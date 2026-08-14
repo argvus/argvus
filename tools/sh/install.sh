@@ -1,0 +1,272 @@
+#!/usr/bin/env sh
+
+set -eu
+
+CDPATH=
+ROOT_DIR="$(cd -- "$(dirname -- "$0")/../.." && pwd)"
+MODE="user"
+SETUP_MODE="copy-all"
+DRY_RUN=false
+COPY_CONFIG=false
+RESTART=false
+PREFIX="${HOME:-}/.local"
+STORAGE_DIR="${ARGVUS_STORAGE_DIR:-$(cd -- "$ROOT_DIR/../argvus-storage" && pwd)}"
+
+usage() {
+  cat <<EOF
+Usage: tools/sh/install.sh [options]
+
+Installs the current argvus checkout for local testing, together
+with the sibling argvus-storage checkout (../argvus-storage), without
+requiring a GitHub release or package repository. Session launchers are
+owned by the separate argvus-session project/package.
+
+Options:
+  --user          install to ~/.local (default)
+  --system        install to /usr and /etc using sudo, like the Arch package
+  --all           install to both ~/.local and /usr (system + user)
+  --prefix <dir>  user install prefix (default: ~/.local)
+  --copy-config   explicitly copy packaged defaults into $XDG_CONFIG_HOME
+  --force         with --copy-config, replace configs after backups
+  --repair        backward-compatible alias for --copy-config --copy argvus
+  --restart       restart Waybar/Argvus user services after install
+  --dry-run       print setup actions where supported
+  -h, --help      show this help
+
+Examples:
+  make install
+  tools/sh/install.sh --user --restart
+  tools/sh/install.sh --system
+  tools/sh/install.sh --all
+EOF
+}
+
+log() { printf '%s\n' "$*"; }
+die() { printf 'install: %s\n' "$*" >&2; exit 1; }
+
+need() {
+  command -v "$1" >/dev/null 2>&1 || die "missing command: $1"
+}
+
+run() {
+  if [ "$DRY_RUN" = true ]; then
+    printf '[dry-run] %s\n' "$*"
+  else
+    "$@"
+  fi
+}
+
+sudo_run() {
+  if [ "$DRY_RUN" = true ]; then
+    printf '[dry-run] sudo %s\n' "$*"
+  else
+    sudo "$@"
+  fi
+}
+
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --user)
+      MODE="user"
+      shift
+    ;;
+    --system)
+      MODE="system"
+      PREFIX="/usr"
+      shift
+    ;;
+    --all)
+      MODE="all"
+      shift
+    ;;
+    --prefix)
+      [ "$#" -ge 2 ] || die "--prefix requires a value"
+      PREFIX="$2"
+      shift 2
+    ;;
+    --force)
+      SETUP_MODE="copy-all-force"
+      shift
+    ;;
+    --repair)
+      SETUP_MODE="repair"
+      COPY_CONFIG=true
+      shift
+    ;;
+    --copy-config)
+      COPY_CONFIG=true
+      shift
+    ;;
+    --no-setup)
+      COPY_CONFIG=false
+      shift
+    ;;
+    --restart)
+      RESTART=true
+      shift
+    ;;
+    --dry-run)
+      DRY_RUN=true
+      shift
+    ;;
+    -h|--help)
+      usage
+      exit 0
+    ;;
+    *)
+      die "unknown argument: $1"
+    ;;
+  esac
+done
+
+[ -n "${HOME:-}" ] || die "HOME is not set"
+need cargo
+need install
+
+[ -f "$STORAGE_DIR/Cargo.toml" ] || die "argvus-storage checkout not found at: $STORAGE_DIR (clone it next to argvus)"
+
+build_storage() {
+  log "Building argvus-storage..."
+  if [ "$DRY_RUN" = true ]; then
+    printf '[dry-run] cargo build --release --locked --manifest-path %s/Cargo.toml\n' "$STORAGE_DIR"
+  else
+    (cd "$STORAGE_DIR" && cargo build --release --locked)
+  fi
+}
+
+run_setup() {
+  [ "$COPY_CONFIG" = true ] || return 0
+
+  setup_arg=""
+  case "$SETUP_MODE" in
+    copy-all) setup_arg="--copy-all" ;;
+    copy-all-force) setup_arg="--copy-all --force" ;;
+    repair) setup_arg="--repair" ;;
+  esac
+
+  run_argvus_setup() {
+    config_src="$1"
+    setup_bin="$2"
+
+    if [ "$DRY_RUN" = true ]; then
+      # shellcheck disable=SC2086
+      ARGVUS_CONFIG_SRC="$config_src" "$setup_bin" $setup_arg --dry-run
+    else
+      # shellcheck disable=SC2086
+      ARGVUS_CONFIG_SRC="$config_src" "$setup_bin" $setup_arg
+    fi
+  }
+
+  case "$MODE" in
+    system)
+      log "Applying system configuration with argvus-setup $setup_arg..."
+      # shellcheck disable=SC2086
+      run_argvus_setup "/usr/share/argvus" argvus-setup
+    ;;
+    user|all)
+      log "Applying user configuration with argvus-setup $setup_arg..."
+      # shellcheck disable=SC2086
+      run_argvus_setup "$ROOT_DIR/config" "$ROOT_DIR/bin/argvus-setup"
+
+      run mkdir -p "${XDG_CONFIG_HOME:-$HOME/.config}/argvus-storage"
+      run cp "$STORAGE_DIR/config.json" \
+        "${XDG_CONFIG_HOME:-$HOME/.config}/argvus-storage/config.json"
+      log "Installed user storage config: ${XDG_CONFIG_HOME:-$HOME/.config}/argvus-storage/config.json"
+      run cp "$STORAGE_DIR/theme.css" \
+        "${XDG_CONFIG_HOME:-$HOME/.config}/argvus-storage/theme.css"
+      log "Installed user storage theme: ${XDG_CONFIG_HOME:-$HOME/.config}/argvus-storage/theme.css"
+      if [ -d "$STORAGE_DIR/themes" ]; then
+        run mkdir -p "${XDG_CONFIG_HOME:-$HOME/.config}/argvus-storage/themes"
+        run cp -R "$STORAGE_DIR/themes/." \
+          "${XDG_CONFIG_HOME:-$HOME/.config}/argvus-storage/themes/"
+      fi
+    ;;
+  esac
+}
+
+install_user() {
+  bin_dir="$PREFIX/bin"
+  share_dir="$PREFIX/share/argvus"
+
+  log "Installing Argvus to $PREFIX..."
+  run mkdir -p "$bin_dir" "$share_dir"
+
+  run rm -rf "$share_dir"
+  run cp -R "$ROOT_DIR/config" "$share_dir"
+  run install -m 755 "$ROOT_DIR/bin/argvus-setup" "$bin_dir/argvus-setup"
+  run install -m 755 "$STORAGE_DIR/target/release/argvus-storage" "$bin_dir/argvus-storage"
+
+  log "Installed binaries to: $bin_dir"
+  log "Make sure $bin_dir is in PATH before restarting the session."
+}
+
+install_system() {
+  need sudo
+  log "Installing Argvus to /usr with sudo..."
+
+  sudo_run install -dm755 /usr/share/argvus
+  if [ "$DRY_RUN" = true ]; then
+    printf '[dry-run] sudo rm -rf /usr/share/argvus\n'
+    printf '[dry-run] sudo cp -a %s/config /usr/share/argvus\n' "$ROOT_DIR"
+  else
+    sudo rm -rf /usr/share/argvus
+    sudo cp -a "$ROOT_DIR/config" /usr/share/argvus
+  fi
+
+  sudo_run install -Dm755 "$ROOT_DIR/bin/argvus-setup" /usr/bin/argvus-setup
+  sudo_run install -Dm755 "$STORAGE_DIR/target/release/argvus-storage" /usr/bin/argvus-storage
+  sudo_run rm -f /etc/profile.d/argvus.sh
+  log "Removed legacy TTY auto-start profile: /etc/profile.d/argvus.sh"
+  sudo_run install -Dm644 "$STORAGE_DIR/config.json" \
+    /etc/argvus-storage/config.json
+  sudo_run install -Dm644 "$STORAGE_DIR/theme.css" \
+    /etc/argvus-storage/theme.css
+  if [ -d "$STORAGE_DIR/themes" ]; then
+    sudo_run install -dm755 /etc/argvus-storage/themes
+    if [ "$DRY_RUN" = true ]; then
+      printf '[dry-run] sudo cp -a %s/themes/. /etc/argvus-storage/themes/\n' "$STORAGE_DIR"
+    else
+      sudo cp -a "$STORAGE_DIR/themes/." /etc/argvus-storage/themes/
+    fi
+  fi
+  sudo_run install -Dm644 "$ROOT_DIR/LICENSE" \
+    /usr/share/licenses/LICENSE
+
+}
+
+restart_runtime() {
+  [ "$RESTART" = true ] || return 0
+
+  log "Restarting runtime pieces..."
+  if command -v pkill >/dev/null 2>&1; then
+    pkill -x argvus-storage 2>/dev/null || true
+    pkill -x waybar 2>/dev/null || true
+  fi
+  if command -v hyprctl >/dev/null 2>&1; then
+    hyprctl reload >/dev/null 2>&1 || true
+  fi
+  if [ -x "${XDG_CONFIG_HOME:-$HOME/.config}/hypr/scripts/init.sh" ]; then
+    sh "${XDG_CONFIG_HOME:-$HOME/.config}/hypr/scripts/init.sh" --waybars >/dev/null 2>&1 &
+  elif [ -x "$ROOT_DIR/config/hypr/scripts/init.sh" ]; then
+    ARGVUS_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}" \
+    ARGVUS_SYSTEM_CONFIG="$ROOT_DIR/config" \
+      sh "$ROOT_DIR/config/hypr/scripts/init.sh" --waybars >/dev/null 2>&1 &
+  fi
+}
+
+build_storage
+
+case "$MODE" in
+  user) install_user ;;
+  system) install_system ;;
+  all)
+    install_user
+    install_system
+  ;;
+  *) die "invalid mode: $MODE" ;;
+esac
+
+run_setup
+restart_runtime
+
+log "Install completed."

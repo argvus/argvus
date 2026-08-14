@@ -1,0 +1,39 @@
+/* === Accent colors === */
+@define-color accent_bg_color #3da79e;
+@define-color accent_fg_color #0e2826;
+@define-color accent_color #5fcdc3;
+@define-color accent_color_rgb 95, 205, 195;
+
+/* === Seleção universal (ListBox/ListView, TreeView, IconView) === */
+row:selected,
+row:selected:focus,
+flowboxchild:selected,
+iconview:selected,
+iconview:selected:focus,
+treeview.view:selected,
+treeview.view:selected:focus,
+treeview.view cell:selected,
+.view:selected {
+    background-color: alpha(#3da79e, 0.18);
+    color: @window_fg_color;
+}
+
+/* Hover por item (não no container inteiro) */
+row:hover,
+treeview.view:hover {
+    background-color: alpha(#3da79e, 0.08);
+}
+
+/* Sidebar (Nautilus, Configurações, etc.) */
+.navigation-sidebar row:selected,
+.navigation-sidebar row:selected:focus,
+.navigation-sidebar row:selected:hover {
+    background-color: alpha(#3da79e, 0.22);
+    color: @window_fg_color;
+}
+
+/* Seleção de texto em campos de entrada/editores */
+selection {
+    background-color: alpha(#3da79e, 0.35);
+    color: @window_fg_color;
+}

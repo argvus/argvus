@@ -1,0 +1,21 @@
+# Argvus Light Float theme for Bottom
+
+[color]
+background = "#f7f7f7"
+foreground = "#181818"
+border = "#181818"
+text = "#181818"
+selected_text = "#f7f7f7"
+selected_bg = "#181818"
+
+[colors]
+cpu_color = "#181818"
+mem_color = "#454545"
+swap_color = "#8a8a8a"
+rx_color = "#303030"
+tx_color = "#181818"
+rx_total_color = "#5a5a5a"
+tx_total_color = "#303030"
+process_color = "#181818"
+process_highlighted_color = "#303030"
+average_cpu_color = "#303030"

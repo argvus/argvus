@@ -1,0 +1,157 @@
+# File: ~/.config/dunst/dunstrc
+
+[global]
+    ### Display ###
+    monitor = 0
+    follow = none
+
+    ### Geometry ###
+    width = (200, 380)
+    height = 160
+    origin = top-right
+    offset = 16x46          # alinha abaixo da topbar do Waybar
+    scale = 0
+    notification_limit = 5
+
+    ### Apparence ###
+    progress_bar = true
+    progress_bar_height = 3
+    progress_bar_frame_width = 0
+    progress_bar_min_width = 340
+    progress_bar_max_width = 340
+    progress_bar_corner_radius = 1
+    highlight = "#3590bd"
+
+    indicate_hidden = yes
+    transparency = 10
+    separator_height = 1
+    padding = 10
+    horizontal_padding = 14
+    text_icon_padding = 10
+    frame_width = 1
+    frame_color = "#3590bd"
+    gap_size = 6
+    separator_color = frame
+    sort = yes
+    corner_radius = 4
+
+    ### Text ###
+    font = monospace 10
+    line_height = 2
+    markup = full
+    format = "<b>%s</b>\n%b"
+    alignment = left
+    vertical_alignment = center
+    show_age_threshold = 60
+    ellipsize = middle
+    ignore_newline = no
+    stack_duplicates = true
+    hide_duplicate_count = false
+    show_indicators = yes
+
+    ### Icons ###
+    icon_theme = "Papirus-Dark, hicolor"
+    enable_recursive_icon_lookup = true
+    icon_position = left
+    min_icon_size = 24
+    max_icon_size = 32
+    icon_corner_radius = 2
+
+    ### History ###
+    sticky_history = yes
+    history_length = 20
+
+    ### Misc ###
+    dmenu = /usr/bin/rofi -dmenu -p dunst
+    browser = /usr/bin/xdg-open
+    always_run_script = true
+    title = Dunst
+    class = Dunst
+    ignore_dbusclose = false
+
+    ### Wayland ###
+    force_xwayland = false
+    layer = overlay
+    force_last_config = false
+
+    ### Mouse ###
+    mouse_left_click = close_current
+    mouse_middle_click = do_action, close_current
+    mouse_right_click = close_all
+
+[experimental]
+    per_monitor_dpi = false
+
+# Urgency ----------------------------------------------------------------------
+
+[urgency_low]
+    background = "#101010"
+    foreground = "#aaaaaa"
+    frame_color = "#757575"
+    timeout = 4
+    default_icon = dialog-information
+
+[urgency_normal]
+    background = "#131313"
+    foreground = "#e0e0e0"
+    frame_color = "#757575"
+    timeout = 6
+    default_icon = dialog-information
+
+[urgency_critical]
+    background = "#1a0a0a"
+    foreground = "#ffffff"
+    frame_color = "#757575"
+    highlight = "#757575"
+    timeout = 0
+    default_icon = dialog-error
+
+# Rules apps -------------------------------------------------------------------
+
+[hyprshot]
+    appname = "Hyprshot"
+    background = "#101a1a"
+    foreground = "#cccccc"
+    frame_color = "#757575"
+    timeout = 4
+    icon = camera-photo
+
+[volume]
+    appname = "volume"
+    background = "#101010"
+    foreground = "#aaaaaa"
+    frame_color = "#757575"
+    timeout = 2
+    icon = audio-volume-high
+
+[gpu-screen-recorder]
+    appname = "gpu-screen-recorder"
+    background = "#1a0f10"
+    foreground = "#e0e0e0"
+    frame_color = "#757575"
+    timeout = 5
+    icon = media-record
+
+[network]
+    appname = "NetworkManager"
+    background = "#101318"
+    foreground = "#cccccc"
+    frame_color = "#757575"
+    timeout = 5
+    icon = network-wireless
+
+[spotify]
+    appname = "Spotify"
+    background = "#0d1a10"
+    foreground = "#cccccc"
+    frame_color = "#757575"
+    highlight = "#757575"
+    timeout = 4
+
+[discord]
+    appname = "discord"
+    background = "#10111a"
+    foreground = "#cccccc"
+    frame_color = "#757575"
+    highlight = "#757575"
+    timeout = 6

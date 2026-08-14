@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+# shellcheck shell=sh disable=SC1091
+#
+# .argvus-bootstrap — PONTO DE ENTRADA ÚNICO
+#
+# Path fixo em ~/.config/.argvus-bootstrap.
+# Se o diretório de instalação mudar, atualize APENAS este arquivo.
+#
+# Uso em scripts:
+#   . "${HOME}/.config/.argvus-bootstrap"
+
+ENVIRONMENT_ROOT="${HOME}/.config/argvus"
+. "${ENVIRONMENT_ROOT}/sh/bootstrap.sh"

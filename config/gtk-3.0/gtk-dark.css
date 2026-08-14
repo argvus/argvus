@@ -1,0 +1,24 @@
+@define-color theme_selected_bg_color #3da79e;
+@define-color theme_selected_fg_color #0e2826;
+
+.view:selected,
+.view:selected:focus,
+row:selected,
+row:selected:focus,
+treeview.view:selected,
+treeview.view:selected:focus,
+treeview.view cell:selected,
+iconview:selected {
+    background-color: alpha(#3da79e, 0.18);
+    color: @theme_text_color;
+}
+
+.view:hover,
+row:hover {
+    background-color: alpha(#3da79e, 0.08);
+}
+
+selection {
+    background-color: alpha(#3da79e, 0.35);
+    color: @theme_text_color;
+}

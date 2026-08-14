@@ -1,0 +1,40 @@
+Kitty Cheatsheets
+====================
+
+Atalhos convencionais »
+------------------------------------------------
+ATALHO                        DESCRIÇÃO
+
+01 - Ctrl + Shift + c       = Copiar texto
+02 - Ctrl + Shift + v       = Colar texto
+03 - Ctrl + Alt + n         = Nova aba
+04 - Ctrl + q               = Fechar aba
+
+Atalhos de Splits »
+------------------------------------------------
+ATALHO                        DESCRIÇÃO
+
+05 - Ctrl + Shift + d       = Split horizontal
+06 - Ctrl + Shift + s       = Split vertical
+07 - Ctrl + Shift +        = Foco esquerda
+08 - Ctrl + Shift +        = Foco abaixo
+09 - Ctrl + Shift +        = Foco acima
+10 - Ctrl + Shift +        = Foco direita
+11 - Ctrl + Shift + x       = Fechar split
+
+Atalhos de Abas »
+-----------------------------------------------
+ATALHO                        DESCRIÇÃO
+
+12 - Alt + 1                = Aba 1
+13 - Alt + 2                = Aba 2
+14 - Ctrl + Tab             = Próxima aba
+15 - Ctrl + Shift + Tab     = Aba anterior
+
+Atalhos de Histórico »
+-----------------------------------------------
+ATALHO                        DESCRIÇÃO
+
+16 - Ctrl + Shift + k       = Prompt anterior
+17 - Ctrl + Shift + j       = Próximo prompt
+18 - Ctrl + Shift + O       = Selecionar saída do último comando

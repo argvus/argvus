@@ -1,0 +1,6 @@
+/* theme: argvus-slate-float */
+@define-color th-window-bg    rgba(47, 53, 65, 1);
+@define-color th-button-bg    #20242E;
+@define-color th-button-fg    #A6B8C4;
+@define-color th-accent       #7391a5;
+@define-color th-accent-text  #2F3541;

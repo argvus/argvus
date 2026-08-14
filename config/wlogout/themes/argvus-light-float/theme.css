@@ -1,0 +1,6 @@
+/* theme: argvus-light-float */
+@define-color th-window-bg    rgba(247, 247, 247, 0.96);
+@define-color th-button-bg    #ebebeb;
+@define-color th-button-fg    #181818;
+@define-color th-accent       #181818;
+@define-color th-accent-text  #f7f7f7;

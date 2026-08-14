@@ -1,0 +1,329 @@
+@import url("./themes/argvus-dark/theme.css");
+@import url("./mode.css");
+
+/*  Waybar — Top Painel  */
+
+@define-color transparent transparent;
+
+
+/* --- Global-Settings --- */
+* {
+  font-family: "Terminus (TTF)", "Font Awesome 7 Free", monospace;
+  min-height: 0px;
+}
+
+window#waybar {
+  min-height: 0px;
+  border-radius: 0px;
+  border: 1px solid @th-decorate;
+  background: @th-background-rgba;
+  transition-property: background-color;
+  transition-duration: .5s;
+}
+
+window#waybar.empty #window {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+#waybar.empty .modules-center {
+  opacity: 0;
+}
+
+#workspaces {
+  padding: 0px 6px 0px 6px;
+}
+
+#workspaces button {
+  background: none;
+  box-shadow: none;
+  text-shadow: none;
+  color: @th-foreground;
+  border: none;
+  font-weight: bold;
+  border-radius: 0px;
+  margin: 4px 1px 4px 1px;
+  padding: 0px 4px;
+  transition: all 0.3s ease-in-out;
+}
+
+#workspaces button.active,
+#workspaces button:hover,
+#workspaces button.focused:hover,
+#workspaces button.empty {
+  text-shadow: none;
+  background: @th-foreground;
+  box-shadow: none;
+  border: none;
+  border-radius: 0px;
+  margin: 4px 1px 4px 1px;
+  padding: 0px 4px;
+  color: @th-background;
+  opacity: 0.85;
+}
+
+
+#workspaces button.empty,
+#workspaces button.empty:hover {
+  text-shadow: none;
+  opacity: 0.40;
+}
+
+#workspaces button.empty {
+  background: none;
+  color: @transparent;
+}
+
+#workspaces button.empty.active {
+  color: @th-foreground;
+}
+
+#custom-icon-window {
+  color: @th-foreground;
+}
+
+#submap {
+  color: @th-foreground;
+  font-weight: bold;
+}
+
+/* Font size bar */
+#language,
+#cpu,
+#memory,
+#network,
+#clock,
+#custom-expand-icon,
+#custom-storage,
+#mpris,
+#custom-window-or-mpris,
+#tray,
+#custom-recording,
+#pulseaudio,
+#power-profiles-daemon,
+#custom-settings,
+#custom-power,
+#custom-cpu-temp,
+#custom-gpu-temp {
+  /* Minimal: 12px, Medium (Recommended): 14px */
+  font-size: 14px;
+}
+
+tooltip {
+  padding: 4px;
+  background: @th-background;
+  border-radius: 0px;
+  font-size: 18px;
+}
+
+tooltip label {
+  color: @th-foreground;
+}
+
+#mpris {
+  color: @th-foreground;
+}
+
+#window {
+  color: @th-window-fg;
+}
+
+#tray,
+#language,
+#group-tray-expander,
+#custom-storage,
+#mpris,
+#cpu,
+#clock.date,
+#clock.time,
+#network,
+#memory,
+#custom-settings,
+#pulseaudio,
+#custom-recording,
+#window,
+#power-profiles-daemon,
+#custom-power,
+#custom-cpu-temp,
+#custom-gpu-temp
+{
+  border-bottom: 1px solid @transparent;
+}
+
+#tray,
+#group-tray-expander,
+#custom-storage,
+#mpris,
+#custom-window-or-mpris,
+#custom-recording,
+#pulseaudio,
+#language,
+#power-profiles-daemon,
+#network,
+#memory,
+#cpu,
+#clock,
+#custom-settings,
+#custom-power,
+#custom-cpu-temp,
+#custom-gpu-temp
+{
+  /* top right bottom left */
+  margin: 0px 4px 0px 4px;
+  padding: 0px 4px 0px 4px;
+}
+
+#language {
+  /* top right bottom left */
+  margin: 0px 1px 0px 4px;
+  padding: 0px 4px 0px 4px;
+}
+
+#power-profiles-daemon {
+  /* top right bottom left */
+  margin: 0px 3px 0px 3px;
+  padding: 0px 3px 0px 3px;
+}
+
+#custom-window-or-mpris {
+  margin-left: 15px;
+}
+
+#right-0, #right-1, #right-2, #mpris {
+  margin: 3px 0px;
+  margin-left: 5px;
+  padding: 0px 10px;
+  border-radius: 0px;
+  border: 1px solid @th-border-rights;
+}
+
+#right-0 {
+  background: @th-right02-bg;
+  color: @th-foreground;
+}
+
+#right-1 {
+  background: @th-right1-bg;
+  color: @th-foreground;
+}
+
+#right-2 {
+  background: @th-right02-bg;
+  color: @th-foreground;
+}
+
+/* --- Hover --- */
+#clock.date:hover,
+#tray,
+#custom-storage:hover,
+#cpu:hover,
+#memory:hover,
+#language:hover,
+#custom-recording:hover,
+#power-profiles-daemon:hover,
+#custom-update:hover,
+#network:hover,
+#pulseaudio:hover,
+#custom-settings:hover,
+#custom-power:hover,
+#custom-cpu-temp:hover,
+#custom-gpu-temp:hover {
+  color: @th-foreground2;
+  border-bottom: 1px solid @th-foreground2;
+}
+
+#language {
+  min-width: 30px;
+}
+
+#custom-settings {
+  color: @th-foreground;
+  padding: 0 6px;
+}
+
+#tray {
+  background: none;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+#tray > .passive {
+  -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+  -gtk-icon-effect: highlight;
+}
+
+#custom-expand-icon {
+  color: @th-decorate;
+}
+
+#custom-expand-icon:hover {
+  border-bottom: 1px solid @transparent;
+}
+
+.hidden {
+  opacity: 0;
+}
+
+#custom-expand-icon {
+  transition: all 0.3s ease;
+}
+
+#mpris {
+  background: @th-mpris-bg;
+  color: @th-foreground;
+  border: 1px solid @th-mpris-border;
+  box-shadow: none;
+  text-shadow: none;
+  animation: repeat;
+  animation-name: blink-player;
+  animation-duration: 3s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+#mpris:hover {
+  border-bottom: 1px solid @th-decorate;
+  box-shadow: none;
+  text-shadow: none;
+}
+
+@keyframes blink-player {
+  to {
+    color: @th-mpris-fg-anim;
+  }
+}
+
+#custom-power {
+  color: @th-power;
+}
+
+/* Recording Screen */
+#custom-recording {
+  color: @th-foreground;
+}
+
+#custom-recording.stopped {
+  color: @th-foreground;
+}
+
+#custom-recording.recording {
+  color: @th-recording;
+  animation: blink-recording 1.2s ease-in-out infinite;
+}
+
+#custom-recording.paused {
+  color: @th-recording-pause;
+}
+
+/* Specific animation Module */
+@keyframes blink-recording {
+  50% {
+    opacity: 0.4;
+  }
+}

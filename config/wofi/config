@@ -1,0 +1,10 @@
+width = 960
+height = 380
+location = center
+show = drun
+allow_markup = false
+no_actions = true
+insensitive = true
+allow_images = false
+gtk_dark = true
+prompt = drun

@@ -1,0 +1,71 @@
+# --- Disabled "D" key (delete permanent), opcional ---
+[[mgr.prepend_keymap]]
+on  = "d"
+run = "noop"
+
+[[mgr.prepend_keymap]]
+on  = "D"
+run = "noop"
+
+# --- Rename folder/files
+[[mgr.prepend_keymap]]
+on = "<F2>"
+run = "rename"
+desc = "Renomear"
+
+# --- Open folder in terminal ---
+[[mgr.prepend_keymap]]
+on   = "<C-t>"
+run = 'shell --orphan "kitty --directory=\"$1\"" sh "$@"'
+desc = "Abrir no terminal"
+
+# --- Move to trash ---
+[[mgr.prepend_keymap]]
+on   = "<Delete>"
+run  = "remove"
+desc = "Mover para lixeira"
+
+# --- Shift+Delete → delete permanent with security ---
+# Install: https://orbitbits.github.io/smog/
+[[mgr.prepend_keymap]]
+on   = "<S-Delete>"
+run  = "shell 'smog %h --confirm' --block"
+desc = "Destruir com segurança (Smog)"
+
+# --- Empty trash with security ---
+[[mgr.prepend_keymap]]
+on   = ["\\", "?"]
+run  = "shell 'smog --trash --confirm' --block"
+desc = "Esvaziar lixeira (Smog)"
+
+# --- Open folder in terminal ---
+[[mgr.prepend_keymap]]
+on   = ["\\", "t"]
+run = 'shell --orphan "kitty --directory=\"$1\"" sh "$@"'
+desc = "Abrir no terminal"
+
+# --- Open file intelligently ---
+[[mgr.prepend_keymap]]
+on = ["\\", "o"]
+run = 'shell "/usr/share/argvus/yazi/scripts/open-smart.sh \"$0\"" --orphan'
+desc = "Abrir arquivo inteligentemente"
+
+# --- Open in Visual Studio Code  ---
+[[mgr.prepend_keymap]]
+on   = ["\\", "c"]
+run  = "shell 'code %h' --orphan"
+desc = "Abrir com VSCode"
+
+# --- Zip ---
+[[mgr.prepend_keymap]]
+on   = ["\\", "z"]
+run  = '''shell 'f="%h"; zip -r "$(dirname "$f")/$(basename "${f%.*}").zip" "$f"' --block'''
+desc = "Zipar (zip)"
+
+# --- Open Xarchiver/File Roller  ---
+[[mgr.prepend_keymap]]
+on   = ["\\", "Z"]
+# run  = "shell 'xarchiver -c %h' --orphan"
+# desc = "  Abrir no Xarchiver"
+run  = "shell 'file-roller --add %h' --orphan"
+desc = "Abrir no File Roller"

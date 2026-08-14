@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate package sources
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Validate expected files
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          test -d config
+          test -f config/argvus/profile
+          test -f config/argvus/sh/bootstrap.sh
+          test -f config/hypr/hyprland.lua
+          test -f config/waybar/config.jsonc
+          test -f LICENSE
+
+          test -x bin/argvus-setup
+          sh -n bin/argvus-setup
+          find config tools/sh -type f -name '*.sh' -print0 | xargs -0 -r sh -n
+
+      - name: Validate package layout
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          pkg_root="$RUNNER_TEMP/pkg"
+
+          install -dm755 "$pkg_root/usr/share/argvus"
+          cp -a config/. "$pkg_root/usr/share/argvus/"
+          install -Dm755 bin/argvus-setup "$pkg_root/usr/bin/argvus-setup"
+          install -Dm644 LICENSE "$pkg_root/usr/share/licenses/argvus/LICENSE"
+
+          test -x "$pkg_root/usr/bin/argvus-setup"
+          test -f "$pkg_root/usr/share/argvus/argvus/profile"
+          test -f "$pkg_root/usr/share/argvus/argvus/sh/bootstrap.sh"
+          test -f "$pkg_root/usr/share/argvus/hypr/hyprland.lua"
+          test -f "$pkg_root/usr/share/argvus/waybar/config.jsonc"
+          test -f "$pkg_root/usr/share/licenses/argvus/LICENSE"

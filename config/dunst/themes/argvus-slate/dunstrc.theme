@@ -1,0 +1,11 @@
+# theme: argvus-slate
+highlight = "#7391a5"
+frame_color = "#7391a5"
+low_background = "#2F3541"
+low_foreground = "#A6B8C4"
+normal_background = "#20242E"
+normal_foreground = "#A6B8C4"
+critical_background = "#957A7B"
+critical_foreground = "#2F3541"
+app_background = "#20242E"
+app_foreground = "#A6B8C4"

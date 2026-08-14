@@ -1,0 +1,34 @@
+@define-color accent_bg_color #3da79e;
+@define-color accent_fg_color #0e2826;
+@define-color accent_color #2a7d76;
+@define-color accent_color_rgb 42, 125, 118;
+
+row:selected,
+row:selected:focus,
+flowboxchild:selected,
+iconview:selected,
+iconview:selected:focus,
+treeview.view:selected,
+treeview.view:selected:focus,
+treeview.view cell:selected,
+.view:selected {
+    background-color: alpha(#3da79e, 0.16);
+    color: @window_fg_color;
+}
+
+row:hover,
+treeview.view:hover {
+    background-color: alpha(#3da79e, 0.06);
+}
+
+.navigation-sidebar row:selected,
+.navigation-sidebar row:selected:focus,
+.navigation-sidebar row:selected:hover {
+    background-color: alpha(#3da79e, 0.20);
+    color: @window_fg_color;
+}
+
+selection {
+    background-color: alpha(#3da79e, 0.30);
+    color: @window_fg_color;
+}

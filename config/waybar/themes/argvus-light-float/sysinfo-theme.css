@@ -1,0 +1,8 @@
+/* theme: argvus-light-float — sysinfo panel */
+@define-color th-background    #f7f7f7;
+@define-color th-header        #181818;
+@define-color th-foreground    #181818;
+@define-color th-window-bg     rgba(235, 235, 235, 0.92);
+@define-color th-border        rgba(24, 24, 24, 0.16);
+@define-color th-border-header rgba(24, 24, 24, 0.18);
+@define-color th-disconnected  rgba(24, 24, 24, 0.30);

@@ -1,0 +1,23 @@
+/* theme: argvus-dark */
+@define-color th-foreground      #DFE5EA;
+@define-color th-foreground2     #B0BFCB;
+@define-color th-decorate        #3590bd;
+@define-color th-decorate-rgba   rgba(53, 144, 189, 0.45);
+@define-color th-hover           #627D8A;
+@define-color th-background      #111316;
+@define-color th-background-rgba rgba(17, 19, 22, 0.85);
+@define-color th-right1-bg       #262933;
+@define-color th-right02-bg      #201F27;
+@define-color th-border-rights   rgba(53, 144, 189, 0.25);
+@define-color th-window-fg       #DFE5EA;
+
+@define-color th-danger          #4C3A3B;
+@define-color th-warn            #695B57;
+@define-color th-ok              #5B7683;
+@define-color th-recording       #4C3A3B;
+@define-color th-recording-pause #695B57;
+@define-color th-power           #3590bd;
+
+@define-color th-mpris-bg        rgba(38, 41, 51, 0.85);
+@define-color th-mpris-border    rgba(53, 144, 189, 0.25);
+@define-color th-mpris-fg-anim   #627D8A;

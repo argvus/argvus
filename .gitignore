@@ -1,0 +1,10 @@
+# Linux
+# -------------------------------------------------------------
+*~
+*.bak
+
+# This repo
+# -------------------------------------------------------------
+config/quickshell/*.zip
+config/quickshell/*.png
+config/argvus/.gtk-mode

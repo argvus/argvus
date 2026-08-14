@@ -1,0 +1,42 @@
+[[row]]
+  ratio=100
+  [[row.child]]
+    type="cpu"
+[[row]]
+  ratio=70
+  [[row.child]]
+    type="proc"
+
+[styles]
+[styles.cpu]
+all_entry_color = "#3aa99f"
+avg_entry_color = "#aaffee"
+cpu_core_colors = ["#3aa99f", "#2a8080", "#1a5f5a", "#aaffee", "#88ccff", "#3aa99f", "#2a8080", "#1a5f5a"]
+
+[styles.memory]
+ram_color = "#3aa99f"
+swap_color = "#2a8080"
+
+[styles.network]
+rx_color = "#88ccff"
+tx_color = "#3aa99f"
+
+[styles.battery]
+high_battery_color = "#3aa99f"
+medium_battery_color = "#f0c050"
+low_battery_color = "#ff5555"
+
+[styles.tables]
+headers = {color = "#3aa99f", bold = true}
+
+[styles.graphs]
+graph_color = "#aaaaaa"
+legend_text = {color = "#aaaaaa"}
+
+[styles.widgets]
+border_color = "#303030"
+selected_border_color = "#3aa99f"
+widget_title = {color = "#3aa99f"}
+text = {color = "#ffffff"}
+selected_text = {color = "#181818", bg_color = "#3aa99f"}
+disabled_text = {color = "#555555"}

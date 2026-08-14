@@ -1,0 +1,11 @@
+# theme: argvus-dark-silver-float
+highlight = "#595959"
+frame_color = "#595959"
+low_background = "#111316"
+low_foreground = "#B0BFCB"
+normal_background = "#262933"
+normal_foreground = "#DFE5EA"
+critical_background = "#4C3A3B"
+critical_foreground = "#DFE5EA"
+app_background = "#201F27"
+app_foreground = "#DFE5EA"

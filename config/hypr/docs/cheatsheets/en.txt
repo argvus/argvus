@@ -1,0 +1,64 @@
+Hyprland Cheatsheets
+====================
+
+Desktop Environment Shortcuts »
+--------------------------------------------------
+SHORTCUT                               DESCRIPTION
+
+01 - SUPER + 1..9               = Workspaces
+02 - SUPER + Shift + Space      = Enable/Disable Floating Window
+03 - SUPER +                = Focus tiled window by direction
+04 - SUPER + Ctrl +           = Cycle focus between windows (tiled and floating)
+05 - Ctrl + Alt +    or             = Moving between work areas
+     Mouse 4 / Mouse 5
+06 - ALT + Tab                        = Cycle through all windows
+07 - SUPER + r                  = Enter window resize mode (floating window only)
+                                  = Resize
+     SHIFT +                      = Move window
+     Esc                              = Exit resize mode
+08 - SUPER + Mouse Button 1     = Drag window (floating window only)
+09 - SUPER + Mouse Button 2     = Window resize mode (floating window only)
+10 - SUPER + f                  = Full screen window
+11 - SUPER + w                  = ​​Group/Ungroup into tabs
+12 - SUPER + Shift +          = Move window
+13 - SUPER + q                  = Close window
+14 - SUPER + Shift + 1..9       = Move window to desktop
+15 - Print                            = Capture selected area
+16 - SUPER + Print              = Capture focused window
+17 - SUPER + Shift + Print      = Capture entire screen
+18 - SUPER + g                  = Start/Pause/Resume screen recording
+19 - SUPER + Shift + g          = Stop and save screen recording
+20 - SUPER + ,                  = Open/Close notification sidebar
+21 - SUPER + y                  = Opens the selector to change the wallpaper
+22 - SUPER + Shift + t          = Opens the selector themes
+23 - SUPER + Shift + a          = Opens the accent color selector
+24 - SUPER + Shift + w          = Configures the weather location
+25 - SUPER + Shift + b          = Opens the brightness selector
+26 - SUPER + F5                 = Toggles between GTK Dark and Light themes
+27 - SUPER + Shift + l          = Lock system
+28 - SUPER + Shift + m          = Turn monitor off/on (not suspend system)
+29 - SUPER + Esc                = Exit system
+30 - SUPER + Shift + r          = Reload Hyprland
+
+Software Shortcuts »
+--------------------------------------------------
+SHORTCUT                               DESCRIPTION
+
+31 - SUPER + Enter              = Terminal
+32 - SUPER + Space              = File Manager
+33 - SUPER + Shift + s          = Removable storage menu
+34 - SUPER + b                  = Default Browser
+35 - SUPER + d                  = Program Launcher
+36 - SUPER + c                  = Calculator
+37 - SUPER + Ctrl + /?          = Kitty Cheatsheets
+38 - SUPER + h                  = Clipboard History
+39 - SUPER + Shift + h          = Clear Clipboard History
+40 - SUPER + p                  = Color Picker
+41 - ALT + SHIFT                      = Switch keyboard between "pt-br (abnt2)" and "us"
+
+Directories »
+-----------------------------------------------
+
+Hyprland configs: $HOME/.config/hypr/
+Hyprland logs: $HOME/.local/state/hyprland/
+Waybar configs: $HOME/.config/waybar/

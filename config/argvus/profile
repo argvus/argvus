@@ -1,0 +1,38 @@
+#!/usr/bin/env sh
+# Argvus - optional TTY session profile.
+#
+# Source this file from ~/.bash_profile or ~/.zprofile only if you explicitly
+# want Hyprland to auto-start on TTY1 when no display manager is running.
+#
+#   [ -f ~/.config/argvus/profile ] && . ~/.config/argvus/profile
+#
+# To disable this opt-in auto-start, set:
+#   export ARGVUS_TTY_DISABLE=1
+#
+# To use a different VT number (default: 1):
+#   export ARGVUS_TTY_VT=2
+#
+# The guard below also skips auto-start when greetd owns the login flow.
+
+if [ "${ARGVUS_TTY_DISABLE:-0}" = "1" ]; then
+  # shellcheck disable=SC2317
+  return 0 2>/dev/null || exit 0
+fi
+
+_desktop_vt="${ARGVUS_TTY_VT:-1}"
+
+if [ -z "${DISPLAY:-}" ] && [ -z "${WAYLAND_DISPLAY:-}" ] && [ -z "${GREETD_SOCK:-}" ]; then
+  _current_vt="${XDG_VTNR:-}"
+  if [ -z "$_current_vt" ] && [ -t 0 ] && [ -r /dev/tty ]; then
+    _current_vt="$(cat /dev/tty 2>/dev/null | sed -n 's/.*tty\([0-9]*\).*/\1/p')"
+  fi
+
+  if [ "$_current_vt" = "$_desktop_vt" ]; then
+    if command -v argvus-tty >/dev/null 2>&1; then
+      unset _desktop_vt _current_vt
+      exec argvus-tty
+    fi
+  fi
+fi
+
+unset _desktop_vt _current_vt

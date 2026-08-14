@@ -1,0 +1,102 @@
+@import "/usr/share/argvus/rofi/themes/argvus-dark/theme.rasi"
+@import "/usr/share/argvus/rofi/mode.rasi"
+
+/* Author: William C. Canin */
+
+* {
+    bg:               @th-bg;
+    fg:               @th-fg;
+    fg-selected:      @th-fg-selected;
+
+    row-alt:          @th-row-alt;
+    row-selected:     @th-row-selected;
+
+    border-color:     @th-border-color;
+    separator-color:  @th-separator;
+
+    spacing: 2px;
+}
+
+window {
+  background-color: @bg;
+  border: 1px;
+  border-color: @border-color;
+  border-radius: 0px;
+  padding: 6px;
+}
+
+mainbox {
+  padding: 0;
+  border: 0;
+  background-color: transparent;
+}
+
+inputbar {
+  padding: 0 0 12px 0;
+  children: [ prompt, textbox-prompt-colon, entry ];
+  background-color: transparent;
+}
+
+prompt {
+  background-color: transparent;
+  text-color: @fg;
+}
+
+textbox-prompt-colon {
+  str: ":";
+  expand: false;
+  text-color: @fg;
+  background-color: transparent;
+}
+
+entry {
+  background-color: transparent;
+  text-color: @fg;
+}
+
+textbox {
+  background-color: @bg;
+  text-color: @fg;
+}
+
+listview {
+  lines: 10;
+  scrollbar: true;
+  border: 2px dash 0px 0px;
+  border-color: @separator-color;
+  background-color: transparent;
+  spacing: 2px;
+  padding: 2px 0 0 0;
+}
+
+element {
+  padding: 2px 4px;
+  background-color: transparent;
+}
+
+element normal.normal {
+  background-color: transparent;
+  text-color: @fg;
+}
+
+element alternate.normal {
+  text-color: @fg;
+  // background-color: rgba(255,255,255,4%);
+}
+
+element selected.normal {
+  background-color: @row-selected;
+  text-color: @fg-selected;
+  border-radius: 0px;
+}
+
+element-text {
+  background-color: inherit;
+  text-color: inherit;
+}
+
+scrollbar {
+  width: 0px;
+  handle-width: 0px;
+  border: 0;
+}

@@ -1,0 +1,65 @@
+Hyprland Cheatsheets
+====================
+
+Atalhos do ambiente de Desktop »
+------------------------------------------------
+ATALHO                                 DESCRIÇÃO
+
+01 - SUPER + 1..9               = Áreas de trabalho
+02 - SUPER + Shift + Space      = Ativa/Desativa Janela flutuante
+03 - SUPER +                = Focar janela tileada por direção
+04 - SUPER + Ctrl +           = Ciclar foco entre janelas (tileadas e flutuantes)
+05 - Ctrl + Alt +    ou             = Circular entre áreas de trabalho
+     Mouse 4 / Mouse 5
+06 - ALT + Tab                        = Circular entre todas janelas
+07 - SUPER + r                  = Entrar modo redimensionar janela (apenas em janela flutuante)
+                                  = Redimencionar
+     SHIFT +                      = Mover janela
+     Esc                              = Sair modo redimencionar
+08 - SUPER + Mouse Button 1     = Arrasta janela (apenas em janela flutuante)
+09 - SUPER + Mouse Button 2     = Modo redimensionar janela (apenas em janela flutuante)
+10 - SUPER + f                  = Tela cheia
+11 - SUPER + w                  = Agrupar/Desagrupar em abas
+12 - SUPER + Shift +          = Mover janela
+13 - SUPER + q                  = Fechar janela
+14 - SUPER + Shift + 1..9       = Mover janela para a área de trabalho
+15 - Print                            = Capturar área selecionada
+16 - SUPER + Print              = Capturar janela em foco
+17 - SUPER + Shift + Print      = Capturar tela inteira
+18 - SUPER + g                  = Iniciar/Pausar/Retormar gravação de tela
+19 - SUPER + Shift + g          = Parar e salvar gravação de tela
+20 - SUPER + ,                  = Abre/Fecha sidebar de notificações
+21 - SUPER + y                  = Abre seletor para trocar wallpaper
+22 - SUPER + Shift + t          = Abre o seletor de temas
+23 - SUPER + Shift + a          = Abre o seletor de cores de destaque
+24 - SUPER + Shift + w          = Configura a localização do clima
+25 - SUPER + Shift + b          = Abre o seletor de brilho
+26 - SUPER + F5                 = Altera entre tema Dark e Light do GTK
+27 - SUPER + Shift + l          = Bloquear sistema
+28 - SUPER + Shift + m          = Desligar/Ligar monitor (não é suspender)
+29 - SUPER + Esc                = Sair do sistema
+30 - SUPER + Shift + r          = Recarregar Hyprland
+
+Atalhos de software »
+------------------------------------------------
+ATALHO                                 DESCRIÇÃO
+
+31 - SUPER + Enter              = Terminal
+32 - SUPER + Space              = Gerenciador de arquivos
+33 - SUPER + Shift + s          = Menu de dispositivos removíveis
+34 - SUPER + b                  = Navegador padrão
+35 - SUPER + d                  = Lançador de programas
+36 - SUPER + c                  = Calculadora
+37 - SUPER + Ctrl + /?          = Cheatsheets do Kitty
+38 - SUPER + h                  = Histórico no Clipboard
+39 - SUPER + Shift + h          = Apagar histórico do Clipboard
+40 - SUPER + p                  = Seletor de cores (Color Picker)
+41 - ALT + SHIFT                      = Altera teclado entre "pt-br (abnt2)" e "us"
+
+
+Diretórios »
+-----------------------------------------------
+
+Hyprland configs: $HOME/.config/hypr/
+Hyprland logs:    $HOME/.local/state/hyprland/
+Waybar configs:   $HOME/.config/waybar/

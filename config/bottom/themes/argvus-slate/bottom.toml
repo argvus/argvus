@@ -1,0 +1,21 @@
+# Argvus Slate theme for Bottom
+
+[color]
+background = "#2F3541"
+foreground = "#A6B8C4"
+border = "#7391a5"
+text = "#A6B8C4"
+selected_text = "#2F3541"
+selected_bg = "#7391a5"
+
+[colors]
+cpu_color = "#7391a5"
+mem_color = "#A6B8C4"
+swap_color = "#545C69"
+rx_color = "#A6B8C4"
+tx_color = "#7391a5"
+rx_total_color = "#545C69"
+tx_total_color = "#A6B8C4"
+process_color = "#A6B8C4"
+process_highlighted_color = "#7391a5"
+average_cpu_color = "#A6B8C4"

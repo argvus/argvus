@@ -1,0 +1,34 @@
+@import url("./themes/argvus-dark/theme.css");
+
+* {
+  background-image: none;
+  font-family: "JetBrainsMonoNL Nerd Font", "Font Awesome 6 Free Solid", "Font Awesome 6 Free", sans-serif;
+  font-weight: 900;
+}
+
+window {
+  background-color: @th-window-bg;
+  border-radius: 10px;
+}
+
+button {
+  background-color: @th-button-bg;
+  color: @th-button-fg;
+  border: 2px solid @th-accent;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 900;
+  margin: 4px;
+  min-width: 80px;
+  min-height: 60px;
+  transition: all 0.2s ease;
+}
+
+button:focus,
+button:active,
+button:hover {
+  background-color: @th-accent;
+  color: @th-accent-text;
+  border-color: @th-accent;
+  outline-style: none;
+}

@@ -1,0 +1,10 @@
+/* theme: argvus-dark-silver */
+* {
+    th-bg:            rgba(17, 19, 22, 88%);
+    th-fg:            rgb(89, 89, 89);
+    th-fg-selected:   rgba(223, 229, 234, 100%);
+    th-row-alt:       rgba(89, 89, 89, 7%);
+    th-row-selected:  rgba(38, 41, 51, 0.88);
+    th-border-color:  rgba(89, 89, 89, 0.36);
+    th-separator:     rgba(105, 91, 87, 0.52);
+}

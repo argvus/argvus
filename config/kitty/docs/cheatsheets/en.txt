@@ -1,0 +1,40 @@
+Kitty Cheatsheets
+====================
+
+Conventional Shortcuts »
+------------------------------------------------
+SHORTCUT                         DESCRIPTION
+
+01 - Ctrl + Shift + c          = Copy text
+02 - Ctrl + Shift + v          = Paste text
+03 - Ctrl + Alt + n            = New tab
+04 - Ctrl + q                  = Close tab
+
+Split Shortcuts »
+------------------------------------------------
+SHORTCUT                         DESCRIPTION
+
+05 - Ctrl + Shift + d          = Horizontal split
+06 - Ctrl + Shift + s          = Vertical split
+07 - Ctrl + Shift +           = Focus left
+08 - Ctrl + Shift +           = Focus down
+09 - Ctrl + Shift +           = Focus up
+10 - Ctrl + Shift +           = Focus right
+11 - Ctrl + Shift + x          = Close split
+
+Tab Shortcuts »
+-----------------------------------------------
+SHORTCUT                         DESCRIPTION
+
+12 - Alt + 1                   = Tab 1
+13 - Alt + 2                   = Tab 2
+14 - Ctrl + Tab                = Next tab
+15 - Ctrl + Shift + Tab        = Previous tab
+
+History Shortcuts »
+-----------------------------------------------
+SHORTCUT                         DESCRIPTION
+
+16 - Ctrl + Shift + k          = Previous prompt
+17 - Ctrl + Shift + j          = Next prompt
+18 - Ctrl + Shift + O          = Select output of the last command
