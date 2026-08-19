@@ -9,10 +9,12 @@ Singleton {
 
     property string themeName: "argvus-dark"
     property string gtkMode: "dark"
+    readonly property string configHome: StandardPaths.writableLocation(StandardPaths.GenericConfigLocation)
+    readonly property string stateHome: Quickshell.env("XDG_STATE_HOME") || StandardPaths.writableLocation(StandardPaths.HomeLocation) + "/.local/state"
+    readonly property string generatedConfig: stateHome + "/argvus/config"
     FileView {
         id: themeNameFile
-        path: StandardPaths.writableLocation(StandardPaths.HomeLocation) +
-              "/.config/argvus/.active-theme"
+        path: root.configHome + "/argvus/.active-theme"
         onTextChanged: {
             var n = text().trim()
             if (n !== "") root.themeName = n
@@ -21,8 +23,7 @@ Singleton {
 
     FileView {
         id: gtkModeFile
-        path: StandardPaths.writableLocation(StandardPaths.HomeLocation) +
-              "/.config/argvus/.gtk-mode"
+        path: root.configHome + "/argvus/.gtk-mode"
         onTextChanged: {
             var m = text().trim()
             if (m === "light" || m === "dark") root.gtkMode = m
@@ -34,8 +35,7 @@ Singleton {
     // by theme-switch.sh and spaces-switch.sh).
     FileView {
         id: waybarMarginFile
-        path: StandardPaths.writableLocation(StandardPaths.HomeLocation) +
-              "/.config/waybar/config.jsonc"
+        path: root.generatedConfig + "/waybar/config.jsonc"
         onTextChanged: {
             var m = text().match(/"margin-right":\s*(-?\d+)/)
             if (m) root._waybarMarginRight = parseInt(m[1], 10)
@@ -59,9 +59,14 @@ Singleton {
     }
 
     function loadTheme() {
-        themeFile.path = "/usr/share/argvus/quickshell/sidebar-right/themes/" +
+        themeFile.path = root.generatedConfig + "/quickshell/sidebar-right/themes/" +
             themeName + "/Theme.qml"
         themeFile.reload()
+        if (themeFile.text().trim() === "") {
+            themeFile.path = "/usr/share/argvus/quickshell/sidebar-right/themes/" +
+                themeName + "/Theme.qml"
+            themeFile.reload()
+        }
     }
 
     function reloadActiveTheme() {

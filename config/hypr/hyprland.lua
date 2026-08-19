@@ -12,6 +12,7 @@ local _config_home = os.getenv("ARGVUS_CONFIG_HOME")
 local _system_config = os.getenv("ARGVUS_SYSTEM_CONFIG") or "/usr/share/argvus"
 local _debug_session = os.getenv("ARGVUS_DEBUG") == "1"
 local _state_home = _config_home .. "/argvus"
+local _generated_config = (os.getenv("XDG_STATE_HOME") or (_home .. "/.local/state")) .. "/argvus/config"
 
 local function _path_exists(path)
   local file = io.open(path, "r")
@@ -34,8 +35,16 @@ end
 local function _config_path(relative_path)
   return _first_existing({
     _config_home .. "/" .. relative_path,
+    _generated_config .. "/" .. relative_path,
     _system_config .. "/" .. relative_path,
   })
+end
+
+local function _load_user_override(relative_path)
+  local path = _config_home .. "/argvus/hypr/" .. relative_path
+  if _path_exists(path) then
+    dofile(path)
+  end
 end
 
 local function _sh(path)
@@ -730,6 +739,12 @@ hl.bind(mod .. " + L", hl.dsp.exec_cmd(_sh(_config_path("hypr/scripts/power-menu
 
 -- Reload Hyprland -----------------------------------------------------------------------------------------------------
 hl.bind(mod .. " + SHIFT + R", hl.dsp.exec_cmd(_sh(_config_path("hypr/scripts/init.sh")) .. " --reload"))
+
+-- User overrides ------------------------------------------------------------------------------------------------------
+_load_user_override("monitors.lua")
+_load_user_override("rules.lua")
+_load_user_override("bindings.lua")
+_load_user_override("user.lua")
 
 -- Autostart -----------------------------------------------------------------------------------------------------------
 hl.on("hyprland.start", function()

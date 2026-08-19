@@ -116,12 +116,14 @@ apply_waybar_margins() {
 }
 
 apply_gaps_runtime() {
+  [ "${ARGVUS_NO_RUNTIME:-0}" = 1 ] && return 0
   command -v hyprctl >/dev/null 2>&1 || return 0
   [ -n "${GAPS_IN:-}" ] && hyprctl keyword general:gaps_in "$GAPS_IN" >/dev/null 2>&1
   [ -n "${GAPS_OUT:-}" ] && hyprctl keyword general:gaps_out "$GAPS_OUT" >/dev/null 2>&1
 }
 
 restart_waybar() {
+  [ "${ARGVUS_NO_RUNTIME:-0}" = 1 ] && return 0
   if command -v waybar >/dev/null 2>&1; then
     sh "$(paths_config hypr/scripts/init.sh)" --waybars >/dev/null 2>&1
   fi

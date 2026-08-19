@@ -49,6 +49,9 @@ HYPR_THEMES="$(paths_config hypr/themes)"
 WAYBAR_THEMES="$(paths_config waybar/themes)"
 QS_THEMES="$(paths_config quickshell/sidebar-right/themes)"
 ROFI_THEMES="$(paths_config rofi/themes)"
+ROFI_CONFIG="$(paths_config rofi/config.rasi)"
+ROFI_THEME="$(paths_config rofi/theme.rasi)"
+ROFI_MODE="$(paths_config rofi/mode.rasi)"
 DUNST_THEMES="$(paths_config dunst/themes)"
 WLOGOUT_THEMES="$(paths_config wlogout/themes)"
 KITTY_THEMES="$(paths_config kitty/themes)"
@@ -296,7 +299,12 @@ if [ ! -f "$QT6CT_COLORS/$THEME.conf" ]; then
   printf 'Warning: qt6ct color scheme not found: %s\n' "$QT6CT_COLORS/$THEME.conf" >&2
 fi
 
-_theme_wallpaper="$(find_theme_wallpaper "$THEME")" || exit 1
+if ! _theme_wallpaper="$(find_theme_wallpaper "$THEME")"; then
+  if [ "$RUNTIME" -eq 1 ]; then
+    exit 1
+  fi
+  _theme_wallpaper=""
+fi
 
 printf '%s' "$THEME" > "$ACTIVE_FILE"
 
@@ -362,10 +370,14 @@ sed -i "s|@import url(\"./themes/.*/sysinfo-theme.css\");|@import url(\"./themes
 sed -i "s|@import url(\"./themes/.*/theme.css\");|@import url(\"./themes/${THEME}/theme.css\");|" \
   "$(paths_config wlogout/style.css)"
 
-sed -i "s|@import \".*/rofi/themes/.*/theme.rasi\"|@import \"${ARGVUS_CONFIG_HOME}/rofi/themes/${THEME}/theme.rasi\"|" \
-  "$(paths_config rofi/theme.rasi)"
+sed -i "s|@theme \".*/rofi/theme.rasi\"|@theme \"${ROFI_THEME}\"|" "$ROFI_CONFIG"
 
-sed -i "s|include .*/kitty/themes/.*/theme.conf|include ${ARGVUS_CONFIG_HOME}/kitty/themes/${THEME}/theme.conf|" \
+sed -i "s|@import \".*/rofi/themes/.*/theme.rasi\"|@import \"${ROFI_THEMES}/${THEME}/theme.rasi\"|" \
+  "$ROFI_THEME"
+
+sed -i "s|@import \".*/rofi/mode.rasi\"|@import \"${ROFI_MODE}\"|" "$ROFI_THEME"
+
+sed -i "s|include .*/kitty/themes/.*/theme.conf|include ${KITTY_THEMES}/${THEME}/theme.conf|" \
   "$(paths_config kitty/kitty.conf)"
 
 apply_dunst_theme

@@ -108,13 +108,23 @@ set_dunst_section_value() {
 }
 
 apply_theme_references() {
+  _rofi_config="$(paths_config rofi/config.rasi)"
+  _rofi_theme_file="$(paths_config rofi/theme.rasi)"
+  _rofi_mode="$(paths_config rofi/mode.rasi)"
+  _rofi_theme="$(paths_config "rofi/themes/${THEME}/theme.rasi")"
+  _kitty_theme="$(paths_config "kitty/themes/${THEME}/theme.conf")"
+
   sed -i "s|@import url(\"./themes/.*/theme.css\");|@import url(\"./themes/${THEME}/theme.css\");|" \
     "$(paths_config waybar/style.css)" "$(paths_config wlogout/style.css)" 2>/dev/null || true
   sed -i "s|@import url(\"./themes/.*/sysinfo-theme.css\");|@import url(\"./themes/${THEME}/sysinfo-theme.css\");|" \
     "$(paths_config waybar/sysinfo.css)" 2>/dev/null || true
-  sed -i "s|@import \".*/rofi/themes/.*/theme.rasi\"|@import \"${ARGVUS_CONFIG_HOME}/rofi/themes/${THEME}/theme.rasi\"|" \
-    "$(paths_config rofi/theme.rasi)" 2>/dev/null || true
-  sed -i "s|include .*/kitty/themes/.*/theme.conf|include ${ARGVUS_CONFIG_HOME}/kitty/themes/${THEME}/theme.conf|" \
+  sed -i "s|@theme \".*/rofi/theme.rasi\"|@theme \"${_rofi_theme_file}\"|" \
+    "$_rofi_config" 2>/dev/null || true
+  sed -i "s|@import \".*/rofi/themes/.*/theme.rasi\"|@import \"${_rofi_theme}\"|" \
+    "$_rofi_theme_file" 2>/dev/null || true
+  sed -i "s|@import \".*/rofi/mode.rasi\"|@import \"${_rofi_mode}\"|" \
+    "$_rofi_theme_file" 2>/dev/null || true
+  sed -i "s|include .*/kitty/themes/.*/theme.conf|include ${_kitty_theme}|" \
     "$(paths_config kitty/kitty.conf)" 2>/dev/null || true
   replace_setting "$(paths_config snappy-switcher/config.ini)" name "${THEME}/theme.ini"
   replace_setting "$(paths_config superfile/config.toml)" theme "\"${THEME}\""

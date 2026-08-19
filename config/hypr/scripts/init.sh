@@ -67,6 +67,10 @@ run_dunst() {
 
 case "$1" in
   --started)
+    if [ -f "$ARGVUS_CONFIG_HOME/argvus/.active-theme" ]; then
+      _argvus_active_theme="$(sed -n '1p' "$ARGVUS_CONFIG_HOME/argvus/.active-theme")"
+      ARGVUS_NO_RUNTIME=1 sh "$(paths_config argvus/sh/theme-switch.sh)" "$_argvus_active_theme" >/dev/null 2>&1 || true
+    fi
     if [ -f "$ARGVUS_CONFIG_HOME/argvus/.accent-color" ]; then
       sh "$(paths_config argvus/sh/accent-switch.sh)" --startup
     fi
