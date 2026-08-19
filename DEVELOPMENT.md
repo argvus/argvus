@@ -50,7 +50,10 @@ For Hyprland changes, test inside a real Argvus session when possible. Check tha
 ## Configuration model
 
 Package installation owns `/usr/share/argvus`. User configuration under
-`$XDG_CONFIG_HOME/<app>` is an optional override, not a startup requirement.
+`$XDG_CONFIG_HOME/<app>` is an optional complete-application override, not a
+startup requirement. Generated Argvus runtime config belongs under
+`$XDG_STATE_HOME/argvus/config` so theme changes can be rebuilt from current
+packaged defaults after upgrades.
 Runtime scripts should source `/usr/share/argvus/argvus/sh/bootstrap.sh` unless
 a user-copied override explicitly replaces that script.
 Keep Hyprland's Lua theme loader aligned with the preference directory used by
@@ -58,7 +61,14 @@ runtime scripts: `$XDG_CONFIG_HOME/argvus`.
 
 Do not make package install scripts write directly to `$HOME`. User-level
 application config should be created only by explicit customization flows such
-as `argvus-setup --copy <app>` or the theme tools when a user changes settings.
+as `argvus-setup --copy <app>`. Theme tools should write small preference files
+under `$XDG_CONFIG_HOME/argvus` and generated runtime config under
+`$XDG_STATE_HOME/argvus/config`, not native `$XDG_CONFIG_HOME/<app>` trees.
+
+Hyprland user Lua overrides live under `$XDG_CONFIG_HOME/argvus/hypr`.
+Supported files are loaded after packaged defaults in this order:
+`monitors.lua`, `rules.lua`, `bindings.lua`, `user.lua`. Missing files must be
+ignored.
 
 `argvus-storage` is packaged separately. Its system defaults belong under `/etc/argvus-storage`, not under `config/argvus-storage`.
 

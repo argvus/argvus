@@ -10,7 +10,7 @@ Argvus does not need to copy dotfiles into `$HOME` before the desktop can
 start. Runtime entrypoints use this priority:
 
 ```text
-$XDG_CONFIG_HOME/<app>  ->  /usr/share/argvus/<app>  ->  upstream defaults
+$XDG_CONFIG_HOME/<app>  ->  $XDG_STATE_HOME/argvus/config/<app>  ->  /usr/share/argvus/<app>  ->  upstream defaults
 ```
 
 `argvus-setup` is optional. Use it only when you want to copy packaged defaults
@@ -27,12 +27,18 @@ upgrades do not overwrite them.
 
 Hyprland reads the active theme, accent and spacing preferences from
 `$XDG_CONFIG_HOME/argvus`, matching the scripts that update those files.
+Optional Hyprland Lua overrides can be placed under
+`$XDG_CONFIG_HOME/argvus/hypr` as `monitors.lua`, `rules.lua`, `bindings.lua`
+or `user.lua`; missing files are ignored.
 Shared wallpapers and bundled fonts live in the separate `argvus-appearance`
 package and are referenced from system paths.
 The packaged Hyprland bindings launch Kitty with the resolved Argvus
 `kitty.conf`, so clean users still receive the packaged terminal theme before
 they create any user overrides. Hyprlock generates its lockscreen wallpaper
-cache under `$XDG_CACHE_HOME/argvus/hypr`.
+cache under `$XDG_CACHE_HOME/argvus/hypr`. Theme and accent tools generate
+runtime application config under `$XDG_STATE_HOME/argvus/config` instead of
+copying complete application configs into native `$XDG_CONFIG_HOME/<app>`
+directories.
 Session startup infrastructure lives in the separate `argvus-session` package:
 `argvus-session`, `argvus-start`, `argvus-tty` and the Wayland session entry.
 
