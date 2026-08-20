@@ -34,6 +34,12 @@ paths_ensure_generated_copy() {
   _relative_path="$1"
   _user_path="$(paths_user_config "$_relative_path")"
   _generated_path="$(paths_generated_config "$_relative_path")"
+
+  if [ -e "$_generated_path" ] || [ -L "$_generated_path" ]; then
+    printf '%s\n' "$_generated_path"
+    return 0
+  fi
+
   _system_path="$(paths_system_config "$_relative_path")"
   _source_path="$_system_path"
 
