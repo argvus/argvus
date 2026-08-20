@@ -36,6 +36,7 @@
   "group/right-2": {
     "orientation": "inherit",
     "modules": [
+      "custom/search",
       "custom/storage",
       "custom/recording",
       "pulseaudio#input",
@@ -221,6 +222,11 @@
     "format": "{}",
     "on-click": "/usr/share/argvus/hypr/scripts/screenshot.sh --video-full",
     "on-click-right": "/usr/share/argvus/hypr/scripts/screenshot.sh --video-full-stop"
+  },
+  "custom/search": {
+    "format": "\uf002",
+    "tooltip": false,
+    "on-click": "rofi -config /usr/share/argvus/rofi/config.rasi -show drun -display-drun \"drun\""
   },
   // Removable storage (UDisks2). Compact Font Awesome icon near recording/sound;
   // left = choose device and open, right = full context menu.
