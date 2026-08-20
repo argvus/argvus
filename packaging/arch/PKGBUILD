@@ -1,7 +1,7 @@
 # Maintainer: William C. Canin
 pkgname=argvus
-pkgver=0.1.0
-pkgrel=2
+pkgver=0.1.1
+pkgrel=1
 pkgdesc="Argvus is a complete, ready-to-use desktop environment focused on Hyprland, packaged for Arch Linux."
 arch=('x86_64')
 url="https://github.com/argvus/argvus"
