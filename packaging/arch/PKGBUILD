@@ -1,7 +1,7 @@
 # Maintainer: William C. Canin
 pkgname=argvus
 pkgver=0.1.0
-pkgrel=1
+pkgrel=2
 pkgdesc="Argvus is a complete, ready-to-use desktop environment focused on Hyprland, packaged for Arch Linux."
 arch=('x86_64')
 url="https://github.com/argvus/argvus"
@@ -16,6 +16,8 @@ depends=(
   'argvus-session'
   'argvus-storage'
   'argvus-waybar'
+	'argvus-pwvucontrol'
+	'argvus-snappy-switcher'
   'bluez'
   'bluez-utils'
   'blueman'
@@ -60,7 +62,6 @@ depends=(
   'otf-font-awesome'
   'pamixer'
   'playerctl'
-  'pwvucontrol'
   'qt5-quickcontrols2'
   'qt5ct'
   'qt6-declarative'
@@ -72,7 +73,6 @@ depends=(
   'rofimoji'
   'satty'
   'slurp'
-  'snappy-switcher'
   'superfile'
   'swaybg'
   'ttf-jetbrains-mono-nerd'
@@ -81,7 +81,6 @@ depends=(
   'wev'
   'wf-recorder'
   'wireplumber'
-  'wlogout'
   'wl-clipboard'
   'wtype'
   'xdg-desktop-portal'
