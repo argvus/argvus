@@ -17,7 +17,7 @@ The ARGVUS project is organized as several repositories under the `argvus` GitHu
 * [site-src](https://github.com/argvus/site-src): this site's source (Astro).
 * [argvus.github.io](https://github.com/argvus/argvus.github.io): the published site.
 
-The Arch manifests live under `arch/` in [argvus-pkgbuild](https://github.com/argvus/argvus-pkgbuild): `arch/argvus/PKGBUILD`, `arch/argvus-session/PKGBUILD`, `arch/argvus-appearance/PKGBUILD`, `arch/argvus-storage/PKGBUILD`, `arch/argvus-calendar/PKGBUILD` and `arch/argvus-greeter/PKGBUILD`. Vendored dependencies (`pwvucontrol`, `snappy-switcher` and `wlogout`) live under [vendors/](https://github.com/argvus/argvus-pkgbuild/tree/main/vendors).
+The Arch manifests live under `arch/` in [argvus-pkgbuild](https://github.com/argvus/argvus-pkgbuild): `arch/argvus/PKGBUILD`, `arch/argvus-session/PKGBUILD`, `arch/argvus-appearance/PKGBUILD`, `arch/argvus-storage/PKGBUILD`, `arch/argvus-calendar/PKGBUILD` and `arch/argvus-greeter/PKGBUILD`. Vendored dependencies (`pwvucontrol` and `snappy-switcher`) live under [vendors/](https://github.com/argvus/argvus-pkgbuild/tree/main/vendors).
 
 ## ARGVUS Packaging
 
@@ -66,7 +66,7 @@ ARGVUS does not copy dotfiles into `$HOME` before the desktop can start. Runtime
 
 `argvus-tty` provides TTY login support without a display manager. It registers a logind session, starts D-Bus, sets environment variables, and launches Hyprland when the user runs `argvus-tty` manually after logging in on a TTY. The package does not install a `profile.d` auto-start script; an opt-in profile is shipped under `/usr/share/argvus/argvus/profile` and automatic TTY startup is an explicit user choice.
 
-Some runtime dependencies that previously required the AUR, including `pwvucontrol`, `snappy-switcher`, and `wlogout`, are vendored and published from the same repository as ARGVUS:
+Some runtime dependencies that previously required the AUR, including `pwvucontrol` and `snappy-switcher`, are vendored and published from the same repository as ARGVUS:
 
 ```sh
 sudo pacman -Syu argvus

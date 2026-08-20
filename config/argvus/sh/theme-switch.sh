@@ -53,7 +53,6 @@ ROFI_CONFIG="$(paths_config rofi/config.rasi)"
 ROFI_THEME="$(paths_config rofi/theme.rasi)"
 ROFI_MODE="$(paths_config rofi/mode.rasi)"
 DUNST_THEMES="$(paths_config dunst/themes)"
-WLOGOUT_THEMES="$(paths_config wlogout/themes)"
 KITTY_THEMES="$(paths_config kitty/themes)"
 BTOP_THEMES="$(paths_config btop/themes)"
 BOTTOM_THEMES="$(paths_config bottom/themes)"
@@ -281,7 +280,6 @@ for _dir in \
   "$QS_THEMES/$THEME" \
   "$ROFI_THEMES/$THEME" \
   "$DUNST_THEMES/$THEME" \
-  "$WLOGOUT_THEMES/$THEME" \
   "$KITTY_THEMES/$THEME" \
   "$BTOP_THEMES/$THEME" \
   "$SNAPPY_THEMES/$THEME"; do
@@ -366,9 +364,6 @@ sed -i "s|@import url(\"./themes/.*/theme.css\");|@import url(\"./themes/${THEME
 
 sed -i "s|@import url(\"./themes/.*/sysinfo-theme.css\");|@import url(\"./themes/${THEME}/sysinfo-theme.css\");|" \
   "$(paths_config waybar/sysinfo.css)"
-
-sed -i "s|@import url(\"./themes/.*/theme.css\");|@import url(\"./themes/${THEME}/theme.css\");|" \
-  "$(paths_config wlogout/style.css)"
 
 sed -i "s|@theme \".*/rofi/theme.rasi\"|@theme \"${ROFI_THEME}\"|" "$ROFI_CONFIG"
 

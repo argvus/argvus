@@ -3,7 +3,7 @@
 Argvus is the desktop configuration repository for the Argvus project: a complete desktop, ready to use, focused on Hyprland.
 
 It contains the packaged defaults for Hyprland, Waybar, Quickshell, Rofi,
-Kitty, Dunst, Wlogout, terminal tools and themes. The package installs those
+Kitty, Dunst, terminal tools and themes. The package installs those
 immutable defaults under `/usr/share/argvus`.
 
 Argvus does not need to copy dotfiles into `$HOME` before the desktop can

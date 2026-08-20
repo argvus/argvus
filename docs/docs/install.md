@@ -5,7 +5,7 @@ description: Install, update and remove ARGVUS, and customize user configs.
 
 Packages are published to the public [argvus/packages](https://github.com/argvus/packages) repository, served at `https://argvus.github.io/packages/`.
 
-The `argvus` package and its dependencies are published to the same repository, so plain `pacman` resolves everything automatically. This includes the vendored packages (`pwvucontrol`, `snappy-switcher` and `wlogout`) and the official component packages `argvus-appearance`, `argvus-calendar`, `argvus-greeter`, `argvus-session` and `argvus-storage`.
+The `argvus` package and its dependencies are published to the same repository, so plain `pacman` resolves everything automatically. This includes the vendored packages (`pwvucontrol` and `snappy-switcher`) and the official component packages `argvus-appearance`, `argvus-calendar`, `argvus-greeter`, `argvus-session` and `argvus-storage`.
 
 ## Install
 

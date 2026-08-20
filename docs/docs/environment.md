@@ -32,7 +32,7 @@ Installing `argvus` pulls in the other component packages as dependencies.
 | Sidebar | `config/quickshell/sidebar-right/` | Quickshell panel for appearance, system, calendar, network, volume, brightness and power controls. |
 | Launchers | `config/rofi/`, `config/wofi/` | Themed launchers, menus and command surfaces. |
 | Terminal and TUI | `config/kitty/`, `config/yazi/`, `config/superfile/`, `config/btop/`, `config/bottom/` | Terminal, file managers and system monitors. |
-| Notifications and logout | `config/dunst/`, `config/wlogout/` | Notification styling and power/logout interface. |
+| Notifications and power menu | `config/dunst/`, `config/hypr/scripts/power-menu.sh` | Notification styling and the Rofi-based power/logout menu. |
 
 ## Session flow
 
@@ -149,7 +149,7 @@ ARGVUS ships eight theme families:
 - `argvus-slate`
 - `argvus-slate-float`
 
-Themes are mirrored across Hyprland, Waybar, Rofi, Dunst, Kitty, Btop, Bottom, Wlogout, Yazi, Superfile, Snappy Switcher and Qt color schemes. The active theme is applied by `config/argvus/sh/theme-switch.sh`.
+Themes are mirrored across Hyprland, Waybar, Rofi, Dunst, Kitty, Btop, Bottom, Yazi, Superfile, Snappy Switcher and Qt color schemes. The active theme is applied by `config/argvus/sh/theme-switch.sh`.
 
 Accent color is controlled separately by `config/argvus/sh/accent-switch.sh`, so the user can change the accent without replacing the theme family.
 

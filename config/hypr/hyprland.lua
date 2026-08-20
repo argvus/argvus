@@ -343,7 +343,6 @@ hl.layer_rule({ match = { namespace = "waybar" }, blur = true })
 hl.layer_rule({ match = { namespace = "quickshell" }, blur = true })
 hl.layer_rule({ match = { namespace = "rofi" }, blur = true })
 hl.layer_rule({ match = { namespace = "dunst" }, blur = true })
-hl.layer_rule({ match = { namespace = "wlogout" }, blur = true })
 
 -- Window Rules  -------------------------------------------------------------------------------------------------------
 hl.window_rule({

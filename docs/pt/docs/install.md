@@ -34,7 +34,7 @@ sudo pacman -Syu
 
 ## Instalar
 
-O pacote `argvus` depende dos pacotes vendored `pwvucontrol`, `snappy-switcher` e `wlogout` e dos pacotes de componentes oficiais `argvus-appearance`, `argvus-calendar`, `argvus-greeter`, `argvus-session` e `argvus-storage`, todos publicados no mesmo repositório.
+O pacote `argvus` depende dos pacotes vendored `pwvucontrol` e `snappy-switcher` e dos pacotes de componentes oficiais `argvus-appearance`, `argvus-calendar`, `argvus-greeter`, `argvus-session` e `argvus-storage`, todos publicados no mesmo repositório.
 
 ```sh
 sudo pacman -Syu argvus

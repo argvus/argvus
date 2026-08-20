@@ -115,7 +115,7 @@ apply_theme_references() {
   _kitty_theme="$(paths_config "kitty/themes/${THEME}/theme.conf")"
 
   sed -i "s|@import url(\"./themes/.*/theme.css\");|@import url(\"./themes/${THEME}/theme.css\");|" \
-    "$(paths_config waybar/style.css)" "$(paths_config wlogout/style.css)" 2>/dev/null || true
+    "$(paths_config waybar/style.css)" 2>/dev/null || true
   sed -i "s|@import url(\"./themes/.*/sysinfo-theme.css\");|@import url(\"./themes/${THEME}/sysinfo-theme.css\");|" \
     "$(paths_config waybar/sysinfo.css)" 2>/dev/null || true
   sed -i "s|@theme \".*/rofi/theme.rasi\"|@theme \"${_rofi_theme_file}\"|" \
@@ -206,7 +206,6 @@ apply_application_colors() {
   _hyprtoolkit="$(paths_config hypr/hyprtoolkit.conf)"
   _dunst="$(paths_config dunst/dunstrc)"
   _kitty="$(paths_config "kitty/themes/${THEME}/theme.conf")"
-  _wlogout="$(paths_config "wlogout/themes/${THEME}/theme.css")"
   _snappy="$(paths_config "snappy-switcher/themes/${THEME}/theme.ini")"
   _bottom="$(paths_config bottom/bottom.toml)"
   _btop="$(paths_config "btop/themes/${THEME}/theme.theme")"
@@ -223,9 +222,6 @@ apply_application_colors() {
     done
   fi
   [ -f "$_kitty" ] && sed -i "s|^active_tab_foreground .*|active_tab_foreground   ${COLOR}|" "$_kitty"
-  [ -f "$_wlogout" ] && sed -i \
-    -e "s|^@define-color th-accent .*|@define-color th-accent       ${COLOR};|" \
-    -e "s|^@define-color th-accent-text .*|@define-color th-accent-text  ${ACCENT_TEXT};|" "$_wlogout"
   [ -f "$_snappy" ] && sed -i \
     -e "s|^border_color .*|border_color  = ${COLOR}ff|" \
     -e "s|^badge_bg .*|badge_bg      = ${COLOR}ff|" "$_snappy"

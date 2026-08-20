@@ -17,7 +17,7 @@ O projeto ARGVUS é organizado em vários repositórios na organização `argvus
 * [site-src](https://github.com/argvus/site-src): a fonte deste site (Astro).
 * [argvus.github.io](https://github.com/argvus/argvus.github.io): o site publicado.
 
-Os manifests Arch ficam em `arch/` no [argvus-pkgbuild](https://github.com/argvus/argvus-pkgbuild): `arch/argvus/PKGBUILD`, `arch/argvus-session/PKGBUILD`, `arch/argvus-appearance/PKGBUILD`, `arch/argvus-storage/PKGBUILD`, `arch/argvus-calendar/PKGBUILD` e `arch/argvus-greeter/PKGBUILD`. As dependências vendored (`pwvucontrol`, `snappy-switcher` e `wlogout`) ficam em [vendors/](https://github.com/argvus/argvus-pkgbuild/tree/main/vendors).
+Os manifests Arch ficam em `arch/` no [argvus-pkgbuild](https://github.com/argvus/argvus-pkgbuild): `arch/argvus/PKGBUILD`, `arch/argvus-session/PKGBUILD`, `arch/argvus-appearance/PKGBUILD`, `arch/argvus-storage/PKGBUILD`, `arch/argvus-calendar/PKGBUILD` e `arch/argvus-greeter/PKGBUILD`. As dependências vendored (`pwvucontrol` e `snappy-switcher`) ficam em [vendors/](https://github.com/argvus/argvus-pkgbuild/tree/main/vendors).
 
 ## Empacotamento
 
@@ -66,7 +66,7 @@ O `argvus-setup` é um helper opcional. Ele copia `/usr/share/argvus/<app>` para
 
 O `argvus-tty` fornece suporte a login por TTY sem display manager. Ele registra uma sessão logind, inicia o D-Bus, define variáveis de ambiente e inicia o Hyprland quando o usuário executa `argvus-tty` manualmente após logar em um TTY. O pacote não instala um script `profile.d` de auto-start; um profile opt-in é empacotado em `/usr/share/argvus/argvus/profile` e o auto-start por TTY é uma escolha explícita do usuário.
 
-Algumas dependências de runtime que antes exigiam o AUR, incluindo `pwvucontrol`, `snappy-switcher` e `wlogout`, são vendored e publicadas no mesmo repositório que o ARGVUS:
+Algumas dependências de runtime que antes exigiam o AUR, incluindo `pwvucontrol` e `snappy-switcher`, são vendored e publicadas no mesmo repositório que o ARGVUS:
 
 ```sh
 sudo pacman -Syu argvus
