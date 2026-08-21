@@ -93,6 +93,7 @@ local _allowed_accents = {
   ["9617d1"] = true,
   ["595959"] = true,
   ["d3d3d3"] = true,
+  ["eeeeee"] = true,
 }
 local _accent_line = _read_first_line({
   _state_home .. "/.accent-color",

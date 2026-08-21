@@ -61,6 +61,7 @@ find_theme_wallpaper() {
     argvus-dark-silver|argvus-dark-silver-float) _wall_name="argvus-dark-silver.png" ;;
     argvus-light|argvus-light-float) _wall_name="argvus-light.png" ;;
     argvus-slate|argvus-slate-float) _wall_name="argvus-slate.png" ;;
+    argvus-universe|argvus-universe-float) _wall_name="argvus-universe.png" ;;
     *) return 1 ;;
   esac
 

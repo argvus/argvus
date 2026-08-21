@@ -40,6 +40,7 @@ case "$THEME" in
   argvus-dark-silver|argvus-dark-silver-float) DEFAULT_ACCENT="595959" ;;
   argvus-light|argvus-light-float) DEFAULT_ACCENT="181818" ;;
   argvus-slate|argvus-slate-float) DEFAULT_ACCENT="7391a5" ;;
+  argvus-universe|argvus-universe-float) DEFAULT_ACCENT="eeeeee" ;;
   *)
     printf 'Invalid active theme for Hyprlock: %s\n' "$THEME" >&2
     exit 1

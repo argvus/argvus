@@ -33,6 +33,7 @@ theme_default_accent() {
     argvus-dark-silver|argvus-dark-silver-float) printf '#595959\n' ;;
     argvus-light|argvus-light-float) printf '#181818\n' ;;
     argvus-slate|argvus-slate-float) printf '#7391a5\n' ;;
+    argvus-universe|argvus-universe-float) printf '#eeeeee\n' ;;
     *) return 1 ;;
   esac
 }
@@ -70,6 +71,7 @@ normalize_accent() {
     *\#d1ce17|d1ce17) COLOR="#d1ce17"; RED=209; GREEN=206; BLUE=23; ACCENT_TEXT="#111316" ;;
     *\#9617d1|9617d1) COLOR="#9617d1"; RED=150; GREEN=23; BLUE=209; ACCENT_TEXT="#f7f7f7" ;;
     *\#595959|595959) COLOR="#595959"; RED=89; GREEN=89; BLUE=89; ACCENT_TEXT="#f7f7f7" ;;
+    *\#eeeeee|eeeeee) COLOR="#eeeeee"; RED=238; GREEN=238; BLUE=238; ACCENT_TEXT="#000000" ;;
     *) return 1 ;;
   esac
   HEX="${COLOR#\#}"
@@ -297,7 +299,7 @@ fi
 
 THEME="$(read_state "$ACTIVE_FILE" "$DEFAULT_THEME")"
 case "$THEME" in
-  argvus-dark|argvus-dark-float|argvus-dark-silver|argvus-dark-silver-float|argvus-light|argvus-light-float|argvus-slate|argvus-slate-float) ;;
+  argvus-dark|argvus-dark-float|argvus-dark-silver|argvus-dark-silver-float|argvus-light|argvus-light-float|argvus-slate|argvus-slate-float|argvus-universe|argvus-universe-float) ;;
   *-dark-float) THEME="argvus-dark-float" ;;
   *-light-float) THEME="argvus-light-float" ;;
   *-light) THEME="argvus-light" ;;

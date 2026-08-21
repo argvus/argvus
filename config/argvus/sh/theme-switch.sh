@@ -18,7 +18,7 @@ fi
 
 if [ -z "$THEME" ]; then
   THEME=$(
-    rofi -config "$(paths_config rofi/config.rasi)" -dmenu -p "   Select Theme" -i -theme-str 'listview {lines: 8;}' <<'EOF'
+    rofi -config "$(paths_config rofi/config.rasi)" -dmenu -p "   Select Theme" -i -theme-str 'listview {lines: 10;}' <<'EOF'
 01 - Argvus Dark
 02 - Argvus Dark Float
 03 - Argvus Dark Silver
@@ -27,6 +27,8 @@ if [ -z "$THEME" ]; then
 06 - Argvus Light Float
 07 - Argvus Slate
 08 - Argvus Slate Float
+09 - Argvus Universe
+10 - Argvus Universe Float
 EOF
   )
 
@@ -41,6 +43,8 @@ EOF
     "06 - Argvus Light Float") THEME="argvus-light-float" ;;
     "07 - Argvus Slate")       THEME="argvus-slate" ;;
     "08 - Argvus Slate Float") THEME="argvus-slate-float" ;;
+    "09 - Argvus Universe")       THEME="argvus-universe" ;;
+    "10 - Argvus Universe Float") THEME="argvus-universe-float" ;;
     *) printf 'Invalid theme selection\n' >&2; exit 1 ;;
   esac
 fi
@@ -85,6 +89,7 @@ find_theme_wallpaper() {
     argvus-dark-silver|argvus-dark-silver-float) _wall_name="argvus-dark-silver.png" ;;
     argvus-light|argvus-light-float) _wall_name="argvus-light.png" ;;
     argvus-slate|argvus-slate-float) _wall_name="argvus-slate.png" ;;
+    argvus-universe|argvus-universe-float) _wall_name="argvus-universe.png" ;;
     *) _wall_name="" ;;
   esac
 
@@ -216,6 +221,8 @@ apply_argvus_storage_theme() {
       _theme_name="argvus-slate.css" ;;
     argvus-light|argvus-light-float)
       _theme_name="argvus-light.css" ;;
+    argvus-universe|argvus-universe-float)
+      _theme_name="argvus-universe.css" ;;
     *)
       return 0 ;;
   esac
@@ -248,6 +255,8 @@ apply_argvus_calendar_theme() {
 
   case "$THEME" in
     argvus-dark|argvus-dark-float|argvus-dark-silver|argvus-dark-silver-float|argvus-slate|argvus-slate-float)
+      _calendar_theme_name="${THEME}.css" ;;
+    argvus-universe|argvus-universe-float)
       _calendar_theme_name="${THEME}.css" ;;
     *)
       return 0 ;;
@@ -312,7 +321,7 @@ _waybar_cfg_sysinfo="$(paths_config waybar/sysinfo.jsonc)"
 _sysinfo_css="$(paths_config waybar/sysinfo.css)"
 
 case "$THEME" in
-  argvus-dark | argvus-dark-silver | argvus-light | argvus-slate)
+  argvus-dark | argvus-dark-silver | argvus-light | argvus-slate | argvus-universe)
     sed -i "s|\"margin-top\": [0-9]*|\"margin-top\": 0|" "$_waybar_cfg"
     sed -i "s|\"margin-left\": [0-9]*|\"margin-left\": 0|" "$_waybar_cfg"
     sed -i "s|\"margin-right\": [0-9]*|\"margin-right\": 0|" "$_waybar_cfg"
