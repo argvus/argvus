@@ -33,10 +33,15 @@
       "custom/gpu-temp"
     ]
   },
+  "group/right-search": {
+    "orientation": "inherit",
+    "modules": [
+      "custom/search"
+    ]
+  },
   "group/right-2": {
     "orientation": "inherit",
     "modules": [
-      "custom/search",
       "custom/storage",
       "custom/recording",
       "pulseaudio#input",
@@ -47,6 +52,7 @@
   "modules-center": ["custom/icon-window", "hyprland/submap", "hyprland/window"],
   "modules-right": [
     "tray",
+    "group/right-search",
     "group/right-2",
     "group/right-1",
     "group/right-0",
