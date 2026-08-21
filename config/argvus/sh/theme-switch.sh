@@ -19,32 +19,32 @@ fi
 if [ -z "$THEME" ]; then
   THEME=$(
     rofi -config "$(paths_config rofi/config.rasi)" -dmenu -p "   Select Theme" -i -theme-str 'listview {lines: 10;}' <<'EOF'
-01 - Argvus Dark
-02 - Argvus Dark Float
+01 - Argvus Dark Aether
+02 - Argvus Dark Aether Float
 03 - Argvus Dark Silver
 04 - Argvus Dark Silver Float
-05 - Argvus Light
-06 - Argvus Light Float
-07 - Argvus Slate
-08 - Argvus Slate Float
-09 - Argvus Universe
-10 - Argvus Universe Float
+05 - Argvus Dark Slate
+06 - Argvus Dark Slate Float
+07 - Argvus Dark Universe
+08 - Argvus Dark Universe Float
+09 - Argvus Light Veil
+10 - Argvus Light Veil Float
 EOF
   )
 
   [ -z "$THEME" ] && exit 0
 
   case "$THEME" in
-    "01 - Argvus Dark")       THEME="argvus-dark-aether" ;;
-    "02 - Argvus Dark Float") THEME="argvus-dark-aether-float" ;;
+    "01 - Argvus Dark Aether")       THEME="argvus-dark-aether" ;;
+    "02 - Argvus Dark Aether Float") THEME="argvus-dark-aether-float" ;;
     "03 - Argvus Dark Silver")       THEME="argvus-dark-silver" ;;
     "04 - Argvus Dark Silver Float") THEME="argvus-dark-silver-float" ;;
-    "05 - Argvus Light")       THEME="argvus-light-veil" ;;
-    "06 - Argvus Light Float") THEME="argvus-light-veil-float" ;;
-    "07 - Argvus Slate")       THEME="argvus-dark-slate" ;;
-    "08 - Argvus Slate Float") THEME="argvus-dark-slate-float" ;;
-    "09 - Argvus Universe")       THEME="argvus-dark-universe" ;;
-    "10 - Argvus Universe Float") THEME="argvus-dark-universe-float" ;;
+    "05 - Argvus Dark Slate")        THEME="argvus-dark-slate" ;;
+    "06 - Argvus Dark Slate Float")  THEME="argvus-dark-slate-float" ;;
+    "07 - Argvus Dark Universe")     THEME="argvus-dark-universe" ;;
+    "08 - Argvus Dark Universe Float") THEME="argvus-dark-universe-float" ;;
+    "09 - Argvus Light Veil")        THEME="argvus-light-veil" ;;
+    "10 - Argvus Light Veil Float")  THEME="argvus-light-veil-float" ;;
     *) printf 'Invalid theme selection\n' >&2; exit 1 ;;
   esac
 fi
