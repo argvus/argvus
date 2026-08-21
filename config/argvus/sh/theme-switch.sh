@@ -324,7 +324,7 @@ case "$THEME" in
     sed -i '/^#workspaces button/,/^}/s/border-radius: [0-9]*px;/border-radius: 0px;/' "$(paths_config waybar/style.css)"
     sed -i '/^#workspaces button\.active,/,/^}/s/border-radius: [0-9]*px;/border-radius: 0px;/' "$(paths_config waybar/style.css)"
     sed -i '/^tooltip {/,/^}/s/border-radius: [0-9]*px;/border-radius: 0px;/' "$(paths_config waybar/style.css)"
-    sed -i '/#right-0, #right-1, #right-2, #mpris {/,/^}/s/border-radius: [0-9]*px;/border-radius: 0px;/' "$(paths_config waybar/style.css)"
+    sed -i '/#right-0, #right-1, #right-2, #right-search, #mpris {/,/^}/s/border-radius: [0-9]*px;/border-radius: 0px;/' "$(paths_config waybar/style.css)"
     sed -i '/^window#waybar {/,/^}/s/border-radius: [0-9]*px;/border-radius: 0px;/' "$_sysinfo_css"
     _rofi_cfg="$(paths_config rofi/theme.rasi)"
     sed -i '/^window {/,/^}/s/border-radius: [0-9]*px;/border-radius: 0px;/' "$_rofi_cfg"
@@ -342,7 +342,7 @@ case "$THEME" in
     sed -i '/^#workspaces button/,/^}/s/border-radius: [0-9]*px;/border-radius: 5px;/' "$(paths_config waybar/style.css)"
     sed -i '/^#workspaces button\.active,/,/^}/s/border-radius: [0-9]*px;/border-radius: 4px;/' "$(paths_config waybar/style.css)"
     sed -i '/^tooltip {/,/^}/s/border-radius: [0-9]*px;/border-radius: 8px;/' "$(paths_config waybar/style.css)"
-    sed -i '/#right-0, #right-1, #right-2, #mpris {/,/^}/s/border-radius: [0-9]*px;/border-radius: 5px;/' "$(paths_config waybar/style.css)"
+    sed -i '/#right-0, #right-1, #right-2, #right-search, #mpris {/,/^}/s/border-radius: [0-9]*px;/border-radius: 5px;/' "$(paths_config waybar/style.css)"
     sed -i '/^window#waybar {/,/^}/s/border-radius: [0-9]*px;/border-radius: 8px;/' "$_sysinfo_css"
     _rofi_cfg="$(paths_config rofi/theme.rasi)"
     sed -i '/^window {/,/^}/s/border-radius: [0-9]*px;/border-radius: 6px;/' "$_rofi_cfg"
@@ -364,6 +364,9 @@ sed -i "s|@import url(\"./themes/.*/theme.css\");|@import url(\"./themes/${THEME
 
 sed -i "s|@import url(\"./themes/.*/sysinfo-theme.css\");|@import url(\"./themes/${THEME}/sysinfo-theme.css\");|" \
   "$(paths_config waybar/sysinfo.css)"
+
+sed -i "s|rofi -config [^ ]* -show drun|rofi -config ${ROFI_CONFIG} -show drun|" \
+  "$_waybar_cfg"
 
 sed -i "s|@theme \".*/rofi/theme.rasi\"|@theme \"${ROFI_THEME}\"|" "$ROFI_CONFIG"
 
@@ -493,6 +496,11 @@ if [ "$RUNTIME" -eq 1 ]; then
   pkill snappy-switcher 2>/dev/null || true
   sleep 0.2
   snappy-switcher --daemon &
+
+  # Signal running kitty instances to reload config (SIGUSR1)
+  for _pid in $(pgrep -x kitty 2>/dev/null); do
+    kill -USR1 "$_pid" 2>/dev/null || true
+  done
 fi
 
 # Sidebar NOT restarted — Theme.qml picks up the new theme dynamically

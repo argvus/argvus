@@ -262,6 +262,10 @@ refresh_runtime() {
     mkdir -p "${_qs_log%/*}"
     qs -c sidebar-right >"$_qs_log" 2>&1 &
   fi
+  # Signal running kitty instances to reload config (SIGUSR1)
+  for _pid in $(pgrep -x kitty 2>/dev/null); do
+    kill -USR1 "$_pid" 2>/dev/null || true
+  done
 }
 
 case "${1:-}" in
