@@ -35,30 +35,34 @@ paths_ensure_generated_copy() {
   _user_path="$(paths_user_config "$_relative_path")"
   _generated_path="$(paths_generated_config "$_relative_path")"
 
+  if [ -e "$_user_path" ] || [ -L "$_user_path" ]; then
+    printf '%s\n' "$_user_path"
+    return 0
+  fi
+
+  # Migrate: if generated copy exists but user path doesn't, move it to user path
   if [ -e "$_generated_path" ] || [ -L "$_generated_path" ]; then
-    printf '%s\n' "$_generated_path"
+    _parent="${_user_path%/*}"
+    mkdir -p "$_parent"
+    mv "$_generated_path" "$_user_path"
+    printf '%s\n' "$_user_path"
     return 0
   fi
 
   _system_path="$(paths_system_config "$_relative_path")"
   _source_path="$_system_path"
 
-  if [ -e "$_user_path" ] || [ -L "$_user_path" ]; then
-    _source_path="$_user_path"
-  fi
-
   if [ -d "$_source_path" ]; then
-    rm -rf "$_generated_path"
-    mkdir -p "$_generated_path"
-    cp -R "$_source_path/." "$_generated_path/"
+    mkdir -p "$_user_path"
+    cp -R "$_source_path/." "$_user_path/"
   elif [ -f "$_source_path" ]; then
-    mkdir -p "${_generated_path%/*}"
-    cp "$_source_path" "$_generated_path"
+    mkdir -p "${_user_path%/*}"
+    cp "$_source_path" "$_user_path"
   else
-    mkdir -p "${_generated_path%/*}"
+    mkdir -p "${_user_path%/*}"
   fi
 
-  printf '%s\n' "$_generated_path"
+  printf '%s\n' "$_user_path"
 }
 
 paths_config() {
