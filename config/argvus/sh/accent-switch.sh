@@ -13,7 +13,7 @@ STATE_DIR="${ARGVUS_CONFIG_HOME}/argvus"
 ACCENT_FILE="${STATE_DIR}/.accent-color"
 ACTIVE_FILE="${STATE_DIR}/.active-theme"
 DEFAULT_ACCENT="#3590bd"
-DEFAULT_THEME="argvus-dark"
+DEFAULT_THEME="argvus-dark-aether"
 RUNTIME=1
 NOTIFY=1
 
@@ -29,11 +29,11 @@ read_state() {
 
 theme_default_accent() {
   case "$1" in
-    argvus-dark|argvus-dark-float) printf '#3590bd\n' ;;
+    argvus-dark-aether|argvus-dark-aether-float) printf '#3590bd\n' ;;
     argvus-dark-silver|argvus-dark-silver-float) printf '#595959\n' ;;
     argvus-light|argvus-light-float) printf '#181818\n' ;;
-    argvus-slate|argvus-slate-float) printf '#7391a5\n' ;;
-    argvus-universe|argvus-universe-float) printf '#eeeeee\n' ;;
+    argvus-dark-slate|argvus-dark-slate-float) printf '#7391a5\n' ;;
+    argvus-dark-universe|argvus-dark-universe-float) printf '#eeeeee\n' ;;
     *) return 1 ;;
   esac
 }
@@ -299,8 +299,8 @@ fi
 
 THEME="$(read_state "$ACTIVE_FILE" "$DEFAULT_THEME")"
 case "$THEME" in
-  argvus-dark|argvus-dark-float|argvus-dark-silver|argvus-dark-silver-float|argvus-light|argvus-light-float|argvus-slate|argvus-slate-float|argvus-universe|argvus-universe-float) ;;
-  *-dark-float) THEME="argvus-dark-float" ;;
+  argvus-dark-aether|argvus-dark-aether-float|argvus-dark-silver|argvus-dark-silver-float|argvus-light|argvus-light-float|argvus-dark-slate|argvus-dark-slate-float|argvus-dark-universe|argvus-dark-universe-float) ;;
+  *-dark-float) THEME="argvus-dark-aether-float" ;;
   *-light-float) THEME="argvus-light-float" ;;
   *-light) THEME="argvus-light" ;;
   *) THEME="$DEFAULT_THEME" ;;

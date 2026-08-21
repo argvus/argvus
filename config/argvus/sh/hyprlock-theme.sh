@@ -34,13 +34,13 @@ read_state() {
   fi
 }
 
-THEME="$(read_state "$ACTIVE_FILE" argvus-dark)"
+THEME="$(read_state "$ACTIVE_FILE" argvus-dark-aether)"
 case "$THEME" in
-  argvus-dark|argvus-dark-float) DEFAULT_ACCENT="3590bd" ;;
+  argvus-dark-aether|argvus-dark-aether-float) DEFAULT_ACCENT="3590bd" ;;
   argvus-dark-silver|argvus-dark-silver-float) DEFAULT_ACCENT="595959" ;;
   argvus-light|argvus-light-float) DEFAULT_ACCENT="181818" ;;
-  argvus-slate|argvus-slate-float) DEFAULT_ACCENT="7391a5" ;;
-  argvus-universe|argvus-universe-float) DEFAULT_ACCENT="eeeeee" ;;
+  argvus-dark-slate|argvus-dark-slate-float) DEFAULT_ACCENT="7391a5" ;;
+  argvus-dark-universe|argvus-dark-universe-float) DEFAULT_ACCENT="eeeeee" ;;
   *)
     printf 'Invalid active theme for Hyprlock: %s\n' "$THEME" >&2
     exit 1

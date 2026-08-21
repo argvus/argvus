@@ -97,7 +97,7 @@ file_panel_name_percent = 50
 #-- Theme
 # Put your theme's name here!
 #theme = "catppuccin-mocha"
-theme = "argvus-dark"
+theme = "argvus-dark-aether"
 
 #-- Code Previewer
 # Whether to use the builtin syntax highlighting with chroma or use bat. Values: "" for builtin chroma, "bat" for bat

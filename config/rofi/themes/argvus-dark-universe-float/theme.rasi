@@ -1,0 +1,10 @@
+/* theme: argvus-dark-universe */
+* {
+    th-bg:            rgba(0, 0, 0, 88%);
+    th-fg:            rgb(238, 238, 238);
+    th-fg-selected:   rgba(238, 238, 238, 100%);
+    th-row-alt:       rgba(238, 238, 238, 7%);
+    th-row-selected:  rgba(10, 10, 10, 0.88);
+    th-border-color:  rgba(238, 238, 238, 0.36);
+    th-separator:     rgba(102, 102, 102, 0.52);
+}

@@ -26,4 +26,4 @@ TERM="/usr/bin/kitty"
 BAR_SIZE="8"
 
 # -- Active theme -------------------------------------------------------------
-ACTIVE_THEME="argvus-dark"
+ACTIVE_THEME="argvus-dark-aether"

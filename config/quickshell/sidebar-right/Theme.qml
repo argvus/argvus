@@ -7,7 +7,7 @@ import Quickshell.Io
 Singleton {
     id: root
 
-    property string themeName: "argvus-dark"
+    property string themeName: "argvus-dark-aether"
     property string gtkMode: "dark"
     readonly property string configHome: StandardPaths.writableLocation(StandardPaths.GenericConfigLocation)
     readonly property string stateHome: Quickshell.env("XDG_STATE_HOME") || StandardPaths.writableLocation(StandardPaths.HomeLocation) + "/.local/state"

@@ -17,7 +17,7 @@ ACTIVE_FILE="${STATE_DIR}/.active-theme"
 WAYBAR_CFG="$(paths_config waybar/config.jsonc)"
 WAYBAR_SYSINFO="$(paths_config waybar/sysinfo.jsonc)"
 THEMES_DIR="$(paths_config hypr/themes)"
-DEFAULT_THEME="argvus-dark"
+DEFAULT_THEME="argvus-dark-aether"
 MAX_VALUE=100
 
 is_float_theme() {

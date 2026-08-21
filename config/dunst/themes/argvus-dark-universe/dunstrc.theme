@@ -1,0 +1,11 @@
+# theme: argvus-dark-universe
+highlight = "#EEEEEE"
+frame_color = "#EEEEEE"
+low_background = "#000000"
+low_foreground = "#AAAAAA"
+normal_background = "#0a0a0a"
+normal_foreground = "#EEEEEE"
+critical_background = "#6b3030"
+critical_foreground = "#EEEEEE"
+app_background = "#050505"
+app_foreground = "#EEEEEE"

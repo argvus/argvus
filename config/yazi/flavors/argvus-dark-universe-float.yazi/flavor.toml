@@ -1,0 +1,64 @@
+# Palette adapted for argvus-dark-universe
+# bg: #000000
+# fg: #eeeeee
+# accent: #eeeeee
+
+[app]
+overall = { bg = "#000000" }
+
+[mgr]
+cwd = { fg = "#eeeeee", bold = true }
+
+# Find
+find_keyword = { fg = "#eeeeee", reversed = true }
+find_position = { fg = "#eeeeee", bold = true, italic = true }
+
+# Marker
+marker_copied = { fg = "#eeeeee", bg = "#eeeeee" }
+marker_cut = { fg = "#6b3030", bg = "#6b3030" }
+marker_marked = { fg = "#306b4a", bg = "#306b4a" }
+marker_selected = { fg = "#000000", bg = "#eeeeee" }
+
+# Count
+count_copied = { fg = "#eeeeee", bold = true, reversed = true }
+count_cut = { fg = "#6b3030", bold = true, reversed = true }
+count_selected = { fg = "#eeeeee", bold = true, reversed = true }
+
+# Border
+border_symbol = "│"
+border_style = { fg = "#222222" }
+
+[indicator]
+parent = { underline = true }
+current = { fg = "#eeeeee", bg = "#222222" }
+preview = { underline = true }
+padding = { open = "█", close = "█" }
+
+[tabs]
+active = { fg = "#000000", bg = "#eeeeee", bold = true }
+inactive = { fg = "#666666", bg = "#050505" }
+sep_inner = { open = "", close = "" }
+sep_outer = { open = "", close = "" }
+
+[mode]
+# Normal mode
+normal_main = { fg = "#eeeeee", bg = "#1a1a1a", bold = true }
+normal_alt = { fg = "#666666", bg = "#050505" }
+
+# Select mode
+select_main = { fg = "#000000", bg = "#eeeeee", bold = true }
+select_alt = { fg = "#eeeeee", bg = "#222222" }
+
+[status]
+separator = { fg = "#222222" }
+mode_normal = { fg = "#eeeeee", bg = "#1a1a1a", bold = true }
+mode_select = { fg = "#000000", bg = "#eeeeee", bold = true }
+mode_unset = { fg = "#666666", bg = "#050505" }
+progress_label = { fg = "#eeeeee", bold = true }
+progress_normal = { fg = "#eeeeee" }
+
+[filetype]
+# Default text file color
+normal = { fg = "#eeeeee" }
+# Folders
+directory = { fg = "#eeeeee", bold = true }

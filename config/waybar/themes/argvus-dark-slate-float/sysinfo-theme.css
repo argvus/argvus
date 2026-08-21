@@ -1,0 +1,8 @@
+/* theme: argvus-dark-slate-float — sysinfo panel */
+@define-color th-background    #2F3541;
+@define-color th-header        #7391a5;
+@define-color th-foreground    #A6B8C4;
+@define-color th-window-bg     #20242E;
+@define-color th-border        #7391a5;
+@define-color th-border-header #7391a5;
+@define-color th-disconnected  rgba(84, 92, 105, 0.3);

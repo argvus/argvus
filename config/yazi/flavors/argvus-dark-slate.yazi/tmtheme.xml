@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>name</key>
+	<string>Argvus Slate</string>
+	<key>originalAuthor</key>
+	<string>argvus-dark-slate theme author</string>
+	<key>colorSpaceName</key>
+    <string>sRGB</string>
+	<key>settings</key>
+	<array>
+		<dict>
+			<key>settings</key>
+			<dict>
+				<key>background</key>
+				<string>#2F3541</string>
+				<key>foreground</key>
+				<string>#A6B8C4</string>
+				<key>lineHighlight</key>
+				<string>#3B4352</string>
+				<key>gutter</key>
+				<string>#2F3541</string>
+				<key>gutterForeground</key>
+				<string>#545C69</string>
+				<key>gutterForegroundHighlight</key>
+				<string>#7391a5</string>
+				<key>minimapBorder</key>
+				<string>#3B4352</string>
+				<key>caret</key>
+				<string>#7391a5</string>
+				<key>blockCaret</key>
+				<string>#7391a5</string>
+				<key>invisibles</key>
+				<string>#545C69</string>
+				<key>misspelling</key>
+				<string>#957A7B</string>
+				<key>highlight</key>
+				<string>#545C69</string>
+				<key>findHighlight</key>
+				<string>#3B4352</string>
+				<key>findHighlightForeground</key>
+				<string>#A6B8C4</string>
+				<key>accent</key>
+				<string>#7391a5</string>
+				<key>foldMarker</key>
+				<string>#7391a5</string>
+				<key>guide</key>
+				<string>#20242E</string>
+				<key>activeGuide</key>
+				<string>#545C69</string>
+				<key>stackGuide</key>
+				<string>#2F3541</string>
+				<key>selection</key>
+				<string>#3B4352</string>
+				<key>selectionBorder</key>
+				<string>#7391a5</string>
+				<key>inactiveSelection</key>
+				<string>#2F3541</string>
+				<key>inactiveSelectionBorder</key>
+				<string>#3B4352</string>
+				<key>bracketsOptions</key>
+				<string>underline</string>
+				<key>bracketsForeground</key>
+				<string>#7391a5</string>
+				<key>bracketContentsOptions</key>
+				<string>stippled_underline</string>
+				<key>bracketContentsForeground</key>
+				<string>#7391a5</string>
+				<key>tagsOptions</key>
+				<string>stippled_underline</string>
+				<key>tagsForeground</key>
+				<string>#7391a5</string>
+				<key>shadow</key>
+				<string>#2F3541</string>
+				<key>shadowWidth</key>
+				<string>4</string>
+				<key>lineDiffAdded</key>
+				<string>#7391a5</string>
+				<key>lineDiffModified</key>
+				<string>#7391a5</string>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>

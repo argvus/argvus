@@ -1,4 +1,4 @@
-@import "/usr/share/argvus/rofi/themes/argvus-dark/theme.rasi"
+@import "/usr/share/argvus/rofi/themes/argvus-dark-aether/theme.rasi"
 @import "/usr/share/argvus/rofi/mode.rasi"
 
 /* Author: William C. Canin */

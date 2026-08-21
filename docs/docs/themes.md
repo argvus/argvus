@@ -3,7 +3,7 @@ title: Themes
 description: Theme families and the shared accent-color system.
 ---
 
-Available themes: `argvus-dark`, `argvus-dark-float`, `argvus-dark-silver`, `argvus-dark-silver-float`, `argvus-light`, `argvus-light-float`, `argvus-slate` and `argvus-slate-float`. Accent changes affect borders, titles, selections, and other highlights without replacing the theme background.
+Available themes: `argvus-dark-aether`, `argvus-dark-aether-float`, `argvus-dark-silver`, `argvus-dark-silver-float`, `argvus-light`, `argvus-light-float`, `argvus-dark-slate` and `argvus-dark-slate-float`. Accent changes affect borders, titles, selections, and other highlights without replacing the theme background.
 
 Open the selector with `SUPER + SHIFT + A`, use the **Accent** control in the sidebar, or run:
 
@@ -21,4 +21,4 @@ Palette: `#996548`, `#3590bd`, `#7391a5`, `#17d174`, `#cb17d1`, `#d1174f`, `#d1c
 
 Theme and accent preferences are stored as small user files under `$XDG_CONFIG_HOME/argvus`. Runtime application config generated from those preferences is written under `$XDG_STATE_HOME/argvus/config`, with `~/.local/state` used when `XDG_STATE_HOME` is unset.
 
-Dark themes use `default.png`; Light uses `argvus-light.png`; Slate uses `argvus-slate.png`; and Dark Silver uses `argvus-dark-silver.png`. Normal and Float variants in each family share the same wallpaper. Wallpapers ship with the `argvus-appearance` package under `/usr/share/backgrounds/argvus/`.
+Dark themes use `default.png`; Light uses `argvus-light.png`; Slate uses `argvus-dark-slate.png`; and Dark Silver uses `argvus-dark-silver.png`. Normal and Float variants in each family share the same wallpaper. Wallpapers ship with the `argvus-appearance` package under `/usr/share/backgrounds/argvus/`.

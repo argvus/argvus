@@ -1,0 +1,8 @@
+/* theme: argvus-dark-universe — sysinfo panel */
+@define-color th-background    #000000;
+@define-color th-header        #EEEEEE;
+@define-color th-foreground    #EEEEEE;
+@define-color th-window-bg     rgba(5, 5, 5, 0.35);
+@define-color th-border        rgba(238, 238, 238, 0.15);
+@define-color th-border-header rgba(238, 238, 238, 0.20);
+@define-color th-disconnected  rgba(170, 170, 170, 0.35);

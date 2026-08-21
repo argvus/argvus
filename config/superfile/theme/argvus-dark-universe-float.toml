@@ -1,0 +1,47 @@
+# theme: argvus-dark-universe-float
+
+code_syntax_highlight = "catppuccin-macchiato"
+
+full_screen_fg = "#EEEEEE"
+full_screen_bg = "#000000"
+gradient_color = ["#EEEEEE", "#888888"]
+
+file_panel_fg = "#EEEEEE"
+file_panel_bg = "#000000"
+file_panel_border = "#222222"
+file_panel_border_active = "#EEEEEE"
+file_panel_top_directory_icon = "#EEEEEE"
+file_panel_top_path = "#EEEEEE"
+file_panel_item_selected_fg = "#000000"
+file_panel_item_selected_bg = "#EEEEEE"
+
+footer_fg = "#EEEEEE"
+footer_bg = "#000000"
+footer_border = "#222222"
+footer_border_active = "#EEEEEE"
+
+sidebar_fg = "#EEEEEE"
+sidebar_bg = "#000000"
+sidebar_title = "#EEEEEE"
+sidebar_border = "#222222"
+sidebar_border_active = "#EEEEEE"
+sidebar_item_selected_fg = "#000000"
+sidebar_item_selected_bg = "#EEEEEE"
+sidebar_divider = "#222222"
+
+modal_fg = "#EEEEEE"
+modal_bg = "#000000"
+modal_border_active = "#EEEEEE"
+modal_cancel_fg = "#000000"
+modal_cancel_bg = "#888888"
+modal_confirm_fg = "#000000"
+modal_confirm_bg = "#EEEEEE"
+
+help_menu_hotkey = "#EEEEEE"
+help_menu_title = "#EEEEEE"
+
+cursor = "#EEEEEE"
+correct = "#EEEEEE"
+error = "#6b3030"
+hint = "#EEEEEE"
+cancel = "#888888"

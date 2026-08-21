@@ -19,7 +19,7 @@ else
 fi
 
 # Read current theme
-THEME="$(cat "$ARGVUS_CONFIG_HOME/argvus/.active-theme" 2>/dev/null || echo "argvus-dark")"
+THEME="$(cat "$ARGVUS_CONFIG_HOME/argvus/.active-theme" 2>/dev/null || echo "argvus-dark-aether")"
 HYPRPAPER_FILE="$(paths_config hypr/hyprpaper.conf)"
 HYPRPAPER_DIR="/usr/share/backgrounds/argvus"
 
@@ -57,11 +57,11 @@ apply_wallpaper() {
 find_theme_wallpaper() {
   _theme="$1"
   case "$_theme" in
-    argvus-dark|argvus-dark-float) _wall_name="default.png" ;;
+    argvus-dark-aether|argvus-dark-aether-float) _wall_name="default.png" ;;
     argvus-dark-silver|argvus-dark-silver-float) _wall_name="argvus-dark-silver.png" ;;
     argvus-light|argvus-light-float) _wall_name="argvus-light.png" ;;
-    argvus-slate|argvus-slate-float) _wall_name="argvus-slate.png" ;;
-    argvus-universe|argvus-universe-float) _wall_name="argvus-universe.png" ;;
+    argvus-dark-slate|argvus-dark-slate-float) _wall_name="argvus-dark-slate.png" ;;
+    argvus-dark-universe|argvus-dark-universe-float) _wall_name="argvus-dark-universe.png" ;;
     *) return 1 ;;
   esac
 
@@ -76,9 +76,9 @@ find_theme_wallpaper() {
 MODE_CSS="$(paths_config waybar/mode.css)"
 mkdir -p "$(dirname "$MODE_CSS")"
 
-if [ "$MODE" = "light" ] && [ "$THEME" = "argvus-dark" ]; then
+if [ "$MODE" = "light" ] && [ "$THEME" = "argvus-dark-aether" ]; then
   cat > "$MODE_CSS" << 'CSSEOF'
-/* mode.css — Light mode overrides for argvus-dark */
+/* mode.css — Light mode overrides for argvus-dark-aether */
 
 /* -- waybar/style.css variables -- */
 @define-color th-foreground      #181818;
@@ -133,7 +133,7 @@ apply_wallpaper "$THEME_WALLPAPER"
 MODE_RASI="$(paths_config rofi/mode.rasi)"
 mkdir -p "$(dirname "$MODE_RASI")"
 
-if [ "$MODE" = "light" ] && [ "$THEME" = "argvus-dark" ]; then
+if [ "$MODE" = "light" ] && [ "$THEME" = "argvus-dark-aether" ]; then
   cat > "$MODE_RASI" << 'RASIEOC'
 * {
     th-bg:            rgba(204, 204, 204, 100%);

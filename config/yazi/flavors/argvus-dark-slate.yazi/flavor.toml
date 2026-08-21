@@ -1,0 +1,64 @@
+# Palette adapted for argvus-dark-slate
+# bg: #2F3541
+# fg: #A6B8C4
+# accent: #7391a5
+
+[app]
+overall = { bg = "#2F3541" }
+
+[mgr]
+cwd = { fg = "#A6B8C4", bold = true }
+
+# Find
+find_keyword = { fg = "#7391a5", reversed = true }
+find_position = { fg = "#7391a5", bold = true, italic = true }
+
+# Marker
+marker_copied = { fg = "#7391a5", bg = "#7391a5" }
+marker_cut = { fg = "#957A7B", bg = "#957A7B" }
+marker_marked = { fg = "#7391a5", bg = "#7391a5" }
+marker_selected = { fg = "#2F3541", bg = "#7391a5" }
+
+# Count
+count_copied = { fg = "#7391a5", bold = true, reversed = true }
+count_cut = { fg = "#957A7B", bold = true, reversed = true }
+count_selected = { fg = "#A6B8C4", bold = true, reversed = true }
+
+# Border
+border_symbol = "│"
+border_style = { fg = "#3B4352" }
+
+[indicator]
+parent = { underline = true }
+current = { fg = "#A6B8C4", bg = "#3B4352" }
+preview = { underline = true }
+padding = { open = "█", close = "█" }
+
+[tabs]
+active = { fg = "#2F3541", bg = "#7391a5", bold = true }
+inactive = { fg = "#545C69", bg = "#20242E" }
+sep_inner = { open = "", close = "" }
+sep_outer = { open = "", close = "" }
+
+[mode]
+# Normal mode
+normal_main = { fg = "#A6B8C4", bg = "#20242E", bold = true }
+normal_alt = { fg = "#545C69", bg = "#20242E" }
+
+# Select mode
+select_main = { fg = "#2F3541", bg = "#7391a5", bold = true }
+select_alt = { fg = "#7391a5", bg = "#3B4352" }
+
+[status]
+separator = { fg = "#3B4352" }
+mode_normal = { fg = "#A6B8C4", bg = "#20242E", bold = true }
+mode_select = { fg = "#2F3541", bg = "#7391a5", bold = true }
+mode_unset = { fg = "#545C69", bg = "#20242E" }
+progress_label = { fg = "#A6B8C4", bold = true }
+progress_normal = { fg = "#7391a5" }
+
+[filetype]
+# Default text file color
+normal = { fg = "#A6B8C4" }
+# Folders
+directory = { fg = "#7391a5", bold = true }

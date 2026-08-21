@@ -35,16 +35,16 @@ EOF
   [ -z "$THEME" ] && exit 0
 
   case "$THEME" in
-    "01 - Argvus Dark")       THEME="argvus-dark" ;;
-    "02 - Argvus Dark Float") THEME="argvus-dark-float" ;;
+    "01 - Argvus Dark")       THEME="argvus-dark-aether" ;;
+    "02 - Argvus Dark Float") THEME="argvus-dark-aether-float" ;;
     "03 - Argvus Dark Silver")       THEME="argvus-dark-silver" ;;
     "04 - Argvus Dark Silver Float") THEME="argvus-dark-silver-float" ;;
     "05 - Argvus Light")       THEME="argvus-light" ;;
     "06 - Argvus Light Float") THEME="argvus-light-float" ;;
-    "07 - Argvus Slate")       THEME="argvus-slate" ;;
-    "08 - Argvus Slate Float") THEME="argvus-slate-float" ;;
-    "09 - Argvus Universe")       THEME="argvus-universe" ;;
-    "10 - Argvus Universe Float") THEME="argvus-universe-float" ;;
+    "07 - Argvus Slate")       THEME="argvus-dark-slate" ;;
+    "08 - Argvus Slate Float") THEME="argvus-dark-slate-float" ;;
+    "09 - Argvus Universe")       THEME="argvus-dark-universe" ;;
+    "10 - Argvus Universe Float") THEME="argvus-dark-universe-float" ;;
     *) printf 'Invalid theme selection\n' >&2; exit 1 ;;
   esac
 fi
@@ -85,11 +85,11 @@ find_theme_wallpaper() {
   _theme="$1"
 
   case "$_theme" in
-    argvus-dark|argvus-dark-float) _wall_name="default.png" ;;
+    argvus-dark-aether|argvus-dark-aether-float) _wall_name="default.png" ;;
     argvus-dark-silver|argvus-dark-silver-float) _wall_name="argvus-dark-silver.png" ;;
     argvus-light|argvus-light-float) _wall_name="argvus-light.png" ;;
-    argvus-slate|argvus-slate-float) _wall_name="argvus-slate.png" ;;
-    argvus-universe|argvus-universe-float) _wall_name="argvus-universe.png" ;;
+    argvus-dark-slate|argvus-dark-slate-float) _wall_name="argvus-dark-slate.png" ;;
+    argvus-dark-universe|argvus-dark-universe-float) _wall_name="argvus-dark-universe.png" ;;
     *) _wall_name="" ;;
   esac
 
@@ -202,7 +202,7 @@ apply_wallpaper() {
 }
 
 # Sincroniza o tema do argvus-storage com o tema ativo.
-# Mapeia: dark -> argvus-dark.css, silver -> argvus-dark-silver.css, slate -> argvus-slate.css, light -> argvus-light.css
+# Mapeia: dark -> argvus-dark-aether.css, silver -> argvus-dark-silver.css, slate -> argvus-dark-slate.css, light -> argvus-light.css
 apply_argvus_storage_theme() {
   _storage_theme_dir="$(paths_config argvus-storage/themes)"
   _storage_theme_dest="$(paths_config argvus-storage/theme.css)"
@@ -213,16 +213,16 @@ apply_argvus_storage_theme() {
   # 3. Diretório do projeto (para desenvolvimento)
   _theme_src=""
   case "$THEME" in
-    argvus-dark|argvus-dark-float)
-      _theme_name="argvus-dark.css" ;;
+    argvus-dark-aether|argvus-dark-aether-float)
+      _theme_name="argvus-dark-aether.css" ;;
     argvus-dark-silver|argvus-dark-silver-float)
     _theme_name="argvus-dark-silver.css" ;;
-    argvus-slate|argvus-slate-float)
-      _theme_name="argvus-slate.css" ;;
+    argvus-dark-slate|argvus-dark-slate-float)
+      _theme_name="argvus-dark-slate.css" ;;
     argvus-light|argvus-light-float)
       _theme_name="argvus-light.css" ;;
-    argvus-universe|argvus-universe-float)
-      _theme_name="argvus-universe.css" ;;
+    argvus-dark-universe|argvus-dark-universe-float)
+      _theme_name="argvus-dark-universe.css" ;;
     *)
       return 0 ;;
   esac
@@ -254,9 +254,9 @@ apply_argvus_calendar_theme() {
   _calendar_theme_name=""
 
   case "$THEME" in
-    argvus-dark|argvus-dark-float|argvus-dark-silver|argvus-dark-silver-float|argvus-slate|argvus-slate-float)
+    argvus-dark-aether|argvus-dark-aether-float|argvus-dark-silver|argvus-dark-silver-float|argvus-dark-slate|argvus-dark-slate-float)
       _calendar_theme_name="${THEME}.css" ;;
-    argvus-universe|argvus-universe-float)
+    argvus-dark-universe|argvus-dark-universe-float)
       _calendar_theme_name="${THEME}.css" ;;
     *)
       return 0 ;;
@@ -321,7 +321,7 @@ _waybar_cfg_sysinfo="$(paths_config waybar/sysinfo.jsonc)"
 _sysinfo_css="$(paths_config waybar/sysinfo.css)"
 
 case "$THEME" in
-  argvus-dark | argvus-dark-silver | argvus-light | argvus-slate | argvus-universe)
+  argvus-dark-aether | argvus-dark-silver | argvus-light | argvus-dark-slate | argvus-dark-universe)
     sed -i "s|\"margin-top\": [0-9]*|\"margin-top\": 0|" "$_waybar_cfg"
     sed -i "s|\"margin-left\": [0-9]*|\"margin-left\": 0|" "$_waybar_cfg"
     sed -i "s|\"margin-right\": [0-9]*|\"margin-right\": 0|" "$_waybar_cfg"
@@ -360,7 +360,7 @@ case "$THEME" in
 esac
 
 case "$THEME" in
-  argvus-slate)
+  argvus-dark-slate)
     sed -i '/^window#waybar {/,/^}/s/border: .*;/border: none;/' "$(paths_config waybar/style.css)"
     ;;
   *)

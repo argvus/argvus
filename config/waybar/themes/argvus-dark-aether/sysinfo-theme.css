@@ -1,0 +1,8 @@
+/* theme: argvus-dark-aether — sysinfo panel */
+@define-color th-background    #111316;
+@define-color th-header        #3590bd;
+@define-color th-foreground    #DFE5EA;
+@define-color th-window-bg     rgba(32, 31, 39, 0.35);
+@define-color th-border        rgba(53, 144, 189, 0.15);
+@define-color th-border-header rgba(53, 144, 189, 0.20);
+@define-color th-disconnected  rgba(176, 191, 203, 0.35);

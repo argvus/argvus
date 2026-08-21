@@ -1,0 +1,11 @@
+# theme: argvus-dark-aether
+highlight = "#3590bd"
+frame_color = "#3590bd"
+low_background = "#111316"
+low_foreground = "#B0BFCB"
+normal_background = "#262933"
+normal_foreground = "#DFE5EA"
+critical_background = "#4C3A3B"
+critical_foreground = "#DFE5EA"
+app_background = "#201F27"
+app_foreground = "#DFE5EA"

@@ -65,7 +65,7 @@ local function _read_first_line(paths)
   return nil
 end
 
-local _theme_name = "argvus-dark"
+local _theme_name = "argvus-dark-aether"
 local _active_theme = _read_first_line({
   _state_home .. "/.active-theme",
   _config_home .. "/.active-theme",
