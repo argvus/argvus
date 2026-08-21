@@ -7,58 +7,67 @@ SHORTCUT                               DESCRIPTION
 
 01 - SUPER + 1..9               = Workspaces
 02 - SUPER + Shift + Space      = Enable/Disable Floating Window
-03 - SUPER +                = Focus tiled window by direction
-04 - SUPER + Ctrl +           = Cycle focus between windows (tiled and floating)
-05 - Ctrl + Alt +    or             = Moving between work areas
+03 - SUPER + ←→↑↓               = Focus tiled window by direction
+04 - SUPER + Ctrl + ←→          = Cycle focus between windows (tiled and floating)
+05 - Ctrl + Alt + ←→  or        = Moving between work areas
      Mouse 4 / Mouse 5
-06 - ALT + Tab                        = Cycle through all windows
-07 - SUPER + r                  = Enter window resize mode (floating window only)
-                                  = Resize
-     SHIFT +                      = Move window
-     Esc                              = Exit resize mode
+06 - ALT + Tab                  = Cycle through all windows
+07 - SUPER + R                  = Enter window resize mode (floating window only)
+     ←→↑↓                       = Resize
+     SHIFT + ←→↑↓               = Move window
+     Esc                        = Exit resize mode
 08 - SUPER + Mouse Button 1     = Drag window (floating window only)
 09 - SUPER + Mouse Button 2     = Window resize mode (floating window only)
 10 - SUPER + f                  = Full screen window
-11 - SUPER + w                  = ​​Group/Ungroup into tabs
-12 - SUPER + Shift +          = Move window
-13 - SUPER + q                  = Close window
-14 - SUPER + Shift + 1..9       = Move window to desktop
-15 - Print                            = Capture selected area
-16 - SUPER + Print              = Capture focused window
-17 - SUPER + Shift + Print      = Capture entire screen
-18 - SUPER + g                  = Start/Pause/Resume screen recording
-19 - SUPER + Shift + g          = Stop and save screen recording
-20 - SUPER + ,                  = Open/Close notification sidebar
-21 - SUPER + y                  = Opens the selector to change the wallpaper
-22 - SUPER + Shift + t          = Opens the selector themes
-23 - SUPER + Shift + a          = Opens the accent color selector
-24 - SUPER + Shift + w          = Configures the weather location
-25 - SUPER + Shift + b          = Opens the brightness selector
-26 - SUPER + F5                 = Toggles between GTK Dark and Light themes
-27 - SUPER + Shift + l          = Lock system
-28 - SUPER + Shift + m          = Turn monitor off/on (not suspend system)
-29 - SUPER + Esc                = Exit system
-30 - SUPER + Shift + r          = Reload Hyprland
+11 - SUPER + s                  = Maximize window (toggle)
+12 - SUPER + e                  = Split vertical/horizontal toggle
+13 - SUPER + w                  = Group/Ungroup into tabs
+14 - SUPER + Tab                = Navigate between tabs
+15 - SUPER + Shift + ←→↑↓       = Move window
+16 - SUPER + q                  = Close window
+17 - SUPER + Shift + 1..9       = Move window to desktop
+18 - Print                      = Capture selected area
+19 - SUPER + Print              = Capture focused window
+20 - SUPER + Shift + Print      = Capture entire screen
+21 - SUPER + g                  = Start/Pause/Resume screen recording
+22 - SUPER + Shift + g          = Stop and save screen recording
+23 - SUPER + ,                  = Open/Close notification sidebar
+24 - SUPER + y                  = Opens the selector to change the wallpaper
+25 - SUPER + Shift + t          = Opens the selector themes
+26 - SUPER + Shift + a          = Opens the accent color selector
+27 - SUPER + Shift + w          = Configures the weather location
+28 - SUPER + Shift + b          = Opens the brightness selector
+29 - SUPER + F5                 = Toggles between GTK Dark and Light themes
+30 - SUPER + L                  = Lock system
+31 - SUPER + Shift + m          = Turn monitor off/on (not suspend system)
+32 - SUPER + Esc                = Exit system
+33 - SUPER + Shift + r          = Reload Hyprland
 
 Software Shortcuts »
 --------------------------------------------------
 SHORTCUT                               DESCRIPTION
 
-31 - SUPER + Enter              = Terminal
-32 - SUPER + Space              = File Manager
-33 - SUPER + Shift + s          = Removable storage menu
-34 - SUPER + b                  = Default Browser
-35 - SUPER + d                  = Program Launcher
-36 - SUPER + c                  = Calculator
-37 - SUPER + Ctrl + /?          = Kitty Cheatsheets
-38 - SUPER + h                  = Clipboard History
-39 - SUPER + Shift + h          = Clear Clipboard History
-40 - SUPER + p                  = Color Picker
-41 - ALT + SHIFT                      = Switch keyboard between "pt-br (abnt2)" and "us"
+34 - SUPER + Enter              = Terminal
+35 - SUPER + Space              = File Manager
+36 - SUPER + Shift + s          = Removable storage menu
+37 - SUPER + b                  = Default Browser
+38 - SUPER + d                  = Program Launcher
+39 - SUPER + c                  = Calculator
+40 - SUPER + Ctrl + /           = Kitty Cheatsheets
+41 - SUPER + Shift + /          = Hyprland Cheatsheets
+42 - SUPER + h                  = Clipboard History
+43 - SUPER + Shift + h          = Clear Clipboard History
+44 - SUPER + p                  = Color Picker
+45 - SUPER + .                  = Emoji Picker
+46 - ALT + SHIFT                = Switch keyboard between "pt-br (abnt2)" and "us"
 
 Directories »
 -----------------------------------------------
 
-Hyprland configs: $HOME/.config/hypr/
-Hyprland logs: $HOME/.local/state/hyprland/
-Waybar configs: $HOME/.config/waybar/
+Argvus configs:      $HOME/.config/argvus/
+Hyprland configs:    $HOME/.config/hypr/
+Hyprland logs:       $HOME/.local/state/hyprland/
+Kitty configs:       $HOME/.config/kitty/
+Waybar configs:      $HOME/.config/waybar/
+Quickshell configs:  $HOME/.config/quickshell/
+Argvus storage:      $HOME/.config/argvus-storage/
