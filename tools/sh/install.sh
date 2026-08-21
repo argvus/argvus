@@ -11,6 +11,7 @@ COPY_CONFIG=false
 RESTART=false
 PREFIX="${HOME:-}/.local"
 STORAGE_DIR="${ARGVUS_STORAGE_DIR:-$(cd -- "$ROOT_DIR/../argvus-storage" && pwd)}"
+STORAGE_RESOURCES="$STORAGE_DIR/resources"
 
 usage() {
   cat <<EOF
@@ -169,15 +170,15 @@ run_setup() {
       run_argvus_setup "$ROOT_DIR/config" "$ROOT_DIR/bin/argvus-setup"
 
       run mkdir -p "${XDG_CONFIG_HOME:-$HOME/.config}/argvus-storage"
-      run cp "$STORAGE_DIR/config.json" \
+      run cp "$STORAGE_RESOURCES/config.json" \
         "${XDG_CONFIG_HOME:-$HOME/.config}/argvus-storage/config.json"
       log "Installed user storage config: ${XDG_CONFIG_HOME:-$HOME/.config}/argvus-storage/config.json"
-      run cp "$STORAGE_DIR/theme.css" \
+      run cp "$STORAGE_RESOURCES/theme.css" \
         "${XDG_CONFIG_HOME:-$HOME/.config}/argvus-storage/theme.css"
       log "Installed user storage theme: ${XDG_CONFIG_HOME:-$HOME/.config}/argvus-storage/theme.css"
-      if [ -d "$STORAGE_DIR/themes" ]; then
+      if [ -d "$STORAGE_RESOURCES/themes" ]; then
         run mkdir -p "${XDG_CONFIG_HOME:-$HOME/.config}/argvus-storage/themes"
-        run cp -R "$STORAGE_DIR/themes/." \
+        run cp -R "$STORAGE_RESOURCES/themes/." \
           "${XDG_CONFIG_HOME:-$HOME/.config}/argvus-storage/themes/"
       fi
     ;;
@@ -217,16 +218,16 @@ install_system() {
   sudo_run install -Dm755 "$STORAGE_DIR/target/release/argvus-storage" /usr/bin/argvus-storage
   sudo_run rm -f /etc/profile.d/argvus.sh
   log "Removed legacy TTY auto-start profile: /etc/profile.d/argvus.sh"
-  sudo_run install -Dm644 "$STORAGE_DIR/config.json" \
+  sudo_run install -Dm644 "$STORAGE_RESOURCES/config.json" \
     /etc/argvus-storage/config.json
-  sudo_run install -Dm644 "$STORAGE_DIR/theme.css" \
+  sudo_run install -Dm644 "$STORAGE_RESOURCES/theme.css" \
     /etc/argvus-storage/theme.css
-  if [ -d "$STORAGE_DIR/themes" ]; then
+  if [ -d "$STORAGE_RESOURCES/themes" ]; then
     sudo_run install -dm755 /etc/argvus-storage/themes
     if [ "$DRY_RUN" = true ]; then
-      printf '[dry-run] sudo cp -a %s/themes/. /etc/argvus-storage/themes/\n' "$STORAGE_DIR"
+      printf '[dry-run] sudo cp -a %s/resources/themes/. /etc/argvus-storage/themes/\n' "$STORAGE_DIR"
     else
-      sudo cp -a "$STORAGE_DIR/themes/." /etc/argvus-storage/themes/
+      sudo cp -a "$STORAGE_RESOURCES/themes/." /etc/argvus-storage/themes/
     fi
   fi
   sudo_run install -Dm644 "$ROOT_DIR/LICENSE" \
