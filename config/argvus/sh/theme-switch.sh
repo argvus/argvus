@@ -258,6 +258,8 @@ apply_argvus_calendar_theme() {
       _calendar_theme_name="${THEME}.css" ;;
     argvus-dark-universe|argvus-dark-universe-float)
       _calendar_theme_name="${THEME}.css" ;;
+    argvus-light-veil|argvus-light-veil-float)
+      _calendar_theme_name="${THEME}.css" ;;
     *)
       return 0 ;;
   esac
