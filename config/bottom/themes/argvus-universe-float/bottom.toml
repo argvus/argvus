@@ -1,0 +1,21 @@
+# Argvus Universe theme for Bottom
+
+[color]
+background = "#000000"
+foreground = "#EEEEEE"
+border = "#EEEEEE"
+text = "#EEEEEE"
+selected_text = "#000000"
+selected_bg = "#EEEEEE"
+
+[colors]
+cpu_color = "#EEEEEE"
+mem_color = "#888888"
+swap_color = "#444444"
+rx_color = "#EEEEEE"
+tx_color = "#AAAAAA"
+rx_total_color = "#666666"
+tx_total_color = "#EEEEEE"
+process_color = "#EEEEEE"
+process_highlighted_color = "#FFFFFF"
+average_cpu_color = "#EEEEEE"
