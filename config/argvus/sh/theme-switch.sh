@@ -39,8 +39,8 @@ EOF
     "02 - Argvus Dark Float") THEME="argvus-dark-aether-float" ;;
     "03 - Argvus Dark Silver")       THEME="argvus-dark-silver" ;;
     "04 - Argvus Dark Silver Float") THEME="argvus-dark-silver-float" ;;
-    "05 - Argvus Light")       THEME="argvus-light" ;;
-    "06 - Argvus Light Float") THEME="argvus-light-float" ;;
+    "05 - Argvus Light")       THEME="argvus-light-veil" ;;
+    "06 - Argvus Light Float") THEME="argvus-light-veil-float" ;;
     "07 - Argvus Slate")       THEME="argvus-dark-slate" ;;
     "08 - Argvus Slate Float") THEME="argvus-dark-slate-float" ;;
     "09 - Argvus Universe")       THEME="argvus-dark-universe" ;;
@@ -87,7 +87,7 @@ find_theme_wallpaper() {
   case "$_theme" in
     argvus-dark-aether|argvus-dark-aether-float) _wall_name="default.png" ;;
     argvus-dark-silver|argvus-dark-silver-float) _wall_name="argvus-dark-silver.png" ;;
-    argvus-light|argvus-light-float) _wall_name="argvus-light.png" ;;
+    argvus-light-veil|argvus-light-veil-float) _wall_name="argvus-light-veil.png" ;;
     argvus-dark-slate|argvus-dark-slate-float) _wall_name="argvus-dark-slate.png" ;;
     argvus-dark-universe|argvus-dark-universe-float) _wall_name="argvus-dark-universe.png" ;;
     *) _wall_name="" ;;
@@ -202,7 +202,7 @@ apply_wallpaper() {
 }
 
 # Sincroniza o tema do argvus-storage com o tema ativo.
-# Mapeia: dark -> argvus-dark-aether.css, silver -> argvus-dark-silver.css, slate -> argvus-dark-slate.css, light -> argvus-light.css
+# Mapeia: dark -> argvus-dark-aether.css, silver -> argvus-dark-silver.css, slate -> argvus-dark-slate.css, light -> argvus-light-veil.css
 apply_argvus_storage_theme() {
   _storage_theme_dir="$(paths_config argvus-storage/themes)"
   _storage_theme_dest="$(paths_config argvus-storage/theme.css)"
@@ -219,8 +219,8 @@ apply_argvus_storage_theme() {
     _theme_name="argvus-dark-silver.css" ;;
     argvus-dark-slate|argvus-dark-slate-float)
       _theme_name="argvus-dark-slate.css" ;;
-    argvus-light|argvus-light-float)
-      _theme_name="argvus-light.css" ;;
+    argvus-light-veil|argvus-light-veil-float)
+      _theme_name="argvus-light-veil.css" ;;
     argvus-dark-universe|argvus-dark-universe-float)
       _theme_name="argvus-dark-universe.css" ;;
     *)
@@ -321,7 +321,7 @@ _waybar_cfg_sysinfo="$(paths_config waybar/sysinfo.jsonc)"
 _sysinfo_css="$(paths_config waybar/sysinfo.css)"
 
 case "$THEME" in
-  argvus-dark-aether | argvus-dark-silver | argvus-light | argvus-dark-slate | argvus-dark-universe)
+  argvus-dark-aether | argvus-dark-silver | argvus-light-veil | argvus-dark-slate | argvus-dark-universe)
     sed -i "s|\"margin-top\": [0-9]*|\"margin-top\": 0|" "$_waybar_cfg"
     sed -i "s|\"margin-left\": [0-9]*|\"margin-left\": 0|" "$_waybar_cfg"
     sed -i "s|\"margin-right\": [0-9]*|\"margin-right\": 0|" "$_waybar_cfg"
@@ -437,7 +437,7 @@ printf '/* mode.css — reset on theme switch */\n' > "$MODE_CSS"
 GTK_MODE_FILE="${ARGVUS_CONFIG_HOME}/argvus/.gtk-mode"
 mkdir -p "$(dirname "$GTK_MODE_FILE")"
 case "$THEME" in
-  argvus-light | argvus-light-float)
+  argvus-light-veil | argvus-light-veil-float)
     printf 'light\n' > "$GTK_MODE_FILE"
     if command -v gsettings >/dev/null 2>&1; then
       gsettings set org.gnome.desktop.interface color-scheme prefer-light 2>/dev/null || true

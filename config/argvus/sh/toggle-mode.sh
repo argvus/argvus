@@ -59,7 +59,7 @@ find_theme_wallpaper() {
   case "$_theme" in
     argvus-dark-aether|argvus-dark-aether-float) _wall_name="default.png" ;;
     argvus-dark-silver|argvus-dark-silver-float) _wall_name="argvus-dark-silver.png" ;;
-    argvus-light|argvus-light-float) _wall_name="argvus-light.png" ;;
+    argvus-light-veil|argvus-light-veil-float) _wall_name="argvus-light-veil.png" ;;
     argvus-dark-slate|argvus-dark-slate-float) _wall_name="argvus-dark-slate.png" ;;
     argvus-dark-universe|argvus-dark-universe-float) _wall_name="argvus-dark-universe.png" ;;
     *) return 1 ;;

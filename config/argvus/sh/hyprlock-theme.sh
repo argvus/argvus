@@ -38,7 +38,7 @@ THEME="$(read_state "$ACTIVE_FILE" argvus-dark-aether)"
 case "$THEME" in
   argvus-dark-aether|argvus-dark-aether-float) DEFAULT_ACCENT="3590bd" ;;
   argvus-dark-silver|argvus-dark-silver-float) DEFAULT_ACCENT="595959" ;;
-  argvus-light|argvus-light-float) DEFAULT_ACCENT="181818" ;;
+  argvus-light-veil|argvus-light-veil-float) DEFAULT_ACCENT="181818" ;;
   argvus-dark-slate|argvus-dark-slate-float) DEFAULT_ACCENT="7391a5" ;;
   argvus-dark-universe|argvus-dark-universe-float) DEFAULT_ACCENT="eeeeee" ;;
   *)

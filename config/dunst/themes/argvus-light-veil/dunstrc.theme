@@ -1,0 +1,11 @@
+# theme: argvus-light-veil
+highlight = "#181818"
+frame_color = "#181818"
+low_background = "#f7f7f7"
+low_foreground = "#454545"
+normal_background = "#ebebeb"
+normal_foreground = "#181818"
+critical_background = "#ffe4e9"
+critical_foreground = "#181818"
+app_background = "#f7f7f7"
+app_foreground = "#181818"

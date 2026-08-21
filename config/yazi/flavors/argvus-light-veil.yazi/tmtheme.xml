@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>name</key>
+	<string>Repose of the Silent One</string>
+	<key>originalAuthor</key>
+	<string>argvus-light-veil theme author</string>
+	<key>colorSpaceName</key>
+    <string>sRGB</string>
+	<key>settings</key>
+	<array>
+		<dict>
+			<key>settings</key>
+			<dict>
+				<key>background</key>
+				<string>#141E1E</string>
+				<key>foreground</key>
+				<string>#D8E0DE</string>
+				<key>lineHighlight</key>
+				<string>#354A4A</string>
+				<key>gutter</key>
+				<string>#141E1E</string>
+				<key>gutterForeground</key>
+				<string>#7A9A9A</string>
+				<key>gutterForegroundHighlight</key>
+				<string>#5A8A8A</string>
+				<key>minimapBorder</key>
+				<string>#354A4A</string>
+				<key>caret</key>
+				<string>#5A8A8A</string>
+				<key>blockCaret</key>
+				<string>#5A8A8A</string>
+				<key>invisibles</key>
+				<string>#7A9A9A</string>
+				<key>misspelling</key>
+				<string>#A85A5A</string>
+				<key>highlight</key>
+				<string>#7A9A9A</string>
+				<key>findHighlight</key>
+				<string>#354A4A</string>
+				<key>findHighlightForeground</key>
+				<string>#D8E0DE</string>
+				<key>accent</key>
+				<string>#5A8A8A</string>
+				<key>foldMarker</key>
+				<string>#8AA87A</string>
+				<key>guide</key>
+				<string>#ebebeb</string>
+				<key>activeGuide</key>
+				<string>#7A9A9A</string>
+				<key>stackGuide</key>
+				<string>#141E1E</string>
+				<key>selection</key>
+				<string>#354A4A</string>
+				<key>selectionBorder</key>
+				<string>#5A8A8A</string>
+				<key>inactiveSelection</key>
+				<string>#141E1E</string>
+				<key>inactiveSelectionBorder</key>
+				<string>#354A4A</string>
+				<key>bracketsOptions</key>
+				<string>underline</string>
+				<key>bracketsForeground</key>
+				<string>#5A8A8A</string>
+				<key>bracketContentsOptions</key>
+				<string>stippled_underline</string>
+				<key>bracketContentsForeground</key>
+				<string>#5A8A8A</string>
+				<key>tagsOptions</key>
+				<string>stippled_underline</string>
+				<key>tagsForeground</key>
+				<string>#5A8A8A</string>
+				<key>shadow</key>
+				<string>#141E1E</string>
+				<key>shadowWidth</key>
+				<string>4</string>
+				<key>lineDiffAdded</key>
+				<string>#5A8A8A</string>
+				<key>lineDiffModified</key>
+				<string>#8AA87A</string>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>

@@ -39,7 +39,7 @@ The system package owns:
 /etc/argvus-storage/theme.css
 /etc/argvus-storage/themes/argvus-dark-aether.css
 /etc/argvus-storage/themes/argvus-dark-silver.css
-/etc/argvus-storage/themes/argvus-light.css
+/etc/argvus-storage/themes/argvus-light-veil.css
 /etc/argvus-storage/themes/argvus-dark-aether-slate.css
 ```
 

@@ -145,8 +145,8 @@ ARGVUS entrega oito famílias de tema:
 * `argvus-dark-aether-aether-float`
 * `argvus-dark-silver`
 * `argvus-dark-silver-float`
-* `argvus-light`
-* `argvus-light-float`
+* `argvus-light-veil`
+* `argvus-light-veil-float`
 * `argvus-dark-aether-slate`
 * `argvus-dark-aether-slate-float`
 
