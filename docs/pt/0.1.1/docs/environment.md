@@ -142,13 +142,13 @@ O botão de configurações da Waybar alterna essa sidebar pelo script de taskba
 ARGVUS entrega oito famílias de tema:
 
 * `argvus-dark-aether`
-* `argvus-dark-aether-aether-float`
+* `argvus-dark-aether-float`
 * `argvus-dark-silver`
 * `argvus-dark-silver-float`
 * `argvus-light-veil`
 * `argvus-light-veil-float`
-* `argvus-dark-aether-slate`
-* `argvus-dark-aether-slate-float`
+* `argvus-dark-slate`
+* `argvus-dark-slate-float`
 
 Os temas são espelhados entre Hyprland, Waybar, Rofi, Dunst, Kitty, Btop, Bottom, Wlogout, Yazi, Superfile, Snappy Switcher e esquemas de cor Qt. O tema ativo é aplicado por `config/argvus/sh/theme-switch.sh`.
 

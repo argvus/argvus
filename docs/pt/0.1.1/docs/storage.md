@@ -40,7 +40,7 @@ O pacote do sistema é dono de:
 /etc/argvus-storage/themes/argvus-dark-aether.css
 /etc/argvus-storage/themes/argvus-dark-silver.css
 /etc/argvus-storage/themes/argvus-light-veil.css
-/etc/argvus-storage/themes/argvus-dark-aether-slate.css
+/etc/argvus-storage/themes/argvus-dark-slate.css
 ```
 
 Quando o usuário muda o tema do desktop, o ARGVUS prepara o tema correspondente do storage na configuração de runtime gerada. Arquivos do usuário em `$XDG_CONFIG_HOME/argvus-storage/` continuam tendo prioridade sobre os defaults do sistema.
