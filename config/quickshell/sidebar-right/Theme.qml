@@ -11,7 +11,7 @@ Singleton {
     property string gtkMode: "dark"
     readonly property string configHome: StandardPaths.writableLocation(StandardPaths.GenericConfigLocation)
     readonly property string stateHome: Quickshell.env("XDG_STATE_HOME") || StandardPaths.writableLocation(StandardPaths.HomeLocation) + "/.local/state"
-    readonly property string generatedConfig: stateHome + "/argvus/config"
+    readonly property string legacyConfig: stateHome + "/argvus/config"
     FileView {
         id: themeNameFile
         path: root.configHome + "/argvus/.active-theme"
@@ -35,7 +35,7 @@ Singleton {
     // by theme-switch.sh and spaces-switch.sh).
     FileView {
         id: waybarMarginFile
-        path: root.generatedConfig + "/waybar/config.jsonc"
+        path: root.configHome + "/waybar/config.jsonc"
         onTextChanged: {
             var m = text().match(/"margin-right":\s*(-?\d+)/)
             if (m) root._waybarMarginRight = parseInt(m[1], 10)
@@ -59,14 +59,22 @@ Singleton {
     }
 
     function loadTheme() {
-        themeFile.path = root.generatedConfig + "/quickshell/sidebar-right/themes/" +
+        // 1. User config (~/.config) — where accent-switch writes accent colors
+        themeFile.path = root.configHome + "/quickshell/sidebar-right/themes/" +
             themeName + "/Theme.qml"
         themeFile.reload()
-        if (themeFile.text().trim() === "") {
-            themeFile.path = "/usr/share/argvus/quickshell/sidebar-right/themes/" +
-                themeName + "/Theme.qml"
-            themeFile.reload()
-        }
+        if (themeFile.text().trim() !== "") return
+
+        // 2. Legacy generated config (~/.local/state/argvus/config)
+        themeFile.path = root.legacyConfig + "/quickshell/sidebar-right/themes/" +
+            themeName + "/Theme.qml"
+        themeFile.reload()
+        if (themeFile.text().trim() !== "") return
+
+        // 3. System default
+        themeFile.path = "/usr/share/argvus/quickshell/sidebar-right/themes/" +
+            themeName + "/Theme.qml"
+        themeFile.reload()
     }
 
     function reloadActiveTheme() {
