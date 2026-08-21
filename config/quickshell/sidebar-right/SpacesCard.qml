@@ -10,16 +10,13 @@ BaseCard {
     property real waybar: 0
     property real gapsIn: 0
     property real gapsOut: 0
-    property bool draggingWaybar: false
-    property bool draggingIn: false
-    property bool draggingOut: false
 
     readonly property string script: "sh ${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/argvus/sh/spaces-switch.sh"
     readonly property string reloadScript: "sh ${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/hypr/scripts/init.sh --reload"
     readonly property var controls: [
-        { key: "waybar", label: Strings.spacesWaybar, valueProp: "waybar", draggingProp: "draggingWaybar", minDef: 0, max: 100 },
-        { key: "gaps_in", label: Strings.spacesGapIn, valueProp: "gapsIn", draggingProp: "draggingIn", minDef: 3, max: 100 },
-        { key: "gaps_out", label: Strings.spacesGapOut, valueProp: "gapsOut", draggingProp: "draggingOut", minDef: 1, max: 100 },
+        { key: "waybar", label: Strings.spacesWaybar, valueProp: "waybar", minDef: 0, max: 100 },
+        { key: "gaps_in", label: Strings.spacesGapIn, valueProp: "gapsIn", minDef: 3, max: 100 },
+        { key: "gaps_out", label: Strings.spacesGapOut, valueProp: "gapsOut", minDef: 1, max: 100 },
     ]
 
     Timer {
@@ -76,85 +73,139 @@ BaseCard {
 
         Repeater {
             model: controls
-            delegate: ColumnLayout {
+            delegate: RowLayout {
                 Layout.fillWidth: true
                 spacing: 6
 
-                RowLayout {
-                    Layout.fillWidth: true
-                    spacing: 10
+                Text {
+                    Layout.preferredWidth: 32
+                    Layout.preferredHeight: 32
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    text: "\uf065"
+                    color: Theme.accent
+                    font.family: "Font Awesome 6 Free"
+                    font.pixelSize: 16
+                    font.weight: Font.Black
+                }
+
+                Text {
+                    text: modelData.label
+                    color: Theme.fgText
+                    font.pixelSize: 11
+                    font.family: "monospace"
+                    font.weight: Font.Medium
+                    Layout.alignment: Qt.AlignVCenter
+                }
+
+                Item { Layout.fillWidth: true }
+
+                // [-] button
+                Rectangle {
+                    width: 26; height: 26; radius: Theme.radiusSmall
+                    color: minusArea.containsMouse ? Theme.accentDim : Theme.bgPanel
+                    border.color: Theme.borderSubtle; border.width: 1
+                    Layout.alignment: Qt.AlignVCenter
 
                     Text {
-                        Layout.preferredWidth: 32
-                        Layout.preferredHeight: 32
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                        text: "\uf065"
-                        color: Theme.accent
-                        font.family: "Font Awesome 6 Free"
-                        font.pixelSize: 16
-                        font.weight: Font.Black
+                        anchors.centerIn: parent
+                        text: "−"
+                        color: minusArea.containsMouse ? Theme.accent : Theme.fgSubtle
+                        font.pixelSize: 14; font.family: "monospace"; font.bold: true
                     }
 
-                    Text {
-                        text: modelData.label
+                    MouseArea {
+                        id: minusArea
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: {
+                            var v = Math.max(Math.round(card[modelData.valueProp]) - 1, modelData.minDef)
+                            card[modelData.valueProp] = v
+                            setValue(modelData.key, v)
+                        }
+                    }
+                }
+
+                // Value field
+                Rectangle {
+                    width: 48; height: 26; radius: Theme.radiusSmall
+                    color: Theme.bgCard
+                    border.color: Theme.borderSubtle; border.width: 1
+                    Layout.alignment: Qt.AlignVCenter
+
+                    TextInput {
+                        id: valInput
+                        anchors.fill: parent
+                        anchors.margins: 2
+                        horizontalAlignment: TextInput.AlignHCenter
+                        verticalAlignment: TextInput.AlignVCenter
                         color: Theme.fgText
                         font.pixelSize: 11
                         font.family: "monospace"
-                        font.weight: Font.Medium
-                        Layout.alignment: Qt.AlignVCenter
-                    }
+                        font.bold: true
+                        inputMethodHints: Qt.ImhDigitsOnly
+                        validator: IntValidator { bottom: modelData.minDef; top: modelData.max }
+                        clip: true
+                        selectByMouse: true
 
-                    Item {
-                        Layout.fillWidth: true
-                        implicitHeight: 32
+                        property bool programmatic: false
+                        property real boundValue: Math.round(card[modelData.valueProp])
 
-                        Rectangle {
-                            id: track
-                            anchors.verticalCenter: parent.verticalCenter
-                            width: parent.width
-                            height: 4; radius: 2
-                            color: Theme.borderSubtle
-
-                            Rectangle {
-                                width: track.width * (card[modelData.valueProp] / modelData.max)
-                                height: 4; radius: 2
-                                color: Theme.accent
-                                Behavior on width { NumberAnimation { duration: 80 } }
+                        onBoundValueChanged: {
+                            if (!activeFocus) {
+                                programmatic = true
+                                text = boundValue
+                                programmatic = false
                             }
                         }
 
-                        MouseArea {
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            cursorShape: Qt.PointingHandCursor
+                        Component.onCompleted: text = boundValue
 
-                            onPressed: function(mouse) {
-                                card[modelData.draggingProp] = true
-                                var v = Math.min(Math.max(mouse.x / width * modelData.max, modelData.minDef), modelData.max)
+                        onTextChanged: {
+                            if (programmatic) return
+                            var v = parseInt(text)
+                            if (!isNaN(v)) {
+                                v = Math.min(Math.max(v, modelData.minDef), modelData.max)
                                 card[modelData.valueProp] = v
                                 setValue(modelData.key, v)
                             }
-                            onPositionChanged: function(mouse) {
-                                if (pressed) {
-                                    var v = Math.min(Math.max(mouse.x / width * modelData.max, modelData.minDef), modelData.max)
-                                    card[modelData.valueProp] = v
-                                    setValue(modelData.key, v)
-                                }
-                            }
-                            onReleased: {
-                                card[modelData.draggingProp] = false
+                        }
+
+                        onActiveFocusChanged: {
+                            if (!activeFocus) {
+                                programmatic = true
+                                text = Math.round(card[modelData.valueProp])
+                                programmatic = false
                             }
                         }
                     }
+                }
+
+                // [+] button
+                Rectangle {
+                    width: 26; height: 26; radius: Theme.radiusSmall
+                    color: plusArea.containsMouse ? Theme.accentDim : Theme.bgPanel
+                    border.color: Theme.borderSubtle; border.width: 1
+                    Layout.alignment: Qt.AlignVCenter
 
                     Text {
-                        text: Math.round(card[modelData.valueProp])
-                        color: Theme.fgDim
-                        font.pixelSize: 10
-                        font.family: "monospace"
-                        Layout.preferredWidth: 32
-                        horizontalAlignment: Text.AlignRight
+                        anchors.centerIn: parent
+                        text: "+"
+                        color: plusArea.containsMouse ? Theme.accent : Theme.fgSubtle
+                        font.pixelSize: 14; font.family: "monospace"; font.bold: true
+                    }
+
+                    MouseArea {
+                        id: plusArea
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: {
+                            var v = Math.min(Math.round(card[modelData.valueProp]) + 1, modelData.max)
+                            card[modelData.valueProp] = v
+                            setValue(modelData.key, v)
+                        }
                     }
                 }
             }
