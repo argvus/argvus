@@ -29,18 +29,18 @@ do_logout() {
   # Support to VeraCrypt Umount devices in logout
   #
   # 1 - Create script:
-  # sudo tee /usr/local/bin/veracrypt-unmount-all.sh > /dev/null << 'EOF'
+  # sudo tee /usr/local/bin/veracrypt-security-exit.sh > /dev/null << 'EOF'
   # /usr/bin/veracrypt --text --dismount
   # EOF
-  # sudo chmod +x /usr/local/bin/veracrypt-unmount-all.sh
+  # sudo chmod +x /usr/local/bin/veracrypt-security-exit.sh
 
   # 2 - Create permissions script:
   # cat << EOF > /etc/sudoers.d/veracrypt-unmount
-  # <USER> ALL=(root) NOPASSWD: /usr/local/bin/veracrypt-unmount-all.sh
+  # <USER> ALL=(root) NOPASSWD: /usr/local/bin/veracrypt-security-exit.sh
   # EOF
 
-  if [ -f "/usr/local/bin/veracrypt-unmount-all.sh" ]; then
-    sudo /usr/local/bin/veracrypt-unmount-all.sh && notify-send "VeraCrypt" "Umount all devices" 2>/dev/null || true
+  if [ -f "/usr/local/bin/veracrypt-security-exit.sh" ]; then
+    sudo /usr/local/bin/veracrypt-security-exit.sh && notify-send "VeraCrypt" "Umount all devices" 2>/dev/null || true
   fi
 
   hyprshutdown
