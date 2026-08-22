@@ -1,6 +1,6 @@
 # Maintainer: William C. Canin
 pkgname=argvus
-pkgver=0.1.9
+pkgver=0.1.10
 pkgrel=1
 pkgdesc="Argvus is a complete, ready-to-use desktop environment focused on Hyprland, packaged for Arch Linux."
 arch=('x86_64')
@@ -9,7 +9,6 @@ license=('GPL-3.0-only')
 options=('!debug')
 
 depends=(
-  'adwaita-icon-theme'
   'argvus-appearance'
   'argvus-calendar'
   'argvus-greeter'
@@ -18,6 +17,17 @@ depends=(
   'argvus-waybar'
 	'argvus-pwvucontrol'
 	'argvus-snappy-switcher'
+	'hyprland'
+	'hypridle'
+  'hyprland-guiutils'
+  'hyprland-qt-support'
+  'hyprlock'
+  'hyprpaper'
+  'hyprpicker'
+  'hyprpolkitagent'
+  'hyprshot'
+  'hyprshutdown'
+	'adwaita-icon-theme'
   'bluez'
   'bluez-utils'
   'blueman'
@@ -36,16 +46,6 @@ depends=(
   'gtk3'
   'gtk-layer-shell'
   'gtk4'
-  'hypridle'
-  'hyprland'
-  'hyprland-guiutils'
-  'hyprland-qt-support'
-  'hyprlock'
-  'hyprpaper'
-  'hyprpicker'
-  'hyprpolkitagent'
-  'hyprshot'
-  'hyprshutdown'
   'imagemagick'
   'imv'
   'udisks2'
@@ -74,6 +74,7 @@ depends=(
   'satty'
   'slurp'
   'superfile'
+	'gpu-screen-recorder'
   'swaybg'
   'ttf-jetbrains-mono-nerd'
   'ttf-nerd-fonts-symbols-mono'
@@ -96,7 +97,6 @@ depends=(
 )
 optdepends=(
   'firefox: default browser used by the shipped keybindings'
-  'gpu-screen-recorder: GPU accelerated screen recording backend'
   'kooha: graphical screen recording utility'
   'nwg-look: GTK theme configuration utility'
   'swappy: screenshot annotation fallback'
