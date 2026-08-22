@@ -25,6 +25,27 @@ do_lock() {
   exec hyprlock
 }
 
+do_logout() {
+  # Support to VeraCrypt Umount devices in logout
+  #
+  # 1 - Create script:
+  # sudo tee /usr/local/bin/veracrypt-unmount-all.sh > /dev/null << 'EOF'
+  # /usr/bin/veracrypt --text --dismount
+  # EOF
+  # sudo chmod +x /usr/local/bin/veracrypt-unmount-all.sh
+
+  # 2 - Create permissions script:
+  # cat << EOF > /etc/sudoers.d/veracrypt-unmount
+  # <USER> ALL=(root) NOPASSWD: /usr/local/bin/veracrypt-unmount-all.sh
+  # EOF
+
+  if [ -f "/usr/local/bin/veracrypt-unmount-all.sh" ]; then
+    sudo /usr/local/bin/veracrypt-unmount-all.sh && notify-send "VeraCrypt" "Umount all devices" 2>/dev/null || true
+  fi
+
+  hyprshutdown
+}
+
 
 # -- power-menu.sh --lock
 # Also used for the keyboard shortcut Mod+Shift+l
@@ -69,32 +90,11 @@ elif [ "$FINDER" = "/usr/bin/wofi" ]; then
     $FINDER)
 fi
 
-_do_logout() {
-	# Support to VeraCrypt Umount devices in logout
-	#
-	# 1 - Create script:
-	# sudo tee /usr/local/bin/veracrypt-unmount-all.sh > /dev/null << 'EOF'
-	# /usr/bin/veracrypt --text --dismount
-	# EOF
-	# sudo chmod +x /usr/local/bin/veracrypt-unmount-all.sh
-
-	# 2 - Create permissions script:
-	# cat << EOF > /etc/sudoers.d/veracrypt-unmount
-	# <USER> ALL=(root) NOPASSWD: /usr/local/bin/veracrypt-unmount-all.sh
-	# EOF
-
-	if [ -f "/usr/local/bin/veracrypt-unmount-all.sh" ]; then
-		sudo sh /usr/local/bin/veracrypt-unmount-all.sh
-	fi
-
-	hyprshutdown
-}
-
 # ── Despatch ------------------------------------------------------------------
 case "$CHOICE" in
 "$LOCK")     do_lock ;;
 "$SUSPEND")  systemctl suspend ;;
-"$LOGOUT")   _do_logout;; # hyprctl dispatch exit
+"$LOGOUT")   do_logout ;; # hyprctl dispatch exit
 "$REBOOT")   hyprshutdown -t 'Reiniciando...' --post-cmd 'reboot' ;; # systemctl reboot
 "$SHUTDOWN") hyprshutdown -t 'Desligando...' --post-cmd 'shutdown -P 0' ;; # systemctl poweroff
 esac
