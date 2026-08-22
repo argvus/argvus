@@ -422,6 +422,9 @@ hl.bind(mod .. " + SHIFT + S", hl.dsp.exec_cmd("argvus-storage menu"))
 hl.bind(mod .. " + comma", hl.dsp.exec_cmd("qs -c sidebar-right ipc call sidebar toggle"))
 hl.bind("mouse:274", hl.dsp.exec_cmd("qs -c sidebar-right ipc call sidebar toggle"))
 
+-- Toggle Waybar top ---------------------------------------------------------------------------------------------------
+hl.bind(mod .. " + BackSpace", hl.dsp.exec_cmd("pkill -SIGUSR1 -f 'waybar -c.*/config.jsonc'"))
+
 -- Wallpaper Picker ----------------------------------------------------------------------------------------------------
 hl.bind(mod .. " + Y", hl.dsp.exec_cmd(_sh(_config_path("hypr/scripts/wallpaper-pick.sh"))))
 

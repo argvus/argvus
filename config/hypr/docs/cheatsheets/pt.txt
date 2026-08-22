@@ -7,7 +7,7 @@ ATALHO                            DESCRIÇÃO
 
 01 - SUPER + 1..9               = Áreas de trabalho
 02 - SUPER + Shift + Space      = Ativa/Desativa Janela flutuante
-03 - SUPER + ←→↑↓               = Focar janela tileada por direção
+03 - SUPER + ←→↑↓              = Focar janela tileada por direção
 04 - SUPER + Ctrl + ←→          = Ciclar foco entre janelas (tileadas e flutuantes)
 05 - Ctrl + Alt + ←→  ou        = Circular entre áreas de trabalho
      Mouse 4 / Mouse 5
@@ -23,7 +23,7 @@ ATALHO                            DESCRIÇÃO
 12 - SUPER + e                  = Alternar split vertical/horizontal
 13 - SUPER + w                  = Agrupar/Desagrupar em abas
 14 - SUPER + Tab                = Navegar entre abas
-15 - SUPER + Shift + ←→↑↓       = Mover janela
+15 - SUPER + Shift + ←→↑↓      = Mover janela
 16 - SUPER + q                  = Fechar janela
 17 - SUPER + Shift + 1..9       = Mover janela para a área de trabalho
 18 - Print                      = Capturar área selecionada
@@ -32,34 +32,35 @@ ATALHO                            DESCRIÇÃO
 21 - SUPER + g                  = Iniciar/Pausar/Retomar gravação de tela
 22 - SUPER + Shift + g          = Parar e salvar gravação de tela
 23 - SUPER + ,                  = Abre/Fecha sidebar de notificações
-24 - SUPER + y                  = Abre seletor para trocar wallpaper
-25 - SUPER + Shift + t          = Abre o seletor de temas
-26 - SUPER + Shift + a          = Abre o seletor de cores de destaque
-27 - SUPER + Shift + w          = Configura a localização do clima
-28 - SUPER + Shift + b          = Abre o seletor de brilho
-29 - SUPER + F5                 = Altera entre tema Dark e Light do GTK
-30 - SUPER + L                  = Bloquear sistema
-31 - SUPER + Shift + m          = Desligar/Ligar monitor (não é suspender)
-32 - SUPER + Esc                = Sair do sistema
-33 - SUPER + Shift + r          = Recarregar Hyprland
+24 - SUPER + BackSpace          = Oculta/Mostra Waybar top
+25 - SUPER + y                  = Abre seletor para trocar wallpaper
+26 - SUPER + Shift + t          = Abre o seletor de temas
+27 - SUPER + Shift + a          = Abre o seletor de cores de destaque
+28 - SUPER + Shift + w          = Configura a localização do clima
+29 - SUPER + Shift + b          = Abre o seletor de brilho
+30 - SUPER + F5                 = Altera entre tema Dark e Light do GTK
+31 - SUPER + L                  = Bloquear sistema
+32 - SUPER + Shift + m          = Desligar/Ligar monitor (não é suspender)
+33 - SUPER + Esc                = Sair do sistema
+34 - SUPER + Shift + r          = Recarregar Hyprland
 
 Atalhos de software »
 ------------------------------------------------
 ATALHO                                 DESCRIÇÃO
 
-34 - SUPER + Enter              = Terminal
-35 - SUPER + Space              = Gerenciador de arquivos
-36 - SUPER + Shift + s          = Menu de dispositivos removíveis
-37 - SUPER + b                  = Navegador padrão
-38 - SUPER + d                  = Lançador de programas
-39 - SUPER + c                  = Calculadora
-40 - SUPER + Ctrl + /           = Cheatsheets do Kitty
-41 - SUPER + Shift + /          = Cheatsheets do Hyprland
-42 - SUPER + h                  = Histórico no Clipboard
-43 - SUPER + Shift + h          = Apagar histórico do Clipboard
-44 - SUPER + p                  = Seletor de cores (Color Picker)
-45 - SUPER + .                  = Emoji Picker
-46 - ALT + SHIFT                = Altera teclado entre "pt-br (abnt2)" e "us"
+35 - SUPER + Enter              = Terminal
+36 - SUPER + Space              = Gerenciador de arquivos
+37 - SUPER + Shift + s          = Menu de dispositivos removíveis
+38 - SUPER + b                  = Navegador padrão
+39 - SUPER + d                  = Lançador de programas
+40 - SUPER + c                  = Calculadora
+41 - SUPER + Ctrl + /           = Cheatsheets do Kitty
+42 - SUPER + Shift + /          = Cheatsheets do Hyprland
+43 - SUPER + h                  = Histórico no Clipboard
+44 - SUPER + Shift + h          = Apagar histórico do Clipboard
+45 - SUPER + p                  = Seletor de cores (Color Picker)
+46 - SUPER + .                  = Emoji Picker
+47 - ALT + SHIFT                = Altera teclado entre "pt-br (abnt2)" e "us"
 
 
 Diretórios »
