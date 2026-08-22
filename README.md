@@ -1,63 +1,84 @@
-# Argvus
+<!-- markdownlint-disable MD033 -->
+<!-- markdownlint-disable MD041 -->
 
-Argvus is the desktop configuration repository for the Argvus project: a complete desktop, ready to use, focused on Hyprland.
+<div align="center">
+  <img src="https://raw.githubusercontent.com/argvus/argvus-logo/refs/heads/main/svg/argvus-banner.svg" width="540">
+</div>
 
-It contains the packaged defaults for Hyprland, Waybar, Quickshell, Rofi,
-Kitty, Dunst, terminal tools and themes. The package installs those
-immutable defaults under `/usr/share/argvus`.
+<div align="center">
 
-Argvus does not need to copy dotfiles into `$HOME` before the desktop can
-start. Runtime entrypoints use this priority:
+**A complete desktop, ready to use. Focused on Hyprland.**
 
-```text
-$XDG_CONFIG_HOME/<app>  ->  $XDG_STATE_HOME/argvus/config/<app>  ->  /usr/share/argvus/<app>  ->  upstream defaults
-```
+ARGVUS bundles a rich, integrated Wayland environment: bar, launchers, system sidebar, Rust-powered removable storage and eight theme families — all packaged for Arch Linux.
 
-`argvus-setup` is optional. Use it only when you want to copy packaged defaults
-into your user config for customization, for example:
+</div>
+
+---
+
+## Features
+
+- **Hyprland** — Wayland compositor with tiling, workspaces and smooth animations
+- **Waybar** — Status bar with system, media, network and storage modules
+- **Quickshell** — QML system sidebar with weather, calendar, brightness and notifications
+- **Rofi** — Application launcher and menus with unified themes
+- **superfile** — Fast TUI file manager
+- **btop** — System monitor
+- **hyprlock** — Lock screen with synchronized theme
+- **argvus-storage** — Rust-powered removable storage module
+
+## Themes
+
+Eight theme families with a shared accent-color system that unifies GTK, terminals, rofi, Waybar and Hyprland. Change the accent color anytime with `SUPER + SHIFT + A`.
+
+| Dark          | Float               | Light            |
+|---------------|---------------------|------------------|
+| Dark Aether   | Dark Aether Float   | Light Veil       |
+| Dark Silver   | Dark Silver Float   | Light Veil Float |
+| Dark Slate    | Dark Slate Float    |                  |
+| Dark Universe | Dark Universe Float |                  |
+
+## Install
 
 ```sh
-argvus-setup --copy hypr
-argvus-setup --copy waybar
-argvus-setup --copy-all
+# Import the GPG key
+curl -fsSLo /tmp/argvus.gpg https://argvus.github.io/packages/arch/argvus.gpg
+sudo pacman-key --add /tmp/argvus.gpg
+ARGVUS_KEY="$(gpg --show-keys --with-colons /tmp/argvus.gpg | grep '^pub:' | head -n1 | cut -d: -f5)"
+sudo pacman-key --lsign-key "$ARGVUS_KEY"
+
+# Add the repository
+curl -fsSL https://argvus.github.io/packages/arch/argvus.conf \
+  | sudo tee /etc/pacman.d/argvus.conf
+echo "Include = /etc/pacman.d/argvus.conf" \
+  | sudo tee -a /etc/pacman.conf
+
+# Install
+sudo pacman -Syu argvus
 ```
 
-Once copied, files in `$XDG_CONFIG_HOME` are user-owned overrides and package
-upgrades do not overwrite them.
+## Links
 
-Hyprland reads the active theme, accent and spacing preferences from
-`$XDG_CONFIG_HOME/argvus`, matching the scripts that update those files.
-Optional Hyprland Lua overrides can be placed under
-`$XDG_CONFIG_HOME/argvus/hypr` as `monitors.lua`, `rules.lua`, `bindings.lua`
-or `user.lua`; missing files are ignored.
-Shared wallpapers and bundled fonts live in the separate `argvus-appearance`
-package and are referenced from system paths.
-The packaged Hyprland bindings launch Kitty with the resolved Argvus
-`kitty.conf`, so clean users still receive the packaged terminal theme before
-they create any user overrides. Hyprlock generates its lockscreen wallpaper
-cache under `$XDG_CACHE_HOME/argvus/hypr`. Theme and accent tools generate
-runtime application config under `$XDG_STATE_HOME/argvus/config` instead of
-copying complete application configs into native `$XDG_CONFIG_HOME/<app>`
-directories.
-Session startup infrastructure lives in the separate `argvus-session` package:
-`argvus-session`, `argvus-start`, `argvus-tty` and the Wayland session entry.
-
-Arch Linux packaging is owned by this repository through
-`packaging/arch/PKGBUILD`. Pushing a `v*` tag builds the signed package and
-publishes both the `.pkg.tar.zst` and `.sig` files to the `packages` repository
-under `public/arch/x86_64`.
-
-## Documentation
-
-- User documentation: https://argvus.github.io/docs/environment/
-- Official apps: https://argvus.github.io/docs/official-apps/
+- Organization: [@argvus](https://github.com/argvus/)
+- Official page: [argvus.github.io](https://argvus.github.io/)
+- Documentation: [argvus.github.io/docs/](https://argvus.github.io/docs/intro/)
 - Development workflow: [DEVELOPMENT.md](./DEVELOPMENT.md)
 - Contribution guide: [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 ## Related repositories
 
-- [`argvus-storage`](https://github.com/argvus/argvus-storage)
-- [`argvus-appearance`](https://github.com/argvus/argvus-appearance)
-- [`argvus-session`](https://github.com/argvus/argvus-session)
-- [`packages`](https://github.com/argvus/packages)
-- [`site-src`](https://github.com/argvus/site-src)
+| Name | Repository | Status |
+|------|------------|--------|
+| argvus-storage | [argvus/argvus-storage](https://github.com/argvus/argvus-storage) | [![Release](https://github.com/argvus/argvus-storage/actions/workflows/release.yml/badge.svg)](https://github.com/argvus/argvus-storage/actions/workflows/release.yml) |
+| argvus-calendar | [argvus/argvus-calendar](https://github.com/argvus/argvus-calendar) | [![Release](https://github.com/argvus/argvus-calendar/actions/workflows/release.yml/badge.svg)](https://github.com/argvus/argvus-calendar/actions/workflows/release.yml) |
+| argvus-greeter | [argvus/argvus-greeter](https://github.com/argvus/argvus-greeter) | [![Release](https://github.com/argvus/argvus-greeter/actions/workflows/release.yml/badge.svg)](https://github.com/argvus/argvus-greeter/actions/workflows/release.yml) |
+| argvus-appearance | [argvus/argvus-appearance](https://github.com/argvus/argvus-appearance) | [![Release](https://github.com/argvus/argvus-appearance/actions/workflows/release.yml/badge.svg)](https://github.com/argvus/argvus-appearance/actions/workflows/release.yml) |
+| argvus-waybar | [argvus/argvus-waybar](https://github.com/argvus/argvus-waybar) | [![Release](https://github.com/argvus/argvus-waybar/actions/workflows/release.yml/badge.svg)](https://github.com/argvus/argvus-waybar/actions/workflows/release.yml) |
+| argvus-session | [argvus/argvus-session](https://github.com/argvus/argvus-session) | [![Release](https://github.com/argvus/argvus-session/actions/workflows/release.yml/badge.svg)](https://github.com/argvus/argvus-session/actions/workflows/release.yml) |
+
+---
+
+<div align="center">
+
+Licensed under [GPL-3.0](./LICENSE)
+
+</div>
