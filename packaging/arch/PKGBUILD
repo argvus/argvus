@@ -27,6 +27,17 @@ depends=(
   'hyprpolkitagent'
   'hyprshot'
   'hyprshutdown'
+	'wayland'
+	'firefox'
+	'mesa'
+	'mesa-utils'
+	'qt5-quickcontrols2'
+  'qt5ct'
+  'qt6-declarative'
+  'qt6-tools'
+  'qt6ct'
+  'quickshell'
+	'virtualbox-guest-utils'
 	'adwaita-icon-theme'
   'bluez'
   'bluez-utils'
@@ -62,12 +73,6 @@ depends=(
   'otf-font-awesome'
   'pamixer'
   'playerctl'
-  'qt5-quickcontrols2'
-  'qt5ct'
-  'qt6-declarative'
-  'qt6-tools'
-  'qt6ct'
-  'quickshell'
   'rofi'
   'rofi-calc'
   'rofimoji'
@@ -96,10 +101,8 @@ depends=(
   'zsh'
 )
 optdepends=(
-  'firefox: default browser used by the shipped keybindings'
   'kooha: graphical screen recording utility'
   'nwg-look: GTK theme configuration utility'
-  'swappy: screenshot annotation fallback'
 )
 source=(
   "${pkgname}-${pkgver}.tar.gz::${url}/archive/refs/tags/v${pkgver}.tar.gz"
