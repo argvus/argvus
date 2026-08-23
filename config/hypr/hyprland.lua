@@ -1,10 +1,9 @@
 -- ===================================
 --  Hyprland 0.56+
---  File: ~/.config/hypr/hyprland.lua
---  By: William C. Canin
+--  Author: William C. Canin
 -- ===================================
 
--- Theme loader --------------------------------------------------------------------------------------------------------
+-- Theme loader ------------------------------------------------------------------------------------
 local _home = os.getenv("HOME") or ""
 local _config_home = os.getenv("ARGVUS_CONFIG_HOME")
   or os.getenv("XDG_CONFIG_HOME")
@@ -119,9 +118,43 @@ if _spaces_file then
   end
   _spaces_file:close()
 end
--- End theme loader ----------------------------------------------------------------------------------------------------
 
--- Monitor -------------------------------------------------------------------------------------------------------------
+-- Virtual machine compatibility -------------------------------------------------------------------
+local function _is_virtual_machine()
+  local pipe = io.popen("systemd-detect-virt --vm 2>/dev/null")
+  if not pipe then
+    return false
+  end
+
+  local virt = pipe:read("*l")
+  pipe:close()
+
+  return virt ~= nil and virt ~= ""
+end
+
+local function _graphics_driver()
+  local pipe = io.popen(
+    "readlink -f /sys/class/drm/card0/device/driver 2>/dev/null"
+  )
+
+  if not pipe then
+    return nil
+  end
+
+  local driver = pipe:read("*l")
+  pipe:close()
+
+  return driver and driver:match("/([^/]+)$") or nil
+end
+
+local _is_vm = _is_virtual_machine()
+local _graphics_driver_name = _graphics_driver()
+
+if _is_vm and _graphics_driver_name == "vmwgfx" then
+  hl.env("LIBGL_ALWAYS_SOFTWARE", "1")
+end
+
+-- Monitor -----------------------------------------------------------------------------------------
 hl.monitor({
   output = "", -- "" = any monitor
   mode = "preferred", -- "preferred" = any mode
@@ -129,7 +162,7 @@ hl.monitor({
   scale = 1,
 })
 
--- Environment variables -----------------------------------------------------------------------------------------------
+-- Environment variables ---------------------------------------------------------------------------
 
 -- Cursor size
 hl.env("HYPRCURSOR_SIZE", "24")
@@ -151,7 +184,7 @@ hl.env("XDG_CONFIG_DIRS", _system_config .. ":" .. (os.getenv("XDG_CONFIG_DIRS")
 -- hl.env("GTK2_RC_FILES", "/dev/null")
 -- hl.env("GTK_THEME", "Hyprland-Dark-Teal")
 
--- Variables -----------------------------------------------------------------------------------------------------------
+-- Variables ---------------------------------------------------------------------------------------
 local mod = "SUPER"
 local kitty_config = string.format("%q", _config_path("kitty/kitty.conf"))
 local terminal = "kitty --config " .. kitty_config
@@ -159,7 +192,7 @@ local terminal = "kitty --config " .. kitty_config
 local file_manager = terminal .. " -e spf"
 local rofi_config = string.format("%q", _config_path("rofi/config.rasi"))
 
--- Global configuration ------------------------------------------------------------------------------------------------
+-- Global configuration ----------------------------------------------------------------------------
 hl.config({
   general = {
     gaps_in = theme.gaps_in,
@@ -285,10 +318,10 @@ hl.config({
   },
 })
 
--- Gestures ----------------------------------------------------------------------------------------------------------
+-- Gestures ----------------------------------------------------------------------------------------
 hl.gesture({ fingers = 3, direction = "horizontal", action = "workspace" })
 
--- XWayland ------------------------------------------------------------------------------------------------------------
+-- XWayland ----------------------------------------------------------------------------------------
 -- -- Prevent invisible XWayland ghost windows from stealing focus
 -- -- Use with: xwayland = { enabled = true }
 hl.window_rule({
@@ -296,7 +329,7 @@ hl.window_rule({
   no_focus = true,
 })
 
--- Animations ----------------------------------------------------------------------------------------------------------
+-- Animations --------------------------------------------------------------------------------------
 hl.curve("myBezier", { type = "bezier", points = { { 0.05, 0.9 }, { 0.1, 1.05 } } })
 hl.curve("smoothOut", { type = "bezier", points = { { 0.36, 0 }, { 0.66, -0.56 } } })
 hl.curve("smoothIn", { type = "bezier", points = { { 0.25, 1 }, { 0.5, 1 } } })
@@ -339,13 +372,13 @@ hl.animation({
   style = "slide",
 })
 
--- Blur ----------------------------------------------------------------------------------------------------------------
+-- Blur --------------------------------------------------------------------------------------------
 hl.layer_rule({ match = { namespace = "waybar" }, blur = true })
 hl.layer_rule({ match = { namespace = "quickshell" }, blur = true })
 hl.layer_rule({ match = { namespace = "rofi" }, blur = true })
 hl.layer_rule({ match = { namespace = "dunst" }, blur = true })
 
--- Window Rules  -------------------------------------------------------------------------------------------------------
+-- Window Rules  -----------------------------------------------------------------------------------
 hl.window_rule({
   match = { class = "org.gnome.Nautilus" },
   float = false,
@@ -392,68 +425,68 @@ hl.window_rule({
 })
 hl.window_rule({ match = { class = "mpv" }, float = true })
 
--- Transparency at the terminals ---------------------------------------------------------------------------------------
+-- Transparency at the terminals -------------------------------------------------------------------
 hl.window_rule({ match = { class = "kitty" }, opacity = theme.term_opacity })
 hl.window_rule({ match = { class = "foot" }, opacity = theme.term_opacity })
 hl.window_rule({ match = { class = "Alacritty" }, opacity = theme.term_opacity })
 
 -- ================ Keybindings ================
 
--- Moving between windows (Using: snappy-switcher) ---------------------------------------------------------------------
+-- Moving between windows (Using: snappy-switcher) -------------------------------------------------
 hl.bind("ALT + Tab", hl.dsp.exec_cmd("snappy-switcher next --mod alt"))
 hl.bind("ALT + SHIFT + Tab", hl.dsp.exec_cmd("snappy-switcher prev --mod alt"))
 
 -- All cheatsheets -----------------------------------------------------------------------------------------------------
 hl.bind(mod .. " + SHIFT + slash", hl.dsp.exec_cmd(_sh(_config_path("hypr/scripts/cheatsheets.sh"))))
 
--- Cheatsheets Kitty ---------------------------------------------------------------------------------------------------
+-- Cheatsheets Kitty -------------------------------------------------------------------------------
 hl.bind(mod .. " + CTRL + slash", hl.dsp.exec_cmd(_sh(_config_path("kitty/scripts/cheatsheets.sh"))))
 
--- Open Terminal -------------------------------------------------------------------------------------------------------
+-- Open Terminal -----------------------------------------------------------------------------------
 hl.bind(mod .. " + Return", hl.dsp.exec_cmd(terminal))
 
--- File Manager --------------------------------------------------------------------------------------------------------
+-- File Manager ------------------------------------------------------------------------------------
 hl.bind(mod .. " + Space", hl.dsp.exec_cmd(file_manager))
 
--- Removable storage ---------------------------------------------------------------------------------------------------
+-- Removable storage -------------------------------------------------------------------------------
 hl.bind(mod .. " + SHIFT + S", hl.dsp.exec_cmd("argvus-storage menu"))
 
--- Sidebar Settings ----------------------------------------------------------------------------------------------------
+-- Sidebar Settings --------------------------------------------------------------------------------
 hl.bind(mod .. " + comma", hl.dsp.exec_cmd("qs -c sidebar-right ipc call sidebar toggle"))
 hl.bind("mouse:274", hl.dsp.exec_cmd("qs -c sidebar-right ipc call sidebar toggle"))
 
--- Toggle Waybar top ---------------------------------------------------------------------------------------------------
+-- Toggle Waybar top -------------------------------------------------------------------------------
 hl.bind(mod .. " + BackSpace", hl.dsp.exec_cmd("pkill -SIGUSR1 -f 'waybar -c.*/config.jsonc'"))
 
--- Wallpaper Picker ----------------------------------------------------------------------------------------------------
+-- Wallpaper Picker --------------------------------------------------------------------------------
 hl.bind(mod .. " + Y", hl.dsp.exec_cmd(_sh(_config_path("hypr/scripts/wallpaper-pick.sh"))))
 
--- Theme switcher ------------------------------------------------------------------------------------------------------
+-- Theme switcher ----------------------------------------------------------------------------------
 hl.bind(mod .. " + SHIFT + T", hl.dsp.exec_cmd(_sh(_config_path("argvus/sh/theme-switch.sh"))))
 
--- Accent color --------------------------------------------------------------------------------------------------------
+-- Accent color ------------------------------------------------------------------------------------
 hl.bind(mod .. " + SHIFT + A", hl.dsp.exec_cmd(_sh(_config_path("argvus/sh/accent-switch.sh"))))
 
--- Brightness -----------------------------------------------------------------------------------------------------------
+-- Brightness --------------------------------------------------------------------------------------
 hl.bind(mod .. " + SHIFT + B", hl.dsp.exec_cmd(_sh(_config_path("argvus/sh/brightness-switch.sh"))))
 
--- Weather location ----------------------------------------------------------------------------------------------------
+-- Weather location --------------------------------------------------------------------------------
 hl.bind(mod .. " + SHIFT + W", hl.dsp.exec_cmd(_sh(_config_path("argvus/sh/weather-location.sh"))))
 
--- GTK Theme Dark/Light ------------------------------------------------------------------------------------------------
+-- GTK Theme Dark/Light ----------------------------------------------------------------------------
 hl.bind(mod .. " + F5", hl.dsp.exec_cmd(_sh(_config_path("argvus/sh/toggle-mode.sh"))))
 
--- Finder --------------------------------------------------------------------------------------------------------------
+-- Finder ------------------------------------------------------------------------------------------
 hl.bind(mod .. " + D", hl.dsp.exec_cmd('rofi -config ' .. rofi_config .. ' -show drun -display-drun "drun"'))
 -- hl.bind(mod .. " + D", hl.dsp.exec_cmd("wofi"))
 
--- Maximize Window -----------------------------------------------------------------------------------------------------
+-- Maximize Window ---------------------------------------------------------------------------------
 hl.bind(mod .. " + S", hl.dsp.window.fullscreen({ mode = "maximized", action = "toggle" }))
 
--- Closed Window -------------------------------------------------------------------------------------------------------
+-- Closed Window -----------------------------------------------------------------------------------
 hl.bind(mod .. " + Q", hl.dsp.window.close())
 
--- Enable/Disable Floating Window --------------------------------------------------------------------------------------
+-- Enable/Disable Floating Window ------------------------------------------------------------------
 hl.bind(mod .. " + SHIFT + space", function()
   hl.dispatch(hl.dsp.window.float({ action = "toggle" }))
   hl.exec_scheduled_prop_refresh_immediately()
@@ -470,13 +503,13 @@ hl.bind(mod .. " + SHIFT + space", function()
   end
 end)
 
--- Window fullscreen ---------------------------------------------------------------------------------------------------
+-- Window fullscreen -------------------------------------------------------------------------------
 hl.bind(mod .. " + F", hl.dsp.window.fullscreen())
 
--- Split vertical/horizontal -------------------------------------------------------------------------------------------
+-- Split vertical/horizontal -----------------------------------------------------------------------
 hl.bind(mod .. " + E", hl.dsp.layout("togglesplit"))
 
--- Tabbed windows ------------------------------------------------------------------------------------------------------
+-- Tabbed windows ----------------------------------------------------------------------------------
 -- Groups all windows in the current workspace into tabs.
 hl.bind(mod .. " + W", function()
   local active = hl.get_active_window()
@@ -509,16 +542,16 @@ hl.bind(mod .. " + W", function()
   }))
 end)
 
--- Navigate between tabs -----------------------------------------------------------------------------------------------
+-- Navigate between tabs ---------------------------------------------------------------------------
 hl.bind(mod .. " + Tab", hl.dsp.group.next())
 
--- Navigate between windows --------------------------------------------------------------------------------------------
+-- Navigate between windows ------------------------------------------------------------------------
 hl.bind(mod .. " + left", hl.dsp.focus({ direction = "left" }))
 hl.bind(mod .. " + right", hl.dsp.focus({ direction = "right" }))
 hl.bind(mod .. " + up", hl.dsp.focus({ direction = "up" }))
 hl.bind(mod .. " + down", hl.dsp.focus({ direction = "down" }))
 
--- Cycle focus between all windows in current workspace (including floating) -------------------------------------------
+-- Cycle focus between all windows in current workspace (including floating) -----------------------
 hl.bind(mod .. " + CTRL + right", function()
   local wins = hl.get_windows()
   local active = hl.get_active_window()
@@ -566,7 +599,7 @@ hl.bind(mod .. " + CTRL + left", function()
   end
 end)
 
--- Cycle workspaces in loop (like GNOME) -------------------------------------------------------------------------------
+-- Cycle workspaces in loop (like GNOME) -----------------------------------------------------------
 local function get_sorted_workspaces()
   local workspaces = hl.get_workspaces()
   local ws_ids = {}
@@ -618,19 +651,19 @@ hl.bind("CTRL + ALT + left", workspace_prev)
 hl.bind("mouse:276", workspace_next)
 hl.bind("mouse:275", workspace_prev)
 
--- Move window float ---------------------------------------------------------------------------------------------------
+-- Move window float -------------------------------------------------------------------------------
 hl.bind(mod .. " + SHIFT + left", hl.dsp.window.move({ direction = "left" }))
 hl.bind(mod .. " + SHIFT + right", hl.dsp.window.move({ direction = "right" }))
 hl.bind(mod .. " + SHIFT + up", hl.dsp.window.move({ direction = "up" }))
 hl.bind(mod .. " + SHIFT + down", hl.dsp.window.move({ direction = "down" }))
 
--- Workspaces 1–9 ------------------------------------------------------------------------------------------------------
+-- Workspaces 1–9 ----------------------------------------------------------------------------------
 for i = 1, 9 do
   hl.bind(mod .. " + " .. i, hl.dsp.focus({ workspace = i }))
   hl.bind(mod .. " + SHIFT + " .. i, hl.dsp.window.move({ workspace = i }))
 end
 
--- Volume --------------------------------------------------------------------------------------------------------------
+-- Volume ------------------------------------------------------------------------------------------
 hl.bind(
   "XF86AudioRaiseVolume",
   hl.dsp.exec_cmd("wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+"),
@@ -643,37 +676,37 @@ hl.bind(
 )
 hl.bind("XF86AudioMute", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"), { locked = true })
 
--- Brightness ----------------------------------------------------------------------------------------------------------
+-- Brightness --------------------------------------------------------------------------------------
 hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("brightnessctl set +5%"), { locked = true, repeating = true })
 hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl set 5%-"), { locked = true, repeating = true })
 
--- Multimidia ----------------------------------------------------------------------------------------------------------
+-- Multimidia --------------------------------------------------------------------------------------
 hl.bind("XF86AudioPlay", hl.dsp.exec_cmd("playerctl play-pause"))
 hl.bind("XF86AudioPause", hl.dsp.exec_cmd("playerctl pause"))
 hl.bind("XF86AudioNext", hl.dsp.exec_cmd("playerctl next"))
 hl.bind("XF86AudioPrev", hl.dsp.exec_cmd("playerctl previous"))
 hl.bind("XF86AudioStop", hl.dsp.exec_cmd("playerctl stop"))
 
--- Turn the monitor off/on ---------------------------------------------------------------------------------------------
+-- Turn the monitor off/on -------------------------------------------------------------------------
 hl.bind(mod .. " + SHIFT + M", hl.dsp.dpms({ action = "toggle" }))
 
--- Default browser -----------------------------------------------------------------------------------------------------
+-- Default browser ---------------------------------------------------------------------------------
 hl.bind(mod .. " + B", hl.dsp.exec_cmd("xdg-open https://"))
 
--- Screen recording ----------------------------------------------------------------------------------------------------
+-- Screen recording --------------------------------------------------------------------------------
 hl.bind(mod .. " + G", hl.dsp.exec_cmd(_sh(_config_path("hypr/scripts/screenshot.sh")) .. " --video-full"))
 hl.bind(mod .. " + SHIFT + G", hl.dsp.exec_cmd(_sh(_config_path("hypr/scripts/screenshot.sh")) .. " --video-full-stop"))
 
--- Clipboard history ---------------------------------------------------------------------------------------------------
+-- Clipboard history -------------------------------------------------------------------------------
 hl.bind(mod .. " + H", hl.dsp.exec_cmd("cliphist list | rofi -config " .. rofi_config .. " -dmenu -i -p Clipboard | cliphist decode | wl-copy"))
 hl.bind(mod .. " + SHIFT + H", hl.dsp.exec_cmd('cliphist wipe && notify-send "Clipboard" "History erased!"'))
 
--- Screenshot / Print --------------------------------------------------------------------------------------------------
+-- Screenshot / Print ------------------------------------------------------------------------------
 hl.bind("Print", hl.dsp.exec_cmd(_sh(_config_path("hypr/scripts/screenshot.sh")) .. " --image-region"))
 hl.bind(mod .. " + Print", hl.dsp.exec_cmd(_sh(_config_path("hypr/scripts/screenshot.sh")) .. " --image-window"))
 hl.bind(mod .. " + SHIFT + Print", hl.dsp.exec_cmd(_sh(_config_path("hypr/scripts/screenshot.sh")) .. " --image-full"))
 
--- Mode Resize Window (keyboard) ---------------------------------------------------------------------------------------
+-- Mode Resize Window (keyboard) -------------------------------------------------------------------
 local _in_resize = false
 
 hl.bind(mod .. " + R", function()
@@ -721,35 +754,35 @@ hl.define_submap("resize", function()
   end)
 end)
 
--- Mode Resize Window (witch mouse) -----------------------------------------------------------------------------------------
+-- Mode Resize Window (witch mouse) ----------------------------------------------------------------
 hl.bind(mod .. " + mouse:272", hl.dsp.window.drag(), { mouse = true })
 hl.bind(mod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 
--- Emoji picker --------------------------------------------------------------------------------------------------------
+-- Emoji picker ------------------------------------------------------------------------------------
 hl.bind(mod .. " + period", hl.dsp.exec_cmd("rofimoji --action clipboard --clipboarder wl-copy --typer wtype"))
 
--- Color Picker --------------------------------------------------------------------------------------------------------
+-- Color Picker ------------------------------------------------------------------------------------
 hl.bind(mod .. " + P", hl.dsp.exec_cmd("hyprpicker -a"))
 
--- Calculator ----------------------------------------------------------------------------------------------------------
+-- Calculator --------------------------------------------------------------------------------------
 hl.bind(mod .. " + C", hl.dsp.exec_cmd("rofi -config " .. rofi_config .. " -show calc -modi calc -no-show-match -no-sort"))
 
--- Exit Hyprland -------------------------------------------------------------------------------------------------------
+-- Exit Hyprland -----------------------------------------------------------------------------------
 hl.bind(mod .. " + escape", hl.dsp.exec_cmd(_sh(_config_path("hypr/scripts/power-menu.sh"))))
 
--- Lock session --------------------------------------------------------------------------------------------------------
+-- Lock session ------------------------------------------------------------------------------------
 hl.bind(mod .. " + L", hl.dsp.exec_cmd(_sh(_config_path("hypr/scripts/power-menu.sh")) .. " --lock"))
 
--- Reload Hyprland -----------------------------------------------------------------------------------------------------
+-- Reload Hyprland ---------------------------------------------------------------------------------
 hl.bind(mod .. " + SHIFT + R", hl.dsp.exec_cmd(_sh(_config_path("hypr/scripts/init.sh")) .. " --reload"))
 
--- User overrides ------------------------------------------------------------------------------------------------------
+-- User overrides ----------------------------------------------------------------------------------
 _load_user_override("monitors.lua")
 _load_user_override("rules.lua")
 _load_user_override("bindings.lua")
 _load_user_override("user.lua")
 
--- Autostart -----------------------------------------------------------------------------------------------------------
+-- Autostart ---------------------------------------------------------------------------------------
 hl.on("hyprland.start", function()
   hl.exec_cmd(_sh(_config_path("hypr/scripts/init.sh")) .. " --started")
 end)
