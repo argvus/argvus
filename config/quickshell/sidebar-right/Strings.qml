@@ -56,6 +56,32 @@ QtObject {
     readonly property string sysinfoDisabled:   isPortuguese ? "Painel esquerdo inativo" : "Left panel inactive"
     readonly property string idleLockTitle:     isPortuguese ? "BLOQUEIO" : "LOCK TIMER"
 
+    // ── UserCard ──
+    readonly property string userTabAvatar:         isPortuguese ? "Avatar" : "Avatar"
+    readonly property string userTabName:           isPortuguese ? "Nome" : "Name"
+    readonly property string userTabPassword:       isPortuguese ? "Senha" : "Password"
+    readonly property string userAvatarActive:      isPortuguese ? "Avatar definido" : "Avatar set"
+    readonly property string userAvatarNone:        isPortuguese ? "Sem avatar" : "No avatar"
+    readonly property string userAvatarChange:      isPortuguese ? "Alterar" : "Change"
+    readonly property string userAvatarRemove:      isPortuguese ? "Remover" : "Remove"
+    readonly property string userAvatarOk:          isPortuguese ? "Avatar atualizado" : "Avatar updated"
+    readonly property string userAvatarRemoved:     isPortuguese ? "Avatar removido" : "Avatar removed"
+    readonly property string userAvatarError:       isPortuguese ? "Erro ao alterar avatar" : "Failed to change avatar"
+    readonly property string user_name_label:       isPortuguese ? "Nome de exibicao:" : "Display name:"
+    readonly property string user_name_hint:        isPortuguese
+        ? "Nome exibido no login e no sistema."
+        : "Name shown on login and across the system."
+    readonly property string user_name_save:        isPortuguese ? "Salvar" : "Save"
+    readonly property string user_name_ok:          isPortuguese ? "Nome atualizado" : "Name updated"
+    readonly property string user_name_error:       isPortuguese ? "Erro ao alterar nome" : "Failed to change name"
+    readonly property string userPasswordDesc:      isPortuguese
+        ? "A senha e gerenciada pelo sistema. Um terminal sera aberto."
+        : "Password is managed by the system. A terminal will open."
+    readonly property string userPasswordChange:    isPortuguese ? "Alterar senha" : "Change password"
+    readonly property string userPasswordHint:      isPortuguese
+        ? "Use o comando 'passwd' no terminal para alterar."
+        : "Use the 'passwd' command in the terminal to change."
+
     // ── PowerCard ──
     readonly property var _ptProfiles: [
         { id: "power-saver",  label: "Economia",    icon: "\uf06c", desc: "Economia de energia" },
