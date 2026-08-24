@@ -75,6 +75,14 @@ sudo pacman -Syu argvus
 | argvus-waybar | [argvus/argvus-waybar](https://github.com/argvus/argvus-waybar) | [![Release](https://github.com/argvus/argvus-waybar/actions/workflows/release.yml/badge.svg)](https://github.com/argvus/argvus-waybar/actions/workflows/release.yml) |
 | argvus-session | [argvus/argvus-session](https://github.com/argvus/argvus-session) | [![Release](https://github.com/argvus/argvus-session/actions/workflows/release.yml/badge.svg)](https://github.com/argvus/argvus-session/actions/workflows/release.yml) |
 
+## Donation
+
+If you liked this project and enjoyed it, buy me a coffee; it motivates me to continue providing support.
+
+<div class="donation">
+  <a href="https://williamcanin.github.io/donate/" target="_blank">Donate</a>
+</div>
+
 ---
 
 <div align="center">
