@@ -75,12 +75,19 @@ QtObject {
     readonly property string user_name_ok:          isPortuguese ? "Nome atualizado" : "Name updated"
     readonly property string user_name_error:       isPortuguese ? "Erro ao alterar nome" : "Failed to change name"
     readonly property string userPasswordDesc:      isPortuguese
-        ? "A senha e gerenciada pelo sistema. Um terminal sera aberto."
-        : "Password is managed by the system. A terminal will open."
+        ? "Altere sua senha do sistema."
+        : "Change your system password."
+    readonly property string userPasswordNew:       isPortuguese ? "Nova senha:" : "New password:"
+    readonly property string userPasswordConfirm:   isPortuguese ? "Confirmar senha:" : "Confirm password:"
+    readonly property string userPasswordMismatch:  isPortuguese
+        ? "As senhas nao coincidem."
+        : "Passwords do not match."
     readonly property string userPasswordChange:    isPortuguese ? "Alterar senha" : "Change password"
+    readonly property string userPasswordOk:        isPortuguese ? "Senha alterada" : "Password changed"
+    readonly property string userPasswordError:     isPortuguese ? "Erro ao alterar senha" : "Failed to change password"
     readonly property string userPasswordHint:      isPortuguese
-        ? "Use o comando 'passwd' no terminal para alterar."
-        : "Use the 'passwd' command in the terminal to change."
+        ? "Será solicitada a senha do polkit."
+        : "Polkit password will be requested."
 
     // ── PowerCard ──
     readonly property var _ptProfiles: [

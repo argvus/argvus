@@ -99,11 +99,11 @@ BaseCard {
         }
     }
 
-    // ── Set display name ──
+    // ── Set display name (polkit) ──
     Process {
         id: setNameProc
         property string newName: ""
-        command: ["argvus-accounts", "self", "name", newName]
+        command: ["pkexec", "argvus-accounts", "name", userName, newName]
         onExited: function(code) {
             if (code === 0) {
                 editStatus = Strings.user_name_ok
@@ -113,6 +113,34 @@ BaseCard {
                 editStatus = Strings.user_name_error
                 editStatusColor = Theme.danger
             }
+            statusTimer.restart()
+        }
+    }
+
+    // ── Change password (polkit) ──
+    Process {
+        id: setPasswdProc
+        property string user: ""
+        property string pass: ""
+        command: ["bash", "-c", ""]
+        onRunningChanged: {
+            if (running) {
+                var escaped = pass.replace(/'/g, "'\\''")
+                command = ["bash", "-c",
+                    "printf '%s:%s\\n' '" + user + "' '" + escaped + "' | pkexec chpasswd"]
+            }
+        }
+        onExited: function(code) {
+            if (code === 0) {
+                editStatus = Strings.userPasswordOk
+                editStatusColor = Theme.ok
+                newPassField.text = ""
+                confirmPassField.text = ""
+            } else {
+                editStatus = Strings.userPasswordError
+                editStatusColor = Theme.danger
+            }
+            pass = ""
             statusTimer.restart()
         }
     }
@@ -130,12 +158,6 @@ BaseCard {
                 }
             }
         }
-    }
-
-    // ── Open passwd in terminal ──
-    Process {
-        id: passwdProc
-        command: ["kitty", "-e", "passwd"]
     }
 
     Timer {
@@ -174,7 +196,7 @@ BaseCard {
                 anchors.centerIn: parent
                 text: userIcon
                 font.family: "Font Awesome 6 Free"
-                font.pixelSize: 18
+                font.pixelSize: 22
                 font.weight: Font.Black
                 color: Theme.accent
                 visible: avatarPath.length === 0 || parent.children[0].status !== Image.Ready
@@ -188,7 +210,7 @@ BaseCard {
             Text {
                 text: fullName && fullName !== userName ? fullName : userName
                 color: Theme.fgText
-                font.pixelSize: 13
+                font.pixelSize: 15
                 font.weight: Font.Bold
                 font.family: "monospace"
                 elide: Text.ElideRight
@@ -197,7 +219,7 @@ BaseCard {
             Text {
                 text: userName + "@" + hostName
                 color: Theme.fgDim
-                font.pixelSize: 10
+                font.pixelSize: 12
                 font.family: "monospace"
                 elide: Text.ElideRight
             }
@@ -216,7 +238,7 @@ BaseCard {
                 anchors.centerIn: parent
                 text: editing ? "\uf00d" : "\uf303"
                 font.family: "Font Awesome 6 Free"
-                font.pixelSize: 12
+                font.pixelSize: 14
                 font.weight: Font.Black
                 color: editing ? Theme.accent : Theme.fgSubtle
             }
@@ -268,14 +290,14 @@ BaseCard {
                         Text {
                             text: tabIcons[index]
                             font.family: "Font Awesome 6 Free"
-                            font.pixelSize: 10
+                            font.pixelSize: 12
                             font.weight: Font.Black
                             color: activeTab === index ? Theme.accent : Theme.fgSubtle
                         }
 
                         Text {
                             text: tabLabels[index]
-                            font.pixelSize: 9
+                            font.pixelSize: 11
                             font.family: "monospace"
                             font.weight: Font.Bold
                             color: activeTab === index ? Theme.accent : Theme.fgSubtle
@@ -330,7 +352,7 @@ BaseCard {
                     anchors.centerIn: parent
                     text: "\uf007"
                     font.family: "Font Awesome 6 Free"
-                    font.pixelSize: 28
+                    font.pixelSize: 32
                     font.weight: Font.Black
                     color: Theme.accent
                     visible: avatarPath.length === 0 || parent.children[0].status !== Image.Ready
@@ -341,7 +363,7 @@ BaseCard {
                 Layout.fillWidth: true
                 text: avatarPath.length > 0 ? Strings.userAvatarActive : Strings.userAvatarNone
                 color: Theme.fgDim
-                font.pixelSize: 9
+                font.pixelSize: 11
                 font.family: "monospace"
                 horizontalAlignment: Text.AlignHCenter
             }
@@ -378,7 +400,7 @@ BaseCard {
             Text {
                 text: Strings.user_name_label
                 color: Theme.fgDim
-                font.pixelSize: 9
+                font.pixelSize: 11
                 font.family: "monospace"
             }
 
@@ -395,7 +417,7 @@ BaseCard {
                     anchors.fill: parent
                     anchors.margins: 8
                     color: Theme.fgText
-                    font.pixelSize: 11
+                    font.pixelSize: 13
                     font.family: "monospace"
                     clip: true
                     verticalAlignment: Text.AlignVCenter
@@ -409,7 +431,7 @@ BaseCard {
             Text {
                 text: Strings.user_name_hint
                 color: Theme.fgFaint
-                font.pixelSize: 8
+                font.pixelSize: 10
                 font.family: "monospace"
                 wrapMode: Text.WordWrap
                 Layout.fillWidth: true
@@ -438,23 +460,100 @@ BaseCard {
             Text {
                 text: Strings.userPasswordDesc
                 color: Theme.fgDim
-                font.pixelSize: 9
+                font.pixelSize: 11
                 font.family: "monospace"
                 wrapMode: Text.WordWrap
                 Layout.fillWidth: true
             }
 
+            // New password field
+            Text {
+                text: Strings.userPasswordNew
+                color: Theme.fgDim
+                font.pixelSize: 11
+                font.family: "monospace"
+            }
+
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.preferredHeight: 32
+                radius: Theme.radiusSmall
+                color: Theme.bgPanel
+                border.color: newPassField.activeFocus ? Theme.accent : Theme.borderSubtle
+                border.width: 1
+
+                TextInput {
+                    id: newPassField
+                    anchors.fill: parent
+                    anchors.margins: 8
+                    color: Theme.fgText
+                    font.pixelSize: 13
+                    font.family: "monospace"
+                    clip: true
+                    verticalAlignment: Text.AlignVCenter
+                    echoMode: TextInput.Password
+                    onAccepted: confirmPassField.forceActiveFocus()
+                }
+            }
+
+            // Confirm password field
+            Text {
+                text: Strings.userPasswordConfirm
+                color: Theme.fgDim
+                font.pixelSize: 11
+                font.family: "monospace"
+            }
+
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.preferredHeight: 32
+                radius: Theme.radiusSmall
+                color: Theme.bgPanel
+                border.color: confirmPassField.activeFocus ? Theme.accent : Theme.borderSubtle
+                border.width: 1
+
+                TextInput {
+                    id: confirmPassField
+                    anchors.fill: parent
+                    anchors.margins: 8
+                    color: Theme.fgText
+                    font.pixelSize: 13
+                    font.family: "monospace"
+                    clip: true
+                    verticalAlignment: Text.AlignVCenter
+                    echoMode: TextInput.Password
+                    onAccepted: changePassBtn.clicked()
+                }
+            }
+
+            // Mismatch warning
+            Text {
+                visible: confirmPassField.text.length > 0 && newPassField.text !== confirmPassField.text
+                text: Strings.userPasswordMismatch
+                color: Theme.danger
+                font.pixelSize: 10
+                font.family: "monospace"
+                Layout.fillWidth: true
+            }
+
             GlassButton {
+                id: changePassBtn
                 Layout.fillWidth: true
                 iconText: "\uf084"
                 label: Strings.userPasswordChange
-                onClicked: passwdProc.running = true
+                accentColor: Theme.ok
+                enabled: newPassField.text.length > 0 && newPassField.text === confirmPassField.text
+                onClicked: {
+                    setPasswdProc.user = userName
+                    setPasswdProc.pass = newPassField.text
+                    setPasswdProc.running = true
+                }
             }
 
             Text {
                 text: Strings.userPasswordHint
                 color: Theme.fgFaint
-                font.pixelSize: 8
+                font.pixelSize: 10
                 font.family: "monospace"
                 wrapMode: Text.WordWrap
                 Layout.fillWidth: true
@@ -467,7 +566,7 @@ BaseCard {
             Layout.fillWidth: true
             text: editStatus
             color: editStatusColor
-            font.pixelSize: 9
+            font.pixelSize: 11
             font.family: "monospace"
             horizontalAlignment: Text.AlignHCenter
         }
