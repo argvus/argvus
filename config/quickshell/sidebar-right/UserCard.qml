@@ -18,6 +18,15 @@ BaseCard {
     property string userIcon: "\uf007"
     property string avatarPath: ""
 
+    // Caminho absoluto de `argvus-accounts`, resolvido via shell de login.
+    // Necessário porque processos iniciados pelo Hyprland (exec-once →
+    // Quickshell) NÃO herdam o $PATH do seu shell interativo (.bashrc/.profile) —
+    // só o ambiente mínimo exportado na sessão. Por isso o comando roda liso
+    // no terminal mas falha silenciosamente quando disparado pela sidebar.
+    // Resolvendo com "bash -lc" uma única vez, pegamos o mesmo PATH que o
+    // terminal do usuário usa (incluindo ~/.cargo/bin, ~/.local/bin, etc.).
+    property string accountsBin: "argvus-accounts"
+
     // ── Edit fields ──
     property string editNameValue: ""
     property string editStatus: ""
@@ -27,7 +36,27 @@ BaseCard {
     readonly property var tabIcons: ["\uf03e", "\uf406", "\uf084"]
     readonly property var tabLabels: [Strings.userTabAvatar, Strings.userTabName, Strings.userTabPassword]
 
-    Component.onCompleted: userProc.running = true
+    Component.onCompleted: {
+        userProc.running = true
+        resolveBinProc.running = true
+    }
+
+    // ── Resolve o caminho absoluto de argvus-accounts via shell de login ──
+    Process {
+        id: resolveBinProc
+        command: ["bash", "-lc", "command -v argvus-accounts"]
+        stdout: SplitParser {
+            onRead: data => {
+                var p = data.trim()
+                if (p.length > 0) accountsBin = p
+            }
+        }
+        onExited: function(code) {
+            if (code !== 0)
+                console.warn("[UserCard] argvus-accounts não encontrado no PATH (nem via shell de login). " +
+                    "Verifique se está instalado e no PATH, ex.: /usr/bin ou ~/.cargo/bin.")
+        }
+    }
 
     Timer {
         interval: 3000; running: true; repeat: true
@@ -68,7 +97,7 @@ BaseCard {
     // ── Set avatar via argvus-accounts ──
     Process {
         id: setAvatarProc
-        command: ["argvus-accounts", "self", "avatar", ""]
+        command: [accountsBin, "self", "avatar", ""]
         onExited: function(code) {
             if (code === 0) {
                 editStatus = Strings.userAvatarOk
@@ -85,7 +114,7 @@ BaseCard {
     // ── Remove avatar ──
     Process {
         id: removeAvatarProc
-        command: ["argvus-accounts", "self", "avatar", "--remove"]
+        command: [accountsBin, "self", "avatar", "--remove"]
         onExited: function(code) {
             if (code === 0) {
                 editStatus = Strings.userAvatarRemoved
@@ -119,6 +148,8 @@ BaseCard {
                 // recusado, etc.) em vez de um erro genérico, já que
                 // várias causas diferentes levam a esse mesmo code != 0.
                 var reason = errOutput.trim()
+                if (reason.length === 0 && accountsBin === "argvus-accounts")
+                    reason = "argvus-accounts não encontrado no PATH da sidebar (veja o console)"
                 console.warn("[UserCard] argvus-accounts name falhou (code " + code + "): " + reason)
                 editStatus = reason.length > 0
                     ? Strings.user_name_error + ": " + reason
@@ -144,7 +175,7 @@ BaseCard {
             if (running) {
                 errOutput = ""
                 // argv puro, sem shell: argvus-accounts passwd OLD NEW CONFIRM
-                command = ["argvus-accounts", "passwd", oldPass, newPass, confirmPass]
+                command = [accountsBin, "passwd", oldPass, newPass, confirmPass]
             }
         }
         onExited: function(code) {
@@ -156,6 +187,8 @@ BaseCard {
                 confirmPassField.text = ""
             } else {
                 var reason = errOutput.trim()
+                if (reason.length === 0 && accountsBin === "argvus-accounts")
+                    reason = "argvus-accounts não encontrado no PATH da sidebar (veja o console)"
                 console.warn("[UserCard] argvus-accounts passwd falhou (code " + code + "): " + reason)
                 editStatus = reason.length > 0
                     ? Strings.userPasswordError + ": " + reason
@@ -177,7 +210,7 @@ BaseCard {
             onRead: data => {
                 var path = data.trim()
                 if (path.length > 0) {
-                    setAvatarProc.command = ["argvus-accounts", "self", "avatar", path]
+                    setAvatarProc.command = [accountsBin, "self", "avatar", path]
                     setAvatarProc.running = true
                 }
             }
@@ -473,7 +506,7 @@ BaseCard {
                     // Chama o binário diretamente (sem shell, sem pkexec):
                     // argvus-accounts já resolve o polkit internamente, e
                     // como argv puro não há necessidade de escapar aspas.
-                    setNameProc.command = ["argvus-accounts", "name", userName, editNameValue]
+                    setNameProc.command = [accountsBin, "name", userName, editNameValue]
                     // Solta o foco do campo de texto antes de disparar o
                     // processo, para o diálogo de autenticação do polkit
                     // (se houver) conseguir assumir o foco de teclado.
