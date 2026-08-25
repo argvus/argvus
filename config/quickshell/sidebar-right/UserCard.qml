@@ -103,7 +103,7 @@ BaseCard {
     Process {
         id: setNameProc
         property string newName: ""
-        command: ["pkexec", "argvus-accounts", "name", "", ""]
+        command: ["bash", "-c", "true"]
         onExited: function(code) {
             if (code === 0) {
                 editStatus = Strings.user_name_ok
@@ -446,7 +446,9 @@ BaseCard {
                 enabled: editNameValue.length > 0 && editNameValue !== fullName
                 onClicked: {
                     setNameProc.newName = editNameValue
-                    setNameProc.command = ["pkexec", "argvus-accounts", "name", userName, editNameValue]
+                    var escaped = editNameValue.replace(/'/g, "'\\''")
+                    setNameProc.command = ["bash", "-c",
+                        "pkexec argvus-accounts name '" + userName + "' '" + escaped + "'"]
                     setNameProc.running = true
                 }
             }
