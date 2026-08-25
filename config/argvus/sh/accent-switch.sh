@@ -216,7 +216,8 @@ apply_application_colors() {
   [ -f "$_hyprlock" ] && sed -i "s|^[[:space:]]*outer_color = .*|  outer_color = rgb(${HEX})|" "$_hyprlock"
   [ -f "$_hyprtoolkit" ] && sed -i \
     -e "s|^bright_text = .*|bright_text = 0xFF${HEX}|" \
-    -e "s|^accent = .*|accent = 0xFF${HEX}|" "$_hyprtoolkit"
+    -e "s|^accent = .*|accent = 0xFF${HEX}|" \
+    -e "s|^link_text = .*|link_text = 0xFF${HEX}|" "$_hyprtoolkit"
   if [ -f "$_dunst" ]; then
     for _section in global urgency_low urgency_normal urgency_critical hyprshot volume gpu-screen-recorder network spotify discord; do
       set_dunst_section_value "$_dunst" "$_section" frame_color "$COLOR"
