@@ -425,6 +425,20 @@ hl.window_rule({
 })
 hl.window_rule({ match = { class = "mpv" }, float = true })
 
+-- Agente de autenticação do PolicyKit (pkexec) ------------------------------------------------------
+-- Sem esta regra, a janela do hyprpolkitagent entra no layout em tile atrás/abaixo
+-- da sidebar-right (que roda em layer-shell "aboveWindows"). O diálogo acaba invisível
+-- ou sem foco de teclado, então o usuário nunca consegue digitar a senha e o pkexec
+-- expira/falha (ex.: "argvus-accounts name" chamado pelo UserCard). Forçar float + center
+-- + pin garante que o prompt sempre apareça no centro da tela, em foco, em qualquer workspace.
+hl.window_rule({
+  match = { class = "hyprpolkitagent" },
+  float = true,
+  center = true,
+  pin = true,
+  size = "420 260",
+})
+
 -- Transparency at the terminals -------------------------------------------------------------------
 hl.window_rule({ match = { class = "kitty" }, opacity = theme.term_opacity })
 hl.window_rule({ match = { class = "foot" }, opacity = theme.term_opacity })
