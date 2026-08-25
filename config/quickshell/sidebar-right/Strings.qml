@@ -77,6 +77,7 @@ QtObject {
     readonly property string userPasswordDesc:      isPortuguese
         ? "Altere sua senha do sistema."
         : "Change your system password."
+    readonly property string userPasswordCurrent:   isPortuguese ? "Senha atual:" : "Current password:"
     readonly property string userPasswordNew:       isPortuguese ? "Nova senha:" : "New password:"
     readonly property string userPasswordConfirm:   isPortuguese ? "Confirmar senha:" : "Confirm password:"
     readonly property string userPasswordMismatch:  isPortuguese

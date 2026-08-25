@@ -99,72 +99,72 @@ BaseCard {
         }
     }
 
-    // ── Set display name (polkit) ──
+    // ── Set display name (argvus-accounts already handles polkit internally) ──
     Process {
         id: setNameProc
         property string newName: ""
-        property string pendingUser: ""
-
-        // Use bash -c to forward the session bus address and runtime dir so
-        // hyprpolkitagent (registered on the D-Bus session bus) can receive
-        // the pkexec authentication request. pkexec strips its own child
-        // environment but still reads DBUS_SESSION_BUS_ADDRESS from its
-        // *own* environment to locate the agent before exec-ing the target.
-        command: ["bash", "-c", ""]
-
-        onRunningChanged: {
-            if (running) {
-                var user = pendingUser
-                var name = newName
-                command = [
-                    "bash", "-c",
-                    "DBUS_SESSION_BUS_ADDRESS=\"$DBUS_SESSION_BUS_ADDRESS\" " +
-                    "XDG_RUNTIME_DIR=\"$XDG_RUNTIME_DIR\" " +
-                    "WAYLAND_DISPLAY=\"$WAYLAND_DISPLAY\" " +
-                    "pkexec argvus-accounts name " +
-                    "'" + user.replace(/'/g, "'\\''" ) + "' " +
-                    "'" + name.replace(/'/g, "'\\''" ) + "'"
-                ]
-            }
+        property string errOutput: ""
+        command: ["true"]
+        stderr: SplitParser {
+            onRead: data => setNameProc.errOutput += data + "\n"
         }
-
+        onRunningChanged: if (running) errOutput = ""
         onExited: function(code) {
             if (code === 0) {
                 editStatus = Strings.user_name_ok
                 editStatusColor = Theme.ok
                 fullName = newName
             } else {
-                editStatus = Strings.user_name_error
+                // Mostra o motivo real (ex.: "Not authorized", polkit
+                // recusado, etc.) em vez de um erro genérico, já que
+                // várias causas diferentes levam a esse mesmo code != 0.
+                var reason = errOutput.trim()
+                console.warn("[UserCard] argvus-accounts name falhou (code " + code + "): " + reason)
+                editStatus = reason.length > 0
+                    ? Strings.user_name_error + ": " + reason
+                    : Strings.user_name_error
                 editStatusColor = Theme.danger
             }
             statusTimer.restart()
         }
     }
 
-    // ── Change password (polkit) ──
+    // ── Change password (argvus-accounts already handles polkit internally) ──
     Process {
         id: setPasswdProc
-        property string user: ""
-        property string pass: ""
-        command: ["bash", "-c", ""]
+        property string oldPass: ""
+        property string newPass: ""
+        property string confirmPass: ""
+        property string errOutput: ""
+        command: ["true"]
+        stderr: SplitParser {
+            onRead: data => setPasswdProc.errOutput += data + "\n"
+        }
         onRunningChanged: {
             if (running) {
-                var escaped = pass.replace(/'/g, "'\\''")
-                command = ["bash", "-c",
-                    "printf '%s:%s\\n' '" + user + "' '" + escaped + "' | pkexec chpasswd"]
+                errOutput = ""
+                // argv puro, sem shell: argvus-accounts passwd OLD NEW CONFIRM
+                command = ["argvus-accounts", "passwd", oldPass, newPass, confirmPass]
             }
         }
         onExited: function(code) {
             if (code === 0) {
                 editStatus = Strings.userPasswordOk
                 editStatusColor = Theme.ok
+                oldPassField.text = ""
                 newPassField.text = ""
                 confirmPassField.text = ""
             } else {
-                editStatus = Strings.userPasswordError
+                var reason = errOutput.trim()
+                console.warn("[UserCard] argvus-accounts passwd falhou (code " + code + "): " + reason)
+                editStatus = reason.length > 0
+                    ? Strings.userPasswordError + ": " + reason
+                    : Strings.userPasswordError
                 editStatusColor = Theme.danger
             }
-            pass = ""
+            oldPass = ""
+            newPass = ""
+            confirmPass = ""
             statusTimer.restart()
         }
     }
@@ -470,7 +470,14 @@ BaseCard {
                 enabled: editNameValue.length > 0 && editNameValue !== fullName
                 onClicked: {
                     setNameProc.newName = editNameValue
-                    setNameProc.pendingUser = userName
+                    // Chama o binário diretamente (sem shell, sem pkexec):
+                    // argvus-accounts já resolve o polkit internamente, e
+                    // como argv puro não há necessidade de escapar aspas.
+                    setNameProc.command = ["argvus-accounts", "name", userName, editNameValue]
+                    // Solta o foco do campo de texto antes de disparar o
+                    // processo, para o diálogo de autenticação do polkit
+                    // (se houver) conseguir assumir o foco de teclado.
+                    nameInput.focus = false
                     setNameProc.running = true
                 }
             }
@@ -489,6 +496,36 @@ BaseCard {
                 font.family: "monospace"
                 wrapMode: Text.WordWrap
                 Layout.fillWidth: true
+            }
+
+            // Current password field
+            Text {
+                text: Strings.userPasswordCurrent
+                color: Theme.fgDim
+                font.pixelSize: 11
+                font.family: "monospace"
+            }
+
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.preferredHeight: 32
+                radius: Theme.radiusSmall
+                color: Theme.bgPanel
+                border.color: oldPassField.activeFocus ? Theme.accent : Theme.borderSubtle
+                border.width: 1
+
+                TextInput {
+                    id: oldPassField
+                    anchors.fill: parent
+                    anchors.margins: 8
+                    color: Theme.fgText
+                    font.pixelSize: 13
+                    font.family: "monospace"
+                    clip: true
+                    verticalAlignment: Text.AlignVCenter
+                    echoMode: TextInput.Password
+                    onAccepted: newPassField.forceActiveFocus()
+                }
             }
 
             // New password field
@@ -567,10 +604,16 @@ BaseCard {
                 iconText: "\uf084"
                 label: Strings.userPasswordChange
                 accentColor: Theme.ok
-                enabled: newPassField.text.length > 0 && newPassField.text === confirmPassField.text
+                enabled: oldPassField.text.length > 0
+                    && newPassField.text.length > 0
+                    && newPassField.text === confirmPassField.text
                 onClicked: {
-                    setPasswdProc.user = userName
-                    setPasswdProc.pass = newPassField.text
+                    setPasswdProc.oldPass = oldPassField.text
+                    setPasswdProc.newPass = newPassField.text
+                    setPasswdProc.confirmPass = confirmPassField.text
+                    // Solta o foco antes de disparar, mesma razão do nome:
+                    // deixa o diálogo de polkit (se houver) assumir o teclado.
+                    confirmPassField.focus = false
                     setPasswdProc.running = true
                 }
             }
