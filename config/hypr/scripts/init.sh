@@ -129,6 +129,8 @@ case "$1" in
     systemctl --user set-environment QT_QPA_PLATFORM=wayland QT_QPA_PLATFORMTHEME=qt6ct QT_QUICK_CONTROLS_STYLE=org.hyprland.style
     systemctl --user start hyprpolkitagent
 
+    pkill qs; qs -c sidebar-right &
+
     pkill snappy-switcher 2>/dev/null || true
     sleep 0.2
     snappy-switcher --daemon &
