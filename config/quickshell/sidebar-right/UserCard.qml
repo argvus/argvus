@@ -104,11 +104,6 @@ BaseCard {
         id: setNameProc
         property string newName: ""
         command: ["pkexec", "argvus-accounts", "name", "", ""]
-        onRunningChanged: {
-            if (running) {
-                command = ["pkexec", "argvus-accounts", "name", userName, newName]
-            }
-        }
         onExited: function(code) {
             if (code === 0) {
                 editStatus = Strings.user_name_ok
@@ -451,6 +446,7 @@ BaseCard {
                 enabled: editNameValue.length > 0 && editNameValue !== fullName
                 onClicked: {
                     setNameProc.newName = editNameValue
+                    setNameProc.command = ["pkexec", "argvus-accounts", "name", userName, editNameValue]
                     setNameProc.running = true
                 }
             }
