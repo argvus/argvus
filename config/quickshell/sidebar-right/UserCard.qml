@@ -103,7 +103,31 @@ BaseCard {
     Process {
         id: setNameProc
         property string newName: ""
-        command: ["bash", "-c", "true"]
+        property string pendingUser: ""
+
+        // Use bash -c to forward the session bus address and runtime dir so
+        // hyprpolkitagent (registered on the D-Bus session bus) can receive
+        // the pkexec authentication request. pkexec strips its own child
+        // environment but still reads DBUS_SESSION_BUS_ADDRESS from its
+        // *own* environment to locate the agent before exec-ing the target.
+        command: ["bash", "-c", ""]
+
+        onRunningChanged: {
+            if (running) {
+                var user = pendingUser
+                var name = newName
+                command = [
+                    "bash", "-c",
+                    "DBUS_SESSION_BUS_ADDRESS=\"$DBUS_SESSION_BUS_ADDRESS\" " +
+                    "XDG_RUNTIME_DIR=\"$XDG_RUNTIME_DIR\" " +
+                    "WAYLAND_DISPLAY=\"$WAYLAND_DISPLAY\" " +
+                    "pkexec argvus-accounts name " +
+                    "'" + user.replace(/'/g, "'\\''" ) + "' " +
+                    "'" + name.replace(/'/g, "'\\''" ) + "'"
+                ]
+            }
+        }
+
         onExited: function(code) {
             if (code === 0) {
                 editStatus = Strings.user_name_ok
@@ -446,9 +470,7 @@ BaseCard {
                 enabled: editNameValue.length > 0 && editNameValue !== fullName
                 onClicked: {
                     setNameProc.newName = editNameValue
-                    var escaped = editNameValue.replace(/'/g, "'\\''")
-                    setNameProc.command = ["bash", "-c",
-                        "pkexec argvus-accounts name '" + userName + "' '" + escaped + "'"]
+                    setNameProc.pendingUser = userName
                     setNameProc.running = true
                 }
             }
