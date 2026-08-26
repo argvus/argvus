@@ -7,6 +7,7 @@ Rectangle {
     property string iconText: ""
     property string label: ""
     property bool   active: false
+    property bool   vertical: false
     property color  accentColor: Theme.accent
     signal clicked()
 
@@ -30,6 +31,7 @@ Rectangle {
     RowLayout {
         anchors.centerIn: parent
         spacing: 5
+        visible: !root.vertical
 
         Text {
             visible: iconText !== ""
@@ -47,6 +49,32 @@ Rectangle {
             font.pixelSize: 11
             font.family: "monospace"
             font.weight: active ? Font.Medium : Font.Normal
+        }
+    }
+
+    ColumnLayout {
+        anchors.centerIn: parent
+        spacing: 2
+        visible: root.vertical
+
+        Text {
+            visible: iconText !== ""
+            text: iconText
+            color: active || ma.containsMouse ? accentColor : Theme.fgSubtle
+            font.family: "Font Awesome 6 Free"
+            font.pixelSize: 15
+            font.weight: Font.Black
+            Layout.alignment: Qt.AlignHCenter
+        }
+
+        Text {
+            visible: label !== ""
+            text: label
+            color: active ? accentColor : (ma.containsMouse ? accentColor : Theme.fgSubtle)
+            font.pixelSize: 11
+            font.family: "monospace"
+            font.weight: active ? Font.Medium : Font.Normal
+            Layout.alignment: Qt.AlignHCenter
         }
     }
 

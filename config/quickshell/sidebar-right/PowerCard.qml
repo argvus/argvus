@@ -49,6 +49,7 @@ BaseCard {
             delegate: GlassButton {
                 Layout.fillWidth: true
                 implicitHeight: 52
+                vertical: true
                 iconText: modelData.icon
                 label: modelData.label
                 active: activeProfile === modelData.id
