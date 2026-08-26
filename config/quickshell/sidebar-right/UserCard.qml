@@ -17,6 +17,7 @@ BaseCard {
     property string hostName: ""
     property string userIcon: "\uf007"
     property string avatarPath: ""
+    property int avatarVersion: 0
 
     // Caminho absoluto de `argvus-accounts`, resolvido via shell de login.
     // Necessário porque processos iniciados pelo Hyprland (exec-once →
@@ -128,6 +129,7 @@ BaseCard {
                 editStatus = Strings.userAvatarOk
                 editStatusColor = Theme.ok
                 avatarCheckProc.running = true
+                avatarVersion++
             } else {
                 editStatus = Strings.userAvatarError
                 editStatusColor = Theme.danger
@@ -256,17 +258,17 @@ BaseCard {
         Layout.fillWidth: true
         spacing: 10
 
-        // Avatar circle
+        // Avatar
         Rectangle {
             implicitWidth: 40
             implicitHeight: 40
-            radius: 20
+            radius: 6
             color: Theme.accentDim
             clip: true
 
             Image {
                 anchors.fill: parent
-                source: avatarPath.length > 0 ? "file://" + avatarPath : ""
+                source: avatarPath.length > 0 ? "file://" + avatarPath + "?v=" + avatarVersion : ""
                 fillMode: Image.PreserveAspectCrop
                 visible: status === Image.Ready
                 smooth: true
@@ -414,7 +416,7 @@ BaseCard {
                 Layout.alignment: Qt.AlignHCenter
                 implicitWidth: 80
                 implicitHeight: 80
-                radius: 40
+                radius: 12
                 color: Theme.accentDim
                 border.color: Theme.accent
                 border.width: 1
@@ -422,7 +424,7 @@ BaseCard {
 
                 Image {
                     anchors.fill: parent
-                    source: avatarPath.length > 0 ? "file://" + avatarPath : ""
+                    source: avatarPath.length > 0 ? "file://" + avatarPath + "?v=" + avatarVersion : ""
                     fillMode: Image.PreserveAspectCrop
                     visible: status === Image.Ready
                     smooth: true
@@ -688,6 +690,7 @@ BaseCard {
             font.pixelSize: 11
             font.family: "monospace"
             horizontalAlignment: Text.AlignHCenter
+            wrapMode: Text.Wrap
         }
     }
 }
