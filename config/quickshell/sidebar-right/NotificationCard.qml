@@ -66,7 +66,7 @@ BaseCard {
         Text {
             text: unreadCount > 0 ? unreadCount + " " + Strings.notifRecent : Strings.notifNone
             color: Theme.fgText
-            font.pixelSize: 10
+            font.pixelSize: 16
             font.family: "monospace"
             Layout.fillWidth: true
         }
@@ -84,7 +84,7 @@ BaseCard {
             Text {
                 text: (currentPage + 1) + "/" + pageCount
                 color: Theme.accent
-                font.pixelSize: 9
+                font.pixelSize: 13
                 font.family: "monospace"
                 horizontalAlignment: Text.AlignHCenter
                 Layout.preferredWidth: 28
@@ -131,7 +131,7 @@ BaseCard {
                     Text {
                         text: "\uf192"
                         font.family: "Font Awesome 6 Free"
-                        font.pixelSize: 8
+                        font.pixelSize: 16
                         font.weight: Font.Black
                         color: Theme.accent
                         opacity: 1
@@ -139,7 +139,7 @@ BaseCard {
                     Text {
                         text: modelData.app
                         color: Theme.accent
-                        font.pixelSize: 9
+                        font.pixelSize: 13
                         font.family: "monospace"
                         opacity: 1
                         Layout.fillWidth: true
@@ -151,7 +151,7 @@ BaseCard {
                     Layout.fillWidth: true
                     text: modelData.summary
                     color: Theme.fgText
-                    font.pixelSize: 10
+                    font.pixelSize: 16
                     font.family: "monospace"
                     font.weight: Font.Medium
                     wrapMode: Text.WordWrap
@@ -162,7 +162,7 @@ BaseCard {
                     Layout.fillWidth: true
                     text: modelData.body
                     color: Theme.fgText
-                    font.pixelSize: 9
+                    font.pixelSize: 13
                     font.family: "monospace"
                     wrapMode: Text.WordWrap
                     visible: modelData.body !== ""
@@ -178,7 +178,7 @@ BaseCard {
         visible: notifications.length === 0
         Layout.fillWidth: true
         text: "\uf00d  " + Strings.notifAllClear
-        font.pixelSize: 10
+        font.pixelSize: 16
         font.family: "monospace"
         color: Theme.accent
         opacity: 1
@@ -201,7 +201,7 @@ BaseCard {
             text: parent.text
             color: parent.enabled ? (ma.containsMouse ? Theme.accent : Theme.fgSubtle) : Theme.borderSubtle
             font.family: "Font Awesome 6 Free"
-            font.pixelSize: 10
+            font.pixelSize: 16
             font.weight: Font.Black
         }
 

@@ -137,7 +137,7 @@ BaseCard {
                 text: networkingEnabled ? "\uf0ac" : "\uf127"
                 color: networkingEnabled ? Theme.accent : Theme.danger
                 font.family: "Font Awesome 6 Free"
-                font.pixelSize: 14
+                font.pixelSize: 16
                 font.weight: Font.Black
             }
 
@@ -161,7 +161,7 @@ BaseCard {
             Text {
                 text: Strings.netTitle
                 color: Theme.fgText
-                font.pixelSize: 11
+                font.pixelSize: 13
                 font.family: "monospace"
                 font.weight: Font.Medium
             }
@@ -177,7 +177,7 @@ BaseCard {
                     if (connected) return Theme.accent
                     return Theme.danger
                 }
-                font.pixelSize: 9
+                font.pixelSize: 13
                 font.family: "monospace"
                 opacity: 1
             }
@@ -186,7 +186,7 @@ BaseCard {
         Text {
             text: networkingEnabled ? "ON" : "OFF"
             color: networkingEnabled ? Theme.accent : Theme.danger
-            font.pixelSize: 8
+            font.pixelSize: 16
             font.family: "monospace"
             font.weight: Font.Bold
             font.letterSpacing: 2
@@ -204,21 +204,21 @@ BaseCard {
             text: "\uf0ac"
             color: Theme.accent
             font.family: "Font Awesome 6 Free"
-            font.pixelSize: 10
+            font.pixelSize: 16
             font.weight: Font.Black
             opacity: 1
         }
         Text {
             text: ip
             color: Theme.fgText
-            font.pixelSize: 10
+            font.pixelSize: 16
             font.family: "monospace"
             Layout.fillWidth: true
         }
         Text {
             text: iface
             color: Theme.accent
-            font.pixelSize: 9
+            font.pixelSize: 13
             font.family: "monospace"
             opacity: 1
         }
@@ -232,20 +232,20 @@ BaseCard {
 
         RowLayout {
             spacing: 4
-            Text { text: "↓"; color: Theme.fgText; font.pixelSize: 11; font.family: "monospace" }
+            Text { text: "↓"; color: Theme.fgText; font.pixelSize: 13; font.family: "monospace" }
             Text {
                 text: downSpeed
-                color: Theme.fgText; font.pixelSize: 10; font.family: "monospace"
+                color: Theme.fgText; font.pixelSize: 16; font.family: "monospace"
                 Layout.preferredWidth: 80
             }
         }
 
         RowLayout {
             spacing: 4
-            Text { text: "↑"; color: Theme.fgText; font.pixelSize: 11; font.family: "monospace" }
+            Text { text: "↑"; color: Theme.fgText; font.pixelSize: 13; font.family: "monospace" }
             Text {
                 text: upSpeed
-                color: Theme.fgText; font.pixelSize: 10; font.family: "monospace"
+                color: Theme.fgText; font.pixelSize: 16; font.family: "monospace"
             }
         }
     }

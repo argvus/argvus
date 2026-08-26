@@ -100,7 +100,7 @@ BaseCard {
         Text {
             text: Strings.idleLockTitle
             color: Theme.fgText
-            font.pixelSize: 11
+            font.pixelSize: 13
             font.family: "monospace"
             font.weight: Font.Medium
         }
@@ -126,7 +126,7 @@ BaseCard {
                         text: parent.modelData.label
                         color: idleTimeout === parent.modelData.seconds ? Theme.accent : Theme.fgSubtle
                         font.family: "monospace"
-                        font.pixelSize: 10
+                        font.pixelSize: 16
                         font.weight: Font.Bold
                     }
 
@@ -167,7 +167,7 @@ BaseCard {
                 text: sysinfoEnabled ? "\uf0ca" : "\uf00d"
                 color: sysinfoEnabled ? Theme.accent : Theme.danger
                 font.family: "Font Awesome 6 Free"
-                font.pixelSize: 14
+                font.pixelSize: 16
                 font.weight: Font.Black
             }
 
@@ -188,7 +188,7 @@ BaseCard {
             Text {
                 text: Strings.sysinfoTitle
                 color: Theme.fgText
-                font.pixelSize: 11
+                font.pixelSize: 13
                 font.family: "monospace"
                 font.weight: Font.Medium
             }
@@ -196,7 +196,7 @@ BaseCard {
             Text {
                 text: sysinfoEnabled ? Strings.sysinfoEnabled : Strings.sysinfoDisabled
                 color: sysinfoEnabled ? Theme.accent : Theme.danger
-                font.pixelSize: 9
+                font.pixelSize: 13
                 font.family: "monospace"
                 opacity: 1
             }
@@ -205,7 +205,7 @@ BaseCard {
         Text {
             text: sysinfoEnabled ? "ON" : "OFF"
             color: sysinfoEnabled ? Theme.accent : Theme.danger
-            font.pixelSize: 8
+            font.pixelSize: 16
             font.family: "monospace"
             font.weight: Font.Bold
             font.letterSpacing: 2

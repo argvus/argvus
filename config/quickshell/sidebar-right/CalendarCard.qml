@@ -22,7 +22,7 @@ BaseCard {
             Layout.fillWidth: true
             text: monthNames[displayMonth] + "  " + displayYear
             color: Theme.fgSubtle
-            font.pixelSize: 12
+            font.pixelSize: 16
             font.weight: Font.Medium
             font.family: "monospace"
             horizontalAlignment: Text.AlignHCenter
@@ -43,7 +43,7 @@ BaseCard {
                 Layout.fillWidth: true
                 text: modelData
                 color: Theme.accent
-                font.pixelSize: 9
+                font.pixelSize: 13
                 font.family: "monospace"
                 horizontalAlignment: Text.AlignHCenter
                 opacity: 1
@@ -74,7 +74,7 @@ BaseCard {
                     anchors.centerIn: parent
                     text: modelData.day > 0 ? modelData.day : ""
                     color: isToday ? Theme.bg : (inMonth ? Theme.fgText : Theme.borderSubtle)
-                    font.pixelSize: 11
+                    font.pixelSize: 13
                     font.family: "monospace"
                     font.weight: isToday ? Font.Bold : Font.Normal
                 }
@@ -116,7 +116,7 @@ BaseCard {
             text: parent.text
             color: ma.containsMouse ? Theme.accent : Theme.fgSubtle
             font.family: "Font Awesome 6 Free"
-            font.pixelSize: 12
+            font.pixelSize: 16
             font.weight: Font.Black
         }
 
