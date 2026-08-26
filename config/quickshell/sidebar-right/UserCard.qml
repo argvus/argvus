@@ -23,7 +23,9 @@ BaseCard {
     // Quickshell) NÃO herdam o $PATH do seu shell interativo (.bashrc/.profile) —
     // só o ambiente mínimo exportado na sessão. Por isso o comando roda liso
     // no terminal mas falha silenciosamente quando disparado pela sidebar.
-    // Resolvendo com "bash -lc" uma única vez, pegamos o mesmo PATH que o
+    // Resolvendo com "bash -c" (herda o PATH do processo quickshell).
+    // Login shell (-l) causa erros quando .bash_profile referencia
+    // ferramentas ausentes (ex.: ~/.cargo/env de uma instalação removida).
     // terminal do usuário usa (incluindo ~/.cargo/bin, ~/.local/bin, etc.).
     property string accountsBin: "argvus-accounts"
 
@@ -51,7 +53,7 @@ BaseCard {
     // ── Resolve o caminho absoluto de argvus-accounts via shell de login ──
     Process {
         id: resolveBinProc
-        command: ["bash", "-lc", "command -v argvus-accounts"]
+        command: ["bash", "-c", "command -v argvus-accounts"]
         stdout: SplitParser {
             onRead: data => {
                 var p = data.trim()
@@ -69,7 +71,7 @@ BaseCard {
     Process {
         id: resolveFallbackProc
         running: !accountsBin || accountsBin === "argvus-accounts"
-        command: ["bash", "-lc", "test -x /usr/bin/argvus-accounts && echo /usr/bin/argvus-accounts || echo "]
+        command: ["bash", "-c", "test -x /usr/bin/argvus-accounts && echo /usr/bin/argvus-accounts || echo "]
         stdout: SplitParser {
             onRead: data => {
                 var p = data.trim()
@@ -201,7 +203,7 @@ BaseCard {
                 // garantir que o ambiente de sessão (dbus, polkit agent,
                 // XDG_RUNTIME_DIR) esteja disponível ao binário.
                 var cmd = accountsBin + " passwd " + shellEscape(userName) + " " + shellEscape(oldPass) + " " + shellEscape(newPass) + " " + shellEscape(confirmPass)
-                command = ["bash", "-lc", cmd]
+                command = ["bash", "-c", cmd]
             }
         }
         onExited: function(code) {
@@ -534,7 +536,7 @@ BaseCard {
                     // com falta de agente de autenticação quando disparado
                     // pela sidebar.
                     var cmd = accountsBin + " name " + shellEscape(userName) + " " + shellEscape(editNameValue)
-                    setNameProc.command = ["bash", "-lc", cmd]
+                    setNameProc.command = ["bash", "-c", cmd]
                     // Solta o foco do campo de texto antes de disparar o
                     // processo, para o diálogo de autenticação do polkit
                     // (se houver) conseguir assumir o foco de teclado.
