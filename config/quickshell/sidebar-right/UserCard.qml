@@ -51,6 +51,13 @@ BaseCard {
         resolveBinProc.running = true
     }
 
+    Connections {
+        target: root
+        function onSidebarVisibleChanged() {
+            if (!root.sidebarVisible) editing = false
+        }
+    }
+
     // ── Resolve o caminho absoluto de argvus-accounts via shell de login ──
     Process {
         id: resolveBinProc
@@ -265,6 +272,7 @@ BaseCard {
             radius: 6
             color: Theme.accentDim
             clip: true
+            layer.enabled: true
 
             Image {
                 anchors.fill: parent
@@ -421,6 +429,7 @@ BaseCard {
                 border.color: Theme.accent
                 border.width: 1
                 clip: true
+                layer.enabled: true
 
                 Image {
                     anchors.fill: parent
