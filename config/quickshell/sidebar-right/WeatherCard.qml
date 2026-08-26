@@ -183,7 +183,7 @@ BaseCard {
         GridLayout {
             Layout.fillWidth: true
             columns: 3
-            columnSpacing: 0; rowSpacing: 4
+            columnSpacing: 14; rowSpacing: 8
 
             Repeater {
                 model: [
@@ -193,7 +193,7 @@ BaseCard {
                 ]
                 delegate: ColumnLayout {
                     Layout.fillWidth: true
-                    spacing: 1
+                    spacing: 4
                     Text {
                         text: modelData.label
                         color: Theme.accent; font.pixelSize: 16; font.family: "monospace"

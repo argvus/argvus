@@ -17,16 +17,7 @@ Rectangle {
     border.color: Theme.accentMid
     border.width: 1
 
-    // Accent line no topo
-    Rectangle {
-        anchors { top: parent.top; left: parent.left; right: parent.right }
-        anchors.leftMargin: parent.radius
-        anchors.rightMargin: parent.radius
-        height: 1
-        color: Theme.accent
-        opacity: 0.6
-        z: 1
-    }
+    // (removed top accent line — visual was duplicated across cards)
 
     ColumnLayout {
         id: innerCol
