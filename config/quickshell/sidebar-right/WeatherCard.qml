@@ -217,8 +217,8 @@ BaseCard {
         Item { Layout.fillWidth: true }
 
         GlassButton {
-            implicitWidth: 92
-            implicitHeight: 24
+            implicitWidth: 100
+            implicitHeight: 30
             iconText: "\uf3c5"
             label: Strings.weatherConfigure
             active: false
@@ -228,8 +228,8 @@ BaseCard {
         }
 
         GlassButton {
-            implicitWidth: 82
-            implicitHeight: 24
+            implicitWidth: 92
+            implicitHeight: 30
             iconText: "\uf021"
             label: Strings.weatherRefresh
             active: false
