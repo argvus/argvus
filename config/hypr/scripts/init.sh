@@ -84,15 +84,18 @@ case "$1" in
     fi
 
     run_waybars
-    pkill qs; qs -c sidebar-right &
+
+    # PolicyKit agent — set Qt env for systemd services (hyprpolkitagent)
+    # AND export for child processes (quickshell).
+    export QT_QPA_PLATFORM=wayland QT_QPA_PLATFORMTHEME=qt6ct QT_QUICK_CONTROLS_STYLE=org.hyprland.style
+    systemctl --user set-environment QT_QPA_PLATFORM="$QT_QPA_PLATFORM" QT_QPA_PLATFORMTHEME="$QT_QPA_PLATFORMTHEME" QT_QUICK_CONTROLS_STYLE="$QT_QUICK_CONTROLS_STYLE"
+    systemctl --user start hyprpolkitagent
+
+    pkill qs; qs -c sidebar-right >> /tmp/quickshell-sidebar.log 2>&1 &
     pkill snappy-switcher; snappy-switcher --daemon &
     wl-paste --type text --watch cliphist store &
     wl-paste --type image --watch cliphist store &
     run_dunst
-
-    # PolicyKit agent (graphical auth) Hyprland
-    systemctl --user set-environment QT_QPA_PLATFORM=wayland QT_QPA_PLATFORMTHEME=qt6ct QT_QUICK_CONTROLS_STYLE=org.hyprland.style
-    systemctl --user start hyprpolkitagent
 
     # Bluetooth
     systemctl enable --now bluetooth >/dev/null 2>&1 &
@@ -125,11 +128,12 @@ case "$1" in
 
     run_dunst
 
-    # PolicyKit agent (graphical auth) Hyprland
-    systemctl --user set-environment QT_QPA_PLATFORM=wayland QT_QPA_PLATFORMTHEME=qt6ct QT_QUICK_CONTROLS_STYLE=org.hyprland.style
+    # PolicyKit agent — set Qt env for systemd services AND child processes.
+    export QT_QPA_PLATFORM=wayland QT_QPA_PLATFORMTHEME=qt6ct QT_QUICK_CONTROLS_STYLE=org.hyprland.style
+    systemctl --user set-environment QT_QPA_PLATFORM="$QT_QPA_PLATFORM" QT_QPA_PLATFORMTHEME="$QT_QPA_PLATFORMTHEME" QT_QUICK_CONTROLS_STYLE="$QT_QUICK_CONTROLS_STYLE"
     systemctl --user start hyprpolkitagent
 
-    pkill qs; qs -c sidebar-right &
+    pkill qs; qs -c sidebar-right >> /tmp/quickshell-sidebar.log 2>&1 &
 
     pkill snappy-switcher 2>/dev/null || true
     sleep 0.2

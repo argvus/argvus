@@ -27,6 +27,13 @@ BaseCard {
     // terminal do usuário usa (incluindo ~/.cargo/bin, ~/.local/bin, etc.).
     property string accountsBin: "argvus-accounts"
 
+    // Escapa um argumento para uso em um comando shell entre aspas simples.
+    // Usa a técnica: 'abc' -> 'abc', "a'b" -> 'a'"'"'b'
+    function shellEscape(s) {
+        if (s === null || s === undefined) return "''"
+        return "'" + String(s).replace(/'/g, "'\"'\"'") + "'"
+    }
+
     // ── Edit fields ──
     property string editNameValue: ""
     property string editStatus: ""
@@ -55,6 +62,22 @@ BaseCard {
             if (code !== 0)
                 console.warn("[UserCard] argvus-accounts não encontrado no PATH (nem via shell de login). " +
                     "Verifique se está instalado e no PATH, ex.: /usr/bin ou ~/.cargo/bin.")
+        }
+    }
+
+    // Fallback: se não achou via PATH, verifica /usr/bin/argvus-accounts
+    Process {
+        id: resolveFallbackProc
+        running: !accountsBin || accountsBin === "argvus-accounts"
+        command: ["bash", "-lc", "test -x /usr/bin/argvus-accounts && echo /usr/bin/argvus-accounts || echo "]
+        stdout: SplitParser {
+            onRead: data => {
+                var p = data.trim()
+                if (p.length > 0) accountsBin = p
+            }
+        }
+        onExited: function(code) {
+            // não reclama aqui — esse é apenas um fallback silencioso
         }
     }
 
@@ -133,10 +156,10 @@ BaseCard {
         id: setNameProc
         property string newName: ""
         property string errOutput: ""
+        property string outOutput: ""
         command: ["true"]
-        stderr: SplitParser {
-            onRead: data => setNameProc.errOutput += data + "\n"
-        }
+        stdout: SplitParser { onRead: data => setNameProc.outOutput += data + "\n" }
+        stderr: SplitParser { onRead: data => setNameProc.errOutput += data + "\n" }
         onRunningChanged: if (running) errOutput = ""
         onExited: function(code) {
             if (code === 0) {
@@ -147,7 +170,7 @@ BaseCard {
                 // Mostra o motivo real (ex.: "Not authorized", polkit
                 // recusado, etc.) em vez de um erro genérico, já que
                 // várias causas diferentes levam a esse mesmo code != 0.
-                var reason = errOutput.trim()
+                var reason = (errOutput + "\n" + outOutput).trim()
                 if (reason.length === 0 && accountsBin === "argvus-accounts")
                     reason = "argvus-accounts não encontrado no PATH da sidebar (veja o console)"
                 console.warn("[UserCard] argvus-accounts name falhou (code " + code + "): " + reason)
@@ -167,15 +190,18 @@ BaseCard {
         property string newPass: ""
         property string confirmPass: ""
         property string errOutput: ""
+        property string outOutput: ""
         command: ["true"]
-        stderr: SplitParser {
-            onRead: data => setPasswdProc.errOutput += data + "\n"
-        }
+        stdout: SplitParser { onRead: data => setPasswdProc.outOutput += data + "\n" }
+        stderr: SplitParser { onRead: data => setPasswdProc.errOutput += data + "\n" }
         onRunningChanged: {
             if (running) {
                 errOutput = ""
-                // argv puro, sem shell: argvus-accounts passwd OLD NEW CONFIRM
-                command = [accountsBin, "passwd", oldPass, newPass, confirmPass]
+                // Executa via shell de login com argumentos escapados para
+                // garantir que o ambiente de sessão (dbus, polkit agent,
+                // XDG_RUNTIME_DIR) esteja disponível ao binário.
+                var cmd = accountsBin + " passwd " + shellEscape(userName) + " " + shellEscape(oldPass) + " " + shellEscape(newPass) + " " + shellEscape(confirmPass)
+                command = ["bash", "-lc", cmd]
             }
         }
         onExited: function(code) {
@@ -186,7 +212,7 @@ BaseCard {
                 newPassField.text = ""
                 confirmPassField.text = ""
             } else {
-                var reason = errOutput.trim()
+                var reason = (errOutput + "\n" + outOutput).trim()
                 if (reason.length === 0 && accountsBin === "argvus-accounts")
                     reason = "argvus-accounts não encontrado no PATH da sidebar (veja o console)"
                 console.warn("[UserCard] argvus-accounts passwd falhou (code " + code + "): " + reason)
@@ -503,10 +529,12 @@ BaseCard {
                 enabled: editNameValue.length > 0 && editNameValue !== fullName
                 onClicked: {
                     setNameProc.newName = editNameValue
-                    // Chama o binário diretamente (sem shell, sem pkexec):
-                    // argvus-accounts já resolve o polkit internamente, e
-                    // como argv puro não há necessidade de escapar aspas.
-                    setNameProc.command = [accountsBin, "name", userName, editNameValue]
+                    // Executa via shell de login para herdar ambiente de sessão
+                    // (dbus/XDG_RUNTIME_DIR/polkit agent etc.) e evita problemas
+                    // com falta de agente de autenticação quando disparado
+                    // pela sidebar.
+                    var cmd = accountsBin + " name " + shellEscape(userName) + " " + shellEscape(editNameValue)
+                    setNameProc.command = ["bash", "-lc", cmd]
                     // Solta o foco do campo de texto antes de disparar o
                     // processo, para o diálogo de autenticação do polkit
                     // (se houver) conseguir assumir o foco de teclado.
