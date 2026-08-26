@@ -253,8 +253,10 @@
   // paused: f144 play:
   "custom/spotify-mpris": {
     "exec": "/usr/share/argvus/waybar/scripts/spotify-mpris.sh",
-    "format": "\uf1bc {}",
-    "format-paused": "<span color='grey'>\uf1bc {}</span>",
+    "on-click": "/usr/share/argvus/waybar/scripts/spotify-playpause.sh",
+    "on-click-right": "/usr/share/argvus/waybar/scripts/spotify-focus.sh",
+    "format": "{}",
+    "format-paused": "{}",
     "return-type": "text",
     "max-length": 80,
     "interval": 1,
@@ -272,7 +274,7 @@
     "status-icons": {
       "paused": "\uf144"
     },
-    "ignored-players": ["spotify", "firefox", "chromium", "brave", "edge", "vivaldi", "opera", "google-chrome"]
+    "ignored-players": ["spotify", "audacious", "rhythmbox", "strawberry", "lollypop", "firefox", "chromium", "brave", "edge", "vivaldi", "opera", "google-chrome"]
   },
   "custom/power": {
     "format": "\uf011",
