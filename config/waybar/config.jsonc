@@ -15,7 +15,7 @@
   },
   "group/left2": {
     "orientation": "inherit",
-    "modules": ["mpris"]
+    "modules": ["custom/spotify-mpris", "mpris"]
   },
   "group/right-0": {
     "orientation": "inherit",
@@ -251,6 +251,15 @@
     "show-passive-items": false
   },
   // paused: f144 play:
+  "custom/spotify-mpris": {
+    "exec": "/usr/share/argvus/waybar/scripts/spotify-mpris.sh",
+    "format": "\uf1bc {}",
+    "format-paused": "<span color='grey'>\uf1bc {}</span>",
+    "return-type": "text",
+    "max-length": 80,
+    "interval": 1,
+    "tooltip": false
+  },
   "mpris": {
     "format": "{player_icon} {dynamic}",
     "format-paused": "<span color='grey'>{status_icon} {dynamic}</span>",
@@ -263,7 +272,7 @@
     "status-icons": {
       "paused": "\uf144"
     },
-    "ignored-players": ["firefox", "chromium", "brave"]
+    "ignored-players": ["spotify", "firefox", "chromium", "brave", "edge", "vivaldi", "opera", "google-chrome"]
   },
   "custom/power": {
     "format": "\uf011",

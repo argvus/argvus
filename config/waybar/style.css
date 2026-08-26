@@ -98,6 +98,7 @@ window#waybar.empty #window {
 #custom-expand-icon,
 #custom-storage,
 #mpris,
+#custom-spotify-mpris,
 #custom-window-or-mpris,
 #tray,
 #custom-recording,
@@ -123,7 +124,8 @@ tooltip label {
   color: @th-foreground;
 }
 
-#mpris {
+#mpris,
+#custom-spotify-mpris {
   color: @th-foreground;
 }
 
@@ -158,6 +160,7 @@ tooltip label {
 #group-tray-expander,
 #custom-storage,
 #mpris,
+#custom-spotify-mpris,
 #custom-window-or-mpris,
 #custom-recording,
 #custom-search,
@@ -194,7 +197,7 @@ tooltip label {
   margin-left: 15px;
 }
 
-#right-0, #right-1, #right-2, #right-search, #mpris {
+#right-0, #right-1, #right-2, #right-search, #mpris, #custom-spotify-mpris {
   margin: 3px 0px;
   margin-left: 5px;
   padding: 0px 10px;
@@ -282,7 +285,8 @@ tooltip label {
   transition: all 0.3s ease;
 }
 
-#mpris {
+#mpris,
+#custom-spotify-mpris {
   background: @th-mpris-bg;
   color: @th-foreground;
   border: 1px solid @th-mpris-border;
@@ -296,7 +300,8 @@ tooltip label {
   animation-direction: alternate;
 }
 
-#mpris:hover {
+#mpris:hover,
+#custom-spotify-mpris:hover {
   border-bottom: 1px solid @th-decorate;
   box-shadow: none;
   text-shadow: none;
