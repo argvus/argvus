@@ -153,7 +153,7 @@ BaseCard {
         }
     }
 
-    // ── Set display name (argvus-accounts already handles polkit internally) ──
+    // ── Set display name (argvus-accounts handles polkit internally) ──
     Process {
         id: setNameProc
         property string newName: ""
@@ -185,7 +185,7 @@ BaseCard {
         }
     }
 
-    // ── Change password (argvus-accounts already handles polkit internally) ──
+    // ── Change password (argvus-accounts handles polkit internally) ──
     Process {
         id: setPasswdProc
         property string oldPass: ""
@@ -199,11 +199,7 @@ BaseCard {
         onRunningChanged: {
             if (running) {
                 errOutput = ""
-                // Executa via shell de login com argumentos escapados para
-                // garantir que o ambiente de sessão (dbus, polkit agent,
-                // XDG_RUNTIME_DIR) esteja disponível ao binário.
-                var cmd = accountsBin + " passwd " + shellEscape(userName) + " " + shellEscape(oldPass) + " " + shellEscape(newPass) + " " + shellEscape(confirmPass)
-                command = ["bash", "-c", cmd]
+                command = [accountsBin, "passwd", userName, oldPass, newPass, confirmPass]
             }
         }
         onExited: function(code) {
@@ -531,15 +527,7 @@ BaseCard {
                 enabled: editNameValue.length > 0 && editNameValue !== fullName
                 onClicked: {
                     setNameProc.newName = editNameValue
-                    // Executa via shell de login para herdar ambiente de sessão
-                    // (dbus/XDG_RUNTIME_DIR/polkit agent etc.) e evita problemas
-                    // com falta de agente de autenticação quando disparado
-                    // pela sidebar.
-                    var cmd = accountsBin + " name " + shellEscape(userName) + " " + shellEscape(editNameValue)
-                    setNameProc.command = ["bash", "-c", cmd]
-                    // Solta o foco do campo de texto antes de disparar o
-                    // processo, para o diálogo de autenticação do polkit
-                    // (se houver) conseguir assumir o foco de teclado.
+                    setNameProc.command = [accountsBin, "name", userName, editNameValue]
                     nameInput.focus = false
                     setNameProc.running = true
                 }
