@@ -90,7 +90,7 @@ If [ARGVUS](https://argvus.github.io) is useful to you, please consider supporti
 | **US$ 20** | [Contribute](#) |
 | **US$ 50** | [Contribute](#) | -->
 
-> The links above will be replaced by the respective [Stripe](https://stripe.com) payment links.
+> The links above will be replaced by the respective [PayPal](https://paypal.com) payment links.
 
 ---
 
