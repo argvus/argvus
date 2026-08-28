@@ -21,6 +21,8 @@ QtObject {
 
     // ── DisplayCard ──
     readonly property string displayScale:       isPortuguese ? "Escala" : "Scale"
+    readonly property string displayDpi:         "DPI"
+    readonly property string displayBrightness:  isPortuguese ? "Brilho" : "Brightness"
     readonly property string displayPowerOn:     isPortuguese ? "Ligar monitor" : "Turn on"
     readonly property string displayPowerOff:    isPortuguese ? "Desligar monitor" : "Turn off"
     readonly property string displayAdvanced:    isPortuguese ? "Ajuste Avançado" : "Advanced Settings"

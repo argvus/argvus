@@ -14,7 +14,11 @@ BaseCard {
 
     Timer {
         interval: 2000; running: true; repeat: true; triggeredOnStart: true
-        onTriggered: statusProc.running = true
+        onTriggered: {
+            statusProc.running = true
+            brightProbe.running = true
+            if (card.brightSupported) brightGet.running = true
+        }
     }
 
     // Read current monitor state (name/res/pos/scale/power) from hyprctl.
@@ -32,7 +36,7 @@ BaseCard {
                         var key = parts[0]
                         var val = parts[1]
                         if (key === "name") {
-                            current = { name: val, res: "", pos: "", scale: "", power: "" }
+                            current = { name: val, res: "", pos: "", scale: "", dpi: "", power: "" }
                             list.push(current)
                         } else if (current) {
                             current[key] = val
@@ -55,9 +59,77 @@ BaseCard {
         setProc.running = true
     }
 
+    // ── Global brightness (backlight) reuse ──
+    readonly property string brightScript: "sh ${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/argvus/sh/brightness-switch.sh"
+    property bool brightSupported: false
+    property real brightness: 0
+
+    Process {
+        id: brightProbe
+        command: ["bash", "-c", card.brightScript + " --status"]
+        stdout: SplitParser {
+            onRead: data => {
+                var backend = data.trim()
+                card.brightSupported = (backend === "brightnessctl" || backend === "ddcutil")
+            }
+        }
+    }
+    Process {
+        id: brightGet
+        command: ["bash", "-c", card.brightScript + " --get"]
+        stdout: SplitParser {
+            onRead: data => {
+                var pct = parseFloat(data.trim()) || 0
+                card.brightness = Math.min(Math.max(pct / 100, 0), 1)
+            }
+        }
+    }
+    Process {
+        id: brightSet
+        property string cmd: ""
+        command: ["bash", "-c", cmd]
+    }
+
+    function setBrightness(v) {
+        var pct = Math.round(v * 100)
+        brightSet.cmd = card.brightScript + " --set " + pct
+        brightSet.running = true
+    }
+
     ColumnLayout {
         Layout.fillWidth: true
         spacing: 10
+
+        // Global brightness (backlight for panel/internal)
+        RowLayout {
+            Layout.fillWidth: true
+            visible: card.brightSupported
+            spacing: 6
+            Text {
+                text: Strings.displayBrightness
+                color: Theme.fgText
+                font.family: "monospace"
+                font.pixelSize: 11
+                Layout.alignment: Qt.AlignVCenter
+            }
+            Slider {
+                id: brightSlider
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignVCenter
+                from: 0
+                to: 1
+                value: card.brightness
+                onMoved: card.setBrightness(value)
+            }
+            Text {
+                text: Math.round(card.brightness * 100) + "%"
+                color: Theme.fgText
+                font.family: "monospace"
+                font.pixelSize: 11
+                Layout.preferredWidth: 32
+                Layout.alignment: Qt.AlignVCenter
+            }
+        }
 
         Repeater {
             model: card.monitors
@@ -115,6 +187,38 @@ BaseCard {
                     }
                     Text {
                         text: modelData.scale
+                        color: Theme.fgText
+                        font.family: "monospace"
+                        font.pixelSize: 11
+                        Layout.preferredWidth: 30
+                        Layout.alignment: Qt.AlignVCenter
+                    }
+                }
+
+                // DPI slider (text/UI scaling per monitor)
+                RowLayout {
+                    Layout.fillWidth: true
+                    spacing: 6
+                    Text {
+                        text: Strings.displayDpi
+                        color: Theme.fgText
+                        font.family: "monospace"
+                        font.pixelSize: 11
+                        Layout.alignment: Qt.AlignVCenter
+                    }
+                    Slider {
+                        id: dpiSlider
+                        Layout.fillWidth: true
+                        Layout.alignment: Qt.AlignVCenter
+                        from: 32
+                        to: 300
+                        stepSize: 4
+                        snapMode: Slider.SnapOnRelease
+                        value: modelData.dpi || 96
+                        onMoved: setMonitor(modelData.name, "dpi", value)
+                    }
+                    Text {
+                        text: modelData.dpi || 96
                         color: Theme.fgText
                         font.family: "monospace"
                         font.pixelSize: 11
