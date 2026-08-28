@@ -414,6 +414,7 @@ hl.window_rule({
   opacity = theme.term_opacity,
 })
 hl.window_rule({ match = { class = "blueman-manager" }, float = true })
+hl.window_rule({ match = { class = "nwg-displays" }, float = true, size = "1000 700", center = true })
 hl.window_rule({ match = { class = "xdg-desktop-portal-gtk" }, float = true })
 hl.window_rule({
   match = { class = "firefox", title = ".*Picture-in-Picture.*" },
