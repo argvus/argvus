@@ -17,4 +17,5 @@ VolumeCard        1.0 VolumeCard.qml
     NetworkCard       1.0 NetworkCard.qml
 AppearanceCard    1.0 AppearanceCard.qml
 DisplayCard       1.0 DisplayCard.qml
+TaskbarCard       1.0 TaskbarCard.qml
 SidebarWindow     1.0 SidebarWindow.qml

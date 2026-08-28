@@ -16,6 +16,7 @@ QtObject {
     readonly property string cardTitleKeyboard:      isPortuguese ? "TECLADO" : "KEYBOARD"
     readonly property string cardTitleAppearance:    isPortuguese ? "APARENCIA" : "APPEARANCE"
     readonly property string cardTitleSpaces:        isPortuguese ? "ESPAÇOS" : "SPACES"
+    readonly property string cardTitleTaskbar:       isPortuguese ? "BARRA DE TAREFAS" : "TASKBAR"
     readonly property string cardTitlePower:         isPortuguese ? "ENERGIA" : "POWER"
     readonly property string cardTitleDisplay:       isPortuguese ? "MONITOR" : "DISPLAY"
 
@@ -32,6 +33,11 @@ QtObject {
     readonly property string spacesGapIn:            isPortuguese ? "Gap Interno" : "Inner Gap"
     readonly property string spacesGapOut:           isPortuguese ? "Gap Externo" : "Outer Gap"
     readonly property string btnApply:               isPortuguese ? "Aplicar" : "Apply"
+
+    // ── TaskbarCard ──
+    readonly property string taskbarPositionLabel:   isPortuguese ? "Posição da barra" : "Bar position"
+    readonly property string taskbarTop:             isPortuguese ? "Topo" : "Top"
+    readonly property string taskbarBottom:          isPortuguese ? "Inferior" : "Bottom"
 
     // ── NotificationCard ──
     readonly property string notifNone:     isPortuguese ? "Nenhuma notificacao" : "No notifications"

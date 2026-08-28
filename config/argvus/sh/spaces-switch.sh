@@ -42,15 +42,17 @@ read_state_values() {
   GAPS_IN=""
   GAPS_OUT=""
   WAYBAR=""
+  WAYBAR_POS=""
   [ -f "$SPACES_FILE" ] || return 0
   while IFS= read -r _rs_line; do
     [ -n "$_rs_line" ] || continue
     _rs_key="${_rs_line%%=*}"
     _rs_val="${_rs_line#*=}"
     case "$_rs_key" in
-      gaps_in)  GAPS_IN="$_rs_val" ;;
-      gaps_out) GAPS_OUT="$_rs_val" ;;
-      waybar)   WAYBAR="$_rs_val" ;;
+      gaps_in)    GAPS_IN="$_rs_val" ;;
+      gaps_out)   GAPS_OUT="$_rs_val" ;;
+      waybar)     WAYBAR="$_rs_val" ;;
+      waybar_pos) WAYBAR_POS="$_rs_val" ;;
     esac
   done < "$SPACES_FILE"
 }
@@ -58,9 +60,10 @@ read_state_values() {
 write_spaces() {
   mkdir -p "$STATE_DIR"
   {
-    [ -n "$GAPS_IN" ]  && printf 'gaps_in=%s\n' "$GAPS_IN"
-    [ -n "$GAPS_OUT" ] && printf 'gaps_out=%s\n' "$GAPS_OUT"
-    [ -n "$WAYBAR" ]   && printf 'waybar=%s\n' "$WAYBAR"
+    [ -n "$GAPS_IN" ]    && printf 'gaps_in=%s\n' "$GAPS_IN"
+    [ -n "$GAPS_OUT" ]   && printf 'gaps_out=%s\n' "$GAPS_OUT"
+    [ -n "$WAYBAR" ]     && printf 'waybar=%s\n' "$WAYBAR"
+    [ -n "$WAYBAR_POS" ] && printf 'waybar_pos=%s\n' "$WAYBAR_POS"
   } > "$SPACES_FILE"
 }
 
@@ -82,9 +85,10 @@ compute_defaults() {
 effective_values() {
   compute_defaults
   read_state_values
-  [ -n "$GAPS_IN" ]  || GAPS_IN="$GAPS_IN_DEF"
-  [ -n "$GAPS_OUT" ] || GAPS_OUT="$GAPS_OUT_DEF"
-  [ -n "$WAYBAR" ]   || WAYBAR="$WAYBAR_DEF"
+  [ -n "$GAPS_IN" ]    || GAPS_IN="$GAPS_IN_DEF"
+  [ -n "$GAPS_OUT" ]   || GAPS_OUT="$GAPS_OUT_DEF"
+  [ -n "$WAYBAR" ]     || WAYBAR="$WAYBAR_DEF"
+  [ -n "$WAYBAR_POS" ] || WAYBAR_POS="top"
 }
 
 # Drop stored values that fall below the current theme defaults.
@@ -100,19 +104,44 @@ clamp_to_defaults() {
 apply_waybar_margins() {
   [ -n "${WAYBAR:-}" ] || return 0
 
-  # Horizontal bar (top): margin-top/left/right = WAYBAR
-  sed -i \
-    -e "s|\"margin-top\": [0-9-]*|\"margin-top\": $WAYBAR|" \
-    -e "s|\"margin-left\": [0-9-]*|\"margin-left\": $WAYBAR|" \
-    -e "s|\"margin-right\": [0-9-]*|\"margin-right\": $WAYBAR|" \
-    "$WAYBAR_CFG"
+  # Ensure the position is resolved (top by default).
+  if [ -z "${WAYBAR_POS:-}" ]; then
+    compute_defaults
+    read_state_values
+  fi
+  [ -n "${WAYBAR_POS:-}" ] || WAYBAR_POS="top"
 
-  # Vertical bar (left): margin-top/left/bottom = WAYBAR
+  # The "float" look (WAYBAR > 0) uses a subtle negative offset on the far
+  # edge; "normal" (WAYBAR = 0) is flush with a small gap. The main bar is
+  # mirrored when it sits at the bottom so both top and bottom respect
+  # the current float/normal mode.
+  if [ "$WAYBAR" -gt 0 ]; then _edge_gap="-8"; else _edge_gap="3"; fi
+
+  # Sysinfo (left, vertical) bar margins stay unchanged regardless of the
+  # top/bottom choice — only the main status bar moves.
   sed -i \
     -e "s|\"margin-top\": [0-9-]*|\"margin-top\": $WAYBAR|" \
     -e "s|\"margin-left\": [0-9-]*|\"margin-left\": $WAYBAR|" \
     -e "s|\"margin-bottom\": [0-9-]*|\"margin-bottom\": $WAYBAR|" \
     "$WAYBAR_SYSINFO"
+
+  if [ "$WAYBAR_POS" = "bottom" ]; then
+    sed -i \
+      -e "s|\"position\": \"[a-z]*\"|\"position\": \"bottom\"|" \
+      -e "s|\"margin-bottom\": [0-9-]*|\"margin-bottom\": $WAYBAR|" \
+      -e "s|\"margin-top\": [0-9-]*|\"margin-top\": $_edge_gap|" \
+      -e "s|\"margin-left\": [0-9-]*|\"margin-left\": $WAYBAR|" \
+      -e "s|\"margin-right\": [0-9-]*|\"margin-right\": $WAYBAR|" \
+      "$WAYBAR_CFG"
+  else
+    sed -i \
+      -e "s|\"position\": \"[a-z]*\"|\"position\": \"top\"|" \
+      -e "s|\"margin-top\": [0-9-]*|\"margin-top\": $WAYBAR|" \
+      -e "s|\"margin-bottom\": [0-9-]*|\"margin-bottom\": $_edge_gap|" \
+      -e "s|\"margin-left\": [0-9-]*|\"margin-left\": $WAYBAR|" \
+      -e "s|\"margin-right\": [0-9-]*|\"margin-right\": $WAYBAR|" \
+      "$WAYBAR_CFG"
+  fi
 }
 
 apply_gaps_runtime() {
@@ -134,6 +163,25 @@ set_key() {
   _value="$2"
   compute_defaults
   read_state_values
+
+  case "$_key" in
+    waybar_pos)
+      case "$_value" in
+        top|bottom)
+          WAYBAR_POS="$_value"
+          write_spaces
+          effective_values
+          apply_waybar_margins
+          restart_waybar
+          return 0
+          ;;
+        *)
+          printf 'Invalid value: %s (use top|bottom)\n' "$_value" >&2
+          return 1
+          ;;
+      esac
+      ;;
+  esac
 
   case "$_key" in
     gaps_in)  _default="$GAPS_IN_DEF" ;;
@@ -166,10 +214,11 @@ reset_key() {
   _key="${1:-all}"
   read_state_values
   case "$_key" in
-    all)      GAPS_IN=""; GAPS_OUT=""; WAYBAR="" ;;
+    all)      GAPS_IN=""; GAPS_OUT=""; WAYBAR=""; WAYBAR_POS="" ;;
     gaps_in)  GAPS_IN="" ;;
     gaps_out) GAPS_OUT="" ;;
     waybar)   WAYBAR="" ;;
+    waybar_pos) WAYBAR_POS="" ;;
     *) printf 'Invalid key: %s\n' "$_key" >&2; return 1 ;;
   esac
   write_spaces
@@ -178,6 +227,7 @@ reset_key() {
   GAPS_IN="${GAPS_IN:-$GAPS_IN_DEF}"
   GAPS_OUT="${GAPS_OUT:-$GAPS_OUT_DEF}"
   WAYBAR="${WAYBAR:-$WAYBAR_DEF}"
+  WAYBAR_POS="${WAYBAR_POS:-top}"
   apply_gaps_runtime
   apply_waybar_margins
   restart_waybar
@@ -186,9 +236,10 @@ reset_key() {
 apply_all() {
   compute_defaults
   read_state_values
-  [ -n "$GAPS_IN" ]  || GAPS_IN="$GAPS_IN_DEF"
-  [ -n "$GAPS_OUT" ] || GAPS_OUT="$GAPS_OUT_DEF"
-  [ -n "$WAYBAR" ]   || WAYBAR="$WAYBAR_DEF"
+  [ -n "$GAPS_IN" ]    || GAPS_IN="$GAPS_IN_DEF"
+  [ -n "$GAPS_OUT" ]   || GAPS_OUT="$GAPS_OUT_DEF"
+  [ -n "$WAYBAR" ]     || WAYBAR="$WAYBAR_DEF"
+  [ -n "$WAYBAR_POS" ] || WAYBAR_POS="top"
   apply_gaps_runtime
   apply_waybar_margins
   restart_waybar
@@ -196,6 +247,7 @@ apply_all() {
 
 print_pairs() {
   printf 'waybar=%s\n' "$WAYBAR"
+  printf 'waybar_pos=%s\n' "$WAYBAR_POS"
   printf 'gaps_in=%s\n' "$GAPS_IN"
   printf 'gaps_out=%s\n' "$GAPS_OUT"
 }
@@ -208,6 +260,7 @@ case "${1:-}" in
   --defaults)
     compute_defaults
     WAYBAR="$WAYBAR_DEF"
+    WAYBAR_POS="top"
     GAPS_IN="$GAPS_IN_DEF"
     GAPS_OUT="$GAPS_OUT_DEF"
     print_pairs
@@ -216,9 +269,10 @@ case "${1:-}" in
     [ -n "${2:-}" ] || { printf 'Missing key\n' >&2; exit 1; }
     effective_values
     case "$2" in
-      gaps_in)  printf '%s\n' "$GAPS_IN" ;;
-      gaps_out) printf '%s\n' "$GAPS_OUT" ;;
-      waybar)   printf '%s\n' "$WAYBAR" ;;
+      gaps_in)    printf '%s\n' "$GAPS_IN" ;;
+      gaps_out)   printf '%s\n' "$GAPS_OUT" ;;
+      waybar)     printf '%s\n' "$WAYBAR" ;;
+      waybar_pos) printf '%s\n' "$WAYBAR_POS" ;;
       *) printf 'Invalid key: %s\n' "$2" >&2; exit 1 ;;
     esac
     ;;
@@ -249,7 +303,7 @@ case "${1:-}" in
   *)
     effective_values
     printf 'Usage: spaces-switch.sh [--status|--defaults|--get <key>|--set <key> <value>|--reset [key]|--apply-static|--apply]\n' >&2
-    printf 'Current: gaps_in=%s gaps_out=%s waybar=%s\n' \
-      "$GAPS_IN" "$GAPS_OUT" "$WAYBAR"
+    printf 'Current: gaps_in=%s gaps_out=%s waybar=%s waybar_pos=%s\n' \
+      "$GAPS_IN" "$GAPS_OUT" "$WAYBAR" "$WAYBAR_POS"
     ;;
 esac
