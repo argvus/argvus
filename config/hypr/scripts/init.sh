@@ -83,6 +83,10 @@ case "$1" in
       sh "$(paths_config argvus/sh/spaces-switch.sh)" --apply-static
     fi
 
+    # Apply saved monitor scale settings (monitor-switch) and any layout
+    # written by nwg-displays.
+    sh "$(paths_config argvus/sh/monitor-switch.sh)" --apply 2>/dev/null || true
+
     run_waybars
 
     # PolicyKit agent — set Qt env for systemd services (hyprpolkitagent)
@@ -122,6 +126,9 @@ case "$1" in
 
     # Reload Hyprland config (applies gaps from .spaces via hyprland.lua)
     hyprctl reload
+
+    # Apply monitor layout written by nwg-displays (if changed).
+    sh "$(paths_config argvus/sh/monitor-switch.sh)" --apply-nwg 2>/dev/null || true
 
     # Restart waybar with new margins after hyprctl reload.
     run_waybars

@@ -17,6 +17,13 @@ QtObject {
     readonly property string cardTitleAppearance:    isPortuguese ? "APARENCIA" : "APPEARANCE"
     readonly property string cardTitleSpaces:        isPortuguese ? "ESPAÇOS" : "SPACES"
     readonly property string cardTitlePower:         isPortuguese ? "ENERGIA" : "POWER"
+    readonly property string cardTitleDisplay:       isPortuguese ? "MONITOR" : "DISPLAY"
+
+    // ── DisplayCard ──
+    readonly property string displayScale:       isPortuguese ? "Escala" : "Scale"
+    readonly property string displayPowerOn:     isPortuguese ? "Ligar monitor" : "Turn on"
+    readonly property string displayPowerOff:    isPortuguese ? "Desligar monitor" : "Turn off"
+    readonly property string displayAdvanced:    isPortuguese ? "Ajuste Avançado" : "Advanced Settings"
 
     // ── SpacesCard ──
     readonly property string spacesWaybar:           isPortuguese ? "Waybar" : "Waybar"
