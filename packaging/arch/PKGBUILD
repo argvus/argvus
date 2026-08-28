@@ -29,6 +29,7 @@ depends=(
   'hyprshot'
   'hyprshutdown'
 	'wayland'
+	'nwg-displays'
 	'firefox'
 	'mesa'
 	'mesa-utils'
