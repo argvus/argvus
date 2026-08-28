@@ -72,13 +72,12 @@ hl.exec("qs -c sidebar-right")
 
 ## Tweaks
 
-### Change the keyboard device name
+### Keyboard layout switching
 
-In `KeyboardCard.qml`, the `property string kbDevice` line:
-```qml
-property string kbDevice: "usb-usb-keyboard"
-```
-Run `hyprctl devices` to see the exact name of your keyboard.
+`KeyboardCard.qml` switches the layout with `hyprctl switchxkblayout all next`,
+which cycles through the `br`/`us` groups on every keyboard — so it works on
+any machine without editing a device name. The card reads the current keymap
+from `hyprctl devices` only to show which layout is active.
 
 ### Colors
 

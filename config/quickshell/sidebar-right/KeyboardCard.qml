@@ -7,7 +7,6 @@ BaseCard {
     cardIcon:  "»"
 
     property string currentLayout: "br"
-    property string kbDevice: "usb-usb-keyboard"
 
     Timer {
         interval: 500; running: true; repeat: false
@@ -24,11 +23,19 @@ BaseCard {
                     var kbs = data.keyboards || []
                     for (var i = 0; i < kbs.length; i++) {
                         var kb = kbs[i]
-                        if (kb.name === kbDevice || kb.name.includes("keyboard")) {
-                            var km = (kb.active_keymap || "").toLowerCase()
-                            currentLayout = km.includes("us") ? "us" : "br"
-                            break
-                        }
+                        // Read the active keymap from a real keyboard (skip
+                        // virtual power/sleep/control/mouse/audio devices and
+                        // indexed clones). Only used to display state.
+                        var n = kb.name.toLowerCase()
+                        if (n.includes("power") || n.includes("sleep") ||
+                            n.includes("system-control") || n.includes("consumer-control") ||
+                            n.includes("mouse") || n.includes("audio-device"))
+                            continue
+                        if (/-\d+$/.test(kb.name))
+                            continue
+                        var km = (kb.active_keymap || "").toLowerCase()
+                        currentLayout = km.includes("us") ? "us" : "br"
+                        break
                     }
                 } catch(e) {}
             }
@@ -37,7 +44,7 @@ BaseCard {
 
     Process {
         id: switchProc
-        command: ["hyprctl", "switchxkblayout", kbDevice, "next"]
+        command: ["hyprctl", "switchxkblayout", "all", "next"]
         onExited: function(code) {
             if (code === 0)
                 currentLayout = (currentLayout === "br") ? "us" : "br"

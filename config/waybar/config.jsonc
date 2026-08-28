@@ -90,8 +90,6 @@
   },
   "hyprland/language": {
     "format": "\uf11c {short}",
-    // Search keyboard with command: hyprctl devices
-    "keyboard-name": "usb-usb-keyboard",
     "on-click": "/usr/share/argvus/waybar/scripts/taskbar.sh --layout-keyboard"
   },
   "cpu": {

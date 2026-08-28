@@ -51,8 +51,9 @@ switch_keyboard_layout() {
   require_session
   case "$XDG_SESSION_DESKTOP" in
     Hyprland)
-      # Hyprland: troca layout via hyprctl
-      hyprctl switchxkblayout usb-usb-keyboard next
+      # Hyprland: switch layout on every keyboard so it works regardless of
+      # the physical device name (portable across machines).
+      hyprctl switchxkblayout all next
       ;;
     sway)
       swaymsg input type:keyboard xkb_switch_layout next

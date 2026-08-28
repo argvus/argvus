@@ -99,6 +99,8 @@ case "$1" in
     pkill snappy-switcher; snappy-switcher --daemon &
     wl-paste --type text --watch cliphist store &
     wl-paste --type image --watch cliphist store &
+    pkill -f keyboard-layout-daemon.sh 2>/dev/null || true
+    sh "$(paths_config argvus/sh/keyboard-layout-daemon.sh)" </dev/null >>/tmp/keyboard-layout-daemon.log 2>&1 &
     run_dunst
 
     # Bluetooth
