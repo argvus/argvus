@@ -7,7 +7,7 @@ SHORTCUT                               DESCRIPTION
 
 01 - SUPER + 1..9               = Workspaces
 02 - SUPER + Shift + Space      = Enable/Disable Floating Window
-03 - SUPER + ←→↑↓              = Focus tiled window by direction
+03 - SUPER + ←→↑↓               = Focus tiled window by direction
 04 - SUPER + Ctrl + ←→          = Cycle focus between windows (tiled and floating)
 05 - Ctrl + Alt + ←→  or        = Moving between work areas
      Mouse 4 / Mouse 5
@@ -43,24 +43,25 @@ SHORTCUT                               DESCRIPTION
 32 - SUPER + Shift + m          = Turn monitor off/on (not suspend system)
 33 - SUPER + Esc                = Exit system
 34 - SUPER + Shift + r          = Reload Hyprland
+35 - SUPER + Alt + ↑/↓          = Move taskbar to top/bottom
 
 Software Shortcuts »
 --------------------------------------------------
 SHORTCUT                               DESCRIPTION
 
-35 - SUPER + Enter              = Terminal
-36 - SUPER + Space              = File Manager
-37 - SUPER + Shift + s          = Removable storage menu
-38 - SUPER + b                  = Default Browser
-39 - SUPER + d                  = Program Launcher
-40 - SUPER + c                  = Calculator
-41 - SUPER + Ctrl + /           = Kitty Cheatsheets
-42 - SUPER + Shift + /          = Hyprland Cheatsheets
-43 - SUPER + h                  = Clipboard History
-44 - SUPER + Shift + h          = Clear Clipboard History
-45 - SUPER + p                  = Color Picker
-46 - SUPER + .                  = Emoji Picker
-47 - ALT + SHIFT                = Switch keyboard between "pt-br (abnt2)" and "us"
+36 - SUPER + Enter              = Terminal
+37 - SUPER + Space              = File Manager
+38 - SUPER + Shift + s          = Removable storage menu
+39 - SUPER + b                  = Default Browser
+40 - SUPER + d                  = Program Launcher
+41 - SUPER + c                  = Calculator
+42 - SUPER + Ctrl + /           = Kitty Cheatsheets
+43 - SUPER + Shift + /          = Hyprland Cheatsheets
+44 - SUPER + h                  = Clipboard History
+45 - SUPER + Shift + h          = Clear Clipboard History
+46 - SUPER + p                  = Color Picker
+47 - SUPER + .                  = Emoji Picker
+48 - ALT + SHIFT                = Switch keyboard between "pt-br (abnt2)" and "us"
 
 Directories »
 -----------------------------------------------

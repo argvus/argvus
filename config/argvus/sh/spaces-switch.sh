@@ -101,21 +101,25 @@ clamp_to_defaults() {
   write_spaces
 }
 
+# Resolve the bar position (top|bottom) without disturbing other values.
+resolve_pos() {
+  if [ -z "${WAYBAR_POS:-}" ]; then
+    WAYBAR_POS="$(sed -n 's/^waybar_pos=//p' "$SPACES_FILE" 2>/dev/null | head -1)"
+  fi
+  [ -n "${WAYBAR_POS:-}" ] || WAYBAR_POS="top"
+}
+
 apply_waybar_margins() {
   [ -n "${WAYBAR:-}" ] || return 0
 
-  # Ensure the position is resolved (top by default).
-  if [ -z "${WAYBAR_POS:-}" ]; then
-    compute_defaults
-    read_state_values
-  fi
-  [ -n "${WAYBAR_POS:-}" ] || WAYBAR_POS="top"
+  # Resolve the position (default top) without re-reading WAYBAR.
+  resolve_pos
 
   # The "float" look (WAYBAR > 0) uses a subtle negative offset on the far
   # edge; "normal" (WAYBAR = 0) is flush with a small gap. The main bar is
   # mirrored when it sits at the bottom so both top and bottom respect
   # the current float/normal mode.
-  if [ "$WAYBAR" -gt 0 ]; then _edge_gap="-8"; else _edge_gap="3"; fi
+  if [ "$WAYBAR" -gt 0 ] 2>/dev/null; then _edge_gap="-8"; else _edge_gap="3"; fi
 
   # Sysinfo (left, vertical) bar margins stay unchanged regardless of the
   # top/bottom choice — only the main status bar moves.
@@ -214,7 +218,11 @@ reset_key() {
   _key="${1:-all}"
   read_state_values
   case "$_key" in
-    all)      GAPS_IN=""; GAPS_OUT=""; WAYBAR=""; WAYBAR_POS="" ;;
+    all)
+      # The bar POSITION is a user preference that must survive theme
+      # changes and logins — reset gaps/waybar but keep waybar_pos.
+      GAPS_IN=""; GAPS_OUT=""; WAYBAR=""
+      ;;
     gaps_in)  GAPS_IN="" ;;
     gaps_out) GAPS_OUT="" ;;
     waybar)   WAYBAR="" ;;

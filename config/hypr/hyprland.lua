@@ -791,6 +791,10 @@ hl.bind(mod .. " + L", hl.dsp.exec_cmd(_sh(_config_path("hypr/scripts/power-menu
 -- Reload Hyprland ---------------------------------------------------------------------------------
 hl.bind(mod .. " + SHIFT + R", hl.dsp.exec_cmd(_sh(_config_path("hypr/scripts/init.sh")) .. " --reload"))
 
+-- Move the waybar status bar to the top/bottom ----------------------------------------------------
+hl.bind("SUPER + ALT + up",   hl.dsp.exec_cmd(_sh(_config_path("argvus/sh/spaces-switch.sh")) .. " --set waybar_pos top"))
+hl.bind("SUPER + ALT + down", hl.dsp.exec_cmd(_sh(_config_path("argvus/sh/spaces-switch.sh")) .. " --set waybar_pos bottom"))
+
 -- User overrides ----------------------------------------------------------------------------------
 _load_user_override("monitors.lua")
 _load_user_override("rules.lua")

@@ -7,7 +7,7 @@ ATALHO                            DESCRIÇÃO
 
 01 - SUPER + 1..9               = Áreas de trabalho
 02 - SUPER + Shift + Space      = Ativa/Desativa Janela flutuante
-03 - SUPER + ←→↑↓              = Focar janela tileada por direção
+03 - SUPER + ←→↑↓               = Focar janela tileada por direção
 04 - SUPER + Ctrl + ←→          = Ciclar foco entre janelas (tileadas e flutuantes)
 05 - Ctrl + Alt + ←→  ou        = Circular entre áreas de trabalho
      Mouse 4 / Mouse 5
@@ -43,24 +43,25 @@ ATALHO                            DESCRIÇÃO
 32 - SUPER + Shift + m          = Desligar/Ligar monitor (não é suspender)
 33 - SUPER + Esc                = Sair do sistema
 34 - SUPER + Shift + r          = Recarregar Hyprland
+35 - SUPER + Alt + ↑/↓          = Mover barra de tarefas para topo/inferior
 
 Atalhos de software »
 ------------------------------------------------
 ATALHO                                 DESCRIÇÃO
 
-35 - SUPER + Enter              = Terminal
-36 - SUPER + Space              = Gerenciador de arquivos
-37 - SUPER + Shift + s          = Menu de dispositivos removíveis
-38 - SUPER + b                  = Navegador padrão
-39 - SUPER + d                  = Lançador de programas
-40 - SUPER + c                  = Calculadora
-41 - SUPER + Ctrl + /           = Cheatsheets do Kitty
-42 - SUPER + Shift + /          = Cheatsheets do Hyprland
-43 - SUPER + h                  = Histórico no Clipboard
-44 - SUPER + Shift + h          = Apagar histórico do Clipboard
-45 - SUPER + p                  = Seletor de cores (Color Picker)
-46 - SUPER + .                  = Emoji Picker
-47 - ALT + SHIFT                = Altera teclado entre "pt-br (abnt2)" e "us"
+36 - SUPER + Enter              = Terminal
+37 - SUPER + Space              = Gerenciador de arquivos
+38 - SUPER + Shift + s          = Menu de dispositivos removíveis
+39 - SUPER + b                  = Navegador padrão
+40 - SUPER + d                  = Lançador de programas
+41 - SUPER + c                  = Calculadora
+42 - SUPER + Ctrl + /           = Cheatsheets do Kitty
+43 - SUPER + Shift + /          = Cheatsheets do Hyprland
+44 - SUPER + h                  = Histórico no Clipboard
+45 - SUPER + Shift + h          = Apagar histórico do Clipboard
+46 - SUPER + p                  = Seletor de cores (Color Picker)
+47 - SUPER + .                  = Emoji Picker
+48 - ALT + SHIFT                = Altera teclado entre "pt-br (abnt2)" e "us"
 
 
 Diretórios »
