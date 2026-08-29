@@ -75,6 +75,7 @@ sudo pacman -Syu argvus
 | argvus-waybar | [argvus/argvus-waybar](https://github.com/argvus/argvus-waybar) | [![Release](https://github.com/argvus/argvus-waybar/actions/workflows/release.yml/badge.svg)](https://github.com/argvus/argvus-waybar/actions/workflows/release.yml) |
 | argvus-session | [argvus/argvus-session](https://github.com/argvus/argvus-session) | [![Release](https://github.com/argvus/argvus-session/actions/workflows/release.yml/badge.svg)](https://github.com/argvus/argvus-session/actions/workflows/release.yml) |
 | argvus-splash | [argvus/argvus-splash](https://github.com/argvus/argvus-splash) | [![Release](https://github.com/argvus/argvus-splash/actions/workflows/release.yml/badge.svg)](https://github.com/argvus/argvus-splash/actions/workflows/release.yml) |
+| argvus-default-apps | [argvus/argvus-default-apps](https://github.com/argvus/argvus-default-apps) | [![Release](https://github.com/argvus/argvus-default-apps/actions/workflows/release.yml/badge.svg)](https://github.com/argvus/argvus-default-apps/actions/workflows/release.yml) |
 
 ## Donate to the development of ARGVUS
 
