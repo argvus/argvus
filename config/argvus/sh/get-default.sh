@@ -43,14 +43,14 @@ fallback() {
   case "$1" in
     terminal) printf 'kitty\n' ;;
     file_manager) printf 'spf\n' ;;
-    text_editor) printf 'nvim\n' ;;
-    terminal_editor) printf 'nvim\n' ;;
+    text_editor) printf 'mousepad\n' ;;
+    terminal_editor) printf 'vim\n' ;;
     browser) printf 'xdg-open\n' ;;
     image_viewer) printf 'imv\n' ;;
     pdf_viewer) printf 'zathura\n' ;;
     video_player) printf 'mpv\n' ;;
-    audio_player) printf 'mpv\n' ;;
-    archive) printf 'file-roller\n' ;;
+    audio_player) printf 'audacious\n' ;;
+    archive) printf 'xarchiver\n' ;;
     launcher) printf 'rofi\n' ;;
     *) printf '\n' ;;
   esac

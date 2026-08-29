@@ -34,12 +34,13 @@ get_default_value() {
     case "$_cat" in
       terminal) printf 'kitty\n' ;;
       file_manager) printf 'spf\n' ;;
-      terminal_editor) printf 'nvim\n' ;;
-      text_editor) printf 'nvim\n' ;;
+      terminal_editor) printf 'vim\n' ;;
+      text_editor) printf 'mousepad\n' ;;
       image_viewer) printf 'imv\n' ;;
       pdf_viewer) printf 'zathura\n' ;;
-      video_player|audio_player) printf 'mpv\n' ;;
-      archive) printf 'file-roller\n' ;;
+      video_player) printf 'mpv\n' ;;
+      audio_player) printf 'audacious\n' ;;
+      archive) printf 'xarchiver\n' ;;
       launcher) printf 'rofi\n' ;;
       browser) printf 'xdg-open\n' ;;
       *) printf '\n' ;;
@@ -55,9 +56,9 @@ FINDER="$(get_default_value launcher | sed '/^$/d' | head -1)"
 FILE_MANAGER="$(get_default_value file_manager | sed '/^$/d' | head -1)"
 [ -n "$FILE_MANAGER" ] || FILE_MANAGER="spf"
 TERMINAL_EDITOR="$(get_default_value terminal_editor | sed '/^$/d' | head -1)"
-[ -n "$TERMINAL_EDITOR" ] || TERMINAL_EDITOR="nvim"
+[ -n "$TERMINAL_EDITOR" ] || TERMINAL_EDITOR="vim"
 TEXT_EDITOR="$(get_default_value text_editor | sed '/^$/d' | head -1)"
-[ -n "$TEXT_EDITOR" ] || TEXT_EDITOR="nvim"
+[ -n "$TEXT_EDITOR" ] || TEXT_EDITOR="mousepad"
 IMAGE_VIEWER="$(get_default_value image_viewer | sed '/^$/d' | head -1)"
 [ -n "$IMAGE_VIEWER" ] || IMAGE_VIEWER="imv"
 PDF_VIEWER="$(get_default_value pdf_viewer | sed '/^$/d' | head -1)"
@@ -65,9 +66,9 @@ PDF_VIEWER="$(get_default_value pdf_viewer | sed '/^$/d' | head -1)"
 VIDEO_PLAYER="$(get_default_value video_player | sed '/^$/d' | head -1)"
 [ -n "$VIDEO_PLAYER" ] || VIDEO_PLAYER="mpv"
 AUDIO_PLAYER="$(get_default_value audio_player | sed '/^$/d' | head -1)"
-[ -n "$AUDIO_PLAYER" ] || AUDIO_PLAYER="mpv"
+[ -n "$AUDIO_PLAYER" ] || AUDIO_PLAYER="audacious"
 ARCHIVE_APP="$(get_default_value archive | sed '/^$/d' | head -1)"
-[ -n "$ARCHIVE_APP" ] || ARCHIVE_APP="file-roller"
+[ -n "$ARCHIVE_APP" ] || ARCHIVE_APP="xarchiver"
 
 # -- UI defaults --------------------------------------------------------------
 BAR_SIZE="8"

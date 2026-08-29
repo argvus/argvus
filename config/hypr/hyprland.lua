@@ -68,7 +68,7 @@ end
 local _defaults_fallback = {
   terminal = "kitty",
   file_manager = "spf",
-  text_editor = "nvim",
+  text_editor = "mousepad",
   terminal_editor = "vim",
   browser = "xdg-open",
   image_viewer = "imv",

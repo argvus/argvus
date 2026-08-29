@@ -6,15 +6,15 @@ ARGVUS_BOOTSTRAP="${ARGVUS_BOOTSTRAP:-${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}
 
 # Default apps resolve from the argvus-default-apps state (via variables.sh),
 # falling back to the Argvus built-ins.
-EDITOR="${TERMINAL_EDITOR:-nvim}"
-TEXT_EDITOR="${TEXT_EDITOR:-nvim}"
+EDITOR="${TERMINAL_EDITOR:-vim}"
+TEXT_EDITOR="${TEXT_EDITOR:-mousepad}"
 YAZI="$FILE_MANAGER"
 [ -n "$YAZI" ] || YAZI="/usr/bin/yazi"
 ZATHURA="${PDF_VIEWER:-zathura}"
 IMAGE_VIEWER="${IMAGE_VIEWER:-imv}"
 VIDEO_PLAYER="${VIDEO_PLAYER:-mpv}"
-AUDIO_PLAYER="${AUDIO_PLAYER:-mpv}"
-ARCHIVE_APP="${ARCHIVE_APP:-file-roller}"
+AUDIO_PLAYER="${AUDIO_PLAYER:-audacious}"
+ARCHIVE_APP="${ARCHIVE_APP:-xarchiver}"
 
 target=$1
 
