@@ -1,0 +1,14 @@
+{
+  "chat.tools.terminal.autoApprove": {
+    "rm -rf *": {
+      "approve": false
+    },
+    "rm -f *": {
+      "approve": false
+    },
+    "*": {
+      "approve": true,
+      "matchCommandLine": true
+    }
+  }
+}
