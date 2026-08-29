@@ -570,7 +570,7 @@ end
 hl.bind(mod .. " + D", hl.dsp.exec_cmd(_launcher_cmd))
 
 -- Default apps selector (argvus-default-apps) -------------------------------------------------------
-hl.bind("SUPER + ALT + P", hl.dsp.exec_cmd("argvus-default-apps show"))
+hl.bind(mod .. " + ALT + P", hl.dsp.exec_cmd("sh /usr/share/argvus/argvus/sh/default_apps_show.sh"))
 
 -- Maximize Window ---------------------------------------------------------------------------------
 hl.bind(mod .. " + S", hl.dsp.window.fullscreen({ mode = "maximized", action = "toggle" }))
@@ -876,8 +876,10 @@ hl.bind(mod .. " + L", hl.dsp.exec_cmd(_sh(_config_path("hypr/scripts/power-menu
 hl.bind(mod .. " + SHIFT + R", hl.dsp.exec_cmd(_sh(_config_path("hypr/scripts/init.sh")) .. " --reload"))
 
 -- Move the waybar status bar to the top/bottom ----------------------------------------------------
-hl.bind("SUPER + ALT + up",   hl.dsp.exec_cmd(_sh(_config_path("argvus/sh/spaces-switch.sh")) .. " --set waybar_pos top"))
-hl.bind("SUPER + ALT + down", hl.dsp.exec_cmd(_sh(_config_path("argvus/sh/spaces-switch.sh")) .. " --set waybar_pos bottom"))
+-- Use absolute paths so the bind works even when hyprland's env is minimal.
+-- Bind arrow keys to move the waybar; keep a single binding per direction
+hl.bind(mod .. " + ALT + up",   hl.dsp.exec_cmd("sh /usr/share/argvus/argvus/sh/spaces-switch.sh --set waybar_pos top"))
+hl.bind(mod .. " + ALT + down", hl.dsp.exec_cmd("sh /usr/share/argvus/argvus/sh/spaces-switch.sh --set waybar_pos bottom"))
 
 -- User overrides ----------------------------------------------------------------------------------
 _load_user_override("monitors.lua")

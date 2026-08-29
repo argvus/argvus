@@ -37,7 +37,9 @@ set_gsettings() {
 }
 
 run_waybars() {
-  pkill -x waybar &
+  # Kill existing waybar instances synchronously to avoid launching new
+  # instances before the old ones exit (which could create duplicate bars).
+  pkill -x waybar 2>/dev/null || true
   pkill -x argvus-storage 2>/dev/null || true
   sleep 0.5
 

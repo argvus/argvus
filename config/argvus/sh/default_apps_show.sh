@@ -9,15 +9,17 @@ set -eu
 
 BIN="argvus-default-apps"
 
-# Resolve the tool; prefer PATH, fall back to common locations.
-FOUND="$(command -v "$BIN" 2>/dev/null || true)"
+# Resolve the tool; prefer the user-local build (which may be newer than the
+# system package) and fall back to PATH so hyprland's minimal env still works.
+FOUND=""
+for p in "$HOME/.local/bin/$BIN" /usr/local/bin/$BIN /usr/bin/$BIN; do
+  if [ -x "$p" ]; then
+    FOUND="$p"
+    break
+  fi
+done
 if [ -z "$FOUND" ]; then
-  for p in /usr/bin/$BIN /usr/local/bin/$BIN "$HOME/.local/bin/$BIN"; do
-    if [ -x "$p" ]; then
-      FOUND="$p"
-      break
-    fi
-  done
+  FOUND="$(command -v "$BIN" 2>/dev/null || true)"
 fi
 
 if [ -z "$FOUND" ]; then
