@@ -4,9 +4,17 @@
 ARGVUS_BOOTSTRAP="${ARGVUS_BOOTSTRAP:-${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/argvus/sh/bootstrap.sh}"
 . "$ARGVUS_BOOTSTRAP"
 
-EDITOR=nvim
-YAZI="/usr/bin/yazi"
-ZATHURA="/usr/bin/zathura"
+# Default apps resolve from the argvus-default-apps state (via variables.sh),
+# falling back to the Argvus built-ins.
+EDITOR="${TERMINAL_EDITOR:-nvim}"
+TEXT_EDITOR="${TEXT_EDITOR:-nvim}"
+YAZI="$FILE_MANAGER"
+[ -n "$YAZI" ] || YAZI="/usr/bin/yazi"
+ZATHURA="${PDF_VIEWER:-zathura}"
+IMAGE_VIEWER="${IMAGE_VIEWER:-imv}"
+VIDEO_PLAYER="${VIDEO_PLAYER:-mpv}"
+AUDIO_PLAYER="${AUDIO_PLAYER:-mpv}"
+ARCHIVE_APP="${ARCHIVE_APP:-file-roller}"
 
 target=$1
 
@@ -32,13 +40,13 @@ case "$mime" in
         "$ZATHURA" "$target" >/dev/null 2>&1 &
         ;;
     image/*)
-        imv "$target" >/dev/null 2>&1 &
+        "$IMAGE_VIEWER" "$target" >/dev/null 2>&1 &
         ;;
     video/*)
-        mpv "$target" >/dev/null 2>&1 &
+        "$VIDEO_PLAYER" "$target" >/dev/null 2>&1 &
         ;;
     audio/*)
-        mpv "$target" >/dev/null 2>&1 &
+        "$AUDIO_PLAYER" "$target" >/dev/null 2>&1 &
         ;;
     application/zip|\
     application/x-7z-compressed|\
@@ -47,7 +55,7 @@ case "$mime" in
     application/gzip|\
     application/x-bzip2|\
     application/x-xz)
-        file-roller "$target" >/dev/null 2>&1 &
+        "$ARCHIVE_APP" "$target" >/dev/null 2>&1 &
         ;;
     *)
         xdg-open "$target" >/dev/null 2>&1 &

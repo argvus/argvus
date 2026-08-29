@@ -18,9 +18,56 @@ GTK_THEME="Adwaita-dark"
 ICON_THEME="Yaru-prussiangreen-dark"
 GTK_CURSOR="Adwaita"
 
+# -- Application defaults -----------------------------------------------------
+# $BOOTSTRAP_DIR is set by bootstrap.sh before sourcing this file. When not
+# present (standalone use), fall back to the packaged location on PATH or
+# /usr/share/argvus so TERM/FINDER still resolve.
+_GET_DEFAULT="${BOOTSTRAP_DIR:-${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/argvus/sh}/get-default.sh"
+get_default_value() {
+  _cat="$1"
+  if [ -x "$_GET_DEFAULT" ]; then
+    sh "$_GET_DEFAULT" "$_cat"
+  elif command -v get-default >/dev/null 2>&1; then
+    get-default "$_cat"
+  else
+    # Local fallback matching argvus-default-apps defaults.
+    case "$_cat" in
+      terminal) printf 'kitty\n' ;;
+      file_manager) printf 'spf\n' ;;
+      terminal_editor) printf 'nvim\n' ;;
+      text_editor) printf 'nvim\n' ;;
+      image_viewer) printf 'imv\n' ;;
+      pdf_viewer) printf 'zathura\n' ;;
+      video_player|audio_player) printf 'mpv\n' ;;
+      archive) printf 'file-roller\n' ;;
+      launcher) printf 'rofi\n' ;;
+      browser) printf 'xdg-open\n' ;;
+      *) printf '\n' ;;
+    esac
+  fi
+}
+
 # -- Application paths --------------------------------------------------------
-FINDER="/usr/bin/rofi"
-TERM="/usr/bin/kitty"
+TERM="$(get_default_value terminal | sed '/^$/d' | head -1)"
+[ -n "$TERM" ] || TERM="kitty"
+FINDER="$(get_default_value launcher | sed '/^$/d' | head -1)"
+[ -n "$FINDER" ] || FINDER="rofi"
+FILE_MANAGER="$(get_default_value file_manager | sed '/^$/d' | head -1)"
+[ -n "$FILE_MANAGER" ] || FILE_MANAGER="spf"
+TERMINAL_EDITOR="$(get_default_value terminal_editor | sed '/^$/d' | head -1)"
+[ -n "$TERMINAL_EDITOR" ] || TERMINAL_EDITOR="nvim"
+TEXT_EDITOR="$(get_default_value text_editor | sed '/^$/d' | head -1)"
+[ -n "$TEXT_EDITOR" ] || TEXT_EDITOR="nvim"
+IMAGE_VIEWER="$(get_default_value image_viewer | sed '/^$/d' | head -1)"
+[ -n "$IMAGE_VIEWER" ] || IMAGE_VIEWER="imv"
+PDF_VIEWER="$(get_default_value pdf_viewer | sed '/^$/d' | head -1)"
+[ -n "$PDF_VIEWER" ] || PDF_VIEWER="zathura"
+VIDEO_PLAYER="$(get_default_value video_player | sed '/^$/d' | head -1)"
+[ -n "$VIDEO_PLAYER" ] || VIDEO_PLAYER="mpv"
+AUDIO_PLAYER="$(get_default_value audio_player | sed '/^$/d' | head -1)"
+[ -n "$AUDIO_PLAYER" ] || AUDIO_PLAYER="mpv"
+ARCHIVE_APP="$(get_default_value archive | sed '/^$/d' | head -1)"
+[ -n "$ARCHIVE_APP" ] || ARCHIVE_APP="file-roller"
 
 # -- UI defaults --------------------------------------------------------------
 BAR_SIZE="8"

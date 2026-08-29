@@ -1,6 +1,6 @@
 # Maintainer: William C. Canin
 pkgname=argvus
-pkgver=0.2.1
+pkgver=0.3.0
 pkgrel=1
 pkgdesc="Argvus is a complete, ready-to-use desktop environment focused on Hyprland, packaged for Arch Linux."
 arch=('x86_64')
@@ -15,6 +15,7 @@ depends=(
   'argvus-session'
 	'argvus-accounts'
   'argvus-storage'
+	'argvus-default-apps'
   'argvus-waybar'
 	'argvus-pwvucontrol'
 	'argvus-snappy-switcher'
@@ -53,6 +54,7 @@ depends=(
   'file-roller'
   'fontconfig'
   'foot'
+	'feh'
   'glib2'
   'grim'
   'gsimplecal'
@@ -61,6 +63,7 @@ depends=(
   'gtk4'
   'imagemagick'
   'imv'
+	'audacious'
   'udisks2'
   'udiskie'
   'jq'

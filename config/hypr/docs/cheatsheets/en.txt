@@ -62,6 +62,7 @@ SHORTCUT                               DESCRIPTION
 46 - SUPER + p                  = Color Picker
 47 - SUPER + .                  = Emoji Picker
 48 - ALT + SHIFT                = Switch keyboard between "pt-br (abnt2)" and "us"
+49 - SUPER + Alt + P            = Default apps selector (argvus-default-apps)
 
 Directories »
 -----------------------------------------------

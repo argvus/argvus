@@ -64,6 +64,46 @@ local function _read_first_line(paths)
   return nil
 end
 
+-- Default applications (written by argvus-default-apps) --------------------------------------------
+local _defaults_fallback = {
+  terminal = "kitty",
+  file_manager = "spf",
+  text_editor = "nvim",
+  terminal_editor = "vim",
+  browser = "xdg-open",
+  image_viewer = "imv",
+  pdf_viewer = "zathura",
+  video_player = "mpv",
+  audio_player = "audacious",
+  archive = "xarchiver",
+  launcher = "rofi",
+}
+
+local _default_values = {}
+local _reads_defaults = false
+local function _get_default(category)
+  -- Resolve the values file once, then serve cached lookups.
+  if not _reads_defaults then
+    _reads_defaults = true
+    local path = _first_existing({
+      _config_home .. "/argvus/defaults.json",
+      (os.getenv("XDG_STATE_HOME") or (_home .. "/.local/state")) .. "/argvus/defaults.json",
+      _system_config .. "/defaults.json",
+    })
+    local file = io.open(path)
+    if file then
+      for _line in file:lines() do
+        local key, value = _line:match('^%s*"([%w_]+)"%s*:%s*"([^"]*)"')
+        if key and value ~= "" then
+          _default_values[key] = value
+        end
+      end
+      file:close()
+    end
+  end
+  return _default_values[category] or _defaults_fallback[category]
+end
+
 local _theme_name = "argvus-dark-aether"
 local _active_theme = _read_first_line({
   _state_home .. "/.active-theme",
@@ -187,9 +227,27 @@ hl.env("XDG_CONFIG_DIRS", _system_config .. ":" .. (os.getenv("XDG_CONFIG_DIRS")
 -- Variables ---------------------------------------------------------------------------------------
 local mod = "SUPER"
 local kitty_config = string.format("%q", _config_path("kitty/kitty.conf"))
-local terminal = "kitty --config " .. kitty_config
--- Default File Manager: superfile (spf)
-local file_manager = terminal .. " -e spf"
+local _terminal_bin = _get_default("terminal")
+-- Keep the kitty.config path only when the default terminal is kitty.
+local terminal
+if _terminal_bin == "kitty" then
+  terminal = "kitty --config " .. kitty_config
+else
+  terminal = _terminal_bin
+end
+-- Default File Manager: the state may hold a TUI (runs in the terminal) or a
+-- GUI file manager. TUI ones launch through the terminal like the old spf.
+local _tui_file_managers = {
+  spf = true, yazi = true, ranger = true, lf = true, joshuto = true,
+  broot = true, mc = true, nnn = true,
+}
+local _file_manager_bin = _get_default("file_manager")
+local file_manager
+if _tui_file_managers[_file_manager_bin] then
+  file_manager = terminal .. " -e " .. _file_manager_bin
+else
+  file_manager = _file_manager_bin
+end
 local rofi_config = string.format("%q", _config_path("rofi/config.rasi"))
 
 -- Global configuration ----------------------------------------------------------------------------
@@ -492,8 +550,19 @@ hl.bind(mod .. " + SHIFT + W", hl.dsp.exec_cmd(_sh(_config_path("argvus/sh/weath
 hl.bind(mod .. " + F5", hl.dsp.exec_cmd(_sh(_config_path("argvus/sh/toggle-mode.sh"))))
 
 -- Finder ------------------------------------------------------------------------------------------
-hl.bind(mod .. " + D", hl.dsp.exec_cmd('rofi -config ' .. rofi_config .. ' -show drun -display-drun "drun"'))
--- hl.bind(mod .. " + D", hl.dsp.exec_cmd("wofi"))
+local _launcher_bin = _get_default("launcher")
+local _launcher_cmd
+if _launcher_bin == "rofi" or _launcher_bin == "" then
+  _launcher_cmd = 'rofi -config ' .. rofi_config .. ' -show drun -display-drun "drun"'
+elseif _launcher_bin == "wofi" then
+  _launcher_cmd = "wofi --show drun"
+else
+  _launcher_cmd = _launcher_bin .. " --show drun"
+end
+hl.bind(mod .. " + D", hl.dsp.exec_cmd(_launcher_cmd))
+
+-- Default apps selector (argvus-default-apps) -------------------------------------------------------
+hl.bind("SUPER + ALT + P", hl.dsp.exec_cmd("argvus-default-apps show"))
 
 -- Maximize Window ---------------------------------------------------------------------------------
 hl.bind(mod .. " + S", hl.dsp.window.fullscreen({ mode = "maximized", action = "toggle" }))
@@ -706,7 +775,14 @@ hl.bind("XF86AudioStop", hl.dsp.exec_cmd("playerctl stop"))
 hl.bind(mod .. " + SHIFT + M", hl.dsp.dpms({ action = "toggle" }))
 
 -- Default browser ---------------------------------------------------------------------------------
-hl.bind(mod .. " + B", hl.dsp.exec_cmd("xdg-open https://"))
+local _browser_bin = _get_default("browser")
+local _browser_cmd
+if _browser_bin == "xdg-open" or _browser_bin == "" then
+  _browser_cmd = "xdg-open https://"
+else
+  _browser_cmd = _browser_bin .. " https://"
+end
+hl.bind(mod .. " + B", hl.dsp.exec_cmd(_browser_cmd))
 
 -- Screen recording --------------------------------------------------------------------------------
 hl.bind(mod .. " + G", hl.dsp.exec_cmd(_sh(_config_path("hypr/scripts/screenshot.sh")) .. " --video-full"))

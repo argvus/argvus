@@ -62,6 +62,7 @@ ATALHO                                 DESCRIÇÃO
 46 - SUPER + p                  = Seletor de cores (Color Picker)
 47 - SUPER + .                  = Emoji Picker
 48 - ALT + SHIFT                = Altera teclado entre "pt-br (abnt2)" e "us"
+49 - SUPER + Alt + P            = Seletor de aplicativos padrão (argvus-default-apps)
 
 
 Diretórios »
