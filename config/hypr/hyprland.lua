@@ -484,6 +484,14 @@ hl.window_rule({
 })
 hl.window_rule({ match = { class = "mpv" }, float = true })
 
+-- argvus-default-apps selector: open as a floating, centered window ---------------
+hl.window_rule({
+  match = { class = "argvus-default-apps" },
+  float = true,
+  center = true,
+  size = "720 520",
+})
+
 -- Agente de autenticação do PolicyKit (pkexec) ------------------------------------------------------
 -- Sem esta regra, a janela do hyprpolkitagent entra no layout em tile atrás/abaixo
 -- da sidebar-right (que roda em layer-shell "aboveWindows"). O diálogo acaba invisível

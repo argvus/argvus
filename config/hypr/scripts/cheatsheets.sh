@@ -12,8 +12,23 @@ else
   PROMPT="Search"
 fi
 
-if [ "$FINDER" = "/usr/bin/rofi" ]; then
-  cat "$CHEAT_FILE" | $FINDER -dmenu -p "$PROMPT" -i -theme-str 'window { width: 1050px; height: 600px;}'
-elif [ "$FINDER" = "/usr/bin/wofi" ]; then
-  cat "$CHEAT_FILE" | $FINDER
-fi
+# FINDER may be a bare name (rofi/wofi) or an absolute path; compare by base
+# name so launcher changes from the default-apps state keep working.
+_finder_base="${FINDER##*/}"
+_finder_base="${_finder_base%% *}"
+
+case "$_finder_base" in
+  rofi)
+    rofi -dmenu -p "$PROMPT" -i -theme-str 'window { width: 1050px; height: 600px;}' < "$CHEAT_FILE"
+    ;;
+  wofi)
+    wofi --show dmenu < "$CHEAT_FILE"
+    ;;
+  fuzzel)
+    fuzzel --dmenu --prompt "$PROMPT" < "$CHEAT_FILE"
+    ;;
+  *)
+    # Generic launcher: most menus accept the stdin-as-menu pattern.
+    "$_finder_base" < "$CHEAT_FILE"
+    ;;
+esac
