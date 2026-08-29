@@ -29,18 +29,18 @@ do_logout() {
   # Support to VeraCrypt Umount devices in logout
   #
   # 1 - Create script:
-  # sudo tee /usr/local/bin/veracrypt-security-exit.sh > /dev/null << 'EOF'
+  # sudo tee /usr/bin/veracrypt-security-exit.sh > /dev/null << 'EOF'
   # /usr/bin/veracrypt --text --dismount
   # EOF
-  # sudo chmod +x /usr/local/bin/veracrypt-security-exit.sh
+  # sudo chmod +x /usr/bin/veracrypt-security-exit.sh
 
   # 2 - Create permissions script:
   # cat << EOF > /etc/sudoers.d/veracrypt-unmount
-  # <USER> ALL=(root) NOPASSWD: /usr/local/bin/veracrypt-security-exit.sh
+  # <USER> ALL=(root) NOPASSWD: /usr/bin/veracrypt-security-exit.sh
   # EOF
 
-  if [ -f "/usr/local/bin/veracrypt-security-exit.sh" ]; then
-    sudo /usr/local/bin/veracrypt-security-exit.sh && notify-send "VeraCrypt" "Umount all devices" 2>/dev/null || true
+  if [ -f "/usr/bin/veracrypt-security-exit.sh" ]; then
+    sudo /usr/bin/veracrypt-security-exit.sh && notify-send "VeraCrypt" "Umount all devices" 2>/dev/null || true
   fi
 
   hyprshutdown
@@ -71,24 +71,44 @@ else
 fi
 
 # -- Menu -----------------------------------------------------------------
-if [ "$FINDER" = "/usr/bin/rofi" ]; then
-  CHOICE=$(printf '%s\n' \
-    "$LOCK" \
-    "$SUSPEND" \
-    "$LOGOUT" \
-    "$REBOOT" \
-    "$SHUTDOWN" |
-    $FINDER -config "$(paths_config rofi/config.rasi)" -dmenu -p ">" \
-    -theme-str 'window {width: 220px;} listview {lines: 5;}' -no-custom -i)
-elif [ "$FINDER" = "/usr/bin/wofi" ]; then
-  CHOICE=$(printf '%s\n' \
-    "$LOCK" \
-    "$SUSPEND" \
-    "$LOGOUT" \
-    "$REBOOT" \
-    "$SHUTDOWN" |
-    $FINDER)
+# Ensure we have a menu launcher; prefer rofi, fall back to wofi
+if [ -z "$FINDER" ]; then
+  if command -v rofi >/dev/null 2>&1; then
+    FINDER=$(command -v rofi)
+  elif command -v wofi >/dev/null 2>&1; then
+    FINDER=$(command -v wofi)
+  else
+    echo "No menu launcher (rofi/wofi) found." >&2
+    exit 1
+  fi
 fi
+
+# Use basename so different install paths still match
+case "$(basename "$FINDER")" in
+rofi)
+  CHOICE=$(printf '%s\n' \
+    "$LOCK" \
+    "$SUSPEND" \
+    "$LOGOUT" \
+    "$REBOOT" \
+    "$SHUTDOWN" |
+    "$FINDER" -config "$(paths_config rofi/config.rasi)" -dmenu -p ">" \
+    -theme-str 'window {width: 220px;} listview {lines: 5;}' -no-custom -i)
+  ;;
+wofi)
+  CHOICE=$(printf '%s\n' \
+    "$LOCK" \
+    "$SUSPEND" \
+    "$LOGOUT" \
+    "$REBOOT" \
+    "$SHUTDOWN" |
+    "$FINDER")
+  ;;
+*)
+  echo "Unsupported menu launcher: $FINDER" >&2
+  exit 1
+  ;;
+esac
 
 # ── Despatch ------------------------------------------------------------------
 case "$CHOICE" in
