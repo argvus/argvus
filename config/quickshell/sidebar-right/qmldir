@@ -18,4 +18,5 @@ VolumeCard        1.0 VolumeCard.qml
 AppearanceCard    1.0 AppearanceCard.qml
 DisplayCard       1.0 DisplayCard.qml
 TaskbarCard       1.0 TaskbarCard.qml
+DefaultAppsCard   1.0 DefaultAppsCard.qml
 SidebarWindow     1.0 SidebarWindow.qml

@@ -129,6 +129,7 @@ PanelWindow {
                 DisplayCard       { Layout.fillWidth: true; Layout.leftMargin: 10; Layout.rightMargin: 10 }
                 TaskbarCard       { Layout.fillWidth: true; Layout.leftMargin: 10; Layout.rightMargin: 10 }
                 SpacesCard        { Layout.fillWidth: true; Layout.leftMargin: 10; Layout.rightMargin: 10 }
+                DefaultAppsCard   { Layout.fillWidth: true; Layout.leftMargin: 10; Layout.rightMargin: 10 }
                 PowerCard         { Layout.fillWidth: true; Layout.leftMargin: 10; Layout.rightMargin: 10 }
 
                 Item { Layout.preferredHeight: 10 }

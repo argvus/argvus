@@ -19,6 +19,24 @@ QtObject {
     readonly property string cardTitleTaskbar:       isPortuguese ? "BARRA DE TAREFAS" : "TASKBAR"
     readonly property string cardTitlePower:         isPortuguese ? "ENERGIA" : "POWER"
     readonly property string cardTitleDisplay:       isPortuguese ? "MONITOR" : "DISPLAY"
+    readonly property string cardTitleDefaultApps:   isPortuguese ? "APPS PADRAO" : "DEFAULT APPS"
+
+    // ── DefaultAppsCard ──
+    readonly property string daHint: isPortuguese
+        ? "Defina os programas usados pelos atalhos do sistema."
+        : "Set the programs used by the system shortcuts."
+    readonly property string daOpen:  isPortuguese ? "Abrir seletor" : "Open selector"
+    readonly property string daTerminal:        isPortuguese ? "Terminal" : "Terminal"
+    readonly property string daFileManager:     isPortuguese ? "Arquivos" : "File Manager"
+    readonly property string daTextEditor:      isPortuguese ? "Editor de texto" : "Text Editor"
+    readonly property string daTerminalEditor:  isPortuguese ? "Editor no terminal" : "Terminal Editor"
+    readonly property string daBrowser:         isPortuguese ? "Navegador" : "Browser"
+    readonly property string daImageViewer:     isPortuguese ? "Ver imagens" : "Image Viewer"
+    readonly property string daPdfViewer:       isPortuguese ? "Ler PDF" : "PDF Viewer"
+    readonly property string daVideoPlayer:     isPortuguese ? "Videos" : "Video Player"
+    readonly property string daAudioPlayer:     isPortuguese ? "Audio" : "Audio Player"
+    readonly property string daArchive:         isPortuguese ? "Arquivos compactados" : "Archive"
+    readonly property string daLauncher:        isPortuguese ? "Iniciador" : "Launcher"
 
     // ── DisplayCard ──
     readonly property string displayScale:       isPortuguese ? "Escala" : "Scale"
