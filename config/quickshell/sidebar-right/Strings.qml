@@ -15,6 +15,7 @@ QtObject {
     readonly property string cardTitleSystem:        isPortuguese ? "SISTEMA" : "SYSTEM"
     readonly property string cardTitleKeyboard:      isPortuguese ? "TECLADO" : "KEYBOARD"
     readonly property string cardTitleAppearance:    isPortuguese ? "APARENCIA" : "APPEARANCE"
+    readonly property string cardTitleSession:       isPortuguese ? "SESSÃO" : "SESSION"
     readonly property string cardTitleSpaces:        isPortuguese ? "ESPAÇOS" : "SPACES"
     readonly property string cardTitleTaskbar:       isPortuguese ? "BARRA DE TAREFAS" : "TASKBAR"
     readonly property string cardTitlePower:         isPortuguese ? "ENERGIA" : "POWER"

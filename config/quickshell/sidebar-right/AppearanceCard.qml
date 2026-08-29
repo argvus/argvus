@@ -7,26 +7,12 @@ BaseCard {
     cardIcon:  "»"
 
     property bool sysinfoEnabled: true
-    property int idleTimeout: 300
     property var accentColors: ["#996548", "#3590bd", "#7391a5", "#17d174", "#cb17d1", "#d1174f", "#d1ce17", "#9617d1", "#595959"]
-    property var idleOptions: [
-        { seconds: 60, label: "1m" },
-        { seconds: 300, label: "5m" },
-        { seconds: 600, label: "10m" },
-        { seconds: 900, label: "15m" },
-        { seconds: 1800, label: "30m" },
-    ]
 
     function applyAccent(color) {
         if (accentProc.running) return
         accentProc.command = ["sh", "-c", "${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/argvus/sh/accent-switch.sh '" + color + "'"]
         accentProc.running = true
-    }
-
-    function applyIdleTimeout(seconds) {
-        if (idleSetProc.running) return
-        idleSetProc.command = ["sh", "-c", "${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/argvus/sh/idle-timeout.sh " + seconds]
-        idleSetProc.running = true
     }
 
     RowLayout {
@@ -86,56 +72,6 @@ BaseCard {
                     hoverEnabled: true
                     cursorShape: Qt.PointingHandCursor
                     onClicked: applyAccent(parent.modelData)
-                }
-            }
-        }
-    }
-
-    Item { Layout.preferredHeight: 4 }
-
-    ColumnLayout {
-        Layout.fillWidth: true
-        spacing: 7
-
-        Text {
-            text: Strings.idleLockTitle
-            color: Theme.fgText
-            font.pixelSize: 13
-            font.family: "monospace"
-            font.weight: Font.Medium
-        }
-
-        RowLayout {
-            Layout.fillWidth: true
-            spacing: 5
-
-            Repeater {
-                model: idleOptions
-
-                Rectangle {
-                    required property var modelData
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: 26
-                    radius: Theme.radiusSmall
-                    color: idleTimeout === modelData.seconds ? Theme.accentDim : Theme.bgPanel
-                    border.width: 1
-                    border.color: idleTimeout === modelData.seconds ? Theme.accent : Theme.borderSubtle
-
-                    Text {
-                        anchors.centerIn: parent
-                        text: parent.modelData.label
-                        color: idleTimeout === parent.modelData.seconds ? Theme.accent : Theme.fgSubtle
-                        font.family: "monospace"
-                        font.pixelSize: 16
-                        font.weight: Font.Bold
-                    }
-
-                    MouseArea {
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: applyIdleTimeout(parent.modelData.seconds)
-                    }
                 }
             }
         }

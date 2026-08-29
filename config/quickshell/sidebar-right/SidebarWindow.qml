@@ -126,6 +126,7 @@ PanelWindow {
                 SystemCard        { Layout.fillWidth: true; Layout.leftMargin: 10; Layout.rightMargin: 10 }
                 KeyboardCard      { Layout.fillWidth: true; Layout.leftMargin: 10; Layout.rightMargin: 10 }
                 AppearanceCard    { Layout.fillWidth: true; Layout.leftMargin: 10; Layout.rightMargin: 10 }
+                SessionCard       { Layout.fillWidth: true; Layout.leftMargin: 10; Layout.rightMargin: 10 }
                 DisplayCard       { Layout.fillWidth: true; Layout.leftMargin: 10; Layout.rightMargin: 10 }
                 TaskbarCard       { Layout.fillWidth: true; Layout.leftMargin: 10; Layout.rightMargin: 10 }
                 SpacesCard        { Layout.fillWidth: true; Layout.leftMargin: 10; Layout.rightMargin: 10 }

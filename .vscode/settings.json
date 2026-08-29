@@ -9,6 +9,12 @@
     "*": {
       "approve": true,
       "matchCommandLine": true
+    },
+    "qs": true,
+    "make": false,
+    "/^git add \\. && git commit -m \"refactor: move lock timeout from appearance card\"$/": {
+      "approve": true,
+      "matchCommandLine": true
     }
   }
 }
