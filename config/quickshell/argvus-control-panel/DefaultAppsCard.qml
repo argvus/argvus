@@ -117,7 +117,7 @@ BaseCard {
     GlassButton {
         Layout.fillWidth: true
         implicitHeight: 36
-        iconText: "\uf0c2"
+        iconText: "\uf2d0"
         label: Strings.daOpen
         active: true
         onClicked: showProc.running = true
