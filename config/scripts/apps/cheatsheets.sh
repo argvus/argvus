@@ -1,14 +1,19 @@
 #!/usr/bin/env sh
 
+# Show the cheatsheet for an app (hypr or kitty) through the configured
+# launcher. Usage: cheatsheets.sh [hypr|kitty]
+
 # shellcheck disable=SC1091
-ARGVUS_BOOTSTRAP="${ARGVUS_BOOTSTRAP:-${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/argvus/sh/bootstrap.sh}"
+ARGVUS_BOOTSTRAP="${ARGVUS_BOOTSTRAP:-${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/scripts/argvus/bootstrap.sh}"
 . "$ARGVUS_BOOTSTRAP"
 
+APP="${1:-hypr}"
+
 if locale_is_pt; then
-  CHEAT_FILE="$(paths_config hypr/docs/cheatsheets/pt.txt)"
+  CHEAT_FILE="$(paths_config "$APP/docs/cheatsheets/pt.txt")"
   PROMPT="Procurar"
 else
-  CHEAT_FILE="$(paths_config hypr/docs/cheatsheets/en.txt)"
+  CHEAT_FILE="$(paths_config "$APP/docs/cheatsheets/en.txt")"
   PROMPT="Search"
 fi
 
