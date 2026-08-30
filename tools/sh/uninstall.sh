@@ -90,17 +90,28 @@ uninstall_user() {
   # Legacy structure — per-app configs/scripts copied by older argvus-setup or
   # provisioned by the runtime before the centralized ~/.config/argvus layout.
   rm_if "$CONFIG_HOME/argvus-sysinfo"
-  rm_if "$CONFIG_HOME/hypr/scripts"
-  rm_if "$CONFIG_HOME/hypr/docs"
-  rm_if "$CONFIG_HOME/waybar/scripts"
-  rm_if "$CONFIG_HOME/kitty/scripts"
-  rm_if "$CONFIG_HOME/yazi/scripts"
-  rm_if "$CONFIG_HOME/waybar/argvus-taskbar.jsonc"
-  rm_if "$CONFIG_HOME/waybar/argvus-taskbar.css"
-  rm_if "$CONFIG_HOME/waybar/argvus-sysinfo.jsonc"
-  rm_if "$CONFIG_HOME/waybar/argvus-sysinfo.css"
 
   rm_if "$CONFIG_HOME/environment.d/argvus.conf"
+
+  # App directories materialized by the legacy argvus-setup --copy-all /
+  # --copy <app>. Development-only command: removed without backup.
+  rm_if "$CONFIG_HOME/bottom"
+  rm_if "$CONFIG_HOME/btop"
+  rm_if "$CONFIG_HOME/dunst"
+  rm_if "$CONFIG_HOME/foot"
+  rm_if "$CONFIG_HOME/gtk-3.0"
+  rm_if "$CONFIG_HOME/gtk-4.0"
+  rm_if "$CONFIG_HOME/hypr"
+  rm_if "$CONFIG_HOME/kitty"
+  rm_if "$CONFIG_HOME/qt6ct"
+  rm_if "$CONFIG_HOME/quickshell"
+  rm_if "$CONFIG_HOME/rofi"
+  rm_if "$CONFIG_HOME/snappy-switcher"
+  rm_if "$CONFIG_HOME/superfile"
+  rm_if "$CONFIG_HOME/term"
+  rm_if "$CONFIG_HOME/waybar"
+  rm_if "$CONFIG_HOME/wofi"
+  rm_if "$CONFIG_HOME/yazi"
 
   rm_if "$HOME/.local/bin/archypr-desktop-setup"
   rm_if "$HOME/.local/bin/archypr-desktop-start"
