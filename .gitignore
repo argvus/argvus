@@ -9,3 +9,13 @@
 config/quickshell/*.zip
 config/quickshell/*.png
 config/argvus/.gtk-mode
+
+# Arch packaging (local build)
+# -------------------------------------------------------------
+packaging/arch/*.tar.gz
+packaging/arch/*.pkg.tar.zst
+packaging/arch/*.sig
+packaging/arch/src/
+packaging/arch/pkg/
+packaging/arch/repo/
+packaging/arch/repo-work/

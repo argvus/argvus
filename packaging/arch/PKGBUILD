@@ -1,6 +1,6 @@
 # Maintainer: William C. Canin
 pkgname=argvus
-pkgver=0.2.0
+pkgver=0.1.19
 pkgrel=1
 pkgdesc="Argvus is a complete, ready-to-use desktop environment focused on Hyprland, packaged for Arch Linux."
 arch=('x86_64')
@@ -119,8 +119,8 @@ sha256sums=('SKIP')
 prepare() {
   cd "${pkgname}-${pkgver}"
   sed -i \
-    's#/usr/share/argvus/scripts/apps/waybar-taskbar.sh --cal#/usr/lib/argvus-calendar/waybar-launcher --surface {x_root} {y_root}#' \
-    config/waybar/argvus-taskbar.jsonc
+    's#/usr/share/argvus/waybar/scripts/taskbar.sh --cal#/usr/lib/argvus-calendar/waybar-launcher --surface {x_root} {y_root}#' \
+    config/waybar/config.jsonc
 }
 
 package() {
@@ -132,10 +132,4 @@ package() {
   install -Dm755 bin/argvus-setup "${pkgdir}/usr/bin/argvus-setup"
   install -Dm644 LICENSE \
     "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
-
-  # ship systemd.environment.d defaults for the systemd user manager so that
-  # services started at login get the Argvus config path + Qt theme without a
-  # per-user ~/.config copy
-  install -Dm644 config/environment.d/argvus.conf \
-    "${pkgdir}/etc/environment.d/argvus.conf"
 }

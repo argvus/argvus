@@ -1,0 +1,138 @@
+# Maintainer: William C. Canin
+# Local-only build: uses the tarball generated from this repository
+# (packaging/arch/argvus-${pkgver}.tar.gz) instead of downloading from GitHub.
+# Build with: make build
+pkgname=argvus
+pkgver=0.1.19
+pkgrel=1
+pkgdesc="Argvus is a complete, ready-to-use desktop environment focused on Hyprland, packaged for Arch Linux."
+arch=('x86_64')
+url="https://github.com/argvus/argvus"
+license=('GPL-3.0-only')
+options=('!debug')
+
+depends=(
+  'argvus-appearance'
+  'argvus-calendar'
+  'argvus-greeter'
+  'argvus-session'
+	'argvus-accounts'
+  'argvus-storage'
+	'argvus-default-apps'
+  'argvus-waybar'
+	'argvus-pwvucontrol'
+	'argvus-snappy-switcher'
+	'hyprland'
+	'hypridle'
+  'hyprland-guiutils'
+  'hyprland-qt-support'
+  'hyprlock'
+  'hyprpaper'
+  'hyprpicker'
+  'hyprpolkitagent'
+  'hyprshot'
+  'hyprshutdown'
+	'wayland'
+	'nwg-displays'
+	'firefox'
+	'mesa'
+	'mesa-utils'
+	'qt5-quickcontrols2'
+  'qt5ct'
+  'qt6-declarative'
+  'qt6-tools'
+  'qt6ct'
+  'quickshell'
+	'virtualbox-guest-utils'
+	'adwaita-icon-theme'
+  'bluez'
+  'bluez-utils'
+  'blueman'
+  'bottom'
+  'brightnessctl'
+  'btop'
+  'cliphist'
+  'dunst'
+  'fastfetch'
+  'file-roller'
+  'fontconfig'
+  'foot'
+	'feh'
+  'glib2'
+  'grim'
+  'gsimplecal'
+  'gtk3'
+  'gtk-layer-shell'
+  'gtk4'
+  'imagemagick'
+  'imv'
+	'audacious'
+  'udisks2'
+  'udiskie'
+  'jq'
+  'kitty'
+  'libnotify'
+  'libqalculate'
+  'mpv'
+  'nautilus'
+  'networkmanager'
+  'noto-fonts'
+  'noto-fonts-emoji'
+  'otf-font-awesome'
+  'pamixer'
+  'playerctl'
+  'rofi'
+  'rofi-calc'
+  'rofimoji'
+  'satty'
+  'slurp'
+  'superfile'
+	'gpu-screen-recorder'
+  'swaybg'
+  'ttf-jetbrains-mono-nerd'
+  'ttf-nerd-fonts-symbols-mono'
+  'vivid'
+  'wev'
+	'mousepad'
+  'wf-recorder'
+  'wireplumber'
+  'wl-clipboard'
+  'wtype'
+  'xdg-desktop-portal'
+  'xdg-desktop-portal-gtk'
+  'xdg-desktop-portal-hyprland'
+  'xdg-desktop-portal-wlr'
+  'xdg-utils'
+  'xarchiver'
+  'yazi'
+	'neovim'
+  'zathura'
+  'zip'
+  'zsh'
+)
+optdepends=(
+  'kooha: graphical screen recording utility'
+  'nwg-look: GTK theme configuration utility'
+)
+source=(
+  "${pkgname}-${pkgver}.tar.gz"
+)
+sha256sums=('SKIP')
+
+prepare() {
+  cd "${pkgname}-${pkgver}"
+  sed -i \
+    's#/usr/share/argvus/waybar/scripts/taskbar.sh --cal#/usr/lib/argvus-calendar/waybar-launcher --surface {x_root} {y_root}#' \
+    config/waybar/config.jsonc
+}
+
+package() {
+  cd "${pkgname}-${pkgver}"
+
+  install -dm755 "${pkgdir}/usr/share/argvus"
+  cp -a config/. "${pkgdir}/usr/share/argvus/"
+
+  install -Dm755 bin/argvus-setup "${pkgdir}/usr/bin/argvus-setup"
+  install -Dm644 LICENSE \
+    "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+}

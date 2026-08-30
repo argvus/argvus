@@ -68,10 +68,9 @@ Directories »
 -----------------------------------------------
 
 Argvus configs:      $HOME/.config/argvus/
-Argvus per-app:      $HOME/.config/argvus/<app>/  (hypr, waybar, kitty, quickshell, ...)
-Argvus overrides:    $HOME/.config/<app>/  (free user override)
+Hyprland configs:    $HOME/.config/hypr/
 Hyprland logs:       $HOME/.local/state/hyprland/
-Kitty configs:       $HOME/.config/argvus/kitty/
-Waybar configs:      $HOME/.config/argvus/waybar/
-Quickshell configs:  $HOME/.config/argvus/quickshell/
+Kitty configs:       $HOME/.config/kitty/
+Waybar configs:      $HOME/.config/waybar/
+Quickshell configs:  $HOME/.config/quickshell/
 Argvus storage:      $HOME/.config/argvus-storage/
