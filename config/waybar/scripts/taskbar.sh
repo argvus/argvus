@@ -89,7 +89,7 @@ sidebar_toggle() {
     echo "open" > "$STATE_FILE"
   fi
 
-  qs -c sidebar-right ipc call sidebar toggle
+  sh "$(paths_config "argvus/sh/toggle-sidebar.sh")"
 }
 
 case $1 in
