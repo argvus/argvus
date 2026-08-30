@@ -1,4 +1,4 @@
-# sidebar-right — Quickshell sidebar for Hyprland
+# argvus-control-panel — Quickshell sidebar for Hyprland
 
 Standalone right-hand sidebar with: Calendar, CPU/RAM/GPU, Keyboard, and Power Profile.
 
@@ -6,10 +6,10 @@ Standalone right-hand sidebar with: Calendar, CPU/RAM/GPU, Keyboard, and Power P
 
 ```bash
 # 1. Copy to ~/.config/quickshell/
-cp -r sidebar-right ~/.config/quickshell/sidebar-right
+cp -r argvus-control-panel ~/.config/quickshell/argvus-control-panel
 
 # 2. Test manually
-qs -c sidebar-right
+qs -c argvus-control-panel
 ```
 
 ## Waybar integration
@@ -47,7 +47,7 @@ hl.bind("SUPER", "S", "exec",
     "sh /usr/share/argvus/argvus/sh/toggle-sidebar.sh")
 
 -- Blur for the panel (optional, but nice)
-hl.rule.layer("noanim,blur,blurpopups", "sidebar-right")
+hl.rule.layer("noanim,blur,blurpopups", "argvus-control-panel")
 ```
 
 > **Note about the layer name:** Quickshell registers the layer with the config name.
@@ -58,7 +58,7 @@ hl.rule.layer("noanim,blur,blurpopups", "sidebar-right")
 To start it together with Hyprland (add to your `hyprland.lua`):
 
 ```lua
-hl.exec("qs -c sidebar-right")
+hl.exec("qs -c argvus-control-panel")
 ```
 
 ## Dependencies

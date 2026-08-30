@@ -5,8 +5,8 @@ ARGVUS_BOOTSTRAP="${ARGVUS_BOOTSTRAP:-${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}
 . "$ARGVUS_BOOTSTRAP"
 
 STATE_FILE="$(paths_cache waybar/sysinfo-state)"
-CFG="$(paths_config waybar/sysinfo.jsonc)"
-CSS="$(paths_config waybar/sysinfo.css)"
+CFG="$(paths_config waybar/argvus-sysinfo.jsonc)"
+CSS="$(paths_config waybar/argvus-sysinfo.css)"
 
 ensure_state_dir() {
     mkdir -p "$(dirname "$STATE_FILE")"

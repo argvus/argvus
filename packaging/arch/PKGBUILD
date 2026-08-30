@@ -1,6 +1,6 @@
 # Maintainer: William C. Canin
 pkgname=argvus
-pkgver=0.3.0
+pkgver=0.4.0
 pkgrel=1
 pkgdesc="Argvus is a complete, ready-to-use desktop environment focused on Hyprland, packaged for Arch Linux."
 arch=('x86_64')
@@ -120,7 +120,7 @@ prepare() {
   cd "${pkgname}-${pkgver}"
   sed -i \
     's#/usr/share/argvus/waybar/scripts/taskbar.sh --cal#/usr/lib/argvus-calendar/waybar-launcher --surface {x_root} {y_root}#' \
-    config/waybar/config.jsonc
+    config/waybar/argvus-taskbar.jsonc
 }
 
 package() {

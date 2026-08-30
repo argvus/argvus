@@ -80,7 +80,7 @@ if [ "$MODE" = "light" ] && [ "$THEME" = "argvus-dark-aether" ]; then
   cat > "$MODE_CSS" << 'CSSEOF'
 /* mode.css — Light mode overrides for argvus-dark-aether */
 
-/* -- waybar/style.css variables -- */
+/* -- waybar/argvus-taskbar.css variables -- */
 @define-color th-foreground      #181818;
 @define-color th-foreground2     #181818;
 @define-color th-decorate        #999999;
@@ -104,7 +104,7 @@ if [ "$MODE" = "light" ] && [ "$THEME" = "argvus-dark-aether" ]; then
 @define-color th-mpris-border    rgba(153, 153, 153, 0.5);
 @define-color th-mpris-fg-anim   #181818;
 
-/* -- waybar/sysinfo.css variables -- */
+/* -- waybar/argvus-sysinfo.css variables -- */
 @define-color th-header          #181818;
 @define-color th-window-bg       #b0b0b0;
 @define-color th-border          #181818;

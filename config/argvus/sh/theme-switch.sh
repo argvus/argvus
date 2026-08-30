@@ -51,7 +51,7 @@ fi
 
 HYPR_THEMES="$(paths_config hypr/themes)"
 WAYBAR_THEMES="$(paths_config waybar/themes)"
-QS_THEMES="$(paths_config quickshell/sidebar-right/themes)"
+QS_THEMES="$(paths_config quickshell/argvus-control-panel/themes)"
 ROFI_THEMES="$(paths_config rofi/themes)"
 ROFI_CONFIG="$(paths_config rofi/config.rasi)"
 ROFI_THEME="$(paths_config rofi/theme.rasi)"
@@ -318,9 +318,9 @@ fi
 printf '%s' "$THEME" > "$ACTIVE_FILE"
 
 # ----- Per-theme waybar layout -----
-_waybar_cfg="$(paths_config waybar/config.jsonc)"
-_waybar_cfg_sysinfo="$(paths_config waybar/sysinfo.jsonc)"
-_sysinfo_css="$(paths_config waybar/sysinfo.css)"
+_waybar_cfg="$(paths_config waybar/argvus-taskbar.jsonc)"
+_waybar_cfg_sysinfo="$(paths_config waybar/argvus-sysinfo.jsonc)"
+_sysinfo_css="$(paths_config waybar/argvus-sysinfo.css)"
 
 case "$THEME" in
   argvus-dark-aether | argvus-dark-silver | argvus-light-veil | argvus-dark-slate | argvus-dark-universe)
@@ -331,11 +331,11 @@ case "$THEME" in
     sed -i "s|\"margin-top\": -\?[0-9]*|\"margin-top\": 1|" "$_waybar_cfg_sysinfo"
     sed -i "s|\"margin-left\": -\?[0-9]*|\"margin-left\": 1|" "$_waybar_cfg_sysinfo"
     sed -i "s|\"margin-bottom\": -\?[0-9]*|\"margin-bottom\": 1|" "$_waybar_cfg_sysinfo"
-    sed -i '/^window#waybar {/,/^}/s/border-radius: [0-9]*px;/border-radius: 0px;/' "$(paths_config waybar/style.css)"
-    sed -i '/^#workspaces button/,/^}/s/border-radius: [0-9]*px;/border-radius: 0px;/' "$(paths_config waybar/style.css)"
-    sed -i '/^#workspaces button\.active,/,/^}/s/border-radius: [0-9]*px;/border-radius: 0px;/' "$(paths_config waybar/style.css)"
-    sed -i '/^tooltip {/,/^}/s/border-radius: [0-9]*px;/border-radius: 0px;/' "$(paths_config waybar/style.css)"
-    sed -i '/#right-0, #right-1, #right-2, #right-search, #mpris {/,/^}/s/border-radius: [0-9]*px;/border-radius: 0px;/' "$(paths_config waybar/style.css)"
+    sed -i '/^window#waybar {/,/^}/s/border-radius: [0-9]*px;/border-radius: 0px;/' "$(paths_config waybar/argvus-taskbar.css)"
+    sed -i '/^#workspaces button/,/^}/s/border-radius: [0-9]*px;/border-radius: 0px;/' "$(paths_config waybar/argvus-taskbar.css)"
+    sed -i '/^#workspaces button\.active,/,/^}/s/border-radius: [0-9]*px;/border-radius: 0px;/' "$(paths_config waybar/argvus-taskbar.css)"
+    sed -i '/^tooltip {/,/^}/s/border-radius: [0-9]*px;/border-radius: 0px;/' "$(paths_config waybar/argvus-taskbar.css)"
+    sed -i '/#right-0, #right-1, #right-2, #right-search, #mpris {/,/^}/s/border-radius: [0-9]*px;/border-radius: 0px;/' "$(paths_config waybar/argvus-taskbar.css)"
     sed -i '/^window#waybar {/,/^}/s/border-radius: [0-9]*px;/border-radius: 0px;/' "$_sysinfo_css"
     _rofi_cfg="$(paths_config rofi/theme.rasi)"
     sed -i '/^window {/,/^}/s/border-radius: [0-9]*px;/border-radius: 0px;/' "$_rofi_cfg"
@@ -349,11 +349,11 @@ case "$THEME" in
     sed -i "s|\"margin-top\": -\?[0-9]*|\"margin-top\": 15|" "$_waybar_cfg_sysinfo"
     sed -i "s|\"margin-left\": -\?[0-9]*|\"margin-left\": 20|" "$_waybar_cfg_sysinfo"
     sed -i "s|\"margin-bottom\": -\?[0-9]*|\"margin-bottom\": 15|" "$_waybar_cfg_sysinfo"
-    sed -i '/^window#waybar {/,/^}/s/border-radius: [0-9]*px;/border-radius: 4px;/' "$(paths_config waybar/style.css)"
-    sed -i '/^#workspaces button/,/^}/s/border-radius: [0-9]*px;/border-radius: 5px;/' "$(paths_config waybar/style.css)"
-    sed -i '/^#workspaces button\.active,/,/^}/s/border-radius: [0-9]*px;/border-radius: 4px;/' "$(paths_config waybar/style.css)"
-    sed -i '/^tooltip {/,/^}/s/border-radius: [0-9]*px;/border-radius: 8px;/' "$(paths_config waybar/style.css)"
-    sed -i '/#right-0, #right-1, #right-2, #right-search, #mpris {/,/^}/s/border-radius: [0-9]*px;/border-radius: 5px;/' "$(paths_config waybar/style.css)"
+    sed -i '/^window#waybar {/,/^}/s/border-radius: [0-9]*px;/border-radius: 4px;/' "$(paths_config waybar/argvus-taskbar.css)"
+    sed -i '/^#workspaces button/,/^}/s/border-radius: [0-9]*px;/border-radius: 5px;/' "$(paths_config waybar/argvus-taskbar.css)"
+    sed -i '/^#workspaces button\.active,/,/^}/s/border-radius: [0-9]*px;/border-radius: 4px;/' "$(paths_config waybar/argvus-taskbar.css)"
+    sed -i '/^tooltip {/,/^}/s/border-radius: [0-9]*px;/border-radius: 8px;/' "$(paths_config waybar/argvus-taskbar.css)"
+    sed -i '/#right-0, #right-1, #right-2, #right-search, #mpris {/,/^}/s/border-radius: [0-9]*px;/border-radius: 5px;/' "$(paths_config waybar/argvus-taskbar.css)"
     sed -i '/^window#waybar {/,/^}/s/border-radius: [0-9]*px;/border-radius: 8px;/' "$_sysinfo_css"
     _rofi_cfg="$(paths_config rofi/theme.rasi)"
     sed -i '/^window {/,/^}/s/border-radius: [0-9]*px;/border-radius: 6px;/' "$_rofi_cfg"
@@ -363,18 +363,18 @@ esac
 
 case "$THEME" in
   argvus-dark-slate)
-    sed -i '/^window#waybar {/,/^}/s/border: .*;/border: none;/' "$(paths_config waybar/style.css)"
+    sed -i '/^window#waybar {/,/^}/s/border: .*;/border: none;/' "$(paths_config waybar/argvus-taskbar.css)"
     ;;
   *)
-    sed -i '/^window#waybar {/,/^}/s/border: .*;/border: 1px solid @th-decorate;/' "$(paths_config waybar/style.css)"
+    sed -i '/^window#waybar {/,/^}/s/border: .*;/border: 1px solid @th-decorate;/' "$(paths_config waybar/argvus-taskbar.css)"
     ;;
 esac
 
 sed -i "s|@import url(\"./themes/.*/theme.css\");|@import url(\"./themes/${THEME}/theme.css\");|" \
-  "$(paths_config waybar/style.css)"
+  "$(paths_config waybar/argvus-taskbar.css)"
 
 sed -i "s|@import url(\"./themes/.*/sysinfo-theme.css\");|@import url(\"./themes/${THEME}/sysinfo-theme.css\");|" \
-  "$(paths_config waybar/sysinfo.css)"
+  "$(paths_config waybar/argvus-sysinfo.css)"
 
 sed -i "s|rofi -config [^ ]* -show drun|rofi -config ${ROFI_CONFIG} -show drun|" \
   "$_waybar_cfg"

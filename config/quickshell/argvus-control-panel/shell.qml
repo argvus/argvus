@@ -3,7 +3,7 @@ import Quickshell
 import Quickshell.Io
 
 ShellRoot {
-    // Toggle via: qs -c sidebar-right ipc call sidebar toggle
+    // Toggle via: qs -c argvus-control-panel ipc call sidebar toggle
     IpcHandler {
         target: "sidebar"
         function toggle(): void { sidebarWin.sidebarVisible = !sidebarWin.sidebarVisible }

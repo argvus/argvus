@@ -1,4 +1,4 @@
-module sidebar-right
+module argvus-control-panel
 
 singleton Theme             1.0 Theme.qml
 singleton Strings           1.0 Strings.qml

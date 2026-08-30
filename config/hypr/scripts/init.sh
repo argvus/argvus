@@ -46,13 +46,13 @@ run_waybars() {
   # INFO System (respects sysinfo-state toggle)
   mkdir -p "$(paths_cache waybar)"
   if [ "$(cat "$(paths_cache waybar/sysinfo-state)" 2>/dev/null)" != "disabled" ]; then
-    waybar -c "$(paths_config "waybar/sysinfo.jsonc")" -s "$(paths_config "waybar/sysinfo.css")" &
+    waybar -c "$(paths_config "waybar/argvus-sysinfo.jsonc")" -s "$(paths_config "waybar/argvus-sysinfo.css")" &
     echo enabled > "$(paths_cache waybar/sysinfo-state)" 2>/dev/null
   fi
   sleep 1
 
   # Status Bar Top
-  waybar -c "$(paths_config "waybar/config.jsonc")" -s "$(paths_config "waybar/style.css")" &
+  waybar -c "$(paths_config "waybar/argvus-taskbar.jsonc")" -s "$(paths_config "waybar/argvus-taskbar.css")" &
 }
 
 run_hypridle() {
@@ -97,7 +97,7 @@ case "$1" in
     systemctl --user set-environment QT_QPA_PLATFORM="$QT_QPA_PLATFORM" QT_QPA_PLATFORMTHEME="$QT_QPA_PLATFORMTHEME" QT_QUICK_CONTROLS_STYLE="$QT_QUICK_CONTROLS_STYLE"
     systemctl --user start hyprpolkitagent
 
-    pkill qs; qs -c sidebar-right >> /tmp/quickshell-sidebar.log 2>&1 &
+    pkill qs; qs -c argvus-control-panel >> /tmp/quickshell-sidebar.log 2>&1 &
     pkill snappy-switcher; snappy-switcher --daemon &
     wl-paste --type text --watch cliphist store &
     wl-paste --type image --watch cliphist store &
@@ -144,7 +144,7 @@ case "$1" in
     systemctl --user set-environment QT_QPA_PLATFORM="$QT_QPA_PLATFORM" QT_QPA_PLATFORMTHEME="$QT_QPA_PLATFORMTHEME" QT_QUICK_CONTROLS_STYLE="$QT_QUICK_CONTROLS_STYLE"
     systemctl --user start hyprpolkitagent
 
-    pkill qs; qs -c sidebar-right >> /tmp/quickshell-sidebar.log 2>&1 &
+    pkill qs; qs -c argvus-control-panel >> /tmp/quickshell-sidebar.log 2>&1 &
 
     pkill snappy-switcher 2>/dev/null || true
     sleep 0.2

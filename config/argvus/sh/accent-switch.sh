@@ -117,9 +117,9 @@ apply_theme_references() {
   _kitty_theme="$(paths_config "kitty/themes/${THEME}/theme.conf")"
 
   sed -i "s|@import url(\"./themes/.*/theme.css\");|@import url(\"./themes/${THEME}/theme.css\");|" \
-    "$(paths_config waybar/style.css)" 2>/dev/null || true
+    "$(paths_config waybar/argvus-taskbar.css)" 2>/dev/null || true
   sed -i "s|@import url(\"./themes/.*/sysinfo-theme.css\");|@import url(\"./themes/${THEME}/sysinfo-theme.css\");|" \
-    "$(paths_config waybar/sysinfo.css)" 2>/dev/null || true
+    "$(paths_config waybar/argvus-sysinfo.css)" 2>/dev/null || true
   sed -i "s|@theme \".*/rofi/theme.rasi\"|@theme \"${_rofi_theme_file}\"|" \
     "$_rofi_config" 2>/dev/null || true
   sed -i "s|@import \".*/rofi/themes/.*/theme.rasi\"|@import \"${_rofi_theme}\"|" \
@@ -186,7 +186,7 @@ apply_qt_palette() {
 }
 
 apply_quickshell() {
-  _file="$(paths_config "quickshell/sidebar-right/themes/${THEME}/Theme.qml")"
+  _file="$(paths_config "quickshell/argvus-control-panel/themes/${THEME}/Theme.qml")"
   [ -f "$_file" ] || return 0
   sed -i \
     -e "s|^[[:space:]]*readonly property color accent:.*|    readonly property color accent:          \"${COLOR}\"|" \
@@ -261,9 +261,9 @@ refresh_runtime() {
   if command -v qs >/dev/null 2>&1 && pgrep -x qs >/dev/null 2>&1; then
     pkill -x qs 2>/dev/null || true
     sleep 0.2
-    _qs_log="$(paths_cache quickshell)/sidebar-right.log"
+    _qs_log="$(paths_cache quickshell)/argvus-control-panel.log"
     mkdir -p "${_qs_log%/*}"
-    qs -c sidebar-right >"$_qs_log" 2>&1 &
+    qs -c argvus-control-panel >"$_qs_log" 2>&1 &
   fi
   # Signal running kitty instances to reload config (SIGUSR1)
   for _pid in $(pgrep -x kitty 2>/dev/null); do

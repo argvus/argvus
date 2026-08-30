@@ -494,7 +494,7 @@ hl.window_rule({
 
 -- Agente de autenticação do PolicyKit (pkexec) ------------------------------------------------------
 -- Sem esta regra, a janela do hyprpolkitagent entra no layout em tile atrás/abaixo
--- da sidebar-right (que roda em layer-shell "aboveWindows"). O diálogo acaba invisível
+-- da argvus-control-panel (que roda em layer-shell "aboveWindows"). O diálogo acaba invisível
 -- ou sem foco de teclado, então o usuário nunca consegue digitar a senha e o pkexec
 -- expira/falha (ex.: "argvus-accounts name" chamado pelo UserCard). Forçar float + center
 -- + pin garante que o prompt sempre apareça no centro da tela, em foco, em qualquer workspace.
@@ -537,7 +537,7 @@ hl.bind(mod .. " + comma", hl.dsp.exec_cmd(_sh(_config_path("argvus/sh/toggle-si
 hl.bind("mouse:274", hl.dsp.exec_cmd(_sh(_config_path("argvus/sh/toggle-sidebar.sh"))))
 
 -- Toggle Waybar top -------------------------------------------------------------------------------
-hl.bind(mod .. " + BackSpace", hl.dsp.exec_cmd("pkill -SIGUSR1 -f 'waybar -c.*/config.jsonc'"))
+hl.bind(mod .. " + BackSpace", hl.dsp.exec_cmd("pkill -SIGUSR1 -f 'waybar -c.*/argvus-taskbar.jsonc'"))
 
 -- Wallpaper Picker --------------------------------------------------------------------------------
 hl.bind(mod .. " + Y", hl.dsp.exec_cmd(_sh(_config_path("hypr/scripts/wallpaper-pick.sh"))))

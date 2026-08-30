@@ -31,11 +31,11 @@ Singleton {
     }
 
     // Mirrors the top waybar's horizontal margin so the sidebar stays
-    // x-aligned with it (source of truth: waybar/config.jsonc, rewritten
+    // x-aligned with it (source of truth: waybar/argvus-taskbar.jsonc, rewritten
     // by theme-switch.sh and spaces-switch.sh).
     FileView {
         id: waybarMarginFile
-        path: root.configHome + "/waybar/config.jsonc"
+        path: root.configHome + "/waybar/argvus-taskbar.jsonc"
         onTextChanged: {
             var m = text().match(/"margin-right":\s*(-?\d+)/)
             if (m) root._waybarMarginRight = parseInt(m[1], 10)
@@ -60,19 +60,19 @@ Singleton {
 
     function loadTheme() {
         // 1. User config (~/.config) — where accent-switch writes accent colors
-        themeFile.path = root.configHome + "/quickshell/sidebar-right/themes/" +
+        themeFile.path = root.configHome + "/quickshell/argvus-control-panel/themes/" +
             themeName + "/Theme.qml"
         themeFile.reload()
         if (themeFile.text().trim() !== "") return
 
         // 2. Legacy generated config (~/.local/state/argvus/config)
-        themeFile.path = root.legacyConfig + "/quickshell/sidebar-right/themes/" +
+        themeFile.path = root.legacyConfig + "/quickshell/argvus-control-panel/themes/" +
             themeName + "/Theme.qml"
         themeFile.reload()
         if (themeFile.text().trim() !== "") return
 
         // 3. System default
-        themeFile.path = "/usr/share/argvus/quickshell/sidebar-right/themes/" +
+        themeFile.path = "/usr/share/argvus/quickshell/argvus-control-panel/themes/" +
             themeName + "/Theme.qml"
         themeFile.reload()
     }
