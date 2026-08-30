@@ -69,9 +69,10 @@ Diretórios »
 -----------------------------------------------
 
 Configs do Argvus:      $HOME/.config/argvus/
-Configs do Hyprland:    $HOME/.config/hypr/
+Argvus por app:         $HOME/.config/argvus/<app>/  (hypr, waybar, kitty, quickshell, ...)
+Overrides do Argvus:    $HOME/.config/<app>/  (override livre do usuário)
 Logs do Hyprland:       $HOME/.local/state/hyprland/
-Configs do Kitty:       $HOME/.config/kitty/
-Configs da Waybar:      $HOME/.config/waybar/
-Configs do Quickshell:  $HOME/.config/quickshell/
+Configs do Kitty:       $HOME/.config/argvus/kitty/
+Configs da Waybar:      $HOME/.config/argvus/waybar/
+Configs do Quickshell:  $HOME/.config/argvus/quickshell/
 Argvus Storage:         $HOME/.config/argvus-storage/
