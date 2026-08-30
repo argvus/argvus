@@ -70,6 +70,7 @@ done
 
 CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
+CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 
 uninstall_user() {
   log "Uninstalling Argvus user install..."
@@ -78,10 +79,26 @@ uninstall_user() {
   rm_if "$HOME/.local/bin/argvus-storage"
   rm_if "$HOME/.local/share/argvus"
 
+  # Current centralized layout
   rm_if "$CONFIG_HOME/argvus"
   rm_if "$CONFIG_HOME/argvus-storage"
   rm_if "$CONFIG_HOME/.argvus-bootstrap"
   rm_if "$STATE_HOME/argvus"
+  rm_if "$STATE_HOME/argvus-storage"
+  rm_if "$CACHE_HOME/argvus"
+
+  # Legacy structure — per-app configs/scripts copied by older argvus-setup or
+  # provisioned by the runtime before the centralized ~/.config/argvus layout.
+  rm_if "$CONFIG_HOME/argvus-sysinfo"
+  rm_if "$CONFIG_HOME/hypr/scripts"
+  rm_if "$CONFIG_HOME/hypr/docs"
+  rm_if "$CONFIG_HOME/waybar/scripts"
+  rm_if "$CONFIG_HOME/kitty/scripts"
+  rm_if "$CONFIG_HOME/yazi/scripts"
+  rm_if "$CONFIG_HOME/waybar/argvus-taskbar.jsonc"
+  rm_if "$CONFIG_HOME/waybar/argvus-taskbar.css"
+  rm_if "$CONFIG_HOME/waybar/argvus-sysinfo.jsonc"
+  rm_if "$CONFIG_HOME/waybar/argvus-sysinfo.css"
 
   rm_if "$CONFIG_HOME/environment.d/argvus.conf"
 
