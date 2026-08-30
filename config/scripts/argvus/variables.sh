@@ -5,7 +5,7 @@ ARGVUS_SYSTEM_CONFIG="${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}"
 ARGVUS_CONFIG_HOME="${ARGVUS_CONFIG_HOME:-${XDG_CONFIG_HOME:-$HOME/.config}}"
 ARGVUS_STATE_HOME="${ARGVUS_STATE_HOME:-${XDG_STATE_HOME:-$HOME/.local/state}/argvus}"
 ARGVUS_CACHE_HOME="${ARGVUS_CACHE_HOME:-${XDG_CACHE_HOME:-$HOME/.cache}/argvus}"
-ENVIRONMENT_ROOT="${ENVIRONMENT_ROOT:-$ARGVUS_SYSTEM_CONFIG/argvus}"
+ENVIRONMENT_ROOT="${ENVIRONMENT_ROOT:-$ARGVUS_SYSTEM_CONFIG/scripts/argvus}"
 
 # -- Cache directories --------------------------------------------------------
 HYPR_CACHE_DIR="${ARGVUS_CACHE_HOME}/hypr"
@@ -22,7 +22,7 @@ GTK_CURSOR="Adwaita"
 # $BOOTSTRAP_DIR is set by bootstrap.sh before sourcing this file. When not
 # present (standalone use), fall back to the packaged location on PATH or
 # /usr/share/argvus so TERM/FINDER still resolve.
-_GET_DEFAULT="${BOOTSTRAP_DIR:-${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/argvus/sh}/get-default.sh"
+_GET_DEFAULT="${BOOTSTRAP_DIR:-${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/scripts/argvus}/get-default.sh"
 get_default_value() {
   _cat="$1"
   if [ -x "$_GET_DEFAULT" ]; then

@@ -5,7 +5,7 @@
 
 set -u
 
-ARGVUS_BOOTSTRAP="${ARGVUS_BOOTSTRAP:-${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/argvus/sh/bootstrap.sh}"
+ARGVUS_BOOTSTRAP="${ARGVUS_BOOTSTRAP:-${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/scripts/argvus/bootstrap.sh}"
 . "$ARGVUS_BOOTSTRAP"
 ARGVUS_MUTABLE_CONFIG=1
 
@@ -248,7 +248,7 @@ apply_application_colors() {
 refresh_runtime() {
   command -v hyprctl >/dev/null 2>&1 && hyprctl reload >/dev/null 2>&1 || true
   if command -v waybar >/dev/null 2>&1; then
-    sh "$(paths_config hypr/scripts/init.sh)" --waybars >/dev/null 2>&1 || true
+    sh "$(paths_config scripts/apps/hypr-init.sh)" --waybars >/dev/null 2>&1 || true
   fi
   pkill -x dunst 2>/dev/null || true
   if command -v dunst >/dev/null 2>&1; then

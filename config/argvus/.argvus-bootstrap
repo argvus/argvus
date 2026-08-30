@@ -9,5 +9,5 @@
 # Uso em scripts:
 #   . "${HOME}/.config/.argvus-bootstrap"
 
-ENVIRONMENT_ROOT="${HOME}/.config/argvus"
-. "${ENVIRONMENT_ROOT}/sh/bootstrap.sh"
+ENVIRONMENT_ROOT="${HOME}/.config/scripts/argvus"
+. "${ENVIRONMENT_ROOT}/bootstrap.sh"

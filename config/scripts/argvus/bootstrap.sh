@@ -5,7 +5,7 @@
 # bootstrap.sh — Carrega automaticamente todos os módulos compartilhados.
 #
 # Uso em scripts:
-#   . "${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/argvus/sh/bootstrap.sh"
+#   . "${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/scripts/argvus/bootstrap.sh"
 #
 # Isso disponibiliza todas as APIs (log_*, string_*, json_*, ...)
 # e variáveis globais (WALLPAPER_PATH, BUTTON_LAYOUT, ...).
@@ -17,7 +17,7 @@ ARGVUS_SYSTEM_CONFIG="${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}"
 ARGVUS_CONFIG_HOME="${ARGVUS_CONFIG_HOME:-${XDG_CONFIG_HOME:-$HOME/.config}}"
 ARGVUS_STATE_HOME="${ARGVUS_STATE_HOME:-${XDG_STATE_HOME:-$HOME/.local/state}/argvus}"
 ARGVUS_CACHE_HOME="${ARGVUS_CACHE_HOME:-${XDG_CACHE_HOME:-$HOME/.cache}/argvus}"
-ARGVUS_BOOTSTRAP="${ARGVUS_BOOTSTRAP:-$ARGVUS_SYSTEM_CONFIG/argvus/sh/bootstrap.sh}"
+ARGVUS_BOOTSTRAP="${ARGVUS_BOOTSTRAP:-$ARGVUS_SYSTEM_CONFIG/scripts/argvus/bootstrap.sh}"
 case ":${XDG_CONFIG_DIRS:-/etc/xdg}:" in
   *":$ARGVUS_SYSTEM_CONFIG:"*) ;;
   *) XDG_CONFIG_DIRS="$ARGVUS_SYSTEM_CONFIG:${XDG_CONFIG_DIRS:-/etc/xdg}" ;;
@@ -25,7 +25,6 @@ esac
 export XDG_CONFIG_DIRS
 
 BOOTSTRAP_DIR="$(CDPATH= cd -- "$(dirname -- "$ARGVUS_BOOTSTRAP")" && pwd)"
-ENVIRONMENT_ROOT="${BOOTSTRAP_DIR%/sh}"
 MODULES_DIR="$BOOTSTRAP_DIR"
 
 . "${MODULES_DIR}/variables.sh"

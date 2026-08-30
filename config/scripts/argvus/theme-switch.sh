@@ -3,7 +3,7 @@
 # Usage: theme-switch <theme-name>
 # shellcheck disable=SC1091
 
-ARGVUS_BOOTSTRAP="${ARGVUS_BOOTSTRAP:-${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/argvus/sh/bootstrap.sh}"
+ARGVUS_BOOTSTRAP="${ARGVUS_BOOTSTRAP:-${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/scripts/argvus/bootstrap.sh}"
 . "$ARGVUS_BOOTSTRAP"
 ARGVUS_MUTABLE_CONFIG=1
 
@@ -457,12 +457,12 @@ esac
 
 # Every theme owns its default accent. A manual accent remains active only until
 # the user switches themes, including when switching back to the same theme.
-if ! sh "$(paths_config argvus/sh/accent-switch.sh)" --theme-default; then
+if ! sh "$(paths_config scripts/argvus/accent-switch.sh)" --theme-default; then
   printf 'Error: could not restore the default accent for %s.\n' "$THEME" >&2
   exit 1
 fi
 
-if ! sh "$(paths_config argvus/sh/hyprlock-theme.sh)" --invalidate; then
+if ! sh "$(paths_config scripts/argvus/hyprlock-theme.sh)" --invalidate; then
   printf 'Error: could not apply the Hyprlock theme for %s.\n' "$THEME" >&2
   exit 1
 fi
@@ -471,14 +471,14 @@ fi
 case "$THEME" in
   *-float)
     # Float themes: re-apply user's spaces override on top of theme defaults.
-    if ! sh "$(paths_config argvus/sh/spaces-switch.sh)" --apply-static; then
+    if ! sh "$(paths_config scripts/argvus/spaces-switch.sh)" --apply-static; then
       printf 'Error: could not re-apply the spaces override for %s.\n' "$THEME" >&2
       exit 1
     fi
     ;;
   *)
     # Non-float themes: reset spaces to theme defaults (clear user overrides).
-    if ! sh "$(paths_config argvus/sh/spaces-switch.sh)" --reset all; then
+    if ! sh "$(paths_config scripts/argvus/spaces-switch.sh)" --reset all; then
       printf 'Error: could not reset spaces for %s.\n' "$THEME" >&2
       exit 1
     fi
@@ -490,7 +490,7 @@ if [ "$RUNTIME" -eq 1 ]; then
   hyprctl reload
 
   # Restart waybar with new theme CSS (mode.css is now clean/dark)
-  sh "$(paths_config hypr/scripts/init.sh)" --waybars
+  sh "$(paths_config scripts/apps/hypr-init.sh)" --waybars
 fi
 
 # Set wallpaper for the new theme

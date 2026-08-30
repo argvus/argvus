@@ -7,7 +7,7 @@
 
 set -u
 
-ARGVUS_BOOTSTRAP="${ARGVUS_BOOTSTRAP:-${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/argvus/sh/bootstrap.sh}"
+ARGVUS_BOOTSTRAP="${ARGVUS_BOOTSTRAP:-${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/scripts/argvus/bootstrap.sh}"
 . "$ARGVUS_BOOTSTRAP"
 ARGVUS_MUTABLE_CONFIG=1
 
@@ -158,7 +158,7 @@ apply_gaps_runtime() {
 restart_waybar() {
   [ "${ARGVUS_NO_RUNTIME:-0}" = 1 ] && return 0
   if command -v waybar >/dev/null 2>&1; then
-    sh "$(paths_config hypr/scripts/init.sh)" --waybars >/dev/null 2>&1
+    sh "$(paths_config scripts/apps/hypr-init.sh)" --waybars >/dev/null 2>&1
   fi
 }
 

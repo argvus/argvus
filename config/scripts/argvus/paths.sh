@@ -70,7 +70,7 @@ paths_config() {
 
   if [ "${ARGVUS_MUTABLE_CONFIG:-0}" = 1 ]; then
     case "$_relative_path" in
-      argvus/sh/*|*/scripts/*|*/docs/*)
+      */scripts/*|*/docs/*)
         paths_read_config "$_relative_path"
         return 0
       ;;
