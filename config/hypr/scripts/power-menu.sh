@@ -39,8 +39,8 @@ do_logout() {
   # <USER> ALL=(root) NOPASSWD: /usr/bin/veracrypt-security-exit.sh
   # EOF
 
-  if [ -f "/usr/bin/veracrypt-security-exit.sh" ]; then
-    sudo /usr/bin/veracrypt-security-exit.sh && notify-send "VeraCrypt" "Umount all devices" 2>/dev/null || true
+  if [ -f "/usr/bin/veracrypt-security-exit.sh" ] && sudo -n /usr/bin/veracrypt-security-exit.sh 2>/dev/null; then
+    notify-send "VeraCrypt" "Umount all devices" 2>/dev/null || true
   fi
 
   hyprshutdown
