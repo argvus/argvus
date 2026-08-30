@@ -3,7 +3,7 @@
 # -- Environment root ----------------------------------------------------------
 ARGVUS_SYSTEM_CONFIG="${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}"
 ARGVUS_CONFIG_HOME="${ARGVUS_CONFIG_HOME:-${XDG_CONFIG_HOME:-$HOME/.config}}"
-ARGVUS_STATE_HOME="${ARGVUS_STATE_HOME:-${XDG_STATE_HOME:-$HOME/.local/state}/argvus}"
+ARGVUS_STATE_HOME="${ARGVUS_STATE_HOME:-${ARGVUS_CONFIG_HOME}/argvus/state}"
 ARGVUS_CACHE_HOME="${ARGVUS_CACHE_HOME:-${XDG_CACHE_HOME:-$HOME/.cache}/argvus}"
 ENVIRONMENT_ROOT="${ENVIRONMENT_ROOT:-$ARGVUS_SYSTEM_CONFIG/scripts/argvus}"
 

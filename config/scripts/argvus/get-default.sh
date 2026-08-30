@@ -7,8 +7,10 @@
 # Reads the single `defaults.json` written by `argvus-default-apps`, with the
 # same path precedence used across Argvus:
 #   $XDG_CONFIG_HOME/argvus/defaults.json
-#       -> $XDG_STATE_HOME/argvus/defaults.json   (written by the Rust tool)
 #       -> /usr/share/argvus/defaults.json
+#
+# (Legacy `$XDG_STATE_HOME/argvus/defaults.json` written by older versions of
+# the Rust tool is still honored while migrating to the argvus/ root.)
 #
 # Categories match the argvus-default-apps keys:
 #   terminal, file_manager, text_editor, terminal_editor, browser,

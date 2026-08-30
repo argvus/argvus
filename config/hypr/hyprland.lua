@@ -11,7 +11,7 @@ local _config_home = os.getenv("ARGVUS_CONFIG_HOME")
 local _system_config = os.getenv("ARGVUS_SYSTEM_CONFIG") or "/usr/share/argvus"
 local _debug_session = os.getenv("ARGVUS_DEBUG") == "1"
 local _state_home = _config_home .. "/argvus"
-local _generated_config = (os.getenv("XDG_STATE_HOME") or (_home .. "/.local/state")) .. "/argvus/config"
+local _generated_config = _config_home .. "/argvus/generated"
 
 local function _path_exists(path)
   local file = io.open(path, "r")
@@ -33,6 +33,7 @@ end
 
 local function _config_path(relative_path)
   return _first_existing({
+    _config_home .. "/argvus/" .. relative_path,
     _config_home .. "/" .. relative_path,
     _generated_config .. "/" .. relative_path,
     _system_config .. "/" .. relative_path,
@@ -87,7 +88,6 @@ local function _get_default(category)
     _reads_defaults = true
     local path = _first_existing({
       _config_home .. "/argvus/defaults.json",
-      (os.getenv("XDG_STATE_HOME") or (_home .. "/.local/state")) .. "/argvus/defaults.json",
       _system_config .. "/defaults.json",
     })
     local file = io.open(path)

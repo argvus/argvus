@@ -4,12 +4,13 @@
 
 ARGVUS_SYSTEM_CONFIG="${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}"
 ARGVUS_CONFIG_HOME="${ARGVUS_CONFIG_HOME:-${XDG_CONFIG_HOME:-$HOME/.config}}"
-ARGVUS_STATE_HOME="${ARGVUS_STATE_HOME:-${XDG_STATE_HOME:-$HOME/.local/state}/argvus}"
+ARGVUS_STATE_HOME="${ARGVUS_STATE_HOME:-${ARGVUS_CONFIG_HOME}/argvus/state}"
 ARGVUS_CACHE_HOME="${ARGVUS_CACHE_HOME:-${XDG_CACHE_HOME:-$HOME/.cache}/argvus}"
 
-paths_user_config() { echo "${ARGVUS_CONFIG_HOME}/${1}"; }
+paths_user_config() { echo "${ARGVUS_CONFIG_HOME}/argvus/${1}"; }
+paths_override_config() { echo "${ARGVUS_CONFIG_HOME}/${1}"; }
 paths_system_config() { echo "${ARGVUS_SYSTEM_CONFIG}/${1}"; }
-paths_generated_config() { echo "${ARGVUS_STATE_HOME}/config/${1}"; }
+paths_generated_config() { echo "${ARGVUS_CONFIG_HOME}/argvus/generated/${1}"; }
 paths_cache() { echo "${ARGVUS_CACHE_HOME}/${1}"; }
 paths_state() { echo "${ARGVUS_STATE_HOME}/${1}"; }
 paths_argvus_config() { echo "${ARGVUS_CONFIG_HOME}/argvus/${1}"; }
@@ -18,11 +19,14 @@ paths_backgrounds() { echo "/usr/share/backgrounds/${1}"; }
 paths_read_config() {
   _relative_path="$1"
   _user_path="$(paths_user_config "$_relative_path")"
+  _override_path="$(paths_override_config "$_relative_path")"
   _generated_path="$(paths_generated_config "$_relative_path")"
   _system_path="$(paths_system_config "$_relative_path")"
 
   if [ -e "$_user_path" ] || [ -L "$_user_path" ]; then
     printf '%s\n' "$_user_path"
+  elif [ -e "$_override_path" ] || [ -L "$_override_path" ]; then
+    printf '%s\n' "$_override_path"
   elif [ -e "$_generated_path" ] || [ -L "$_generated_path" ]; then
     printf '%s\n' "$_generated_path"
   else
