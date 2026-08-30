@@ -37,7 +37,7 @@ Rectangle {
             visible: iconText !== ""
             text: iconText
             color: active || ma.containsMouse ? accentColor : Theme.fgSubtle
-            font.family: "Font Awesome 6 Free"
+            font.family: "Font Awesome 7 Free"
             font.pixelSize: 15
             font.weight: Font.Black
         }
@@ -61,7 +61,7 @@ Rectangle {
             visible: iconText !== ""
             text: iconText
             color: active || ma.containsMouse ? accentColor : Theme.fgSubtle
-            font.family: "Font Awesome 6 Free"
+            font.family: "Font Awesome 7 Free"
             font.pixelSize: 15
             font.weight: Font.Black
             Layout.alignment: Qt.AlignHCenter

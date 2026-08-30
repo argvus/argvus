@@ -158,7 +158,7 @@ BaseCard {
                     Text {
                         text: modelData.power === "off" ? "\uf06e" : "\uf070"
                         color: modelData.power === "off" ? Theme.danger : Theme.fgSubtle
-                        font.family: "Font Awesome 6 Free"
+                        font.family: "Font Awesome 7 Free"
                         font.pixelSize: 13
                     }
                 }

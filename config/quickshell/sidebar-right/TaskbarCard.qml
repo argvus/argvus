@@ -108,7 +108,7 @@ BaseCard {
                     Text {
                         text: "\uf077"
                         color: card.selectedPos === "top" ? Theme.accent : Theme.fgSubtle
-                        font.family: "Font Awesome 6 Free"
+                        font.family: "Font Awesome 7 Free"
                         font.pixelSize: 14
                         font.weight: Font.Black
                     }
@@ -156,7 +156,7 @@ BaseCard {
                     Text {
                         text: "\uf078"
                         color: card.selectedPos === "bottom" ? Theme.accent : Theme.fgSubtle
-                        font.family: "Font Awesome 6 Free"
+                        font.family: "Font Awesome 7 Free"
                         font.pixelSize: 14
                         font.weight: Font.Black
                     }

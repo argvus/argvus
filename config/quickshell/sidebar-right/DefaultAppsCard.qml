@@ -86,7 +86,7 @@ BaseCard {
                     width: 20
                     text: modelData.icon
                     color: Theme.accent
-                    font.family: "Font Awesome 6 Free"
+                    font.family: "Font Awesome 7 Free"
                     font.pixelSize: 13
                     font.weight: Font.Black
                 }

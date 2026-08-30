@@ -131,7 +131,7 @@ Singleton {
     readonly property color warn:            modeColors ? modeColors.warn            : (themeObj ? themeObj.warn           : "#f9e2af")
     readonly property color ok:              modeColors ? modeColors.ok              : (themeObj ? themeObj.ok             : "#a6e3a1")
     readonly property string fontMono:       modeColors ? modeColors.fontMono        : (themeObj ? themeObj.fontMono       : "monospace")
-    readonly property string fontIcon:       modeColors ? modeColors.fontIcon        : (themeObj ? themeObj.fontIcon       : "Font Awesome 6 Free")
+    readonly property string fontIcon:       modeColors ? modeColors.fontIcon        : (themeObj ? themeObj.fontIcon       : "Font Awesome 7 Free")
     readonly property int radius:            modeColors ? modeColors.radius          : (themeObj ? themeObj.radius         : 8)
     readonly property int radiusPill:        modeColors ? modeColors.radiusPill      : (themeObj ? themeObj.radiusPill     : 18)
     readonly property int radiusSmall:       modeColors ? modeColors.radiusSmall     : (themeObj ? themeObj.radiusSmall    : 4)

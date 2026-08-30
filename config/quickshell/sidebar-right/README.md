@@ -20,7 +20,7 @@ Add a button to your `~/.config/waybar/config`:
 "custom/sidebar": {
     "format": "󰕰",
     "tooltip": false,
-    "on-click": "qs -c sidebar-right ipc call sidebar toggle"
+    "on-click": "sh /usr/share/argvus/argvus/sh/toggle-sidebar.sh"
 }
 ```
 
@@ -44,7 +44,7 @@ Add to your `~/.config/hypr/hyprland.lua`:
 ```lua
 -- Right-hand sidebar (Quickshell)
 hl.bind("SUPER", "S", "exec",
-    "qs -c sidebar-right ipc call sidebar toggle")
+    "sh /usr/share/argvus/argvus/sh/toggle-sidebar.sh")
 
 -- Blur for the panel (optional, but nice)
 hl.rule.layer("noanim,blur,blurpopups", "sidebar-right")

@@ -286,7 +286,7 @@ BaseCard {
             Text {
                 anchors.centerIn: parent
                 text: userIcon
-                font.family: "Font Awesome 6 Free"
+                font.family: "Font Awesome 7 Free"
                 font.pixelSize: 22
                 font.weight: Font.Black
                 color: Theme.accent
@@ -328,7 +328,7 @@ BaseCard {
             Text {
                 anchors.centerIn: parent
                 text: editing ? "\uf00d" : "\uf303"
-                font.family: "Font Awesome 6 Free"
+                font.family: "Font Awesome 7 Free"
                 font.pixelSize: 14
                 font.weight: Font.Black
                 color: editing ? Theme.accent : Theme.fgSubtle
@@ -380,7 +380,7 @@ BaseCard {
 
                         Text {
                             text: tabIcons[index]
-                            font.family: "Font Awesome 6 Free"
+                            font.family: "Font Awesome 7 Free"
                             font.pixelSize: 12
                             font.weight: Font.Black
                             color: activeTab === index ? Theme.accent : Theme.fgSubtle
@@ -443,7 +443,7 @@ BaseCard {
                 Text {
                     anchors.centerIn: parent
                     text: "\uf007"
-                    font.family: "Font Awesome 6 Free"
+                    font.family: "Font Awesome 7 Free"
                     font.pixelSize: 32
                     font.weight: Font.Black
                     color: Theme.accent

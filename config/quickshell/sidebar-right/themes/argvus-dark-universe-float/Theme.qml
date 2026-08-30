@@ -44,7 +44,7 @@ QtObject {
 
     // Tipography --------------------------------------------------------------
     readonly property string fontMono:       "monospace"
-    readonly property string fontIcon:       "Font Awesome 6 Free"
+    readonly property string fontIcon:       "Font Awesome 7 Free"
 
     // Form --------------------------------------------------------------------
     readonly property int radius:            8

@@ -84,7 +84,7 @@ BaseCard {
                     verticalAlignment: Text.AlignVCenter
                     text: "\uf065"
                     color: Theme.accent
-                    font.family: "Font Awesome 6 Free"
+                    font.family: "Font Awesome 7 Free"
                     font.pixelSize: 16
                     font.weight: Font.Black
                 }

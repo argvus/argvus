@@ -148,7 +148,7 @@ BaseCard {
 
             Text {
                 text: weatherIcon
-                font.family: "Font Awesome 6 Free"
+                font.family: "Font Awesome 7 Free"
                 font.weight: Font.Black
                 color: Theme.fgText
                 font.pixelSize: 30

@@ -37,7 +37,7 @@ QtObject {
     readonly property color ok:              "#7391a5"
 
     readonly property string fontMono:       "monospace"
-    readonly property string fontIcon:       "Font Awesome 6 Free"
+    readonly property string fontIcon:       "Font Awesome 7 Free"
 
     readonly property int radius:            8
     readonly property int radiusPill:        18

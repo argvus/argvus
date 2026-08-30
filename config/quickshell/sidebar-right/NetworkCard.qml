@@ -136,7 +136,7 @@ BaseCard {
                 anchors.centerIn: parent
                 text: networkingEnabled ? "\uf0ac" : "\uf127"
                 color: networkingEnabled ? Theme.accent : Theme.danger
-                font.family: "Font Awesome 6 Free"
+                font.family: "Font Awesome 7 Free"
                 font.pixelSize: 16
                 font.weight: Font.Black
             }
@@ -203,7 +203,7 @@ BaseCard {
         Text {
             text: "\uf0ac"
             color: Theme.accent
-            font.family: "Font Awesome 6 Free"
+            font.family: "Font Awesome 7 Free"
             font.pixelSize: 16
             font.weight: Font.Black
             opacity: 1

@@ -130,7 +130,7 @@ BaseCard {
                     spacing: 4
                     Text {
                         text: "\uf192"
-                        font.family: "Font Awesome 6 Free"
+                        font.family: "Font Awesome 7 Free"
                         font.pixelSize: 16
                         font.weight: Font.Black
                         color: Theme.accent
@@ -200,7 +200,7 @@ BaseCard {
             anchors.centerIn: parent
             text: parent.text
             color: parent.enabled ? (ma.containsMouse ? Theme.accent : Theme.fgSubtle) : Theme.borderSubtle
-            font.family: "Font Awesome 6 Free"
+            font.family: "Font Awesome 7 Free"
             font.pixelSize: 16
             font.weight: Font.Black
         }

@@ -102,7 +102,7 @@ BaseCard {
                 anchors.centerIn: parent
                 text: sysinfoEnabled ? "\uf0ca" : "\uf00d"
                 color: sysinfoEnabled ? Theme.accent : Theme.danger
-                font.family: "Font Awesome 6 Free"
+                font.family: "Font Awesome 7 Free"
                 font.pixelSize: 16
                 font.weight: Font.Black
             }
