@@ -97,12 +97,13 @@ case "$1" in
     systemctl --user set-environment QT_QPA_PLATFORM="$QT_QPA_PLATFORM" QT_QPA_PLATFORMTHEME="$QT_QPA_PLATFORMTHEME" QT_QUICK_CONTROLS_STYLE="$QT_QUICK_CONTROLS_STYLE"
     systemctl --user start hyprpolkitagent
 
-    pkill qs; qs -c argvus-control-panel >> /tmp/quickshell-sidebar.log 2>&1 &
+    pkill qs; mkdir -p "$(paths_cache quickshell)"; qs -c argvus-control-panel >> "$(paths_cache quickshell)/argvus-control-panel.log" 2>&1 &
     pkill snappy-switcher; snappy-switcher --daemon &
     wl-paste --type text --watch cliphist store &
     wl-paste --type image --watch cliphist store &
     pkill -f keyboard-layout-daemon.sh 2>/dev/null || true
-    sh "$(paths_config argvus/sh/keyboard-layout-daemon.sh)" </dev/null >>/tmp/keyboard-layout-daemon.log 2>&1 &
+    mkdir -p "$(paths_cache hypr)"
+    sh "$(paths_config argvus/sh/keyboard-layout-daemon.sh)" </dev/null >>"$(paths_cache hypr)/keyboard-layout-daemon.log" 2>&1 &
     run_dunst
 
     # Bluetooth
@@ -144,7 +145,7 @@ case "$1" in
     systemctl --user set-environment QT_QPA_PLATFORM="$QT_QPA_PLATFORM" QT_QPA_PLATFORMTHEME="$QT_QPA_PLATFORMTHEME" QT_QUICK_CONTROLS_STYLE="$QT_QUICK_CONTROLS_STYLE"
     systemctl --user start hyprpolkitagent
 
-    pkill qs; qs -c argvus-control-panel >> /tmp/quickshell-sidebar.log 2>&1 &
+    pkill qs; mkdir -p "$(paths_cache quickshell)"; qs -c argvus-control-panel >> "$(paths_cache quickshell)/argvus-control-panel.log" 2>&1 &
 
     pkill snappy-switcher 2>/dev/null || true
     sleep 0.2

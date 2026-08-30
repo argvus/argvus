@@ -11,16 +11,22 @@
 
 set -eu
 
+ARGVUS_BOOTSTRAP="${ARGVUS_BOOTSTRAP:-${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/argvus/sh/bootstrap.sh}"
+# shellcheck disable=SC1091
+. "$ARGVUS_BOOTSTRAP"
+
 CONFIG="argvus-control-panel"
+QS_LOG="$(paths_cache quickshell)/argvus-control-panel.log"
+mkdir -p "${QS_LOG%/*}"
 
 # Is the sidebar process already up?
 if pgrep -f "qs -c $CONFIG" >/dev/null 2>&1; then
   qs -c "$CONFIG" ipc call sidebar toggle >/dev/null 2>&1 || {
     # Race: process died between check and call — start it instead.
-    nohup qs -c "$CONFIG" >> /tmp/quickshell-sidebar.log 2>&1 &
+    nohup qs -c "$CONFIG" >> "$QS_LOG" 2>&1 &
   }
 else
-  nohup qs -c "$CONFIG" >> /tmp/quickshell-sidebar.log 2>&1 &
+  nohup qs -c "$CONFIG" >> "$QS_LOG" 2>&1 &
 fi
 
 exit 0
