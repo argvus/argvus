@@ -209,8 +209,8 @@ hl.env("HYPRCURSOR_SIZE", "24")
 hl.env("XCURSOR_SIZE", "24")
 -- Forces Qt apps to use Kvantum as their theme engine
 -- hl.env("QT_STYLE_OVERRIDE", "kvantum")
--- Use qt5ct to configure Qt (font, icons, style)
-hl.env("QT_QPA_PLATFORMTHEME", "qt5ct")
+-- Use qt6ct to configure Qt (font, icons, style)
+hl.env("QT_QPA_PLATFORMTHEME", "qt6ct")
 -- Use Hyprland's Qt Quick Controls style for Hypr* Qt/QML apps
 hl.env("QT_QUICK_CONTROLS_STYLE", "org.hyprland.style")
 -- Forces Firefox to run natively on Wayland

@@ -199,6 +199,19 @@ install_user() {
 
   log "Installed binaries to: $bin_dir"
   log "Make sure $bin_dir is in PATH before restarting the session."
+
+  install_envd_user
+}
+
+install_envd_user() {
+  # $XDG_CONFIG_HOME/environment.d is read by the systemd user manager, so
+  # services started at login get the source config search path + Qt theme
+  # without needing a --copy-all materialization at install time. This is a
+  # single small file, not a full per-user copy of the DE.
+  envd_dir="${XDG_CONFIG_HOME:-$HOME/.config}/environment.d"
+  run mkdir -p "$envd_dir"
+  run cp "$ROOT_DIR/config/environment.d/argvus.conf" "$envd_dir/argvus.conf"
+  log "Installed user environment: $envd_dir/argvus.conf"
 }
 
 install_system() {
@@ -233,6 +246,17 @@ install_system() {
   sudo_run install -Dm644 "$ROOT_DIR/LICENSE" \
     /usr/share/licenses/LICENSE
 
+  install_envd_system
+}
+
+install_envd_system() {
+  # Ship systemd.environment.d defaults for the systemd user manager so that
+  # services started at login (hyprpolkitagent, xdg-desktop-portal, ...) get
+  # the Argvus config search path + Qt theme without any per-user ~/.config
+  # copy. Applied for NEW logins only (systemd --user reload or re-login).
+  sudo_run install -Dm644 "$ROOT_DIR/config/environment.d/argvus.conf" \
+    /etc/environment.d/argvus.conf
+  log "Installed systemd environment: /etc/environment.d/argvus.conf"
 }
 
 restart_runtime() {

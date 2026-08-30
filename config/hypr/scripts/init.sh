@@ -72,6 +72,12 @@ case "$1" in
     if [ -f "$ARGVUS_CONFIG_HOME/argvus/.active-theme" ]; then
       _argvus_active_theme="$(sed -n '1p' "$ARGVUS_CONFIG_HOME/argvus/.active-theme")"
       ARGVUS_NO_RUNTIME=1 sh "$(paths_config argvus/sh/theme-switch.sh)" "$_argvus_active_theme" >/dev/null 2>&1 || true
+    else
+      # First login for this user: apply the packaged default theme so the
+      # mutable per-user configs (qt6ct.conf, waybar, rofi, dunst, ...) are
+      # lazily materialized from /usr/share/argvus automatically. No
+      # argvus-setup --copy-all needed for the DE to be fully themed.
+      ARGVUS_NO_RUNTIME=1 sh "$(paths_config argvus/sh/theme-switch.sh)" "$ACTIVE_THEME" >/dev/null 2>&1 || true
     fi
     if [ -f "$ARGVUS_CONFIG_HOME/argvus/.accent-color" ]; then
       sh "$(paths_config argvus/sh/accent-switch.sh)" --startup

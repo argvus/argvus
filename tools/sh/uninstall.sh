@@ -83,6 +83,8 @@ uninstall_user() {
   rm_if "$CONFIG_HOME/.argvus-bootstrap"
   rm_if "$STATE_HOME/argvus"
 
+  rm_if "$CONFIG_HOME/environment.d/argvus.conf"
+
   rm_if "$HOME/.local/bin/archypr-desktop-setup"
   rm_if "$HOME/.local/bin/archypr-desktop-start"
   rm_if "$HOME/.local/bin/archypr-desktop-session"
@@ -127,6 +129,7 @@ uninstall_system() {
   rm_if_sudo /usr/share/xsessions/archypr-desktop.desktop
 
   sudo_run rm -f /etc/profile.d/argvus.sh
+  sudo_run rm -f /etc/environment.d/argvus.conf
 }
 
 case "$MODE" in

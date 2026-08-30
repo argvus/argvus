@@ -132,4 +132,10 @@ package() {
   install -Dm755 bin/argvus-setup "${pkgdir}/usr/bin/argvus-setup"
   install -Dm644 LICENSE \
     "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+
+  # ship systemd.environment.d defaults for the systemd user manager so that
+  # services started at login get the Argvus config path + Qt theme without a
+  # per-user ~/.config copy
+  install -Dm644 config/environment.d/argvus.conf \
+    "${pkgdir}/etc/environment.d/argvus.conf"
 }
