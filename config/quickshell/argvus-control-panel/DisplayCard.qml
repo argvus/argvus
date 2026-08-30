@@ -8,7 +8,7 @@ BaseCard {
     cardTitle: Strings.cardTitleDisplay
     cardIcon: "»"
 
-    readonly property string script: "sh ${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/argvus/sh/monitor-switch.sh"
+    readonly property string script: "sh ${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/scripts/argvus/monitor-switch.sh"
 
     property var monitors: []
 
@@ -60,7 +60,7 @@ BaseCard {
     }
 
     // ── Global brightness (backlight) reuse ──
-    readonly property string brightScript: "sh ${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/argvus/sh/brightness-switch.sh"
+    readonly property string brightScript: "sh ${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/scripts/argvus/brightness-switch.sh"
     property bool brightSupported: false
     property real brightness: 0
 

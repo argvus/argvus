@@ -73,7 +73,7 @@
     "tooltip": false
   },
   "custom/window-or-mpris": {
-    "exec": "/usr/share/argvus/waybar/scripts/window-or-mpris.sh",
+    "exec": "/usr/share/argvus/scripts/apps/waybar-window-or-mpris.sh",
     "interval": 1,
     "format": "{}",
     "tooltip": false
@@ -90,30 +90,30 @@
   },
   "hyprland/language": {
     "format": "\uf11c {short}",
-    "on-click": "/usr/share/argvus/waybar/scripts/taskbar.sh --layout-keyboard"
+    "on-click": "/usr/share/argvus/scripts/apps/waybar-taskbar.sh --layout-keyboard"
   },
   "cpu": {
     "interval": 2,
     "format": "\uf2db {usage}%",
-    "on-click": "/usr/share/argvus/waybar/scripts/taskbar.sh --cpu"
+    "on-click": "/usr/share/argvus/scripts/apps/waybar-taskbar.sh --cpu"
   },
   "custom/cpu-temp": {
-    "exec": "/usr/share/argvus/waybar/scripts/sysinfo/cpu-temp.sh",
+    "exec": "/usr/share/argvus/scripts/argvus/sysinfo/cpu-temp.sh",
     "interval": 3,
     "format": " {}°C",
-    "on-click": "/usr/share/argvus/waybar/scripts/taskbar.sh --cpu-temp"
+    "on-click": "/usr/share/argvus/scripts/apps/waybar-taskbar.sh --cpu-temp"
   },
   "custom/gpu-temp": {
-    "exec": "/usr/share/argvus/waybar/scripts/sysinfo/gpu.sh --temp",
+    "exec": "/usr/share/argvus/scripts/argvus/sysinfo/gpu.sh --temp",
     "interval": 5,
     "format": "󰾲 {}",
     "tooltip": false,
-    "on-click": "/usr/share/argvus/waybar/scripts/taskbar.sh --gpu-temp"
+    "on-click": "/usr/share/argvus/scripts/apps/waybar-taskbar.sh --gpu-temp"
   },
   "memory": {
     "interval": 2,
     "format": "\uf538 {percentage}%",
-    "on-click": "/usr/share/argvus/waybar/scripts/taskbar.sh --mem"
+    "on-click": "/usr/share/argvus/scripts/apps/waybar-taskbar.sh --mem"
   },
   "clock#date": {
     "format": "\uf073 {:L%a,%d %B}",
@@ -156,7 +156,7 @@
     "interval": 3,
     "nospacing": 1,
     "on-click": "nm-connection-editor", // or: "kitty --title nmtui-float -e nmtui"
-    "on-click-right": "/usr/share/argvus/waybar/scripts/netctl.sh"
+    "on-click-right": "/usr/share/argvus/scripts/apps/waybar-netctl.sh"
   },
   "bluetooth": {
     "format": "{status}",
@@ -217,15 +217,15 @@
       "interval": 1,
       "format": "{}",
       "tooltip": false,
-      "on-click": "/usr/share/argvus/waybar/scripts/taskbar.sh --sidebar-toggle"
+      "on-click": "/usr/share/argvus/scripts/apps/waybar-taskbar.sh --sidebar-toggle"
   },
   "custom/recording": {
-    "exec": "/usr/share/argvus/hypr/scripts/screenshot.sh --video-full-status",
+    "exec": "/usr/share/argvus/scripts/apps/hypr-screenshot.sh --video-full-status",
     "return-type": "json",
     "interval": 2,
     "format": "{}",
-    "on-click": "/usr/share/argvus/hypr/scripts/screenshot.sh --video-full",
-    "on-click-right": "/usr/share/argvus/hypr/scripts/screenshot.sh --video-full-stop"
+    "on-click": "/usr/share/argvus/scripts/apps/hypr-screenshot.sh --video-full",
+    "on-click-right": "/usr/share/argvus/scripts/apps/hypr-screenshot.sh --video-full-stop"
   },
   "custom/search": {
     "format": "\uf002",
@@ -240,7 +240,7 @@
     "format": "{}",
     "tooltip": true,
     "hide-empty-text": true,
-    "on-click": "/usr/share/argvus/hypr/scripts/storage-menu.sh"
+    "on-click": "/usr/share/argvus/scripts/apps/hypr-storage-menu.sh"
     // "on-click-right": "argvus-storage devices"
   },
   "tray": {
@@ -250,9 +250,9 @@
   },
   // paused: f144 play:
   "custom/spotify-mpris": {
-    "exec": "/usr/share/argvus/waybar/scripts/spotify-mpris.sh",
-    "on-click": "/usr/share/argvus/waybar/scripts/spotify-playpause.sh",
-    "on-click-right": "/usr/share/argvus/waybar/scripts/spotify-focus.sh",
+    "exec": "/usr/share/argvus/scripts/apps/waybar-spotify-mpris.sh",
+    "on-click": "/usr/share/argvus/scripts/apps/waybar-spotify-playpause.sh",
+    "on-click-right": "/usr/share/argvus/scripts/apps/waybar-spotify-focus.sh",
     "format": "{}",
     "format-paused": "{}",
     "return-type": "text",
@@ -277,6 +277,6 @@
   "custom/power": {
     "format": "\uf011",
     "tooltip": false,
-    "on-click": "/usr/share/argvus/waybar/scripts/taskbar.sh --power-menu"
+    "on-click": "/usr/share/argvus/scripts/apps/waybar-taskbar.sh --power-menu"
   }
 }

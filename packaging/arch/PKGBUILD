@@ -119,7 +119,7 @@ sha256sums=('SKIP')
 prepare() {
   cd "${pkgname}-${pkgver}"
   sed -i \
-    's#/usr/share/argvus/waybar/scripts/taskbar.sh --cal#/usr/lib/argvus-calendar/waybar-launcher --surface {x_root} {y_root}#' \
+    's#/usr/share/argvus/scripts/apps/waybar-taskbar.sh --cal#/usr/lib/argvus-calendar/waybar-launcher --surface {x_root} {y_root}#' \
     config/waybar/argvus-taskbar.jsonc
 }
 

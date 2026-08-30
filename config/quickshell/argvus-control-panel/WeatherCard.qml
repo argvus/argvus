@@ -102,7 +102,7 @@ BaseCard {
 
     Process {
         id: configureProc
-        command: ["sh", "-c", "${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/argvus/sh/weather-location.sh"]
+        command: ["sh", "-c", "${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/scripts/argvus/weather-location.sh"]
         onExited: {
             locationFile.reload()
             root.refreshWeather()

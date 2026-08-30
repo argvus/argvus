@@ -17,7 +17,7 @@ BaseCard {
 
     function applyIdleTimeout(seconds) {
         if (idleSetProc.running) return
-        idleSetProc.command = ["sh", "-c", "${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/argvus/sh/idle-timeout.sh " + seconds]
+        idleSetProc.command = ["sh", "-c", "${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/scripts/argvus/idle-timeout.sh " + seconds]
         idleSetProc.running = true
     }
 
@@ -76,7 +76,7 @@ BaseCard {
 
     Process {
         id: idleSetProc
-        command: ["sh", "-c", "${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/argvus/sh/idle-timeout.sh 300"]
+        command: ["sh", "-c", "${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/scripts/argvus/idle-timeout.sh 300"]
         stdout: SplitParser {
             onRead: data => idleTimeout = Number(data.trim())
         }
@@ -84,7 +84,7 @@ BaseCard {
 
     Process {
         id: idleStatusProc
-        command: ["sh", "-c", "${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/argvus/sh/idle-timeout.sh status"]
+        command: ["sh", "-c", "${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/scripts/argvus/idle-timeout.sh status"]
         stdout: SplitParser {
             onRead: data => idleTimeout = Number(data.trim())
         }

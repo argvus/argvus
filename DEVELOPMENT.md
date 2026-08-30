@@ -54,7 +54,7 @@ Package installation owns `/usr/share/argvus`. User configuration under
 startup requirement. Generated Argvus runtime config belongs under
 `$XDG_STATE_HOME/argvus/config` so theme changes can be rebuilt from current
 packaged defaults after upgrades.
-Runtime scripts should source `/usr/share/argvus/argvus/sh/bootstrap.sh` unless
+Runtime scripts should source `/usr/share/argvus/scripts/argvus/bootstrap.sh` unless
 a user-copied override explicitly replaces that script.
 Keep Hyprland's Lua theme loader aligned with the preference directory used by
 runtime scripts: `$XDG_CONFIG_HOME/argvus`.

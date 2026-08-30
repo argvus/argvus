@@ -1,11 +1,11 @@
 #!/usr/bin/env sh
 
 # shellcheck disable=SC1091
-ARGVUS_BOOTSTRAP="${ARGVUS_BOOTSTRAP:-${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/argvus/sh/bootstrap.sh}"
+ARGVUS_BOOTSTRAP="${ARGVUS_BOOTSTRAP:-${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/scripts/argvus/bootstrap.sh}"
 . "$ARGVUS_BOOTSTRAP"
 
 do_lock() {
-  sh "$(paths_config argvus/sh/hyprlock-theme.sh)" >/dev/null || return 1
+  sh "$(paths_config scripts/argvus/hyprlock-theme.sh)" >/dev/null || return 1
   HYPRLOCK_PATH="$(
     sed -n \
       -e "s|^[[:space:]]*path[[:space:]]*=[[:space:]]*~|$HOME|p" \

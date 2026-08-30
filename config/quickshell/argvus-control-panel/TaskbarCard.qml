@@ -14,7 +14,7 @@ BaseCard {
     // True once the user manually changes the selection.
     property bool dirty: false
 
-    readonly property string script: "sh ${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/argvus/sh/spaces-switch.sh"
+    readonly property string script: "sh ${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/scripts/argvus/spaces-switch.sh"
 
     Timer {
         interval: 2000; running: true; repeat: true; triggeredOnStart: true

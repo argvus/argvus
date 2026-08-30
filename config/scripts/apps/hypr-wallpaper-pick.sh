@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-ARGVUS_BOOTSTRAP="${ARGVUS_BOOTSTRAP:-${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/argvus/sh/bootstrap.sh}"
+ARGVUS_BOOTSTRAP="${ARGVUS_BOOTSTRAP:-${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/scripts/argvus/bootstrap.sh}"
 . "$ARGVUS_BOOTSTRAP"
 ARGVUS_MUTABLE_CONFIG=1
 HYPRPAPER_FILE="$(paths_config hypr/hyprpaper.conf)"
@@ -40,6 +40,6 @@ sed -i "s|^[[:space:]]*path[[:space:]]*=.*$|  path =  ${CONFIG_PATH}|" "$HYPRPAP
 apply_wallpaper_runtime "$SELECTED_PATH"
 
 # Rebuild Hyprlock config and invalidate the cached lock wallpaper.
-sh "$(paths_config argvus/sh/hyprlock-theme.sh)" --invalidate >/dev/null 2>&1 || true
+sh "$(paths_config scripts/argvus/hyprlock-theme.sh)" --invalidate >/dev/null 2>&1 || true
 
 notify-send "Wallpaper" "Alterado para:\n$(basename "$SELECTED_PATH")"

@@ -11,7 +11,7 @@ BaseCard {
     property real brightness: 0
     property bool dragging: false
 
-    readonly property string script: "sh ${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/argvus/sh/brightness-switch.sh"
+    readonly property string script: "sh ${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/scripts/argvus/brightness-switch.sh"
 
     visible: supported
 

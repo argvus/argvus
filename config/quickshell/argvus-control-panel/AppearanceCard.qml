@@ -11,7 +11,7 @@ BaseCard {
 
     function applyAccent(color) {
         if (accentProc.running) return
-        accentProc.command = ["sh", "-c", "${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/argvus/sh/accent-switch.sh '" + color + "'"]
+        accentProc.command = ["sh", "-c", "${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/scripts/argvus/accent-switch.sh '" + color + "'"]
         accentProc.running = true
     }
 
@@ -46,7 +46,7 @@ BaseCard {
         accentColor: Theme.accent
         onClicked: {
             if (accentProc.running) return
-            accentProc.command = ["sh", "-c", "${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/argvus/sh/accent-switch.sh"]
+            accentProc.command = ["sh", "-c", "${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/scripts/argvus/accent-switch.sh"]
             accentProc.running = true
         }
     }
@@ -159,12 +159,12 @@ BaseCard {
 
     Process {
         id: wallpaperProc
-        command: ["bash", "-c", "sh ${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/hypr/scripts/wallpaper-pick.sh"]
+        command: ["bash", "-c", "sh ${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/scripts/apps/hypr-wallpaper-pick.sh"]
     }
 
     Process {
         id: themeProc
-        command: ["sh", "-c", "${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/argvus/sh/theme-switch.sh"]
+        command: ["sh", "-c", "${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/scripts/argvus/theme-switch.sh"]
         onExited: {
             Theme.reloadActiveTheme()
             Theme.reloadAccent()
@@ -173,13 +173,13 @@ BaseCard {
 
     Process {
         id: accentProc
-        command: ["sh", "-c", "${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/argvus/sh/accent-switch.sh"]
+        command: ["sh", "-c", "${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/scripts/argvus/accent-switch.sh"]
         onExited: Theme.reloadAccent()
     }
 
     Process {
         id: toggleProc
-        command: ["sh", "-c", "${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/waybar/scripts/sysinfo-toggle.sh toggle"]
+        command: ["sh", "-c", "${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/scripts/apps/waybar-sysinfo-toggle.sh toggle"]
         stdout: SplitParser {
             onRead: data => sysinfoEnabled = data.trim() === "enabled"
         }
@@ -187,7 +187,7 @@ BaseCard {
 
     Process {
         id: checkProc
-        command: ["sh", "-c", "${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/waybar/scripts/sysinfo-toggle.sh status"]
+        command: ["sh", "-c", "${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/scripts/apps/waybar-sysinfo-toggle.sh status"]
         stdout: SplitParser {
             onRead: data => sysinfoEnabled = data.trim() === "enabled"
         }
@@ -195,7 +195,7 @@ BaseCard {
 
     Process {
         id: idleSetProc
-        command: ["sh", "-c", "${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/argvus/sh/idle-timeout.sh 300"]
+        command: ["sh", "-c", "${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/scripts/argvus/idle-timeout.sh 300"]
         stdout: SplitParser {
             onRead: data => idleTimeout = Number(data.trim())
         }
@@ -203,7 +203,7 @@ BaseCard {
 
     Process {
         id: idleStatusProc
-        command: ["sh", "-c", "${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/argvus/sh/idle-timeout.sh status"]
+        command: ["sh", "-c", "${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/scripts/argvus/idle-timeout.sh status"]
         stdout: SplitParser {
             onRead: data => idleTimeout = Number(data.trim())
         }

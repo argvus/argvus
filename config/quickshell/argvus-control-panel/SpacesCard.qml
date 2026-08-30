@@ -11,8 +11,8 @@ BaseCard {
     property real gapsIn: 0
     property real gapsOut: 0
 
-    readonly property string script: "sh ${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/argvus/sh/spaces-switch.sh"
-    readonly property string reloadScript: "sh ${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/hypr/scripts/init.sh --reload"
+    readonly property string script: "sh ${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/scripts/argvus/spaces-switch.sh"
+    readonly property string reloadScript: "sh ${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/scripts/apps/hypr-init.sh --reload"
     readonly property var controls: [
         { key: "waybar", label: Strings.spacesWaybar, valueProp: "waybar", minDef: 0, max: 100 },
         { key: "gaps_in", label: Strings.spacesGapIn, valueProp: "gapsIn", minDef: 3, max: 100 },

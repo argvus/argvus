@@ -270,12 +270,14 @@ restart_runtime() {
   if command -v hyprctl >/dev/null 2>&1; then
     hyprctl reload >/dev/null 2>&1 || true
   fi
-  if [ -x "${XDG_CONFIG_HOME:-$HOME/.config}/hypr/scripts/init.sh" ]; then
-    sh "${XDG_CONFIG_HOME:-$HOME/.config}/hypr/scripts/init.sh" --waybars >/dev/null 2>&1 &
-  elif [ -x "$ROOT_DIR/config/hypr/scripts/init.sh" ]; then
+  if [ -x "$ROOT_DIR/config/scripts/apps/hypr-init.sh" ]; then
     ARGVUS_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}" \
     ARGVUS_SYSTEM_CONFIG="$ROOT_DIR/config" \
-      sh "$ROOT_DIR/config/hypr/scripts/init.sh" --waybars >/dev/null 2>&1 &
+      sh "$ROOT_DIR/config/scripts/apps/hypr-init.sh" --waybars >/dev/null 2>&1 &
+  elif [ -x "${XDG_CONFIG_HOME:-$HOME/.config}/scripts/apps/hypr-init.sh" ]; then
+    sh "${XDG_CONFIG_HOME:-$HOME/.config}/scripts/apps/hypr-init.sh" --waybars >/dev/null 2>&1 &
+  elif [ -x "${XDG_CONFIG_HOME:-$HOME/.config}/hypr/scripts/init.sh" ]; then
+    sh "${XDG_CONFIG_HOME:-$HOME/.config}/hypr/scripts/init.sh" --waybars >/dev/null 2>&1 &
   fi
 }
 

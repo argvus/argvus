@@ -20,7 +20,7 @@ Add a button to your `~/.config/waybar/config`:
 "custom/sidebar": {
     "format": "󰕰",
     "tooltip": false,
-    "on-click": "sh /usr/share/argvus/argvus/sh/toggle-sidebar.sh"
+    "on-click": "sh /usr/share/argvus/scripts/argvus/toggle-sidebar.sh"
 }
 ```
 
@@ -44,7 +44,7 @@ Add to your `~/.config/hypr/hyprland.lua`:
 ```lua
 -- Right-hand sidebar (Quickshell)
 hl.bind("SUPER", "S", "exec",
-    "sh /usr/share/argvus/argvus/sh/toggle-sidebar.sh")
+    "sh /usr/share/argvus/scripts/argvus/toggle-sidebar.sh")
 
 -- Blur for the panel (optional, but nice)
 hl.rule.layer("noanim,blur,blurpopups", "argvus-control-panel")

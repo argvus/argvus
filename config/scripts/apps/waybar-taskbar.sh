@@ -8,7 +8,7 @@ if [ "${1:-}" = "--cal" ] && [ -x /usr/lib/argvus-calendar/waybar-launcher ]; th
   exec /usr/lib/argvus-calendar/waybar-launcher "$@"
 fi
 
-ARGVUS_BOOTSTRAP="${ARGVUS_BOOTSTRAP:-${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/argvus/sh/bootstrap.sh}"
+ARGVUS_BOOTSTRAP="${ARGVUS_BOOTSTRAP:-${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/scripts/argvus/bootstrap.sh}"
 # shellcheck disable=SC1090,SC1091
 . "$ARGVUS_BOOTSTRAP"
 
@@ -65,7 +65,7 @@ power_menu() {
   [ -n "$DIR" ] || require_session
   # shellcheck disable=SC1091
   # shellcheck disable=SC1090
-  . "$(paths_config "$DIR/scripts/power-menu.sh")"
+  . "$(paths_config "scripts/apps/hypr-power-menu.sh")"
 }
 
 term() {
@@ -89,7 +89,7 @@ sidebar_toggle() {
     echo "open" > "$STATE_FILE"
   fi
 
-  sh "$(paths_config "argvus/sh/toggle-sidebar.sh")"
+  sh "$(paths_config "scripts/argvus/toggle-sidebar.sh")"
 }
 
 case $1 in

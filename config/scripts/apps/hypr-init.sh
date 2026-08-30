@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
 # shellcheck disable=SC1091
-ARGVUS_BOOTSTRAP="${ARGVUS_BOOTSTRAP:-${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/argvus/sh/bootstrap.sh}"
+ARGVUS_BOOTSTRAP="${ARGVUS_BOOTSTRAP:-${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/scripts/argvus/bootstrap.sh}"
 . "$ARGVUS_BOOTSTRAP"
 
 # Run xdg-user
@@ -71,16 +71,16 @@ case "$1" in
   --started)
     if [ -f "$ARGVUS_CONFIG_HOME/argvus/.active-theme" ]; then
       _argvus_active_theme="$(sed -n '1p' "$ARGVUS_CONFIG_HOME/argvus/.active-theme")"
-      ARGVUS_NO_RUNTIME=1 sh "$(paths_config argvus/sh/theme-switch.sh)" "$_argvus_active_theme" >/dev/null 2>&1 || true
+      ARGVUS_NO_RUNTIME=1 sh "$(paths_config scripts/argvus/theme-switch.sh)" "$_argvus_active_theme" >/dev/null 2>&1 || true
     else
       # First login for this user: apply the packaged default theme so the
       # mutable per-user configs (qt6ct.conf, waybar, rofi, dunst, ...) are
       # lazily materialized from /usr/share/argvus automatically. No
       # argvus-setup --copy-all needed for the DE to be fully themed.
-      ARGVUS_NO_RUNTIME=1 sh "$(paths_config argvus/sh/theme-switch.sh)" "$ACTIVE_THEME" >/dev/null 2>&1 || true
+      ARGVUS_NO_RUNTIME=1 sh "$(paths_config scripts/argvus/theme-switch.sh)" "$ACTIVE_THEME" >/dev/null 2>&1 || true
     fi
     if [ -f "$ARGVUS_CONFIG_HOME/argvus/.accent-color" ]; then
-      sh "$(paths_config argvus/sh/accent-switch.sh)" --startup
+      sh "$(paths_config scripts/argvus/accent-switch.sh)" --startup
     fi
     set_gsettings
     start_wallpaper
@@ -88,12 +88,12 @@ case "$1" in
 
     # Apply user's spaces override (gaps + waybar margins) before starting bars.
     if [ -f "$ARGVUS_CONFIG_HOME/argvus/.active-theme" ] || [ -f "$ARGVUS_CONFIG_HOME/argvus/.spaces" ]; then
-      sh "$(paths_config argvus/sh/spaces-switch.sh)" --apply-static
+      sh "$(paths_config scripts/argvus/spaces-switch.sh)" --apply-static
     fi
 
     # Apply saved monitor scale settings (monitor-switch) and any layout
     # written by nwg-displays.
-    sh "$(paths_config argvus/sh/monitor-switch.sh)" --apply 2>/dev/null || true
+    sh "$(paths_config scripts/argvus/monitor-switch.sh)" --apply 2>/dev/null || true
 
     run_waybars
 
@@ -109,7 +109,7 @@ case "$1" in
     wl-paste --type image --watch cliphist store &
     pkill -f keyboard-layout-daemon.sh 2>/dev/null || true
     mkdir -p "$(paths_cache hypr)"
-    sh "$(paths_config argvus/sh/keyboard-layout-daemon.sh)" </dev/null >>"$(paths_cache hypr)/keyboard-layout-daemon.log" 2>&1 &
+    sh "$(paths_config scripts/argvus/keyboard-layout-daemon.sh)" </dev/null >>"$(paths_cache hypr)/keyboard-layout-daemon.log" 2>&1 &
     run_dunst
 
     # Bluetooth
@@ -123,7 +123,7 @@ case "$1" in
     # set_wallpaper
   ;;
   --reload)
-    sh "$(paths_config argvus/sh/hyprlock-theme.sh)" --invalidate >/dev/null 2>&1 || true
+    sh "$(paths_config scripts/argvus/hyprlock-theme.sh)" --invalidate >/dev/null 2>&1 || true
     start_wallpaper
 
     run_hypridle
@@ -132,14 +132,14 @@ case "$1" in
 
     # Apply spaces override (waybar margins to config files) before hyprctl reload.
     if [ -f "$ARGVUS_CONFIG_HOME/argvus/.active-theme" ] || [ -f "$ARGVUS_CONFIG_HOME/argvus/.spaces" ]; then
-      sh "$(paths_config argvus/sh/spaces-switch.sh)" --apply-static
+      sh "$(paths_config scripts/argvus/spaces-switch.sh)" --apply-static
     fi
 
     # Reload Hyprland config (applies gaps from .spaces via hyprland.lua)
     hyprctl reload
 
     # Apply monitor layout written by nwg-displays (if changed).
-    sh "$(paths_config argvus/sh/monitor-switch.sh)" --apply-nwg 2>/dev/null || true
+    sh "$(paths_config scripts/argvus/monitor-switch.sh)" --apply-nwg 2>/dev/null || true
 
     # Restart waybar with new margins after hyprctl reload.
     run_waybars
