@@ -75,7 +75,12 @@ CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 uninstall_user() {
   log "Uninstalling Argvus user install..."
 
+  rm_if "$HOME/.local/bin/argvus"
   rm_if "$HOME/.local/bin/argvus-setup"
+  rm_if "$HOME/.local/bin/argvus-btop"
+  rm_if "$HOME/.local/bin/argvus-btm"
+  rm_if "$HOME/.local/bin/argvus-spf"
+  rm_if "$HOME/.local/bin/argvus-yazi"
   rm_if "$HOME/.local/bin/argvus-storage"
   rm_if "$HOME/.local/share/argvus"
 
@@ -87,13 +92,13 @@ uninstall_user() {
   rm_if "$STATE_HOME/argvus-storage"
   rm_if "$CACHE_HOME/argvus"
 
-  # Legacy structure — per-app configs/scripts copied by older argvus-setup or
+  # Legacy structure — per-app configs/scripts copied by older setup flows or
   # provisioned by the runtime before the centralized ~/.config/argvus layout.
   rm_if "$CONFIG_HOME/argvus-sysinfo"
 
   rm_if "$CONFIG_HOME/environment.d/argvus.conf"
 
-  # App directories materialized by the legacy argvus-setup --copy-all /
+  # App directories materialized by the legacy setup --copy-all /
   # --copy <app>. Development-only command: removed without backup.
   rm_if "$CONFIG_HOME/bottom"
   rm_if "$CONFIG_HOME/btop"
@@ -142,7 +147,12 @@ uninstall_user() {
 uninstall_system() {
   log "Uninstalling Argvus system install..."
 
+  sudo_run rm -f /usr/bin/argvus
   sudo_run rm -f /usr/bin/argvus-setup
+  sudo_run rm -f /usr/bin/argvus-btop
+  sudo_run rm -f /usr/bin/argvus-btm
+  sudo_run rm -f /usr/bin/argvus-spf
+  sudo_run rm -f /usr/bin/argvus-yazi
   sudo_run rm -f /usr/bin/argvus-storage
   rm_if_sudo /usr/share/argvus
   rm_if_sudo /usr/share/licenses/argvus

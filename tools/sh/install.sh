@@ -151,23 +151,23 @@ run_setup() {
 
     if [ "$DRY_RUN" = true ]; then
       # shellcheck disable=SC2086
-      ARGVUS_CONFIG_SRC="$config_src" "$setup_bin" $setup_arg --dry-run
+      ARGVUS_CONFIG_SRC="$config_src" "$setup_bin" --setup $setup_arg --dry-run
     else
       # shellcheck disable=SC2086
-      ARGVUS_CONFIG_SRC="$config_src" "$setup_bin" $setup_arg
+      ARGVUS_CONFIG_SRC="$config_src" "$setup_bin" --setup $setup_arg
     fi
   }
 
   case "$MODE" in
     system)
-      log "Applying system configuration with argvus-setup $setup_arg..."
+      log "Applying system configuration with argvus --setup $setup_arg..."
       # shellcheck disable=SC2086
-      run_argvus_setup "/usr/share/argvus" argvus-setup
+      run_argvus_setup "/usr/share/argvus" argvus
     ;;
     user|all)
-      log "Applying user configuration with argvus-setup $setup_arg..."
+      log "Applying user configuration with argvus --setup $setup_arg..."
       # shellcheck disable=SC2086
-      run_argvus_setup "$ROOT_DIR/config" "$ROOT_DIR/bin/argvus-setup"
+      run_argvus_setup "$ROOT_DIR/config" "$ROOT_DIR/bin/argvus"
 
       run mkdir -p "${XDG_CONFIG_HOME:-$HOME/.config}/argvus-storage"
       run cp "$STORAGE_RESOURCES/config.json" \
@@ -193,8 +193,8 @@ install_user() {
   run mkdir -p "$bin_dir" "$share_dir"
 
   run rm -rf "$share_dir"
-  run cp -R "$ROOT_DIR/config" "$share_dir"
-  run install -m 755 "$ROOT_DIR/bin/argvus-setup" "$bin_dir/argvus-setup"
+  run cp -R "$ROOT_DIR/config/." "$share_dir/"
+  run install -m 755 "$ROOT_DIR/bin/argvus" "$bin_dir/argvus"
   run install -m 755 "$STORAGE_DIR/target/release/argvus-storage" "$bin_dir/argvus-storage"
 
   log "Installed binaries to: $bin_dir"
@@ -221,13 +221,13 @@ install_system() {
   sudo_run install -dm755 /usr/share/argvus
   if [ "$DRY_RUN" = true ]; then
     printf '[dry-run] sudo rm -rf /usr/share/argvus\n'
-    printf '[dry-run] sudo cp -a %s/config /usr/share/argvus\n' "$ROOT_DIR"
+    printf '[dry-run] sudo cp -a %s/config/. /usr/share/argvus/\n' "$ROOT_DIR"
   else
     sudo rm -rf /usr/share/argvus
-    sudo cp -a "$ROOT_DIR/config" /usr/share/argvus
+    sudo cp -a "$ROOT_DIR/config/." /usr/share/argvus/
   fi
 
-  sudo_run install -Dm755 "$ROOT_DIR/bin/argvus-setup" /usr/bin/argvus-setup
+  sudo_run install -Dm755 "$ROOT_DIR/bin/argvus" /usr/bin/argvus
   sudo_run install -Dm755 "$STORAGE_DIR/target/release/argvus-storage" /usr/bin/argvus-storage
   sudo_run rm -f /etc/profile.d/argvus.sh
   log "Removed legacy TTY auto-start profile: /etc/profile.d/argvus.sh"

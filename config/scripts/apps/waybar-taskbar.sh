@@ -72,10 +72,10 @@ term() {
   require_session
   case "$XDG_SESSION_DESKTOP" in
   Hyprland)
-    "$TERM" -e btm -C "$(paths_config "bottom/$1.toml")" && hyprctl dispatch "hl.dsp.focus({ workspace = $CURRENT_WS })"
+    "$TERM" -e argvus --btm -C "$(paths_config "bottom/$1.toml")" && hyprctl dispatch "hl.dsp.focus({ workspace = $CURRENT_WS })"
     ;;
   sway)
-    "$TERM" -e btm -C "$(paths_config "bottom/$1.toml")"
+    "$TERM" -e argvus --btm -C "$(paths_config "bottom/$1.toml")"
     ;;
   esac
 }

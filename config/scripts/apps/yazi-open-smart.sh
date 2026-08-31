@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-# shellcheck disable=SC1091
+# shellcheck disable=SC1090,SC1091
 ARGVUS_BOOTSTRAP="${ARGVUS_BOOTSTRAP:-${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/scripts/argvus/bootstrap.sh}"
 . "$ARGVUS_BOOTSTRAP"
 
@@ -10,6 +10,10 @@ EDITOR="${TERMINAL_EDITOR:-vim}"
 TEXT_EDITOR="${TEXT_EDITOR:-mousepad}"
 YAZI="$FILE_MANAGER"
 [ -n "$YAZI" ] || YAZI="/usr/bin/yazi"
+case "$YAZI" in
+    spf|superfile) YAZI="argvus --spf" ;;
+    yazi) YAZI="argvus --yazy" ;;
+esac
 ZATHURA="${PDF_VIEWER:-zathura}"
 IMAGE_VIEWER="${IMAGE_VIEWER:-imv}"
 VIDEO_PLAYER="${VIDEO_PLAYER:-mpv}"
@@ -21,7 +25,8 @@ target=$1
 [ -z "$target" ] && exit 1
 
 if [ -d "$target" ]; then
-    "$TERM" -e "$YAZI" "$target" >/dev/null 2>&1 &
+    # shellcheck disable=SC2086
+    "$TERM" -e $YAZI "$target" >/dev/null 2>&1 &
     exit 0
 fi
 

@@ -129,7 +129,7 @@ package() {
   install -dm755 "${pkgdir}/usr/share/argvus"
   cp -a config/. "${pkgdir}/usr/share/argvus/"
 
-  install -Dm755 bin/argvus-setup "${pkgdir}/usr/bin/argvus-setup"
+  install -Dm755 bin/argvus "${pkgdir}/usr/bin/argvus"
   install -Dm644 LICENSE \
     "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
 

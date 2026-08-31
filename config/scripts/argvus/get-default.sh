@@ -44,7 +44,7 @@ find_state_file() {
 fallback() {
   case "$1" in
     terminal) printf 'kitty\n' ;;
-    file_manager) printf 'spf\n' ;;
+    file_manager) printf 'argvus --spf\n' ;;
     text_editor) printf 'mousepad\n' ;;
     terminal_editor) printf 'vim\n' ;;
     browser) printf 'xdg-open\n' ;;

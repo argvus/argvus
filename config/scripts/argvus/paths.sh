@@ -23,10 +23,10 @@ paths_read_config() {
   _generated_path="$(paths_generated_config "$_relative_path")"
   _system_path="$(paths_system_config "$_relative_path")"
 
-  if [ -e "$_user_path" ] || [ -L "$_user_path" ]; then
-    printf '%s\n' "$_user_path"
-  elif [ -e "$_override_path" ] || [ -L "$_override_path" ]; then
+  if [ -e "$_override_path" ] || [ -L "$_override_path" ]; then
     printf '%s\n' "$_override_path"
+  elif [ -e "$_user_path" ] || [ -L "$_user_path" ]; then
+    printf '%s\n' "$_user_path"
   elif [ -e "$_generated_path" ] || [ -L "$_generated_path" ]; then
     printf '%s\n' "$_generated_path"
   else
@@ -74,7 +74,7 @@ paths_config() {
 
   if [ "${ARGVUS_MUTABLE_CONFIG:-0}" = 1 ]; then
     case "$_relative_path" in
-      */scripts/*|*/docs/*)
+      scripts/*|*/scripts/*|docs/*|*/docs/*)
         paths_read_config "$_relative_path"
         return 0
       ;;

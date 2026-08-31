@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# shellcheck disable=SC1090,SC1091,SC2034
 
 ARGVUS_BOOTSTRAP="${ARGVUS_BOOTSTRAP:-${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/scripts/argvus/bootstrap.sh}"
 . "$ARGVUS_BOOTSTRAP"
@@ -21,7 +22,11 @@ get_active_monitor() {
   fi
 }
 
-"$TERM" -e yazi --chooser-file="$SELECTED_FILE" "$WALLPAPERS_DIR"
+if command -v argvus >/dev/null 2>&1; then
+  "$TERM" -e argvus --yazy --chooser-file="$SELECTED_FILE" "$WALLPAPERS_DIR"
+else
+  "$TERM" -e yazi --chooser-file="$SELECTED_FILE" "$WALLPAPERS_DIR"
+fi
 
 SELECTED_PATH=$(cat "$SELECTED_FILE")
 rm -f "$SELECTED_FILE"

@@ -33,8 +33,8 @@ end
 
 local function _config_path(relative_path)
   return _first_existing({
-    _config_home .. "/argvus/" .. relative_path,
     _config_home .. "/" .. relative_path,
+    _config_home .. "/argvus/" .. relative_path,
     _generated_config .. "/" .. relative_path,
     _system_config .. "/" .. relative_path,
   })
@@ -68,7 +68,7 @@ end
 -- Default applications (written by argvus-default-apps) --------------------------------------------
 local _defaults_fallback = {
   terminal = "kitty",
-  file_manager = "spf",
+  file_manager = "argvus --spf",
   text_editor = "mousepad",
   terminal_editor = "vim",
   browser = "xdg-open",
@@ -220,6 +220,19 @@ hl.env("XDG_CURRENT_DESKTOP", "Hyprland")
 hl.env("XDG_SESSION_TYPE", "wayland")
 hl.env("XDG_SESSION_DESKTOP", "Hyprland")
 hl.env("XDG_CONFIG_DIRS", _system_config .. ":" .. (os.getenv("XDG_CONFIG_DIRS") or "/etc/xdg"))
+local _active_theme_for_yazi = _read_first_line({
+  _config_home .. "/argvus/.active-theme",
+  _system_config .. "/argvus/.active-theme",
+}) or "argvus-dark-aether"
+local _native_yazi_config = _config_home .. "/yazi"
+local _argvus_yazi_config = _config_home .. "/argvus/yazi"
+local _yazi_config_home = _system_config .. "/yazi"
+if _path_exists(_native_yazi_config .. "/flavors/" .. _active_theme_for_yazi .. ".yazi/flavor.toml") then
+  _yazi_config_home = _native_yazi_config
+elseif _path_exists(_argvus_yazi_config .. "/flavors/" .. _active_theme_for_yazi .. ".yazi/flavor.toml") then
+  _yazi_config_home = _config_home .. "/argvus/yazi"
+end
+hl.env("YAZI_CONFIG_HOME", _yazi_config_home)
 -- Theme
 -- hl.env("GTK2_RC_FILES", "/dev/null")
 -- hl.env("GTK_THEME", "Hyprland-Dark-Teal")
@@ -227,26 +240,36 @@ hl.env("XDG_CONFIG_DIRS", _system_config .. ":" .. (os.getenv("XDG_CONFIG_DIRS")
 -- Variables ---------------------------------------------------------------------------------------
 local mod = "SUPER"
 local kitty_config = string.format("%q", _config_path("kitty/kitty.conf"))
+local foot_config = string.format("%q", _config_path("foot/foot.ini"))
 local _terminal_bin = _get_default("terminal")
--- Keep the kitty.config path only when the default terminal is kitty.
+-- Keep explicit config paths for terminals that do not read Argvus' per-user tree.
 local terminal
 if _terminal_bin == "kitty" then
   terminal = "kitty --config " .. kitty_config
+elseif _terminal_bin == "foot" then
+  terminal = "foot -c " .. foot_config
 else
   terminal = _terminal_bin
 end
 -- Default File Manager: the state may hold a TUI (runs in the terminal) or a
 -- GUI file manager. TUI ones launch through the terminal like the old spf.
 local _tui_file_managers = {
-  spf = true, yazi = true, ranger = true, lf = true, joshuto = true,
-  broot = true, mc = true, nnn = true,
+  ["argvus --spf"] = true, ["argvus --yazy"] = true, ["argvus --yazi"] = true,
+  spf = true, superfile = true, yazi = true, ranger = true, lf = true,
+  joshuto = true, broot = true, mc = true, nnn = true,
+}
+local _argvus_file_manager_wrappers = {
+  spf = "argvus --spf",
+  superfile = "argvus --spf",
+  yazi = "argvus --yazy",
 }
 local _file_manager_bin = _get_default("file_manager")
+local _file_manager_cmd = _argvus_file_manager_wrappers[_file_manager_bin] or _file_manager_bin
 local file_manager
-if _tui_file_managers[_file_manager_bin] then
-  file_manager = terminal .. " -e " .. _file_manager_bin
+if _tui_file_managers[_file_manager_cmd] then
+  file_manager = terminal .. " -e " .. _file_manager_cmd
 else
-  file_manager = _file_manager_bin
+  file_manager = _file_manager_cmd
 end
 local rofi_config = string.format("%q", _config_path("rofi/config.rasi"))
 
