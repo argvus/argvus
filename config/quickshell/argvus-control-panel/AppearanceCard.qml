@@ -85,26 +85,21 @@ BaseCard {
 
         Rectangle {
             id: sysinfoToggleBtn
-            width: 32; height: 32; radius: 6
+            width: 44; height: 24; radius: height / 2
 
-            color: {
-                if (!sysinfoEnabled) return Theme.bgCardAlt
-                if (sysinfoToggleArea.containsMouse) return Theme.accentDim
-                return Theme.bgCard
-            }
-            border.color: sysinfoEnabled ? Theme.accent : Theme.danger
-            border.width: 1
+            color: sysinfoEnabled ? Theme.accent : Theme.borderSubtle
             Layout.alignment: Qt.AlignVCenter
 
             Behavior on color { ColorAnimation { duration: 150 } }
 
-            Text {
-                anchors.centerIn: parent
-                text: sysinfoEnabled ? "\uf0ca" : "\uf00d"
-                color: sysinfoEnabled ? Theme.accent : Theme.danger
-                font.family: "Font Awesome 7 Free"
-                font.pixelSize: 16
-                font.weight: Font.Black
+            Rectangle {
+                id: sysinfoKnob
+                width: 18; height: 18; radius: height / 2
+                x: sysinfoEnabled ? parent.width - width - 3 : 3
+                y: (parent.height - height) / 2
+                color: Theme.bgHeader
+
+                Behavior on x { NumberAnimation { duration: 180; easing.type: Easing.OutCubic } }
             }
 
             MouseArea {
