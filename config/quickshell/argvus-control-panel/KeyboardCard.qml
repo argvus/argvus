@@ -89,7 +89,7 @@ BaseCard {
 
         Layout.fillWidth: true
         implicitHeight: 50
-        radius: 6
+        radius: Theme.radius
 
         color: {
             if (active) return Theme.bgCard

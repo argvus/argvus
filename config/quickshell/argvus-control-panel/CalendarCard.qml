@@ -65,7 +65,7 @@ BaseCard {
 
                 Rectangle {
                     anchors.centerIn: parent
-                    width: 22; height: 22; radius: 3
+                    width: 22; height: 22; radius: Theme.radius
                     color: isToday ? Theme.accent : "transparent"
                     border.color: isToday ? Theme.accent : "transparent"
                 }
@@ -104,7 +104,7 @@ BaseCard {
     component NavBtn: Rectangle {
         property string text: ""
         signal clicked()
-        width: 28; height: 28; radius: 6
+        width: 28; height: 28; radius: Theme.radius
         color: ma.containsMouse ? Theme.accentDim : Theme.bgPanel
         border.color: ma.containsMouse ? Theme.accent : Theme.borderSubtle
         border.width: 1
