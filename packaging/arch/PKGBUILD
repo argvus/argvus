@@ -51,7 +51,7 @@ depends=(
   'cliphist'
   'dunst'
   'fastfetch'
-  'file-roller'
+  'okular'
   'fontconfig'
   'foot'
 	'feh'
