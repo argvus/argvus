@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Apply one highlight color without changing theme backgrounds.
 # Usage: accent-switch.sh [COLOR|--apply|--startup|--theme-default]
-# shellcheck disable=SC1091
+# shellcheck disable=SC1090,SC1091,SC2034
 
 set -u
 
@@ -110,6 +110,8 @@ set_dunst_section_value() {
 }
 
 apply_theme_references() {
+  _yazi_config="$(paths_config yazi)"
+  _superfile_config="$(paths_config superfile)"
   _rofi_config="$(paths_config rofi/config.rasi)"
   _rofi_theme_file="$(paths_config rofi/theme.rasi)"
   _rofi_mode="$(paths_config rofi/mode.rasi)"
@@ -129,13 +131,13 @@ apply_theme_references() {
   sed -i "s|include .*/kitty/themes/.*/theme.conf|include ${_kitty_theme}|" \
     "$(paths_config kitty/kitty.conf)" 2>/dev/null || true
   replace_setting "$(paths_config snappy-switcher/config.ini)" name "${THEME}/theme.ini"
-  replace_setting "$(paths_config superfile/config.toml)" theme "\"${THEME}\""
+  replace_setting "$_superfile_config/config.toml" theme "\"${THEME}\""
   replace_setting "$(paths_config qt6ct/qt6ct.conf)" color_scheme_path "$(paths_config "qt6ct/colors/${THEME}.conf")"
   if [ -f "$(paths_config "btop/themes/${THEME}/theme.theme")" ]; then
     replace_setting "$(paths_config btop/btop.conf)" color_theme "\"$(paths_config "btop/themes/${THEME}/theme.theme")\""
   fi
-  if [ -f "$(paths_config "yazi/themes/${THEME}/theme.toml")" ]; then
-    cp "$(paths_config "yazi/themes/${THEME}/theme.toml")" "$(paths_config yazi/theme.toml)"
+  if [ -f "$_yazi_config/flavors/${THEME}.yazi/flavor.toml" ]; then
+    printf '[flavor]\ndark = "%s"\n' "$THEME" > "$_yazi_config/theme.toml"
   fi
 }
 
@@ -234,7 +236,7 @@ apply_application_colors() {
   [ -f "$_bottom" ] && sed -i "s|^selected_text = .*|selected_text = \"${ACCENT_TEXT}\"|" "$_bottom"
 
   for _key in title hi_fg proc_misc cpu_box mem_box net_box proc_box temp_start; do
-    [ -f "$_btop" ] && sed -i "s|^\[${_key}\]=.*|[${_key}]=\"${COLOR}\"|" "$_btop"
+    [ -f "$_btop" ] && sed -i "s|^theme\\[${_key}\\]=.*|theme[${_key}]=\"${COLOR}\"|" "$_btop"
   done
 
   for _key in file_panel_border_active file_panel_top_directory_icon footer_border_active sidebar_title sidebar_border_active modal_border_active modal_confirm_bg help_menu_hotkey correct hint; do

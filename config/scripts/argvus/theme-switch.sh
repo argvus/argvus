@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # theme-switch - apply a named theme across the whole argvus desktop
 # Usage: theme-switch <theme-name>
-# shellcheck disable=SC1091
+# shellcheck disable=SC1090,SC1091,SC2034
 
 ARGVUS_BOOTSTRAP="${ARGVUS_BOOTSTRAP:-${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/scripts/argvus/bootstrap.sh}"
 . "$ARGVUS_BOOTSTRAP"
@@ -58,10 +58,16 @@ ROFI_THEME="$(paths_config rofi/theme.rasi)"
 ROFI_MODE="$(paths_config rofi/mode.rasi)"
 DUNST_THEMES="$(paths_config dunst/themes)"
 KITTY_THEMES="$(paths_config kitty/themes)"
+FOOT_CONFIG="$(paths_config foot/foot.ini)"
+FOOT_THEMES="$(paths_config foot/themes)"
+FOOT_SYSTEM_THEMES="$(paths_system_config foot/themes)"
 BTOP_THEMES="$(paths_config btop/themes)"
+BTOP_SYSTEM_THEMES="$(paths_system_config btop/themes)"
 BOTTOM_THEMES="$(paths_config bottom/themes)"
-YAZI_THEMES="$(paths_config yazi/themes)"
+YAZI_CONFIG_ROOT="$(paths_config yazi)"
+YAZI_SYSTEM_ROOT="$(paths_system_config yazi)"
 SNAPPY_THEMES="$(paths_config snappy-switcher/themes)"
+SUPERFILE_CONFIG_ROOT="$(paths_config superfile)"
 SUPERFILE_THEMES="$(paths_config superfile/theme)"
 QT6CT_COLORS="$(paths_config qt6ct/colors)"
 HYPRPAPER_FILE="$(paths_config hypr/hyprpaper.conf)"
@@ -143,6 +149,79 @@ set_dunst_section_value() {
     }
     { print }
   ' "$_file" > "$_tmp" && mv "$_tmp" "$_file"
+}
+
+should_manage_btop_config() {
+  _conf="$1"
+  [ -f "$_conf" ] || return 0
+  _theme="$(sed -n 's/^[[:space:]]*color_theme[[:space:]]*=[[:space:]]*"\([^"]*\)".*/\1/p' "$_conf" | head -n1)"
+  case "$_theme" in
+    ''|Default|*argvus*) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+should_manage_foot_config() {
+  _conf="$1"
+  [ -f "$_conf" ] || return 0
+  grep -q 'argvus.*/foot/themes' "$_conf"
+}
+
+foot_color_value() {
+  _file="$1"
+  _key="$2"
+  sed -n "s|^[[:space:]]*${_key}[[:space:]]*=[[:space:]]*\\([0-9A-Fa-f][0-9A-Fa-f ]*\\).*|\\1|p" "$_file" | head -n1
+}
+
+send_foot_palette_to_pty() {
+  _tty="$1"
+  _theme_file="$2"
+  [ -w "$_tty" ] || return 0
+
+  _fg="$(foot_color_value "$_theme_file" foreground)"
+  _bg="$(foot_color_value "$_theme_file" background)"
+  _sel_fg="$(foot_color_value "$_theme_file" selection-foreground)"
+  _sel_bg="$(foot_color_value "$_theme_file" selection-background)"
+  _cursor="$(foot_color_value "$_theme_file" cursor | awk '{print $2}')"
+
+  {
+    [ -n "$_fg" ] && printf '\033]10;#%s\a' "$_fg"
+    [ -n "$_bg" ] && printf '\033]11;#%s\a' "$_bg"
+    [ -n "$_cursor" ] && printf '\033]12;#%s\a' "$_cursor"
+    [ -n "$_sel_bg" ] && printf '\033]17;#%s\a' "$_sel_bg"
+    [ -n "$_sel_fg" ] && printf '\033]19;#%s\a' "$_sel_fg"
+
+    _idx=0
+    for _key in regular0 regular1 regular2 regular3 regular4 regular5 regular6 regular7 \
+      bright0 bright1 bright2 bright3 bright4 bright5 bright6 bright7; do
+      _value="$(foot_color_value "$_theme_file" "$_key")"
+      [ -n "$_value" ] && printf '\033]4;%s;#%s\a' "$_idx" "$_value"
+      _idx=$((_idx + 1))
+    done
+  } > "$_tty" 2>/dev/null || true
+}
+
+apply_running_foot_theme() {
+  _theme_file="$1"
+  [ -f "$_theme_file" ] || return 0
+
+  for _pid in $(pgrep -x foot 2>/dev/null) $(pgrep -x footclient 2>/dev/null); do
+    for _fd in 0 1 2; do
+      _tty="$(readlink "/proc/$_pid/fd/$_fd" 2>/dev/null || true)"
+      case "$_tty" in
+        /dev/pts/*|/dev/tty*) send_foot_palette_to_pty "$_tty" "$_theme_file" ;;
+      esac
+    done
+
+    for _child in $(pgrep -P "$_pid" 2>/dev/null); do
+      for _fd in 0 1 2; do
+        _tty="$(readlink "/proc/$_child/fd/$_fd" 2>/dev/null || true)"
+        case "$_tty" in
+          /dev/pts/*|/dev/tty*) send_foot_palette_to_pty "$_tty" "$_theme_file" ;;
+        esac
+      done
+    done
+  done
 }
 
 apply_dunst_theme() {
@@ -265,8 +344,8 @@ apply_argvus_calendar_theme() {
   esac
 
   _calendar_theme_src=""
-  if [ -f "$(paths_config argvus-calendar/themes/${_calendar_theme_name})" ]; then
-    _calendar_theme_src="$(paths_config argvus-calendar/themes/${_calendar_theme_name})"
+  if [ -f "$(paths_config "argvus-calendar/themes/${_calendar_theme_name}")" ]; then
+    _calendar_theme_src="$(paths_config "argvus-calendar/themes/${_calendar_theme_name}")"
   elif [ -f "/etc/argvus-calendar/themes/${_calendar_theme_name}" ]; then
     _calendar_theme_src="/etc/argvus-calendar/themes/${_calendar_theme_name}"
   elif [ -f "$(dirname "$0")/../../../../argvus-calendar/resources/themes/${_calendar_theme_name}" ]; then
@@ -292,6 +371,7 @@ for _dir in \
   "$ROFI_THEMES/$THEME" \
   "$DUNST_THEMES/$THEME" \
   "$KITTY_THEMES/$THEME" \
+  "$FOOT_THEMES/$THEME" \
   "$BTOP_THEMES/$THEME" \
   "$SNAPPY_THEMES/$THEME"; do
   if [ ! -d "$_dir" ]; then
@@ -389,6 +469,24 @@ sed -i "s|@import \".*/rofi/mode.rasi\"|@import \"${ROFI_MODE}\"|" "$ROFI_THEME"
 sed -i "s|include .*/kitty/themes/.*/theme.conf|include ${KITTY_THEMES}/${THEME}/theme.conf|" \
   "$(paths_config kitty/kitty.conf)"
 
+if [ -f "$FOOT_SYSTEM_THEMES/$THEME/theme.ini" ]; then
+  mkdir -p "$FOOT_THEMES/$THEME"
+  cp "$FOOT_SYSTEM_THEMES/$THEME/theme.ini" "$FOOT_THEMES/$THEME/theme.ini"
+fi
+
+if [ -f "$FOOT_THEMES/$THEME/theme.ini" ]; then
+  sed -i "s|^include = .*/foot/themes/.*/theme.ini|include = ${FOOT_THEMES}/${THEME}/theme.ini|" "$FOOT_CONFIG"
+  _native_foot="${ARGVUS_CONFIG_HOME}/foot/foot.ini"
+  if should_manage_foot_config "$_native_foot"; then
+    mkdir -p "${_native_foot%/*}"
+    if [ ! -f "$_native_foot" ]; then
+      cp "$FOOT_CONFIG" "$_native_foot"
+    fi
+    sed -i "s|^include = .*/foot/themes/.*/theme.ini|include = ${FOOT_THEMES}/${THEME}/theme.ini|" "$_native_foot"
+  fi
+  apply_running_foot_theme "$FOOT_THEMES/$THEME/theme.ini"
+fi
+
 apply_dunst_theme
 
 if [ -f "$HYPR_THEMES/$THEME/hyprtoolkit.conf" ]; then
@@ -410,9 +508,22 @@ if [ "$RUNTIME" -eq 1 ] && { [ -f "$HYPR_THEMES/$THEME/hyprtoolkit.conf" ] || [ 
   systemctl --user restart hyprpolkitagent 2>/dev/null || true
 fi
 
+if [ -f "$BTOP_SYSTEM_THEMES/$THEME/theme.theme" ]; then
+  mkdir -p "$BTOP_THEMES/$THEME"
+  cp "$BTOP_SYSTEM_THEMES/$THEME/theme.theme" "$BTOP_THEMES/$THEME/theme.theme"
+fi
+
 if [ -f "$BTOP_THEMES/$THEME/theme.theme" ]; then
   _btop_conf="$(paths_config btop/btop.conf)"
   sed -i "s|color_theme = .*|color_theme = \"${BTOP_THEMES}/${THEME}/theme.theme\"|" "$_btop_conf"
+  _native_btop="${ARGVUS_CONFIG_HOME}/btop/btop.conf"
+  if should_manage_btop_config "$_native_btop"; then
+    mkdir -p "${_native_btop%/*}"
+    if [ ! -f "$_native_btop" ]; then
+      cp "$_btop_conf" "$_native_btop"
+    fi
+    sed -i "s|color_theme = .*|color_theme = \"${BTOP_THEMES}/${THEME}/theme.theme\"|" "$_native_btop"
+  fi
 fi
 
 if [ -f "$SNAPPY_THEMES/$THEME/theme.ini" ]; then
@@ -424,11 +535,18 @@ if [ -f "$BOTTOM_THEMES/$THEME/bottom.toml" ]; then
   cp "$BOTTOM_THEMES/$THEME/bottom.toml" "$(paths_config bottom/bottom.toml)"
 fi
 
-if [ -f "$YAZI_THEMES/$THEME/theme.toml" ]; then
-  cp "$YAZI_THEMES/$THEME/theme.toml" "$(paths_config yazi/theme.toml)"
+if [ -d "$YAZI_SYSTEM_ROOT/flavors/$THEME.yazi" ]; then
+  mkdir -p "$YAZI_CONFIG_ROOT/flavors/$THEME.yazi"
+  cp -R "$YAZI_SYSTEM_ROOT/flavors/$THEME.yazi/." "$YAZI_CONFIG_ROOT/flavors/$THEME.yazi/"
 fi
 
-_superfile_conf="$(paths_config superfile/config.toml)"
+if [ -f "$YAZI_CONFIG_ROOT/flavors/$THEME.yazi/flavor.toml" ]; then
+  printf '[flavor]\ndark = "%s"\n' "$THEME" > "$YAZI_CONFIG_ROOT/theme.toml"
+else
+  printf 'Warning: yazi flavor not found: %s\n' "$YAZI_CONFIG_ROOT/flavors/$THEME.yazi/flavor.toml" >&2
+fi
+
+_superfile_conf="$SUPERFILE_CONFIG_ROOT/config.toml"
 if [ -f "$_superfile_conf" ] && [ -f "$SUPERFILE_THEMES/$THEME.toml" ]; then
   sed -i "s|^theme = .*|theme = \"${THEME}\"|" "$_superfile_conf"
 fi
@@ -510,6 +628,11 @@ if [ "$RUNTIME" -eq 1 ]; then
 
   # Signal running kitty instances to reload config (SIGUSR1)
   for _pid in $(pgrep -x kitty 2>/dev/null); do
+    kill -USR1 "$_pid" 2>/dev/null || true
+  done
+
+  # Signal running foot instances to use their dark color theme.
+  for _pid in $(pgrep -x foot 2>/dev/null) $(pgrep -x footclient 2>/dev/null); do
     kill -USR1 "$_pid" 2>/dev/null || true
   done
 fi
