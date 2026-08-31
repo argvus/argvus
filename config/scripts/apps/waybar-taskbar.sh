@@ -80,6 +80,25 @@ term() {
   esac
 }
 
+term_exec() {
+  _class="$1"
+  shift
+  case "${TERM##*/}" in
+    kitty)
+      kitty --class "$_class" -e "$@"
+      ;;
+    foot|footclient)
+      "$TERM" --app-id "$_class" -e "$@"
+      ;;
+    alacritty)
+      alacritty --class "$_class" -e "$@"
+      ;;
+    *)
+      "$TERM" -e "$@"
+      ;;
+  esac
+}
+
 sidebar_toggle() {
   STATE_FILE="$WAYBAR_CACHE_DIR/sidebar-state"
 
@@ -108,14 +127,14 @@ case $1 in
     go_workspace "$CURRENT_WS"
     ;;
   --cpu-temp)
-    "$TERM" --class cpu-temp-popup -e sh -c 'sensors; echo; read -p "Pressione Enter para fechar..."'
+    term_exec cpu-temp-popup sh -c 'sensors; echo; read -p "Pressione Enter para fechar..."'
     go_workspace "$CURRENT_WS"
     ;;
   --gpu-temp)
     if command -v nvidia-smi >/dev/null 2>&1 && nvidia-smi -L >/dev/null 2>&1; then
-      "$TERM" --class gpu-temp-popup -e watch -n 1 nvidia-smi
+      term_exec gpu-temp-popup watch -n 1 nvidia-smi
     else
-      "$TERM" --class gpu-temp-popup -e sh -c 'sensors; echo; read -p "Pressione Enter para fechar..."'
+      term_exec gpu-temp-popup sh -c 'sensors; echo; read -p "Pressione Enter para fechar..."'
     fi
     go_workspace "$CURRENT_WS"
     ;;

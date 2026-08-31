@@ -11,6 +11,7 @@ local _config_home = os.getenv("ARGVUS_CONFIG_HOME")
 local _system_config = os.getenv("ARGVUS_SYSTEM_CONFIG") or "/usr/share/argvus"
 local _debug_session = os.getenv("ARGVUS_DEBUG") == "1"
 local _state_home = _config_home .. "/argvus"
+local _xdg_state_home = os.getenv("XDG_STATE_HOME") or (_home .. "/.local/state")
 local _generated_config = _config_home .. "/argvus/generated"
 
 local function _path_exists(path)
@@ -88,6 +89,7 @@ local function _get_default(category)
     _reads_defaults = true
     local path = _first_existing({
       _config_home .. "/argvus/defaults.json",
+      _xdg_state_home .. "/argvus/defaults.json",
       _system_config .. "/defaults.json",
     })
     local file = io.open(path)
@@ -881,7 +883,7 @@ hl.bind(mod .. " + mouse:272", hl.dsp.window.drag(), { mouse = true })
 hl.bind(mod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 
 -- Emoji picker ------------------------------------------------------------------------------------
-hl.bind(mod .. " + period", hl.dsp.exec_cmd("rofimoji --action clipboard --clipboarder wl-copy --typer wtype --selector-args " .. string.format("%q", "-config " .. _config_path("rofi/config.rasi"))))
+hl.bind(mod .. " + period", hl.dsp.exec_cmd(_sh(_config_path("scripts/apps/emoji-picker.sh"))))
 
 -- Color Picker ------------------------------------------------------------------------------------
 hl.bind(mod .. " + P", hl.dsp.exec_cmd("hyprpicker -a"))
