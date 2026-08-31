@@ -14,7 +14,7 @@ cmd_status() {
   if [ -f "$STATE_FILE" ]; then
     cat "$STATE_FILE"
   else
-    printf 'enabled\n'
+    printf 'disabled\n'
   fi
 }
 

@@ -7,7 +7,7 @@ BaseCard {
     cardIcon:  ">"
 
     property int idleTimeout: 300
-    property bool lockDpms: true
+    property bool lockDpms: false
     property var idleOptions: [
         { seconds: 60, label: "1m" },
         { seconds: 300, label: "5m" },
@@ -78,26 +78,21 @@ BaseCard {
 
         Rectangle {
             id: lockDpmsToggleBtn
-            width: 32; height: 32; radius: 6
+            width: 44; height: 24; radius: height / 2
 
-            color: {
-                if (!lockDpms) return Theme.bgCardAlt
-                if (lockDpmsToggleArea.containsMouse) return Theme.accentDim
-                return Theme.bgCard
-            }
-            border.color: lockDpms ? Theme.accent : Theme.danger
-            border.width: 1
+            color: lockDpms ? Theme.accent : Theme.borderSubtle
             Layout.alignment: Qt.AlignVCenter
 
             Behavior on color { ColorAnimation { duration: 150 } }
 
-            Text {
-                anchors.centerIn: parent
-                text: lockDpms ? "\uf108" : "\uf00d"
-                color: lockDpms ? Theme.accent : Theme.danger
-                font.family: "Font Awesome 7 Free"
-                font.pixelSize: 16
-                font.weight: Font.Black
+            Rectangle {
+                id: lockDpmsKnob
+                width: 18; height: 18; radius: height / 2
+                x: lockDpms ? parent.width - width - 3 : 3
+                y: (parent.height - height) / 2
+                color: Theme.bgHeader
+
+                Behavior on x { NumberAnimation { duration: 180; easing.type: Easing.OutCubic } }
             }
 
             MouseArea {
