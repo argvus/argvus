@@ -5,7 +5,7 @@ This repository contains the packaged Argvus desktop defaults. Most changes are 
 ## Repository layout
 
 ```text
-bin/       command entrypoints; the argvus package installs only argvus-setup
+bin/       command entrypoints installed by the argvus package
 config/    packaged desktop defaults installed under /usr/share/argvus
 packaging/ Arch Linux package metadata
 tools/sh/  local development install and validation helpers
@@ -36,7 +36,7 @@ Use `ARGVUS_STORAGE_DIR=/path/to/argvus-storage` when the storage checkout is no
 ## Common checks
 
 ```sh
-bash -n bin/argvus-setup
+bash -n bin/argvus
 bash -n tools/sh/install.sh tools/sh/uninstall.sh
 find config tools/sh -type f -name '*.sh' -print0 | xargs -0 -r sh -n
 makepkg --printsrcinfo -p packaging/arch/PKGBUILD
@@ -52,7 +52,7 @@ For Hyprland changes, test inside a real Argvus session when possible. Check tha
 Package installation owns `/usr/share/argvus`. User configuration under
 `$XDG_CONFIG_HOME/<app>` is an optional complete-application override, not a
 startup requirement. Generated Argvus runtime config belongs under
-`$XDG_STATE_HOME/argvus/config` so theme changes can be rebuilt from current
+`$XDG_CONFIG_HOME/argvus/generated` so theme changes can be rebuilt from current
 packaged defaults after upgrades.
 Runtime scripts should source `/usr/share/argvus/scripts/argvus/bootstrap.sh` unless
 a user-copied override explicitly replaces that script.
@@ -61,9 +61,9 @@ runtime scripts: `$XDG_CONFIG_HOME/argvus`.
 
 Do not make package install scripts write directly to `$HOME`. User-level
 application config should be created only by explicit customization flows such
-as `argvus-setup --copy <app>`. Theme tools should write small preference files
+as `argvus --setup --copy <app>`. Theme tools should write small preference files
 under `$XDG_CONFIG_HOME/argvus` and generated runtime config under
-`$XDG_STATE_HOME/argvus/config`, not native `$XDG_CONFIG_HOME/<app>` trees.
+`$XDG_CONFIG_HOME/argvus/generated`, not native `$XDG_CONFIG_HOME/<app>` trees.
 
 Hyprland user Lua overrides live under `$XDG_CONFIG_HOME/argvus/hypr`.
 Supported files are loaded after packaged defaults in this order:
@@ -77,10 +77,26 @@ should reference `/usr/share/backgrounds/argvus` and system fonts rather than
 copying those assets into `~/.config`.
 Kitty launch commands must pass the resolved Argvus `kitty.conf`, because Kitty
 does not consume `/usr/share/argvus/kitty/kitty.conf` through `XDG_CONFIG_DIRS`.
+Use the `argvus --spf`, `argvus --btop`, `argvus --btm` and `argvus --yazy`
+subcommands for bundled TUI apps that do not consume `/usr/share/argvus`
+directly. Each subcommand keeps `$XDG_CONFIG_HOME/<app>` as a native user
+override and otherwise points the app at the Argvus config tree.
+Yazi themes are shipped only as native flavors under
+`config/yazi/flavors/<theme>.yazi/flavor.toml`. Do not add a parallel
+`config/yazi/themes` tree; theme switching writes `theme.toml` with the active
+Argvus flavor and fills missing packaged flavors into `$XDG_CONFIG_HOME/argvus/yazi`
+when needed.
+Btop themes must use the native `theme[key]="value"` syntax. Runtime refresh
+copies the active packaged theme into `$XDG_CONFIG_HOME/argvus/btop` so older
+materialized Argvus themes are repaired after package upgrades.
+Foot themes are selected by rewriting the `include` in `foot/foot.ini` to the
+active `foot/themes/<theme>/theme.ini`. When `foot` is the default terminal,
+Hyprland should launch it with `foot -c <resolved foot.ini>` so the Argvus tree
+is used even when the app does not read `$XDG_CONFIG_HOME/argvus` by itself.
 Hyprlock lockscreen wallpaper caches belong under `$XDG_CACHE_HOME/argvus/hypr`;
 do not use legacy `~/.cache/hypr` paths.
 
-The `argvus` package owns `/usr/bin/argvus-setup`. `argvus-session` owns
+The `argvus` package owns `/usr/bin/argvus`. `argvus-session` owns
 `/usr/bin/argvus-session`, `/usr/bin/argvus-start`, `/usr/bin/argvus-tty` and
 the Wayland display-manager entry under `/usr/share/wayland-sessions`.
 

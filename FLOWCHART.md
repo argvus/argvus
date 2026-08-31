@@ -15,7 +15,7 @@ cor de destaque, espaçamentos e outros comportamentos.
 | Local | Papel | Quem escreve |
 | --- | --- | --- |
 | `/usr/share/argvus` | Defaults empacotados (imutáveis). Fonte base de leitura. | pacman (upgrade) |
-| `~/.config/argvus/<app>/` | Config de cada app tocada pelo usuário/runtime (waybar, hypr, quickshell, kitty…). | `theme-switch`, `accent-switch`, `argvus-setup` |
+| `~/.config/argvus/<app>/` | Config de cada app tocada pelo usuário/runtime (waybar, hypr, quickshell, kitty...). | `theme-switch`, `accent-switch`, `argvus --setup` |
 | `~/.config/argvus/generated/` | Config de runtime reconstruída a partir dos defaults + preferências. | runtime |
 | `~/.config/argvus/state/` | Estado do usuário (antigo `~/.local/state/argvus`). | runtime |
 | `~/.config/argvus/` | Preferências pequenas: `.active-theme`, `.accent-color`, `.spaces`, `defaults.json`. | runtime |
@@ -25,12 +25,13 @@ cor de destaque, espaçamentos e outros comportamentos.
 ### Cadeia de precedência (leitura)
 
 ```text
-~/.config/argvus/<app>  ->  ~/.config/<app>  ->  ~/.config/argvus/generated/<app>  ->  /usr/share/argvus/<app>
+~/.config/<app>  ->  ~/.config/argvus/<app>  ->  ~/.config/argvus/generated/<app>  ->  /usr/share/argvus/<app>
 ```
 
 A configuração é resolvida do mais específico para o mais genérico: se o
-usuário tem um arquivo em `~/.config/argvus/<app>`, ele vence; senão, usa
-`~/.config/<app>` (override manual); senão, o gerado; e por fim o empacotado.
+usuário tem um arquivo em `~/.config/<app>`, ele vence como override manual;
+senão, usa a camada Argvus em `~/.config/argvus/<app>`; senão, o gerado; e por
+fim o empacotado.
 
 ### Por que não é uma cópia
 
@@ -156,15 +157,15 @@ O `get-default.sh <categoria>` resolve com a mesma ordem de precedência:
 
 ---
 
-## 6. `argvus-setup` (opcional)
+## 6. `argvus --setup` (opcional)
 
-O `argvus-setup` **não é necessário** para o DE funcionar. Ele existe apenas
+O `argvus --setup` **não é necessário** para o DE funcionar. Ele existe apenas
 para quem quer **materializar as configs** para editar manualmente:
 
 ```sh
-argvus-setup --copy <app>      # copia /usr/share/argvus/<app> → ~/.config/argvus/<app>
-argvus-setup --copy-all        # copia todos os apps; o app `argvus` é mesclado na raiz
-argvus-setup --copy-all --force  # substitui o existente com backup
+argvus --setup --copy <app>        # copia /usr/share/argvus/<app> para ~/.config/argvus/<app>
+argvus --setup --copy-all          # copia todos os apps; o app `argvus` é mesclado na raiz
+argvus --setup --copy-all --force  # substitui o existente com backup
 ```
 
 Depois de copiado, o arquivo vira override do usuário e **upgrades de pacote
@@ -196,3 +197,18 @@ não o substituem**.
 - **`~/.cache/argvus`** = descartável (logs, wallpaper, daemon state).
 - Arquivos **`scripts/`** e **`docs/`** são sempre **somente leitura** na camada
   do usuário (não são materializados/sobrescritos pelo runtime).
+- Apps TUI com busca de config própria (`superfile`, `btop`, `bottom`, `yazi`)
+  devem ser abertos pelos subcomandos `argvus --spf`, `argvus --btop`,
+  `argvus --btm` e `argvus --yazy`, que respeitam `~/.config/<app>` como
+  override nativo.
+- O Yazi usa somente flavors nativos em
+  `config/yazi/flavors/<tema>.yazi/flavor.toml`. Não existe mais uma árvore
+  paralela `config/yazi/themes`; a troca de tema grava `theme.toml` com o
+  flavor Argvus ativo e completa flavors empacotados ausentes em
+  `~/.config/argvus/yazi` quando necessário.
+- Temas do btop devem usar a sintaxe nativa `theme[chave]="valor"`. O runtime
+  recopia o tema Argvus ativo para `~/.config/argvus/btop`, corrigindo temas
+  materializados por versões antigas depois de upgrades.
+- O Foot troca de tema pelo `include` em `foot/foot.ini`, apontando para
+  `foot/themes/<tema>/theme.ini`. Quando `foot` é o terminal padrão, o
+  Hyprland inicia com `foot -c <foot.ini resolvido>` para usar a árvore Argvus.
