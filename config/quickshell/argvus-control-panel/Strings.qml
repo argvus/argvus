@@ -89,6 +89,9 @@ QtObject {
     readonly property string sysinfoEnabled:    isPortuguese ? "Painel esquerdo ativo" : "Left panel active"
     readonly property string sysinfoDisabled:   isPortuguese ? "Painel esquerdo inativo" : "Left panel inactive"
     readonly property string idleLockTitle:     isPortuguese ? "BLOQUEIO" : "LOCK TIMER"
+    readonly property string lockDpmsTitle:     isPortuguese ? "DESLIGAR MONITOR" : "TURN OFF MONITOR"
+    readonly property string lockDpmsEnabled:   isPortuguese ? "Monitor desliga ao bloquear" : "Monitor turns off on lock"
+    readonly property string lockDpmsDisabled:  isPortuguese ? "Monitor permanece ligado" : "Monitor stays on"
 
     // ── UserCard ──
     readonly property string userTabAvatar:         isPortuguese ? "Avatar" : "Avatar"

@@ -22,6 +22,9 @@ do_lock() {
       -fill black -colorize 20% \
       "$HYPRLOCK_PATH"
   fi
+  if [ "$(sh "$(paths_config scripts/argvus/lock-dpms-toggle.sh)" status)" = "enabled" ]; then
+    (sleep 1; hyprctl dispatch 'hl.dsp.dpms({ action = "off" })') &
+  fi
   exec hyprlock
 }
 
