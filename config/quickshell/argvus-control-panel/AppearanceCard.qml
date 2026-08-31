@@ -85,7 +85,8 @@ BaseCard {
 
         Rectangle {
             id: sysinfoToggleBtn
-            width: 44; height: 24; radius: height / 2
+            width: 44; height: 24
+            radius: Theme.radius
 
             color: sysinfoEnabled ? Theme.accent : Theme.borderSubtle
             Layout.alignment: Qt.AlignVCenter
@@ -94,7 +95,8 @@ BaseCard {
 
             Rectangle {
                 id: sysinfoKnob
-                width: 18; height: 18; radius: height / 2
+                width: 18; height: 18
+                radius: Math.max(2, Theme.radius)
                 x: sysinfoEnabled ? parent.width - width - 3 : 3
                 y: (parent.height - height) / 2
                 color: Theme.bgHeader

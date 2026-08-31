@@ -119,7 +119,8 @@ BaseCard {
 
         Rectangle {
             id: toggleBtn
-            width: 44; height: 24; radius: height / 2
+            width: 44; height: 24
+            radius: Theme.radius
 
             color: networkingEnabled ? Theme.accent : Theme.borderSubtle
             Layout.alignment: Qt.AlignVCenter
@@ -128,7 +129,8 @@ BaseCard {
 
             Rectangle {
                 id: toggleKnob
-                width: 18; height: 18; radius: height / 2
+                width: 18; height: 18
+                radius: Math.max(2, Theme.radius)
                 x: networkingEnabled ? parent.width - width - 3 : 3
                 y: (parent.height - height) / 2
                 color: Theme.bgHeader
