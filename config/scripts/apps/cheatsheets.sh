@@ -24,7 +24,7 @@ _finder_base="${_finder_base%% *}"
 
 case "$_finder_base" in
   rofi)
-    rofi -dmenu -p "$PROMPT" -i -theme-str 'window { width: 1050px; height: 600px;}' < "$CHEAT_FILE"
+    rofi -config "$(paths_config rofi/config.rasi)" -dmenu -p "$PROMPT" -i -theme-str 'window { width: 1050px; height: 600px;}' < "$CHEAT_FILE"
     ;;
   wofi)
     wofi --show dmenu < "$CHEAT_FILE"

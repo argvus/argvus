@@ -518,10 +518,10 @@ hl.bind("ALT + Tab", hl.dsp.exec_cmd("snappy-switcher next --mod alt"))
 hl.bind("ALT + SHIFT + Tab", hl.dsp.exec_cmd("snappy-switcher prev --mod alt"))
 
 -- All cheatsheets -----------------------------------------------------------------------------------------------------
-hl.bind(mod .. " + SHIFT + slash", hl.dsp.exec_cmd(_sh(_config_path("scripts/apps/cheatsheets.sh") .. " hypr")))
+hl.bind(mod .. " + SHIFT + slash", hl.dsp.exec_cmd(_sh(_config_path("scripts/apps/cheatsheets.sh")) .. " hypr"))
 
 -- Cheatsheets Kitty -------------------------------------------------------------------------------
-hl.bind(mod .. " + CTRL + slash", hl.dsp.exec_cmd(_sh(_config_path("scripts/apps/cheatsheets.sh") .. " kitty")))
+hl.bind(mod .. " + CTRL + slash", hl.dsp.exec_cmd(_sh(_config_path("scripts/apps/cheatsheets.sh")) .. " kitty"))
 
 -- Open Terminal -----------------------------------------------------------------------------------
 hl.bind(mod .. " + Return", hl.dsp.exec_cmd(terminal))
