@@ -23,7 +23,7 @@ SHORTCUT                               DESCRIPTION
 12 - SUPER + e                  = Split vertical/horizontal toggle
 13 - SUPER + w                  = Group/Ungroup into tabs
 14 - SUPER + Tab                = Navigate between tabs
-15 - SUPER + Shift + ←→↑↓      = Move window
+15 - SUPER + Shift + ←→↑↓       = Move window
 16 - SUPER + q                  = Close window
 17 - SUPER + Shift + 1..9       = Move window to desktop
 18 - Print                      = Capture selected area

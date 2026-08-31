@@ -23,7 +23,7 @@ ATALHO                            DESCRIÇÃO
 12 - SUPER + e                  = Alternar split vertical/horizontal
 13 - SUPER + w                  = Agrupar/Desagrupar em abas
 14 - SUPER + Tab                = Navegar entre abas
-15 - SUPER + Shift + ←→↑↓      = Mover janela
+15 - SUPER + Shift + ←→↑↓       = Mover janela
 16 - SUPER + q                  = Fechar janela
 17 - SUPER + Shift + 1..9       = Mover janela para a área de trabalho
 18 - Print                      = Capturar área selecionada
