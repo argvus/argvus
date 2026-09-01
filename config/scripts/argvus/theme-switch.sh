@@ -608,7 +608,7 @@ if [ "$RUNTIME" -eq 1 ]; then
   hyprctl reload
 
   # Restart waybar with new theme CSS (mode.css is now clean/dark)
-  sh "$(paths_config scripts/apps/hypr-init.sh)" --waybars
+  argvus-sessionctl restart waybar >/dev/null 2>&1 || true
 fi
 
 # Set wallpaper for the new theme
@@ -616,15 +616,10 @@ apply_wallpaper "$_theme_wallpaper"
 
 if [ "$RUNTIME" -eq 1 ]; then
   # Restart dunst with new theme colors
-  pkill -x dunst 2>/dev/null || true
-  if command -v dunst >/dev/null 2>&1; then
-    dunst -config "$(paths_config dunst/dunstrc)" &
-  fi
+  argvus-sessionctl restart dunst >/dev/null 2>&1 || true
 
   # Restart snappy-switcher with new theme
-  pkill snappy-switcher 2>/dev/null || true
-  sleep 0.2
-  snappy-switcher --daemon &
+  argvus-sessionctl restart snappy-switcher >/dev/null 2>&1 || true
 
   # Signal running kitty instances to reload config (SIGUSR1)
   for _pid in $(pgrep -x kitty 2>/dev/null); do

@@ -562,7 +562,7 @@ hl.bind(mod .. " + comma", hl.dsp.exec_cmd(_sh(_config_path("scripts/argvus/togg
 hl.bind("mouse:274", hl.dsp.exec_cmd(_sh(_config_path("scripts/argvus/toggle-sidebar.sh"))))
 
 -- Toggle Waybar top -------------------------------------------------------------------------------
-hl.bind(mod .. " + BackSpace", hl.dsp.exec_cmd("pkill -SIGUSR1 -f 'waybar -c.*/argvus-taskbar.jsonc'"))
+hl.bind(mod .. " + BackSpace", hl.dsp.exec_cmd("systemctl --user kill --signal=SIGUSR1 argvus-waybar-taskbar.service"))
 
 -- Wallpaper Picker --------------------------------------------------------------------------------
 hl.bind(mod .. " + Y", hl.dsp.exec_cmd(_sh(_config_path("scripts/apps/hypr-wallpaper-pick.sh"))))
@@ -898,7 +898,7 @@ hl.bind(mod .. " + escape", hl.dsp.exec_cmd(_sh(_config_path("scripts/apps/hypr-
 hl.bind(mod .. " + L", hl.dsp.exec_cmd(_sh(_config_path("scripts/apps/hypr-power-menu.sh")) .. " --lock"))
 
 -- Reload Hyprland ---------------------------------------------------------------------------------
-hl.bind(mod .. " + SHIFT + R", hl.dsp.exec_cmd(_sh(_config_path("scripts/apps/hypr-init.sh")) .. " --reload"))
+hl.bind(mod .. " + SHIFT + R", hl.dsp.exec_cmd("argvus-sessionctl reload"))
 
 -- Move the waybar status bar to the top/bottom ----------------------------------------------------
 -- Use absolute paths so the bind works even when hyprland's env is minimal.
@@ -914,5 +914,5 @@ _load_user_override("user.lua")
 
 -- Autostart ---------------------------------------------------------------------------------------
 hl.on("hyprland.start", function()
-  hl.exec_cmd(_sh(_config_path("scripts/apps/hypr-init.sh")) .. " --started")
+  hl.exec_cmd("argvus-sessionctl ready")
 end)

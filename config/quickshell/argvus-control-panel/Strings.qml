@@ -12,6 +12,7 @@ QtObject {
     readonly property string cardTitleVolume:        "VOLUME"
     readonly property string cardTitleBrightness:     isPortuguese ? "BRILHO" : "BRIGHTNESS"
     readonly property string cardTitleNetwork:       isPortuguese ? "REDE" : "NETWORK"
+    readonly property string cardTitleBluetooth:     "BLUETOOTH"
     readonly property string cardTitleSystem:        isPortuguese ? "SISTEMA" : "SYSTEM"
     readonly property string cardTitleKeyboard:      isPortuguese ? "TECLADO" : "KEYBOARD"
     readonly property string cardTitleAppearance:    isPortuguese ? "APARENCIA" : "APPEARANCE"
@@ -69,6 +70,16 @@ QtObject {
     readonly property string netDisabled:     isPortuguese ? "Rede desativada" : "Network disabled"
     readonly property string netConnected:    isPortuguese ? "Conectado" : "Connected"
     readonly property string netNoConnection: isPortuguese ? "Sem conexao" : "No connection"
+
+    // ── BluetoothCard ──
+    readonly property string btTitle:           "Bluetooth"
+    readonly property string btEnabled:         isPortuguese ? "Bluetooth ativo" : "Bluetooth active"
+    readonly property string btDisabled:        isPortuguese ? "Bluetooth desligado" : "Bluetooth off"
+    readonly property string btConnected:       isPortuguese ? "dispositivo(s)" : "device(s)"
+    readonly property string btNoController:    isPortuguese ? "Sem controlador" : "No controller"
+    readonly property string btUnavailable:     isPortuguese ? "bluez-utils ausente" : "bluez-utils missing"
+    readonly property string btOpenManager:     isPortuguese ? "Abrir Blueman" : "Open Blueman"
+    readonly property string btManagerOptional: isPortuguese ? "Blueman opcional" : "Blueman optional"
 
     // ── WeatherCard ──
     readonly property string weatherLoading:   isPortuguese ? "Buscando dados..." : "Loading..."

@@ -65,6 +65,13 @@ hypr_apply_wallpaper() {
   _wallpaper_path="${1:-$WALLPAPER_PATH}"
   [ -n "$_wallpaper_path" ] || return 0
   [ -f "$_wallpaper_path" ] || return 0
+
+  if command -v systemctl >/dev/null 2>&1 &&
+     systemctl --user is-active --quiet argvus-session.target 2>/dev/null &&
+     systemctl --user cat argvus-wallpaper.service >/dev/null 2>&1; then
+    systemctl --user restart argvus-wallpaper.service >/dev/null 2>&1 && return 0
+  fi
+
   _hyprpaper_log="$(paths_cache hypr)/hyprpaper.log"
   _swaybg_log="$(paths_cache hypr)/swaybg.log"
   mkdir -p "${_hyprpaper_log%/*}"

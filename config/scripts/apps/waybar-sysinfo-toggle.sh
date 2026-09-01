@@ -5,8 +5,6 @@ ARGVUS_BOOTSTRAP="${ARGVUS_BOOTSTRAP:-${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}
 . "$ARGVUS_BOOTSTRAP"
 
 STATE_FILE="$(paths_cache waybar/sysinfo-state)"
-CFG="$(paths_config waybar/argvus-sysinfo.jsonc)"
-CSS="$(paths_config waybar/argvus-sysinfo.css)"
 
 ensure_state_dir() {
     mkdir -p "$(dirname "$STATE_FILE")"
@@ -15,21 +13,23 @@ ensure_state_dir() {
 cmd_on() {
     ensure_state_dir
     echo enabled > "$STATE_FILE"
-    nohup waybar -c "$CFG" -s "$CSS" </dev/null >/dev/null 2>&1 &
+    argvus-sessionctl restart waybar
     printf "enabled\n"
 }
 
 cmd_off() {
     ensure_state_dir
     echo disabled > "$STATE_FILE"
-    pkill -f '^waybar\b.*sysinfo'
+    if command -v systemctl >/dev/null 2>&1; then
+        systemctl --user stop argvus-waybar-sysinfo.service >/dev/null 2>&1 || true
+    fi
     printf "disabled\n"
 }
 
 cmd_status() {
     if [ -f "$STATE_FILE" ]; then
         cat "$STATE_FILE"
-    elif pgrep -f '^waybar\b.*sysinfo' >/dev/null 2>&1; then
+    elif command -v systemctl >/dev/null 2>&1 && systemctl --user is-active --quiet argvus-waybar-sysinfo.service 2>/dev/null; then
         printf "enabled\n"
     else
         printf "disabled\n"

@@ -16,17 +16,14 @@ ARGVUS_BOOTSTRAP="${ARGVUS_BOOTSTRAP:-${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}
 . "$ARGVUS_BOOTSTRAP"
 
 CONFIG="argvus-control-panel"
-QS_LOG="$(paths_cache quickshell)/argvus-control-panel.log"
-mkdir -p "${QS_LOG%/*}"
 
-# Is the sidebar process already up?
-if pgrep -f "qs -c $CONFIG" >/dev/null 2>&1; then
-  qs -c "$CONFIG" ipc call sidebar toggle >/dev/null 2>&1 || {
-    # Race: process died between check and call — start it instead.
-    nohup qs -c "$CONFIG" >> "$QS_LOG" 2>&1 &
-  }
-else
-  nohup qs -c "$CONFIG" >> "$QS_LOG" 2>&1 &
+if qs -c "$CONFIG" ipc call sidebar toggle >/dev/null 2>&1; then
+  exit 0
 fi
+
+command -v systemctl >/dev/null 2>&1 || exit 0
+systemctl --user start argvus-shell.service >/dev/null 2>&1 || exit 0
+sleep 0.3
+qs -c "$CONFIG" ipc call sidebar toggle >/dev/null 2>&1 || true
 
 exit 0

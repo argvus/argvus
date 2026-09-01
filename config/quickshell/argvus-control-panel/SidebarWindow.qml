@@ -123,6 +123,7 @@ PanelWindow {
                 VolumeCard        { Layout.fillWidth: true; Layout.leftMargin: 10; Layout.rightMargin: 10 }
                 BrightnessCard    { Layout.fillWidth: true; Layout.leftMargin: 10; Layout.rightMargin: 10 }
                 NetworkCard       { Layout.fillWidth: true; Layout.leftMargin: 10; Layout.rightMargin: 10 }
+                BluetoothCard     { Layout.fillWidth: true; Layout.leftMargin: 10; Layout.rightMargin: 10 }
                 SystemCard        { Layout.fillWidth: true; Layout.leftMargin: 10; Layout.rightMargin: 10 }
                 KeyboardCard      { Layout.fillWidth: true; Layout.leftMargin: 10; Layout.rightMargin: 10 }
                 AppearanceCard    { Layout.fillWidth: true; Layout.leftMargin: 10; Layout.rightMargin: 10 }

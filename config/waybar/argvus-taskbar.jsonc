@@ -44,6 +44,7 @@
     "modules": [
       "custom/storage",
       "custom/recording",
+      "bluetooth",
       "pulseaudio#input",
       "pulseaudio#output"
     ]
@@ -159,14 +160,26 @@
     "on-click-right": "/usr/share/argvus/scripts/apps/waybar-netctl.sh"
   },
   "bluetooth": {
-    "format": "{status}",
-    "format-connected": "\uf294 {num_connected}",
-    "format-off": "\uf294",
-    "format-on": "\uf294",
-    "format-no-controller": "",
-    "tooltip-format": "{controller_alias}\t{controller_address}\n{num_connected} device(s) connected",
+    "format": "{icon}",
+    "format-connected": "{icon} {num_connections}",
+    "format-off": "\uf05e",
+    "format-disabled": "\uf05e",
+    "format-on": "{icon}",
+    "format-no-controller": "\uf05e",
+    "format-icons": {
+      "enabled": "\uf294",
+      "on": "\uf294",
+      "connected": "\uf294",
+      "off": "\uf05e",
+      "disabled": "\uf05e"
+    },
+    "tooltip-format": "{controller_alias}\t{controller_address}\n{num_connections} device(s) connected",
     "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{device_enumerate}",
-    "on-click": "blueman-manager",
+    "tooltip-format-off": "Bluetooth off",
+    "tooltip-format-disabled": "Bluetooth disabled",
+    "tooltip-format-no-controller": "No Bluetooth controller",
+    "on-click": "/usr/share/argvus/scripts/argvus/bluetooth-control.sh toggle",
+    "on-click-right": "/usr/share/argvus/scripts/argvus/bluetooth-control.sh manager",
     "interval": 30
   },
   "power-profiles-daemon": {

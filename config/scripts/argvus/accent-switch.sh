@@ -249,24 +249,7 @@ apply_application_colors() {
 
 refresh_runtime() {
   command -v hyprctl >/dev/null 2>&1 && hyprctl reload >/dev/null 2>&1 || true
-  if command -v waybar >/dev/null 2>&1; then
-    sh "$(paths_config scripts/apps/hypr-init.sh)" --waybars >/dev/null 2>&1 || true
-  fi
-  pkill -x dunst 2>/dev/null || true
-  if command -v dunst >/dev/null 2>&1; then
-    dunst -config "$(paths_config dunst/dunstrc)" >/dev/null 2>&1 &
-  fi
-  if command -v snappy-switcher >/dev/null 2>&1; then
-    pkill -x snappy-switcher 2>/dev/null || true
-    snappy-switcher --daemon >/dev/null 2>&1 &
-  fi
-  if command -v qs >/dev/null 2>&1 && pgrep -x qs >/dev/null 2>&1; then
-    pkill -x qs 2>/dev/null || true
-    sleep 0.2
-    _qs_log="$(paths_cache quickshell)/argvus-control-panel.log"
-    mkdir -p "${_qs_log%/*}"
-    qs -c argvus-control-panel >"$_qs_log" 2>&1 &
-  fi
+  argvus-sessionctl restart waybar dunst snappy-switcher shell >/dev/null 2>&1 || true
   # Signal running kitty instances to reload config (SIGUSR1)
   for _pid in $(pgrep -x kitty 2>/dev/null); do
     kill -USR1 "$_pid" 2>/dev/null || true

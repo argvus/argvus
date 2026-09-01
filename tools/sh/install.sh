@@ -263,21 +263,12 @@ restart_runtime() {
   [ "$RESTART" = true ] || return 0
 
   log "Restarting runtime pieces..."
-  if command -v pkill >/dev/null 2>&1; then
-    pkill -x argvus-storage 2>/dev/null || true
-    pkill -x waybar 2>/dev/null || true
+  if command -v argvus-sessionctl >/dev/null 2>&1; then
+    argvus-sessionctl reload >/dev/null 2>&1 || true
+    return 0
   fi
   if command -v hyprctl >/dev/null 2>&1; then
     hyprctl reload >/dev/null 2>&1 || true
-  fi
-  if [ -x "$ROOT_DIR/config/scripts/apps/hypr-init.sh" ]; then
-    ARGVUS_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}" \
-    ARGVUS_SYSTEM_CONFIG="$ROOT_DIR/config" \
-      sh "$ROOT_DIR/config/scripts/apps/hypr-init.sh" --waybars >/dev/null 2>&1 &
-  elif [ -x "${XDG_CONFIG_HOME:-$HOME/.config}/scripts/apps/hypr-init.sh" ]; then
-    sh "${XDG_CONFIG_HOME:-$HOME/.config}/scripts/apps/hypr-init.sh" --waybars >/dev/null 2>&1 &
-  elif [ -x "${XDG_CONFIG_HOME:-$HOME/.config}/hypr/scripts/init.sh" ]; then
-    sh "${XDG_CONFIG_HOME:-$HOME/.config}/hypr/scripts/init.sh" --waybars >/dev/null 2>&1 &
   fi
 }
 

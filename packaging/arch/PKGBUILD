@@ -1,6 +1,6 @@
 # Maintainer: William C. Canin
 pkgname=argvus
-pkgver=0.2.1
+pkgver=0.3.0
 pkgrel=1
 pkgdesc="Argvus is a complete, ready-to-use desktop environment focused on Hyprland, packaged for Arch Linux."
 arch=('x86_64')
@@ -40,11 +40,10 @@ depends=(
   'qt6-tools'
   'qt6ct'
   'quickshell'
-	'virtualbox-guest-utils'
-	'adwaita-icon-theme'
+  'virtualbox-guest-utils'
+  'adwaita-icon-theme'
   'bluez'
   'bluez-utils'
-  'blueman'
   'bottom'
   'brightnessctl'
   'btop'
@@ -108,6 +107,7 @@ depends=(
   'zsh'
 )
 optdepends=(
+  'blueman: optional Bluetooth manager and tray applet'
   'kooha: graphical screen recording utility'
   'nwg-look: GTK theme configuration utility'
 )

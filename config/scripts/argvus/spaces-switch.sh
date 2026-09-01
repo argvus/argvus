@@ -157,9 +157,8 @@ apply_gaps_runtime() {
 
 restart_waybar() {
   [ "${ARGVUS_NO_RUNTIME:-0}" = 1 ] && return 0
-  if command -v waybar >/dev/null 2>&1; then
-    sh "$(paths_config scripts/apps/hypr-init.sh)" --waybars >/dev/null 2>&1
-  fi
+  command -v argvus-sessionctl >/dev/null 2>&1 || return 0
+  argvus-sessionctl restart waybar >/dev/null 2>&1 || true
 }
 
 set_key() {

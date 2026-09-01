@@ -115,8 +115,8 @@ else
   printf '/* mode.css — Dark mode (no overrides) */\n' > "$MODE_CSS"
 fi
 
-# Restart waybar
-sh "$(paths_config scripts/apps/hypr-init.sh)" --waybars
+# Restart waybar under the ARGVUS session target.
+argvus-sessionctl restart waybar >/dev/null 2>&1 || true
 
 # ==============================================================================
 # WALLPAPER

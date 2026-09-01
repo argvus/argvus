@@ -62,11 +62,8 @@ apply_timeout() {
 }
 
 refresh_runtime() {
-  command -v hypridle >/dev/null 2>&1 || return 0
-  pkill -x hypridle 2>/dev/null || true
-  _hypridle_log="$(paths_cache hypr)/hypridle.log"
-  mkdir -p "${_hypridle_log%/*}"
-  hypridle -c "$HYPRIDLE_FILE" >"$_hypridle_log" 2>&1 &
+  command -v argvus-sessionctl >/dev/null 2>&1 || return 0
+  argvus-sessionctl restart hypridle >/dev/null 2>&1 || true
 }
 
 case "${1:-}" in
