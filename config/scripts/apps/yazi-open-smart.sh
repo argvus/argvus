@@ -39,9 +39,9 @@ case "$mime" in
     application/toml|\
     application/x-yaml|\
     application/x-shellscript)
-        "$TERM" -e "$EDITOR" "$target" >/dev/null 2>&1 &
+        "$TEXT_EDITOR" "$target" >/dev/null 2>&1 &
         ;;
-    application/pdf)
+    application/pdf|application/x-pdf|application/x-bzpdf|application/x-gzpdf|image/vnd.pdf|image/vnd.djvu|image/vnd.djvu+multipage)
         "$ZATHURA" "$target" >/dev/null 2>&1 &
         ;;
     image/*)
