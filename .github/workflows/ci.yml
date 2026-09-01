@@ -27,13 +27,13 @@ jobs:
 
           test -d config
           test -f config/argvus/profile
-          test -f config/argvus/sh/bootstrap.sh
+          test -f config/scripts/argvus/bootstrap.sh
           test -f config/hypr/hyprland.lua
-          test -f config/waybar/config.jsonc
+          test -f config/waybar/argvus-taskbar.jsonc
           test -f LICENSE
 
-          test -x bin/argvus-setup
-          sh -n bin/argvus-setup
+          test -x bin/argvus
+          sh -n bin/argvus
           find config tools/sh -type f -name '*.sh' -print0 | xargs -0 -r sh -n
 
       - name: Validate package layout
@@ -45,12 +45,12 @@ jobs:
 
           install -dm755 "$pkg_root/usr/share/argvus"
           cp -a config/. "$pkg_root/usr/share/argvus/"
-          install -Dm755 bin/argvus-setup "$pkg_root/usr/bin/argvus-setup"
+          install -Dm755 bin/argvus "$pkg_root/usr/bin/argvus"
           install -Dm644 LICENSE "$pkg_root/usr/share/licenses/argvus/LICENSE"
 
-          test -x "$pkg_root/usr/bin/argvus-setup"
+          test -x "$pkg_root/usr/bin/argvus"
           test -f "$pkg_root/usr/share/argvus/argvus/profile"
-          test -f "$pkg_root/usr/share/argvus/argvus/sh/bootstrap.sh"
+          test -f "$pkg_root/usr/share/argvus/scripts/argvus/bootstrap.sh"
           test -f "$pkg_root/usr/share/argvus/hypr/hyprland.lua"
-          test -f "$pkg_root/usr/share/argvus/waybar/config.jsonc"
+          test -f "$pkg_root/usr/share/argvus/waybar/argvus-taskbar.jsonc"
           test -f "$pkg_root/usr/share/licenses/argvus/LICENSE"
