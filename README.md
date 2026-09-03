@@ -9,7 +9,9 @@
 
 **A complete desktop, ready to use. Focused on Hyprland.**
 
-ARGVUS bundles a rich, integrated Wayland environment: bar, launchers, system sidebar, Rust-powered removable storage and eight theme families — all packaged for Arch Linux.
+ARGVUS coordinates a modular Wayland desktop ecosystem: session lifecycle,
+shell UI, taskbar, launchers, storage, lock screen, power, display, network,
+notifications and themes — all packaged for Arch Linux.
 
 </div>
 
@@ -25,6 +27,33 @@ ARGVUS bundles a rich, integrated Wayland environment: bar, launchers, system si
 - **btop** — System monitor
 - **hyprlock** — Lock screen with synchronized theme
 - **argvus-storage** — Rust-powered removable storage module
+
+## Modular Ecosystem
+
+`argvus` is the full desktop metapackage/coordinator. Component ownership is
+split across smaller packages:
+
+| Area | Package |
+|------|---------|
+| Session lifecycle, shared bootstrap and base Hyprland session config | `argvus-session` |
+| Quickshell control panel, ARGVUS Waybar taskbar/sysinfo, rofi/wofi shell UI | `argvus-shell` |
+| Patched Waybar package/binary | `argvus-waybar` |
+| Terminal/TUI app profiles and the `argvus` compatibility command | `argvus-app-profiles` |
+| Appearance, wallpapers, fonts and themes | `argvus-appearance` |
+| Notifications and Dunst config | `argvus-notifications` |
+| Power menu, idle and DPMS policy | `argvus-power` |
+| Display/monitor integration | `argvus-display` |
+| NetworkManager and Bluetooth commands | `argvus-network` |
+| Hyprlock config and lock screen themes | `argvus-lock` |
+| Wayland, DBus and portal defaults | `argvus-portal` |
+| Accounts, default apps, calendar, storage and greeter | `argvus-accounts`, `argvus-default-apps`, `argvus-calendar`, `argvus-storage`, `argvus-greeter` |
+
+`argvus` itself remains the install target for users and coordinates the
+complete package set.
+
+Source-tree `make install` in this repository installs only metapackage
+metadata for local checks. Runtime files are installed by the module packages
+listed above.
 
 ## Themes
 
@@ -76,6 +105,15 @@ sudo pacman -Syu argvus
 | argvus-session | [argvus/argvus-session](https://github.com/argvus/argvus-session) | [![Release](https://github.com/argvus/argvus-session/actions/workflows/release.yml/badge.svg)](https://github.com/argvus/argvus-session/actions/workflows/release.yml) |
 | argvus-splash | [argvus/argvus-splash](https://github.com/argvus/argvus-splash) | [![Release](https://github.com/argvus/argvus-splash/actions/workflows/release.yml/badge.svg)](https://github.com/argvus/argvus-splash/actions/workflows/release.yml) |
 | argvus-default-apps | [argvus/argvus-default-apps](https://github.com/argvus/argvus-default-apps) | [![Release](https://github.com/argvus/argvus-default-apps/actions/workflows/release.yml/badge.svg)](https://github.com/argvus/argvus-default-apps/actions/workflows/release.yml) |
+| argvus-app-profiles | [argvus/argvus-app-profiles](https://github.com/argvus/argvus-app-profiles) | Planned |
+| argvus-shell | [argvus/argvus-shell](https://github.com/argvus/argvus-shell) | Planned |
+| argvus-settings | [argvus/argvus-settings](https://github.com/argvus/argvus-settings) | Planned |
+| argvus-notifications | [argvus/argvus-notifications](https://github.com/argvus/argvus-notifications) | Planned |
+| argvus-power | [argvus/argvus-power](https://github.com/argvus/argvus-power) | Planned |
+| argvus-display | [argvus/argvus-display](https://github.com/argvus/argvus-display) | Planned |
+| argvus-network | [argvus/argvus-network](https://github.com/argvus/argvus-network) | Planned |
+| argvus-lock | [argvus/argvus-lock](https://github.com/argvus/argvus-lock) | Planned |
+| argvus-portal | [argvus/argvus-portal](https://github.com/argvus/argvus-portal) | Planned |
 
 ## Donate to the development of ARGVUS
 

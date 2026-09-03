@@ -15,42 +15,35 @@ jobs:
   validate:
     name: Validate package sources
     runs-on: ubuntu-latest
+    container: archlinux:latest
 
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
 
-      - name: Validate expected files
+      - name: Install validation tools
+        run: |
+          pacman -Syu --noconfirm --needed             base-devel             git             shellcheck             sudo
+
+      - name: Validate repository
         shell: bash
         run: |
           set -euo pipefail
+          if make -n validate >/dev/null 2>&1; then
+            make validate
+          else
+            echo "No make validate target; skipping repository validation."
+          fi
 
-          test -d config
-          test -f config/argvus/profile
-          test -f config/scripts/argvus/bootstrap.sh
-          test -f config/hypr/hyprland.lua
-          test -f config/waybar/argvus-taskbar.jsonc
-          test -f LICENSE
-
-          test -x bin/argvus
-          sh -n bin/argvus
-          find config tools/sh -type f -name '*.sh' -print0 | xargs -0 -r sh -n
-
-      - name: Validate package layout
+      - name: Validate CI PKGBUILD
         shell: bash
         run: |
           set -euo pipefail
+          cd "packaging/arch"
+          makepkg -p PKGBUILD --printsrcinfo >/dev/null
 
-          pkg_root="$RUNNER_TEMP/pkg"
-
-          install -dm755 "$pkg_root/usr/share/argvus"
-          cp -a config/. "$pkg_root/usr/share/argvus/"
-          install -Dm755 bin/argvus "$pkg_root/usr/bin/argvus"
-          install -Dm644 LICENSE "$pkg_root/usr/share/licenses/argvus/LICENSE"
-
-          test -x "$pkg_root/usr/bin/argvus"
-          test -f "$pkg_root/usr/share/argvus/argvus/profile"
-          test -f "$pkg_root/usr/share/argvus/scripts/argvus/bootstrap.sh"
-          test -f "$pkg_root/usr/share/argvus/hypr/hyprland.lua"
-          test -f "$pkg_root/usr/share/argvus/waybar/argvus-taskbar.jsonc"
-          test -f "$pkg_root/usr/share/licenses/argvus/LICENSE"
+      - name: Validate local PKGBUILD
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f "packaging/arch/PKGBUILD.local"

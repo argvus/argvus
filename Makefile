@@ -3,24 +3,21 @@ REMOTES := $(shell git remote 2>/dev/null || echo "")
 
 .DEFAULT_GOAL := help
 
-.PHONY: help set-permissions install uninstall test-storage test-storage-once test-storage-menu test-storage-waybar push push-lease
+.PHONY: help set-permissions install uninstall push push-lease
 
 # ----- Menu help -----
 help:
 	@echo "Available targets:"
+	@echo "  make build"
 	@echo "  make set-permissions"
 	@echo "  make install"
 	@echo "  make uninstall"
-	@echo "  make test-storage"
-	@echo "  make test-storage-once"
-	@echo "  make test-storage-menu"
-	@echo "  make test-storage-waybar"
 	@echo "  make push"
 	@echo "  make push-lease"
 
 set-permissions:
-	@find config -type f -name "*.sh" -exec chmod +x {} \;
-	@find bin -type f -exec chmod +x {} \;
+	@if [ -d config ]; then find config -type f -name "*.sh" -exec chmod +x {} \;; fi
+	@if [ -d bin ]; then find bin -type f -exec chmod +x {} \;; fi
 	@find tools/sh -type f -name "*.sh" -exec chmod +x {} \; 2>/dev/null || true
 
 install:
@@ -28,18 +25,6 @@ install:
 
 uninstall:
 	@sh tools/sh/uninstall.sh --all
-
-test-storage:
-	@sh tools/sh/test-storage-waybar.sh check
-
-test-storage-once:
-	@sh tools/sh/test-storage-waybar.sh once
-
-test-storage-menu:
-	@sh tools/sh/test-storage-waybar.sh menu
-
-test-storage-waybar:
-	@sh tools/sh/test-storage-waybar.sh waybar
 
 # ----- GIT PUSH (development commands) -----
 push:
@@ -59,3 +44,8 @@ push-lease:
 # Swallow bare arguments passed to the targets above
 %:
 	@:
+
+.PHONY: build
+
+build:
+	@tools/build-local-package.sh

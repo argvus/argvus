@@ -9,15 +9,14 @@ usage() {
   cat <<EOF
 Usage: tools/sh/uninstall.sh [--user] [--system] [--all] [--dry-run] [--help]
 
-Removes Argvus (and legacy archypr-desktop) files installed by
-install.sh / make install. Session launchers are owned by the separate
-argvus-session project/package. User config directories are preserved
-as .bak-* backups and listed at the end so nothing is lost.
+Removes only metadata installed by this metapackage checkout. Runtime files are
+owned by the modular ARGVUS packages and must be removed through pacman or each
+module repository.
 
 Options:
-  --user          uninstall user install in ~/.local and ~/.config (default)
-  --system        uninstall system install in /usr using sudo
-  --all           uninstall both user and system
+  --user          uninstall user metadata from ~/.local (default)
+  --system        uninstall system metadata from /usr using sudo
+  --all           uninstall both user and system metadata
   --dry-run       print what would be removed without removing
   -h, --help      show this help
 EOF
@@ -42,16 +41,14 @@ sudo_run() {
   fi
 }
 
-rm_if() {
-  [ -e "$1" ] || [ -L "$1" ] || return 0
-  log "Removing: $1"
-  run rm -rf "$1"
+remove_user() {
+  log "Removing argvus metapackage user metadata..."
+  run rm -f "${HOME}/.local/share/licenses/argvus/LICENSE"
 }
 
-rm_if_sudo() {
-  [ -e "$1" ] || [ -L "$1" ] || return 0
-  log "Removing: $1"
-  sudo_run rm -rf "$1"
+remove_system() {
+  log "Removing argvus metapackage system metadata..."
+  sudo_run rm -f /usr/share/licenses/argvus/LICENSE
 }
 
 while [ "$#" -gt 0 ]; do
@@ -68,116 +65,14 @@ done
 
 [ -n "${HOME:-}" ] || die "HOME is not set"
 
-CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
-STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
-CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
-
-uninstall_user() {
-  log "Uninstalling Argvus user install..."
-
-  rm_if "$HOME/.local/bin/argvus"
-  rm_if "$HOME/.local/bin/argvus-setup"
-  rm_if "$HOME/.local/bin/argvus-btop"
-  rm_if "$HOME/.local/bin/argvus-btm"
-  rm_if "$HOME/.local/bin/argvus-spf"
-  rm_if "$HOME/.local/bin/argvus-yazi"
-  rm_if "$HOME/.local/bin/argvus-storage"
-  rm_if "$HOME/.local/share/argvus"
-
-  # Current centralized layout
-  rm_if "$CONFIG_HOME/argvus"
-  rm_if "$CONFIG_HOME/argvus-storage"
-  rm_if "$CONFIG_HOME/.argvus-bootstrap"
-  rm_if "$STATE_HOME/argvus"
-  rm_if "$STATE_HOME/argvus-storage"
-  rm_if "$CACHE_HOME/argvus"
-
-  # Legacy structure — per-app configs/scripts copied by older setup flows or
-  # provisioned by the runtime before the centralized ~/.config/argvus layout.
-  rm_if "$CONFIG_HOME/argvus-sysinfo"
-
-  rm_if "$CONFIG_HOME/environment.d/argvus.conf"
-
-  # App directories materialized by the legacy setup --copy-all /
-  # --copy <app>. Development-only command: removed without backup.
-  rm_if "$CONFIG_HOME/bottom"
-  rm_if "$CONFIG_HOME/btop"
-  rm_if "$CONFIG_HOME/dunst"
-  rm_if "$CONFIG_HOME/foot"
-  rm_if "$CONFIG_HOME/gtk-3.0"
-  rm_if "$CONFIG_HOME/gtk-4.0"
-  rm_if "$CONFIG_HOME/hypr"
-  rm_if "$CONFIG_HOME/kitty"
-  rm_if "$CONFIG_HOME/qt6ct"
-  rm_if "$CONFIG_HOME/quickshell"
-  rm_if "$CONFIG_HOME/rofi"
-  rm_if "$CONFIG_HOME/snappy-switcher"
-  rm_if "$CONFIG_HOME/superfile"
-  rm_if "$CONFIG_HOME/term"
-  rm_if "$CONFIG_HOME/waybar"
-  rm_if "$CONFIG_HOME/wofi"
-  rm_if "$CONFIG_HOME/yazi"
-
-  rm_if "$HOME/.local/bin/archypr-desktop-setup"
-  rm_if "$HOME/.local/bin/archypr-desktop-start"
-  rm_if "$HOME/.local/bin/archypr-desktop-session"
-  rm_if "$HOME/.local/bin/archypr-desktop-tty"
-  rm_if "$HOME/.local/bin/archypr-storage"
-  rm_if "$HOME/.local/share/archypr-desktop"
-  rm_if "$HOME/.local/share/wayland-sessions/archypr-desktop.desktop"
-  rm_if "$HOME/.local/share/xsessions/archypr-desktop.desktop"
-
-  rm_if "$CONFIG_HOME/archypr-desktop"
-  rm_if "$CONFIG_HOME/.archypr-desktop-bootstrap"
-
-  log "Kept user config backups (newest per app):"
-  last_app=""
-  for d in "$CONFIG_HOME"/*.bak-*; do
-    [ -e "$d" ] || continue
-    app="${d##*/}"; app="${app%.bak-*}"
-    case "$last_app" in
-      "$app") continue ;;
-    esac
-    last_app="$app"
-    newest="$(printf '%s\n' "$CONFIG_HOME"/"$app".bak-* | sort | tail -1)"
-    log "  $app -> $newest"
-  done
-}
-
-uninstall_system() {
-  log "Uninstalling Argvus system install..."
-
-  sudo_run rm -f /usr/bin/argvus
-  sudo_run rm -f /usr/bin/argvus-setup
-  sudo_run rm -f /usr/bin/argvus-btop
-  sudo_run rm -f /usr/bin/argvus-btm
-  sudo_run rm -f /usr/bin/argvus-spf
-  sudo_run rm -f /usr/bin/argvus-yazi
-  sudo_run rm -f /usr/bin/argvus-storage
-  rm_if_sudo /usr/share/argvus
-  rm_if_sudo /usr/share/licenses/argvus
-
-  sudo_run rm -f /usr/bin/archypr-desktop-setup
-  sudo_run rm -f /usr/bin/archypr-desktop-start
-  sudo_run rm -f /usr/bin/archypr-desktop-session
-  sudo_run rm -f /usr/bin/archypr-desktop-tty
-  sudo_run rm -f /usr/bin/archypr-storage
-  rm_if_sudo /usr/share/archypr-desktop
-  rm_if_sudo /usr/share/wayland-sessions/archypr-desktop.desktop
-  rm_if_sudo /usr/share/xsessions/archypr-desktop.desktop
-
-  sudo_run rm -f /etc/profile.d/argvus.sh
-  sudo_run rm -f /etc/environment.d/argvus.conf
-}
-
 case "$MODE" in
-  user) uninstall_user ;;
-  system) uninstall_system ;;
+  user) remove_user ;;
+  system) remove_system ;;
   all)
-    uninstall_user
-    uninstall_system
+    remove_user
+    remove_system
   ;;
   *) die "invalid mode: $MODE" ;;
 esac
 
-log "Uninstall completed."
+log "Metapackage uninstall completed."
