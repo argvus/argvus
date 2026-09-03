@@ -3,7 +3,7 @@ REMOTES := $(shell git remote 2>/dev/null || echo "")
 
 .DEFAULT_GOAL := help
 
-.PHONY: help set-permissions install uninstall push push-lease
+.PHONY: help set-permissions install uninstall push push-lease build clean
 
 # ----- Menu help -----
 help:
@@ -45,7 +45,8 @@ push-lease:
 %:
 	@:
 
-.PHONY: build
-
 build:
 	@tools/build-local-package.sh
+
+clean:
+	rm -f packaging/arch/*.zst packaging/arch/*.tar.gz

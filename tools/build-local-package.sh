@@ -2,6 +2,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
+REPO_ROOT="$(cd "$ROOT_DIR/.." && pwd)"
 
 if [[ -f "$ROOT_DIR/packaging/arch/PKGBUILD.local" ]]; then
   PACKAGING_DIR="$ROOT_DIR/packaging/arch"
@@ -55,4 +56,10 @@ makepkg -p PKGBUILD.local "${flags[@]}" "$@"
 packages="$(find "$PACKAGING_DIR" -maxdepth 1 -type f -name "${pkgname}-*.pkg.tar.zst" -print | sort)"
 if [[ -n "$packages" ]]; then
   printf 'Packages created:\n%s\n' "$packages"
+
+  DIST_DIR="$REPO_ROOT/dist"
+  mkdir -p "$DIST_DIR"
+  cp $packages "$DIST_DIR/"
+  printf 'Copied to %s:\n' "$DIST_DIR"
+  printf '%s\n' "$packages" | xargs -I{} basename {}
 fi
