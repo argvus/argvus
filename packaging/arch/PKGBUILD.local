@@ -1,6 +1,6 @@
 # Maintainer: William C. Canin
 pkgname=argvus
-pkgver=0.3.0
+pkgver=0.4.0
 pkgrel=1
 pkgdesc="Complete ARGVUS desktop environment metapackage."
 arch=('any')
