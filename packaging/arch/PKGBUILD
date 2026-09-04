@@ -10,6 +10,7 @@ options=('!debug')
 
 depends=(
   'argvus-app-profiles'
+  'argvus-about'
   'argvus-appearance'
   'argvus-calendar'
   'argvus-display'

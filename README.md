@@ -46,7 +46,7 @@ split across smaller packages:
 | NetworkManager and Bluetooth commands | `argvus-network` |
 | Hyprlock config and lock screen themes | `argvus-lock` |
 | Wayland, DBus and portal defaults | `argvus-portal` |
-| Accounts, default apps, calendar, storage and greeter | `argvus-accounts`, `argvus-default-apps`, `argvus-calendar`, `argvus-storage`, `argvus-greeter` |
+| Accounts, default apps, about, calendar, storage and greeter | `argvus-accounts`, `argvus-default-apps`, `argvus-about`, `argvus-calendar`, `argvus-storage`, `argvus-greeter` |
 
 `argvus` itself remains the install target for users and coordinates the
 complete package set.
@@ -105,6 +105,7 @@ sudo pacman -Syu argvus
 | argvus-session | [argvus/argvus-session](https://github.com/argvus/argvus-session) | [![Release](https://github.com/argvus/argvus-session/actions/workflows/release.yml/badge.svg)](https://github.com/argvus/argvus-session/actions/workflows/release.yml) |
 | argvus-splash | [argvus/argvus-splash](https://github.com/argvus/argvus-splash) | [![Release](https://github.com/argvus/argvus-splash/actions/workflows/release.yml/badge.svg)](https://github.com/argvus/argvus-splash/actions/workflows/release.yml) |
 | argvus-default-apps | [argvus/argvus-default-apps](https://github.com/argvus/argvus-default-apps) | [![Release](https://github.com/argvus/argvus-default-apps/actions/workflows/release.yml/badge.svg)](https://github.com/argvus/argvus-default-apps/actions/workflows/release.yml) |
+| argvus-about | [argvus/argvus-about](https://github.com/argvus/argvus-about) | Planned |
 | argvus-app-profiles | [argvus/argvus-app-profiles](https://github.com/argvus/argvus-app-profiles) | Planned |
 | argvus-shell | [argvus/argvus-shell](https://github.com/argvus/argvus-shell) | Planned |
 | argvus-settings | [argvus/argvus-settings](https://github.com/argvus/argvus-settings) | Planned |
