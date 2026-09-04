@@ -3,12 +3,14 @@ REMOTES := $(shell git remote 2>/dev/null || echo "")
 
 .DEFAULT_GOAL := help
 
-.PHONY: help set-permissions install uninstall push push-lease build clean
+.PHONY: help set-permissions install uninstall push push-lease build build-bin check validate clean
 
 # ----- Menu help -----
 help:
 	@echo "Available targets:"
 	@echo "  make build"
+	@echo "  make build-bin"
+	@echo "  make check"
 	@echo "  make set-permissions"
 	@echo "  make install"
 	@echo "  make uninstall"
@@ -20,7 +22,18 @@ set-permissions:
 	@if [ -d bin ]; then find bin -type f -exec chmod +x {} \;; fi
 	@find tools/sh -type f -name "*.sh" -exec chmod +x {} \; 2>/dev/null || true
 
-install:
+check:
+	cargo fmt --check
+	cargo test --locked
+	cargo clippy --locked -- -D warnings
+
+validate: check
+	@echo "argvus validation ok"
+
+build-bin:
+	cargo build --release --locked
+
+install: build-bin
 	@sh tools/sh/install.sh --all --force
 
 uninstall:

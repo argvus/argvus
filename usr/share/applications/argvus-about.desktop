@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=About ARGVUS
+Name[pt_BR]=Sobre o ARGVUS
+Comment=Show ARGVUS desktop information
+Comment[pt_BR]=Mostra informações do ambiente ARGVUS
+Exec=argvus --about
+Icon=argvus-about
+Terminal=false
+Categories=Settings;System;GTK;
+StartupNotify=true

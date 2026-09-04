@@ -1,0 +1,56 @@
+window.argvus-about {
+  font-family: "Terminus (TTF)", monospace;
+  font-size: 15px;
+}
+
+.root {
+  background: @window_bg_color;
+}
+
+notebook tab {
+  padding: 8px 18px;
+}
+
+.tab-page {
+  padding: 28px;
+}
+
+.window-title,
+.section-title,
+.module-title {
+  font-weight: 700;
+}
+
+.info-key {
+  color: alpha(currentColor, 0.62);
+  font-weight: 700;
+}
+
+.info-value,
+.paragraph,
+.module-desc {
+  line-height: 1.35;
+}
+
+.module-list {
+  background: transparent;
+}
+
+.license-frame {
+  margin-top: 2px;
+}
+
+.license-scroll {
+  background: alpha(currentColor, 0.04);
+}
+
+.license-view {
+  font-family: "Terminus (TTF)", monospace;
+  font-size: 13px;
+  padding: 12px;
+}
+
+.actions {
+  padding: 10px 12px;
+  border-top: 1px solid alpha(currentColor, 0.14);
+}

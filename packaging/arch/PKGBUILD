@@ -2,15 +2,14 @@
 pkgname=argvus
 pkgver=0.4.0
 pkgrel=1
-pkgdesc="Complete ARGVUS desktop environment metapackage."
-arch=('any')
+pkgdesc="Complete ARGVUS desktop environment package."
+arch=('x86_64')
 url="https://github.com/argvus/argvus"
 license=('GPL-3.0-only')
 options=('!debug')
 
 depends=(
   'argvus-app-profiles'
-  'argvus-about'
   'argvus-appearance'
   'argvus-calendar'
   'argvus-display'
@@ -47,11 +46,13 @@ depends=(
   'adwaita-icon-theme'
   'cliphist'
   'fastfetch'
+  'gcc-libs'
   'okular'
 	'feh'
   'glib2'
   'grim'
   'gsimplecal'
+  'gtk4'
   'gtk-layer-shell'
   'imv'
 	'audacious'
@@ -80,7 +81,11 @@ depends=(
 	'neovim'
   'zathura'
   'zip'
-  'zsh'
+	'zsh'
+)
+makedepends=(
+  'cargo'
+  'pkgconf'
 )
 optdepends=(
   'blueman: optional Bluetooth manager and tray applet'
@@ -92,8 +97,48 @@ source=(
 )
 sha256sums=('SKIP')
 
+prepare() {
+  cd "${pkgname}-${pkgver}"
+  cargo fetch --locked --target "${CARCH}-unknown-linux-gnu"
+}
+
+build() {
+  cd "${pkgname}-${pkgver}"
+
+  export CFLAGS="${CFLAGS/-flto=auto/}"
+  export CXXFLAGS="${CXXFLAGS/-flto=auto/}"
+  export FFLAGS="${FFLAGS/-flto=auto/}"
+  export FCFLAGS="${FCFLAGS/-flto=auto/}"
+  export LDFLAGS="${LDFLAGS/-flto=auto/}"
+
+  cargo build --release --locked --target-dir target
+}
+
+check() {
+  cd "${pkgname}-${pkgver}"
+
+  export CFLAGS="${CFLAGS/-flto=auto/}"
+  export CXXFLAGS="${CXXFLAGS/-flto=auto/}"
+  export FFLAGS="${FFLAGS/-flto=auto/}"
+  export FCFLAGS="${FCFLAGS/-flto=auto/}"
+  export LDFLAGS="${LDFLAGS/-flto=auto/}"
+
+  cargo test --locked --target-dir target
+}
+
 package() {
   cd "${pkgname}-${pkgver}"
+
+  install -Dm755 "target/release/argvus-about" \
+    "${pkgdir}/usr/bin/argvus-about"
+
+  install -Dm644 usr/share/applications/argvus-about.desktop \
+    "${pkgdir}/usr/share/applications/argvus-about.desktop"
+
+  install -Dm644 assets/argvus-about.svg \
+    "${pkgdir}/usr/share/argvus-about/argvus-about.svg"
+  install -Dm644 assets/argvus-about.svg \
+    "${pkgdir}/usr/share/icons/hicolor/scalable/apps/argvus-about.svg"
 
   install -Dm644 LICENSE \
     "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"

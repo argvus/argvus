@@ -30,7 +30,7 @@ notifications and themes — all packaged for Arch Linux.
 
 ## Modular Ecosystem
 
-`argvus` is the full desktop metapackage/coordinator. Component ownership is
+`argvus` is the full desktop package/coordinator. Component ownership is
 split across smaller packages:
 
 | Area | Package |
@@ -46,13 +46,13 @@ split across smaller packages:
 | NetworkManager and Bluetooth commands | `argvus-network` |
 | Hyprlock config and lock screen themes | `argvus-lock` |
 | Wayland, DBus and portal defaults | `argvus-portal` |
-| Accounts, default apps, about, calendar, storage and greeter | `argvus-accounts`, `argvus-default-apps`, `argvus-about`, `argvus-calendar`, `argvus-storage`, `argvus-greeter` |
+| Accounts, default apps, about, calendar, storage and greeter | `argvus-accounts`, `argvus-default-apps`, built-in `argvus-about`, `argvus-calendar`, `argvus-storage`, `argvus-greeter` |
 
-`argvus` itself remains the install target for users and coordinates the
-complete package set.
+`argvus` itself remains the install target for users, coordinates the complete
+package set, and ships the `argvus-about` GTK application.
 
-Source-tree `make install` in this repository installs only metapackage
-metadata for local checks. Runtime files are installed by the module packages
+Source-tree `make install` in this repository keeps local checks focused on
+the coordinator package. Runtime files are installed by the module packages
 listed above.
 
 ## Themes
@@ -105,7 +105,6 @@ sudo pacman -Syu argvus
 | argvus-session | [argvus/argvus-session](https://github.com/argvus/argvus-session) | [![Release](https://github.com/argvus/argvus-session/actions/workflows/release.yml/badge.svg)](https://github.com/argvus/argvus-session/actions/workflows/release.yml) |
 | argvus-splash | [argvus/argvus-splash](https://github.com/argvus/argvus-splash) | [![Release](https://github.com/argvus/argvus-splash/actions/workflows/release.yml/badge.svg)](https://github.com/argvus/argvus-splash/actions/workflows/release.yml) |
 | argvus-default-apps | [argvus/argvus-default-apps](https://github.com/argvus/argvus-default-apps) | [![Release](https://github.com/argvus/argvus-default-apps/actions/workflows/release.yml/badge.svg)](https://github.com/argvus/argvus-default-apps/actions/workflows/release.yml) |
-| argvus-about | [argvus/argvus-about](https://github.com/argvus/argvus-about) | Planned |
 | argvus-app-profiles | [argvus/argvus-app-profiles](https://github.com/argvus/argvus-app-profiles) | Planned |
 | argvus-shell | [argvus/argvus-shell](https://github.com/argvus/argvus-shell) | Planned |
 | argvus-settings | [argvus/argvus-settings](https://github.com/argvus/argvus-settings) | Planned |

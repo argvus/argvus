@@ -14,9 +14,9 @@ usage() {
   cat <<EOF
 Usage: tools/sh/install.sh [options]
 
-Installs only the local metapackage metadata from this checkout. Runtime files
-are owned by the modular ARGVUS repositories and by the Arch packages pulled by
-pacman -S argvus.
+Installs the local coordinator metadata and the argvus-about binary from this
+checkout. Runtime files are owned by the modular ARGVUS repositories and by the
+Arch packages pulled by pacman -S argvus.
 
 Options:
   --user          install metadata to ~/.local (default)
@@ -149,6 +149,27 @@ install_license() {
   fi
 }
 
+install_about() {
+  prefix="$1"
+  bin_path="$prefix/bin/argvus-about"
+  desktop_path="$prefix/share/applications/argvus-about.desktop"
+  asset_path="$prefix/share/argvus-about/argvus-about.svg"
+  icon_path="$prefix/share/icons/hicolor/scalable/apps/argvus-about.svg"
+
+  log "Installing argvus-about to $prefix..."
+  if needs_sudo "$bin_path"; then
+    sudo_run install -Dm755 "$ROOT_DIR/target/release/argvus-about" "$bin_path"
+    sudo_run install -Dm644 "$ROOT_DIR/usr/share/applications/argvus-about.desktop" "$desktop_path"
+    sudo_run install -Dm644 "$ROOT_DIR/assets/argvus-about.svg" "$asset_path"
+    sudo_run install -Dm644 "$ROOT_DIR/assets/argvus-about.svg" "$icon_path"
+  else
+    run install -Dm755 "$ROOT_DIR/target/release/argvus-about" "$bin_path"
+    run install -Dm644 "$ROOT_DIR/usr/share/applications/argvus-about.desktop" "$desktop_path"
+    run install -Dm644 "$ROOT_DIR/assets/argvus-about.svg" "$asset_path"
+    run install -Dm644 "$ROOT_DIR/assets/argvus-about.svg" "$icon_path"
+  fi
+}
+
 restart_runtime() {
   [ "$RESTART" = true ] || return 0
 
@@ -165,13 +186,17 @@ check_component_checkouts
 case "$MODE" in
   user)
     install_license "$PREFIX"
+    install_about "$PREFIX"
   ;;
   system)
     install_license /usr
+    install_about /usr
   ;;
   all)
     install_license "${HOME}/.local"
+    install_about "${HOME}/.local"
     install_license /usr
+    install_about /usr
   ;;
   *)
     die "invalid mode: $MODE"
