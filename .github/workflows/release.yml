@@ -34,18 +34,22 @@ jobs:
         run: |
           set -euo pipefail
 
-          version="${GITHUB_REF_NAME#v}"
-          if [[ ! "$version" =~ ^[0-9]+(\.[0-9]+)*([._+-][A-Za-z0-9]+)*$ ]]; then
+          tag_version="${GITHUB_REF_NAME#v}"
+          if [[ ! "$tag_version" =~ ^[0-9]+(\.[0-9]+)*([._+-][A-Za-z0-9]+)*$ ]]; then
             echo "Unsupported version tag: ${GITHUB_REF_NAME}" >&2
             exit 1
           fi
 
           if [[ -f Cargo.toml ]]; then
             cargo_version="$(awk -F '"' '/^version = / { print $2; exit }' Cargo.toml)"
-            if [[ -n "$cargo_version" && "$cargo_version" != "$version" ]]; then
-              echo "Cargo.toml version (${cargo_version}) does not match tag (${version})." >&2
+            [[ -n "$cargo_version" ]] || { echo "Cargo.toml version not found" >&2; exit 1; }
+            if [[ "$cargo_version" != "$tag_version" ]]; then
+              echo "Cargo.toml version (${cargo_version}) does not match tag (${tag_version})." >&2
               exit 1
             fi
+            version="$cargo_version"
+          else
+            version="$tag_version"
           fi
 
           sed -i "s/^pkgver=.*/pkgver=${version}/" "packaging/arch/PKGBUILD"
