@@ -24,6 +24,7 @@ depends=(
   'argvus-shell'
 	'argvus-accounts'
   'argvus-storage'
+  'argvus-theme-nautilus'
 	'argvus-default-apps'
   'argvus-waybar'
 	'argvus-pwvucontrol'
