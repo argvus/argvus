@@ -14,6 +14,7 @@ depends=(
   'argvus-calendar'
   'argvus-display'
   'argvus-greeter'
+  'argvus-icons'
   'argvus-lock'
   'argvus-network'
   'argvus-notifications'
