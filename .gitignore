@@ -13,3 +13,4 @@ config/argvus/.gtk-mode
 argvus*.tar.gz
 
 /dist/
+/target/

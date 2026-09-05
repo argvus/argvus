@@ -46,7 +46,7 @@ split across smaller packages:
 | NetworkManager and Bluetooth commands | `argvus-network` |
 | Hyprlock config and lock screen themes | `argvus-lock` |
 | Wayland, DBus and portal defaults | `argvus-portal` |
-| Accounts, default apps, about, calendar, storage and greeter | `argvus-accounts`, `argvus-default-apps`, built-in `argvus-about`, `argvus-calendar`, `argvus-storage`, `argvus-greeter` |
+| Accounts, settings, about, calendar, storage and greeter | `argvus-accounts`, `argvus-settings`, built-in `argvus-about`, `argvus-calendar`, `argvus-storage`, `argvus-greeter` |
 
 `argvus` itself remains the install target for users, coordinates the complete
 package set, and ships the `argvus-about` GTK application.
@@ -57,7 +57,7 @@ listed above.
 
 ## Themes
 
-Eight theme families with a shared accent-color system that unifies GTK, terminals, rofi, Waybar and Hyprland. Change the accent color anytime with `SUPER + SHIFT + A`.
+Ten theme families with a shared accent-color system that unifies GTK, terminals, rofi, Waybar and Hyprland. Change the accent color anytime with `SUPER + SHIFT + A`.
 
 | Dark          | Float               | Light            |
 |---------------|---------------------|------------------|
@@ -104,7 +104,6 @@ sudo pacman -Syu argvus
 | argvus-waybar | [argvus/argvus-waybar](https://github.com/argvus/argvus-waybar) | [![Release](https://github.com/argvus/argvus-waybar/actions/workflows/release.yml/badge.svg)](https://github.com/argvus/argvus-waybar/actions/workflows/release.yml) |
 | argvus-session | [argvus/argvus-session](https://github.com/argvus/argvus-session) | [![Release](https://github.com/argvus/argvus-session/actions/workflows/release.yml/badge.svg)](https://github.com/argvus/argvus-session/actions/workflows/release.yml) |
 | argvus-splash | [argvus/argvus-splash](https://github.com/argvus/argvus-splash) | [![Release](https://github.com/argvus/argvus-splash/actions/workflows/release.yml/badge.svg)](https://github.com/argvus/argvus-splash/actions/workflows/release.yml) |
-| argvus-default-apps | [argvus/argvus-default-apps](https://github.com/argvus/argvus-default-apps) | [![Release](https://github.com/argvus/argvus-default-apps/actions/workflows/release.yml/badge.svg)](https://github.com/argvus/argvus-default-apps/actions/workflows/release.yml) |
 | argvus-app-profiles | [argvus/argvus-app-profiles](https://github.com/argvus/argvus-app-profiles) | Planned |
 | argvus-shell | [argvus/argvus-shell](https://github.com/argvus/argvus-shell) | Planned |
 | argvus-settings | [argvus/argvus-settings](https://github.com/argvus/argvus-settings) | Planned |

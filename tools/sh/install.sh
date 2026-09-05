@@ -123,7 +123,6 @@ check_component_checkouts() {
     argvus-settings \
     argvus-shell \
     argvus-storage \
-    argvus-default-apps \
     argvus-calendar \
     argvus-greeter \
     argvus-waybar
