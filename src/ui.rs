@@ -72,7 +72,12 @@ pub fn build(app: &gtk::Application) {
 
 fn install_css() {
     let provider = gtk::CssProvider::new();
-    provider.load_from_string(include_str!("../assets/style.css"));
+    let css = format!(
+        "{}\n{}",
+        include_str!("../assets/style.css"),
+        app_font_css()
+    );
+    provider.load_from_string(&css);
     if let Some(display) = gtk::gdk::Display::default() {
         gtk::style_context_add_provider_for_display(
             &display,
@@ -80,6 +85,54 @@ fn install_css() {
             gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
         );
     }
+}
+
+fn app_font_css() -> String {
+    let (family, size) = argvus_font("apps", "Terminus (TTF)", 13);
+    format!(
+        ".argvus-about {{ font-family: \"{}\", monospace; font-size: {}px; }}",
+        css_escape(&family),
+        size
+    )
+}
+
+fn argvus_font(prefix: &str, fallback_family: &str, fallback_size: u32) -> (String, u32) {
+    let config_home = std::env::var_os("ARGVUS_CONFIG_HOME")
+        .or_else(|| std::env::var_os("XDG_CONFIG_HOME"))
+        .map(std::path::PathBuf::from)
+        .unwrap_or_else(|| {
+            std::env::var_os("HOME")
+                .map(std::path::PathBuf::from)
+                .unwrap_or_else(|| std::path::PathBuf::from("/tmp"))
+                .join(".config")
+        });
+    let path = config_home.join("argvus").join("fonts.conf");
+    let Ok(contents) = std::fs::read_to_string(path) else {
+        return (fallback_family.to_string(), fallback_size);
+    };
+
+    let family = read_font_key(&contents, &format!("{prefix}_family"))
+        .or_else(|| read_font_key(&contents, "default_family"))
+        .unwrap_or_else(|| fallback_family.to_string());
+    let size = read_font_key(&contents, &format!("{prefix}_size"))
+        .or_else(|| read_font_key(&contents, "default_size"))
+        .and_then(|value| value.parse::<u32>().ok())
+        .unwrap_or(fallback_size)
+        .clamp(8, 32);
+    (family, size)
+}
+
+fn read_font_key(contents: &str, key: &str) -> Option<String> {
+    contents.lines().find_map(|line| {
+        let (candidate, value) = line.split_once('=')?;
+        (candidate.trim() == key)
+            .then(|| value.trim().to_string())
+            .filter(|value| !value.is_empty())
+    })
+}
+
+fn css_escape(value: &str) -> String {
+    value.replace('\\', "\\\\").replace('"', "\\\"")
 }
 
 fn system_tab(lang: Lang, info: &SystemInfo) -> gtk::Widget {
