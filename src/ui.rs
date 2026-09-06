@@ -1,7 +1,12 @@
 use gtk::prelude::*;
+use std::process::Command;
 
 use crate::i18n::{Lang, na, tr};
 use crate::system::SystemInfo;
+
+const DONATE_URL: &str = "https://argvus.github.io/#support";
+const ARGVUS_URL: &str = "https://argvus.github.io";
+const WILLIAM_CANIN_URL: &str = "https://williamcanin.github.io";
 
 pub fn build(app: &gtk::Application) {
     install_css();
@@ -38,6 +43,7 @@ pub fn build(app: &gtk::Application) {
         &about_tab(lang),
         Some(&gtk::Label::new(Some(tr(lang, "Sobre", "About")))),
     );
+    notebook.append_page(&donate_tab(lang), Some(&gtk::Label::new(Some("Donate"))));
     notebook.append_page(
         &credits_tab(lang),
         Some(&gtk::Label::new(Some(tr(lang, "Créditos", "Credits")))),
@@ -209,6 +215,13 @@ fn about_tab(lang: Lang) -> gtk::Widget {
     intro.set_xalign(0.0);
     content.append(&intro);
 
+    section_link(
+        &content,
+        tr(lang, "Site oficial", "Official website"),
+        ARGVUS_URL,
+        ARGVUS_URL,
+    );
+
     let list = gtk::ListBox::new();
     list.add_css_class("module-list");
     for (name, desc_pt, desc_en) in modules() {
@@ -243,10 +256,11 @@ fn credits_tab(lang: Lang) -> gtk::Widget {
     content.add_css_class("tab-page");
     content.set_valign(gtk::Align::Start);
 
-    section(
+    section_link(
         &content,
         tr(lang, "Desenvolvedor principal", "Lead developer"),
-        "William C. Canin",
+        WILLIAM_CANIN_URL,
+        "William C. Canin - https://williamcanin.github.io",
     );
     section(
         &content,
@@ -268,6 +282,43 @@ fn credits_tab(lang: Lang) -> gtk::Widget {
     );
 
     scrolled(content).upcast()
+}
+
+fn donate_tab(lang: Lang) -> gtk::Widget {
+    let content = gtk::Box::new(gtk::Orientation::Vertical, 18);
+    content.add_css_class("tab-page");
+    content.set_valign(gtk::Align::Start);
+
+    let title = gtk::Label::new(Some(tr(
+        lang,
+        "Apoie o desenvolvimento do ARGVUS",
+        "Support ARGVUS development",
+    )));
+    title.add_css_class("section-title");
+    title.set_xalign(0.0);
+    content.append(&title);
+
+    let text = gtk::Label::new(Some(tr(
+        lang,
+        "Se o ARGVUS é útil para você, considere apoiar o desenvolvimento do projeto. Sua contribuição ajuda a manter a infraestrutura e a evolução contínua do desktop.",
+        "If ARGVUS is useful to you, please consider supporting the project's development. Your contribution helps maintain the infrastructure and ongoing evolution of the desktop.",
+    )));
+    text.add_css_class("paragraph");
+    text.set_wrap(true);
+    text.set_xalign(0.0);
+    content.append(&text);
+
+    let button = gtk::Button::with_label("Donate");
+    button.add_css_class("suggested-action");
+    button.set_halign(gtk::Align::Start);
+    button.connect_clicked(|_| open_donate_url());
+    content.append(&button);
+
+    scrolled(content).upcast()
+}
+
+fn open_donate_url() {
+    let _ = Command::new("xdg-open").arg(DONATE_URL).spawn();
 }
 
 fn copyright_tab(lang: Lang) -> gtk::Widget {
@@ -328,6 +379,17 @@ fn section(parent: &gtk::Box, title: &str, body: &str) {
     body.set_wrap(true);
     body.set_selectable(true);
     parent.append(&body);
+}
+
+fn section_link(parent: &gtk::Box, title: &str, uri: &str, label: &str) {
+    let title = gtk::Label::new(Some(title));
+    title.add_css_class("section-title");
+    title.set_xalign(0.0);
+    parent.append(&title);
+
+    let link = gtk::LinkButton::with_label(uri, label);
+    link.set_halign(gtk::Align::Start);
+    parent.append(&link);
 }
 
 fn scrolled<W: IsA<gtk::Widget>>(child: W) -> gtk::ScrolledWindow {
