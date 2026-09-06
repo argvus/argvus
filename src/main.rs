@@ -1,5 +1,6 @@
 mod i18n;
 mod system;
+mod theme;
 mod ui;
 
 use gtk::prelude::*;

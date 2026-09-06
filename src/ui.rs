@@ -1,8 +1,12 @@
 use gtk::prelude::*;
+use std::cell::RefCell;
 use std::process::Command;
+use std::rc::Rc;
+use std::time::Duration;
 
 use crate::i18n::{Lang, na, tr};
 use crate::system::SystemInfo;
+use crate::theme::ThemeCss;
 
 const DONATE_URL: &str = "https://argvus.github.io/#support";
 const ARGVUS_URL: &str = "https://argvus.github.io";
@@ -78,11 +82,10 @@ pub fn build(app: &gtk::Application) {
 
 fn install_css() {
     let provider = gtk::CssProvider::new();
-    let css = format!(
-        "{}\n{}",
-        include_str!("../assets/style.css"),
-        app_font_css()
-    );
+    let theme = Rc::new(RefCell::new(ThemeCss::new()));
+    let css = theme
+        .borrow_mut()
+        .render(include_str!("../assets/style.css"), &app_font_css());
     provider.load_from_string(&css);
     if let Some(display) = gtk::gdk::Display::default() {
         gtk::style_context_add_provider_for_display(
@@ -91,6 +94,15 @@ fn install_css() {
             gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
         );
     }
+
+    gtk::glib::timeout_add_local(Duration::from_secs(1), move || {
+        let mut theme = theme.borrow_mut();
+        if theme.changed() {
+            let css = theme.render(include_str!("../assets/style.css"), &app_font_css());
+            provider.load_from_string(&css);
+        }
+        gtk::glib::ControlFlow::Continue
+    });
 }
 
 fn app_font_css() -> String {
@@ -388,11 +400,13 @@ fn section_link(parent: &gtk::Box, title: &str, uri: &str, label: &str) {
     parent.append(&title);
 
     let link = gtk::LinkButton::with_label(uri, label);
+    link.add_css_class("argvus-link");
     link.set_halign(gtk::Align::Start);
     parent.append(&link);
 }
 
 fn scrolled<W: IsA<gtk::Widget>>(child: W) -> gtk::ScrolledWindow {
+    child.set_vexpand(true);
     gtk::ScrolledWindow::builder()
         .hscrollbar_policy(gtk::PolicyType::Never)
         .vscrollbar_policy(gtk::PolicyType::Automatic)

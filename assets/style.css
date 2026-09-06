@@ -1,17 +1,43 @@
 window.argvus-about {
+  background: @argvus_bg;
+  color: @argvus_fg;
   font-family: "Terminus (TTF)", monospace;
   font-size: 15px;
 }
 
 .root {
-  background: @window_bg_color;
+  background: @argvus_bg;
+  color: @argvus_fg;
+}
+
+notebook,
+notebook > header,
+notebook > stack,
+headerbar,
+headerbar windowhandle,
+scrolledwindow,
+scrolledwindow viewport {
+  background: @argvus_bg;
+  color: @argvus_fg;
+}
+
+headerbar {
+  border-color: @argvus_border;
 }
 
 notebook tab {
   padding: 8px 18px;
+  color: @argvus_muted;
+}
+
+notebook tab:checked {
+  color: @argvus_fg;
+  border-color: @argvus_border;
 }
 
 .tab-page {
+  background: @argvus_bg;
+  color: @argvus_fg;
   padding: 28px;
 }
 
@@ -22,7 +48,7 @@ notebook tab {
 }
 
 .info-key {
-  color: alpha(currentColor, 0.62);
+  color: @argvus_muted;
   font-weight: 700;
 }
 
@@ -34,6 +60,17 @@ notebook tab {
 
 .module-list {
   background: transparent;
+  color: @argvus_fg;
+}
+
+.module-list row {
+  background: transparent;
+  color: @argvus_fg;
+}
+
+.module-list row:hover,
+.module-list row:selected {
+  background: @argvus_surface;
 }
 
 .license-frame {
@@ -41,10 +78,12 @@ notebook tab {
 }
 
 .license-scroll {
-  background: alpha(currentColor, 0.04);
+  background: @argvus_surface;
 }
 
 .license-view {
+  background: @argvus_surface;
+  color: @argvus_fg;
   font-family: "Terminus (TTF)", monospace;
   font-size: 13px;
   padding: 12px;
@@ -52,5 +91,22 @@ notebook tab {
 
 .actions {
   padding: 10px 12px;
-  border-top: 1px solid alpha(currentColor, 0.14);
+  background: @argvus_bg;
+  border-top: 1px solid @argvus_border;
+}
+
+button {
+  background: @argvus_surface;
+  color: @argvus_fg;
+  border-color: @argvus_border;
+}
+
+button:hover {
+  background: @argvus_surface;
+  border-color: @argvus_focus;
+}
+
+button.suggested-action {
+  color: @argvus_fg;
+  border-color: @argvus_focus;
 }
