@@ -25,6 +25,7 @@ depends=(
   'argvus-shell'
   'argvus-accounts'
   'argvus-storage'
+  'argvus-terminal'
   'argvus-waybar'
   'argvus-pwvucontrol'
   'argvus-snappy-switcher'
