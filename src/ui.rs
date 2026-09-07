@@ -286,11 +286,7 @@ fn credits_tab(lang: Lang) -> gtk::Widget {
     section(
         &content,
         tr(lang, "Agradecimentos", "Thanks"),
-        tr(
-            lang,
-            "Hyprland, GTK, Rust, Waybar, Quickshell e todos os projetos livres que tornam este desktop possível.",
-            "Hyprland, GTK, Rust, Waybar, Quickshell and every free software project that makes this desktop possible.",
-        ),
+        "Hyprland - https://hypr.land\nRust - https://rust-lang.org\nRofi - https://github.com/davatorium/rofi\nWaybar - https://github.com/Alexays/Waybar\nQuickshell - https://quickshell.org\nGTK - https://www.gtk.org\nYaru Theme - https://github.com/ubuntu/yaru\nKitty - https://sw.kovidgoyal.net/kitty\nsuperfile - https://superfile.dev\nnwg-look - https://github.com/nwg-piotr/nwg-look\nnwg-displays - https://github.com/nwg-piotr/nwg-displays\ngreetd - https://git.sr.ht/~kennylevinsen/greetd\n\ne todos os projetos livres que tornam este desktop possível.",
     );
 
     scrolled(content).upcast()
