@@ -106,7 +106,7 @@ fn install_css() {
 }
 
 fn app_font_css() -> String {
-    let (family, size) = argvus_font("apps", "Terminus (TTF)", 13);
+    let (family, size) = argvus_font("apps", "IBM Plex Mono", 12);
     format!(
         ".argvus-about {{ font-family: \"{}\", monospace; font-size: {}px; }}",
         css_escape(&family),

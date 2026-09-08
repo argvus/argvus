@@ -1,7 +1,7 @@
 window.argvus-about {
   background: @argvus_bg;
   color: @argvus_fg;
-  font-family: "Terminus (TTF)", monospace;
+  font-family: "IBM Plex Mono", monospace;
   font-size: 15px;
 }
 
@@ -84,7 +84,7 @@ notebook tab:checked {
 .license-view {
   background: @argvus_surface;
   color: @argvus_fg;
-  font-family: "Terminus (TTF)", monospace;
+  font-family: "IBM Plex Mono", monospace;
   font-size: 13px;
   padding: 12px;
 }
