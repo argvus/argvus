@@ -85,6 +85,7 @@ depends=(
 )
 optdepends=(
   'blueman: optional Bluetooth manager and tray applet'
+  'starship: customizable prompt for any shell'
   'kooha: graphical screen recording utility'
   'nwg-look: GTK theme configuration utility'
 )
