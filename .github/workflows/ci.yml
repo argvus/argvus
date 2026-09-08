@@ -23,7 +23,7 @@ jobs:
 
       - name: Install validation tools
         run: |
-          pacman -Syu --noconfirm --needed             base-devel             cargo             git             gtk4             pkgconf             rust             shellcheck             sudo
+          pacman -Syu --noconfirm --needed             base-devel             git             pkgconf             shellcheck             sudo
 
       - name: Validate repository
         shell: bash
@@ -39,11 +39,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if [[ -f Cargo.toml ]]; then
-            version="$(awk -F '"' '/^version = / { print $2; exit }' Cargo.toml)"
-            [[ -n "$version" ]] || { echo "Cargo.toml version not found" >&2; exit 1; }
-            sed -i "s/^pkgver=.*/pkgver=${version}/" "packaging/arch/PKGBUILD"
-          fi
           cd "packaging/arch"
           makepkg -p PKGBUILD --printsrcinfo >/dev/null
 

@@ -9,14 +9,14 @@ usage() {
   cat <<EOF
 Usage: tools/sh/uninstall.sh [--user] [--system] [--all] [--dry-run] [--help]
 
-Removes metadata and argvus-about files installed by this package checkout.
+Removes argvus files installed by this package checkout.
 Runtime files are owned by the modular ARGVUS packages and must be removed
 through pacman or each module repository.
 
 Options:
-  --user          uninstall user metadata from ~/.local (default)
-  --system        uninstall system metadata from /usr using sudo
-  --all           uninstall both user and system metadata
+  --user          uninstall from ~/.local (default)
+  --system        uninstall from /usr using sudo
+  --all           uninstall both user and system
   --dry-run       print what would be removed without removing
   -h, --help      show this help
 EOF
@@ -42,21 +42,15 @@ sudo_run() {
 }
 
 remove_user() {
-  log "Removing argvus metapackage user metadata..."
+  log "Removing argvus metapackage user files..."
   run rm -f "${HOME}/.local/share/licenses/argvus/LICENSE"
-  run rm -f "${HOME}/.local/bin/argvus-about"
-  run rm -f "${HOME}/.local/share/applications/argvus-about.desktop"
-  run rm -f "${HOME}/.local/share/argvus-about/argvus-about.svg"
-  run rm -f "${HOME}/.local/share/icons/hicolor/scalable/apps/argvus-about.svg"
+  run rm -f "${HOME}/.local/bin/argvus"
 }
 
 remove_system() {
-  log "Removing argvus metapackage system metadata..."
+  log "Removing argvus metapackage system files..."
   sudo_run rm -f /usr/share/licenses/argvus/LICENSE
-  sudo_run rm -f /usr/bin/argvus-about
-  sudo_run rm -f /usr/share/applications/argvus-about.desktop
-  sudo_run rm -f /usr/share/argvus-about/argvus-about.svg
-  sudo_run rm -f /usr/share/icons/hicolor/scalable/apps/argvus-about.svg
+  sudo_run rm -f /usr/bin/argvus
 }
 
 while [ "$#" -gt 0 ]; do

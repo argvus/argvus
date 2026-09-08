@@ -1,43 +1,45 @@
+PREFIX ?= /usr
+DESTDIR ?=
 BRANCH := $(shell git branch --show-current 2>/dev/null || echo "unknown")
 REMOTES := $(shell git remote 2>/dev/null || echo "")
 
 .DEFAULT_GOAL := help
 
-.PHONY: help set-permissions install uninstall push push-lease build build-bin check validate clean
+.PHONY: help install uninstall set-permissions validate build clean push push-lease
 
-# ----- Menu help -----
 help:
 	@echo "Available targets:"
 	@echo "  make build"
-	@echo "  make build-bin"
-	@echo "  make check"
 	@echo "  make set-permissions"
 	@echo "  make install"
 	@echo "  make uninstall"
+	@echo "  make validate"
 	@echo "  make push"
 	@echo "  make push-lease"
 
 set-permissions:
-	@if [ -d config ]; then find config -type f -name "*.sh" -exec chmod +x {} \;; fi
 	@if [ -d bin ]; then find bin -type f -exec chmod +x {} \;; fi
+	@if [ -d usr/bin ]; then find usr/bin -type f -exec chmod +x {} \;; fi
 	@find tools/sh -type f -name "*.sh" -exec chmod +x {} \; 2>/dev/null || true
 
-check:
-	cargo fmt --check
-	cargo test --locked
-	cargo clippy --locked -- -D warnings
-
-validate: check
+validate:
+	@test -x usr/bin/argvus
+	@sh -n usr/bin/argvus
 	@echo "argvus validation ok"
 
-build-bin:
-	cargo build --release --locked
-
-install: build-bin
-	@sh tools/sh/install.sh --all --force
+install:
+	install -Dm755 usr/bin/argvus \
+		"$(DESTDIR)$(PREFIX)/bin/argvus"
+	install -Dm644 LICENSE \
+		"$(DESTDIR)$(PREFIX)/share/licenses/argvus/LICENSE"
 
 uninstall:
-	@sh tools/sh/uninstall.sh --all
+	find "$(DESTDIR)$(PREFIX)/bin" -name 'argvus' -type f -delete
+	find "$(DESTDIR)$(PREFIX)/share/licenses/argvus" -type f -delete
+
+# Swallow bare arguments passed to the targets above
+%:
+	@:
 
 # ----- GIT PUSH (development commands) -----
 push:
@@ -53,10 +55,6 @@ push-lease:
 		echo "  pushing to $$remote..."; \
 		git push --force-with-lease $$remote $(BRANCH); \
 	done
-
-# Swallow bare arguments passed to the targets above
-%:
-	@:
 
 build:
 	@tools/build-local-package.sh
