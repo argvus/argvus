@@ -213,7 +213,7 @@ run_control_center() {
     --timezone|--date-time|--regional-locale|--system-locales|--encoding|--keyboard|--keyboard-layout|--keyboard-variant|--console-keymap)
       set -- locale "$@"
       ;;
-    --hostname)
+    --hostname|--firewall|--users)
       set -- system "$@"
       ;;
   esac
