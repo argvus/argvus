@@ -10,18 +10,15 @@ Usage:
   argvus --system-monitor [btop options]
   argvus --control-center [page]
   argvus --terminal [terminal options]
-  argvus --termminal [terminal options]
-  argvus --btm [bottom options]
   argvus --spf [superfile options]
   argvus --yazi [yazi options]
   argvus --about [about tab]
   argvus --calendar [argvus-calendar options]
   argvus --default-apps [control center Apps options]
-  argvus --settings [control center options]
   argvus --storage [argvus-storage options]
 
 Aliases:
-  argvus setup | system-monitor | control-center | terminal | termminal | btm | spf | yazi | about | calendar | default-apps | settings | storage
+  argvus setup | system-monitor | control-center | terminal | spf | yazi | about | calendar | default-apps | storage
 
 Setup options:
   --copy <app>   Copy /usr/share/argvus/<app> to ~/.config/argvus/<app>.
@@ -205,22 +202,22 @@ find_control_center() {
 
 run_control_center() {
   _control_center="$(find_control_center)"
-  require_command argvus-terminal
-  exec argvus-terminal --class argvus-control-center --tui -e "$_control_center" "$@"
-}
-
-run_btm() {
-  source_bootstrap
-  if has_arg '-C --config_location --config_location=*' "$@"; then
-    exec btm "$@"
-  fi
-  _native_dir="${ARGVUS_CONFIG_HOME}/bottom"
-  if [ -e "$_native_dir" ] || [ -L "$_native_dir" ]; then
-    XDG_CONFIG_HOME="$ARGVUS_CONFIG_HOME"
-    export XDG_CONFIG_HOME
-    exec btm "$@"
-  fi
-  exec btm --config_location "$(paths_config bottom/bottom.toml)" "$@"
+  require_command argvus-tui-terminal
+  case "${1:-}" in
+    --apps) shift; set -- apps "$@" ;;
+    --fonts) shift; set -- fonts "$@" ;;
+    --locale) shift; set -- locale "$@" ;;
+    --language) shift; set -- language "$@" ;;
+    --system) shift; set -- system "$@" ;;
+    --about) shift; set -- about "$@" ;;
+    --timezone|--date-time|--regional-locale|--system-locales|--encoding|--keyboard|--keyboard-layout|--keyboard-variant|--console-keymap)
+      set -- locale "$@"
+      ;;
+    --hostname)
+      set -- system "$@"
+      ;;
+  esac
+  exec argvus-tui-terminal --class argvus-control-center --term foot -- "$_control_center" "$@"
 }
 
 run_spf() {
@@ -346,10 +343,6 @@ run_default_apps() {
   run_control_center apps "$@"
 }
 
-run_settings() {
-  run_control_center "$@"
-}
-
 run_storage() {
   require_command argvus-storage
   if [ "$#" -eq 0 ]; then
@@ -371,13 +364,9 @@ case "${1:-}" in
     shift
     run_control_center "$@"
     ;;
-  --terminal|terminal|--termminal|termminal)
+  --terminal|terminal)
     shift
     run_terminal "$@"
-    ;;
-  --btm|btm|--bottom|bottom)
-    shift
-    run_btm "$@"
     ;;
   --spf|spf|--superfile|superfile)
     shift
@@ -398,10 +387,6 @@ case "${1:-}" in
   --default-apps|default-apps)
     shift
     run_default_apps "$@"
-    ;;
-  --settings|settings)
-    shift
-    run_settings "$@"
     ;;
   --storage|storage)
     shift
