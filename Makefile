@@ -5,6 +5,8 @@ REMOTES := $(shell git remote 2>/dev/null || echo "")
 
 .DEFAULT_GOAL := help
 
+SCRIPT_VERSION := $(shell sed -n 's/^VERSION="\(.*\)"/\1/p' usr/bin/argvus)
+
 .PHONY: help install uninstall set-permissions validate build clean push push-lease
 
 help:
@@ -25,6 +27,15 @@ set-permissions:
 validate:
 	@test -x usr/bin/argvus
 	@sh -n usr/bin/argvus
+	@[ -n "$(SCRIPT_VERSION)" ] || { echo "VERSION not found in usr/bin/argvus" >&2; exit 1; }
+	@for f in packaging/arch/PKGBUILD packaging/arch/PKGBUILD.local; do \
+		[ -f "$$f" ] || continue; \
+		pkgver=$$(sed -n 's/^pkgver=\(.*\)/\1/p' "$$f"); \
+		if [ "$$pkgver" != "$(SCRIPT_VERSION)" ]; then \
+			echo "pkgver mismatch in $$f: expected $(SCRIPT_VERSION), got $$pkgver" >&2; \
+			exit 1; \
+		fi; \
+	done
 	@echo "argvus validation ok"
 
 install:

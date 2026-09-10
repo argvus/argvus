@@ -41,6 +41,7 @@ jobs:
           fi
 
           sed -i "s/^pkgver=.*/pkgver=${version}/" "packaging/arch/PKGBUILD"
+          sed -i "s/^VERSION=\".*\"/VERSION=\"${version}\"/" "usr/bin/argvus"
           echo "version=${version}" >> "$GITHUB_OUTPUT"
 
       - name: Validate repository

@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 # Argvus command dispatcher.
 
+VERSION="0.4.0"
+
 set -eu
 
 usage() {
@@ -16,9 +18,10 @@ Usage:
   argvus --calendar [argvus-calendar options]
   argvus --default-apps [control center Apps options]
   argvus --storage [argvus-storage options]
+  argvus --version
 
 Aliases:
-  argvus setup | system-monitor | control-center | terminal | spf | yazi | about | calendar | default-apps | storage
+  argvus setup | system-monitor | control-center | terminal | spf | yazi | about | calendar | default-apps | storage | version
 
 Setup options:
   --copy <app>   Copy /usr/share/argvus/<app> to ~/.config/argvus/<app>.
@@ -391,6 +394,9 @@ case "${1:-}" in
   --storage|storage)
     shift
     run_storage "$@"
+    ;;
+  --version|-V|version)
+    printf 'argvus %s\n' "$VERSION"
     ;;
   --help|-h|'')
     usage
