@@ -396,7 +396,7 @@ case "${1:-}" in
     run_storage "$@"
     ;;
   --version|-V|version)
-    printf 'argvus %s\n' "$VERSION"
+    printf 'ARGVUS %s\n' "$VERSION"
     ;;
   --help|-h|'')
     usage
