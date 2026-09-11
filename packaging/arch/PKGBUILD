@@ -11,7 +11,7 @@ options=('!debug')
 depends=(
   'argvus-app-profiles'
   'argvus-appearance'
-  'argvus-calendar'
+  'argvus-taskbar-calendar'
   'argvus-control-panel'
   'argvus-control-center'
   'argvus-widget-telemetry'

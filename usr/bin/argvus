@@ -15,7 +15,7 @@ Usage:
   argvus --spf [superfile options]
   argvus --yazi [yazi options]
   argvus --about [about tab]
-  argvus --calendar [argvus-calendar options]
+  argvus --calendar [argvus-taskbar-calendar options]
   argvus --default-apps [control center Apps options]
   argvus --storage [argvus-storage options]
   argvus --version
@@ -335,11 +335,11 @@ run_about() {
 }
 
 run_calendar() {
-  require_command argvus-calendar
+  require_command argvus-taskbar-calendar
   if [ "$#" -eq 0 ]; then
     set -- toggle
   fi
-  exec argvus-calendar "$@"
+  exec argvus-taskbar-calendar "$@"
 }
 
 run_default_apps() {
