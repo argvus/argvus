@@ -17,7 +17,7 @@ Usage:
   argvus --about [about tab]
   argvus --calendar [argvus-taskbar-calendar options]
   argvus --default-apps [control center Apps options]
-  argvus --storage [argvus-storage options]
+  argvus --storage [argvus-taskbar-storage options]
   argvus --version
 
 Aliases:
@@ -347,11 +347,11 @@ run_default_apps() {
 }
 
 run_storage() {
-  require_command argvus-storage
+  require_command argvus-taskbar-storage
   if [ "$#" -eq 0 ]; then
     set -- menu
   fi
-  exec argvus-storage "$@"
+  exec argvus-taskbar-storage "$@"
 }
 
 case "${1:-}" in
