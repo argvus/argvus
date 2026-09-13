@@ -18,10 +18,11 @@ Usage:
   argvus --calendar [argvus-taskbar-calendar options]
   argvus --default-apps [control center Apps options]
   argvus --storage [argvus-taskbar-storage options]
+  argvus --displays [control center Displays page]
   argvus --version
 
 Aliases:
-  argvus setup | system-monitor | control-center | terminal | spf | yazi | about | calendar | default-apps | storage | version
+  argvus setup | system-monitor | control-center | terminal | spf | yazi | about | calendar | default-apps | storage | displays | version
 
 Setup options:
   --copy <app>   Copy /usr/share/argvus/<app> to ~/.config/argvus/<app>.
@@ -213,6 +214,7 @@ run_control_center() {
     --language) shift; set -- language "$@" ;;
     --system) shift; set -- system "$@" ;;
     --about) shift; set -- about "$@" ;;
+    --displays|--monitors) shift; set -- displays "$@" ;;
     --timezone|--date-time|--regional-locale|--system-locales|--encoding|--keyboard|--keyboard-layout|--keyboard-variant|--console-keymap)
       set -- locale "$@"
       ;;
@@ -394,6 +396,10 @@ case "${1:-}" in
   --storage|storage)
     shift
     run_storage "$@"
+    ;;
+  --displays|displays)
+    shift
+    run_control_center displays "$@"
     ;;
   --version|-V|version)
     printf 'ARGVUS %s\n' "$VERSION"
