@@ -17,12 +17,12 @@ Usage:
   argvus --about [about tab]
   argvus --calendar [argvus-taskbar-calendar options]
   argvus --default-apps [control center Apps options]
-  argvus --storage [argvus-taskbar-storage options]
+  argvus --removable-devices [argvus-taskbar-storage options]
   argvus --displays [control center Displays page]
   argvus --version
 
 Aliases:
-  argvus setup | system-monitor | control-center | terminal | spf | yazi | about | calendar | default-apps | storage | displays | version
+  argvus setup | system-monitor | control-center | terminal | spf | yazi | about | calendar | default-apps | removable-devices | displays | version
 
 Setup options:
   --copy <app>   Copy /usr/share/argvus/<app> to ~/.config/argvus/<app>.
@@ -348,7 +348,7 @@ run_default_apps() {
   run_control_center apps "$@"
 }
 
-run_storage() {
+run_removable_devices() {
   require_command argvus-taskbar-storage
   if [ "$#" -eq 0 ]; then
     set -- menu
@@ -393,9 +393,9 @@ case "${1:-}" in
     shift
     run_default_apps "$@"
     ;;
-  --storage|storage)
+  --removable-devices|removable-devices|--storage|storage)
     shift
-    run_storage "$@"
+    run_removable_devices "$@"
     ;;
   --displays|displays)
     shift
