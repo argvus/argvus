@@ -29,7 +29,7 @@ if [[ -f "$ROOT_DIR/Cargo.toml" ]]; then
 fi
 
 if [[ -z "$TEMP_BUILD_SCRIPT" ]]; then
-  script_version="$(sed -n 's/^VERSION="\(.*\)"/\1/p' "$ROOT_DIR/usr/bin/argvus" | head -n1)"
+  script_version="$(sed -n 's/^VERSION="\(.*\)"/\1/p' "$ROOT_DIR/src/usr/bin/argvus" | head -n1)"
   if [[ -n "$script_version" ]]; then
     TEMP_BUILD_SCRIPT="$(mktemp)"
     sed "s/^pkgver=.*/pkgver=${script_version}/" "$BUILD_SCRIPT" > "$TEMP_BUILD_SCRIPT"

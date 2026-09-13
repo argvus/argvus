@@ -119,9 +119,9 @@ install_argvus_bin() {
 
   log "Installing argvus command dispatcher to $prefix..."
   if needs_sudo "$bin_path"; then
-    sudo_run install -Dm755 "$ROOT_DIR/usr/bin/argvus" "$bin_path"
+    sudo_run install -Dm755 "$ROOT_DIR/src/usr/bin/argvus" "$bin_path"
   else
-    run install -Dm755 "$ROOT_DIR/usr/bin/argvus" "$bin_path"
+    run install -Dm755 "$ROOT_DIR/src/usr/bin/argvus" "$bin_path"
   fi
 }
 

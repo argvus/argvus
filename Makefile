@@ -5,7 +5,7 @@ REMOTES := $(shell git remote 2>/dev/null || echo "")
 
 .DEFAULT_GOAL := help
 
-SCRIPT_VERSION := $(shell sed -n 's/^VERSION="\(.*\)"/\1/p' usr/bin/argvus)
+SCRIPT_VERSION := $(shell sed -n 's/^VERSION="\(.*\)"/\1/p' src/usr/bin/argvus)
 
 .PHONY: help install uninstall set-permissions validate build clean push push-lease
 
@@ -21,13 +21,13 @@ help:
 
 set-permissions:
 	@if [ -d bin ]; then find bin -type f -exec chmod +x {} \;; fi
-	@if [ -d usr/bin ]; then find usr/bin -type f -exec chmod +x {} \;; fi
+	@if [ -d src/usr/bin ]; then find src/usr/bin -type f -exec chmod +x {} \;; fi
 	@find tools/sh -type f -name "*.sh" -exec chmod +x {} \; 2>/dev/null || true
 
 validate:
-	@test -x usr/bin/argvus
-	@sh -n usr/bin/argvus
-	@[ -n "$(SCRIPT_VERSION)" ] || { echo "VERSION not found in usr/bin/argvus" >&2; exit 1; }
+	@test -x src/usr/bin/argvus
+	@sh -n src/usr/bin/argvus
+	@[ -n "$(SCRIPT_VERSION)" ] || { echo "VERSION not found in src/usr/bin/argvus" >&2; exit 1; }
 	@for f in packaging/arch/PKGBUILD packaging/arch/PKGBUILD.local; do \
 		[ -f "$$f" ] || continue; \
 		pkgver=$$(sed -n 's/^pkgver=\(.*\)/\1/p' "$$f"); \
@@ -39,7 +39,7 @@ validate:
 	@echo "argvus validation ok"
 
 install:
-	install -Dm755 usr/bin/argvus \
+	install -Dm755 src/usr/bin/argvus \
 		"$(DESTDIR)$(PREFIX)/bin/argvus"
 	install -Dm644 LICENSE \
 		"$(DESTDIR)$(PREFIX)/share/licenses/argvus/LICENSE"
