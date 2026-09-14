@@ -70,20 +70,21 @@ Supported files are loaded after packaged defaults in this order:
 `monitors.lua`, `rules.lua`, `bindings.lua`, `user.lua`. Missing files must be
 ignored.
 
-`argvus-storage` is packaged separately. Its system defaults belong under `/etc/argvus-storage`, not under `config/argvus-storage`.
+`argvus-taskbar-storage` is packaged separately. Its system defaults belong under
+`/usr/share/argvus/taskbar-storage/config`.
 
-`argvus-appearance` owns shared wallpapers and bundled fonts. Desktop configs
+`argvus-wallpapers` and `argvus-fonts` own wallpapers and bundled fonts. Desktop configs
 should reference `/usr/share/backgrounds/argvus` and system fonts rather than
 copying those assets into `~/.config`.
 Kitty launch commands must pass the resolved Argvus `kitty.conf`, because Kitty
-does not consume `/usr/share/argvus/kitty/kitty.conf` through `XDG_CONFIG_DIRS`.
+does not consume `/usr/share/argvus/terminal/config/kitty.conf` through `XDG_CONFIG_DIRS`.
 Use the `argvus --spf`, `argvus --btop`, `argvus --btm` and `argvus --yazy`
 subcommands for bundled TUI apps that do not consume `/usr/share/argvus`
 directly. Each subcommand keeps `$XDG_CONFIG_HOME/<app>` as a native user
 override and otherwise points the app at the Argvus config tree.
 Yazi themes are shipped only as native flavors under
-`config/yazi/flavors/<theme>.yazi/flavor.toml`. Do not add a parallel
-`config/yazi/themes` tree; theme switching writes `theme.toml` with the active
+`argvus-app-profiles/src/usr/share/argvus/app-profiles/config/yazi/flavors/<theme>.yazi/flavor.toml`.
+Theme switching writes `theme.toml` with the active
 Argvus flavor and fills missing packaged flavors into `$XDG_CONFIG_HOME/argvus/yazi`
 when needed.
 Btop themes must use the native `theme[key]="value"` syntax. Runtime refresh
