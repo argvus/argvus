@@ -42,7 +42,7 @@ require_command() {
 
 source_bootstrap() {
   : "${HOME:?HOME is not set}"
-  ARGVUS_BOOTSTRAP="${ARGVUS_BOOTSTRAP:-${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/scripts/argvus/bootstrap.sh}"
+  ARGVUS_BOOTSTRAP="${ARGVUS_BOOTSTRAP:-${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/session/sh/bootstrap.sh}"
   # shellcheck disable=SC1090
   . "$ARGVUS_BOOTSTRAP"
 }
@@ -286,20 +286,20 @@ run_spf() {
     export XDG_CONFIG_HOME
     exec spf "$@"
   fi
-  _argvus_superfile_dir="$(paths_config superfile)"
+  _argvus_superfile_dir="$(paths_config app-profiles/config/superfile)"
   XDG_CONFIG_HOME="${_argvus_superfile_dir%/superfile}"
   export XDG_CONFIG_HOME
   exec spf "$@"
 }
 
 resolve_argvus_yazi_config() {
-  for _dir in "$(paths_user_config yazi)" "$(paths_generated_config yazi)" "$(paths_system_config yazi)"; do
+  for _dir in "$(paths_user_config app-profiles/config/yazi)" "$(paths_generated_config app-profiles/config/yazi)" "$(paths_system_config app-profiles/config/yazi)"; do
     if [ -e "$_dir" ] || [ -L "$_dir" ]; then
       printf '%s\n' "$_dir"
       return 0
     fi
   done
-  paths_system_config yazi
+  paths_system_config app-profiles/config/yazi
 }
 
 read_active_theme() {
@@ -313,8 +313,8 @@ read_active_theme() {
 
 materialize_argvus_yazi_config() {
   _theme="$(read_active_theme)"
-  _dst="$(paths_user_config yazi)"
-  _src="$(paths_system_config yazi)"
+  _dst="$(paths_user_config app-profiles/config/yazi)"
+  _src="$(paths_system_config app-profiles/config/yazi)"
 
   if [ ! -d "$_dst" ] && [ -d "$_src" ]; then
     mkdir -p "$_dst"
