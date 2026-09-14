@@ -35,7 +35,8 @@ split across smaller packages:
 
 | Area | Package |
 |------|---------|
-| Session lifecycle, shared bootstrap and base Hyprland session config | `argvus-session` |
+| Session lifecycle, shared bootstrap and session services | `argvus-session` |
+| Hyprland configuration and Hyprland-specific scripts | `argvus-hyprland` |
 | Quickshell control panel, ARGVUS Waybar taskbar/sysinfo, rofi/wofi shell UI | `argvus-shell` |
 | Patched Waybar package/binary | `argvus-waybar` |
 | Terminal/TUI app profiles and the `argvus` compatibility command | `argvus-app-profiles` |
@@ -103,6 +104,7 @@ sudo pacman -Syu argvus
 | argvus-appearance | [argvus/argvus-appearance](https://github.com/argvus/argvus-appearance) | [![Release](https://github.com/argvus/argvus-appearance/actions/workflows/release.yml/badge.svg)](https://github.com/argvus/argvus-appearance/actions/workflows/release.yml) |
 | argvus-waybar | [argvus/argvus-waybar](https://github.com/argvus/argvus-waybar) | [![Release](https://github.com/argvus/argvus-waybar/actions/workflows/release.yml/badge.svg)](https://github.com/argvus/argvus-waybar/actions/workflows/release.yml) |
 | argvus-session | [argvus/argvus-session](https://github.com/argvus/argvus-session) | [![Release](https://github.com/argvus/argvus-session/actions/workflows/release.yml/badge.svg)](https://github.com/argvus/argvus-session/actions/workflows/release.yml) |
+| argvus-hyprland | [argvus/argvus-hyprland](https://github.com/argvus/argvus-hyprland) | [![Release](https://github.com/argvus/argvus-hyprland/actions/workflows/release.yml/badge.svg)](https://github.com/argvus/argvus-hyprland/actions/workflows/release.yml) |
 | argvus-splash | [argvus/argvus-splash](https://github.com/argvus/argvus-splash) | [![Release](https://github.com/argvus/argvus-splash/actions/workflows/release.yml/badge.svg)](https://github.com/argvus/argvus-splash/actions/workflows/release.yml) |
 | argvus-app-profiles | [argvus/argvus-app-profiles](https://github.com/argvus/argvus-app-profiles) | Planned |
 | argvus-shell | [argvus/argvus-shell](https://github.com/argvus/argvus-shell) | Planned |
