@@ -222,7 +222,57 @@ run_control_center() {
       set -- system "$@"
       ;;
   esac
-  exec argvus-tui-terminal --class argvus-control-center --term foot -- "$_control_center" "$@"
+
+  # Keep the Control Center single-instance.  The class is assigned by
+  # argvus-tui-terminal.  Some terminal backends expose their own class
+  # (currently kitty), so retain the title fallback for the same TUI window.
+  # Focusing by address also switches to its workspace in Hyprland.
+  if command -v hyprctl >/dev/null 2>&1 && command -v jq >/dev/null 2>&1; then
+    _control_center_address="$(hyprctl clients -j 2>/dev/null \
+      | jq -r 'map(select(.class == "argvus-control-center" or .initialClass == "argvus-control-center" or (.class == "kitty" and ((.title // "") | test("argvus-control-center$")))))[0].address // empty' 2>/dev/null || true)"
+    if [ -n "$_control_center_address" ]; then
+      hyprctl eval "hl.dispatch(hl.dsp.focus({ window = \"address:$_control_center_address\" }))" >/dev/null 2>&1 || true
+      return 0
+    fi
+  fi
+
+  # Serialize the check-and-start window.  This also handles two key presses
+  # arriving before Hyprland reports the newly created client.
+  _control_center_lock="${XDG_RUNTIME_DIR:-/tmp}/argvus-control-center.lock"
+  exec 9>"$_control_center_lock"
+  if ! flock -n 9; then
+    return 0
+  fi
+
+  # Recheck after acquiring the lock: another invocation may have started the
+  # terminal while this one was waiting for the lock.
+  if command -v hyprctl >/dev/null 2>&1 && command -v jq >/dev/null 2>&1; then
+    _control_center_address="$(hyprctl clients -j 2>/dev/null \
+      | jq -r 'map(select(.class == "argvus-control-center" or .initialClass == "argvus-control-center" or (.class == "kitty" and ((.title // "") | test("argvus-control-center$")))))[0].address // empty' 2>/dev/null || true)"
+    if [ -n "$_control_center_address" ]; then
+      hyprctl eval "hl.dispatch(hl.dsp.focus({ window = \"address:$_control_center_address\" }))" >/dev/null 2>&1 || true
+      flock -u 9
+      return 0
+    fi
+  fi
+
+  argvus-tui-terminal --class argvus-control-center --term foot -- "$_control_center" "$@" &
+  _control_center_pid=$!
+
+  # Wait briefly for the client to be registered before releasing the lock.
+  # This closes the race without keeping a lock for the lifetime of the app.
+  if command -v hyprctl >/dev/null 2>&1 && command -v jq >/dev/null 2>&1; then
+    _control_center_attempt=0
+    while [ "$_control_center_attempt" -lt 20 ]; do
+      _control_center_address="$(hyprctl clients -j 2>/dev/null \
+        | jq -r 'map(select(.class == "argvus-control-center" or .initialClass == "argvus-control-center" or (.class == "kitty" and ((.title // "") | test("argvus-control-center$")))))[0].address // empty' 2>/dev/null || true)"
+      [ -n "$_control_center_address" ] && break
+      kill -0 "$_control_center_pid" 2>/dev/null || break
+      sleep 0.1
+      _control_center_attempt=$((_control_center_attempt + 1))
+    done
+  fi
+  flock -u 9
 }
 
 run_spf() {
@@ -333,7 +383,7 @@ run_yazi() {
 }
 
 run_about() {
-  run_control_center about "$@"
+  run_control_center --about "$@"
 }
 
 run_calendar() {
