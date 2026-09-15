@@ -13,10 +13,10 @@ tools/sh/  local development install and validation helpers
 
 ## Local setup
 
-Clone `argvus-storage` next to this repository:
+Clone `argvus-removable-devices` next to this repository:
 
 ```sh
-git clone https://github.com/argvus/argvus-storage ../argvus-storage
+git clone https://github.com/argvus/argvus-removable-devices ../argvus-removable-devices
 ```
 
 Install for user-level testing:
@@ -31,7 +31,7 @@ Install system-like paths for package testing:
 tools/sh/install.sh --system
 ```
 
-Use `ARGVUS_STORAGE_DIR=/path/to/argvus-storage` when the storage checkout is not next to this repository.
+Use `ARGVUS_STORAGE_DIR=/path/to/argvus-removable-devices` when the storage checkout is not next to this repository.
 
 ## Common checks
 
@@ -42,7 +42,7 @@ find config tools/sh -type f -name '*.sh' -print0 | xargs -0 -r sh -n
 makepkg --printsrcinfo -p packaging/arch/PKGBUILD
 ```
 
-For Waybar/storage integration: check the `argvus-storage` repository for
+For Waybar/storage integration: check the `argvus-removable-devices` repository for
 updated tests and run Waybar manually as needed.
 
 For Hyprland changes, test inside a real Argvus session when possible. Check that the session starts from a clean user, the Waybar appears, the Quickshell sidebar toggles, theme switching creates only intentional user overrides and package defaults remain read-only.
@@ -70,8 +70,8 @@ Supported files are loaded after packaged defaults in this order:
 `monitors.lua`, `rules.lua`, `bindings.lua`, `user.lua`. Missing files must be
 ignored.
 
-`argvus-taskbar-storage` is packaged separately. Its system defaults belong under
-`/usr/share/argvus/taskbar-storage/config`.
+`argvus-removable-devices` is packaged separately. Its system defaults belong under
+`/usr/share/argvus/removable-devices/config`.
 
 `argvus-wallpapers` and `argvus-fonts` own wallpapers and bundled fonts. Desktop configs
 should reference `/usr/share/backgrounds/argvus` and system fonts rather than

@@ -27,7 +27,7 @@ depends=(
   'argvus-hyprland'
   'argvus-launcher'
   'argvus-accounts'
-  'argvus-taskbar-storage'
+  'argvus-removable-devices'
   'argvus-system-monitor'
   'argvus-taskbar'
   'argvus-terminal'

@@ -26,7 +26,7 @@ notifications and themes — all packaged for Arch Linux.
 - **superfile** — Fast TUI file manager
 - **btop** — System monitor
 - **hyprlock** — Lock screen with synchronized theme
-- **argvus-storage** — Rust-powered removable storage module
+- **argvus-removable-devices** — Rust-powered removable storage module
 
 ## Modular Ecosystem
 
@@ -47,7 +47,7 @@ split across smaller packages:
 | NetworkManager and Bluetooth commands | `argvus-network` |
 | Hyprlock config and lock screen themes | `argvus-lock` |
 | Wayland, DBus and portal defaults | `argvus-portal` |
-| Accounts, settings, about, calendar, storage and greeter | `argvus-accounts`, `argvus-settings`, built-in `argvus-about`, `argvus-calendar`, `argvus-storage`, `argvus-greeter` |
+| Accounts, settings, about, calendar, storage and greeter | `argvus-accounts`, `argvus-settings`, built-in `argvus-about`, `argvus-calendar`, `argvus-removable-devices`, `argvus-greeter` |
 
 `argvus` itself remains the install target for users, coordinates the complete
 package set, and ships the `argvus-about` GTK application.
@@ -98,7 +98,7 @@ sudo pacman -Syu argvus
 
 | Name | Repository | Status |
 |------|------------|--------|
-| argvus-storage | [argvus/argvus-storage](https://github.com/argvus/argvus-storage) | [![Release](https://github.com/argvus/argvus-storage/actions/workflows/release.yml/badge.svg)](https://github.com/argvus/argvus-storage/actions/workflows/release.yml) |
+| argvus-removable-devices | [argvus/argvus-removable-devices](https://github.com/argvus/argvus-removable-devices) | [![Release](https://github.com/argvus/argvus-removable-devices/actions/workflows/release.yml/badge.svg)](https://github.com/argvus/argvus-removable-devices/actions/workflows/release.yml) |
 | argvus-calendar | [argvus/argvus-calendar](https://github.com/argvus/argvus-calendar) | [![Release](https://github.com/argvus/argvus-calendar/actions/workflows/release.yml/badge.svg)](https://github.com/argvus/argvus-calendar/actions/workflows/release.yml) |
 | argvus-greeter | [argvus/argvus-greeter](https://github.com/argvus/argvus-greeter) | [![Release](https://github.com/argvus/argvus-greeter/actions/workflows/release.yml/badge.svg)](https://github.com/argvus/argvus-greeter/actions/workflows/release.yml) |
 | argvus-appearance | [argvus/argvus-appearance](https://github.com/argvus/argvus-appearance) | [![Release](https://github.com/argvus/argvus-appearance/actions/workflows/release.yml/badge.svg)](https://github.com/argvus/argvus-appearance/actions/workflows/release.yml) |

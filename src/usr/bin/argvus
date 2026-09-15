@@ -17,7 +17,7 @@ Usage:
   argvus --about [about tab]
   argvus --calendar [argvus-taskbar-calendar options]
   argvus --default-apps [control center Apps options]
-  argvus --removable-devices [argvus-taskbar-storage options]
+  argvus --removable-devices [argvus-removable-devices options]
   argvus --displays [control center Displays page]
   argvus --version
 
@@ -399,11 +399,11 @@ run_default_apps() {
 }
 
 run_removable_devices() {
-  require_command argvus-taskbar-storage
+  require_command argvus-removable-devices
   if [ "$#" -eq 0 ]; then
     set -- menu
   fi
-  exec argvus-taskbar-storage "$@"
+  exec argvus-removable-devices "$@"
 }
 
 case "${1:-}" in
