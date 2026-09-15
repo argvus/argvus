@@ -276,7 +276,12 @@ run_control_center() {
 }
 
 run_spf() {
+  _terminal_term="${TERM-}"
   source_bootstrap
+  if [ -n "$_terminal_term" ]; then
+    TERM="$_terminal_term"
+    export TERM
+  fi
   if has_arg '-c --config-file --config-file=* --hf --hotkey-file --hotkey-file=*' "$@"; then
     exec spf "$@"
   fi
@@ -350,7 +355,12 @@ materialize_argvus_yazi_config() {
 
 run_yazi() {
   _requested_yazi_config="${YAZI_CONFIG_HOME:-}"
+  _terminal_term="${TERM-}"
   source_bootstrap
+  if [ -n "$_terminal_term" ]; then
+    TERM="$_terminal_term"
+    export TERM
+  fi
   if [ -n "$_requested_yazi_config" ] && [ -d "$_requested_yazi_config" ]; then
     case "$_requested_yazi_config" in
       "${ARGVUS_CONFIG_HOME}/argvus/yazi"|/usr/share/argvus/yazi) ;;
