@@ -39,11 +39,12 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cd "packaging/arch"
+          cd "packaging/arch/ci"
           makepkg -p PKGBUILD --printsrcinfo >/dev/null
 
       - name: Validate local PKGBUILD
         shell: bash
         run: |
           set -euo pipefail
-          test -f "packaging/arch/PKGBUILD.local"
+          cd "packaging/arch/local"
+          makepkg -p PKGBUILD --printsrcinfo >/dev/null

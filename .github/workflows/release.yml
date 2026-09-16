@@ -40,7 +40,7 @@ jobs:
             exit 1
           fi
 
-          sed -i "s/^pkgver=.*/pkgver=${version}/" "packaging/arch/PKGBUILD"
+          sed -i "s/^pkgver=.*/pkgver=${version}/" "packaging/arch/ci/PKGBUILD"
           sed -i "s/^VERSION=\".*\"/VERSION=\"${version}\"/" "src/usr/bin/argvus"
           echo "version=${version}" >> "$GITHUB_OUTPUT"
 
@@ -59,9 +59,9 @@ jobs:
         run: |
           set -euo pipefail
 
-          sudo -u builder env GITHUB_WORKSPACE="$GITHUB_WORKSPACE" bash -lc             'cd "$GITHUB_WORKSPACE/packaging/arch" && makepkg --nodeps --noconfirm --needed --cleanbuild --clean'
+          sudo -u builder env GITHUB_WORKSPACE="$GITHUB_WORKSPACE" bash -lc             'cd "$GITHUB_WORKSPACE/packaging/arch/ci" && makepkg --nodeps --noconfirm --needed --cleanbuild --clean'
 
-          pkg_file="$(find "packaging/arch" -maxdepth 1 -type f -name 'argvus-*.pkg.tar.zst' -print -quit)"
+          pkg_file="$(find "packaging/arch/ci" -maxdepth 1 -type f -name 'argvus-*.pkg.tar.zst' -print -quit)"
           if [[ -z "$pkg_file" ]]; then
             echo "Package file was not created." >&2
             exit 1

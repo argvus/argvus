@@ -1,0 +1,9 @@
+blank_issues_enabled: false
+
+contact_links:
+  - name: ARGVUS Discussions
+    url: https://github.com/orgs/argvus/discussions
+    about: Ask questions and discuss ideas.
+  - name: Security vulnerability
+    url: https://github.com/argvus/argvus/security/advisories/new
+    about: Report vulnerabilities privately.

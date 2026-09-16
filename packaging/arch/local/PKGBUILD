@@ -32,9 +32,9 @@ depends=(
   'argvus-taskbar'
   'argvus-terminal'
   'argvus-waybar'
-	'argvus-pwvucontrol'
-	'argvus-snappy-switcher'
-	'hyprland'
+  'argvus-pwvucontrol'
+  'argvus-snappy-switcher'
+  'hyprland'
   'hyprland-guiutils'
   'hyprland-qt-support'
   'hyprpolkitagent'
@@ -93,13 +93,21 @@ optdepends=(
   'kooha: graphical screen recording utility'
   'nwg-look: GTK theme configuration utility'
 )
-source=(
-  "${pkgname}-${pkgver}.tar.gz::${url}/archive/refs/tags/v${pkgver}.tar.gz"
-)
-sha256sums=('SKIP')
+source=("${pkgname}-${pkgver}.tar.gz")
+sha256sums=("SKIP")
+
+# shellcheck disable=SC1091
+_functions_file="${startdir:-$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)}/../common/functions.sh"
+. "$_functions_file"
+
+prepare() {
+  arch_normalize_source_tree
+}
+
+check() {
+  arch_check_argvus_payload
+}
 
 package() {
-  cd "${pkgname}-${pkgver}"
-
-  make DESTDIR="${pkgdir}" PREFIX=/usr install
+  arch_package_argvus_payload
 }

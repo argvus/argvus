@@ -1,0 +1,13 @@
+argvus
+cleanbuild
+hyprland
+makepkg
+namcap
+pkgbuild
+pkgdesc
+pkgdir
+pkgname
+pkgrel
+pkgver
+printsrcinfo
+wayland

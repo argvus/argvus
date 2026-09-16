@@ -4,7 +4,6 @@ set -eu
 
 CDPATH=
 ROOT_DIR="$(cd -- "$(dirname -- "$0")/../.." && pwd)"
-ORG_DIR="$(cd -- "$ROOT_DIR/.." && pwd)"
 MODE="user"
 PREFIX="${HOME:-}/.local"
 DRY_RUN=false

@@ -1,0 +1,14 @@
+{
+  "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
+  "version": "0.2",
+  "language": "en",
+  "dictionaryDefinitions": [
+    {
+      "name": "argvus",
+      "path": ".cspell/custom-dictionary-workspace.txt",
+      "addWords": true
+    }
+  ],
+  "dictionaries": ["argvus"],
+  "ignorePaths": [".git", "build", "LICENSE", "TODO.txt", "**/PKGBUILD"]
+}

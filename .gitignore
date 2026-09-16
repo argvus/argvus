@@ -1,12 +1,15 @@
-# Linux
-# -------------------------------------------------------------
-*~
-*.bak
-
-# This repo
-# -------------------------------------------------------------
+.DS_Store
 /tmp
-*.zst
-argvus*.tar.gz
-
-/dist/
+/build
+TODO.txt
+*.pkg.tar.*
+*.src.tar.*
+*.tar.gz
+*.sig
+.release/
+packages-repo/
+packaging/arch/ci/src/
+packaging/arch/ci/pkg/
+packaging/arch/local/src/
+packaging/arch/local/pkg/
+packaging/arch/*/.PKGBUILD.local.*

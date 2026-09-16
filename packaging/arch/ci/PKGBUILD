@@ -39,11 +39,11 @@ depends=(
   'hyprland-qt-support'
   'hyprpolkitagent'
   'hyprshot'
-	'wayland'
-	'firefox'
-	'mesa'
-	'mesa-utils'
-	'qt5-quickcontrols2'
+  'wayland'
+  'firefox'
+  'mesa'
+  'mesa-utils'
+  'qt5-quickcontrols2'
   'qt5ct'
   'qt6-tools'
   'virtualbox-guest-utils'
@@ -52,14 +52,14 @@ depends=(
   'fastfetch'
   'gcc-libs'
   'okular'
-	'feh'
+  'feh'
   'glib2'
   'grim'
   'gsimplecal'
   'gtk4'
   'gtk-layer-shell'
   'imv'
-	'audacious'
+  'audacious'
   'udisks2'
   'udiskie'
   'jq'
@@ -69,23 +69,23 @@ depends=(
   'noto-fonts-emoji'
   'satty'
   'slurp'
-	'gpu-screen-recorder'
+  'gpu-screen-recorder'
   'swaybg'
   'ttf-jetbrains-mono-nerd'
   'ttf-nerd-fonts-symbols-mono'
   'vivid'
   'wev'
-	'mousepad'
+  'mousepad'
   'wf-recorder'
   'wireplumber'
   'wl-clipboard'
   'wtype'
   'xdg-utils'
   'xarchiver'
-	'neovim'
+  'neovim'
   'zathura'
   'zip'
-	'zsh'
+  'zsh'
 )
 optdepends=(
   'blueman: optional Bluetooth manager and tray applet'
@@ -93,10 +93,23 @@ optdepends=(
   'kooha: graphical screen recording utility'
   'nwg-look: GTK theme configuration utility'
 )
-source=("${pkgname}-${pkgver}.tar.gz")
-sha256sums=("SKIP")
+source=(
+  "${pkgname}-${pkgver}.tar.gz::${url}/archive/refs/tags/v${pkgver}.tar.gz"
+)
+sha256sums=('SKIP')
+
+# shellcheck disable=SC1091
+_functions_file="${startdir:-$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)}/../common/functions.sh"
+. "$_functions_file"
+
+prepare() {
+  arch_normalize_source_tree
+}
+
+check() {
+  arch_check_argvus_payload
+}
 
 package() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
-  make DESTDIR="${pkgdir}" PREFIX=/usr install
+  arch_package_argvus_payload
 }

@@ -5,10 +5,9 @@ This repository contains the packaged Argvus desktop defaults. Most changes are 
 ## Repository layout
 
 ```text
-bin/       command entrypoints installed by the argvus package
-config/    packaged desktop defaults installed under /usr/share/argvus
-packaging/ Arch Linux package metadata
-tools/sh/  local development install and validation helpers
+src/       files installed by the argvus package
+packaging/arch/{ci,local,common}/ Arch package metadata and shared helpers
+tools/sh/  local build, install and validation helpers
 ```
 
 ## Local setup
@@ -36,10 +35,10 @@ Use `ARGVUS_STORAGE_DIR=/path/to/argvus-removable-devices` when the storage chec
 ## Common checks
 
 ```sh
-bash -n bin/argvus
+bash -n src/usr/bin/argvus
 bash -n tools/sh/install.sh tools/sh/uninstall.sh
-find config tools/sh -type f -name '*.sh' -print0 | xargs -0 -r sh -n
-makepkg --printsrcinfo -p packaging/arch/PKGBUILD
+make validate
+makepkg --printsrcinfo -p packaging/arch/ci/PKGBUILD
 ```
 
 For Waybar/storage integration: check the `argvus-removable-devices` repository for
@@ -103,7 +102,7 @@ the Wayland display-manager entry under `/usr/share/wayland-sessions`.
 
 ## Release flow
 
-The Arch Linux package is built from `packaging/arch/PKGBUILD` in this
+The Arch Linux package is built from `packaging/arch/ci/PKGBUILD` in this
 repository. The release workflow runs when a `v*` tag is pushed, updates
 `pkgver` from the tag, builds the package, signs it and publishes both files to
 `argvus/packages`:
