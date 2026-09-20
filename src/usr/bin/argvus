@@ -19,6 +19,7 @@ Usage:
   argvus --default-apps [control center Apps options]
   argvus --removable-devices [argvus-removable-devices options]
   argvus --displays [control center Displays page]
+  argvus --network-interfaces
   argvus --version
 
 Aliases:
@@ -461,6 +462,10 @@ case "${1:-}" in
     shift
     run_control_center displays "$@"
     ;;
+  --network-interfaces)
+    shift
+    run_control_center network interfaces "$@"
+  ;;
   --version|-V|version)
     printf 'ARGVUS %s\n' "$VERSION"
     ;;
