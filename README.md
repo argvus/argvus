@@ -58,7 +58,7 @@ listed above.
 
 ## Themes
 
-Ten theme families with a shared accent-color system that unifies GTK, terminals, rofi, Waybar and Hyprland. Change the accent color anytime with `SUPER + SHIFT + A`.
+Ten theme families with a shared accent-color system that unifies GTK, terminals, rofi, Waybar and Hyprland. Change the accent color from the Highlight color control in the Control Panel or Control Center.
 
 | Dark          | Float               | Light            |
 |---------------|---------------------|------------------|

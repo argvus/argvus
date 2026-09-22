@@ -107,9 +107,9 @@ o default é copiado de /usr/share/argvus/<app>/arquivo
   script edita a cópia (sed -i) e relança o serviço
 ```
 
-Esse é o mecanismo que permite, ao pressionar `SUPER + SHIFT + A`, o accent
-color se espalhar por GTK, terminal, rofi, Waybar e Hyprland **sem** que o
-usuário precise editar nada manualmente.
+Esse é o mecanismo que permite ao controle **Highlight color** do Control Panel
+ou Control Center espalhar o accent color por GTK, terminal, rofi, Waybar e
+Hyprland **sem** que o usuário precise editar nada manualmente.
 
 > A cadeia de precedência existe justamente para isso: o runtime sempre lê a
 > config mais específica, e escreve apenas na camada do usuário
@@ -127,7 +127,7 @@ usuário precise editar nada manualmente.
    etc.) na camada do usuário e reinicia os serviços afetados.
 4. Na próxima leitura, o `hyprland.lua` encontra o novo tema na precedência.
 
-### Cor de destaque (`SUPER + SHIFT + A`)
+### Cor de destaque (controle `Highlight color`)
 
 1. A cor fica gravada em `~/.config/argvus/.accent-color`.
 2. `accent-switch.sh` materializa e reescreve as paletas das apps
@@ -182,7 +182,7 @@ não o substituem**.
                     • theme-switch materializa waybar/rofi/kitty/qt6ct na camada do usuário
                     • gsettings define GTK/ícone/cursor; wallpaper inicia; bars/sidebar sobem
 3. Uso:         tudo lido de ~/.config/argvus/... (vence) ou /usr/share/argvus (base)
-4. SUPER+SHIFT+A: accent-switch reescreve paletas em ~/.config/argvus e recarrega
+4. O controle `Highlight color` chama `accent-switch` para reescrever paletas em ~/.config/argvus e recarrega
 5. Reboot:      hyprland.lua lê tema+accent+spacing da precedência → sessão igual
 ```
 
