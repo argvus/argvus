@@ -7,7 +7,7 @@
 
 <div align="center">
 
-**A complete desktop, ready to use. Focused on Hyprland.**
+**A modular desktop environment for Wayland and Arch Linux, built on Hyprland.**
 
 ARGVUS coordinates a modular Wayland desktop ecosystem: session lifecycle,
 shell UI, taskbar, launchers, storage, lock screen, power, display, network,
