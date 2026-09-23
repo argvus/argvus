@@ -129,6 +129,7 @@ Required repository secrets:
 ```text
 PACKAGES_REPO_TOKEN
 GPG_PRIVATE_KEY
+GPG_KEY_ID
 GPG_PASSPHRASE
 ```
 
