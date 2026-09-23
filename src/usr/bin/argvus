@@ -8,6 +8,7 @@ set -eu
 usage() {
   cat <<'EOF'
 Usage:
+  argvus --start-desktop
   argvus --setup [setup options]
   argvus --system-monitor [btop options]
   argvus --control-center [page]
@@ -418,6 +419,10 @@ run_removable_devices() {
 }
 
 case "${1:-}" in
+  --start-desktop)
+    # This 'argvus-tty' script comes from the "argvus-session" package.
+    argvus-tty
+    ;;
   --setup|setup)
     shift
     run_setup "$@"
