@@ -58,7 +58,7 @@ listed above.
 
 ## Themes
 
-Thirteen theme families with a shared accent-color system that unifies GTK, terminals, rofi, Waybar and Hyprland. Change the accent color from the Highlight color control in the Control Panel or Control Center.
+Nineteen theme families with a shared accent-color system that unifies GTK, terminals, rofi, Waybar and Hyprland. Change the accent color from the Highlight color control in the Control Panel or Control Center.
 
 | Dark          | Float               | Light            |
 |---------------|---------------------|------------------|
@@ -71,6 +71,7 @@ Thirteen theme families with a shared accent-color system that unifies GTK, term
 | ARGVUS Dark Gruvbox High | ARGVUS Dark Gruvbox High Float | ARGVUS Frost |
 | ARGVUS Dark Gruvbox | ARGVUS Dark Gruvbox Float |                  |
 | ARGVUS Catppuccin Latte | ARGVUS Catppuccin Latte Float |                  |
+| ARGVUS Light Gruvbox | ARGVUS Light Gruvbox Float | ARGVUS Light Gruvbox |
 | ARGVUS Rosé Pine | ARGVUS Rosé Pine Float |                  |
 | ARGVUS Tokyo Night | ARGVUS Tokyo Night Float |                  |
 
