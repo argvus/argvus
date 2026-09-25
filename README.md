@@ -58,7 +58,7 @@ listed above.
 
 ## Themes
 
-Twenty theme families with a shared accent-color system that unifies GTK, terminals, rofi, Waybar and Hyprland. Change the accent color from the Highlight color control in the Control Panel or Control Center.
+Twenty-one theme families with a shared accent-color system that unifies GTK, terminals, rofi, Waybar and Hyprland. Change the accent color from the Highlight color control in the Control Panel or Control Center.
 
 | Dark             | Float                    | Light             |
 |------------------|--------------------------|-------------------|
@@ -68,6 +68,7 @@ Twenty theme families with a shared accent-color system that unifies GTK, termin
 | Gruvbox High Dark| Gruvbox High Dark Float  | GitHub Light      |
 | Monokai Dark     | Monokai Dark Float       | Gruvbox Light     |
 | One Dark         | One Dark Float           | Solarized Light   |
+|                  |                         | One Light         |
 | Rosé Pine        | Rosé Pine Float          |                   |
 | Silver Dark      | Silver Dark Float        |                   |
 | Slate Dark       | Slate Dark Float         |                   |
