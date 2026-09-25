@@ -314,7 +314,7 @@ read_active_theme() {
   if [ -f "$_active_file" ]; then
     sed -n '1p' "$_active_file"
   else
-    printf 'argvus-dark-aether\n'
+    printf 'argvus-dark\n'
   fi
 }
 

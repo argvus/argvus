@@ -58,22 +58,24 @@ listed above.
 
 ## Themes
 
-Nineteen theme families with a shared accent-color system that unifies GTK, terminals, rofi, Waybar and Hyprland. Change the accent color from the Highlight color control in the Control Panel or Control Center.
+Twenty theme families with a shared accent-color system that unifies GTK, terminals, rofi, Waybar and Hyprland. Change the accent color from the Highlight color control in the Control Panel or Control Center.
 
-| Dark          | Float               | Light            |
-|---------------|---------------------|------------------|
-| Dark Aether   | Dark Aether Float   | Light Veil       |
-| Dark Silver   | Dark Silver Float   | Light Veil Float |
-| Dark Slate    | Dark Slate Float    |                  |
-| Dark Universe | Dark Universe Float |                  |
-| ARGVUS One Dark | ARGVUS One Dark Float | Light Veil |
-| ARGVUS Dracula | ARGVUS Dracula Float | ARGVUS GitHub Light |
-| ARGVUS Dark Gruvbox High | ARGVUS Dark Gruvbox High Float | ARGVUS Frost |
-| ARGVUS Dark Gruvbox | ARGVUS Dark Gruvbox Float |                  |
-| ARGVUS Catppuccin Latte | ARGVUS Catppuccin Latte Float |                  |
-| ARGVUS Light Gruvbox | ARGVUS Light Gruvbox Float | ARGVUS Light Gruvbox |
-| ARGVUS Rosé Pine | ARGVUS Rosé Pine Float |                  |
-| ARGVUS Tokyo Night | ARGVUS Tokyo Night Float |                  |
+| Dark             | Float                    | Light             |
+|------------------|--------------------------|-------------------|
+| ARGVUS Dark      | ARGVUS Dark Float        | ARGVUS Light      |
+| Dracula          | Dracula Float            | Catppuccin Latte  |
+| Gruvbox Dark     | Gruvbox Dark Float       | Frost             |
+| Gruvbox High Dark| Gruvbox High Dark Float  | GitHub Light      |
+| Monokai Dark     | Monokai Dark Float       | Gruvbox Light     |
+| One Dark         | One Dark Float           | Solarized Light   |
+| Rosé Pine        | Rosé Pine Float          |                   |
+| Silver Dark      | Silver Dark Float        |                   |
+| Slate Dark       | Slate Dark Float         |                   |
+| Sunset           | Sunset Float             |                   |
+| Tokyo-Night      | Tokyo-Night Float        |                   |
+| Hackerman        | Hackerman Float          |                   |
+| Solitude         | Solitude Float           |                   |
+| Universe         | Universe Float           |                   |
 
 ## Install
 
