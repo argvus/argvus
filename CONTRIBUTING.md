@@ -10,7 +10,7 @@ Good contributions improve the desktop experience as a whole: session startup, H
 
 - Keep defaults predictable and suitable for a ready-to-use Hyprland desktop.
 - Preserve user configuration. Do not introduce package-time writes to `$HOME`.
-- Keep generated runtime config in `$XDG_CONFIG_HOME/argvus/generated`; use
+- Keep generated runtime config in `$XDG_CONFIG_HOME/argvus/data/generated`; use
   `argvus --setup --copy <app>` for explicit native app config copies.
 - Keep shared theme behavior consistent across Hyprland, Waybar, Rofi, Dunst, Kitty and terminal tools.
 - Prefer small, focused changes with clear motivation.

@@ -15,10 +15,11 @@ cor de destaque, espaçamentos e outros comportamentos.
 | Local | Papel | Quem escreve |
 | --- | --- | --- |
 | `/usr/share/argvus` | Defaults empacotados (imutáveis). Fonte base de leitura. | pacman (upgrade) |
-| `~/.config/argvus/<app>/` | Config de cada app tocada pelo usuário/runtime (waybar, hypr, quickshell, kitty...). | `theme-switch`, `accent-switch`, `argvus --setup` |
-| `~/.config/argvus/generated/` | Config de runtime reconstruída a partir dos defaults + preferências. | runtime |
-| `~/.config/argvus/state/` | Estado do usuário (antigo `~/.local/state/argvus`). | runtime |
-| `~/.config/argvus/` | Preferências pequenas: `.active-theme`, `.accent-color`, `.spaces`, `defaults.json`. | runtime |
+| `~/.config/argvus/config/` | Documento canônico modular. Fonte de verdade do argvus-config. | `argvus-config` |
+| `~/.config/argvus/data/<app>/` | Config de cada app tocada pelo usuário/runtime (waybar, hypr, quickshell, kitty...). | `theme-switch`, `accent-switch`, `argvus --setup` |
+| `~/.config/argvus/data/generated/` | Config de runtime reconstruída a partir dos defaults + preferências. | runtime |
+| `~/.config/argvus/data/state/` | Estado do usuário (antigo `~/.local/state/argvus`). | runtime |
+| `~/.config/argvus/data/` | Preferências pequenas: `.active-theme`, `.accent-color`, `.spaces`, `control-center/defaults.json`. | runtime |
 | `~/.config/<app>/` | **Override livre** do usuário para um app específico (fica intocado por padrão). | usuário (manual) |
 | `~/.cache/argvus/` | Cache volátil (wallpaper do Hyprlock, logs, daemon state). | runtime |
 
@@ -30,7 +31,7 @@ cor de destaque, espaçamentos e outros comportamentos.
 
 A configuração é resolvida do mais específico para o mais genérico: se o
 usuário tem um arquivo em `~/.config/<app>`, ele vence como override manual;
-senão, usa a camada Argvus em `~/.config/argvus/<app>`; senão, o gerado; e por
+senão, usa a camada Argvus em `~/.config/argvus/data/<app>`; senão, o gerado; e por
 fim o empacotado.
 
 ### Por que não é uma cópia
@@ -79,7 +80,7 @@ hypr-init.sh --started   (primeira ação do DE)
 - **Sem `~/.config/argvus`?** O DE ainda inicia normalmente, lendo tudo de
   `/usr/share/argvus`.
 - **Primeiro login:** o `hypr-init.sh --started` detecta que não há
-  `~/.config/argvus/.active-theme` e aplica o tema padrão empacotado
+  `~/.config/argvus/data/.active-theme` e aplica o tema padrão empacotado
   (`ARGVUS_NO_RUNTIME=1 ... theme-switch.sh`), materializando sob demanda os
   arquivos que o tema precisa modificar.
 
@@ -101,7 +102,7 @@ paths_config("<app>/arquivo")
 o default é copiado de /usr/share/argvus/<app>/arquivo
       │
       ▼
-  ~/.config/argvus/<app>/arquivo   (cópia do usuário)
+  ~/.config/argvus/data/<app>/arquivo   (cópia do usuário)
       │
       ▼
   script edita a cópia (sed -i) e relança o serviço
@@ -121,7 +122,7 @@ Hyprland **sem** que o usuário precise editar nada manualmente.
 
 ### Tema (`SUPER + SHIFT + T`)
 
-1. O tema ativo fica gravado em `~/.config/argvus/.active-theme`.
+1. O tema ativo fica gravado em `~/.config/argvus/data/.active-theme`.
 2. `theme-switch.sh <tema>` é chamado com `ARGVUS_MUTABLE_CONFIG=1`.
 3. Ele reescreve as configs de app (waybar, rofi, kitty, papéis de parede,
    etc.) na camada do usuário e reinicia os serviços afetados.
@@ -129,13 +130,13 @@ Hyprland **sem** que o usuário precise editar nada manualmente.
 
 ### Cor de destaque (controle `Highlight color`)
 
-1. A cor fica gravada em `~/.config/argvus/.accent-color`.
+1. A cor fica gravada em `~/.config/argvus/data/.accent-color`.
 2. `accent-switch.sh` materializa e reescreve as paletas das apps
    (quickshell, waybar, rofi, gtk) e notifica o runtime para recarregar.
 
 ### Espaçamentos (`SUPER + SHIFT + T` → opção de espacamento / `.spaces`)
 
-1. O valor fica em `~/.config/argvus/.spaces`.
+1. O valor fica em `~/.config/argvus/data/.spaces`.
 2. `spaces-switch.sh --apply-static` ajusta as margens/bordas da waybar e do
    quickshell na camada do usuário.
 
@@ -144,7 +145,7 @@ Hyprland **sem** que o usuário precise editar nada manualmente.
 ## 5. Default apps (app padrão)
 
 O aplicativo padrão por categoria (terminal, editor, navegador, etc.) é gravado
-pelo `argvus-default-apps` em `~/.config/argvus/defaults.json`.
+pelo `argvus-default-apps` em `~/.config/argvus/data/control-center/defaults.json`.
 
 O `get-default.sh <categoria>` resolve com a mesma ordem de precedência:
 
@@ -205,9 +206,9 @@ não o substituem**.
   `config/yazi/flavors/<tema>.yazi/flavor.toml`. Não existe mais uma árvore
   paralela `config/yazi/themes`; a troca de tema grava `theme.toml` com o
   flavor Argvus ativo e completa flavors empacotados ausentes em
-  `~/.config/argvus/yazi` quando necessário.
+  `~/.config/argvus/data/yazi` quando necessário.
 - Temas do btop devem usar a sintaxe nativa `theme[chave]="valor"`. O runtime
-  recopia o tema Argvus ativo para `~/.config/argvus/btop`, corrigindo temas
+  recopia o tema Argvus ativo para `~/.config/argvus/data/btop`, corrigindo temas
   materializados por versões antigas depois de upgrades.
 - O Foot troca de tema pelo `include` em `foot/foot.ini`, apontando para
   `foot/themes/<tema>/theme.ini`. Quando `foot` é o terminal padrão, o

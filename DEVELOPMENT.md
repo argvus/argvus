@@ -51,20 +51,20 @@ For Hyprland changes, test inside a real Argvus session when possible. Check tha
 Package installation owns `/usr/share/argvus`. User configuration under
 `$XDG_CONFIG_HOME/<app>` is an optional complete-application override, not a
 startup requirement. Generated Argvus runtime config belongs under
-`$XDG_CONFIG_HOME/argvus/generated` so theme changes can be rebuilt from current
+`$XDG_CONFIG_HOME/argvus/data/generated` so theme changes can be rebuilt from current
 packaged defaults after upgrades.
 Runtime scripts should source `/usr/share/argvus/session/sh/bootstrap.sh` unless
 a user-copied override explicitly replaces that script.
 Keep Hyprland's Lua theme loader aligned with the preference directory used by
-runtime scripts: `$XDG_CONFIG_HOME/argvus`.
+runtime scripts: `$XDG_CONFIG_HOME/argvus/data`.
 
 Do not make package install scripts write directly to `$HOME`. User-level
 application config should be created only by explicit customization flows such
 as `argvus --setup --copy <app>`. Theme tools should write small preference files
-under `$XDG_CONFIG_HOME/argvus` and generated runtime config under
-`$XDG_CONFIG_HOME/argvus/generated`, not native `$XDG_CONFIG_HOME/<app>` trees.
+under `$XDG_CONFIG_HOME/argvus/data` and generated runtime config under
+`$XDG_CONFIG_HOME/argvus/data/generated`, not native `$XDG_CONFIG_HOME/<app>` trees.
 
-Hyprland user Lua overrides live under `$XDG_CONFIG_HOME/argvus/hypr`.
+Hyprland user Lua overrides live under `$XDG_CONFIG_HOME/argvus/data/hypr`.
 Supported files are loaded after packaged defaults in this order:
 `monitors.lua`, `rules.lua`, `bindings.lua`, `user.lua`. Missing files must be
 ignored.
@@ -84,15 +84,15 @@ override and otherwise points the app at the Argvus config tree.
 Yazi themes are shipped only as native flavors under
 `argvus-app-profiles/src/usr/share/argvus/app-profiles/config/yazi/flavors/<theme>.yazi/flavor.toml`.
 Theme switching writes `theme.toml` with the active
-Argvus flavor and fills missing packaged flavors into `$XDG_CONFIG_HOME/argvus/yazi`
+Argvus flavor and fills missing packaged flavors into `$XDG_CONFIG_HOME/argvus/data/yazi`
 when needed.
 Btop themes must use the native `theme[key]="value"` syntax. Runtime refresh
-copies the active packaged theme into `$XDG_CONFIG_HOME/argvus/btop` so older
+copies the active packaged theme into `$XDG_CONFIG_HOME/argvus/data/btop` so older
 materialized Argvus themes are repaired after package upgrades.
 Foot themes are selected by rewriting the `include` in `foot/foot.ini` to the
 active `foot/themes/<theme>/theme.ini`. When `foot` is the default terminal,
 Hyprland should launch it with `foot -c <resolved foot.ini>` so the Argvus tree
-is used even when the app does not read `$XDG_CONFIG_HOME/argvus` by itself.
+is used even when the app does not read `$XDG_CONFIG_HOME/argvus/data` by itself.
 Hyprlock lockscreen wallpaper caches belong under `$XDG_CACHE_HOME/argvus/hypr`;
 do not use legacy `~/.cache/hypr` paths.
 
