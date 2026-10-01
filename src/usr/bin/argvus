@@ -17,6 +17,7 @@ Usage:
   argvus --yazi [yazi options]
   argvus --about [about tab]
   argvus --calendar [argvus-taskbar-calendar options]
+  argvus --game-snake
   argvus --default-apps [control center Apps options]
   argvus --removable-devices [argvus-removable-devices options]
   argvus --displays [control center Displays page]
@@ -24,10 +25,10 @@ Usage:
   argvus --version
 
 Aliases:
-  argvus setup | system-monitor | control-center | terminal | spf | yazi | about | calendar | default-apps | removable-devices | displays | version
+  argvus setup | system-monitor | control-center | terminal | spf | yazi | about | calendar | game-snake | default-apps | removable-devices | displays | version
 
 Setup options:
-  --copy <app>   Copy /usr/share/argvus/<app> to ~/.config/argvus/<app>.
+  --copy <app>   Copy /usr/share/argvus/<app> to ~/.config/argvus/data/<app>.
   --copy-all     Copy all packaged defaults for explicit customization.
   --force        Replace an existing destination after backing it up.
   --repair       Backward-compatible alias for --copy argvus.
@@ -258,7 +259,7 @@ run_control_center() {
     fi
   fi
 
-  argvus-tui-terminal --class argvus-control-center --term foot -- "$_control_center" "$@" &
+  argvus-tui-terminal --class argvus-control-center --term kitty --profile control-center -- "$_control_center" "$@" &
   _control_center_pid=$!
 
   # Wait briefly for the client to be registered before releasing the lock.
@@ -273,6 +274,18 @@ run_control_center() {
       sleep 0.1
       _control_center_attempt=$((_control_center_attempt + 1))
     done
+  fi
+  # Do not report success when the terminal wrapper failed before registering
+  # a Hyprland client. This makes shortcut and desktop-entry failures visible
+  # instead of silently leaving the user with no window.
+  if ! kill -0 "$_control_center_pid" 2>/dev/null; then
+    if wait "$_control_center_pid"; then
+      :
+    else
+      _control_center_status=$?
+      flock -u 9
+      return "$_control_center_status"
+    fi
   fi
   flock -u 9
 }
@@ -310,7 +323,7 @@ resolve_argvus_yazi_config() {
 }
 
 read_active_theme() {
-  _active_file="${ARGVUS_CONFIG_HOME}/argvus/.active-theme"
+  _active_file="${ARGVUS_CONFIG_HOME}/argvus/data/.active-theme"
   if [ -f "$_active_file" ]; then
     sed -n '1p' "$_active_file"
   else
@@ -365,7 +378,7 @@ run_yazi() {
   fi
   if [ -n "$_requested_yazi_config" ] && [ -d "$_requested_yazi_config" ]; then
     case "$_requested_yazi_config" in
-      "${ARGVUS_CONFIG_HOME}/argvus/yazi"|/usr/share/argvus/yazi) ;;
+      "${ARGVUS_CONFIG_HOME}/argvus/data/yazi"|/usr/share/argvus/yazi) ;;
       *) exec yazi "$@" ;;
     esac
   fi
@@ -404,6 +417,19 @@ run_calendar() {
     set -- toggle
   fi
   exec argvus-taskbar-calendar "$@"
+}
+
+run_game_snake() {
+  require_command argvus-game-snake
+  if [ -t 0 ] && [ -t 1 ]; then
+    exec argvus-game-snake "$@"
+  fi
+  require_command argvus-tui-terminal
+  exec argvus-tui-terminal \
+    --class argvus-game-snake \
+    --term kitty \
+    --profile control-center \
+    -- argvus-game-snake "$@"
 }
 
 run_default_apps() {
@@ -454,6 +480,10 @@ case "${1:-}" in
   --calendar|calendar)
     shift
     run_calendar "$@"
+    ;;
+  --game-snake|game-snake)
+    shift
+    run_game_snake "$@"
     ;;
   --default-apps|default-apps)
     shift
