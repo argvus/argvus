@@ -12,6 +12,7 @@ depends=(
   'argvus-app-profiles'
   'argvus-appearance'
   'argvus-taskbar-calendar'
+  'argvus-game-snake'
   'argvus-control-panel'
   'argvus-control-center'
   'argvus-widget-telemetry'
