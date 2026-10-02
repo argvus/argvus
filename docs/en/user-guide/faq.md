@@ -53,7 +53,7 @@ argvus --control-center
 
 You can also open a focused area with `argvus-control-center`, for example `argvus-control-center appearance themes`. Run `argvus-control-center --help` to see the routes available in the installed version.
 
-Use **Control Panel** for current status and frequent actions such as volume, brightness, network, notifications, power and session controls. It is not a second configuration database. See [Where to configure things](/docs/user-guide/where-to-configure/) and [Control Center](/docs/argvus-control-center/user-guide/control-center/) for the distinction.
+Use **Control Panel** for current status and frequent actions such as volume, brightness, network, notifications, power and session controls. It is not a second configuration database. See [Where to configure things](/docs/user-guide/where-to-configure/) and [Control Center](/docs/argvus-control-center/) for the distinction.
 
 ## Where are ARGVUS settings stored?
 

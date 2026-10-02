@@ -15,6 +15,6 @@ Saia da sessão, selecione **ARGVUS** no seu gerenciador de login (ou inicie uma
 
 ## Próximos passos
 
-- Precisa dos requisitos, da configuração manual do repositório ou dos detalhes do que o instalador faz? Veja o guia completo de [Primeiros Passos](/docs/getting-started/).
-- Quer personalizar seu desktop após o primeiro login? Veja [Primeira configuração](/docs/user-guide/getting-started/) no Guia do Usuário.
-- Algo não está funcionando? Confira a [Solução de Problemas](/docs/user-guide/troubleshooting/).
+- Precisa dos requisitos, da configuração manual do repositório ou dos detalhes do que o instalador faz? Veja o guia completo de [Primeiros Passos](/pt/docs/getting-started/).
+- Quer personalizar seu desktop após o primeiro login? Veja [Primeira configuração](/pt/docs/user-guide/getting-started/) no Guia do Usuário.
+- Algo não está funcionando? Confira a [Solução de Problemas](/pt/docs/user-guide/troubleshooting/).

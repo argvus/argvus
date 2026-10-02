@@ -5,7 +5,7 @@ description: Understand the ARGVUS desktop surfaces.
 
 The desktop shell is composed of Hyprland, the patched Waybar taskbar, a Quickshell Control Panel and optional telemetry widgets. Hyprland owns windows and workspaces; the taskbar communicates workspace/window and system status; the Control Panel provides quick actions; notifications and applications appear alongside these surfaces.
 
-Configuration lives in the [Control Center](./control-center/), while frequent actions live in the [Control Panel](./desktop/control-panel/). Start with [First configuration](./getting-started/) if this is your first session.
+Configuration lives in the [Control Center](./control-center/), while frequent actions live in the [Control Panel](./desktop/control-panel/). Start with [First configuration](/docs/user-guide/getting-started/) if this is your first session.
 
 - [Control Panel](./desktop/control-panel/)
 - [Taskbar](./desktop/taskbar/)

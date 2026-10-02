@@ -27,9 +27,9 @@ Use `make clone de <project> [project...]`, `make build <project> [project...]` 
 
 Os projetos clonados continuam sendo repositórios Git independentes. O workflow os coordena, mas não possui o histórico, as versões de pacotes nem as dependências específicas de cada projeto. Suas variáveis configuráveis e regras de preparação do workspace estão documentadas no README; consulte-o antes de alterar a infraestrutura local ou adicionar um novo projeto.
 
-* [Arquitetura](./developer-guide/architecture/overview/)
-* [Subsistemas](./developer-guide/subsystems/session-and-systemd/)
-* [Desenvolvimento](./developer-guide/development/environment/)
-* [Referência](./reference/)
+* [Arquitetura](/pt/docs/developer-guide/architecture/overview/)
+* [Subsistemas](/pt/docs/developer-guide/subsystems/session-and-systemd/)
+* [Desenvolvimento](/pt/docs/developer-guide/development/environment/)
+* [Referência](/pt/docs/reference/)
 
 Os repositórios em `de/` são a fonte de verdade. Manifests, payloads e units definem os limites de runtime.

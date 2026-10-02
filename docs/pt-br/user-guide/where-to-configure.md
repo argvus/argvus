@@ -36,6 +36,6 @@ Se uma configuração não estiver listada, use a busca da tela inicial do Contr
 
 ## Relacionados
 
-* [Primeira configuração](./getting-started/)
+* [Primeira configuração](/pt/docs/user-guide/getting-started/)
 * [Control Center](./control-center/)
 * [Control Panel](./desktop/control-panel/)

@@ -26,9 +26,9 @@ Use `make clone de <project> [project...]`, `make build <project> [project...]` 
 
 The cloned projects remain independent Git repositories. The workflow coordinates them but does not own their source history, package versions or project-specific dependencies. Its configurable variables and workspace setup rules are documented in its README; consult that document before changing the local infrastructure or adding a new project.
 
-- [Architecture](./developer-guide/architecture/overview/)
-- [Subsystems](./developer-guide/subsystems/session-and-systemd/)
-- [Development](./developer-guide/development/environment/)
-- [Reference](./reference/)
+- [Architecture](/docs/developer-guide/architecture/overview/)
+- [Subsystems](/docs/developer-guide/subsystems/session-and-systemd/)
+- [Development](/docs/developer-guide/development/environment/)
+- [Reference](/docs/reference/)
 
 Source repositories under `de/` are authoritative. Package manifests and installed units define the runtime boundary; README files are supplementary.

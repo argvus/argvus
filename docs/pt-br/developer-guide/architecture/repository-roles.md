@@ -4,7 +4,7 @@ description: Responsabilidades dos projetos ARGVUS.
 slug: pt/0.4.0/docs/developer-guide/architecture/repository-roles
 ---
 
-Os projetos são agrupados como infraestrutura (`argvus`, `argvus-config`, `argvus-session`, `argvus-tui`, `argvus-i18n`), UI, provedores, integrações e assets/packaging. Consulte a [matriz de pacotes](../../reference/package-matrix/) para os limites instalados.
+Os projetos são agrupados como infraestrutura (`argvus`, `argvus-config`, `argvus-session`, `argvus-tui`, `argvus-i18n`), UI, provedores, integrações e assets/packaging. Consulte a [matriz de pacotes](/pt/docs/reference/package-matrix/) para os limites instalados.
 
 Configuração: o `argvus-config` é dono do `config.json`, do modelo de paths e locks, e é o único escritor de `data/generated/`. A única regra que atravessa os pacotes: só o `argvus-config` escreve em `data/generated/`. Um componente que precise alcançar um aplicativo que não lê o `config.json` adiciona um adapter no seu próprio helper e deixa o orquestrador chamá-lo depois do commit canônico; ele nunca escreve um arquivo generated.
 

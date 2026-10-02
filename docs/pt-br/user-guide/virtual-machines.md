@@ -4,7 +4,7 @@ description: Execute ARGVUS com hardware gráfico virtual.
 slug: pt/0.4.0/docs/user-guide/virtual-machines
 ---
 
-`argvus-start` detecta virtualização e exporta ajustes de compatibilidade para sessões afetadas. Se a renderização falhar, inspecione o ambiente e os logs antes de adicionar overrides; veja [solução de problemas gráficos](./troubleshooting/graphics-and-virtual-machines/).
+`argvus-start` detecta virtualização e exporta ajustes de compatibilidade para sessões afetadas. Se a renderização falhar, inspecione o ambiente e os logs antes de adicionar overrides; veja [solução de problemas gráficos](/pt/docs/user-guide/troubleshooting/graphics-and-virtual-machines/).
 
 Quando a virtualização é detectada, `argvus-start` exporta variáveis de compatibilidade para a sessão, incluindo fallbacks de renderização por software, cursor por software e modificadores. Esse é o primeiro caminho a testar; não adicione um override permanente apenas porque o desktop está rodando em uma VM.
 

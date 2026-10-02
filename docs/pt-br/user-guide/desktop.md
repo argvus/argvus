@@ -6,7 +6,7 @@ slug: pt/0.4.0/docs/user-guide/desktop
 
 O shell é composto por Hyprland, Waybar, Control Panel Quickshell e widgets opcionais. O Hyprland possui janelas e áreas de trabalho; a taskbar comunica o estado de áreas/janelas e do sistema; o Control Panel oferece ações rápidas; notificações e aplicativos aparecem junto a essas superfícies.
 
-A configuração fica no [Control Center](./control-center/), enquanto as ações frequentes ficam no [Control Panel](./desktop/control-panel/). Comece pela [Primeira configuração](./getting-started/) se esta for sua primeira sessão.
+A configuração fica no [Control Center](./control-center/), enquanto as ações frequentes ficam no [Control Panel](./desktop/control-panel/). Comece pela [Primeira configuração](/pt/docs/user-guide/getting-started/) se esta for sua primeira sessão.
 
 * [Control Panel](./desktop/control-panel/)
 * [Taskbar](./desktop/taskbar/)

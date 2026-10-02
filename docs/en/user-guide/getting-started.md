@@ -7,7 +7,7 @@ After the first graphical session, you do not need to configure every part of AR
 
 ## A useful order
 
-1. Read the [desktop overview](./desktop/) to identify windows, workspaces, the taskbar, the Control Panel and the launcher.
+1. Read the [desktop overview](/docs/user-guide/desktop/) to identify windows, workspaces, the taskbar, the Control Panel and the launcher.
 2. Open the [Control Center](./control-center/) and choose a theme, mode, accent and wallpaper in **Appearance**.
 3. Adjust [windows and layout](./desktop/windows-and-layout/) if the default gaps, borders or taskbar spacing do not suit your screen.
 4. Configure the [taskbar](./desktop/taskbar/) and decide which [Control Panel](./desktop/control-panel/) cards you want visible.
@@ -20,7 +20,7 @@ The first four steps are optional personalization. The remaining steps are norma
 
 Use **Control Center** for settings that describe how ARGVUS should be configured: appearance, layout, fonts, input, shortcuts, language, region and default applications. Use **Control Panel** for status and frequent session actions such as volume, brightness, network state, notifications, power and session controls.
 
-See [Control Center vs Control Panel](./control-center/) for the full distinction and [Where to configure things](./where-to-configure/) for a quick index.
+See [Control Center vs Control Panel](./control-center/) for the full distinction and [Where to configure things](/docs/user-guide/where-to-configure/) for a quick index.
 
 ## Changes, persistence and recovery
 
@@ -30,7 +30,7 @@ When a page offers **Reset defaults**, use that page action rather than deleting
 
 ## Next steps
 
-- [Appearance](./appearance/) — themes, wallpapers, effects and layout.
+- [Appearance](/docs/user-guide/appearance/) — themes, wallpapers, effects and layout.
 - [Desktop layout](./desktop/windows-and-layout/) — understand gaps, borders and panel space.
 - [Input devices](./hardware/input/) — mouse and touchpad controls.
-- [Troubleshooting theme and wallpaper](./troubleshooting/theme-and-wallpaper/) — recovery when a visual change is not what you expected.
+- [Troubleshooting theme and wallpaper](/docs/user-guide/troubleshooting/theme-and-wallpaper/) — recovery when a visual change is not what you expected.

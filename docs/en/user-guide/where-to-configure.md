@@ -35,6 +35,6 @@ If a setting is not listed, use the Control Center's home search. Its search reg
 
 ## Related
 
-- [First configuration](./getting-started/)
+- [First configuration](/docs/user-guide/getting-started/)
 - [Control Center](./control-center/)
 - [Control Panel](./desktop/control-panel/)

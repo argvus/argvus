@@ -12,7 +12,7 @@ The repositories are grouped by responsibility rather than by navigation page:
 - integration: Hyprland, portal, greeter, lock and splash;
 - assets and packaging: appearance, wallpapers, fonts, icons, profiles and Waybar.
 
-See the [package matrix](../../reference/package-matrix/) for the installed package boundary.
+See the [package matrix](/docs/reference/package-matrix/) for the installed package boundary.
 
 Language is not the ownership boundary: each component keeps its runtime
 helpers with its package. The one hard rule that cuts across packages: only

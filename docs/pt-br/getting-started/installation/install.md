@@ -195,7 +195,7 @@ argvus --setup --copy <app> --force
 
 ## Overrides do Hyprland
 
-Para o guia completo de overrides do Hyprland, incluindo a diferença entre uma configuração nativa completa e os fragmentos incrementais do ARGVUS, veja [Overrides do Hyprland](/docs/argvus-hyprland/user-guide/hyprland-overrides/).
+Para o guia completo de overrides do Hyprland, incluindo a diferença entre uma configuração nativa completa e os fragmentos incrementais do ARGVUS, veja [Overrides do Hyprland](/pt/docs/argvus-hyprland/hyprland-overrides/).
 
 ```sh
 mkdir -p ~/.config/argvus/data/hypr
