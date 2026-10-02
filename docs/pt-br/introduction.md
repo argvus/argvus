@@ -26,7 +26,7 @@ taskbar · control panel · notificações · wallpaper · idle · clipboard
 
 `argvus-session` possui o ciclo de vida e a configuração do ambiente. Ele não implementa todas as funcionalidades: cada componente possui seus comandos, configurações e payloads de serviço.
 
-Para instalação e inicialização, veja [Instalação](./user-guide/installation/) e [Sessões](./user-guide/sessions/). Para ownership dos serviços, veja o [ciclo de vida](./developer-guide/architecture/runtime-lifecycle/) do desenvolvedor.
+Para instalação e inicialização, veja [Instalação](/docs/getting-started/installation/) e [Sessões](/docs/user-guide/sessions/). Para ownership dos serviços, veja o [ciclo de vida](/docs/developer-guide/architecture/runtime-lifecycle/) do desenvolvedor.
 
 ## Camadas principais
 
@@ -38,13 +38,13 @@ O pacote `argvus` fornece o dispatcher `/usr/bin/argvus` e o ponto de entrada pr
 
 `argvus-hyprland` fornece configuração e keybindings Hyprland. `argvus-waybar` fornece o binário Waybar corrigido, enquanto `argvus-taskbar` possui configuração e ações da taskbar. `argvus-control-panel` fornece o painel Quickshell, e `argvus-widget-telemetry` fornece widgets opcionais.
 
-Veja [Desktop](./user-guide/desktop/) para uso e [superfícies do shell](./developer-guide/subsystems/shell-surfaces/) para ownership de implementação.
+Veja [Desktop](/docs/user-guide/desktop/) para uso e [superfícies do shell](/docs/developer-guide/subsystems/shell-surfaces/) para ownership de implementação.
 
 ### Configurações e aplicativos
 
 `argvus-control-center` é o aplicativo de configurações orientado ao teclado. Calendário, monitor do sistema, terminal, launcher e ferramentas de dispositivos removíveis são aplicativos separados integrados ao shell e ao dispatcher.
 
-Veja [Aplicativos](./user-guide/applications/) e a [referência de comandos](./reference/command-line/).
+Veja [Aplicativos](/docs/user-guide/applications/) e a [referência de comandos](/docs/reference/command-line/).
 
 ### Provedores e integrações
 
@@ -52,17 +52,17 @@ Display, rede, Bluetooth, energia, notificações, firewall e armazenamento remo
 
 Login, lock e visuais de inicialização também são separados: `argvus-greeter` trata greetd, `argvus-lock` trata Hyprlock, `argvus-theme-splash` trata o overlay de carregamento da sessão e `argvus-splash` trata o tema Plymouth de boot.
 
-Veja [Hardware](./user-guide/hardware/), [Privacidade e segurança](./user-guide/privacy-and-security/) e a [referência de componentes](./developer-guide/component-reference/).
+Veja [Hardware](/docs/user-guide/hardware/), [Privacidade e segurança](/docs/user-guide/privacy-and-security/) e a [referência de componentes](/docs/developer-guide/).
 
 ## Estado compartilhado de aparência
 
 Preferências de tema, acento, wallpaper, fontes e efeitos ficam como estado lógico em `$XDG_CONFIG_HOME/argvus` (normalmente `~/.config/argvus`). O `argvus-config` é o único componente que escreve `data/generated/`, onde projeta arquivos consumidor para Hyprland, GTK, Qt6ct, Waybar, Quickshell, Rofi, Dunst, notificações, lock screen, Yazi, Superfile e terminais. Os helpers de aparência confirmam a mudança de estado e então reconciliam aplicativos externos; eles nunca escrevem a árvore generated.
 
-O diretório gerado não é a fonte de verdade. Veja [Aparência](./user-guide/appearance/) e [configuração e estado](./developer-guide/architecture/configuration-and-state/).
+O diretório gerado não é a fonte de verdade. Veja [Aparência](/docs/user-guide/appearance/) e [configuração e estado](/docs/developer-guide/architecture/configuration-and-state/).
 
 O sistema visual também controla o layout. Sticky é compacto e quadrado; Float usa gaps maiores, cantos arredondados e margens maiores ao redor da taskbar e do shell. A taskbar usa a borda superior por padrão, mas permite posicionamento no topo ou embaixo pelo estado compartilhado. Os efeitos controlam transparência, blur, sombras e animações do compositor e das superfícies do desktop.
 
-Veja a [tabela de temas](./user-guide/appearance/) para famílias e cores, [efeitos](./user-guide/appearance/effects/) para o contrato compartilhado e [taskbar](./user-guide/desktop/taskbar/) para o posicionamento da barra e das janelas.
+Veja a [tabela de temas](/docs/user-guide/appearance/) para famílias e cores, [efeitos](/docs/argvus-appearance/user-guide/effects/) para o contrato compartilhado e [taskbar](/docs/argvus-taskbar/user-guide/taskbar/) para o posicionamento da barra e das janelas.
 
 ## O que é — e o que não é — o ARGVUS
 
@@ -72,14 +72,14 @@ Por isso, ele é mais do que uma configuração do Hyprland ou uma coleção de 
 
 O ARGVUS não precisa substituir todos os aplicativos. Ele integra aplicativos upstream selecionados quando essa é a opção mais confiável, mantendo coerentes o comportamento e a configuração do desktop.
 
-Para conhecer as fronteiras de implementação e a responsabilidade dos pacotes, consulte a [visão geral da arquitetura](./developer-guide/architecture/overview/) e os [papéis dos repositórios](./developer-guide/architecture/repository-roles/) para desenvolvedores.
+Para conhecer as fronteiras de implementação e a responsabilidade dos pacotes, consulte a [visão geral da arquitetura](/docs/developer-guide/architecture/overview/) e os [papéis dos repositórios](/docs/developer-guide/architecture/repository-roles/) para desenvolvedores.
 
 ## Continue por objetivo
 
-* [Ler as perguntas frequentes](./user-guide/faq/).
-* [Instalar o ARGVUS](./user-guide/installation/).
-* [Iniciar uma sessão gráfica ou TTY](./user-guide/sessions/).
-* [Configurar temas e wallpapers](./user-guide/appearance/).
-* [Usar taskbar e Control Panel](./user-guide/desktop/).
-* [Entender comandos, caminhos e serviços](./reference/).
-* [Estudar a arquitetura](./developer-guide/architecture/overview/).
+* [Ler as perguntas frequentes](/docs/user-guide/faq/).
+* [Instalar o ARGVUS](/docs/getting-started/installation/).
+* [Iniciar uma sessão gráfica ou TTY](/docs/user-guide/sessions/).
+* [Configurar temas e wallpapers](/docs/user-guide/appearance/).
+* [Usar taskbar e Control Panel](/docs/user-guide/desktop/).
+* [Entender comandos, caminhos e serviços](/docs/reference/).
+* [Estudar a arquitetura](/docs/developer-guide/architecture/overview/).

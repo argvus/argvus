@@ -6,4 +6,4 @@ slug: pt/0.4.0/docs/user-guide/installation
 
 ARGVUS é distribuído como pacotes Arch assinados. O instalador público configura o repositório ARGVUS; o conjunto de pacotes instala os componentes do desktop.
 
-Veja os [requisitos](./installation/requirements/), siga a [instalação](./installation/install/) e conclua com a [primeira sessão](./installation/first-session/).
+Veja os [requisitos](/docs/getting-started/installation/requirements/), siga a [instalação](/docs/getting-started/installation/install/) e conclua com a [primeira sessão](/docs/getting-started/installation/first-session/).

@@ -12,4 +12,4 @@ Before installation, make sure that:
 - the user can run a Wayland session;
 - networking is available when the package repository is configured.
 
-Virtual machines may need the compatibility settings described in [Virtual machines](../virtual-machines/).
+Virtual machines may need the compatibility settings described in [Virtual machines](/docs/user-guide/virtual-machines/).

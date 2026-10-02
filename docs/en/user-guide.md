@@ -3,9 +3,9 @@ title: User Guide
 description: Install, configure and use the ARGVUS desktop environment.
 ---
 
-ARGVUS is a modular Hyprland and Wayland desktop environment for Arch Linux. Start with [installation](./user-guide/installation/), then choose a feature from the user guide.
+ARGVUS is a modular Hyprland and Wayland desktop environment for Arch Linux. Start with [installation](/docs/getting-started/installation/), then choose a feature from the user guide.
 
-The desktop combines a Hyprland session, a Waybar taskbar, a Quickshell control panel, native applications and system providers. The [architecture guide](./developer-guide/architecture/overview/) explains how those pieces work together.
+The desktop combines a Hyprland session, a Waybar taskbar, a Quickshell control panel, native applications and system providers. The [architecture guide](/docs/developer-guide/architecture/overview/) explains how those pieces work together.
 
 ## Common entry points
 
@@ -16,12 +16,12 @@ The desktop combines a Hyprland session, a Waybar taskbar, a Quickshell control 
 
 ## User guide
 
-- [Frequently asked questions](./user-guide/faq/)
-- [Installation](./user-guide/installation/)
-- [Sessions](./user-guide/sessions/)
-- [Appearance](./user-guide/appearance/)
-- [Desktop surfaces](./user-guide/desktop/)
-- [Applications](./user-guide/applications/)
-- [Hardware](./user-guide/hardware/)
-- [Privacy and security](./user-guide/privacy-and-security/)
-- [Troubleshooting](./user-guide/troubleshooting/)
+- [Frequently asked questions](/docs/user-guide/faq/)
+- [Installation](/docs/getting-started/installation/)
+- [Sessions](/docs/user-guide/sessions/)
+- [Appearance](/docs/user-guide/appearance/)
+- [Desktop surfaces](/docs/user-guide/desktop/)
+- [Applications](/docs/user-guide/applications/)
+- [Hardware](/docs/user-guide/hardware/)
+- [Privacy and security](/docs/user-guide/privacy-and-security/)
+- [Troubleshooting](/docs/user-guide/troubleshooting/)
