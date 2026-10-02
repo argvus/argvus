@@ -116,7 +116,7 @@ sudo pacman -Syu argvus
 | argvus-waybar | [argvus/argvus-waybar](https://github.com/argvus/argvus-waybar) | [![Release](https://github.com/argvus/argvus-waybar/actions/workflows/release.yml/badge.svg)](https://github.com/argvus/argvus-waybar/actions/workflows/release.yml) |
 | argvus-session | [argvus/argvus-session](https://github.com/argvus/argvus-session) | [![Release](https://github.com/argvus/argvus-session/actions/workflows/release.yml/badge.svg)](https://github.com/argvus/argvus-session/actions/workflows/release.yml) |
 | argvus-hyprland | [argvus/argvus-hyprland](https://github.com/argvus/argvus-hyprland) | [![Release](https://github.com/argvus/argvus-hyprland/actions/workflows/release.yml/badge.svg)](https://github.com/argvus/argvus-hyprland/actions/workflows/release.yml) |
-| argvus-splash | [argvus/argvus-splash](https://github.com/argvus/argvus-splash) | [![Release](https://github.com/argvus/argvus-splash/actions/workflows/release.yml/badge.svg)](https://github.com/argvus/argvus-splash/actions/workflows/release.yml) |
+| argvus-boot-splash | [argvus/argvus-boot-splash](https://github.com/argvus/argvus-boot-splash) | [![Release](https://github.com/argvus/argvus-boot-splash/actions/workflows/release.yml/badge.svg)](https://github.com/argvus/argvus-boot-splash/actions/workflows/release.yml) |
 | argvus-app-profiles | [argvus/argvus-app-profiles](https://github.com/argvus/argvus-app-profiles) | Planned |
 | argvus-shell | [argvus/argvus-shell](https://github.com/argvus/argvus-shell) | Planned |
 | argvus-settings | [argvus/argvus-settings](https://github.com/argvus/argvus-settings) | Planned |
