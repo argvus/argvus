@@ -147,6 +147,6 @@ If [ARGVUS](https://argvus.github.io) is useful to you, please consider supporti
 
 <div align="center">
 
-Licensed under [GPL-3.0](./LICENSE)
+Licensed under [GPL-3.0-only](./LICENSE)
 
 </div>
