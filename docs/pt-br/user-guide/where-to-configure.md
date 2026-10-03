@@ -13,11 +13,11 @@ Use esta tabela quando souber o que quer alterar, mas não qual superfície do A
 | Alterar o wallpaper | **Control Center → Aparência → Wallpapers** |
 | Ativar ou desativar efeitos visuais | **Control Center → Aparência → Efeitos**, **Control Center → Aparência → Inicializadores**, **Control Center → Configuração**, **Taskbar**, **Widget Telemetry** ou **Control Panel** |
 | Alterar posição ou agrupamento de utilitários da taskbar | **Control Center → Aparência → Espaços, bordas e posição** |
-| Personalizar JSONC ou CSS da taskbar | [Overrides da Waybar e da taskbar](./desktop/waybar-overrides/) |
+| Personalizar JSONC ou CSS da taskbar | [Overrides da Waybar e da taskbar](/pt/docs/argvus-waybar/) |
 | Alterar gaps ou bordas das janelas | **Control Center → Aparência → Espaços, bordas e posição** |
 | Escolher cards visíveis do Control Panel | **Control Center → Aparência → Control Panel** |
 | Alterar atalhos de teclado | **Control Center → Localidade e região → Atalhos de teclado** |
-| Adicionar uma regra avançada do Hyprland, configuração de monitor ou novo keybinding | [Overrides do Hyprland](./desktop/hyprland-overrides/) |
+| Adicionar uma regra avançada do Hyprland, configuração de monitor ou novo keybinding | [Overrides do Hyprland](/pt/docs/argvus-hyprland/hyprland-overrides/) |
 | Alterar comportamento do mouse ou touchpad | **Control Center → Localidade e região → Mouse e touchpad** |
 | Alterar fontes | **Control Center → Fontes** |
 | Escolher aplicativos padrão | **Control Center → Aplicativos padrão** |
@@ -37,5 +37,5 @@ Se uma configuração não estiver listada, use a busca da tela inicial do Contr
 ## Relacionados
 
 * [Primeira configuração](/pt/docs/user-guide/getting-started/)
-* [Control Center](./control-center/)
-* [Control Panel](./desktop/control-panel/)
+* [Control Center](/pt/docs/argvus-control-center/)
+* [Control Panel](/pt/docs/argvus-control-panel/)

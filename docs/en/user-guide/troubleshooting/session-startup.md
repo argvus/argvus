@@ -38,4 +38,4 @@ The session stops the loading overlay when fatal preparation or target startup
 fails. A visual consumer failure should either use its documented fallback or be
 reported explicitly; it must not be hidden as a successful session.
 
-The session log is kept under `$XDG_STATE_HOME/argvus/session.log` (normally `~/.local/state/argvus/session.log`). After changing a user Hyprland override, log out and in so the session entry point validates and selects it again. See [Graphical session](../sessions/graphical-session/) for the normal startup flow.
+The session log is kept under `$XDG_STATE_HOME/argvus/session.log` (normally `~/.local/state/argvus/session.log`). After changing a user Hyprland override, log out and in so the session entry point validates and selects it again. See [Graphical session](/docs/argvus-session/graphical-session/) for the normal startup flow.

@@ -43,8 +43,8 @@ O valor mostrado na tabela é o accent gravado no `config.json` quando a famíli
 O modo altera geometria e tratamento das superfícies; não cria uma nova família de cores. Veja [Temas](/pt/docs/argvus-themes/) e [Desktop](/pt/docs/user-guide/desktop/) para posicionamento.
 
 * [Temas](/pt/docs/argvus-themes/)
-* [Wallpapers](./appearance/wallpapers/)
-* [Fontes e ícones](./appearance/fonts-and-icons/)
-* [Efeitos](./appearance/effects/)
+* [Wallpapers](/pt/docs/argvus-appearance/wallpapers/)
+* [Fontes e ícones](/pt/docs/argvus-appearance/fonts-and-icons/)
+* [Efeitos](/pt/docs/argvus-appearance/effects/)
 
 As interfaces estão no Control Center e no Control Panel. A implementação atravessa `argvus-appearance`, `argvus-session` e pacotes de assets.

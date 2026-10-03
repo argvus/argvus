@@ -42,8 +42,8 @@ The color shown in the table is the value written to `config.json` when that fam
 The mode changes geometry and surface treatment; it does not create a sixth color family. See [Themes](/docs/argvus-themes/) for selection and [Desktop](/docs/user-guide/desktop/) for taskbar and window placement.
 
 - [Themes](/docs/argvus-themes/)
-- [Wallpapers](./appearance/wallpapers/)
-- [Fonts and icons](./appearance/fonts-and-icons/)
-- [Effects](./appearance/effects/)
+- [Wallpapers](/docs/argvus-appearance/wallpapers/)
+- [Fonts and icons](/docs/argvus-appearance/fonts-and-icons/)
+- [Effects](/docs/argvus-appearance/effects/)
 
 The Control Center exposes the user-facing settings. The implementation is shared by `argvus-appearance`, `argvus-session`, the shell components and the asset packages. See [appearance architecture](/docs/developer-guide/subsystems/appearance-and-themes/).

@@ -6,10 +6,10 @@ slug: pt/0.4.0/docs/user-guide/applications
 
 O dispatcher `argvus` expõe os aplicativos e ferramentas principais.
 
-* [Launcher](./applications/launcher/)
-* [Terminal](./applications/terminal/)
-* [Calendário](./applications/calendar/)
-* [Snake](./applications/snake/)
-* [Monitor](./applications/system-monitor/)
-* [Aplicativos padrão](./applications/default-apps/)
-* [Dispositivos removíveis](./applications/removable-devices/)
+* [Launcher](/pt/docs/argvus-launcher/)
+* [Terminal](/pt/docs/argvus-terminal/)
+* [Calendário](/pt/docs/argvus-taskbar-calendar/)
+* [Snake](/pt/docs/argvus-game-snake/)
+* [Monitor](/pt/docs/argvus-system-monitor/)
+* [Aplicativos padrão](/pt/docs/argvus-control-center/)
+* [Dispositivos removíveis](/pt/docs/argvus-removable-devices/)

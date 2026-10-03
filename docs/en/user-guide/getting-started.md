@@ -8,11 +8,11 @@ After the first graphical session, you do not need to configure every part of AR
 ## A useful order
 
 1. Read the [desktop overview](/docs/user-guide/desktop/) to identify windows, workspaces, the taskbar, the Control Panel and the launcher.
-2. Open the [Control Center](./control-center/) and choose a theme, mode, accent and wallpaper in **Appearance**.
-3. Adjust [windows and layout](./desktop/windows-and-layout/) if the default gaps, borders or taskbar spacing do not suit your screen.
-4. Configure the [taskbar](./desktop/taskbar/) and decide which [Control Panel](./desktop/control-panel/) cards you want visible.
-5. Review [keyboard shortcuts](./desktop/keyboard-shortcuts/) and change only the bindings you actually use.
-6. Configure [mouse and touchpad](./hardware/input/), displays, networking and power from the relevant settings pages.
+2. Open the [Control Center](/docs/argvus-control-center/) and choose a theme, mode, accent and wallpaper in **Appearance**.
+3. Adjust [windows and layout](/docs/argvus-hyprland/windows-and-layout/) if the default gaps, borders or taskbar spacing do not suit your screen.
+4. Configure the [taskbar](/docs/argvus-taskbar/taskbar/) and decide which [Control Panel](/docs/argvus-control-panel/) cards you want visible.
+5. Review [keyboard shortcuts](/docs/argvus-hyprland/keyboard-shortcuts/) and change only the bindings you actually use.
+6. Configure [mouse and touchpad](/docs/argvus-hyprland/input/), displays, networking and power from the relevant settings pages.
 
 The first four steps are optional personalization. The remaining steps are normally only needed when your hardware, language or workflow requires them.
 
@@ -20,7 +20,7 @@ The first four steps are optional personalization. The remaining steps are norma
 
 Use **Control Center** for settings that describe how ARGVUS should be configured: appearance, layout, fonts, input, shortcuts, language, region and default applications. Use **Control Panel** for status and frequent session actions such as volume, brightness, network state, notifications, power and session controls.
 
-See [Control Center vs Control Panel](./control-center/) for the full distinction and [Where to configure things](/docs/user-guide/where-to-configure/) for a quick index.
+See [Control Center vs Control Panel](/docs/argvus-control-center/) for the full distinction and [Where to configure things](/docs/user-guide/where-to-configure/) for a quick index.
 
 ## Changes, persistence and recovery
 
@@ -31,6 +31,6 @@ When a page offers **Reset defaults**, use that page action rather than deleting
 ## Next steps
 
 - [Appearance](/docs/user-guide/appearance/) — themes, wallpapers, effects and layout.
-- [Desktop layout](./desktop/windows-and-layout/) — understand gaps, borders and panel space.
-- [Input devices](./hardware/input/) — mouse and touchpad controls.
+- [Desktop layout](/docs/argvus-hyprland/windows-and-layout/) — understand gaps, borders and panel space.
+- [Input devices](/docs/argvus-hyprland/input/) — mouse and touchpad controls.
 - [Troubleshooting theme and wallpaper](/docs/user-guide/troubleshooting/theme-and-wallpaper/) — recovery when a visual change is not what you expected.

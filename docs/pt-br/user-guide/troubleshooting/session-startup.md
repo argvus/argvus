@@ -37,4 +37,4 @@ A sessão encerra o overlay quando a preparação fatal ou o início do target
 falha. Uma falha visual deve usar o fallback documentado ou ser reportada
 explicitamente; ela não pode ser ocultada como se a sessão tivesse iniciado.
 
-O log da sessão fica em `$XDG_STATE_HOME/argvus/session.log` (normalmente `~/.local/state/argvus/session.log`). Depois de alterar um override do Hyprland, faça logout/login para que a entrada da sessão valide e selecione o arquivo novamente. Veja [sessão gráfica](../sessions/graphical-session/) para o fluxo normal.
+O log da sessão fica em `$XDG_STATE_HOME/argvus/session.log` (normalmente `~/.local/state/argvus/session.log`). Depois de alterar um override do Hyprland, faça logout/login para que a entrada da sessão valide e selecione o arquivo novamente. Veja [sessão gráfica](/pt/docs/argvus-session/graphical-session/) para o fluxo normal.

@@ -9,11 +9,11 @@ Após a primeira sessão gráfica, você não precisa configurar todas as partes
 ## Uma ordem útil
 
 1. Leia a [visão geral do desktop](/pt/docs/user-guide/desktop/) para identificar janelas, áreas de trabalho, taskbar, Control Panel e lançador.
-2. Abra o [Control Center](./control-center/) e escolha tema, modo, acento e wallpaper em **Aparência**.
-3. Ajuste [janelas e layout](./desktop/windows-and-layout/) se os gaps, bordas ou espaços da taskbar não forem adequados à sua tela.
-4. Configure a [taskbar](./desktop/taskbar/) e escolha quais cards do [Control Panel](./desktop/control-panel/) devem ficar visíveis.
-5. Revise os [atalhos de teclado](./desktop/keyboard-shortcuts/) e altere apenas os atalhos que realmente usa.
-6. Configure [mouse e touchpad](./hardware/input/), displays, rede e energia nas páginas de configuração correspondentes.
+2. Abra o [Control Center](/pt/docs/argvus-control-center/) e escolha tema, modo, acento e wallpaper em **Aparência**.
+3. Ajuste [janelas e layout](/pt/docs/argvus-hyprland/windows-and-layout/) se os gaps, bordas ou espaços da taskbar não forem adequados à sua tela.
+4. Configure a [taskbar](/pt/docs/argvus-taskbar/taskbar/) e escolha quais cards do [Control Panel](/pt/docs/argvus-control-panel/) devem ficar visíveis.
+5. Revise os [atalhos de teclado](/pt/docs/argvus-hyprland/keyboard-shortcuts/) e altere apenas os atalhos que realmente usa.
+6. Configure [mouse e touchpad](/pt/docs/argvus-hyprland/input/), displays, rede e energia nas páginas de configuração correspondentes.
 
 Os quatro primeiros passos são personalização opcional. Os demais normalmente só são necessários quando o hardware, idioma ou fluxo de trabalho exigir.
 
@@ -21,7 +21,7 @@ Os quatro primeiros passos são personalização opcional. Os demais normalmente
 
 Use o **Control Center** para configurações que descrevem como o ARGVUS deve ser configurado: aparência, layout, fontes, entrada, atalhos, idioma, região e aplicativos padrão. Use o **Control Panel** para status e ações frequentes da sessão, como volume, brilho, estado da rede, notificações, energia e sessão.
 
-Veja [Control Center e Control Panel](./control-center/) para a distinção completa e [Onde configurar as coisas](/pt/docs/user-guide/where-to-configure/) para um índice rápido.
+Veja [Control Center e Control Panel](/pt/docs/argvus-control-center/) para a distinção completa e [Onde configurar as coisas](/pt/docs/user-guide/where-to-configure/) para um índice rápido.
 
 ## Alterações, persistência e recuperação
 
@@ -32,6 +32,6 @@ Quando uma página oferecer **Restaurar padrões**, use essa ação em vez de ap
 ## Próximos passos
 
 * [Aparência](/pt/docs/user-guide/appearance/) — temas, wallpapers, efeitos e layout.
-* [Layout do desktop](./desktop/windows-and-layout/) — entenda gaps, bordas e espaço dos painéis.
-* [Dispositivos de entrada](./hardware/input/) — controles de mouse e touchpad.
+* [Layout do desktop](/pt/docs/argvus-hyprland/windows-and-layout/) — entenda gaps, bordas e espaço dos painéis.
+* [Dispositivos de entrada](/pt/docs/argvus-hyprland/input/) — controles de mouse e touchpad.
 * [Solução de problemas de tema e wallpaper](/pt/docs/user-guide/troubleshooting/theme-and-wallpaper/) — recuperação quando uma alteração visual não ficou como esperado.

@@ -12,11 +12,11 @@ Use this table when you know what you want to change but not which ARGVUS surfac
 | Change the wallpaper | **Control Center → Appearance → Wallpapers** |
 | Enable or disable visual effects | **Control Center → Appearance → Effects**, **Control Center → Appearance → Launchers**, **Control Center → Configuration**, **Taskbar**, **Widget Telemetry** or **Control Panel** |
 | Change taskbar position or utility grouping | **Control Center → Appearance → Spaces, Borders & Position** |
-| Customize taskbar JSONC or CSS | [Waybar and taskbar overrides](./desktop/waybar-overrides/) |
+| Customize taskbar JSONC or CSS | [Waybar and taskbar overrides](/docs/argvus-waybar/) |
 | Change window gaps or borders | **Control Center → Appearance → Spaces, Borders & Position** |
 | Choose visible Control Panel cards | **Control Center → Appearance → Control Panel** |
 | Change keyboard shortcuts | **Control Center → Locale & Region → Keyboard shortcuts** |
-| Add an advanced Hyprland rule, monitor setting or new keybinding | [Hyprland overrides](./desktop/hyprland-overrides/) |
+| Add an advanced Hyprland rule, monitor setting or new keybinding | [Hyprland overrides](/docs/argvus-hyprland/hyprland-overrides/) |
 | Change mouse or touchpad behavior | **Control Center → Locale & Region → Mouse & Touchpad** |
 | Change fonts | **Control Center → Fonts** |
 | Choose default applications | **Control Center → Default applications** |
@@ -36,5 +36,5 @@ If a setting is not listed, use the Control Center's home search. Its search reg
 ## Related
 
 - [First configuration](/docs/user-guide/getting-started/)
-- [Control Center](./control-center/)
-- [Control Panel](./desktop/control-panel/)
+- [Control Center](/docs/argvus-control-center/)
+- [Control Panel](/docs/argvus-control-panel/)
