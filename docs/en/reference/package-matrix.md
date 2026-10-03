@@ -23,6 +23,7 @@ description: ARGVUS package responsibilities.
 | --- | --- |
 | `argvus-accounts` | Local account metadata and avatars. |
 | `argvus-taskbar-calendar` | Calendar popup and event integration. |
+| `argvus-games` | Meta-package for the official ARGVUS games; depends on `argvus-game-snake`. |
 | `argvus-game-snake` | Retro terminal Snake game and local ranking. |
 | `argvus-removable-devices` | UDisks2 storage actions and taskbar/menu integration. |
 | `argvus-launcher` | Launcher configuration and entry points. |

@@ -24,6 +24,7 @@ slug: pt/0.4.0/docs/reference/package-matrix
 | --- | --- |
 | `argvus-accounts` | Metadados de contas locais e avatares. |
 | `argvus-taskbar-calendar` | Popup de calendário e integração de eventos. |
+| `argvus-games` | Metapacote dos jogos oficiais do ARGVUS; depende de `argvus-game-snake`. |
 | `argvus-game-snake` | Jogo Snake retro no terminal e ranking local. |
 | `argvus-removable-devices` | Ações de armazenamento UDisks2 e integração com taskbar/menu. |
 | `argvus-launcher` | Configuração e entrypoints do launcher. |

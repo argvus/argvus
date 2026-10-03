@@ -8,7 +8,7 @@ ARGVUS exposes common applications through the `argvus` dispatcher and focused p
 - [Launcher](/docs/argvus-launcher/)
 - [Terminal](/docs/argvus-terminal/)
 - [Calendar](/docs/argvus-taskbar-calendar/)
-- [Snake](/docs/argvus-game-snake/)
+- [Games](/docs/argvus-games/) (including [Snake](/docs/argvus-games/snake/))
 - [System monitor](/docs/argvus-system-monitor/)
 - [Default applications](/docs/argvus-control-center/)
 - [Removable devices](/docs/argvus-removable-devices/)
