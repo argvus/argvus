@@ -12,6 +12,7 @@ description: ARGVUS package responsibilities.
 | `argvus-control-center` | TUI settings application. |
 | `argvus-control-panel` | Quickshell control panel. |
 | `argvus-taskbar`, `argvus-waybar` | Waybar configuration and patched binary. |
+| `argvus-branding` | Logo and wordmark assets. |
 | `argvus-appearance`, `argvus-wallpapers`, `argvus-fonts`, `argvus-icons` | Appearance state and visual assets. |
 | `argvus-network`, `argvus-display`, `argvus-power`, `argvus-notifications` | Desktop providers. |
 | `argvus-greeter`, `argvus-lock`, `argvus-splash`, `argvus-theme-splash` | Login, lock and startup visuals. |

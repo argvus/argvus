@@ -13,6 +13,7 @@ slug: pt/0.4.0/docs/reference/package-matrix
 | `argvus-control-center` | Aplicativo de configurações TUI. |
 | `argvus-control-panel` | Painel Quickshell. |
 | `argvus-taskbar`, `argvus-waybar` | Configuração e binário Waybar. |
+| `argvus-branding` | Assets de logo e wordmark. |
 | `argvus-appearance`, `argvus-wallpapers`, `argvus-fonts`, `argvus-icons` | Estado visual e assets. |
 | `argvus-network`, `argvus-display`, `argvus-power`, `argvus-notifications` | Provedores do desktop. |
 | `argvus-greeter`, `argvus-lock`, `argvus-splash`, `argvus-theme-splash` | Login, lock e startup. |
