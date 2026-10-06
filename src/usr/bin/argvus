@@ -259,7 +259,7 @@ run_control_center() {
     fi
   fi
 
-  argvus-tui-terminal --class argvus-control-center --term kitty --profile control-center -- "$_control_center" "$@" &
+  env ARGVUS_ICON_SCALE=3/3 argvus-tui-terminal --class argvus-control-center --term kitty --profile control-center -- "$_control_center" "$@" &
   _control_center_pid=$!
 
   # Wait briefly for the client to be registered before releasing the lock.
