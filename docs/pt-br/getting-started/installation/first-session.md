@@ -9,7 +9,7 @@ Para login gráfico, consulte o fluxo greetd em [Sessões](/pt/docs/user-guide/s
 Para uma sessão TTY, faça login e execute:
 
 ```sh
-argvus-tty
+argvus --start-desktop
 ```
 
 Depois, use `argvus-sessionctl status`. Se a sessão não iniciar, consulte [solução de problemas da sessão](/pt/docs/user-guide/troubleshooting/session-startup/).
