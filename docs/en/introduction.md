@@ -55,7 +55,7 @@ See [Hardware](/docs/user-guide/hardware/), [Privacy and security](/docs/user-gu
 
 ## Shared appearance state
 
-Theme, accent, wallpaper, font and effects preferences are stored as logical state under `$XDG_CONFIG_HOME/argvus` (normally `~/.config/argvus`). `argvus-config` is the only component that writes `data/generated/`, where it projects consumer files for Hyprland, GTK, Qt6ct, Waybar, Quickshell, Rofi, Dunst, notifications, the lock screen, Yazi, Superfile and terminals. Appearance helpers commit the state change and then reconcile external applications; they never write the generated tree.
+Theme, accent, wallpaper, font and effects preferences are stored as logical state under `$XDG_CONFIG_HOME/argvus` (normally `~/.config/argvus`). `argvus-config` is the only component that writes `data/generated/`, where it projects consumer files for Hyprland, GTK, Qt6ct, Waybar, Quickshell, Dunst, notifications, the lock screen, Yazi, Superfile and terminals. Rofi is the exception: `argvus-launcher` packages its configuration and themes as plain files, and the user's edited copies live under `data/rofi/`. Appearance helpers commit the state change and then reconcile external applications; they never write the generated tree.
 
 The generated directory is not the source of truth. See [Appearance](/docs/user-guide/appearance/) and [configuration and state](/docs/developer-guide/architecture/configuration-and-state/).
 

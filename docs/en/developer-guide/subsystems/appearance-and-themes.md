@@ -3,7 +3,7 @@ title: Appearance and themes
 description: Theme state propagation across ARGVUS.
 ---
 
-`argvus-appearance` owns theme, accent, wallpaper and font *state*. It consumes assets from `argvus-wallpapers`, `argvus-fonts` and `argvus-icons`, but it does not generate theme output: every ARGVUS-owned consumer file for Hyprland, GTK, Qt, Waybar, Quickshell, Rofi, Dunst, Hyprlock, Yazi, Superfile, terminals and native applications is a projection written by `argvus-config` alone.
+`argvus-appearance` owns theme, accent, wallpaper and font *state*. It consumes assets from `argvus-wallpapers`, `argvus-fonts` and `argvus-icons`, but it does not generate theme output: every ARGVUS-owned consumer file for Hyprland, GTK, Qt, Waybar, Quickshell, Dunst, Hyprlock, Yazi, Superfile, terminals and native applications is a projection written by `argvus-config` alone, except Rofi: `argvus-launcher` owns its files, and `argvus-appearance` edits the user copies under `data/rofi/`.
 
 The Control Center and Control Panel are user interfaces; neither is the sole source of theme state.
 

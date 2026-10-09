@@ -78,7 +78,7 @@ Set `ARGVUS_NO_RUNTIME=1` for preparation or isolated tests.
 Generation happens in staging and the `data/` tree is swapped only after all
 projectors succeed. Therefore deleting `data/generated/` and running
 `argvus-config apply` is a reproducible rebuild without publishing a partial
-sequence of Rofi, Hyprland, or Taskbar outputs. The command records derived
+sequence of Hyprland or Taskbar outputs. The command records derived
 section hashes and the runtime decision in
 `$XDG_STATE_HOME/argvus/config-projection.json` (normally
 `~/.local/state/argvus/config-projection.json`). Neither the manifest nor
@@ -129,7 +129,6 @@ before publication:
 | Notifications | `generated/notifications/` and `dunstrc` |
 | Lock screen | `generated/hypr/hyprlock.conf` and the Hyprtoolkit theme profiles |
 | GTK | `generated/gtk/` |
-| Rofi | `generated/rofi/` |
 | Yazi | `generated/yazi/` |
 | Superfile | `generated/superfile/` |
 | Terminal and Qt profiles | `generated/terminal/`, `generated/qt6ct/` |
@@ -141,7 +140,7 @@ before publication:
 
 The theme layer is also mirrored outside the generated root:
 `data/waybar/argvus-taskbar.{jsonc,css}`,
-`data/waybar/argvus-widget-telemetry.{jsonc,css}`, `data/rofi/`, `data/foot/`,
+`data/waybar/argvus-widget-telemetry.{jsonc,css}`, `data/foot/`,
 `data/qt6ct/`, `data/hypr/hyprtoolkit.conf` and
 `data/hypr/application-style.conf`. Those copies are replaced from the packaged
 defaults when the appearance section changes, and the projector then rewrites

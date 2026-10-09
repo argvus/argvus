@@ -78,8 +78,7 @@ ocorre em staging e a árvore `data/` só é trocada depois que todos os
 projectors terminam. Assim, apagar `data/generated/` e executar `argvus-config
 apply` também delega o reload pós-commit ao `argvus-sessionctl`; use
 `ARGVUS_NO_RUNTIME=1` durante preparação da sessão ou testes isolados. Esse
-rebuild é reproduzível, sem publicar uma sequência parcial de Rofi,
-Hyprland ou Taskbar. O comando registra hashes derivados por seção e a decisão
+rebuild é reproduzível, sem publicar uma sequência parcial de Hyprland ou Taskbar. O comando registra hashes derivados por seção e a decisão
 de runtime em `$XDG_STATE_HOME/argvus/config-projection.json` (normalmente
 `~/.local/state/argvus/config-projection.json`). Nem o manifesto nem os arquivos
 gerados são fontes de verdade. `apply` faz o reload pós-commit por meio do
@@ -129,7 +128,6 @@ aparência nunca são chamados pelo projetor e jamais podem escrever em
 | Notificações | `generated/notifications/` e `dunstrc` |
 | Lock screen | `generated/hypr/hyprlock.conf` e os perfis de tema do Hyprtoolkit |
 | GTK | `generated/gtk/` |
-| Rofi | `generated/rofi/` |
 | Yazi | `generated/yazi/` |
 | Superfile | `generated/superfile/` |
 | Perfis de terminal e Qt | `generated/terminal/`, `generated/qt6ct/` |
@@ -141,8 +139,7 @@ aparência nunca são chamados pelo projetor e jamais podem escrever em
 
 A camada de tema também é espelhada fora da raiz generated:
 `data/waybar/argvus-taskbar.{jsonc,css}`,
-`data/waybar/argvus-widget-telemetry.{jsonc,css}`, `data/rofi/`,
-`data/foot/`, `data/qt6ct/`, `data/hypr/hyprtoolkit.conf` e
+`data/waybar/argvus-widget-telemetry.{jsonc,css}`, `data/foot/`, `data/qt6ct/`, `data/hypr/hyprtoolkit.conf` e
 `data/hypr/application-style.conf`. Essas cópias são substituídas pelos defaults
 empacotados quando a seção de aparência muda, e o projetor então reescreve apenas
 seus blocos gerenciados delimitados — o bloco de fonte nos stylesheets do Waybar

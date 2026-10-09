@@ -7,10 +7,10 @@ The normal user root is `$XDG_CONFIG_HOME/argvus` (usually `~/.config/argvus`). 
 
 `argvus-config` is the only writer below `generated/`. Every ARGVUS-owned
 consumer file is a projection of `config.json`, including Hyprland, GTK, Qt6ct,
-Waybar, Quickshell, Rofi, Dunst, Hyprlock, the Waybar taskbar and widget-telemetry
+Waybar, Quickshell, Dunst, Hyprlock, the Waybar taskbar and widget-telemetry
 profiles, the Yazi and Superfile configuration trees, the terminal and Qt profile
 trees, the font managed blocks and the removable-devices stylesheet. Components
-resolve explicit user overrides, then generated output, then package defaults.
+resolve explicit user overrides, then generated output, then package defaults. Rofi is not a projection: `argvus-launcher` owns its files, and the user copies live under `data/rofi/`.
 Normal theme/reload projection never promotes either generated or packaged files
 into a user override. Documentation and tools should identify the logical source
 instead of asking users to edit generated output.

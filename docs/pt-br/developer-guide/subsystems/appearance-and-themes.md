@@ -4,7 +4,7 @@ description: Propagação do estado de tema.
 slug: pt/0.4.0/docs/developer-guide/subsystems/appearance-and-themes
 ---
 
-`argvus-appearance` é dono do *estado* de tema, acento, wallpaper e fontes. Consome assets de `argvus-wallpapers`, `argvus-fonts` e `argvus-icons`, mas não gera a saída de tema: todo arquivo consumidor do ARGVUS para Hyprland, GTK, Qt, Waybar, Quickshell, Rofi, Dunst, Hyprlock, Yazi, Superfile, terminais e aplicativos nativos é uma projeção escrita somente pelo `argvus-config`.
+`argvus-appearance` é dono do *estado* de tema, acento, wallpaper e fontes. Consome assets de `argvus-wallpapers`, `argvus-fonts` e `argvus-icons`, mas não gera a saída de tema: todo arquivo consumidor do ARGVUS para Hyprland, GTK, Qt, Waybar, Quickshell, Dunst, Hyprlock, Yazi, Superfile, terminais e aplicativos nativos é uma projeção escrita somente pelo `argvus-config`, exceto o Rofi: o `argvus-launcher` é dono dos arquivos, e o `argvus-appearance` edita as cópias do usuário em `data/rofi/`.
 
 O Control Center e o Control Panel são interfaces; nenhum dos dois é a fonte de estado de tema.
 

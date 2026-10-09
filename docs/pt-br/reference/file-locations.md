@@ -25,7 +25,7 @@ slug: pt/0.4.0/docs/reference/file-locations
 * `$XDG_CONFIG_HOME/argvus/data/generated/terminal/` — perfis de terminal projetados.
 * `$XDG_CONFIG_HOME/argvus/data/generated/qt6ct/` — paleta do Qt6ct projetada.
 * `$XDG_CONFIG_HOME/argvus/data/generated/gtk/` — arquivos de tema do GTK projetados.
-* `$XDG_CONFIG_HOME/argvus/data/generated/rofi/` — temas e modo do Rofi projetados.
+* `$XDG_CONFIG_HOME/argvus/data/rofi/` — cópias do usuário da configuração, dos temas e do modo do Rofi. O ARGVUS cria cada cópia quando altera o arquivo pela primeira vez; arquivos não alterados são lidos de `/usr/share/argvus/launcher/config/`.
 * `$XDG_CONFIG_HOME/argvus/data/generated/removable-devices/theme.css` — stylesheet projetado de dispositivos removíveis.
 * `$XDG_CONFIG_HOME/argvus/data/hypr/` — overrides Lua e projeções nativas do Hyprland.
 * `$XDG_CONFIG_HOME/hypr/hyprland.lua` — configuração nativa completa opcional do Hyprland, selecionada pelo `argvus-start`; não é um overlay incremental.
