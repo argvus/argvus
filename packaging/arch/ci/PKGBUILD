@@ -103,7 +103,7 @@ optdepends=(
   'argvus-theme-gruvbox-dark: gruvbox-dark theme for ARGVUS'
   'argvus-theme-gruvbox-high-dark: gruvbox-high-dark theme for ARGVUS'
   'argvus-theme-gruvbox-light: gruvbox-light theme for ARGVUS'
-  'argvus-theme-hackerman: hackerman theme for ARGVUS'
+  'argvus-theme-matrix: matrix theme for ARGVUS'
   'argvus-theme-monokai-dark: monokai-dark theme for ARGVUS'
   'argvus-theme-nord-light: Nord Light theme for ARGVUS'
   'argvus-theme-one-dark: one-dark theme for ARGVUS'

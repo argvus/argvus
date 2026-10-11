@@ -87,7 +87,7 @@ Hyprland. Change the accent color from the Highlight color control in the Contro
 | Dracula               | Catppuccin Latte   |
 | Gruvbox Dark          | Everforest Light   |
 | Gruvbox High Dark     | Frost              |
-| Hackerman             | GitHub Light       |
+| Matrix             | GitHub Light       |
 | Monokai Dark          | Gruvbox Light      |
 | One Dark              | One Light          |
 | Rosé Pine             | Solarized Light    |

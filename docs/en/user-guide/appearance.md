@@ -27,7 +27,7 @@ The twenty-four families below are defined by the current theme payload. The col
 | Tokyo-Night | `#7AA2F7` | `#1A1B26` | Sticky, Float |
 | Solitude | `#798186` | `#101315` | Sticky, Float |
 | Sunset | `#E2BE8A` | `#0F0F0F` | Sticky, Float |
-| Hackerman | `#82FB9C` | `#0B0C16` | Sticky, Float |
+| Matrix | `#82FB9C` | `#0B0C16` | Sticky, Float |
 | Monokai Dark | `#78DCE8` | `#2D2A2E` | Sticky, Float |
 | One Light | `#4078F2` | `#FAFAFA` | Sticky, Float |
 | Flexoki Light | `#205EA6` | `#FFFCF0` | Sticky, Float |
