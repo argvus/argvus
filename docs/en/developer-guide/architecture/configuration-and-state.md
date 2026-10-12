@@ -116,5 +116,4 @@ Development and installed-package tests are separate modes; neither may fall
 back silently to an unrelated executable or the developer's home. `apply` is
 also the reconciliation boundary for legacy combined theme identifiers: a
 value such as `argvus-dark-float` becomes `theme=argvus-dark` and
-`variant=float` before resolution. `/usr/share/argvus/version.json` describes
-packaged asset identity and is diagnostic metadata, not a source of truth.
+`variant=float` before resolution. Packaged asset identity is not recorded in a manifest in this release, so no diagnostic file describes it.

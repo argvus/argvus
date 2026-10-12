@@ -117,5 +117,4 @@ Testes do checkout e do pacote instalado são modos separados e não podem cair
 silenciosamente em outro executável ou no home do desenvolvedor. `apply` é
 também a fronteira de reconciliação para identificadores legados combinados:
 `argvus-dark-float` torna-se `theme=argvus-dark` e `variant=float` antes da
-resolução. `/usr/share/argvus/version.json` descreve a identidade dos assets
-empacotados como metadado de diagnóstico, não como fonte de verdade.
+resolução. A identidade dos assets empacotados não é registrada em manifesto nesta versão, então nenhum arquivo de diagnóstico a descreve.

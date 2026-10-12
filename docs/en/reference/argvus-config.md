@@ -280,5 +280,4 @@ by the build environment, and profile. Development tests must inject their
 binary and assets explicitly; they must not silently use `/usr/lib/argvus/commands/argvus-config`
 or `~/.config/argvus`. `apply` safely normalizes legacy combined identifiers
 such as `argvus-dark-float` into separate theme and variant values before
-rebuilding projections. The installed asset manifest is
-`/usr/share/argvus/version.json`.
+rebuilding projections. Packaged asset identity is not recorded in a manifest in this release.

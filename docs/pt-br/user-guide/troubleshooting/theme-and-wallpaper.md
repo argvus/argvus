@@ -59,7 +59,7 @@ argvus terminal --print-config
 O comando acima lê a preferência canônica. `.active-theme` é apenas uma
 projeção de compatibilidade. O cache é regenerado pelo `argvus terminal` e
 sincronizado com a aplicação do tema. Um
-`/usr/lib/argvus/theme-splash/splash` ausente ou antigo indica uma atualização
+`/usr/lib/argvus/loading-theme/splash` ausente ou antigo indica uma atualização
 incompleta dos pacotes; reconstrua e instale os pacotes coordenados antes de
 avaliar o resultado na sessão real.
 

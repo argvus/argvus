@@ -285,5 +285,4 @@ perfil. Testes de desenvolvimento devem injetar explicitamente binário e
 assets; não devem usar `/usr/lib/argvus/commands/argvus-config` ou `~/.config/argvus`
 silenciosamente. `apply` normaliza com segurança identificadores legados como
 `argvus-dark-float` para theme e variant separados antes de reconstruir as
-projeções. O manifesto de assets instalado fica em
-`/usr/share/argvus/version.json`.
+projeções. A identidade dos assets empacotados não é registrada em manifesto nesta versão.
