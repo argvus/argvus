@@ -138,6 +138,15 @@ else
   fail "self and unlisted names are not dispatched"
 fi
 
+# 11. The `git` subcommand maps to argvus-git and forwards its arguments.
+make_fake "$COMMANDS/argvus-git"
+out="$(run /bin/sh "$DISPATCHER" git 'my repo' 2>&1 </dev/null)" && status=0 || status=$?
+if [ "$status" -eq 0 ] && [ "$out" = "$(printf '[my repo]\nstdin=')" ]; then
+  pass "git maps to argvus-git"
+else
+  fail "git maps to argvus-git (status $status, output: $out)"
+fi
+
 if [ "$failures" -ne 0 ]; then
   printf '%s failure(s)\n' "$failures" >&2
   exit 1
