@@ -9,7 +9,7 @@ Treat environment variables as runtime contracts: verify the installed helper's 
 
 Derived state lives under the state root rather than the configuration root.
 `XDG_STATE_HOME` (normally `~/.local/state`) receives `argvus/config-projection.json`,
-the projection manifest `argvus-config` rebuilds and `argvus-sessionctl reload`
+the projection manifest `argvus-config` rebuilds and `argvus sessionctl reload`
 applies, plus `argvus/session.log`. Neither is a source of truth.
 
 ## Language environment

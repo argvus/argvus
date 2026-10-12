@@ -128,8 +128,8 @@ restart_runtime() {
   [ "$RESTART" = true ] || return 0
 
   log "Reloading ARGVUS runtime..."
-  if command -v argvus-sessionctl >/dev/null 2>&1; then
-    argvus-sessionctl reload >/dev/null 2>&1 || true
+  if command -v argvus >/dev/null 2>&1; then
+    argvus sessionctl reload >/dev/null 2>&1 || true
   elif command -v hyprctl >/dev/null 2>&1; then
     hyprctl reload >/dev/null 2>&1 || true
   fi

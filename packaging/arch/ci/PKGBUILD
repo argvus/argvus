@@ -10,6 +10,9 @@ options=('!debug')
 
 depends=(
   'argvus-app-profiles'
+  'argvus-config'
+  'argvus-i18n'
+  'argvus-firewall'
   'argvus-appearance'
   'argvus-branding'
   'argvus-taskbar-calendar'

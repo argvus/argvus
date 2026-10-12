@@ -4,7 +4,7 @@ description: Use o ARGVUS em inglês ou português.
 slug: pt/0.4.0/docs/user-guide/localization
 ---
 
-`argvus-i18n` fornece catálogos compartilhados, `argvus-i18n validate` e o módulo QML `org.argvus.i18n`. Aplicativos nativos, shell e helpers da sessão consomem esses catálogos.
+`argvus-i18n` fornece catálogos compartilhados, `argvus i18n validate` e o módulo QML `org.argvus.i18n`. Aplicativos nativos, shell e helpers da sessão consomem esses catálogos.
 
 Use **Control Center → Localidade e região** para configurar idioma, localidade regional, locales de sistema gerados, fuso horário, data/hora e teclado. Os catálogos atuais do ARGVUS fornecem inglês e português; isso é separado da lista de locales que o sistema operacional gerou.
 

@@ -16,13 +16,24 @@ Usage:
   argvus --spf [superfile options]
   argvus --yazi [yazi options]
   argvus --about [about tab]
-  argvus --calendar [argvus-taskbar-calendar options]
+  argvus --calendar [argvus taskbar-calendar options]
   argvus --game-snake
   argvus --default-apps [control center Apps options]
-  argvus --removable-devices [argvus-removable-devices options]
+  argvus --removable-devices [argvus removable-devices options]
   argvus --displays [control center Displays page]
   argvus --network-interfaces
   argvus --version
+  argvus help | --help | -h
+  argvus <command> [arguments...]
+
+Commands:
+  argvus sessionctl | session | start | tty
+  argvus greeter | greeter-session | greeter-tui | greeter-setup
+  argvus config | i18n | accounts | firewall
+  argvus taskbar-calendar | removable-devices | notifications
+  argvus networkctl | bluetoothctl | displayctl | widget-telemetry-toggle
+  argvus launcher | projects | snippets | ssh
+  argvus tui-terminal | app-profiles-yazi-keymap | game-snake | terminal
 
 Aliases:
   argvus setup | system-monitor | control-center | terminal | spf | yazi | about | calendar | game-snake | default-apps | removable-devices | displays | version
@@ -37,6 +48,75 @@ EOF
 }
 
 die() { printf 'argvus: %s\n' "$*" >&2; exit 1; }
+
+# Directory of private executables. Packages install them here instead of
+# /usr/bin; ARGVUS_COMMANDS_DIR lets tests and DESTDIR checks override it.
+ARGVUS_COMMANDS_DIR="${ARGVUS_COMMANDS_DIR:-/usr/lib/argvus/commands}"
+
+# Maps a public subcommand to its private executable name. Only the names
+# listed here can be reached through the generic dispatch, so user input is
+# never used to build a path. `argvus` itself is never listed.
+private_command_name() {
+  case "$1" in
+    session) printf 'argvus-session\n' ;;
+    start) printf 'argvus-start\n' ;;
+    tty) printf 'argvus-tty\n' ;;
+    sessionctl) printf 'argvus-sessionctl\n' ;;
+    greeter) printf 'argvus-greeter\n' ;;
+    greeter-session) printf 'argvus-greeter-session\n' ;;
+    greeter-tui) printf 'argvus-greeter-tui\n' ;;
+    greeter-setup) printf 'argvus-greeter-setup\n' ;;
+    config) printf 'argvus-config\n' ;;
+    i18n) printf 'argvus-i18n\n' ;;
+    accounts) printf 'argvus-accounts\n' ;;
+    firewall) printf 'argvus-firewall\n' ;;
+    taskbar-calendar) printf 'argvus-taskbar-calendar\n' ;;
+    removable-devices) printf 'argvus-removable-devices\n' ;;
+    notifications) printf 'argvus-notifications\n' ;;
+    networkctl) printf 'argvus-networkctl\n' ;;
+    bluetoothctl) printf 'argvus-bluetoothctl\n' ;;
+    displayctl) printf 'argvus-displayctl\n' ;;
+    widget-telemetry-toggle) printf 'argvus-widget-telemetry-toggle\n' ;;
+    launcher) printf 'argvus-launcher\n' ;;
+    projects) printf 'argvus-projects\n' ;;
+    snippets) printf 'argvus-snippets\n' ;;
+    ssh) printf 'argvus-ssh\n' ;;
+    tui-terminal) printf 'argvus-tui-terminal\n' ;;
+    app-profiles-yazi-keymap) printf 'argvus-app-profiles-yazi-keymap\n' ;;
+    game-snake) printf 'argvus-game-snake\n' ;;
+    terminal) printf 'argvus-terminal\n' ;;
+    *) return 1 ;;
+  esac
+}
+
+# Prints the executable for a private name. The commands directory wins. The
+# PATH fallback covers packages that still install the file in /usr/bin; it
+# only runs for names already accepted by private_command_name.
+resolve_private_command() {
+  if [ -x "$ARGVUS_COMMANDS_DIR/$1" ]; then
+    printf '%s\n' "$ARGVUS_COMMANDS_DIR/$1"
+    return 0
+  fi
+  command -v "$1" 2>/dev/null
+}
+
+# Prints the private executable for a name, or stops with an error.
+private_path() {
+  _path="$(resolve_private_command "$1")" || die "$1 is not installed"
+  printf '%s\n' "$_path"
+}
+
+# Replaces this process with the private command, forwarding every argument
+# unchanged. Stdin, stdout, stderr, signals and the exit status are inherited.
+dispatch_private() {
+  _sub="$1"
+  shift
+  _name="$(private_command_name "$_sub")" \
+    || die "unknown command: $_sub (see 'argvus --help')"
+  _path="$(resolve_private_command "$_name")" \
+    || die "$_name is not installed"
+  exec "$_path" "$@"
+}
 
 require_command() {
   _command="$1"
@@ -186,30 +266,22 @@ Use --force to replace it after a backup."
 }
 
 run_system_monitor() {
-  require_command argvus-system-monitor
-  exec argvus-system-monitor "$@"
+  _system_monitor="$(private_path argvus-system-monitor)"
+  exec "$_system_monitor" "$@"
 }
 
 run_terminal() {
-  require_command argvus-terminal
-  exec argvus-terminal "$@"
+  _terminal="$(private_path argvus-terminal)"
+  exec "$_terminal" "$@"
 }
 
 find_control_center() {
-  if command -v argvus-control-center >/dev/null 2>&1; then
-    printf 'argvus-control-center\n'
-    return 0
-  fi
-  if command -v argvus-controle-center >/dev/null 2>&1; then
-    printf 'argvus-controle-center\n'
-    return 0
-  fi
-  die "argvus-control-center is not installed"
+  private_path argvus-control-center
 }
 
 run_control_center() {
   _control_center="$(find_control_center)"
-  require_command argvus-tui-terminal
+  _tui_terminal="$(private_path argvus-tui-terminal)"
   case "${1:-}" in
     --apps) shift; set -- apps "$@" ;;
     --fonts) shift; set -- fonts "$@" ;;
@@ -259,7 +331,7 @@ run_control_center() {
     fi
   fi
 
-  env ARGVUS_ICON_SCALE=3/3 argvus-tui-terminal --class argvus-control-center --term kitty --profile control-center -- "$_control_center" "$@" &
+  env ARGVUS_ICON_SCALE=3/3 "$_tui_terminal" --class argvus-control-center --term kitty --profile control-center -- "$_control_center" "$@" &
   _control_center_pid=$!
 
   # Wait briefly for the client to be registered before releasing the lock.
@@ -412,24 +484,24 @@ run_about() {
 }
 
 run_calendar() {
-  require_command argvus-taskbar-calendar
   if [ "$#" -eq 0 ]; then
     set -- toggle
   fi
-  exec argvus-taskbar-calendar "$@"
+  _calendar="$(private_path argvus-taskbar-calendar)"
+  exec "$_calendar" "$@"
 }
 
 run_game_snake() {
-  require_command argvus-game-snake
+  _game_snake="$(private_path argvus-game-snake)"
   if [ -t 0 ] && [ -t 1 ]; then
-    exec argvus-game-snake "$@"
+    exec "$_game_snake" "$@"
   fi
-  require_command argvus-tui-terminal
-  exec argvus-tui-terminal \
+  _tui_terminal="$(private_path argvus-tui-terminal)"
+  exec "$_tui_terminal" \
     --class argvus-game-snake \
     --term kitty \
     --profile control-center \
-    -- argvus-game-snake "$@"
+    -- "$_game_snake" "$@"
 }
 
 run_default_apps() {
@@ -437,17 +509,17 @@ run_default_apps() {
 }
 
 run_removable_devices() {
-  require_command argvus-removable-devices
   if [ "$#" -eq 0 ]; then
     set -- menu
   fi
-  exec argvus-removable-devices "$@"
+  _removable="$(private_path argvus-removable-devices)"
+  exec "$_removable" "$@"
 }
 
 case "${1:-}" in
   --start-desktop)
-    # This 'argvus-tty' script comes from the "argvus-session" package.
-    argvus-tty
+    # argvus-tty comes from the "argvus-session" package.
+    dispatch_private tty
     ;;
   --setup|setup)
     shift
@@ -504,10 +576,12 @@ case "${1:-}" in
   --version|-V|version)
     printf 'ARGVUS %s\n' "$VERSION"
     ;;
-  --help|-h|'')
+  --help|-h|help|'')
     usage
     ;;
   *)
-    die "unknown command: $1"
+    _command="$1"
+    shift
+    dispatch_private "$_command" "$@"
     ;;
 esac

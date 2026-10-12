@@ -11,7 +11,7 @@ slug: pt/0.4.0/docs/user-guide/sessions
 * [Greeter](/pt/docs/argvus-greeter/)
 
 ```sh
-argvus-sessionctl status
-argvus-sessionctl logs
-argvus-sessionctl restart waybar
+argvus sessionctl status
+argvus sessionctl logs
+argvus sessionctl restart waybar
 ```

@@ -154,7 +154,7 @@ Hyprlock lockscreen wallpaper caches belong under `$XDG_CACHE_HOME/argvus/hypr`;
 do not use legacy `~/.cache/hypr` paths.
 
 Session ownership: the `argvus` package owns `/usr/bin/argvus`. `argvus-session`
-owns `/usr/bin/argvus-session`, `/usr/bin/argvus-start`, `/usr/bin/argvus-tty`,
+owns `/usr/lib/argvus/commands/argvus-session`, `/usr/lib/argvus/commands/argvus-start`, `/usr/lib/argvus/commands/argvus-tty`,
 the user systemd units, and the Wayland session entry
 `/usr/share/wayland-sessions/argvus.desktop`. The greeter that `greetd` starts is
 provided by `argvus-greeter`.

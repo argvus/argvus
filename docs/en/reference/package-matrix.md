@@ -28,7 +28,7 @@ description: ARGVUS package responsibilities.
 | `argvus-game-snake` | Retro terminal Snake game and local ranking. |
 | `argvus-removable-devices` | UDisks2 storage actions and taskbar/menu integration. |
 | `argvus-launcher` | Launcher configuration and entry points. |
-| `argvus-terminal`, `argvus-system-monitor` | Terminal and system-monitor profiles. |
+| `argvus terminal`, `argvus system-monitor` | Terminal and system-monitor profiles. |
 | `argvus-firewall` | System firewall service and Control Center integration. |
 
 The `argvus` package depends on the component packages for a complete desktop. A package's presence in this table does not mean it owns the whole feature: for example, the taskbar combines `argvus-waybar`, `argvus-taskbar`, `argvus-session` and domain providers.

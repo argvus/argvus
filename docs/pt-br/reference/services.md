@@ -46,17 +46,17 @@ O serviço de sistema `argvus-firewall.service` pertence ao `argvus-firewall`. O
 
 ## Comandos de gerenciamento de sessão
 
-O comando `argvus-sessionctl` gerencia o ciclo de vida da sessão e pode reiniciar componentes específicos sem fazer logout:
+O comando `argvus sessionctl` gerencia o ciclo de vida da sessão e pode reiniciar componentes específicos sem fazer logout:
 
 ### Ciclo de vida da sessão
 
 ```sh
-argvus-sessionctl start               # Iniciar uma nova sessão
-argvus-sessionctl stop                # Parar a sessão atual
-argvus-sessionctl restart             # Reiniciar a sessão inteira
-argvus-sessionctl reload              # Recarregar configuração e serviços ativos
-argvus-sessionctl status              # Mostrar status da sessão
-argvus-sessionctl logs                # Exibir logs da sessão
+argvus sessionctl start               # Iniciar uma nova sessão
+argvus sessionctl stop                # Parar a sessão atual
+argvus sessionctl restart             # Reiniciar a sessão inteira
+argvus sessionctl reload              # Recarregar configuração e serviços ativos
+argvus sessionctl status              # Mostrar status da sessão
+argvus sessionctl logs                # Exibir logs da sessão
 ```
 
 ### Reinicializações de componentes específicos
@@ -65,18 +65,18 @@ Reinicie serviços individuais sem afetar a sessão inteira:
 
 ```sh
 # Superfícies de desktop
-argvus-sessionctl restart waybar
-argvus-sessionctl restart wallpaper
-argvus-sessionctl restart shell
+argvus sessionctl restart waybar
+argvus sessionctl restart wallpaper
+argvus sessionctl restart shell
 
 # Notificações e seletor
-argvus-sessionctl restart dunst snappy-switcher
+argvus sessionctl restart dunst snappy-switcher
 
 # Clipboard e entrada
-argvus-sessionctl restart clipboard keyboard-layout
+argvus sessionctl restart clipboard keyboard-layout
 
 # Applet Bluetooth (opcional)
-argvus-sessionctl restart blueman-applet
+argvus sessionctl restart blueman-applet
 ```
 
 ### Sincronização de ambiente
@@ -84,7 +84,7 @@ argvus-sessionctl restart blueman-applet
 Importe variáveis de ambiente para a sessão:
 
 ```sh
-argvus-sessionctl import-environment
+argvus sessionctl import-environment
 ```
 
 Isso sincroniza variáveis de Wayland, Hyprland, Qt, cursor e DBus entre o shell e os serviços de usuário do systemd.

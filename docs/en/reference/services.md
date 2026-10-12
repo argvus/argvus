@@ -47,17 +47,17 @@ The system-level `argvus-firewall.service` belongs to `argvus-firewall`. The cal
 
 ## Session management commands
 
-The `argvus-sessionctl` command manages the session lifecycle and can restart specific components without logging out:
+The `argvus sessionctl` command manages the session lifecycle and can restart specific components without logging out:
 
 ### Session lifecycle
 
 ```sh
-argvus-sessionctl start               # Start a new session
-argvus-sessionctl stop                # Stop the current session
-argvus-sessionctl restart             # Restart the entire session
-argvus-sessionctl reload              # Reload configuration and active services
-argvus-sessionctl status              # Show session status
-argvus-sessionctl logs                # Display session logs
+argvus sessionctl start               # Start a new session
+argvus sessionctl stop                # Stop the current session
+argvus sessionctl restart             # Restart the entire session
+argvus sessionctl reload              # Reload configuration and active services
+argvus sessionctl status              # Show session status
+argvus sessionctl logs                # Display session logs
 ```
 
 ### Component-specific restarts
@@ -66,18 +66,18 @@ Restart individual services without affecting the entire session:
 
 ```sh
 # Desktop surfaces
-argvus-sessionctl restart waybar
-argvus-sessionctl restart wallpaper
-argvus-sessionctl restart shell
+argvus sessionctl restart waybar
+argvus sessionctl restart wallpaper
+argvus sessionctl restart shell
 
 # Notifications and switcher
-argvus-sessionctl restart dunst snappy-switcher
+argvus sessionctl restart dunst snappy-switcher
 
 # Clipboard and input
-argvus-sessionctl restart clipboard keyboard-layout
+argvus sessionctl restart clipboard keyboard-layout
 
 # Bluetooth applet (optional)
-argvus-sessionctl restart blueman-applet
+argvus sessionctl restart blueman-applet
 ```
 
 ### Environment synchronization
@@ -85,7 +85,7 @@ argvus-sessionctl restart blueman-applet
 Import environment variables into the session:
 
 ```sh
-argvus-sessionctl import-environment
+argvus sessionctl import-environment
 ```
 
 This synchronizes Wayland, Hyprland, Qt, cursor, and DBus variables between the shell and systemd user services.

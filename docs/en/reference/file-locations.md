@@ -27,8 +27,8 @@ description: Important installed ARGVUS files and directories.
 - `$XDG_CONFIG_HOME/argvus/data/rofi/` — user copies of the Rofi configuration, themes and mode. ARGVUS creates each copy when it first changes the file; unchanged files are read from `/usr/share/argvus/launcher/config/`.
 - `$XDG_CONFIG_HOME/argvus/data/generated/removable-devices/theme.css` — projected removable-devices stylesheet.
 - `$XDG_CONFIG_HOME/argvus/data/hypr/` — user Hyprland Lua overrides and native Hyprland projections.
-- `$XDG_CONFIG_HOME/hypr/hyprland.lua` — optional complete native Hyprland configuration selected by `argvus-start`; it is not an incremental overlay.
-- `$XDG_STATE_HOME/argvus/config-projection.json` — projection manifest: generation, effective-config hash, changed sections and pending runtime work. Read by `argvus-sessionctl reload`; never a source of truth.
+- `$XDG_CONFIG_HOME/hypr/hyprland.lua` — optional complete native Hyprland configuration selected by `argvus start`; it is not an incremental overlay.
+- `$XDG_STATE_HOME/argvus/config-projection.json` — projection manifest: generation, effective-config hash, changed sections and pending runtime work. Read by `argvus sessionctl reload`; never a source of truth.
 - `$XDG_STATE_HOME/argvus/widget-telemetry-blocks` — legacy telemetry block preferences. Migration input only; canonical values live in `config.json` and this file is no longer written.
 - `$XDG_STATE_HOME/argvus/session.log` — graphical session log (normally `~/.local/state/argvus/session.log`).
 - `/usr/share/wayland-sessions/argvus.desktop` — graphical session entry.

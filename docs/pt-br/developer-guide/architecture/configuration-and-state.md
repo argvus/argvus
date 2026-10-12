@@ -34,11 +34,11 @@ externos como `hyprctl` e scripts de assets de temas. Python fica reservado a
 testes, auditorias e ferramentas de desenvolvimento; não é dependência do
 runtime crítico do desktop.
 
-`argvus-config apply` é a fronteira de reconstrução (com `project` como alias
+`argvus config apply` é a fronteira de reconstrução (com `project` como alias
 compatível). Ele regenera outputs ausentes mesmo quando o documento canônico
 não mudou, escreve projectors em staging e troca atomicamente a árvore `data/`
 apenas depois de projeções bem-sucedidas. O lifecycle da sessão continua pertencendo
-ao `argvus-sessionctl`, que usa esse manifesto para planejar reloads focados.
+ao `argvus sessionctl`, que usa esse manifesto para planejar reloads focados.
 
 Quando o chamador já confirmou uma generation — `apply-theme`, uma troca de
 accent, um `set`/`patch` ou uma mudança de bloco de widget-telemetry — o
@@ -50,20 +50,20 @@ ausente ou não tem trabalho pendente. Reprojetar nesse momento reconstruiria um
 O manifesto também registra a generation operacional, o hash da configuração
 efetiva, os domains alterados e a lista de arquivos gerados.
 `data/internal/generation.json` é apenas um marcador local descartável.
-`argvus-config status` compara esses dados com a configuração resolvida e
+`argvus config status` compara esses dados com a configuração resolvida e
 detecta arquivos ausentes ou extras.
 
 Mutations seguem a mesma fronteira: `UserConfig` é clonado para um
 `NextUserConfig`, validado, resolvido em `EffectiveConfig`, projetado e só então
 persistido. `.config-transaction.json` é estado operacional de recuperação;
-`argvus-config recover` reprojeta deterministicamente o documento canônico
+`argvus config recover` reprojeta deterministicamente o documento canônico
 anterior após uma queda entre a publicação de `data/` e `config.json`. O reload
 é solicitado somente depois do commit, e uma falha de reload não desfaz uma
 configuração persistente coerente.
 
 Mutations persistentes calculam `ChangedDomains` a partir da configuração efetiva
 anterior e nova. Depois do commit, um único reload é enviado pelo
-`argvus-sessionctl`; falhas são registradas sem rollback da configuração. O
+`argvus sessionctl`; falhas são registradas sem rollback da configuração. O
 startup faz recovery antes do bootstrap e da projeção, evitando que consumidores
 iniciem contra uma transação abandonada.
 
@@ -108,7 +108,7 @@ cache, um arquivo nativo de configuração em `$XDG_CONFIG_HOME/<app>`, um arqui
 de estado do greeter — é alvo de adapter e não deve ser lido de volta como
 configuração.
 
-A projeção cobre os consumidores de Hyprland, GTK/Qt, Waybar, Quickshell, terminais, notificações, lock screen e aplicativos nativos. O Hyprland lê as cores das bordas ativa e inativa do tema selecionado; somente `appearance.accent_custom=true` substitui a borda ativa/do grupo pelo acento definido pelo usuário. A troca de tema reaplica esses valores no reload do compositor para que ele não retenha as cores do tema anterior. Quando a configuração do usuário é reconstruída, as animações ficam habilitadas por padrão. Apagar `generated/` e executar `argvus-config apply` o recria byte a byte a partir do `config.json`; editar arquivos gerados diretamente não é durável.
+A projeção cobre os consumidores de Hyprland, GTK/Qt, Waybar, Quickshell, terminais, notificações, lock screen e aplicativos nativos. O Hyprland lê as cores das bordas ativa e inativa do tema selecionado; somente `appearance.accent_custom=true` substitui a borda ativa/do grupo pelo acento definido pelo usuário. A troca de tema reaplica esses valores no reload do compositor para que ele não retenha as cores do tema anterior. Quando a configuração do usuário é reconstruída, as animações ficam habilitadas por padrão. Apagar `generated/` e executar `argvus config apply` o recria byte a byte a partir do `config.json`; editar arquivos gerados diretamente não é durável.
 O diagnóstico de runtime deve identificar o conjunto completo de execução:
 caminho e versão/revisão do binário, raiz de assets, config, data, arquivos
 gerados, raiz interna e manifesto de projeção. `status --verbose` exibe esse

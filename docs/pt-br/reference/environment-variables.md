@@ -11,7 +11,7 @@ Trate essas variáveis como contratos de runtime e verifique o helper instalado 
 O estado derivado fica na raiz de estado, e não na raiz de configuração.
 `XDG_STATE_HOME` (normalmente `~/.local/state`) recebe
 `argvus/config-projection.json`, o manifesto de projeção que o `argvus-config`
-reconstrói e o `argvus-sessionctl reload` aplica, além de `argvus/session.log`.
+reconstrói e o `argvus sessionctl reload` aplica, além de `argvus/session.log`.
 Nenhum dos dois é uma fonte de verdade.
 
 ## Ambiente de idioma

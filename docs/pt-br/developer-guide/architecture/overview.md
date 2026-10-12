@@ -13,7 +13,7 @@ O estado compartilhado conecta essas camadas. O `argvus-config` guarda o documen
 | Camada | Responsabilidade principal | Exemplos |
 | --- | --- | --- |
 | Entrypoints e dispatcher | Iniciar aplicativos do desktop e resolver perfis do ARGVUS. | `argvus`, `argvus-app-profiles` |
-| Ciclo de vida da sessão | Preparar o ambiente, iniciar o Hyprland, sincronizar o ambiente do serviço do usuário e encerrar a sessão. | `argvus-session`, `argvus-sessionctl` |
+| Ciclo de vida da sessão | Preparar o ambiente, iniciar o Hyprland, sincronizar o ambiente do serviço do usuário e encerrar a sessão. | `argvus-session`, `argvus sessionctl` |
 | Compositor e shell | Definir o comportamento das janelas e as superfícies visíveis do desktop. | `argvus-hyprland`, `argvus-waybar`, `argvus-taskbar`, `argvus-control-panel` |
 | Configuração | Ser dono do `config.json`, do modelo de paths e de todo arquivo consumidor gerado. | `argvus-config` |
 | Aplicativos | Fornecer configurações e fluxos específicos do desktop. | Control Center, calendário, launcher, monitor do sistema e dispositivos removíveis |

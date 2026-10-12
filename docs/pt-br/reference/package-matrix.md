@@ -29,7 +29,7 @@ slug: pt/0.4.0/docs/reference/package-matrix
 | `argvus-game-snake` | Jogo Snake retro no terminal e ranking local. |
 | `argvus-removable-devices` | Ações de armazenamento UDisks2 e integração com taskbar/menu. |
 | `argvus-launcher` | Configuração e entrypoints do launcher. |
-| `argvus-terminal`, `argvus-system-monitor` | Perfis de terminal e monitor do sistema. |
+| `argvus terminal`, `argvus system-monitor` | Perfis de terminal e monitor do sistema. |
 | `argvus-firewall` | Serviço de firewall do sistema e integração com o Control Center. |
 
 O pacote `argvus` depende dos pacotes de componentes para formar o desktop completo. A presença de um pacote nesta tabela não significa que ele seja dono de toda a funcionalidade: por exemplo, a taskbar combina `argvus-waybar`, `argvus-taskbar`, `argvus-session` e provedores de domínio.

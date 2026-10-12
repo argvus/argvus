@@ -6,8 +6,8 @@ description: Diagnose greeter, Hyprland and systemd user-session failures.
 Run:
 
 ```sh
-argvus-sessionctl status
-argvus-sessionctl logs
+argvus sessionctl status
+argvus sessionctl logs
 systemctl --user status argvus-session.target
 ```
 
@@ -24,7 +24,7 @@ If `argvus-session.target` is inactive while the loading overlay is active, insp
 the projection error before restarting services:
 
 ```sh
-argvus-config project
+argvus config project
 journalctl --user -u argvus-session.target -u argvus-session-prepare.service -b --no-pager
 ```
 
@@ -32,7 +32,7 @@ journalctl --user -u argvus-session.target -u argvus-session-prepare.service -b 
 authoritative way to reproduce a generation while diagnosing. Session startup
 runs it because no committed plan exists yet; the plan it writes to
 `${XDG_STATE_HOME:-$HOME/.local/state}/argvus/config-projection.json` is what a
-later `argvus-sessionctl reload` applies, without projecting again.
+later `argvus sessionctl reload` applies, without projecting again.
 
 The session stops the loading overlay when fatal preparation or target startup
 fails. A visual consumer failure should either use its documented fallback or be

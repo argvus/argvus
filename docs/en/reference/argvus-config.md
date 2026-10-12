@@ -11,18 +11,18 @@ For most users, configuration happens through the ARGVUS Control Center or this 
 
 ```sh
 # View your configuration location and validate it
-argvus-config path
-argvus-config validate
+argvus config path
+argvus config validate
 
 # Get a specific value
-argvus-config get /appearance/theme
-argvus-config get /appearance/theme --raw    # Without JSON formatting
+argvus config get /appearance/theme
+argvus config get /appearance/theme --raw    # Without JSON formatting
 
 # Set a value (must be valid JSON)
-argvus-config set /appearance/theme '"gruvbox-dark"'
+argvus config set /appearance/theme '"gruvbox-dark"'
 
 # Apply changes to reload the session
-argvus-config apply
+argvus config apply
 ```
 
 For administrators and advanced configuration, continue reading below.
@@ -42,56 +42,56 @@ The file is written atomically, kept private to the user, and protected by `.con
 The `argvus-config` command is installed by the `argvus-config` package:
 
 ```sh
-argvus-config path
-argvus-config validate
-argvus-config ensure
-argvus-config migrate
-argvus-config status
-argvus-config explain /layout/gaps_out
-argvus-config get /appearance/theme --effective --raw
-argvus-config set /appearance/accent '"#61AFEF"'
-argvus-config patch appearance-patch.json
-argvus-config apply-theme universe --variant sticky --accent '#EEEEEE' --gtk-mode dark
-argvus-config apply-theme universe-float --variant float --accent '#EEEEEE' --gtk-mode dark
-argvus-config theme-manifest universe-float
-argvus-config unset /appearance/accent
-argvus-config apply
-argvus-config rebuild
-argvus-config project
-argvus-config project --force
+argvus config path
+argvus config validate
+argvus config ensure
+argvus config migrate
+argvus config status
+argvus config explain /layout/gaps_out
+argvus config get /appearance/theme --effective --raw
+argvus config set /appearance/accent '"#61AFEF"'
+argvus config patch appearance-patch.json
+argvus config apply-theme universe --variant sticky --accent '#EEEEEE' --gtk-mode dark
+argvus config apply-theme universe-float --variant float --accent '#EEEEEE' --gtk-mode dark
+argvus config theme-manifest universe-float
+argvus config unset /appearance/accent
+argvus config apply
+argvus config rebuild
+argvus config project
+argvus config project --force
 ```
 
 `ensure` materializes a new `config.json` with the schema defaults, or fills
 missing fields without replacing explicit values. It fails on malformed JSON.
 `migrate` imports existing legacy appearance state without replacing values
-already present in `config.json`. `argvus-sessionctl` runs `recover`, `ensure`,
+already present in `config.json`. `argvus sessionctl` runs `recover`, `ensure`,
 `migrate` and `project` before applying a reload after configuration changes:
 
 ```sh
-argvus-sessionctl apply-config
+argvus sessionctl apply-config
 ```
 
 `apply` and `rebuild` are aliases for rebuilding every projection from
 `config.json`; `project` is the historical spelling and accepts `--force`.
-`apply` also delegates the post-commit runtime reload to `argvus-sessionctl`.
+`apply` also delegates the post-commit runtime reload to `argvus sessionctl`.
 Set `ARGVUS_NO_RUNTIME=1` for preparation or isolated tests.
 Generation happens in staging and the `data/` tree is swapped only after all
 projectors succeed. Therefore deleting `data/generated/` and running
-`argvus-config apply` is a reproducible rebuild without publishing a partial
+`argvus config apply` is a reproducible rebuild without publishing a partial
 sequence of Hyprland or Taskbar outputs. The command records derived
 section hashes and the runtime decision in
 `$XDG_STATE_HOME/argvus/config-projection.json` (normally
 `~/.local/state/argvus/config-projection.json`). Neither the manifest nor
 generated files are sources of truth. `apply` performs the post-commit reload
-through `argvus-sessionctl`; `project` remains projection-only for compatibility.
+through `argvus sessionctl`; `project` remains projection-only for compatibility.
 
 Every persistent mutation uses the same rule: if the canonical document changed,
-the CLI invokes one centralized `argvus-sessionctl reload` after commit. The
+the CLI invokes one centralized `argvus sessionctl reload` after commit. The
 reload result is recorded in `data/internal/last-reload.json`.
 
-`argvus-sessionctl reload` is therefore an *apply* step, not a projection step.
+`argvus sessionctl reload` is therefore an *apply* step, not a projection step.
 When the incoming manifest reports pending work it restores the targeted
-consumers described by the plan and does not call `argvus-config project` again;
+consumers described by the plan and does not call `argvus config project` again;
 reprojecting would rebuild an identical tree and discard the plan the mutation
 just produced. It falls back to migration and projection only when no committed
 plan exists, for example during session startup.
@@ -154,7 +154,7 @@ Widget telemetry block selection is canonical at
 `/control_panel/widget_telemetry_blocks`, an array of the seven block names
 (`system`, `cpu_gpu`, `memory`, `storage`, `processes`, `network`, `keys`). The
 legacy `$XDG_STATE_HOME/argvus/widget-telemetry-blocks` file is read only as a
-migration fallback and is never written. `argvus-widget-telemetry-toggle blocks
+migration fallback and is never written. `argvus widget-telemetry-toggle blocks
 set` and `blocks all` patch the canonical array in a single atomic write, and
 `apply-state` assumes the selection was already persisted by its caller.
 
@@ -166,12 +166,12 @@ and owns validation and live hyprctl application. .spaces and .borders are
 migration-only state and are never the source of truth.
 
 Accent and GTK mode state use the same Rust boundary. Use `argvus-config
-accent COLOR` or `argvus-config accent --theme-default` for accent ownership,
-and `argvus-config mode toggle|set dark|light` for GTK mode. The historical
+accent COLOR` or `argvus config accent --theme-default` for accent ownership,
+and `argvus config mode toggle|set dark|light` for GTK mode. The historical
 accent and mode scripts are compatibility wrappers; `.accent-color`,
 `.accent-custom` and `.gtk-mode` are migration/projection files only.
 
-Logical ARGVUS paths are also resolved by `argvus-config paths`. The legacy
+Logical ARGVUS paths are also resolved by `argvus config paths`. The legacy
 `paths.sh` file only exposes compatibility functions; native overrides, user
 data, generated data and system fallback are resolved by the Rust path model.
 
@@ -180,7 +180,7 @@ read-modify-write operation. `apply-theme` performs the equivalent atomic
 theme transaction and preserves `accent_custom` and `wallpaper_custom` values.
 Mutating commands build a `NextUserConfig`, resolve an `EffectiveConfig`, stage
 all projectors, and only then publish the canonical JSON. An operational
-`.config-transaction.json` marker allows `argvus-config recover` to reproject
+`.config-transaction.json` marker allows `argvus config recover` to reproject
 the previous configuration after a crash between data and JSON publication.
 Theme defaults are declared by the packaged
 `appearance/config/theme-defaults.json` manifest; CSS, Lua, Rasi and Qt files
@@ -202,8 +202,8 @@ With `--raw`, string values are printed without JSON quotes, while objects and a
 The same logical model is used for profile exchange:
 
 ```sh
-argvus-config export --scope appearance --output appearance.json
-argvus-config import --scope appearance appearance.json
+argvus config export --scope appearance --output appearance.json
+argvus config import --scope appearance appearance.json
 ```
 
 Use `--scope desktop` for the complete managed desktop model. Missing fields use ARGVUS defaults; generated output should not be edited directly.
@@ -226,24 +226,24 @@ Power preferences use `power.screen_off_minutes`, `power.lock_minutes`, `power.k
 
 `migrate` imports the old root files and sections once, preserving an existing canonical value. Legacy `defaults.json`, `/defaults`, `/hyprland/keybindings`, `keybindings.toml`, dot-files, `generated/` and component directories are moved below `data/`; repeated reloads do not recreate the old root layout. Selecting the current theme again is idempotent: if canonical state and projections already agree, the projection plan reports no changed sections and the session skips splash and service restarts.
 
-Power follows the same projection contract: Control Center writes `/power` in `config.json`, `argvus-config project` renders `data/hypr/hypridle.conf` atomically, and only then may `argvus-sessionctl` restart `argvus-hypridle.service`. Removing that file is recoverable with `argvus-config project`; a value of `0` omits the corresponding timeout and means Never.
+Power follows the same projection contract: Control Center writes `/power` in `config.json`, `argvus config project` renders `data/hypr/hypridle.conf` atomically, and only then may `argvus sessionctl` restart `argvus-hypridle.service`. Removing that file is recoverable with `argvus config project`; a value of `0` omits the corresponding timeout and means Never.
 
 Lock-screen appearance is projected by Rust from the canonical theme, accent,
 effects, wallpaper and font state into `data/hypr/hyprlock.conf`. The historical
 `hyprlock-theme.sh` entrypoint is compatibility-only and delegates to
-`argvus-config lock apply`; `--invalidate` only invalidates the derived blurred
+`argvus config lock apply`; `--invalidate` only invalidates the derived blurred
 wallpaper cache.
 
 Power timeout changes use `/power/lock_minutes` and
-`/power/screen_off_minutes` as their source of truth. `argvus-config project`
+`/power/screen_off_minutes` as their source of truth. `argvus config project`
 reuses the existing Hypridle renderer, and the `idle-timeout.sh` entrypoint is
 only a compatibility adapter; service restart remains delegated to
-`argvus-sessionctl`.
+`argvus sessionctl`.
 
 Notification appearance is derived from the canonical theme, accent and
 effects into `data/notifications/dunstrc`. The historical notifications
 `theme.sh` file only exposes compatibility functions that call
-`argvus-config notifications`; it does not parse or mutate Dunst configuration.
+`argvus config notifications`; it does not parse or mutate Dunst configuration.
 
 Hardware-oriented adapters such as display discovery and Bluetooth control are
 now imported by the Rust display domain: `nwg-displays` is an external importer,
@@ -258,26 +258,26 @@ while lock-DPMS is session runtime state under
 Hyprland input projection or locale fallback, while the active layout remains
 session runtime state discovered from Hyprland. The cycle entrypoint and the
 keyboard-layout daemon are compatibility wrappers only; the user service runs
-the Rust daemon directly and `argvus-sessionctl keyboard-layout cycle` is the
+the Rust daemon directly and `argvus sessionctl keyboard-layout cycle` is the
 stable command for callers.
 
 Bluetooth runtime state follows the external-adapter boundary but is not part
-of `argvus-config`: `/usr/bin/argvus-bluetooth` owns typed parsing and
+of `argvus-config`: `argvus-bluetoothctl` owns typed parsing and
 validation around `bluetoothctl`, bounded retries, system-service checks and
-RFKill status. `bluetooth-control.sh` and `argvus-bluetoothctl` remain
+RFKill status. `bluetooth-control.sh` and `argvus bluetoothctl` remain
 compatibility entrypoints. Adapter power, paired devices and connected devices
 remain BlueZ runtime state rather than canonical JSON state; hardware-live
 Bluetooth validation is environment-dependent.
 ## Runtime identity and reconciliation
 
-Use `argvus-config status --verbose` to inspect the exact binary, build
+Use `argvus config status --verbose` to inspect the exact binary, build
 identity, configuration root, generated root, asset root, manifest source and
 active generation. It reports `synchronized`, `stale`, `incomplete`, `legacy`
 and `pending-transaction` projection states.
 
-`argvus-config --version` reports package version, build revision when supplied
+`argvus config --version` reports package version, build revision when supplied
 by the build environment, and profile. Development tests must inject their
-binary and assets explicitly; they must not silently use `/usr/bin/argvus-config`
+binary and assets explicitly; they must not silently use `/usr/lib/argvus/commands/argvus-config`
 or `~/.config/argvus`. `apply` safely normalizes legacy combined identifiers
 such as `argvus-dark-float` into separate theme and variant values before
 rebuilding projections. The installed asset manifest is

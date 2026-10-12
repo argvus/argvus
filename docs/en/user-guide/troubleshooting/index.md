@@ -9,4 +9,4 @@ description: Diagnose common ARGVUS installation and runtime problems.
 - [Display and Hyprland](/docs/user-guide/troubleshooting/display-and-hyprland/)
 - [Themes and wallpaper](/docs/user-guide/troubleshooting/theme-and-wallpaper/)
 
-Start with `argvus-sessionctl status` and distinguish package contents from active user overrides and generated files.
+Start with `argvus sessionctl status` and distinguish package contents from active user overrides and generated files.

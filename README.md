@@ -44,16 +44,16 @@ split across smaller packages:
 | Quickshell control panel | `argvus-control-panel` |
 | Taskbar, Waybar and widgets | `argvus-taskbar`, `argvus-waybar`, `argvus-taskbar-calendar`, `argvus-widget-telemetry` |
 | Settings application (TUI) | `argvus-control-center` |
-| Launcher and lock screen | `argvus-launcher`, `argvus-lock` |
+| Launcher and lock screen | `argvus launcher`, `argvus-lock` |
 | Appearance, wallpapers, fonts and icons | `argvus-appearance`, `argvus-wallpapers`, `argvus-fonts`, `argvus-icons`, `argvus-branding` |
 | Themes | `argvus-themes`, `argvus-theme-*` |
-| Terminal, TUI apps and system monitor | `argvus-terminal`, `argvus-app-profiles`, `argvus-system-monitor` |
+| Terminal, TUI apps and system monitor | `argvus terminal`, `argvus-app-profiles`, `argvus system-monitor` |
 | Display, power, network and notifications | `argvus-display`, `argvus-power`, `argvus-network`, `argvus-notifications` |
 | Desktop portals and Wayland/DBus defaults | `argvus-portal` |
 | Removable storage | `argvus-removable-devices` |
 | Accounts | `argvus-accounts` |
 | Firewall | `argvus-firewall` |
-| Games | `argvus-games`, `argvus-game-snake` |
+| Games | `argvus-games`, `argvus game-snake` |
 | Shared libraries | `argvus-config`, `argvus-i18n` (with `argvus-language-en-us` and `argvus-language-pt-br`), `argvus-tui` |
 
 The `argvus` package itself provides the `argvus` command, the install target for

@@ -32,11 +32,11 @@ small compatibility entrypoints or adapters for external consumers such as
 `hyprctl` and asset-owned theme scripts. Python is reserved for tests, audits
 and development helpers; it is not part of the critical desktop runtime.
 
-`argvus-config apply` is the rebuild boundary (`project` remains the
+`argvus config apply` is the rebuild boundary (`project` remains the
 compatibility spelling). It regenerates missing outputs even when the canonical
 document is unchanged, renders projectors in staging, and atomically swaps the
 `data/` tree only after every projection succeeds. The session lifecycle remains owned by
-`argvus-sessionctl`, which consumes that manifest to plan targeted reloads.
+`argvus sessionctl`, which consumes that manifest to plan targeted reloads.
 
 When a caller has already committed a generation — `apply-theme`, an accent
 change, a `set`/`patch`, or a widget-telemetry block change — `reload` **applies**
@@ -48,13 +48,13 @@ identical tree and discard the plan the mutation just produced.
 The manifest also records the operational generation, effective-configuration
 hash, changed domains and generated file list. `data/internal/generation.json`
 is a disposable local projection marker and is never a user preference.
-`argvus-config status` compares these records with the resolved configuration
+`argvus config status` compares these records with the resolved configuration
 and reports missing or extra generated files.
 
 Mutations follow the same engine boundary: `UserConfig` is cloned into a
 `NextUserConfig`, validated, resolved into `EffectiveConfig`, projected, and
 only then persisted. `.config-transaction.json` is operational recovery state;
-`argvus-config recover` deterministically reprojects the previous canonical
+`argvus config recover` deterministically reprojects the previous canonical
 document after a crash between publishing `data/` and `config.json`. Reload is
 requested only after the commit, and a reload failure does not roll back a
 coherent persisted configuration.
@@ -85,7 +85,7 @@ being silently replaced.
 
 Persistent mutations compare the resolved old and new configurations through
 `ChangedDomains`. After commit, one reload request is sent through
-`argvus-sessionctl`; reload failure is reported and recorded without rolling
+`argvus sessionctl`; reload failure is reported and recorded without rolling
 back the committed configuration. Session startup performs recovery before
 bootstrap materialization and projection, so consumers do not start against an
 abandoned transaction.
@@ -107,7 +107,7 @@ migration input. Anything a component still writes at runtime — a cache, a nat
 config file under `$XDG_CONFIG_HOME/<app>`, a greeter state file — is an adapter
 target and must not be read back as configuration.
 
-Projection covers consumers for Hyprland, GTK/Qt, Waybar, Quickshell, terminals, notifications, lock screen and native applications. Hyprland reads active and inactive border colors from the selected theme; an explicit `appearance.accent_custom=true` is the only case that overrides the active/group border with the user accent. Theme switching reapplies these values through the compositor reload so it cannot retain the previous theme's colors. If the user configuration is recreated, effects default to animations enabled. Deleting `generated/` and running `argvus-config apply` recreates it byte-for-byte from `config.json`; editing generated files directly is not durable.
+Projection covers consumers for Hyprland, GTK/Qt, Waybar, Quickshell, terminals, notifications, lock screen and native applications. Hyprland reads active and inactive border colors from the selected theme; an explicit `appearance.accent_custom=true` is the only case that overrides the active/group border with the user accent. Theme switching reapplies these values through the compositor reload so it cannot retain the previous theme's colors. If the user configuration is recreated, effects default to animations enabled. Deleting `generated/` and running `argvus config apply` recreates it byte-for-byte from `config.json`; editing generated files directly is not durable.
 Runtime diagnosis must identify the complete execution tuple: binary path,
 version/revision, asset root, config root, data root, generated root, internal
 root and projection manifest. `status --verbose` exposes this tuple and

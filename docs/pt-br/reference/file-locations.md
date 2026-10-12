@@ -28,8 +28,8 @@ slug: pt/0.4.0/docs/reference/file-locations
 * `$XDG_CONFIG_HOME/argvus/data/rofi/` — cópias do usuário da configuração, dos temas e do modo do Rofi. O ARGVUS cria cada cópia quando altera o arquivo pela primeira vez; arquivos não alterados são lidos de `/usr/share/argvus/launcher/config/`.
 * `$XDG_CONFIG_HOME/argvus/data/generated/removable-devices/theme.css` — stylesheet projetado de dispositivos removíveis.
 * `$XDG_CONFIG_HOME/argvus/data/hypr/` — overrides Lua e projeções nativas do Hyprland.
-* `$XDG_CONFIG_HOME/hypr/hyprland.lua` — configuração nativa completa opcional do Hyprland, selecionada pelo `argvus-start`; não é um overlay incremental.
-* `$XDG_STATE_HOME/argvus/config-projection.json` — manifesto de projeção: generation, hash da configuração efetiva, seções alteradas e trabalho de runtime pendente. Lido pelo `argvus-sessionctl reload`; nunca é fonte de verdade.
+* `$XDG_CONFIG_HOME/hypr/hyprland.lua` — configuração nativa completa opcional do Hyprland, selecionada pelo `argvus start`; não é um overlay incremental.
+* `$XDG_STATE_HOME/argvus/config-projection.json` — manifesto de projeção: generation, hash da configuração efetiva, seções alteradas e trabalho de runtime pendente. Lido pelo `argvus sessionctl reload`; nunca é fonte de verdade.
 * `$XDG_STATE_HOME/argvus/widget-telemetry-blocks` — preferências legadas de blocos de telemetria. Apenas entrada de migração; os valores canônicos estão no `config.json` e esse arquivo não é mais escrito.
 * `$XDG_STATE_HOME/argvus/session.log` — log da sessão gráfica (normalmente `~/.local/state/argvus/session.log`).
 * `/usr/share/wayland-sessions/argvus.desktop` — entrada da sessão gráfica.

@@ -18,7 +18,7 @@ Shared state connects these layers. `argvus-config` holds the canonical document
 | Layer | Primary responsibility | Examples |
 | --- | --- | --- |
 | Entry points and dispatch | Start desktop applications and resolve ARGVUS profiles. | `argvus`, `argvus-app-profiles` |
-| Session lifecycle | Prepare the environment, launch Hyprland, synchronize the user service environment and own session shutdown. | `argvus-session`, `argvus-sessionctl` |
+| Session lifecycle | Prepare the environment, launch Hyprland, synchronize the user service environment and own session shutdown. | `argvus-session`, `argvus sessionctl` |
 | Compositor and shell | Define window behavior and visible desktop surfaces. | `argvus-hyprland`, `argvus-waybar`, `argvus-taskbar`, `argvus-control-panel` |
 | Configuration | Own `config.json`, the path model and every generated consumer file. | `argvus-config` |
 | Applications | Provide settings and focused desktop workflows. | Control Center, calendar, launcher, system monitor and removable devices |

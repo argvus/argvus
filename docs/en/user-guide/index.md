@@ -11,7 +11,7 @@ The desktop combines a Hyprland session, a Waybar taskbar, a Quickshell control 
 
 - Open the settings application with `argvus --control-center`.
 - Open the calendar with `argvus --calendar`.
-- Inspect the session with `argvus-sessionctl status`.
+- Inspect the session with `argvus sessionctl status`.
 - Read the installed command list with `argvus --help`.
 
 ## User guide

@@ -3,7 +3,7 @@ title: Localization
 description: Use ARGVUS in English or Portuguese.
 ---
 
-`argvus-i18n` provides the shared catalogs, the `argvus-i18n validate` command and the QML module `org.argvus.i18n`. ARGVUS currently ships English and Portuguese catalogs.
+`argvus-i18n` provides the shared catalogs, the `argvus i18n validate` command and the QML module `org.argvus.i18n`. ARGVUS currently ships English and Portuguese catalogs.
 
 Native applications and shell components consume the shared catalogs. A translated string may therefore be used by more than one repository.
 

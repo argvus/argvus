@@ -14,6 +14,8 @@ require_command shellcheck
 cd "$ROOT_DIR"
 shellcheck tools/sh/*.sh packaging/arch/common/*.sh src/usr/bin/argvus
 bash -n tools/sh/*.sh packaging/arch/common/*.sh src/usr/bin/argvus
+shellcheck tests/dispatcher.sh
+bash tests/dispatcher.sh
 
 metadata() {
 	bash -c '
