@@ -32,7 +32,7 @@ Commands:
   argvus config | i18n | accounts | firewall
   argvus taskbar-calendar | removable-devices | notifications
   argvus networkctl | bluetoothctl | displayctl | widget-telemetry-toggle
-  argvus launcher | projects | snippets | ssh | git
+  argvus launcher | projects | snippets | ssh | keys | git
   argvus tui-terminal | app-profiles-yazi-keymap | game-snake | terminal
 
 Aliases:
@@ -81,6 +81,7 @@ private_command_name() {
     projects) printf 'argvus-projects\n' ;;
     snippets) printf 'argvus-snippets\n' ;;
     ssh) printf 'argvus-ssh\n' ;;
+    keys) printf 'argvus-keys\n' ;;
     git) printf 'argvus-git\n' ;;
     tui-terminal) printf 'argvus-tui-terminal\n' ;;
     app-profiles-yazi-keymap) printf 'argvus-app-profiles-yazi-keymap\n' ;;
