@@ -46,6 +46,7 @@ depends=(
   'hyprshot'
   'wayland'
   'firefox'
+  'code'
   'mesa'
   'mesa-utils'
   'qt5-quickcontrols2'
