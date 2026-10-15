@@ -71,6 +71,8 @@ It is therefore more than a Hyprland configuration or a collection of personal d
 
 ARGVUS does not need to replace every application. It integrates selected upstream applications where that is the most reliable choice, while keeping the desktop-wide behavior and configuration coherent.
 
+The name combines two ideas. *ARGV*, from *argument vector*, is the list of arguments a program receives, and reflects the keyboard-first goal of driving the desktop through commands and shortcuts. *US*, from *User System*, reflects the goal of a desktop centered on its user. For the full explanation and the pronunciation audio, see [About ARGVUS](/about/).
+
 For the implementation boundaries and package ownership, see the developer [architecture overview](/docs/developer-guide/architecture/overview/) and [repository roles](/docs/developer-guide/architecture/repository-roles/).
 
 ## Continue by goal
