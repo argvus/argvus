@@ -11,9 +11,9 @@ Use this table when you know what you want to change but not which ARGVUS surfac
 | Change the accent color | **Control Center → Appearance → Accents** |
 | Change the wallpaper | **Control Center → Appearance → Wallpapers** |
 | Enable or disable visual effects | **Control Center → Appearance → Effects**, **Control Center → Appearance → Launchers**, **Control Center → Configuration**, **Taskbar**, **Widget Telemetry** or **Control Panel** |
-| Change taskbar position or utility grouping | **Control Center → Appearance → Spaces, Borders & Position** |
+| Change taskbar position or utility grouping | **Control Center → Appearance → Taskbar → Position** and **Icons** |
 | Customize taskbar JSONC or CSS | [Waybar and taskbar overrides](/docs/argvus-waybar/) |
-| Change window gaps or borders | **Control Center → Appearance → Spaces, Borders & Position** |
+| Change window gaps or borders | **Control Center → Desktop & Input → Hyprland → Window spaces** and **Borders** |
 | Choose visible Control Panel cards | **Control Center → Appearance → Control Panel** |
 | Change keyboard shortcuts | **Control Center → Locale & Region → Keyboard shortcuts** |
 | Add an advanced Hyprland rule, monitor setting or new keybinding | [Hyprland overrides](/docs/argvus-hyprland/hyprland-overrides/) |
