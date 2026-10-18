@@ -16,10 +16,10 @@ O target usa uma unidade de preparação one-shot antes de iniciar os componente
 
 `argvus-sessionctl ready` projeta a configuração canônica antes de iniciar o target. Uma falha fatal de projeção ou do início do target é registrada e encerra o overlay de carregamento independente, evitando um spinner aparentemente infinito. Consumidores visuais opcionais devem usar um fallback ou reportar uma falha degradada sem substituir o target da sessão.
 
-A resolução de paths e o plano de preparação do Hyprland pertencem ao Rust. Os
-arquivos legados `paths.sh` e `hypr-init.sh` são entrypoints de compatibilidade;
-eles não contêm mais precedência de paths, loops de startup ou orquestração de
-projeções.
+A resolução de paths, a preparação da sessão e o plano de reload do Hyprland
+pertencem ao Rust. `argvus-config session-prepare` e `argvus-config
+session-reload-config` executam as etapas de startup e de reload; o script legado
+`hypr-init.sh` foi removido.
 
 ## Serviços e encerramento
 

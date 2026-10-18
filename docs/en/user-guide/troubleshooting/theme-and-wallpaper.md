@@ -15,11 +15,12 @@ argvus config apply
 argvus sessionctl reload
 ```
 
-`theme-switch.sh` and `accent-switch.sh` are orchestrators: they validate, lock,
-show the splash, commit through `argvus-config` and then reconcile the external
-consumers that cannot read `config.json`. They never write `data/generated/`, and
-`theme-switch.sh` no longer writes the GTK, storage or `mode.css` files itself.
-Use `accent-switch.sh --apply` to re-run only the accent reconciliation.
+`argvus theme-switch` (which runs `argvus-config theme-apply`) and `argvus config accent`
+are orchestrators: they validate, lock, show the splash, commit through
+`argvus-config` and then reconcile the external consumers that cannot read
+`config.json`. They never write `data/generated/`, and the theme transaction does
+not write the GTK, storage or `mode.css` files through separate scripts.
+Use `argvus config accent --apply` to re-run only the accent reconciliation.
 
 If only the pre-login greeter is white or uses the fallback theme, compare the private source with its public projection:
 

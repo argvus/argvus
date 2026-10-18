@@ -108,9 +108,9 @@ source, theme and variant. It does not parse generated files or create a second
 precedence rule.
 
 Theme and effects projection are implemented in `argvus-config` itself.
-`theme-switch.sh`, `accent-switch.sh` and `effects-toggle.sh` do not project:
+The theme transaction (`argvus theme-switch`, which runs `theme-apply`), `argvus config accent` and `argvus effects-toggle` do not project:
 they validate, lock, show the splash, commit through this CLI and then
-reconcile external consumers that cannot read `config.json`. `effects-toggle.sh`
+reconcile external consumers that cannot read `config.json`. `argvus effects-toggle`
 is a thin delegate with no output of its own. The appearance helpers are never
 called by the projector, and they must never write below `data/generated/`.
 
@@ -248,7 +248,8 @@ effects into `data/notifications/dunstrc`. The historical notifications
 Hardware-oriented adapters such as display discovery and Bluetooth control are
 now imported by the Rust display domain: `nwg-displays` is an external importer,
 while `/displays` and `data/generated/hypr/monitors.lua` remain canonical and
-derived state respectively. Wallpaper selection, taskbar utility-group mode,
+derived state respectively. The display tools change the layout with
+`argvus config monitor-set`, `monitor-primary`, `monitor-workspaces` and `monitor-remove`; the display commands are `argvus config display status|list-modes|set|apply|apply-nwg|migrate-nwg|nwg-import|nwg-apply`. The Hyprland file is projected from `/displays`; no shell script writes it any more. Wallpaper selection, taskbar utility-group mode,
 and default-app lookup also use `argvus-config` APIs; their historical Shell
 entrypoints are UI or compatibility wrappers. Keep Awake is a persistent
 `/power/keep_awake` preference projected to the `data/power/keep-awake` marker,
@@ -264,8 +265,7 @@ stable command for callers.
 Bluetooth runtime state follows the external-adapter boundary but is not part
 of `argvus-config`: `argvus-bluetoothctl` owns typed parsing and
 validation around `bluetoothctl`, bounded retries, system-service checks and
-RFKill status. `bluetooth-control.sh` and `argvus bluetoothctl` remain
-compatibility entrypoints. Adapter power, paired devices and connected devices
+RFKill status. `argvus bluetoothctl` is the entrypoint. Adapter power, paired devices and connected devices
 remain BlueZ runtime state rather than canonical JSON state; hardware-live
 Bluetooth validation is environment-dependent.
 ## Runtime identity and reconciliation

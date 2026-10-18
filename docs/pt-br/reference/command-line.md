@@ -41,6 +41,7 @@ O dispatcher também aceita os nomes sem o prefixo `--`, como `argvus control-ce
 | `argvus taskbar-calendar` / `removable-devices` / `notifications` | Calendário da taskbar, dispositivos removíveis e notificações. |
 | `argvus networkctl` / `bluetoothctl` / `displayctl` / `widget-telemetry-toggle` | Controles de rede, Bluetooth, displays e telemetria. |
 | `argvus launcher` / `projects` / `snippets` / `ssh` / `keys` / `git` | Lançador e ferramentas de seleção, o gerenciador de chaves SSH (`argvus keys`) e a TUI de git de um projeto escolhido. |
+| `argvus gpg` | Chaves GPG: `list`, `status`, `generate`, `export-public`, `export-private`, `import`, `import-private`, `delete`, `edit`, `keyserver`. Subcomando de `argvus-keys`. |
 | `argvus tui-terminal` / `app-profiles-yazi-keymap` / `game-snake` / `terminal` | Lançadores de terminal e auxiliares. |
 
 O dispatcher procura esses executáveis em `/usr/lib/argvus/commands/`. Defina `ARGVUS_COMMANDS_DIR` para usar outro diretório, por exemplo em testes ou em uma verificação com `DESTDIR`. Até que um pacote instale seu executável ali, o dispatcher usa o nome encontrado no `PATH`. Os nomes `argvus-*` acima continuam funcionando onde um pacote os instala, mas a forma `argvus <comando>` é a interface pública.

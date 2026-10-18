@@ -16,7 +16,7 @@ cor de destaque, espaçamentos e outros comportamentos.
 | --- | --- | --- |
 | `/usr/share/argvus` | Defaults empacotados (imutáveis). Fonte base de leitura. | pacman (upgrade) |
 | `~/.config/argvus/config/` | Documento canônico modular. Fonte de verdade do argvus-config. | `argvus-config` |
-| `~/.config/argvus/data/<app>/` | Config de cada app tocada pelo usuário/runtime (waybar, hypr, quickshell, kitty...). | `theme-switch`, `accent-switch`, `argvus --setup` |
+| `~/.config/argvus/data/<app>/` | Config de cada app tocada pelo usuário/runtime (waybar, hypr, quickshell, kitty...). | `theme-switch`, `argvus config accent`, `argvus --setup` |
 | `~/.config/argvus/data/generated/` | Config de runtime reconstruída a partir dos defaults + preferências. | runtime |
 | `~/.config/argvus/data/state/` | Estado do usuário (antigo `~/.local/state/argvus`). | runtime |
 | `~/.config/argvus/data/` | Preferências pequenas: `.active-theme`, `.accent-color`, `.spaces`, `control-center/defaults.json`. | runtime |
@@ -59,7 +59,7 @@ hyprland.lua
    │  • resolve tema/accent/spacing via cadeia de precedência
    │  • registra binds (teclas)
    ▼
-hypr-init.sh --started   (primeira ação do DE)
+argvus-config session-prepare   (primeira ação do DE, via argvus-session-prepare)
    │
    ├──► 1º login? ──NÃO──► apenas lê o estado existente
    │          │SIM
@@ -79,9 +79,9 @@ hypr-init.sh --started   (primeira ação do DE)
 
 - **Sem `~/.config/argvus`?** O DE ainda inicia normalmente, lendo tudo de
   `/usr/share/argvus`.
-- **Primeiro login:** o `hypr-init.sh --started` detecta que não há
+- **Primeiro login:** o `argvus-config session-prepare` detecta que não há
   `~/.config/argvus/data/.active-theme` e aplica o tema padrão empacotado
-  (`ARGVUS_NO_RUNTIME=1 ... theme-switch.sh`), materializando sob demanda os
+  (`ARGVUS_NO_RUNTIME=1 argvus theme-switch`), materializando sob demanda os
   arquivos que o tema precisa modificar.
 
 ---
@@ -93,7 +93,7 @@ refletir o tema ativo, a cor de destaque ou os espaçamentos. Para reescrever um
 arquivo com `sed -i`, o runtime precisa de uma cópia **real** editável.
 
 Sempre que um script roda com `ARGVUS_MUTABLE_CONFIG=1` (por exemplo
-`theme-switch.sh`, `accent-switch.sh`, `spaces-switch.sh`, `monitor-switch.sh`):
+`argvus theme-switch`, `argvus config accent`, `spaces-switch.sh`, `argvus config display`):
 
 ```text
 paths_config("<app>/arquivo")
@@ -123,7 +123,7 @@ Hyprland **sem** que o usuário precise editar nada manualmente.
 ### Tema (`SUPER + SHIFT + T`)
 
 1. O tema ativo fica gravado em `~/.config/argvus/data/.active-theme`.
-2. `theme-switch.sh <tema>` é chamado com `ARGVUS_MUTABLE_CONFIG=1`.
+2. `argvus theme-switch <tema>` é chamado com `ARGVUS_MUTABLE_CONFIG=1`.
 3. Ele reescreve as configs de app (waybar, rofi, kitty, papéis de parede,
    etc.) na camada do usuário e reinicia os serviços afetados.
 4. Na próxima leitura, o `hyprland.lua` encontra o novo tema na precedência.
@@ -131,7 +131,7 @@ Hyprland **sem** que o usuário precise editar nada manualmente.
 ### Cor de destaque (controle `Highlight color`)
 
 1. A cor fica gravada em `~/.config/argvus/data/.accent-color`.
-2. `accent-switch.sh` materializa e reescreve as paletas das apps
+2. `argvus config accent` materializa e reescreve as paletas das apps
    (quickshell, waybar, rofi, gtk) e notifica o runtime para recarregar.
 
 ### Espaçamentos (`SUPER + SHIFT + T` → opção de espacamento / `.spaces`)
@@ -178,12 +178,12 @@ não o substituem**.
 
 ```text
 1. Instalação:  /usr/share/argvus  <-- pacote (nada em ~/.config/argvus ainda)
-2. 1º login:    hypr-init.sh --started
+2. 1º login:    argvus-config session-prepare
                     • .active-theme não existe → aplica tema padrão
                     • theme-switch materializa waybar/rofi/kitty/qt6ct na camada do usuário
                     • gsettings define GTK/ícone/cursor; wallpaper inicia; bars/sidebar sobem
 3. Uso:         tudo lido de ~/.config/argvus/... (vence) ou /usr/share/argvus (base)
-4. O controle `Highlight color` chama `accent-switch` para reescrever paletas em ~/.config/argvus e recarrega
+4. O controle `Highlight color` chama `argvus config accent` para reescrever paletas em ~/.config/argvus e recarrega
 5. Reboot:      hyprland.lua lê tema+accent+spacing da precedência → sessão igual
 ```
 

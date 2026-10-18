@@ -17,7 +17,7 @@ instead of asking users to edit generated output.
 
 `argvus-appearance` therefore owns theme and accent orchestration, while
 `argvus-config` owns canonical state and structured projection.
-`theme-switch.sh` and `accent-switch.sh` validate, lock and commit through
+`argvus theme-switch` (the `argvus-config theme-apply` transaction) and `argvus config accent` validate, lock and commit through
 `argvus-config` when available, then reconcile compatibility consumers that
 cannot read `config.json` directly. Those adapters are
 the native Qt6ct file, GTK `settings.ini` and `gsettings` hints, the terminal and

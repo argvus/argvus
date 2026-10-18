@@ -17,9 +17,9 @@ The target uses a one-shot preparation unit before starting long-running compone
 
 `argvus-sessionctl ready` projects the canonical configuration before starting the target. A fatal projection or target-start failure is logged and stops the independent loading overlay, preventing an apparently endless spinner. Optional visual consumers must resolve a fallback or report a degraded failure without replacing the session target.
 
-Path resolution and the Hyprland preparation plan are Rust-owned. The legacy
-`paths.sh` and `hypr-init.sh` files are compatibility entrypoints; they no
-longer contain path precedence, startup loops or projection orchestration.
+Path resolution, session preparation and the Hyprland reload plan are Rust-owned.
+`argvus-config session-prepare` and `argvus-config session-reload-config` run the
+startup and reload steps; the legacy `hypr-init.sh` script has been removed.
 
 ## Services and shutdown
 

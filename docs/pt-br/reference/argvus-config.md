@@ -106,10 +106,10 @@ projeção ausente ou stale.
 e variante. Ele não interpreta arquivos gerados nem cria outra regra de precedência.
 
 As projeções de tema e efeitos são implementadas pelo próprio `argvus-config`.
-`theme-switch.sh`, `accent-switch.sh` e `effects-toggle.sh` não projetam: eles
+A transação de tema (`argvus theme-switch`, que executa `theme-apply`), `argvus config accent` e `argvus effects-toggle` não projetam: eles
 validam, travam, exibem o splash, confirmam através desta CLI e então reconciliam
 consumidores externos que não conseguem ler o `config.json`.
-`effects-toggle.sh` é um delegate fino, sem saída própria. Os helpers de
+`argvus effects-toggle` é um delegate fino, sem saída própria. Os helpers de
 aparência nunca são chamados pelo projetor e jamais podem escrever em
 `data/generated/`.
 
@@ -251,7 +251,10 @@ componente até receberem um boundary Rust próprio para estado de runtime e
 ciclo de vida dos dispositivos.
 O domínio Rust de display também importa a saída do `nwg-displays`; o programa
 externo é apenas um adapter e `/displays` continua sendo a fonte canônica,
-enquanto `data/generated/hypr/monitors.lua` é derivado. Seleção de wallpaper,
+enquanto `data/generated/hypr/monitors.lua` é derivado. As ferramentas de display
+alteraram o layout com `argvus config monitor-set`, `monitor-primary`, `monitor-workspaces` e `monitor-remove`; os comandos de display são `argvus config display status|list-modes|set|apply|apply-nwg|migrate-nwg|nwg-import|nwg-apply`. O arquivo
+do Hyprland é projetado a partir de `/displays`; nenhum script Shell o grava mais.
+Seleção de wallpaper,
 modo do grupo utilitário da taskbar e consulta de aplicativos padrão usam APIs
 de `argvus-config`; os entrypoints Shell históricos são wrappers de UI ou
 compatibilidade. Keep Awake é a preferência persistente `/power/keep_awake`, projetada no marcador `data/power/keep-awake`,
@@ -267,8 +270,7 @@ estável para callers.
 O estado de runtime do Bluetooth segue a fronteira de adapter externo, mas não
 faz parte do `argvus-config`: `argvus-bluetoothctl` concentra o parsing e
 a validação tipados sobre o `bluetoothctl`, retries limitados, verificação do
-serviço do sistema e estado do RFKill. `bluetooth-control.sh` e
-`argvus bluetoothctl` permanecem como entrypoints de compatibilidade. Energia
+serviço do sistema e estado do RFKill. `argvus bluetoothctl` é o entrypoint. Energia
 do adapter, dispositivos pareados e conexões continuam sendo estado externo
 do BlueZ, não estado canônico JSON; a validação live depende do hardware
 disponível.
