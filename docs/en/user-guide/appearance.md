@@ -39,9 +39,9 @@ The color shown in the table is the value written to `config.json` when that fam
 
 **Sticky** is the compact layout: tiled windows use small internal gaps, the outer gaps are zero and the taskbar sits close to the screen edge. **Float** adds larger gaps, rounded corners, shadows and margins around the taskbar and shell surfaces.
 
-The mode changes geometry and surface treatment; it does not create a sixth color family. See [Themes](/docs/argvus-themes/) for selection and [Desktop](/docs/user-guide/desktop/) for taskbar and window placement.
+The mode changes geometry and surface treatment; it does not create a sixth color family. See [Themes](/docs/user-guide/appearance/) for selection and [Desktop](/docs/user-guide/desktop/) for taskbar and window placement.
 
-- [Themes](/docs/argvus-themes/)
+- [Themes](/docs/user-guide/appearance/)
 - [Wallpapers](/docs/argvus-appearance/wallpapers/)
 - [Fonts and icons](/docs/argvus-appearance/fonts-and-icons/)
 - [Effects](/docs/argvus-appearance/effects/)

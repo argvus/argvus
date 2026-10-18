@@ -33,7 +33,7 @@ The session package installs these user units under `/usr/lib/systemd/user` (the
 | `argvus-polkit.service` | PolicyKit agent integration. |
 | `argvus-session-loading.service` | Session-loading overlay during compositor startup. |
 
-`argvus-blueman-applet.service` and `argvus-snappy-switcher.service` are also shipped by the session package. Some units are optional or started conditionally; they are not all active in every session.
+`argvus-blueman-applet.service` is also shipped by the session package. Some units are optional or started conditionally; they are not all active in every session.
 
 To inspect a unit's effective definition rather than only its source checkout:
 
@@ -71,7 +71,7 @@ argvus sessionctl restart wallpaper
 argvus sessionctl restart shell
 
 # Notifications and switcher
-argvus sessionctl restart dunst snappy-switcher
+argvus sessionctl restart dunst
 
 # Clipboard and input
 argvus sessionctl restart clipboard keyboard-layout

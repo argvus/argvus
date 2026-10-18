@@ -4,7 +4,7 @@ description: Inicie o ARGVUS após a instalação.
 slug: pt/0.4.0/docs/user-guide/installation/first-session
 ---
 
-Para login gráfico, consulte o fluxo greetd em [Sessões](/pt/docs/user-guide/sessions/) e inspecione as opções com `argvus-greeter-setup --help`.
+Para login gráfico, consulte o fluxo greetd em [Sessões](/pt/docs/user-guide/sessions/) e inspecione as opções com `argvus greeter-setup --help`.
 
 Para uma sessão TTY, faça login e execute:
 

@@ -1,0 +1,17 @@
+[package]
+name = "argvus-i18n-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+description.workspace = true
+repository.workspace = true
+homepage.workspace = true
+
+[lib]
+name = "argvus_i18n"
+path = "src/lib.rs"
+
+[dependencies]
+serde_json.workspace = true

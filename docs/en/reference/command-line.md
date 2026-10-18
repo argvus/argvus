@@ -1,87 +1,115 @@
 ---
 title: Command line
-description: Public ARGVUS commands and their owning packages.
+description: The argvus command, its subcommands, the flags kept for keybindings, and where each one runs.
 ---
 
-The `/usr/bin/argvus` dispatcher provides `--setup`, `--system-monitor`, `--control-center`, `--terminal`, `--spf`, `--yazi`, `--about`, `--calendar`, `--game-snake`, `--default-apps`, `--removable-devices`, `--displays`, `--network-interfaces` and `--version`. The same names are available without the leading `--`.
+`/usr/bin/argvus` is the public entry point of ARGVUS. It is one Rust program built from the `argvus-cli` crate. Each subcommand either runs inside that program, runs a helper executable from the commands directory, or runs a packaged script.
 
-Other public entry points include `argvus-session`, `argvus start`, `argvus sessionctl`, `argvus tty`, `argvus-control-center`, `argvus-taskbar-calendar`, `argvus-accounts`, `argvus displayctl`, `argvus networkctl`, `argvus bluetoothctl`, `argvus-notifications`, `argvus-firewall` and `argvus widget-telemetry-toggle`.
+Run `argvus --help` for the list installed with your version. The subcommands are written without the leading `--`. The `--` forms are kept only where a keybinding or a desktop entry uses them.
 
-Use each command's `--help` for options. There is no separate `argvus-about`, `argvus-setup` or `argvus-default-apps` binary.
+## Where each command runs
 
-## Dispatcher examples
+- **In-process:** the command is a library of the workspace and runs inside `argvus`. No separate executable exists. These are `config`, `i18n`, `keys`, `gpg`, `projects`, `terminal`, `system-monitor`, `network`, `bluetooth`, `widget-telemetry`, `tui-terminal` and `setup`.
+- **Helper:** a separate executable in `/usr/lib/argvus/commands/`, installed by the `argvus-gtk` package. These are `control-center` (a terminal application) and the GTK 4 applications `taskbar-calendar` and `removable-devices`.
+- **Private executable:** an executable that another package installs in `/usr/lib/argvus/commands/`. `argvus` only starts it. These include `session`, `start`, `tty`, `sessionctl`, `launcher`, `snippets`, `ssh`, `git`, `app-profiles-yazi-keymap`, `notifications`, `displayctl`, `firewall`, `accounts`, `taskbar-actions` and the `greeter-*` entry points.
+- **Script:** a packaged shell script run with `/bin/sh`. These are the Hyprland script commands listed below.
 
-The dispatcher is the stable user-facing entry point for integrated applications:
+`ARGVUS_COMMANDS_DIR` changes the commands directory, for tests and `DESTDIR` checks. A private executable that is not found there is looked up on `PATH`.
 
-| Command | Action |
+## Subcommands
+
+| Command | Runs | Notes |
+| --- | --- | --- |
+| `argvus config ...` | In-process | Configuration model and tools. Also reached by `theme-switch` and `effects-toggle`. |
+| `argvus i18n ...` | In-process | Translations: `get DOMAIN KEY [name=value...]`, `locale`, `list`, `validate [LOCALE]`. |
+| `argvus keys ...` | In-process | SSH key manager. `gpg` is an alias for the GPG subcommands. |
+| `argvus gpg ...` | In-process | GPG keys: `list`, `status`, `generate`, `export-public`, `export-private`, `import`, `import-private`, `delete`, `edit`, `keyserver`. |
+| `argvus projects ...` | In-process | Project picker. |
+| `argvus terminal ...` | In-process | The ARGVUS terminal profile. |
+| `argvus system-monitor ...` | In-process | The system monitor. |
+| `argvus network ...` | In-process | NetworkManager status and controls (`networkctl` is kept as an alias). |
+| `argvus bluetooth ...` | In-process | Bluetooth status and controls (`bluetoothctl` is kept as an alias). |
+| `argvus widget-telemetry block ...` | In-process | The Waybar telemetry block. This is the hot path of the bar. |
+| `argvus widget-telemetry toggle ...` | In-process | Switches the telemetry blocks on and off, and their order. |
+| `argvus game-snake` | Private executable | The terminal Snake game, from the independent `argvus-game-snake` project, an optional package. Outside a terminal it opens one. |
+| `argvus control-center [page]` | Helper (terminal application) | Opens the Control Center, or focuses the window that is already open. |
+| `argvus taskbar-calendar [args]` | GTK 4 application | Defaults to `toggle`. |
+| `argvus removable-devices [args]` | GTK 4 application | Defaults to `menu`. |
+| `argvus loading-theme ...` | Packaged `splash` at `/usr/lib/argvus/loading-theme/splash` | The session loading overlay. |
+| `argvus session`, `start`, `tty`, `sessionctl` | Private executables | Session entry points and the session controller. |
+| `argvus greeter`, `greeter-session`, `greeter-tui`, `greeter-setup` | Private executables | Greeter entry points. |
+| `argvus accounts`, `firewall` | Private executables | Accounts and firewall tools. |
+| `argvus launcher`, `snippets`, `ssh`, `git` | Private executables | Launcher and picker tools. |
+| `argvus tui-terminal` | In-process | Terminal wrapper for TUI applications. |
+| `app-profiles-yazi-keymap` | Private executable | Keymap helper. |
+| `argvus notifications`, `displayctl`, `taskbar-actions` | Private executables | Notifications, display and taskbar actions. |
+| `argvus setup [options]` | In-process | Copies packaged defaults into the user configuration. See below. |
+
+Arguments are forwarded unchanged, including spaces and empty values. Standard input, output, error, signals and the exit status belong to the command that runs. An unknown name fails with a hint to run `argvus --help`.
+
+## Flags and aliases
+
+These names exist so that keybindings, desktop entries and older scripts keep working. Prefer the subcommand form in new code.
+
+| Flag or alias | Equivalent |
 | --- | --- |
-| `argvus --control-center` | Open the ARGVUS Control Center. |
-| `argvus --default-apps` | Open the Control Center Apps page (compatibility route). |
-| `argvus --calendar` | Toggle the taskbar calendar. |
-| `argvus --game-snake` | Open the retro terminal Snake game. |
-| `argvus --removable-devices` | Open the removable-device menu. |
-| `argvus --system-monitor` | Open the configured system monitor. |
-| `argvus --terminal` | Open the ARGVUS terminal profile. |
-| `argvus --spf` / `argvus --yazi` | Open the corresponding file-manager profile, reading `data/generated/superfile/` and `data/generated/yazi/`. |
-| `argvus --displays` | Open the Control Center Displays page. |
-| `argvus --network-interfaces` | Open network-interface controls in the Control Center. |
+| `--control-center`, `--about`, `--default-apps` | `control-center` (with `about` and `apps` pages) |
+| `--displays`, `--monitors` page | `control-center displays` |
+| `--network-interfaces` | `control-center network interfaces` |
+| `--system-monitor`, `--terminal`, `--game-snake` | `system-monitor`, `terminal`, `game-snake` |
+| `--calendar`, `--removable-devices`, `--storage` | `taskbar-calendar`, `removable-devices` |
+| `--spf`, `--superfile` | the file manager (`spf`) |
+| `--yazi`, `--yazy` | the file browser (`yazi`) |
+| `--setup` | `setup` |
+| `--start-desktop` | starts `tty` (no arguments are forwarded) |
+| `--version`, `-V`, `version` | prints `ARGVUS <version>` |
+| `help`, `--help`, `-h` | prints the usage |
+| `networkctl`, `bluetoothctl` | `network`, `bluetooth` |
+| `widget-telemetry-toggle`, `widget-telemetry-block` | `widget-telemetry toggle`, `widget-telemetry block` |
+| `theme-switch` | `config theme-apply` |
+| `effects-toggle` | `config effects` |
 
-The dispatcher also accepts command names without the leading `--`, such as `argvus control-center` or `argvus calendar`. Run `argvus --help` for the installed version's complete list.
+The Control Center accepts legacy page flags as its first argument and maps them to page names. Examples: `--apps` becomes `apps`, `--keyboard-layout` becomes `locale`, and `--hostname` becomes `system`.
 
-## Delegated subcommands
+## Hyprland script commands
 
-`argvus <command> [arguments...]` runs a private ARGVUS executable. Arguments are forwarded unchanged, including spaces and empty values. Standard input, output, error, signals and the exit status belong to the started command. `argvus help` and `argvus --help` print the list. An unknown name fails with a hint to run `argvus --help`.
+These run packaged scripts and are used by the Hyprland configuration:
 
-| Command | Runs |
-| --- | --- |
-| `argvus sessionctl` / `session` / `start` / `tty` | Session controller and login entry points. |
-| `argvus greeter` / `greeter-session` / `greeter-tui` / `greeter-setup` | Greeter entry points and setup. |
-| `argvus config` / `i18n` / `accounts` / `firewall` | Configuration, translations, accounts and firewall tools. |
-| `argvus taskbar-calendar` / `removable-devices` / `notifications` | Taskbar calendar, removable devices and notifications. |
-| `argvus networkctl` / `bluetoothctl` / `displayctl` / `widget-telemetry-toggle` | Network, Bluetooth, display and telemetry controls. |
-| `argvus launcher` / `projects` / `snippets` / `ssh` / `keys` / `git` | Launcher and picker tools, the SSH key manager (`argvus keys`), and the git TUI for a picked project. |
-| `argvus gpg` | GPG keys: `list`, `status`, `generate`, `export-public`, `export-private`, `import`, `import-private`, `delete`, `edit`, `keyserver`. Subcommand of `argvus-keys`. |
-| `argvus tui-terminal` / `app-profiles-yazi-keymap` / `game-snake` / `terminal` | Terminal launchers and helpers. |
+`cheatsheets-hypr`, `cheatsheets-launcher`, `scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `layout-mode-menu`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
 
-The dispatcher looks for these executables in `/usr/lib/argvus/commands/`. Set `ARGVUS_COMMANDS_DIR` to use another directory, for example in tests or a `DESTDIR` check. Until a package installs its executable there, the dispatcher falls back to the name on `PATH`. The `argvus-*` names above still work where a package installs them, but the `argvus <command>` form is the public interface.
+A script in the user's configuration overrides the packaged one. The lookup order is the same as `_config_path` in `hyprland.lua`: the user's config copy, then the ARGVUS data copy, then the state copy, then the generated copy, and only then the packaged file under `/usr/share/argvus`.
 
-## Session and domain commands
+## Examples
 
 ```sh
-argvus sessionctl status
-argvus sessionctl reload
-argvus sessionctl logs
-argvus displayctl --apply
-argvus networkctl status
-argvus bluetoothctl available
-argvus widget-telemetry-toggle status
+argvus control-center displays
+argvus taskbar-calendar toggle
+argvus widget-telemetry block header system
+argvus widget-telemetry toggle status
+argvus i18n get widget-telemetry label.device
+argvus config get /appearance/theme
+argvus network status
+argvus bluetooth status
+argvus gpg list
 ```
 
-`argvus sessionctl` controls the ARGVUS user session and can restart owned components. The display, network and Bluetooth commands delegate to their respective providers. They are not replacements for the underlying system services.
+## Setup
 
-## Setup and customization
-
-`SUPER + SHIFT + R` runs `argvus sessionctl reload`. When a preceding command has already committed a generation, reload applies it from the projection manifest and does not project again. If the ARGVUS profile or
-`config.json` is missing, reload materializes a fresh canonical profile,
-projects its generated files and applies the runtime changes. It does not copy
-`/usr/share/argvus` into the home directory, and it does not replace a
-malformed existing JSON file.
-
-`argvus --setup` is a separate, optional override tool. It never serves as
-profile recovery. Its manifest currently supports the advanced TUI overrides
-`foot-tui` and `kitty-tui`:
+`argvus setup` copies packaged defaults from `/usr/share/argvus/<app>` into `~/.config/argvus/data/<app>`, so that you can customize them. It never edits the packaged files.
 
 ```sh
-argvus --setup --copy foot-tui
-argvus --setup --copy kitty-tui
-argvus --setup --copy-all
-argvus --setup --copy foot-tui --force
-argvus --setup --copy-all --dry-run
+argvus setup --copy <app>          # copy one packaged app
+argvus setup --copy-all            # copy every packaged app directory
+argvus setup --copy <app> --force  # back up the existing destination first
+argvus setup --copy <app> --dry-run
 ```
 
-`--copy-all` copies only those explicit manifest entries; it does not enumerate
-all first-level directories under `/usr/share/argvus`, and it never copies
-scripts, services, assets, generated files or `config.json`. Setup resolves all
-sources and destinations before mutating anything. `--force` backs up only the
-affected destination, while `--dry-run` performs no filesystem mutation. There
-is no separate `argvus-setup` binary.
+A destination that already exists is reported and left alone, unless `--force` is given. With `--force`, the existing directory is renamed to `<name>.bak-<timestamp>` before the copy.
+
+The `argvus` app is special: it copies the contents of its packaged directory into the configuration root. Because the configuration root already exists when setup runs, `--copy argvus` needs `--force` in the current code.
+
+Setup validates every option before it changes anything. Invalid app names (empty, starting with `.`, or containing `/`) are rejected.
+
+## Session and reload
+
+`SUPER + SHIFT + R` runs `argvus sessionctl reload`. The session controller applies the generated configuration and restarts only the components it owns. It does not copy `/usr/share/argvus` into the home directory, and it does not replace a malformed JSON file.

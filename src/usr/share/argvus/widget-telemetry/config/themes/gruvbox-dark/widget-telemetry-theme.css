@@ -1,0 +1,9 @@
+/* theme: gruvbox-dark — widget telemetry panel */
+@define-color th-background    #282828;
+@define-color th-header        #D4BE98;
+@define-color th-foreground    #EBDBB2;
+@define-color th-window-bg     #3C3836;
+@define-color th-window-bg-rgba rgba(60, 56, 54, 0.35);
+@define-color th-border        rgba(212, 190, 152, 0.15);
+@define-color th-border-header rgba(212, 190, 152, 0.20);
+@define-color th-disconnected  rgba(168, 153, 132, 0.35);

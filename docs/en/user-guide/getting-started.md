@@ -8,7 +8,7 @@ After the first graphical session, you do not need to configure every part of AR
 ## A useful order
 
 1. Read the [desktop overview](/docs/user-guide/desktop/) to identify windows, workspaces, the taskbar, the Control Panel and the launcher.
-2. Open the [Control Center](/docs/argvus-control-center/) and choose a theme, mode, accent and wallpaper in **Appearance**.
+2. Open the [Control Center](/docs/components/argvus-control-center/) and choose a theme, mode, accent and wallpaper in **Appearance**.
 3. Adjust [windows and layout](/docs/argvus-hyprland/windows-and-layout/) if the default gaps, borders or taskbar spacing do not suit your screen.
 4. Configure the [taskbar](/docs/argvus-taskbar/taskbar/) and decide which [Control Panel](/docs/argvus-control-panel/) cards you want visible.
 5. Review [keyboard shortcuts](/docs/argvus-hyprland/keyboard-shortcuts/) and change only the bindings you actually use.
@@ -20,7 +20,7 @@ The first four steps are optional personalization. The remaining steps are norma
 
 Use **Control Center** for settings that describe how ARGVUS should be configured: appearance, layout, fonts, input, shortcuts, language, region and default applications. Use **Control Panel** for status and frequent session actions such as volume, brightness, network state, notifications, power and session controls.
 
-See [Control Center vs Control Panel](/docs/argvus-control-center/) for the full distinction and [Where to configure things](/docs/user-guide/where-to-configure/) for a quick index.
+See [Control Center vs Control Panel](/docs/components/argvus-control-center/) for the full distinction and [Where to configure things](/docs/user-guide/where-to-configure/) for a quick index.
 
 ## Changes, persistence and recovery
 

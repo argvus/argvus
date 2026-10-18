@@ -1,0 +1,2 @@
+@import url("solarized-light.css");
+.argvus-calendar, .day-selected, .nav-button:hover, .add-event:hover, .day:hover, .event-button:hover, .editor-action:hover, .editor-entry, .event-editor entry { border-radius: 4px; }

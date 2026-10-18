@@ -23,7 +23,7 @@ jobs:
 
       - name: Install validation tools
         run: |
-          pacman -Syu --noconfirm --needed             base-devel             git             pkgconf             shellcheck             sudo
+          pacman -Syu --noconfirm --needed             base-devel             git             pkgconf             rust             gtk4             gtk4-layer-shell             shellcheck             sudo
 
       - name: Validate repository
         shell: bash

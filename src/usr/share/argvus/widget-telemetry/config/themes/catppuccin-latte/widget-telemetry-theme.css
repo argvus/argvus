@@ -1,0 +1,9 @@
+/* theme: catppuccin-latte — widget telemetry panel */
+@define-color th-background    #EFF1F5;
+@define-color th-header        #4C4F69;
+@define-color th-foreground    #4C4F69;
+@define-color th-window-bg     #E6E9EF;
+@define-color th-window-bg-rgba rgba(230, 233, 239, 0.82);
+@define-color th-border        rgba(172, 176, 190, 0.55);
+@define-color th-border-header rgba(172, 176, 190, 1);
+@define-color th-disconnected  rgba(156, 160, 176, 0.30);

@@ -1,0 +1,15 @@
+/* theme: monokai-dark — widget telemetry panel */
+@define-color th-background #221F22;
+@define-color th-header #78DCE8;
+@define-color th-foreground #FCFCFA;
+@define-color th-window-bg     #2D2A2E;
+@define-color th-window-bg-rgba rgba(45, 42, 46, 0.35);
+@define-color th-border #5B595C;
+@define-color th-border-header #78DCE8;
+@define-color th-disconnected #939293;
+@define-color th-metric-primary #78DCE8;
+@define-color th-metric-secondary #AB9DF2;
+@define-color th-metric-success #A9DC76;
+@define-color th-metric-warning #FFD866;
+@define-color th-metric-error #FF6188;
+@define-color th-metric-orange #FC9867;

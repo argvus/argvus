@@ -1,0 +1,100 @@
+@import url("./themes/argvus-dark/widget-telemetry-theme.css");
+@import url("/usr/share/argvus/appearance/config/waybar/mode.css");
+
+/*  Waybar — Painel vertical (Widget Telemetry)  */
+
+@define-color th-window-bg-effective @th-window-bg-rgba;
+
+* {
+    font-family: "IBM Plex Mono", "Symbols Nerd Font Mono", monospace;
+    font-size: 14px;
+    border: none;
+    border-radius: 0;
+    min-height: 0;
+    padding: 0;
+    margin: 0;
+}
+
+/* -- Window default -------------------------------------- */
+window#waybar {
+  min-width: 380px;
+  color: @th-foreground;
+  border-radius: 0px;
+  border: 1px solid @th-border;
+  background: @th-window-bg-effective;
+}
+
+/* -- Container  ------------------------------------------ */
+.modules-left {
+  padding: 8px 0;
+}
+
+/* -- Base ------------------------------------------------ */
+#custom-header-system,
+#custom-header-temperature-usage_cpu-gpu,
+#custom-temperature-usage_cpu-gpu,
+#custom-header-memory,
+#custom-memory,
+#custom-header-top-processes,
+#custom-top-processes,
+#custom-header-storage,
+#custom-storage,
+#custom-header-network,
+#custom-network,
+#custom-header-dev_dashboard,
+#custom-dev_dashboard,
+#custom-header-keys,
+#custom-system,
+#custom-keys {
+    padding: 1px 16px;
+    color: @th-foreground;
+    background: transparent;
+}
+
+/* -- Header --------------------------------------------- */
+#custom-header-system,
+#custom-header-temperature-usage_cpu-gpu,
+#custom-header-memory,
+#custom-header-top-processes,
+#custom-header-storage,
+#custom-header-network,
+#custom-header-dev_dashboard,
+#custom-header-keys {
+    color: @th-header;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 6px 16px 2px 16px;
+    border-top: 1px solid @th-border-header;
+    margin-top: 2px;
+}
+
+#custom-header-system {
+  padding-top: 6px;
+}
+
+/* -- Font ----------------------------------------------- */
+#custom-system,
+#custom-temperature-usage_cpu-gpu,
+#custom-memory,
+#custom-top-processes,
+#custom-storage,
+#custom-network,
+#custom-dev_dashboard,
+#custom-keys {
+  color: @th-foreground;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+/* ── Processes ------------------------------------------ */
+#custom-top-processes {
+  font-size: 10px;
+}
+
+#network.disconnected {
+  color: @th-disconnected;
+}
+
+@keyframes blink {
+  50% { opacity: 0.6; }
+}

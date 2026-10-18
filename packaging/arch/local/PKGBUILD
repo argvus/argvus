@@ -1,30 +1,27 @@
 # Maintainer: William C. Canin
-pkgname=argvus
+# Package base of the ARGVUS workspace. The Cargo workspace under this repository
+# builds the `argvus` command and the GTK 4 helpers of `argvus-gtk`.
+pkgbase=argvus
+pkgname=('argvus' 'argvus-gtk' 'argvus-greeter')
 pkgver=0.1.0
 pkgrel=1
-pkgdesc="Complete ARGVUS desktop environment package."
+pkgdesc="ARGVUS desktop: command, data and shared Rust crates."
 arch=('x86_64')
 url="https://github.com/argvus/argvus"
 license=('GPL-3.0-only')
-options=('!debug')
+makedepends=('cargo' 'pkgconf' 'gtk4' 'gtk4-layer-shell')
+options=('!debug' '!lto')
 
 depends=(
   'argvus-app-profiles'
-  'argvus-config'
-  'argvus-i18n'
   'argvus-firewall'
   'argvus-appearance'
   'argvus-branding'
-  'argvus-taskbar-calendar'
-  'argvus-game-snake'
   'argvus-control-panel'
-  'argvus-control-center'
-  'argvus-widget-telemetry'
   'argvus-display'
   'argvus-greeter'
   'argvus-icons'
   'argvus-lock'
-  'argvus-network'
   'argvus-notifications'
   'argvus-portal'
   'argvus-power'
@@ -32,13 +29,8 @@ depends=(
   'argvus-hyprland'
   'argvus-launcher'
   'argvus-accounts'
-  'argvus-removable-devices'
-  'argvus-system-monitor'
   'argvus-taskbar'
-  'argvus-terminal'
   'argvus-waybar'
-  'argvus-pwvucontrol'
-  'argvus-snappy-switcher'
   'hyprland'
   'hyprland-guiutils'
   'hyprland-qt-support'
@@ -93,36 +85,12 @@ depends=(
   'zip'
   'zsh'
 )
-optdepends=(
-  'blueman: optional Bluetooth manager and tray applet'
-  'starship: customizable prompt for any shell'
-  'kooha: graphical screen recording utility'
-  'nwg-look: GTK theme configuration utility'
-  'argvus-themes: Meta-package for all official ARGVUS themes'
-  'argvus-games: Official ARGVUS games meta-package'
-  'argvus-theme-catppuccin-latte: catppuccin-latte theme for ARGVUS'
-  'argvus-theme-dracula: dracula theme for ARGVUS'
-  'argvus-theme-everforest-light: everforest-light theme for ARGVUS'
-  'argvus-theme-github-light: github-light theme for ARGVUS'
-  'argvus-theme-gruvbox-dark: gruvbox-dark theme for ARGVUS'
-  'argvus-theme-gruvbox-high-dark: gruvbox-high-dark theme for ARGVUS'
-  'argvus-theme-gruvbox-light: gruvbox-light theme for ARGVUS'
-  'argvus-theme-matrix: matrix theme for ARGVUS'
-  'argvus-theme-monokai-dark: monokai-dark theme for ARGVUS'
-  'argvus-theme-nord-light: Nord Light theme for ARGVUS'
-  'argvus-theme-one-dark: one-dark theme for ARGVUS'
-  'argvus-theme-one-light: one-light theme for ARGVUS'
-  'argvus-theme-rose-pine: rose-pine theme for ARGVUS'
-  'argvus-theme-silver-dark: silver-dark theme for ARGVUS'
-  'argvus-theme-slate-dark: slate-dark theme for ARGVUS'
-  'argvus-theme-solarized-light: solarized-light theme for ARGVUS'
-  'argvus-theme-solitude: solitude theme for ARGVUS'
-  'argvus-theme-sunset: sunset theme for ARGVUS'
-  'argvus-theme-tokyo-night: tokyo-night theme for ARGVUS'
-  'argvus-theme-universe: universe theme for ARGVUS'
+
+optdepends=()
+source=(
+  "${pkgbase}-${pkgver}.tar.gz"
 )
-source=("${pkgname}-${pkgver}.tar.gz")
-sha256sums=("SKIP")
+sha256sums=('SKIP')
 
 # shellcheck disable=SC1091
 _functions_file="${startdir:-$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)}/../common/functions.sh"
@@ -132,10 +100,174 @@ prepare() {
   arch_normalize_source_tree
 }
 
-check() {
-  arch_check_argvus_payload
+build() {
+  arch_build_argvus_workspace
 }
 
-package() {
-  arch_package_argvus_payload
+check() {
+  arch_check_argvus_workspace
+}
+
+package_argvus() {
+  pkgdesc="ARGVUS desktop: command, data and the Hyprland-facing runtime."
+  depends=(
+    'argvus-app-profiles'
+    'argvus-firewall'
+    'argvus-appearance'
+    'argvus-branding'
+    'argvus-control-panel'
+    'argvus-display'
+    'argvus-greeter'
+    'argvus-icons'
+    'argvus-lock'
+    'argvus-notifications'
+    'argvus-portal'
+    'argvus-power'
+    'argvus-session'
+    'argvus-hyprland'
+    'argvus-launcher'
+    'argvus-accounts'
+    'argvus-taskbar'
+    'argvus-waybar'
+    'hyprland'
+    'hyprland-guiutils'
+    'hyprland-qt-support'
+    'hyprpolkitagent'
+    'hyprshot'
+    'wayland'
+    'firefox'
+    'code'
+    'mesa'
+    'mesa-utils'
+    'qt5-quickcontrols2'
+    'qt5ct'
+    'qt6-tools'
+    'virtualbox-guest-utils'
+    'adwaita-icon-theme'
+    'cliphist'
+    'fastfetch'
+    'gcc-libs'
+    'okular'
+    'feh'
+    'glib2'
+    'grim'
+    'gsimplecal'
+    'gtk4'
+    'gtk-layer-shell'
+    'imv'
+    'audacious'
+    'udisks2'
+    'udiskie'
+    'jq'
+    'mpv'
+    'nautilus'
+    'noto-fonts'
+    'noto-fonts-emoji'
+    'satty'
+    'slurp'
+    'gpu-screen-recorder'
+    'swaybg'
+    'ttf-jetbrains-mono-nerd'
+    'ttf-nerd-fonts-symbols-mono'
+    'vivid'
+    'wev'
+    'mousepad'
+    'wf-recorder'
+    'wireplumber'
+    'wl-clipboard'
+    'wtype'
+    'xdg-utils'
+    'xarchiver'
+    'neovim'
+    'zathura'
+    'zip'
+    'zsh'
+  )
+  replaces=(
+    'argvus-config'
+    'argvus-i18n'
+    'argvus-language-en-us'
+    'argvus-language-pt-br'
+    'argvus-keys'
+    'argvus-projects'
+    'argvus-terminal'
+    'argvus-system-monitor'
+    'argvus-network'
+    'argvus-widget-telemetry'
+  )
+  conflicts=(
+    'argvus-config'
+    'argvus-i18n'
+    'argvus-language-en-us'
+    'argvus-language-pt-br'
+    'argvus-keys'
+    'argvus-projects'
+    'argvus-terminal'
+    'argvus-system-monitor'
+    'argvus-network'
+    'argvus-widget-telemetry'
+  )
+  provides=(
+    'argvus-config'
+    'argvus-i18n'
+    'argvus-language-en-us'
+    'argvus-language-pt-br'
+    'argvus-keys'
+    'argvus-projects'
+    'argvus-terminal'
+    'argvus-system-monitor'
+    'argvus-network'
+    'argvus-widget-telemetry'
+  )
+  arch_package_argvus
+}
+
+package_argvus-gtk() {
+  pkgdesc="ARGVUS GTK 4 helpers: Control Center, taskbar calendar, removable devices and loading overlay."
+  depends=(
+    'argvus'
+    'gtk4'
+    'gtk4-layer-shell'
+  )
+  replaces=(
+    'argvus-control-center'
+    'argvus-taskbar-calendar'
+    'argvus-loading-theme'
+    'argvus-removable-devices'
+  )
+  conflicts=(
+    'argvus-control-center'
+    'argvus-taskbar-calendar'
+    'argvus-loading-theme'
+    'argvus-removable-devices'
+  )
+  provides=(
+    'argvus-control-center'
+    'argvus-taskbar-calendar'
+    'argvus-loading-theme'
+    'argvus-removable-devices'
+  )
+  arch_package_argvus_gtk
+}
+
+package_argvus-greeter() {
+  pkgdesc="Keyboard-first TUI greetd greeter for the ARGVUS desktop."
+  depends=(
+    'greetd'
+    'argvus'
+    'argvus-app-profiles'
+    'argvus-appearance'
+    'argvus-session'
+    'kitty'
+    'hyprland'
+    'systemd-libs'
+    'libdrm'
+  )
+  backup=(
+    'etc/argvus/greeter.toml'
+    'etc/argvus/hyprland-argvus-greeter.conf'
+    'etc/argvus/hyprland-argvus-greeter.lua'
+  )
+  install=argvus-greeter.install
+  arch_package_argvus_greeter
 }

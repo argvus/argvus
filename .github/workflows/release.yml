@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   package:
-    name: Build and publish Arch package
+    name: Build and publish Arch packages
     runs-on: ubuntu-latest
     container: archlinux:latest
 
@@ -20,7 +20,7 @@ jobs:
 
       - name: Install packaging tools
         run: |
-          pacman -Syu --noconfirm --needed             base-devel             git             gnupg             jq             pacman-contrib             sudo
+          pacman -Syu --noconfirm --needed             base-devel             git             gnupg             jq             pacman-contrib             rust             gtk4             gtk4-layer-shell             sudo
 
       - name: Prepare build user
         run: |
@@ -28,7 +28,7 @@ jobs:
           printf 'builder ALL=(ALL) NOPASSWD: ALL\n' >/etc/sudoers.d/builder
           chown -R builder:builder "$GITHUB_WORKSPACE"
 
-      - name: Prepare PKGBUILD version
+      - name: Prepare package version
         id: version
         shell: bash
         run: |
@@ -40,8 +40,10 @@ jobs:
             exit 1
           fi
 
+          # The PKGBUILD version and the workspace version (the argvus command
+          # reports it) both come from the tag. Only [workspace.package] is changed.
           sed -i "s/^pkgver=.*/pkgver=${version}/" "packaging/arch/ci/PKGBUILD"
-          sed -i "s/^VERSION=\".*\"/VERSION=\"${version}\"/" "src/usr/bin/argvus"
+          sed -i "/^\[workspace.package\]/,/^\[/ s/^version = .*/version = \"${version}\"/" Cargo.toml
           echo "version=${version}" >> "$GITHUB_OUTPUT"
 
       - name: Validate repository
@@ -54,26 +56,25 @@ jobs:
             echo "No make validate target; skipping repository validation."
           fi
 
-      - name: Build package
+      - name: Build packages
         shell: bash
         run: |
           set -euo pipefail
 
           sudo -u builder env GITHUB_WORKSPACE="$GITHUB_WORKSPACE" bash -lc             'cd "$GITHUB_WORKSPACE/packaging/arch/ci" && makepkg --nodeps --noconfirm --needed --cleanbuild --clean'
 
-          pkg_file="$(find "packaging/arch/ci" -maxdepth 1 -type f -name 'argvus-*.pkg.tar.zst' -print -quit)"
-          if [[ -z "$pkg_file" ]]; then
-            echo "Package file was not created." >&2
+          # One PKGBUILD (pkgbase argvus) produces the split packages argvus,
+          # argvus-gtk and argvus-greeter. All of them are published.
+          mapfile -t pkg_files < <(find "packaging/arch/ci" -maxdepth 1 -type f -name 'argvus*.pkg.tar.zst' | sort)
+          if [[ "${#pkg_files[@]}" -ne 3 ]]; then
+            printf 'Expected 3 split packages, found %s:\n' "${#pkg_files[@]}" >&2
+            printf '  %s\n' "${pkg_files[@]}" >&2
             exit 1
           fi
 
-          {
-            echo "pkg_file=${pkg_file}"
-            echo "pkg_name=$(basename "$pkg_file")"
-            echo "pkg_sig_file=${pkg_file}.sig"
-          } >> "$GITHUB_ENV"
+          printf '%s\n' "${pkg_files[@]}" > "$RUNNER_TEMP/argvus-packages.txt"
 
-      - name: Sign package
+      - name: Sign packages
         shell: bash
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
@@ -96,10 +97,13 @@ jobs:
           IMPORTED_GPG_FINGERPRINT="$(gpg --batch --list-secret-keys --with-colons | awk -F: '$1 == "fpr" { print $10; exit }')"
           [ "$IMPORTED_GPG_KEY_ID" = "$GPG_KEY_ID" ] || [ "$IMPORTED_GPG_FINGERPRINT" = "$GPG_KEY_ID" ] || { echo "::error::Imported GPG key does not match GPG_KEY_ID"; exit 1; }
 
-          rm -f "${pkg_file}.sig"
-          printf '%s' "$GPG_PASSPHRASE" | gpg --batch --yes --pinentry-mode loopback --passphrase-fd 0 --local-user "$GPG_KEY_ID" --detach-sign "$pkg_file"
+          mapfile -t pkg_files < "$RUNNER_TEMP/argvus-packages.txt"
+          for pkg_file in "${pkg_files[@]}"; do
+            rm -f "${pkg_file}.sig"
+            printf '%s' "$GPG_PASSPHRASE" | gpg --batch --yes --pinentry-mode loopback --passphrase-fd 0 --local-user "$GPG_KEY_ID" --detach-sign "$pkg_file"
+          done
 
-      - name: Verify package signature
+      - name: Verify package signatures
         shell: bash
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
@@ -113,15 +117,18 @@ jobs:
           chmod 700 "$GNUPGHOME"
           printf '%s' "$GPG_PRIVATE_KEY" | gpg --batch --import
 
-          gpg --batch --verify "${pkg_sig_file}" "${pkg_file}"
+          mapfile -t pkg_files < "$RUNNER_TEMP/argvus-packages.txt"
+          for pkg_file in "${pkg_files[@]}"; do
+            gpg --batch --verify "${pkg_file}.sig" "$pkg_file"
+          done
 
-      - name: Upload temporary package artifact
+      - name: Upload temporary package artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.pkg_name }}
+          name: argvus-packages-${{ steps.version.outputs.version }}
           path: |
-            ${{ env.pkg_file }}
-            ${{ env.pkg_sig_file }}
+            packaging/arch/ci/argvus*.pkg.tar.zst
+            packaging/arch/ci/argvus*.pkg.tar.zst.sig
           if-no-files-found: error
           retention-days: 1
 
@@ -132,7 +139,7 @@ jobs:
           path: packages-repo
           token: ${{ secrets.PACKAGES_REPO_TOKEN }}
 
-      - name: Publish package to argvus/packages
+      - name: Publish packages to argvus/packages
         shell: bash
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
@@ -162,11 +169,18 @@ jobs:
 
           repo_dir="$GITHUB_WORKSPACE/packages-repo/public/arch/x86_64"
           mkdir -p "$repo_dir"
-          cp "$GITHUB_WORKSPACE/${pkg_file}" "$repo_dir/${pkg_name}"
-          cp "$GITHUB_WORKSPACE/${pkg_sig_file}" "$repo_dir/${pkg_name}.sig"
+
+          mapfile -t pkg_files < "$RUNNER_TEMP/argvus-packages.txt"
+          pkg_names=()
+          for pkg_file in "${pkg_files[@]}"; do
+            pkg_name="$(basename "$pkg_file")"
+            pkg_names+=("$pkg_name")
+            cp "$GITHUB_WORKSPACE/$pkg_file" "$repo_dir/$pkg_name"
+            cp "$GITHUB_WORKSPACE/$pkg_file.sig" "$repo_dir/$pkg_name.sig"
+          done
 
           cd "$repo_dir"
-          repo-add -R argvus.db.tar.gz "$pkg_name"
+          repo-add -R argvus.db.tar.gz "${pkg_names[@]}"
           gpg_sign argvus.db.tar.gz
           gpg_sign argvus.files.tar.gz
           gpg_sign argvus.db

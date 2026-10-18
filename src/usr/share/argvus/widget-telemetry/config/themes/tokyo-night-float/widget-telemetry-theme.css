@@ -1,0 +1,9 @@
+/* theme: tokyo-night-float — widget telemetry panel */
+@define-color th-background    #1A1B26;
+@define-color th-header        #7AA2F7;
+@define-color th-foreground    #C0CAF5;
+@define-color th-window-bg     #24283B;
+@define-color th-window-bg-rgba rgba(36, 40, 59, 0.35);
+@define-color th-border        rgba(59, 66, 97, 0.65);
+@define-color th-border-header rgba(122, 162, 247, 0.45);
+@define-color th-disconnected  rgba(86, 95, 137, 0.35);

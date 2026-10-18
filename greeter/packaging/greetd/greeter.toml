@@ -1,0 +1,11 @@
+# Compatibility configuration consumed from /etc/argvus/greeter.toml. The TUI
+# currently uses the clock/date and session values; wallpaper remains retained
+# for older package/configuration contracts.
+[appearance]
+wallpaper = "/usr/share/backgrounds/argvus/argvus-dark.jxl"
+show_clock = true
+show_date = true
+
+[session]
+# The value is matched against session id, name, or DesktopNames metadata.
+default = "argvus"

@@ -1,0 +1,19 @@
+[package]
+name = "argvus-widget-telemetry-blocks"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+description = "Block commands of the ARGVUS telemetry widget"
+repository.workspace = true
+homepage.workspace = true
+readme = "../../README.md"
+
+[[bin]]
+name = "argvus-widget-telemetry-block"
+path = "src/main.rs"
+
+[dependencies]
+argvus-widget-telemetry-core.workspace = true
+argvus-runtime.workspace = true

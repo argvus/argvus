@@ -1,0 +1,20 @@
+{
+  "menu.lock": "Bloquear",
+  "menu.suspend": "Suspender",
+  "menu.logout": "Sair",
+  "menu.reboot": "Reiniciar",
+  "menu.shutdown": "Desligar",
+  "menu.launcher_missing": "O lançador de menus Rofi não foi encontrado.",
+  "menu.unsupported_launcher": "Lançador de menus não suportado: {launcher}",
+  "idle.timeout.title": "Tempo limite para bloqueio",
+  "idle.timeout.one_minute": "1 minuto",
+  "idle.timeout.minutes": "{count} minutos",
+  "idle.timeout.never": "Nunca",
+  "idle.timeout.config_missing": "A configuração do hypridle não foi encontrada: {path}",
+  "idle.timeout.invalid": "Tempo limite de bloqueio inválido: {timeout}",
+  "idle.timeout.notification": "Bloqueio por inatividade: {timeout}",
+  "keep_awake.title": "Manter acordado",
+  "keep_awake.enabled": "Manter acordado ativado",
+  "keep_awake.disabled": "Manter acordado desativado",
+  "dpms.usage": "Uso: {command} {arguments}"
+}

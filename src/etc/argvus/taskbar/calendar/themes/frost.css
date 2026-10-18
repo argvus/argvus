@@ -1,0 +1,86 @@
+@define-color argvus_bg #F6F8FA;
+@define-color argvus_bg_alpha rgba(246, 248, 250, 0.99);
+@define-color argvus_bg_effective @argvus_bg_alpha;
+@define-color argvus_surface #F1F4F7;
+@define-color argvus_fg #24292F;
+@define-color argvus_muted #6E7781;
+@define-color argvus_dim rgba(69, 69, 69, 0.34);
+@define-color argvus_accent #0969DA;
+@define-color argvus_accent_alpha rgba(9, 105, 218, 0.45);
+@define-color argvus_border #B8C1CC;
+@define-color argvus_focus #0969DA;
+
+.argvus-calendar {
+  background: @argvus_bg_effective;
+  color: @argvus_fg;
+  border-color: @argvus_border;
+  border-radius: 0;
+}
+
+.calendar-title,
+.agenda-title,
+.event-title,
+.editor-title,
+.day-has-event {
+  color: @argvus_fg;
+}
+
+.nav-button,
+.event-time,
+.editor-check,
+.editor-value,
+.editor-action,
+.events-toggle {
+  color: @argvus_muted;
+}
+
+.today-button,
+.add-event,
+.weekday,
+.day-current,
+.editor-label,
+.editor-save,
+.events-toggle:checked {
+  color: @argvus_accent;
+}
+
+.editor-delete {
+  color: #CF222E;
+}
+
+.nav-button:hover,
+.add-event:hover,
+.day:hover,
+.event-button:hover,
+.editor-action:hover,
+.agenda row:hover,
+.event-row:hover,
+.editor-entry,
+.event-editor entry {
+  background: @argvus_surface;
+  border-color: @argvus_border;
+}
+
+.nav-button:focus,
+.add-event:focus,
+.day:focus,
+.event-button:focus,
+.editor-action:focus,
+.editor-entry:focus,
+.event-editor entry:focus,
+.day-selected {
+  border-color: @argvus_focus;
+}
+
+.day-current.day-selected {
+  background: rgba(221, 244, 255, 0.8);
+}
+
+.day-outside-month,
+.agenda-empty {
+  color: @argvus_dim;
+}
+
+.event-divider {
+  color: @argvus_accent_alpha;
+}

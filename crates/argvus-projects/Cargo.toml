@@ -1,0 +1,19 @@
+[package]
+name = "argvus-projects"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+description.workspace = true
+repository.workspace = true
+homepage.workspace = true
+readme = "../../README.md"
+
+[[bin]]
+name = "argvus-projects"
+path = "src/main.rs"
+
+[dependencies]
+argvus-projects-core.workspace = true
+serde_json = "1"

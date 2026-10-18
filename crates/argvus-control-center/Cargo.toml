@@ -1,0 +1,99 @@
+[package]
+name = "argvus-control-center"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+description = "Keyboard-first ARGVUS control center"
+repository.workspace = true
+
+[features]
+default = ["full"]
+
+# Compile-time module switches. Remove a module from "full" (or build with
+# --no-default-features --features <the ones you want>) and that module will
+# not appear in argvus-control-center. Flip a module back to true by adding
+# it to the list again. Examples:
+#   const DEFAULT_APP: bool = true;   -> apps, fonts, locale, language, system
+#   const BLUETOOTH:   bool = false;  -> bluetooth
+full = [
+  "about",
+  "apps",
+  "fonts",
+  "locale",
+  "language",
+  "hardware",
+  "network",
+  "audio",
+  "bluetooth",
+  "boot",
+  "packages",
+  "services",
+  "dev-services",
+  "system",
+  "storage",
+  "diagnostics",
+  "power",
+  "session",
+  "displays",
+  "appearance",
+]
+stable = [
+  "about",
+  "apps",
+  "fonts",
+  "locale",
+  "language",
+  "network",
+  "services",
+  "system",
+]
+about = ["dep:argvus-control-center-about"]
+hardware = ["dep:argvus-control-center-hardware"]
+services = ["dep:argvus-control-center-services"]
+dev-services = ["dep:argvus-control-center-dev-services"]
+network = ["dep:argvus-control-center-network"]
+audio = ["dep:argvus-control-center-audio"]
+bluetooth = ["dep:argvus-control-center-bluetooth"]
+boot = ["dep:argvus-control-center-boot"]
+packages = ["dep:argvus-control-center-packages"]
+storage = ["dep:argvus-control-center-storage"]
+diagnostics = ["dep:argvus-control-center-diagnostics"]
+power = ["dep:argvus-control-center-power"]
+session = ["dep:argvus-control-center-session"]
+displays = ["dep:argvus-control-center-displays"]
+appearance = ["dep:argvus-control-center-appearance"]
+apps = []
+fonts = []
+locale = []
+language = []
+system = []
+
+[dependencies]
+anyhow.workspace = true
+argvus-control-center-about = { workspace = true, optional = true }
+argvus-control-center-settings = { workspace = true }
+argvus-control-center-hardware = { workspace = true, optional = true }
+argvus-control-center-services = { workspace = true, optional = true }
+argvus-control-center-dev-services = { workspace = true, optional = true }
+argvus-control-center-network = { workspace = true, optional = true }
+argvus-control-center-audio = { workspace = true, optional = true }
+argvus-control-center-bluetooth = { workspace = true, optional = true }
+argvus-control-center-boot = { workspace = true, optional = true }
+argvus-control-center-packages = { workspace = true, optional = true }
+argvus-control-center-storage = { workspace = true, optional = true }
+argvus-control-center-diagnostics = { workspace = true, optional = true }
+argvus-control-center-power = { workspace = true, optional = true }
+argvus-control-center-session = { workspace = true, optional = true }
+argvus-control-center-displays = { workspace = true, optional = true }
+argvus-control-center-appearance = { workspace = true, optional = true }
+argvus-control-center-core = { workspace = true }
+argvus-i18n.workspace = true
+argvus-theme.workspace = true
+argvus-tui.workspace = true
+crossterm.workspace = true
+ratatui.workspace = true
+
+[dev-dependencies]
+# Test builds never start external programs (see the core `testing` feature).
+argvus-control-center-core = { workspace = true, features = ["testing"] }

@@ -12,15 +12,13 @@ require_command makepkg
 require_command shellcheck
 
 cd "$ROOT_DIR"
-shellcheck tools/sh/*.sh packaging/arch/common/*.sh src/usr/bin/argvus
-bash -n tools/sh/*.sh packaging/arch/common/*.sh src/usr/bin/argvus
-shellcheck tests/dispatcher.sh
-bash tests/dispatcher.sh
+shellcheck tools/sh/*.sh packaging/arch/common/*.sh
+bash -n tools/sh/*.sh packaging/arch/common/*.sh
 
 metadata() {
 	bash -c '
 		source "$1"
-		printf "%s\n" "$pkgname" "$pkgver" "$pkgrel" "$pkgdesc"
+		printf "%s\n" "$pkgbase" "$pkgver" "$pkgrel" "$pkgdesc"
 		printf "%s\n" "${arch[*]}" "${license[*]}" "${depends[*]}"
 		printf "%s\n" "${makedepends[*]}" "${options[*]}"
 	' bash "$1"

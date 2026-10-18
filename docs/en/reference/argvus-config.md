@@ -39,7 +39,7 @@ The file is written atomically, kept private to the user, and protected by `.con
 
 ## Command line
 
-The `argvus-config` command is installed by the `argvus-config` package:
+The `argvus config` subcommand is provided in-process by the `argvus` package:
 
 ```sh
 argvus config path
@@ -159,7 +159,7 @@ set` and `blocks all` patch the canonical array in a single atomic write, and
 `apply-state` assumes the selection was already persisted by its caller.
 
 Hyprland spacing and border preferences follow the same boundary. The
-argvus-config spaces and argvus-config borders commands (and their historical
+argvus config spaces and argvus config borders commands (and their historical
 compatibility wrappers) update /layout; Rust generates
 data/generated/spaces-effective.conf and data/generated/borders-effective.conf
 and owns validation and live hyprctl application. .spaces and .borders are
@@ -263,7 +263,7 @@ the Rust daemon directly and `argvus sessionctl keyboard-layout cycle` is the
 stable command for callers.
 
 Bluetooth runtime state follows the external-adapter boundary but is not part
-of `argvus-config`: `argvus-bluetoothctl` owns typed parsing and
+of `argvus-config`: `argvus bluetooth` owns typed parsing and
 validation around `bluetoothctl`, bounded retries, system-service checks and
 RFKill status. `argvus bluetoothctl` is the entrypoint. Adapter power, paired devices and connected devices
 remain BlueZ runtime state rather than canonical JSON state; hardware-live
@@ -277,7 +277,7 @@ and `pending-transaction` projection states.
 
 `argvus config --version` reports package version, build revision when supplied
 by the build environment, and profile. Development tests must inject their
-binary and assets explicitly; they must not silently use `/usr/lib/argvus/commands/argvus-config`
+binary and assets explicitly; they must not silently use `argvus config`
 or `~/.config/argvus`. `apply` safely normalizes legacy combined identifiers
 such as `argvus-dark-float` into separate theme and variant values before
 rebuilding projections. Packaged asset identity is not recorded in a manifest in this release.

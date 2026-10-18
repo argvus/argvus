@@ -1,0 +1,16 @@
+[package]
+name = "argvus-projects-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+description = "Core crate for the ARGVUS Rust project argvus-projects"
+repository.workspace = true
+homepage.workspace = true
+
+[dependencies]
+
+[lib]
+name = "argvus_projects_core"
+path = "src/lib.rs"

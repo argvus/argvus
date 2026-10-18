@@ -40,9 +40,9 @@ As vinte e quatro famílias abaixo são definidas pelo payload atual de temas. A
 
 O valor mostrado na tabela é o accent gravado no `config.json` quando a família é selecionada ou quando **Restaurar padrão do tema** é usado. Um accent RGB escolhido manualmente vale até a próxima troca de tema, que o substitui pelo padrão do tema selecionado.
 
-O modo altera geometria e tratamento das superfícies; não cria uma nova família de cores. Veja [Temas](/pt/docs/argvus-themes/) e [Desktop](/pt/docs/user-guide/desktop/) para posicionamento.
+O modo altera geometria e tratamento das superfícies; não cria uma nova família de cores. Veja [Temas](/pt/docs/user-guide/appearance/) e [Desktop](/pt/docs/user-guide/desktop/) para posicionamento.
 
-* [Temas](/pt/docs/argvus-themes/)
+* [Temas](/pt/docs/user-guide/appearance/)
 * [Wallpapers](/pt/docs/argvus-appearance/wallpapers/)
 * [Fontes e ícones](/pt/docs/argvus-appearance/fonts-and-icons/)
 * [Efeitos](/pt/docs/argvus-appearance/effects/)

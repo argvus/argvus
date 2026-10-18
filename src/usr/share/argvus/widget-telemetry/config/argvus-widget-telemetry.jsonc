@@ -1,0 +1,224 @@
+// =============================================================================
+//  Waybar — Painel vertical (Widget Telemetry)
+// =============================================================================
+{
+    "name": "argvus-widget-telemetry",
+    "layer": "bottom",
+    "position": "left",
+    "width": 380,
+    "height": 0,
+    "spacing": 0,
+    "exclusive": false,
+    "passthrough": false,
+    "margin-top": 0,
+    "margin-left": 0,
+    "margin-bottom": 0,
+    "modules-left": [
+      // ARGVUS_TELEMETRY_SYSTEM_BEGIN
+      "custom/header-system",
+      "custom/system",
+      // ARGVUS_TELEMETRY_SYSTEM_END
+      // ARGVUS_TELEMETRY_CPU_GPU_BEGIN
+      "custom/header-temperature-usage_cpu-gpu",
+      "custom/temperature-usage_cpu-gpu",
+      // ARGVUS_TELEMETRY_CPU_GPU_END
+      // ARGVUS_TELEMETRY_MEMORY_BEGIN
+      "custom/header-memory",
+      "custom/memory",
+      // ARGVUS_TELEMETRY_MEMORY_END
+      // ARGVUS_TELEMETRY_STORAGE_BEGIN
+      "custom/header-storage",
+      "custom/storage",
+      // ARGVUS_TELEMETRY_STORAGE_END
+      // ARGVUS_TELEMETRY_PROCESSES_BEGIN
+      "custom/header-top-processes",
+      "custom/top-processes",
+      // ARGVUS_TELEMETRY_PROCESSES_END
+      // ARGVUS_TELEMETRY_NETWORK_BEGIN
+      "custom/header-network",
+      "custom/network",
+      // ARGVUS_TELEMETRY_NETWORK_END
+      // ARGVUS_TELEMETRY_DEV_DASHBOARD_BEGIN
+      "custom/header-dev_dashboard",
+      "custom/dev_dashboard",
+      // ARGVUS_TELEMETRY_DEV_DASHBOARD_END
+      // ARGVUS_TELEMETRY_KEYS_BEGIN
+      "custom/header-keys",
+      "custom/keys"
+      // ARGVUS_TELEMETRY_KEYS_END
+    ],
+    // -- System Info ----------------------------------------------------------
+    // ARGVUS_TELEMETRY_SYSTEM_BEGIN
+    "custom/header-system": {
+      "exec": "argvus widget-telemetry block header system",
+      "interval": 30,
+      "signal": 13,
+      "hide-empty-text": true,
+      "on-scroll-up": "argvus widget-telemetry toggle scroll up",
+      "on-scroll-down": "argvus widget-telemetry toggle scroll down"
+    },
+    "custom/system": {
+      "exec": "argvus widget-telemetry block system",
+      "return-type": "json",
+      "markup": true,
+      "interval": 3600,
+      "tooltip": false,
+      "signal": 13,
+      "hide-empty-text": true,
+      "on-scroll-up": "argvus widget-telemetry toggle scroll up",
+      "on-scroll-down": "argvus widget-telemetry toggle scroll down"
+    },
+    // ARGVUS_TELEMETRY_SYSTEM_END
+    // -- Temperature and Usage (CPU /GPU) -------------------------------------
+    // ARGVUS_TELEMETRY_CPU_GPU_BEGIN
+    "custom/header-temperature-usage_cpu-gpu": {
+      "exec": "argvus widget-telemetry block header cpu_gpu",
+      "interval": 30,
+      "signal": 13,
+      "hide-empty-text": true,
+      "on-scroll-up": "argvus widget-telemetry toggle scroll up",
+      "on-scroll-down": "argvus widget-telemetry toggle scroll down"
+    },
+    "custom/temperature-usage_cpu-gpu": {
+      "exec": "argvus widget-telemetry block cpu_gpu",
+      "return-type": "json",
+      "interval": 10,
+      "tooltip": false,
+      "signal": 13,
+      "hide-empty-text": true,
+      "on-scroll-up": "argvus widget-telemetry toggle scroll up",
+      "on-scroll-down": "argvus widget-telemetry toggle scroll down"
+    },
+    // ARGVUS_TELEMETRY_CPU_GPU_END
+
+    // -- Memory ---------------------------------------------------------------
+    // ARGVUS_TELEMETRY_MEMORY_BEGIN
+    "custom/header-memory": {
+      "exec": "argvus widget-telemetry block header memory",
+      "interval": 30,
+      "signal": 13,
+      "hide-empty-text": true,
+      "on-scroll-up": "argvus widget-telemetry toggle scroll up",
+      "on-scroll-down": "argvus widget-telemetry toggle scroll down"
+    },
+    "custom/memory": {
+      "exec": "argvus widget-telemetry block memory",
+      "return-type": "json",
+      "interval": 5,
+      "tooltip": false,
+      "signal": 13,
+      "hide-empty-text": true,
+      "on-scroll-up": "argvus widget-telemetry toggle scroll up",
+      "on-scroll-down": "argvus widget-telemetry toggle scroll down"
+    },
+    // ARGVUS_TELEMETRY_MEMORY_END
+
+    // -- Top Processes --------------------------------------------------------
+    // ARGVUS_TELEMETRY_PROCESSES_BEGIN
+    "custom/header-top-processes": {
+      "exec": "argvus widget-telemetry block header processes",
+      "interval": 30,
+      "signal": 13,
+      "hide-empty-text": true,
+      "on-scroll-up": "argvus widget-telemetry toggle scroll up",
+      "on-scroll-down": "argvus widget-telemetry toggle scroll down"
+    },
+    "custom/top-processes": {
+      "exec": "argvus widget-telemetry block processes",
+      "return-type": "json",
+      "interval": 10,
+      "tooltip": false,
+      "signal": 13,
+      "hide-empty-text": true,
+      "on-scroll-up": "argvus widget-telemetry toggle scroll up",
+      "on-scroll-down": "argvus widget-telemetry toggle scroll down"
+    },
+    // ARGVUS_TELEMETRY_PROCESSES_END
+
+    // -- Storage --------------------------------------------------------------
+    // ARGVUS_TELEMETRY_STORAGE_BEGIN
+    "custom/header-storage": {
+      "exec": "argvus widget-telemetry block header storage",
+      "interval": 30,
+      "signal": 13,
+      "hide-empty-text": true,
+      "on-scroll-up": "argvus widget-telemetry toggle scroll up",
+      "on-scroll-down": "argvus widget-telemetry toggle scroll down"
+    },
+    "custom/storage": {
+      "exec": "argvus widget-telemetry block storage",
+      "return-type": "json",
+      "interval": 30,
+      "tooltip": false,
+      "signal": 13,
+      "hide-empty-text": true,
+      "on-scroll-up": "argvus widget-telemetry toggle scroll up",
+      "on-scroll-down": "argvus widget-telemetry toggle scroll down"
+    },
+    // ARGVUS_TELEMETRY_STORAGE_END
+
+    // -- Netowork -------------------------------------------------------------
+    // ARGVUS_TELEMETRY_NETWORK_BEGIN
+    "custom/header-network": {
+      "exec": "argvus widget-telemetry block header network",
+      "interval": 30,
+      "signal": 13,
+      "hide-empty-text": true,
+      "on-scroll-up": "argvus widget-telemetry toggle scroll up",
+      "on-scroll-down": "argvus widget-telemetry toggle scroll down"
+    },
+    "custom/network": {
+      "exec": "argvus widget-telemetry block network",
+      "return-type": "json",
+      "interval": 10,
+      "tooltip": false,
+      "signal": 13,
+      "hide-empty-text": true,
+      "on-scroll-up": "argvus widget-telemetry toggle scroll up",
+      "on-scroll-down": "argvus widget-telemetry toggle scroll down"
+    },
+    // ARGVUS_TELEMETRY_NETWORK_END
+
+    // -- Hyprland cheatsheets -------------------------------------------------
+    // ARGVUS_TELEMETRY_KEYS_BEGIN
+    "custom/header-keys": {
+      "exec": "argvus widget-telemetry block header keys",
+      "interval": 30,
+      "signal": 13,
+      "hide-empty-text": true,
+      "on-scroll-up": "argvus widget-telemetry toggle scroll up",
+      "on-scroll-down": "argvus widget-telemetry toggle scroll down"
+    },
+    "custom/keys": {
+      "exec": "argvus widget-telemetry block keys",
+      "interval": 3600,
+      "tooltip": false,
+      "signal": 13,
+      "hide-empty-text": true,
+      "on-scroll-up": "argvus widget-telemetry toggle scroll up",
+      "on-scroll-down": "argvus widget-telemetry toggle scroll down"
+    },
+    // ARGVUS_TELEMETRY_KEYS_END
+
+    // -- Dev Dashboard ----------------------------------------------------------
+    // ARGVUS_TELEMETRY_DEV_DASHBOARD_BEGIN
+    "custom/header-dev_dashboard": {
+      "exec": "argvus widget-telemetry block header dev_dashboard",
+      "interval": 30,
+      "signal": 13,
+      "hide-empty-text": true,
+      "on-scroll-up": "argvus widget-telemetry toggle scroll up",
+      "on-scroll-down": "argvus widget-telemetry toggle scroll down"
+    },
+    "custom/dev_dashboard": {
+      "exec": "argvus widget-telemetry block dev_dashboard",
+      "return-type": "json",
+      "interval": 10,
+      "tooltip": false,
+      "signal": 13,
+      "hide-empty-text": true,
+      "on-scroll-up": "argvus widget-telemetry toggle scroll up",
+      "on-scroll-down": "argvus widget-telemetry toggle scroll down"
+    }
+    // ARGVUS_TELEMETRY_DEV_DASHBOARD_END
+}

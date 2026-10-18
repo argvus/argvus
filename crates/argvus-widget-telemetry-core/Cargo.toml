@@ -1,0 +1,17 @@
+[package]
+name = "argvus-widget-telemetry-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+description = "Core rules of the ARGVUS telemetry widget"
+repository.workspace = true
+homepage.workspace = true
+
+[lib]
+name = "argvus_widget_telemetry_core"
+path = "src/lib.rs"
+
+[dependencies]
+serde_json = "1"

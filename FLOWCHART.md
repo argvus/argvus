@@ -59,7 +59,7 @@ hyprland.lua
    │  • resolve tema/accent/spacing via cadeia de precedência
    │  • registra binds (teclas)
    ▼
-argvus-config session-prepare   (primeira ação do DE, via argvus-session-prepare)
+argvus config session-prepare   (primeira ação do DE, via argvus-session-prepare)
    │
    ├──► 1º login? ──NÃO──► apenas lê o estado existente
    │          │SIM
@@ -79,7 +79,7 @@ argvus-config session-prepare   (primeira ação do DE, via argvus-session-prepa
 
 - **Sem `~/.config/argvus`?** O DE ainda inicia normalmente, lendo tudo de
   `/usr/share/argvus`.
-- **Primeiro login:** o `argvus-config session-prepare` detecta que não há
+- **Primeiro login:** o `argvus config session-prepare` detecta que não há
   `~/.config/argvus/data/.active-theme` e aplica o tema padrão empacotado
   (`ARGVUS_NO_RUNTIME=1 argvus theme-switch`), materializando sob demanda os
   arquivos que o tema precisa modificar.
@@ -178,7 +178,7 @@ não o substituem**.
 
 ```text
 1. Instalação:  /usr/share/argvus  <-- pacote (nada em ~/.config/argvus ainda)
-2. 1º login:    argvus-config session-prepare
+2. 1º login:    argvus config session-prepare
                     • .active-theme não existe → aplica tema padrão
                     • theme-switch materializa waybar/rofi/kitty/qt6ct na camada do usuário
                     • gsettings define GTK/ícone/cursor; wallpaper inicia; bars/sidebar sobem

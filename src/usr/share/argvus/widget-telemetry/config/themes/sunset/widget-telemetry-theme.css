@@ -1,0 +1,9 @@
+/* theme: sunset — widget telemetry panel */
+@define-color th-background    #0F0F0F;
+@define-color th-header        #E2BE8A;
+@define-color th-foreground    #EADCCC;
+@define-color th-window-bg     #211E1B;
+@define-color th-window-bg-rgba rgba(33, 30, 27, 0.35);
+@define-color th-border        rgba(226, 190, 138, 0.15);
+@define-color th-border-header rgba(226, 190, 138, 0.20);
+@define-color th-disconnected  rgba(206, 163, 127, 0.35);

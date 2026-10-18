@@ -40,7 +40,7 @@ O arquivo é escrito atomicamente, fica privado para o usuário e é protegido p
 
 ## Linha de comando
 
-O comando `argvus-config` é instalado pelo pacote `argvus-config`:
+O subcomando `argvus config` é fornecido em processo pelo pacote `argvus`:
 
 ```sh
 argvus config path
@@ -164,7 +164,7 @@ scripts históricos de accent e modo são apenas wrappers de compatibilidade;
 projeção.
 
 As preferências de espaçamento e bordas do Hyprland seguem a mesma fronteira.
-Os comandos argvus-config spaces e argvus-config borders (e os wrappers
+Os comandos argvus config spaces e argvus config borders (e os wrappers
 históricos de compatibilidade) atualizam /layout; o Rust gera
 data/generated/spaces-effective.conf e data/generated/borders-effective.conf
 e controla validação e aplicação live via hyprctl. .spaces e .borders são
@@ -268,7 +268,7 @@ daemon Rust diretamente e `argvus sessionctl keyboard-layout cycle` é o comando
 estável para callers.
 
 O estado de runtime do Bluetooth segue a fronteira de adapter externo, mas não
-faz parte do `argvus-config`: `argvus-bluetoothctl` concentra o parsing e
+faz parte do `argvus-config`: `argvus bluetooth` concentra o parsing e
 a validação tipados sobre o `bluetoothctl`, retries limitados, verificação do
 serviço do sistema e estado do RFKill. `argvus bluetoothctl` é o entrypoint. Energia
 do adapter, dispositivos pareados e conexões continuam sendo estado externo
@@ -284,7 +284,7 @@ manifesto e generation ativa. Ele informa os estados `synchronized`, `stale`,
 
 `argvus config --version` informa versão, revisão do build quando fornecida e
 perfil. Testes de desenvolvimento devem injetar explicitamente binário e
-assets; não devem usar `/usr/lib/argvus/commands/argvus-config` ou `~/.config/argvus`
+assets; não devem usar `argvus config` ou `~/.config/argvus`
 silenciosamente. `apply` normaliza com segurança identificadores legados como
 `argvus-dark-float` para theme e variant separados antes de reconstruir as
 projeções. A identidade dos assets empacotados não é registrada em manifesto nesta versão.

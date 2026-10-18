@@ -1,0 +1,9 @@
+/* theme: solarized-light */
+@define-color th-background #FDF6E3;
+@define-color th-header #268BD2;
+@define-color th-foreground #657B83;
+@define-color th-window-bg     #F7F0DD;
+@define-color th-window-bg-rgba rgba(247, 240, 221, 0.92);
+@define-color th-border rgba(216, 210, 190, 0.85);
+@define-color th-border-header rgba(38, 139, 210, 0.35);
+@define-color th-disconnected rgba(131, 148, 150, 0.45);

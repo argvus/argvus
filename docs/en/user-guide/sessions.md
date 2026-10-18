@@ -7,7 +7,7 @@ description: Start and manage an ARGVUS graphical session.
 
 - [Graphical session](/docs/argvus-session/graphical-session/)
 - [TTY session](/docs/argvus-session/tty-session/)
-- [Greeter](/docs/argvus-greeter/)
+- [Greeter](/docs/components/argvus-greeter/)
 
 Useful diagnostics:
 

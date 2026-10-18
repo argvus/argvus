@@ -1,0 +1,9 @@
+/* theme: rose-pine-float — widget telemetry panel */
+@define-color th-background    #191724;
+@define-color th-header        #C4A7E7;
+@define-color th-foreground    #E0DEF4;
+@define-color th-window-bg     #21202E;
+@define-color th-window-bg-rgba rgba(33, 32, 46, 0.35);
+@define-color th-border        rgba(196, 167, 231, 0.15);
+@define-color th-border-header rgba(196, 167, 231, 0.20);
+@define-color th-disconnected  rgba(144, 140, 170, 0.35);

@@ -1,0 +1,28 @@
+[package]
+name = "argvus-cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+description = "Public `argvus` command dispatcher of the ARGVUS desktop"
+repository.workspace = true
+homepage.workspace = true
+
+[[bin]]
+name = "argvus"
+path = "src/main.rs"
+
+[dependencies]
+argvus-config.workspace = true
+argvus-keys.workspace = true
+argvus-network-commands.workspace = true
+argvus-projects.workspace = true
+argvus-system-monitor.workspace = true
+argvus-terminal.workspace = true
+argvus-widget-telemetry-blocks.workspace = true
+argvus-widget-telemetry-toggle.workspace = true
+argvus-i18n-cli.workspace = true
+argvus-tui-terminal.workspace = true
+libc.workspace = true
+serde_json.workspace = true

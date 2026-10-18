@@ -1,0 +1,25 @@
+[workspace]
+# Keep the greeter as a small workspace so release, test, and package commands
+# share exactly the same dependency and profile behavior.
+resolver = "2"
+members = ["crates/main", "crates/handoff"]
+
+[workspace.package]
+# Workspace metadata is inherited by the binary crate and is also consumed by
+# the Arch packaging templates.
+version = "0.1.0"
+edition = "2024"
+license = "GPL-3.0-only"
+rust-version = "1.95"
+authors = ["ARGVUS"]
+repository = "https://github.com/argvus/argvus-greeter"
+homepage = "https://github.com/argvus/argvus-greeter"
+description = "Keyboard-first TUI greetd greeter for the Argvus Desktop Environment"
+
+[profile.release]
+# A login component benefits from a compact, deterministic binary: symbols are
+# not needed at runtime, thin LTO improves startup size, and one codegen unit
+# keeps release output reproducible enough for package comparisons.
+strip = "symbols"
+lto = "thin"
+codegen-units = 1

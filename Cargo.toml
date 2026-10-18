@@ -1,0 +1,131 @@
+[workspace]
+resolver = "2"
+exclude = ["greeter"]
+members = [
+  "crates/argvus-cli",
+  "crates/argvus-config",
+  "crates/argvus-control-center",
+  "crates/argvus-control-center-about",
+  "crates/argvus-control-center-appearance",
+  "crates/argvus-control-center-apps",
+  "crates/argvus-control-center-audio",
+  "crates/argvus-control-center-bluetooth",
+  "crates/argvus-control-center-boot",
+  "crates/argvus-control-center-core",
+  "crates/argvus-control-center-dev-services",
+  "crates/argvus-control-center-diagnostics",
+  "crates/argvus-control-center-displays",
+  "crates/argvus-control-center-hardware",
+  "crates/argvus-control-center-network",
+  "crates/argvus-control-center-packages",
+  "crates/argvus-control-center-power",
+  "crates/argvus-control-center-services",
+  "crates/argvus-control-center-session",
+  "crates/argvus-control-center-settings",
+  "crates/argvus-control-center-storage",
+  "crates/argvus-i18n",
+  "crates/argvus-i18n-core",
+  "crates/argvus-keys",
+  "crates/argvus-keys-core",
+  "crates/argvus-loading-theme",
+  "crates/argvus-loading-theme-core",
+  "crates/argvus-network-commands",
+  "crates/argvus-network-core",
+  "crates/argvus-projects",
+  "crates/argvus-projects-core",
+  "crates/argvus-removable-devices",
+  "crates/argvus-runtime",
+  "crates/argvus-tui-terminal-core",
+  "crates/argvus-tui-terminal",
+  "crates/argvus-system-monitor",
+  "crates/argvus-system-monitor-core",
+  "crates/argvus-taskbar-calendar",
+  "crates/argvus-terminal",
+  "crates/argvus-terminal-core",
+  "crates/argvus-theme",
+  "crates/argvus-tui",
+  "crates/argvus-widget-telemetry-blocks",
+  "crates/argvus-widget-telemetry-core",
+  "crates/argvus-widget-telemetry-toggle",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "GPL-3.0-only"
+rust-version = "1.95"
+authors = ["ARGVUS"]
+repository = "https://github.com/argvus/argvus"
+homepage = "https://github.com/argvus/argvus"
+description = "ARGVUS desktop: command dispatcher and shared Rust crates"
+
+[workspace.dependencies]
+anyhow = "1.0"
+argvus-cli = { version = "0.1.0", path = "crates/argvus-cli" }
+argvus-config = { version = "0.1.0", path = "crates/argvus-config" }
+argvus-control-center = { version = "0.1.0", path = "crates/argvus-control-center" }
+argvus-control-center-about = { version = "0.1.0", path = "crates/argvus-control-center-about" }
+argvus-control-center-appearance = { version = "0.1.0", path = "crates/argvus-control-center-appearance" }
+argvus-control-center-apps = { version = "0.1.0", path = "crates/argvus-control-center-apps" }
+argvus-control-center-audio = { version = "0.1.0", path = "crates/argvus-control-center-audio" }
+argvus-control-center-bluetooth = { version = "0.1.0", path = "crates/argvus-control-center-bluetooth" }
+argvus-control-center-boot = { version = "0.1.0", path = "crates/argvus-control-center-boot" }
+argvus-control-center-core = { version = "0.1.0", path = "crates/argvus-control-center-core" }
+argvus-control-center-dev-services = { version = "0.1.0", path = "crates/argvus-control-center-dev-services" }
+argvus-control-center-diagnostics = { version = "0.1.0", path = "crates/argvus-control-center-diagnostics" }
+argvus-control-center-displays = { version = "0.1.0", path = "crates/argvus-control-center-displays" }
+argvus-control-center-hardware = { version = "0.1.0", path = "crates/argvus-control-center-hardware" }
+argvus-control-center-network = { version = "0.1.0", path = "crates/argvus-control-center-network" }
+argvus-control-center-packages = { version = "0.1.0", path = "crates/argvus-control-center-packages" }
+argvus-control-center-power = { version = "0.1.0", path = "crates/argvus-control-center-power" }
+argvus-control-center-services = { version = "0.1.0", path = "crates/argvus-control-center-services" }
+argvus-control-center-session = { version = "0.1.0", path = "crates/argvus-control-center-session" }
+argvus-control-center-settings = { version = "0.1.0", path = "crates/argvus-control-center-settings" }
+argvus-control-center-storage = { version = "0.1.0", path = "crates/argvus-control-center-storage" }
+argvus-i18n = { package = "argvus-i18n-core", version = "0.1.0", path = "crates/argvus-i18n-core" }
+argvus-i18n-cli = { version = "0.1.0", package = "argvus-i18n", path = "crates/argvus-i18n" }
+argvus-i18n-core = { version = "0.1.0", path = "crates/argvus-i18n-core" }
+argvus-keys = { version = "0.1.0", path = "crates/argvus-keys" }
+argvus-keys-core = { version = "0.1.0", path = "crates/argvus-keys-core" }
+argvus-loading-theme = { version = "0.1.0", path = "crates/argvus-loading-theme" }
+argvus-loading-theme-core = { version = "0.1.0", path = "crates/argvus-loading-theme-core" }
+argvus-network-commands = { version = "0.1.0", path = "crates/argvus-network-commands" }
+argvus-network-core = { version = "0.1.0", path = "crates/argvus-network-core" }
+argvus-projects = { version = "0.1.0", path = "crates/argvus-projects" }
+argvus-projects-core = { version = "0.1.0", path = "crates/argvus-projects-core" }
+argvus-removable-devices = { version = "0.1.0", path = "crates/argvus-removable-devices" }
+argvus-runtime = { version = "0.1.0", path = "crates/argvus-runtime" }
+argvus-system-monitor = { version = "0.1.0", path = "crates/argvus-system-monitor" }
+argvus-system-monitor-core = { version = "0.1.0", path = "crates/argvus-system-monitor-core" }
+argvus-taskbar-calendar = { version = "0.1.0", path = "crates/argvus-taskbar-calendar" }
+argvus-terminal = { version = "0.1.0", path = "crates/argvus-terminal" }
+argvus-terminal-core = { version = "0.1.0", path = "crates/argvus-terminal-core" }
+argvus-theme = { version = "0.1.0", path = "crates/argvus-theme" }
+argvus-tui-terminal = { version = "0.1.0", path = "crates/argvus-tui-terminal" }
+argvus-tui-terminal-core = { version = "0.1.0", path = "crates/argvus-tui-terminal-core" }
+argvus-tui = { version = "0.1.0", path = "crates/argvus-tui" }
+argvus-widget-telemetry-blocks = { version = "0.1.0", path = "crates/argvus-widget-telemetry-blocks" }
+argvus-widget-telemetry-core = { version = "0.1.0", path = "crates/argvus-widget-telemetry-core" }
+argvus-widget-telemetry-toggle = { version = "0.1.0", path = "crates/argvus-widget-telemetry-toggle" }
+clap = { version = "4.5", features = ["derive"] }
+crossterm = "0.29"
+gtk = { package = "gtk4", version = "0.11.4", features = ["v4_12"] }
+gtk4-layer-shell = "0.8.1"
+image = { version = "0.25", default-features = false, features = ["png", "jpeg", "webp"] }
+libc = "0.2"
+ratatui = "0.30.2"
+ratatui-image = { version = "11.0.8", default-features = false, features = ["crossterm", "image-defaults"] }
+rayon = "1"
+resvg = { version = "0.48", default-features = false, features = ["text"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1"
+signal-hook = "0.3"
+thiserror = "2"
+toml = "0.8"
+unicode-width = "0.2"
+zbus = "5"
+
+[profile.release]
+lto = true
+strip = true
+codegen-units = 1

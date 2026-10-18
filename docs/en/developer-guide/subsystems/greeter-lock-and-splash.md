@@ -3,7 +3,7 @@ title: Greeter, lock and splash
 description: Separate startup and authentication visuals.
 ---
 
-`argvus-greeter` provides the greetd interface. `argvus-theme-splash` provides the GTK4 session-loading overlay started by `argvus-session-loading.service`. `argvus-splash` provides the separate Plymouth boot theme. `argvus-lock` provides Hyprlock configuration.
+`argvus-greeter` provides the greetd interface. The session-loading overlay is the `argvus loading-theme` helper shipped by `argvus-gtk`, started by `argvus-session-loading.service`. `argvus-boot-splash` provides the separate boot splash. `argvus-lock` provides Hyprlock configuration.
 
 Theme state is handed across the greeter and session transition, but these packages have different lifecycles and installed payloads.
 

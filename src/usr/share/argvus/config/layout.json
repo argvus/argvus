@@ -1,0 +1,20 @@
+{
+  "taskbar": {
+    "margin_bottom": 2,
+    "margin_left": 0,
+    "margin_right": 0,
+    "margin_top": 0,
+    "position": "top"
+  },
+  "variant": "sticky",
+  "window": {
+    "border_size": 1,
+    "gaps_in": 2,
+    "gaps_out_bottom": 0,
+    "gaps_out_left": 0,
+    "gaps_out_right": 0,
+    "gaps_out_top": 0,
+    "rounded": false,
+    "rounding": 0
+  }
+}

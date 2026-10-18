@@ -8,7 +8,7 @@ slug: pt/0.4.0/docs/user-guide/sessions
 
 * [Sessão gráfica](/pt/docs/argvus-session/graphical-session/)
 * [Sessão TTY](/pt/docs/argvus-session/tty-session/)
-* [Greeter](/pt/docs/argvus-greeter/)
+* [Greeter](/pt/docs/components/argvus-greeter/)
 
 ```sh
 argvus sessionctl status

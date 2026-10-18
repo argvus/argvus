@@ -116,11 +116,14 @@ install_argvus_bin() {
   prefix="$1"
   bin_path="$prefix/bin/argvus"
 
-  log "Installing argvus command dispatcher to $prefix..."
+  built_bin="$ROOT_DIR/target/release/argvus"
+  [ -x "$built_bin" ] || die "argvus is not built: run 'cargo build --release --locked -p argvus-cli' first"
+
+  log "Installing argvus command to $prefix..."
   if needs_sudo "$bin_path"; then
-    sudo_run install -Dm755 "$ROOT_DIR/src/usr/bin/argvus" "$bin_path"
+    sudo_run install -Dm755 "$built_bin" "$bin_path"
   else
-    run install -Dm755 "$ROOT_DIR/src/usr/bin/argvus" "$bin_path"
+    run install -Dm755 "$built_bin" "$bin_path"
   fi
 }
 

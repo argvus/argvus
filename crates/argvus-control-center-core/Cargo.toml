@@ -1,0 +1,25 @@
+[package]
+name = "argvus-control-center-core"
+version = "0.1.0"
+edition = "2024"
+license = "GPL-3.0-only"
+rust-version = "1.95"
+
+[features]
+# Test builds of the other crates enable this through their
+# dev-dependencies: every external process then fails to start as if the
+# tool were missing, so no test reaches the system. Never enabled in a
+# release build.
+testing = []
+
+[dependencies]
+argvus-i18n.workspace = true
+serde.workspace = true
+serde_json = { workspace = true, features = ["preserve_order"] }
+toml.workspace = true
+libc = "0.2"
+
+[dev-dependencies]
+# Enables `testing` for the integration tests in `tests/`, which check that
+# no external process starts under it. The unit tests keep the real runner.
+argvus-control-center-core = { path = ".", features = ["testing"] }

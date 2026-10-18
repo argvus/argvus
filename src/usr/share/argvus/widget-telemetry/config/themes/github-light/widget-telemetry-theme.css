@@ -1,0 +1,9 @@
+/* theme: github-light — widget telemetry panel */
+@define-color th-background    #FFFFFF;
+@define-color th-header        #1F2328;
+@define-color th-foreground    #1F2328;
+@define-color th-window-bg     #EBEBEB;
+@define-color th-window-bg-rgba rgba(235, 235, 235, 0.92);
+@define-color th-border        rgba(24, 24, 24, 0.16);
+@define-color th-border-header rgba(24, 24, 24, 0.18);
+@define-color th-disconnected  rgba(24, 24, 24, 0.30);

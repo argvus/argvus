@@ -1,0 +1,24 @@
+[package]
+name = "argvus-control-center-settings"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+argvus-i18n.workspace = true
+argvus-theme.workspace = true
+argvus-tui.workspace = true
+argvus-control-center-apps = { workspace = true }
+argvus-control-center-core = { workspace = true }
+crossterm.workspace = true
+ratatui.workspace = true
+thiserror.workspace = true
+serde_json = { workspace = true, features = ["preserve_order"] }
+serde.workspace = true
+toml.workspace = true
+zbus.workspace = true
+
+[dev-dependencies]
+# Test builds never start external programs (see the core `testing` feature).
+argvus-control-center-core = { workspace = true, features = ["testing"] }

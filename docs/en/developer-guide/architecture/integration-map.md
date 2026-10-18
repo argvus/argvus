@@ -15,7 +15,7 @@ argvus config   -> the only writer of data/generated/
                    Hyprlock / Yazi / Superfile / terminal / fonts / removable-devices
 theme-switch / config accent -> argvus config (commit) -> external adapters
                    Qt6ct file / GTK settings.ini + gsettings / terminals /
-                   system-monitor / snappy-switcher / foot / superfile / greeter
+                   system-monitor / foot / superfile / greeter
 Waybar          -> popups via immutable root coordinates; calendar resolves real horizontal Taskbar geometry
 ```
 

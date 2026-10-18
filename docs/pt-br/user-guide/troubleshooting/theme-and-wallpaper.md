@@ -16,7 +16,7 @@ argvus config apply
 argvus sessionctl reload
 ```
 
-`argvus theme-switch` (que executa `argvus-config theme-apply`) e `argvus config accent`
+`argvus theme-switch` (que executa `argvus config theme-apply`) e `argvus config accent`
 são orquestradores: validam, travam, mostram o splash, confirmam a mudança pelo
 `argvus-config` e só então reconciliam os consumidores externos que não conseguem
 ler o `config.json`. Eles nunca escrevem em `data/generated/`, e a transação de

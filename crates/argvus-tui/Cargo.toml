@@ -1,0 +1,22 @@
+[package]
+name = "argvus-tui"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+argvus-i18n.workspace = true
+argvus-theme.workspace = true
+crossterm.workspace = true
+image.workspace = true
+ratatui.workspace = true
+ratatui-image.workspace = true
+resvg.workspace = true
+unicode-width.workspace = true
+clap.workspace = true
+serde_json.workspace = true
+
+[[bin]]
+name = "argvus-appearance"
+path = "src/bin/argvus-appearance.rs"

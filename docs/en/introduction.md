@@ -31,17 +31,17 @@ For installation and startup, see [Installation](/docs/getting-started/installat
 
 ### Entry points and infrastructure
 
-The `argvus` package provides the `/usr/bin/argvus` dispatcher and the main package entry point. `argvus-session` provides graphical and TTY entry points, the user target and `argvus sessionctl`. Shared TUI and localization functionality comes from `argvus-tui` and `argvus-i18n`.
+The `argvus` package provides the `/usr/bin/argvus` dispatcher and the main package entry point. `argvus-session` provides graphical and TTY entry points, the user target and `argvus sessionctl`. Shared TUI and localization functionality comes from the `argvus` workspace (the `argvus-tui` and `argvus-i18n` crates) and the `argvus i18n` command.
 
 ### Compositor and desktop shell
 
-`argvus-hyprland` supplies the Hyprland configuration and keybindings. `argvus-waybar` supplies the patched Waybar binary, while `argvus-taskbar` owns taskbar configuration and actions. `argvus-control-panel` supplies the Quickshell panel, and `argvus-widget-telemetry` supplies optional system widgets.
+`argvus-hyprland` supplies the Hyprland configuration and keybindings. `argvus-waybar` supplies the patched Waybar binary, while `argvus-taskbar` owns taskbar configuration and actions. `argvus-control-panel` supplies the Quickshell panel, and `argvus widget-telemetry` supplies optional system widgets, in-process in `argvus`.
 
 See [Desktop](/docs/user-guide/desktop/) for usage and [shell surfaces](/docs/developer-guide/subsystems/shell-surfaces/) for implementation ownership.
 
 ### Settings and applications
 
-`argvus-control-center` is the keyboard-first settings application. The calendar, system monitor, terminal, launcher and removable-device tools are separate applications integrated with the shell and dispatcher.
+`argvus control-center` is the keyboard-first settings application, shipped as a helper in `argvus-gtk`. The calendar and removable-device tools are GTK 4 helpers in `argvus-gtk`; the system monitor and terminal are subcommands of `argvus`; the launcher is `argvus-launcher`. All of them are integrated with the shell and the dispatcher.
 
 See [Applications](/docs/user-guide/applications/) and the [command reference](/docs/reference/command-line/).
 
@@ -49,7 +49,7 @@ See [Applications](/docs/user-guide/applications/) and the [command reference](/
 
 Display, network, Bluetooth, power, notifications, firewall and removable storage are provided by focused projects. The Control Center and Control Panel consume these providers; they do not replace them.
 
-Login, lock and startup visuals are also separate: `argvus-greeter` handles greetd, `argvus-lock` handles Hyprlock, `argvus-theme-splash` handles the session-loading overlay and `argvus-splash` handles the Plymouth boot theme.
+Login, lock and startup visuals are also separate: `argvus-greeter` handles greetd, `argvus-lock` handles Hyprlock, the `argvus-gtk` loading overlay handles the session loading, and `argvus-boot-splash` handles the boot splash.
 
 See [Hardware](/docs/user-guide/hardware/), [Privacy and security](/docs/user-guide/privacy-and-security/) and the developer [component reference](/docs/developer-guide/).
 

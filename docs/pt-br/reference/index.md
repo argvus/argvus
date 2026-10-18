@@ -9,3 +9,4 @@ slug: pt/0.4.0/docs/reference
 * [Serviços](/pt/docs/reference/services/)
 * [Localizações](/pt/docs/reference/file-locations/)
 * [Matriz de pacotes](/pt/docs/reference/package-matrix/)
+* [Componentes](/pt/docs/components/)

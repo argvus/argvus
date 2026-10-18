@@ -1,0 +1,18 @@
+[package]
+name = "argvus-tui-terminal"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+description.workspace = true
+repository.workspace = true
+homepage.workspace = true
+readme = "../../README.md"
+
+[[bin]]
+name = "argvus-tui-terminal"
+path = "src/main.rs"
+
+[dependencies]
+argvus-tui-terminal-core.workspace = true

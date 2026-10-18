@@ -12,19 +12,23 @@ cleanup() {
 }
 trap cleanup EXIT
 
-metadata="$({ cd "$PACKAGING_DIR" && bash -c 'source "$1"; printf "%s\n%s\n" "$pkgname" "$pkgver"' bash "$BUILD_SCRIPT"; })"
+metadata="$({ cd "$PACKAGING_DIR" && bash -c 'source "$1"; printf "%s\n%s\n" "$pkgbase" "$pkgver"' bash "$BUILD_SCRIPT"; })"
 pkgname="$(printf '%s\n' "$metadata" | sed -n '1p')"
 pkgver="$(printf '%s\n' "$metadata" | sed -n '2p')"
 archive="$ROOT_DIR/build/artifacts/${pkgname}-${pkgver}.tar.gz"
 mkdir -p "$ROOT_DIR/build/artifacts"
 
-if grep -q "${pkgname}-\${pkgver}.tar.gz\|\${pkgname}-\${pkgver}.tar.gz\|${pkgname}-${pkgver}.tar.gz" "$BUILD_SCRIPT"; then
+# The PKGBUILD names its local archive with ${pkgbase} (argvus) or ${pkgname}; match
+# either spelling literally, so the archive is always rebuilt from the working tree.
+# shellcheck disable=SC2016 # the patterns are literal PKGBUILD text, not expansions
+if grep -qF -e '${pkgbase}-${pkgver}.tar.gz' -e '${pkgname}-${pkgver}.tar.gz' "$BUILD_SCRIPT"; then
   echo "Creating local source archive: $archive"
   tar -czf "$archive" \
     --exclude='./.git' \
     --exclude='./.release' \
     --exclude='./packages-repo' \
     --exclude='./target' \
+    --exclude='./greeter/target' \
     --exclude='./build' \
     --exclude='./dist' \
     --exclude='./tmp' \

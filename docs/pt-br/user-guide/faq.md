@@ -52,9 +52,9 @@ Como alternativa complementar, você pode abri-lo pelo terminal com:
 argvus --control-center
 ```
 
-Também é possível abrir uma área diretamente com `argvus-control-center`, por exemplo `argvus-control-center appearance themes`. Execute `argvus-control-center --help` para ver as rotas disponíveis na versão instalada.
+Também é possível abrir uma área diretamente com `argvus control-center`, por exemplo `argvus control-center appearance themes`. Execute `argvus control-center --help` para ver as rotas disponíveis na versão instalada.
 
-Use o **Control Panel** para consultar o estado atual e executar ações frequentes, como volume, brilho, rede, notificações, energia e controles da sessão. Ele não é uma segunda base de configurações. Veja [Onde configurar as coisas](/pt/docs/user-guide/where-to-configure/) e [Control Center](/pt/docs/argvus-control-center/) para entender a diferença.
+Use o **Control Panel** para consultar o estado atual e executar ações frequentes, como volume, brilho, rede, notificações, energia e controles da sessão. Ele não é uma segunda base de configurações. Veja [Onde configurar as coisas](/pt/docs/user-guide/where-to-configure/) e [Control Center](/pt/docs/components/argvus-control-center/) para entender a diferença.
 
 ## Onde ficam armazenadas as configurações do ARGVUS?
 

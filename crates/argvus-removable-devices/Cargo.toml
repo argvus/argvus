@@ -1,0 +1,22 @@
+[package]
+name = "argvus-removable-devices"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+description.workspace = true
+
+[dependencies]
+zbus = { version = "5", features = ["tokio"] }
+zvariant = "5"
+arboard = { version = "3", default-features = false, features = ["wayland-data-control"] }
+serde_json = "1"
+futures-lite = "2"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "time", "signal"] }
+libc = "0.2"
+gtk = { package = "gtk4", version = "0.11", features = ["v4_12"] }
+gtk4-layer-shell = "0.8"
+
+[[bin]]
+name = "argvus-removable-devices"
+path = "src/main.rs"

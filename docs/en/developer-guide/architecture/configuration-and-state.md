@@ -17,11 +17,11 @@ instead of asking users to edit generated output.
 
 `argvus-appearance` therefore owns theme and accent orchestration, while
 `argvus-config` owns canonical state and structured projection.
-`argvus theme-switch` (the `argvus-config theme-apply` transaction) and `argvus config accent` validate, lock and commit through
+`argvus theme-switch` (the `argvus config theme-apply` transaction) and `argvus config accent` validate, lock and commit through
 `argvus-config` when available, then reconcile compatibility consumers that
 cannot read `config.json` directly. Those adapters are
 the native Qt6ct file, GTK `settings.ini` and `gsettings` hints, the terminal and
-system-monitor applications, snappy-switcher, foot, superfile's own config
+system-monitor applications, foot, superfile's own config
 directory and the pre-authentication greeter. A helper that needs a new adapter
 must add it there, never inside `generated/`.
 

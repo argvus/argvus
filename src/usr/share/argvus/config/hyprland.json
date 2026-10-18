@@ -1,0 +1,19 @@
+{
+  "window_rules": {},
+  "input": {
+    "mouse": {
+      "accel_profile": "flat",
+      "left_handed": false,
+      "natural_scroll": false,
+      "scroll_factor": 1.0,
+      "sensitivity": 0.0
+    },
+    "touchpad": {
+      "disable_while_typing": true,
+      "natural_scroll": false,
+      "tap_and_drag": true,
+      "tap_to_click": true,
+      "two_finger_right_click": false
+    }
+  }
+}

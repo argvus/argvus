@@ -1,0 +1,23 @@
+[package]
+name = "argvus-loading-theme"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description.workspace = true
+
+[[bin]]
+name = "splash"
+path = "src/main.rs"
+
+[dependencies]
+argvus-loading-theme-core.workspace = true
+argvus-i18n.workspace = true
+clap.workspace = true
+gtk.workspace = true
+gtk4-layer-shell.workspace = true
+libc.workspace = true
+signal-hook.workspace = true

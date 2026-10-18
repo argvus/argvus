@@ -36,5 +36,5 @@ If a setting is not listed, use the Control Center's home search. Its search reg
 ## Related
 
 - [First configuration](/docs/user-guide/getting-started/)
-- [Control Center](/docs/argvus-control-center/)
+- [Control Center](/docs/components/argvus-control-center/)
 - [Control Panel](/docs/argvus-control-panel/)

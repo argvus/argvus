@@ -1,0 +1,20 @@
+{
+  "menu.lock": "Lock",
+  "menu.suspend": "Suspend",
+  "menu.logout": "Log Out",
+  "menu.reboot": "Reboot",
+  "menu.shutdown": "Shut Down",
+  "menu.launcher_missing": "Rofi menu launcher not found.",
+  "menu.unsupported_launcher": "Unsupported menu launcher: {launcher}",
+  "idle.timeout.title": "Lock timeout",
+  "idle.timeout.one_minute": "1 minute",
+  "idle.timeout.minutes": "{count} minutes",
+  "idle.timeout.never": "Never",
+  "idle.timeout.config_missing": "hypridle config not found: {path}",
+  "idle.timeout.invalid": "Invalid lock timeout: {timeout}",
+  "idle.timeout.notification": "Inactivity lock: {timeout}",
+  "keep_awake.title": "Keep Awake",
+  "keep_awake.enabled": "Keep Awake enabled",
+  "keep_awake.disabled": "Keep Awake disabled",
+  "dpms.usage": "Usage: {command} {arguments}"
+}

@@ -1,0 +1,23 @@
+[package]
+name = "argvus-network-commands"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+description.workspace = true
+repository.workspace = true
+homepage.workspace = true
+readme = "../../README.md"
+
+[[bin]]
+name = "argvus-networkctl"
+path = "src/bin/argvus-networkctl.rs"
+
+[[bin]]
+name = "argvus-bluetoothctl"
+path = "src/bin/argvus-bluetoothctl.rs"
+
+[dependencies]
+argvus-network-core.workspace = true
+argvus-runtime.workspace = true

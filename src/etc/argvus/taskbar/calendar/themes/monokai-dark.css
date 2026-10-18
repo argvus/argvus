@@ -1,0 +1,21 @@
+@define-color argvus_bg #2D2A2E;
+@define-color argvus_bg_alpha rgba(45, 42, 46, 0.99);
+@define-color argvus_bg_effective @argvus_bg_alpha;
+@define-color argvus_surface #403E41;
+@define-color argvus_fg #FCFCFA;
+@define-color argvus_muted #C1C0C0;
+@define-color argvus_dim rgba(147, 146, 147, 0.34);
+@define-color argvus_accent #78DCE8;
+@define-color argvus_accent_alpha rgba(120, 220, 232, 0.45);
+@define-color argvus_border #5B595C;
+@define-color argvus_focus #78DCE8;
+.argvus-calendar { background: @argvus_bg_effective; color: @argvus_fg; border-color: @argvus_border; border-radius: 0; }
+.calendar-title, .agenda-title, .event-title, .editor-title, .day-has-event { color: @argvus_fg; }
+.nav-button, .event-time, .editor-check, .editor-value, .editor-action, .events-toggle { color: @argvus_muted; }
+.today-button, .add-event, .weekday, .day-current, .editor-label, .editor-save, .events-toggle:checked { color: @argvus_accent; }
+.editor-delete { color: #FF6188; }
+.nav-button:hover, .add-event:hover, .day:hover, .event-button:hover, .editor-action:hover, .agenda row:hover, .event-row:hover, .editor-entry, .event-editor entry { background: @argvus_surface; border-color: @argvus_border; }
+.nav-button:focus, .add-event:focus, .day:focus, .event-button:focus, .editor-action:focus, .editor-entry:focus, .event-editor entry:focus, .day-selected { border-color: @argvus_focus; }
+.day-current.day-selected { background: rgba(120, 220, 232, 0.16); }
+.day-outside-month, .agenda-empty { color: @argvus_dim; }
+.event-divider { color: @argvus_accent_alpha; }

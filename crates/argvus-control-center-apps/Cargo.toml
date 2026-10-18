@@ -1,0 +1,15 @@
+[package]
+name = "argvus-control-center-apps"
+version = "0.1.0"
+edition = "2024"
+license = "GPL-3.0-only"
+rust-version = "1.95"
+
+[dependencies]
+argvus-control-center-core = { workspace = true }
+serde.workspace = true
+serde_json = { workspace = true, features = ["preserve_order"] }
+
+[dev-dependencies]
+# Test builds never start external programs (see the core `testing` feature).
+argvus-control-center-core = { workspace = true, features = ["testing"] }

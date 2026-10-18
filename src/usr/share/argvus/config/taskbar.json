@@ -1,0 +1,24 @@
+{
+  "date": {
+    "format": "weekday_day_month"
+  },
+  "icons": {
+    "audio_player_enabled": true,
+    "launcher_enabled": false,
+    "launcher_custom_icon_path": null,
+    "cpu_enabled": true,
+    "cpu_temperature_enabled": true,
+    "gpu_temperature_enabled": true,
+    "keyboard_layout_enabled": true,
+    "memory_enabled": true,
+    "network_enabled": true,
+    "power_profile_enabled": true,
+    "utilities": {
+      "expanded": true
+    }
+  },
+  "time": {
+    "format": "24h",
+    "seconds_enabled": false
+  }
+}

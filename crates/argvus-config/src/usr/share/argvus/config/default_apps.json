@@ -1,0 +1,13 @@
+{
+  "archive": "xarchiver",
+  "audio_player": "audacious",
+  "browser": "firefox",
+  "file_manager": "spf",
+  "image_viewer": "imv",
+  "launcher": "rofi",
+  "pdf_viewer": "zathura",
+  "terminal": "argvus-terminal",
+  "terminal_editor": "vim",
+  "text_editor": "mousepad",
+  "video_player": "mpv"
+}

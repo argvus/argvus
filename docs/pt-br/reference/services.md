@@ -32,7 +32,7 @@ O pacote de sessão instala estas units de usuário em `/usr/lib/systemd/user` (
 | `argvus-polkit.service` | Integração do agente PolicyKit. |
 | `argvus-session-loading.service` | Overlay de carregamento durante o início do compositor. |
 
-`argvus-blueman-applet.service` e `argvus-snappy-switcher.service` também são fornecidos pelo pacote de sessão. Algumas units são opcionais ou iniciadas condicionalmente; nem todas ficam ativas em toda sessão.
+`argvus-blueman-applet.service` também é fornecido pelo pacote de sessão. Algumas units são opcionais ou iniciadas condicionalmente; nem todas ficam ativas em toda sessão.
 
 Para inspecionar a definição efetiva de uma unit, em vez de somente o checkout da fonte:
 
@@ -70,7 +70,7 @@ argvus sessionctl restart wallpaper
 argvus sessionctl restart shell
 
 # Notificações e seletor
-argvus sessionctl restart dunst snappy-switcher
+argvus sessionctl restart dunst
 
 # Clipboard e entrada
 argvus sessionctl restart clipboard keyboard-layout

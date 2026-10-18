@@ -2,7 +2,7 @@ PREFIX ?= /usr
 DESTDIR ?=
 .DEFAULT_GOAL := help
 
-SCRIPT_VERSION := $(shell sed -n 's/^VERSION="\(.*\)"/\1/p' src/usr/bin/argvus)
+WORKSPACE_VERSION := $(shell sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -n1)
 
 .PHONY: help install uninstall set-permissions validate build package clean
 
@@ -16,18 +16,22 @@ help:
 	@echo "  make validate"
 
 set-permissions:
-	@if [ -d src/usr/bin ]; then find src/usr/bin -type f -exec chmod +x {} \;; fi
 	@find tools/sh -type f -name "*.sh" -exec chmod +x {} \; 2>/dev/null || true
 
 validate:
 	@sh tools/sh/sync-skeleton.sh --check
-	@test -x src/usr/bin/argvus
-	@sh -n src/usr/bin/argvus
-	@[ -n "$(SCRIPT_VERSION)" ] || { echo "VERSION not found in src/usr/bin/argvus" >&2; exit 1; }
+	@[ -n "$(WORKSPACE_VERSION)" ] || { echo "version not found in Cargo.toml" >&2; exit 1; }
+	@cargo fmt --all -- --check
+	@cargo clippy --workspace --all-targets --locked -- -D warnings
+	@cargo test --workspace --locked
+	@cd greeter && cargo fmt --all -- --check && cargo clippy --workspace --all-targets --locked -- -D warnings && cargo test --workspace --locked
 	@tools/sh/validate.sh
 
 install:
 	@sudo pacman -U build/dist/argvus*.zst --overwrite="*" --noconfirm
+
+uninstall:
+	@tools/sh/uninstall.sh --user
 
 build:
 	@tools/sh/pkgbuild_local.sh

@@ -1,0 +1,29 @@
+[Desktop Entry]
+Type=Application
+# The desktop entry launches the keyboard-first TUI through a tab-less Kitty
+# profile so the ARGVUS window rules can identify it by the stable class.
+Name=ARGVUS Control Center
+Name[pt_BR]=Central de Controle ARGVUS
+Comment=Configure ARGVUS from the terminal
+Comment[pt_BR]=Configure o ARGVUS pelo terminal
+Exec=env ARGVUS_ICON_SCALE=3/3 argvus tui-terminal --class argvus-control-center --term kitty --profile control-center -- /usr/lib/argvus/commands/argvus-control-center
+Icon=preferences-system
+Terminal=false
+Categories=Settings;
+Keywords=Settings;Control Center;Default Apps;Fonts;About;
+Actions=Apps;Fonts;About;
+
+[Desktop Action Apps]
+Name=Default Apps
+Name[pt_BR]=Apps Padrão
+Exec=env ARGVUS_ICON_SCALE=3/3 argvus --control-center apps
+
+[Desktop Action Fonts]
+Name=Fonts
+Name[pt_BR]=Fontes
+Exec=env ARGVUS_ICON_SCALE=3/3 argvus --control-center fonts
+
+[Desktop Action About]
+Name=About ARGVUS
+Name[pt_BR]=Sobre o ARGVUS
+Exec=argvus --about

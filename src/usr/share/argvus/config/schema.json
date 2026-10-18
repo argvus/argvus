@@ -1,0 +1,320 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ARGVUS user configuration",
+  "type": "object",
+  "required": ["schema_version"],
+  "properties": {
+    "schema_version": { "type": "integer", "const": 1 },
+    "appearance": {
+      "type": "object",
+      "properties": {
+        "theme": { "type": "string", "minLength": 1 },
+        "accent": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+        "accent_custom": { "type": "boolean" },
+        "gtk_mode": { "enum": ["light", "dark", "auto", "sticky"] },
+        "icon_theme": { "type": "string", "maxLength": 128, "pattern": "^(?!\\.\\.?$)[^/\\x00]*$" },
+        "wallpaper": { "type": ["string", "null"] },
+        "wallpaper_custom": { "type": "boolean" },
+        "colors": {
+          "type": "object",
+          "properties": {
+            "window_border_active": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+            "window_border_inactive": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+            "group_border_active": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+            "group_border_inactive": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+            "taskbar_border": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" }
+          }
+        }
+      }
+    },
+    "layout": {
+      "type": "object",
+      "properties": {
+        "variant": { "enum": ["sticky", "float"] },
+        "window": {
+          "type": "object",
+          "properties": {
+            "gaps_in": { "type": "integer", "minimum": 0, "maximum": 100 },
+            "gaps_out": { "type": "integer", "minimum": 0, "maximum": 100 },
+            "gaps_out_top": { "type": "integer", "minimum": 0, "maximum": 100 },
+            "gaps_out_left": { "type": "integer", "minimum": 0, "maximum": 100 },
+            "gaps_out_right": { "type": "integer", "minimum": 0, "maximum": 100 },
+            "gaps_out_bottom": { "type": "integer", "minimum": 0, "maximum": 100 },
+            "rounded": { "type": "boolean" },
+            "border_size": { "type": "integer", "minimum": 0, "maximum": 10 },
+            "rounding": { "type": "integer", "minimum": 0, "maximum": 10 }
+          }
+        },
+        "taskbar": {
+          "type": "object",
+          "properties": {
+            "position": { "enum": ["top", "bottom", "left", "right"] },
+            "margin_top": { "type": "integer", "minimum": 0, "maximum": 100 },
+            "margin_bottom": { "type": "integer", "minimum": 0, "maximum": 100 },
+            "margin_left": { "type": "integer", "minimum": 0, "maximum": 100 },
+            "margin_right": { "type": "integer", "minimum": 0, "maximum": 100 }
+          }
+        }
+      }
+    },
+    "effects": {
+      "type": "object",
+      "properties": {
+        "animations": { "type": "boolean" },
+        "widget_telemetry_enabled": { "type": "boolean" },
+        "blur_global_enabled": { "type": "boolean" },
+        "blur_size": { "type": "integer", "minimum": 1, "maximum": 64 },
+        "blur_passes": { "type": "integer", "minimum": 1, "maximum": 8 },
+        "blur_brightness": { "type": "number", "minimum": 0, "maximum": 2 },
+        "blur_noise": { "type": "number", "minimum": 0, "maximum": 1 },
+        "blur_contrast": { "type": "number", "minimum": 0, "maximum": 2 },
+        "blur_vibrancy": { "type": "number", "minimum": 0, "maximum": 1 },
+        "blur_vibrancy_darkness": { "type": "number", "minimum": 0, "maximum": 1 },
+        "transparency_taskbar_enabled": { "type": "boolean" },
+        "transparency_taskbar_value": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "transparency_launchers_enabled": { "type": "boolean" },
+        "transparency_launchers_value": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "transparency_widget-telemetry_enabled": { "type": "boolean" },
+        "transparency_widget-telemetry_value": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "transparency_control-panel_enabled": { "type": "boolean" },
+        "transparency_control-panel_value": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "transparency_terminal_enabled": { "type": "boolean" },
+        "transparency_terminal_value": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "transparency_control-center_enabled": { "type": "boolean" },
+        "transparency_control-center_value": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "blur_control-center_enabled": { "type": "boolean" },
+        "animation_opening_style": { "type": "string", "enum": ["slide", "popin", "slidefade", "slidevert", "slidefadevert", "gnomed"] },
+        "animation_opening_speed": { "type": "number", "minimum": 1, "maximum": 10 },
+        "animation_opening_curve": { "type": "string", "enum": ["default", "bezier", "spring", "linear", "ease_out"] },
+        "animation_opening_popin": { "type": "integer", "minimum": 1, "maximum": 100 },
+        "animation_closing_style": { "type": "string", "enum": ["slide", "popin", "slidefade", "slidevert", "slidefadevert", "gnomed"] },
+        "animation_closing_speed": { "type": "number", "minimum": 1, "maximum": 10 },
+        "animation_closing_curve": { "type": "string", "enum": ["default", "bezier", "spring", "linear", "ease_out"] },
+        "animation_closing_popin": { "type": "integer", "minimum": 1, "maximum": 100 },
+        "animation_moving_enabled": { "type": "boolean" },
+        "animation_moving_speed": { "type": "number", "minimum": 1, "maximum": 10 },
+        "animation_moving_curve": { "type": "string", "enum": ["default", "bezier", "spring", "linear", "ease_out"] },
+        "animation_switching_style": { "type": "string", "enum": ["slide", "fade", "slidefade", "slidevert", "slidefadevert"] },
+        "animation_switching_speed": { "type": "number", "minimum": 1, "maximum": 10 },
+        "animation_switching_curve": { "type": "string", "enum": ["default", "bezier", "spring", "linear", "ease_out"] },
+        "animation_workspace_in_style": { "type": "string", "enum": ["slide", "fade", "slidefade", "slidevert", "slidefadevert"] },
+        "animation_workspace_in_speed": { "type": "number", "minimum": 1, "maximum": 10 },
+        "animation_workspace_in_curve": { "type": "string", "enum": ["default", "bezier", "spring", "linear", "ease_out"] },
+        "animation_workspace_out_style": { "type": "string", "enum": ["slide", "fade", "slidefade", "slidevert", "slidefadevert"] },
+        "animation_workspace_out_speed": { "type": "number", "minimum": 1, "maximum": 10 },
+        "animation_workspace_out_curve": { "type": "string", "enum": ["default", "bezier", "spring", "linear", "ease_out"] },
+        "animation_special_workspace_style": { "type": "string", "enum": ["slide", "fade", "slidefade", "slidevert", "slidefadevert"] },
+        "animation_special_workspace_speed": { "type": "number", "minimum": 1, "maximum": 10 },
+        "animation_special_workspace_curve": { "type": "string", "enum": ["default", "bezier", "spring", "linear", "ease_out"] },
+        "animation_layers_enabled": { "type": "boolean" },
+        "animation_layers_speed": { "type": "number", "minimum": 1, "maximum": 10 },
+        "animation_layers_curve": { "type": "string", "enum": ["default", "bezier", "spring", "linear", "ease_out"] },
+        "animation_layers_in_style": { "type": "string", "enum": ["slide", "popin", "fade", "slidefade", "slidevert", "slidefadevert"] },
+        "animation_layers_in_speed": { "type": "number", "minimum": 1, "maximum": 10 },
+        "animation_layers_in_curve": { "type": "string", "enum": ["default", "bezier", "spring", "linear", "ease_out"] },
+        "animation_layers_out_style": { "type": "string", "enum": ["slide", "popin", "fade", "slidefade", "slidevert", "slidefadevert"] },
+        "animation_layers_out_speed": { "type": "number", "minimum": 1, "maximum": 10 },
+        "animation_layers_out_curve": { "type": "string", "enum": ["default", "bezier", "spring", "linear", "ease_out"] },
+        "animation_fade_enabled": { "type": "boolean" },
+        "animation_fade_speed": { "type": "number", "minimum": 1, "maximum": 10 },
+        "animation_fade_curve": { "type": "string", "enum": ["default", "bezier", "spring", "linear", "ease_out"] },
+        "animation_fade_in_enabled": { "type": "boolean" },
+        "animation_fade_in_speed": { "type": "number", "minimum": 1, "maximum": 10 },
+        "animation_fade_in_curve": { "type": "string", "enum": ["default", "bezier", "spring", "linear", "ease_out"] },
+        "animation_fade_out_enabled": { "type": "boolean" },
+        "animation_fade_out_speed": { "type": "number", "minimum": 1, "maximum": 10 },
+        "animation_fade_out_curve": { "type": "string", "enum": ["default", "bezier", "spring", "linear", "ease_out"] },
+        "animation_border_enabled": { "type": "boolean" },
+        "animation_border_speed": { "type": "number", "minimum": 1, "maximum": 10 },
+        "animation_border_curve": { "type": "string", "enum": ["default", "bezier", "spring", "linear", "ease_out"] },
+        "animation_border_angle_enabled": { "type": "boolean" },
+        "animation_border_angle_speed": { "type": "number", "minimum": 1, "maximum": 10 },
+        "animation_border_angle_curve": { "type": "string", "enum": ["default", "bezier", "spring", "linear", "ease_out"] },
+        "animation_zoom_enabled": { "type": "boolean" },
+        "animation_zoom_speed": { "type": "number", "minimum": 1, "maximum": 10 },
+        "animation_zoom_curve": { "type": "string", "enum": ["default", "bezier", "spring", "linear", "ease_out"] },
+        "animation_monitor_added_enabled": { "type": "boolean" },
+        "animation_monitor_added_speed": { "type": "number", "minimum": 1, "maximum": 10 },
+        "animation_monitor_added_curve": { "type": "string", "enum": ["default", "bezier", "spring", "linear", "ease_out"] },
+        "animation_bezier_x1": { "type": "number", "minimum": 0, "maximum": 1 },
+        "animation_bezier_y1": { "type": "number", "minimum": -2, "maximum": 3 },
+        "animation_bezier_x2": { "type": "number", "minimum": 0, "maximum": 1 },
+        "animation_bezier_y2": { "type": "number", "minimum": -2, "maximum": 3 },
+        "animation_spring_mass": { "type": "number", "minimum": 0.5, "maximum": 10 },
+        "animation_spring_stiffness": { "type": "number", "minimum": 0.5, "maximum": 2000 },
+        "animation_spring_dampening": { "type": "number", "minimum": 0.5, "maximum": 200 }
+      }
+    },
+    "taskbar": {
+      "type": "object",
+      "properties": {
+        "icons": {
+          "type": "object",
+          "properties": {
+            "audio_player_enabled": { "type": "boolean" },
+            "launcher_enabled": { "type": "boolean" },
+            "launcher_custom_icon_path": { "type": ["string", "null"] },
+            "network_enabled": { "type": "boolean" },
+            "power_profile_enabled": { "type": "boolean" },
+            "keyboard_layout_enabled": { "type": "boolean" },
+            "memory_enabled": { "type": "boolean" },
+            "cpu_enabled": { "type": "boolean" },
+            "cpu_temperature_enabled": { "type": "boolean" },
+            "gpu_temperature_enabled": { "type": "boolean" },
+            "utilities": {
+              "type": "object",
+              "properties": {
+                "expanded": { "type": "boolean" }
+              }
+            }
+          }
+        },
+        "date": {
+          "type": "object",
+          "properties": {
+            "format": {
+              "enum": [
+                "weekday_day_month",
+                "weekday_day_month_year",
+                "weekday_day_slash_month_year",
+                "numeric_short_locale_aware"
+              ]
+            }
+          }
+        },
+        "time": {
+          "type": "object",
+          "properties": {
+            "seconds_enabled": { "type": "boolean" },
+            "format": { "enum": ["24h", "12h"] }
+          }
+        }
+      }
+    },
+    "fonts": {
+      "type": "object",
+      "properties": {
+        "targets": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "family": { "type": "string" },
+              "style": { "type": "string" },
+              "size": { "type": "integer", "minimum": 8, "maximum": 32 }
+            }
+          }
+        },
+        "rendering": {
+          "type": "object",
+          "properties": {
+            "antialias": { "type": "boolean" },
+            "hinting": { "type": "string" },
+            "subpixel": { "type": "string" },
+            "custom_dpi": { "type": "boolean" },
+            "dpi": { "type": "integer", "minimum": 72, "maximum": 240 }
+          }
+        },
+        "legacy": { "type": "string" }
+      }
+    },
+    "control_panel": { "type": "object" },
+    "default_apps": {
+      "type": "object",
+      "properties": {
+        "terminal": { "type": "string" },
+        "file_manager": { "type": "string" },
+        "text_editor": { "type": "string" },
+        "terminal_editor": { "type": "string" },
+        "browser": { "type": "string" },
+        "image_viewer": { "type": "string" },
+        "pdf_viewer": { "type": "string" },
+        "video_player": { "type": "string" },
+        "audio_player": { "type": "string" },
+        "archive": { "type": "string" },
+        "launcher": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "keyboard_shortcuts": {
+      "type": "object",
+      "patternProperties": {
+        "^[a-z0-9]+(?:_[a-z0-9]+)*$": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    },
+    "hyprland": {
+      "type": "object",
+      "properties": {
+        "keybindings": { "type": "object" },
+        "window_rules": { "type": "object" },
+        "input": { "type": "object" },
+        "keyboard": { "type": "object" }
+      }
+    },
+    "displays": {
+      "type": "object",
+      "properties": {
+        "primary_monitor": { "type": ["string", "null"] },
+        "monitors": { "type": "object" },
+        "workspaces": { "type": "object" }
+      }
+    },
+    "power": {
+      "type": "object",
+      "properties": {
+        "screen_off_minutes": { "type": "integer", "minimum": 0 },
+        "lock_minutes": { "type": "integer", "minimum": 0 },
+        "keep_awake": { "type": "boolean" },
+        "lid_battery": { "type": "string" },
+        "lid_ac": { "type": "string" },
+        "power_button": { "type": "string" }
+      }
+    },
+    "session": {
+      "type": "object",
+      "properties": { "language": { "type": "string" } }
+    },
+    "calendar": { "type": "object" },
+    "removable_devices": { "type": "object" },
+    "projects": {
+      "type": "object",
+      "properties": {
+        "roots": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "paths": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "editor": { "type": "string" }
+      }
+    },
+    "snippets": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string", "minLength": 1 },
+              "content": { "type": "string" }
+            },
+            "required": ["name", "content"]
+          }
+        }
+      }
+    },
+    "audio": {
+      "type": "object",
+      "properties": {
+        "output_volume": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "output_muted": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "extensions": { "type": "object" }
+  }
+}

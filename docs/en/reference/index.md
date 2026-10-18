@@ -8,3 +8,4 @@ description: Commands, files, services and packages installed by ARGVUS.
 - [Services](/docs/reference/services/)
 - [File locations](/docs/reference/file-locations/)
 - [Package matrix](/docs/reference/package-matrix/)
+- [Components](/docs/components/)

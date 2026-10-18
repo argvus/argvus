@@ -1,0 +1,19 @@
+[package]
+name = "argvus-keys"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+description.workspace = true
+repository.workspace = true
+homepage.workspace = true
+readme = "../../README.md"
+
+[[bin]]
+name = "argvus-keys"
+path = "src/main.rs"
+
+[dependencies]
+argvus-keys-core.workspace = true
+libc.workspace = true

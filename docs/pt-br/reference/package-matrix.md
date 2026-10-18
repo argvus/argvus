@@ -1,35 +1,34 @@
 ---
 title: Matriz de pacotes
-description: Responsabilidades dos pacotes ARGVUS.
-slug: pt/0.4.0/docs/reference/package-matrix
+description: Responsabilidades dos pacotes do ARGVUS.
 ---
 
 | Pacote | Responsabilidade |
 | --- | --- |
-| `argvus` | Dispatcher e ponto de entrada. |
-| `argvus-session` | Entrada e ciclo de vida da sessão. |
-| `argvus-config` | Configuração lógica canônica do usuário, único escritor de `data/generated/`, e importação/exportação de perfis. |
-| `argvus-hyprland` | Configuração Hyprland. |
-| `argvus-control-center` | Aplicativo de configurações TUI. |
-| `argvus-control-panel` | Painel Quickshell. |
-| `argvus-taskbar`, `argvus-waybar` | Configuração e binário Waybar. |
-| `argvus-branding` | Assets de logo e wordmark. |
-| `argvus-appearance`, `argvus-wallpapers`, `argvus-fonts`, `argvus-icons` | Estado visual e assets. |
-| `argvus-network`, `argvus-display`, `argvus-power`, `argvus-notifications` | Provedores do desktop. |
-| `argvus-greeter`, `argvus-lock`, `argvus-splash`, `argvus-theme-splash` | Login, lock e startup. |
-| `argvus-i18n`, `argvus-tui` | Bibliotecas e catálogos compartilhados. |
+| `argvus` | Pacote mestre: dispatcher, comandos em processo (configuração, traduções, chaves, projetos, terminal, monitor do sistema, rede, Bluetooth, telemetria, terminal TUI, setup), os dados compartilhados e os catálogos de i18n. Todo pacote de componente depende dele. |
+| `argvus-gtk` | Auxiliares: o Centro de Controle (aplicativo de terminal) e os aplicativos GTK 4 do calendário da barra, dispositivos removíveis e overlay de carregamento. |
+| `argvus-greeter` | Greeter de login para o greetd, o terceiro pacote separado do PKGBUILD de `argvus`, gerado a partir de `greeter/`. |
+| `argvus-session` | Pontos de entrada da sessão e ciclo de vida do usuário. |
+| `argvus-hyprland` | Configuração do Hyprland. |
+| `argvus-control-panel` | Painel de controle em Quickshell. |
+| `argvus-taskbar`, `argvus-waybar` | Configuração da Waybar e binário com patch. |
+| `argvus-branding` | Logo e recursos da marca. |
+| `argvus-appearance`, `argvus-wallpapers`, `argvus-fonts`, `argvus-icons` | Estado de aparência e recursos visuais. |
+| `argvus-display`, `argvus-power`, `argvus-notifications` | Provedores do desktop. |
+| `argvus-lock`, `argvus-boot-splash` | Bloqueio de tela e splash de inicialização. |
+| `argvus-accounts`, `argvus-firewall` | Contas locais e firewall, com privilégios próprios. |
+| `argvus-launcher` | Configuração do lançador e pontos de entrada. |
+| `argvus-app-profiles` | Perfis de dados para os aplicativos de terminal incluídos. |
+| `argvus-portal` | Portais XDG e padrões Wayland/DBus. |
+| `argvus-theme-*` | Um pacote opcional por família de tema oficial. |
+| `argvus-game-snake`, `argvus-games` | Opcional. O Snake é um projeto independente; `argvus-games` agrupa os jogos opcionais. |
 
-## Fronteiras adicionais de pacotes
+## Pacotes substituídos
 
-| Pacote | Responsabilidade |
-| --- | --- |
-| `argvus-accounts` | Metadados de contas locais e avatares. |
-| `argvus-taskbar-calendar` | Popup de calendário e integração de eventos. |
-| `argvus-games` | Metapacote dos jogos oficiais do ARGVUS; depende de `argvus-game-snake`. |
-| `argvus-game-snake` | Jogo Snake retro no terminal e ranking local. |
-| `argvus-removable-devices` | Ações de armazenamento UDisks2 e integração com taskbar/menu. |
-| `argvus-launcher` | Configuração e entrypoints do launcher. |
-| `argvus terminal`, `argvus system-monitor` | Perfis de terminal e monitor do sistema. |
-| `argvus-firewall` | Serviço de firewall do sistema e integração com o Control Center. |
+O `argvus` declara `replaces`, `conflicts` e `provides` dos pacotes que absorveu, para que uma atualização os remova e seus arquivos não fiquem órfãos:
 
-O pacote `argvus` depende dos pacotes de componentes para formar o desktop completo. A presença de um pacote nesta tabela não significa que ele seja dono de toda a funcionalidade: por exemplo, a taskbar combina `argvus-waybar`, `argvus-taskbar`, `argvus-session` e provedores de domínio.
+`argvus-config`, `argvus-i18n` (com `argvus-language-en-us` e `argvus-language-pt-br`), `argvus-keys`, `argvus-projects`, `argvus-terminal`, `argvus-system-monitor`, `argvus-network`, `argvus-widget-telemetry`. O `argvus-gtk` substitui `argvus-control-center`, `argvus-taskbar-calendar`, `argvus-loading-theme` e `argvus-removable-devices`.
+
+Os pacotes removidos `argvus-pwvucontrol` e `argvus-snappy-switcher` não são fornecidos por nenhum pacote.
+
+Não há ordem de instalação: `argvus` é o pacote mestre, e todos os outros dependem dele. Estar nesta tabela não significa que um pacote é dono de toda a funcionalidade: por exemplo, a barra combina `argvus-waybar`, `argvus-taskbar`, `argvus-session` e os provedores de domínio.

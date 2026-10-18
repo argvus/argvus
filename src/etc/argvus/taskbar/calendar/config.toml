@@ -1,0 +1,40 @@
+# Argvus Calendar configuration
+# System-wide configuration lives in /etc/argvus/taskbar/calendar/config.toml.
+# It is edited through the gear button, which opens this file in a terminal
+# with sudo privileges.
+
+[appearance]
+# Font used by the calendar interface.
+font_family = "monospace"
+
+# UI font size. Valid range: 8-32.
+font_size = 12
+
+[locale]
+# auto follows the system language (Portuguese when the system is pt-*,
+# English otherwise). Fixed values: en-US, pt-BR.
+language = "auto"
+
+[calendar]
+# monday | sunday
+week_start = "monday"
+
+# Events/reminders are experimental and disabled by default. Enable them from
+# the settings panel when you want the service to create event notifications.
+show_events = false
+
+default_event_duration_minutes = 60
+default_reminder_minutes = 10
+sync_interval_minutes = 15
+
+[editor]
+# Editor used to open the configuration file. Leave empty to use
+# $VISUAL / $EDITOR.
+command = ""
+args = []
+
+[terminal]
+# Terminal used to open the configuration file with sudo. Leave empty to
+# use $TERMINAL or the Argvus default.
+command = ""
+args = []

@@ -15,5 +15,5 @@ argvus config  -> único escritor de data/generated/
                   Hyprlock / Yazi / Superfile / terminal / fontes / dispositivos removíveis
 theme-switch / config accent -> argvus config (commit) -> adapters externos
                   arquivo do Qt6ct / settings.ini do GTK + gsettings / terminais /
-                  system-monitor / snappy-switcher / foot / superfile / greeter
+                  system-monitor / foot / superfile / greeter
 ```

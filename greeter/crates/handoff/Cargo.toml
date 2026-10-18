@@ -1,0 +1,18 @@
+[package]
+name = "argvus-greeter-handoff"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "Direct DRM/KMS transition surface for the ARGVUS login handoff"
+
+[[bin]]
+name = "argvus-greeter-handoff"
+path = "src/main.rs"
+
+[dependencies]
+clap = { version = "4.5", features = ["derive"] }
+libc = "0.2"

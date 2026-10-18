@@ -1,0 +1,11 @@
+[Unit]
+Description=Argvus Calendar reminders service
+After=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/argvus taskbar-calendar service
+Restart=on-failure
+
+[Install]
+WantedBy=default.target

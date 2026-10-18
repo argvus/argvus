@@ -1,0 +1,18 @@
+[package]
+name = "argvus-keys-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+description = "Core crate for the ARGVUS Rust project argvus-keys"
+repository.workspace = true
+homepage.workspace = true
+
+[dependencies]
+libc.workspace = true
+thiserror.workspace = true
+
+[lib]
+name = "argvus_keys_core"
+path = "src/lib.rs"

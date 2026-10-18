@@ -1,0 +1,9 @@
+/* theme: solitude-float — widget telemetry panel */
+@define-color th-background    #101315;
+@define-color th-header        #798186;
+@define-color th-foreground    #CACCCC;
+@define-color th-window-bg     #202528;
+@define-color th-window-bg-rgba rgba(32, 37, 40, 0.35);
+@define-color th-border        rgba(121, 129, 134, 0.15);
+@define-color th-border-header rgba(121, 129, 134, 0.20);
+@define-color th-disconnected  rgba(159, 165, 169, 0.35);

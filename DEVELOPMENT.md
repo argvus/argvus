@@ -1,9 +1,10 @@
 # Development
 
-This repository is the `argvus` coordinator package. It provides the `argvus`
-command dispatcher and the metapackage that pulls the rest of the ARGVUS desktop.
-Runtime files (Hyprland, shell, themes, session, greeter) live in the module
-repositories listed in [README.md](./README.md).
+This repository is the `argvus` master package. It is the Rust workspace of the
+`argvus` command (`crates/`), the Control Center, the configuration model and the
+translations, and it also builds the greeter (`greeter/`, its own Cargo workspace).
+Every component package depends on `argvus`. Session, Hyprland and theme files live
+in the component repositories listed in [README.md](./README.md).
 
 Most changes here are dispatcher routes, packaging metadata or install and
 validation tooling. Still, test the full session behavior in a real ARGVUS
@@ -19,14 +20,18 @@ specific to this repository.
 ## Repository layout
 
 ```text
-src/usr/bin/argvus       the `argvus` dispatcher (the payload installed by this package)
-packaging/arch/ci/       PKGBUILD used for tagged releases (GitHub tag archive)
-packaging/arch/local/    PKGBUILD used for working-tree builds
+Cargo.toml               workspace root; [workspace.dependencies] for every crate
+crates/                  one crate per command or library (`argvus-cli` is the dispatcher)
+greeter/                 the greeter: its own Cargo workspace, outside the root workspace
+locales/                 shared translation catalogs (en-US, pt-BR)
+src/                     data payload installed by the packages (themes, defaults, docs)
+packaging/arch/ci/       PKGBUILD for tagged releases (pkgbase `argvus`, three split packages)
+packaging/arch/local/    PKGBUILD for working-tree builds (same split packages)
 packaging/arch/common/   functions.sh shared by both PKGBUILDs
-tools/sh/                install.sh, uninstall.sh, pkgbuild_local.sh, validate.sh
+tools/sh/                pkgbuild_local.sh, validate.sh, sync-skeleton.sh, install helpers
 docs/                    documentation in en and pt-br
 .github/workflows/       ci.yml (validation on push and pull request to main)
-                         release.yml (Arch package for tags v*)
+                         release.yml (Arch packages for tags v*)
 ```
 
 ## Local setup
@@ -56,11 +61,13 @@ changes in the owning module repository.
 
 | Target | What it does |
 |--------|--------------|
-| `make build` | Runs `tools/sh/pkgbuild_local.sh`, writing archives to `build/artifacts/` and packages to `build/dist/`. |
-| `make install` | Installs the built package with `sudo pacman -U build/dist/argvus*.zst`. |
-| `make validate` | Checks that `src/usr/bin/argvus` is executable and has a `VERSION`, then runs `tools/sh/validate.sh`. |
+| `make build` (`make package`) | Runs `tools/sh/pkgbuild_local.sh`, writing archives to `build/artifacts/` and the three packages (`argvus`, `argvus-gtk`, `argvus-greeter`) to `build/dist/`. |
+| `make install` | Installs the built packages with `sudo pacman -U build/dist/argvus*.zst --overwrite="*"`. |
+| `make validate` | Checks the shared-file drift (`sync-skeleton.sh --check`) and the workspace version, then runs `cargo fmt --check`, `cargo clippy -D warnings` and `cargo test --locked` for the workspace and for `greeter/`, then `tools/sh/validate.sh`. |
 | `make set-permissions` | Makes the shell scripts executable. |
 | `make clean` | Removes `build/`. |
+
+`make help` also lists `make uninstall`, which has no target in this repository.
 
 `tools/sh/validate.sh` requires `bash`, `makepkg` and `shellcheck`. It runs
 `shellcheck` and `bash -n` on the shell scripts, verifies that the CI and local
@@ -70,8 +77,9 @@ checks `git diff --check`.
 Common checks before a change is ready:
 
 ```sh
-bash -n src/usr/bin/argvus
-bash -n tools/sh/install.sh tools/sh/uninstall.sh
+cargo fmt --all -- --check
+cargo clippy --workspace --all-targets --locked -- -D warnings
+cargo test --workspace --locked
 make validate
 (cd packaging/arch/ci && makepkg -p PKGBUILD --printsrcinfo >/dev/null)
 ```
@@ -119,9 +127,10 @@ Supported files are loaded after packaged defaults in this order:
 `monitors.lua`, `rules.lua`, `bindings.lua`, `user.lua`. Missing files must be
 ignored.
 
-`argvus-removable-devices` is packaged separately. Its system defaults belong under
-`/usr/share/argvus/removable-devices/config`, and its system-wide JSON config
-lives under `/etc/argvus/removable-devices/`.
+The removable-devices helper is the `argvus removable-devices` route, provided by the
+`argvus-gtk` package. Its system defaults belong under
+`/usr/share/argvus/removable-devices/config` (shipped by `argvus`), and its system-wide
+JSON config lives under `/etc/argvus/removable-devices/`.
 
 `argvus-wallpapers` and `argvus-fonts` own wallpapers and bundled fonts. Desktop
 configs should reference `/usr/share/backgrounds/argvus` and system fonts rather
@@ -157,18 +166,20 @@ Session ownership: the `argvus` package owns `/usr/bin/argvus`. `argvus-session`
 owns `/usr/lib/argvus/commands/argvus-session`, `/usr/lib/argvus/commands/argvus-start`, `/usr/lib/argvus/commands/argvus-tty`,
 the user systemd units, and the Wayland session entry
 `/usr/share/wayland-sessions/argvus.desktop`. The greeter that `greetd` starts is
-provided by `argvus-greeter`.
+the `argvus-greeter` split package of this repository, built from `greeter/`.
 
 ## Release flow
 
-The Arch Linux package is built from `packaging/arch/ci/PKGBUILD` in this
-repository. The release workflow runs when a `v*` tag is pushed. It sets
-`pkgver` in the CI PKGBUILD and `VERSION` in `src/usr/bin/argvus` from the tag,
-builds the package, signs it and publishes both files to `argvus/packages`:
+The Arch Linux packages are built from `packaging/arch/ci/PKGBUILD` in this
+repository, which produces `argvus`, `argvus-gtk` and `argvus-greeter`. The release
+workflow runs when a `v*` tag is pushed. It sets `pkgver` in the CI PKGBUILD from the
+tag, builds the packages, signs them and publishes each package and its `.sig` to
+`argvus/packages`:
 
 ```text
-public/arch/x86_64/argvus-<version>-1-x86_64.pkg.tar.zst
-public/arch/x86_64/argvus-<version>-1-x86_64.pkg.tar.zst.sig
+public/arch/x86_64/argvus-<version>-1-x86_64.pkg.tar.zst(.sig)
+public/arch/x86_64/argvus-gtk-<version>-1-x86_64.pkg.tar.zst(.sig)
+public/arch/x86_64/argvus-greeter-<version>-1-x86_64.pkg.tar.zst(.sig)
 ```
 
 The workflow also updates the `argvus` repository database files with

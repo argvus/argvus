@@ -1,0 +1,9 @@
+/* theme: dracula — widget telemetry panel */
+@define-color th-background    #282A36;
+@define-color th-header        #BD93F9;
+@define-color th-foreground    #F8F8F2;
+@define-color th-window-bg     #21222C;
+@define-color th-window-bg-rgba rgba(33, 34, 44, 0.35);
+@define-color th-border        rgba(189, 147, 249, 0.15);
+@define-color th-border-header rgba(189, 147, 249, 0.20);
+@define-color th-disconnected  rgba(98, 114, 164, 0.35);

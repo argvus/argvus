@@ -18,11 +18,11 @@ override do usuário.
 
 Por isso `argvus-appearance` orquestra tema e accent, enquanto o
 `argvus-config` mantém o estado canônico e as projeções estruturadas.
-`argvus theme-switch` (a transação `argvus-config theme-apply`) e `argvus config accent` validam, travam, confirmam a mudança pelo
+`argvus theme-switch` (a transação `argvus config theme-apply`) e `argvus config accent` validam, travam, confirmam a mudança pelo
 `argvus-config` quando disponível e então reconciliam os consumidores de
 compatibilidade que não conseguem ler o `config.json` diretamente. Esses adapters são o arquivo nativo do Qt6ct, o
 `settings.ini` do GTK e as dicas de `gsettings`, os aplicativos de terminal e de
-monitoramento do sistema, o snappy-switcher, o foot, o diretório de configuração
+monitoramento do sistema, o foot, o diretório de configuração
 próprio do superfile e o greeter de pré-autenticação. Um helper que precise de um
 novo adapter deve adicioná-lo ali, nunca dentro de `generated/`.
 

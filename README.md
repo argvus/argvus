@@ -30,39 +30,40 @@ power, display, network, notifications and themes — all packaged for Arch Linu
 - **Removable devices** — UDisks2-backed storage actions in the taskbar and menus
 - **Terminal and TUI apps** — Terminal profiles, system monitor and app profiles for bundled TUI tools
 - **Themes** — 22 official theme families (44 variants with Light/Dark and Float styles)
-- **Games** — Snake for the terminal, with a local high score list
+- **Games** — Optional. Snake for the terminal (`argvus-game-snake`, an independent project), with a local high score list
 
 ## Modular Ecosystem
 
-`argvus` is the full desktop package and coordinator. Component ownership is
-split across smaller packages:
+`argvus` is the master package. Installing it installs the desktop, and every component
+package depends on it, so no install order is required. Its split packages are
+`argvus` (the command, the in-process subcommands and the shared runtime), `argvus-gtk`
+(helpers: the Control Center, a terminal application, and the GTK 4 taskbar calendar, removable devices and loading overlay) and
+`argvus-greeter` (the login greeter, built from `greeter/`).
 
-| Area | Packages |
-|------|----------|
-| Session lifecycle, login and startup | `argvus-session`, `argvus-greeter`, `argvus-boot-splash`, `argvus-loading-theme` |
+| Area | Packages and commands |
+|------|-----------------------|
+| Session lifecycle, login and startup | `argvus-session`, `argvus-greeter`, `argvus-boot-splash` |
 | Hyprland configuration and scripts | `argvus-hyprland` |
 | Quickshell control panel | `argvus-control-panel` |
-| Taskbar, Waybar and widgets | `argvus-taskbar`, `argvus-waybar`, `argvus-taskbar-calendar`, `argvus-widget-telemetry` |
-| Settings application (TUI) | `argvus-control-center` |
-| Launcher and lock screen | `argvus launcher`, `argvus-lock` |
+| Taskbar, Waybar and widgets | `argvus-taskbar`, `argvus-waybar`, `argvus widget-telemetry` |
+| Settings application | `argvus control-center` (`argvus-gtk`) |
+| Launcher and lock screen | `argvus-launcher`, `argvus-lock` |
 | Appearance, wallpapers, fonts and icons | `argvus-appearance`, `argvus-wallpapers`, `argvus-fonts`, `argvus-icons`, `argvus-branding` |
-| Themes | `argvus-themes`, `argvus-theme-*` |
-| Terminal, TUI apps and system monitor | `argvus terminal`, `argvus-app-profiles`, `argvus system-monitor` |
-| Display, power, network and notifications | `argvus-display`, `argvus-power`, `argvus-network`, `argvus-notifications` |
+| Themes | `argvus-theme-*` (one package per official theme) |
+| Terminal, TUI apps and system monitor | `argvus terminal`, `argvus tui-terminal`, `argvus system-monitor`, `argvus-app-profiles` (data) |
+| Display, power, network and notifications | `argvus-display`, `argvus-power`, `argvus network`, `argvus-notifications` |
 | Desktop portals and Wayland/DBus defaults | `argvus-portal` |
-| Removable storage | `argvus-removable-devices` |
-| Accounts | `argvus-accounts` |
+| Removable storage | `argvus removable-devices` (`argvus-gtk`) |
+| Accounts | `argvus-accounts` (runs as root through `pkexec`) |
 | Firewall | `argvus-firewall` |
-| Games | `argvus-games`, `argvus game-snake` |
-| Shared libraries | `argvus-config`, `argvus-i18n` (with `argvus-language-en-us` and `argvus-language-pt-br`), `argvus-tui` |
+| Games | `argvus-games`; `argvus-game-snake` is independent and optional |
+| Configuration, translations and keys | `argvus config`, `argvus i18n` (with the language catalogs), `argvus keys` |
 
-The `argvus` package itself provides the `argvus` command, the install target for
-users, and the metapackage that pulls the desktop components listed in its
-dependencies. The `argvus` command routes to the applications above; for example,
-`argvus --about` opens the About page inside `argvus-control-center`.
+The `argvus` command routes to these subcommands. For example, `argvus control-center
+about` opens the About page of the Control Center.
 
 Source-tree `tools/sh/install.sh` only installs the `argvus` command for local
-testing. Runtime files are installed by the module packages above.
+testing. Runtime files are installed by the packages above.
 
 ## Command
 
@@ -100,8 +101,7 @@ Hyprland. Change the accent color from the Highlight color control in the Contro
 
 Every family above has a Float variant (for example `dracula-float`).
 Official themes are defined in `argvus-appearance`. The `argvus-theme-*`
-packages are optional and can be installed individually or together through
-`argvus-themes`.
+packages are optional and can be installed individually, for example `pacman -S argvus-theme-sunset`.
 
 ## Install
 
@@ -126,7 +126,7 @@ Optional packages:
 
 ```sh
 # All official themes
-sudo pacman -S argvus-themes
+pacman -Ssq '^argvus-theme-' | sudo xargs pacman -S --needed
 
 # Optional applications and utilities
 sudo pacman -S blueman starship kooha nwg-look
@@ -151,36 +151,27 @@ sudo pacman -S blueman starship kooha nwg-look
 | argvus-appearance | [argvus/argvus-appearance](https://github.com/argvus/argvus-appearance) |
 | argvus-boot-splash | [argvus/argvus-boot-splash](https://github.com/argvus/argvus-boot-splash) |
 | argvus-branding | [argvus/argvus-branding](https://github.com/argvus/argvus-branding) |
-| argvus-config | [argvus/argvus-config](https://github.com/argvus/argvus-config) |
-| argvus-control-center | [argvus/argvus-control-center](https://github.com/argvus/argvus-control-center) |
 | argvus-control-panel | [argvus/argvus-control-panel](https://github.com/argvus/argvus-control-panel) |
 | argvus-display | [argvus/argvus-display](https://github.com/argvus/argvus-display) |
 | argvus-firewall | [argvus/argvus-firewall](https://github.com/argvus/argvus-firewall) |
 | argvus-fonts | [argvus/argvus-fonts](https://github.com/argvus/argvus-fonts) |
 | argvus-game-snake | [argvus/argvus-game-snake](https://github.com/argvus/argvus-game-snake) |
 | argvus-games | [argvus/argvus-games](https://github.com/argvus/argvus-games) |
-| argvus-greeter | [argvus/argvus-greeter](https://github.com/argvus/argvus-greeter) |
 | argvus-hyprland | [argvus/argvus-hyprland](https://github.com/argvus/argvus-hyprland) |
-| argvus-i18n | [argvus/argvus-i18n](https://github.com/argvus/argvus-i18n) |
 | argvus-icons | [argvus/argvus-icons](https://github.com/argvus/argvus-icons) |
 | argvus-launcher | [argvus/argvus-launcher](https://github.com/argvus/argvus-launcher) |
-| argvus-loading-theme | [argvus/argvus-loading-theme](https://github.com/argvus/argvus-loading-theme) |
 | argvus-lock | [argvus/argvus-lock](https://github.com/argvus/argvus-lock) |
-| argvus-network | [argvus/argvus-network](https://github.com/argvus/argvus-network) |
 | argvus-notifications | [argvus/argvus-notifications](https://github.com/argvus/argvus-notifications) |
 | argvus-portal | [argvus/argvus-portal](https://github.com/argvus/argvus-portal) |
 | argvus-power | [argvus/argvus-power](https://github.com/argvus/argvus-power) |
-| argvus-removable-devices | [argvus/argvus-removable-devices](https://github.com/argvus/argvus-removable-devices) |
 | argvus-session | [argvus/argvus-session](https://github.com/argvus/argvus-session) |
-| argvus-system-monitor | [argvus/argvus-system-monitor](https://github.com/argvus/argvus-system-monitor) |
 | argvus-taskbar | [argvus/argvus-taskbar](https://github.com/argvus/argvus-taskbar) |
-| argvus-taskbar-calendar | [argvus/argvus-taskbar-calendar](https://github.com/argvus/argvus-taskbar-calendar) |
-| argvus-terminal | [argvus/argvus-terminal](https://github.com/argvus/argvus-terminal) |
-| argvus-tui | [argvus/argvus-tui](https://github.com/argvus/argvus-tui) |
 | argvus-wallpapers | [argvus/argvus-wallpapers](https://github.com/argvus/argvus-wallpapers) |
 | argvus-waybar | [argvus/argvus-waybar](https://github.com/argvus/argvus-waybar) |
-| argvus-widget-telemetry | [argvus/argvus-widget-telemetry](https://github.com/argvus/argvus-widget-telemetry) |
-| argvus-themes, argvus-theme-* | [argvus/argvus-themes](https://github.com/argvus/argvus-themes) and one repository per theme, for example [argvus/argvus-theme-dracula](https://github.com/argvus/argvus-theme-dracula) |
+| argvus-theme-*, for example | [argvus/argvus-theme-dracula](https://github.com/argvus/argvus-theme-dracula) |
+
+The Rust workspace, with the `argvus` command, the Control Center, the greeter source,
+the configuration model and translations, lives in this repository (`crates/`, `greeter/`).
 
 ## Donate to the development of ARGVUS
 

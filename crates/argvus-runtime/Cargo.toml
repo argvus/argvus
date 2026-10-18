@@ -1,0 +1,14 @@
+[package]
+name = "argvus-runtime"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+description = "Translation and program helpers of the ARGVUS runtime commands"
+repository.workspace = true
+homepage.workspace = true
+
+[lib]
+name = "argvus_runtime"
+path = "src/lib.rs"

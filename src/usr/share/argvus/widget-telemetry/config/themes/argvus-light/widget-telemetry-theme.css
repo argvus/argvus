@@ -1,0 +1,9 @@
+/* theme: argvus-light — widget telemetry panel */
+@define-color th-background    #f7f7f7;
+@define-color th-header        #181818;
+@define-color th-foreground    #181818;
+@define-color th-window-bg     #EBEBEB;
+@define-color th-window-bg-rgba rgba(235, 235, 235, 0.82);
+@define-color th-border        rgba(24, 24, 24, 0.16);
+@define-color th-border-header rgba(24, 24, 24, 0.18);
+@define-color th-disconnected  rgba(24, 24, 24, 0.30);

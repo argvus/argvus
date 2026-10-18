@@ -1,0 +1,52 @@
+{
+  // Argvus — removable storage module (argvus-removable-devices) system defaults.
+  //
+  // This file is installed at /etc/argvus/removable-devices/config.json.
+  // To customize per user, copy it to ~/.config/argvus/removable-devices/config.json
+  // and edit; user settings override these defaults. All keys are optional.
+  //
+  // GTK popup menu styling (mode = "gui") lives in the sibling theme.css
+  // file, not here. Copy it to ~/.config/argvus/removable-devices/theme.css to
+  // customize the look; user rules override the system ones.
+  //
+  // Comments are allowed and ignored.
+
+  "show_name": false,       // kept for compatibility; Waybar shows one compact icon
+  "show_capacity": false,   // append used/total to the label
+  "hide_when_empty": true,  // hide the waybar module when no devices are present
+  "show_hidden": false,     // show EFI/reserved partitions
+  "show_notification": true, // notify when removable devices connect/disconnect
+  "max_devices": 0,         // 0 = unlimited; extra devices are shown as "+N"
+
+  "sort": "mount_time",     // mount_time | insertion | name | size
+  "separator": "  ",
+  "format": "{icon}",
+
+  // Leave these unset to use the File Manager selected in ARGVUS Control
+  // Center (`get-default.sh file_manager`). Set file_manager_command only
+  // when an explicit storage-specific override is required.
+  // "open_command": "...",             // compatibility alias
+  // "file_manager_command": "...",     // e.g. "nautilus", "spf" or "yazi"
+  "copy_command": "wl-copy",
+  "unlock_command": "kitty -e",   // prefix used to open a terminal for the LUKS passphrase
+  "mode": "gui",                  // gui = GTK context menu on right click | rofi = dmenu-style list
+  "menu": "rofi",                 // rofi | wofi | dmenu (only used when mode = rofi)
+  // rofi mode auto-resolves the ARGVUS theme (-config <argvus>/launcher/config/config.rasi),
+  // uses the "-p" value as a base prompt, and navigates devices -> actions with
+  // arrows (Right = open submenu, Esc/Left in the submenu = go back).
+  "menu_flags": "-dmenu -i -p Storage",
+
+  // Tokens for "format" and "tooltip_format":
+  //   {icon} {name} {block} {fs} {capacity} {used} {free} {mount} {vendor}
+  //   {model} {state}   (state = "Encrypted · Locked" / "Read-only", ...)
+  "tooltip_format": "{name}\n{state}\n{fs} · {capacity}\n{used} used · {free} free\n{mount}",
+
+  // Symbols Nerd Font glyphs (icon_size is accepted for compatibility but
+  // unused in text mode — the waybar label is a normal text label).
+  "icons": {
+    "mounted": "󰕓",    // md-harddisk
+    "unmounted": "󰕓",  // md-harddisk
+    "encrypted": "󰍁",  // md-lock-outline
+    "read_only": "󰍁"   // md-lock-outline
+  }
+}

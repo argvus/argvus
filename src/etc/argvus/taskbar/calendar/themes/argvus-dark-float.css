@@ -1,0 +1,16 @@
+@import url("argvus-dark.css");
+
+.argvus-calendar {
+  border-radius: 4px;
+}
+
+.day-selected,
+.nav-button:hover,
+.add-event:hover,
+.day:hover,
+.event-button:hover,
+.editor-action:hover,
+.editor-entry,
+.event-editor entry {
+  border-radius: 4px;
+}

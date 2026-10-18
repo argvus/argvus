@@ -37,5 +37,5 @@ Se uma configuração não estiver listada, use a busca da tela inicial do Contr
 ## Relacionados
 
 * [Primeira configuração](/pt/docs/user-guide/getting-started/)
-* [Control Center](/pt/docs/argvus-control-center/)
+* [Control Center](/pt/docs/components/argvus-control-center/)
 * [Control Panel](/pt/docs/argvus-control-panel/)
