@@ -35,6 +35,12 @@ Commands:
   argvus launcher | projects | snippets | ssh | keys | gpg | git
   argvus tui-terminal | app-profiles-yazi-keymap | game-snake | terminal
 
+Hyprland script commands (used by the Hyprland configuration):
+  argvus cheatsheets-hypr | cheatsheets-launcher | scratchpad | hypr-screenshot
+  argvus spaces-switch | emoji-picker | toggle-sidebar | weather-location
+  argvus theme-switch | layout-mode-menu | brightness-switch | toggle-mode
+  argvus idle-timeout | keep-awake | hypr-power-menu | effects-toggle
+
 Aliases:
   argvus setup | system-monitor | control-center | terminal | spf | yazi | about | calendar | game-snake | default-apps | removable-devices | displays | version
 
@@ -82,7 +88,6 @@ private_command_name() {
     snippets) printf 'argvus-snippets\n' ;;
     ssh) printf 'argvus-ssh\n' ;;
     keys) printf 'argvus-keys\n' ;;
-    gpg) printf 'argvus-gpg\n' ;;
     git) printf 'argvus-git\n' ;;
     tui-terminal) printf 'argvus-tui-terminal\n' ;;
     app-profiles-yazi-keymap) printf 'argvus-app-profiles-yazi-keymap\n' ;;
@@ -119,6 +124,70 @@ dispatch_private() {
   _path="$(resolve_private_command "$_name")" \
     || die "$_name is not installed"
   exec "$_path" "$@"
+}
+
+# Maps a Hyprland script command to its script path relative to the ARGVUS
+# data root (`<domain>/sh/<script>.sh`). Like private_command_name, only listed
+# names are reachable, so user input never builds a path.
+#
+# These scripts still exist as shell. Routing them here lets the Hyprland Lua
+# configuration call `argvus <command>` instead of a script path; the script
+# behind each route is replaced by Rust in a later stage.
+script_route_path() {
+  case "$1" in
+    cheatsheets-hypr) printf 'hyprland/sh/cheatsheets.sh\n' ;;
+    cheatsheets-launcher) printf 'launcher/sh/cheatsheets.sh\n' ;;
+    scratchpad) printf 'hyprland/sh/scratchpad.sh\n' ;;
+    hypr-screenshot) printf 'hyprland/sh/hypr-screenshot.sh\n' ;;
+    spaces-switch) printf 'hyprland/sh/spaces-switch.sh\n' ;;
+    emoji-picker) printf 'launcher/sh/emoji-picker.sh\n' ;;
+    toggle-sidebar) printf 'control-panel/sh/toggle-sidebar.sh\n' ;;
+    weather-location) printf 'control-panel/sh/weather-location.sh\n' ;;
+    layout-mode-menu) printf 'appearance/sh/layout-mode-menu.sh\n' ;;
+    brightness-switch) printf 'appearance/sh/brightness-switch.sh\n' ;;
+    toggle-mode) printf 'appearance/sh/toggle-mode.sh\n' ;;
+    idle-timeout) printf 'power/sh/idle-timeout.sh\n' ;;
+    keep-awake) printf 'power/sh/keep-awake.sh\n' ;;
+    hypr-power-menu) printf 'power/sh/hypr-power-menu.sh\n' ;;
+    *) return 1 ;;
+  esac
+}
+
+# Prints the script to run for a relative path. The precedence matches
+# _config_path in hyprland.lua: the user's config copy, then the ARGVUS data
+# copy, then the state copy, then the generated copy, and only then the
+# packaged file. A user copy keeps working after the Lua route changes, so
+# user customizations are not lost. Keep both lists in sync until the Lua
+# configuration stops resolving scripts.
+resolve_script_path() {
+  _relative="$1"
+  _legacy="scripts/argvus/${_relative##*/}"
+  _config_home="${ARGVUS_CONFIG_HOME:-${XDG_CONFIG_HOME:-${HOME:-}/.config}}"
+  _state_home="$_config_home/argvus"
+  _data_home="$_state_home/data"
+  _generated="$_data_home/generated"
+  for _candidate in \
+    "$_config_home/$_legacy" "$_config_home/$_relative" \
+    "$_data_home/$_legacy" "$_data_home/$_relative" \
+    "$_state_home/$_legacy" "$_state_home/$_relative" \
+    "$_generated/$_legacy" "$_generated/$_relative"; do
+    if [ -e "$_candidate" ]; then
+      printf '%s\n' "$_candidate"
+      return 0
+    fi
+  done
+  printf '%s\n' "${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/$_relative"
+}
+
+# Replaces this process with `sh <script>`, forwarding every argument. The
+# interpreter is named by absolute path so the route does not depend on PATH.
+dispatch_script() {
+  _sub="$1"
+  shift
+  _relative="$(script_route_path "$_sub")" \
+    || die "unknown command: $_sub (see 'argvus --help')"
+  _script="$(resolve_script_path "$_relative")"
+  exec /bin/sh "$_script" "$@"
 }
 
 require_command() {
@@ -582,9 +651,29 @@ case "${1:-}" in
   --help|-h|help|'')
     usage
     ;;
+  theme-switch)
+    # The theme transaction is argvus-config's; the route keeps the name that
+    # the keybinding and the callers use.
+    shift
+    exec "$ARGVUS_COMMANDS_DIR/argvus-config" theme-apply "$@"
+    ;;
+  gpg)
+    # The GPG keys are a subcommand of argvus-keys, next to the SSH keys.
+    shift
+    dispatch_private keys gpg "$@"
+    ;;
+  effects-toggle)
+    # The visual effects are argvus-config's `effects` command; the route keeps
+    # the name that the keybindings and the callers use.
+    shift
+    exec "$ARGVUS_COMMANDS_DIR/argvus-config" effects "$@"
+    ;;
   *)
     _command="$1"
     shift
+    if script_route_path "$_command" >/dev/null 2>&1; then
+      dispatch_script "$_command" "$@"
+    fi
     dispatch_private "$_command" "$@"
     ;;
 esac

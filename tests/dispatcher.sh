@@ -147,6 +147,47 @@ else
   fail "git maps to argvus-git (status $status, output: $out)"
 fi
 
+# 12. A script route runs the packaged script with its arguments forwarded.
+SYSTEM="$WORK/system"
+CONFIG_HOME="$WORK/config"
+mkdir -p "$SYSTEM/hyprland/sh" "$CONFIG_HOME/scripts/argvus"
+# shellcheck disable=SC2016
+printf '%s\n' 'for arg do printf "[%s]\n" "$arg"; done' > "$SYSTEM/hyprland/sh/scratchpad.sh"
+out="$(run env ARGVUS_SYSTEM_CONFIG="$SYSTEM" /bin/sh "$DISPATCHER" scratchpad 'a b' '' </dev/null 2>&1)" && status=0 || status=$?
+if [ "$status" -eq 0 ] && [ "$out" = "$(printf '[a b]\n[]')" ]; then
+  pass "script route forwards arguments to the packaged script"
+else
+  fail "script route forwards arguments (status $status, output: $out)"
+fi
+
+# 13. A user copy in the ARGVUS config home wins over the packaged script.
+printf '%s\n' 'printf "override\n"' > "$CONFIG_HOME/scripts/argvus/scratchpad.sh"
+out="$(run env ARGVUS_SYSTEM_CONFIG="$SYSTEM" ARGVUS_CONFIG_HOME="$CONFIG_HOME" /bin/sh "$DISPATCHER" scratchpad </dev/null 2>&1)" && status=0 || status=$?
+if [ "$status" -eq 0 ] && [ "$out" = "override" ]; then
+  pass "user script override wins over the packaged script"
+else
+  fail "user script override wins over the packaged script (status $status, output: $out)"
+fi
+
+# 14. The effects route is argvus-config's `effects` command, with the same
+# arguments; the packaged script no longer exists.
+make_fake "$COMMANDS/argvus-config"
+out="$(run /bin/sh "$DISPATCHER" effects-toggle animations toggle </dev/null 2>&1)" && status=0 || status=$?
+if [ "$status" -eq 0 ] && [ "$out" = "$(printf '[effects]\n[animations]\n[toggle]\nstdin=')" ]; then
+  pass "effects-toggle routes to argvus-config effects"
+else
+  fail "effects-toggle routes to argvus-config effects (status $status, output: $out)"
+fi
+
+# 15. The gpg route is argvus-keys' `gpg` subcommand, with its arguments.
+make_fake "$COMMANDS/argvus-keys"
+out="$(run /bin/sh "$DISPATCHER" gpg list </dev/null 2>&1)" && status=0 || status=$?
+if [ "$status" -eq 0 ] && [ "$out" = "$(printf '[gpg]\n[list]\nstdin=')" ]; then
+  pass "gpg routes to argvus-keys gpg"
+else
+  fail "gpg routes to argvus-keys gpg (status $status, output: $out)"
+fi
+
 if [ "$failures" -ne 0 ]; then
   printf '%s failure(s)\n' "$failures" >&2
   exit 1
