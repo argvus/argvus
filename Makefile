@@ -20,6 +20,7 @@ set-permissions:
 	@find tools/sh -type f -name "*.sh" -exec chmod +x {} \; 2>/dev/null || true
 
 validate:
+	@sh tools/sh/sync-skeleton.sh --check
 	@test -x src/usr/bin/argvus
 	@sh -n src/usr/bin/argvus
 	@[ -n "$(SCRIPT_VERSION)" ] || { echo "VERSION not found in src/usr/bin/argvus" >&2; exit 1; }
