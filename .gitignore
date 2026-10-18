@@ -13,5 +13,5 @@ packaging/arch/ci/pkg/
 packaging/arch/local/src/
 packaging/arch/local/pkg/
 packaging/arch/*/.PKGBUILD.local.*
-/target
+target/
 /greeter/target
