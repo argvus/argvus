@@ -3,11 +3,13 @@
 //! A theme switch rewrites the files of several session components, so it
 //! stops those services first and restarts the ones that were running. It also
 //! shows the loading overlay with the colours of the theme. These steps do not
-//! depend on the theme, so they live here. The transaction itself (lock,
-//! traps, and the order of the writes) lives in `theme_apply` and `theme_body`.
+//! depend on the theme, so they live here. The transaction itself (the lock and
+//! the order of the writes) lives in `theme_apply` and `theme_body`.
 
 use crate::session_paths::SessionPaths;
-use crate::session_splash::{self, SplashColors, SplashEnvironment, SplashRequest, StartOutcome};
+use crate::session_splash::{
+  self, Owner, SplashColors, SplashEnvironment, SplashRequest, StartOutcome,
+};
 use std::fs;
 use std::process::{Command, Stdio};
 
@@ -88,6 +90,7 @@ pub fn start_overlay(theme: &str) -> StartOutcome {
     theme,
     colors: Some(colors),
     await_compositor: false,
+    owner: Owner::Transition,
   };
   session_splash::start_with(
     &SplashEnvironment::resolve(),
@@ -96,9 +99,10 @@ pub fn start_overlay(theme: &str) -> StartOutcome {
   )
 }
 
-/// Stops the overlay recorded in the pid file.
+/// Stops the overlay that a theme switch started. The session splash is not
+/// touched, because it records its pid in a different file.
 pub fn stop_overlay() {
-  session_splash::stop(&SplashEnvironment::resolve());
+  session_splash::stop(&SplashEnvironment::resolve(), Owner::Transition);
 }
 
 /// The message printed when the overlay could not be shown. `None` when the

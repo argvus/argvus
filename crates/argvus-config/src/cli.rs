@@ -231,7 +231,10 @@ fn run(arguments: Vec<String>) -> Result<(), Box<dyn std::error::Error>> {
         }
       }
       Some("stop") => {
-        session_splash::stop(&session_splash::SplashEnvironment::resolve());
+        session_splash::stop(
+          &session_splash::SplashEnvironment::resolve(),
+          session_splash::Owner::Session,
+        );
       }
       _ => return Err("usage: argvus config session-splash start|stop".into()),
     },

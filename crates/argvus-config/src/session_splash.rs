@@ -14,7 +14,31 @@ use std::process::{Command, Stdio};
 use std::thread::sleep;
 use std::time::Duration;
 
-const PID_FILE_NAME: &str = "argvus-loading-theme.pid";
+/// Which flow started a splash. Each owner records its pid in its own file, so
+/// a flow stops only the splash it started.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Owner {
+  /// The session splash, started by `argvus-sessionctl` during a reload.
+  Session,
+  /// The overlay of a theme switch.
+  Transition,
+}
+
+impl Owner {
+  fn pid_file_name(self) -> &'static str {
+    match self {
+      Owner::Session => "argvus-loading-theme.pid",
+      Owner::Transition => "argvus-loading-theme-transition.pid",
+    }
+  }
+}
+
+/// Every owner, so that a second splash is never started over a running one.
+const OWNERS: [Owner; 2] = [Owner::Session, Owner::Transition];
+/// The kernel keeps only the first 15 bytes of a process name in `/proc/<pid>/comm`.
+const COMM_LENGTH: usize = 15;
+/// How long `stop` waits for a splash to exit after SIGTERM before SIGKILL.
+const EXIT_WAIT_STEPS: u32 = 100;
 /// Theme used when the effective configuration names none.
 pub const DEFAULT_THEME: &str = "argvus-dark";
 /// How many 100 ms waits for the compositor before giving up.
@@ -80,9 +104,9 @@ fn systemd_value(name: &str) -> Option<String> {
     .map(str::to_string)
 }
 
-/// Where the splash records its pid.
-pub fn pid_file(environment: &SplashEnvironment) -> PathBuf {
-  environment.runtime_dir().join(PID_FILE_NAME)
+/// Where a splash started by `owner` records its pid.
+pub fn pid_file(environment: &SplashEnvironment, owner: Owner) -> PathBuf {
+  environment.runtime_dir().join(owner.pid_file_name())
 }
 
 fn read_pid(path: &Path) -> Option<i32> {
@@ -94,23 +118,101 @@ fn read_pid(path: &Path) -> Option<i32> {
   first.parse::<i32>().ok().filter(|pid| *pid > 0)
 }
 
-/// Whether a process with this pid exists.
+/// Whether a process with this pid exists. A zombie still counts: it has
+/// exited but nobody has reaped it yet.
 fn process_alive(pid: i32) -> bool {
   // SAFETY: signal 0 only checks that the process exists and sends nothing.
   unsafe { libc::kill(pid, 0) == 0 }
 }
 
-/// Whether a splash started earlier is still running. A stale pid file is
-/// removed, as the session script did.
-pub fn active(environment: &SplashEnvironment) -> bool {
-  let path = pid_file(environment);
+/// Whether `pid` runs a process named `name`. The name is compared with the
+/// kernel's truncated `comm`. It is only a fallback for pid files written before
+/// the start time was recorded: a script's `comm` is its interpreter's name, so
+/// the name does not identify a splash that is a shell script.
+fn is_named(pid: i32, name: &str) -> bool {
+  let expected: String = name.chars().take(COMM_LENGTH).collect();
+  fs::read_to_string(format!("/proc/{pid}/comm"))
+    .map(|comm| comm.trim_end() == expected)
+    .unwrap_or(false)
+}
+
+/// The kernel's start time of `pid` (field 22 of `/proc/<pid>/stat`, in clock
+/// ticks since boot). A recycled pid has a different start time.
+fn process_start_time(pid: i32) -> Option<u64> {
+  let stat = fs::read_to_string(format!("/proc/{pid}/stat")).ok()?;
+  // The command name is in parentheses and may contain spaces, so the fields are
+  // counted from the last closing parenthesis.
+  let after_name = stat.rsplit_once(')')?.1;
+  // After `)` the first field is the state, which is field 3; start time is field 22.
+  after_name.split_whitespace().nth(19)?.parse().ok()
+}
+
+/// The start time recorded on the pid file's second line, when present.
+fn read_start_time(path: &Path) -> Option<u64> {
+  fs::read_to_string(path)
+    .ok()?
+    .lines()
+    .nth(1)?
+    .trim()
+    .parse()
+    .ok()
+}
+
+/// Waits for `pid` to end, reaping it when it is a child of this process, and
+/// returns whether it ended within `steps` polls of 50 ms.
+fn wait_until_exited(pid: i32, steps: u32) -> bool {
+  for _ in 0..=steps {
+    let mut status: libc::c_int = 0;
+    // SAFETY: WNOHANG reads the state of `pid` without blocking, and reaps it
+    // only when it is a child of this process.
+    let reaped = unsafe { libc::waitpid(pid, &mut status, libc::WNOHANG) };
+    if reaped == pid {
+      return true;
+    }
+    let not_our_child =
+      reaped == -1 && std::io::Error::last_os_error().raw_os_error() == Some(libc::ECHILD);
+    if not_our_child && !process_alive(pid) {
+      return true;
+    }
+    sleep(Duration::from_millis(50));
+  }
+  false
+}
+
+/// Ends the splash `pid`: SIGTERM so it can clean up, then SIGKILL when it
+/// ignores that for the whole wait.
+fn terminate(pid: i32) {
+  // SAFETY: the caller has checked that `pid` is the splash it started.
+  unsafe {
+    libc::kill(pid, libc::SIGTERM);
+  }
+  if !wait_until_exited(pid, EXIT_WAIT_STEPS) {
+    // SAFETY: as above; SIGKILL cannot be ignored.
+    unsafe {
+      libc::kill(pid, libc::SIGKILL);
+    }
+    wait_until_exited(pid, EXIT_WAIT_STEPS / 10);
+  }
+}
+
+/// The pid recorded for `owner`, when that splash is still running. A stale
+/// pid file is removed, as the session script did.
+fn running_pid(environment: &SplashEnvironment, owner: Owner) -> Option<i32> {
+  let path = pid_file(environment, owner);
   match read_pid(&path) {
-    Some(pid) if process_alive(pid) => true,
+    Some(pid) if process_alive(pid) => Some(pid),
     _ => {
       let _ = fs::remove_file(&path);
-      false
+      None
     }
   }
+}
+
+/// Whether a splash started by any owner is still running.
+pub fn active(environment: &SplashEnvironment) -> bool {
+  OWNERS
+    .iter()
+    .any(|owner| running_pid(environment, *owner).is_some())
 }
 
 fn is_executable(path: &Path) -> bool {
@@ -181,6 +283,7 @@ pub struct SplashRequest<'a> {
   pub theme: &'a str,
   pub colors: Option<SplashColors>,
   pub await_compositor: bool,
+  pub owner: Owner,
 }
 
 impl<'a> SplashRequest<'a> {
@@ -190,6 +293,7 @@ impl<'a> SplashRequest<'a> {
       theme,
       colors: None,
       await_compositor: true,
+      owner: Owner::Session,
     }
   }
 }
@@ -283,16 +387,18 @@ pub fn start_with(
   let ready = is_ready(&ready_file);
   let _ = fs::remove_file(&ready_file);
   if !ready {
-    // SIGTERM, as the session script did, so the splash can clean up.
-    // SAFETY: the pid belongs to the child this process just spawned.
-    unsafe {
-      libc::kill(child.id() as i32, libc::SIGTERM);
-    }
-    let _ = child.wait();
+    // The child was spawned by this process, so `terminate` also reaps it.
+    terminate(child.id() as i32);
     return StartOutcome::NotReady;
   }
-  // The splash outlives this process; its pid is what `stop` will signal.
-  if fs::write(pid_file(environment), format!("{}\n", child.id())).is_ok() {
+  // The splash outlives this process; its pid is what `stop` will signal. Line
+  // two is its start time, which identifies the splash even when the binary is a
+  // script, whose process name is its interpreter's.
+  let record = match process_start_time(child.id() as i32) {
+    Some(start_time) => format!("{}\n{start_time}\n", child.id()),
+    None => format!("{}\n", child.id()),
+  };
+  if fs::write(pid_file(environment, request.owner), record).is_ok() {
     StartOutcome::Started
   } else {
     StartOutcome::NotReady
@@ -319,27 +425,38 @@ fn wait_for_compositor() -> Option<SplashEnvironment> {
   None
 }
 
-/// Stops the splash started by an earlier call, if it is still running.
+/// Stops the splash that `owner` started, if it is still running.
 ///
 /// The pid file is removed first, so a failed stop does not leave a stale
-/// record behind. Waits up to five seconds for the process to exit.
-pub fn stop(environment: &SplashEnvironment) {
-  let path = pid_file(environment);
+/// record behind. The pid is signalled only while `/proc/<pid>/comm` still names
+/// the splash binary, so a recycled pid is left alone. The splash gets SIGTERM,
+/// then SIGKILL if it ignores that.
+pub fn stop(environment: &SplashEnvironment, owner: Owner) {
+  let binary_name = crate::session_loading::splash_binary()
+    .file_name()
+    .map(|name| name.to_string_lossy().into_owned())
+    .unwrap_or_default();
+  stop_named(environment, owner, &binary_name);
+}
+
+/// `stop` for a splash whose process name is `name`.
+fn stop_named(environment: &SplashEnvironment, owner: Owner, name: &str) {
+  let path = pid_file(environment, owner);
   let pid = read_pid(&path);
+  let start_time = read_start_time(&path);
   let _ = fs::remove_file(&path);
   let Some(pid) = pid else {
     return;
   };
-  // SAFETY: sends SIGTERM to a pid recorded by `start`.
-  unsafe {
-    libc::kill(pid, libc::SIGTERM);
+  let is_the_splash = match start_time {
+    Some(recorded) => process_start_time(pid) == Some(recorded),
+    None => is_named(pid, name),
+  };
+  if !is_the_splash {
+    // The recorded pid is gone or now belongs to another process.
+    return;
   }
-  for _ in 0..100 {
-    if !process_alive(pid) {
-      return;
-    }
-    sleep(Duration::from_millis(50));
-  }
+  terminate(pid);
 }
 
 #[cfg(test)]
@@ -383,10 +500,11 @@ mod tests {
         theme: "github-light",
         colors: None,
         await_compositor: false,
+        owner: Owner::Session,
       },
     );
     assert_eq!(outcome, StartOutcome::Unavailable);
-    assert!(!pid_file(&environment).exists());
+    assert!(!pid_file(&environment, Owner::Session).exists());
     let _ = fs::remove_dir_all(runtime);
   }
 
@@ -397,7 +515,11 @@ mod tests {
     let _ = fs::create_dir_all(&runtime);
     let environment = environment_under(&runtime);
     // This test process is alive, so the pid file names a running splash.
-    fs::write(pid_file(&environment), format!("{}\n", std::process::id())).expect("pid file");
+    fs::write(
+      pid_file(&environment, Owner::Session),
+      format!("{}\n", std::process::id()),
+    )
+    .expect("pid file");
     let outcome = start_with(
       &environment,
       &runtime.join("no-such-splash"),
@@ -415,9 +537,9 @@ mod tests {
       values: BTreeMap::from([("XDG_RUNTIME_DIR".to_string(), runtime.display().to_string())]),
     };
     // A pid far above any real process: it cannot be alive.
-    fs::write(pid_file(&environment), "2147483646\n").expect("pid file");
+    fs::write(pid_file(&environment, Owner::Session), "2147483646\n").expect("pid file");
     assert!(!active(&environment));
-    assert!(!pid_file(&environment).exists());
+    assert!(!pid_file(&environment, Owner::Session).exists());
     let _ = fs::remove_dir_all(runtime);
   }
 
@@ -437,6 +559,211 @@ mod tests {
       !wayland_socket_ready(&environment),
       "a regular file is not a socket"
     );
+    let _ = fs::remove_dir_all(runtime);
+  }
+
+  /// Copies `source` to `directory/name`, so the kernel reports `name` as the
+  /// process name, and starts it with `arguments`.
+  fn spawn_named(
+    directory: &Path,
+    source: &str,
+    name: &str,
+    arguments: &[&str],
+  ) -> std::process::Child {
+    let program = directory.join(name);
+    fs::copy(source, &program).expect("copy test program");
+    // Another test may fork while this copy is still open for writing; the
+    // child then holds the descriptor, and exec fails with ETXTBSY until it closes.
+    for _ in 0..50 {
+      match Command::new(&program)
+        .args(arguments)
+        .stdin(Stdio::null())
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .spawn()
+      {
+        Ok(child) => return child,
+        Err(error) if error.raw_os_error() == Some(libc::ETXTBSY) => {
+          sleep(Duration::from_millis(20));
+        }
+        Err(error) => panic!("spawn test program: {error}"),
+      }
+    }
+    panic!("spawn test program: still busy after retries");
+  }
+
+  fn test_runtime(label: &str) -> PathBuf {
+    let runtime =
+      std::env::temp_dir().join(format!("argvus-splash-{label}-{}", std::process::id()));
+    let _ = fs::remove_dir_all(&runtime);
+    fs::create_dir_all(&runtime).expect("runtime dir");
+    runtime
+  }
+
+  #[test]
+  fn stop_reaps_the_splash_instead_of_waiting_for_a_zombie() {
+    let runtime = test_runtime("reap");
+    let environment = environment_under(&runtime);
+    let mut child = spawn_named(&runtime, "/bin/sleep", "splash-test", &["60"]);
+    fs::write(
+      pid_file(&environment, Owner::Transition),
+      format!("{}\n", child.id()),
+    )
+    .expect("pid file");
+
+    let started = std::time::Instant::now();
+    stop_named(&environment, Owner::Transition, "splash-test");
+    // Without reaping, `process_alive` keeps seeing the zombie and the wait runs for five seconds.
+    assert!(
+      started.elapsed() < Duration::from_secs(2),
+      "{:?}",
+      started.elapsed()
+    );
+    assert!(!pid_file(&environment, Owner::Transition).exists());
+    assert!(child.try_wait().is_err(), "the child was reaped by stop");
+    let _ = fs::remove_dir_all(runtime);
+  }
+
+  #[test]
+  fn stop_does_not_signal_a_pid_that_is_not_the_splash() {
+    let runtime = test_runtime("identity");
+    let environment = environment_under(&runtime);
+    let mut other = spawn_named(&runtime, "/bin/sleep", "other-process", &["60"]);
+    fs::write(
+      pid_file(&environment, Owner::Transition),
+      format!("{}\n", other.id()),
+    )
+    .expect("pid file");
+
+    stop_named(&environment, Owner::Transition, "splash-test");
+    assert!(
+      process_alive(other.id() as i32),
+      "a recycled pid must survive"
+    );
+    assert!(!pid_file(&environment, Owner::Transition).exists());
+    let _ = other.kill();
+    let _ = other.wait();
+    let _ = fs::remove_dir_all(runtime);
+  }
+
+  #[test]
+  fn stop_escalates_to_sigkill_when_sigterm_is_ignored() {
+    let runtime = test_runtime("sigkill");
+    let environment = environment_under(&runtime);
+    let mut child = spawn_named(
+      &runtime,
+      "/bin/sh",
+      "splash-test",
+      &["-c", "trap '' TERM; sleep 60"],
+    );
+    fs::write(
+      pid_file(&environment, Owner::Transition),
+      format!("{}\n", child.id()),
+    )
+    .expect("pid file");
+
+    stop_named(&environment, Owner::Transition, "splash-test");
+    assert!(!process_alive(child.id() as i32), "SIGKILL ends the splash");
+    let _ = child.kill();
+    let _ = child.wait();
+    let _ = fs::remove_dir_all(runtime);
+  }
+
+  #[test]
+  fn a_recorded_start_time_identifies_a_script_splash() {
+    // A script runs under its interpreter, so its process name is not the binary
+    // name. The recorded start time is what identifies it.
+    let runtime = test_runtime("start-time");
+    let environment = environment_under(&runtime);
+    let splash = spawn_named(&runtime, "/bin/sleep", "interpreter-name", &["60"]);
+    let start_time = process_start_time(splash.id() as i32).expect("start time");
+    fs::write(
+      pid_file(&environment, Owner::Transition),
+      format!("{}\n{start_time}\n", splash.id()),
+    )
+    .expect("pid file");
+
+    stop_named(&environment, Owner::Transition, "splash-test");
+    // `stop` reaped the child, so it no longer exists as a process at all.
+    assert!(
+      !process_alive(splash.id() as i32),
+      "the recorded splash was stopped"
+    );
+    // `stop` already reaped the child; this only satisfies the Child handle.
+    let mut splash = splash;
+    let _ = splash.wait();
+    let _ = fs::remove_dir_all(runtime);
+  }
+
+  #[test]
+  fn a_recorded_start_time_that_no_longer_matches_is_left_alone() {
+    let runtime = test_runtime("start-mismatch");
+    let environment = environment_under(&runtime);
+    let mut other = spawn_named(&runtime, "/bin/sleep", "other-process", &["60"]);
+    let start_time = process_start_time(other.id() as i32).expect("start time");
+    // The same pid with a different start time is a recycled pid.
+    fs::write(
+      pid_file(&environment, Owner::Transition),
+      format!("{}\n{}\n", other.id(), start_time + 1),
+    )
+    .expect("pid file");
+
+    stop_named(&environment, Owner::Transition, "splash-test");
+    assert!(
+      process_alive(other.id() as i32),
+      "a recycled pid must survive"
+    );
+    let _ = other.kill();
+    let _ = other.wait();
+    let _ = fs::remove_dir_all(runtime);
+  }
+
+  #[test]
+  fn each_owner_stops_only_its_own_splash() {
+    let runtime = test_runtime("owners");
+    let environment = environment_under(&runtime);
+    let mut session = spawn_named(&runtime, "/bin/sleep", "splash-test", &["60"]);
+    fs::write(
+      pid_file(&environment, Owner::Session),
+      format!("{}\n", session.id()),
+    )
+    .expect("pid file");
+
+    stop_named(&environment, Owner::Transition, "splash-test");
+    assert!(
+      process_alive(session.id() as i32),
+      "the session splash is not the transition's"
+    );
+    assert!(pid_file(&environment, Owner::Session).exists());
+    let _ = session.kill();
+    let _ = session.wait();
+    let _ = fs::remove_dir_all(runtime);
+  }
+
+  #[test]
+  fn a_transition_overlay_never_starts_over_a_session_splash() {
+    let runtime = test_runtime("shared-guard");
+    let environment = environment_under(&runtime);
+    let mut session = spawn_named(&runtime, "/bin/sleep", "splash-test", &["60"]);
+    fs::write(
+      pid_file(&environment, Owner::Session),
+      format!("{}\n", session.id()),
+    )
+    .expect("pid file");
+
+    let outcome = start_with(
+      &environment,
+      &runtime.join("no-such-splash"),
+      &SplashRequest {
+        theme: "github-light",
+        colors: None,
+        await_compositor: false,
+        owner: Owner::Transition,
+      },
+    );
+    assert_eq!(outcome, StartOutcome::AlreadyRunning);
+    let _ = session.kill();
+    let _ = session.wait();
     let _ = fs::remove_dir_all(runtime);
   }
 }
