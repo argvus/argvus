@@ -60,7 +60,6 @@ impl Palette {
       "dark-gruvbox" | "gruvbox-dark" => (0x282828, 0xD4BE98),
       "dark-rose-pine" | "rose-pine" => (0x191724, 0xc4a7e7),
       "dark-tokio-night" | "dark-tokyo-night" | "tokyo-night" => (0x1a1b26, 0x7aa2f7),
-      "light-frost" | "frost" => (0xf6f8fa, 0x0969da),
       "github-light" => (0xffffff, 0x0969da),
       "one-light" => (0xfafafa, 0x4078f2),
       "everforest-light" | "everforest-light-float" => (0xfdf6e3, 0x3a94c5),

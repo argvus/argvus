@@ -73,7 +73,7 @@ is_supported_theme() {
   case "$1" in
     one-dark|one-dark-float|dracula|dracula-float|argvus-dark|argvus-dark-float|silver-dark|silver-dark-float|\
     slate-dark|slate-dark-float|universe|universe-float|\
-    argvus-light|argvus-light-float|github-light|github-light-float|solarized-light|solarized-light-float|one-light|one-light-float|everforest-light|everforest-light-float|frost|frost-float|catppuccin-latte|catppuccin-latte-float|gruvbox-light|gruvbox-light-float|rose-pine|rose-pine-float|tokyo-night|tokyo-night-float|solitude|solitude-float|sunset|sunset-float|matrix|matrix-float|monokai-dark|monokai-dark-float)
+    argvus-light|argvus-light-float|github-light|github-light-float|solarized-light|solarized-light-float|one-light|one-light-float|everforest-light|everforest-light-float|catppuccin-latte|catppuccin-latte-float|gruvbox-light|gruvbox-light-float|rose-pine|rose-pine-float|tokyo-night|tokyo-night-float|solitude|solitude-float|sunset|sunset-float|matrix|matrix-float|monokai-dark|monokai-dark-float)
       return 0
       ;;
     *)
@@ -97,7 +97,6 @@ canonical_theme_id() {
     argvus-dark-gruvbox) printf '%s\n' "gruvbox-dark" ;; argvus-dark-gruvbox-float) printf '%s\n' "gruvbox-dark-float" ;;
     argvus-github-light) printf '%s\n' "github-light" ;; argvus-github-light-float) printf '%s\n' "github-light-float" ;;
     argvus-light-solarized) printf '%s\n' "solarized-light" ;; argvus-light-solarized-float) printf '%s\n' "solarized-light-float" ;;
-    argvus-light-frost) printf '%s\n' "frost" ;; argvus-light-frost-float) printf '%s\n' "frost-float" ;;
     argvus-light-gruvbox) printf '%s\n' "gruvbox-light" ;; argvus-light-gruvbox-float) printf '%s\n' "gruvbox-light-float" ;;
     argvus-dark-rose-pine) printf '%s\n' "rose-pine" ;; argvus-dark-rose-pine-float) printf '%s\n' "rose-pine-float" ;;
     argvus-dark-tokio-night) printf '%s\n' "tokyo-night" ;; argvus-dark-tokio-night-float) printf '%s\n' "tokyo-night-float" ;;
