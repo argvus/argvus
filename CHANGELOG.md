@@ -6,6 +6,7 @@ All notable changes to `argvus` are documented here.
 
 - A failed theme switch now restarts the services it stopped and reports the error; an invalid theme id is refused before anything changes.
 - `argvus config accent` persists the chosen color as the custom accent in the same command; the Control Center no longer does a separate patch step.
+- The theme switch's loading overlay records its own pid file and stops only the overlay it started. A splash that ignores SIGTERM is killed after five seconds, and a stopped splash no longer leaves the switch waiting on a zombie process.
 - Light/Dark toggle picks the opposite mode from the theme's manifest, so light themes such as Solarized Light now switch too.
 - Appearance > Themes lists Nord Light.
 - Sticky/Float regenerates the per-component files of the current theme for the new variant (taskbar, launcher, notifications, lock, terminal, telemetry, control panel, TUI, btop).
