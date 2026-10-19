@@ -65,6 +65,7 @@ struct PopupPosition {
   x: i32,
   y: i32,
   width: i32,
+  height: i32,
   origin_x: i32,
   origin_y: i32,
 }
@@ -119,7 +120,13 @@ pub fn run(
   }
 
   // The fixed container fills the surface, so its coordinates are the window's.
+  // GTK sizes a window from its children's natural size, and the Fixed only
+  // reports the menu's extent, so the monitor size is requested explicitly.
+  // Without it the surface stays at the menu's height while the compositor
+  // paints the menu column down to the bottom of the output.
+  overlay.set_default_size(position.width, position.height);
   let fixed = gtk::Fixed::new();
+  fixed.set_size_request(position.width, position.height);
   fixed.set_widget_name("storage-click-catcher");
   overlay.set_child(Some(&fixed));
 
@@ -497,6 +504,7 @@ fn popup_position(
       x: SCREEN_MARGIN,
       y: 32,
       width: 1920,
+      height: 1080,
       origin_x: 0,
       origin_y: 0,
     };
@@ -517,6 +525,7 @@ fn popup_position(
     x: local_x.clamp(SCREEN_MARGIN, max_x),
     y: popup_y.clamp(SCREEN_MARGIN, max_y),
     width: geometry.width(),
+    height: geometry.height(),
     origin_x: geometry.x(),
     origin_y: geometry.y(),
   }
