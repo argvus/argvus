@@ -21,12 +21,12 @@ const LIGHT_THEMES: &[&str] = &[
   "one-light-float",
   "everforest-light",
   "everforest-light-float",
-  "frost",
-  "frost-float",
   "catppuccin-latte",
   "catppuccin-latte-float",
   "gruvbox-light",
   "gruvbox-light-float",
+  "nord-light",
+  "nord-light-float",
 ];
 
 /// Legacy and alternate ids that map to a canonical theme.
@@ -53,8 +53,6 @@ const CANONICAL_IDS: &[(&str, &str)] = &[
   ("argvus-github-light-float", "github-light-float"),
   ("argvus-light-solarized", "solarized-light"),
   ("argvus-light-solarized-float", "solarized-light-float"),
-  ("argvus-light-frost", "frost"),
-  ("argvus-light-frost-float", "frost-float"),
   ("argvus-light-gruvbox", "gruvbox-light"),
   ("argvus-light-gruvbox-float", "gruvbox-light-float"),
   ("argvus-dark-rose-pine", "rose-pine"),
@@ -68,6 +66,8 @@ const CANONICAL_IDS: &[(&str, &str)] = &[
   ("argvus-dark-solitude", "solitude"),
   ("argvus-dark-solitude-float", "solitude-float"),
   ("argvus-dark-sunset", "sunset"),
+  ("dark-sunset", "sunset"),
+  ("dark-sunset-float", "sunset-float"),
   ("argvus-dark-sunset-float", "sunset-float"),
   ("argvus-dark-matrix", "matrix"),
   ("argvus-dark-matrix-float", "matrix-float"),
@@ -107,7 +107,6 @@ const BUILTIN_WALLPAPERS: &[(&str, &str)] = &[
     "catppuccin-latte",
     "abstract/light/catppuccin-latte-abstract-light.jxl",
   ),
-  ("frost", "abstract/light/frost-abstract-light.jxl"),
   (
     "github-light",
     "abstract/light/github-light-abstract-light.jxl",
@@ -131,6 +130,22 @@ pub fn canonical_theme_id(id: &str) -> &str {
     .find(|(alias, _)| *alias == id)
     .map(|(_, canonical)| *canonical)
     .unwrap_or(id)
+}
+
+/// Whether `id` can name a theme: lowercase letters, digits, `.`, `_` and `-`,
+/// starting with a letter or digit, and never a path. Theme ids are joined into
+/// file paths, so anything else is refused before it reaches the filesystem.
+pub fn is_valid_theme_id(id: &str) -> bool {
+  let mut chars = id.chars();
+  let starts_well = chars
+    .next()
+    .is_some_and(|c| c.is_ascii_lowercase() || c.is_ascii_digit());
+  starts_well
+    && id.len() <= 128
+    && !id.contains("..")
+    && id
+      .chars()
+      .all(|c| c.is_ascii_lowercase() || c.is_ascii_digit() || matches!(c, '.' | '_' | '-'))
 }
 
 /// Resolves the theme to apply. An empty id stays empty. The Sticky/Float mode
@@ -267,7 +282,7 @@ mod tests {
   #[test]
   fn gtk_mode_follows_the_builtin_light_list_without_a_manifest() {
     let missing = Path::new("/nonexistent-themes-d");
-    assert_eq!(gtk_mode(missing, "frost-float"), "light");
+    assert_eq!(gtk_mode(missing, "github-light-float"), "light");
     assert_eq!(gtk_mode(missing, "argvus-dark"), "dark");
   }
 
@@ -324,5 +339,40 @@ mod tests {
     );
     assert_eq!(theme_wallpaper(&themes, &wallpapers, "matrix"), None);
     let _ = fs::remove_dir_all(root);
+  }
+}
+
+#[cfg(test)]
+mod id_tests {
+  use super::is_valid_theme_id;
+
+  #[test]
+  fn accepts_real_theme_ids() {
+    for id in [
+      "argvus-dark",
+      "catppuccin-latte-float",
+      "gruvbox-high-dark",
+      "sunset",
+      "v2.1",
+    ] {
+      assert!(is_valid_theme_id(id), "{id}");
+    }
+  }
+
+  #[test]
+  fn refuses_paths_and_control_characters() {
+    for id in [
+      "",
+      "../x",
+      "a/b",
+      "/etc/passwd",
+      ".hidden",
+      "Dark",
+      "a b",
+      "x\n",
+      "a..b",
+    ] {
+      assert!(!is_valid_theme_id(id), "{id:?}");
+    }
   }
 }

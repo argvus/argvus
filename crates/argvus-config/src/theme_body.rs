@@ -95,13 +95,15 @@ pub fn run(paths: &SessionPaths, theme: &str, runtime: bool) -> i32 {
   // switch goes on with an empty one.
   let wallpaper = find_theme_wallpaper(paths, &themes_dir, theme).unwrap_or_default();
 
-  apply_canonical_theme(theme, &wallpaper);
+  if !apply_canonical_theme(theme, &wallpaper) {
+    return 1;
+  }
 
   let mut status = 0;
   if runtime {
     theme_transition::stop_units();
   }
-  let _ = fs::write(&active_file, theme);
+  let _ = crate::text_edit::replace_file(&active_file, theme);
   let uid_dir = greeter_dir();
   let _ = theme_surfaces::publish_greeter_theme(
     &themes_dir,
@@ -221,9 +223,15 @@ fn finish_transition(paths: &SessionPaths, mut status: i32, runtime: bool) -> i3
 
 /// Applies the theme through the canonical configuration, unless a projection
 /// is running (that projection already did it).
-fn apply_canonical_theme(theme: &str, wallpaper: &str) {
-  if env::var("ARGVUS_PROJECTING").as_deref() == Ok("1") || !on_path("argvus") {
-    return;
+/// Returns `false` when the canonical commit failed. The switch then stops before
+/// any service or file is touched, and the failure is reported to the caller.
+fn apply_canonical_theme(theme: &str, wallpaper: &str) -> bool {
+  // A projection or a mode switch already holds the canonical choice: commit nothing,
+  // so a custom wallpaper or accent is not reset. The runtime still runs.
+  let skip_commit = env::var("ARGVUS_PROJECTING").as_deref() == Ok("1")
+    || env::var("ARGVUS_SKIP_CANONICAL").as_deref() == Ok("1");
+  if skip_commit || !on_path("argvus") {
+    return true;
   }
   let family = theme.strip_suffix("-float").unwrap_or(theme);
   let mut arguments = vec![
@@ -239,11 +247,21 @@ fn apply_canonical_theme(theme: &str, wallpaper: &str) {
     arguments.push(wallpaper.to_string());
     arguments.push("--reset-wallpaper".to_string());
   }
-  let _ = Command::new("argvus")
+  let status = Command::new("argvus")
     .args(&arguments)
     .stdout(Stdio::null())
-    .stderr(Stdio::null())
     .status();
+  match status {
+    Ok(result) if result.success() => true,
+    Ok(result) => {
+      eprintln!("argvus-config: the canonical theme commit failed ({result})");
+      false
+    }
+    Err(error) => {
+      eprintln!("argvus-config: cannot run argvus for the canonical commit: {error}");
+      false
+    }
+  }
 }
 
 /// The Waybar stylesheets and the rofi theme of the switch.

@@ -78,16 +78,16 @@ mod tests {
   fn missing_files_are_filled_and_existing_ones_are_kept() {
     let root = scratch("fill");
     let paths = paths_under(&root);
-    let system_theme = root.join("system/appearance/config/gtk-3.0/themes/frost");
+    let system_theme = root.join("system/appearance/config/gtk-3.0/themes/github-light");
     fs::create_dir_all(system_theme.join("nested")).expect("system tree");
     fs::write(system_theme.join("gtk.css"), "packaged").expect("packaged");
     fs::write(system_theme.join("nested/extra.css"), "packaged nested").expect("nested");
-    let user_theme = root.join("config/argvus/data/gtk-3.0/themes/frost");
+    let user_theme = root.join("config/argvus/data/gtk-3.0/themes/github-light");
     fs::create_dir_all(&user_theme).expect("user tree");
     fs::write(user_theme.join("gtk.css"), "user edit").expect("user edit");
 
-    let parent =
-      theme_parent(&paths, "appearance/config/gtk-3.0/themes", "frost").expect("theme directory");
+    let parent = theme_parent(&paths, "appearance/config/gtk-3.0/themes", "github-light")
+      .expect("theme directory");
     assert_eq!(parent, root.join("config/argvus/data/gtk-3.0/themes"));
     assert_eq!(
       fs::read_to_string(user_theme.join("gtk.css")).expect("kept"),
@@ -104,16 +104,16 @@ mod tests {
   fn override_wins_over_packaged_copy_for_the_same_file() {
     let root = scratch("override");
     let paths = paths_under(&root);
-    let override_theme = root.join("config/hypr/themes/frost");
+    let override_theme = root.join("config/hypr/themes/github-light");
     fs::create_dir_all(&override_theme).expect("override");
     fs::write(override_theme.join("hyprtoolkit.conf"), "override").expect("override file");
-    let system_theme = root.join("system/appearance/config/hypr/themes/frost");
+    let system_theme = root.join("system/appearance/config/hypr/themes/github-light");
     fs::create_dir_all(&system_theme).expect("system");
     fs::write(system_theme.join("hyprtoolkit.conf"), "packaged").expect("packaged file");
     fs::write(system_theme.join("wallpaper.png"), "").expect("packaged only");
 
-    theme_parent(&paths, "appearance/config/hypr/themes", "frost").expect("theme directory");
-    let copied = root.join("config/argvus/data/hypr/themes/frost");
+    theme_parent(&paths, "appearance/config/hypr/themes", "github-light").expect("theme directory");
+    let copied = root.join("config/argvus/data/hypr/themes/github-light");
     assert_eq!(
       fs::read_to_string(copied.join("hyprtoolkit.conf")).expect("copy"),
       "override"

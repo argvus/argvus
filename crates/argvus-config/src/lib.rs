@@ -10,7 +10,7 @@ use std::env;
 use std::fs::{self, File, OpenOptions};
 use std::io::{self, Write};
 use std::os::fd::AsRawFd;
-use std::os::unix::fs::PermissionsExt;
+use std::os::unix::fs::{DirBuilderExt, OpenOptionsExt};
 use std::path::{Path, PathBuf};
 use thiserror::Error;
 
@@ -48,6 +48,36 @@ pub mod waybar;
 pub const CURRENT_SCHEMA_VERSION: u32 = 1;
 const LOCK_FILE: &str = "data/internal/config.lock";
 const BACKUP_FILE: &str = "data/backups/config.json.bak";
+/// The previous backup, kept when a new one replaces `BACKUP_FILE`.
+const OLDER_BACKUP_NAME: &str = "config.json.bak.1";
+
+/// Replaces the backup with `contents`, keeping the previous backup as the older
+/// generation. The write is atomic (temporary file, sync, rename), and an unchanged
+/// backup is left alone so an identical save does not drop the older generation.
+fn write_backup(backup: &Path, contents: &str) -> io::Result<()> {
+  if let Some(parent) = backup.parent() {
+    fs::DirBuilder::new()
+      .recursive(true)
+      .mode(0o700)
+      .create(parent)?;
+  }
+  if fs::read_to_string(backup).ok().as_deref() == Some(contents) {
+    return Ok(());
+  }
+  if let (true, Some(parent)) = (backup.is_file(), backup.parent()) {
+    fs::rename(backup, parent.join(OLDER_BACKUP_NAME))?;
+  }
+  let temporary = backup.with_extension(format!("bak.tmp-{}", std::process::id()));
+  let _ = fs::remove_file(&temporary);
+  let mut file = OpenOptions::new()
+    .create_new(true)
+    .write(true)
+    .mode(0o600)
+    .open(&temporary)?;
+  file.write_all(contents.as_bytes())?;
+  file.sync_all()?;
+  fs::rename(temporary, backup)
+}
 const MODULE_DIRECTORY: &str = "config";
 
 const KNOWN_SECTIONS: [&str; 17] = [
@@ -290,28 +320,61 @@ pub struct ConfigStore {
 
 impl ConfigStore {
   pub fn from_environment() -> ConfigResult<Self> {
-    let config_home = env::var_os("ARGVUS_CONFIG_HOME")
-      .or_else(|| env::var_os("XDG_CONFIG_HOME"))
-      .map(PathBuf::from)
-      .or_else(|| env::var_os("HOME").map(|home| PathBuf::from(home).join(".config")))
+    // Empty values count as unset, as in SessionPaths. A relative path would create the
+    // configuration tree in whatever directory the command runs from, so it is refused.
+    let config_home = non_empty_env("ARGVUS_CONFIG_HOME")
+      .or_else(|| non_empty_env("XDG_CONFIG_HOME"))
+      .or_else(|| non_empty_env("HOME").map(|home| home.join(".config")))
       .ok_or(ConfigError::MissingConfigDirectory)?;
-    let directory = config_home.join("argvus");
-    Ok(Self {
-      path: directory.join(MODULE_DIRECTORY),
-      lock_path: directory.join(LOCK_FILE),
-    })
+    if !config_home.is_absolute() {
+      return Err(ConfigError::MissingConfigDirectory);
+    }
+    Ok(Self::at(&config_home))
   }
 
+  /// The store under `config_home`, the directory that contains `argvus/`.
+  pub fn at(config_home: &Path) -> Self {
+    let directory = config_home.join("argvus");
+    Self {
+      path: directory.join(MODULE_DIRECTORY),
+      lock_path: directory.join(LOCK_FILE),
+    }
+  }
+
+  /// Reads the stored document under the shared lock, so a read never sees a save
+  /// that is half renamed. Write paths in this module call the unlocked loader
+  /// instead, because they already hold the exclusive lock.
   pub fn load(&self) -> ConfigResult<ConfigDocument> {
-    self.load_legacy_or_modules(self.config_root()?)
+    let root = self.config_root()?;
+    let _lock = self.shared_lock()?;
+    self.load_legacy_or_modules(root)
   }
 
   pub fn load_effective(&self) -> ConfigResult<ConfigDocument> {
-    let mut document = self.load_legacy_or_modules(self.config_root()?)?;
+    let root = self.config_root()?;
+    let _lock = self.shared_lock()?;
+    let mut document = self.load_legacy_or_modules(root)?;
     apply_packaged_defaults(&mut document)?;
     apply_defaults(&mut document);
     document.validate()?;
     Ok(document)
+  }
+
+  /// The shared lock for a read. Without a lock file no writer has run yet, so the
+  /// read goes ahead unlocked; the returned file releases the lock when dropped.
+  fn shared_lock(&self) -> ConfigResult<Option<File>> {
+    let file = match File::open(&self.lock_path) {
+      Ok(file) => file,
+      Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(None),
+      Err(error) => return Err(error.into()),
+    };
+    // SAFETY: the descriptor belongs to the file opened above and stays valid
+    // until the returned value is dropped.
+    let result = unsafe { libc::flock(file.as_raw_fd(), libc::LOCK_SH) };
+    if result != 0 {
+      return Err(io::Error::last_os_error().into());
+    }
+    Ok(Some(file))
   }
 
   /// Create or complete the canonical document without replacing explicit
@@ -407,7 +470,11 @@ impl ConfigStore {
         let Some(section) = path.file_stem().and_then(|name| name.to_str()) else {
           continue;
         };
-        let value: Value = serde_json::from_str(&fs::read_to_string(&path)?)?;
+        let text = fs::read_to_string(&path)?;
+        // Name the file: a damaged section is fixed by hand, and the error says where.
+        let value: Value = serde_json::from_str(&text).map_err(|error| {
+          ConfigError::Invalid(format!("{} is not valid JSON: {error}", path.display()))
+        })?;
         if !value.is_object() {
           return Err(ConfigError::Invalid(format!(
             "section {section} must be a JSON object"
@@ -427,36 +494,48 @@ impl ConfigStore {
   fn save_modules_locked(&self, document: &ConfigDocument) -> ConfigResult<()> {
     let root = self.config_root()?;
     let directory = self.module_directory();
-    fs::create_dir_all(&directory)?;
+    // The configuration is private: directories are created 0700 and every file is
+    // created 0600 (the mode is set when the file is created, never after).
+    fs::DirBuilder::new()
+      .recursive(true)
+      .mode(0o700)
+      .create(&directory)?;
     let legacy = root.join("config.json");
     let backup = root.join(BACKUP_FILE);
     if directory.is_dir() && fs::read_dir(&directory)?.next().is_some() {
       let previous = self.load_modular(false)?;
-      if let Some(parent) = backup.parent() {
-        fs::create_dir_all(parent)?;
-      }
-      let contents = serde_json::to_string_pretty(&previous.sorted_sections())?;
-      fs::write(&backup, format!("{contents}\n"))?;
+      let contents = format!(
+        "{}\n",
+        serde_json::to_string_pretty(&previous.sorted_sections())?
+      );
+      write_backup(&backup, &contents)?;
     }
     if legacy.is_file() {
-      if let Some(parent) = backup.parent() {
-        fs::create_dir_all(parent)?;
-      }
-      fs::copy(&legacy, backup)?;
+      let contents = fs::read_to_string(&legacy)?;
+      write_backup(&backup, &contents)?;
     }
+    // Write every section to its temporary file first, then rename them. A failure
+    // while writing leaves the previous configuration untouched, and the window in
+    // which readers can see a mix of old and new sections is only the renames.
+    let mut staged = Vec::new();
     for (section, value) in &document.sections {
       let path = directory.join(format!("{section}.json"));
       let temporary = path.with_extension(format!("json.tmp-{}", std::process::id()));
+      let _ = fs::remove_file(&temporary);
       let mut file = OpenOptions::new()
         .create_new(true)
         .write(true)
+        .mode(0o600)
         .open(&temporary)?;
       file.write_all(serde_json::to_string_pretty(&sorted_value(value))?.as_bytes())?;
       file.write_all(b"\n")?;
       file.sync_all()?;
-      fs::set_permissions(&temporary, fs::Permissions::from_mode(0o600))?;
+      staged.push((temporary, path));
+    }
+    for (temporary, path) in staged {
       fs::rename(temporary, path)?;
     }
+    File::open(&directory)?.sync_all()?;
     if directory.is_dir() {
       for entry in fs::read_dir(&directory)? {
         let entry = entry?;
@@ -3314,5 +3393,89 @@ mod sorted_value_tests {
     let unsorted = json!({"b": {"d": 1, "c": 2}, "a": [{"z": 0, "y": 1}]});
     let text = serde_json::to_string(&sorted_value(&unsorted)).expect("serialize");
     assert_eq!(text, r#"{"a":[{"y":1,"z":0}],"b":{"c":2,"d":1}}"#);
+  }
+}
+
+/// An environment variable as a path, when it is set and not empty.
+fn non_empty_env(name: &str) -> Option<PathBuf> {
+  env::var_os(name)
+    .filter(|value| !value.is_empty())
+    .map(PathBuf::from)
+}
+
+#[cfg(test)]
+mod save_tests {
+  use super::*;
+  use std::os::unix::fs::PermissionsExt;
+
+  fn root(name: &str) -> PathBuf {
+    let root = env::temp_dir().join(format!("argvus-save-{name}-{}", std::process::id()));
+    let _ = fs::remove_dir_all(&root);
+    root
+  }
+
+  fn set_theme(store: &ConfigStore, theme: &str) {
+    store
+      .modify(|document| document.set("/appearance/theme", Value::String(theme.into())))
+      .expect("save");
+  }
+
+  #[test]
+  fn saves_keep_two_backup_generations_and_private_modes() {
+    let config_home = root("generations");
+    let store = ConfigStore::at(&config_home);
+    // The first save has no previous state to back up; the second backs up the first
+    // state; the third moves that backup to the older generation.
+    set_theme(&store, "sunset");
+    set_theme(&store, "dracula");
+    let backups = config_home.join("argvus").join("data/backups");
+    assert!(backups.join("config.json.bak").is_file());
+    assert!(!backups.join("config.json.bak.1").exists());
+    set_theme(&store, "tokyo-night");
+    assert!(backups.join("config.json.bak.1").is_file());
+    let section = config_home.join("argvus/config/appearance.json");
+    let mode = fs::metadata(&section)
+      .expect("section")
+      .permissions()
+      .mode()
+      & 0o777;
+    assert_eq!(mode, 0o600);
+    let _ = fs::remove_dir_all(config_home);
+  }
+
+  #[test]
+  fn an_empty_variable_counts_as_unset() {
+    let name = "ARGVUS_TEST_EMPTY_CONFIG_VARIABLE";
+    // SAFETY: the variable name is unique to this test, so no other test reads it.
+    unsafe { env::set_var(name, "") };
+    assert!(non_empty_env(name).is_none());
+    unsafe { env::remove_var(name) };
+  }
+
+  #[test]
+  fn a_read_waits_for_a_writer_that_holds_the_lock() {
+    use std::sync::mpsc;
+    use std::time::Duration;
+
+    let directory = env::temp_dir().join(format!(
+      "argvus-config-test-{}-read-lock",
+      std::process::id()
+    ));
+    let _ = fs::remove_dir_all(&directory);
+    let store = ConfigStore::at(&directory);
+    store.save(&ConfigDocument::default()).unwrap();
+
+    let writer = store.open_lock().unwrap();
+    lock_file(&writer).unwrap();
+    let (sender, receiver) = mpsc::channel();
+    let reader = ConfigStore::at(&directory);
+    std::thread::spawn(move || {
+      let _ = sender.send(reader.load().is_ok());
+    });
+    // The read must wait while the writer holds the exclusive lock.
+    assert!(receiver.recv_timeout(Duration::from_millis(200)).is_err());
+    drop(LockGuard(&writer));
+    assert_eq!(receiver.recv_timeout(Duration::from_secs(5)), Ok(true));
+    let _ = fs::remove_dir_all(&directory);
   }
 }

@@ -26,7 +26,6 @@ const BUILTIN_FAMILIES: [&str; 22] = [
   "solarized-light",
   "one-light",
   "everforest-light",
-  "frost",
   "catppuccin-latte",
   "gruvbox-light",
   "universe",
@@ -38,6 +37,7 @@ const BUILTIN_FAMILIES: [&str; 22] = [
   "sunset",
   "matrix",
   "monokai-dark",
+  "nord-light",
 ];
 
 /// Themes the greeter may show before login, besides the ones with a manifest.
@@ -62,8 +62,6 @@ const GREETER_BUILTIN: [&str; 42] = [
   "one-light-float",
   "everforest-light",
   "everforest-light-float",
-  "frost",
-  "frost-float",
   "catppuccin-latte",
   "catppuccin-latte-float",
   "gruvbox-light",
@@ -84,6 +82,8 @@ const GREETER_BUILTIN: [&str; 42] = [
   "matrix-float",
   "monokai-dark",
   "monokai-dark-float",
+  "nord-light",
+  "nord-light-float",
 ];
 
 /// The Float variant of a theme is served by its family.
@@ -114,10 +114,9 @@ pub fn storage_stylesheet(theme: &str, themes_dir: &Path) -> Option<String> {
 /// The fallback stylesheet used when a theme's own one is missing: light
 /// families keep the light palette, everything else the dark one.
 fn storage_fallback(theme: &str) -> &'static str {
-  const LIGHT_PREFIXES: [&str; 8] = [
+  const LIGHT_PREFIXES: [&str; 7] = [
     "argvus-light",
     "catppuccin-latte",
-    "frost",
     "github-light",
     "gruvbox-light",
     "solarized-light",
@@ -324,8 +323,8 @@ mod tests {
   fn builtin_storage_names_follow_the_family() {
     let themes = Path::new("/nonexistent");
     assert_eq!(
-      storage_stylesheet("frost-float", themes).as_deref(),
-      Some("frost.css")
+      storage_stylesheet("github-light-float", themes).as_deref(),
+      Some("github-light.css")
     );
     assert_eq!(
       storage_stylesheet("one-light", themes).as_deref(),
@@ -338,8 +337,8 @@ mod tests {
   fn calendar_names_keep_the_float_suffix_except_tokyo_night() {
     let themes = Path::new("/nonexistent");
     assert_eq!(
-      calendar_stylesheet("frost-float", themes).as_deref(),
-      Some("frost-float.css")
+      calendar_stylesheet("github-light-float", themes).as_deref(),
+      Some("github-light-float.css")
     );
     assert_eq!(
       calendar_stylesheet("tokyo-night-float", themes).as_deref(),
@@ -349,7 +348,7 @@ mod tests {
 
   #[test]
   fn fallback_keeps_light_families_light() {
-    assert_eq!(storage_fallback("frost-float"), "argvus-light.css");
+    assert_eq!(storage_fallback("github-light-float"), "argvus-light.css");
     assert_eq!(storage_fallback("rose-pine"), "argvus-dark.css");
   }
 

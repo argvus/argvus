@@ -20,7 +20,7 @@ const LEGACY_FONTS_END: &str = "/* argvus-settings-fonts:end */";
 
 /// The themes that get the compact layout. Matched by the exact theme id, as
 /// the shell's case statement did, so a Float id uses the default layout.
-const COMPACT_THEMES: [&str; 22] = [
+const COMPACT_THEMES: [&str; 21] = [
   "one-dark",
   "dracula",
   "argvus-dark",
@@ -30,7 +30,6 @@ const COMPACT_THEMES: [&str; 22] = [
   "solarized-light",
   "one-light",
   "everforest-light",
-  "frost",
   "catppuccin-latte",
   "gruvbox-light",
   "slate-dark",
@@ -260,8 +259,6 @@ mod tests {
 
   #[test]
   fn compact_list_matches_exact_ids_only() {
-    assert_eq!(layout_for("frost").taskbar_margin, 0);
-    assert_eq!(layout_for("frost-float").taskbar_margin, 16);
     assert_eq!(layout_for("rose-pine").taskbar_margin, 0);
   }
 

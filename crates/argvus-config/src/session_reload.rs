@@ -23,9 +23,13 @@ pub struct ReloadContext<'a> {
   pub commands_dir: &'a Path,
 }
 
-/// The active theme: the first line of `.active-theme`, or the default when
-/// the file is absent.
+/// The active theme. The canonical configuration is the source of truth; the
+/// `.active-theme` marker is a projection of it. The marker is used only when the
+/// canonical document has no theme, and then the default when it is absent too.
 pub fn active_theme(paths: &SessionPaths) -> String {
+  if let Some(theme) = canonical_theme(&paths.config_home) {
+    return theme;
+  }
   let file = paths.config_home.join("argvus/data/.active-theme");
   if file.is_file() {
     return fs::read_to_string(file)
@@ -34,6 +38,16 @@ pub fn active_theme(paths: &SessionPaths) -> String {
       .unwrap_or_default();
   }
   DEFAULT_THEME.to_string()
+}
+
+/// `/appearance/theme` of the canonical configuration under `config_home`, when set.
+fn canonical_theme(config_home: &Path) -> Option<String> {
+  let document = crate::ConfigStore::at(config_home).load().ok()?;
+  document
+    .get("/appearance/theme")
+    .and_then(serde_json::Value::as_str)
+    .filter(|theme| !theme.is_empty())
+    .map(str::to_string)
 }
 
 /// Runs the reload and returns the exit status the session script expects.
@@ -345,6 +359,31 @@ mod tests {
       system_config: root.join("system"),
     };
     assert_eq!(active_theme(&paths), "tokyo-night");
+    let _ = fs::remove_dir_all(root);
+  }
+
+  #[test]
+  fn active_theme_prefers_the_canonical_theme_over_the_marker() {
+    let root = std::env::temp_dir().join(format!("argvus-reload-canonical-{}", std::process::id()));
+    let _ = fs::remove_dir_all(&root);
+    let config_home = root.join("config");
+    let data = config_home.join("argvus/data");
+    fs::create_dir_all(&data).expect("data dir");
+    fs::write(data.join(".active-theme"), "tokyo-night\n").expect("marker");
+    crate::ConfigStore::at(&config_home)
+      .modify(|document| {
+        document.set(
+          "/appearance/theme",
+          serde_json::Value::String("nord-light".into()),
+        )
+      })
+      .expect("canonical theme");
+    let paths = SessionPaths {
+      config_home,
+      data_home: data,
+      system_config: root.join("system"),
+    };
+    assert_eq!(active_theme(&paths), "nord-light");
     let _ = fs::remove_dir_all(root);
   }
 }

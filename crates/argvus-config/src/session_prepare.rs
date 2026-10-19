@@ -33,12 +33,12 @@ const LIGHT_THEMES: [&str; 16] = [
   "one-light-float",
   "everforest-light",
   "everforest-light-float",
-  "frost",
-  "frost-float",
   "catppuccin-latte",
   "catppuccin-latte-float",
   "gruvbox-light",
   "gruvbox-light-float",
+  "nord-light",
+  "nord-light-float",
 ];
 
 /// Message keys the shell printed through `argvus_tr`.
@@ -185,10 +185,14 @@ fn apply_startup_theme(paths: &SessionPaths, cache_home: &Path, theme: &str) {
   }
 
   // The `argvus theme-switch` route resolves the implementation.
+  // At startup the canonical configuration already holds the user's choice, so
+  // this run only materializes the files. It must not commit the theme again,
+  // because that would reset a custom wallpaper on every login.
   let status = Command::new("argvus")
     .arg("theme-switch")
     .arg(theme)
     .env("ARGVUS_NO_RUNTIME", "1")
+    .env("ARGVUS_PROJECTING", "1")
     .stdout(Stdio::null())
     .stderr(Stdio::null())
     .status();
@@ -552,7 +556,7 @@ mod tests {
 
   #[test]
   fn light_themes_use_the_light_scheme_list() {
-    assert!(LIGHT_THEMES.contains(&"frost"));
+    assert!(LIGHT_THEMES.contains(&"github-light"));
     assert!(!LIGHT_THEMES.contains(&"argvus-dark"));
   }
 

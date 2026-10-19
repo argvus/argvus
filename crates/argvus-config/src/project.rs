@@ -207,7 +207,7 @@ pub fn project(store: &ConfigStore, force: bool) -> ConfigResult<String> {
   project_bool_marker(
     &document,
     "/power/keep_awake",
-    &paths.data.join("power/keep-awake"),
+    &paths.data.join("power/.keep-awake"),
   )?;
   project_input(&document, &paths)?;
   project_window_rules(&document, &paths)?;

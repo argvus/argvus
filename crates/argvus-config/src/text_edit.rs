@@ -7,7 +7,7 @@
 
 use regex::Regex;
 use std::fs;
-use std::io;
+use std::io::{self, Write};
 use std::path::Path;
 
 /// How a setting line is written.
@@ -203,15 +203,44 @@ pub fn set_target(text: &str, target: Target, value: &str) -> String {
 /// Writes `contents` over `path` atomically, keeping its permissions. An
 /// identical file is left untouched.
 pub fn replace_file(path: &Path, contents: &str) -> std::io::Result<()> {
-  if fs::read_to_string(path).ok().as_deref() == Some(contents) {
+  // A dotfile manager often links the file: replace the file the link points to, so
+  // the link keeps working and is not turned into a regular file.
+  let target = fs::canonicalize(path).unwrap_or_else(|_| path.to_path_buf());
+  if fs::read_to_string(&target).ok().as_deref() == Some(contents) {
     return Ok(());
   }
-  let temporary = path.with_extension("argvus-setting-tmp");
-  fs::write(&temporary, contents)?;
-  if let Ok(metadata) = fs::metadata(path) {
+  // The temporary name is unique to this file and this write, so two edits of
+  // sibling files (for example `argvus-taskbar.css` and `.jsonc`) never share it.
+  let name = target
+    .file_name()
+    .and_then(|name| name.to_str())
+    .unwrap_or("file");
+  let stamp = std::time::SystemTime::now()
+    .duration_since(std::time::UNIX_EPOCH)
+    .map(|elapsed| elapsed.as_nanos())
+    .unwrap_or_default();
+  let temporary =
+    target.with_file_name(format!(".{name}.argvus-tmp-{}-{stamp}", std::process::id()));
+  let mut file = fs::OpenOptions::new()
+    .create_new(true)
+    .write(true)
+    .open(&temporary)?;
+  let written = file
+    .write_all(contents.as_bytes())
+    .and_then(|()| file.sync_all());
+  drop(file);
+  if let Err(error) = written {
+    let _ = fs::remove_file(&temporary);
+    return Err(error);
+  }
+  if let Ok(metadata) = fs::metadata(&target) {
     fs::set_permissions(&temporary, metadata.permissions())?;
   }
-  fs::rename(&temporary, path)
+  fs::rename(&temporary, &target)?;
+  if let Some(parent) = target.parent() {
+    fs::File::open(parent)?.sync_all()?;
+  }
+  Ok(())
 }
 
 /// Sets one `key=value` in a GTK `settings.ini`, creating the file and its
@@ -342,9 +371,9 @@ mod tests {
       set_target(
         "@import url(\"./themes/old/widget-telemetry-theme.css\");\n@import url(\"./themes/old/theme.css\");\n",
         Target::WaybarTelemetryThemeImport,
-        "frost"
+        "github-light"
       ),
-      "@import url(\"./themes/frost/widget-telemetry-theme.css\");\n@import url(\"./themes/old/theme.css\");\n"
+      "@import url(\"./themes/github-light/widget-telemetry-theme.css\");\n@import url(\"./themes/old/theme.css\");\n"
     );
     assert_eq!(
       set_target(

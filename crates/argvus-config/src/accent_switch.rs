@@ -195,6 +195,29 @@ fn apply(
   let Some(accent_value) = accent::normalize(&requested) else {
     return Err(Failure::Invalid(requested));
   };
+  // A chosen color is the user's custom accent; `--theme-default` returns to the
+  // theme's own accent. Both are written to the canonical document in one step,
+  // so a later theme switch or projection keeps the choice. The startup and
+  // apply modes only re-apply what is already stored and write nothing.
+  let custom_choice = match requested_mode {
+    "--theme-default" => Some(false),
+    "--startup" | "--apply-static" | "--apply" => None,
+    _ => Some(true),
+  };
+  if let Some(custom) = custom_choice {
+    let color = accent_value.color.clone();
+    let store =
+      ConfigStore::from_environment().map_err(|error| Failure::State(error.to_string()))?;
+    store
+      .modify(|document| {
+        document.set(
+          "/appearance/accent",
+          serde_json::Value::String(color.clone()),
+        )?;
+        document.set("/appearance/accent_custom", serde_json::Value::Bool(custom))
+      })
+      .map_err(|error| Failure::State(error.to_string()))?;
+  }
   let active = accent::canonical_theme_id(&accent::read_state(&active_file, accent::DEFAULT_THEME))
     .to_string();
   let theme = accent::applied_theme(&themes_dir, &active);
@@ -212,8 +235,10 @@ fn apply(
     .map(PathBuf::from)
     .unwrap_or_else(|| home.join(".cache"));
   let written = fs::create_dir_all(&state_dir)
-    .and_then(|()| fs::write(&active_file, format!("{theme}\n")))
-    .and_then(|()| fs::write(&accent_file, format!("{}\n", accent_value.color)));
+    .and_then(|()| crate::text_edit::replace_file(&active_file, &format!("{theme}\n")))
+    .and_then(|()| {
+      crate::text_edit::replace_file(&accent_file, &format!("{}\n", accent_value.color))
+    });
   if let Err(error) = written {
     return Err(Failure::State(error.to_string()));
   }

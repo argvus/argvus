@@ -8,7 +8,7 @@ use crate::{
   theme_apply, theme_dirs, theme_resolve, theme_surfaces, theme_transition, user_copy,
 };
 use crate::{ConfigError, ConfigResult};
-use crate::{accent_switch, display, effects, monitor_state, theme_files, waybar};
+use crate::{accent, accent_switch, display, effects, monitor_state, theme_files, waybar};
 use serde_json::{Map, Value};
 use std::env;
 use std::fs;
@@ -155,7 +155,14 @@ pub fn run_command(arguments: Vec<String>) -> ExitCode {
       eprintln!("argvus-config: cannot resolve the configuration directory");
       return ExitCode::from(1);
     };
-    return ExitCode::from(theme_apply::run(&paths, theme, &layout_variant()) as u8);
+    let variant = match layout_variant() {
+      Ok(variant) => variant,
+      Err(error) => {
+        eprintln!("argvus-config: cannot read the layout mode: {error}");
+        return ExitCode::from(1);
+      }
+    };
+    return ExitCode::from(theme_apply::run(&paths, theme, &variant) as u8);
   }
   // Checked before the `theme-` prefix below, which routes theme queries only.
   if arguments.first().map(String::as_str) == Some("theme-file") {
@@ -334,13 +341,20 @@ fn apply_theme(
       .position(|value| value == name)
       .and_then(|index| arguments.get(index + 1))
   };
-  let manifest = load_theme_manifest(theme)?;
+  // The theme's own defaults come from its manifest (themes.d/<family>/theme.toml),
+  // the same source the accent and GTK mode fallbacks use everywhere else.
+  if !theme_resolve::is_valid_theme_id(theme) {
+    return Err(format!("invalid theme id '{theme}'").into());
+  }
+  let themes_dir = system_config_dir().join("appearance/themes.d");
+  let default_accent = accent::theme_default_accent(&themes_dir, theme);
+  let default_mode = theme_resolve::gtk_mode(&themes_dir, theme);
   let accent = option("--accent")
     .map(String::as_str)
-    .or_else(|| manifest.get("accent").and_then(Value::as_str));
+    .or(default_accent.as_deref());
   let gtk_mode = option("--gtk-mode")
     .map(String::as_str)
-    .or_else(|| manifest.get("mode").and_then(Value::as_str));
+    .or(Some(default_mode));
   let flag = |name: &str| arguments.iter().any(|argument| argument == name);
   store.apply_theme(
     theme,
@@ -361,22 +375,11 @@ fn apply_mode(store: &ConfigStore, arguments: &[String]) -> Result<(), Box<dyn s
   Ok(())
 }
 
-fn load_theme_manifest(theme: &str) -> Result<Map<String, Value>, Box<dyn std::error::Error>> {
-  let system_config = env::var_os("ARGVUS_SYSTEM_CONFIG")
-    .map(std::path::PathBuf::from)
-    .unwrap_or_else(|| "/usr/share/argvus".into());
-  let path = system_config.join("appearance/config/theme-defaults.json");
-  if !path.is_file() {
-    return Ok(Map::new());
-  }
-  let document: Value = serde_json::from_str(&fs::read_to_string(path)?)?;
-  Ok(
-    document
-      .get(theme)
-      .and_then(Value::as_object)
-      .cloned()
-      .unwrap_or_default(),
-  )
+fn system_config_dir() -> PathBuf {
+  env::var_os("ARGVUS_SYSTEM_CONFIG")
+    .filter(|value| !value.is_empty())
+    .map(PathBuf::from)
+    .unwrap_or_else(|| PathBuf::from("/usr/share/argvus"))
 }
 
 fn export_scope(
@@ -1054,10 +1057,16 @@ fn theme_command(command: &str, arguments: &[String]) -> ExitCode {
     .unwrap_or_else(|| PathBuf::from("/usr/share/argvus"))
     .join("appearance/themes.d");
   match command {
-    "theme-resolve" => {
-      println!("{}", theme_resolve::resolve_theme(id, &layout_variant()));
-      ExitCode::SUCCESS
-    }
+    "theme-resolve" => match layout_variant() {
+      Ok(variant) => {
+        println!("{}", theme_resolve::resolve_theme(id, &variant));
+        ExitCode::SUCCESS
+      }
+      Err(error) => {
+        eprintln!("argvus-config: cannot read the layout mode: {error}");
+        ExitCode::from(1)
+      }
+    },
     "theme-gtk-mode" => {
       println!("{}", theme_resolve::gtk_mode(&themes_dir, id));
       ExitCode::SUCCESS
@@ -1077,17 +1086,18 @@ fn theme_command(command: &str, arguments: &[String]) -> ExitCode {
 }
 
 /// The Sticky/Float variant from the canonical layout, or `sticky` when unknown.
-fn layout_variant() -> String {
-  ConfigStore::from_environment()
-    .and_then(|store| store.load())
-    .ok()
-    .and_then(|document| {
-      document
-        .get("/layout/variant")
-        .and_then(Value::as_str)
-        .map(str::to_string)
-    })
-    .unwrap_or_default()
+/// The Sticky/Float variant of the canonical layout. An unset value is Sticky (an
+/// empty string). A configuration that cannot be read is an error: falling back to
+/// Sticky would silently change the mode the user chose.
+fn layout_variant() -> Result<String, Box<dyn std::error::Error>> {
+  let document = ConfigStore::from_environment()?.load()?;
+  Ok(
+    document
+      .get("/layout/variant")
+      .and_then(Value::as_str)
+      .map(str::to_string)
+      .unwrap_or_default(),
+  )
 }
 
 /// The wallpaper root: `WALLPAPER_ROOT`, or `<backgrounds>/argvus`.

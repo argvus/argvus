@@ -380,7 +380,7 @@ mod tests {
       &environment,
       &runtime.join("no-such-splash"),
       &SplashRequest {
-        theme: "frost",
+        theme: "github-light",
         colors: None,
         await_compositor: false,
       },
@@ -401,7 +401,7 @@ mod tests {
     let outcome = start_with(
       &environment,
       &runtime.join("no-such-splash"),
-      &SplashRequest::session("frost"),
+      &SplashRequest::session("github-light"),
     );
     assert_eq!(outcome, StartOutcome::AlreadyRunning);
     let _ = fs::remove_dir_all(runtime);

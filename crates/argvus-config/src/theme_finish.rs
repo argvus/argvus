@@ -49,9 +49,12 @@ pub fn run(paths: &SessionPaths, finish: &Finish) -> Result<(), &'static str> {
 /// accent, restores the theme's default; a custom accent is kept as it is.
 fn restore_accent() -> Result<(), &'static str> {
   let official = env::var("ARGVUS_ACCENT_OFFICIAL").as_deref() == Ok("1");
-  let custom = !official && on_path("argvus") && {
-    let store = crate::ConfigStore::from_environment().ok();
-    accent::canonical_accent(store.as_ref()).is_some()
+  let custom = !official && {
+    // A configuration that cannot be read does not say whether the accent is custom.
+    // Guessing "not custom" would overwrite the user's color, so the switch fails.
+    let store = crate::ConfigStore::from_environment().map_err(|_| "accent_restore_failed")?;
+    store.load().map_err(|_| "accent_restore_failed")?;
+    accent::canonical_accent(Some(&store)).is_some()
   };
   let mode = if custom {
     "--apply-static"
@@ -172,10 +175,4 @@ fn apply_storage_and_calendar(paths: &SessionPaths, finish: &Finish) {
     finish.theme,
     workspace.as_deref(),
   );
-}
-
-fn on_path(program: &str) -> bool {
-  env::var_os("PATH")
-    .map(|paths| env::split_paths(&paths).any(|dir| dir.join(program).is_file()))
-    .unwrap_or(false)
 }

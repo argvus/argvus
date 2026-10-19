@@ -105,9 +105,15 @@ pub fn apply_wallpaper(hyprpaper_file: &Path, wallpaper: &str, runtime: bool) {
 /// Writes the wallpaper path as hyprpaper reads it: a leading home directory
 /// becomes `~`, as the shell's `sed "s|^$HOME|~|"` did.
 pub fn display_path(wallpaper: &str, home: &str) -> String {
+  // Only a path inside the home directory, at a directory boundary, is shortened:
+  // `/home/bo` must not match `/home/boss/...`, and an empty home matches nothing.
+  if home.is_empty() {
+    return wallpaper.to_string();
+  }
+  let home = home.trim_end_matches('/');
   match wallpaper.strip_prefix(home) {
-    Some(rest) => format!("~{rest}"),
-    None => wallpaper.to_string(),
+    Some(rest) if rest.is_empty() || rest.starts_with('/') => format!("~{rest}"),
+    _ => wallpaper.to_string(),
   }
 }
 
@@ -186,7 +192,7 @@ pub fn apply_gtk_theme_files(paths: &SessionPaths, request: &GtkFiles) {
     .parent()
     .map(fs::create_dir_all)
     .unwrap_or(Ok(()))
-    .and_then(|()| fs::write(&mode_file, format!("{}\n", request.mode)));
+    .and_then(|()| crate::text_edit::replace_file(&mode_file, &format!("{}\n", request.mode)));
   if let Err(error) = written {
     report(&mode_file, &error);
   }
@@ -303,7 +309,7 @@ pub fn gtk_theme_name(themes_dir: &Path, theme: &str) -> Option<&'static str> {
       "Adwaita-dark"
     });
   }
-  const LIGHT: [&str; 16] = [
+  const LIGHT: [&str; 14] = [
     "argvus-light",
     "argvus-light-float",
     "github-light",
@@ -314,8 +320,6 @@ pub fn gtk_theme_name(themes_dir: &Path, theme: &str) -> Option<&'static str> {
     "one-light-float",
     "everforest-light",
     "everforest-light-float",
-    "frost",
-    "frost-float",
     "catppuccin-latte",
     "catppuccin-latte-float",
     "gruvbox-light",
@@ -356,5 +360,19 @@ mod tests {
   #[test]
   fn empty_monitor_name_is_not_a_monitor() {
     assert_eq!(parse_monitor_name("Monitor  (ID 0):\n"), None);
+  }
+}
+
+#[cfg(test)]
+mod display_path_tests {
+  use super::display_path;
+
+  #[test]
+  fn shortens_only_inside_the_home_directory() {
+    assert_eq!(display_path("/home/boss/x.jxl", "/home/boss"), "~/x.jxl");
+    assert_eq!(display_path("/home/boss", "/home/boss"), "~");
+    assert_eq!(display_path("/home/boss/x", "/home/boss/"), "~/x");
+    assert_eq!(display_path("/home/boss2/x", "/home/boss"), "/home/boss2/x");
+    assert_eq!(display_path("/usr/share/x", ""), "/usr/share/x");
   }
 }

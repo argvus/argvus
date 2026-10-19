@@ -1301,7 +1301,6 @@ fn theme_background(theme: &str) -> &'static str {
     "one-light" | "one-light-float" => "#FAFAFA",
     "everforest-light" | "everforest-light-float" => "#FDF6E3",
     "solarized-light" | "solarized-light-float" => "#FDF6E3",
-    "frost" | "frost-float" => "#f6f8fa",
     "catppuccin-latte" | "catppuccin-latte-float" => "#EFF1F5",
     "gruvbox-light" | "gruvbox-light-float" => "#FBF1C7",
     "universe" | "universe-float" => "#000000",

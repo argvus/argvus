@@ -20,62 +20,66 @@ use std::process::{Command, ExitStatus, Stdio};
 /// Runs the transaction for `theme_argument` and returns the exit status.
 /// `layout_variant` is the Sticky/Float variant the theme id resolves with.
 pub fn run(paths: &SessionPaths, theme_argument: &str, layout_variant: &str) -> i32 {
+  // Refuse an unsafe id before any service stops or any file is written.
+  if !theme_argument.is_empty() && !theme_resolve::is_valid_theme_id(theme_argument) {
+    eprintln!("argvus-config: invalid theme id '{theme_argument}'");
+    return 1;
+  }
   let theme = theme_resolve::resolve_theme(theme_argument, layout_variant);
   if theme.is_empty() {
     return run_menu(paths);
   }
   let runtime = env::var("ARGVUS_NO_RUNTIME").as_deref() != Ok("1");
   let systemctl = on_path("systemctl");
-  let recorded_units = if systemctl {
-    theme_transition::active_units().join(" ")
-  } else {
-    String::new()
-  };
-
   let lock_path = cache_home().join("theme-switch.lock");
   if let Some(parent) = lock_path.parent() {
     let _ = fs::create_dir_all(parent);
   }
 
-  let overlay_started = runtime && start_overlay(&theme);
-
-  let mut status = match acquire_lock(&lock_path) {
-    Ok(lock) => {
-      let status = theme_body::run(paths, &theme, runtime);
-      // Dropping the lock releases it; the body never inherits the file.
-      drop(lock);
-      status
-    }
+  // The whole transaction runs under the lock, the record of the active units
+  // included. A switch that waited behind another one then records what is
+  // running when it starts, and restarts exactly that.
+  let lock = match acquire_lock(&lock_path) {
+    Ok(lock) => lock,
     Err(error) => {
       eprintln!("argvus-config: theme lock: {error}");
-      1
+      return 1;
     }
   };
+  let recorded_units = if systemctl {
+    theme_transition::active_units().join(" ")
+  } else {
+    String::new()
+  };
+  let overlay_started = runtime && start_overlay(&theme);
+  let mut status = theme_body::run(paths, &theme, runtime);
 
   // Session preparation materializes files with NO_RUNTIME=1. Do not reload
   // systemd components while their startup transaction is still in progress.
   let projecting = env::var("ARGVUS_PROJECTING").as_deref() == Ok("1");
   let config_service = env::var("ARGVUS_CONFIG_SERVICE").as_deref() == Ok("1");
-  if status == 0 && runtime && !projecting && !config_service && systemctl {
-    let reload = Command::new("systemctl")
-      .args(["--user", "reload", "argvus-config.service"])
-      .stdout(Stdio::null())
-      .stderr(Stdio::null())
-      .status();
-    match reload {
-      Ok(result) if result.success() => {}
-      Ok(result) => status = exit_code(result),
-      Err(_) => status = 1,
+  if runtime && !projecting && !config_service && systemctl {
+    if status == 0 {
+      let reload = Command::new("systemctl")
+        .args(["--user", "reload", "argvus-config.service"])
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .status();
+      match reload {
+        Ok(result) if result.success() => {}
+        Ok(result) => status = exit_code(result),
+        Err(_) => status = 1,
+      }
     }
-    // If the theme did not change, the body stops the services without
-    // restarting them. Restart the ones that were active, so the wallpaper
-    // and the other components come back.
+    // The body stops the services before it applies the theme. They must come
+    // back even when the switch failed part way.
     let _ = theme_transition::restart_units(&recorded_units);
   }
 
   if overlay_started {
     theme_transition::stop_overlay();
   }
+  drop(lock);
   status
 }
 

@@ -76,13 +76,8 @@ pub fn normalize(requested: &str) -> Option<Accent> {
 
 /// The theme ids the switch keeps as the Catppuccin Latte family.
 pub fn canonical_theme_id(theme: &str) -> &str {
-  match theme {
-    "argvus-catppuccin-latte" | "argvus-light-catppuccin-latte" => "catppuccin-latte",
-    "argvus-catppuccin-latte-float" | "argvus-light-catppuccin-latte-float" => {
-      "catppuccin-latte-float"
-    }
-    other => other,
-  }
+  // One alias table for the whole crate: the theme resolver owns it.
+  crate::theme_resolve::canonical_theme_id(theme)
 }
 
 /// The accent a theme owns when the user has not chosen one: its manifest, or
@@ -106,7 +101,6 @@ pub fn theme_default_accent(themes_dir: &Path, theme: &str) -> Option<String> {
     "everforest-light" => "#3A94C5",
     "solarized-light" => "#268BD2",
     "rose-pine" => "#C4A7E7",
-    "frost" => "#0969DA",
     "catppuccin-latte" => "#1E66F5",
     "gruvbox-light" => "#458588",
     "slate-dark" => "#7391a5",
@@ -202,7 +196,6 @@ pub fn applied_theme(themes_dir: &Path, active_theme: &str) -> String {
     "solarized-light",
     "one-light",
     "everforest-light",
-    "frost",
     "catppuccin-latte",
     "gruvbox-light",
     "slate-dark",
@@ -215,6 +208,7 @@ pub fn applied_theme(themes_dir: &Path, active_theme: &str) -> String {
     "sunset",
     "matrix",
     "monokai-dark",
+    "nord-light",
   ];
   if REGISTERED.contains(&family) {
     return theme;
@@ -1014,7 +1008,10 @@ mod tests {
   #[test]
   fn legacy_theme_ids_map_to_registered_ones() {
     let themes = Path::new("/nonexistent");
-    assert_eq!(applied_theme(themes, "frost-float"), "frost-float");
+    assert_eq!(
+      applied_theme(themes, "github-light-float"),
+      "github-light-float"
+    );
     assert_eq!(
       applied_theme(themes, "custom-dark-float"),
       "argvus-dark-float"

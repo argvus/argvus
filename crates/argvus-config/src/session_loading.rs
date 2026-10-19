@@ -259,7 +259,7 @@ mod tests {
     fs::create_dir_all(paths.config_home.join("argvus/data")).expect("data dir");
     fs::write(
       paths.config_home.join("argvus/data/.active-theme"),
-      "frost\n",
+      "github-light\n",
     )
     .expect("theme");
     fs::write(
@@ -292,7 +292,7 @@ mod tests {
     assert!(attached, "the splash accepted the display");
     assert_eq!(
       fs::read_to_string(&log).expect("log"),
-      "wayland-7 --session-handoff --spinner-only --theme frost --accent #112233\n"
+      "wayland-7 --session-handoff --spinner-only --theme github-light --accent #112233\n"
     );
     let _ = fs::remove_dir_all(root);
   }
