@@ -19,13 +19,12 @@ pub const DEFAULT_ICON_THEME: &str = "Argvus Dark Icons";
 pub const DEFAULT_LIGHT_ICON_THEME: &str = "Argvus Light Icons";
 /// Built-in theme families that use the light mode. Mirrors `gtk_mode_for_theme`
 /// in `theme-manifest.sh`; drop-in themes declare their category instead.
-const BUILT_IN_LIGHT_THEMES: [&str; 8] = [
+const BUILT_IN_LIGHT_THEMES: [&str; 7] = [
   "argvus-light",
   "github-light",
   "solarized-light",
   "one-light",
   "everforest-light",
-  "frost",
   "gruvbox-light",
   "catppuccin-latte",
 ];

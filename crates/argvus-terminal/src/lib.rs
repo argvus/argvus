@@ -196,9 +196,11 @@ fn read_first_line(path: &Path) -> Option<String> {
   Some(text.lines().next().unwrap_or_default().trim().to_string())
 }
 
-/// The accent of a theme: the chosen accent, or the theme's own.
+/// The accent of a theme: the accent the user stored, or the theme's own. Only the
+/// stored value counts: the effective value falls back to the packaged default, which
+/// would hide a custom accent saved in the marker file.
 fn accent_for(paths: &Paths, theme: &str) -> String {
-  config_get("/appearance/accent")
+  config_stored("/appearance/accent")
     .filter(|accent| accent != "null")
     .or_else(|| read_first_line(&paths.data_dir().join(".accent-color")))
     .unwrap_or_else(|| theme_default_accent(paths, theme))
@@ -244,11 +246,22 @@ fn env_or(variable: &str, default: &str) -> String {
     .unwrap_or_else(|| default.to_string())
 }
 
+/// The value a user stored at a canonical pointer (`null` when unset), or `None`
+/// when `argvus` does not answer.
+fn config_stored(pointer: &str) -> Option<String> {
+  config_read(pointer, &["--raw"])
+}
+
 /// The value of a canonical configuration pointer, or `None` when `argvus` does
 /// not answer.
 fn config_get(pointer: &str) -> Option<String> {
+  config_read(pointer, &["--effective", "--raw"])
+}
+
+fn config_read(pointer: &str, options: &[&str]) -> Option<String> {
   let output = Process::new("argvus")
-    .args(["config", "get", pointer, "--effective", "--raw"])
+    .args(["config", "get", pointer])
+    .args(options)
     .stderr(Stdio::null())
     .output()
     .ok()?;

@@ -95,8 +95,6 @@ pub fn canonical_theme_id(theme_id: &str) -> String {
     "argvus-github-light-float" => "github-light-float".into(),
     "argvus-light-solarized" => "solarized-light".into(),
     "argvus-light-solarized-float" => "solarized-light-float".into(),
-    "argvus-light-frost" => "frost".into(),
-    "argvus-light-frost-float" => "frost-float".into(),
     "argvus-dark-catppuccin-latte"
     | "argvus-light-catppuccin-latte"
     | "argvus-catppuccin-latte" => "catppuccin-latte".into(),
@@ -880,8 +878,6 @@ pub const THEMES: &[(&str, &str)] = &[
   ("argvus-light-float", "ARGVUS Light Float"),
   ("catppuccin-latte", "Catppuccin Latte"),
   ("catppuccin-latte-float", "Catppuccin Latte Float"),
-  ("frost", "Frost"),
-  ("frost-float", "Frost Float"),
   ("github-light", "GitHub Light"),
   ("github-light-float", "GitHub Light Float"),
   ("gruvbox-light", "Gruvbox Light"),
@@ -892,6 +888,8 @@ pub const THEMES: &[(&str, &str)] = &[
   ("one-light-float", "One Light Float"),
   ("everforest-light", "Everforest Light"),
   ("everforest-light-float", "Everforest Light Float"),
+  ("nord-light", "Nord Light"),
+  ("nord-light-float", "Nord Light Float"),
 ];
 /// Defines the constant `THEME_FAMILIES`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub const THEME_FAMILIES: &[(&str, &str)] = &[
@@ -911,12 +909,12 @@ pub const THEME_FAMILIES: &[(&str, &str)] = &[
   ("universe", "Universe"),
   ("argvus-light", "ARGVUS Light"),
   ("catppuccin-latte", "Catppuccin Latte"),
-  ("frost", "Frost"),
   ("github-light", "GitHub Light"),
   ("gruvbox-light", "Gruvbox Light"),
   ("solarized-light", "Solarized Light"),
   ("one-light", "One Light"),
   ("everforest-light", "Everforest Light"),
+  ("nord-light", "Nord Light"),
 ];
 /// Executes the `theme_label` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn theme_label(name: &str) -> String {
@@ -1127,6 +1125,29 @@ impl AppearanceState {
 #[cfg(test)]
 mod tests {
   use super::*;
+
+  #[test]
+  /// Every selectable family has its base and `-float` entries in `THEMES`, and
+  /// `THEMES` lists nothing that is not a family, so the selector cannot offer a theme
+  /// whose variant is missing.
+  fn every_family_has_its_base_and_float_entries() {
+    for (family, _) in THEME_FAMILIES {
+      for id in [family.to_string(), format!("{family}-float")] {
+        assert!(
+          THEMES.iter().any(|(code, _)| *code == id),
+          "{id} is a family without a THEMES entry"
+        );
+      }
+    }
+    for (code, _) in THEMES {
+      let family = code.strip_suffix("-float").unwrap_or(code);
+      assert!(
+        THEME_FAMILIES.iter().any(|(id, _)| *id == family),
+        "{code} is in THEMES but not in THEME_FAMILIES"
+      );
+    }
+  }
+
   #[test]
   /// Executes the `prompt_metadata_is_explicit` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn prompt_metadata_is_explicit() {

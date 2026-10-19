@@ -256,7 +256,6 @@ fn theme_default_accent(theme: &str) -> Option<&'static str> {
     "everforest-light" | "everforest-light-float" => Some("#3A94C5"),
     "solarized-light" | "solarized-light-float" => Some("#268BD2"),
     "rose-pine" | "rose-pine-float" => Some("#C4A7E7"),
-    "frost" | "frost-float" => Some("#0969DA"),
     "catppuccin-latte" | "catppuccin-latte-float" => Some("#1E66F5"),
     "gruvbox-light" | "gruvbox-light-float" => Some("#458588"),
     "slate-dark" | "slate-dark-float" => Some("#7391a5"),
@@ -1077,14 +1076,14 @@ pub fn set_accent(color: &str) -> Result<(), String> {
   if color == "--theme-default" {
     return reset_accent_to_theme_default();
   }
-  persist_accent_canonical(color, true)?;
+  // `argvus config accent` writes the canonical custom accent and applies it in
+  // one command; there is no separate patch step that could leave them apart.
   run_argvus_route("config", &["accent", color], &[])
 }
 
 /// Restores the active theme's default highlight color and clears the custom
 /// flag so a later theme switch keeps the theme owning the accent again.
 fn reset_accent_to_theme_default() -> Result<(), String> {
-  persist_accent_canonical("", false)?;
   run_argvus_route("config", &["accent", "--theme-default"], &[])
 }
 

@@ -23,7 +23,6 @@ pub fn theme_colors(theme: &str) -> Option<(&'static str, &'static str, &'static
     "one-light" => Some(("#FAFAFA", "#383A42", "#4078F2")),
     "everforest-light" => Some(("#FDF6E3", "#5C6A72", "#3A94C5")),
     "solarized-light" | "light-solarized" => Some(("#FDF6E3", "#657B83", "#268BD2")),
-    "frost" | "light-frost" => Some(("#f6f8fa", "#24292f", "#0969da")),
     "tokyo-night" | "dark-tokio-night" => Some(("#1A1B26", "#C0CAF5", "#7AA2F7")),
     "solitude" | "dark-solitude" => Some(("#101315", "#CACCCC", "#798186")),
     "sunset" | "dark-sunset" => Some(("#0F0F0F", "#EADCCC", "#E2BE8A")),
@@ -87,10 +86,6 @@ mod tests {
     assert_eq!(
       theme_colors("ARGVUS Light"),
       Some(("#ffffff", "#000000", DEFAULT_ACCENT))
-    );
-    assert_eq!(
-      theme_colors("frost-float"),
-      Some(("#f6f8fa", "#24292f", "#0969da"))
     );
     assert_eq!(
       theme_colors("solitude"),

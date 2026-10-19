@@ -45,8 +45,6 @@ pub const OFFICIAL_THEMES: &[&str] = &[
   "argvus-light-float",
   "catppuccin-latte",
   "catppuccin-latte-float",
-  "frost",
-  "frost-float",
   "github-light",
   "github-light-float",
   "gruvbox-light",
@@ -221,8 +219,6 @@ pub fn normalize_theme_name(name: &str) -> &str {
     "argvus-github-light-float" => "github-light-float",
     "argvus-light-solarized" => "solarized-light",
     "argvus-light-solarized-float" => "solarized-light-float",
-    "argvus-light-frost" => "frost",
-    "argvus-light-frost-float" => "frost-float",
     "argvus-light-gruvbox" => "gruvbox-light",
     "argvus-light-gruvbox-float" => "gruvbox-light-float",
     "argvus-dark-rose-pine" => "rose-pine",
@@ -409,7 +405,7 @@ mod tests {
 
   #[test]
   fn official_theme_validation_covers_the_declared_families() {
-    assert_eq!(OFFICIAL_THEMES.len(), 44);
+    assert_eq!(OFFICIAL_THEMES.len(), 42);
     for name in [
       "argvus-dark",
       "one-dark",

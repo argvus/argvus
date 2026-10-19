@@ -40,7 +40,6 @@ pub fn built_in(theme_id: &str) -> &'static str {
     "one-light" => "#4078F2",
     "everforest-light" => "#3A94C5",
     "solarized-light" => "#268BD2",
-    "frost" => "#0969DA",
     "gruvbox-light" => "#458588",
     "slate-dark" => "#7391a5",
     "universe" => "#eeeeee",
