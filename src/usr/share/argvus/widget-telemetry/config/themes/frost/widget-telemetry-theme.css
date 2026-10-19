@@ -1,9 +1,0 @@
-/* theme: frost — widget telemetry panel */
-@define-color th-background    #F6F8FA;
-@define-color th-header        #0969DA;
-@define-color th-foreground    #24292F;
-@define-color th-window-bg     #FFFFFF;
-@define-color th-window-bg-rgba rgba(255, 255, 255, 0.96);
-@define-color th-border        #B8C1CC;
-@define-color th-border-header #C5CDD6;
-@define-color th-disconnected  rgba(87, 96, 106, 0.30);
