@@ -1,7 +1,6 @@
 ---
 title: Referência
 description: Comandos, arquivos, serviços e pacotes ARGVUS.
-slug: pt/0.4.0/docs/reference
 ---
 
 * [Linha de comando](/pt/docs/reference/command-line/)

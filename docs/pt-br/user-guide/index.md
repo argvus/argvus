@@ -1,7 +1,6 @@
 ---
 title: Guia do usuário
 description: Instale, configure e use o desktop ARGVUS.
-slug: pt/0.4.0/docs/user-guide
 ---
 
 ARGVUS é um desktop modular baseado em Hyprland e Wayland para Arch Linux. Comece pela [instalação](/pt/docs/getting-started/installation/) e escolha uma funcionalidade no guia.

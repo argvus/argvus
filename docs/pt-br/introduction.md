@@ -1,7 +1,6 @@
 ---
 title: Introdução
 description: O que é o ARGVUS, como o desktop funciona e onde ficam seus componentes.
-slug: pt/0.4.0/docs/introduction
 ---
 
 ARGVUS é um desktop modular baseado em Hyprland e Wayland para Arch Linux. Ele é um conjunto integrado de pacotes, não um aplicativo monolítico: sessão, compositor, superfícies do shell, configurações, provedores e assets visuais trabalham juntos por meio de estado compartilhado e contratos de runtime.

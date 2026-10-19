@@ -11,7 +11,7 @@ argvus sessionctl logs
 systemctl --user status argvus-session.target
 ```
 
-Check the greeter, `argvus-start`, Hyprland and the relevant user unit separately. A successful package build does not prove that the installed payload or active user override is current.
+Check the greeter, `argvus start`, Hyprland and the relevant user unit separately. A successful package build does not prove that the installed payload or active user override is current.
 
 Use the checks in this order:
 

@@ -12,7 +12,7 @@ The Control Center is ARGVUS's keyboard-first settings application. Use it when 
 | **Control Center** | Themes, wallpapers, effects, layout, taskbar behavior, fonts, default applications, keyboard and input settings, language, region and system configuration. |
 | **Control Panel** | Current status and frequent actions such as volume, brightness, network, notifications, power and session controls. |
 
-The Control Panel can expose quick controls for a setting that is configured permanently in Control Center. For example, use the panel for a quick appearance or display action, and Control Center when you want to change the desktop configuration behind it. See [Control Panel](/docs/argvus-control-panel/) and [Where to configure things](/docs/user-guide/where-to-configure/).
+The Control Panel can expose quick controls for a setting that is configured permanently in Control Center. For example, use the panel for a quick appearance or display action, and Control Center when you want to change the desktop configuration behind it. See Control Panel and [Where to configure things](/docs/user-guide/where-to-configure/).
 
 ## Main areas
 
@@ -294,7 +294,7 @@ Useful direct routes include `apps`, `window-rules`, `projects`, `snippets`, `ss
 ## Related
 
 - [First configuration](/docs/getting-started/)
-- [Control Panel](/docs/argvus-control-panel/)
+- Control Panel
 - [Appearance](/docs/user-guide/appearance/)
 - [Keyboard shortcuts](/docs/argvus-hyprland/keyboard-shortcuts/)
 - [Mouse and touchpad](/docs/argvus-hyprland/input/)

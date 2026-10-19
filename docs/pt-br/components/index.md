@@ -15,6 +15,11 @@ Estes componentes foram consolidados no workspace `argvus`. As páginas de usuá
 | Login (greetd) | `argvus greeter` | [Greeter](/pt/docs/components/argvus-greeter/) |
 | Calendário | `argvus taskbar-calendar` | [Calendário](/pt/docs/components/argvus-taskbar-calendar/) |
 | Dispositivos removíveis | `argvus removable-devices` | [Dispositivos removíveis](/pt/docs/components/argvus-removable-devices/) |
+| Temas | `argvus theme-switch` | [Temas](/docs/components/argvus-themes/) |
+| Chaves | `argvus keys`, `argvus gpg` | [Chaves](/docs/components/argvus-keys/) |
+| Projetos | `argvus projects` | [Projetos](/docs/components/argvus-projects/) |
+| Telemetria do widget | `argvus widget-telemetry` | [Telemetria do widget](/docs/components/argvus-widget-telemetry/) |
+| Overlay de carregamento | `argvus loading-theme` | [Overlay de carregamento](/docs/components/argvus-loading-theme/) |
 | Snake | `argvus game-snake` | [Snake](/pt/docs/argvus-game-snake/) |
 
 A referência de comandos está em [Linha de comando](/pt/docs/reference/command-line/).

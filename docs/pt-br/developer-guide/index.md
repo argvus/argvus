@@ -1,7 +1,6 @@
 ---
 title: Guia do desenvolvedor
 description: Arquitetura e desenvolvimento dos componentes ARGVUS.
-slug: pt/0.4.0/docs/developer-guide
 ---
 
 ARGVUS é um conjunto de projetos empacotados separadamente, conectados por configuração compartilhada, serviços systemd de usuário e contratos Wayland/Hyprland.

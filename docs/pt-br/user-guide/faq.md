@@ -1,7 +1,6 @@
 ---
 title: Perguntas frequentes
 description: Dúvidas comuns sobre o ARGVUS, sua arquitetura e seu uso diário.
-slug: pt/0.4.0/docs/user-guide/faq
 ---
 
 Esta página responde às dúvidas mais comuns sobre o que é o ARGVUS, como ele é distribuído e onde configurá-lo. Para procedimentos detalhados, siga os links de cada resposta.

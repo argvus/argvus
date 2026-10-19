@@ -10,7 +10,7 @@ After the first graphical session, you do not need to configure every part of AR
 1. Read the [desktop overview](/docs/user-guide/desktop/) to identify windows, workspaces, the taskbar, the Control Panel and the launcher.
 2. Open the [Control Center](/docs/components/argvus-control-center/) and choose a theme, mode, accent and wallpaper in **Appearance**.
 3. Adjust [windows and layout](/docs/argvus-hyprland/windows-and-layout/) if the default gaps, borders or taskbar spacing do not suit your screen.
-4. Configure the [taskbar](/docs/argvus-taskbar/taskbar/) and decide which [Control Panel](/docs/argvus-control-panel/) cards you want visible.
+4. Configure the [taskbar](/docs/argvus-taskbar/taskbar/) and decide which Control Panel cards you want visible.
 5. Review [keyboard shortcuts](/docs/argvus-hyprland/keyboard-shortcuts/) and change only the bindings you actually use.
 6. Configure [mouse and touchpad](/docs/argvus-hyprland/input/), displays, networking and power from the relevant settings pages.
 

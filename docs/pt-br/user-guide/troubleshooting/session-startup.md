@@ -1,7 +1,6 @@
 ---
 title: Problemas ao iniciar a sessão
 description: Diagnostique greeter, Hyprland e serviços de usuário.
-slug: pt/0.4.0/docs/user-guide/troubleshooting/session-startup
 ---
 
 ```sh
@@ -10,7 +9,7 @@ argvus sessionctl logs
 systemctl --user status argvus-session.target
 ```
 
-Verifique separadamente greeter, `argvus-start`, Hyprland e a unit afetada. Um build bem-sucedido não prova que o payload instalado ou o override ativo está atualizado.
+Verifique separadamente greeter, `argvus start`, Hyprland e a unit afetada. Um build bem-sucedido não prova que o payload instalado ou o override ativo está atualizado.
 
 Faça as verificações nesta ordem:
 

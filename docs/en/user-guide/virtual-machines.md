@@ -3,7 +3,7 @@ title: Virtual machines
 description: Run ARGVUS with virtual graphics hardware.
 ---
 
-`argvus-start` detects virtualization and exports compatibility settings for affected sessions, including software-rendering and cursor/modifier fallbacks when required by the detected environment.
+`argvus start` detects virtualization and exports compatibility settings for affected sessions, including software-rendering and cursor/modifier fallbacks when required by the detected environment.
 
 If a virtual machine still fails to render, inspect the session environment and logs before adding an override. See [graphics troubleshooting](/docs/user-guide/troubleshooting/graphics-and-virtual-machines/).
 

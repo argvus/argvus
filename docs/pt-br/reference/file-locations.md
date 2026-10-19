@@ -1,7 +1,6 @@
 ---
 title: Localizações de arquivos
 description: Arquivos e diretórios instalados importantes.
-slug: pt/0.4.0/docs/reference/file-locations
 ---
 
 * `/usr/bin/argvus*` — comandos públicos.

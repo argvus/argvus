@@ -1,7 +1,6 @@
 ---
 title: Variáveis de ambiente
 description: Contratos de ambiente usados pela sessão.
-slug: pt/0.4.0/docs/reference/environment-variables
 ---
 
 A sessão configura integração XDG e Wayland e pode exportar variáveis de compatibilidade para virtualização. `ARGVUS_CONFIG_HOME`, `ARGVUS_SYSTEM_CONFIG` e `ARGVUS_BOOTSTRAP` são usados para resolver raízes de configuração.

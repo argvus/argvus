@@ -1,7 +1,6 @@
 ---
 title: Configuração e estado
 description: Estado compartilhado, overrides e arquivos gerados.
-slug: pt/0.4.0/docs/developer-guide/architecture/configuration-and-state
 ---
 
 A raiz normal é `$XDG_CONFIG_HOME/argvus` (geralmente `~/.config/argvus`). As preferências lógicas gerenciadas ficam em `config.json`. Tema, accent, wallpaper, espaçamento e bordas são canônicos nesse arquivo; os dot-files permanecem como projeções derivadas de compatibilidade para os consumidores atuais do Lua do Hyprland e dos scripts, enquanto esses consumidores migram para `data/`.

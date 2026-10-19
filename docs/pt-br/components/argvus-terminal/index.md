@@ -1,7 +1,6 @@
 ---
 title: Terminal
 description: Abra o terminal e os perfis de aplicativos TUI.
-slug: pt/0.4.0/docs/user-guide/applications/terminal
 ---
 
 ```sh

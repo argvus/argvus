@@ -1,7 +1,6 @@
 ---
 title: Problemas de tema e wallpaper
 description: Diagnostique propagação de aparência.
-slug: pt/0.4.0/docs/user-guide/troubleshooting/theme-and-wallpaper
 ---
 
 Confira a seção canônica `appearance` em `$XDG_CONFIG_HOME/argvus/config.json` e os arquivos gerados em `$XDG_CONFIG_HOME/argvus/data/generated`. Os dot-files antigos são apenas entradas de migração.

@@ -1,7 +1,6 @@
 ---
 title: Primeira configuração
 description: Um roteiro prático para configurar o ARGVUS após a instalação.
-slug: pt/0.4.0/docs/user-guide/getting-started
 ---
 
 Após a primeira sessão gráfica, você não precisa configurar todas as partes do ARGVUS. Comece pelos ajustes que mudam a sensação do desktop e configure hardware e serviços conforme necessário.
@@ -11,7 +10,7 @@ Após a primeira sessão gráfica, você não precisa configurar todas as partes
 1. Leia a [visão geral do desktop](/pt/docs/user-guide/desktop/) para identificar janelas, áreas de trabalho, taskbar, Control Panel e lançador.
 2. Abra o [Control Center](/pt/docs/components/argvus-control-center/) e escolha tema, modo, acento e wallpaper em **Aparência**.
 3. Ajuste [janelas e layout](/pt/docs/argvus-hyprland/windows-and-layout/) se os gaps, bordas ou espaços da taskbar não forem adequados à sua tela.
-4. Configure a [taskbar](/pt/docs/argvus-taskbar/taskbar/) e escolha quais cards do [Control Panel](/pt/docs/argvus-control-panel/) devem ficar visíveis.
+4. Configure a [taskbar](/pt/docs/argvus-taskbar/taskbar/) e escolha quais cards do Control Panel devem ficar visíveis.
 5. Revise os [atalhos de teclado](/pt/docs/argvus-hyprland/keyboard-shortcuts/) e altere apenas os atalhos que realmente usa.
 6. Configure [mouse e touchpad](/pt/docs/argvus-hyprland/input/), displays, rede e energia nas páginas de configuração correspondentes.
 

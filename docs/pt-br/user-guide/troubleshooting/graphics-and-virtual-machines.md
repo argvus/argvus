@@ -1,7 +1,6 @@
 ---
 title: Gráficos e máquinas virtuais
 description: Diagnostique falhas de renderização.
-slug: pt/0.4.0/docs/user-guide/troubleshooting/graphics-and-virtual-machines
 ---
 
 Inspecione o ambiente da sessão e os logs do compositor. Em máquinas virtuais, verifique as variáveis exportadas por `argvus start`. Não force renderização por software sem confirmar a necessidade.

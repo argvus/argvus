@@ -1,7 +1,6 @@
 ---
 title: Dispositivos removíveis
 description: Monte e gerencie armazenamento removível.
-slug: pt/0.4.0/docs/user-guide/applications/removable-devices
 ---
 
 `argvus-removable-devices` monitora UDisks2 e fornece o módulo de armazenamento da ARGVUS Taskbar e o menu dos dispositivos. O menu também está disponível como uma interface separada no estilo Rofi, permitindo usar as mesmas ações pela taskbar ou por um fluxo de launcher.

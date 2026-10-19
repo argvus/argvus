@@ -1,7 +1,6 @@
 ---
 title: Configuração do ARGVUS
 description: O contrato JSON lógico de configuração usado pelo ARGVUS.
-slug: pt/0.4.0/docs/reference/argvus-config
 ---
 
 O ARGVUS mantém as preferências de usuário gerenciadas em `$XDG_CONFIG_HOME/argvus/config.json` (normalmente `~/.config/argvus/config.json`). Esse documento é o modelo lógico canônico das preferências administradas pelo ARGVUS, e o `argvus-config` é o único componente que escreve arquivos em `data/generated/`. Arquivos nativos e gerados continuam como projeções de compatibilidade ou overrides específicos de cada aplicativo.
@@ -178,9 +177,15 @@ pelo modelo de paths Rust.
 `patch` aplica um objeto JSON cujas chaves são JSON pointers em uma única
 operação protegida por lock. `apply-theme` executa a transação atômica do tema
 e preserva os valores `accent_custom` e `wallpaper_custom`. Os defaults de
-tema ficam no manifesto empacotado
-`appearance/config/theme-defaults.json`; CSS, Lua, Rasi e Qt são projeções
-desse estado. Mutations constroem um `NextUserConfig`, resolvem um
+tema ficam no manifesto de cada tema (`appearance/themes.d/<tema>/theme.toml`): o accent padrão,
+o esquema de cores do GTK e os nomes das folhas de estilo. CSS, Lua, Rasi e Qt são projeções
+desse estado.
+
+Trocar de tema, inclusive entre claro e escuro, volta a cor de destaque ao padrão do tema, mesmo
+quando o usuário escolheu uma cor própria: a cor personalizada só é mantida até a próxima troca de
+tema. Use `argvus config accent` depois da troca para definir a cor novamente. Aplicar um tema com `argvus config
+theme-apply` grava `/appearance/accent` e `/appearance/gtk_mode` a partir do manifesto, e
+`argvus config accent` grava a cor escolhida com `accent_custom` ligado, em um único comando. Mutations constroem um `NextUserConfig`, resolvem um
 `EffectiveConfig`, geram todos os projectors em staging e só então publicam o
 JSON canônico. O marker operacional `.config-transaction.json` permite que
 `argvus config recover` reprojete a configuração anterior após uma queda entre

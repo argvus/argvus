@@ -1,7 +1,6 @@
 ---
 title: Solução de problemas
 description: Diagnostique problemas comuns do ARGVUS.
-slug: pt/0.4.0/docs/user-guide/troubleshooting
 ---
 
 * [Instalação](/pt/docs/user-guide/troubleshooting/installation/)

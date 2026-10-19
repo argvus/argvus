@@ -1,7 +1,6 @@
 ---
 title: Empacotamento
 description: Construa e inspecione pacotes Arch do ARGVUS.
-slug: pt/0.4.0/docs/developer-guide/development/packaging
 ---
 
 Cada componente possui seu packaging Arch. Inspecione `packaging/arch/` e o payload antes de documentar arquivos. Para verificar o runtime, compare com `pacman -Ql <pacote>` e inspecione overrides ativos separadamente.

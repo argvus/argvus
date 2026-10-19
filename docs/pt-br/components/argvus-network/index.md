@@ -1,7 +1,6 @@
 ---
 title: Rede e Bluetooth
 description: Gerencie NetworkManager e Bluetooth.
-slug: pt/0.4.0/docs/user-guide/hardware/networking
 ---
 
 O subcomando `argvus network` consulta e controla o NetworkManager, e `argvus bluetooth` consulta e controla o estado e a disponibilidade do adaptador Bluetooth. Os dois rodam em processo dentro do `argvus`; `networkctl` e `bluetoothctl` continuam como aliases. O Control Panel e a Waybar usam esses comandos. Consulte `--help` para os subcomandos instalados.

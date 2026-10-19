@@ -1,7 +1,6 @@
 ---
 title: Mapa de integração
 description: Relações entre os projetos no runtime.
-slug: pt/0.4.0/docs/developer-guide/architecture/integration-map
 ---
 
 ```text

@@ -15,3 +15,11 @@ description: User, system, package-default and generated ARGVUS configuration.
 The active theme, accent, custom wallpaper and effects state are logical user state. The managed logical model is documented in [Canonical configuration](/docs/reference/argvus-config/). Generated Hyprland, GTK, Qt6ct, Waybar, Quickshell, Dunst, Hyprlock, Yazi, Superfile, terminal, font and removable-devices files should not be treated as independent sources of truth.
 
 `argvus-config` also mirrors the theme layer into `data/waybar/argvus-taskbar.{jsonc,css}` and `data/waybar/argvus-widget-telemetry.{jsonc,css}`. Those copies are replaced from the packaged defaults on an appearance change, then have their delimited managed blocks rewritten, so treat them as derived rather than as hand-maintained files. Native application configuration under `$XDG_CONFIG_HOME/<app>` is different: it is an adapter target written by the appearance orchestrators, never by the projector.
+
+## Exception to the single-writer rule
+
+`argvus config` is the only writer of `data/generated/`. One exception exists for migration:
+when a user copy of a packaged file is created, a file that an older version left under
+`data/generated/` is moved to its user location (`data/`), so the user keeps their edits. The
+move happens only for files that the current version does not generate. Do not rely on this
+path for new files: add a generated file in the projection, not here.

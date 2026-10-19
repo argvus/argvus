@@ -1,7 +1,6 @@
 ---
 title: Serviços
 description: Serviços systemd do ARGVUS.
-slug: pt/0.4.0/docs/reference/services
 ---
 
 O target principal é `argvus-session.target`. Serviços comuns incluem `argvus-taskbar.service`, `argvus-control-panel.service`, `argvus-widget-telemetry.service`, `argvus-dunst.service`, `argvus-wallpaper.service`, `argvus-hypridle.service` e `argvus-session-loading.service`.
@@ -24,6 +23,10 @@ O pacote de sessão instala estas units de usuário em `/usr/lib/systemd/user` (
 | `argvus-control-panel.service` | Control Panel Quickshell. |
 | `argvus-taskbar.service` | Taskbar principal do ARGVUS. |
 | `argvus-widget-telemetry.service` | Superfície opcional de telemetria/sysinfo. |
+| `argvus-config.service` | Projeta a configuração canônica (`argvus config project`); o reload executa `argvus sessionctl reload-config-transaction`. |
+| `argvus-session-reload.service` | Recarrega o desktop (`argvus sessionctl reload-desktop`). |
+| `argvus-ssh-agent.service` | Agente SSH da sessão. |
+| `argvus-secret-service.service` | Inicia o serviço de segredos por `argvus sessionctl start-secret-service`. |
 | `argvus-wallpaper.service` | Backend do wallpaper ativo. |
 | `argvus-dunst.service` | Daemon de notificações Dunst. |
 | `argvus-hypridle.service` | Política de idle e lock. |

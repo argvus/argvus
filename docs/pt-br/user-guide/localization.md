@@ -1,7 +1,6 @@
 ---
 title: Localização
 description: Use o ARGVUS em inglês ou português.
-slug: pt/0.4.0/docs/user-guide/localization
 ---
 
 `argvus-i18n` fornece catálogos compartilhados, `argvus i18n validate` e o módulo QML `org.argvus.i18n`. Aplicativos nativos, shell e helpers da sessão consomem esses catálogos.

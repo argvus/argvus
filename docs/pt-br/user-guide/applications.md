@@ -1,7 +1,6 @@
 ---
 title: Aplicativos
 description: Use os aplicativos integrados ao ARGVUS.
-slug: pt/0.4.0/docs/user-guide/applications
 ---
 
 O dispatcher `argvus` expõe os aplicativos e ferramentas principais.

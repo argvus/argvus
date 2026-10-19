@@ -25,6 +25,10 @@ The session package installs these user units under `/usr/lib/systemd/user` (the
 | `argvus-control-panel.service` | Quickshell Control Panel. |
 | `argvus-taskbar.service` | Main ARGVUS taskbar. |
 | `argvus-widget-telemetry.service` | Optional telemetry/sysinfo surface. |
+| `argvus-config.service` | Projects the canonical configuration (`argvus config project`); reload runs `argvus sessionctl reload-config-transaction`. |
+| `argvus-session-reload.service` | Reloads the desktop (`argvus sessionctl reload-desktop`). |
+| `argvus-ssh-agent.service` | SSH agent for the session. |
+| `argvus-secret-service.service` | Starts the secret service through `argvus sessionctl start-secret-service`. |
 | `argvus-wallpaper.service` | Active wallpaper backend. |
 | `argvus-dunst.service` | Dunst notification daemon. |
 | `argvus-hypridle.service` | Idle and lock policy. |

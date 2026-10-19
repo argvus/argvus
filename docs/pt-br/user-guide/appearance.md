@@ -1,14 +1,13 @@
 ---
 title: Aparência
 description: Configure a linguagem visual compartilhada do ARGVUS.
-slug: pt/0.4.0/docs/user-guide/appearance
 ---
 
 O sistema de aparência aplica um estado comum ao Hyprland, GTK, Qt, Waybar, Quickshell, Rofi, Dunst, Hyprlock e aplicativos ARGVUS.
 
 ## Famílias de tema
 
-As vinte e quatro famílias abaixo são definidas pelo payload atual de temas. A coluna de cor mostra o valor restaurado pela ação **Restaurar padrão do tema**; o usuário pode escolher outra cor RGB válida independentemente.
+As vinte e duas famílias abaixo são definidas pelo payload atual de temas. A coluna de cor mostra o valor restaurado pela ação **Restaurar padrão do tema**; o usuário pode escolher outra cor RGB válida independentemente.
 
 | Família | Cor de destaque restaurada | Fundo base | Modos |
 | --- | --- | --- | --- |
@@ -31,9 +30,8 @@ As vinte e quatro famílias abaixo são definidas pelo payload atual de temas. A
 | Matrix | `#82FB9C` | `#0B0C16` | Sticky, Float |
 | Monokai Dark | `#78DCE8` | `#2D2A2E` | Sticky, Float |
 | One Light | `#4078F2` | `#FAFAFA` | Sticky, Float |
-| Flexoki Light | `#205EA6` | `#FFFCF0` | Sticky, Float |
 | Everforest Light | `#3A94C5` | `#FDF6E3` | Sticky, Float |
-| ARGVUS Kanagawa Lotus | `#4D699B` | `#F2ECBC` | Sticky, Float |
+| Solarized Light | `#268BD2` | `#FDF6E3` | Sticky, Float |
 | Nord Light | `#5E81AC` | `#ECEFF4` | Sticky, Float |
 
 **Sticky** é o layout compacto: janelas lado a lado usam gaps internos pequenos, os gaps externos são zero e a taskbar fica próxima da borda. **Float** adiciona gaps maiores, cantos arredondados, sombras e margens às superfícies do shell.

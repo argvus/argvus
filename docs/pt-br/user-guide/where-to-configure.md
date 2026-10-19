@@ -1,7 +1,6 @@
 ---
 title: Onde configurar as coisas
 description: Um índice rápido para encontrar configurações comuns do ARGVUS.
-slug: pt/0.4.0/docs/user-guide/where-to-configure
 ---
 
 Use esta tabela quando souber o que quer alterar, mas não qual superfície do ARGVUS é responsável por isso.
@@ -38,4 +37,4 @@ Se uma configuração não estiver listada, use a busca da tela inicial do Contr
 
 * [Primeira configuração](/pt/docs/user-guide/getting-started/)
 * [Control Center](/pt/docs/components/argvus-control-center/)
-* [Control Panel](/pt/docs/argvus-control-panel/)
+* Control Panel

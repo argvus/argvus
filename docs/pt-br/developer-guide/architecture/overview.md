@@ -1,7 +1,6 @@
 ---
 title: Visão geral da arquitetura
 description: Como o ARGVUS forma um desktop integrado.
-slug: pt/0.4.0/docs/developer-guide/architecture/overview
 ---
 
 As camadas de runtime são: dispatcher `argvus`; ciclo de vida em `argvus-session`; compositor e shell em Hyprland, Waybar, taskbar e Control Panel; aplicativos; e provedores de display, rede, energia, aparência, contas e notificações.

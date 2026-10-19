@@ -1,7 +1,6 @@
 ---
 title: Control Center
 description: Configure as partes persistentes do seu desktop ARGVUS.
-slug: pt/0.4.0/docs/user-guide/control-center
 ---
 
 O Control Center é o aplicativo de configurações do ARGVUS, com navegação orientada ao teclado. Use-o quando quiser configurar o desktop, e não apenas executar uma ação pontual.
@@ -13,7 +12,7 @@ O Control Center é o aplicativo de configurações do ARGVUS, com navegação o
 | **Control Center** | Temas, wallpapers, efeitos, layout, comportamento da taskbar, fontes, aplicativos padrão, teclado e entrada, idioma, região e configuração do sistema. |
 | **Control Panel** | Status atual e ações frequentes, como volume, brilho, rede, notificações, energia e controles da sessão. |
 
-O Control Panel pode oferecer controles rápidos para uma configuração permanente do Control Center. Por exemplo, use o painel para uma ação rápida de aparência ou display, e o Control Center quando quiser alterar a configuração do desktop por trás dela. Veja [Control Panel](/pt/docs/argvus-control-panel/) e [Onde configurar as coisas](/pt/docs/user-guide/where-to-configure/).
+O Control Panel pode oferecer controles rápidos para uma configuração permanente do Control Center. Por exemplo, use o painel para uma ação rápida de aparência ou display, e o Control Center quando quiser alterar a configuração do desktop por trás dela. Veja Control Panel e [Onde configurar as coisas](/pt/docs/user-guide/where-to-configure/).
 
 ## Áreas principais
 
@@ -295,7 +294,7 @@ Rotas diretas úteis incluem `apps`, `window-rules`, `projects`, `snippets`, `ss
 ## Relacionados
 
 * [Primeira configuração](/pt/docs/getting-started/)
-* [Control Panel](/pt/docs/argvus-control-panel/)
+* Control Panel
 * [Aparência](/pt/docs/user-guide/appearance/)
 * [Atalhos de teclado](/pt/docs/argvus-hyprland/keyboard-shortcuts/)
 * [Mouse e touchpad](/pt/docs/argvus-hyprland/input/)

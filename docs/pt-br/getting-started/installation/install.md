@@ -1,7 +1,6 @@
 ---
 title: Instalar o ARGVUS
 description: Instale, atualize, remova e configure o ARGVUS.
-slug: pt/0.4.0/docs/user-guide/installation/install
 ---
 
 O ARGVUS é distribuído como um pacote Arch Linux pelo repositório oficial de pacotes do ARGVUS.

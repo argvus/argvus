@@ -1,7 +1,6 @@
 ---
 title: Contribuição
 description: Limites de contribuição para projetos e documentação.
-slug: pt/0.4.0/docs/developer-guide/development/contributing
 ---
 
 Trace uma funcionalidade por todos os repositórios consumidores. Preserve contratos de estado, ownership de pacotes e serviços e os dois catálogos de idioma. Valide origem, payload instalado e sessão ativa separadamente.

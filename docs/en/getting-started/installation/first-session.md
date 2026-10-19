@@ -11,4 +11,4 @@ For a TTY session, log in on a virtual terminal and run:
 argvus --start-desktop
 ```
 
-After login, use `argvus-sessionctl status` to inspect the ARGVUS user target. If the compositor or shell does not start, follow [session troubleshooting](/docs/user-guide/troubleshooting/session-startup/).
+After login, use `argvus sessionctl status` to inspect the ARGVUS user target. If the compositor or shell does not start, follow [session troubleshooting](/docs/user-guide/troubleshooting/session-startup/).

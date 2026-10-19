@@ -182,9 +182,16 @@ Mutating commands build a `NextUserConfig`, resolve an `EffectiveConfig`, stage
 all projectors, and only then publish the canonical JSON. An operational
 `.config-transaction.json` marker allows `argvus config recover` to reproject
 the previous configuration after a crash between data and JSON publication.
-Theme defaults are declared by the packaged
-`appearance/config/theme-defaults.json` manifest; CSS, Lua, Rasi and Qt files
-are projections of that state.
+Theme defaults are declared by each theme's manifest
+(`appearance/themes.d/<theme>/theme.toml`): the default accent, the GTK color scheme and
+the stylesheet names. CSS, Lua, Rasi and Qt files are projections of that state.
+
+Changing the theme, including Light/Dark, resets the highlight color to the theme's default,
+even when the user chose a custom color: the custom color is kept only until the next theme
+change. Use `argvus config accent` after the theme change to set it again. Applying a
+theme with `argvus config theme-apply` writes `/appearance/accent` and `/appearance/gtk_mode`
+from the manifest, and `argvus config accent` writes the chosen color with `accent_custom`
+set, in one command.
 
 `apply-theme` takes the variant explicitly as `--variant sticky|float` and
 resolves the requested name through the manifest, so a request can never

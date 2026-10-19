@@ -87,12 +87,13 @@ Hyprland. Change the accent color from the Highlight color control in the Contro
 | ARGVUS Dark           | ARGVUS Light       |
 | Dracula               | Catppuccin Latte   |
 | Gruvbox Dark          | Everforest Light   |
-| Gruvbox High Dark     | Frost              |
+| Gruvbox High Dark     |                    |
 | Matrix             | GitHub Light       |
 | Monokai Dark          | Gruvbox Light      |
 | One Dark              | One Light          |
 | Rosé Pine             | Solarized Light    |
 | Silver Dark           |                    |
+|                       | Nord Light         |
 | Slate Dark            |                    |
 | Solitude              |                    |
 | Sunset                |                    |

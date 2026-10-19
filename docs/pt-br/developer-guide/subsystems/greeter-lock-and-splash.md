@@ -1,7 +1,6 @@
 ---
 title: Greeter, lock e splash
 description: Visuais separados de login e inicialização.
-slug: pt/0.4.0/docs/developer-guide/subsystems/greeter-lock-and-splash
 ---
 
 `argvus-greeter` fornece a interface greetd; o overlay de carregamento da sessão é o auxiliar `argvus loading-theme` do `argvus-gtk`; `argvus-boot-splash` fornece o splash de boot; `argvus-lock` fornece Hyprlock. Eles têm ciclos de vida e payloads distintos.

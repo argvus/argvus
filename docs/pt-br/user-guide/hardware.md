@@ -1,7 +1,6 @@
 ---
 title: Hardware
 description: Configure displays, conectividade e energia.
-slug: pt/0.4.0/docs/user-guide/hardware
 ---
 
 * [Displays](/pt/docs/argvus-display/)
