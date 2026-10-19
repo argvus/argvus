@@ -4,23 +4,36 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Existing tag to publish (for example v0.1.0)'
+        required: true
 
 permissions:
   contents: read
+
+concurrency:
+  group: argvus-release
+  cancel-in-progress: false
 
 jobs:
   package:
     name: Build and publish Arch packages
     runs-on: ubuntu-latest
     container: archlinux:latest
+    permissions:
+      contents: write
 
     steps:
-      - name: Checkout source
-        uses: actions/checkout@v4
-
       - name: Install packaging tools
         run: |
-          pacman -Syu --noconfirm --needed             base-devel             git             gnupg             jq             pacman-contrib             rust             gtk4             gtk4-layer-shell             sudo
+          pacman -Syu --noconfirm --needed \
+            base-devel git gnupg pacman-contrib rust gtk4 gtk4-layer-shell \
+            libdrm namcap shellcheck sudo
+
+      - name: Checkout source
+        uses: actions/checkout@v4
 
       - name: Prepare build user
         run: |
@@ -31,20 +44,36 @@ jobs:
       - name: Prepare package version
         id: version
         shell: bash
+        env:
+          TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
         run: |
           set -euo pipefail
 
-          version="${GITHUB_REF_NAME#v}"
+          version="${TAG#v}"
           if [[ ! "$version" =~ ^[0-9]+(\.[0-9]+)*([._+-][A-Za-z0-9]+)*$ ]]; then
-            echo "Unsupported version tag: ${GITHUB_REF_NAME}" >&2
+            echo "Unsupported version tag: ${TAG}" >&2
             exit 1
           fi
 
-          # The PKGBUILD version and the workspace version (the argvus command
-          # reports it) both come from the tag. Only [workspace.package] is changed.
+          # The package builds the tag tarball, so the tag must match the version the
+          # sources declare. Bump [workspace.package] and greeter/Cargo.toml before tagging.
+          workspace_version="$(sed -n '/^\[workspace.package\]/,/^\[/ s/^version = "\(.*\)"/\1/p' Cargo.toml | head -n 1)"
+          greeter_version="$(sed -n 's/^version = "\(.*\)"/\1/p' greeter/Cargo.toml | head -n 1)"
+          for declared in "$workspace_version" "$greeter_version"; do
+            if [[ "$declared" != "$version" ]]; then
+              echo "Tag ${TAG} does not match the declared version ${declared}" >&2
+              exit 1
+            fi
+          done
+
           sed -i "s/^pkgver=.*/pkgver=${version}/" "packaging/arch/ci/PKGBUILD"
-          sed -i "/^\[workspace.package\]/,/^\[/ s/^version = .*/version = \"${version}\"/" Cargo.toml
           echo "version=${version}" >> "$GITHUB_OUTPUT"
+
+      - name: Fill PKGBUILD checksums
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo -u builder env GITHUB_WORKSPACE="$GITHUB_WORKSPACE" HOME=/home/builder bash -lc 'cd "$GITHUB_WORKSPACE/packaging/arch/ci" && updpkgsums'
 
       - name: Validate repository
         shell: bash
@@ -199,3 +228,11 @@ jobs:
 
           git commit -m "Publish argvus ${{ steps.version.outputs.version }}"
           git push
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+          files: |
+            packaging/arch/ci/argvus*.pkg.tar.zst
+            packaging/arch/ci/argvus*.pkg.tar.zst.sig
