@@ -1152,7 +1152,13 @@ fn run_component_adapters(
   let theme_qml = paths.generated.join(format!(
     "quickshell/argvus-control-panel/themes/{theme}/Theme.qml"
   ));
-  let theme_transaction = env::var("ARGVUS_THEME_SWITCH").ok().as_deref() == Some("1");
+  // A running switch applies the theme itself and holds the theme lock. A
+  // projection started by that switch (through its configuration reload) must
+  // not start another switch, which would wait on that lock. The environment
+  // variable covers callers that set it; the marker covers the reload, because
+  // systemd does not pass the caller's environment to it.
+  let theme_transaction = env::var("ARGVUS_THEME_SWITCH").ok().as_deref() == Some("1")
+    || crate::theme_apply::transaction_in_progress();
   let theme_missing = !theme_output.is_file() || !theme_qml.is_file();
   let theme_applied = !theme_transaction
     && (appearance_visual_changed || (changed_sections.is_empty() && theme_missing));

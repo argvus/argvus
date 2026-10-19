@@ -6,16 +6,33 @@
 //! theme files is `theme_body`, and it runs here, under the lock.
 
 use crate::session_paths::SessionPaths;
-use crate::session_splash::StartOutcome;
+use crate::session_splash::{self, StartOutcome};
 use crate::theme_body;
 use crate::theme_resolve;
 use crate::theme_transition::{self, overlay_warning};
 use std::env;
 use std::fs::{self, OpenOptions};
+use std::io;
 use std::os::fd::AsRawFd;
 use std::os::unix::process::ExitStatusExt;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process::{Command, ExitStatus, Stdio};
+use std::thread::sleep;
+use std::time::{Duration, Instant};
+
+/// The marker a running switch keeps beside its lock. The configuration reload
+/// that this switch starts reads it and leaves the theme to this switch, instead
+/// of starting a second switch that would wait on the lock held here.
+const TRANSACTION_MARKER: &str = "theme-switch.active";
+
+/// How long a switch waits for the lock while another switch holds it.
+const LOCK_WAIT_LIMIT: Duration = Duration::from_secs(60);
+
+/// How long the configuration reload may take before this switch gives up on it.
+const RELOAD_WAIT_LIMIT: Duration = Duration::from_secs(60);
+
+/// Interval between checks of the lock and of the reload child.
+const POLL_INTERVAL: Duration = Duration::from_millis(50);
 
 /// Runs the transaction for `theme_argument` and returns the exit status.
 /// `layout_variant` is the Sticky/Float variant the theme id resolves with.
@@ -38,8 +55,9 @@ pub fn run(paths: &SessionPaths, theme_argument: &str, layout_variant: &str) -> 
 
   // The whole transaction runs under the lock, the record of the active units
   // included. A switch that waited behind another one then records what is
-  // running when it starts, and restarts exactly that.
-  let lock = match acquire_lock(&lock_path) {
+  // running when it starts, and restarts exactly that. The bindings below are
+  // dropped in reverse order: overlay, marker, then lock.
+  let _lock = match acquire_lock(&lock_path) {
     Ok(lock) => lock,
     Err(error) => {
       eprintln!("argvus-config: theme lock: {error}");
@@ -51,7 +69,16 @@ pub fn run(paths: &SessionPaths, theme_argument: &str, layout_variant: &str) -> 
   } else {
     String::new()
   };
-  let overlay_started = runtime && start_overlay(&theme);
+  let _transaction = match TransactionMarker::record(cache_home().join(TRANSACTION_MARKER)) {
+    Ok(marker) => marker,
+    Err(error) => {
+      eprintln!("argvus-config: theme transaction: {error}");
+      return 1;
+    }
+  };
+  // The guard stops the overlay however this function returns, including a
+  // failed body, so the overlay cannot outlive the switch that started it.
+  let _overlay = (runtime && start_overlay(&theme)).then_some(OverlayGuard);
   let mut status = theme_body::run(paths, &theme, runtime);
 
   // Session preparation materializes files with NO_RUNTIME=1. Do not reload
@@ -60,15 +87,20 @@ pub fn run(paths: &SessionPaths, theme_argument: &str, layout_variant: &str) -> 
   let config_service = env::var("ARGVUS_CONFIG_SERVICE").as_deref() == Ok("1");
   if runtime && !projecting && !config_service && systemctl {
     if status == 0 {
-      let reload = Command::new("systemctl")
-        .args(["--user", "reload", "argvus-config.service"])
-        .stdout(Stdio::null())
-        .stderr(Stdio::null())
-        .status();
+      let reload = run_bounded(
+        Command::new("systemctl")
+          .args(["--user", "reload", "argvus-config.service"])
+          .stdout(Stdio::null())
+          .stderr(Stdio::null()),
+        RELOAD_WAIT_LIMIT,
+      );
       match reload {
         Ok(result) if result.success() => {}
         Ok(result) => status = exit_code(result),
-        Err(_) => status = 1,
+        Err(error) => {
+          eprintln!("argvus-config: reload of argvus-config.service: {error}");
+          status = 1;
+        }
       }
     }
     // The body stops the services before it applies the theme. They must come
@@ -76,10 +108,6 @@ pub fn run(paths: &SessionPaths, theme_argument: &str, layout_variant: &str) -> 
     let _ = theme_transition::restart_units(&recorded_units);
   }
 
-  if overlay_started {
-    theme_transition::stop_overlay();
-  }
-  drop(lock);
   status
 }
 
@@ -102,21 +130,118 @@ fn start_overlay(theme: &str) -> bool {
   outcome == StartOutcome::Started
 }
 
-/// Takes the exclusive lock, waiting for a switch that holds it. The file is
-/// opened close-on-exec, so the body does not keep the lock alive.
-fn acquire_lock(path: &PathBuf) -> std::io::Result<std::fs::File> {
+/// Stops the overlay that a switch started, when the switch ends.
+struct OverlayGuard;
+
+impl Drop for OverlayGuard {
+  fn drop(&mut self) {
+    theme_transition::stop_overlay();
+  }
+}
+
+/// The record of a running switch: the pid of its process and that process's
+/// start time. The file is removed when the switch ends.
+struct TransactionMarker {
+  path: PathBuf,
+}
+
+impl TransactionMarker {
+  /// Records this process as the running switch. The start time is stored with
+  /// the pid, so a recycled pid is not taken for a switch that is still running.
+  fn record(path: PathBuf) -> io::Result<Self> {
+    let pid = std::process::id();
+    let start_time = session_splash::process_start_time(pid as i32)
+      .ok_or_else(|| io::Error::other("cannot read the start time of this process"))?;
+    fs::write(&path, format!("{pid}\n{start_time}\n"))?;
+    Ok(Self { path })
+  }
+}
+
+impl Drop for TransactionMarker {
+  fn drop(&mut self) {
+    let _ = fs::remove_file(&self.path);
+  }
+}
+
+/// Whether a theme switch is running right now, for the projection that a
+/// switch's own reload starts. A marker left by a switch that died is ignored.
+pub(crate) fn transaction_in_progress() -> bool {
+  transaction_recorded_at(&cache_home().join(TRANSACTION_MARKER))
+}
+
+/// Whether the marker at `path` names a process that is still the switch it
+/// recorded, by pid and start time.
+fn transaction_recorded_at(path: &Path) -> bool {
+  let Ok(text) = fs::read_to_string(path) else {
+    return false;
+  };
+  let mut lines = text.lines();
+  let pid = lines
+    .next()
+    .and_then(|line| line.trim().parse::<i32>().ok());
+  let recorded_start = lines
+    .next()
+    .and_then(|line| line.trim().parse::<u64>().ok());
+  match (pid, recorded_start) {
+    (Some(pid), Some(recorded_start)) => {
+      session_splash::process_start_time(pid) == Some(recorded_start)
+    }
+    _ => false,
+  }
+}
+
+/// Takes the exclusive lock, waiting at most `LOCK_WAIT_LIMIT` for a switch that
+/// holds it. The file is opened close-on-exec, so the body does not keep the lock
+/// alive.
+fn acquire_lock(path: &Path) -> io::Result<fs::File> {
   let file = OpenOptions::new()
     .create(true)
     .write(true)
     .truncate(false)
     .open(path)?;
-  // SAFETY: the descriptor belongs to the file opened above and stays valid
-  // for the lock's lifetime.
-  let result = unsafe { libc::flock(file.as_raw_fd(), libc::LOCK_EX) };
-  if result != 0 {
-    return Err(std::io::Error::last_os_error());
+  let started = Instant::now();
+  loop {
+    // SAFETY: the descriptor belongs to the file opened above and stays valid
+    // for the lock's lifetime.
+    let result = unsafe { libc::flock(file.as_raw_fd(), libc::LOCK_EX | libc::LOCK_NB) };
+    if result == 0 {
+      return Ok(file);
+    }
+    let error = io::Error::last_os_error();
+    if error.kind() != io::ErrorKind::WouldBlock {
+      return Err(error);
+    }
+    if started.elapsed() >= LOCK_WAIT_LIMIT {
+      return Err(io::Error::new(
+        io::ErrorKind::TimedOut,
+        "another theme switch is still running",
+      ));
+    }
+    sleep(POLL_INTERVAL);
   }
-  Ok(file)
+}
+
+/// Runs `command` and waits for it at most `limit`. A child still running at the
+/// limit is killed and reported as `TimedOut`. Killing `systemctl` does not stop a
+/// job that systemd already started, so this bounds the wait, not the job.
+fn run_bounded(command: &mut Command, limit: Duration) -> io::Result<ExitStatus> {
+  let mut child = command.spawn()?;
+  let started = Instant::now();
+  loop {
+    if let Some(status) = child.try_wait()? {
+      return Ok(status);
+    }
+    if started.elapsed() >= limit {
+      // The child is ours, so waiting after the kill reaps it.
+      let _ = child.kill();
+      let _ = child.wait();
+      return Err(io::Error::new(
+        io::ErrorKind::TimedOut,
+        format!("still running after {}s", limit.as_secs()),
+      ));
+    }
+    sleep(POLL_INTERVAL);
+  }
 }
 
 /// The exit status of a child, with a signal reported as the shell did (128 + n).
@@ -142,4 +267,66 @@ fn on_path(program: &str) -> bool {
   env::var_os("PATH")
     .map(|paths| env::split_paths(&paths).any(|dir| dir.join(program).is_file()))
     .unwrap_or(false)
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  /// A scratch directory for one test. Each test uses its own name, and the
+  /// directory is removed by the test that created it.
+  fn scratch_dir(name: &str) -> PathBuf {
+    let dir = env::temp_dir().join(format!(
+      "argvus-theme-transaction-{name}-{}",
+      std::process::id()
+    ));
+    let _ = fs::remove_dir_all(&dir);
+    fs::create_dir_all(&dir).expect("scratch directory");
+    dir
+  }
+
+  #[test]
+  fn recorded_switch_is_seen_until_its_marker_is_removed() {
+    let dir = scratch_dir("recorded");
+    let path = dir.join(TRANSACTION_MARKER);
+    let marker = TransactionMarker::record(path.clone()).expect("marker is written");
+    assert!(transaction_recorded_at(&path));
+    drop(marker);
+    assert!(!path.exists());
+    assert!(!transaction_recorded_at(&path));
+    let _ = fs::remove_dir_all(&dir);
+  }
+
+  #[test]
+  fn marker_with_a_recycled_start_time_is_not_a_running_switch() {
+    let dir = scratch_dir("recycled");
+    let path = dir.join(TRANSACTION_MARKER);
+    // A start time of zero never matches a live process, so the pid is reused.
+    fs::write(&path, format!("{}\n0\n", std::process::id())).expect("marker is written");
+    assert!(!transaction_recorded_at(&path));
+    let _ = fs::remove_dir_all(&dir);
+  }
+
+  #[test]
+  fn marker_of_a_dead_process_is_not_a_running_switch() {
+    let dir = scratch_dir("dead");
+    let path = dir.join(TRANSACTION_MARKER);
+    // No process has this pid, so its start time cannot be read.
+    fs::write(&path, format!("{}\n1\n", i32::MAX)).expect("marker is written");
+    assert!(!transaction_recorded_at(&path));
+    let _ = fs::remove_dir_all(&dir);
+  }
+
+  #[test]
+  fn bounded_run_reports_a_child_that_outlives_the_limit() {
+    let status = run_bounded(&mut Command::new("true"), Duration::from_secs(5))
+      .expect("true runs to completion");
+    assert!(status.success());
+
+    let timed_out = run_bounded(Command::new("sleep").arg("30"), Duration::from_millis(100));
+    assert_eq!(
+      timed_out.expect_err("sleep outlives the limit").kind(),
+      io::ErrorKind::TimedOut
+    );
+  }
 }

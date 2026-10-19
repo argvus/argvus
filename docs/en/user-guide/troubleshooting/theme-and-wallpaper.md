@@ -22,6 +22,15 @@ are orchestrators: they validate, lock, show the splash, commit through
 not write the GTK, storage or `mode.css` files through separate scripts.
 Use `argvus config accent --apply` to re-run only the accent reconciliation.
 
+If the loading overlay stays on screen after a theme change, check whether a switch is still running. A switch records itself in `theme-switch.active`, beside its lock:
+
+```sh
+cat "${XDG_CACHE_HOME:-$HOME/.cache}/argvus/theme-switch.active"
+ps -ef | grep -E 'theme-switch|loading-theme'
+```
+
+A pid in the marker that is still alive means the switch has not finished. A switch that waits more than 60 seconds for the theme lock, or for the configuration reload, ends with an error message and removes its overlay, so an overlay that stays up points to a switch hung inside its reload. A marker whose process has exited is stale and the next switch ignores it. Include the output of the commands above when reporting the problem.
+
 If only the pre-login greeter is white or uses the fallback theme, compare the private source with its public projection:
 
 ```sh

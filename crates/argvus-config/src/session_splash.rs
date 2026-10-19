@@ -138,7 +138,7 @@ fn is_named(pid: i32, name: &str) -> bool {
 
 /// The kernel's start time of `pid` (field 22 of `/proc/<pid>/stat`, in clock
 /// ticks since boot). A recycled pid has a different start time.
-fn process_start_time(pid: i32) -> Option<u64> {
+pub(crate) fn process_start_time(pid: i32) -> Option<u64> {
   let stat = fs::read_to_string(format!("/proc/{pid}/stat")).ok()?;
   // The command name is in parentheses and may contain spaces, so the fields are
   // counted from the last closing parenthesis.

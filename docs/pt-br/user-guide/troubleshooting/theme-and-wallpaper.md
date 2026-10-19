@@ -22,6 +22,15 @@ ler o `config.json`. Eles nunca escrevem em `data/generated/`, e a transação d
 tema não grava mais os arquivos de GTK, storage ou `mode.css` por scripts separados. Use `argvus config accent --apply` para reexecutar apenas a reconciliação
 de acento.
 
+Se o overlay de carregamento continuar na tela após uma troca de tema, verifique se alguma troca ainda está em execução. A troca registra a si mesma em `theme-switch.active`, ao lado do seu lock:
+
+```sh
+cat "${XDG_CACHE_HOME:-$HOME/.cache}/argvus/theme-switch.active"
+ps -ef | grep -E 'theme-switch|loading-theme'
+```
+
+Um pid no marcador que ainda está vivo significa que a troca não terminou. Uma troca que espera mais de 60 segundos pelo lock do tema, ou pelo reload da configuração, termina com mensagem de erro e remove o seu overlay; por isso, um overlay que continua na tela aponta para uma troca travada dentro do reload. Um marcador cujo processo já saiu é antigo, e a próxima troca o ignora. Envie a saída dos comandos acima ao relatar o problema.
+
 Se apenas o greeter pré-login estiver branco ou usando o tema de fallback, compare a fonte privada com a projeção pública:
 
 ```sh
