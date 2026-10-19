@@ -19,6 +19,12 @@ arch_source_root() {
 	printf '%s\n' "${srcdir}/${pkgbase}-${pkgver}"
 }
 
+# Where cargo writes release binaries: CARGO_TARGET_DIR when a local build sets it,
+# otherwise the target directory inside the source tree.
+arch_cargo_target_dir() {
+	printf '%s\n' "${CARGO_TARGET_DIR:-$(arch_source_root)/target}"
+}
+
 arch_normalize_source_tree() {
 	local expected="${srcdir}/${pkgbase}-${pkgver}"
 	local -a roots=()
@@ -63,7 +69,7 @@ arch_check_argvus_workspace() {
 	source_root="$(arch_source_root)"
 	cd -- "$source_root" || return 1
 
-	test -x target/release/argvus
+	test -x "$(arch_cargo_target_dir)/release/argvus"
 	cargo test --workspace --locked
 	(cd greeter && cargo test --workspace --locked)
 }
@@ -106,7 +112,7 @@ arch_package_argvus() {
 	local source_root
 	source_root="$(arch_source_root)"
 
-	install -Dm755 "${source_root}/target/release/argvus" "${pkgdir}/usr/bin/argvus"
+	install -Dm755 "$(arch_cargo_target_dir)/release/argvus" "${pkgdir}/usr/bin/argvus"
 	arch_install_payload
 
 	# The i18n catalogs of the two supported locales.
@@ -123,12 +129,12 @@ arch_package_argvus_gtk() {
 
 	install -dm755 "${pkgdir}/usr/lib/argvus/commands"
 	for command in "${ARGVUS_GTK_COMMANDS[@]}"; do
-		install -Dm755 "${source_root}/target/release/${command}" \
+		install -Dm755 "$(arch_cargo_target_dir)/release/${command}" \
 			"${pkgdir}/usr/lib/argvus/commands/${command}"
 	done
 
 	# The loading overlay stays at the path the greeter and the session launch.
-	install -Dm755 "${source_root}/target/release/splash" \
+	install -Dm755 "$(arch_cargo_target_dir)/release/splash" \
 		"${pkgdir}/usr/lib/argvus/loading-theme/splash"
 
 	# Taskbar calendar: the Waybar launcher, its configuration and its user unit.
@@ -151,7 +157,7 @@ arch_package_argvus_greeter() {
 	source_root="$(arch_source_root)"
 	greeter="${source_root}/greeter"
 
-	install -Dm755 "${greeter}/target/release/argvus-greeter" \
+	install -Dm755 "$(arch_cargo_target_dir)/release/argvus-greeter" \
 		"${pkgdir}/usr/lib/argvus/commands/argvus-greeter"
 	install -Dm755 "${greeter}/packaging/greetd/argvus-greeter-setup" \
 		"${pkgdir}/usr/lib/argvus/commands/argvus-greeter-setup"
@@ -159,7 +165,7 @@ arch_package_argvus_greeter() {
 		"${pkgdir}/usr/lib/argvus/commands/argvus-greeter-session"
 	install -Dm755 "${greeter}/packaging/greetd/argvus-greeter-tui" \
 		"${pkgdir}/usr/lib/argvus/commands/argvus-greeter-tui"
-	install -Dm755 "${greeter}/target/release/argvus-greeter-handoff" \
+	install -Dm755 "$(arch_cargo_target_dir)/release/argvus-greeter-handoff" \
 		"${pkgdir}/usr/lib/argvus/greeter/handoff"
 
 	install -Dm644 "${greeter}/packaging/greetd/greeter.toml" "${pkgdir}/etc/argvus/greeter.toml"

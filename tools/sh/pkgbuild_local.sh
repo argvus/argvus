@@ -50,6 +50,10 @@ else
   flags=(--nodeps --noconfirm --needed --cleanbuild --clean --force)
 fi
 
+# Cargo writes its objects outside the makepkg source tree, so --cleanbuild (which
+# removes $srcdir before each build) does not discard compiled dependencies.
+export CARGO_TARGET_DIR="${CARGO_TARGET_DIR:-$ROOT_DIR/build/cargo-target}"
+
 cd "$PACKAGING_DIR"
 export BUILDDIR="$ROOT_DIR/build/artifacts"
 export SRCDEST="$ROOT_DIR/build/artifacts"
