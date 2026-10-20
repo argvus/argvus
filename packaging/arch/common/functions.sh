@@ -3,16 +3,17 @@
 # shellcheck disable=SC2154
 # srcdir, pkgdir, pkgbase, pkgname and pkgver are supplied by makepkg.
 #
-# The argvus package base builds one Cargo workspace. `argvus` carries the
-# public CLI and the data of the repositories absorbed into the workspace.
-# `argvus-gtk` carries the GTK 4 helpers, which stay out of the command path.
+# The argvus package builds one Cargo workspace and installs all of its products
+# in one package: the public CLI and its data, the GTK 4 helpers (kept out of the
+# command path) and the login greeter with its greetd files.
 
 # Helpers that are GTK 4 programs, installed in the private commands directory
-# (argvus-taskbar-calendar, argvus-control-center, argvus-removable-devices).
+# under their subcommand names (control-center, removable-devices, taskbar-calendar).
+# Cargo builds them as argvus-<name>; the installed file drops the prefix.
 ARGVUS_GTK_COMMANDS=(
-	argvus-control-center
-	argvus-removable-devices
-	argvus-taskbar-calendar
+	control-center
+	removable-devices
+	taskbar-calendar
 )
 
 arch_source_root() {
@@ -59,9 +60,11 @@ arch_build_argvus_workspace() {
 		-p argvus-removable-devices \
 		-p argvus-taskbar-calendar
 
-	# The greeter is a separate Cargo workspace inside this repository, with its own
-	# lockfile. It shares argvus-i18n, argvus-theme and argvus-tui by path.
-	(cd greeter && cargo build --release --locked)
+	# The greeter is a member of the root workspace, built with the compact
+	# `greeter` profile, so its binaries land in target/greeter/ and not in release/.
+	cargo build --profile greeter --locked \
+		-p argvus-greeter \
+		-p argvus-greeter-handoff
 }
 
 arch_check_argvus_workspace() {
@@ -71,7 +74,6 @@ arch_check_argvus_workspace() {
 
 	test -x "$(arch_cargo_target_dir)/release/argvus"
 	cargo test --workspace --locked
-	(cd greeter && cargo test --workspace --locked)
 }
 
 # Installs the files of the package payload (`src/`) at their system paths. The
@@ -86,9 +88,9 @@ arch_install_payload() {
 		cp -R --no-preserve=ownership "${source_root}/src/etc/." "${pkgdir}/etc/"
 	fi
 
-	# The taskbar calendar files belong to argvus-gtk. Removing them here keeps the
-	# two packages from installing the same files.
-	rm -rf -- "${pkgdir}/usr/lib/argvus-taskbar-calendar" \
+	# The taskbar calendar files are installed by arch_package_argvus_gtk. Removing
+	# them from the payload first keeps each file installed from one source only.
+	rm -rf -- "${pkgdir}/usr/lib/argvus/taskbar-calendar" \
 		"${pkgdir}/usr/lib/systemd/user/argvus-taskbar-calendar.service" \
 		"${pkgdir}/etc/argvus/taskbar/calendar"
 
@@ -117,8 +119,8 @@ arch_package_argvus() {
 
 	# The i18n catalogs of the two supported locales.
 	install -dm755 "${pkgdir}/usr/share/argvus/i18n/en-US" "${pkgdir}/usr/share/argvus/i18n/pt-BR"
-	install -m644 "${source_root}/locales/en-US/"*.json "${pkgdir}/usr/share/argvus/i18n/en-US/"
-	install -m644 "${source_root}/locales/pt-BR/"*.json "${pkgdir}/usr/share/argvus/i18n/pt-BR/"
+	install -m644 "${source_root}/resources/locales/en-US/"*.json "${pkgdir}/usr/share/argvus/i18n/en-US/"
+	install -m644 "${source_root}/resources/locales/pt-BR/"*.json "${pkgdir}/usr/share/argvus/i18n/pt-BR/"
 
 	install -Dm644 "${source_root}/LICENSE" "${pkgdir}/usr/share/licenses/argvus/LICENSE"
 }
@@ -129,7 +131,7 @@ arch_package_argvus_gtk() {
 
 	install -dm755 "${pkgdir}/usr/lib/argvus/commands"
 	for command in "${ARGVUS_GTK_COMMANDS[@]}"; do
-		install -Dm755 "$(arch_cargo_target_dir)/release/${command}" \
+		install -Dm755 "$(arch_cargo_target_dir)/release/argvus-${command}" \
 			"${pkgdir}/usr/lib/argvus/commands/${command}"
 	done
 
@@ -138,8 +140,8 @@ arch_package_argvus_gtk() {
 		"${pkgdir}/usr/lib/argvus/loading-theme/splash"
 
 	# Taskbar calendar: the Waybar launcher, its configuration and its user unit.
-	install -Dm755 "${source_root}/src/usr/lib/argvus-taskbar-calendar/waybar-launcher" \
-		"${pkgdir}/usr/lib/argvus-taskbar-calendar/waybar-launcher"
+	install -Dm755 "${source_root}/src/usr/lib/argvus/taskbar-calendar/waybar-launcher" \
+		"${pkgdir}/usr/lib/argvus/taskbar-calendar/waybar-launcher"
 	install -Dm644 "${source_root}/src/usr/lib/systemd/user/argvus-taskbar-calendar.service" \
 		"${pkgdir}/usr/lib/systemd/user/argvus-taskbar-calendar.service"
 	install -dm755 "${pkgdir}/etc/argvus/taskbar/calendar/themes"
@@ -149,23 +151,22 @@ arch_package_argvus_gtk() {
 	install -m644 "${source_root}/src/etc/argvus/taskbar/calendar/themes/"*.css \
 		"${pkgdir}/etc/argvus/taskbar/calendar/themes/"
 
-	install -Dm644 "${source_root}/LICENSE" "${pkgdir}/usr/share/licenses/argvus-gtk/LICENSE"
 }
 
 arch_package_argvus_greeter() {
 	local source_root greeter
 	source_root="$(arch_source_root)"
-	greeter="${source_root}/greeter"
+	greeter="${source_root}/crates/argvus-greeter"
 
-	install -Dm755 "$(arch_cargo_target_dir)/release/argvus-greeter" \
-		"${pkgdir}/usr/lib/argvus/commands/argvus-greeter"
+	install -Dm755 "$(arch_cargo_target_dir)/greeter/argvus-greeter" \
+		"${pkgdir}/usr/lib/argvus/commands/greeter"
 	install -Dm755 "${greeter}/packaging/greetd/argvus-greeter-setup" \
-		"${pkgdir}/usr/lib/argvus/commands/argvus-greeter-setup"
+		"${pkgdir}/usr/lib/argvus/commands/greeter-setup"
 	install -Dm755 "${greeter}/packaging/greetd/argvus-greeter-session" \
-		"${pkgdir}/usr/lib/argvus/commands/argvus-greeter-session"
+		"${pkgdir}/usr/lib/argvus/commands/greeter-session"
 	install -Dm755 "${greeter}/packaging/greetd/argvus-greeter-tui" \
-		"${pkgdir}/usr/lib/argvus/commands/argvus-greeter-tui"
-	install -Dm755 "$(arch_cargo_target_dir)/release/argvus-greeter-handoff" \
+		"${pkgdir}/usr/lib/argvus/commands/greeter-tui"
+	install -Dm755 "$(arch_cargo_target_dir)/greeter/argvus-greeter-handoff" \
 		"${pkgdir}/usr/lib/argvus/greeter/handoff"
 
 	install -Dm644 "${greeter}/packaging/greetd/greeter.toml" "${pkgdir}/etc/argvus/greeter.toml"
@@ -178,5 +179,4 @@ arch_package_argvus_greeter() {
 	install -Dm644 "${greeter}/packaging/greetd/config.toml" \
 		"${pkgdir}/usr/share/doc/argvus-greeter/greetd-config.toml"
 	install -Dm644 "${greeter}/README.md" "${pkgdir}/usr/share/doc/argvus-greeter/README.md"
-	install -Dm644 "${source_root}/LICENSE" "${pkgdir}/usr/share/licenses/argvus-greeter/LICENSE"
 }

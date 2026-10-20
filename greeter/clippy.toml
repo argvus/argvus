@@ -1,3 +1,0 @@
-# The minimum supported compiler is part of the package compatibility contract;
-# lint configuration must remain valid for that toolchain.
-msrv = "1.95.0"

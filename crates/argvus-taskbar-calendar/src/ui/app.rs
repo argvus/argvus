@@ -1694,7 +1694,7 @@ fn control_reminder_service(enabled: bool) {
   let _ = Command::new("systemctl").args(systemctl_args).status();
   if !enabled {
     let _ = Command::new("pkill")
-      .args(["-f", "argvus-taskbar-calendar service"])
+      .args(["-f", "argvus taskbar-calendar service"])
       .status();
   }
 }

@@ -3,7 +3,7 @@
 Use this as the clock/date click handler:
 
 ```json
-"on-click": "/usr/lib/argvus-taskbar-calendar/waybar-launcher --root {x} {y}"
+"on-click": "/usr/lib/argvus/taskbar-calendar/waybar-launcher --root {x} {y}"
 ```
 
 The ARGVUS Waybar patch provides `{x}`/`{y}` from the original button event as

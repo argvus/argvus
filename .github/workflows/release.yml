@@ -56,24 +56,22 @@ jobs:
           fi
 
           # The package builds the tag tarball, so the tag must match the version the
-          # sources declare. Bump [workspace.package] and greeter/Cargo.toml before tagging.
+          # sources declare. Bump [workspace.package] before tagging; the greeter
+          # inherits that version from the root workspace.
           workspace_version="$(sed -n '/^\[workspace.package\]/,/^\[/ s/^version = "\(.*\)"/\1/p' Cargo.toml | head -n 1)"
-          greeter_version="$(sed -n 's/^version = "\(.*\)"/\1/p' greeter/Cargo.toml | head -n 1)"
-          for declared in "$workspace_version" "$greeter_version"; do
-            if [[ "$declared" != "$version" ]]; then
-              echo "Tag ${TAG} does not match the declared version ${declared}" >&2
-              exit 1
-            fi
-          done
+          if [[ "$workspace_version" != "$version" ]]; then
+            echo "Tag ${TAG} does not match the declared version ${workspace_version}" >&2
+            exit 1
+          fi
 
-          sed -i "s/^pkgver=.*/pkgver=${version}/" "packaging/arch/ci/PKGBUILD"
+          sed -i "s/^pkgver=.*/pkgver=${version}/" "packaging/arch/remote/PKGBUILD"
           echo "version=${version}" >> "$GITHUB_OUTPUT"
 
       - name: Fill PKGBUILD checksums
         shell: bash
         run: |
           set -euo pipefail
-          sudo -u builder env GITHUB_WORKSPACE="$GITHUB_WORKSPACE" HOME=/home/builder bash -lc 'cd "$GITHUB_WORKSPACE/packaging/arch/ci" && updpkgsums'
+          sudo -u builder env GITHUB_WORKSPACE="$GITHUB_WORKSPACE" HOME=/home/builder bash -lc 'cd "$GITHUB_WORKSPACE/packaging/arch/remote" && updpkgsums'
 
       - name: Validate repository
         shell: bash
@@ -90,13 +88,13 @@ jobs:
         run: |
           set -euo pipefail
 
-          sudo -u builder env GITHUB_WORKSPACE="$GITHUB_WORKSPACE" bash -lc             'cd "$GITHUB_WORKSPACE/packaging/arch/ci" && makepkg --nodeps --noconfirm --needed --cleanbuild --clean'
+          sudo -u builder env GITHUB_WORKSPACE="$GITHUB_WORKSPACE" bash -lc             'cd "$GITHUB_WORKSPACE/packaging/arch/remote" && makepkg --nodeps --noconfirm --needed --cleanbuild --clean'
 
-          # One PKGBUILD (pkgbase argvus) produces the split packages argvus,
-          # argvus-gtk and argvus-greeter. All of them are published.
-          mapfile -t pkg_files < <(find "packaging/arch/ci" -maxdepth 1 -type f -name 'argvus*.pkg.tar.zst' | sort)
-          if [[ "${#pkg_files[@]}" -ne 3 ]]; then
-            printf 'Expected 3 split packages, found %s:\n' "${#pkg_files[@]}" >&2
+          # The PKGBUILD (pkgname argvus) produces one package that carries the
+          # command, the GTK 4 helpers and the login greeter.
+          mapfile -t pkg_files < <(find "packaging/arch/remote" -maxdepth 1 -type f -name 'argvus*.pkg.tar.zst' | sort)
+          if [[ "${#pkg_files[@]}" -ne 1 ]]; then
+            printf 'Expected 1 package, found %s:\n' "${#pkg_files[@]}" >&2
             printf '  %s\n' "${pkg_files[@]}" >&2
             exit 1
           fi
@@ -156,8 +154,8 @@ jobs:
         with:
           name: argvus-packages-${{ steps.version.outputs.version }}
           path: |
-            packaging/arch/ci/argvus*.pkg.tar.zst
-            packaging/arch/ci/argvus*.pkg.tar.zst.sig
+            packaging/arch/remote/argvus*.pkg.tar.zst
+            packaging/arch/remote/argvus*.pkg.tar.zst.sig
           if-no-files-found: error
           retention-days: 1
 
@@ -234,5 +232,5 @@ jobs:
         with:
           tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
           files: |
-            packaging/arch/ci/argvus*.pkg.tar.zst
-            packaging/arch/ci/argvus*.pkg.tar.zst.sig
+            packaging/arch/remote/argvus*.pkg.tar.zst
+            packaging/arch/remote/argvus*.pkg.tar.zst.sig

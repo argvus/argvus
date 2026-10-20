@@ -10,7 +10,7 @@
 #   sh tools/sh/sync-skeleton.sh --apply SKELETON_DIR
 set -eu
 
-SHARED_FILES="rust-toolchain.toml rustfmt.toml clippy.toml .editorconfig cliff.toml"
+SHARED_FILES="rust-toolchain.toml rustfmt.toml clippy.toml .editorconfig"
 MANIFEST=".skeleton/manifest"
 EXCEPTIONS=".skeleton/exceptions"
 

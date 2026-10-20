@@ -12,7 +12,8 @@ require_command makepkg
 require_command shellcheck
 
 cd "$ROOT_DIR"
-shellcheck tools/sh/*.sh packaging/arch/common/*.sh
+shellcheck tools/sh/*.sh packaging/arch/common/*.sh src/usr/bin/argvus-terminal
+sh -n src/usr/bin/argvus-terminal
 bash -n tools/sh/*.sh packaging/arch/common/*.sh
 
 metadata() {
@@ -24,11 +25,11 @@ metadata() {
 	' bash "$1"
 }
 
-ci_metadata="$(metadata packaging/arch/ci/PKGBUILD)"
+remote_metadata="$(metadata packaging/arch/remote/PKGBUILD)"
 local_metadata="$(metadata packaging/arch/local/PKGBUILD)"
-[[ "$ci_metadata" == "$local_metadata" ]] || die "CI and local PKGBUILD metadata are out of sync"
+[[ "$remote_metadata" == "$local_metadata" ]] || die "remote and local PKGBUILD metadata are out of sync"
 
-for pkgbuild_dir in packaging/arch/ci packaging/arch/local; do
+for pkgbuild_dir in packaging/arch/remote packaging/arch/local; do
 	(
 		cd "$pkgbuild_dir"
 		makepkg -p PKGBUILD --printsrcinfo >/dev/null

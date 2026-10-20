@@ -111,9 +111,9 @@ fn matches_search(query: &str, values: &[&str]) -> bool {
 /// Executes the `request` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn request(firewall: bool, value: Value, privileged: bool) -> Result<Value, String> {
   let binary = if firewall {
-    "/usr/lib/argvus/commands/argvus-firewall"
+    "/usr/lib/argvus/commands/firewall"
   } else {
-    "/usr/lib/argvus/commands/argvus-accounts"
+    "/usr/lib/argvus/commands/accounts"
   };
   let mut command = argvus_control_center_core::process::command(if privileged {
     "/usr/bin/pkexec"

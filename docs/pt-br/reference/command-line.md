@@ -10,7 +10,7 @@ Execute `argvus --help` para ver a lista da sua versão instalada. Os subcomando
 ## Onde cada comando roda
 
 - **Em processo:** o comando é uma biblioteca do workspace e roda dentro do `argvus`. Não existe executável separado. São `config`, `i18n`, `keys`, `gpg`, `projects`, `terminal`, `system-monitor`, `network`, `bluetooth`, `widget-telemetry`, `tui-terminal` e `setup`.
-- **Auxiliar:** um executável separado em `/usr/lib/argvus/commands/`, instalado pelo pacote `argvus-gtk`. São `control-center` (aplicativo de terminal) e os aplicativos GTK 4 `taskbar-calendar` e `removable-devices`.
+- **Auxiliar:** um executável separado em `/usr/lib/argvus/commands/`, instalado pelo pacote `argvus`. São `control-center` (aplicativo de terminal) e os aplicativos GTK 4 `taskbar-calendar` e `removable-devices`.
 - **Executável privado:** um executável que outro pacote instala em `/usr/lib/argvus/commands/`. O `argvus` apenas o inicia. Incluem `session`, `start`, `tty`, `sessionctl`, `launcher`, `snippets`, `ssh`, `git`, `app-profiles-yazi-keymap`, `notifications`, `displayctl`, `firewall`, `accounts`, `taskbar-actions` e os pontos de entrada `greeter-*`.
 - **Script:** um script de shell empacotado, executado com `/bin/sh`. São os comandos de script do Hyprland listados abaixo.
 

@@ -206,12 +206,12 @@ mod tests {
   /// Executes the `system_settings_operation_builds_the_installed_helper_chain` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn system_settings_operation_builds_the_installed_helper_chain() {
     let runner = RecordingRunner::default();
-    let operation = SystemSettingsOperation::new(runner, "/usr/bin/argvus-control-center");
+    let operation = SystemSettingsOperation::new(runner, "/usr/lib/argvus/commands/control-center");
     let request =
       PrivilegedRequest::new("service", "restart", vec!["demo.service".into()]).unwrap();
     operation.execute(&request).unwrap();
     let command = operation.runner.0.lock().unwrap().clone().unwrap();
-    assert_eq!(command.program, "/usr/bin/argvus-control-center");
+    assert_eq!(command.program, "/usr/lib/argvus/commands/control-center");
     assert_eq!(
       command.args,
       ["system-settings", "service", "restart", "demo.service"]
@@ -222,12 +222,12 @@ mod tests {
   /// Executes the `system_settings_operation_live_builds_the_same_elevated_chain` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn system_settings_operation_live_builds_the_same_elevated_chain() {
     let runner = RecordingRunner::default();
-    let operation = SystemSettingsOperation::new(runner, "/usr/bin/argvus-control-center");
+    let operation = SystemSettingsOperation::new(runner, "/usr/lib/argvus/commands/control-center");
     let request = PrivilegedRequest::new("boot", "initramfs-regenerate", vec![]).unwrap();
     let live = crate::process::LiveProcess::new();
     operation.execute_live(&request, &live).unwrap();
     let command = operation.runner.0.lock().unwrap().clone().unwrap();
-    assert_eq!(command.program, "/usr/bin/argvus-control-center");
+    assert_eq!(command.program, "/usr/lib/argvus/commands/control-center");
     assert_eq!(
       command.args,
       ["system-settings", "boot", "initramfs-regenerate"]

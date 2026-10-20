@@ -112,7 +112,7 @@ fn discovers_installed_languages() {
 
 #[test]
 fn control_center_input_catalogs_resolve_page_keys() {
-  let catalogs = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../locales");
+  let catalogs = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../resources/locales");
   let keys = [
     "control_center.mouse_touchpad",
     "control_center.input_mouse",

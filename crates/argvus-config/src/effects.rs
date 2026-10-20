@@ -812,7 +812,7 @@ impl Effects {
         .stderr(Stdio::null())
         .status();
     }
-    let sessionctl = self.commands_dir.join("argvus-sessionctl");
+    let sessionctl = self.commands_dir.join("sessionctl");
     if sessionctl.is_file() {
       for component in ["waybar", "dunst", "control-panel"] {
         let _ = Command::new(&sessionctl)
@@ -822,7 +822,7 @@ impl Effects {
           .status();
       }
     }
-    let calendar = self.commands_dir.join("argvus-taskbar-calendar");
+    let calendar = self.commands_dir.join("taskbar-calendar");
     if calendar.is_file() {
       let _ = Command::new(&calendar)
         .arg("reload")
@@ -1128,7 +1128,7 @@ impl Effects {
             .stderr(Stdio::null())
             .status();
         }
-        let sessionctl = self.commands_dir.join("argvus-sessionctl");
+        let sessionctl = self.commands_dir.join("sessionctl");
         let restart = match surface.as_str() {
           "taskbar" => Some("waybar"),
           "widget-telemetry" => Some("widget-telemetry"),

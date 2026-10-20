@@ -1,11 +1,12 @@
 # Maintainer: William C. Canin
-# Package base of the ARGVUS workspace. The Cargo workspace under this repository
-# builds the `argvus` command and the GTK 4 helpers of `argvus-gtk`.
+# Package of the ARGVUS workspace. The Cargo workspace under this repository builds
+# the `argvus` command, the GTK 4 helpers and the login greeter; this package
+# installs all of them.
 pkgbase=argvus
-pkgname=('argvus' 'argvus-gtk' 'argvus-greeter')
+pkgname=argvus
 pkgver=0.1.0
 pkgrel=1
-pkgdesc="ARGVUS desktop: command, data and shared Rust crates."
+pkgdesc="ARGVUS desktop: command, data, settings helpers and the login greeter."
 arch=('x86_64')
 url="https://github.com/argvus/argvus"
 license=('GPL-3.0-only')
@@ -19,7 +20,6 @@ depends=(
   'argvus-branding'
   'argvus-control-panel'
   'argvus-display'
-  'argvus-greeter'
   'argvus-icons'
   'argvus-lock'
   'argvus-notifications'
@@ -31,6 +31,10 @@ depends=(
   'argvus-accounts'
   'argvus-taskbar'
   'argvus-waybar'
+  'greetd'
+  'kitty'
+  'systemd-libs'
+  'libdrm'
   'hyprland'
   'hyprland-guiutils'
   'hyprland-qt-support'
@@ -56,6 +60,7 @@ depends=(
   'gsimplecal'
   'gtk4'
   'gtk-layer-shell'
+  'gtk4-layer-shell'
   'imv'
   'audacious'
   'udisks2'
@@ -86,6 +91,58 @@ depends=(
   'zsh'
 )
 
+# Packages that this one replaces. The split packages argvus-gtk and argvus-greeter
+# are included: an upgrade removes them and their files are installed by argvus.
+replaces=(
+  'argvus-config'
+  'argvus-i18n'
+  'argvus-language-en-us'
+  'argvus-language-pt-br'
+  'argvus-keys'
+  'argvus-projects'
+  'argvus-terminal'
+  'argvus-system-monitor'
+  'argvus-network'
+  'argvus-widget-telemetry'
+  'argvus-control-center'
+  'argvus-taskbar-calendar'
+  'argvus-loading-theme'
+  'argvus-removable-devices'
+  'argvus-gtk'
+  'argvus-greeter'
+)
+conflicts=("${replaces[@]}")
+
+# argvus-gtk and argvus-greeter stay provided: packages that depend on them, such
+# as argvus-taskbar and argvus-control-panel, are satisfied by this package.
+provides=(
+  'argvus-config'
+  'argvus-i18n'
+  'argvus-language-en-us'
+  'argvus-language-pt-br'
+  'argvus-keys'
+  'argvus-projects'
+  'argvus-terminal'
+  'argvus-system-monitor'
+  'argvus-network'
+  'argvus-widget-telemetry'
+  'argvus-control-center'
+  'argvus-taskbar-calendar'
+  'argvus-loading-theme'
+  'argvus-removable-devices'
+  'argvus-gtk'
+  'argvus-greeter'
+)
+
+# The greetd configuration files are kept on upgrade, as they were in the greeter
+# split package.
+backup=(
+  'etc/argvus/greeter.toml'
+  'etc/argvus/hyprland-argvus-greeter.conf'
+  'etc/argvus/hyprland-argvus-greeter.lua'
+)
+install=argvus.install
+
 optdepends=()
 source=(
   "${pkgbase}-${pkgver}.tar.gz"
@@ -108,166 +165,8 @@ check() {
   arch_check_argvus_workspace
 }
 
-package_argvus() {
-  pkgdesc="ARGVUS desktop: command, data and the Hyprland-facing runtime."
-  depends=(
-    'argvus-app-profiles'
-    'argvus-firewall'
-    'argvus-appearance'
-    'argvus-branding'
-    'argvus-control-panel'
-    'argvus-display'
-    'argvus-greeter'
-    'argvus-icons'
-    'argvus-lock'
-    'argvus-notifications'
-    'argvus-portal'
-    'argvus-power'
-    'argvus-session'
-    'argvus-hyprland'
-    'argvus-launcher'
-    'argvus-accounts'
-    'argvus-taskbar'
-    'argvus-waybar'
-    'hyprland'
-    'hyprland-guiutils'
-    'hyprland-qt-support'
-    'hyprpolkitagent'
-    'hyprshot'
-    'wayland'
-    'firefox'
-    'code'
-    'mesa'
-    'mesa-utils'
-    'qt5-quickcontrols2'
-    'qt5ct'
-    'qt6-tools'
-    'virtualbox-guest-utils'
-    'adwaita-icon-theme'
-    'cliphist'
-    'fastfetch'
-    'gcc-libs'
-    'okular'
-    'feh'
-    'glib2'
-    'grim'
-    'gsimplecal'
-    'gtk4'
-    'gtk-layer-shell'
-    'imv'
-    'audacious'
-    'udisks2'
-    'udiskie'
-    'jq'
-    'mpv'
-    'nautilus'
-    'noto-fonts'
-    'noto-fonts-emoji'
-    'satty'
-    'slurp'
-    'gpu-screen-recorder'
-    'swaybg'
-    'ttf-jetbrains-mono-nerd'
-    'ttf-nerd-fonts-symbols-mono'
-    'vivid'
-    'wev'
-    'mousepad'
-    'wf-recorder'
-    'wireplumber'
-    'wl-clipboard'
-    'wtype'
-    'xdg-utils'
-    'xarchiver'
-    'neovim'
-    'zathura'
-    'zip'
-    'zsh'
-  )
-  replaces=(
-    'argvus-config'
-    'argvus-i18n'
-    'argvus-language-en-us'
-    'argvus-language-pt-br'
-    'argvus-keys'
-    'argvus-projects'
-    'argvus-terminal'
-    'argvus-system-monitor'
-    'argvus-network'
-    'argvus-widget-telemetry'
-  )
-  conflicts=(
-    'argvus-config'
-    'argvus-i18n'
-    'argvus-language-en-us'
-    'argvus-language-pt-br'
-    'argvus-keys'
-    'argvus-projects'
-    'argvus-terminal'
-    'argvus-system-monitor'
-    'argvus-network'
-    'argvus-widget-telemetry'
-  )
-  provides=(
-    'argvus-config'
-    'argvus-i18n'
-    'argvus-language-en-us'
-    'argvus-language-pt-br'
-    'argvus-keys'
-    'argvus-projects'
-    'argvus-terminal'
-    'argvus-system-monitor'
-    'argvus-network'
-    'argvus-widget-telemetry'
-  )
+package() {
   arch_package_argvus
-}
-
-package_argvus-gtk() {
-  pkgdesc="ARGVUS GTK 4 helpers: Control Center, taskbar calendar, removable devices and loading overlay."
-  depends=(
-    'argvus'
-    'gtk4'
-    'gtk4-layer-shell'
-  )
-  replaces=(
-    'argvus-control-center'
-    'argvus-taskbar-calendar'
-    'argvus-loading-theme'
-    'argvus-removable-devices'
-  )
-  conflicts=(
-    'argvus-control-center'
-    'argvus-taskbar-calendar'
-    'argvus-loading-theme'
-    'argvus-removable-devices'
-  )
-  provides=(
-    'argvus-control-center'
-    'argvus-taskbar-calendar'
-    'argvus-loading-theme'
-    'argvus-removable-devices'
-  )
   arch_package_argvus_gtk
-}
-
-package_argvus-greeter() {
-  pkgdesc="Keyboard-first TUI greetd greeter for the ARGVUS desktop."
-  depends=(
-    'greetd'
-    'argvus'
-    'argvus-app-profiles'
-    'argvus-appearance'
-    'argvus-session'
-    'kitty'
-    'hyprland'
-    'systemd-libs'
-    'libdrm'
-  )
-  backup=(
-    'etc/argvus/greeter.toml'
-    'etc/argvus/hyprland-argvus-greeter.conf'
-    'etc/argvus/hyprland-argvus-greeter.lua'
-  )
-  install=argvus-greeter.install
   arch_package_argvus_greeter
 }

@@ -1947,11 +1947,13 @@ mod tests {
     for (action, expected_echo, expected_args) in cases {
       let (echo, request) = boot_request(action).unwrap();
       assert_eq!(echo, expected_echo);
-      let process =
-        SystemSettingsOperation::new(SystemProcessRunner, "/usr/bin/argvus-control-center")
-          .process_for(&request)
-          .unwrap();
-      assert_eq!(process.program, "/usr/bin/argvus-control-center");
+      let process = SystemSettingsOperation::new(
+        SystemProcessRunner,
+        "/usr/lib/argvus/commands/control-center",
+      )
+      .process_for(&request)
+      .unwrap();
+      assert_eq!(process.program, "/usr/lib/argvus/commands/control-center");
       let mut args = vec!["system-settings", "boot"];
       args.extend(expected_args);
       assert_eq!(process.args, args);
@@ -1969,10 +1971,12 @@ mod tests {
     // The operation is only checked as built; test builds start no process
     // (the core `testing` feature), so the job below runs nothing.
     let (_, request) = boot_request(BootAction::Initramfs).unwrap();
-    let process =
-      SystemSettingsOperation::new(SystemProcessRunner, "/usr/bin/argvus-control-center")
-        .process_for(&request)
-        .unwrap();
+    let process = SystemSettingsOperation::new(
+      SystemProcessRunner,
+      "/usr/lib/argvus/commands/control-center",
+    )
+    .process_for(&request)
+    .unwrap();
     assert_eq!(
       process.args,
       ["system-settings", "boot", "initramfs-regenerate"]

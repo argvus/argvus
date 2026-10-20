@@ -6,7 +6,7 @@ Name=ARGVUS Control Center
 Name[pt_BR]=Central de Controle ARGVUS
 Comment=Configure ARGVUS from the terminal
 Comment[pt_BR]=Configure o ARGVUS pelo terminal
-Exec=env ARGVUS_ICON_SCALE=3/3 argvus tui-terminal --class argvus-control-center --term kitty --profile control-center -- /usr/lib/argvus/commands/argvus-control-center
+Exec=env ARGVUS_ICON_SCALE=3/3 argvus tui-terminal --class argvus-control-center --term kitty --profile control-center -- /usr/lib/argvus/commands/control-center
 Icon=preferences-system
 Terminal=false
 Categories=Settings;

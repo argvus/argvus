@@ -8,7 +8,7 @@ description: The argvus workspace, its dispatcher and the shared Rust crates.
 The workspace also holds the crates that the commands share:
 
 - `argvus-config`: the canonical configuration store and the only writer of the generated tree (`data/generated/`). It is also a library used in-process by `argvus config`, `theme-switch` and `effects-toggle`.
-- `argvus-i18n` and `argvus-i18n-core`: the catalogs in `locales/`, their validation, and the `org.argvus.i18n` QML module.
+- `argvus-i18n` and `argvus-i18n-core`: the catalogs in `resources/locales/`, their validation, and the `org.argvus.i18n` QML module.
 - `argvus-tui` and `argvus-theme`: shared terminal UI and theme loading.
 - `argvus-runtime`: the translated messages and the process helpers shared by the commands.
 

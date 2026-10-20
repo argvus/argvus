@@ -14,6 +14,7 @@ use std::{
 
 use argvus_i18n::I18n;
 use argvus_loading_theme_core::{DEFAULT_ACCENT, DEFAULT_BACKGROUND, DEFAULT_FOREGROUND};
+use argvus_system::monotonic_ns;
 use clap::Parser;
 use gtk::{
   Align, Application, ApplicationWindow, Box as GtkBox, Label, Orientation, Spinner, gdk, glib,
@@ -352,18 +353,6 @@ fn signal_ready(path: Option<&str>, fd: Option<i32>) {
     // The descriptor is explicitly handed to this process by the caller.
     let mut file = unsafe { File::from_raw_fd(fd) };
     let _ = file.write_all(b"READY\n");
-  }
-}
-
-fn monotonic_ns() -> u128 {
-  let mut value = libc::timespec {
-    tv_sec: 0,
-    tv_nsec: 0,
-  };
-  if unsafe { libc::clock_gettime(libc::CLOCK_MONOTONIC, &mut value) } == 0 {
-    value.tv_sec as u128 * 1_000_000_000 + value.tv_nsec as u128
-  } else {
-    0
   }
 }
 

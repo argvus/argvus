@@ -28,4 +28,4 @@ Se `~/.config/locale.conf` existir e definir `LANG`, `LC_ALL` ou `LC_MESSAGES`, 
 mv ~/.config/locale.conf ~/.config/locale.conf.backup
 ```
 
-Aplique o idioma novamente em **Control Center → Localidade e região**. O Control Panel será reiniciado automaticamente; se outros componentes ainda exibirem o idioma anterior, saia e entre novamente para que a sessão gráfica e o `systemd --user` recebam o novo ambiente. Repita os comandos de diagnóstico depois disso. Veja [Variáveis de ambiente](../../reference/environment-variables/) para os contratos técnicos e a precedência.
+Aplique o idioma novamente em **Control Center → Localidade e região**. O Control Panel será reiniciado automaticamente; se outros componentes ainda exibirem o idioma anterior, saia e entre novamente para que a sessão gráfica e o `systemd --user` recebam o novo ambiente. Repita os comandos de diagnóstico depois disso. Veja [Variáveis de ambiente](../reference/environment-variables/) para os contratos técnicos e a precedência.

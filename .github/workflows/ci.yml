@@ -35,11 +35,11 @@ jobs:
             echo "No make validate target; skipping repository validation."
           fi
 
-      - name: Validate CI PKGBUILD
+      - name: Validate remote PKGBUILD
         shell: bash
         run: |
           set -euo pipefail
-          cd "packaging/arch/ci"
+          cd "packaging/arch/remote"
           makepkg -p PKGBUILD --printsrcinfo >/dev/null
 
       - name: Validate local PKGBUILD

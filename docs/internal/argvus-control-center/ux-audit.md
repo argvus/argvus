@@ -10,7 +10,7 @@ comportamento.**
   `de/argvus-tui`, com fonte acessível e editável). Histórico: hoje o crate está
   em `de/argvus/crates/argvus-tui` e o repositório antigo foi aposentado em `de/retiree`.
 - Catálogo i18n: `de/argvus-i18n/locales/{en-US,pt-BR}/control-center.json`
-  (1256 chaves em cada idioma). Histórico: hoje está em `de/argvus/locales/`.
+  (1256 chaves em cada idioma). Histórico: hoje está em `de/argvus/resources/locales/`.
 - Fonte de ícones verificada: `/usr/share/fonts/TTF/SymbolsNerdFontMono-Regular.ttf`
   (nomes de glyph lidos da própria fonte com `fontTools`).
 
@@ -960,7 +960,7 @@ Achados fora do escopo, sem alteração:
 
 Dependências: a Fase 2 compila contra `argvus-tui` e `argvus-i18n` na
 branch `ux_ui` (path dependencies). Nada disso está em `main`: o
-`packaging/arch/ci/PKGBUILD` baixa `main` dos dois repositórios e só
+`packaging/arch/remote/PKGBUILD` baixa `main` dos dois repositórios e só
 compila depois da mesclagem; em execução, as chaves `control_center.hint.*`,
 `confirm`, `discard*`, `draft_changed`, `export` e `import` exigem o
 `argvus-i18n` instalado a partir de `ux_ui` (sem elas o rodapé mostra a

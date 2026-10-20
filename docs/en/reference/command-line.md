@@ -10,7 +10,7 @@ Run `argvus --help` for the list installed with your version. The subcommands ar
 ## Where each command runs
 
 - **In-process:** the command is a library of the workspace and runs inside `argvus`. No separate executable exists. These are `config`, `i18n`, `keys`, `gpg`, `projects`, `terminal`, `system-monitor`, `network`, `bluetooth`, `widget-telemetry`, `tui-terminal` and `setup`.
-- **Helper:** a separate executable in `/usr/lib/argvus/commands/`, installed by the `argvus-gtk` package. These are `control-center` (a terminal application) and the GTK 4 applications `taskbar-calendar` and `removable-devices`.
+- **Helper:** a separate executable in `/usr/lib/argvus/commands/`, installed by the `argvus` package. These are `control-center` (a terminal application) and the GTK 4 applications `taskbar-calendar` and `removable-devices`.
 - **Private executable:** an executable that another package installs in `/usr/lib/argvus/commands/`. `argvus` only starts it. These include `session`, `start`, `tty`, `sessionctl`, `launcher`, `snippets`, `ssh`, `git`, `app-profiles-yazi-keymap`, `notifications`, `displayctl`, `firewall`, `accounts`, `taskbar-actions` and the `greeter-*` entry points.
 - **Script:** a packaged shell script run with `/bin/sh`. These are the Hyprland script commands listed below.
 

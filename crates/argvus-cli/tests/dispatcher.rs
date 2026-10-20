@@ -157,7 +157,7 @@ fn unknown_command_fails_with_a_hint() {
 #[test]
 fn arguments_are_forwarded_exactly_and_stdin_is_inherited() {
   let sandbox = Sandbox::new("forward");
-  sandbox.fake(&sandbox.commands(), "argvus-sessionctl");
+  sandbox.fake(&sandbox.commands(), "sessionctl");
   let output = sandbox.run(
     &sandbox.tools_path(),
     &["sessionctl", "a b", "", "x$y", "*", "it's"],
@@ -179,7 +179,7 @@ fn exit_status_of_an_in_process_command_is_preserved() {
 #[test]
 fn works_outside_the_project_directory() {
   let sandbox = Sandbox::new("cwd");
-  sandbox.fake(&sandbox.commands(), "argvus-sessionctl");
+  sandbox.fake(&sandbox.commands(), "sessionctl");
   let mut command = sandbox.command(&sandbox.tools_path(), &["sessionctl", "ok"]);
   command.current_dir("/");
   let output = finish(command, "");
@@ -188,10 +188,10 @@ fn works_outside_the_project_directory() {
 }
 
 #[test]
-fn falls_back_to_path_for_accepted_names() {
+fn falls_back_to_path_for_legacy_prefixed_names() {
   let sandbox = Sandbox::new("path-fallback");
   // `i18n` runs in-process now, so the fallback is checked with a command that
-  // is still a private executable.
+  // is still a private executable. Older packages installed it as argvus-snippets.
   sandbox.fake(&sandbox.root.join("path-bin"), "argvus-snippets");
   let path = format!(
     "{}:{}",
@@ -206,9 +206,25 @@ fn falls_back_to_path_for_accepted_names() {
 }
 
 #[test]
+fn never_runs_unprefixed_names_from_path() {
+  let sandbox = Sandbox::new("bare-path");
+  // A program named like a helper must not run: `argvus git` would otherwise
+  // start whatever `git` is on PATH.
+  sandbox.fake(&sandbox.root.join("path-bin"), "git");
+  let path = format!(
+    "{}:{}",
+    sandbox.root.join("path-bin").display(),
+    sandbox.tools_path()
+  );
+  let output = sandbox.run(&path, &["git"], "");
+  assert!(!output.status.success());
+  assert!(String::from_utf8_lossy(&output.stderr).contains("git is not installed"));
+}
+
+#[test]
 fn commands_directory_takes_precedence_over_path() {
   let sandbox = Sandbox::new("precedence");
-  sandbox.fake(&sandbox.commands(), "argvus-snippets");
+  sandbox.fake(&sandbox.commands(), "snippets");
   // The PATH copy answers differently, so the output shows which one ran.
   write_executable(
     &sandbox.root.join("path-bin/argvus-snippets"),
@@ -229,7 +245,7 @@ fn missing_private_command_is_reported() {
   let sandbox = Sandbox::new("missing");
   let output = sandbox.run(&sandbox.tools_path(), &["firewall", "status"], "");
   assert!(!output.status.success());
-  assert!(String::from_utf8_lossy(&output.stderr).contains("argvus-firewall is not installed"));
+  assert!(String::from_utf8_lossy(&output.stderr).contains("firewall is not installed"));
 }
 
 #[test]
@@ -246,7 +262,7 @@ fn itself_and_unlisted_names_are_not_dispatched() {
 #[test]
 fn git_maps_to_argvus_git_and_forwards_its_arguments() {
   let sandbox = Sandbox::new("git");
-  sandbox.fake(&sandbox.commands(), "argvus-git");
+  sandbox.fake(&sandbox.commands(), "git");
   let output = sandbox.run(&sandbox.tools_path(), &["git", "my repo"], "");
   assert!(output.status.success());
   assert_eq!(text(&output.stdout), expected(&["[my repo]", "stdin="]));
@@ -332,7 +348,7 @@ fn theme_switch_is_not_dispatched_to_a_private_executable() {
 #[test]
 fn start_desktop_starts_tty_without_forwarding_arguments() {
   let sandbox = Sandbox::new("start-desktop");
-  sandbox.fake(&sandbox.commands(), "argvus-tty");
+  sandbox.fake(&sandbox.commands(), "tty");
   let output = sandbox.run(&sandbox.tools_path(), &["--start-desktop", "ignored"], "");
   assert!(output.status.success());
   assert_eq!(text(&output.stdout), "stdin=");

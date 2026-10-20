@@ -5,8 +5,8 @@ description: Responsibilities of the ARGVUS source repositories after the worksp
 
 The repositories are grouped by responsibility rather than by navigation page:
 
-- workspace: `argvus` (dispatcher, in-process commands, GTK 4 helpers, shared crates, the greeter in `greeter/` and the data of the commands);
-- session and integration: `argvus-session`, `argvus-hyprland`, `argvus-portal`, `argvus-lock`, `argvus-boot-splash`, and the greeter (`argvus-greeter`, built from `argvus/greeter`);
+- workspace: `argvus` (dispatcher, in-process commands, GTK 4 helpers, shared crates, the greeter in `crates/argvus-greeter` and the data of the commands);
+- session and integration: `argvus-session`, `argvus-hyprland`, `argvus-portal`, `argvus-lock`, `argvus-boot-splash`, and the greeter (`argvus-greeter`, built from `argvus/crates/argvus-greeter`);
 - UI outside the workspace: Control Panel, taskbar (`argvus-taskbar`), launcher and Waybar;
 - providers: display, power, firewall, notifications;
 - assets and packaging: appearance, wallpapers, fonts, icons, profiles.
@@ -30,7 +30,7 @@ These repositories were merged into `de/argvus`. Their documentation now lives u
 | `argvus-loading-theme` | `argvus loading-theme` (`splash` helper) | command line |
 | `argvus-tui-terminal` | `argvus tui-terminal` (crate in the workspace) | command line |
 | `argvus-tui`, `argvus-theme` | Shared crates `crates/argvus-tui` and `crates/argvus-theme` | developer notes |
-| `argvus-greeter` | Source in `greeter/`, package `argvus-greeter` | [greeter component](/docs/components/argvus-greeter/) |
+| `argvus-greeter` | Source in `crates/argvus-greeter`, shipped in the `argvus` package | [greeter component](/docs/components/argvus-greeter/) |
 | `argvus-themes` | Retired. Each official theme is its own `argvus-theme-*` package. | [installing themes](/docs/user-guide/appearance/) |
 
 The developer notes of the consolidated components are in `docs/internal/<repository>/`.

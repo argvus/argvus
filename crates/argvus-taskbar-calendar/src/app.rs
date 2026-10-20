@@ -65,6 +65,6 @@ pub fn status(paths: &Paths) -> Result<()> {
   println!("Cache: {}", paths.cache_dir.display());
   println!("Calendars: {}", db.calendars()?.len());
   println!("Events: {}", db.all_events()?.len());
-  println!("Service: use `argvus-taskbar-calendar service` or install the user systemd unit");
+  println!("Service: use `argvus taskbar-calendar service` or install the user systemd unit");
   Ok(())
 }

@@ -1,4 +1,0 @@
-# Match the two-space formatting convention used across the ARGVUS Rust
-# workspaces while keeping formatting configuration repository-local.
-edition = "2024"
-tab_spaces = 2

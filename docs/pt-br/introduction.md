@@ -41,7 +41,7 @@ Veja [Desktop](/pt/docs/user-guide/desktop/) para uso e [superfícies do shell](
 
 ### Configurações e aplicativos
 
-`argvus control-center` é o aplicativo de configurações orientado ao teclado, distribuído como auxiliar no `argvus-gtk`. O calendário e os dispositivos removíveis também são auxiliares GTK 4 do `argvus-gtk`; monitor do sistema e terminal são subcomandos do `argvus`; o launcher é o `argvus-launcher`. Todos estão integrados ao shell e ao dispatcher.
+`argvus control-center` é o aplicativo de configurações orientado ao teclado, distribuído como auxiliar no `argvus`. O calendário e os dispositivos removíveis também são auxiliares GTK 4 do `argvus`; monitor do sistema e terminal são subcomandos do `argvus`; o launcher é o `argvus-launcher`. Todos estão integrados ao shell e ao dispatcher.
 
 Veja [Aplicativos](/pt/docs/user-guide/applications/) e a [referência de comandos](/pt/docs/reference/command-line/).
 
@@ -49,7 +49,7 @@ Veja [Aplicativos](/pt/docs/user-guide/applications/) e a [referência de comand
 
 Display, rede, Bluetooth, energia, notificações, firewall e armazenamento removível são fornecidos por projetos específicos. Control Center e Control Panel consomem esses provedores; eles não os substituem.
 
-Login, lock e visuais de inicialização também são separados: `argvus-greeter` trata greetd, `argvus-lock` trata Hyprlock, o overlay de carregamento da sessão vem do auxiliar `argvus-gtk` e `argvus-boot-splash` trata o splash de boot.
+Login, lock e visuais de inicialização também são separados: `argvus-greeter` trata greetd, `argvus-lock` trata Hyprlock, o overlay de carregamento da sessão vem do pacote `argvus` e `argvus-boot-splash` trata o splash de boot.
 
 Veja [Hardware](/pt/docs/user-guide/hardware/), [Privacidade e segurança](/pt/docs/user-guide/privacy-and-security/) e a [referência de componentes](/pt/docs/developer-guide/).
 

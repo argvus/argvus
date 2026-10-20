@@ -117,7 +117,7 @@ pub fn prepare(paths: &SessionPaths, commands_dir: &Path, cache_home: &Path) -> 
 
   // PolicyKit and Quickshell read these through the systemd user environment,
   // which the session command imports from the environment it is given.
-  let _ = Command::new(commands_dir.join("argvus-sessionctl"))
+  let _ = Command::new(commands_dir.join("sessionctl"))
     .arg("import-environment")
     .envs(session_environment)
     .stdout(Stdio::null())
@@ -141,7 +141,7 @@ fn migrate_monitor_state(paths: &SessionPaths, commands_dir: &Path) {
   }
 
   let legacy_monitors = paths.config_home.join("hypr/monitors.conf");
-  let displayctl = commands_dir.join("argvus-displayctl");
+  let displayctl = commands_dir.join("displayctl");
   if legacy_monitors.is_file() && is_executable(&displayctl) {
     let state = paths.config_home.join("argvus/.monitors");
     let state_is_empty = fs::metadata(&state).map(|m| m.len() == 0).unwrap_or(true);

@@ -8,7 +8,7 @@ description: O workspace argvus, seu dispatcher e os crates Rust compartilhados.
 O workspace também reúne os crates que os comandos compartilham:
 
 - `argvus-config`: o armazenamento canônico da configuração e o único escritor da árvore gerada (`data/generated/`). É também uma biblioteca usada em processo por `argvus config`, `theme-switch` e `effects-toggle`.
-- `argvus-i18n` e `argvus-i18n-core`: os catálogos em `locales/`, a validação deles e o módulo QML `org.argvus.i18n`.
+- `argvus-i18n` e `argvus-i18n-core`: os catálogos em `resources/locales/`, a validação deles e o módulo QML `org.argvus.i18n`.
 - `argvus-tui` e `argvus-theme`: a interface de terminal compartilhada e o carregamento de temas.
 - `argvus-runtime`: as mensagens traduzidas e os auxiliares de processo compartilhados pelos comandos.
 

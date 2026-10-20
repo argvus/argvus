@@ -6,8 +6,8 @@ description: ARGVUS package responsibilities.
 | Package | Responsibility |
 | --- | --- |
 | `argvus` | Master package: dispatcher, in-process commands (configuration, translations, keys, projects, terminal, system monitor, network, Bluetooth, telemetry, TUI terminal, setup), the shared data and the i18n catalogs. Every component package depends on it. |
-| `argvus-gtk` | Helpers: the Control Center (a terminal application), and the GTK 4 applications for the taskbar calendar, removable devices and the loading overlay. |
-| `argvus-greeter` | Login greeter for greetd, the third split package of the `argvus` PKGBUILD, built from `greeter/`. |
+| `argvus` (helpers) | Helpers in the same package: the Control Center (a terminal application), and the GTK 4 applications for the taskbar calendar, removable devices and the loading overlay. |
+| `argvus` (greeter) | Login greeter for greetd, shipped in the same package and built from `crates/argvus-greeter`. |
 | `argvus-session` | Session entry points and user lifecycle. |
 | `argvus-hyprland` | Hyprland configuration. |
 | `argvus-control-panel` | Quickshell control panel. |
@@ -27,7 +27,9 @@ description: ARGVUS package responsibilities.
 
 `argvus` declares `replaces`, `conflicts` and `provides` for the packages it absorbed, so an upgrade removes them and their files do not remain as orphans:
 
-`argvus-config`, `argvus-i18n` (with `argvus-language-en-us` and `argvus-language-pt-br`), `argvus-keys`, `argvus-projects`, `argvus-terminal`, `argvus-system-monitor`, `argvus-network`, `argvus-widget-telemetry`. `argvus-gtk` replaces `argvus-control-center`, `argvus-taskbar-calendar`, `argvus-loading-theme` and `argvus-removable-devices`.
+`argvus-config`, `argvus-i18n` (with `argvus-language-en-us` and `argvus-language-pt-br`), `argvus-keys`, `argvus-projects`, `argvus-terminal`, `argvus-system-monitor`, `argvus-network`, `argvus-widget-telemetry`. `argvus` also replaces `argvus-control-center`, `argvus-taskbar-calendar`, `argvus-loading-theme`, `argvus-removable-devices`, and the former split packages `argvus-gtk` and `argvus-greeter`, which it still provides so that packages depending on them keep resolving.
+
+`/usr/bin/argvus-terminal` stays installed as a compatibility launcher for `argvus terminal`. Hyprland's default terminal, the Control Center catalog and saved default applications still name that command.
 
 The removed packages `argvus-pwvucontrol` and `argvus-snappy-switcher` are not provided by any package.
 

@@ -218,7 +218,7 @@ mod tests {
   /// against.
   #[test]
   fn every_hint_action_is_translated_in_en_us_and_pt_br() {
-    let locales = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../locales");
+    let locales = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../resources/locales");
     for locale in ["en-US", "pt-BR"] {
       let path = locales.join(locale).join("control-center.json");
       let content = std::fs::read_to_string(&path)

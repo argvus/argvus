@@ -9,13 +9,13 @@ use std::path::PathBuf;
 const DEFAULT_COMMANDS_DIR: &str = "/usr/lib/argvus/commands";
 
 /// Private executables that routes start by name, outside the generic table.
-pub const CONTROL_CENTER: &str = "argvus-control-center";
-pub const GAME_SNAKE: &str = "argvus-game-snake";
+pub const CONTROL_CENTER: &str = "control-center";
+pub const GAME_SNAKE: &str = "game-snake";
 /// The loading overlay. It stays at this path: the greeter and the session config
 /// launch it from here, so the route does not move it into the commands directory.
 pub const LOADING_THEME_BINARY: &str = "/usr/lib/argvus/loading-theme/splash";
-pub const TASKBAR_CALENDAR: &str = "argvus-taskbar-calendar";
-pub const REMOVABLE_DEVICES: &str = "argvus-removable-devices";
+pub const TASKBAR_CALENDAR: &str = "taskbar-calendar";
+pub const REMOVABLE_DEVICES: &str = "removable-devices";
 
 macro_rules! private_commands {
   ($($variant:ident => $subcommand:literal => $executable:literal,)+) => {
@@ -46,27 +46,27 @@ macro_rules! private_commands {
 }
 
 private_commands! {
-  Session => "session" => "argvus-session",
-  Start => "start" => "argvus-start",
-  Tty => "tty" => "argvus-tty",
-  Sessionctl => "sessionctl" => "argvus-sessionctl",
-  Greeter => "greeter" => "argvus-greeter",
-  GreeterSession => "greeter-session" => "argvus-greeter-session",
-  GreeterTui => "greeter-tui" => "argvus-greeter-tui",
-  GreeterSetup => "greeter-setup" => "argvus-greeter-setup",
-  Accounts => "accounts" => "argvus-accounts",
-  Firewall => "firewall" => "argvus-firewall",
-  TaskbarCalendar => "taskbar-calendar" => "argvus-taskbar-calendar",
-  RemovableDevices => "removable-devices" => "argvus-removable-devices",
-  Notifications => "notifications" => "argvus-notifications",
-  Displayctl => "displayctl" => "argvus-displayctl",
-  Launcher => "launcher" => "argvus-launcher",
-  Snippets => "snippets" => "argvus-snippets",
-  GameSnake => "game-snake" => "argvus-game-snake",
-  TaskbarActions => "taskbar-actions" => "argvus-taskbar-actions",
-  Ssh => "ssh" => "argvus-ssh",
-  Git => "git" => "argvus-git",
-  AppProfilesYaziKeymap => "app-profiles-yazi-keymap" => "argvus-app-profiles-yazi-keymap",
+  Session => "session" => "session",
+  Start => "start" => "start",
+  Tty => "tty" => "tty",
+  Sessionctl => "sessionctl" => "sessionctl",
+  Greeter => "greeter" => "greeter",
+  GreeterSession => "greeter-session" => "greeter-session",
+  GreeterTui => "greeter-tui" => "greeter-tui",
+  GreeterSetup => "greeter-setup" => "greeter-setup",
+  Accounts => "accounts" => "accounts",
+  Firewall => "firewall" => "firewall",
+  TaskbarCalendar => "taskbar-calendar" => "taskbar-calendar",
+  RemovableDevices => "removable-devices" => "removable-devices",
+  Notifications => "notifications" => "notifications",
+  Displayctl => "displayctl" => "displayctl",
+  Launcher => "launcher" => "launcher",
+  Snippets => "snippets" => "snippets",
+  GameSnake => "game-snake" => "game-snake",
+  TaskbarActions => "taskbar-actions" => "taskbar-actions",
+  Ssh => "ssh" => "ssh",
+  Git => "git" => "git",
+  AppProfilesYaziKeymap => "app-profiles-yazi-keymap" => "app-profiles-yazi-keymap",
 }
 
 macro_rules! script_routes {
@@ -121,14 +121,16 @@ pub fn commands_dir() -> PathBuf {
     .unwrap_or_else(|| PathBuf::from(DEFAULT_COMMANDS_DIR))
 }
 
-/// Finds an executable for `name`. The commands directory wins; the PATH fallback
-/// covers packages that still install the file in `/usr/bin`.
+/// Finds an executable for `name`. The commands directory wins. The PATH fallback
+/// only looks for the `argvus-<name>` file that older packages installed in
+/// `/usr/bin`: a bare name such as `git` or `ssh` must never run an unrelated
+/// program from PATH.
 pub fn resolve_executable(name: &str) -> Option<PathBuf> {
   let installed = commands_dir().join(name);
   if is_executable(&installed) {
     return Some(installed);
   }
-  find_on_path(name)
+  find_on_path(&format!("argvus-{name}"))
 }
 
 /// Like `resolve_executable`, but a missing program is a failure with a message.

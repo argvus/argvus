@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+# Compatibility launcher for the former argvus-terminal executable. The terminal
+# is the `argvus terminal` route now. Hyprland's default terminal, the Control
+# Center catalog and saved default applications still name this command, so it
+# must stay on PATH.
+
+exec argvus terminal "$@"

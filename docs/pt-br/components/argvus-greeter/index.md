@@ -1,15 +1,15 @@
 ---
 title: Greeter
-description: O greeter de login que o greetd inicia, distribuído no pacote argvus-greeter.
+description: O greeter de login que o greetd inicia, distribuído no pacote argvus.
 ---
 
 `argvus-greeter` é o greeter de login do greetd. É uma interface de terminal, operada
 pelo teclado, que descobre as sessões Wayland instaladas, mostra as contas com os
 avatares e aplica o tema ARGVUS ativo para a conta selecionada.
 
-É o terceiro pacote separado do pacote mestre `argvus`. O código-fonte fica no diretório
-`greeter/` do repositório `argvus`, como workspace Cargo próprio, e o pacote é gerado
-junto com `argvus` e `argvus-gtk`. Instalar `argvus` não exige ordem de instalação.
+É parte do pacote `argvus`, o único pacote do desktop. O código-fonte fica em
+`crates/argvus-greeter` do repositório `argvus`, como membro do workspace Cargo raiz, e é
+compilado junto com o restante do `argvus`.
 
 O greeter não autentica usuários. A autenticação é feita pelo greetd através do PAM. O
 lançador abre o greeter com `argvus tui-terminal`, então o greeter não precisa de um

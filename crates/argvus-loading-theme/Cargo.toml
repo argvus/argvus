@@ -16,6 +16,7 @@ path = "src/main.rs"
 [dependencies]
 argvus-loading-theme-core.workspace = true
 argvus-i18n.workspace = true
+argvus-system.workspace = true
 clap.workspace = true
 gtk.workspace = true
 gtk4-layer-shell.workspace = true

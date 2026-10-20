@@ -172,9 +172,9 @@ mod tests {
 
   #[test]
   /// The shell header root is a catalog key, so it must exist and differ
-  /// between en-US and pt-BR in the workspace `locales` directory.
+  /// between en-US and pt-BR in the workspace `resources/locales` directory.
   fn shell_root_is_translated_in_en_us_and_pt_br() {
-    let locales = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../locales");
+    let locales = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../resources/locales");
     let root = |locale: &str| {
       let path = locales.join(locale).join("control-center.json");
       let content = std::fs::read_to_string(&path)

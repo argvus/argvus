@@ -6,8 +6,8 @@ description: Responsabilidades dos pacotes do ARGVUS.
 | Pacote | Responsabilidade |
 | --- | --- |
 | `argvus` | Pacote mestre: dispatcher, comandos em processo (configuração, traduções, chaves, projetos, terminal, monitor do sistema, rede, Bluetooth, telemetria, terminal TUI, setup), os dados compartilhados e os catálogos de i18n. Todo pacote de componente depende dele. |
-| `argvus-gtk` | Auxiliares: o Centro de Controle (aplicativo de terminal) e os aplicativos GTK 4 do calendário da barra, dispositivos removíveis e overlay de carregamento. |
-| `argvus-greeter` | Greeter de login para o greetd, o terceiro pacote separado do PKGBUILD de `argvus`, gerado a partir de `greeter/`. |
+| `argvus` (auxiliares) | Auxiliares no mesmo pacote: o Centro de Controle (aplicativo de terminal) e os aplicativos GTK 4 do calendário da barra, dispositivos removíveis e overlay de carregamento. |
+| `argvus` (greeter) | Greeter de login para o greetd, no mesmo pacote, gerado a partir de `crates/argvus-greeter`. |
 | `argvus-session` | Pontos de entrada da sessão e ciclo de vida do usuário. |
 | `argvus-hyprland` | Configuração do Hyprland. |
 | `argvus-control-panel` | Painel de controle em Quickshell. |
@@ -27,7 +27,9 @@ description: Responsabilidades dos pacotes do ARGVUS.
 
 O `argvus` declara `replaces`, `conflicts` e `provides` dos pacotes que absorveu, para que uma atualização os remova e seus arquivos não fiquem órfãos:
 
-`argvus-config`, `argvus-i18n` (com `argvus-language-en-us` e `argvus-language-pt-br`), `argvus-keys`, `argvus-projects`, `argvus-terminal`, `argvus-system-monitor`, `argvus-network`, `argvus-widget-telemetry`. O `argvus-gtk` substitui `argvus-control-center`, `argvus-taskbar-calendar`, `argvus-loading-theme` e `argvus-removable-devices`.
+`argvus-config`, `argvus-i18n` (com `argvus-language-en-us` e `argvus-language-pt-br`), `argvus-keys`, `argvus-projects`, `argvus-terminal`, `argvus-system-monitor`, `argvus-network`, `argvus-widget-telemetry`. O `argvus` também substitui `argvus-control-center`, `argvus-taskbar-calendar`, `argvus-loading-theme`, `argvus-removable-devices` e os antigos pacotes separados `argvus-gtk` e `argvus-greeter`, que ele ainda fornece para que os pacotes que dependem deles continuem resolvidos.
+
+`/usr/bin/argvus-terminal` continua instalado como launcher de compatibilidade para `argvus terminal`. O terminal padrão do Hyprland, o catálogo do Control Center e os aplicativos padrão salvos ainda usam esse comando.
 
 Os pacotes removidos `argvus-pwvucontrol` e `argvus-snappy-switcher` não são fornecidos por nenhum pacote.
 

@@ -34,11 +34,11 @@ power, display, network, notifications and themes — all packaged for Arch Linu
 
 ## Modular Ecosystem
 
-`argvus` is the master package. Installing it installs the desktop, and every component
-package depends on it, so no install order is required. Its split packages are
-`argvus` (the command, the in-process subcommands and the shared runtime), `argvus-gtk`
-(helpers: the Control Center, a terminal application, and the GTK 4 taskbar calendar, removable devices and loading overlay) and
-`argvus-greeter` (the login greeter, built from `greeter/`).
+`argvus` is the master package and the only package of the desktop. It installs the
+command, its in-process subcommands and the shared runtime, the helpers (the Control
+Center, a terminal application, and the GTK 4 taskbar calendar, removable devices and
+loading overlay) and the login greeter (built from `crates/argvus-greeter`). Every
+component package depends on it, so no install order is required.
 
 | Area | Packages and commands |
 |------|-----------------------|
@@ -46,14 +46,14 @@ package depends on it, so no install order is required. Its split packages are
 | Hyprland configuration and scripts | `argvus-hyprland` |
 | Quickshell control panel | `argvus-control-panel` |
 | Taskbar, Waybar and widgets | `argvus-taskbar`, `argvus-waybar`, `argvus widget-telemetry` |
-| Settings application | `argvus control-center` (`argvus-gtk`) |
+| Settings application | `argvus control-center` (`argvus`) |
 | Launcher and lock screen | `argvus-launcher`, `argvus-lock` |
 | Appearance, wallpapers, fonts and icons | `argvus-appearance`, `argvus-wallpapers`, `argvus-fonts`, `argvus-icons`, `argvus-branding` |
 | Themes | `argvus-theme-*` (one package per official theme) |
 | Terminal, TUI apps and system monitor | `argvus terminal`, `argvus tui-terminal`, `argvus system-monitor`, `argvus-app-profiles` (data) |
 | Display, power, network and notifications | `argvus-display`, `argvus-power`, `argvus network`, `argvus-notifications` |
 | Desktop portals and Wayland/DBus defaults | `argvus-portal` |
-| Removable storage | `argvus removable-devices` (`argvus-gtk`) |
+| Removable storage | `argvus removable-devices` (`argvus`) |
 | Accounts | `argvus-accounts` (runs as root through `pkexec`) |
 | Firewall | `argvus-firewall` |
 | Games | `argvus-games`; `argvus-game-snake` is independent and optional |
@@ -139,8 +139,8 @@ sudo pacman -S blueman starship kooha nwg-look
 - Official page: [argvus.github.io](https://argvus.github.io/)
 - Documentation: [argvus.github.io/docs/](https://argvus.github.io/docs/intro/)
 - Repository documentation: [docs/](./docs/)
-- Development workflow: [DEVELOPMENT.md](./DEVELOPMENT.md)
-- Contribution guide: [CONTRIBUTING.md](./CONTRIBUTING.md)
+- Development workflow: [DEVELOPMENT.md](./docs/DEVELOPMENT.md)
+- Contribution guide: [CONTRIBUTING.md](./docs/CONTRIBUTING.md)
 - Ecosystem workflow: [argvus/workflow](https://github.com/argvus/workflow)
 
 ## Related repositories
@@ -172,7 +172,7 @@ sudo pacman -S blueman starship kooha nwg-look
 | argvus-theme-*, for example | [argvus/argvus-theme-dracula](https://github.com/argvus/argvus-theme-dracula) |
 
 The Rust workspace, with the `argvus` command, the Control Center, the greeter source,
-the configuration model and translations, lives in this repository (`crates/`, `greeter/`).
+the configuration model and translations, lives in this repository (`crates/`).
 
 ## Donate to the development of ARGVUS
 

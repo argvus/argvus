@@ -1,0 +1,172 @@
+# Maintainer: William C. Canin
+# Package of the ARGVUS workspace. The Cargo workspace under this repository builds
+# the `argvus` command, the GTK 4 helpers and the login greeter; this package
+# installs all of them.
+pkgbase=argvus
+pkgname=argvus
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="ARGVUS desktop: command, data, settings helpers and the login greeter."
+arch=('x86_64')
+url="https://github.com/argvus/argvus"
+license=('GPL-3.0-only')
+makedepends=('cargo' 'pkgconf' 'gtk4' 'gtk4-layer-shell')
+options=('!debug' '!lto')
+
+depends=(
+  'argvus-app-profiles'
+  'argvus-firewall'
+  'argvus-appearance'
+  'argvus-branding'
+  'argvus-control-panel'
+  'argvus-display'
+  'argvus-icons'
+  'argvus-lock'
+  'argvus-notifications'
+  'argvus-portal'
+  'argvus-power'
+  'argvus-session'
+  'argvus-hyprland'
+  'argvus-launcher'
+  'argvus-accounts'
+  'argvus-taskbar'
+  'argvus-waybar'
+  'greetd'
+  'kitty'
+  'systemd-libs'
+  'libdrm'
+  'hyprland'
+  'hyprland-guiutils'
+  'hyprland-qt-support'
+  'hyprpolkitagent'
+  'hyprshot'
+  'wayland'
+  'firefox'
+  'code'
+  'mesa'
+  'mesa-utils'
+  'qt5-quickcontrols2'
+  'qt5ct'
+  'qt6-tools'
+  'virtualbox-guest-utils'
+  'adwaita-icon-theme'
+  'cliphist'
+  'fastfetch'
+  'gcc-libs'
+  'okular'
+  'feh'
+  'glib2'
+  'grim'
+  'gsimplecal'
+  'gtk4'
+  'gtk-layer-shell'
+  'gtk4-layer-shell'
+  'imv'
+  'audacious'
+  'udisks2'
+  'udiskie'
+  'jq'
+  'mpv'
+  'nautilus'
+  'noto-fonts'
+  'noto-fonts-emoji'
+  'satty'
+  'slurp'
+  'gpu-screen-recorder'
+  'swaybg'
+  'ttf-jetbrains-mono-nerd'
+  'ttf-nerd-fonts-symbols-mono'
+  'vivid'
+  'wev'
+  'mousepad'
+  'wf-recorder'
+  'wireplumber'
+  'wl-clipboard'
+  'wtype'
+  'xdg-utils'
+  'xarchiver'
+  'neovim'
+  'zathura'
+  'zip'
+  'zsh'
+)
+
+# Packages that this one replaces. The split packages argvus-gtk and argvus-greeter
+# are included: an upgrade removes them and their files are installed by argvus.
+replaces=(
+  'argvus-config'
+  'argvus-i18n'
+  'argvus-language-en-us'
+  'argvus-language-pt-br'
+  'argvus-keys'
+  'argvus-projects'
+  'argvus-terminal'
+  'argvus-system-monitor'
+  'argvus-network'
+  'argvus-widget-telemetry'
+  'argvus-control-center'
+  'argvus-taskbar-calendar'
+  'argvus-loading-theme'
+  'argvus-removable-devices'
+  'argvus-gtk'
+  'argvus-greeter'
+)
+conflicts=("${replaces[@]}")
+
+# argvus-gtk and argvus-greeter stay provided: packages that depend on them, such
+# as argvus-taskbar and argvus-control-panel, are satisfied by this package.
+provides=(
+  'argvus-config'
+  'argvus-i18n'
+  'argvus-language-en-us'
+  'argvus-language-pt-br'
+  'argvus-keys'
+  'argvus-projects'
+  'argvus-terminal'
+  'argvus-system-monitor'
+  'argvus-network'
+  'argvus-widget-telemetry'
+  'argvus-control-center'
+  'argvus-taskbar-calendar'
+  'argvus-loading-theme'
+  'argvus-removable-devices'
+  'argvus-gtk'
+  'argvus-greeter'
+)
+
+# The greetd configuration files are kept on upgrade, as they were in the greeter
+# split package.
+backup=(
+  'etc/argvus/greeter.toml'
+  'etc/argvus/hyprland-argvus-greeter.conf'
+  'etc/argvus/hyprland-argvus-greeter.lua'
+)
+install=argvus.install
+
+optdepends=()
+source=(
+  "${pkgbase}-${pkgver}.tar.gz::${url}/archive/refs/tags/v${pkgver}.tar.gz"
+)
+sha256sums=('SKIP')
+
+# shellcheck disable=SC1091
+_functions_file="${startdir:-$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)}/../common/functions.sh"
+. "$_functions_file"
+
+prepare() {
+  arch_normalize_source_tree
+}
+
+build() {
+  arch_build_argvus_workspace
+}
+
+check() {
+  arch_check_argvus_workspace
+}
+
+package() {
+  arch_package_argvus
+  arch_package_argvus_gtk
+  arch_package_argvus_greeter
+}

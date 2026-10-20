@@ -28,7 +28,6 @@ if grep -qF -e '${pkgbase}-${pkgver}.tar.gz' -e '${pkgname}-${pkgver}.tar.gz' "$
     --exclude='./.release' \
     --exclude='./packages-repo' \
     --exclude='./target' \
-    --exclude='./greeter/target' \
     --exclude='./build' \
     --exclude='./dist' \
     --exclude='./tmp' \

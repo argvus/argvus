@@ -2952,10 +2952,12 @@ mod tests {
     else {
       panic!("not a privileged operation");
     };
-    let process =
-      SystemSettingsOperation::new(SystemProcessRunner, "/usr/bin/argvus-control-center")
-        .process_for(&request)
-        .unwrap();
+    let process = SystemSettingsOperation::new(
+      SystemProcessRunner,
+      "/usr/lib/argvus/commands/control-center",
+    )
+    .process_for(&request)
+    .unwrap();
     (echo, process)
   }
 
@@ -3006,7 +3008,7 @@ mod tests {
     for (action, expected_echo, expected_args) in cases {
       let (echo, process) = privileged_process(action);
       assert_eq!(echo, expected_echo);
-      assert_eq!(process.program, "/usr/bin/argvus-control-center");
+      assert_eq!(process.program, "/usr/lib/argvus/commands/control-center");
       let mut args = vec!["system-settings", "package"];
       args.extend(expected_args);
       assert_eq!(process.args, args);

@@ -1,6 +1,5 @@
 [workspace]
 resolver = "2"
-exclude = ["greeter"]
 members = [
   "crates/argvus-cli",
   "crates/argvus-config",
@@ -23,6 +22,8 @@ members = [
   "crates/argvus-control-center-session",
   "crates/argvus-control-center-settings",
   "crates/argvus-control-center-storage",
+  "crates/argvus-greeter",
+  "crates/argvus-greeter-handoff",
   "crates/argvus-i18n",
   "crates/argvus-i18n-core",
   "crates/argvus-keys",
@@ -37,6 +38,7 @@ members = [
   "crates/argvus-runtime",
   "crates/argvus-tui-terminal-core",
   "crates/argvus-tui-terminal",
+  "crates/argvus-system",
   "crates/argvus-system-monitor",
   "crates/argvus-system-monitor-core",
   "crates/argvus-taskbar-calendar",
@@ -95,6 +97,7 @@ argvus-projects = { version = "0.1.0", path = "crates/argvus-projects" }
 argvus-projects-core = { version = "0.1.0", path = "crates/argvus-projects-core" }
 argvus-removable-devices = { version = "0.1.0", path = "crates/argvus-removable-devices" }
 argvus-runtime = { version = "0.1.0", path = "crates/argvus-runtime" }
+argvus-system = { version = "0.1.0", path = "crates/argvus-system" }
 argvus-system-monitor = { version = "0.1.0", path = "crates/argvus-system-monitor" }
 argvus-system-monitor-core = { version = "0.1.0", path = "crates/argvus-system-monitor-core" }
 argvus-taskbar-calendar = { version = "0.1.0", path = "crates/argvus-taskbar-calendar" }
@@ -129,3 +132,11 @@ zbus = "5"
 lto = true
 strip = true
 codegen-units = 1
+
+# The greeter runs before login and is kept compact: symbols are not needed at
+# runtime, and thin LTO keeps its startup size small. Built with
+# `cargo build --profile greeter`; output goes to target/greeter/.
+[profile.greeter]
+inherits = "release"
+lto = "thin"
+strip = "symbols"

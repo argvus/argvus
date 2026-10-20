@@ -114,7 +114,7 @@ pub fn manifest() -> Vec<Component> {
       "argvus-session",
       "Sessão ARGVUS",
       "Gerenciador de sessão do ARGVUS",
-      vec!["argvus-session"],
+      vec!["session"],
       None,
       true,
     ),
