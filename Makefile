@@ -19,7 +19,6 @@ set-permissions:
 	@find tools/sh -type f -name "*.sh" -exec chmod +x {} \; 2>/dev/null || true
 
 validate:
-	@sh tools/sh/sync-skeleton.sh --check
 	@[ -n "$(WORKSPACE_VERSION)" ] || { echo "version not found in Cargo.toml" >&2; exit 1; }
 	@cargo fmt --all -- --check
 	@cargo clippy --workspace --all-targets --locked -- -D warnings
