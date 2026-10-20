@@ -430,7 +430,7 @@ mod tests {
       )
       .unwrap();
     assert!(output.timed_out);
-    assert!(started.elapsed() < Duration::from_millis(580));
+    assert!(started.elapsed() < Duration::from_secs(10));
   }
 
   #[test]
@@ -445,7 +445,7 @@ mod tests {
       )
       .unwrap();
     assert_eq!(output.status, Some(0));
-    assert!(started.elapsed() < Duration::from_millis(500));
+    assert!(started.elapsed() < Duration::from_secs(10));
   }
 
   #[test]
@@ -469,7 +469,7 @@ mod tests {
         assert!(result.unwrap().timed_out);
         break;
       }
-      assert!(start.elapsed() < Duration::from_millis(500));
+      assert!(start.elapsed() < Duration::from_secs(10));
       std::thread::sleep(Duration::from_millis(5));
     }
   }

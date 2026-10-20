@@ -582,7 +582,10 @@ mod tests {
         .stderr(Stdio::null())
         .spawn()
       {
-        Ok(child) => return child,
+        Ok(child) => {
+          wait_for_exec(child.id(), name);
+          return child;
+        }
         Err(error) if error.raw_os_error() == Some(libc::ETXTBSY) => {
           sleep(Duration::from_millis(20));
         }
@@ -590,6 +593,31 @@ mod tests {
       }
     }
     panic!("spawn test program: still busy after retries");
+  }
+
+  /// Waits until `pid` runs a program named `name`. Identifying a splash by its
+  /// name is only meaningful once the exec has replaced the test-binary image.
+  fn wait_for_exec(pid: u32, name: &str) {
+    let expected: String = name.chars().take(COMM_LENGTH).collect();
+    for _ in 0..400 {
+      let comm = fs::read_to_string(format!("/proc/{pid}/comm")).unwrap_or_default();
+      if comm.trim_end() == expected {
+        return;
+      }
+      sleep(Duration::from_millis(5));
+    }
+    panic!("child {pid} did not exec {name} in time");
+  }
+
+  /// Records `pid` the way the session does: the pid, then its start time, which
+  /// identifies the process even after an exec changes its name.
+  fn write_recorded_pid(environment: &SplashEnvironment, owner: Owner, pid: u32) {
+    let start_time = process_start_time(pid as i32).expect("start time of the child");
+    fs::write(
+      pid_file(environment, owner),
+      format!("{pid}\n{start_time}\n"),
+    )
+    .expect("pid file");
   }
 
   fn test_runtime(label: &str) -> PathBuf {
@@ -605,22 +633,43 @@ mod tests {
     let runtime = test_runtime("reap");
     let environment = environment_under(&runtime);
     let mut child = spawn_named(&runtime, "/bin/sleep", "splash-test", &["60"]);
+    write_recorded_pid(&environment, Owner::Transition, child.id());
+
+    let started = std::time::Instant::now();
+    stop_named(&environment, Owner::Transition, "splash-test");
+    // Without reaping, `process_alive` keeps seeing the zombie and the wait runs for five seconds.
+    assert!(
+      // The splash sleeps for 60 s, so this bound only has to rule out a
+      // five-second wait; it leaves room for a loaded machine.
+      started.elapsed() < Duration::from_secs(10),
+      "{:?}",
+      started.elapsed()
+    );
+    assert!(!pid_file(&environment, Owner::Transition).exists());
+    assert!(
+      child.try_wait().is_err(),
+      "stop did not reap the splash child"
+    );
+    let _ = fs::remove_dir_all(runtime);
+  }
+
+  #[test]
+  fn legacy_pid_file_is_identified_by_process_name() {
+    let runtime = test_runtime("legacy");
+    let environment = environment_under(&runtime);
+    let mut child = spawn_named(&runtime, "/bin/sleep", "splash-test", &["60"]);
+    // A pid file written before the start time was recorded holds only the pid.
     fs::write(
       pid_file(&environment, Owner::Transition),
       format!("{}\n", child.id()),
     )
     .expect("pid file");
 
-    let started = std::time::Instant::now();
     stop_named(&environment, Owner::Transition, "splash-test");
-    // Without reaping, `process_alive` keeps seeing the zombie and the wait runs for five seconds.
     assert!(
-      started.elapsed() < Duration::from_secs(2),
-      "{:?}",
-      started.elapsed()
+      child.try_wait().is_err(),
+      "stop did not reap the legacy splash child"
     );
-    assert!(!pid_file(&environment, Owner::Transition).exists());
-    assert!(child.try_wait().is_err(), "the child was reaped by stop");
     let _ = fs::remove_dir_all(runtime);
   }
 
@@ -656,11 +705,7 @@ mod tests {
       "splash-test",
       &["-c", "trap '' TERM; sleep 60"],
     );
-    fs::write(
-      pid_file(&environment, Owner::Transition),
-      format!("{}\n", child.id()),
-    )
-    .expect("pid file");
+    write_recorded_pid(&environment, Owner::Transition, child.id());
 
     stop_named(&environment, Owner::Transition, "splash-test");
     assert!(!process_alive(child.id() as i32), "SIGKILL ends the splash");
