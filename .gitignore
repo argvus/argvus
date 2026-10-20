@@ -8,10 +8,10 @@ TODO.txt
 *.sig
 .release/
 packages-repo/
-packaging/arch/remote/src/
-packaging/arch/remote/pkg/
-packaging/arch/local/src/
-packaging/arch/local/pkg/
-packaging/arch/*/.PKGBUILD.local.*
+packaging/archlinux/pkgbuilds/remote/src/
+packaging/archlinux/pkgbuilds/remote/pkg/
+packaging/archlinux/pkgbuilds/local/src/
+packaging/archlinux/pkgbuilds/local/pkg/
+packaging/archlinux/pkgbuilds/*/.PKGBUILD.local.*
 target/
 __pycache__/

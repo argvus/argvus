@@ -24,11 +24,12 @@ specific to this repository.
 Cargo.toml               workspace root; [workspace.dependencies] for every crate
 crates/                  one crate per command or library (`argvus-cli` is the dispatcher; `argvus-greeter` keeps its README and greetd files in `crates/argvus-greeter/` (`packaging/greetd/`))
 resources/locales/       shared translation catalogs (en-US, pt-BR)
-src/                     data payload installed by the packages (themes, defaults, docs)
-packaging/arch/remote/   PKGBUILD for tagged releases (pkgbase `argvus`, three split packages)
-packaging/arch/local/    PKGBUILD for working-tree builds (same split packages)
-packaging/arch/common/   functions.sh shared by both PKGBUILDs
-tools/sh/                pkgbuild_local.sh, validate.sh, sync-skeleton.sh, install helpers
+packaging/archlinux/src/ data payload installed by the package (usr/, etc/)
+packaging/archlinux/pkgbuilds/remote/ PKGBUILD for tagged releases (pkgbase and package `argvus`)
+packaging/archlinux/pkgbuilds/local/  PKGBUILD for working-tree builds (same package)
+packaging/archlinux/pkgbuilds/common/ functions.sh shared by both PKGBUILDs
+packaging/archlinux/README.md        packaging layout and build notes
+tools/sh/                pkgbuild_local.sh, validate.sh, install helpers
 docs/                    documentation in en and pt-br; contributor files (CONTRIBUTING, SECURITY, CODE_OF_CONDUCT, AUTHORS, FLOWCHART)
 .github/workflows/       ci.yml (validation on push and pull request to main)
                          release.yml (Arch packages for tags v*)
@@ -63,7 +64,7 @@ changes in the owning module repository.
 |--------|--------------|
 | `make build` (`make package`) | Runs `tools/sh/pkgbuild_local.sh`, writing archives to `build/artifacts/` and the package (`argvus`) to `build/dist/`. |
 | `make install` | Installs the built packages with `sudo pacman -U build/dist/argvus*.zst --overwrite="*"`. |
-| `make validate` | Checks the shared-file drift (`sync-skeleton.sh --check`) and the workspace version, then runs `cargo fmt --check`, `cargo clippy -D warnings` and `cargo test --locked` for the workspace (the greeter included), then `tools/sh/validate.sh`. |
+| `make validate` | Checks the workspace version, then runs `cargo fmt --check`, `cargo clippy -D warnings` and `cargo test --locked` for the workspace (the greeter included), then `tools/sh/validate.sh`. |
 | `make set-permissions` | Makes the shell scripts executable. |
 | `make clean` | Removes `build/`. |
 
@@ -81,7 +82,7 @@ cargo fmt --all -- --check
 cargo clippy --workspace --all-targets --locked -- -D warnings
 cargo test --workspace --locked
 make validate
-(cd packaging/arch/remote && makepkg -p PKGBUILD --printsrcinfo >/dev/null)
+(cd packaging/archlinux/pkgbuilds/remote && makepkg -p PKGBUILD --printsrcinfo >/dev/null)
 ```
 
 For Hyprland changes, test inside a real ARGVUS session when possible. Check that
@@ -91,7 +92,7 @@ defaults remain read-only.
 
 ## Packaging metadata
 
-`packaging/arch/remote/PKGBUILD` and `packaging/arch/local/PKGBUILD` share the same
+`packaging/archlinux/pkgbuilds/remote/PKGBUILD` and `packaging/archlinux/pkgbuilds/local/PKGBUILD` share the same
 metadata (`pkgname`, `pkgver`, `pkgrel`, `pkgdesc`, `arch`, `license`,
 `depends`, `makedepends`, `options`). Keep them identical when you edit
 dependencies. `validate.sh` fails when they differ.
@@ -170,7 +171,7 @@ the login greeter that this repository installs as part of the `argvus` package.
 
 ## Release flow
 
-The Arch Linux packages are built from `packaging/arch/remote/PKGBUILD` in this
+The Arch Linux packages are built from `packaging/archlinux/pkgbuilds/remote/PKGBUILD` in this
 repository, which produces the single `argvus` package. The release
 workflow runs when a `v*` tag is pushed. It sets `pkgver` in the remote PKGBUILD from the
 tag, builds the packages, signs them and publishes each package and its `.sig` to

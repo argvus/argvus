@@ -1,14 +1,15 @@
 # Arch packaging layout
 
-This package follows the ARGVUS packaging skeleton with separate local and CI
-PKGBUILDs. The metadata and package payload are shared; only the source input
+The package payload is `packaging/archlinux/src/` (`usr/` and `etc/`, mirroring the installed root).
+
+This package has separate local and remote PKGBUILDs (`pkgbuilds/local` and `pkgbuilds/remote`). The metadata and package payload are shared; only the source input
 differs.
 
 | Path | Use | Source |
 | --- | --- | --- |
-| `local/PKGBUILD` | `make build` from the working tree | generated local archive |
-| `remote/PKGBUILD` | tagged release | GitHub tag archive |
-| `common/functions.sh` | shared source normalization and payload logic | — |
+| `pkgbuilds/local/PKGBUILD` | `make build` from the working tree | generated local archive |
+| `pkgbuilds/remote/PKGBUILD` | tagged release | GitHub tag archive |
+| `pkgbuilds/common/functions.sh` | shared source normalization and payload logic | — |
 
 One PKGBUILD (`pkgname=argvus`) produces one package with the command, its shared data,
 the GTK 4 helpers and the login greeter, with `argvus.install` as its install hook.

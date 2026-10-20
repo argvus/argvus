@@ -76,16 +76,16 @@ arch_check_argvus_workspace() {
 	cargo test --workspace --locked
 }
 
-# Installs the files of the package payload (`src/`) at their system paths. The
-# `src/` tree mirrors the installed root: `usr/` and `etc/`.
+# Installs the files of the package payload (`packaging/archlinux/src/`) at their
+# system paths. The payload tree mirrors the installed root: `usr/` and `etc/`.
 arch_install_payload() {
 	local source_root
 	source_root="$(arch_source_root)"
 
-	cp -R --no-preserve=ownership "${source_root}/src/usr/." "${pkgdir}/usr/"
-	if [[ -d "${source_root}/src/etc" ]]; then
+	cp -R --no-preserve=ownership "${source_root}/packaging/archlinux/src/usr/." "${pkgdir}/usr/"
+	if [[ -d "${source_root}/packaging/archlinux/src/etc" ]]; then
 		install -dm755 "${pkgdir}/etc"
-		cp -R --no-preserve=ownership "${source_root}/src/etc/." "${pkgdir}/etc/"
+		cp -R --no-preserve=ownership "${source_root}/packaging/archlinux/src/etc/." "${pkgdir}/etc/"
 	fi
 
 	# The taskbar calendar files are installed by arch_package_argvus_gtk. Removing
@@ -96,17 +96,17 @@ arch_install_payload() {
 
 	# The i18n QML module is imported from the Qt module path, not the ARGVUS data.
 	install -dm755 "${pkgdir}/usr/lib/qt6/qml/org/argvus/i18n"
-	install -Dm644 "${source_root}/src/usr/share/argvus/qml/argvus-i18n/I18n.qml" \
+	install -Dm644 "${source_root}/packaging/archlinux/src/usr/share/argvus/qml/argvus-i18n/I18n.qml" \
 		"${pkgdir}/usr/lib/qt6/qml/org/argvus/i18n/I18n.qml"
-	install -Dm644 "${source_root}/src/usr/share/argvus/qml/argvus-i18n/qmldir" \
+	install -Dm644 "${source_root}/packaging/archlinux/src/usr/share/argvus/qml/argvus-i18n/qmldir" \
 		"${pkgdir}/usr/lib/qt6/qml/org/argvus/i18n/qmldir"
 	rm -rf -- "${pkgdir}/usr/share/argvus/qml"
 
 	# The system monitor reads its btop configuration from its own directory.
-	install -Dm644 "${source_root}/src/usr/share/argvus/system-monitor/config/btop/btop.conf" \
+	install -Dm644 "${source_root}/packaging/archlinux/src/usr/share/argvus/system-monitor/config/btop/btop.conf" \
 		"${pkgdir}/usr/share/argvus-system-monitor/btop/btop.conf"
 	install -dm755 "${pkgdir}/usr/share/argvus-system-monitor/btop/themes"
-	install -m644 "${source_root}/src/usr/share/argvus/system-monitor/config/btop/themes/"*.theme \
+	install -m644 "${source_root}/packaging/archlinux/src/usr/share/argvus/system-monitor/config/btop/themes/"*.theme \
 		"${pkgdir}/usr/share/argvus-system-monitor/btop/themes/"
 }
 
@@ -140,15 +140,15 @@ arch_package_argvus_gtk() {
 		"${pkgdir}/usr/lib/argvus/loading-theme/splash"
 
 	# Taskbar calendar: the Waybar launcher, its configuration and its user unit.
-	install -Dm755 "${source_root}/src/usr/lib/argvus/taskbar-calendar/waybar-launcher" \
+	install -Dm755 "${source_root}/packaging/archlinux/src/usr/lib/argvus/taskbar-calendar/waybar-launcher" \
 		"${pkgdir}/usr/lib/argvus/taskbar-calendar/waybar-launcher"
-	install -Dm644 "${source_root}/src/usr/lib/systemd/user/argvus-taskbar-calendar.service" \
+	install -Dm644 "${source_root}/packaging/archlinux/src/usr/lib/systemd/user/argvus-taskbar-calendar.service" \
 		"${pkgdir}/usr/lib/systemd/user/argvus-taskbar-calendar.service"
 	install -dm755 "${pkgdir}/etc/argvus/taskbar/calendar/themes"
-	install -m644 "${source_root}/src/etc/argvus/taskbar/calendar/"*.toml \
-		"${source_root}/src/etc/argvus/taskbar/calendar/"*.css \
+	install -m644 "${source_root}/packaging/archlinux/src/etc/argvus/taskbar/calendar/"*.toml \
+		"${source_root}/packaging/archlinux/src/etc/argvus/taskbar/calendar/"*.css \
 		"${pkgdir}/etc/argvus/taskbar/calendar/"
-	install -m644 "${source_root}/src/etc/argvus/taskbar/calendar/themes/"*.css \
+	install -m644 "${source_root}/packaging/archlinux/src/etc/argvus/taskbar/calendar/themes/"*.css \
 		"${pkgdir}/etc/argvus/taskbar/calendar/themes/"
 
 }

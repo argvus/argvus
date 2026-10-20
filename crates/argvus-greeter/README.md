@@ -73,7 +73,7 @@ Arch packaging can install this crate's `packaging/greetd` examples as
 documentation or adapt them into package defaults.
 
 Arch packaging is owned by this repository through
-`packaging/arch/remote/PKGBUILD`. Tag pushes build and publish signed
+`packaging/archlinux/pkgbuilds/remote/PKGBUILD`. Tag pushes build and publish signed
 `.pkg.tar.zst` packages to the shared
 `argvus/packages` repository.
 

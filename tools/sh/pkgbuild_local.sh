@@ -3,7 +3,7 @@ set -euo pipefail
 
 ROOT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd)"
 
-PACKAGING_DIR="$ROOT_DIR/packaging/arch/local"
+PACKAGING_DIR="$ROOT_DIR/packaging/archlinux/pkgbuilds/local"
 
 BUILD_SCRIPT="$PACKAGING_DIR/PKGBUILD"
 TEMP_BUILD_SCRIPT=""
@@ -32,10 +32,10 @@ if grep -qF -e '${pkgbase}-${pkgver}.tar.gz' -e '${pkgname}-${pkgver}.tar.gz' "$
     --exclude='./dist' \
     --exclude='./tmp' \
     --exclude='./tools' \
-    --exclude='./packaging/arch/*/src' \
-    --exclude='./packaging/arch/*/pkg' \
-    --exclude='./packaging/arch/*/*.pkg.tar*' \
-    --exclude='./packaging/arch/*/*.tar.gz' \
+    --exclude='./packaging/archlinux/pkgbuilds/*/src' \
+    --exclude='./packaging/archlinux/pkgbuilds/*/pkg' \
+    --exclude='./packaging/archlinux/pkgbuilds/*/*.pkg.tar*' \
+    --exclude='./packaging/archlinux/pkgbuilds/*/*.tar.gz' \
     --transform "s#^\./#${pkgname}-${pkgver}/#" \
     -C "$ROOT_DIR" .
 fi

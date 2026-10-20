@@ -39,12 +39,12 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cd "packaging/arch/remote"
+          cd "packaging/archlinux/pkgbuilds/remote"
           makepkg -p PKGBUILD --printsrcinfo >/dev/null
 
       - name: Validate local PKGBUILD
         shell: bash
         run: |
           set -euo pipefail
-          cd "packaging/arch/local"
+          cd "packaging/archlinux/pkgbuilds/local"
           makepkg -p PKGBUILD --printsrcinfo >/dev/null

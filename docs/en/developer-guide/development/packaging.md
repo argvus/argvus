@@ -3,7 +3,7 @@ title: Packaging
 description: Build and inspect ARGVUS Arch packages.
 ---
 
-Each component owns its Arch packaging under its repository. Inspect `packaging/arch/`, the package functions and the installed file list before documenting a payload. Package defaults under `/usr/share/argvus` and administrator configuration under `/etc/argvus` are not interchangeable.
+Each component owns its Arch packaging under its repository. Inspect `packaging/archlinux/`, the package functions and the installed file list before documenting a payload. Package defaults under `/usr/share/argvus` and administrator configuration under `/etc/argvus` are not interchangeable.
 
 For runtime verification, compare package contents with `pacman -Ql <package>` and inspect active user overrides separately.
 

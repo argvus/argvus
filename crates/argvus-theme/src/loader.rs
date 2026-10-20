@@ -285,7 +285,7 @@ fn development_resources_dir() -> PathBuf {
     let manifest_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     let sources = [
       manifest_dir.join("../../../argvus-appearance/src/usr/share/argvus/appearance/config/tui"),
-      manifest_dir.join("../../src/usr/share/argvus/control-center/config"),
+      manifest_dir.join("../../packaging/archlinux/src/usr/share/argvus/control-center/config"),
     ];
     if let Some(source) = sources.into_iter().find(|candidate| candidate.is_dir()) {
       return source;
@@ -296,7 +296,7 @@ fn development_resources_dir() -> PathBuf {
         [
           dir.join("../argvus-appearance/src/usr/share/argvus/appearance/config/tui"),
           dir.join("src/usr/share/argvus/control-center/config"),
-          dir.join("../../src/usr/share/argvus/control-center/config"),
+          dir.join("../../packaging/archlinux/src/usr/share/argvus/control-center/config"),
           dir.join("resources"),
           dir.join("argvus-control-center/resources"),
           dir.join("../../resources"),

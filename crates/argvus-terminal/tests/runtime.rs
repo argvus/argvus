@@ -61,7 +61,8 @@ impl Drop for Fixture {
 
 /// The terminal package's own files, as the repository ships them.
 fn system_root() -> PathBuf {
-  Path::new(env!("CARGO_MANIFEST_DIR")).join("../../src/usr/share/argvus/terminal")
+  Path::new(env!("CARGO_MANIFEST_DIR"))
+    .join("../../packaging/archlinux/src/usr/share/argvus/terminal")
 }
 
 #[test]
