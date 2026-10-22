@@ -16,7 +16,7 @@ description: ARGVUS package responsibilities.
 | `argvus-appearance`, `argvus-wallpapers`, `argvus-fonts`, `argvus-icons` | Appearance state and visual assets. |
 | `argvus-display`, `argvus-power`, `argvus-notifications` | Desktop providers. |
 | `argvus-lock`, `argvus-boot-splash` | Lock screen and boot splash. |
-| `argvus-accounts`, `argvus-firewall` | Local accounts and firewall, with their own privileges. |
+| `argvus-firewall` | Firewall, with its own privileges. |
 | `argvus-launcher` | Launcher configuration and entry points. |
 | `argvus-app-profiles` | Data-only profiles for bundled terminal applications. |
 | `argvus-portal` | XDG portal and Wayland/DBus defaults. |
@@ -27,7 +27,7 @@ description: ARGVUS package responsibilities.
 
 `argvus` declares `replaces`, `conflicts` and `provides` for the packages it absorbed, so an upgrade removes them and their files do not remain as orphans:
 
-`argvus-config`, `argvus-i18n` (with `argvus-language-en-us` and `argvus-language-pt-br`), `argvus-keys`, `argvus-projects`, `argvus-terminal`, `argvus-system-monitor`, `argvus-network`, `argvus-widget-telemetry`. `argvus` also replaces `argvus-control-center`, `argvus-taskbar-calendar`, `argvus-loading-theme`, `argvus-removable-devices`, and the former split packages `argvus-gtk` and `argvus-greeter`, which it still provides so that packages depending on them keep resolving.
+`argvus-config`, `argvus-i18n` (with `argvus-language-en-us` and `argvus-language-pt-br`), `argvus-keys`, `argvus-projects`, `argvus-terminal`, `argvus-system-monitor`, `argvus-network`, `argvus-widget-telemetry`. `argvus` also replaces `argvus-control-center`, `argvus-taskbar-calendar`, `argvus-loading-theme`, `argvus-removable-devices`, and the former split packages `argvus-gtk` and `argvus-greeter`, which it still provides so that packages depending on them keep resolving. It also replaces `argvus-accounts`: the account manager is built from `crates/argvus-accounts` and installed as `/usr/lib/argvus/commands/accounts`, with its polkit rule. The package no longer depends on `argvus-accounts`, which removes the dependency cycle between the two packages.
 
 `/usr/bin/argvus-terminal` stays installed as a compatibility launcher for `argvus terminal`. Hyprland's default terminal, the Control Center catalog and saved default applications still name that command.
 

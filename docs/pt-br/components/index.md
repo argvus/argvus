@@ -7,6 +7,7 @@ Estes componentes foram consolidados no workspace `argvus`. As páginas de usuá
 
 | Componente | Comando | Página |
 | --- | --- | --- |
+| Contas | `argvus accounts` | [Contas](/pt/docs/components/argvus-accounts/) |
 | Centro de Controle | `argvus control-center` | [Centro de Controle](/pt/docs/components/argvus-control-center/) |
 | Internacionalização | `argvus i18n` | [Internacionalização](/pt/docs/components/argvus-i18n/) |
 | Terminal | `argvus terminal` | [Terminal](/pt/docs/components/argvus-terminal/) |
