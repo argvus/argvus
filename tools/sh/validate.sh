@@ -27,6 +27,14 @@ shellcheck tools/sh/*.sh packaging/archlinux/pkgbuilds/common/*.sh "${packaged_s
 for script in "${packaged_scripts[@]}"; do
 	sh -n "$script"
 done
+
+# Packaged tmpfiles entries cross a privilege boundary (the greeter directory is
+# shared with the session that logs in): none may be writable by every user.
+for tmpfiles in crates/argvus-greeter/packaging/greetd/*tmpfiles*.conf; do
+	if awk '!/^[[:space:]]*(#|$)/ && $3 ~ /^[0-7]*[2367]$/ { found = 1 } END { exit !found }' "$tmpfiles"; then
+		die "world-writable tmpfiles entry in $tmpfiles"
+	fi
+done
 bash -n tools/sh/*.sh packaging/archlinux/pkgbuilds/common/*.sh
 
 metadata() {
