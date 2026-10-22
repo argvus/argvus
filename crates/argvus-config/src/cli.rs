@@ -242,6 +242,7 @@ fn run(arguments: Vec<String>) -> Result<(), Box<dyn std::error::Error>> {
       let enabled = session_units::telemetry_enabled(&cache_home()?);
       println!("{}", if enabled { "enabled" } else { "disabled" });
     }
+    "audio" => crate::audio::run(&store, &arguments[1..])?,
     "get" => get_value(&store, &arguments[1..])?,
     "set" => set_value(&store, &arguments[1..])?,
     "patch" => patch_value(&store, &arguments[1..])?,
@@ -1252,6 +1253,9 @@ fn print_help() {
   println!("  get /appearance/theme [--effective] [--raw]");
   println!("  set /appearance/theme \"argvus-dark\"");
   println!("  patch FILE|-                         atomically update multiple JSON pointers");
+  println!(
+    "  audio volume <N|+N|-N> [--limit PERCENT] | mute <on|off|toggle>   change the output sink and record it in /audio"
+  );
   println!("  apply-theme THEME [theme options]     atomically apply theme-owned fields");
   println!(
     "  apply-mode <sticky|float>             switch Sticky/Float without changing the theme"

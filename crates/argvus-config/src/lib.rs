@@ -17,6 +17,7 @@ use thiserror::Error;
 pub mod accent;
 pub mod accent_switch;
 pub mod appearance_runtime;
+pub mod audio;
 pub mod cli;
 pub mod css_edit;
 pub mod display;

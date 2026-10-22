@@ -28,6 +28,18 @@ const TRANSPARENCY_SURFACES: [&str; 6] = [
   "control-center",
 ];
 
+/// The surfaces whose own transparency switch decides the EFFECTS status: the
+/// Application Style pages (Terminal, Launchers) and the Taskbar, Widget
+/// Telemetry and Control Panel pages. Control Center is written with them but
+/// does not take part in the reading.
+const EFFECT_SURFACES: [&str; 5] = [
+  "taskbar",
+  "control-panel",
+  "widget-telemetry",
+  "terminal",
+  "launchers",
+];
+
 /// The blur parameters: `key minimum maximum kind default`.
 const BLUR_SETTINGS: &str = "blur_size 1 64 integer 6
 blur_passes 1 8 integer 2
@@ -207,6 +219,13 @@ impl Effects {
     Ok(())
   }
 
+  /// The EFFECTS master switch: global blur and every transparency surface.
+  /// Animations are a separate master switch and are never touched here.
+  fn write_effects(&self, status: &str) -> io::Result<()> {
+    self.write_flag("/effects/blur_global_enabled", status)?;
+    self.write_transparency(status)
+  }
+
   /// Asks the compositor-facing services to reload the configuration.
   fn request_config_reload(&self) -> io::Result<()> {
     if env::var("ARGVUS_CONFIG_SERVICE").as_deref() == Ok("1")
@@ -229,12 +248,10 @@ impl Effects {
 
   // ---- default and canonical status ------------------------------------
 
+  /// Every effect is on until the user turns it off, on virtual machines and
+  /// low-power sessions too.
   fn default_status(&self) -> &'static str {
-    if env::var("ARGVUS_LOW_POWER").as_deref() == Ok("1") || detect_vm() {
-      "disabled"
-    } else {
-      "enabled"
-    }
+    "enabled"
   }
 
   fn global_effect_enabled(&self) -> &'static str {
@@ -253,6 +270,7 @@ impl Effects {
     match component {
       "blur" => self.global_effect_enabled(),
       "transparency" => self.transparency_status(),
+      "effects" => effects_status(self.any_transparency_status(), self.global_effect_enabled()),
       _ => self
         .canonical_status(component)
         .unwrap_or_else(|| self.default_status()),
@@ -268,6 +286,15 @@ impl Effects {
       }
     }
     "enabled"
+  }
+
+  /// `enabled` when at least one effect surface keeps its transparency on.
+  /// The surfaces are independent, so one is enough for EFFECTS to read as on.
+  fn any_transparency_status(&self) -> &'static str {
+    let any_enabled = EFFECT_SURFACES
+      .iter()
+      .any(|surface| self.effect_enabled(&format!("{surface}.transparency")) == "enabled");
+    if any_enabled { "enabled" } else { "disabled" }
   }
 
   // ---- projection file ---------------------------------------------------
@@ -550,6 +577,14 @@ impl Effects {
         &format!("alpha(@th-mpris-bg, {opacity});"),
       );
     }
+    apply_border_transparency(
+      &css,
+      &mut text,
+      &["th-border-rights", "th-mpris-border"],
+      "th-background",
+      "@define-color th-mpris-bg-effective ",
+      self.effect_enabled("taskbar.transparency") != "disabled",
+    );
     const MARK_START: &str = "/* ARGVUS animations disabled */";
     const MARK_END: &str = "/* ARGVUS animations disabled end */";
     if animations == "disabled" {
@@ -601,6 +636,14 @@ impl Effects {
         &format!("alpha(@th-window-bg, {opacity});"),
       );
     }
+    apply_border_transparency(
+      &css,
+      &mut text,
+      &["th-border", "th-border-header"],
+      "th-window-bg",
+      "@define-color th-window-bg-effective ",
+      self.effect_enabled("widget-telemetry.transparency") != "disabled",
+    );
     fs::write(&css, text)
   }
 
@@ -871,6 +914,7 @@ impl Effects {
         .write_flag("/effects/animations", status)
         .map_err(|_| 1)?,
       "transparency" => self.write_transparency(status).map_err(|_| 1)?,
+      "effects" => self.write_effects(status).map_err(|_| 1)?,
       _ => return Err(64),
     }
     self.request_config_reload().map_err(|_| 1)?;
@@ -889,10 +933,7 @@ impl Effects {
     self
       .write_flag("/effects/animations", status)
       .map_err(|_| 1)?;
-    self
-      .write_flag("/effects/blur_global_enabled", status)
-      .map_err(|_| 1)?;
-    self.write_transparency(status).map_err(|_| 1)?;
+    self.write_effects(status).map_err(|_| 1)?;
     self.request_config_reload().map_err(|_| 1)?;
     self.apply_surfaces(status, status).map_err(|_| 1)?;
     println!("{status}");
@@ -914,6 +955,18 @@ impl Effects {
       "enabled" => self.set_status(component, "disabled"),
       _ => self.set_status(component, "enabled"),
     }
+  }
+
+  /// `enabled` only when animations are enabled and EFFECTS reads as enabled
+  /// (blur or any effect surface transparency).
+  fn all_effects_status(&self) -> &'static str {
+    all_effects_status(self.status("animations"), self.status("effects"))
+  }
+
+  /// Switches every effect at once, from the same aggregate that `status`
+  /// prints, so a toggle always moves away from what `status` reported.
+  fn toggle_all(&self) -> Result<(), Failure> {
+    self.set_all_status(toggle_target(self.all_effects_status()))
   }
 
   fn component_command(&self, component: &str, operation: &str) -> Result<(), Failure> {
@@ -1261,6 +1314,33 @@ fn is_leading_zero(value: &str) -> bool {
   rest.bytes().all(|byte| byte.is_ascii_digit())
 }
 
+fn all_effects_status(animations: &str, effects: &str) -> &'static str {
+  if animations == "enabled" && effects == "enabled" {
+    "enabled"
+  } else {
+    "disabled"
+  }
+}
+
+/// `enabled` when blur or at least one effect surface transparency is enabled;
+/// the animations master switch does not take part.
+fn effects_status(transparency: &str, blur: &str) -> &'static str {
+  if transparency == "enabled" || blur == "enabled" {
+    "enabled"
+  } else {
+    "disabled"
+  }
+}
+
+/// What a toggle switches every effect to: off when all are on, on otherwise.
+fn toggle_target(aggregate: &str) -> &'static str {
+  if aggregate == "enabled" {
+    "disabled"
+  } else {
+    "enabled"
+  }
+}
+
 fn raw_text(value: Option<&Value>) -> String {
   match value {
     Some(Value::String(text)) => text.clone(),
@@ -1313,6 +1393,109 @@ fn theme_background(theme: &str) -> &'static str {
     "monokai-dark" | "monokai-dark-float" => "#2D2A2E",
     "one-dark" | "one-dark-float" => "#282C34",
     _ => "#111316",
+  }
+}
+
+/// Every `@define-color` line of the theme files imported by a Waybar stylesheet,
+/// so the opaque border colors can be derived from the theme palette.
+fn imported_theme_text(css: &Path, text: &str) -> String {
+  let parent = css.parent().unwrap_or(Path::new("."));
+  text
+    .lines()
+    .filter_map(|line| {
+      let rest = line.trim().strip_prefix("@import url(\"")?;
+      let relative = rest.split('"').next()?;
+      fs::read_to_string(parent.join(relative)).ok()
+    })
+    .collect::<Vec<_>>()
+    .join("\n")
+}
+
+/// The value text of `@define-color NAME VALUE;` in `theme`.
+fn defined_color(theme: &str, name: &str) -> Option<String> {
+  let prefix = format!("@define-color {name} ");
+  theme.lines().find_map(|line| {
+    let value = line.trim_start().strip_prefix(&prefix)?;
+    Some(value.trim().trim_end_matches(';').trim().to_string())
+  })
+}
+
+/// Parses `#rrggbb` or `rgba(r, g, b, a)` into 0..=255 channels and an alpha.
+fn parse_css_color(value: &str) -> Option<([f64; 3], f64)> {
+  let value = value.trim();
+  if let Some(hex) = value.strip_prefix('#') {
+    if hex.len() != 6 {
+      return None;
+    }
+    let channel = |range: std::ops::Range<usize>| u8::from_str_radix(&hex[range], 16).ok();
+    return Some((
+      [
+        f64::from(channel(0..2)?),
+        f64::from(channel(2..4)?),
+        f64::from(channel(4..6)?),
+      ],
+      1.0,
+    ));
+  }
+  let inner = value
+    .strip_prefix("rgba(")
+    .or_else(|| value.strip_prefix("rgb("))?
+    .strip_suffix(')')?;
+  let parts: Vec<f64> = inner
+    .split(',')
+    .map(|part| part.trim().parse::<f64>().ok())
+    .collect::<Option<_>>()?;
+  match parts.as_slice() {
+    [red, green, blue] => Some(([*red, *green, *blue], 1.0)),
+    [red, green, blue, alpha] => Some(([*red, *green, *blue], *alpha)),
+    _ => None,
+  }
+}
+
+/// The opaque color a translucent `foreground` shows over `background`, as
+/// `#rrggbb`. `None` when either color cannot be parsed.
+fn solid_over(foreground: &str, background: &str) -> Option<String> {
+  let (front, alpha) = parse_css_color(foreground)?;
+  let (back, _) = parse_css_color(background)?;
+  let mixed = |index: usize| {
+    (front[index] * alpha + back[index] * (1.0 - alpha))
+      .round()
+      .clamp(0.0, 255.0) as u8
+  };
+  Some(format!("#{:02X}{:02X}{:02X}", mixed(0), mixed(1), mixed(2)))
+}
+
+/// Routes the translucent border colors of a stylesheet through
+/// `NAME-effective` variables. With transparency on they keep the theme value;
+/// with it off they become the opaque color the theme value shows over
+/// `background_name`, so no part of the surface stays see-through.
+fn apply_border_transparency(
+  css: &Path,
+  text: &mut String,
+  border_names: &[&str],
+  background_name: &str,
+  anchor: &str,
+  transparent: bool,
+) {
+  let theme = imported_theme_text(css, text);
+  let background = defined_color(&theme, background_name);
+  for name in border_names {
+    let effective = format!("{name}-effective");
+    if !text
+      .lines()
+      .any(|line| line.starts_with(&format!("@define-color {effective} ")))
+    {
+      // Route every use through the new variable first, then declare it, so the
+      // declaration itself keeps pointing at the theme color.
+      *text = replace_in_lines(text, &format!("@{name};"), &format!("@{effective};"));
+      *text = insert_after(text, anchor, &format!("@define-color {effective} @{name};"));
+    }
+    let solid = match (transparent, defined_color(&theme, name), &background) {
+      (false, Some(border), Some(background)) => solid_over(&border, background),
+      _ => None,
+    };
+    let value = solid.unwrap_or_else(|| format!("@{name}"));
+    *text = set_define(text, &effective, &format!("{value};"));
   }
 }
 
@@ -1420,20 +1603,6 @@ fn read_first_line(path: &Path) -> String {
     .unwrap_or_default()
 }
 
-/// `systemd-detect-virt --vm` succeeds only inside a virtual machine.
-fn detect_vm() -> bool {
-  if !on_path("systemd-detect-virt") {
-    return false;
-  }
-  Command::new("systemd-detect-virt")
-    .arg("--vm")
-    .stdout(Stdio::null())
-    .stderr(Stdio::null())
-    .status()
-    .map(|status| status.success())
-    .unwrap_or(false)
-}
-
 fn on_path(program: &str) -> bool {
   env::var_os("PATH")
     .map(|paths| env::split_paths(&paths).any(|dir| dir.join(program).is_file()))
@@ -1483,7 +1652,7 @@ pub fn run(arguments: &[String]) -> i32 {
   };
   let rest = &arguments[arguments.len().min(1)..];
   let result = match arguments.first().map(String::as_str).unwrap_or("status") {
-    "animations" | "transparency" | "blur" => {
+    "animations" | "transparency" | "blur" | "effects" => {
       let component = arguments[0].as_str();
       effects.component_command(
         component,
@@ -1518,15 +1687,12 @@ pub fn run(arguments: &[String]) -> i32 {
       rest.get(1).map(String::as_str).unwrap_or(""),
     ),
     "status" => {
-      let on = effects.status("animations") == "enabled"
-        && effects.status("transparency") == "enabled"
-        && effects.status("blur") == "enabled";
-      println!("{}", if on { "enabled" } else { "disabled" });
+      println!("{}", effects.all_effects_status());
       Ok(())
     }
     "enable" | "on" | "enabled" => effects.set_all_status("enabled"),
     "disable" | "off" | "disabled" => effects.set_all_status("disabled"),
-    "toggle" => effects.toggle_component("animations"),
+    "toggle" => effects.toggle_all(),
     "apply" => effects
       .ensure_theme_effects()
       .map_err(|_| 1)
@@ -1646,6 +1812,83 @@ mod tests {
       ),
       "a\nb\n"
     );
+  }
+
+  #[test]
+  fn aggregate_needs_animations_and_effects() {
+    assert_eq!(all_effects_status("enabled", "enabled"), "enabled");
+    assert_eq!(all_effects_status("disabled", "enabled"), "disabled");
+    assert_eq!(all_effects_status("enabled", "disabled"), "disabled");
+  }
+
+  #[test]
+  fn effects_switch_is_on_when_blur_or_any_transparency_is_on() {
+    assert_eq!(effects_status("enabled", "enabled"), "enabled");
+    assert_eq!(effects_status("enabled", "disabled"), "enabled");
+    assert_eq!(effects_status("disabled", "enabled"), "enabled");
+    assert_eq!(effects_status("disabled", "disabled"), "disabled");
+  }
+
+  #[test]
+  fn translucent_border_becomes_the_opaque_color_it_shows_over_the_background() {
+    assert_eq!(
+      solid_over("rgba(255, 255, 255, 0.5)", "#000000").as_deref(),
+      Some("#808080")
+    );
+    assert_eq!(solid_over("#336699", "#000000").as_deref(), Some("#336699"));
+    assert_eq!(solid_over("transparent", "#000000"), None);
+  }
+
+  #[test]
+  fn border_transparency_is_idempotent_and_reversible() {
+    let directory = std::env::temp_dir().join(format!("argvus-border-{}", std::process::id()));
+    fs::create_dir_all(&directory).unwrap();
+    fs::write(
+      directory.join("theme.css"),
+      "@define-color th-background #000000;\n@define-color th-border rgba(255, 255, 255, 0.5);\n",
+    )
+    .unwrap();
+    let css = directory.join("bar.css");
+    let original = "@import url(\"./theme.css\");\n@define-color th-window-effective @th-background;\n* { border: 1px solid @th-border; }\n";
+    let anchor = "@define-color th-window-effective ";
+    let mut text = original.to_string();
+    apply_border_transparency(
+      &css,
+      &mut text,
+      &["th-border"],
+      "th-background",
+      anchor,
+      false,
+    );
+    assert!(text.contains("@define-color th-border-effective #808080;"));
+    assert!(text.contains("solid @th-border-effective;"));
+    let once = text.clone();
+    apply_border_transparency(
+      &css,
+      &mut text,
+      &["th-border"],
+      "th-background",
+      anchor,
+      false,
+    );
+    assert_eq!(text, once);
+    apply_border_transparency(
+      &css,
+      &mut text,
+      &["th-border"],
+      "th-background",
+      anchor,
+      true,
+    );
+    assert!(text.contains("@define-color th-border-effective @th-border;"));
+    let _ = fs::remove_dir_all(&directory);
+  }
+
+  #[test]
+  fn toggle_moves_every_effect_away_from_the_aggregate() {
+    assert_eq!(toggle_target("enabled"), "disabled");
+    // A mixed state reports `disabled`, so the toggle turns everything on.
+    assert_eq!(toggle_target("disabled"), "enabled");
   }
 
   #[test]

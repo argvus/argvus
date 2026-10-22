@@ -47,5 +47,5 @@
   "tty.already_graphical": "already in a graphical session (WAYLAND_DISPLAY={wayland} DISPLAY={display})",
   "usage.get_default": "Usage: get-default.sh <category>",
   "usage.keyboard_cycle": "Usage: {command} [cycle|--list]",
-  "usage.effects": "Usage: {command} [animations|transparency|blur|transparency-value|blur-value|blur-settings] {status|enable|disable|toggle|set}"
+  "usage.effects": "Usage: {command} [animations|effects|transparency|blur|transparency-value|blur-value|blur-settings] {status|enable|disable|toggle|set}"
 }

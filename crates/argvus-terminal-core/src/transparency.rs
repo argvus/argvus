@@ -10,15 +10,11 @@ pub struct Transparency {
   pub enabled: String,
   /// The transparency percent; empty when unknown.
   pub value: String,
-  /// `ARGVUS_LOW_POWER=1`.
-  pub low_power: bool,
-  /// The machine is a virtual machine.
-  pub virtual_machine: bool,
 }
 
 /// The `background_opacity` the terminal gets, or `None` when the theme keeps its
-/// own. Transparency is on only when the setting says so; a virtual machine or
-/// the low-power mode start with it off, unless the setting says otherwise.
+/// own. Transparency is on unless the setting says otherwise, on virtual
+/// machines and low-power sessions too.
 pub fn opacity(state: &Transparency) -> Option<String> {
   let explicit = state.argvus_present
     && matches!(state.enabled.as_str(), "true" | "false")
@@ -42,7 +38,7 @@ fn enabled_by_default(state: &Transparency) -> bool {
   match state.enabled.as_str() {
     "true" | "enabled" => true,
     "false" | "disabled" => false,
-    _ => !state.low_power && !state.virtual_machine,
+    _ => true,
   }
 }
 
@@ -55,8 +51,6 @@ mod tests {
       argvus_present: true,
       enabled: enabled.into(),
       value: value.into(),
-      low_power: false,
-      virtual_machine: false,
     }
   }
 
@@ -67,13 +61,8 @@ mod tests {
   }
 
   #[test]
-  fn unknown_setting_follows_the_machine() {
+  fn unknown_setting_keeps_transparency_on() {
     assert_eq!(opacity(&state("", "")), None);
-    let virtual_machine = Transparency {
-      virtual_machine: true,
-      ..state("", "")
-    };
-    assert_eq!(opacity(&virtual_machine).as_deref(), Some("1.0"));
     assert_eq!(opacity(&state("enabled", "x")), None);
   }
 }

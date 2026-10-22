@@ -164,7 +164,7 @@ pub fn cheatsheet_description(lang: Lang, binding: &Binding) -> Option<String> {
       "Toggle between the ARGVUS Dark and ARGVUS Light themes",
       "Alterna entre os temas ARGVUS Dark e ARGVUS Light",
     ),
-    "appearance.animations" => ("Toggle animations", "Ativa/Desativa animações"),
+    "appearance.animations" => ("Toggle visual effects", "Ativa/Desativa efeitos visuais"),
     "system.about" => ("Open About ARGVUS", "Abrir Sobre o ARGVUS"),
     "session.lock" => ("Lock system", "Bloquear sistema"),
     "session.dpms" => (

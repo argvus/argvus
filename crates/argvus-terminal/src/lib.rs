@@ -239,13 +239,6 @@ fn appearance_accent(theme_id: &str) -> Option<String> {
   (output.status.success() && !accent.is_empty()).then_some(accent)
 }
 
-fn env_or(variable: &str, default: &str) -> String {
-  env::var(variable)
-    .ok()
-    .filter(|value| !value.is_empty())
-    .unwrap_or_else(|| default.to_string())
-}
-
 /// The value a user stored at a canonical pointer (`null` when unset), or `None`
 /// when `argvus` does not answer.
 fn config_stored(pointer: &str) -> Option<String> {
@@ -276,30 +269,16 @@ fn transparency_state() -> Transparency {
   let argvus_present = program_exists("argvus");
   let enabled = config_get("/effects/transparency_terminal_enabled").unwrap_or_default();
   let value = config_get("/effects/transparency_terminal_value").unwrap_or_default();
-  let virtual_machine =
-    program_exists("systemd-detect-virt") && run_quiet("systemd-detect-virt", &["--vm"]);
   Transparency {
     argvus_present,
     enabled,
     value,
-    low_power: env_or("ARGVUS_LOW_POWER", "0") == "1",
-    virtual_machine,
   }
 }
 
 fn program_exists(program: &str) -> bool {
   env::var_os("PATH")
     .map(|paths| env::split_paths(&paths).any(|dir| dir.join(program).is_file()))
-    .unwrap_or(false)
-}
-
-fn run_quiet(program: &str, arguments: &[&str]) -> bool {
-  Process::new(program)
-    .args(arguments)
-    .stdout(Stdio::null())
-    .stderr(Stdio::null())
-    .status()
-    .map(|status| status.success())
     .unwrap_or(false)
 }
 
