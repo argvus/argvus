@@ -13,9 +13,9 @@ usage() {
   cat <<EOF
 Usage: tools/sh/install.sh [options]
 
-Installs the argvus command dispatcher from this checkout. Runtime files are
-owned by the modular ARGVUS repositories and by the Arch packages pulled by
-pacman -S argvus.
+Installs the argvus command dispatcher from this checkout. The other files of
+the desktop (helpers, greeter, data) are installed by the argvus package and
+the component packages it depends on (pacman -S argvus).
 
 Options:
   --user          install to ~/.local (default)
@@ -116,7 +116,12 @@ install_argvus_bin() {
   prefix="$1"
   bin_path="$prefix/bin/argvus"
 
-  built_bin="$ROOT_DIR/target/release/argvus"
+  # `make build` keeps Cargo objects in build/cargo-target; a plain cargo build
+  # uses CARGO_TARGET_DIR or target/.
+  built_bin="${CARGO_TARGET_DIR:-$ROOT_DIR/target}/release/argvus"
+  if [ ! -x "$built_bin" ] && [ -x "$ROOT_DIR/build/cargo-target/release/argvus" ]; then
+    built_bin="$ROOT_DIR/build/cargo-target/release/argvus"
+  fi
   [ -x "$built_bin" ] || die "argvus is not built: run 'cargo build --release --locked -p argvus-cli' first"
 
   log "Installing argvus command to $prefix..."
