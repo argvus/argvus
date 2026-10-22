@@ -88,7 +88,7 @@ The example starts a dedicated minimal Hyprland instance for the greeter
 through `/usr/lib/argvus/commands/greeter-session` and does not start the user's normal Argvus
 desktop configuration before authentication. The launcher clears VT1 and
 redirects compositor output to the greeter user's state directory, or to a
-per-UID fallback under `/tmp` when greetd does not provide a writable `HOME`, so
+private fallback directory created with `mktemp` under `/tmp` when greetd does not provide a writable `HOME`, so
 boot or terminal logs do not remain visible under the login screen.
 The greeter compositor still sets `XDG_CURRENT_DESKTOP=Hyprland` to satisfy
 Hyprland's startup checks, while `XDG_SESSION_DESKTOP=argvus-greeter` identifies
