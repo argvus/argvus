@@ -50,7 +50,6 @@ depends=(
   'virtualbox-guest-utils'
   'adwaita-icon-theme'
   'cliphist'
-  'fastfetch'
   'gcc-libs'
   'pam'
   'polkit'
@@ -80,7 +79,6 @@ depends=(
   'ttf-jetbrains-mono-nerd'
   'ttf-nerd-fonts-symbols-mono'
   'vivid'
-  'wev'
   'mousepad'
   'wf-recorder'
   'wireplumber'
@@ -148,7 +146,11 @@ backup=(
 )
 install=argvus.install
 
-optdepends=()
+# Tools that no ARGVUS component runs; they are offered, not required.
+optdepends=(
+  'fastfetch: system summary in the terminal'
+  'wev: inspect Wayland input events when writing keybindings'
+)
 source=(
   "${pkgbase}-${pkgver}.tar.gz"
 )
