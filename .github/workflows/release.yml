@@ -34,6 +34,10 @@ jobs:
 
       - name: Checkout source
         uses: actions/checkout@v4
+        with:
+          # A manual run publishes the tag it names, so it validates that tag's
+          # sources and not the branch the run was started from.
+          ref: ${{ github.event_name == 'workflow_dispatch' && format('refs/tags/{0}', inputs.tag) || github.ref }}
 
       - name: Prepare build user
         run: |
@@ -117,6 +121,9 @@ jobs:
           export GNUPGHOME
           GNUPGHOME="$(mktemp -d)"
           chmod 700 "$GNUPGHOME"
+          # The private key must not stay on disk for the later steps, which
+          # include third-party actions running in the same container.
+          trap 'gpgconf --kill all >/dev/null 2>&1 || true; rm -rf -- "$GNUPGHOME"' EXIT
 
           printf '%s' "$GPG_PRIVATE_KEY" | gpg --batch --import
           IMPORTED_GPG_KEY_ID="$(gpg --batch --list-secret-keys --with-colons | awk -F: '/^sec:/ { print $5; exit }')"
@@ -142,6 +149,9 @@ jobs:
           export GNUPGHOME
           GNUPGHOME="$(mktemp -d)"
           chmod 700 "$GNUPGHOME"
+          # The private key must not stay on disk for the later steps, which
+          # include third-party actions running in the same container.
+          trap 'gpgconf --kill all >/dev/null 2>&1 || true; rm -rf -- "$GNUPGHOME"' EXIT
           printf '%s' "$GPG_PRIVATE_KEY" | gpg --batch --import
 
           mapfile -t pkg_files < "$RUNNER_TEMP/argvus-packages.txt"
@@ -182,6 +192,9 @@ jobs:
           export GNUPGHOME
           GNUPGHOME="$(mktemp -d)"
           chmod 700 "$GNUPGHOME"
+          # The private key must not stay on disk for the later steps, which
+          # include third-party actions running in the same container.
+          trap 'gpgconf --kill all >/dev/null 2>&1 || true; rm -rf -- "$GNUPGHOME"' EXIT
           printf '%s' "$GPG_PRIVATE_KEY" | gpg --batch --import
           IMPORTED_GPG_KEY_ID="$(gpg --batch --list-secret-keys --with-colons | awk -F: '/^sec:/ { print $5; exit }')"
           [ -n "$IMPORTED_GPG_KEY_ID" ] || { echo "::error::No secret GPG key was imported"; exit 1; }

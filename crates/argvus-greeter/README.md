@@ -88,13 +88,15 @@ The example starts a dedicated minimal Hyprland instance for the greeter
 through `/usr/lib/argvus/commands/greeter-session` and does not start the user's normal Argvus
 desktop configuration before authentication. The launcher clears VT1 and
 redirects compositor output to the greeter user's state directory, or to a
-per-UID fallback under `/tmp` when greetd does not provide a writable `HOME`, so
+private fallback directory created with `mktemp` under `/tmp` when greetd does not provide a writable `HOME`, so
 boot or terminal logs do not remain visible under the login screen.
 The greeter compositor still sets `XDG_CURRENT_DESKTOP=Hyprland` to satisfy
 Hyprland's startup checks, while `XDG_SESSION_DESKTOP=argvus-greeter` identifies
 the login environment. When authentication succeeds, the greeter starts the
 normal `--spinner-only` layer-shell splash and waits for its first frame before
-asking greetd to start the selected session. It keeps the terminal and minimal
+asking greetd to start the selected session. When the splash is missing or does
+not report a frame in time, the session still starts, without the overlay.
+It keeps the terminal and minimal
 compositor alive until greetd terminates the greeter session, so terminal
 restoration cannot uncover a blank compositor. The user-session loading helper
 then starts the same spinner as soon as the new Wayland socket appears and

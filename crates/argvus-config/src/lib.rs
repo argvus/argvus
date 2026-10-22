@@ -192,7 +192,7 @@ impl ConfigDocument {
 
   pub fn load_effective(path: &Path) -> ConfigResult<Self> {
     let mut document = Self::load(path)?;
-    apply_defaults(&mut document);
+    apply_defaults(&mut document)?;
     Ok(document)
   }
 
@@ -355,7 +355,7 @@ impl ConfigStore {
     let _lock = self.shared_lock()?;
     let mut document = self.load_legacy_or_modules(root)?;
     apply_packaged_defaults(&mut document)?;
-    apply_defaults(&mut document);
+    apply_defaults(&mut document)?;
     document.validate()?;
     Ok(document)
   }
@@ -391,7 +391,7 @@ impl ConfigStore {
     let imported = import_legacy_values(&mut document, root)?;
     let moved = migrate_legacy_layout(root)?;
     apply_packaged_defaults(&mut document)?;
-    apply_defaults(&mut document);
+    apply_defaults(&mut document)?;
     document.validate()?;
     if document != before || imported || moved || was_missing || !directory.exists() {
       self.save_modules_locked(&document)?;
@@ -485,7 +485,7 @@ impl ConfigStore {
     }
     if apply_default_values {
       apply_packaged_defaults(&mut document)?;
-      apply_defaults(&mut document);
+      apply_defaults(&mut document)?;
     }
     document.validate()?;
     Ok(document)
@@ -699,7 +699,7 @@ impl ConfigStore {
     let mut document = self.load_legacy_or_modules(self.config_root()?)?;
     if with_defaults {
       apply_packaged_defaults(&mut document)?;
-      apply_defaults(&mut document);
+      apply_defaults(&mut document)?;
     }
     // Compare with what the operation reports, not with a default-filled
     // copy: writing a value equal to its default must still persist it, or
@@ -952,7 +952,48 @@ fn unset_nested(root: &mut Value, components: &[String]) {
   }
 }
 
-fn apply_defaults(document: &mut ConfigDocument) {
+/// Stored objects that `apply_defaults` descends into. A value at one of these
+/// paths that is not an object cannot take defaults; it is reported as invalid
+/// configuration instead of stopping the command.
+const DEFAULTED_OBJECTS: &[&[&str]] = &[
+  &["appearance"],
+  &["layout"],
+  &["layout", "taskbar"],
+  &["layout", "window"],
+  &["effects"],
+  &["taskbar"],
+  &["taskbar", "icons"],
+  &["taskbar", "icons", "utilities"],
+  &["taskbar", "date"],
+  &["taskbar", "time"],
+  &["default_apps"],
+  &["keyboard_shortcuts"],
+  &["hyprland"],
+  &["hyprland", "input"],
+  &["hyprland", "input", "mouse"],
+  &["hyprland", "input", "touchpad"],
+  &["power"],
+  &["audio"],
+];
+
+fn check_defaulted_objects(document: &ConfigDocument) -> ConfigResult<()> {
+  for path in DEFAULTED_OBJECTS {
+    let mut current = document.sections.get(path[0]);
+    for key in &path[1..] {
+      current = current.and_then(|value| value.get(key));
+    }
+    if current.is_some_and(|value| !value.is_object()) {
+      return Err(ConfigError::Invalid(format!(
+        "{} must be an object",
+        path.join(".")
+      )));
+    }
+  }
+  Ok(())
+}
+
+fn apply_defaults(document: &mut ConfigDocument) -> ConfigResult<()> {
+  check_defaulted_objects(document)?;
   let appearance = document
     .sections
     .entry("appearance".into())
@@ -1248,6 +1289,7 @@ fn apply_defaults(document: &mut ConfigDocument) {
   audio
     .entry("output_muted")
     .or_insert_with(|| Value::Bool(false));
+  Ok(())
 }
 
 fn apply_packaged_defaults(document: &mut ConfigDocument) -> ConfigResult<()> {
@@ -2657,6 +2699,44 @@ mod tests {
       validate_animation_setting("animation_spring_stiffness", &Value::from(238.119)).is_ok()
     );
     assert!(validate_animation_setting("animation_unknown", &Value::from(1)).is_err());
+  }
+
+  #[test]
+  fn defaults_report_nested_values_that_are_not_objects() {
+    for (section, value, path) in [
+      (
+        "layout",
+        serde_json::json!({ "taskbar": 5 }),
+        "layout.taskbar",
+      ),
+      (
+        "taskbar",
+        serde_json::json!({ "icons": "x" }),
+        "taskbar.icons",
+      ),
+      (
+        "taskbar",
+        serde_json::json!({ "icons": { "utilities": [] } }),
+        "taskbar.icons.utilities",
+      ),
+      (
+        "hyprland",
+        serde_json::json!({ "input": { "mouse": 1 } }),
+        "hyprland.input.mouse",
+      ),
+    ] {
+      let mut document = ConfigDocument::default();
+      document.sections.insert(section.to_owned(), value);
+      let error = apply_defaults(&mut document).unwrap_err();
+      assert!(error.to_string().contains(path), "{path}: {error}");
+    }
+    let mut document = ConfigDocument::default();
+    apply_defaults(&mut document).unwrap();
+    assert!(
+      document
+        .get("/layout/taskbar")
+        .is_some_and(Value::is_object)
+    );
   }
 
   #[test]

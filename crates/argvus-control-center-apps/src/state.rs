@@ -358,14 +358,18 @@ mod tests {
   use std::env;
   use std::fs;
 
-  /// Defines the constant `DIR`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
-  const DIR: &str = "target/test-state";
+  /// Scratch directory of these tests, outside the source tree and unique to
+  /// this test process.
+  fn test_root() -> PathBuf {
+    env::temp_dir().join(format!(
+      "argvus-control-center-apps-test-{}",
+      std::process::id()
+    ))
+  }
 
   /// Executes the `tmp_file` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn tmp_file(name: &str) -> PathBuf {
-    let p = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-      .join(DIR)
-      .join(name);
+    let p = test_root().join(name);
     if let Some(parent) = p.parent() {
       fs::create_dir_all(parent).unwrap();
     }
@@ -473,8 +477,7 @@ mod tests {
   #[test]
   /// Executes the modular canonical state precedence test in this module.
   fn modular_config_drives_effective_state() {
-    let argvus =
-      PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("target/test-state/config-home/argvus");
+    let argvus = test_root().join("config-home/argvus");
     fs::create_dir_all(&argvus).unwrap();
     fs::create_dir_all(argvus.join("config")).unwrap();
 

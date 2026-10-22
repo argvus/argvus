@@ -34,7 +34,10 @@ if [ "${HOME:-}" = "/" ] || [ -z "${HOME:-}" ]; then
   if [ -n "${XDG_RUNTIME_DIR:-}" ]; then
     HOME="${XDG_RUNTIME_DIR}/argvus-greeter/home"
   else
-    HOME="/tmp/argvus-greeter-$(id -u)/home"
+    # A fixed name under /tmp could be created first by another local user,
+    # who would then own the greeter's configuration. mktemp makes a new
+    # private directory owned by this account.
+    HOME="$(mktemp -d /tmp/argvus-greeter.XXXXXXXX)/home"
   fi
 
   export HOME

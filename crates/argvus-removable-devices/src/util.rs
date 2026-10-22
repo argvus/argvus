@@ -33,7 +33,8 @@ pub fn human_bytes_short(bytes: u64) -> String {
 }
 
 // Launch a command without waiting (fire and forget), detached from the
-// terminal. Returns the pid, or -1 on failure.
+// terminal. A thread reaps the child, so the long-running `watch` does not
+// collect zombies. Returns the pid, or -1 on failure.
 pub fn fork_exec(command: &str) -> i32 {
   use std::os::unix::process::CommandExt;
   match Command::new("/bin/sh")
@@ -45,7 +46,13 @@ pub fn fork_exec(command: &str) -> i32 {
     .process_group(0)
     .spawn()
   {
-    Ok(child) => child.id() as i32,
+    Ok(mut child) => {
+      let pid = child.id() as i32;
+      std::thread::spawn(move || {
+        let _ = child.wait();
+      });
+      pid
+    }
     Err(_) => -1,
   }
 }
@@ -151,6 +158,18 @@ mod tests {
   fn trim_whitespace() {
     assert_eq!(trim("  foo \n"), "foo");
     assert_eq!(trim("\t\r\n"), "");
+  }
+
+  #[test]
+  fn launched_commands_are_reaped() {
+    let pid = fork_exec("exit 0");
+    assert!(pid > 0);
+    let status = std::path::PathBuf::from(format!("/proc/{pid}"));
+    let deadline = std::time::Instant::now() + std::time::Duration::from_secs(5);
+    while status.exists() && std::time::Instant::now() < deadline {
+      std::thread::sleep(std::time::Duration::from_millis(20));
+    }
+    assert!(!status.exists(), "child {pid} was left as a zombie");
   }
 
   #[test]

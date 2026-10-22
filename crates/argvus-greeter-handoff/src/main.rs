@@ -22,6 +22,10 @@ const DEFAULT_SOCKET: &str = "/run/argvus-greeter/handoff.sock";
 const DEFAULT_THEME: &str = "argvus-dark";
 const FRAME_DELAY: Duration = Duration::from_millis(90);
 const ACK_TIMEOUT: Duration = Duration::from_secs(20);
+/// How long the surface waits for one client to send its command line. The
+/// socket is open to every local user, so a client that connects and stays
+/// silent must not stop the surface from serving the session's `release`.
+const CLIENT_TIMEOUT: Duration = Duration::from_secs(1);
 const DRM_IOCTL_MODE_CREATE_DUMB: libc::c_ulong = 0xc020_64b2;
 const DRM_IOCTL_MODE_MAP_DUMB: libc::c_ulong = 0xc010_64b3;
 const DRM_IOCTL_MODE_DESTROY_DUMB: libc::c_ulong = 0xc010_64b4;
@@ -481,6 +485,8 @@ fn select_output(fd: RawFd) -> io::Result<(u32, u32, ModeInfo)> {
 /// Handles one client request. A release returns its stream still open, so the
 /// acknowledgement can be written after DRM master has been dropped.
 fn handle_command(mut stream: UnixStream, palette: &mut Palette) -> io::Result<Option<UnixStream>> {
+  stream.set_read_timeout(Some(CLIENT_TIMEOUT))?;
+  stream.set_write_timeout(Some(CLIENT_TIMEOUT))?;
   let mut command = String::new();
   BufReader::new(&mut stream).read_line(&mut command)?;
   let command = command.trim();
@@ -609,6 +615,20 @@ mod tests {
     let _ = fs::remove_dir_all(&directory);
     fs::create_dir_all(&directory).expect("create test directory");
     directory
+  }
+
+  #[test]
+  fn a_silent_client_cannot_stall_the_surface() {
+    let directory = test_directory("silent");
+    let socket = directory.join("handoff.sock");
+    let listener = UnixListener::bind(&socket).expect("bind test socket");
+    let _client = UnixStream::connect(&socket).expect("connect silent client");
+    let (stream, _) = listener.accept().expect("accept silent client");
+    let started = Instant::now();
+    let mut palette = Palette::from_theme("argvus-dark");
+    assert!(handle_command(stream, &mut palette).is_err());
+    assert!(started.elapsed() < CLIENT_TIMEOUT + Duration::from_secs(1));
+    let _ = fs::remove_dir_all(&directory);
   }
 
   #[test]
