@@ -550,6 +550,9 @@ fn validate_network(action: &str, values: &[String]) -> Result<(), String> {
 fn valid_package_name(value: &str) -> bool {
   !value.is_empty()
     && value.len() <= 128
+    // pacman runs as root and reads a leading '-' as an option; Arch package
+    // names never start with '-' or '.'.
+    && !value.starts_with(['-', '.'])
     && value
       .chars()
       .all(|c| c.is_ascii_alphanumeric() || matches!(c, '@' | '.' | '_' | '+' | '-'))
@@ -748,11 +751,13 @@ fn validate_boot(action: &str, values: &[String]) -> Result<(), String> {
       .filter(|value| *value <= 60)
       .map(|_| ())
       .ok_or_else(|| "timeout must be between 0 and 60".into()),
+    // grub-mkconfig sources /etc/default/grub as a shell script, so characters
+    // that the shell expands inside double quotes are refused.
     "grub-cmdline" if values.len() == 1 => (!values[0].is_empty()
       && values[0].len() <= 2048
       && values[0]
         .chars()
-        .all(|character| !character.is_control() && !matches!(character, '"' | '\\')))
+        .all(|character| !character.is_control() && !matches!(character, '"' | '\\' | '$' | '`')))
     .then_some(())
     .ok_or_else(|| "invalid GRUB kernel command line".into()),
     "grub-regenerate" | "initramfs-regenerate" if values.is_empty() => Ok(()),
@@ -1151,6 +1156,8 @@ mod tests {
     assert!(validate_boot("systemd-timeout", &["61".into()]).is_err());
     assert!(validate_boot("grub-cmdline", &["quiet splash".into()]).is_ok());
     assert!(validate_boot("grub-cmdline", &["bad\nline".into()]).is_err());
+    assert!(validate_boot("grub-cmdline", &["quiet $(id)".into()]).is_err());
+    assert!(validate_boot("grub-cmdline", &["quiet `id`".into()]).is_err());
     assert!(validate_boot("plymouth-theme", &["argvus-boot-splash".into()]).is_ok());
     assert!(validate_boot("plymouth-theme", &["theme/name".into()]).is_err());
   }
@@ -1161,6 +1168,9 @@ mod tests {
     assert!(validate_package("install", &["firefox".into()]).is_ok());
     assert!(validate_package("upgrade", &[]).is_ok());
     assert!(validate_package("install", &["foo;reboot".into()]).is_err());
+    assert!(validate_package("install", &["--dbonly".into()]).is_err());
+    assert!(validate_package("remove", &["-dd".into(), "glibc".into()]).is_err());
+    assert!(validate_package("upgrade-package", &[".hidden".into()]).is_err());
     assert!(validate_package("downgrade", &["/tmp/package.pkg.tar.zst".into()]).is_err());
     assert!(validate_package("clean-cache", &["keep-three".into()]).is_ok());
     assert!(validate_package("clean-cache", &["all".into()]).is_err());
