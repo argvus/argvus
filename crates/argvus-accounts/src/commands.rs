@@ -211,7 +211,7 @@ fn cmd_passwd(manager: &AccountManager, user: &str) -> Result<()> {
 
   // Fails early with UserNotFound for unknown targets.
   manager.get_user(user)?;
-  let me = AccountManager::current_username()?;
+  let me = invoking_username()?;
   let is_self = me == *user;
 
   // Prove knowledge of the current password before asking for elevation,
@@ -229,7 +229,7 @@ fn cmd_passwd(manager: &AccountManager, user: &str) -> Result<()> {
 }
 
 fn cmd_self(manager: &AccountManager, action: Option<&SelfAction>, verbose: bool) -> Result<()> {
-  let me = AccountManager::current_username()?;
+  let me = invoking_username()?;
   if verbose {
     eprintln!("argvus-accounts: self target '{me}'");
   }
@@ -253,6 +253,22 @@ fn cmd_self(manager: &AccountManager, action: Option<&SelfAction>, verbose: bool
       cmd_avatar(manager, &me, image.as_deref(), *remove)
     }
   }
+}
+
+/// The account that ran the command. Under pkexec the elevated child runs as
+/// root and `PKEXEC_UID` names the caller, so `self` keeps meaning the caller's
+/// account instead of root's.
+fn invoking_username() -> Result<String> {
+  if passwd::effective_uid() == 0
+    && let Some(uid) = std::env::var("PKEXEC_UID")
+      .ok()
+      .and_then(|uid| uid.parse::<u32>().ok())
+  {
+    return passwd::get_user_by_uid(uid)?
+      .map(|user| user.username)
+      .ok_or_else(|| Error::system("unable to resolve the polkit caller"));
+  }
+  AccountManager::current_username()
 }
 
 fn join_or_none(items: &[String]) -> String {
@@ -281,4 +297,20 @@ fn home_dir() -> Option<PathBuf> {
     .filter(|value| !value.is_empty())
     .map(PathBuf::from)
     .or_else(|| passwd::current_user().ok().map(|user| user.home))
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  #[test]
+  fn invoking_user_is_the_current_user_outside_pkexec() {
+    if passwd::effective_uid() == 0 {
+      return; // root may carry PKEXEC_UID; the unprivileged path is checked here
+    }
+    assert_eq!(
+      invoking_username().unwrap(),
+      AccountManager::current_username().unwrap()
+    );
+  }
 }
