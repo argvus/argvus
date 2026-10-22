@@ -14,12 +14,9 @@ name = "argvus-taskbar-calendar"
 path = "src/main.rs"
 
 [dependencies]
-anyhow = "1.0.100"
 chrono = { version = "0.4.42", features = ["serde", "clock"] }
-chrono-tz = "0.10.4"
 clap = { version = "4.6.6", features = ["derive"] }
 env_logger = "0.11.8"
-futures-util = "0.3.31"
 gtk = { package = "gtk4", version = "0.11.4", features = ["v4_12"] }
 gtk4-layer-shell = "0.8.1"
 icalendar = { version = "0.17.13", features = ["chrono-tz", "recurrence"] }
@@ -36,4 +33,3 @@ thiserror = "2.0.17"
 tokio = { version = "1.53.1", features = ["rt-multi-thread", "macros", "time", "sync"] }
 toml = "0.9.8"
 uuid = { version = "1.24.0", features = ["v4", "serde"] }
-xdg = "3.0.0"

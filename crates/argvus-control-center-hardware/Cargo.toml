@@ -12,7 +12,6 @@ argvus-theme.workspace = true
 argvus-tui.workspace = true
 ratatui.workspace = true
 crossterm.workspace = true
-serde_json = { workspace = true, features = ["preserve_order"] }
 
 [dev-dependencies]
 # Test builds never start external programs (see the core `testing` feature).

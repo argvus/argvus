@@ -351,7 +351,6 @@ dependencies = [
  "crossterm",
  "ratatui",
  "rayon",
- "serde",
  "serde_json",
 ]
 
@@ -393,7 +392,6 @@ dependencies = [
  "argvus-tui",
  "crossterm",
  "ratatui",
- "serde_json",
 ]
 
 [[package]]
@@ -401,7 +399,6 @@ name = "argvus-control-center-network"
 version = "0.1.0"
 dependencies = [
  "argvus-control-center-core",
- "argvus-control-center-settings",
  "argvus-i18n-core",
  "argvus-theme",
  "argvus-tui",
@@ -641,12 +638,9 @@ version = "0.1.0"
 name = "argvus-taskbar-calendar"
 version = "0.1.0"
 dependencies = [
- "anyhow",
  "chrono",
- "chrono-tz",
  "clap",
  "env_logger",
- "futures-util",
  "gtk4",
  "gtk4-layer-shell",
  "icalendar",
@@ -663,7 +657,6 @@ dependencies = [
  "tokio",
  "toml 0.9.12+spec-1.1.0",
  "uuid",
- "xdg",
 ]
 
 [[package]]
@@ -6984,12 +6977,6 @@ dependencies = [
  "libc",
  "rustix 1.1.5",
 ]
-
-[[package]]
-name = "xdg"
-version = "3.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2fb433233f2df9344722454bc7e96465c9d03bff9d77c248f9e7523fe79585b5"
 
 [[package]]
 name = "xml-rs"

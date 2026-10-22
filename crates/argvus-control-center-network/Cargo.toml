@@ -7,7 +7,6 @@ rust-version.workspace = true
 
 [dependencies]
 argvus-control-center-core = { workspace = true }
-argvus-control-center-settings = { workspace = true }
 argvus-i18n.workspace = true
 argvus-theme.workspace = true
 argvus-tui.workspace = true
