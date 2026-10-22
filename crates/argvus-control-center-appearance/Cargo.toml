@@ -13,7 +13,7 @@ argvus-tui.workspace = true
 ratatui.workspace = true
 crossterm.workspace = true
 flate2 = "1.1"
-sha2 = "0.10"
+sha2 = "0.11"
 serde_json = { workspace = true, features = ["preserve_order"] }
 serde.workspace = true
 toml.workspace = true
