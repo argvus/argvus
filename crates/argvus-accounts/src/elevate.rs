@@ -10,6 +10,7 @@
 //! recursion: if the child is still denied, the underlying error surfaces
 //! instead of another elevation attempt.
 
+use std::ffi::OsString;
 use std::io::Write;
 use std::os::unix::process::CommandExt as _;
 use std::process::{Command, Stdio};
@@ -40,10 +41,18 @@ pub enum Requirement {
 /// required, this function replaces the process with `pkexec` and only
 /// returns on failure (pkexec missing / exec refused).
 pub fn ensure(requirement: &Requirement) -> Result<()> {
+  ensure_with_args(requirement, std::env::args_os().skip(1).collect())
+}
+
+/// Like [`ensure`], but the elevated child runs with `args` instead of the
+/// original arguments. Used when an argument must be rewritten first, such as
+/// a relative path that the child would resolve in root's home: `pkexec`
+/// changes to the target user's home directory before it runs the program.
+pub fn ensure_with_args(requirement: &Requirement, args: Vec<OsString>) -> Result<()> {
   if !elevation_needed(requirement)? {
     return Ok(());
   }
-  exec_pkexec(None)
+  exec_pkexec(args, None)
 }
 
 /// Like [`ensure`], but the elevated child reads `input` from its standard
@@ -64,7 +73,10 @@ pub fn ensure_with_input(requirement: &Requirement, input: &[u8]) -> Result<()> 
     .map_err(|err| Error::system(format!("failed to pass input to pkexec: {err}")))?;
   // Dropping the writer closes the pipe, so the child reads EOF after `input`.
   drop(writer);
-  exec_pkexec(Some(Stdio::from(reader)))
+  exec_pkexec(
+    std::env::args_os().skip(1).collect(),
+    Some(Stdio::from(reader)),
+  )
 }
 
 /// Whether the requirement is unmet by the current process.
@@ -81,9 +93,9 @@ fn elevation_needed(requirement: &Requirement) -> Result<bool> {
   Ok(true)
 }
 
-/// Replaces the process with `pkexec`, running this same executable with the
-/// original arguments. `stdin` is inherited unless a replacement is given.
-fn exec_pkexec(stdin: Option<Stdio>) -> Result<()> {
+/// Replaces the process with `pkexec`, running this same executable with
+/// `args`. `stdin` is inherited unless a replacement is given.
+fn exec_pkexec(args: Vec<OsString>, stdin: Option<Stdio>) -> Result<()> {
   let program = locate_pkexec().ok_or_else(|| {
     Error::system("pkexec was not found; install 'polkit' or re-run the command with sudo")
   })?;
@@ -96,11 +108,7 @@ fn exec_pkexec(stdin: Option<Stdio>) -> Result<()> {
   // considers suspicious (e.g. TERM from the terminal).  Clear everything
   // and pass only what the polkit agent needs to receive the auth request.
   let mut cmd = Command::new(program);
-  cmd
-    .arg(exe)
-    .args(std::env::args_os().skip(1))
-    .env_clear()
-    .env(ELEVATED_ENV, "1");
+  cmd.arg(exe).args(args).env_clear().env(ELEVATED_ENV, "1");
 
   if let Some(dbus) = std::env::var_os("DBUS_SESSION_BUS_ADDRESS") {
     cmd.env("DBUS_SESSION_BUS_ADDRESS", dbus);

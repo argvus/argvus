@@ -1,6 +1,7 @@
 //! Command dispatch and presentation logic.
 
 use std::collections::BTreeSet;
+use std::ffi::OsString;
 use std::path::{Path, PathBuf};
 
 use argvus_accounts_core::metadata;
@@ -52,13 +53,17 @@ pub fn execute(cli: &Cli) -> Result<()> {
       image,
       remove,
     } => {
-      // Expand tilde before any elevation: pkexec resets the
-      // environment and '~' would resolve to root's home.
-      let expanded = image.as_deref().map(expand_tilde);
-      elevate::ensure(&Requirement::OtherUsersOnly {
-        target: user.clone(),
-      })?;
-      cmd_avatar(&manager, user, expanded.as_deref(), *remove)
+      // pkexec resets the environment and starts the child in root's home,
+      // so '~' and relative paths are resolved here and the absolute path is
+      // what the elevated child receives.
+      let image = image.as_deref().map(absolute_image_path).transpose()?;
+      elevate::ensure_with_args(
+        &Requirement::OtherUsersOnly {
+          target: user.clone(),
+        },
+        avatar_arguments(user, image.as_deref(), *remove, cli.verbose),
+      )?;
+      cmd_avatar(&manager, user, image.as_deref(), *remove)
     }
     Command::Groups { user, add, remove } => cmd_groups(&manager, user, add, remove),
     Command::Passwd { user } => cmd_passwd(&manager, user),
@@ -279,6 +284,41 @@ fn join_or_none(items: &[String]) -> String {
   }
 }
 
+/// The image path with `~` expanded, made absolute against the working
+/// directory of the caller.
+fn absolute_image_path(path: &Path) -> Result<PathBuf> {
+  std::path::absolute(expand_tilde(path)).map_err(|err| {
+    Error::system(format!(
+      "cannot resolve image path '{}': {err}",
+      path.display()
+    ))
+  })
+}
+
+/// Arguments of the elevated `avatar` command. The user follows `--`, so the
+/// command line cannot be read as an option, and the image is absolute.
+fn avatar_arguments(
+  user: &str,
+  image: Option<&Path>,
+  remove: bool,
+  verbose: bool,
+) -> Vec<OsString> {
+  let mut args = Vec::new();
+  if verbose {
+    args.push(OsString::from("--verbose"));
+  }
+  args.push(OsString::from("avatar"));
+  if remove {
+    args.push(OsString::from("--remove"));
+  }
+  args.push(OsString::from("--"));
+  args.push(OsString::from(user));
+  if let Some(image) = image {
+    args.push(image.as_os_str().to_owned());
+  }
+  args
+}
+
 fn expand_tilde(path: &Path) -> PathBuf {
   let text = path.to_string_lossy();
   if text == "~" {
@@ -312,5 +352,37 @@ mod tests {
       invoking_username().unwrap(),
       AccountManager::current_username().unwrap()
     );
+  }
+
+  #[test]
+  fn elevated_avatar_arguments_parse_back_with_an_absolute_image() {
+    use clap::Parser as _;
+    let image = absolute_image_path(Path::new("face.png")).unwrap();
+    assert!(image.is_absolute());
+    let args = avatar_arguments("bob", Some(&image), false, true);
+    let cli = Cli::try_parse_from(std::iter::once(OsString::from("accounts")).chain(args)).unwrap();
+    assert!(cli.verbose);
+    match cli.command {
+      Command::Avatar {
+        user,
+        image: Some(parsed),
+        remove: false,
+      } => {
+        assert_eq!(user, "bob");
+        assert_eq!(parsed, image);
+      }
+      other => panic!("unexpected command: {other:?}"),
+    }
+  }
+
+  #[test]
+  fn elevated_avatar_removal_keeps_the_user_after_the_separator() {
+    use clap::Parser as _;
+    let args = avatar_arguments("bob", None, true, false);
+    let cli = Cli::try_parse_from(std::iter::once(OsString::from("accounts")).chain(args)).unwrap();
+    assert!(matches!(
+      cli.command,
+      Command::Avatar { ref user, image: None, remove: true } if user == "bob"
+    ));
   }
 }
