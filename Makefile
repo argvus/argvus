@@ -25,8 +25,13 @@ validate:
 	@cargo test --workspace --locked
 	@tools/sh/validate.sh
 
+# Installs only the newest package in build/dist: older builds stay there, and
+# passing several versions of argvus to pacman makes the transaction fail.
 install:
-	@sudo pacman -U build/dist/argvus*.zst --overwrite="*" --noconfirm
+	@pkg="$$(ls -t build/dist/argvus-[0-9]*.pkg.tar.zst 2>/dev/null | head -n 1)"; \
+	[ -n "$$pkg" ] || { echo "no argvus package in build/dist: run make build" >&2; exit 1; }; \
+	echo "Installing $$pkg"; \
+	sudo pacman -U "$$pkg" --overwrite="*" --noconfirm
 
 uninstall:
 	@tools/sh/uninstall.sh --user

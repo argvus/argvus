@@ -63,7 +63,7 @@ changes in the owning module repository.
 | Target | What it does |
 |--------|--------------|
 | `make build` (`make package`) | Runs `tools/sh/pkgbuild_local.sh`, writing archives to `build/artifacts/` and the package (`argvus`) to `build/dist/`. |
-| `make install` | Installs the built packages with `sudo pacman -U build/dist/argvus*.zst --overwrite="*"`. |
+| `make install` | Installs the newest package in `build/dist/` with `sudo pacman -U <package> --overwrite="*"`. |
 | `make validate` | Checks the workspace version, then runs `cargo fmt --check`, `cargo clippy -D warnings` and `cargo test --locked` for the workspace (the greeter included), then `tools/sh/validate.sh`. |
 | `make set-permissions` | Makes the shell scripts executable. |
 | `make clean` | Removes `build/`. |
