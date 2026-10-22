@@ -92,7 +92,9 @@ jobs:
         run: |
           set -euo pipefail
 
-          sudo -u builder env GITHUB_WORKSPACE="$GITHUB_WORKSPACE" bash -lc             'cd "$GITHUB_WORKSPACE/packaging/archlinux/pkgbuilds/remote" && makepkg --nodeps --noconfirm --needed --cleanbuild --clean'
+          # The workspace tests already ran in "Validate repository" on this same
+          # tag; --nocheck skips a second debug build of the whole test suite.
+          sudo -u builder env GITHUB_WORKSPACE="$GITHUB_WORKSPACE" bash -lc             'cd "$GITHUB_WORKSPACE/packaging/archlinux/pkgbuilds/remote" && makepkg --nodeps --noconfirm --needed --cleanbuild --clean --nocheck'
 
           # The PKGBUILD (pkgname argvus) produces one package that carries the
           # command, the GTK 4 helpers and the login greeter.
