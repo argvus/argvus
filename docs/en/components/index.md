@@ -21,6 +21,6 @@ These components were consolidated into the `argvus` workspace. Their user pages
 | Projects | `argvus projects` | [Projects](/docs/components/argvus-projects/) |
 | Widget telemetry | `argvus widget-telemetry` | [Widget telemetry](/docs/components/argvus-widget-telemetry/) |
 | Loading overlay | `argvus loading-theme` | [Loading overlay](/docs/components/argvus-loading-theme/) |
-| Snake | `argvus game-snake` | [Snake](/docs/argvus-game-snake/) |
+| Snake | `argvus game-snake` | [Snake](/docs/argvus-games/snake/) |
 
 The command reference is in [Command line](/docs/reference/command-line/).
