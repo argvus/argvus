@@ -1,0 +1,16 @@
+// ARGVUS account administration.
+//
+// When `argvus-accounts manage` needs administrator authentication, the
+// password asked is the caller's own when the caller is in the `sudo` group,
+// and the root password otherwise. The account being changed or deleted is
+// never asked for a password.
+polkit.addAdminRule(function (action, subject) {
+  if (action.id !== "org.freedesktop.policykit.exec" ||
+      action.lookup("program") !== "/usr/lib/argvus/commands/accounts") {
+    return [];
+  }
+  if (subject.isInGroup("sudo")) {
+    return ["unix-user:" + subject.user];
+  }
+  return ["unix-user:root"];
+});

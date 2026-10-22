@@ -58,7 +58,8 @@ arch_build_argvus_workspace() {
 		-p argvus-control-center \
 		-p argvus-loading-theme \
 		-p argvus-removable-devices \
-		-p argvus-taskbar-calendar
+		-p argvus-taskbar-calendar \
+		-p argvus-accounts
 
 	# The greeter is a member of the root workspace, built with the compact
 	# `greeter` profile, so its binaries land in target/greeter/ and not in release/.
@@ -121,6 +122,11 @@ arch_package_argvus() {
 	install -dm755 "${pkgdir}/usr/share/argvus/i18n/en-US" "${pkgdir}/usr/share/argvus/i18n/pt-BR"
 	install -m644 "${source_root}/resources/locales/en-US/"*.json "${pkgdir}/usr/share/argvus/i18n/en-US/"
 	install -m644 "${source_root}/resources/locales/pt-BR/"*.json "${pkgdir}/usr/share/argvus/i18n/pt-BR/"
+
+	# Account administration runs as root only through polkit (pkexec). It is a
+	# private command and keeps the path that the polkit rule and the callers use.
+	install -Dm755 "$(arch_cargo_target_dir)/release/argvus-accounts" \
+		"${pkgdir}/usr/lib/argvus/commands/accounts"
 
 	install -Dm644 "${source_root}/LICENSE" "${pkgdir}/usr/share/licenses/argvus/LICENSE"
 }

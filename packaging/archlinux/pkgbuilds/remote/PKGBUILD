@@ -28,7 +28,6 @@ depends=(
   'argvus-session'
   'argvus-hyprland'
   'argvus-launcher'
-  'argvus-accounts'
   'argvus-taskbar'
   'argvus-waybar'
   'greetd'
@@ -53,6 +52,10 @@ depends=(
   'cliphist'
   'fastfetch'
   'gcc-libs'
+  'pam'
+  'polkit'
+  'shadow'
+  'util-linux'
   'okular'
   'feh'
   'glib2'
@@ -110,6 +113,7 @@ replaces=(
   'argvus-removable-devices'
   'argvus-gtk'
   'argvus-greeter'
+  'argvus-accounts'
 )
 conflicts=("${replaces[@]}")
 
@@ -132,6 +136,7 @@ provides=(
   'argvus-removable-devices'
   'argvus-gtk'
   'argvus-greeter'
+  'argvus-accounts'
 )
 
 # The greetd configuration files are kept on upgrade, as they were in the greeter
