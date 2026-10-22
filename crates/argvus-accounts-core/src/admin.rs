@@ -1,0 +1,657 @@
+//! Structured administration API. Secrets travel over stdin, never argv.
+use std::process::Command;
+
+use serde::Deserialize;
+use serde_json::{Value, json};
+
+use crate::{
+  AccountManager, Error, Result, autologin, groups, metadata, passwd, password, validation,
+};
+
+#[derive(Deserialize)]
+#[serde(tag = "action", rename_all = "kebab-case", deny_unknown_fields)]
+enum Request {
+  Snapshot,
+  Create {
+    user: String,
+    name: String,
+    shell: String,
+    groups: Vec<String>,
+    #[serde(default)]
+    password: Option<String>,
+  },
+  Edit {
+    user: String,
+    name: String,
+    shell: String,
+    primary_group: String,
+    groups: Vec<String>,
+  },
+  Password {
+    user: String,
+    old: String,
+    new: String,
+    confirm: String,
+  },
+  Lock {
+    user: String,
+    locked: bool,
+  },
+  ExpirePassword {
+    user: String,
+  },
+  Delete {
+    user: String,
+    #[serde(default)]
+    remove_home: bool,
+  },
+  CreateGroup {
+    group: String,
+  },
+  EditGroup {
+    group: String,
+    name: String,
+    members: Vec<String>,
+  },
+  DeleteGroup {
+    group: String,
+  },
+  Avatar {
+    user: String,
+    path: String,
+  },
+  AutoLogin {
+    user: String,
+    enabled: bool,
+  },
+}
+
+fn invalid(message: impl Into<String>) -> Error {
+  Error::InvalidOperation(message.into())
+}
+
+fn actor_uid() -> Result<u32> {
+  if passwd::effective_uid() == 0
+    && let Ok(uid) = std::env::var("PKEXEC_UID")
+  {
+    return uid.parse().map_err(|_| invalid("invalid polkit caller"));
+  }
+  Ok(passwd::effective_uid())
+}
+
+fn shells() -> Result<Vec<String>> {
+  let contents =
+    std::fs::read_to_string("/etc/shells").map_err(|err| Error::system(err.to_string()))?;
+  Ok(
+    contents
+      .lines()
+      .map(str::trim)
+      .filter(|line| line.starts_with('/'))
+      .map(str::to_owned)
+      .collect(),
+  )
+}
+
+fn validate_shell(shell: &str) -> Result<()> {
+  if !shells()?.iter().any(|candidate| candidate == shell) {
+    return Err(invalid("select a login shell listed in /etc/shells"));
+  }
+  Ok(())
+}
+
+fn validate_groups(names: &[String]) -> Result<()> {
+  for name in names {
+    validation::validate_group_name(name)?;
+    if groups::get_group_by_name(name)?.is_none() {
+      return Err(Error::GroupNotFound(name.clone()));
+    }
+  }
+  Ok(())
+}
+
+fn target(user: &str) -> Result<passwd::UserInfo> {
+  validation::validate_username(user)?;
+  passwd::get_user_by_name(user)?.ok_or_else(|| Error::UserNotFound(user.into()))
+}
+
+/// Refuses system accounts (uid below 1000 and `nobody`). Used for edits, where
+/// the administrator may still change its own profile.
+fn protect_system_account(user: &str) -> Result<()> {
+  let info = target(user)?;
+  if info.uid < 1000 || info.uid == 65534 {
+    return Err(invalid("cannot modify a system account"));
+  }
+  Ok(())
+}
+
+fn protect_account(user: &str) -> Result<()> {
+  let info = target(user)?;
+  if info.uid < 1000 || info.uid == 65534 || info.uid == actor_uid()? {
+    return Err(invalid(
+      "cannot delete or lock a system account or your own account",
+    ));
+  }
+  Ok(())
+}
+
+fn run(program: &str, args: &[&str]) -> Result<()> {
+  metadata::run_command(Command::new(program).args(args), "account operation failed")
+}
+
+/// Executes a bounded JSON request. Only snapshots are available without root.
+pub fn execute(input: &str) -> Result<Value> {
+  if input.len() > 65536 {
+    return Err(invalid("request too large"));
+  }
+  let request = serde_json::from_str(input).map_err(|_| invalid("invalid account request"))?;
+  execute_request(request)
+}
+
+/// Whether `uid` may administer accounts: root, or a member of the `sudo` group.
+fn is_administrator(uid: u32) -> Result<bool> {
+  if uid == 0 {
+    return Ok(true);
+  }
+  let Some(user) = passwd::get_user_by_uid(uid)? else {
+    return Ok(false);
+  };
+  Ok(
+    groups::groups_of_user(&user.username, user.gid)?
+      .iter()
+      .any(|group| group.name == "sudo"),
+  )
+}
+
+fn execute_request(request: Request) -> Result<Value> {
+  if matches!(request, Request::Snapshot) {
+    let manager = AccountManager::new();
+    let actor = actor_uid()?;
+    let is_admin = is_administrator(actor)?;
+    let mut users = Vec::new();
+    for info in manager.list_users(true)? {
+      // Without administration rights an account only sees its own entry.
+      if !is_admin && info.uid != actor {
+        continue;
+      }
+      let memberships = groups::groups_of_user(&info.username, info.gid)?;
+      users.push(json!({
+                "user": info.username, "name": info.display_name().unwrap_or(""),
+                "uid": info.uid, "gid": info.gid, "home": info.home, "shell": info.shell,
+                "primary_group": memberships.iter().find(|group| group.gid == info.gid).map(|group| group.name.clone()).unwrap_or_default(),
+                "groups": memberships.iter().filter(|group| group.gid != info.gid).map(|group| group.name.clone()).collect::<Vec<_>>()
+            }));
+    }
+    // Without administration rights only the groups the caller belongs to are listed.
+    let own_groups: Vec<String> = match passwd::get_user_by_uid(actor)? {
+      Some(user) => groups::groups_of_user(&user.username, user.gid)?
+        .into_iter()
+        .map(|group| group.name)
+        .collect(),
+      None => Vec::new(),
+    };
+    let group_details: Vec<_> = groups::list_groups()?
+      .into_iter()
+      .filter(|group| is_admin || own_groups.contains(&group.name))
+      .collect();
+    return Ok(json!({
+        "users": users,
+        "groups": group_details.iter().map(|group| group.name.clone()).collect::<Vec<_>>(),
+        "group_details": group_details.into_iter().map(|group| json!({
+            "name": group.name,
+            "gid": group.gid,
+            // Membership of other accounts is only shown to administrators.
+            "members": if is_admin { group.members } else { Vec::new() }
+        })).collect::<Vec<_>>(),
+        "shells": shells()?,
+        "actor_uid": actor,
+        "actor_is_admin": is_admin,
+        // Best-effort: a missing/unreadable greetd config must not break the snapshot.
+        "autologin_user": autologin::current_user().unwrap_or(None)
+    }));
+  }
+  if passwd::effective_uid() != 0 {
+    return Err(Error::PermissionDenied(
+      "administration requires pkexec /usr/lib/argvus/commands/accounts manage".into(),
+    ));
+  }
+  apply_request(
+    request,
+    &current_members_of,
+    &mut run,
+    &mut password::set_password_admin,
+  )
+}
+
+fn current_members_of(group: &str) -> Result<Vec<String>> {
+  Ok(
+    groups::get_group_by_name(group)?
+      .ok_or_else(|| Error::GroupNotFound(group.into()))?
+      .members,
+  )
+}
+
+fn apply_request(
+  request: Request,
+  current_members: &dyn Fn(&str) -> Result<Vec<String>>,
+  run: &mut impl FnMut(&str, &[&str]) -> Result<()>,
+  set_password: &mut impl FnMut(&str, &str) -> Result<()>,
+) -> Result<Value> {
+  match request {
+    Request::Snapshot => unreachable!(),
+    Request::Create {
+      user,
+      name,
+      shell,
+      groups,
+      password,
+    } => {
+      validation::validate_username(&user)?;
+      let name = metadata::validate_display_name(&name)?;
+      validate_shell(&shell)?;
+      validate_groups(&groups)?;
+      if passwd::get_user_by_name(&user)?.is_some() {
+        return Err(invalid("user already exists"));
+      }
+      // A new account remains password-locked unless `password` was
+      // supplied; validate any requestable secret before touching the
+      // system so an unusable password fails fast.
+      let new_password = password.filter(|value| !value.is_empty());
+      if let Some(new_password) = new_password.as_deref() {
+        password::validate_new_password(new_password)?;
+      }
+      run(
+        "/usr/bin/useradd",
+        &[
+          "--create-home",
+          "--user-group",
+          "--comment",
+          &name,
+          "--shell",
+          &shell,
+          "--groups",
+          &groups.join(","),
+          "--",
+          &user,
+        ],
+      )?;
+      if let Some(new_password) = new_password {
+        set_password(&user, &new_password).map_err(|err| {
+          Error::system(format!(
+            "account '{user}' was created, but setting its password failed: {err}"
+          ))
+        })?;
+      }
+    }
+    Request::Edit {
+      user,
+      name,
+      shell,
+      primary_group,
+      groups,
+    } => {
+      protect_system_account(&user)?;
+      let name = metadata::validate_display_name(&name)?;
+      validate_shell(&shell)?;
+      validate_groups(&groups)?;
+      validate_groups(std::slice::from_ref(&primary_group))?;
+      if target(&user)?.uid == actor_uid()? {
+        // Keep the caller from dropping its own administrator membership, which
+        // would lock it out of the next elevation. The admin group is `sudo`.
+        let current = groups::groups_of_user(&user, target(&user)?.gid)?;
+        if current.iter().any(|group| group.name == "sudo")
+          && primary_group != "sudo"
+          && !groups.iter().any(|group| group == "sudo")
+        {
+          return Err(invalid("cannot remove your own administrator membership"));
+        }
+      }
+      run(
+        "/usr/bin/usermod",
+        &[
+          "--comment",
+          &name,
+          "--shell",
+          &shell,
+          "--gid",
+          &primary_group,
+          "--groups",
+          &groups.join(","),
+          "--",
+          &user,
+        ],
+      )?;
+    }
+    Request::Password {
+      user,
+      old,
+      new,
+      confirm,
+    } => {
+      let info = target(&user)?;
+      if new != confirm {
+        return Err(invalid("new password and confirmation do not match"));
+      }
+      password::validate_new_password(&new)?;
+      if info.uid == actor_uid()? && !password::verify_own_password(&user, &old)? {
+        return Err(Error::PermissionDenied(
+          "current password does not match".into(),
+        ));
+      }
+      password::set_password_admin(&user, &new)?;
+    }
+    Request::Lock { user, locked } => {
+      protect_account(&user)?;
+      run(
+        "/usr/bin/usermod",
+        &[if locked { "--lock" } else { "--unlock" }, "--", &user],
+      )?;
+    }
+    Request::ExpirePassword { user } => {
+      target(&user)?;
+      run("/usr/bin/chage", &["--lastday", "0", "--", &user])?;
+    }
+    Request::Delete { user, remove_home } => {
+      protect_account(&user)?;
+      // Never force deletion of logged-in users; home removal is explicit in the UI.
+      let args = if remove_home {
+        vec!["--remove", "--", user.as_str()]
+      } else {
+        vec!["--", user.as_str()]
+      };
+      run("/usr/bin/userdel", &args)?;
+    }
+    Request::CreateGroup { group } => {
+      validation::validate_group_name(&group)?;
+      run("/usr/bin/groupadd", &["--", &group])?;
+    }
+    Request::EditGroup {
+      group,
+      name,
+      members,
+    } => {
+      validation::validate_group_name(&group)?;
+      validation::validate_group_name(&name)?;
+      for member in &members {
+        validation::validate_username(member)?;
+      }
+      let existing = current_members(&group)?;
+      if name != group {
+        run("/usr/bin/groupmod", &["--new-name", &name, "--", &group])?;
+      }
+      for member in &existing {
+        if !members.iter().any(|candidate| candidate == member) {
+          run("/usr/bin/gpasswd", &["--delete", member, "--", &name])?;
+        }
+      }
+      for member in &members {
+        if !existing.iter().any(|candidate| candidate == member) {
+          run(
+            "/usr/bin/usermod",
+            &["--append", "--groups", &name, "--", member],
+          )?;
+        }
+      }
+    }
+    Request::DeleteGroup { group } => {
+      validation::validate_group_name(&group)?;
+      current_members(&group)?;
+      run("/usr/bin/groupdel", &["--", &group])?;
+    }
+    Request::Avatar { user, path } => {
+      let manager = AccountManager::new();
+      if path.is_empty() {
+        manager.remove_avatar(&user)?;
+      } else {
+        manager.set_avatar(&user, std::path::Path::new(&path))?;
+      }
+    }
+    Request::AutoLogin { user, enabled } => {
+      let info = target(&user)?;
+      if info.uid < 1000 || info.uid == 65534 {
+        return Err(invalid(
+          "automatic login is only available for regular user accounts",
+        ));
+      }
+      autologin::set_user(enabled.then_some(user.as_str()))?;
+    }
+  }
+  Ok(json!({"ok": true}))
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+  #[test]
+  fn protocol_rejects_unknown_operations_and_fields() {
+    assert!(serde_json::from_str::<Request>(r#"{"action":"shell","command":"id"}"#).is_err());
+    assert!(
+      serde_json::from_str::<Request>(r#"{"action":"delete","user":"root","force":true}"#).is_err()
+    );
+  }
+  #[test]
+  fn protects_root_and_system_users() {
+    assert!(protect_account("root").is_err());
+    assert!(protect_account("../etc/passwd").is_err());
+  }
+
+  #[test]
+  fn edits_cannot_target_system_accounts() {
+    assert!(protect_system_account("root").is_err());
+    assert!(protect_system_account("../etc/passwd").is_err());
+  }
+
+  #[test]
+  fn create_uses_shadow_argument_vector_and_leaves_password_locked() {
+    let mut calls = Vec::new();
+    let request = Request::Create {
+      user: "argvus_test_created".into(),
+      name: "Alice $(id)".into(),
+      shell: shells().unwrap()[0].clone(),
+      groups: Vec::new(),
+      password: None,
+    };
+    let mut set_password_calls = Vec::new();
+    apply_request(
+      request,
+      &|_| Ok(Vec::new()),
+      &mut |program, args| {
+        calls.push((
+          program.to_string(),
+          args.iter().map(|arg| arg.to_string()).collect::<Vec<_>>(),
+        ));
+        Ok(())
+      },
+      &mut |user, new| {
+        set_password_calls.push((user.to_string(), new.to_string()));
+        Ok(())
+      },
+    )
+    .unwrap();
+    assert_eq!(calls.len(), 1);
+    assert_eq!(calls[0].0, "/usr/bin/useradd");
+    assert!(calls[0].1.contains(&"--create-home".into()));
+    assert!(calls[0].1.contains(&"Alice $(id)".into()));
+    assert!(!calls[0].1.contains(&"--password".into()));
+    assert_eq!(calls[0].1.last().unwrap(), "argvus_test_created");
+    assert!(set_password_calls.is_empty());
+  }
+
+  #[test]
+  fn create_with_password_sets_it_without_passing_secret_via_argv() {
+    let secret = "correct horse battery staple";
+    let mut calls = Vec::new();
+    let mut set_password_calls = Vec::new();
+    let request = Request::Create {
+      user: "argvus_test_created".into(),
+      name: "Alice".into(),
+      shell: shells().unwrap()[0].clone(),
+      groups: Vec::new(),
+      password: Some(secret.into()),
+    };
+    apply_request(
+      request,
+      &|_| Ok(Vec::new()),
+      &mut |program, args| {
+        calls.push((
+          program.to_string(),
+          args.iter().map(|arg| arg.to_string()).collect::<Vec<_>>(),
+        ));
+        Ok(())
+      },
+      &mut |user, new| {
+        set_password_calls.push((user.to_string(), new.to_string()));
+        Ok(())
+      },
+    )
+    .unwrap();
+    assert_eq!(calls.len(), 1);
+    assert_eq!(calls[0].0, "/usr/bin/useradd");
+    assert!(!calls[0].1.contains(&"--password".into()));
+    assert_eq!(calls[0].1.last().unwrap(), "argvus_test_created");
+    for (_program, args) in &calls {
+      for arg in args {
+        assert!(
+          !arg.contains(secret),
+          "secret must never reach argv: {arg:?}"
+        );
+      }
+    }
+    assert_eq!(set_password_calls.len(), 1);
+    assert_eq!(set_password_calls[0].0, "argvus_test_created");
+    assert_eq!(set_password_calls[0].1, secret);
+  }
+
+  #[test]
+  fn create_rejects_invalid_password_before_running_any_system_command() {
+    let request = Request::Create {
+      user: "argvus_test_created".into(),
+      name: "Alice".into(),
+      shell: shells().unwrap()[0].clone(),
+      groups: Vec::new(),
+      password: Some("line\nbreak".into()),
+    };
+    assert!(
+      apply_request(
+        request,
+        &|_| Ok(Vec::new()),
+        &mut |_, _| panic!("must not run a system command for an invalid password"),
+        &mut |_, _| panic!("must not set a password for an invalid password"),
+      )
+      .is_err()
+    );
+  }
+
+  #[test]
+  fn invalid_creation_never_reaches_shadow_tools() {
+    let request = Request::Create {
+      user: "--root".into(),
+      name: "Invalid".into(),
+      shell: "/bin/sh".into(),
+      groups: Vec::new(),
+      password: None,
+    };
+    assert!(
+      apply_request(
+        request,
+        &|_| Ok(Vec::new()),
+        &mut |_, _| panic!("must not run a system command"),
+        &mut |_, _| panic!("must not set a password"),
+      )
+      .is_err()
+    );
+  }
+
+  #[test]
+  fn cannot_delete_root_even_after_authorization() {
+    assert!(
+      apply_request(
+        Request::Delete {
+          user: "root".into(),
+          remove_home: false,
+        },
+        &|_| Ok(Vec::new()),
+        &mut |_, _| panic!("must not delete root"),
+        &mut |_, _| panic!("must not set a password"),
+      )
+      .is_err()
+    );
+  }
+
+  #[test]
+  fn edit_group_renames_and_syncs_membership() {
+    let mut calls = Vec::new();
+    let request = Request::EditGroup {
+      group: "staff".into(),
+      name: "team".into(),
+      members: vec!["alice".into(), "bob".into()],
+    };
+    let current = |_group: &str| Ok(vec!["carol".into()]);
+    apply_request(
+      request,
+      &current,
+      &mut |program, args| {
+        calls.push((
+          program.to_string(),
+          args.iter().map(|arg| arg.to_string()).collect::<Vec<_>>(),
+        ));
+        Ok(())
+      },
+      &mut |_, _| panic!("EditGroup must not set a password"),
+    )
+    .unwrap();
+    assert!(calls.contains(&(
+      "/usr/bin/groupmod".into(),
+      vec![
+        "--new-name".into(),
+        "team".into(),
+        "--".into(),
+        "staff".into()
+      ]
+    )));
+    assert!(calls.contains(&(
+      "/usr/bin/gpasswd".into(),
+      vec![
+        "--delete".into(),
+        "carol".into(),
+        "--".into(),
+        "team".into()
+      ]
+    )));
+    assert!(calls.iter().any(|call| call.0 == "/usr/bin/usermod"));
+    assert!(calls.iter().any(|call| call.1.contains(&"--append".into())));
+  }
+
+  #[test]
+  fn delete_group_runs_groupdel() {
+    let mut calls = Vec::new();
+    let current = |_group: &str| Ok(vec!["alice".into()]);
+    apply_request(
+      Request::DeleteGroup {
+        group: "legacy".into(),
+      },
+      &current,
+      &mut |program, _| {
+        calls.push(program.to_string());
+        Ok(())
+      },
+      &mut |_, _| panic!("DeleteGroup must not set a password"),
+    )
+    .unwrap();
+    assert!(calls.contains(&"/usr/bin/groupdel".into()));
+  }
+
+  #[test]
+  fn group_operations_reject_missing_or_invalid_groups() {
+    assert!(
+      apply_request(
+        Request::DeleteGroup {
+          group: "../etc/passwd".into()
+        },
+        &|_| Ok(Vec::new()),
+        &mut |_, _| panic!("must not delete an invalid group"),
+        &mut |_, _| panic!("must not set a password"),
+      )
+      .is_err()
+    );
+  }
+}

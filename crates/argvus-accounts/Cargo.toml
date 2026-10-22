@@ -1,0 +1,24 @@
+[package]
+name = "argvus-accounts"
+description = "Local user account and avatar manager for the Argvus desktop"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+
+# Private executable: the argvus package installs it as commands/accounts and
+# the dispatcher starts it from there. It is not a public `argvus-accounts` command.
+[[bin]]
+name = "argvus-accounts"
+path = "src/main.rs"
+
+[dependencies]
+argvus-accounts-core.workspace = true
+clap = { workspace = true, features = ["wrap_help"] }
+
+[dev-dependencies]
+assert_cmd.workspace = true
+predicates.workspace = true
