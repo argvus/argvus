@@ -94,7 +94,9 @@ The greeter compositor still sets `XDG_CURRENT_DESKTOP=Hyprland` to satisfy
 Hyprland's startup checks, while `XDG_SESSION_DESKTOP=argvus-greeter` identifies
 the login environment. When authentication succeeds, the greeter starts the
 normal `--spinner-only` layer-shell splash and waits for its first frame before
-asking greetd to start the selected session. It keeps the terminal and minimal
+asking greetd to start the selected session. When the splash is missing or does
+not report a frame in time, the session still starts, without the overlay.
+It keeps the terminal and minimal
 compositor alive until greetd terminates the greeter session, so terminal
 restoration cannot uncover a blank compositor. The user-session loading helper
 then starts the same spinner as soon as the new Wayland socket appears and

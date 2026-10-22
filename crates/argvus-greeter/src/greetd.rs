@@ -199,15 +199,13 @@ fn handle_response(
         info!(session = %session.id, monotonic_ns = monotonic_ns(), "authentication succeeded");
         // The overlay must be mapped while Kitty and the greeter compositor
         // are still alive. A Wayland client cannot survive their later DRM
-        // handover, but it eliminates the pre-handover empty screen.
+        // handover, but it eliminates the pre-handover empty screen. It only
+        // hides the switch, so an authenticated user still logs in without it.
         let splash = match WaylandSplash::start(&theme, accent.as_deref()) {
-          Ok(splash) => splash,
+          Ok(splash) => Some(splash),
           Err(error) => {
-            error!(%error, "could not start the greeter handoff splash");
-            let _ = events.send(Event::Error(
-              "Could not start the session transition.".into(),
-            ));
-            return Ok(WorkerState::Disconnected);
+            error!(%error, "could not start the greeter handoff splash; continuing without it");
+            None
           }
         };
         // The DRM surface must be listening before the greeter compositor exits,
@@ -228,7 +226,9 @@ fn handle_response(
             // greetd terminates the greeter session after accepting the user
             // command. Keep the splash parented here until that SIGTERM, so
             // terminal cleanup cannot uncover the compositor in between.
-            splash.detach();
+            if let Some(splash) = splash {
+              splash.detach();
+            }
             let _ = events.send(Event::SessionStarted);
           }
           Response::Error {
