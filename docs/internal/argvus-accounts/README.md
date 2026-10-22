@@ -19,8 +19,9 @@ Não há serviço, setuid, capability nem D-Bus próprio. O modelo é:
    `DBUS_SESSION_BUS_ADDRESS` e `XDG_RUNTIME_DIR`.
 3. `polkit/50-argvus-accounts.rules` (instalado em
    `/usr/share/polkit-1/rules.d/`) autoriza `org.freedesktop.policykit.exec` somente
-   quando `program` é `/usr/lib/argvus/commands/accounts`. Quem está no grupo `sudo`
-   autentica com a própria senha; os demais, com a do root.
+   quando `program` é `/usr/lib/argvus/commands/accounts`. Quem está no grupo `wheel`
+   ou `sudo` autentica com a própria senha; os demais, com a do root. Os dois grupos
+   ficam em `ADMIN_GROUPS` (`admin.rs`), espelhado na regra e no Control Center.
 4. O processo root é o mesmo binário. Toda validação de entrada é feita nele, em
    `admin.rs`, `validation.rs`, `metadata.rs` e `password.rs`. O subcomando `manage`
    lê JSON da entrada padrão com limite de 64 KiB e recusa execução que não seja root.
@@ -38,7 +39,7 @@ só evita uma segunda tentativa de elevação.
   a `MAX_SOURCE_FILE_BYTES + 1`. Coberto por `avatar_rejects_bad_inputs` em
   `tests/integration.rs`.
 - `Edit` chama `protect_system_account`: contas com UID abaixo de 1000 e `nobody` não
-  são editadas. A guarda de auto-remoção de administrador usa o grupo `sudo`.
+  são editadas. A guarda de auto-remoção de administrador usa `ADMIN_GROUPS` (`wheel` e `sudo`).
 - Na revisão, não foi encontrado nenhum log que grave senhas ou hashes. Mantenha assim ao
   adicionar diagnósticos (`--verbose`).
 

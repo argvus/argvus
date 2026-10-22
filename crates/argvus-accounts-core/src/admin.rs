@@ -147,7 +147,19 @@ pub fn execute(input: &str) -> Result<Value> {
   execute_request(request)
 }
 
-/// Whether `uid` may administer accounts: root, or a member of the `sudo` group.
+/// Groups whose members administer the system: `wheel` is Arch's sudoers and
+/// polkit administrator group, `sudo` the group earlier ARGVUS releases used.
+/// The polkit rule `50-argvus-accounts.rules` and the Control Center use the
+/// same pair.
+pub const ADMIN_GROUPS: [&str; 2] = ["wheel", "sudo"];
+
+/// Whether `name` is one of the [`ADMIN_GROUPS`].
+#[must_use]
+pub fn is_admin_group(name: &str) -> bool {
+  ADMIN_GROUPS.contains(&name)
+}
+
+/// Whether `uid` may administer accounts: root, or a member of an admin group.
 fn is_administrator(uid: u32) -> Result<bool> {
   if uid == 0 {
     return Ok(true);
@@ -158,7 +170,7 @@ fn is_administrator(uid: u32) -> Result<bool> {
   Ok(
     groups::groups_of_user(&user.username, user.gid)?
       .iter()
-      .any(|group| group.name == "sudo"),
+      .any(|group| is_admin_group(&group.name)),
   )
 }
 
@@ -296,11 +308,11 @@ fn apply_request(
       validate_groups(std::slice::from_ref(&primary_group))?;
       if target(&user)?.uid == actor_uid()? {
         // Keep the caller from dropping its own administrator membership, which
-        // would lock it out of the next elevation. The admin group is `sudo`.
+        // would lock it out of the next elevation (see `ADMIN_GROUPS`).
         let current = groups::groups_of_user(&user, target(&user)?.gid)?;
-        if current.iter().any(|group| group.name == "sudo")
-          && primary_group != "sudo"
-          && !groups.iter().any(|group| group == "sudo")
+        if current.iter().any(|group| is_admin_group(&group.name))
+          && !is_admin_group(&primary_group)
+          && !groups.iter().any(|group| is_admin_group(group))
         {
           return Err(invalid("cannot remove your own administrator membership"));
         }
@@ -428,6 +440,14 @@ mod tests {
       serde_json::from_str::<Request>(r#"{"action":"delete","user":"root","force":true}"#).is_err()
     );
   }
+  #[test]
+  fn wheel_and_sudo_are_the_admin_groups() {
+    assert!(is_admin_group("wheel"));
+    assert!(is_admin_group("sudo"));
+    assert!(!is_admin_group("users"));
+    assert!(!is_admin_group("Wheel"));
+  }
+
   #[test]
   fn protects_root_and_system_users() {
     assert!(protect_account("root").is_err());

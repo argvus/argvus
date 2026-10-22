@@ -41,7 +41,8 @@ Somente `list`, `show`, `self`, `self groups` e o seu próprio avatar funcionam 
 Qualquer outra alteração pede autorização ao agente polkit do desktop. A regra do ARGVUS
 (`/usr/share/polkit-1/rules.d/50-argvus-accounts.rules`) define quem precisa se autenticar:
 
-- um usuário do grupo `sudo` confirma com a própria senha;
+- um usuário de um grupo de administradores (`wheel`, o padrão do Arch, ou `sudo`) confirma com a
+  própria senha;
 - qualquer outro usuário confirma com a senha do root.
 
 | Operação | Sem autorização | Com autorização |
@@ -71,8 +72,9 @@ Não é preciso executar o comando com `sudo`. O comando pede autorização ao p
   medida que é digitado.
 - Editar uma conta com UID abaixo de 1000 (e `nobody`) é recusado, assim como bloqueá-la ou
   removê-la. A sua própria conta não pode ser bloqueada nem removida.
-- A condição de administrador é o grupo `sudo`. Remover a própria condição de administrador por uma
-  edição é recusado.
+- A condição de administrador é o grupo `wheel` ou o grupo `sudo`. O Control Center adiciona novos
+  administradores ao `wheel` quando o sistema o tem, e ao `sudo` caso contrário. Remover a própria
+  condição de administrador por uma edição é recusado.
 
 ## Exemplos
 
@@ -81,9 +83,9 @@ Não é preciso executar o comando com `sudo`. O comando pede autorização ao p
 argvus accounts self name "William Canin"
 argvus accounts self avatar ~/Pictures/perfil.png
 
-# Veja os seus grupos e adicione outro usuário ao grupo sudo (exige autorização)
+# Veja os seus grupos e adicione outro usuário ao grupo wheel (exige autorização)
 argvus accounts self groups
-argvus accounts groups ghost --add sudo
+argvus accounts groups ghost --add wheel
 
 # Administrador: mostre os detalhes de um usuário e altere o nome dele
 argvus accounts show ghost
