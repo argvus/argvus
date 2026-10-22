@@ -358,22 +358,13 @@ mod tests {
   use std::env;
   use std::fs;
 
-  /// Scratch directory of these tests, outside the source tree and unique to
-  /// this test process.
-  fn test_root() -> PathBuf {
-    env::temp_dir().join(format!(
-      "argvus-control-center-apps-test-{}",
-      std::process::id()
-    ))
-  }
-
-  /// Executes the `tmp_file` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
-  fn tmp_file(name: &str) -> PathBuf {
-    let p = test_root().join(name);
-    if let Some(parent) = p.parent() {
-      fs::create_dir_all(parent).unwrap();
-    }
-    p
+  /// A scratch directory for one test, outside the source tree. It is removed
+  /// when the returned guard is dropped, even when the test fails.
+  fn scratch() -> tempfile::TempDir {
+    tempfile::Builder::new()
+      .prefix("argvus-control-center-apps-test-")
+      .tempdir()
+      .unwrap()
   }
 
   #[test]
@@ -383,7 +374,8 @@ mod tests {
     state.set(Category::Browser, "firefox");
     state.set(Category::Terminal, "kitty");
 
-    let path = tmp_file("roundtrip.json");
+    let dir = scratch();
+    let path = dir.path().join("roundtrip.json");
     state.save_to(&path).unwrap();
 
     let loaded = AppState::load_from(&path);
@@ -394,8 +386,8 @@ mod tests {
   #[test]
   /// Executes the `missing_file_yields_empty_state` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn missing_file_yields_empty_state() {
-    let path = tmp_file("missing.json");
-    let _ = fs::remove_file(&path);
+    let dir = scratch();
+    let path = dir.path().join("missing.json");
     let state = AppState::load_from(&path);
     assert_eq!(state.get(Category::Browser), None);
     assert_eq!(state.effective(Category::Terminal), "argvus-terminal");
@@ -404,7 +396,8 @@ mod tests {
   #[test]
   /// Executes the `invalid_json_yields_empty_state` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn invalid_json_yields_empty_state() {
-    let path = tmp_file("invalid.json");
+    let dir = scratch();
+    let path = dir.path().join("invalid.json");
     fs::write(&path, "not json {").unwrap();
     let state = AppState::load_from(&path);
     assert_eq!(state.effective(Category::Terminal), "argvus-terminal");
@@ -477,7 +470,8 @@ mod tests {
   #[test]
   /// Executes the modular canonical state precedence test in this module.
   fn modular_config_drives_effective_state() {
-    let argvus = test_root().join("config-home/argvus");
+    let dir = scratch();
+    let argvus = dir.path().join("config-home/argvus");
     fs::create_dir_all(&argvus).unwrap();
     fs::create_dir_all(argvus.join("config")).unwrap();
 
