@@ -72,8 +72,11 @@ it needs it.
 
   Interactively, type the three lines and press Enter after each one. The input is shown on the
   terminal as it is typed.
-- Editing an account below UID 1000 (and `nobody`) is refused, and so are locking and deleting
-  it. Your own account cannot be locked or deleted.
+- Editing an account below UID 1000 (and `nobody`) is refused, and so are locking it, deleting it
+  and expiring its password. Your own account cannot be locked or deleted.
+- Renaming or deleting a group below GID 1000, or an administrator group (`wheel`, `sudo`), is
+  refused; its members can still be changed, except that you cannot remove yourself from an
+  administrator group.
 - Administrator membership is the `wheel` or the `sudo` group. The Control Center adds new
   administrators to `wheel` when the system has it, and to `sudo` otherwise. Removing your own
   administrator membership through an edit is refused.

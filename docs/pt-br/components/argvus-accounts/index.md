@@ -70,8 +70,11 @@ Não é preciso executar o comando com `sudo`. O comando pede autorização ao p
 
   No terminal, digite as três linhas e pressione Enter após cada uma. O texto aparece na tela à
   medida que é digitado.
-- Editar uma conta com UID abaixo de 1000 (e `nobody`) é recusado, assim como bloqueá-la ou
-  removê-la. A sua própria conta não pode ser bloqueada nem removida.
+- Editar uma conta com UID abaixo de 1000 (e `nobody`) é recusado, assim como bloqueá-la, removê-la
+  ou expirar a senha dela. A sua própria conta não pode ser bloqueada nem removida.
+- Renomear ou remover um grupo com GID abaixo de 1000, ou um grupo de administradores (`wheel`,
+  `sudo`), é recusado; os membros dele ainda podem mudar, mas você não pode se remover de um grupo
+  de administradores.
 - A condição de administrador é o grupo `wheel` ou o grupo `sudo`. O Control Center adiciona novos
   administradores ao `wheel` quando o sistema o tem, e ao `sudo` caso contrário. Remover a própria
   condição de administrador por uma edição é recusado.
