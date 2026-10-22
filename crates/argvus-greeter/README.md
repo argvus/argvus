@@ -152,8 +152,8 @@ For each user discovered in `/etc/passwd`, Argvus Greeter resolves the avatar
 in this order:
 
 1. `$HOME/.face` — written and validated by
-   [`argvus-accounts`](https://github.com/argvus/argvus-accounts), the official
-   account-metadata source of the Argvus desktop (regular PNG file, 256x256,
+   `argvus accounts`, the official account-metadata source of the Argvus desktop
+   (regular PNG file, 256x256,
    mode `0644`, owned by the user);
 2. `/var/lib/AccountsService/icons/<username>` — freedesktop
    [AccountsService](https://www.freedesktop.org/wiki/Software/AccountsService/)
@@ -218,7 +218,7 @@ changes:
 
 The login screen is strictly read-only with respect to avatars: there is no
 button, menu, or flow to upload, choose, or remove them. Avatar lifecycle
-(set, replace, remove) belongs exclusively to `argvus-accounts`.
+(set, replace, remove) belongs exclusively to `argvus accounts`.
 
 ## Development
 

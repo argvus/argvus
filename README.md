@@ -54,7 +54,7 @@ component package depends on it, so no install order is required.
 | Display, power, network and notifications | `argvus-display`, `argvus-power`, `argvus network`, `argvus-notifications` |
 | Desktop portals and Wayland/DBus defaults | `argvus-portal` |
 | Removable storage | `argvus removable-devices` (`argvus`) |
-| Accounts | `argvus-accounts` (runs as root through `pkexec`) |
+| Accounts | `argvus accounts` (runs as root through `pkexec`) |
 | Firewall | `argvus-firewall` |
 | Games | `argvus-games`; `argvus-game-snake` is independent and optional |
 | Configuration, translations and keys | `argvus config`, `argvus i18n` (with the language catalogs), `argvus keys` |
@@ -147,7 +147,6 @@ sudo pacman -S blueman starship kooha nwg-look
 
 | Package | Repository |
 |---------|------------|
-| argvus-accounts | [argvus/argvus-accounts](https://github.com/argvus/argvus-accounts) |
 | argvus-app-profiles | [argvus/argvus-app-profiles](https://github.com/argvus/argvus-app-profiles) |
 | argvus-appearance | [argvus/argvus-appearance](https://github.com/argvus/argvus-appearance) |
 | argvus-boot-splash | [argvus/argvus-boot-splash](https://github.com/argvus/argvus-boot-splash) |

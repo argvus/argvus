@@ -225,7 +225,7 @@ linhas no mesmo cursor (`selected - rows.len()`), desenhados com
 | Usuário | Campos (nome completo, shell, grupo principal, grupos suplementares) | Edita no rascunho | Value (nome) / Submenu (shell, grupos) na seção Conta | `Enter` | migrado |
 | Usuário | **`[ Save changes ]`** | `edit` → confirmação | `Salvar alterações` (`draft_actions`) logo após os campos, apagada sem mudança; Esc com rascunho pede descarte | `Enter` | migrado |
 | Usuário | **`[ Change password ]`** | Abre página de senha | Submenu na seção Senha | `Enter` | migrado |
-| Usuário | **`[ Lock password ]` / `[ Unlock password ]`** | `lock` → confirmação | Action ×2 na seção Senha. **Não fundidas:** o snapshot do `argvus-accounts` não informa o estado de bloqueio (D17) | `Enter` | migrado |
+| Usuário | **`[ Lock password ]` / `[ Unlock password ]`** | `lock` → confirmação | Action ×2 na seção Senha. **Não fundidas:** o snapshot de `argvus accounts` não informa o estado de bloqueio (D17) | `Enter` | migrado |
 | Usuário | **`[ Require password change at login ]`** | `expire-password` → confirmação | Action (confirmada) na seção Senha | `Enter` | migrado |
 | Usuário | **`[ Avatar image ]`** | Editor de caminho → confirmação | Action na seção Avatar (abre o mesmo editor) | `Enter` | migrado |
 | Usuário | **`[ Remove avatar ]`** | `avatar ""` → confirmação | Action na seção Avatar, confirmação sem estilo de perigo (D18) | `Enter` | migrado |
@@ -1550,7 +1550,7 @@ ações nem o momento em que cada mudança é efetivada.
 | D14 | `Home/End` navegam (D3); para preservar o 0/100 direto, Enter numa linha Value com passo abre o prompt numérico 0–100, que grava só no rascunho (`Apply` continua necessário). | decidido (Fase 2) |
 | D15 | Recarregar (`r` ou o automático ao entrar numa página) preserva um rascunho com alterações e só reconstrói um rascunho limpo. | decidido (Fase 2) |
 | D16 | `Space` não é removido no `appearance`: continua ativando Action, Submenu e Choice (e abrindo o editor de Value sem passo), tratado na página sem mudar o padrão do componente para os outros crates. | decidido (Fase 2) |
-| D17 | `Bloquear senha`/`Desbloquear senha` continuam duas linhas: o snapshot do `argvus-accounts` não traz o estado de bloqueio (`crates/argvus-accounts-core/src/admin.rs`, objeto `users`). | decidido (Fase 3) |
+| D17 | `Bloquear senha`/`Desbloquear senha` continuam duas linhas: o snapshot de `argvus accounts` não traz o estado de bloqueio (`crates/argvus-accounts-core/src/admin.rs`, objeto `users`). | decidido (Fase 3) |
 | D18 | `Remover avatar`: Action com confirmação, sem estilo de perigo, na seção Avatar. `Aplicar regras salvas`: Action confirmada na seção Regras, fora da Zona de perigo; a confirmação avisa que o firewall será reiniciado. | decidido (Fase 3) |
 | D19 | `r` em Atalhos mantém o efeito de antes (restaura **só o atalho selecionado**; na edição, o atalho editado e volta) e passa pela confirmação única, como o D6 exige. `Restaurar todos os atalhos` é a linha Destructive da Zona de perigo. A linha `Restaurar padrão` da edição continua imediata, como antes. | decidido (Fase 3) |
 | D20 | Locales do sistema: Enter numa linha alterna o locale; `Aplicar` é a última linha (rascunho, confirmada). | decidido (Fase 3) |
