@@ -77,8 +77,15 @@ is_supported_theme() {
       return 0
       ;;
     *)
-      # Drop-in themes are supported when their installed manifest exists.
-      [ -r "${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/appearance/themes.d/$1/theme.toml" ] && return 0
+      # The ID is read from a file the user owns and becomes a path component,
+      # so it is checked as the Rust theme loader checks it: lowercase letters,
+      # digits and inner hyphens only.
+      case "$1" in
+        ''|-*|*-|*[!a-z0-9-]*) return 1 ;;
+      esac
+      # Drop-in themes are supported when their installed manifest exists. The
+      # manifest belongs to the family, so a Float variant uses the same one.
+      [ -r "${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/appearance/themes.d/${1%-float}/theme.toml" ] && return 0
       return 1
       ;;
   esac
