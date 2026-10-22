@@ -1693,9 +1693,19 @@ fn control_reminder_service(enabled: bool) {
   };
   let _ = Command::new("systemctl").args(systemctl_args).status();
   if !enabled {
-    let _ = Command::new("pkill")
-      .args(["-f", "argvus taskbar-calendar service"])
-      .status();
+    // Only this user's reminder service: the uid comes from /proc/self, as
+    // this crate does not link libc. Without it nothing is signalled.
+    if let Ok(metadata) = std::fs::metadata("/proc/self") {
+      use std::os::unix::fs::MetadataExt as _;
+      let _ = Command::new("pkill")
+        .args([
+          "-u",
+          metadata.uid().to_string().as_str(),
+          "-f",
+          "argvus taskbar-calendar service",
+        ])
+        .status();
+    }
   }
 }
 

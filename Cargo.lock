@@ -285,6 +285,7 @@ dependencies = [
  "argvus-control-center-core",
  "serde",
  "serde_json",
+ "tempfile",
 ]
 
 [[package]]

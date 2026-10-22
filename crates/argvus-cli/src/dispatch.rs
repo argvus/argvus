@@ -40,29 +40,29 @@ pub fn run(arguments: &[OsString]) -> Outcome {
     "--start-desktop" => exec_private(PrivateCommand::Tty, &[]),
     "--setup" | "setup" => setup::run(rest),
     "--system-monitor" | "system-monitor" => {
-      Ok(argvus_system_monitor::run_command(owned_arguments(rest)))
+      Ok(argvus_system_monitor::run_command(owned_arguments(rest)?))
     }
     "--control-center" | "control-center" => control_center::run(rest.to_vec()),
-    "tui-terminal" => Ok(argvus_tui_terminal::run_command(owned_arguments(rest))),
-    "--terminal" | "terminal" => Ok(argvus_terminal::run_command(owned_arguments(rest))),
-    "projects" => Ok(argvus_projects::run_command(owned_arguments(rest))),
+    "tui-terminal" => Ok(argvus_tui_terminal::run_command(owned_arguments(rest)?)),
+    "--terminal" | "terminal" => Ok(argvus_terminal::run_command(owned_arguments(rest)?)),
+    "projects" => Ok(argvus_projects::run_command(owned_arguments(rest)?)),
     "widget-telemetry" => widget_telemetry(rest),
     "loading-theme" => exec_program(Path::new(LOADING_THEME_BINARY), rest),
     "network" | "networkctl" => Ok(argvus_network_commands::networkctl::run_command(
       "argvus-networkctl",
-      owned_arguments(rest),
+      owned_arguments(rest)?,
     )),
     "bluetooth" | "bluetoothctl" => Ok(argvus_network_commands::bluetoothctl::run_command(
       "argvus-bluetoothctl",
-      owned_arguments(rest),
+      owned_arguments(rest)?,
     )),
     // Compatibility names for the callers moved in a later step: they run the same
     // in-process commands as the subcommands above.
     "widget-telemetry-toggle" => Ok(argvus_widget_telemetry_toggle::run_command(
-      owned_arguments(rest),
+      owned_arguments(rest)?,
     )),
     "widget-telemetry-block" => Ok(argvus_widget_telemetry_blocks::run_command(
-      owned_arguments(rest),
+      owned_arguments(rest)?,
     )),
     "--spf" | "spf" | "--superfile" | "superfile" => apps::run_spf(rest),
     "--yazy" | "yazy" | "--yazi" | "yazi" => apps::run_yazi(rest),
@@ -80,10 +80,10 @@ pub fn run(arguments: &[OsString]) -> Outcome {
     "theme-switch" => run_config(&with_leading("theme-apply", rest)),
     "effects-toggle" => run_config(&with_leading("effects", rest)),
     "config" => run_config(rest),
-    "gpg" => Ok(argvus_keys::run_command(command_words("gpg", rest))),
-    "keys" => Ok(argvus_keys::run_command(owned_arguments(rest))),
+    "gpg" => Ok(argvus_keys::run_command(command_words("gpg", rest)?)),
+    "keys" => Ok(argvus_keys::run_command(owned_arguments(rest)?)),
     // Runs in-process: the i18n commands are a library of the workspace.
-    "i18n" => Ok(argvus_i18n_cli::run(&owned_arguments(rest))),
+    "i18n" => Ok(argvus_i18n_cli::run(&owned_arguments(rest)?)),
     other => {
       if let Some(route) = ScriptRoute::from_name(other) {
         return script::run(route, rest);
@@ -128,7 +128,7 @@ fn exec_named(name: &str, arguments: &[OsString]) -> Outcome {
 fn run_config(arguments: &[OsString]) -> Outcome {
   Ok(argvus_config_core::cli::run_command(owned_arguments(
     arguments,
-  )))
+  )?))
 }
 
 /// Starts the game directly in a terminal, or inside the terminal wrapper when
@@ -167,20 +167,22 @@ fn default_arguments(arguments: &[OsString], default: &str) -> Vec<OsString> {
 }
 
 /// The words of an in-process command: the command name, then `arguments`.
-fn command_words(command: &str, arguments: &[OsString]) -> Vec<String> {
-  std::iter::once(command.to_owned())
-    .chain(owned_arguments(arguments))
-    .collect()
+fn command_words(command: &str, arguments: &[OsString]) -> Result<Vec<String>, Failure> {
+  Ok(
+    std::iter::once(command.to_owned())
+      .chain(owned_arguments(arguments)?)
+      .collect(),
+  )
 }
 
 /// `argvus widget-telemetry block|toggle ...`: the Waybar block and the toggle.
 fn widget_telemetry(arguments: &[OsString]) -> Outcome {
   match arguments.first().and_then(|argument| argument.to_str()) {
     Some("block") => Ok(argvus_widget_telemetry_blocks::run_command(
-      owned_arguments(&arguments[1..]),
+      owned_arguments(&arguments[1..])?,
     )),
     Some("toggle") => Ok(argvus_widget_telemetry_toggle::run_command(
-      owned_arguments(&arguments[1..]),
+      owned_arguments(&arguments[1..])?,
     )),
     _ => {
       eprintln!("usage: argvus widget-telemetry <block|toggle> [arguments...]");
@@ -189,10 +191,23 @@ fn widget_telemetry(arguments: &[OsString]) -> Outcome {
   }
 }
 
-fn owned_arguments(arguments: &[OsString]) -> Vec<String> {
+/// The arguments of an in-process command as strings. A non-UTF-8 argument (a
+/// file name in a legacy encoding, for example) is refused rather than altered,
+/// so a command never acts on a different path than the one it was given.
+fn owned_arguments(arguments: &[OsString]) -> Result<Vec<String>, Failure> {
   arguments
     .iter()
-    .map(|argument| argument.to_string_lossy().into_owned())
+    .map(|argument| {
+      argument.to_str().map(str::to_owned).ok_or_else(|| {
+        Failure::with_code(
+          format!(
+            "argument is not valid UTF-8: {}",
+            argument.to_string_lossy()
+          ),
+          2,
+        )
+      })
+    })
     .collect()
 }
 
@@ -221,6 +236,19 @@ mod tests {
     );
     let given = [OsString::from("show")];
     assert_eq!(default_arguments(&given, "toggle"), given.to_vec());
+  }
+
+  #[test]
+  fn non_utf8_arguments_are_refused_instead_of_altered() {
+    use std::os::unix::ffi::OsStringExt as _;
+    let invalid = OsString::from_vec(b"caf\xe9.txt".to_vec());
+    let failure = owned_arguments(&[OsString::from("open"), invalid]).unwrap_err();
+    assert_eq!(failure.code(), 2);
+    assert!(failure.message().contains("not valid UTF-8"));
+    assert_eq!(
+      owned_arguments(&[OsString::from("café.txt")]).unwrap(),
+      vec!["café.txt".to_owned()]
+    );
   }
 
   #[test]

@@ -79,14 +79,16 @@ chmod 700 "$STATE_DIR" 2>/dev/null || true
 LOG="$STATE_DIR/session.log"
 
 # The greeter runs as its own user before authentication, so it cannot write to
-# the user's ~/.local/state/argvus. Keep its log in the DRM rendezvous directory
-# when available; session appends it to the user's session.log at login.
+# the user's ~/.local/state/argvus. Keep its log in the DRM rendezvous directory,
+# which belongs to the greeter user; the session appends it to the user's
+# session.log at login.
 if [ -d /run/argvus-greeter ] && [ -w /run/argvus-greeter ]; then
   LOG="/run/argvus-greeter/session.log"
   # Start each greeter run with an empty log so argvus-session never appends
-  # output from an earlier run. The file is owned by the greeter user, so the
-  # session cannot truncate it itself.
+  # output from an earlier run. The session that logs in runs as another user
+  # and only reads it, so it is made readable by everyone.
   : > "$LOG"
+  chmod 0644 "$LOG" 2>/dev/null || true
 fi
 
 # Clear the active login VT before the graphical greeter takes over.

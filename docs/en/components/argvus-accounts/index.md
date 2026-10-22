@@ -42,7 +42,8 @@ Only `list`, `show`, `self`, `self groups` and your own avatar work without auth
 other change asks the desktop's polkit agent for authorization. The ARGVUS rule
 (`/usr/share/polkit-1/rules.d/50-argvus-accounts.rules`) decides who must authenticate:
 
-- a user in the `sudo` group confirms with their own password;
+- a user in an administrator group (`wheel`, the Arch default, or `sudo`) confirms with their own
+  password;
 - any other user confirms with the root password.
 
 | Operation | Without authorization | With authorization |
@@ -71,10 +72,14 @@ it needs it.
 
   Interactively, type the three lines and press Enter after each one. The input is shown on the
   terminal as it is typed.
-- Editing an account below UID 1000 (and `nobody`) is refused, and so are locking and deleting
-  it. Your own account cannot be locked or deleted.
-- Administrator membership is the `sudo` group. Removing your own administrator membership
-  through an edit is refused.
+- Editing an account below UID 1000 (and `nobody`) is refused, and so are locking it, deleting it
+  and expiring its password. Your own account cannot be locked or deleted.
+- Renaming or deleting a group below GID 1000, or an administrator group (`wheel`, `sudo`), is
+  refused; its members can still be changed, except that you cannot remove yourself from an
+  administrator group.
+- Administrator membership is the `wheel` or the `sudo` group. The Control Center adds new
+  administrators to `wheel` when the system has it, and to `sudo` otherwise. Removing your own
+  administrator membership through an edit is refused.
 
 ## Examples
 
@@ -83,9 +88,9 @@ it needs it.
 argvus accounts self name "William Canin"
 argvus accounts self avatar ~/Pictures/profile.png
 
-# Check your groups, then add another user to the sudo group (authorization required)
+# Check your groups, then add another user to the wheel group (authorization required)
 argvus accounts self groups
-argvus accounts groups ghost --add sudo
+argvus accounts groups ghost --add wheel
 
 # Administrator: show a user's details and reset that user's name
 argvus accounts show ghost

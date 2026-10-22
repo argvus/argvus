@@ -13,3 +13,4 @@ serde_json = { workspace = true, features = ["preserve_order"] }
 [dev-dependencies]
 # Test builds never start external programs (see the core `testing` feature).
 argvus-control-center-core = { workspace = true, features = ["testing"] }
+tempfile.workspace = true

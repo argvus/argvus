@@ -90,6 +90,17 @@ pub fn is_page(page: Page) -> bool {
 fn text(value: &Value, key: &str) -> String {
   value[key].as_str().unwrap_or_default().into()
 }
+
+/// Groups that grant administration, as in `argvus-accounts-core` (`ADMIN_GROUPS`).
+const ADMIN_GROUPS: [&str; 2] = ["wheel", "sudo"];
+
+/// Whether `groups` contains an administrator group.
+fn has_admin_group(groups: &[String]) -> bool {
+  groups
+    .iter()
+    .any(|group| ADMIN_GROUPS.contains(&group.as_str()))
+}
+
 /// Executes the `strings` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn strings(value: &Value) -> Vec<String> {
   value
@@ -644,9 +655,7 @@ impl Administration {
       Row::toggle(
         Item::UserAdmin,
         label("control_center.make_admin"),
-        strings(&self.user["groups"])
-          .iter()
-          .any(|group| group == "sudo"),
+        has_admin_group(&strings(&self.user["groups"])),
       )
       .icon(icons::SHIELD)
       .enabled(self.is_admin()),
@@ -904,6 +913,19 @@ impl Administration {
 
   /// Whether the signed-in account administers accounts (root or `sudo`), as
   /// the backend reported it. Administrators only see and change other accounts.
+  /// The group a new administrator joins: `wheel` when the system has it (as
+  /// stock Arch does), otherwise `sudo`.
+  pub(crate) fn admin_group(&self) -> &'static str {
+    if strings(&self.accounts["groups"])
+      .iter()
+      .any(|group| group == "wheel")
+    {
+      "wheel"
+    } else {
+      "sudo"
+    }
+  }
+
   pub(crate) fn is_admin(&self) -> bool {
     self.accounts["actor_is_admin"].as_bool().unwrap_or(false)
   }
@@ -1315,8 +1337,8 @@ impl App {
         };
         let title = self.admin.create_account_label(lang);
         let mut groups = strings(&self.admin.user["groups"]);
-        if self.admin.create_admin && !groups.iter().any(|group| group == "sudo") {
-          groups.push("sudo".into());
+        if self.admin.create_admin && !has_admin_group(&groups) {
+          groups.push(self.admin.admin_group().into());
         }
         let mut value = json!({"action":"create", "user":user, "name":self.admin.user["name"], "shell":self.admin.user["shell"], "groups":groups});
         if self.admin.passwords[1].is_empty() && self.admin.passwords[2].is_empty() {
@@ -1368,13 +1390,14 @@ impl App {
       // Cancel only discards the edits; the user page stays open.
       Item::CancelUser => self.admin.discard_draft(Page::User),
       Item::CreateAdmin => self.admin.create_admin = !self.admin.create_admin,
-      // The sudo membership is part of the groups draft, so Save applies it.
+      // The administrator membership is part of the groups draft, so Save
+      // applies it. Turning it off leaves every administrator group.
       Item::UserAdmin => {
         let mut groups = strings(&self.admin.user["groups"]);
-        if groups.iter().any(|group| group == "sudo") {
-          groups.retain(|group| group != "sudo");
+        if has_admin_group(&groups) {
+          groups.retain(|group| !ADMIN_GROUPS.contains(&group.as_str()));
         } else {
-          groups.push("sudo".into());
+          groups.push(self.admin.admin_group().into());
         }
         self.admin.user["groups"] = json!(groups);
       }
@@ -2501,6 +2524,25 @@ mod tests {
         json!({"action":"auto-login", "user":"alice", "enabled":false})
       ))
     );
+  }
+
+  #[test]
+  fn administrator_toggle_uses_wheel_when_the_system_has_it() {
+    let mut app = app(Page::User);
+    // alice is in wheel, so she is an administrator; turning it off leaves wheel.
+    app.admin_activate(Item::UserAdmin);
+    assert!(strings(&app.admin.user["groups"]).is_empty());
+    app.admin_activate(Item::UserAdmin);
+    assert_eq!(strings(&app.admin.user["groups"]), vec!["wheel"]);
+  }
+
+  #[test]
+  fn administrator_toggle_falls_back_to_sudo_without_wheel() {
+    let mut app = app(Page::User);
+    app.admin.accounts["groups"] = json!(["users", "sudo"]);
+    app.admin.user["groups"] = json!([]);
+    app.admin_activate(Item::UserAdmin);
+    assert_eq!(strings(&app.admin.user["groups"]), vec!["sudo"]);
   }
 
   #[test]

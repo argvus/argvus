@@ -45,7 +45,7 @@ Execute `argvus --help` para ver a lista da sua versão instalada. Os subcomando
 | `argvus notifications`, `displayctl`, `taskbar-actions` | Executáveis privados | Notificações, controles de display e ações da barra. |
 | `argvus setup [opções]` | Em processo | Copia os padrões empacotados para a configuração do usuário. Veja abaixo. |
 
-Os argumentos são repassados sem alteração, inclusive espaços e valores vazios. Entrada padrão, saída, erro, sinais e código de saída pertencem ao comando que roda. Um nome desconhecido falha com uma dica para executar `argvus --help`.
+Os argumentos são repassados sem alteração, inclusive espaços e valores vazios. Entrada padrão, saída, erro, sinais e código de saída pertencem ao comando que roda. Um nome desconhecido falha com uma dica para executar `argvus --help`. Um comando que roda em processo recusa um argumento que não seja UTF-8 válido (código de saída 2) em vez de repassar um valor alterado; comandos que rodam um programa separado recebem os bytes sem alteração.
 
 ## Flags e aliases
 

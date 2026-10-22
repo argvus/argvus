@@ -45,7 +45,7 @@ Run `argvus --help` for the list installed with your version. The subcommands ar
 | `argvus notifications`, `displayctl`, `taskbar-actions` | Private executables | Notifications, display and taskbar actions. |
 | `argvus setup [options]` | In-process | Copies packaged defaults into the user configuration. See below. |
 
-Arguments are forwarded unchanged, including spaces and empty values. Standard input, output, error, signals and the exit status belong to the command that runs. An unknown name fails with a hint to run `argvus --help`.
+Arguments are forwarded unchanged, including spaces and empty values. Standard input, output, error, signals and the exit status belong to the command that runs. An unknown name fails with a hint to run `argvus --help`. A command that runs in-process refuses an argument that is not valid UTF-8 (exit status 2) instead of passing an altered value on; commands that run a separate program receive the bytes unchanged.
 
 ## Flags and aliases
 

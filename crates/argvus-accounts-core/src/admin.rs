@@ -147,7 +147,19 @@ pub fn execute(input: &str) -> Result<Value> {
   execute_request(request)
 }
 
-/// Whether `uid` may administer accounts: root, or a member of the `sudo` group.
+/// Groups whose members administer the system: `wheel` is Arch's sudoers and
+/// polkit administrator group, `sudo` the group earlier ARGVUS releases used.
+/// The polkit rule `50-argvus-accounts.rules` and the Control Center use the
+/// same pair.
+pub const ADMIN_GROUPS: [&str; 2] = ["wheel", "sudo"];
+
+/// Whether `name` is one of the [`ADMIN_GROUPS`].
+#[must_use]
+pub fn is_admin_group(name: &str) -> bool {
+  ADMIN_GROUPS.contains(&name)
+}
+
+/// Whether `uid` may administer accounts: root, or a member of an admin group.
 fn is_administrator(uid: u32) -> Result<bool> {
   if uid == 0 {
     return Ok(true);
@@ -158,7 +170,7 @@ fn is_administrator(uid: u32) -> Result<bool> {
   Ok(
     groups::groups_of_user(&user.username, user.gid)?
       .iter()
-      .any(|group| group.name == "sudo"),
+      .any(|group| is_admin_group(&group.name)),
   )
 }
 
@@ -216,23 +228,42 @@ fn execute_request(request: Request) -> Result<Value> {
   }
   apply_request(
     request,
-    &current_members_of,
+    &group_facts,
     &mut run,
     &mut password::set_password_admin,
   )
 }
 
-fn current_members_of(group: &str) -> Result<Vec<String>> {
-  Ok(
-    groups::get_group_by_name(group)?
-      .ok_or_else(|| Error::GroupNotFound(group.into()))?
-      .members,
-  )
+/// The GID and the supplementary members of a group.
+type GroupFacts = (u32, Vec<String>);
+
+/// The [`GroupFacts`] of `group`.
+fn group_facts(group: &str) -> Result<GroupFacts> {
+  let group =
+    groups::get_group_by_name(group)?.ok_or_else(|| Error::GroupNotFound(group.into()))?;
+  Ok((group.gid, group.members))
+}
+
+/// Refuses renaming or deleting a system group (GID below 1000) or an
+/// administrator group: other accounts and services depend on their names, and
+/// losing an administrator group locks every administrator out.
+fn protect_system_group(group: &str, gid: u32) -> Result<()> {
+  if gid < 1000 || is_admin_group(group) {
+    return Err(invalid(
+      "cannot rename or delete a system or administrator group",
+    ));
+  }
+  Ok(())
+}
+
+/// Username of the account that requested the operation.
+fn actor_name() -> Result<Option<String>> {
+  Ok(passwd::get_user_by_uid(actor_uid()?)?.map(|user| user.username))
 }
 
 fn apply_request(
   request: Request,
-  current_members: &dyn Fn(&str) -> Result<Vec<String>>,
+  group_info: &dyn Fn(&str) -> Result<GroupFacts>,
   run: &mut impl FnMut(&str, &[&str]) -> Result<()>,
   set_password: &mut impl FnMut(&str, &str) -> Result<()>,
 ) -> Result<Value> {
@@ -296,11 +327,11 @@ fn apply_request(
       validate_groups(std::slice::from_ref(&primary_group))?;
       if target(&user)?.uid == actor_uid()? {
         // Keep the caller from dropping its own administrator membership, which
-        // would lock it out of the next elevation. The admin group is `sudo`.
+        // would lock it out of the next elevation (see `ADMIN_GROUPS`).
         let current = groups::groups_of_user(&user, target(&user)?.gid)?;
-        if current.iter().any(|group| group.name == "sudo")
-          && primary_group != "sudo"
-          && !groups.iter().any(|group| group == "sudo")
+        if current.iter().any(|group| is_admin_group(&group.name))
+          && !is_admin_group(&primary_group)
+          && !groups.iter().any(|group| is_admin_group(group))
         {
           return Err(invalid("cannot remove your own administrator membership"));
         }
@@ -337,7 +368,7 @@ fn apply_request(
           "current password does not match".into(),
         ));
       }
-      password::set_password_admin(&user, &new)?;
+      set_password(&user, &new)?;
     }
     Request::Lock { user, locked } => {
       protect_account(&user)?;
@@ -347,7 +378,7 @@ fn apply_request(
       )?;
     }
     Request::ExpirePassword { user } => {
-      target(&user)?;
+      protect_system_account(&user)?;
       run("/usr/bin/chage", &["--lastday", "0", "--", &user])?;
     }
     Request::Delete { user, remove_home } => {
@@ -374,7 +405,19 @@ fn apply_request(
       for member in &members {
         validation::validate_username(member)?;
       }
-      let existing = current_members(&group)?;
+      let (gid, existing) = group_info(&group)?;
+      if name != group {
+        protect_system_group(&group, gid)?;
+      }
+      // Same guard as `Edit`: the caller cannot drop its own administrator
+      // membership, which would lock it out of the next elevation.
+      if is_admin_group(&group)
+        && let Some(actor) = actor_name()?
+        && existing.contains(&actor)
+        && !members.contains(&actor)
+      {
+        return Err(invalid("cannot remove your own administrator membership"));
+      }
       if name != group {
         run("/usr/bin/groupmod", &["--new-name", &name, "--", &group])?;
       }
@@ -394,7 +437,8 @@ fn apply_request(
     }
     Request::DeleteGroup { group } => {
       validation::validate_group_name(&group)?;
-      current_members(&group)?;
+      let (gid, _) = group_info(&group)?;
+      protect_system_group(&group, gid)?;
       run("/usr/bin/groupdel", &["--", &group])?;
     }
     Request::Avatar { user, path } => {
@@ -429,6 +473,14 @@ mod tests {
     );
   }
   #[test]
+  fn wheel_and_sudo_are_the_admin_groups() {
+    assert!(is_admin_group("wheel"));
+    assert!(is_admin_group("sudo"));
+    assert!(!is_admin_group("users"));
+    assert!(!is_admin_group("Wheel"));
+  }
+
+  #[test]
   fn protects_root_and_system_users() {
     assert!(protect_account("root").is_err());
     assert!(protect_account("../etc/passwd").is_err());
@@ -453,7 +505,7 @@ mod tests {
     let mut set_password_calls = Vec::new();
     apply_request(
       request,
-      &|_| Ok(Vec::new()),
+      &|_| Ok((1000, Vec::new())),
       &mut |program, args| {
         calls.push((
           program.to_string(),
@@ -490,7 +542,7 @@ mod tests {
     };
     apply_request(
       request,
-      &|_| Ok(Vec::new()),
+      &|_| Ok((1000, Vec::new())),
       &mut |program, args| {
         calls.push((
           program.to_string(),
@@ -533,7 +585,7 @@ mod tests {
     assert!(
       apply_request(
         request,
-        &|_| Ok(Vec::new()),
+        &|_| Ok((1000, Vec::new())),
         &mut |_, _| panic!("must not run a system command for an invalid password"),
         &mut |_, _| panic!("must not set a password for an invalid password"),
       )
@@ -553,7 +605,7 @@ mod tests {
     assert!(
       apply_request(
         request,
-        &|_| Ok(Vec::new()),
+        &|_| Ok((1000, Vec::new())),
         &mut |_, _| panic!("must not run a system command"),
         &mut |_, _| panic!("must not set a password"),
       )
@@ -569,7 +621,7 @@ mod tests {
           user: "root".into(),
           remove_home: false,
         },
-        &|_| Ok(Vec::new()),
+        &|_| Ok((1000, Vec::new())),
         &mut |_, _| panic!("must not delete root"),
         &mut |_, _| panic!("must not set a password"),
       )
@@ -585,7 +637,7 @@ mod tests {
       name: "team".into(),
       members: vec!["alice".into(), "bob".into()],
     };
-    let current = |_group: &str| Ok(vec!["carol".into()]);
+    let current = |_group: &str| Ok((1001, vec!["carol".into()]));
     apply_request(
       request,
       &current,
@@ -624,7 +676,7 @@ mod tests {
   #[test]
   fn delete_group_runs_groupdel() {
     let mut calls = Vec::new();
-    let current = |_group: &str| Ok(vec!["alice".into()]);
+    let current = |_group: &str| Ok((1001, vec!["alice".into()]));
     apply_request(
       Request::DeleteGroup {
         group: "legacy".into(),
@@ -641,13 +693,84 @@ mod tests {
   }
 
   #[test]
+  fn system_and_administrator_groups_cannot_be_renamed_or_deleted() {
+    for (group, gid) in [("video", 985), ("wheel", 998), ("sudo", 1005)] {
+      assert!(
+        apply_request(
+          Request::DeleteGroup {
+            group: group.into(),
+          },
+          &|_| Ok((gid, Vec::new())),
+          &mut |_, _| panic!("must not delete {group}"),
+          &mut |_, _| panic!("must not set a password"),
+        )
+        .is_err(),
+        "{group}"
+      );
+      assert!(
+        apply_request(
+          Request::EditGroup {
+            group: group.into(),
+            name: "renamed".into(),
+            members: Vec::new(),
+          },
+          &|_| Ok((gid, Vec::new())),
+          &mut |_, _| panic!("must not rename {group}"),
+          &mut |_, _| panic!("must not set a password"),
+        )
+        .is_err(),
+        "{group}"
+      );
+    }
+  }
+
+  #[test]
+  fn system_group_membership_can_still_change() {
+    let mut calls = Vec::new();
+    apply_request(
+      Request::EditGroup {
+        group: "video".into(),
+        name: "video".into(),
+        members: vec!["alice".into()],
+      },
+      &|_| Ok((985, Vec::new())),
+      &mut |program, _| {
+        calls.push(program.to_string());
+        Ok(())
+      },
+      &mut |_, _| panic!("EditGroup must not set a password"),
+    )
+    .unwrap();
+    assert_eq!(calls, ["/usr/bin/usermod"]);
+  }
+
+  #[test]
+  fn administrator_cannot_leave_an_admin_group_through_a_group_edit() {
+    let me = passwd::current_user().unwrap().username;
+    let existing = vec![me.clone()];
+    assert!(
+      apply_request(
+        Request::EditGroup {
+          group: "wheel".into(),
+          name: "wheel".into(),
+          members: Vec::new(),
+        },
+        &|_| Ok((998, existing.clone())),
+        &mut |_, _| panic!("must not drop {me} from wheel"),
+        &mut |_, _| panic!("must not set a password"),
+      )
+      .is_err()
+    );
+  }
+
+  #[test]
   fn group_operations_reject_missing_or_invalid_groups() {
     assert!(
       apply_request(
         Request::DeleteGroup {
           group: "../etc/passwd".into()
         },
-        &|_| Ok(Vec::new()),
+        &|_| Ok((1000, Vec::new())),
         &mut |_, _| panic!("must not delete an invalid group"),
         &mut |_, _| panic!("must not set a password"),
       )

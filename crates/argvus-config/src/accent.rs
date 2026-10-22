@@ -978,7 +978,9 @@ fn refresh_runtime(context: &Context) {
       &["sessionctl", "restart", "waybar", "dunst", "shell"],
     );
   }
-  if let Some(pids) = command_output("pgrep", &["-x", "kitty"]) {
+  // Only this user's kitty instances (see `effects::signal_kitty`).
+  let uid = crate::theme_surfaces::current_user_id().to_string();
+  if let Some(pids) = command_output("pgrep", &["-u", uid.as_str(), "-x", "kitty"]) {
     for pid in pids.lines() {
       if let Ok(pid) = pid.trim().parse::<i32>() {
         // SAFETY: SIGUSR1 to a pid that pgrep just reported.

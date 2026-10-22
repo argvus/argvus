@@ -27,6 +27,14 @@ shellcheck tools/sh/*.sh packaging/archlinux/pkgbuilds/common/*.sh "${packaged_s
 for script in "${packaged_scripts[@]}"; do
 	sh -n "$script"
 done
+
+# Packaged tmpfiles entries cross a privilege boundary (the greeter directory is
+# shared with the session that logs in): none may be writable by every user.
+for tmpfiles in crates/argvus-greeter/packaging/greetd/*tmpfiles*.conf; do
+	if awk '!/^[[:space:]]*(#|$)/ && $3 ~ /^[0-7]*[2367]$/ { found = 1 } END { exit !found }' "$tmpfiles"; then
+		die "world-writable tmpfiles entry in $tmpfiles"
+	fi
+done
 bash -n tools/sh/*.sh packaging/archlinux/pkgbuilds/common/*.sh
 
 metadata() {
@@ -48,6 +56,13 @@ for pkgbuild_dir in packaging/archlinux/pkgbuilds/remote packaging/archlinux/pkg
 		makepkg -p PKGBUILD --printsrcinfo >/dev/null
 	)
 done
+
+# Workflow steps run with the release secrets, so every action is pinned to a
+# full commit SHA (Dependabot keeps the pins current).
+if grep -nE '^[[:space:]]*-?[[:space:]]*uses:[[:space:]]*[^[:space:]]+@' .github/workflows/*.yml \
+	| grep -vE '@[0-9a-f]{40}([[:space:]]|$)'; then
+	die "workflow action not pinned to a commit SHA"
+fi
 
 git diff --check
 printf 'argvus validation ok\n'

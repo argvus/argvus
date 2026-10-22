@@ -128,8 +128,11 @@ fn clear_custom_wallpaper(paths: &SessionPaths) {
 
 /// Tells the running kitty instances to reload their configuration.
 fn signal_kitty() {
+  // Only this user's kitty instances: other users' processes cannot be signalled
+  // anyway, and must not be enumerated or targeted.
+  let uid = crate::theme_surfaces::current_user_id().to_string();
   let Ok(output) = Command::new("pgrep")
-    .args(["-x", "kitty"])
+    .args(["-u", uid.as_str(), "-x", "kitty"])
     .stderr(Stdio::null())
     .output()
   else {
