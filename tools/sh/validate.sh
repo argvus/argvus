@@ -57,5 +57,12 @@ for pkgbuild_dir in packaging/archlinux/pkgbuilds/remote packaging/archlinux/pkg
 	)
 done
 
+# Workflow steps run with the release secrets, so every action is pinned to a
+# full commit SHA (Dependabot keeps the pins current).
+if grep -nE '^[[:space:]]*-?[[:space:]]*uses:[[:space:]]*[^[:space:]]+@' .github/workflows/*.yml \
+	| grep -vE '@[0-9a-f]{40}([[:space:]]|$)'; then
+	die "workflow action not pinned to a commit SHA"
+fi
+
 git diff --check
 printf 'argvus validation ok\n'
