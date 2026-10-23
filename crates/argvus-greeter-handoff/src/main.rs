@@ -33,8 +33,6 @@ const POLL_DELAY: Duration = Duration::from_millis(10);
 /// How long the last frame stays on screen after a release while the user
 /// compositor takes over the output.
 const REPLACEMENT_TIMEOUT: Duration = Duration::from_secs(10);
-/// Interval between the checks for the compositor's first frame.
-const REPLACEMENT_POLL: Duration = Duration::from_millis(20);
 /// Interval between the attempts to become DRM master.
 const MASTER_POLL: Duration = Duration::from_millis(10);
 const ACK_TIMEOUT: Duration = Duration::from_secs(20);
@@ -141,6 +139,36 @@ struct ModeInfo {
   name: [libc::c_char; 32],
 }
 
+impl ModeInfo {
+  /// Whether both modes drive the output with the same timings, so moving
+  /// from one to the other needs no modeset.
+  fn same_timings(&self, other: &Self) -> bool {
+    (
+      self.clock,
+      self.hdisplay,
+      self.hsync_start,
+      self.hsync_end,
+      self.htotal,
+      self.vdisplay,
+      self.vsync_start,
+      self.vsync_end,
+      self.vtotal,
+      self.flags,
+    ) == (
+      other.clock,
+      other.hdisplay,
+      other.hsync_start,
+      other.hsync_end,
+      other.htotal,
+      other.vdisplay,
+      other.vsync_start,
+      other.vsync_end,
+      other.vtotal,
+      other.flags,
+    )
+  }
+}
+
 #[repr(C)]
 struct Connector {
   connector_id: u32,
@@ -238,6 +266,13 @@ unsafe extern "C" {
     connectors: *mut u32,
     connector_count: libc::c_int,
     mode: *mut ModeInfo,
+  ) -> libc::c_int;
+  fn drmModePageFlip(
+    fd: libc::c_int,
+    crtc_id: u32,
+    buffer_id: u32,
+    flags: u32,
+    user_data: *mut libc::c_void,
   ) -> libc::c_int;
 }
 
@@ -372,8 +407,9 @@ fn main() -> io::Result<()> {
       let _ = released.stream.write_all(b"released\n");
       // Destroying the framebuffer now would make the kernel turn the output
       // off until the compositor's first modeset: a black flash between the
-      // two spinners. The last frame stays until the compositor replaces it.
-      if wait_for_replacement(fd, released.crtc_id, released.buffer.framebuffer) {
+      // two spinners. The buffer stays on the output, with the spinner still
+      // animating, until the compositor replaces it.
+      if wait_for_replacement(fd, released.crtc_id, &mut released.buffer, &palette) {
         mark("handoff.replaced-by-compositor");
       } else {
         mark("handoff.replacement-timeout");
@@ -397,10 +433,19 @@ struct Released {
   crtc_id: u32,
 }
 
-/// Waits until the CRTC no longer scans out `framebuffer`, which means the
-/// user compositor committed its own frame, or until `REPLACEMENT_TIMEOUT`.
+/// Waits until the CRTC no longer scans out `buffer`, which means the user
+/// compositor committed its own frame, or until `REPLACEMENT_TIMEOUT`, and keeps
+/// the spinner animating meanwhile. Writing to the buffer needs no DRM master:
+/// it stays scanned out until the compositor's first modeset, and the squares
+/// disappear only for the moment the compositor needs to serve its clients.
 /// Returns whether the compositor replaced the frame before the timeout.
-fn wait_for_replacement(fd: RawFd, crtc_id: u32, framebuffer: u32) -> bool {
+fn wait_for_replacement(
+  fd: RawFd,
+  crtc_id: u32,
+  buffer: &mut DumbBuffer,
+  palette: &Palette,
+) -> bool {
+  let framebuffer = buffer.framebuffer;
   let deadline = Instant::now() + REPLACEMENT_TIMEOUT;
   while Instant::now() < deadline {
     let Some((scanned_out, _)) = crtc_state(fd, crtc_id) else {
@@ -409,9 +454,21 @@ fn wait_for_replacement(fd: RawFd, crtc_id: u32, framebuffer: u32) -> bool {
     if scanned_out != framebuffer {
       return true;
     }
-    thread::sleep(REPLACEMENT_POLL);
+    draw_spinner(buffer, palette, &spinner::frame(monotonic_millis()));
+    thread::sleep(POLL_DELAY);
   }
   false
+}
+
+/// The mode the CRTC drives, when it has one.
+fn crtc_mode(fd: RawFd, crtc_id: u32) -> Option<ModeInfo> {
+  let crtc = unsafe { drmModeGetCrtc(fd, crtc_id) };
+  if crtc.is_null() {
+    return None;
+  }
+  let mode = unsafe { ((*crtc).mode_valid != 0).then_some((*crtc).mode) };
+  unsafe { drmModeFreeCrtc(crtc) };
+  mode
 }
 
 /// The framebuffer the CRTC scans out and whether it has a mode set.
@@ -550,20 +607,30 @@ fn run_surface(fd: RawFd, listener: &UnixListener, palette: &mut Palette) -> io:
   // shows that black for a moment between two spinner frames.
   draw_background(&mut buffer, palette);
   draw_spinner(&mut buffer, palette, &spinner::frame(monotonic_millis()));
-  let set_result = unsafe {
-    drmModeSetCrtc(
-      fd,
-      crtc_id,
-      buffer.framebuffer,
-      0,
-      0,
-      &mut connector,
-      1,
-      &mode as *const ModeInfo as *mut ModeInfo,
-    )
-  };
-  if set_result != 0 {
-    return Err(io::Error::last_os_error());
+  // When the greeter compositor left the output on in the same mode, a page
+  // flip swaps the image without a modeset. A modeset can make the monitor
+  // resynchronise, which shows as a black flash even with identical timings.
+  let flipped = crtc_mode(fd, crtc_id).is_some_and(|current| current.same_timings(&mode))
+    && unsafe { drmModePageFlip(fd, crtc_id, buffer.framebuffer, 0, std::ptr::null_mut()) } == 0;
+  if flipped {
+    mark("handoff.page-flip");
+  } else {
+    let set_result = unsafe {
+      drmModeSetCrtc(
+        fd,
+        crtc_id,
+        buffer.framebuffer,
+        0,
+        0,
+        &mut connector,
+        1,
+        &mode as *const ModeInfo as *mut ModeInfo,
+      )
+    };
+    if set_result != 0 {
+      return Err(io::Error::last_os_error());
+    }
+    mark("handoff.modeset");
   }
 
   mark("handoff.first-frame");
@@ -812,6 +879,35 @@ mod tests {
       spinner_pixel(&palette, &rest, -20.5, -20.0),
       mix_rgb(palette.background, 0xff_0000, 0.5)
     );
+  }
+
+  fn mode(clock: u32, vrefresh: u32) -> ModeInfo {
+    ModeInfo {
+      clock,
+      hdisplay: 1920,
+      hsync_start: 2008,
+      hsync_end: 2052,
+      htotal: 2200,
+      hskew: 0,
+      vdisplay: 1080,
+      vsync_start: 1084,
+      vsync_end: 1089,
+      vtotal: 1125,
+      vscan: 0,
+      vrefresh,
+      flags: 5,
+      mode_type: 0,
+      name: [0; 32],
+    }
+  }
+
+  #[test]
+  fn modes_with_the_same_timings_need_no_modeset() {
+    let mut named = mode(185_580, 75);
+    named.mode_type = 0x48;
+    named.name[0] = b'1' as libc::c_char;
+    assert!(mode(185_580, 75).same_timings(&named));
+    assert!(!mode(185_580, 75).same_timings(&mode(148_500, 60)));
   }
 
   /// Binds a socket in `directory` and serves one request through
