@@ -21,7 +21,12 @@ use argvus_loading_theme_core::{
 };
 use clap::Parser;
 
+mod wayland;
+
 const DEFAULT_SOCKET: &str = "/run/argvus-greeter/handoff.sock";
+/// Login marks on `CLOCK_MONOTONIC`, shared with the greeter. The journal and
+/// the session log use the same clock, so one login can be timed end to end.
+const TIMING_LOG: &str = "/run/argvus-greeter/timing.log";
 const DEFAULT_THEME: &str = "argvus-dark";
 /// How often the surface redraws the spinner and checks for commands.
 const POLL_DELAY: Duration = Duration::from_millis(10);
@@ -58,6 +63,15 @@ struct Cli {
   /// surface this does nothing and succeeds.
   #[arg(long, value_name = "COMMAND")]
   send: Option<String>,
+  /// Wayland mode: draws the same spinner as a layer-shell overlay on the
+  /// compositor of `WAYLAND_DISPLAY`, until SIGTERM or until the compositor
+  /// goes away. Fails when it cannot connect, so the caller can retry.
+  #[arg(long, conflicts_with = "send")]
+  wayland: bool,
+  /// Wayland mode: writes `READY` to this inherited descriptor once every
+  /// output has shown its first frame.
+  #[arg(long, requires = "wayland")]
+  ready_fd: Option<i32>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -334,15 +348,22 @@ fn main() -> io::Result<()> {
   if let Some(command) = cli.send.as_deref() {
     return send_command(&cli.socket, command);
   }
+  if cli.wayland {
+    let palette = Palette::new(&cli.theme, cli.accent.as_deref().and_then(hex_to_rgb));
+    return wayland::run(palette, cli.ready_fd);
+  }
   let listener = prepare_socket(&cli.socket)?;
   let user_accent = cli.accent.as_deref().and_then(hex_to_rgb);
   let mut palette = Palette::new(&cli.theme, user_accent);
+  mark("handoff.waiting-for-master");
   let fd = acquire_card()?;
+  mark("handoff.master-acquired");
 
   let result = run_surface(fd, &listener, &mut palette);
   unsafe {
     drmDropMaster(fd);
   }
+  mark("handoff.master-dropped");
   let _ = fs::remove_file(&cli.socket);
   let outcome = match result {
     Ok(mut released) => {
@@ -352,7 +373,11 @@ fn main() -> io::Result<()> {
       // Destroying the framebuffer now would make the kernel turn the output
       // off until the compositor's first modeset: a black flash between the
       // two spinners. The last frame stays until the compositor replaces it.
-      wait_for_replacement(fd, released.crtc_id, released.buffer.framebuffer);
+      if wait_for_replacement(fd, released.crtc_id, released.buffer.framebuffer) {
+        mark("handoff.replaced-by-compositor");
+      } else {
+        mark("handoff.replacement-timeout");
+      }
       drop(released.buffer);
       Ok(())
     }
@@ -374,25 +399,52 @@ struct Released {
 
 /// Waits until the CRTC no longer scans out `framebuffer`, which means the
 /// user compositor committed its own frame, or until `REPLACEMENT_TIMEOUT`.
-fn wait_for_replacement(fd: RawFd, crtc_id: u32, framebuffer: u32) {
+/// Returns whether the compositor replaced the frame before the timeout.
+fn wait_for_replacement(fd: RawFd, crtc_id: u32, framebuffer: u32) -> bool {
   let deadline = Instant::now() + REPLACEMENT_TIMEOUT;
   while Instant::now() < deadline {
-    let crtc = unsafe { drmModeGetCrtc(fd, crtc_id) };
-    if crtc.is_null() {
-      return;
-    }
-    let scanned_out = unsafe { (*crtc).buffer_id };
-    unsafe { drmModeFreeCrtc(crtc) };
+    let Some((scanned_out, _)) = crtc_state(fd, crtc_id) else {
+      return true;
+    };
     if scanned_out != framebuffer {
-      return;
+      return true;
     }
     thread::sleep(REPLACEMENT_POLL);
+  }
+  false
+}
+
+/// The framebuffer the CRTC scans out and whether it has a mode set.
+fn crtc_state(fd: RawFd, crtc_id: u32) -> Option<(u32, bool)> {
+  let crtc = unsafe { drmModeGetCrtc(fd, crtc_id) };
+  if crtc.is_null() {
+    return None;
+  }
+  let state = unsafe { ((*crtc).buffer_id, (*crtc).mode_valid != 0) };
+  unsafe { drmModeFreeCrtc(crtc) };
+  Some(state)
+}
+
+/// Appends `event` to `TIMING_LOG`. Timing is diagnostic, so a failure to
+/// write never affects the surface.
+fn mark(event: &str) {
+  let line = format!("monotonic_ns={} mark {event}\n", monotonic_nanos());
+  if let Ok(mut file) = OpenOptions::new()
+    .create(true)
+    .append(true)
+    .open(TIMING_LOG)
+  {
+    let _ = file.write_all(line.as_bytes());
   }
 }
 
 /// Milliseconds of `CLOCK_MONOTONIC`, the clock the GTK splash also reads, so
 /// both surfaces show the same spinner frame at the same instant.
 fn monotonic_millis() -> u64 {
+  monotonic_nanos() / 1_000_000
+}
+
+fn monotonic_nanos() -> u64 {
   let mut now = libc::timespec {
     tv_sec: 0,
     tv_nsec: 0,
@@ -403,7 +455,7 @@ fn monotonic_millis() -> u64 {
   }
   let seconds = u64::try_from(now.tv_sec).unwrap_or_default();
   let nanoseconds = u64::try_from(now.tv_nsec).unwrap_or_default();
-  seconds * 1000 + nanoseconds / 1_000_000
+  seconds * 1_000_000_000 + nanoseconds
 }
 
 /// Sends one command to the running surface and waits for its acknowledgement.
@@ -482,8 +534,22 @@ fn acquire_card() -> io::Result<RawFd> {
 
 fn run_surface(fd: RawFd, listener: &UnixListener, palette: &mut Palette) -> io::Result<Released> {
   let (connector_id, crtc_id, mode) = select_output(fd)?;
+  // Whether the greeter compositor left its frame on the output or turned the
+  // output off decides if the monitor has to sync again at this modeset.
+  match crtc_state(fd, crtc_id) {
+    Some((framebuffer, mode_valid)) => mark(&format!(
+      "handoff.output-found crtc={crtc_id} framebuffer={framebuffer} mode_valid={mode_valid}"
+    )),
+    None => mark(&format!(
+      "handoff.output-found crtc={crtc_id} state=unknown"
+    )),
+  }
   let mut connector = connector_id;
   let mut buffer = DumbBuffer::create(fd, mode.hdisplay as u32, mode.vdisplay as u32)?;
+  // A new dumb buffer is black. Paint it before the modeset, or the output
+  // shows that black for a moment between two spinner frames.
+  draw_background(&mut buffer, palette);
+  draw_spinner(&mut buffer, palette, &spinner::frame(monotonic_millis()));
   let set_result = unsafe {
     drmModeSetCrtc(
       fd,
@@ -500,12 +566,13 @@ fn run_surface(fd: RawFd, listener: &UnixListener, palette: &mut Palette) -> io:
     return Err(io::Error::last_os_error());
   }
 
-  draw_background(&mut buffer, palette);
+  mark("handoff.first-frame");
   loop {
     while let Ok((stream, _)) = listener.accept() {
       let previous = *palette;
       match handle_command(stream, palette) {
         Ok(Some(stream)) => {
+          mark("handoff.release-received");
           return Ok(Released {
             stream,
             buffer,
@@ -596,26 +663,62 @@ fn draw_background(buffer: &mut DumbBuffer, palette: &Palette) {
 }
 
 /// Draws the shared spinner (`argvus_loading_theme_core::spinner`) at the
-/// center of the output. Each pixel of the spinner area is written once with
-/// its final color, so the scanned-out buffer never shows a half-drawn frame.
+/// center of the output.
 fn draw_spinner(buffer: &mut DumbBuffer, palette: &Palette, frame: &spinner::Frame) {
-  let width = buffer.width as i64;
-  let height = buffer.height as i64;
-  let stride = i64::from(buffer.pitch / 4);
-  let center_x = width as f64 / 2.0;
-  let center_y = height as f64 / 2.0;
+  let image = Image {
+    width: buffer.width as usize,
+    height: buffer.height as usize,
+    stride: (buffer.pitch / 4) as usize,
+  };
+  paint_spinner(buffer.pixels(), image, palette, frame);
+}
+
+/// The layout of an XRGB8888 image: its size and the pixels per row.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+struct Image {
+  width: usize,
+  height: usize,
+  stride: usize,
+}
+
+/// A rectangle of pixels.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+struct Area {
+  x: usize,
+  y: usize,
+  width: usize,
+  height: usize,
+}
+
+/// Paints the spinner at the center of `pixels` and returns the area it wrote.
+/// Each pixel of that area is written once with its final color, so a
+/// scanned-out buffer never shows a half-drawn frame, and the area covers every
+/// position of the animation, so it also erases the previous frame.
+fn paint_spinner(
+  pixels: &mut [u32],
+  image: Image,
+  palette: &Palette,
+  frame: &spinner::Frame,
+) -> Area {
+  let center_x = image.width as f64 / 2.0;
+  let center_y = image.height as f64 / 2.0;
   // One extra pixel on each side for the anti-aliased edge of the squares.
-  let half_side = (spinner::EXTENT / 2.0).ceil() as i64 + 1;
-  let first_x = (center_x as i64 - half_side).max(0);
-  let last_x = (center_x as i64 + half_side).min(width - 1);
-  let first_y = (center_y as i64 - half_side).max(0);
-  let last_y = (center_y as i64 + half_side).min(height - 1);
-  let pixels = buffer.pixels();
+  let half_side = (spinner::EXTENT / 2.0).ceil() as usize + 1;
+  let first_x = (center_x as usize).saturating_sub(half_side);
+  let last_x = (center_x as usize + half_side).min(image.width.saturating_sub(1));
+  let first_y = (center_y as usize).saturating_sub(half_side);
+  let last_y = (center_y as usize + half_side).min(image.height.saturating_sub(1));
   for y in first_y..=last_y {
     for x in first_x..=last_x {
       let color = spinner_pixel(palette, frame, x as f64 - center_x, y as f64 - center_y);
-      pixels[(y * stride + x) as usize] = 0xff00_0000 | color;
+      pixels[y * image.stride + x] = 0xff00_0000 | color;
     }
+  }
+  Area {
+    x: first_x,
+    y: first_y,
+    width: last_x + 1 - first_x,
+    height: last_y + 1 - first_y,
   }
 }
 

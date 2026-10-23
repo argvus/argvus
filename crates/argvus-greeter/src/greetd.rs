@@ -6,7 +6,7 @@
 //! a Unix socket directly.
 
 use crate::{
-  handoff::{DrmHandoff, WaylandSplash},
+  handoff::{self, DrmHandoff, WaylandSplash},
   session::Session,
 };
 use argvus_system::monotonic_ns;
@@ -197,12 +197,16 @@ fn handle_response(
         // Authentication succeeded, so the selected session is handed to
         // greetd rather than launched by the greeter process itself.
         info!(session = %session.id, monotonic_ns = monotonic_ns(), "authentication succeeded");
+        handoff::mark("greeter.auth-succeeded");
         // The overlay must be mapped while Kitty and the greeter compositor
         // are still alive. A Wayland client cannot survive their later DRM
         // handover, but it eliminates the pre-handover empty screen. It only
         // hides the switch, so an authenticated user still logs in without it.
         let splash = match WaylandSplash::start(&theme, accent.as_deref()) {
-          Ok(splash) => Some(splash),
+          Ok(splash) => {
+            handoff::mark("greeter.splash-ready");
+            Some(splash)
+          }
           Err(error) => {
             error!(%error, "could not start the greeter handoff splash; continuing without it");
             None
@@ -210,8 +214,11 @@ fn handle_response(
         };
         // The DRM surface must be listening before the greeter compositor exits,
         // because it waits for that compositor to release DRM master.
-        if let Err(error) = DrmHandoff::start(&theme, accent.as_deref()) {
-          error!(%error, "could not start the DRM handoff surface; continuing without it");
+        match DrmHandoff::start(&theme, accent.as_deref()) {
+          Ok(_) => handoff::mark("greeter.handoff-listening"),
+          Err(error) => {
+            error!(%error, "could not start the DRM handoff surface; continuing without it");
+          }
         }
         let _ = events.send(Event::SessionStarting);
         Request::StartSession {
@@ -223,6 +230,7 @@ fn handle_response(
         match Response::read_from(stream)? {
           Response::Success => {
             info!(session = %session.id, "session started");
+            handoff::mark("greeter.session-started");
             // greetd terminates the greeter session after accepting the user
             // command. Keep the splash parented here until that SIGTERM, so
             // terminal cleanup cannot uncover the compositor in between.
@@ -230,6 +238,11 @@ fn handle_response(
               splash.detach();
             }
             let _ = events.send(Event::SessionStarted);
+            // greetd starts the user session only after the greeter session
+            // ends, and gives it 5 seconds before killing it. The compositor
+            // does not leave on that SIGTERM, so it is asked to exit now; the
+            // DRM handoff surface is already waiting for the display.
+            handoff::exit_greeter_compositor();
           }
           Response::Error {
             error_type: _,

@@ -1137,7 +1137,7 @@ fn session_loading() -> ExitCode {
       let uid = unsafe { libc::getuid() };
       PathBuf::from(format!("/run/user/{uid}"))
     });
-  let status = session_loading::run(&paths, &runtime_dir, &session_loading::splash_binary());
+  let status = session_loading::run(&paths, &runtime_dir, &session_loading::spinner_binary());
   ExitCode::from(status.clamp(0, 255) as u8)
 }
 

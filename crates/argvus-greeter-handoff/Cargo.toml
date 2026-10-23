@@ -7,7 +7,7 @@ rust-version.workspace = true
 authors.workspace = true
 repository.workspace = true
 homepage.workspace = true
-description = "Direct DRM/KMS transition surface for the ARGVUS login handoff"
+description = "Login handoff spinner for ARGVUS: a direct DRM/KMS surface and a light Wayland overlay"
 
 [[bin]]
 name = "argvus-greeter-handoff"
@@ -17,3 +17,8 @@ path = "src/main.rs"
 argvus-loading-theme-core.workspace = true
 clap = { version = "4.5", features = ["derive"] }
 libc = "0.2"
+# The Wayland mode is a plain shared-memory layer-shell client. GTK needed about
+# 300 ms to show its first frame, which left the compositor's first frames
+# without a spinner.
+wayland-client = "0.31"
+wayland-protocols-wlr = { version = "0.3", features = ["client"] }

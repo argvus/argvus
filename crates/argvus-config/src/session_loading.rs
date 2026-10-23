@@ -1,9 +1,11 @@
 //! The session-loading spinner: a long-running service that attaches the
-//! splash's Wayland handoff to the user compositor as soon as it publishes a
-//! socket, and keeps retrying until one of them accepts the splash.
+//! spinner surface to the user compositor as soon as it publishes a socket,
+//! and keeps retrying until one of them accepts it.
 //!
-//! It replaces `argvus-session-loading`. The splash binary and its handoff
-//! protocol are unchanged.
+//! The surface is the Wayland mode of the greeter's handoff helper: a plain
+//! shared-memory client that maps its first frame within milliseconds of
+//! connecting. The GTK splash needed about 300 ms, during which the compositor
+//! already showed its background without the spinner.
 
 use crate::session_paths::SessionPaths;
 use std::fs;
@@ -14,10 +16,11 @@ use std::thread::sleep;
 use std::time::Duration;
 
 const DEFAULT_SPLASH_BIN: &str = "/usr/lib/argvus/loading-theme/splash";
+const DEFAULT_SPINNER_BIN: &str = "/usr/lib/argvus/greeter/handoff";
 const DEFAULT_THEME: &str = "argvus-dark";
-/// Pause after a round that found sockets but no accepting compositor. Each
-/// round starts the splash process, so this pause stays longer.
-const RETRY_WITH_SOCKETS: Duration = Duration::from_millis(50);
+/// Pause after a round that found sockets but no accepting compositor. A round
+/// starts the spinner process, which only connects and exits on failure.
+const RETRY_WITH_SOCKETS: Duration = Duration::from_millis(10);
 /// Pause after a round that found no socket at all. A round is only a
 /// directory read, and every millisecond here is time without a spinner on
 /// screen once Hyprland shows its first frame.
@@ -52,14 +55,13 @@ pub fn run(paths: &SessionPaths, runtime_dir: &Path, splash: &Path) -> i32 {
   }
 }
 
-/// Runs the splash handoff for one display. Returns `true` when the splash
-/// exits successfully, which ends the service.
+/// Runs the spinner surface on one display. Returns `true` when it exits
+/// successfully, which ends the service.
 fn attach(paths: &SessionPaths, splash: &Path, display: &str) -> bool {
   let theme = theme_name(paths);
   let mut command = Command::new(splash);
   command
-    .arg("--session-handoff")
-    .arg("--spinner-only")
+    .arg("--wayland")
     .arg("--theme")
     .arg(&theme)
     .env("WAYLAND_DISPLAY", display);
@@ -171,6 +173,15 @@ pub fn splash_binary() -> PathBuf {
     .filter(|value| !value.is_empty())
     .map(PathBuf::from)
     .unwrap_or_else(|| PathBuf::from(DEFAULT_SPLASH_BIN))
+}
+
+/// The session spinner binary: `ARGVUS_SESSION_SPINNER_BIN` when set,
+/// otherwise the packaged handoff helper.
+pub fn spinner_binary() -> PathBuf {
+  std::env::var_os("ARGVUS_SESSION_SPINNER_BIN")
+    .filter(|value| !value.is_empty())
+    .map(PathBuf::from)
+    .unwrap_or_else(|| PathBuf::from(DEFAULT_SPINNER_BIN))
 }
 
 #[cfg(test)]
@@ -295,7 +306,7 @@ mod tests {
     assert!(attached, "the splash accepted the display");
     assert_eq!(
       fs::read_to_string(&log).expect("log"),
-      "wayland-7 --session-handoff --spinner-only --theme github-light --accent #112233\n"
+      "wayland-7 --wayland --theme github-light --accent #112233\n"
     );
     let _ = fs::remove_dir_all(root);
   }

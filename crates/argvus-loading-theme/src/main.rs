@@ -360,6 +360,10 @@ fn animate(state: Rc<RefCell<FadeState>>, from: f64, to: f64, duration_ms: u32, 
         for window in &state.borrow().windows {
           window.close();
         }
+        eprintln!(
+          "argvus-loading-theme: monotonic_ns={} surfaces closed",
+          monotonic_ns()
+        );
         gtk::Application::default().quit();
       }
       glib::ControlFlow::Break
@@ -378,6 +382,10 @@ fn install_signal_handlers(state: &Rc<RefCell<FadeState>>) {
   let signal_state = Rc::clone(state);
   glib::timeout_add_local(Duration::from_millis(40), move || {
     if requested.load(Ordering::Relaxed) {
+      eprintln!(
+        "argvus-loading-theme: monotonic_ns={} stop requested",
+        monotonic_ns()
+      );
       start_fade_out(&signal_state);
       glib::ControlFlow::Break
     } else {

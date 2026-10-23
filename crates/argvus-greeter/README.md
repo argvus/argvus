@@ -93,7 +93,7 @@ boot or terminal logs do not remain visible under the login screen.
 The greeter compositor still sets `XDG_CURRENT_DESKTOP=Hyprland` to satisfy
 Hyprland's startup checks, while `XDG_SESSION_DESKTOP=argvus-greeter` identifies
 the login environment. When authentication succeeds, the greeter starts the
-normal `--spinner-only` layer-shell splash and waits for its first frame before
+spinner surface (`/usr/lib/argvus/greeter/handoff --wayland`) and waits for its first frame before
 asking greetd to start the selected session. When the splash is missing or does
 not report a frame in time, the session still starts, without the overlay.
 It keeps the terminal and minimal

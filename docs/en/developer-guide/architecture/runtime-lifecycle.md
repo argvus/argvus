@@ -26,7 +26,7 @@ A login with no configuration change repeats no expensive work:
 - The display step of preparation (`argvus config display session-prepare`) applies only DPMS and disabled outputs: it neither projects again nor reloads the compositor.
 - `argvus-session-reload.service` runs `argvus sessionctl reload-desktop --login`, which reloads Hyprland only when the projection manifest lists `hyprland` among the affected consumers. The desktop components do not wait for it.
 
-The loading overlay is mapped from the compositor handoff until `argvus sessionctl ready` has started the target, so a single spinner covers the whole startup. It has no `PartOf=`, because recreating the target at a new login must not take it down; `sessionctl` stops it explicitly, and `RuntimeMaxSec=30` ends it if no stop arrives.
+The session spinner (the handoff helper in Wayland mode) is mapped from the compositor handoff until `argvus sessionctl ready` has started the target, so a single spinner covers the whole startup. It has no `PartOf=`, because recreating the target at a new login must not take it down; `sessionctl` stops it explicitly, and `RuntimeMaxSec=30` ends it if no stop arrives.
 
 Each preparation, reload and projection-adapter step appends its duration to the session log as `<epoch-ms> timing <step> <N>ms`; see [session startup troubleshooting](/docs/user-guide/troubleshooting/session-startup/).
 

@@ -45,6 +45,16 @@ grep timing ~/.local/state/argvus/session.log | tail -30 | sort -k4 -rn
 systemd-analyze --user critical-chain argvus-session.target
 ```
 
+Para medir a troca do greeter para o desktop, leia os marcos do greeter e do handoff junto com o journal. Todos usam o `CLOCK_MONOTONIC`, então ficam alinhados:
+
+```sh
+cat /run/argvus-greeter/timing.log
+journalctl -b -o short-monotonic --since -2min | grep -E 'greetd|Hyprland|coredump|argvus-greeter-handoff|session-loading'
+grep monotonic_ns ~/.local/state/argvus/session.log | tail -5
+```
+
+O `timing.log` guarda só o último login: marcos do greeter (`greeter.*`) e da superfície DRM do handoff (`handoff.master-acquired`, `handoff.output-found`, `handoff.first-frame`, `handoff.release-received`, `handoff.replaced-by-compositor`). `handoff.output-found ... framebuffer=0` indica que o compositor do greeter desligou a saída antes de o handoff assumir, e o monitor precisou sincronizar de novo. O indicador da sessão (`argvus-greeter-handoff`) grava `first layer-shell frame callback` e `stop requested` no journal.
+
 Uma entrada `project.theme-switch` ou `prepare.startup-theme` só é esperada após uma mudança de aparência, uma atualização de pacote ou um novo acento. Se ela aparecer em todo login, os arquivos de tema materializados estão ausentes; execute `argvus theme-switch <tema>` uma vez.
 
 O log da sessão fica em `$XDG_STATE_HOME/argvus/session.log` (normalmente `~/.local/state/argvus/session.log`). Depois de alterar um override do Hyprland, faça logout/login para que a entrada da sessão valide e selecione o arquivo novamente. Veja [sessão gráfica](/pt/docs/argvus-session/graphical-session/) para o fluxo normal.

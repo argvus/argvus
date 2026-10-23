@@ -35,7 +35,7 @@ Execute `argvus --help` para ver a lista da sua versão instalada. Os subcomando
 | `argvus control-center [página]` | Auxiliar (aplicativo de terminal) | Abre o Centro de Controle, ou foca a janela que já está aberta. |
 | `argvus taskbar-calendar [args]` | Auxiliar GTK 4 | O padrão é `toggle`. |
 | `argvus removable-devices [args]` | Auxiliar GTK 4 | O padrão é `menu`. |
-| `argvus loading-theme ...` | `splash` empacotado em `/usr/lib/argvus/loading-theme/splash` | O overlay de carregamento da sessão. |
+| `argvus loading-theme ...` | `splash` empacotado em `/usr/lib/argvus/loading-theme/splash` | O overlay das trocas de tema e dos reloads diretos. |
 | `argvus session`, `start`, `tty`, `sessionctl` | Executáveis privados | Pontos de entrada da sessão e o controlador da sessão. |
 | `argvus greeter`, `greeter-session`, `greeter-tui`, `greeter-setup` | Executáveis privados | Pontos de entrada do greeter. |
 | `argvus accounts`, `firewall` | Executáveis privados | Ferramentas de contas e de firewall. |

@@ -35,7 +35,7 @@ Run `argvus --help` for the list installed with your version. The subcommands ar
 | `argvus control-center [page]` | Helper (terminal application) | Opens the Control Center, or focuses the window that is already open. |
 | `argvus taskbar-calendar [args]` | GTK 4 application | Defaults to `toggle`. |
 | `argvus removable-devices [args]` | GTK 4 application | Defaults to `menu`. |
-| `argvus loading-theme ...` | Packaged `splash` at `/usr/lib/argvus/loading-theme/splash` | The session loading overlay. |
+| `argvus loading-theme ...` | Packaged `splash` at `/usr/lib/argvus/loading-theme/splash` | The overlay of theme transitions and direct reloads. |
 | `argvus session`, `start`, `tty`, `sessionctl` | Private executables | Session entry points and the session controller. |
 | `argvus greeter`, `greeter-session`, `greeter-tui`, `greeter-setup` | Private executables | Greeter entry points. |
 | `argvus accounts`, `firewall` | Private executables | Accounts and firewall tools. |

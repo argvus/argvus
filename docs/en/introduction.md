@@ -49,7 +49,7 @@ See [Applications](/docs/user-guide/applications/) and the [command reference](/
 
 Display, network, Bluetooth, power, notifications, firewall and removable storage are provided by focused projects. The Control Center and Control Panel consume these providers; they do not replace them.
 
-Login, lock and startup visuals are also separate: `argvus-greeter` handles greetd, `argvus-lock` handles Hyprlock, the loading overlay shipped in `argvus` handles the session loading, and `argvus-boot-splash` handles the boot splash.
+Login, lock and startup visuals are also separate: `argvus-greeter` handles greetd, `argvus-lock` handles Hyprlock, the handoff helper shipped in `argvus` draws the login spinner, the loading overlay handles theme transitions, and `argvus-boot-splash` handles the boot splash.
 
 See [Hardware](/docs/user-guide/hardware/), [Privacy and security](/docs/user-guide/privacy-and-security/) and the developer [component reference](/docs/developer-guide/).
 

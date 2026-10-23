@@ -2,25 +2,64 @@
 //!
 //! The login TUI cannot return immediately after greetd accepts a session:
 //! its terminal wrapper would tear down the last visible frame first. This
-//! module starts the GTK splash inside the still-running greeter compositor,
-//! waits for a real frame-clock notification, and only then allows the TUI
-//! guard to enter its handoff-preserving exit mode.
+//! module starts the spinner surface (the Wayland mode of the handoff helper)
+//! inside the still-running greeter compositor, waits for its first presented
+//! frame, and only then allows the TUI guard to enter its handoff-preserving
+//! exit mode.
 
 use anyhow::{Context, bail};
 use std::{
-  io::{self, Read},
+  fs::OpenOptions,
+  io::{self, Read, Write},
   os::fd::RawFd,
   os::unix::process::CommandExt,
   process::{Child, Command, Stdio},
   time::{Duration, Instant},
 };
 
-const SPLASH: &str = "/usr/lib/argvus/loading-theme/splash";
 const READY_FD: RawFd = 3;
 const READY_TIMEOUT: Duration = Duration::from_secs(8);
 const DRM_HANDOFF: &str = "/usr/lib/argvus/greeter/handoff";
 const DRM_HANDOFF_SOCKET: &str = "/run/argvus-greeter/handoff.sock";
 const DRM_HANDOFF_SOCKET_TIMEOUT: Duration = Duration::from_secs(2);
+const ARGVUS: &str = "/usr/bin/argvus";
+/// Login marks on `CLOCK_MONOTONIC`, shared with the DRM handoff surface. The
+/// journal and the session log use the same clock.
+const TIMING_LOG: &str = "/run/argvus-greeter/timing.log";
+
+/// Asks the greeter compositor to exit through its IPC socket. A failure is
+/// logged; greetd still ends the greeter session after its own timeout.
+pub fn exit_greeter_compositor() {
+  mark("greeter.compositor-exit-requested");
+  let status = Command::new(ARGVUS)
+    .args(["config", "hyprland", "exit"])
+    .stdin(Stdio::null())
+    .stdout(Stdio::null())
+    .stderr(Stdio::null())
+    .status();
+  if !matches!(status, Ok(status) if status.success()) {
+    tracing::warn!(
+      ?status,
+      "the greeter compositor did not accept the exit request"
+    );
+  }
+}
+
+/// Appends `event` to `TIMING_LOG`. Timing is diagnostic, so a failure to
+/// write never affects the login.
+pub fn mark(event: &str) {
+  let line = format!(
+    "monotonic_ns={} mark {event}\n",
+    argvus_system::monotonic_ns()
+  );
+  if let Ok(mut file) = OpenOptions::new()
+    .create(true)
+    .append(true)
+    .open(TIMING_LOG)
+  {
+    let _ = file.write_all(line.as_bytes());
+  }
+}
 
 pub struct WaylandSplash {
   child: Child,
@@ -29,8 +68,8 @@ pub struct WaylandSplash {
 impl WaylandSplash {
   /// Starts the session splash and waits for its first rendered frame.
   pub fn start(theme: &str, accent: Option<&str>) -> anyhow::Result<Self> {
-    if !std::path::Path::new(SPLASH).is_file() {
-      bail!("session splash is not installed at {SPLASH}");
+    if !std::path::Path::new(DRM_HANDOFF).is_file() {
+      bail!("session splash is not installed at {DRM_HANDOFF}");
     }
 
     let mut pipe = [0; 2];
@@ -42,10 +81,9 @@ impl WaylandSplash {
 
     let write_fd = pipe[1];
     tracing::info!("T1 splash-spawn");
-    let mut command = Command::new(SPLASH);
+    let mut command = Command::new(DRM_HANDOFF);
     command.args([
-      "--session-handoff",
-      "--spinner-only",
+      "--wayland",
       "--theme",
       theme,
       "--ready-fd",

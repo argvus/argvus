@@ -526,6 +526,8 @@ dependencies = [
  "argvus-loading-theme-core",
  "clap",
  "libc",
+ "wayland-client",
+ "wayland-protocols-wlr",
 ]
 
 [[package]]

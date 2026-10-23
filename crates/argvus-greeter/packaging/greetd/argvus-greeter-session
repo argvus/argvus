@@ -89,6 +89,10 @@ if [ -d /run/argvus-greeter ] && [ -w /run/argvus-greeter ]; then
   # and only reads it, so it is made readable by everyone.
   : > "$LOG"
   chmod 0644 "$LOG" 2>/dev/null || true
+  # Login marks of the greeter and the DRM handoff surface, on CLOCK_MONOTONIC.
+  # It holds one login: the next greeter run starts it again.
+  : > /run/argvus-greeter/timing.log
+  chmod 0644 /run/argvus-greeter/timing.log 2>/dev/null || true
 fi
 
 # Clear the active login VT before the graphical greeter takes over.
@@ -127,6 +131,13 @@ if is_virtual_machine; then
     "argvus-greeter-session: virtual machine detected (${VIRT}); using software OpenGL." \
     >> "$LOG"
 fi
+
+# The greeter compositor can crash while it tears down its DRM outputs. The
+# DRM handoff surface cannot take the display until the process is gone, and a
+# core dump keeps it alive for a few hundred milliseconds with the output off.
+# `ulimit -c` is not POSIX; a shell without it keeps core dumps enabled.
+# shellcheck disable=SC3045
+ulimit -c 0 2>/dev/null || true
 
 # Start the minimal Hyprland compositor. The command variants cover Arch's
 # executable naming and the development launcher without changing policy.
