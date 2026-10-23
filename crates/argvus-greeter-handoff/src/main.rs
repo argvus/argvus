@@ -23,8 +23,7 @@ use clap::Parser;
 
 const DEFAULT_SOCKET: &str = "/run/argvus-greeter/handoff.sock";
 const DEFAULT_THEME: &str = "argvus-dark";
-/// How often the surface checks for a new spinner frame and for commands. The
-/// frame itself changes every `spinner::STEP_MILLIS`.
+/// How often the surface redraws the spinner and checks for commands.
 const POLL_DELAY: Duration = Duration::from_millis(10);
 /// How long the last frame stays on screen after a release while the user
 /// compositor takes over the output.
@@ -502,7 +501,6 @@ fn run_surface(fd: RawFd, listener: &UnixListener, palette: &mut Palette) -> io:
   }
 
   draw_background(&mut buffer, palette);
-  let mut shown_dot = None;
   loop {
     while let Ok((stream, _)) = listener.accept() {
       let previous = *palette;
@@ -520,14 +518,9 @@ fn run_surface(fd: RawFd, listener: &UnixListener, palette: &mut Palette) -> io:
       }
       if *palette != previous {
         draw_background(&mut buffer, palette);
-        shown_dot = None;
       }
     }
-    let active_dot = spinner::active_dot(monotonic_millis());
-    if shown_dot != Some(active_dot) {
-      draw_spinner(&mut buffer, palette, active_dot);
-      shown_dot = Some(active_dot);
-    }
+    draw_spinner(&mut buffer, palette, &spinner::frame(monotonic_millis()));
     thread::sleep(POLL_DELAY);
   }
 }
@@ -603,15 +596,15 @@ fn draw_background(buffer: &mut DumbBuffer, palette: &Palette) {
 }
 
 /// Draws the shared spinner (`argvus_loading_theme_core::spinner`) at the
-/// center of the output. Each pixel of the spinner square is written once with
+/// center of the output. Each pixel of the spinner area is written once with
 /// its final color, so the scanned-out buffer never shows a half-drawn frame.
-fn draw_spinner(buffer: &mut DumbBuffer, palette: &Palette, active_dot: usize) {
+fn draw_spinner(buffer: &mut DumbBuffer, palette: &Palette, frame: &spinner::Frame) {
   let width = buffer.width as i64;
   let height = buffer.height as i64;
   let stride = i64::from(buffer.pitch / 4);
   let center_x = width as f64 / 2.0;
   let center_y = height as f64 / 2.0;
-  // One extra pixel on each side for the anti-aliased edge of the dots.
+  // One extra pixel on each side for the anti-aliased edge of the squares.
   let half_side = (spinner::EXTENT / 2.0).ceil() as i64 + 1;
   let first_x = (center_x as i64 - half_side).max(0);
   let last_x = (center_x as i64 + half_side).min(width - 1);
@@ -620,37 +613,31 @@ fn draw_spinner(buffer: &mut DumbBuffer, palette: &Palette, active_dot: usize) {
   let pixels = buffer.pixels();
   for y in first_y..=last_y {
     for x in first_x..=last_x {
-      let color = spinner_pixel(
-        palette,
-        active_dot,
-        x as f64 + 0.5 - center_x,
-        y as f64 + 0.5 - center_y,
-      );
+      let color = spinner_pixel(palette, frame, x as f64 - center_x, y as f64 - center_y);
       pixels[(y * stride + x) as usize] = 0xff00_0000 | color;
     }
   }
 }
 
-/// The color of the pixel whose center is at (`offset_x`, `offset_y`) from the
-/// spinner center: the background, covered by any dot with a one-pixel
-/// anti-aliased edge like the one cairo draws in the GTK splash.
-fn spinner_pixel(palette: &Palette, active_dot: usize, offset_x: f64, offset_y: f64) -> u32 {
-  let idle = spinner::idle_rgb_over(palette.background);
+/// The color of the one-pixel square whose top-left corner is at (`left`,
+/// `top`) from the spinner center. Each square covers the pixel in proportion to
+/// the area they share, which gives the same anti-aliased edge cairo draws in
+/// the GTK splash.
+fn spinner_pixel(palette: &Palette, frame: &spinner::Frame, left: f64, top: f64) -> u32 {
   let mut color = palette.background;
-  for index in 0..spinner::DOTS {
-    let (dot_x, dot_y) = spinner::dot_offset(index);
-    let distance = ((offset_x - dot_x).powi(2) + (offset_y - dot_y).powi(2)).sqrt();
-    let coverage = (spinner::DOT_RADIUS + 0.5 - distance).clamp(0.0, 1.0);
+  for square in frame.squares {
+    let coverage = overlap(square.x, square.x + spinner::SQUARE, left, left + 1.0)
+      * overlap(square.y, square.y + spinner::SQUARE, top, top + 1.0);
     if coverage > 0.0 {
-      let dot_color = if index == active_dot {
-        palette.accent
-      } else {
-        idle
-      };
-      color = mix_rgb(color, dot_color, coverage);
+      color = mix_rgb(color, palette.accent, coverage);
     }
   }
   color
+}
+
+/// Length of the overlap between the intervals [`start`, `end`] and [`from`, `to`].
+fn overlap(start: f64, end: f64, from: f64, to: f64) -> f64 {
+  (end.min(to) - start.max(from)).max(0.0)
 }
 
 /// `base` moved toward `over` by `amount` (0 keeps `base`, 1 gives `over`).
@@ -708,16 +695,20 @@ mod tests {
   }
 
   #[test]
-  fn spinner_pixels_show_the_active_dot_and_the_background() {
+  fn spinner_pixels_show_the_squares_and_the_background() {
     let palette = Palette::new("argvus-dark", Some(0xff_0000));
-    let (active_x, active_y) = spinner::dot_offset(3);
-    assert_eq!(spinner_pixel(&palette, 3, active_x, active_y), 0xff_0000);
-    let (idle_x, idle_y) = spinner::dot_offset(4);
+    let rest = spinner::frame(0);
+    // The top-left square covers this pixel completely.
+    assert_eq!(spinner_pixel(&palette, &rest, -20.0, -20.0), 0xff_0000);
     assert_eq!(
-      spinner_pixel(&palette, 3, idle_x, idle_y),
-      spinner::idle_rgb_over(palette.background)
+      spinner_pixel(&palette, &rest, 25.0, 25.0),
+      palette.background
     );
-    assert_eq!(spinner_pixel(&palette, 3, 0.0, 0.0), palette.background);
+    // A pixel that straddles the left edge of the top-left square is half covered.
+    assert_eq!(
+      spinner_pixel(&palette, &rest, -20.5, -20.0),
+      mix_rgb(palette.background, 0xff_0000, 0.5)
+    );
   }
 
   /// Binds a socket in `directory` and serves one request through

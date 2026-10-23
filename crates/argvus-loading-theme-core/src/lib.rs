@@ -73,46 +73,106 @@ pub fn hex_to_rgb(value: &str) -> Option<u32> {
 /// The loading spinner, shared by every surface of the login handoff.
 ///
 /// The greeter splash, the DRM handoff surface and the session overlay are
-/// three processes on two display paths. They draw this same spinner, in
+/// three processes on two display paths. They draw this same animation, in
 /// physical pixels, and take its phase from `CLOCK_MONOTONIC`, so the switch
 /// from one process to the next does not change what is on screen.
+///
+/// The animation is a four-square loader: a box grows from `REST` to `OPEN`,
+/// each square moves to the next corner, and the box shrinks back. The
+/// keyframes and the easing follow a CSS loader with a 1.5 s cycle.
 pub mod spinner {
-  /// Number of dots on the circle.
-  pub const DOTS: usize = 12;
-  /// Distance from the center to each dot, in physical pixels.
-  pub const ORBIT_RADIUS: f64 = 28.0;
-  /// Radius of one dot, in physical pixels.
-  pub const DOT_RADIUS: f64 = 5.0;
-  /// How long each dot stays highlighted.
-  pub const STEP_MILLIS: u64 = 90;
-  /// Color of the dots that are not highlighted.
-  pub const IDLE_RGB: u32 = 0x40_4040;
-  /// Opacity of the dots that are not highlighted.
-  pub const IDLE_ALPHA: f64 = 0.4;
+  /// Length of one full cycle, in milliseconds.
+  pub const CYCLE_MILLIS: u64 = 1500;
+  /// Side of each square, in physical pixels.
+  pub const SQUARE: f64 = 21.0;
+  /// Side of the box while the squares rest in its corners.
+  pub const REST: f64 = 40.0;
+  /// Side of the box while the squares travel to the next corners.
+  pub const OPEN: f64 = 60.0;
   /// Side of the square that holds the whole spinner, in physical pixels.
-  pub const EXTENT: f64 = 2.0 * (ORBIT_RADIUS + DOT_RADIUS);
+  pub const EXTENT: f64 = OPEN;
 
-  /// The highlighted dot at `monotonic_millis` (milliseconds of `CLOCK_MONOTONIC`).
-  pub fn active_dot(monotonic_millis: u64) -> usize {
-    ((monotonic_millis / STEP_MILLIS) % DOTS as u64) as usize
+  /// Cycle progress at which the box stops growing.
+  const EXPAND_END: f64 = 0.33;
+  /// Cycle progress at which the squares reach the next corners.
+  const MOVE_END: f64 = 0.66;
+  /// Control points of the `cubic-bezier(0.3, 1, 0, 1)` applied to each segment.
+  const EASE_X1: f64 = 0.3;
+  const EASE_Y1: f64 = 1.0;
+  const EASE_X2: f64 = 0.0;
+  const EASE_Y2: f64 = 1.0;
+
+  /// Corner fractions (x, y) of the box that each square occupies at rest:
+  /// top-left, top-right, bottom-right, bottom-left.
+  const START: [(f64, f64); 4] = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)];
+  /// Corner fractions after the squares have moved one corner clockwise.
+  const END: [(f64, f64); 4] = [(1.0, 0.0), (1.0, 1.0), (0.0, 1.0), (0.0, 0.0)];
+
+  /// Top-left corner of one square, relative to the spinner center.
+  #[derive(Debug, Clone, Copy, PartialEq)]
+  pub struct Square {
+    pub x: f64,
+    pub y: f64,
   }
 
-  /// The idle dot color over an opaque `background`, for surfaces without
-  /// alpha blending (the DRM handoff buffer). It equals what a compositor shows
-  /// for `IDLE_RGB` at `IDLE_ALPHA` over the same background.
-  pub fn idle_rgb_over(background: u32) -> u32 {
-    let channel = |shift: u32| {
-      let base = f64::from((background >> shift) & 0xff);
-      let idle = f64::from((IDLE_RGB >> shift) & 0xff);
-      ((base + (idle - base) * IDLE_ALPHA).round() as u32) << shift
+  /// Position of the four squares at one instant, relative to the spinner center.
+  #[derive(Debug, Clone, Copy, PartialEq)]
+  pub struct Frame {
+    pub squares: [Square; 4],
+  }
+
+  /// The frame at `monotonic_millis` (milliseconds of `CLOCK_MONOTONIC`).
+  pub fn frame(monotonic_millis: u64) -> Frame {
+    let progress = (monotonic_millis % CYCLE_MILLIS) as f64 / CYCLE_MILLIS as f64;
+    let (container, corners) = if progress < EXPAND_END {
+      let eased = ease(progress / EXPAND_END);
+      (lerp(REST, OPEN, eased), START)
+    } else if progress < MOVE_END {
+      let eased = ease((progress - EXPAND_END) / (MOVE_END - EXPAND_END));
+      (OPEN, blend_corners(START, END, eased))
+    } else {
+      let eased = ease((progress - MOVE_END) / (1.0 - MOVE_END));
+      (lerp(OPEN, REST, eased), END)
     };
-    channel(16) | channel(8) | channel(0)
+    let free = container - SQUARE;
+    let squares = corners.map(|(fraction_x, fraction_y)| Square {
+      x: -container / 2.0 + fraction_x * free,
+      y: -container / 2.0 + fraction_y * free,
+    });
+    Frame { squares }
   }
 
-  /// Offset of dot `index` from the spinner center, in physical pixels.
-  pub fn dot_offset(index: usize) -> (f64, f64) {
-    let angle = std::f64::consts::TAU * (index % DOTS) as f64 / DOTS as f64;
-    (angle.cos() * ORBIT_RADIUS, angle.sin() * ORBIT_RADIUS)
+  /// Eased progress of `cubic-bezier(0.3, 1, 0, 1)` at linear progress `x`.
+  pub fn ease(x: f64) -> f64 {
+    let x = x.clamp(0.0, 1.0);
+    let (mut low, mut high) = (0.0, 1.0);
+    for _ in 0..60 {
+      let middle = (low + high) / 2.0;
+      if bezier_axis(middle, EASE_X1, EASE_X2) < x {
+        low = middle;
+      } else {
+        high = middle;
+      }
+    }
+    bezier_axis((low + high) / 2.0, EASE_Y1, EASE_Y2)
+  }
+
+  fn bezier_axis(t: f64, first: f64, second: f64) -> f64 {
+    let inverse = 1.0 - t;
+    3.0 * inverse * inverse * t * first + 3.0 * inverse * t * t * second + t * t * t
+  }
+
+  fn lerp(from: f64, to: f64, amount: f64) -> f64 {
+    from + (to - from) * amount
+  }
+
+  fn blend_corners(from: [(f64, f64); 4], to: [(f64, f64); 4], amount: f64) -> [(f64, f64); 4] {
+    std::array::from_fn(|index| {
+      (
+        lerp(from[index].0, to[index].0, amount),
+        lerp(from[index].1, to[index].1, amount),
+      )
+    })
   }
 }
 
@@ -130,31 +190,64 @@ mod tests {
   }
 
   #[test]
-  fn spinner_phase_follows_the_shared_clock() {
-    assert_eq!(spinner::active_dot(0), 0);
-    assert_eq!(spinner::active_dot(spinner::STEP_MILLIS - 1), 0);
-    assert_eq!(spinner::active_dot(spinner::STEP_MILLIS), 1);
+  fn spinner_cycle_repeats_on_the_shared_clock() {
+    assert_eq!(spinner::frame(0), spinner::frame(spinner::CYCLE_MILLIS));
     assert_eq!(
-      spinner::active_dot(spinner::STEP_MILLIS * spinner::DOTS as u64),
-      0
+      spinner::frame(333),
+      spinner::frame(spinner::CYCLE_MILLIS + 333)
     );
   }
 
   #[test]
-  fn idle_dot_blends_toward_its_color() {
-    assert_eq!(spinner::idle_rgb_over(spinner::IDLE_RGB), spinner::IDLE_RGB);
-    // 0x19 + (0x40 - 0x19) * 0.4 = 0x28.6 -> 0x29
-    assert_eq!(spinner::idle_rgb_over(0x19_1919), 0x29_2929);
+  fn spinner_starts_at_rest_in_the_corners() {
+    let frame = spinner::frame(0);
+    assert_eq!(frame.squares[0], spinner::Square { x: -20.0, y: -20.0 });
+    assert_eq!(frame.squares[2], spinner::Square { x: -1.0, y: -1.0 });
   }
 
   #[test]
-  fn spinner_dots_lie_on_the_orbit() {
-    for index in 0..spinner::DOTS {
-      let (x, y) = spinner::dot_offset(index);
-      assert!(((x * x + y * y).sqrt() - spinner::ORBIT_RADIUS).abs() < 1e-9);
+  fn spinner_moves_each_square_to_the_next_corner() {
+    // 66 % of the cycle: the box is open and the squares have arrived.
+    let frame = spinner::frame(990);
+    let first = frame.squares[0];
+    assert!((first.x - 9.0).abs() < 1e-6);
+    assert!((first.y + 30.0).abs() < 1e-6);
+  }
+
+  #[test]
+  fn spinner_stays_inside_its_extent() {
+    let half = spinner::EXTENT / 2.0;
+    for millis in (0..spinner::CYCLE_MILLIS).step_by(5) {
+      for square in spinner::frame(millis).squares {
+        assert!(square.x >= -half - 1e-9 && square.y >= -half - 1e-9);
+        assert!(square.x + spinner::SQUARE <= half + 1e-9);
+        assert!(square.y + spinner::SQUARE <= half + 1e-9);
+      }
     }
-    let (first_x, first_y) = spinner::dot_offset(0);
-    assert!((first_x - spinner::ORBIT_RADIUS).abs() < 1e-9 && first_y.abs() < 1e-9);
+  }
+
+  #[test]
+  fn spinner_stays_centered_while_it_animates() {
+    for millis in (0..spinner::CYCLE_MILLIS).step_by(7) {
+      let squares = spinner::frame(millis).squares;
+      let mean_x: f64 = squares
+        .iter()
+        .map(|square| square.x + spinner::SQUARE / 2.0)
+        .sum::<f64>()
+        / 4.0;
+      let mean_y: f64 = squares
+        .iter()
+        .map(|square| square.y + spinner::SQUARE / 2.0)
+        .sum::<f64>()
+        / 4.0;
+      assert!(mean_x.abs() < 1e-9 && mean_y.abs() < 1e-9);
+    }
+  }
+
+  #[test]
+  fn spinner_easing_hits_both_ends() {
+    assert!(spinner::ease(0.0).abs() < 1e-9);
+    assert!((spinner::ease(1.0) - 1.0).abs() < 1e-9);
   }
 
   #[test]

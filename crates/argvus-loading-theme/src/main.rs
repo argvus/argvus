@@ -123,8 +123,8 @@ fn active_theme_name() -> String {
 
 fn css(palette: &Palette) -> String {
   format!(
-    "window, #splash-surface, .splash-surface {{ background-color: {}; }} * {{ color: {}; }} .splash-accent {{ color: {}; }}",
-    palette.background, palette.foreground, palette.accent
+    "window, #splash-surface, .splash-surface {{ background-color: {}; }} * {{ color: {}; }}",
+    palette.background, palette.foreground
   )
 }
 
@@ -274,17 +274,16 @@ fn make_surface(
 /// The shared loading spinner (`argvus_loading_theme_core::spinner`).
 ///
 /// It replaces `gtk::Spinner` so the greeter splash, the DRM handoff surface
-/// and this overlay show one image: same dots, same physical size and, because
-/// the phase comes from `CLOCK_MONOTONIC`, the same frame at the same instant.
+/// and this overlay show one animation: same squares, same physical size and,
+/// because the phase comes from `CLOCK_MONOTONIC`, the same frame at the same instant.
 fn spinner_area(palette: &Palette) -> DrawingArea {
   let accent = hex_to_rgb(&palette.accent)
     .or_else(|| hex_to_rgb(DEFAULT_ACCENT))
     .unwrap_or_default();
   let area = DrawingArea::new();
-  area.add_css_class("splash-accent");
   area.set_halign(Align::Center);
   area.set_valign(Align::Center);
-  // Large enough at scale 1; on a scaled output the dots shrink to keep their
+  // Large enough at scale 1; on a scaled output the squares shrink to keep their
   // physical size and stay centered in the same area.
   let extent = spinner::EXTENT.ceil() as i32;
   area.set_content_width(extent);
@@ -292,26 +291,19 @@ fn spinner_area(palette: &Palette) -> DrawingArea {
   area.set_draw_func(move |area, context, width, height| {
     let scale = f64::from(area.scale_factor().max(1));
     let monotonic_millis = u64::try_from(glib::monotonic_time() / 1000).unwrap_or_default();
-    let active = spinner::active_dot(monotonic_millis);
+    let frame = spinner::frame(monotonic_millis);
     let (center_x, center_y) = (f64::from(width) / 2.0, f64::from(height) / 2.0);
-    for index in 0..spinner::DOTS {
-      if index == active {
-        let (red, green, blue) = rgb_channels(accent);
-        context.set_source_rgb(red, green, blue);
-      } else {
-        let (red, green, blue) = rgb_channels(spinner::IDLE_RGB);
-        context.set_source_rgba(red, green, blue, spinner::IDLE_ALPHA);
-      }
-      let (offset_x, offset_y) = spinner::dot_offset(index);
-      context.arc(
-        center_x + offset_x / scale,
-        center_y + offset_y / scale,
-        spinner::DOT_RADIUS / scale,
-        0.0,
-        std::f64::consts::TAU,
+    let (red, green, blue) = rgb_channels(accent);
+    context.set_source_rgb(red, green, blue);
+    for square in frame.squares {
+      context.rectangle(
+        center_x + square.x / scale,
+        center_y + square.y / scale,
+        spinner::SQUARE / scale,
+        spinner::SQUARE / scale,
       );
-      let _ = context.fill();
     }
+    let _ = context.fill();
   });
   area.add_tick_callback(|area, _clock| {
     area.queue_draw();
