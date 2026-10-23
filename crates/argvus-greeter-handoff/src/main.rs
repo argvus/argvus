@@ -16,11 +16,23 @@ use std::{
   time::{Duration, Instant},
 };
 
+use argvus_loading_theme_core::{
+  DEFAULT_ACCENT, DEFAULT_BACKGROUND, hex_to_rgb, spinner, theme_colors,
+};
 use clap::Parser;
 
 const DEFAULT_SOCKET: &str = "/run/argvus-greeter/handoff.sock";
 const DEFAULT_THEME: &str = "argvus-dark";
-const FRAME_DELAY: Duration = Duration::from_millis(90);
+/// How often the surface checks for a new spinner frame and for commands. The
+/// frame itself changes every `spinner::STEP_MILLIS`.
+const POLL_DELAY: Duration = Duration::from_millis(10);
+/// How long the last frame stays on screen after a release while the user
+/// compositor takes over the output.
+const REPLACEMENT_TIMEOUT: Duration = Duration::from_secs(10);
+/// Interval between the checks for the compositor's first frame.
+const REPLACEMENT_POLL: Duration = Duration::from_millis(20);
+/// Interval between the attempts to become DRM master.
+const MASTER_POLL: Duration = Duration::from_millis(10);
 const ACK_TIMEOUT: Duration = Duration::from_secs(20);
 /// How long the surface waits for one client to send its command line. The
 /// socket is open to every local user, so a client that connects and stays
@@ -39,6 +51,9 @@ struct Cli {
   /// Initial theme used before the authenticated session publishes its theme.
   #[arg(long, default_value = DEFAULT_THEME)]
   theme: String,
+  /// The user's accent (`#rrggbb`), as the greeter passes it to the GTK splash.
+  #[arg(long)]
+  accent: Option<String>,
   /// Client mode: sends one command (`release` or `theme=NAME`) to the running
   /// surface, waits for its acknowledgement and exits. Without a running
   /// surface this does nothing and succeeds.
@@ -46,48 +61,34 @@ struct Cli {
   send: Option<String>,
 }
 
-#[derive(Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 struct Palette {
   background: u32,
   accent: u32,
+  /// The user's accent, kept when a `theme=` command changes the theme.
+  user_accent: Option<u32>,
 }
 
 impl Palette {
-  fn from_theme(theme: &str) -> Self {
-    let normalized = theme.trim().to_ascii_lowercase().replace(['_', ' '], "-");
-    let normalized = normalized.strip_prefix("argvus-").unwrap_or(&normalized);
-    let normalized = normalized.strip_suffix("-float").unwrap_or(normalized);
+  /// The colors of `theme` from the table the GTK splash uses, with the user's
+  /// accent when there is one, so both surfaces paint the same colors.
+  fn new(theme: &str, user_accent: Option<u32>) -> Self {
+    let (background, theme_accent) = theme_colors(theme)
+      .map(|(background, _, accent)| (background, accent))
+      .unwrap_or((DEFAULT_BACKGROUND, DEFAULT_ACCENT));
+    let background = hex_to_rgb(background).unwrap_or_default();
+    let accent = user_accent
+      .or_else(|| hex_to_rgb(theme_accent))
+      .unwrap_or_default();
+    Self {
+      background,
+      accent,
+      user_accent,
+    }
+  }
 
-    let (background, accent) = match normalized {
-      "dark" | "dark-aether" => (0x191b27, 0x3590bd),
-      "light" | "light-veil" => (0xffffff, 0x000000),
-      "dracula" => (0x282a36, 0xbd93f9),
-      "onedark" | "one-dark" => (0x282c34, 0x61afef),
-      "dark-silver" | "silver-dark" => (0x595959, 0x333647),
-      "dark-slate" | "slate-dark" => (0x3b4352, 0x7391a5),
-      "dark-universe" | "universe" => (0x000000, 0xffffff),
-      "dark-gruvbox-high" | "gruvbox-high-dark" => (0x282828, 0xD79921),
-      "dark-gruvbox" | "gruvbox-dark" => (0x282828, 0xD4BE98),
-      "dark-rose-pine" | "rose-pine" => (0x191724, 0xc4a7e7),
-      "dark-tokio-night" | "dark-tokyo-night" | "tokyo-night" => (0x1a1b26, 0x7aa2f7),
-      "github-light" => (0xffffff, 0x0969da),
-      "one-light" => (0xfafafa, 0x4078f2),
-      "everforest-light" | "everforest-light-float" => (0xfdf6e3, 0x3a94c5),
-      "solarized-light" | "light-solarized" => (0xfdf6e3, 0x268bd2),
-      "catppuccin-latte" | "light-catppuccin-latte" | "dark-catppuccin-latte" => {
-        (0xeff1f5, 0x1e66f5)
-      }
-      "gruvbox-light" | "light-gruvbox" => (0xfbf1c7, 0x458588),
-      "solitude" => (0x101315, 0x798186),
-      "dark-sunset" | "sunset" => (0x0f0f0f, 0xe2be8a),
-      "matrix" => (0x0b0c16, 0x82fb9c),
-      "monokai-dark" => (0x2d2a2e, 0x78dce8),
-      "dark-matrix" => (0x0b0c16, 0x82fb9c),
-      "dark-monokai" => (0x2d2a2e, 0x78dce8),
-      _ => (0x191b27, 0x3590bd),
-    };
-
-    Self { background, accent }
+  fn with_theme(&self, theme: &str) -> Self {
+    Self::new(theme, self.user_accent)
   }
 }
 
@@ -156,6 +157,19 @@ struct Encoder {
 }
 
 #[repr(C)]
+struct Crtc {
+  crtc_id: u32,
+  buffer_id: u32,
+  x: u32,
+  y: u32,
+  width: u32,
+  height: u32,
+  mode_valid: libc::c_int,
+  mode: ModeInfo,
+  gamma_size: libc::c_int,
+}
+
+#[repr(C)]
 struct CreateDumb {
   height: u32,
   width: u32,
@@ -200,6 +214,8 @@ unsafe extern "C" {
     buffer_id: *mut u32,
   ) -> libc::c_int;
   fn drmModeRmFB(fd: libc::c_int, buffer_id: u32) -> libc::c_int;
+  fn drmModeGetCrtc(fd: libc::c_int, crtc_id: u32) -> *mut Crtc;
+  fn drmModeFreeCrtc(crtc: *mut Crtc);
   fn drmModeSetCrtc(
     fd: libc::c_int,
     crtc_id: u32,
@@ -215,6 +231,8 @@ unsafe extern "C" {
 struct DumbBuffer {
   fd: RawFd,
   handle: u32,
+  width: u32,
+  height: u32,
   pitch: u32,
   size: usize,
   map: *mut u8,
@@ -282,11 +300,23 @@ impl DumbBuffer {
     Ok(Self {
       fd,
       handle: request.handle,
+      width,
+      height,
       pitch: request.pitch,
       size: request.size as usize,
       map: mapped.cast(),
       framebuffer,
     })
+  }
+}
+
+impl DumbBuffer {
+  /// The mapped buffer as XRGB8888 pixels, `pitch / 4` per row.
+  fn pixels(&mut self) -> &mut [u32] {
+    // SAFETY: `map` is the live mmap of this dumb buffer, `size` bytes long and
+    // aligned for u32. It stays mapped until `drop`, and the exclusive borrow of
+    // `self` prevents another slice over it.
+    unsafe { std::slice::from_raw_parts_mut(self.map.cast::<u32>(), self.size / 4) }
   }
 }
 
@@ -306,21 +336,75 @@ fn main() -> io::Result<()> {
     return send_command(&cli.socket, command);
   }
   let listener = prepare_socket(&cli.socket)?;
-  let mut palette = Palette::from_theme(&cli.theme);
+  let user_accent = cli.accent.as_deref().and_then(hex_to_rgb);
+  let mut palette = Palette::new(&cli.theme, user_accent);
   let fd = acquire_card()?;
 
   let result = run_surface(fd, &listener, &mut palette);
   unsafe {
     drmDropMaster(fd);
-    libc::close(fd);
   }
   let _ = fs::remove_file(&cli.socket);
-  // The release is acknowledged only after DRM master has been dropped, so the
-  // caller can start the user compositor without racing this process.
-  if let Some(mut release) = result? {
-    let _ = release.write_all(b"released\n");
+  let outcome = match result {
+    Ok(mut released) => {
+      // The release is acknowledged only after DRM master has been dropped, so
+      // the caller can start the user compositor without racing this process.
+      let _ = released.stream.write_all(b"released\n");
+      // Destroying the framebuffer now would make the kernel turn the output
+      // off until the compositor's first modeset: a black flash between the
+      // two spinners. The last frame stays until the compositor replaces it.
+      wait_for_replacement(fd, released.crtc_id, released.buffer.framebuffer);
+      drop(released.buffer);
+      Ok(())
+    }
+    Err(error) => Err(error),
+  };
+  unsafe {
+    libc::close(fd);
   }
-  Ok(())
+  outcome
+}
+
+/// What the surface keeps after a `release` until the user compositor shows
+/// its own first frame.
+struct Released {
+  stream: UnixStream,
+  buffer: DumbBuffer,
+  crtc_id: u32,
+}
+
+/// Waits until the CRTC no longer scans out `framebuffer`, which means the
+/// user compositor committed its own frame, or until `REPLACEMENT_TIMEOUT`.
+fn wait_for_replacement(fd: RawFd, crtc_id: u32, framebuffer: u32) {
+  let deadline = Instant::now() + REPLACEMENT_TIMEOUT;
+  while Instant::now() < deadline {
+    let crtc = unsafe { drmModeGetCrtc(fd, crtc_id) };
+    if crtc.is_null() {
+      return;
+    }
+    let scanned_out = unsafe { (*crtc).buffer_id };
+    unsafe { drmModeFreeCrtc(crtc) };
+    if scanned_out != framebuffer {
+      return;
+    }
+    thread::sleep(REPLACEMENT_POLL);
+  }
+}
+
+/// Milliseconds of `CLOCK_MONOTONIC`, the clock the GTK splash also reads, so
+/// both surfaces show the same spinner frame at the same instant.
+fn monotonic_millis() -> u64 {
+  let mut now = libc::timespec {
+    tv_sec: 0,
+    tv_nsec: 0,
+  };
+  // SAFETY: `now` is a valid, writable timespec for the duration of the call.
+  if unsafe { libc::clock_gettime(libc::CLOCK_MONOTONIC, &mut now) } != 0 {
+    return 0;
+  }
+  let seconds = u64::try_from(now.tv_sec).unwrap_or_default();
+  let nanoseconds = u64::try_from(now.tv_nsec).unwrap_or_default();
+  seconds * 1000 + nanoseconds / 1_000_000
 }
 
 /// Sends one command to the running surface and waits for its acknowledgement.
@@ -393,15 +477,11 @@ fn acquire_card() -> io::Result<RawFd> {
         "DRM device did not become available",
       ));
     }
-    thread::sleep(Duration::from_millis(50));
+    thread::sleep(MASTER_POLL);
   }
 }
 
-fn run_surface(
-  fd: RawFd,
-  listener: &UnixListener,
-  palette: &mut Palette,
-) -> io::Result<Option<UnixStream>> {
+fn run_surface(fd: RawFd, listener: &UnixListener, palette: &mut Palette) -> io::Result<Released> {
   let (connector_id, crtc_id, mode) = select_output(fd)?;
   let mut connector = connector_id;
   let mut buffer = DumbBuffer::create(fd, mode.hdisplay as u32, mode.vdisplay as u32)?;
@@ -421,19 +501,34 @@ fn run_surface(
     return Err(io::Error::last_os_error());
   }
 
-  let mut frame = 0usize;
+  draw_background(&mut buffer, palette);
+  let mut shown_dot = None;
   loop {
     while let Ok((stream, _)) = listener.accept() {
+      let previous = *palette;
       match handle_command(stream, palette) {
-        Ok(Some(release)) => return Ok(Some(release)),
+        Ok(Some(stream)) => {
+          return Ok(Released {
+            stream,
+            buffer,
+            crtc_id,
+          });
+        }
         Ok(None) => {}
         // A client that disconnects early or sends garbage must not end the surface.
         Err(_) => {}
       }
+      if *palette != previous {
+        draw_background(&mut buffer, palette);
+        shown_dot = None;
+      }
     }
-    draw_frame(&mut buffer, palette, frame);
-    frame = frame.wrapping_add(1);
-    thread::sleep(FRAME_DELAY);
+    let active_dot = spinner::active_dot(monotonic_millis());
+    if shown_dot != Some(active_dot) {
+      draw_spinner(&mut buffer, palette, active_dot);
+      shown_dot = Some(active_dot);
+    }
+    thread::sleep(POLL_DELAY);
   }
 }
 
@@ -491,7 +586,7 @@ fn handle_command(mut stream: UnixStream, palette: &mut Palette) -> io::Result<O
   BufReader::new(&mut stream).read_line(&mut command)?;
   let command = command.trim();
   if let Some(theme) = command.strip_prefix("theme=") {
-    *palette = Palette::from_theme(theme);
+    *palette = palette.with_theme(theme);
     stream.write_all(b"ok\n")?;
     return Ok(None);
   }
@@ -502,50 +597,70 @@ fn handle_command(mut stream: UnixStream, palette: &mut Palette) -> io::Result<O
   Ok(None)
 }
 
-fn draw_frame(buffer: &mut DumbBuffer, palette: &Palette, frame: usize) {
-  let width = (buffer.pitch / 4) as i32;
-  let height = (buffer.size as u32 / buffer.pitch) as i32;
-  let pixels = unsafe { std::slice::from_raw_parts_mut(buffer.map.cast::<u32>(), buffer.size / 4) };
-  pixels.fill(0xff00_0000 | palette.background);
+/// Paints the whole buffer with the background color.
+fn draw_background(buffer: &mut DumbBuffer, palette: &Palette) {
+  buffer.pixels().fill(0xff00_0000 | palette.background);
+}
 
-  let cx = width / 2;
-  let cy = height / 2;
-  let radius = 28i32;
-  let active = frame % 12;
-  for spoke in 0..12 {
-    let angle = std::f32::consts::TAU * spoke as f32 / 12.0;
-    let x = cx + (angle.cos() * radius as f32) as i32;
-    let y = cy + (angle.sin() * radius as f32) as i32;
-    let color = if spoke == active {
-      0xff00_0000 | palette.accent
-    } else {
-      0x6640_4040
-    };
-    draw_disc(pixels, width, height, x, y, 5, color);
+/// Draws the shared spinner (`argvus_loading_theme_core::spinner`) at the
+/// center of the output. Each pixel of the spinner square is written once with
+/// its final color, so the scanned-out buffer never shows a half-drawn frame.
+fn draw_spinner(buffer: &mut DumbBuffer, palette: &Palette, active_dot: usize) {
+  let width = buffer.width as i64;
+  let height = buffer.height as i64;
+  let stride = i64::from(buffer.pitch / 4);
+  let center_x = width as f64 / 2.0;
+  let center_y = height as f64 / 2.0;
+  // One extra pixel on each side for the anti-aliased edge of the dots.
+  let half_side = (spinner::EXTENT / 2.0).ceil() as i64 + 1;
+  let first_x = (center_x as i64 - half_side).max(0);
+  let last_x = (center_x as i64 + half_side).min(width - 1);
+  let first_y = (center_y as i64 - half_side).max(0);
+  let last_y = (center_y as i64 + half_side).min(height - 1);
+  let pixels = buffer.pixels();
+  for y in first_y..=last_y {
+    for x in first_x..=last_x {
+      let color = spinner_pixel(
+        palette,
+        active_dot,
+        x as f64 + 0.5 - center_x,
+        y as f64 + 0.5 - center_y,
+      );
+      pixels[(y * stride + x) as usize] = 0xff00_0000 | color;
+    }
   }
 }
 
-fn draw_disc(
-  pixels: &mut [u32],
-  width: i32,
-  height: i32,
-  cx: i32,
-  cy: i32,
-  radius: i32,
-  color: u32,
-) {
-  for y in (cy - radius)..=(cy + radius) {
-    for x in (cx - radius)..=(cx + radius) {
-      if x < 0 || y < 0 || x >= width || y >= height {
-        continue;
-      }
-      let dx = x - cx;
-      let dy = y - cy;
-      if dx * dx + dy * dy <= radius * radius {
-        pixels[(y * width + x) as usize] = color;
-      }
+/// The color of the pixel whose center is at (`offset_x`, `offset_y`) from the
+/// spinner center: the background, covered by any dot with a one-pixel
+/// anti-aliased edge like the one cairo draws in the GTK splash.
+fn spinner_pixel(palette: &Palette, active_dot: usize, offset_x: f64, offset_y: f64) -> u32 {
+  let idle = spinner::idle_rgb_over(palette.background);
+  let mut color = palette.background;
+  for index in 0..spinner::DOTS {
+    let (dot_x, dot_y) = spinner::dot_offset(index);
+    let distance = ((offset_x - dot_x).powi(2) + (offset_y - dot_y).powi(2)).sqrt();
+    let coverage = (spinner::DOT_RADIUS + 0.5 - distance).clamp(0.0, 1.0);
+    if coverage > 0.0 {
+      let dot_color = if index == active_dot {
+        palette.accent
+      } else {
+        idle
+      };
+      color = mix_rgb(color, dot_color, coverage);
     }
   }
+  color
+}
+
+/// `base` moved toward `over` by `amount` (0 keeps `base`, 1 gives `over`).
+fn mix_rgb(base: u32, over: u32, amount: f64) -> u32 {
+  let channel = |shift: u32| {
+    let from = f64::from((base >> shift) & 0xff);
+    let to = f64::from((over >> shift) & 0xff);
+    ((from + (to - from) * amount).round() as u32) << shift
+  };
+  channel(16) | channel(8) | channel(0)
 }
 
 fn drm_call<T>(fd: RawFd, request: libc::c_ulong, value: &mut T) -> io::Result<()> {
@@ -567,25 +682,42 @@ mod tests {
   use super::*;
 
   #[test]
-  fn supported_themes_map_to_expected_colors() {
-    assert_eq!(Palette::from_theme("ARGVUS Light").background, 0xffffff);
-    assert_eq!(Palette::from_theme("universe-float").accent, 0xffffff);
-    assert_eq!(Palette::from_theme("tokyo-night").background, 0x1a1b26);
-    assert_eq!(Palette::from_theme("tokyo-night").accent, 0x7aa2f7);
-    assert_eq!(Palette::from_theme("solitude").background, 0x101315);
-    assert_eq!(Palette::from_theme("solitude").accent, 0x798186);
-    assert_eq!(Palette::from_theme("sunset").background, 0x0f0f0f);
-    assert_eq!(Palette::from_theme("sunset").accent, 0xe2be8a);
-    assert_eq!(Palette::from_theme("matrix").background, 0x0b0c16);
-    assert_eq!(Palette::from_theme("matrix").accent, 0x82fb9c);
-    assert_eq!(Palette::from_theme("monokai-dark").background, 0x2d2a2e);
-    assert_eq!(Palette::from_theme("monokai-dark").accent, 0x78dce8);
+  fn palette_uses_the_splash_theme_table() {
+    assert_eq!(Palette::new("ARGVUS Light", None).background, 0xffffff);
+    assert_eq!(Palette::new("tokyo-night", None).background, 0x1a1b26);
+    assert_eq!(Palette::new("tokyo-night", None).accent, 0x7aa2f7);
+    assert_eq!(Palette::new("solitude", None).background, 0x101315);
+    assert_eq!(Palette::new("solitude", None).accent, 0x798186);
+    assert_eq!(Palette::new("argvus-dark", None).background, 0x191b27);
   }
 
   #[test]
-  fn unknown_themes_fall_back_to_aether() {
-    assert_eq!(Palette::from_theme("custom").background, 0x191b27);
-    assert_eq!(Palette::from_theme("custom").accent, 0x3590bd);
+  fn unknown_themes_use_the_splash_defaults() {
+    let palette = Palette::new("custom", None);
+    assert_eq!(Some(palette.background), hex_to_rgb(DEFAULT_BACKGROUND));
+    assert_eq!(Some(palette.accent), hex_to_rgb(DEFAULT_ACCENT));
+  }
+
+  #[test]
+  fn the_user_accent_survives_a_theme_change() {
+    let palette = Palette::new("argvus-dark", Some(0x12_3456));
+    assert_eq!(palette.accent, 0x12_3456);
+    let changed = palette.with_theme("tokyo-night");
+    assert_eq!(changed.background, 0x1a1b26);
+    assert_eq!(changed.accent, 0x12_3456);
+  }
+
+  #[test]
+  fn spinner_pixels_show_the_active_dot_and_the_background() {
+    let palette = Palette::new("argvus-dark", Some(0xff_0000));
+    let (active_x, active_y) = spinner::dot_offset(3);
+    assert_eq!(spinner_pixel(&palette, 3, active_x, active_y), 0xff_0000);
+    let (idle_x, idle_y) = spinner::dot_offset(4);
+    assert_eq!(
+      spinner_pixel(&palette, 3, idle_x, idle_y),
+      spinner::idle_rgb_over(palette.background)
+    );
+    assert_eq!(spinner_pixel(&palette, 3, 0.0, 0.0), palette.background);
   }
 
   /// Binds a socket in `directory` and serves one request through
@@ -598,7 +730,7 @@ mod tests {
     let listener = UnixListener::bind(&socket).expect("bind test socket");
     let handle = thread::spawn(move || {
       let (stream, _) = listener.accept().expect("accept test client");
-      let mut palette = Palette::from_theme(palette_theme);
+      let mut palette = Palette::new(palette_theme, None);
       if let Ok(Some(mut release)) = handle_command(stream, &mut palette) {
         // Mirrors main: the acknowledgement follows the DRM release.
         release
@@ -625,7 +757,7 @@ mod tests {
     let _client = UnixStream::connect(&socket).expect("connect silent client");
     let (stream, _) = listener.accept().expect("accept silent client");
     let started = Instant::now();
-    let mut palette = Palette::from_theme("argvus-dark");
+    let mut palette = Palette::new("argvus-dark", None);
     assert!(handle_command(stream, &mut palette).is_err());
     assert!(started.elapsed() < CLIENT_TIMEOUT + Duration::from_secs(1));
     let _ = fs::remove_dir_all(&directory);

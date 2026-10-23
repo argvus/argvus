@@ -8,6 +8,7 @@ tema ou inicia a sessão do desktop. É um auxiliar do pacote `argvus`, iniciado
 `/usr/lib/argvus/loading-theme/splash`, e não fica em `/usr/bin`.
 
 No início da sessão o overlay mostra apenas o indicador de carregamento, sem interação, e encerra
-com `SIGTERM`. Ele lê o tema selecionado do diretório de dados do ARGVUS e usa a paleta Dark padrão
+com `SIGTERM`. O indicador é o mesmo que a superfície DRM de transição do greeter desenha, então o
+login aparece como um único splash (veja [Greeter, bloqueio e splash](/pt/docs/developer-guide/subsystems/greeter-lock-and-splash/)). Ele lê o tema selecionado do diretório de dados do ARGVUS e usa a paleta Dark padrão
 do pacote se não houver seleção. Ele só informa que está pronto depois do primeiro quadro de cada
 superfície que exibe, e não quando o processo inicia.

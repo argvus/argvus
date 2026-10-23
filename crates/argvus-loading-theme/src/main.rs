@@ -13,11 +13,13 @@ use std::{
 };
 
 use argvus_i18n::I18n;
-use argvus_loading_theme_core::{DEFAULT_ACCENT, DEFAULT_BACKGROUND, DEFAULT_FOREGROUND};
+use argvus_loading_theme_core::{
+  DEFAULT_ACCENT, DEFAULT_BACKGROUND, DEFAULT_FOREGROUND, hex_to_rgb, spinner,
+};
 use argvus_system::monotonic_ns;
 use clap::Parser;
 use gtk::{
-  Align, Application, ApplicationWindow, Box as GtkBox, Label, Orientation, Spinner, gdk, glib,
+  Align, Application, ApplicationWindow, Box as GtkBox, DrawingArea, Label, Orientation, gdk, glib,
   prelude::*,
 };
 use gtk4_layer_shell::{Edge, KeyboardMode, Layer, LayerShell};
@@ -257,13 +259,7 @@ fn make_surface(
   content.set_can_focus(false);
   content.set_focusable(false);
 
-  let spinner = Spinner::new();
-  spinner.add_css_class("splash-accent");
-  spinner.set_halign(Align::Center);
-  spinner.set_width_request(24);
-  spinner.set_height_request(24);
-  spinner.start();
-  content.append(&spinner);
+  content.append(&spinner_area(palette));
   if !spinner_only {
     let applying = Label::new(Some(&tr_applying()));
     applying.add_css_class("caption");
@@ -273,6 +269,61 @@ fn make_surface(
   window.set_child(Some(&content));
   window.set_opacity(if spinner_only { 1.0 } else { 0.0 });
   window
+}
+
+/// The shared loading spinner (`argvus_loading_theme_core::spinner`).
+///
+/// It replaces `gtk::Spinner` so the greeter splash, the DRM handoff surface
+/// and this overlay show one image: same dots, same physical size and, because
+/// the phase comes from `CLOCK_MONOTONIC`, the same frame at the same instant.
+fn spinner_area(palette: &Palette) -> DrawingArea {
+  let accent = hex_to_rgb(&palette.accent)
+    .or_else(|| hex_to_rgb(DEFAULT_ACCENT))
+    .unwrap_or_default();
+  let area = DrawingArea::new();
+  area.add_css_class("splash-accent");
+  area.set_halign(Align::Center);
+  area.set_valign(Align::Center);
+  // Large enough at scale 1; on a scaled output the dots shrink to keep their
+  // physical size and stay centered in the same area.
+  let extent = spinner::EXTENT.ceil() as i32;
+  area.set_content_width(extent);
+  area.set_content_height(extent);
+  area.set_draw_func(move |area, context, width, height| {
+    let scale = f64::from(area.scale_factor().max(1));
+    let monotonic_millis = u64::try_from(glib::monotonic_time() / 1000).unwrap_or_default();
+    let active = spinner::active_dot(monotonic_millis);
+    let (center_x, center_y) = (f64::from(width) / 2.0, f64::from(height) / 2.0);
+    for index in 0..spinner::DOTS {
+      if index == active {
+        let (red, green, blue) = rgb_channels(accent);
+        context.set_source_rgb(red, green, blue);
+      } else {
+        let (red, green, blue) = rgb_channels(spinner::IDLE_RGB);
+        context.set_source_rgba(red, green, blue, spinner::IDLE_ALPHA);
+      }
+      let (offset_x, offset_y) = spinner::dot_offset(index);
+      context.arc(
+        center_x + offset_x / scale,
+        center_y + offset_y / scale,
+        spinner::DOT_RADIUS / scale,
+        0.0,
+        std::f64::consts::TAU,
+      );
+      let _ = context.fill();
+    }
+  });
+  area.add_tick_callback(|area, _clock| {
+    area.queue_draw();
+    glib::ControlFlow::Continue
+  });
+  area
+}
+
+/// `0xrrggbb` as cairo channels between 0 and 1.
+fn rgb_channels(rgb: u32) -> (f64, f64, f64) {
+  let channel = |shift: u32| f64::from((rgb >> shift) & 0xff) / 255.0;
+  (channel(16), channel(8), channel(0))
 }
 
 struct FadeState {

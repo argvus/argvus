@@ -15,10 +15,13 @@ use std::time::Duration;
 
 const DEFAULT_SPLASH_BIN: &str = "/usr/lib/argvus/loading-theme/splash";
 const DEFAULT_THEME: &str = "argvus-dark";
-/// Pause after a round that found sockets but no accepting compositor.
-const RETRY_WITH_SOCKETS: Duration = Duration::from_millis(100);
-/// Pause after a round that found no socket at all.
-const RETRY_WITHOUT_SOCKETS: Duration = Duration::from_millis(50);
+/// Pause after a round that found sockets but no accepting compositor. Each
+/// round starts the splash process, so this pause stays longer.
+const RETRY_WITH_SOCKETS: Duration = Duration::from_millis(50);
+/// Pause after a round that found no socket at all. A round is only a
+/// directory read, and every millisecond here is time without a spinner on
+/// screen once Hyprland shows its first frame.
+const RETRY_WITHOUT_SOCKETS: Duration = Duration::from_millis(10);
 
 /// Runs the spinner until the splash accepts a socket. Never returns on
 /// failure: the service is meant to keep trying while the compositor starts.

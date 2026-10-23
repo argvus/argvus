@@ -1,4 +1,5 @@
-//! Pure theme palette helpers shared by the splash application.
+//! Pure theme palette and spinner helpers shared by the splash surfaces: the
+//! GTK overlay and the greeter's DRM handoff surface.
 
 pub const DEFAULT_BACKGROUND: &str = "#101218";
 pub const DEFAULT_FOREGROUND: &str = "#f4f4f4";
@@ -49,9 +50,112 @@ pub fn valid_color(value: &str, fallback: &str) -> String {
   }
 }
 
+/// Converts a `#rgb` or `#rrggbb` color to `0xrrggbb`. The alpha of a
+/// `#rrggbbaa` color is ignored, because every splash surface is opaque.
+pub fn hex_to_rgb(value: &str) -> Option<u32> {
+  let digits = value.strip_prefix('#')?;
+  if !digits
+    .chars()
+    .all(|character| character.is_ascii_hexdigit())
+  {
+    return None;
+  }
+  match digits.len() {
+    3 => {
+      let expanded: String = digits.chars().flat_map(|digit| [digit, digit]).collect();
+      u32::from_str_radix(&expanded, 16).ok()
+    }
+    6 | 8 => u32::from_str_radix(&digits[..6], 16).ok(),
+    _ => None,
+  }
+}
+
+/// The loading spinner, shared by every surface of the login handoff.
+///
+/// The greeter splash, the DRM handoff surface and the session overlay are
+/// three processes on two display paths. They draw this same spinner, in
+/// physical pixels, and take its phase from `CLOCK_MONOTONIC`, so the switch
+/// from one process to the next does not change what is on screen.
+pub mod spinner {
+  /// Number of dots on the circle.
+  pub const DOTS: usize = 12;
+  /// Distance from the center to each dot, in physical pixels.
+  pub const ORBIT_RADIUS: f64 = 28.0;
+  /// Radius of one dot, in physical pixels.
+  pub const DOT_RADIUS: f64 = 5.0;
+  /// How long each dot stays highlighted.
+  pub const STEP_MILLIS: u64 = 90;
+  /// Color of the dots that are not highlighted.
+  pub const IDLE_RGB: u32 = 0x40_4040;
+  /// Opacity of the dots that are not highlighted.
+  pub const IDLE_ALPHA: f64 = 0.4;
+  /// Side of the square that holds the whole spinner, in physical pixels.
+  pub const EXTENT: f64 = 2.0 * (ORBIT_RADIUS + DOT_RADIUS);
+
+  /// The highlighted dot at `monotonic_millis` (milliseconds of `CLOCK_MONOTONIC`).
+  pub fn active_dot(monotonic_millis: u64) -> usize {
+    ((monotonic_millis / STEP_MILLIS) % DOTS as u64) as usize
+  }
+
+  /// The idle dot color over an opaque `background`, for surfaces without
+  /// alpha blending (the DRM handoff buffer). It equals what a compositor shows
+  /// for `IDLE_RGB` at `IDLE_ALPHA` over the same background.
+  pub fn idle_rgb_over(background: u32) -> u32 {
+    let channel = |shift: u32| {
+      let base = f64::from((background >> shift) & 0xff);
+      let idle = f64::from((IDLE_RGB >> shift) & 0xff);
+      ((base + (idle - base) * IDLE_ALPHA).round() as u32) << shift
+    };
+    channel(16) | channel(8) | channel(0)
+  }
+
+  /// Offset of dot `index` from the spinner center, in physical pixels.
+  pub fn dot_offset(index: usize) -> (f64, f64) {
+    let angle = std::f64::consts::TAU * (index % DOTS) as f64 / DOTS as f64;
+    (angle.cos() * ORBIT_RADIUS, angle.sin() * ORBIT_RADIUS)
+  }
+}
+
 #[cfg(test)]
 mod tests {
   use super::*;
+
+  #[test]
+  fn converts_short_long_and_alpha_hex_colors() {
+    assert_eq!(hex_to_rgb("#191b27"), Some(0x19_1b27));
+    assert_eq!(hex_to_rgb("#FFF"), Some(0xff_ffff));
+    assert_eq!(hex_to_rgb("#11223344"), Some(0x11_2233));
+    assert_eq!(hex_to_rgb("191b27"), None);
+    assert_eq!(hex_to_rgb("#12345"), None);
+  }
+
+  #[test]
+  fn spinner_phase_follows_the_shared_clock() {
+    assert_eq!(spinner::active_dot(0), 0);
+    assert_eq!(spinner::active_dot(spinner::STEP_MILLIS - 1), 0);
+    assert_eq!(spinner::active_dot(spinner::STEP_MILLIS), 1);
+    assert_eq!(
+      spinner::active_dot(spinner::STEP_MILLIS * spinner::DOTS as u64),
+      0
+    );
+  }
+
+  #[test]
+  fn idle_dot_blends_toward_its_color() {
+    assert_eq!(spinner::idle_rgb_over(spinner::IDLE_RGB), spinner::IDLE_RGB);
+    // 0x19 + (0x40 - 0x19) * 0.4 = 0x28.6 -> 0x29
+    assert_eq!(spinner::idle_rgb_over(0x19_1919), 0x29_2929);
+  }
+
+  #[test]
+  fn spinner_dots_lie_on_the_orbit() {
+    for index in 0..spinner::DOTS {
+      let (x, y) = spinner::dot_offset(index);
+      assert!(((x * x + y * y).sqrt() - spinner::ORBIT_RADIUS).abs() < 1e-9);
+    }
+    let (first_x, first_y) = spinner::dot_offset(0);
+    assert!((first_x - spinner::ORBIT_RADIUS).abs() < 1e-9 && first_y.abs() < 1e-9);
+  }
 
   #[test]
   fn accepts_supported_hex_colors() {

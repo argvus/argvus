@@ -207,6 +207,7 @@ dependencies = [
 name = "argvus-config"
 version = "0.1.0"
 dependencies = [
+ "argvus-loading-theme-core",
  "libc",
  "regex",
  "serde",
@@ -522,6 +523,7 @@ dependencies = [
 name = "argvus-greeter-handoff"
 version = "0.1.0"
 dependencies = [
+ "argvus-loading-theme-core",
  "clap",
  "libc",
 ]

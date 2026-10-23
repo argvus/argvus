@@ -210,7 +210,7 @@ fn handle_response(
         };
         // The DRM surface must be listening before the greeter compositor exits,
         // because it waits for that compositor to release DRM master.
-        if let Err(error) = DrmHandoff::start(&theme) {
+        if let Err(error) = DrmHandoff::start(&theme, accent.as_deref()) {
           error!(%error, "could not start the DRM handoff surface; continuing without it");
         }
         let _ = events.send(Event::SessionStarting);

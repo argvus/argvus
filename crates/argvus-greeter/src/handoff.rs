@@ -110,8 +110,10 @@ impl Drop for WaylandSplash {
 pub struct DrmHandoff;
 
 impl DrmHandoff {
-  /// Starts the helper and waits until its command socket is listening.
-  pub fn start(theme: &str) -> anyhow::Result<Self> {
+  /// Starts the helper and waits until its command socket is listening. The
+  /// theme and accent are the ones given to the GTK splash, so both surfaces
+  /// paint the same spinner in the same colors.
+  pub fn start(theme: &str, accent: Option<&str>) -> anyhow::Result<Self> {
     if !std::path::Path::new(DRM_HANDOFF).is_file() {
       bail!("DRM handoff surface is not installed at {DRM_HANDOFF}");
     }
@@ -120,8 +122,11 @@ impl DrmHandoff {
     let _ = std::fs::remove_file(DRM_HANDOFF_SOCKET);
 
     let mut command = Command::new(DRM_HANDOFF);
+    command.args(["--theme", theme]);
+    if let Some(accent) = accent {
+      command.args(["--accent", accent]);
+    }
     command
-      .args(["--theme", theme])
       .stdin(Stdio::null())
       .stdout(Stdio::null())
       .stderr(Stdio::null())
