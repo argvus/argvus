@@ -24,7 +24,7 @@ O pacote de sessão instala estas units de usuário em `/usr/lib/systemd/user` (
 | `argvus-taskbar.service` | Taskbar principal do ARGVUS. |
 | `argvus-widget-telemetry.service` | Superfície opcional de telemetria/sysinfo. |
 | `argvus-config.service` | Projeta a configuração canônica (`argvus config project`); o reload executa `argvus sessionctl reload-config-transaction`. |
-| `argvus-session-reload.service` | Recarrega o desktop (`argvus sessionctl reload-desktop`). |
+| `argvus-session-reload.service` | Reload do login (`argvus sessionctl reload-desktop --login`): recarrega o Hyprland só quando a projeção o afetou. |
 | `argvus-ssh-agent.service` | Agente SSH da sessão. |
 | `argvus-secret-service.service` | Inicia o serviço de segredos por `argvus sessionctl start-secret-service`. |
 | `argvus-wallpaper.service` | Backend do wallpaper ativo. |
@@ -33,7 +33,7 @@ O pacote de sessão instala estas units de usuário em `/usr/lib/systemd/user` (
 | `argvus-clipboard-text.service` / `argvus-clipboard-image.service` | Watchers do histórico de clipboard. |
 | `argvus-keyboard-layout.service` | Notificações de layout do teclado. |
 | `argvus-polkit.service` | Integração do agente PolicyKit. |
-| `argvus-session-loading.service` | Overlay de carregamento durante o início do compositor. |
+| `argvus-session-loading.service` | Overlay de carregamento da troca de compositor até os componentes do desktop iniciarem. |
 
 `argvus-blueman-applet.service` também é fornecido pelo pacote de sessão. Algumas units são opcionais ou iniciadas condicionalmente; nem todas ficam ativas em toda sessão.
 

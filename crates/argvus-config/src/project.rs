@@ -4,6 +4,7 @@
 //! theme/effect adapters remain external processes until their public payload
 //! contracts can be moved without duplicating asset ownership.
 
+use crate::session_timing::timed;
 use crate::{ConfigDocument, ConfigError, ConfigResult, ConfigStore};
 use serde_json::{Map, Value};
 use std::collections::hash_map::DefaultHasher;
@@ -43,6 +44,46 @@ pub struct ArgvusPaths {
   pub projection_manifest: PathBuf,
 }
 
+/// The ARGVUS state directory: `$XDG_STATE_HOME/argvus`, or `~/.local/state/argvus`.
+pub fn argvus_state_root() -> ConfigResult<PathBuf> {
+  let state_home = env::var_os("XDG_STATE_HOME")
+    .map(PathBuf::from)
+    .or_else(|| env::var_os("HOME").map(|home| PathBuf::from(home).join(".local/state")))
+    .ok_or(ConfigError::MissingConfigDirectory)?;
+  Ok(state_home.join("argvus"))
+}
+
+/// File name of the projection manifest under the state directory.
+const PROJECTION_MANIFEST_FILE: &str = "config-projection.json";
+
+/// Consumer name the manifest uses for the compositor.
+const HYPRLAND_CONSUMER: &str = "hyprland";
+
+/// Whether the last projection changed something the compositor reads.
+///
+/// A missing or unreadable manifest answers `true`, so a caller that skips the
+/// compositor reload on `false` never skips one that may be needed.
+pub fn last_projection_affects_compositor() -> bool {
+  let Some(manifest) = argvus_state_root()
+    .ok()
+    .and_then(|state_root| read_manifest(&state_root.join(PROJECTION_MANIFEST_FILE)))
+  else {
+    return true;
+  };
+  manifest_affects_compositor(&manifest)
+}
+
+fn manifest_affects_compositor(manifest: &Value) -> bool {
+  manifest
+    .get("affected_consumers")
+    .and_then(Value::as_array)
+    .is_none_or(|consumers| {
+      consumers
+        .iter()
+        .any(|consumer| consumer.as_str() == Some(HYPRLAND_CONSUMER))
+    })
+}
+
 impl ArgvusPaths {
   pub fn from_store(store: &ConfigStore) -> ConfigResult<Self> {
     let root = store
@@ -50,17 +91,13 @@ impl ArgvusPaths {
       .parent()
       .ok_or(ConfigError::MissingConfigDirectory)?
       .to_path_buf();
-    let state_home = env::var_os("XDG_STATE_HOME")
-      .map(PathBuf::from)
-      .or_else(|| env::var_os("HOME").map(|home| PathBuf::from(home).join(".local/state")))
-      .ok_or(ConfigError::MissingConfigDirectory)?;
-    let state_root = state_home.join("argvus");
+    let state_root = argvus_state_root()?;
     Ok(Self {
       data: root.join("data"),
       generated: root.join("data/generated"),
       internal: root.join("data/internal"),
       backups: root.join("data/backups"),
-      projection_manifest: state_root.join("config-projection.json"),
+      projection_manifest: state_root.join(PROJECTION_MANIFEST_FILE),
       root,
     })
   }
@@ -123,17 +160,17 @@ pub fn project(store: &ConfigStore, force: bool) -> ConfigResult<String> {
   if changed_sections.contains(&"appearance") {
     affected_consumers.extend(["theme", "accent", "wallpaper", "surfaces"]);
     if appearance_runtime_changed {
-      affected_consumers.push("hyprland");
+      affected_consumers.push(HYPRLAND_CONSUMER);
     }
   }
   if changed_sections.contains(&"effects") {
-    affected_consumers.extend(["surfaces", "hyprland"]);
+    affected_consumers.extend(["surfaces", HYPRLAND_CONSUMER]);
   }
   if changed_sections
     .iter()
     .any(|section| ["layout", "hyprland", "displays"].contains(section))
   {
-    affected_consumers.push("hyprland");
+    affected_consumers.push(HYPRLAND_CONSUMER);
   }
   if changed_sections.contains(&"fonts") {
     affected_consumers.extend(["terminal", "surfaces"]);
@@ -1148,10 +1185,6 @@ fn run_component_adapters(
     .get("/appearance/theme")
     .and_then(Value::as_str)
     .unwrap_or("argvus-dark");
-  let theme_output = paths.generated.join("theme-effective.conf");
-  let theme_qml = paths.generated.join(format!(
-    "quickshell/argvus-control-panel/themes/{theme}/Theme.qml"
-  ));
   // A running switch applies the theme itself and holds the theme lock. A
   // projection started by that switch (through its configuration reload) must
   // not start another switch, which would wait on that lock. The environment
@@ -1159,24 +1192,86 @@ fn run_component_adapters(
   // systemd does not pass the caller's environment to it.
   let theme_transaction = env::var("ARGVUS_THEME_SWITCH").ok().as_deref() == Some("1")
     || crate::theme_apply::transaction_in_progress();
-  let theme_missing = !theme_output.is_file() || !theme_qml.is_file();
-  let theme_applied = !theme_transaction
-    && (appearance_visual_changed || (changed_sections.is_empty() && theme_missing));
-  if theme_applied {
-    run_theme_switch(theme, paths)?;
+  let plan = plan_adapters(&AdapterInputs {
+    changed_sections,
+    appearance_visual_changed,
+    theme_transaction,
+    theme_materialized: theme_outputs_present(paths, theme),
+    effects_materialized: crate::effects::theme_effects_path(
+      &crate::effects::effects_state_home(&paths.data),
+      theme,
+    )
+    .is_file(),
+  });
+  if plan.theme_switch {
+    timed("project.theme-switch", || run_theme_switch(theme, paths))?;
   }
-  let effects_output = paths.generated.join(format!("effects/{theme}.conf"));
-  let effects_missing = !effects_output.is_file();
-  let effects_applied = !theme_transaction
-    && (changed_sections.contains(&"effects") || (changed_sections.is_empty() && effects_missing));
-  if effects_applied {
-    run_adapter_command(
-      Command::new("argvus").arg("effects-toggle").arg("apply"),
-      Path::new("argvus effects-toggle"),
-      paths,
-    )?;
+  if plan.effects_toggle {
+    timed("project.effects-toggle", || {
+      run_adapter_command(
+        Command::new("argvus").arg("effects-toggle").arg("apply"),
+        Path::new("argvus effects-toggle"),
+        paths,
+      )
+    })?;
   }
-  Ok(theme_applied || effects_applied)
+  Ok(plan.theme_switch || plan.effects_toggle)
+}
+
+/// What decides whether the theme and effects adapters run in a projection.
+struct AdapterInputs<'a> {
+  changed_sections: &'a [&'a str],
+  appearance_visual_changed: bool,
+  /// A theme switch is already running and owns the theme lock.
+  theme_transaction: bool,
+  /// The files the theme switch writes for the active theme are in place.
+  theme_materialized: bool,
+  /// The effects file of the active theme is in place.
+  effects_materialized: bool,
+}
+
+/// The adapters a projection runs.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+struct AdapterPlan {
+  theme_switch: bool,
+  effects_toggle: bool,
+}
+
+/// Decides which adapters run. A change of their own section always runs
+/// them. With nothing changed, they run only to repair missing outputs: a
+/// stable login must not repeat the theme switch, which costs seconds.
+fn plan_adapters(inputs: &AdapterInputs<'_>) -> AdapterPlan {
+  if inputs.theme_transaction {
+    return AdapterPlan {
+      theme_switch: false,
+      effects_toggle: false,
+    };
+  }
+  let repairs_only = inputs.changed_sections.is_empty();
+  AdapterPlan {
+    theme_switch: inputs.appearance_visual_changed || (repairs_only && !inputs.theme_materialized),
+    effects_toggle: inputs.changed_sections.contains(&"effects")
+      || (repairs_only && !inputs.effects_materialized),
+  }
+}
+
+/// Whether the user copies that the theme switch materializes exist. It reuses
+/// the session preparation check, built on this store's directories, so both
+/// callers agree on what "applied" means. Without a resolvable environment
+/// the outputs are treated as missing, which keeps the safe behavior.
+fn theme_outputs_present(paths: &ArgvusPaths, theme: &str) -> bool {
+  let Some(config_home) = paths.root.parent() else {
+    return false;
+  };
+  let Some(environment_paths) = crate::session_paths::SessionPaths::from_environment() else {
+    return false;
+  };
+  let session_paths = crate::session_paths::SessionPaths {
+    config_home: config_home.to_path_buf(),
+    data_home: paths.data.clone(),
+    system_config: environment_paths.system_config,
+  };
+  crate::session_prepare::theme_materialized(&session_paths, theme)
 }
 
 fn run_adapter(path: &Path, arguments: &[&str], paths: &ArgvusPaths) -> ConfigResult<()> {
@@ -1233,6 +1328,78 @@ fn remove_legacy_markers(root: &Path) -> ConfigResult<()> {
 #[cfg(test)]
 mod tests {
   use super::*;
+
+  fn stable_login_inputs<'a>(changed_sections: &'a [&'a str]) -> AdapterInputs<'a> {
+    AdapterInputs {
+      changed_sections,
+      appearance_visual_changed: false,
+      theme_transaction: false,
+      theme_materialized: true,
+      effects_materialized: true,
+    }
+  }
+
+  #[test]
+  fn manifest_without_hyprland_consumer_skips_the_compositor() {
+    let manifest = serde_json::json!({"affected_consumers": ["control-panel", "audio"]});
+    assert!(!manifest_affects_compositor(&manifest));
+  }
+
+  #[test]
+  fn manifest_with_hyprland_consumer_or_without_the_field_reloads() {
+    let affected = serde_json::json!({"affected_consumers": ["hyprland"]});
+    let unknown = serde_json::json!({"schema_version": 3});
+    assert!(manifest_affects_compositor(&affected));
+    assert!(manifest_affects_compositor(&unknown));
+  }
+
+  #[test]
+  fn stable_projection_runs_no_adapter() {
+    let plan = plan_adapters(&stable_login_inputs(&[]));
+    assert_eq!(
+      plan,
+      AdapterPlan {
+        theme_switch: false,
+        effects_toggle: false,
+      }
+    );
+  }
+
+  #[test]
+  fn missing_outputs_are_repaired_when_nothing_changed() {
+    let inputs = AdapterInputs {
+      theme_materialized: false,
+      effects_materialized: false,
+      ..stable_login_inputs(&[])
+    };
+    let plan = plan_adapters(&inputs);
+    assert!(plan.theme_switch);
+    assert!(plan.effects_toggle);
+  }
+
+  #[test]
+  fn visual_and_effects_changes_run_their_adapters() {
+    let inputs = AdapterInputs {
+      appearance_visual_changed: true,
+      ..stable_login_inputs(&["appearance", "effects"])
+    };
+    let plan = plan_adapters(&inputs);
+    assert!(plan.theme_switch);
+    assert!(plan.effects_toggle);
+  }
+
+  #[test]
+  fn running_theme_switch_blocks_nested_adapters() {
+    let inputs = AdapterInputs {
+      appearance_visual_changed: true,
+      theme_transaction: true,
+      theme_materialized: false,
+      ..stable_login_inputs(&["effects"])
+    };
+    let plan = plan_adapters(&inputs);
+    assert!(!plan.theme_switch);
+    assert!(!plan.effects_toggle);
+  }
 
   #[test]
   fn hypridle_projection_uses_the_runtime_consumer_path() {

@@ -37,7 +37,8 @@ pub fn run(arguments: &[String]) -> i32 {
     ("status", []) => status(),
     ("list-modes", [monitor]) => list_modes(monitor),
     ("set", [monitor, key, value]) => set(&store, monitor, key, value),
-    ("apply" | "session-prepare" | "session-reload", []) => apply(&store),
+    ("apply" | "session-reload", []) => apply(&store, ApplyMode::Full),
+    ("session-prepare", []) => apply(&store, ApplyMode::SessionPrepare),
     ("apply-nwg", []) => apply_nwg(),
     ("migrate-nwg", []) => migrate_nwg(&store),
     ("nwg-import", [file]) => nwg_import(&store, Path::new(file)),
@@ -232,9 +233,25 @@ fn set(store: &ConfigStore, monitor: &str, key: &str, value: &str) -> i32 {
 /// Applies the canonical layout to the running session: the legacy state is
 /// migrated when the layout has no monitor yet, disabled monitors and powered
 /// down monitors are applied, and Hyprland reloads its configuration.
-fn apply(store: &ConfigStore) -> i32 {
+/// How much of the display state an apply touches.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum ApplyMode {
+  /// A user or reload request: project the store, apply the runtime state and
+  /// reload the compositor.
+  Full,
+  /// Session preparation: `argvus-config.service` has just projected the store
+  /// and Hyprland has just loaded the generated monitors, so only the state that
+  /// lives outside the configuration (DPMS, disabled outputs) is applied.
+  SessionPrepare,
+}
+
+fn apply(store: &ConfigStore, mode: ApplyMode) -> i32 {
   let legacy = legacy_state_file();
-  if let Err(error) = monitor_state::sync_legacy(store, &legacy) {
+  let synchronized = match mode {
+    ApplyMode::Full => monitor_state::sync_legacy(store, &legacy),
+    ApplyMode::SessionPrepare => monitor_state::import_legacy_if_needed(store, &legacy).map(|_| ()),
+  };
+  if let Err(error) = synchronized {
     eprintln!("argvus-config: {error}");
     return 1;
   }
@@ -259,7 +276,9 @@ fn apply(store: &ConfigStore) -> i32 {
       }
     }
   }
-  run_runtime(&["hyprland", "reload"]);
+  if mode == ApplyMode::Full {
+    run_runtime(&["hyprland", "reload"]);
+  }
   0
 }
 

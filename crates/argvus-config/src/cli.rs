@@ -21,7 +21,7 @@ pub fn run_command(arguments: Vec<String>) -> ExitCode {
     return session_restart(&arguments[1..]);
   }
   if arguments.first().map(String::as_str) == Some("session-reload-config") {
-    return session_reload_config();
+    return session_reload_config(&arguments[1..]);
   }
   if arguments.first().map(String::as_str) == Some("session-sync-config") {
     return session_sync_config();
@@ -1173,7 +1173,12 @@ fn session_sync_config() -> ExitCode {
 }
 
 /// Runs the runtime half of a configuration reload (see `session_reload`).
-fn session_reload_config() -> ExitCode {
+/// `--login` runs the reduced login variant (`session_reload::reload_at_login`).
+fn session_reload_config(arguments: &[String]) -> ExitCode {
+  if arguments.iter().any(|argument| argument == "--login") {
+    let status = session_reload::reload_at_login();
+    return ExitCode::from(status.clamp(0, 255) as u8);
+  }
   let Some(paths) = session_paths::SessionPaths::from_environment() else {
     eprintln!("argvus-config: configuration directory is unavailable");
     return ExitCode::from(1);

@@ -33,6 +33,7 @@ pub mod session_plan;
 pub mod session_prepare;
 pub mod session_reload;
 pub mod session_splash;
+pub mod session_timing;
 pub mod session_units;
 pub mod text_edit;
 pub mod theme_apply;

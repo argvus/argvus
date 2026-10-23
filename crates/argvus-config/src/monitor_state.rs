@@ -118,16 +118,28 @@ pub fn validate(key: &str, value: &str) -> ConfigResult<()> {
 /// yet, so an installation that predates `/displays` keeps its layout. Later
 /// changes live in `config.json` and are never overwritten by the file.
 pub fn sync_legacy(store: &ConfigStore, state_file: &Path) -> ConfigResult<()> {
+  if !import_legacy_if_needed(store, state_file)? {
+    crate::project::project(store, false)?;
+  }
+  Ok(())
+}
+
+/// The import half of [`sync_legacy`], without the projection that follows it.
+/// Returns whether the legacy file was imported (the import projects itself).
+///
+/// Session preparation uses it alone: `argvus-config.service` projected the
+/// store just before, so another projection would only repeat that work.
+pub fn import_legacy_if_needed(store: &ConfigStore, state_file: &Path) -> ConfigResult<bool> {
   let document = store.load()?;
   let has_monitors = document
     .get("/displays/monitors")
     .and_then(Value::as_object)
     .is_some_and(|monitors| !monitors.is_empty());
   if !has_monitors && state_file.is_file() {
-    return import(store, state_file);
+    import(store, state_file)?;
+    return Ok(true);
   }
-  crate::project::project(store, false)?;
-  Ok(())
+  Ok(false)
 }
 
 fn apply_change(

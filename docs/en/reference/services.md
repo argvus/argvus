@@ -26,7 +26,7 @@ The session package installs these user units under `/usr/lib/systemd/user` (the
 | `argvus-taskbar.service` | Main ARGVUS taskbar. |
 | `argvus-widget-telemetry.service` | Optional telemetry/sysinfo surface. |
 | `argvus-config.service` | Projects the canonical configuration (`argvus config project`); reload runs `argvus sessionctl reload-config-transaction`. |
-| `argvus-session-reload.service` | Reloads the desktop (`argvus sessionctl reload-desktop`). |
+| `argvus-session-reload.service` | Login reload (`argvus sessionctl reload-desktop --login`): reloads Hyprland only when the projection affected it. |
 | `argvus-ssh-agent.service` | SSH agent for the session. |
 | `argvus-secret-service.service` | Starts the secret service through `argvus sessionctl start-secret-service`. |
 | `argvus-wallpaper.service` | Active wallpaper backend. |
@@ -35,7 +35,7 @@ The session package installs these user units under `/usr/lib/systemd/user` (the
 | `argvus-clipboard-text.service` / `argvus-clipboard-image.service` | Clipboard history watchers. |
 | `argvus-keyboard-layout.service` | Keyboard-layout notifications. |
 | `argvus-polkit.service` | PolicyKit agent integration. |
-| `argvus-session-loading.service` | Session-loading overlay during compositor startup. |
+| `argvus-session-loading.service` | Session-loading overlay from the compositor handoff until the desktop components start. |
 
 `argvus-blueman-applet.service` is also shipped by the session package. Some units are optional or started conditionally; they are not all active in every session.
 

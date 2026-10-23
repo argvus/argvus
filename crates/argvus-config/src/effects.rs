@@ -123,13 +123,23 @@ pub struct Effects {
 /// A failed command: the exit status the shell would have used.
 pub type Failure = i32;
 
+/// Directory of the effects state: `ARGVUS_STATE_HOME`, or `<data_home>/state`.
+pub(crate) fn effects_state_home(data_home: &Path) -> PathBuf {
+  env::var_os("ARGVUS_STATE_HOME")
+    .filter(|value| !value.is_empty())
+    .map(PathBuf::from)
+    .unwrap_or_else(|| data_home.join("state"))
+}
+
+/// The generated effects file of `theme` under the effects state directory.
+pub(crate) fn theme_effects_path(state_home: &Path, theme: &str) -> PathBuf {
+  state_home.join("effects").join(format!("{theme}.conf"))
+}
+
 impl Effects {
   pub fn from_environment() -> Option<Self> {
     let paths = SessionPaths::from_environment()?;
-    let state_home = env::var_os("ARGVUS_STATE_HOME")
-      .filter(|value| !value.is_empty())
-      .map(PathBuf::from)
-      .unwrap_or_else(|| paths.data_home.join("state"));
+    let state_home = effects_state_home(&paths.data_home);
     Some(Self {
       store: ConfigStore::from_environment().ok(),
       commands_dir: env::var_os("ARGVUS_COMMANDS_DIR")
@@ -157,10 +167,7 @@ impl Effects {
   }
 
   fn theme_effects_file(&self) -> PathBuf {
-    self
-      .state_home
-      .join("effects")
-      .join(format!("{}.conf", self.active_theme()))
+    theme_effects_path(&self.state_home, &self.active_theme())
   }
 
   /// Reads one raw effective value from the store, as `get --effective --raw`.

@@ -38,4 +38,15 @@ The session stops the loading overlay when fatal preparation or target startup
 fails. A visual consumer failure should either use its documented fallback or be
 reported explicitly; it must not be hidden as a successful session.
 
+## Slow login
+
+Each startup step records its duration in the session log. To see the steps of the last login, slowest first:
+
+```sh
+grep timing ~/.local/state/argvus/session.log | tail -30 | sort -k4 -rn
+systemd-analyze --user critical-chain argvus-session.target
+```
+
+A `project.theme-switch` or `prepare.startup-theme` entry is expected only after an appearance change, a package update or a new accent. If it appears on every login, the materialized theme files are missing; run `argvus theme-switch <theme>` once.
+
 The session log is kept under `$XDG_STATE_HOME/argvus/session.log` (normally `~/.local/state/argvus/session.log`). After changing a user Hyprland override, log out and in so the session entry point validates and selects it again. See [Graphical session](/docs/argvus-session/graphical-session/) for the normal startup flow.

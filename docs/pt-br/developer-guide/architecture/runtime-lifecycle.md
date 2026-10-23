@@ -13,7 +13,20 @@ O `argvus start` valida a configuração do Hyprland, aplica o fallback empacota
 
 O target usa uma unidade de preparação one-shot antes de iniciar os componentes persistentes. A preparação aplica configuração gerada, estado de tema e acento, estado dos monitores, integração de aplicativos e ambiente da sessão. Os serviços persistentes pertencem ao `systemd --user`, não a processos iniciados de forma ad hoc em background.
 
-`argvus sessionctl ready` projeta a configuração canônica antes de iniciar o target. Uma falha fatal de projeção ou do início do target é registrada e encerra o overlay de carregamento independente, evitando um spinner aparentemente infinito. Consumidores visuais opcionais devem usar um fallback ou reportar uma falha degradada sem substituir o target da sessão.
+`argvus sessionctl ready` inicia o target, cujo `argvus-config.service` projeta a configuração canônica antes da preparação. Uma falha fatal de projeção ou do início do target é registrada e encerra o overlay de carregamento independente, evitando um spinner aparentemente infinito. Consumidores visuais opcionais devem usar um fallback ou reportar uma falha degradada sem substituir o target da sessão.
+
+### Custo do login
+
+Um login sem mudança de configuração não repete trabalho caro:
+
+- A projeção só executa a troca de tema e o adaptador de efeitos quando as seções de aparência ou de efeitos mudaram, ou quando as saídas reais (as cópias de usuário materializadas e `data/state/effects/<tema>.conf`) estão ausentes.
+- A preparação só aplica o tema de startup, e o acento por cima dele, quando o carimbo em `$XDG_CACHE_HOME/argvus/session/theme-startup.stamp` deixa de corresponder aos arquivos de tema empacotados e ao marcador de acento. Uma atualização de pacote ou um novo acento o invalida uma vez. Quando o tema é reaplicado, a preparação também recarrega o Hyprland, que iniciou com os arquivos anteriores.
+- A etapa de monitores da preparação (`argvus config display session-prepare`) aplica apenas DPMS e saídas desativadas: ela não projeta de novo nem recarrega o compositor.
+- `argvus-session-reload.service` executa `argvus sessionctl reload-desktop --login`, que só recarrega o Hyprland quando o manifesto da projeção lista `hyprland` entre os consumidores afetados. Os componentes do desktop não esperam por ele.
+
+O overlay de carregamento fica visível desde a troca de compositor até `argvus sessionctl ready` ter iniciado o target, então um único spinner cobre todo o início. Ele não tem `PartOf=`, porque recriar o target num novo login não pode derrubá-lo; o `sessionctl` o encerra explicitamente, e `RuntimeMaxSec=30` o encerra se nenhum stop chegar.
+
+Cada etapa da preparação, do reload e dos adaptadores da projeção grava sua duração no log da sessão como `<epoch-ms> timing <etapa> <N>ms`; veja [problemas no início da sessão](/pt/docs/user-guide/troubleshooting/session-startup/).
 
 A resolução de paths, a preparação da sessão e o plano de reload do Hyprland
 pertencem ao Rust. `argvus config session-prepare` e `argvus config
@@ -22,7 +35,7 @@ session-reload-config` executam as etapas de startup e de reload; o script legad
 
 ## Serviços e encerramento
 
-O target normalmente possui `argvus-control-panel.service`, `argvus-taskbar.service`, `argvus-widget-telemetry.service` quando habilitado, `argvus-wallpaper.service`, `argvus-dunst.service`, `argvus-hypridle.service`, watchers de clipboard, notificações de layout do teclado, integração do PolicyKit e o overlay de carregamento da sessão. A falha de um serviço opcional não substitui toda a sessão.
+O target normalmente possui `argvus-control-panel.service`, `argvus-taskbar.service`, `argvus-widget-telemetry.service` quando habilitado, `argvus-wallpaper.service`, `argvus-dunst.service`, `argvus-hypridle.service`, watchers de clipboard, notificações de layout do teclado e integração do PolicyKit. O overlay de carregamento da sessão é iniciado pelo `argvus start`, não pelo target. A falha de um serviço opcional não substitui toda a sessão.
 
 Os serviços que precisam de uma conexão cliente Wayland, incluindo o Control Panel e o gerenciador de ociosidade, aguardam um runtime Hyprland utilizável antes de iniciar o cliente. Isso evita iniciar o Quickshell ou o hypridle contra um socket antigo durante a troca do compositor; se o Hyprland for substituído, o systemd pode iniciar o componente novamente quando o novo runtime estiver disponível.
 

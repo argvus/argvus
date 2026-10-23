@@ -15,7 +15,20 @@ The graphical entry point is `/usr/share/wayland-sessions/argvus.desktop`, which
 
 The target uses a one-shot preparation unit before starting long-running components. Preparation applies generated configuration, theme and accent state, monitor state, application integration and session environment. Persistent services are owned by `systemd --user`, not by ad-hoc background processes.
 
-`argvus sessionctl ready` projects the canonical configuration before starting the target. A fatal projection or target-start failure is logged and stops the independent loading overlay, preventing an apparently endless spinner. Optional visual consumers must resolve a fallback or report a degraded failure without replacing the session target.
+`argvus sessionctl ready` starts the target, whose `argvus-config.service` projects the canonical configuration before preparation runs. A fatal projection or target-start failure is logged and stops the independent loading overlay, preventing an apparently endless spinner. Optional visual consumers must resolve a fallback or report a degraded failure without replacing the session target.
+
+### Login cost
+
+A login with no configuration change repeats no expensive work:
+
+- The projection runs the theme switch and the effects adapter only when the appearance or effects sections changed, or when their real outputs (the materialized user copies and `data/state/effects/<theme>.conf`) are missing.
+- Preparation applies the startup theme, and the accent on top of it, only when the stamp in `$XDG_CACHE_HOME/argvus/session/theme-startup.stamp` no longer matches the packaged theme files and the accent marker. A package update or a new accent invalidates it once. When the theme is reapplied, preparation also reloads Hyprland, which started on the previous files.
+- The display step of preparation (`argvus config display session-prepare`) applies only DPMS and disabled outputs: it neither projects again nor reloads the compositor.
+- `argvus-session-reload.service` runs `argvus sessionctl reload-desktop --login`, which reloads Hyprland only when the projection manifest lists `hyprland` among the affected consumers. The desktop components do not wait for it.
+
+The loading overlay is mapped from the compositor handoff until `argvus sessionctl ready` has started the target, so a single spinner covers the whole startup. It has no `PartOf=`, because recreating the target at a new login must not take it down; `sessionctl` stops it explicitly, and `RuntimeMaxSec=30` ends it if no stop arrives.
+
+Each preparation, reload and projection-adapter step appends its duration to the session log as `<epoch-ms> timing <step> <N>ms`; see [session startup troubleshooting](/docs/user-guide/troubleshooting/session-startup/).
 
 Path resolution, session preparation and the Hyprland reload plan are Rust-owned.
 `argvus config session-prepare` and `argvus config session-reload-config` run the
@@ -23,7 +36,7 @@ startup and reload steps; the legacy `hypr-init.sh` script has been removed.
 
 ## Services and shutdown
 
-The target commonly owns `argvus-control-panel.service`, `argvus-taskbar.service`, `argvus-widget-telemetry.service` when enabled, `argvus-wallpaper.service`, `argvus-dunst.service`, `argvus-hypridle.service`, clipboard watchers, keyboard-layout notifications, PolicyKit integration and the session-loading overlay. A failure in an optional service does not replace the whole session.
+The target commonly owns `argvus-control-panel.service`, `argvus-taskbar.service`, `argvus-widget-telemetry.service` when enabled, `argvus-wallpaper.service`, `argvus-dunst.service`, `argvus-hypridle.service`, clipboard watchers, keyboard-layout notifications and PolicyKit integration. The session-loading overlay is started by `argvus start`, not by the target. A failure in an optional service does not replace the whole session.
 
 The services that need a Wayland client connection, including the Control Panel and idle manager, wait for a usable Hyprland runtime before launching their client. This avoids starting Quickshell or hypridle against a stale socket during compositor handoff; if Hyprland is replaced, systemd can start the component again after the new runtime is available.
 

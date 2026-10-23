@@ -8,6 +8,7 @@
 
 use crate::hyprland_ipc;
 use crate::session_paths::{SessionPaths, font_default_value};
+use crate::session_timing::timed;
 use std::fs;
 use std::io;
 use std::path::{Path, PathBuf};
@@ -57,35 +58,42 @@ fn canonical_theme(config_home: &Path) -> Option<String> {
 pub fn reload_config(context: &ReloadContext<'_>) -> i32 {
   let paths = context.paths;
   let lock_script = paths.read_config("lock/sh/hyprlock-theme.sh");
-  let _ = Command::new("sh")
-    .arg(&lock_script)
-    .arg("--invalidate")
-    .stdout(Stdio::null())
-    .stderr(Stdio::null())
-    .status();
+  timed("reload.lock-invalidate", || {
+    let _ = Command::new("sh")
+      .arg(&lock_script)
+      .arg("--invalidate")
+      .stdout(Stdio::null())
+      .stderr(Stdio::null())
+      .status();
+  });
 
   let mut environment: Vec<(String, String)> = Vec::new();
-  if let Some(config) = sync_user_files(context) {
+  if let Some(config) = timed("reload.user-files", || sync_user_files(context)) {
     environment.push(("YAZI_CONFIG_HOME".into(), config.display().to_string()));
   }
 
   let data = paths.config_home.join("argvus/data");
   let applies_spacing = data.join(".active-theme").is_file() || data.join(".spaces").is_file();
   if applies_spacing {
-    let status = run_script(paths, "hyprland/sh/spaces-switch.sh", &environment);
+    let status = timed("reload.spaces-switch", || {
+      run_script(paths, "hyprland/sh/spaces-switch.sh", &environment)
+    });
     if status != 0 {
       return status;
     }
   }
   let applies_borders = data.join(".active-theme").is_file() || data.join(".borders").is_file();
   if applies_borders {
-    let status = run_script(paths, "hyprland/sh/borders-switch.sh", &environment);
+    let status = timed("reload.borders-switch", || {
+      run_script(paths, "hyprland/sh/borders-switch.sh", &environment)
+    });
     if status != 0 {
       return status;
     }
   }
 
-  match hyprland_ipc::reload() {
+  let compositor_reload = timed("reload.compositor", hyprland_ipc::reload);
+  match compositor_reload {
     Ok(Some(warning)) => eprintln!("argvus-config: {warning}"),
     Ok(None) => {}
     Err(error) => {
@@ -94,8 +102,31 @@ pub fn reload_config(context: &ReloadContext<'_>) -> i32 {
     }
   }
 
-  apply_display(&environment);
+  timed("reload.display", || apply_display(&environment));
   0
+}
+
+/// Login variant of [`reload_config`].
+///
+/// Session preparation has just synchronized the user files, spacing, borders
+/// and displays, and Hyprland has just loaded the generated configuration. The
+/// only work left is a compositor reload, and only when the projection that ran
+/// at this login changed something Hyprland reads.
+pub fn reload_at_login() -> i32 {
+  if !crate::project::last_projection_affects_compositor() {
+    return 0;
+  }
+  match timed("reload.compositor", hyprland_ipc::reload) {
+    Ok(Some(warning)) => {
+      eprintln!("argvus-config: {warning}");
+      0
+    }
+    Ok(None) => 0,
+    Err(error) => {
+      eprintln!("argvus-config: {error}");
+      1
+    }
+  }
 }
 
 /// Brings the Rofi, btop and yazi files in line with the active theme. Used by

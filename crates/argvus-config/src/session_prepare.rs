@@ -9,6 +9,7 @@
 
 use crate::session_paths::{SessionPaths, font_default_value, font_state_value};
 use crate::session_reload::{ReloadContext, active_theme, run_script, sync_user_files};
+use crate::session_timing::timed;
 use std::env;
 use std::fs;
 use std::os::unix::fs::PermissionsExt;
@@ -50,46 +51,56 @@ const MESSAGE_BUTTONS_DISABLED: &str = "gtk.buttons_disabled";
 /// Runs the whole session preparation. Every step is best effort, as the shell
 /// steps were, so the result is always success.
 pub fn prepare(paths: &SessionPaths, commands_dir: &Path, cache_home: &Path) -> i32 {
-  let _ = Command::new("xdg-user-dirs-update")
-    .stdout(Stdio::null())
-    .stderr(Stdio::null())
-    .status();
+  timed("prepare.xdg-user-dirs", || {
+    let _ = Command::new("xdg-user-dirs-update")
+      .stdout(Stdio::null())
+      .stderr(Stdio::null())
+      .status();
+  });
 
-  migrate_monitor_state(paths, commands_dir);
+  timed("prepare.monitor-state", || {
+    migrate_monitor_state(paths, commands_dir)
+  });
 
   let theme = active_theme(paths);
-  apply_startup_theme(paths, cache_home, &theme);
-
-  if paths
-    .config_home
-    .join("argvus/data/.accent-color")
-    .is_file()
-  {
-    let _ = run_accent_startup();
+  let theme_reapplied = timed("prepare.startup-theme", || {
+    apply_startup_theme(paths, cache_home, &theme)
+  });
+  // Hyprland started on the theme files of the previous login. A reapplied
+  // theme rewrote them, so the compositor reads them again. The login reload
+  // service skips this case because it only follows the projection manifest.
+  if theme_reapplied {
+    timed("prepare.compositor-reload", || {
+      let _ = crate::hyprland_ipc::reload();
+    });
   }
 
-  set_gsettings(paths);
+  timed("prepare.gsettings", || set_gsettings(paths));
 
   let context = ReloadContext {
     paths,
     commands_dir,
   };
   let mut environment: Vec<(String, String)> = Vec::new();
-  if let Some(config) = sync_user_files(&context) {
+  if let Some(config) = timed("prepare.user-files", || sync_user_files(&context)) {
     environment.push(("YAZI_CONFIG_HOME".into(), config.display().to_string()));
   }
 
   let data = paths.config_home.join("argvus/data");
   if data.join(".active-theme").is_file() || data.join(".spaces").is_file() {
-    let _ = run_script(paths, "hyprland/sh/spaces-switch.sh", &environment);
+    timed("prepare.spaces-switch", || {
+      let _ = run_script(paths, "hyprland/sh/spaces-switch.sh", &environment);
+    });
   }
   if data.join(".active-theme").is_file() || data.join(".borders").is_file() {
-    let _ = run_script(paths, "hyprland/sh/borders-switch.sh", &environment);
+    timed("prepare.borders-switch", || {
+      let _ = run_script(paths, "hyprland/sh/borders-switch.sh", &environment);
+    });
   }
 
-  apply_display_at_prepare(&environment);
+  timed("prepare.display", || apply_display_at_prepare(&environment));
 
-  let editor = terminal_editor(paths);
+  let editor = timed("prepare.terminal-editor", || terminal_editor(paths));
   let path = augmented_path();
   let mut session_environment = environment;
   session_environment.extend([
@@ -117,12 +128,14 @@ pub fn prepare(paths: &SessionPaths, commands_dir: &Path, cache_home: &Path) -> 
 
   // PolicyKit and Quickshell read these through the systemd user environment,
   // which the session command imports from the environment it is given.
-  let _ = Command::new(commands_dir.join("sessionctl"))
-    .arg("import-environment")
-    .envs(session_environment)
-    .stdout(Stdio::null())
-    .stderr(Stdio::null())
-    .status();
+  timed("prepare.import-environment", || {
+    let _ = Command::new(commands_dir.join("sessionctl"))
+      .arg("import-environment")
+      .envs(session_environment)
+      .stdout(Stdio::null())
+      .stderr(Stdio::null())
+      .status();
+  });
   0
 }
 
@@ -171,17 +184,22 @@ fn run_accent_startup() -> bool {
     .unwrap_or(false)
 }
 
-/// Applies the startup theme unless the stamp matches the current theme files
-/// and the user copies are already in place. The stamp is written only when
-/// the theme switch succeeds.
-fn apply_startup_theme(paths: &SessionPaths, cache_home: &Path, theme: &str) {
+/// Applies the startup theme, then the user's accent on top of it, unless the
+/// stamp matches the current theme files and the user copies are already in
+/// place. The stamp is written only when the theme switch succeeds.
+///
+/// When the stamp matches, the accent is skipped too: the files and the accent
+/// marker (part of the fingerprint) are the ones the last login left.
+///
+/// Returns whether the theme switch ran.
+fn apply_startup_theme(paths: &SessionPaths, cache_home: &Path, theme: &str) -> bool {
   let stamp = cache_home.join("session/theme-startup.stamp");
   let fingerprint = theme_fingerprint(paths, theme);
   let stamp_matches = fs::read_to_string(&stamp)
     .map(|text| text.trim_end_matches('\n') == fingerprint)
     .unwrap_or(false);
   if stamp.is_file() && stamp_matches && theme_materialized(paths, theme) {
-    return;
+    return false;
   }
 
   // The `argvus theme-switch` route resolves the implementation.
@@ -196,12 +214,30 @@ fn apply_startup_theme(paths: &SessionPaths, cache_home: &Path, theme: &str) {
     .stdout(Stdio::null())
     .stderr(Stdio::null())
     .status();
+
+  // The theme switch writes the theme's own accent; the user's choice goes back
+  // on top of it.
+  if accent_color_file(paths).is_file() {
+    timed("prepare.accent", || {
+      let _ = run_accent_startup();
+    });
+  }
+
   if matches!(status, Ok(status) if status.success()) {
     if let Some(parent) = stamp.parent() {
       let _ = fs::create_dir_all(parent);
     }
-    let _ = fs::write(&stamp, &fingerprint);
+    // Fingerprint the files as the switch and the accent left them: a stamp
+    // taken before them would never match again and repeat the switch on
+    // every login.
+    let _ = fs::write(&stamp, theme_fingerprint(paths, theme));
   }
+  true
+}
+
+/// The marker of the accent the user chose, read by `config accent --startup`.
+fn accent_color_file(paths: &SessionPaths) -> PathBuf {
+  paths.config_home.join("argvus/data/.accent-color")
 }
 
 /// The text that identifies the theme files. It is stored in the stamp, so it
@@ -253,6 +289,9 @@ fn fingerprint_roots(paths: &SessionPaths, theme: &str) -> Vec<PathBuf> {
     system(format!("system-monitor/config/btop/themes/{theme}")),
     system(format!("appearance/config/gtk-3.0/themes/{theme}")),
     system(format!("appearance/config/gtk-4.0/themes/{theme}")),
+    // The accent is reapplied only with the theme, so a new accent must
+    // invalidate the stamp as well.
+    accent_color_file(paths),
   ]
 }
 
@@ -290,7 +329,7 @@ fn stat_line(path: &Path) -> String {
 
 /// Whether the user copies of the theme's files exist, so a matching stamp
 /// means the startup has nothing left to materialize.
-fn theme_materialized(paths: &SessionPaths, theme: &str) -> bool {
+pub(crate) fn theme_materialized(paths: &SessionPaths, theme: &str) -> bool {
   if !paths
     .config_home
     .join("argvus/data/.active-theme")

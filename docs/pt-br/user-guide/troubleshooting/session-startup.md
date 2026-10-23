@@ -36,4 +36,15 @@ A sessão encerra o overlay quando a preparação fatal ou o início do target
 falha. Uma falha visual deve usar o fallback documentado ou ser reportada
 explicitamente; ela não pode ser ocultada como se a sessão tivesse iniciado.
 
+## Login lento
+
+Cada etapa do início grava sua duração no log da sessão. Para ver as etapas do último login, da mais lenta para a mais rápida:
+
+```sh
+grep timing ~/.local/state/argvus/session.log | tail -30 | sort -k4 -rn
+systemd-analyze --user critical-chain argvus-session.target
+```
+
+Uma entrada `project.theme-switch` ou `prepare.startup-theme` só é esperada após uma mudança de aparência, uma atualização de pacote ou um novo acento. Se ela aparecer em todo login, os arquivos de tema materializados estão ausentes; execute `argvus theme-switch <tema>` uma vez.
+
 O log da sessão fica em `$XDG_STATE_HOME/argvus/session.log` (normalmente `~/.local/state/argvus/session.log`). Depois de alterar um override do Hyprland, faça logout/login para que a entrada da sessão valide e selecione o arquivo novamente. Veja [sessão gráfica](/pt/docs/argvus-session/graphical-session/) para o fluxo normal.
