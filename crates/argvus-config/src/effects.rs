@@ -51,36 +51,30 @@ blur_vibrancy_darkness 0 1 number 0";
 
 /// The animation parameters, in the same format.
 const ANIMATION_SETTINGS: &str = "animation_opening_enabled - - boolean true
-animation_opening_style - - enum:slide,popin,slidefade,slidevert,slidefadevert,gnomed popin
+animation_opening_style - - enum:slide,popin,gnomed popin
 animation_opening_speed 1 10 number 4.1
 animation_opening_curve - - enum:default,bezier,spring,linear,ease_out default
 animation_opening_popin 1 100 integer 87
-animation_closing_style - - enum:slide,popin,slidefade,slidevert,slidefadevert,gnomed popin
+animation_closing_style - - enum:slide,popin,gnomed popin
 animation_closing_speed 1 10 number 1.49
 animation_closing_curve - - enum:default,bezier,spring,linear,ease_out default
 animation_closing_popin 1 100 integer 87
 animation_moving_enabled - - boolean true
 animation_moving_speed 1 10 number 4.79
 animation_moving_curve - - enum:default,bezier,spring,linear,ease_out default
-animation_switching_style - - enum:slide,fade,slidefade,slidevert,slidefadevert fade
-animation_switching_speed 1 10 number 1.94
-animation_switching_curve - - enum:default,bezier,spring,linear,ease_out default
-animation_workspace_in_style - - enum:slide,fade,slidefade,slidevert,slidefadevert fade
+animation_workspace_in_style - - enum:slide,fade,slidefade,slidevert,slidefadevert slide
 animation_workspace_in_speed 1 10 number 1.21
 animation_workspace_in_curve - - enum:default,bezier,spring,linear,ease_out default
-animation_workspace_out_style - - enum:slide,fade,slidefade,slidevert,slidefadevert fade
+animation_workspace_out_style - - enum:slide,fade,slidefade,slidevert,slidefadevert slide
 animation_workspace_out_speed 1 10 number 1.94
 animation_workspace_out_curve - - enum:default,bezier,spring,linear,ease_out default
 animation_special_workspace_style - - enum:slide,fade,slidefade,slidevert,slidefadevert slide
 animation_special_workspace_speed 1 10 number 5
 animation_special_workspace_curve - - enum:default,bezier,spring,linear,ease_out default
-animation_layers_enabled - - boolean true
-animation_layers_speed 1 10 number 3.81
-animation_layers_curve - - enum:default,bezier,spring,linear,ease_out default
-animation_layers_in_style - - enum:slide,popin,fade,slidefade,slidevert,slidefadevert fade
+animation_layers_in_style - - enum:slide,popin,fade slide
 animation_layers_in_speed 1 10 number 4
 animation_layers_in_curve - - enum:default,bezier,spring,linear,ease_out default
-animation_layers_out_style - - enum:slide,popin,fade,slidefade,slidevert,slidefadevert fade
+animation_layers_out_style - - enum:slide,popin,fade slide
 animation_layers_out_speed 1 10 number 1.5
 animation_layers_out_curve - - enum:default,bezier,spring,linear,ease_out default
 animation_fade_enabled - - boolean true
@@ -105,9 +99,9 @@ animation_monitor_added_enabled - - boolean true
 animation_monitor_added_speed 1 10 number 5
 animation_monitor_added_curve - - enum:default,bezier,spring,linear,ease_out default
 animation_bezier_x1 0 1 number 0.23
-animation_bezier_y1 -2 3 number 1
+animation_bezier_y1 -1 2 number 1
 animation_bezier_x2 0 1 number 0.32
-animation_bezier_y2 -2 3 number 1
+animation_bezier_y2 -1 2 number 1
 animation_spring_mass 0.5 10 number 1
 animation_spring_stiffness 0.5 2000 number 238.1191
 animation_spring_dampening 0.5 200 number 24.21279333";

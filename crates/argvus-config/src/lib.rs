@@ -188,8 +188,47 @@ impl ConfigDocument {
     let text = fs::read_to_string(path)?;
     let mut document: Self = serde_json::from_str(&text)?;
     migrate_legacy_sections(&mut document)?;
+    document.migrate_animation_settings();
     document.validate()?;
     Ok(document)
+  }
+
+  /// Brings stored animation values in line with Hyprland 0.56.2. Retired keys are
+  /// dropped, styles the leaf no longer offers are dropped, and bezier Y points
+  /// outside the range the compositor parses are clamped. The packaged defaults
+  /// fill whatever is removed, so an older config still loads.
+  fn migrate_animation_settings(&mut self) {
+    let Some(effects) = self
+      .sections
+      .get_mut("effects")
+      .and_then(Value::as_object_mut)
+    else {
+      return;
+    };
+    for key in RETIRED_ANIMATION_KEYS {
+      effects.remove(key);
+    }
+    let stale_styles: Vec<String> = effects
+      .iter()
+      .filter(|(key, value)| {
+        key.starts_with("animation_")
+          && key.ends_with("_style")
+          && !value
+            .as_str()
+            .is_some_and(|choice| animation_styles(key).contains(&choice))
+      })
+      .map(|(key, _)| key.clone())
+      .collect();
+    for key in stale_styles {
+      effects.remove(&key);
+    }
+    for key in ["animation_bezier_y1", "animation_bezier_y2"] {
+      if let Some(value) = effects.get(key).and_then(Value::as_f64)
+        && !(-1.0..=2.0).contains(&value)
+      {
+        effects.insert(key.to_owned(), Value::from(value.clamp(-1.0, 2.0)));
+      }
+    }
   }
 
   pub fn load_effective(path: &Path) -> ConfigResult<Self> {
@@ -485,6 +524,7 @@ impl ConfigStore {
         document.sections.insert(section.to_owned(), value);
       }
     }
+    document.migrate_animation_settings();
     if apply_default_values {
       apply_packaged_defaults(&mut document)?;
       apply_defaults(&mut document)?;
@@ -1413,24 +1453,25 @@ const BLUR_SETTINGS_DEFAULTS: [(&str, f64); 7] = [
   ("blur_vibrancy_darkness", 0.0),
 ];
 
-/// Styles Hyprland 0.56.2 accepts for window open/close leaves.
-const WINDOW_ANIMATION_STYLES: [&str; 6] = [
-  "slide",
-  "popin",
-  "slidefade",
-  "slidevert",
-  "slidefadevert",
-  "gnomed",
-];
+/// Styles that render on the window open/close leaves in Hyprland 0.56.2. The
+/// compositor accepts `slidefade`, `slidevert` and `slidefadevert` here too, but
+/// it draws them as pop-in, so they are not offered.
+const WINDOW_ANIMATION_STYLES: [&str; 3] = ["slide", "popin", "gnomed"];
 
-/// Styles Hyprland 0.56.2 accepts for the layer leaves.
-const LAYER_ANIMATION_STYLES: [&str; 6] = [
-  "slide",
-  "popin",
-  "fade",
-  "slidefade",
-  "slidevert",
-  "slidefadevert",
+/// Styles that render on the layer leaves in Hyprland 0.56.2. Slide variants
+/// other than `slide` are drawn as a plain slide, so they are not offered.
+const LAYER_ANIMATION_STYLES: [&str; 3] = ["slide", "popin", "fade"];
+
+/// Keys of the `layers` and `switching` animation leaves that were removed. Hyprland
+/// reads neither leaf directly (only their `In`/`Out` children), so their values
+/// had no effect.
+const RETIRED_ANIMATION_KEYS: [&str; 6] = [
+  "animation_layers_enabled",
+  "animation_layers_speed",
+  "animation_layers_curve",
+  "animation_switching_style",
+  "animation_switching_speed",
+  "animation_switching_curve",
 ];
 
 /// Styles Hyprland 0.56.2 accepts for the workspace leaves. `popin` and
@@ -1523,7 +1564,7 @@ fn validate_animation_setting(key: &str, value: &Value) -> ConfigResult<()> {
   } else {
     match key {
       "animation_bezier_x1" | "animation_bezier_x2" => (0.0, 1.0, false),
-      "animation_bezier_y1" | "animation_bezier_y2" => (-2.0, 3.0, false),
+      "animation_bezier_y1" | "animation_bezier_y2" => (-1.0, 2.0, false),
       "animation_spring_mass" => (0.5, 10.0, false),
       "animation_spring_stiffness" => (0.5, 2000.0, false),
       "animation_spring_dampening" => (0.5, 200.0, false),
@@ -2675,13 +2716,19 @@ mod tests {
     assert!(validate_animation_setting("animation_opening_style", &Value::from("wobble")).is_err());
     assert!(validate_animation_setting("animation_opening_style", &Value::from("fade")).is_err());
     assert!(
-      validate_animation_setting("animation_switching_style", &Value::from("popin")).is_err()
+      validate_animation_setting("animation_opening_style", &Value::from("slidefade")).is_err()
+    );
+    assert!(
+      validate_animation_setting("animation_workspace_in_style", &Value::from("popin")).is_err()
     );
     assert!(
       validate_animation_setting("animation_workspace_in_style", &Value::from("fade")).is_ok()
     );
     assert!(
       validate_animation_setting("animation_layers_in_style", &Value::from("gnomed")).is_err()
+    );
+    assert!(
+      validate_animation_setting("animation_layers_in_style", &Value::from("slidefade")).is_err()
     );
     assert!(
       validate_animation_setting("animation_layers_out_style", &Value::from("popin")).is_ok()
@@ -2694,13 +2741,40 @@ mod tests {
     assert!(validate_animation_setting("animation_opening_popin", &Value::from(85)).is_ok());
     assert!(validate_animation_setting("animation_moving_enabled", &Value::Bool(false)).is_ok());
     assert!(validate_animation_setting("animation_moving_enabled", &Value::from(1)).is_err());
-    assert!(validate_animation_setting("animation_bezier_y1", &Value::from(-1.5)).is_ok());
+    assert!(validate_animation_setting("animation_bezier_y1", &Value::from(-1.0)).is_ok());
+    assert!(validate_animation_setting("animation_bezier_y1", &Value::from(-1.5)).is_err());
+    assert!(validate_animation_setting("animation_bezier_y2", &Value::from(2.5)).is_err());
     assert!(validate_animation_setting("animation_bezier_x1", &Value::from(-0.1)).is_err());
     assert!(validate_animation_setting("animation_spring_mass", &Value::from(0.2)).is_err());
     assert!(
       validate_animation_setting("animation_spring_stiffness", &Value::from(238.119)).is_ok()
     );
     assert!(validate_animation_setting("animation_unknown", &Value::from(1)).is_err());
+  }
+
+  #[test]
+  fn stored_animation_values_are_migrated_before_validation() {
+    let mut document = ConfigDocument::default();
+    document.sections.insert(
+      "effects".into(),
+      serde_json::json!({
+        "animation_layers_speed": 3.81,
+        "animation_switching_style": "fade",
+        "animation_opening_style": "slidefade",
+        "animation_layers_in_style": "fade",
+        "animation_bezier_y1": 2.5,
+        "animation_bezier_y2": 0.5,
+      }),
+    );
+    document.migrate_animation_settings();
+    let effects = document.sections["effects"].as_object().unwrap();
+    assert!(!effects.contains_key("animation_layers_speed"));
+    assert!(!effects.contains_key("animation_switching_style"));
+    assert!(!effects.contains_key("animation_opening_style"));
+    assert_eq!(effects["animation_layers_in_style"], "fade");
+    assert_eq!(effects["animation_bezier_y1"], 2.0);
+    assert_eq!(effects["animation_bezier_y2"], 0.5);
+    assert!(document.validate().is_ok());
   }
 
   #[test]

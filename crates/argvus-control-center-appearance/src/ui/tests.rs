@@ -1230,7 +1230,7 @@ fn animation_edits_stay_in_the_shared_draft_until_apply() {
       .values
       .leaf(AnimationLeaf::Opening)
       .style,
-    AnimationStyle::SlideFade,
+    AnimationStyle::Gnomed,
     "Enter cycles the style forward"
   );
   assert_eq!(

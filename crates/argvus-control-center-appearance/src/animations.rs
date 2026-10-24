@@ -6,19 +6,19 @@
 //! and the tests agree. The bounds must match `ANIMATION_SETTINGS` in
 //! `argvus effects-toggle` and the schema in `argvus-config`.
 
-/// Animation leaves the pages expose. Hyprland 0.56.2 has no leaf for window
-/// resizing (it shares `windowsMove`), for popups or for shadow and glow
-/// gradient angles, so those are not listed.
+/// Animation leaves the pages expose. Only leaves that change what Hyprland 0.56.2
+/// draws are listed. `windows`, `layers` and `workspaces` are parents that the
+/// compositor never reads on their own, so their values would have no effect.
+/// Window resizing shares `windowsMove`, and the popup fades, shadow and glow
+/// gradient angles and the zoom fade are not exposed.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum AnimationLeaf {
   Opening,
   Closing,
   Moving,
-  Switching,
   WorkspaceIn,
   WorkspaceOut,
   SpecialWorkspace,
-  Layers,
   LayersIn,
   LayersOut,
   Fade,
@@ -31,15 +31,13 @@ pub enum AnimationLeaf {
 }
 
 impl AnimationLeaf {
-  pub const ALL: [Self; 17] = [
+  pub const ALL: [Self; 15] = [
     Self::Opening,
     Self::Closing,
     Self::Moving,
-    Self::Switching,
     Self::WorkspaceIn,
     Self::WorkspaceOut,
     Self::SpecialWorkspace,
-    Self::Layers,
     Self::LayersIn,
     Self::LayersOut,
     Self::Fade,
@@ -58,11 +56,9 @@ impl AnimationLeaf {
       Self::Opening => "opening",
       Self::Closing => "closing",
       Self::Moving => "moving",
-      Self::Switching => "switching",
       Self::WorkspaceIn => "workspace_in",
       Self::WorkspaceOut => "workspace_out",
       Self::SpecialWorkspace => "special_workspace",
-      Self::Layers => "layers",
       Self::LayersIn => "layers_in",
       Self::LayersOut => "layers_out",
       Self::Fade => "fade",
@@ -81,11 +77,9 @@ impl AnimationLeaf {
       Self::Opening => "control_center.animation_opening",
       Self::Closing => "control_center.animation_closing",
       Self::Moving => "control_center.animation_moving",
-      Self::Switching => "control_center.animation_switching",
       Self::WorkspaceIn => "control_center.animation_workspace_in",
       Self::WorkspaceOut => "control_center.animation_workspace_out",
       Self::SpecialWorkspace => "control_center.animation_special_workspace",
-      Self::Layers => "control_center.animation_layers",
       Self::LayersIn => "control_center.animation_layers_in",
       Self::LayersOut => "control_center.animation_layers_out",
       Self::Fade => "control_center.animation_fade",
@@ -102,15 +96,10 @@ impl AnimationLeaf {
   pub const fn group(self) -> AnimationGroup {
     match self {
       Self::Opening | Self::Closing | Self::Moving => AnimationGroup::Windows,
-      Self::Switching | Self::WorkspaceIn | Self::WorkspaceOut | Self::SpecialWorkspace => {
-        AnimationGroup::Workspaces
+      Self::WorkspaceIn | Self::WorkspaceOut | Self::SpecialWorkspace => AnimationGroup::Workspaces,
+      Self::LayersIn | Self::LayersOut | Self::Fade | Self::FadeIn | Self::FadeOut => {
+        AnimationGroup::LayersPopups
       }
-      Self::Layers
-      | Self::LayersIn
-      | Self::LayersOut
-      | Self::Fade
-      | Self::FadeIn
-      | Self::FadeOut => AnimationGroup::LayersPopups,
       Self::Border | Self::BorderAngle => AnimationGroup::BordersEffects,
       Self::Zoom | Self::MonitorAdded => AnimationGroup::OtherAnimations,
     }
@@ -121,7 +110,6 @@ impl AnimationLeaf {
     matches!(
       self,
       Self::Moving
-        | Self::Layers
         | Self::Fade
         | Self::FadeIn
         | Self::FadeOut
@@ -138,7 +126,6 @@ impl AnimationLeaf {
       self,
       Self::Opening
         | Self::Closing
-        | Self::Switching
         | Self::WorkspaceIn
         | Self::WorkspaceOut
         | Self::SpecialWorkspace
@@ -159,9 +146,7 @@ impl AnimationLeaf {
     match self {
       Self::Opening | Self::Closing => &WINDOW_STYLES,
       Self::LayersIn | Self::LayersOut => &LAYER_STYLES,
-      Self::Switching | Self::WorkspaceIn | Self::WorkspaceOut | Self::SpecialWorkspace => {
-        &WORKSPACE_STYLES
-      }
+      Self::WorkspaceIn | Self::WorkspaceOut | Self::SpecialWorkspace => &WORKSPACE_STYLES,
       _ => &[],
     }
   }
@@ -182,11 +167,6 @@ impl AnimationLeaf {
   const fn default_style(self) -> AnimationStyle {
     match self {
       Self::Opening | Self::Closing => AnimationStyle::Popin,
-      Self::Switching
-      | Self::WorkspaceIn
-      | Self::WorkspaceOut
-      | Self::LayersIn
-      | Self::LayersOut => AnimationStyle::Fade,
       _ => AnimationStyle::Slide,
     }
   }
@@ -196,11 +176,9 @@ impl AnimationLeaf {
       Self::Opening => 4.1,
       Self::Closing => 1.49,
       Self::Moving => 4.79,
-      Self::Switching => 1.94,
       Self::WorkspaceIn => 1.21,
       Self::WorkspaceOut => 1.94,
       Self::SpecialWorkspace => 5.0,
-      Self::Layers => 3.81,
       Self::LayersIn => 4.0,
       Self::LayersOut => 1.5,
       Self::Fade => 3.03,
@@ -265,24 +243,20 @@ pub enum AnimationStyle {
   Gnomed,
 }
 
-/// Styles of the window open and close leaves.
-const WINDOW_STYLES: [AnimationStyle; 6] = [
+/// Styles of the window open and close leaves. The slide variants are left out
+/// because Hyprland draws them as pop-in.
+const WINDOW_STYLES: [AnimationStyle; 3] = [
   AnimationStyle::Slide,
   AnimationStyle::Popin,
-  AnimationStyle::SlideFade,
-  AnimationStyle::SlideVert,
-  AnimationStyle::SlideFadeVert,
   AnimationStyle::Gnomed,
 ];
 
-/// Styles of the layer leaves.
-const LAYER_STYLES: [AnimationStyle; 6] = [
+/// Styles of the layer leaves. The slide variants are left out because Hyprland
+/// draws them as a plain slide.
+const LAYER_STYLES: [AnimationStyle; 3] = [
   AnimationStyle::Slide,
   AnimationStyle::Popin,
   AnimationStyle::Fade,
-  AnimationStyle::SlideFade,
-  AnimationStyle::SlideVert,
-  AnimationStyle::SlideFadeVert,
 ];
 
 /// Styles of the workspace leaves. Hyprland refuses `popin` and `gnomed` here.
@@ -437,7 +411,7 @@ impl CurveParam {
   pub const fn bounds(self) -> (f64, f64) {
     match self {
       Self::BezierX1 | Self::BezierX2 => (0.0, 1.0),
-      Self::BezierY1 | Self::BezierY2 => (-2.0, 3.0),
+      Self::BezierY1 | Self::BezierY2 => (-1.0, 2.0),
       Self::SpringMass => (0.5, 10.0),
       Self::SpringStiffness => (0.5, 2000.0),
       Self::SpringDampening => (0.5, 200.0),
@@ -572,7 +546,7 @@ pub struct LeafValues {
 /// (same order as `CurveParam::ALL`).
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct AnimationValues {
-  leaves: [LeafValues; 17],
+  leaves: [LeafValues; 15],
   params: [f64; 7],
 }
 
@@ -743,11 +717,19 @@ mod tests {
     assert_eq!(values.leaf(AnimationLeaf::Closing).speed, 1.49);
     assert_eq!(
       values.leaf(AnimationLeaf::WorkspaceIn).style,
-      AnimationStyle::Fade
+      AnimationStyle::Slide
+    );
+    assert_eq!(
+      values.leaf(AnimationLeaf::WorkspaceOut).style,
+      AnimationStyle::Slide
     );
     assert_eq!(
       values.leaf(AnimationLeaf::LayersIn).style,
-      AnimationStyle::Fade
+      AnimationStyle::Slide
+    );
+    assert_eq!(
+      values.leaf(AnimationLeaf::LayersOut).style,
+      AnimationStyle::Slide
     );
     assert_eq!(
       values.get(AnimationField::Param(CurveParam::SpringStiffness)),
@@ -792,8 +774,12 @@ mod tests {
         .styles()
         .contains(&AnimationStyle::Gnomed)
     );
+    assert!(
+      !AnimationLeaf::Opening
+        .styles()
+        .contains(&AnimationStyle::SlideFadeVert)
+    );
     for leaf in [
-      AnimationLeaf::Switching,
       AnimationLeaf::WorkspaceIn,
       AnimationLeaf::WorkspaceOut,
       AnimationLeaf::SpecialWorkspace,
@@ -819,7 +805,7 @@ mod tests {
       .sum();
     assert_eq!(all, AnimationLeaf::ALL.len());
     assert_eq!(AnimationGroup::Windows.leaves().count(), 3);
-    assert_eq!(AnimationGroup::LayersPopups.leaves().count(), 6);
+    assert_eq!(AnimationGroup::LayersPopups.leaves().count(), 5);
   }
 
   #[test]
@@ -833,7 +819,9 @@ mod tests {
 
     let y1 = AnimationField::Param(CurveParam::BezierY1);
     values.set(y1, -5.0);
-    assert_eq!(values.get(y1), -2.0);
+    assert_eq!(values.get(y1), -1.0);
+    values.set(y1, 5.0);
+    assert_eq!(values.get(y1), 2.0);
   }
 
   #[test]
@@ -849,7 +837,9 @@ mod tests {
     );
 
     let y1 = AnimationField::Param(CurveParam::BezierY1);
-    assert_eq!(y1.parse("-1.5"), Some(-1.5));
+    assert_eq!(y1.parse("-0.5"), Some(-0.5));
+    assert_eq!(y1.parse("-1.5"), None);
+    assert_eq!(y1.parse("2.5"), None);
     assert_eq!(
       AnimationField::Param(CurveParam::BezierX1).parse("-0.1"),
       None
@@ -860,11 +850,7 @@ mod tests {
   #[test]
   fn cycle_wraps_in_both_directions() {
     assert_eq!(
-      cycle(
-        AnimationLeaf::Opening.styles(),
-        AnimationStyle::SlideFadeVert,
-        1
-      ),
+      cycle(AnimationLeaf::Opening.styles(), AnimationStyle::Popin, 1),
       AnimationStyle::Gnomed
     );
     assert_eq!(
@@ -880,7 +866,7 @@ mod tests {
   #[test]
   fn script_round_trip_keeps_the_values() {
     let mut values = AnimationValues::default();
-    values.leaf_mut(AnimationLeaf::Opening).style = AnimationStyle::SlideFade;
+    values.leaf_mut(AnimationLeaf::Opening).style = AnimationStyle::Gnomed;
     values.leaf_mut(AnimationLeaf::Fade).enabled = false;
     values.leaf_mut(AnimationLeaf::FadeIn).speed = 9.5;
     values.leaf_mut(AnimationLeaf::Border).curve = AnimationCurve::Spring;
