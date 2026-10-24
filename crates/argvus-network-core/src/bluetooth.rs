@@ -41,6 +41,19 @@ impl Summary {
   }
 }
 
+/// Whether the entries of `/sys/class/bluetooth` name a controller (`hci0`,
+/// `hci1`, …). The kernel lists every adapter there, powered or blocked, so an
+/// empty listing means there is no controller to ask bluetoothctl about.
+pub fn lists_controller<I, S>(entries: I) -> bool
+where
+  I: IntoIterator<Item = S>,
+  S: AsRef<str>,
+{
+  entries
+    .into_iter()
+    .any(|entry| entry.as_ref().starts_with("hci"))
+}
+
 /// Whether `show` describes a controller: a block that names one and does not
 /// say that there is none.
 pub fn adapter_available(show: &str) -> bool {
@@ -183,7 +196,10 @@ pub fn status_field(output: &str, key: &str) -> Option<String> {
 
 #[cfg(test)]
 mod tests {
-  use super::{Labels, adapter_available, adapter_value, connected_devices, summarize, waybar};
+  use super::{
+    Labels, adapter_available, adapter_value, connected_devices, lists_controller, summarize,
+    waybar,
+  };
 
   const SHOW: &str = "Controller 00:11:22:33:44:55 (public)\n\tPowered: yes\n\tAlias: laptop\n";
 
@@ -192,6 +208,14 @@ mod tests {
     assert!(adapter_available(SHOW));
     assert!(!adapter_available("No default controller available\n"));
     assert!(!adapter_available(""));
+  }
+
+  #[test]
+  fn sysfs_listing_names_a_controller() {
+    assert!(lists_controller(["hci0"]));
+    assert!(lists_controller(["rfkill0", "hci1"]));
+    assert!(!lists_controller(Vec::<String>::new()));
+    assert!(!lists_controller(["rfkill0"]));
   }
 
   #[test]

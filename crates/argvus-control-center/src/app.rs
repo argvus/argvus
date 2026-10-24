@@ -401,8 +401,7 @@ impl App {
     }
     #[cfg(feature = "appearance")]
     if let InitialRoute::Appearance(page) = initial {
-      appearance.page = page;
-      appearance.reload();
+      appearance.open(page);
     }
     let mut search_registry = SearchRegistry::default();
     let entries: [(&str, &str, &str, &str, &str); _] = [
@@ -1519,9 +1518,8 @@ impl App {
   /// Opens one page of the Appearance tree from the Home, reloading its state.
   #[cfg(feature = "appearance")]
   fn open_appearance_surface(&mut self, page: AppearancePage) {
-    self.appearance.page = page;
+    self.appearance.open(page);
     self.route = Route::Appearance;
-    self.appearance.reload();
   }
 
   /// Executes the `open_settings` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
@@ -1939,8 +1937,7 @@ impl App {
   #[cfg(feature = "appearance")]
   /// Executes the `open_appearance_page` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn open_appearance_page(&mut self, page: AppearancePage) {
-    self.appearance.page = page;
-    self.appearance.reload();
+    self.appearance.open(page);
     self.route = Route::Appearance;
   }
 

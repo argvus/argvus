@@ -1561,3 +1561,104 @@ fn icons_page_draws_search_actions_and_a_footer_with_status_left_and_shortcuts_r
   assert!(shortcuts.trim_end().ends_with("? Help"), "{shortcuts:?}");
   assert!(shortcuts.starts_with(' '), "shortcuts are right-aligned");
 }
+
+/// Polls until `done` holds, failing after a generous bound so a stuck job
+/// does not hang the suite.
+fn poll_until(application: &mut AppearanceApp, done: impl Fn(&AppearanceApp) -> bool) {
+  let deadline = std::time::Instant::now() + std::time::Duration::from_secs(5);
+  while !done(application) {
+    assert!(std::time::Instant::now() < deadline, "job did not finish");
+    application.poll();
+    std::thread::sleep(std::time::Duration::from_millis(5));
+  }
+}
+
+#[test]
+fn open_drops_a_load_left_running_for_another_page() {
+  // The host returned to its Home while the Control Panel was still loading;
+  // opening Widget Telemetry must not wait for that load.
+  let mut application = app(AppearancePage::ControlPanel);
+  application.job = Some(application.manager.spawn(|_| {
+    std::thread::sleep(std::time::Duration::from_secs(2));
+    Ok(JobData::Action(String::new()))
+  }));
+  application.job_page = Some(AppearancePage::ControlPanel);
+  let stale = application.job.as_ref().map(JobHandle::id);
+
+  application.open(AppearancePage::WidgetTelemetry);
+
+  assert_eq!(application.page, AppearancePage::WidgetTelemetry);
+  assert_eq!(application.job_page, Some(AppearancePage::WidgetTelemetry));
+  assert_ne!(application.job.as_ref().map(JobHandle::id), stale);
+}
+
+#[test]
+fn reopening_a_surface_within_its_refresh_window_shows_its_values() {
+  // Leaving the page clears its draft; reopening it while the loaded state is
+  // still fresh starts no load, so the draft must come from that state.
+  let mut application = app(AppearancePage::Home);
+  application.state.widget_telemetry = true;
+  application
+    .refreshed
+    .push((AppearancePage::WidgetTelemetry, std::time::Instant::now()));
+
+  application.open(AppearancePage::WidgetTelemetry);
+
+  assert!(application.job.is_none(), "no reload inside the window");
+  assert!(
+    application
+      .surface_draft()
+      .is_some_and(|draft| draft.widget_enabled)
+  );
+  assert!(!application.has_pending_changes());
+}
+
+#[test]
+fn card_availability_arrives_without_blocking_or_dirtying_the_draft() {
+  let mut application = draft_app(AppearancePage::ControlPanel);
+  application.control_panel_draft = Some(application.state.control_panel_cards.clone());
+  application.availability = Some(application.manager.spawn(|_| {
+    Ok(JobData::Availability(vec![(
+      ControlPanelCard::Bluetooth,
+      false,
+    )]))
+  }));
+  assert!(
+    application.job.is_none(),
+    "the probe does not make the page busy"
+  );
+
+  poll_until(&mut application, |application| {
+    application.availability.is_none()
+  });
+
+  assert!(
+    !application
+      .state
+      .control_panel_cards
+      .available(ControlPanelCard::Bluetooth)
+  );
+  assert!(application.surface_draft().is_some_and(|draft| {
+    !draft
+      .control_panel_cards
+      .available(ControlPanelCard::Bluetooth)
+  }));
+  assert!(
+    application
+      .control_panel_draft
+      .as_ref()
+      .is_some_and(|draft| !draft.available(ControlPanelCard::Bluetooth))
+  );
+  assert!(!application.has_pending_changes());
+
+  // A page load that copied the state before the probe finished must not
+  // bring the old availability back.
+  application.on_loaded(AppearancePage::ControlPanel, AppearanceState::default());
+  assert!(
+    !application
+      .state
+      .control_panel_cards
+      .available(ControlPanelCard::Bluetooth)
+  );
+  assert!(!application.has_pending_changes());
+}

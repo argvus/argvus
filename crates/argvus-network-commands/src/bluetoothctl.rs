@@ -5,6 +5,7 @@
 use argvus_network_core::bluetooth::{self, Labels, Summary};
 use argvus_runtime::messages::text_in;
 use argvus_runtime::process::{Finished, notify, program_exists, run_quiet, run_with_limit};
+use std::io;
 use std::os::unix::process::CommandExt;
 use std::path::Path;
 use std::process::{Command, ExitCode};
@@ -12,6 +13,8 @@ use std::time::Duration;
 
 /// How long one bluetoothctl call may run.
 const BTCTL_LIMIT: Duration = Duration::from_secs(3);
+/// Where the kernel lists the Bluetooth controllers.
+const SYSFS_BLUETOOTH: &str = "/sys/class/bluetooth";
 /// The usage error of a command line the command does not know.
 const USAGE_STATUS: u8 = 64;
 const DOMAIN: &str = "network";
@@ -54,6 +57,21 @@ fn bluetoothctl_available() -> bool {
   program_exists("bluetoothctl")
 }
 
+/// Whether the kernel lists a controller. Without one, `bluetoothctl show`
+/// waits for BlueZ until [`BTCTL_LIMIT`] when the service is stopped, so the
+/// status would take seconds to say what sysfs already says. A listing that
+/// cannot be read for another reason does not decide: bluetoothctl is asked.
+fn controller_listed() -> bool {
+  match std::fs::read_dir(SYSFS_BLUETOOTH) {
+    Ok(entries) => bluetooth::lists_controller(
+      entries
+        .filter_map(Result::ok)
+        .map(|entry| entry.file_name().to_string_lossy().into_owned()),
+    ),
+    Err(error) => error.kind() != io::ErrorKind::NotFound,
+  }
+}
+
 /// bluetoothctl under the time limit, with its output if it ended in time.
 fn btctl(arguments: &[&str]) -> Option<Finished> {
   run_with_limit("bluetoothctl", arguments, BTCTL_LIMIT)
@@ -79,6 +97,9 @@ fn manager_line() -> String {
 fn summary() -> Summary {
   if !bluetoothctl_available() {
     return Summary::unavailable("unavailable");
+  }
+  if !controller_listed() {
+    return Summary::unavailable("no-controller");
   }
   let show = btctl_output(&["show"]);
   if !bluetooth::adapter_available(&show) {

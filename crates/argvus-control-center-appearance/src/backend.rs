@@ -594,26 +594,40 @@ fn telemetry_order(status: &str) -> Vec<WidgetTelemetryBlock> {
   order
 }
 
-/// Decodes the Control Panel helper status and keeps package defaults when an
-/// older installation does not provide the helper or returns malformed data.
-/// Returns the order alongside the enabled/available flags since both come
-/// from the same status call and the order is only meaningful together with
-/// it (an unavailable card's position does not matter until it reappears).
-fn control_panel_cards() -> (ControlPanelCards, Vec<ControlPanelCard>) {
+/// Reads the Control Panel helper status: the enabled flags and the order,
+/// which come from the same call. The hardware availability is not probed
+/// here: it is carried over from `previous` and refreshed separately by
+/// [`control_panel_availability`], so the page never waits for a hardware probe.
+fn control_panel_cards(previous: &ControlPanelCards) -> (ControlPanelCards, Vec<ControlPanelCard>) {
   let status = run_script_output(&control_panel_cards_script(), &["status"]);
-  let mut cards = status
-    .as_deref()
-    .map(parse_control_panel_cards)
-    .unwrap_or_default();
+  control_panel_cards_from_status(status.as_deref(), previous)
+}
+
+/// Decodes the helper status and keeps package defaults when an older
+/// installation does not provide the helper or returns malformed data. The
+/// availability of every card is the one `previous` already knew.
+fn control_panel_cards_from_status(
+  status: Option<&str>,
+  previous: &ControlPanelCards,
+) -> (ControlPanelCards, Vec<ControlPanelCard>) {
+  let mut cards = status.map(parse_control_panel_cards).unwrap_or_default();
+  for card in ControlPanelCard::ALL {
+    cards.set_available(card, previous.available(card));
+  }
   let order = status
-    .as_deref()
     .map(parse_control_panel_order)
     .unwrap_or_else(|| ControlPanelCard::ALL.to_vec());
-  // Keep the Control Center list identical to the cards' own runtime checks.
-  // These probes are intentionally independent: a disabled card remains disabled
-  // when hardware is temporarily disconnected and becomes available again later.
-  // Hardware probes can invoke external tools (including short timeouts), so
-  // run them concurrently on the worker thread instead of serializing them.
+  (cards, order)
+}
+
+/// Probes the hardware the cards depend on, with the same checks the cards
+/// run themselves. A disabled card stays disabled when its hardware is
+/// temporarily disconnected and becomes available again later.
+///
+/// The probes invoke external tools with timeouts (bluetoothctl may wait up to
+/// seconds for BlueZ), so they run concurrently, and the caller runs this in a
+/// background job of its own instead of the page load.
+pub fn control_panel_availability() -> Vec<(ControlPanelCard, bool)> {
   let (bluetooth_available, brightness_available) = std::thread::scope(|scope| {
     let bluetooth = scope.spawn(|| {
       run_argvus_route_output("bluetoothctl", &["status"])
@@ -628,9 +642,10 @@ fn control_panel_cards() -> (ControlPanelCards, Vec<ControlPanelCard>) {
       brightness.join().unwrap_or(false),
     )
   });
-  cards.set_available(ControlPanelCard::Bluetooth, bluetooth_available);
-  cards.set_available(ControlPanelCard::Brightness, brightness_available);
-  (cards, order)
+  vec![
+    (ControlPanelCard::Bluetooth, bluetooth_available),
+    (ControlPanelCard::Brightness, brightness_available),
+  ]
 }
 
 /// Maps the Control Panel helper's stable card ID back to its enum variant,
@@ -869,6 +884,169 @@ fn refresh_official_themes(state: &mut AppearanceState) {
   state.discovery_warnings = report.warnings;
 }
 
+/// Surfaces whose transparency (and, for some, blur) `load_page` reads.
+const SURFACES_WITH_EFFECTS: [EffectSurface; 5] = [
+  EffectSurface::Taskbar,
+  EffectSurface::ControlPanel,
+  EffectSurface::WidgetTelemetry,
+  EffectSurface::Terminal,
+  EffectSurface::Launchers,
+];
+
+/// What the concurrent readers of [`load_page`] collected. `None` means the
+/// page does not show that data, so the previous values are kept.
+struct PageReadings {
+  global_effects: Option<GlobalEffects>,
+  surface_effects: Vec<(EffectSurface, SurfaceEffects)>,
+  telemetry: Option<TelemetryReading>,
+  control_panel: Option<ControlPanelReading>,
+  layout: Option<LayoutStatus>,
+}
+
+/// The global effect switches and the Hyprland blur parameters.
+struct GlobalEffects {
+  animations: bool,
+  transparency: bool,
+  blur: bool,
+  blur_values: BlurValues,
+}
+
+/// One surface's transparency, and its blur when the surface has one.
+struct SurfaceEffects {
+  transparency: i32,
+  transparency_enabled: bool,
+  blur: Option<(i32, bool)>,
+}
+
+/// The widget switch and the raw `blocks status` output.
+struct TelemetryReading {
+  enabled: bool,
+  blocks_status: String,
+}
+
+/// The Control Panel master switch and its cards.
+struct ControlPanelReading {
+  cards: ControlPanelCards,
+  order: Vec<ControlPanelCard>,
+  enabled: bool,
+}
+
+/// The raw status of the layout scripts, parsed after the join.
+struct LayoutStatus {
+  utility_group: Option<String>,
+  spacing: Option<String>,
+  borders: Option<String>,
+}
+
+/// The result of a reader that ran, or `None` when it did not run or panicked
+/// (the page then keeps its previous values, as when a reader fails).
+fn joined<T>(handle: Option<std::thread::ScopedJoinHandle<'_, T>>) -> Option<T> {
+  handle.and_then(|handle| handle.join().ok())
+}
+
+fn read_global_effects() -> GlobalEffects {
+  std::thread::scope(|scope| {
+    let blur_values = scope.spawn(blur_values);
+    let animations = scope.spawn(|| effect_state("animations"));
+    let transparency = scope.spawn(|| effect_state("transparency"));
+    let blur = effect_state("blur");
+    GlobalEffects {
+      animations: animations.join().unwrap_or_default(),
+      transparency: transparency.join().unwrap_or_default(),
+      blur,
+      blur_values: blur_values.join().unwrap_or_default(),
+    }
+  })
+}
+
+/// Reads one surface. Terminal and launchers have no blur of their own.
+fn read_surface_effects(surface: EffectSurface) -> SurfaceEffects {
+  let has_blur = !matches!(surface, EffectSurface::Terminal | EffectSurface::Launchers);
+  SurfaceEffects {
+    transparency: effect_value("transparency", surface),
+    transparency_enabled: effect_enabled("transparency", surface),
+    blur: has_blur.then(|| {
+      (
+        effect_value("blur", surface),
+        effect_enabled("blur", surface),
+      )
+    }),
+  }
+}
+
+fn store_surface_effects(
+  state: &mut AppearanceState,
+  surface: EffectSurface,
+  effects: SurfaceEffects,
+) {
+  let (blur, blur_enabled) = effects.blur.unwrap_or((0, true));
+  match surface {
+    EffectSurface::Taskbar => {
+      state.taskbar_transparency = effects.transparency;
+      state.taskbar_transparency_enabled = effects.transparency_enabled;
+      state.taskbar_blur = blur;
+      state.taskbar_blur_enabled = blur_enabled;
+    }
+    EffectSurface::ControlPanel => {
+      state.control_panel_transparency = effects.transparency;
+      state.control_panel_transparency_enabled = effects.transparency_enabled;
+      state.control_panel_blur = blur;
+      state.control_panel_blur_enabled = blur_enabled;
+    }
+    EffectSurface::WidgetTelemetry => {
+      state.widget_telemetry_transparency = effects.transparency;
+      state.widget_telemetry_transparency_enabled = effects.transparency_enabled;
+      state.widget_telemetry_blur = blur;
+      state.widget_telemetry_blur_enabled = blur_enabled;
+    }
+    EffectSurface::Terminal => {
+      state.terminal_transparency = effects.transparency;
+      state.terminal_transparency_enabled = effects.transparency_enabled;
+    }
+    EffectSurface::Launchers => {
+      state.launcher_transparency = effects.transparency;
+      state.launcher_transparency_enabled = effects.transparency_enabled;
+    }
+  }
+}
+
+fn read_telemetry() -> TelemetryReading {
+  std::thread::scope(|scope| {
+    let blocks_status = scope.spawn(telemetry_blocks_status);
+    let enabled = telemetry_state();
+    TelemetryReading {
+      enabled,
+      blocks_status: blocks_status.join().ok().flatten().unwrap_or_default(),
+    }
+  })
+}
+
+fn read_control_panel(previous_cards: &ControlPanelCards) -> ControlPanelReading {
+  std::thread::scope(|scope| {
+    let enabled = scope.spawn(control_panel_enabled);
+    let (cards, order) = control_panel_cards(previous_cards);
+    ControlPanelReading {
+      cards,
+      order,
+      enabled: enabled.join().unwrap_or(true),
+    }
+  })
+}
+
+fn read_layout_status() -> LayoutStatus {
+  std::thread::scope(|scope| {
+    let utility_group =
+      scope.spawn(|| run_script_output(&script("taskbar-right-2-mode.sh"), &["status"]));
+    let spacing = scope.spawn(|| run_script_output(&script("spaces-switch.sh"), &["--status"]));
+    let borders = run_script_output(&script("borders-switch.sh"), &["--status"]);
+    LayoutStatus {
+      utility_group: utility_group.join().ok().flatten(),
+      spacing: spacing.join().ok().flatten(),
+      borders,
+    }
+  })
+}
+
 /// Retrieves data for `load_state` without mixing collection with TUI rendering. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 /// Collect only data used by the requested page. Existing values survive unrelated refreshes.
 pub fn load_page(
@@ -894,7 +1072,7 @@ pub fn load_page(
   if page == AppearancePage::Icons {
     load_icon_themes(&mut state);
   }
-  if matches!(
+  let wants_global_effects = matches!(
     page,
     AppearancePage::Blur
       | AppearancePage::Animations
@@ -902,17 +1080,8 @@ pub fn load_page(
       | AppearancePage::WidgetTelemetry
       | AppearancePage::ControlPanel
       | AppearancePage::SurfaceSection { .. }
-  ) {
-    state.animations = effect_state("animations");
-    state.transparency = effect_state("transparency");
-    state.blur = effect_state("blur");
-    state.blur_values = blur_values();
-  }
-  if page.is_animations() {
-    state.animations = effect_state("animations");
-    state.animation_values = animation_values();
-  }
-  if matches!(
+  );
+  let wants_surface_effects = matches!(
     page,
     AppearancePage::Taskbar
       | AppearancePage::WidgetTelemetry
@@ -921,68 +1090,24 @@ pub fn load_page(
       | AppearancePage::Launchers
       | AppearancePage::TerminalTransparency
       | AppearancePage::SurfaceSection { .. }
-  ) {
-    state.taskbar_transparency = effect_value("transparency", EffectSurface::Taskbar);
-    state.control_panel_transparency = effect_value("transparency", EffectSurface::ControlPanel);
-    state.widget_telemetry_transparency =
-      effect_value("transparency", EffectSurface::WidgetTelemetry);
-    state.taskbar_blur = effect_value("blur", EffectSurface::Taskbar);
-    state.control_panel_blur = effect_value("blur", EffectSurface::ControlPanel);
-    state.widget_telemetry_blur = effect_value("blur", EffectSurface::WidgetTelemetry);
-    state.terminal_transparency = effect_value("transparency", EffectSurface::Terminal);
-    state.launcher_transparency = effect_value("transparency", EffectSurface::Launchers);
-    state.taskbar_transparency_enabled = effect_enabled("transparency", EffectSurface::Taskbar);
-    state.control_panel_transparency_enabled =
-      effect_enabled("transparency", EffectSurface::ControlPanel);
-    state.widget_telemetry_transparency_enabled =
-      effect_enabled("transparency", EffectSurface::WidgetTelemetry);
-    state.taskbar_blur_enabled = effect_enabled("blur", EffectSurface::Taskbar);
-    state.control_panel_blur_enabled = effect_enabled("blur", EffectSurface::ControlPanel);
-    state.widget_telemetry_blur_enabled = effect_enabled("blur", EffectSurface::WidgetTelemetry);
-    state.terminal_transparency_enabled = effect_enabled("transparency", EffectSurface::Terminal);
-    state.launcher_transparency_enabled = effect_enabled("transparency", EffectSurface::Launchers);
-  }
-  if page == AppearancePage::WidgetTelemetry
-    || matches!(
-      page,
-      AppearancePage::SurfaceSection {
+  );
+  let wants_telemetry = matches!(
+    page,
+    AppearancePage::WidgetTelemetry
+      | AppearancePage::SurfaceSection {
         surface: EffectSurface::WidgetTelemetry,
         ..
       }
-    )
-  {
-    state.widget_telemetry = telemetry_state();
-    let status = telemetry_blocks_status().unwrap_or_default();
-    state.widget_telemetry_blocks = telemetry_blocks(&status);
-    state.widget_telemetry_order = telemetry_order(&status);
-  }
-  if page == AppearancePage::ControlPanel
-    || matches!(
-      page,
-      AppearancePage::SurfaceSection {
+  );
+  let wants_control_panel = matches!(
+    page,
+    AppearancePage::ControlPanel
+      | AppearancePage::SurfaceSection {
         surface: EffectSurface::ControlPanel,
         ..
       }
-    )
-  {
-    let (cards, order) = control_panel_cards();
-    state.control_panel_cards = cards;
-    state.control_panel_order = order;
-    state.control_panel_enabled = control_panel_enabled();
-  }
-  if matches!(
-    page,
-    AppearancePage::Themes
-      | AppearancePage::ThemeFamilies { .. }
-      | AppearancePage::CustomThemes
-      | AppearancePage::OfficialThemes
-  ) {
-    state.custom_themes = custom_themes();
-    state.active_custom_theme = active_custom_theme();
-    // Discover and load official themes (built-in + drop-in packages)
-    refresh_official_themes(&mut state);
-  }
-  if matches!(
+  );
+  let wants_layout = matches!(
     page,
     AppearancePage::Borders
       | AppearancePage::Taskbar
@@ -997,14 +1122,79 @@ pub fn load_page(
         surface: EffectSurface::Taskbar,
         ..
       }
+  );
+  // Every reader below is an independent external process (about twenty for
+  // the surface pages), so they run concurrently instead of one after the
+  // other. Nothing is written to `state` until all of them are joined.
+  let previous_cards = state.control_panel_cards.clone();
+  let readings = std::thread::scope(|scope| {
+    let global_effects = wants_global_effects.then(|| scope.spawn(read_global_effects));
+    let surface_effects: Vec<_> = if wants_surface_effects {
+      SURFACES_WITH_EFFECTS
+        .into_iter()
+        .map(|surface| (surface, scope.spawn(move || read_surface_effects(surface))))
+        .collect()
+    } else {
+      Vec::new()
+    };
+    let telemetry = wants_telemetry.then(|| scope.spawn(read_telemetry));
+    let control_panel =
+      wants_control_panel.then(|| scope.spawn(|| read_control_panel(&previous_cards)));
+    let layout = wants_layout.then(|| scope.spawn(read_layout_status));
+    PageReadings {
+      global_effects: joined(global_effects),
+      surface_effects: surface_effects
+        .into_iter()
+        .filter_map(|(surface, handle)| handle.join().ok().map(|effects| (surface, effects)))
+        .collect(),
+      telemetry: joined(telemetry),
+      control_panel: joined(control_panel),
+      layout: joined(layout),
+    }
+  });
+  if let Some(global_effects) = readings.global_effects {
+    state.animations = global_effects.animations;
+    state.transparency = global_effects.transparency;
+    state.blur = global_effects.blur;
+    state.blur_values = global_effects.blur_values;
+  }
+  if page.is_animations() {
+    state.animations = effect_state("animations");
+    state.animation_values = animation_values();
+  }
+  for (surface, effects) in readings.surface_effects {
+    store_surface_effects(&mut state, surface, effects);
+  }
+  if let Some(telemetry) = readings.telemetry {
+    state.widget_telemetry = telemetry.enabled;
+    state.widget_telemetry_blocks = telemetry_blocks(&telemetry.blocks_status);
+    state.widget_telemetry_order = telemetry_order(&telemetry.blocks_status);
+  }
+  if let Some(control_panel) = readings.control_panel {
+    state.control_panel_cards = control_panel.cards;
+    state.control_panel_order = control_panel.order;
+    state.control_panel_enabled = control_panel.enabled;
+  }
+  if matches!(
+    page,
+    AppearancePage::Themes
+      | AppearancePage::ThemeFamilies { .. }
+      | AppearancePage::CustomThemes
+      | AppearancePage::OfficialThemes
   ) {
-    if let Some(output) = run_script_output(&script("taskbar-right-2-mode.sh"), &["status"]) {
+    state.custom_themes = custom_themes();
+    state.active_custom_theme = active_custom_theme();
+    // Discover and load official themes (built-in + drop-in packages)
+    refresh_official_themes(&mut state);
+  }
+  if let Some(layout) = readings.layout {
+    if let Some(output) = layout.utility_group {
       state.taskbar_utility_group = TaskbarUtilityGroupMode::from_value(output.trim());
     }
-    if let Some(output) = run_script_output(&script("spaces-switch.sh"), &["--status"]) {
+    if let Some(output) = layout.spacing {
       parse_spacing_status(&output, &mut state);
     }
-    if let Some(output) = run_script_output(&script("borders-switch.sh"), &["--status"]) {
+    if let Some(output) = layout.borders {
       parse_borders_status(&output, &mut state);
     }
     apply_canonical_layout(&mut state);
@@ -1696,5 +1886,24 @@ mod tests {
     assert!(cards.enabled(ControlPanelCard::Power));
     assert!(cards.enabled(ControlPanelCard::User));
     assert!(parse_control_panel_cards("invalid").enabled(ControlPanelCard::User));
+  }
+
+  #[test]
+  fn control_panel_status_keeps_the_known_availability() {
+    let mut previous = ControlPanelCards::default();
+    previous.set_available(ControlPanelCard::Bluetooth, false);
+    let (cards, order) = control_panel_cards_from_status(
+      Some(r#"{"cards":[{"id":"bluetooth","enabled":false}]}"#),
+      &previous,
+    );
+    assert!(!cards.available(ControlPanelCard::Bluetooth));
+    assert!(!cards.enabled(ControlPanelCard::Bluetooth));
+    assert!(cards.available(ControlPanelCard::Brightness));
+    assert_eq!(order.first(), Some(&ControlPanelCard::Bluetooth));
+
+    let (cards, order) = control_panel_cards_from_status(None, &previous);
+    assert!(!cards.available(ControlPanelCard::Bluetooth));
+    assert!(cards.enabled(ControlPanelCard::Bluetooth));
+    assert_eq!(order, ControlPanelCard::ALL.to_vec());
   }
 }

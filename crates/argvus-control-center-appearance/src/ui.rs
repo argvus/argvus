@@ -52,6 +52,9 @@ use ratatui::{
 /// Defines `JobData`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 enum JobData {
   Loaded(AppearancePage, Box<AppearanceState>),
+  /// Hardware availability of the Control Panel cards, probed apart from the
+  /// page load so that the page never waits for it.
+  Availability(Vec<(ControlPanelCard, bool)>),
   Archives(Vec<std::path::PathBuf>),
   Action(String),
   ImportReady {
@@ -147,6 +150,13 @@ pub struct AppearanceApp {
   prompt_error: Option<String>,
   prompt_back: Option<AppearancePage>,
   job: Option<JobHandle<JobData>>,
+  /// The page `job` is loading, which may no longer be the current one.
+  job_page: Option<AppearancePage>,
+  /// The Control Panel cards' hardware probe; it does not make the page busy.
+  availability: Option<JobHandle<JobData>>,
+  /// The last probed card availability. Reapplied after every page load,
+  /// whose state was copied before the probe finished.
+  known_availability: Option<Vec<(ControlPanelCard, bool)>>,
   refreshed: Vec<(AppearancePage, std::time::Instant)>,
   action: Option<JobHandle<JobData>>,
   reload_requested: bool,
@@ -180,6 +190,15 @@ impl AppearanceApp {
   /// Executes the `reload` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn reload(&mut self) {
     self.ensure_page();
+  }
+
+  /// Enters `page` from outside Appearance (the Home, search, a CLI route or
+  /// another domain). It goes through the same path as in-page navigation: a
+  /// load still running for another page is cancelled instead of delaying this
+  /// one, and the page's draft is rebuilt from the state already known, so a
+  /// page reopened within its refresh window shows its values right away.
+  pub fn open(&mut self, page: AppearancePage) {
+    self.go(page);
   }
 
   /// Replaces the semantic theme used by this page.
@@ -235,6 +254,9 @@ impl AppearanceApp {
       prompt_error: None,
       prompt_back: None,
       job: None,
+      job_page: None,
+      availability: None,
+      known_availability: None,
       refreshed: Vec::new(),
       action: None,
       reload_requested: false,
@@ -266,9 +288,17 @@ impl AppearanceApp {
   }
   /// Executes the `refresh` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn refresh(&mut self) {
+    if Self::shows_control_panel_cards(self.page) && self.availability.is_none() {
+      self.availability = Some(
+        self
+          .manager
+          .spawn(|_| Ok(JobData::Availability(backend::control_panel_availability()))),
+      );
+    }
     if self.job.is_none() && self.action.is_none() {
       self.status_loading = true;
       let page = self.page;
+      self.job_page = Some(page);
       let state = self.state.clone();
       self.job = Some(self.manager.spawn(move |_| {
         if page == AppearancePage::ThemeImport {
@@ -285,10 +315,22 @@ impl AppearanceApp {
   /// Executes the `poll` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn poll(&mut self) -> bool {
     let mut changed = false;
+    if let Some(availability) = &self.availability
+      && let JobState::Finished(result) = availability.try_state()
+    {
+      self.availability = None;
+      // A failed probe keeps the previous availability.
+      if let Ok(JobData::Availability(cards)) = result {
+        self.apply_card_availability(&cards);
+        self.known_availability = Some(cards);
+      }
+      changed = true;
+    }
     if let Some(job) = &self.job
       && let JobState::Finished(result) = job.try_state()
     {
       self.job = None;
+      self.job_page = None;
       match result {
         Ok(JobData::Loaded(page, state)) => self.on_loaded(page, *state),
         Ok(JobData::Archives(paths)) => {
@@ -304,6 +346,7 @@ impl AppearanceApp {
         }
         Ok(JobData::Action(_)) => {}
         Ok(JobData::ImportReady { .. }) => {}
+        Ok(JobData::Availability(_)) => {}
       }
       changed = true;
     }
@@ -363,6 +406,9 @@ impl AppearanceApp {
     self.refreshed.push((page, std::time::Instant::now()));
     let keep_draft = self.surface_draft_has_changes();
     self.state = state;
+    if let Some(cards) = self.known_availability.clone() {
+      self.apply_card_availability(&cards);
+    }
     self.loaded = true;
     self.status_loading = false;
     if page == AppearancePage::ControlPanel && self.page == page {
@@ -376,6 +422,37 @@ impl AppearanceApp {
     }
     if self.page != page {
       self.refresh();
+    }
+  }
+
+  /// Whether `page` lists the Control Panel cards, whose availability
+  /// depends on a hardware probe.
+  fn shows_control_panel_cards(page: AppearancePage) -> bool {
+    matches!(
+      page,
+      AppearancePage::ControlPanel
+        | AppearancePage::SurfaceSection {
+          surface: EffectSurface::ControlPanel,
+          ..
+        }
+    )
+  }
+
+  /// Stores the probed card availability in the state and in both Control
+  /// Panel drafts. Only availability changes, never the enabled flags, so a
+  /// draft without edits still matches the state afterwards.
+  fn apply_card_availability(&mut self, cards: &[(ControlPanelCard, bool)]) {
+    for &(card, available) in cards {
+      self
+        .state
+        .control_panel_cards
+        .set_available(card, available);
+      if let Some(draft) = self.surface_draft.as_mut() {
+        draft.control_panel_cards.set_available(card, available);
+      }
+      if let Some(draft) = self.control_panel_draft.as_mut() {
+        draft.set_available(card, available);
+      }
     }
   }
 
@@ -477,10 +554,14 @@ impl AppearanceApp {
   }
   /// Executes the `go` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn go(&mut self, page: AppearancePage) {
-    if self.page != page
+    // A load for another page is dropped: its result would only be replaced,
+    // and while it runs `refresh` cannot start the load of `page`. This also
+    // covers a load left running when the host returned to its Home.
+    if self.job_page != Some(page)
       && let Some(job) = self.job.take()
     {
       job.cancel();
+      self.job_page = None;
       self.status_loading = false;
     }
     if self.page == AppearancePage::ControlPanel && page != AppearancePage::ControlPanel {

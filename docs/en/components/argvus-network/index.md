@@ -33,26 +33,24 @@ argvus networkctl manager
 
 ## Command-line Bluetooth management
 
-Use `argvus bluetoothctl` for Bluetooth device and adapter control:
+Use `argvus bluetoothctl` for the Bluetooth adapter:
 
 ```sh
-# Show Bluetooth adapter state
+# Show the adapter state (key=value lines)
 argvus bluetoothctl status
 
-# Toggle Bluetooth on/off
+# Exit 0 when an adapter is available, 1 otherwise
+argvus bluetoothctl available
+
+# Turn the adapter on or off, or toggle it
 argvus bluetoothctl enable
 argvus bluetoothctl disable
+argvus bluetoothctl toggle
 
-# List paired devices
-argvus bluetoothctl list
-
-# Connect/disconnect devices
-argvus bluetoothctl connect <device-name-or-address>
-argvus bluetoothctl disconnect <device-name-or-address>
-
-# Trust or untrust a device
-argvus bluetoothctl trust <device-address>
-argvus bluetoothctl untrust <device-address>
+# Open the Bluetooth manager (Blueman)
+argvus bluetoothctl manager
 ```
+
+When the kernel lists no controller in `/sys/class/bluetooth`, `status` answers `status=no-controller` immediately, without asking `bluetoothctl` (which would otherwise wait for BlueZ when the service is stopped). The taskbar module and the Control Panel cards read the same status.
 
 Use `--help` on either command to see additional options and subcommands specific to your installed version.

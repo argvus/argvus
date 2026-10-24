@@ -302,15 +302,23 @@ impl Effects {
 
   /// Creates the projection file with its defaults and renames the old
   /// launcher keys, as the shell did on every read.
+  /// Completes the theme's effects projection with the defaults it lacks.
+  ///
+  /// Every reader calls this, and the Control Center runs its readers
+  /// concurrently, so the file is only written when something was added, and
+  /// then through a rename: a reader never sees it truncated, and never
+  /// writes back the defaults over a half-read file.
   fn ensure_theme_effects(&self) -> io::Result<()> {
     let file = self.theme_effects_file();
     if let Some(parent) = file.parent() {
       fs::create_dir_all(parent)?;
     }
-    if !file.exists() {
-      fs::write(&file, "")?;
-    }
-    let mut text = fs::read_to_string(&file)?;
+    let original = match fs::read_to_string(&file) {
+      Ok(text) => Some(text),
+      Err(error) if error.kind() == io::ErrorKind::NotFound => None,
+      Err(error) => return Err(error),
+    };
+    let mut text = original.clone().unwrap_or_default();
     if text.lines().any(|line| line.starts_with("launcher.")) {
       text = text
         .split_inclusive('\n')
@@ -348,7 +356,12 @@ impl Effects {
         text.push('\n');
       }
     }
-    fs::write(&file, text)
+    if original.as_deref() == Some(text.as_str()) {
+      return Ok(());
+    }
+    let temporary = file.with_extension(format!("tmp.{}", std::process::id()));
+    fs::write(&temporary, text)?;
+    fs::rename(&temporary, &file)
   }
 
   fn projection_value(&self, key: &str) -> Option<String> {
@@ -1883,6 +1896,43 @@ mod tests {
     );
     assert!(text.contains("@define-color th-border-effective @th-border;"));
     let _ = fs::remove_dir_all(&directory);
+  }
+
+  #[test]
+  fn completing_the_projection_keeps_values_and_rewrites_only_on_change() {
+    let root = std::env::temp_dir().join(format!("argvus-effects-{}", std::process::id()));
+    let effects = Effects {
+      paths: SessionPaths {
+        config_home: root.join("config"),
+        data_home: root.join("data"),
+        system_config: root.join("system"),
+      },
+      store: None,
+      commands_dir: root.join("commands"),
+      state_home: root.join("state"),
+    };
+    let file = effects.theme_effects_file();
+    fs::create_dir_all(file.parent().unwrap()).unwrap();
+    fs::write(&file, "taskbar.transparency=80\n").unwrap();
+
+    effects.ensure_theme_effects().unwrap();
+    let completed = fs::read_to_string(&file).unwrap();
+    assert!(completed.starts_with("taskbar.transparency=80\n"));
+    assert!(completed.contains("widget-telemetry.blur.enabled=enabled\n"));
+    assert!(!completed.contains("taskbar.transparency=50"));
+
+    // A complete projection is left untouched: no write, no temporary file.
+    let modified = fs::metadata(&file).unwrap().modified().unwrap();
+    effects.ensure_theme_effects().unwrap();
+    assert_eq!(fs::read_to_string(&file).unwrap(), completed);
+    assert_eq!(fs::metadata(&file).unwrap().modified().unwrap(), modified);
+    let leftovers = fs::read_dir(file.parent().unwrap())
+      .unwrap()
+      .filter_map(Result::ok)
+      .filter(|entry| entry.file_name().to_string_lossy().contains(".tmp."))
+      .count();
+    assert_eq!(leftovers, 0);
+    let _ = fs::remove_dir_all(&root);
   }
 
   #[test]

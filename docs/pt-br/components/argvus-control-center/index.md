@@ -68,6 +68,8 @@ A Taskbar configura a posição do painel, o espaçamento ao redor dele e das ja
 
 O Control Panel configura a visibilidade e a ordem dos seus cards de ação rápida, além das próprias sessões e transparência.
 
+A página abre e aceita comandos assim que as configurações dos cards são lidas. Os cards que dependem de hardware (Bluetooth e Brilho) são verificados em segundo plano: até essa verificação terminar, eles mantêm a disponibilidade vista por último nesta janela, e a lista se atualiza sozinha quando o resultado chega.
+
 ### Widget Telemetry
 
 O Widget Telemetry configura as sessões e a transparência do widget de informações do sistema.

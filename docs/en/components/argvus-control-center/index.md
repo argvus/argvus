@@ -68,6 +68,8 @@ Taskbar configures the panel's position, the spacing around it and its windows, 
 
 Control Panel configures the visibility and order of its quick-action cards, plus its own sessions and transparency.
 
+The page opens and accepts input as soon as the card settings are read. The cards that depend on hardware (Bluetooth and Brightness) are checked in the background: until that check finishes they keep the availability last seen in this window, and the list updates on its own when the result arrives.
+
 ### Widget Telemetry
 
 Widget Telemetry configures the system-information widget's sessions and transparency.
