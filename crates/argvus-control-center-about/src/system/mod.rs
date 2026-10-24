@@ -6,6 +6,7 @@ use std::fs;
 
 pub mod cpu;
 pub mod gpu;
+pub mod hyprland;
 pub mod memory;
 pub mod os;
 pub mod session;

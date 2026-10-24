@@ -20,6 +20,7 @@ pub fn doc(app: &App, width: usize, selected: usize) -> Doc<'static> {
     ),
     key_value("ARGVUS", &app.argvus_version),
     key_value("GTK", &app.gtk_version),
+    key_value("Hyprland", &app.hyprland_version),
     key_value(tr(lang, "control_center.kernel"), &app.system.kernel),
     key_value(
       tr(lang, "control_center.window_system"),
@@ -52,7 +53,7 @@ mod tests {
     let app = App::test();
     let doc = doc(&app, 100, 0);
     let text = doc.lines.iter().map(|l| l.to_string()).collect::<String>();
-    for key in ["ARGVUS", "GTK", "CPU", "GPU"] {
+    for key in ["ARGVUS", "GTK", "Hyprland", "CPU", "GPU"] {
       assert!(text.contains(key), "missing {key}");
     }
   }
