@@ -214,12 +214,16 @@ fn handle_response(
         };
         // The DRM surface must be listening before the greeter compositor exits,
         // because it waits for that compositor to release DRM master.
-        match DrmHandoff::start(&theme, accent.as_deref()) {
-          Ok(_) => handoff::mark("greeter.handoff-listening"),
+        let handoff_listening = match DrmHandoff::start(&theme, accent.as_deref()) {
+          Ok(_) => {
+            handoff::mark("greeter.handoff-listening");
+            true
+          }
           Err(error) => {
             error!(%error, "could not start the DRM handoff surface; continuing without it");
+            false
           }
-        }
+        };
         let _ = events.send(Event::SessionStarting);
         Request::StartSession {
           cmd: session.command.clone(),
@@ -238,10 +242,22 @@ fn handle_response(
               splash.detach();
             }
             let _ = events.send(Event::SessionStarted);
+            // The DRM handoff surface takes the display while the greeter
+            // compositor is still alive but inactive, so the output keeps its
+            // signal. Without that, the compositor exits as before and turns
+            // the outputs off.
+            if handoff_listening
+              && let Err(error) =
+                handoff::leave_vt().and_then(|()| handoff::wait_for_handoff_frame())
+            {
+              warn!(%error, "the DRM handoff surface did not take the display before the compositor exit");
+              // The greeter log lives in the greeter's runtime directory,
+              // which logind removes at logout; the timing log survives it.
+              handoff::mark(&format!("greeter.handoff-takeover-failed error={error:#}"));
+            }
             // greetd starts the user session only after the greeter session
             // ends, and gives it 5 seconds before killing it. The compositor
-            // does not leave on that SIGTERM, so it is asked to exit now; the
-            // DRM handoff surface is already waiting for the display.
+            // does not leave on that SIGTERM, so it is asked to exit now.
             handoff::exit_greeter_compositor();
           }
           Response::Error {

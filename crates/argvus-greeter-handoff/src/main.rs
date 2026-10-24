@@ -33,6 +33,11 @@ const POLL_DELAY: Duration = Duration::from_millis(10);
 /// How long the last frame stays on screen after a release while the user
 /// compositor takes over the output.
 const REPLACEMENT_TIMEOUT: Duration = Duration::from_secs(10);
+/// How long the overlay stays over the user compositor once it has replaced
+/// the primary plane, when the session spinner never sends `retire`.
+const RETIRE_TIMEOUT: Duration = Duration::from_secs(3);
+/// `DRM_FORMAT_XRGB8888`, the format of every dumb buffer this surface draws.
+const DRM_FORMAT_XRGB8888: u32 = 0x3432_5258;
 /// Interval between the attempts to become DRM master. Each attempt is one
 /// `open`, and every millisecond the output spends between two masters is a
 /// frame that nobody draws.
@@ -72,6 +77,11 @@ struct Cli {
   /// output has shown its first frame.
   #[arg(long, requires = "wayland")]
   ready_fd: Option<i32>,
+  /// Wayland mode: once every output has shown its first frame, sends
+  /// `retire` to the DRM handoff surface, which then removes the overlay that
+  /// hid the compositor's first frames.
+  #[arg(long, requires = "wayland")]
+  retire_handoff: bool,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -213,6 +223,27 @@ struct Crtc {
 }
 
 #[repr(C)]
+struct PlaneResources {
+  count_planes: u32,
+  planes: *mut u32,
+}
+
+#[repr(C)]
+struct Plane {
+  count_formats: u32,
+  formats: *mut u32,
+  plane_id: u32,
+  crtc_id: u32,
+  fb_id: u32,
+  crtc_x: u32,
+  crtc_y: u32,
+  x: u32,
+  y: u32,
+  possible_crtcs: u32,
+  gamma_size: u32,
+}
+
+#[repr(C)]
 struct CreateDumb {
   height: u32,
   width: u32,
@@ -269,6 +300,32 @@ unsafe extern "C" {
     connectors: *mut u32,
     connector_count: libc::c_int,
     mode: *mut ModeInfo,
+  ) -> libc::c_int;
+  fn drmModeSetCursor(
+    fd: libc::c_int,
+    crtc_id: u32,
+    handle: u32,
+    width: u32,
+    height: u32,
+  ) -> libc::c_int;
+  fn drmModeGetPlaneResources(fd: libc::c_int) -> *mut PlaneResources;
+  fn drmModeFreePlaneResources(resources: *mut PlaneResources);
+  fn drmModeGetPlane(fd: libc::c_int, plane_id: u32) -> *mut Plane;
+  fn drmModeFreePlane(plane: *mut Plane);
+  fn drmModeSetPlane(
+    fd: libc::c_int,
+    plane_id: u32,
+    crtc_id: u32,
+    fb_id: u32,
+    flags: u32,
+    crtc_x: i32,
+    crtc_y: i32,
+    crtc_w: u32,
+    crtc_h: u32,
+    src_x: u32,
+    src_y: u32,
+    src_w: u32,
+    src_h: u32,
   ) -> libc::c_int;
   fn drmModePageFlip(
     fd: libc::c_int,
@@ -388,44 +445,257 @@ fn main() -> io::Result<()> {
   }
   if cli.wayland {
     let palette = Palette::new(&cli.theme, cli.accent.as_deref().and_then(hex_to_rgb));
-    return wayland::run(palette, cli.ready_fd);
+    return wayland::run(palette, cli.ready_fd, cli.retire_handoff);
   }
   let listener = prepare_socket(&cli.socket)?;
   let user_accent = cli.accent.as_deref().and_then(hex_to_rgb);
   let mut palette = Palette::new(&cli.theme, user_accent);
   mark("handoff.waiting-for-master");
-  let fd = acquire_card()?;
+  let (cards, mut observers) = open_observers()?;
+  // Finding the output and painting the first frame need no DRM master, so
+  // they happen before the wait and the output gets its frame as soon as the
+  // greeter compositor lets go of it. The buffer belongs to the observer's
+  // descriptor, which stays open until this process exits.
+  let prepared = observers
+    .iter()
+    .find_map(|observer| prepare_surface(observer.file.as_raw_fd(), &palette).ok());
+  if let Some(prepared) = &prepared {
+    mark(&format!("handoff.prepared crtc={}", prepared.crtc_id));
+  }
+  let fd = acquire_card(&cards, &mut observers)?;
   mark("handoff.master-acquired");
 
-  let result = run_surface(fd, &listener, &mut palette);
+  let result = run_surface(fd, prepared, &listener, &mut palette);
+  // The overlay can only be set while this process is still DRM master.
+  let overlay = result
+    .as_ref()
+    .ok()
+    .and_then(|released| show_overlay(fd, released, &palette));
   unsafe {
     drmDropMaster(fd);
   }
   mark("handoff.master-dropped");
-  let _ = fs::remove_file(&cli.socket);
   let outcome = match result {
     Ok(mut released) => {
       // The release is acknowledged only after DRM master has been dropped, so
       // the caller can start the user compositor without racing this process.
       let _ = released.stream.write_all(b"released\n");
-      // Destroying the framebuffer now would make the kernel turn the output
-      // off until the compositor's first modeset: a black flash between the
-      // two spinners. The buffer stays on the output, with the spinner still
-      // animating, until the compositor replaces it.
-      if wait_for_replacement(fd, released.crtc_id, &mut released.buffer, &palette) {
-        mark("handoff.replaced-by-compositor");
-      } else {
-        mark("handoff.replacement-timeout");
+      match overlay {
+        // The compositor's first modeset scans out a buffer it has not drawn
+        // yet. The overlay stays above it, with the spinner still animating,
+        // until the session spinner is on screen.
+        Some(mut overlay) => {
+          hold_overlay(fd, &listener, &released, &mut overlay, &palette);
+          drop(overlay);
+        }
+        // Destroying the framebuffer now would make the kernel turn the output
+        // off until the compositor's first modeset. The buffer stays on the
+        // output, with the spinner still animating, until the compositor
+        // replaces it.
+        None => {
+          if wait_for_replacement(fd, released.crtc_id, &mut released.buffer, &palette) {
+            mark("handoff.replaced-by-compositor");
+          } else {
+            mark("handoff.replacement-timeout");
+          }
+        }
       }
       drop(released.buffer);
       Ok(())
     }
     Err(error) => Err(error),
   };
+  let _ = fs::remove_file(&cli.socket);
   unsafe {
     libc::close(fd);
   }
   outcome
+}
+
+/// A copy of the last frame on an overlay plane of the output's CRTC. The user
+/// compositor only drives the primary and cursor planes, so the overlay stays
+/// on screen through its first modeset. Dropping it removes the framebuffer,
+/// and the kernel turns off that plane alone; that needs no DRM master.
+struct Overlay {
+  buffer: DumbBuffer,
+}
+
+/// Puts the released frame on a free overlay plane. Returns `None`, and the
+/// surface falls back to the primary plane alone, when the CRTC has no free
+/// overlay plane for XRGB8888 or the driver refuses it.
+fn show_overlay(fd: RawFd, released: &Released, palette: &Palette) -> Option<Overlay> {
+  let Some(plane_id) = crtc_index(fd, released.crtc_id)
+    .and_then(|index| free_overlay_plane(&overlay_planes(fd), index))
+  else {
+    mark("handoff.overlay-unavailable reason=no-free-plane");
+    return None;
+  };
+  let (width, height) = (released.buffer.width, released.buffer.height);
+  let mut buffer = match DumbBuffer::create(fd, width, height) {
+    Ok(buffer) => buffer,
+    Err(error) => {
+      mark(&format!(
+        "handoff.overlay-unavailable errno={}",
+        error.raw_os_error().unwrap_or_default()
+      ));
+      return None;
+    }
+  };
+  draw_background(&mut buffer, palette);
+  draw_spinner(&mut buffer, palette, &spinner::frame(monotonic_millis()));
+  // Source coordinates are 16.16 fixed point.
+  let result = unsafe {
+    drmModeSetPlane(
+      fd,
+      plane_id,
+      released.crtc_id,
+      buffer.framebuffer,
+      0,
+      0,
+      0,
+      width,
+      height,
+      0,
+      0,
+      width << 16,
+      height << 16,
+    )
+  };
+  if result != 0 {
+    // libdrm returns the negated errno.
+    mark(&format!("handoff.overlay-unavailable errno={}", -result));
+    return None;
+  }
+  mark(&format!("handoff.overlay plane={plane_id}"));
+  Some(Overlay { buffer })
+}
+
+/// One overlay plane as `drmModeGetPlane` reports it.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+struct OverlayPlane {
+  plane_id: u32,
+  crtc_id: u32,
+  possible_crtcs: u32,
+  xrgb8888: bool,
+}
+
+/// The first plane that can show an XRGB8888 buffer on the CRTC at
+/// `crtc_index` and that no CRTC uses yet.
+fn free_overlay_plane(planes: &[OverlayPlane], crtc_index: usize) -> Option<u32> {
+  planes
+    .iter()
+    .find(|plane| {
+      plane.crtc_id == 0
+        && plane.xrgb8888
+        && crtc_index < 32
+        && plane.possible_crtcs & (1 << crtc_index) != 0
+    })
+    .map(|plane| plane.plane_id)
+}
+
+/// The planes of `fd`. Without `DRM_CLIENT_CAP_UNIVERSAL_PLANES`, which this
+/// surface never sets, the kernel lists only the overlay planes.
+fn overlay_planes(fd: RawFd) -> Vec<OverlayPlane> {
+  let resources = unsafe { drmModeGetPlaneResources(fd) };
+  if resources.is_null() {
+    return Vec::new();
+  }
+  let resources_ref = unsafe { &*resources };
+  let planes = (0..resources_ref.count_planes as usize)
+    .filter_map(|index| {
+      let plane_id = unsafe { *resources_ref.planes.add(index) };
+      let plane = unsafe { drmModeGetPlane(fd, plane_id) };
+      if plane.is_null() {
+        return None;
+      }
+      let plane_ref = unsafe { &*plane };
+      let formats =
+        unsafe { std::slice::from_raw_parts(plane_ref.formats, plane_ref.count_formats as usize) };
+      let info = OverlayPlane {
+        plane_id,
+        crtc_id: plane_ref.crtc_id,
+        possible_crtcs: plane_ref.possible_crtcs,
+        xrgb8888: formats.contains(&DRM_FORMAT_XRGB8888),
+      };
+      unsafe { drmModeFreePlane(plane) };
+      Some(info)
+    })
+    .collect();
+  unsafe { drmModeFreePlaneResources(resources) };
+  planes
+}
+
+/// The position of `crtc_id` in the device's CRTC list, which is the bit
+/// `possible_crtcs` uses for it.
+fn crtc_index(fd: RawFd, crtc_id: u32) -> Option<usize> {
+  let resources = unsafe { drmModeGetResources(fd) };
+  if resources.is_null() {
+    return None;
+  }
+  let resources_ref = unsafe { &*resources };
+  let index = (0..resources_ref.count_crtcs as usize)
+    .find(|&index| unsafe { *resources_ref.crtcs.add(index) } == crtc_id);
+  unsafe { drmModeFreeResources(resources) };
+  index
+}
+
+/// Why the overlay leaves the screen without a `retire`, if it has to.
+fn overlay_expired(elapsed: Duration, since_replaced: Option<Duration>) -> Option<&'static str> {
+  match since_replaced {
+    Some(since) if since >= RETIRE_TIMEOUT => Some("handoff.retire-timeout"),
+    None if elapsed >= REPLACEMENT_TIMEOUT => Some("handoff.replacement-timeout"),
+    _ => None,
+  }
+}
+
+/// Keeps the overlay on screen and its spinner animating until the session
+/// spinner sends `retire`, which it does once its own first frame is on
+/// screen, or until `overlay_expired`. Writing to the buffer needs no DRM
+/// master.
+fn hold_overlay(
+  fd: RawFd,
+  listener: &UnixListener,
+  released: &Released,
+  overlay: &mut Overlay,
+  palette: &Palette,
+) {
+  let started = Instant::now();
+  let mut replaced_at = None;
+  loop {
+    while let Ok((mut stream, _)) = listener.accept() {
+      let Ok(line) = read_command(&mut stream) else {
+        continue;
+      };
+      let command = parse_command(&line);
+      let _ = stream.write_all(match command {
+        Command::Unknown => b"error\n".as_slice(),
+        // Already released; a repeated request gets the same answer.
+        Command::Release => b"released\n".as_slice(),
+        Command::Theme(_) | Command::Ping | Command::Retire => b"ok\n".as_slice(),
+      });
+      if command == Command::Retire {
+        mark("handoff.retired");
+        return;
+      }
+    }
+    if replaced_at.is_none()
+      && crtc_state(fd, released.crtc_id).map(|(framebuffer, _)| framebuffer)
+        != Some(released.buffer.framebuffer)
+    {
+      mark("handoff.replaced-by-compositor");
+      replaced_at = Some(Instant::now());
+    }
+    if let Some(event) = overlay_expired(started.elapsed(), replaced_at.map(|at| at.elapsed())) {
+      mark(event);
+      return;
+    }
+    draw_spinner(
+      &mut overlay.buffer,
+      palette,
+      &spinner::frame(monotonic_millis()),
+    );
+    thread::sleep(POLL_DELAY);
+  }
 }
 
 /// What the surface keeps after a `release` until the user compositor shows
@@ -606,7 +876,21 @@ fn crtc_samples(fd: RawFd) -> Vec<CrtcSample> {
   samples
 }
 
-fn acquire_card() -> io::Result<RawFd> {
+/// A descriptor on one DRM card, held open for the whole wait for DRM master.
+struct Observer {
+  name: String,
+  file: fs::File,
+  watch: CrtcWatch,
+}
+
+/// The DRM cards, in name order, and one observer on each.
+///
+/// When the greeter compositor's descriptor is the last one to close, the
+/// kernel restores the fbdev console mode, which blanks the output before this
+/// process can draw. The observers keep the device open, and they read the
+/// CRTCs, so the timing log shows whether the output stayed on between the two
+/// masters.
+fn open_observers() -> io::Result<(Vec<PathBuf>, Vec<Observer>)> {
   let mut cards = fs::read_dir("/dev/dri")?
     .filter_map(Result::ok)
     .map(|entry| entry.path())
@@ -618,28 +902,35 @@ fn acquire_card() -> io::Result<RawFd> {
     })
     .collect::<Vec<_>>();
   cards.sort();
-
-  // One descriptor per card stays open for the whole wait. When the greeter
-  // compositor's descriptor is the last one to close, the kernel restores the
-  // fbdev console mode, which blanks the output before this process can draw.
-  // The same descriptors read the CRTCs, so the timing log shows whether the
-  // output stayed on between the two masters.
-  let mut observers = cards
+  let observers = cards
     .iter()
     .filter_map(|card| {
       let file = OpenOptions::new().read(true).write(true).open(card).ok()?;
       let name = card.file_name()?.to_string_lossy().into_owned();
-      Some((name, file, CrtcWatch::default()))
+      Some(Observer {
+        name,
+        file,
+        watch: CrtcWatch::default(),
+      })
     })
-    .collect::<Vec<_>>();
+    .collect();
+  Ok((cards, observers))
+}
 
+/// Waits until a descriptor on one of `cards` becomes DRM master and returns
+/// it. An observer that becomes master is taken out of `observers`; its
+/// descriptor is returned without being closed.
+fn acquire_card(cards: &[PathBuf], observers: &mut Vec<Observer>) -> io::Result<RawFd> {
   let deadline = Instant::now() + Duration::from_secs(15);
   loop {
-    for (name, file, watch) in &mut observers {
-      for sample in watch.changes(crtc_samples(file.as_raw_fd())) {
+    for observer in observers.iter_mut() {
+      for sample in observer
+        .watch
+        .changes(crtc_samples(observer.file.as_raw_fd()))
+      {
         mark(&format!(
-          "handoff.crtc card={name} crtc={} fb={} mode_valid={}",
-          sample.crtc_id, sample.framebuffer, sample.mode_valid
+          "handoff.crtc card={} crtc={} fb={} mode_valid={}",
+          observer.name, sample.crtc_id, sample.framebuffer, sample.mode_valid
         ));
       }
     }
@@ -647,12 +938,11 @@ fn acquire_card() -> io::Result<RawFd> {
     // itself, and then no new descriptor can.
     if let Some(index) = observers
       .iter()
-      .position(|(_, file, _)| unsafe { drmSetMaster(file.as_raw_fd()) } == 0)
+      .position(|observer| unsafe { drmSetMaster(observer.file.as_raw_fd()) } == 0)
     {
-      let (_, file, _) = observers.swap_remove(index);
-      return Ok(file.into_raw_fd());
+      return Ok(observers.swap_remove(index).file.into_raw_fd());
     }
-    for card in &cards {
+    for card in cards {
       let Ok(file) = OpenOptions::new().read(true).write(true).open(card) else {
         continue;
       };
@@ -672,8 +962,46 @@ fn acquire_card() -> io::Result<RawFd> {
   }
 }
 
-fn run_surface(fd: RawFd, listener: &UnixListener, palette: &mut Palette) -> io::Result<Released> {
+/// The output the surface drives and its first frame, already painted.
+struct PreparedSurface {
+  connector_id: u32,
+  crtc_id: u32,
+  mode: ModeInfo,
+  buffer: DumbBuffer,
+}
+
+/// Finds the output and paints a buffer for it with the background and the
+/// spinner. None of this needs DRM master.
+fn prepare_surface(fd: RawFd, palette: &Palette) -> io::Result<PreparedSurface> {
   let (connector_id, crtc_id, mode) = select_output(fd)?;
+  let mut buffer = DumbBuffer::create(fd, mode.hdisplay as u32, mode.vdisplay as u32)?;
+  // A new dumb buffer is black. Paint it before the modeset, or the output
+  // shows that black for a moment between two spinner frames.
+  draw_background(&mut buffer, palette);
+  draw_spinner(&mut buffer, palette, &spinner::frame(monotonic_millis()));
+  Ok(PreparedSurface {
+    connector_id,
+    crtc_id,
+    mode,
+    buffer,
+  })
+}
+
+fn run_surface(
+  fd: RawFd,
+  prepared: Option<PreparedSurface>,
+  listener: &UnixListener,
+  palette: &mut Palette,
+) -> io::Result<Released> {
+  let PreparedSurface {
+    connector_id,
+    crtc_id,
+    mode,
+    mut buffer,
+  } = match prepared {
+    Some(prepared) => prepared,
+    None => prepare_surface(fd, palette)?,
+  };
   // Whether the greeter compositor left its frame on the output or turned the
   // output off decides if the monitor has to sync again at this modeset.
   match crtc_state(fd, crtc_id) {
@@ -685,16 +1013,17 @@ fn run_surface(fd: RawFd, listener: &UnixListener, palette: &mut Palette) -> io:
     )),
   }
   let mut connector = connector_id;
-  let mut buffer = DumbBuffer::create(fd, mode.hdisplay as u32, mode.vdisplay as u32)?;
-  // A new dumb buffer is black. Paint it before the modeset, or the output
-  // shows that black for a moment between two spinner frames.
-  draw_background(&mut buffer, palette);
+  // The frame was painted before the wait; bring the spinner to this instant.
   draw_spinner(&mut buffer, palette, &spinner::frame(monotonic_millis()));
-  // When the greeter compositor left the output on in the same mode, a page
-  // flip swaps the image without a modeset. A modeset can make the monitor
-  // resynchronise, which shows as a black flash even with identical timings.
+  // When the greeter compositor left its frame on the output in the same mode,
+  // a page flip swaps the image without a modeset. A modeset can make the
+  // monitor resynchronise, which shows as a black flash even with identical
+  // timings. A page flip needs a framebuffer to replace: with an empty primary
+  // plane the kernel refuses it (EBUSY), so that case goes to the modeset.
   let mut flipped = false;
-  if crtc_mode(fd, crtc_id).is_some_and(|current| current.same_timings(&mode)) {
+  let primary_has_frame = crtc_state(fd, crtc_id).is_some_and(|(framebuffer, _)| framebuffer != 0);
+  if primary_has_frame && crtc_mode(fd, crtc_id).is_some_and(|current| current.same_timings(&mode))
+  {
     // libdrm returns the negated errno.
     match unsafe { drmModePageFlip(fd, crtc_id, buffer.framebuffer, 0, std::ptr::null_mut()) } {
       0 => flipped = true,
@@ -723,6 +1052,9 @@ fn run_surface(fd: RawFd, listener: &UnixListener, palette: &mut Palette) -> io:
   }
 
   mark("handoff.first-frame");
+  // The greeter compositor's cursor stays on its plane until that compositor
+  // exits; the surface shows no cursor.
+  unsafe { drmModeSetCursor(fd, crtc_id, 0, 0, 0) };
   loop {
     while let Ok((stream, _)) = listener.accept() {
       let previous = *palette;
@@ -804,23 +1136,57 @@ fn find_output(
   result
 }
 
-/// Handles one client request. A release returns its stream still open, so the
-/// acknowledgement can be written after DRM master has been dropped.
-fn handle_command(mut stream: UnixStream, palette: &mut Palette) -> io::Result<Option<UnixStream>> {
+/// A request a client sends to the surface, one per connection.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum Command<'a> {
+  /// Changes the theme of the frame.
+  Theme(&'a str),
+  /// Answered once the surface draws, so a client can wait for its first frame.
+  Ping,
+  /// Drops DRM master for the user compositor.
+  Release,
+  /// The session spinner is on screen; the overlay can go.
+  Retire,
+  Unknown,
+}
+
+fn parse_command(line: &str) -> Command<'_> {
+  match line.trim() {
+    "ping" => Command::Ping,
+    "release" => Command::Release,
+    "retire" => Command::Retire,
+    other => other
+      .strip_prefix("theme=")
+      .map_or(Command::Unknown, Command::Theme),
+  }
+}
+
+/// Reads the request line of one client. The socket is open to every local
+/// user, so the read gives up after `CLIENT_TIMEOUT`.
+fn read_command(stream: &mut UnixStream) -> io::Result<String> {
   stream.set_read_timeout(Some(CLIENT_TIMEOUT))?;
   stream.set_write_timeout(Some(CLIENT_TIMEOUT))?;
   let mut command = String::new();
-  BufReader::new(&mut stream).read_line(&mut command)?;
-  let command = command.trim();
-  if let Some(theme) = command.strip_prefix("theme=") {
-    *palette = palette.with_theme(theme);
-    stream.write_all(b"ok\n")?;
-    return Ok(None);
+  BufReader::new(&mut *stream).read_line(&mut command)?;
+  Ok(command)
+}
+
+/// Handles one client request while the surface owns the output. A release
+/// returns its stream still open, so the acknowledgement can be written after
+/// DRM master has been dropped.
+fn handle_command(mut stream: UnixStream, palette: &mut Palette) -> io::Result<Option<UnixStream>> {
+  let line = read_command(&mut stream)?;
+  match parse_command(&line) {
+    Command::Theme(theme) => *palette = palette.with_theme(theme),
+    Command::Release => return Ok(Some(stream)),
+    // Nothing is on an overlay before the release.
+    Command::Ping | Command::Retire => {}
+    Command::Unknown => {
+      stream.write_all(b"error\n")?;
+      return Ok(None);
+    }
   }
-  if command == "release" {
-    return Ok(Some(stream));
-  }
-  stream.write_all(b"error\n")?;
+  stream.write_all(b"ok\n")?;
   Ok(None)
 }
 
@@ -1008,6 +1374,52 @@ mod tests {
     named.name[0] = b'1' as libc::c_char;
     assert!(mode(185_580, 75).same_timings(&named));
     assert!(!mode(185_580, 75).same_timings(&mode(148_500, 60)));
+  }
+
+  #[test]
+  fn commands_are_parsed_from_their_line() {
+    assert_eq!(parse_command("ping\n"), Command::Ping);
+    assert_eq!(parse_command("release\n"), Command::Release);
+    assert_eq!(parse_command("retire"), Command::Retire);
+    assert_eq!(parse_command("theme=nord\n"), Command::Theme("nord"));
+    assert_eq!(parse_command("reboot"), Command::Unknown);
+  }
+
+  #[test]
+  fn the_overlay_is_a_free_xrgb_plane_of_the_crtc() {
+    let plane = |plane_id, crtc_id, possible_crtcs, xrgb8888| OverlayPlane {
+      plane_id,
+      crtc_id,
+      possible_crtcs,
+      xrgb8888,
+    };
+    let planes = [
+      plane(58, 0, 0b010, true),
+      plane(68, 57, 0b001, true),
+      plane(78, 0, 0b001, false),
+      plane(88, 0, 0b001, true),
+    ];
+    assert_eq!(free_overlay_plane(&planes, 0), Some(88));
+    assert_eq!(free_overlay_plane(&planes, 1), Some(58));
+    assert_eq!(free_overlay_plane(&planes, 2), None);
+    assert_eq!(free_overlay_plane(&planes, 40), None);
+  }
+
+  #[test]
+  fn the_overlay_leaves_on_its_own_only_after_a_timeout() {
+    assert_eq!(overlay_expired(Duration::from_secs(1), None), None);
+    assert_eq!(
+      overlay_expired(Duration::from_secs(5), Some(Duration::from_secs(1))),
+      None
+    );
+    assert_eq!(
+      overlay_expired(Duration::from_secs(5), Some(RETIRE_TIMEOUT)),
+      Some("handoff.retire-timeout")
+    );
+    assert_eq!(
+      overlay_expired(REPLACEMENT_TIMEOUT, None),
+      Some("handoff.replacement-timeout")
+    );
   }
 
   #[test]

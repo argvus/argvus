@@ -60,8 +60,12 @@ pub fn run(paths: &SessionPaths, runtime_dir: &Path, splash: &Path) -> i32 {
 fn attach(paths: &SessionPaths, splash: &Path, display: &str) -> bool {
   let theme = theme_name(paths);
   let mut command = Command::new(splash);
+  // `--retire-handoff` lets the greeter's DRM handoff surface remove the
+  // overlay that hides the compositor's first frames once this spinner is on
+  // screen. Without a greeter there is no surface and nothing to retire.
   command
     .arg("--wayland")
+    .arg("--retire-handoff")
     .arg("--theme")
     .arg(&theme)
     .env("WAYLAND_DISPLAY", display);
@@ -306,7 +310,7 @@ mod tests {
     assert!(attached, "the splash accepted the display");
     assert_eq!(
       fs::read_to_string(&log).expect("log"),
-      "wayland-7 --wayland --theme github-light --accent #112233\n"
+      "wayland-7 --wayland --retire-handoff --theme github-light --accent #112233\n"
     );
     let _ = fs::remove_dir_all(root);
   }

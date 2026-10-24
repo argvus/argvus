@@ -10,9 +10,9 @@
 use anyhow::{Context, bail};
 use std::{
   fs::OpenOptions,
-  io::{self, Read, Write},
+  io::{self, BufRead, BufReader, Read, Write},
   os::fd::RawFd,
-  os::unix::process::CommandExt,
+  os::unix::{net::UnixStream, process::CommandExt},
   process::{Child, Command, Stdio},
   time::{Duration, Instant},
 };
@@ -22,6 +22,13 @@ const READY_TIMEOUT: Duration = Duration::from_secs(8);
 const DRM_HANDOFF: &str = "/usr/lib/argvus/greeter/handoff";
 const DRM_HANDOFF_SOCKET: &str = "/run/argvus-greeter/handoff.sock";
 const DRM_HANDOFF_SOCKET_TIMEOUT: Duration = Duration::from_secs(2);
+/// How long the greeter waits for the DRM handoff surface to show its first
+/// frame after leaving the VT.
+const DRM_HANDOFF_DRAWING_TIMEOUT: Duration = Duration::from_secs(2);
+/// The empty virtual terminal the seat switches to while the greeter
+/// compositor exits. It is above the autovt range (1-6 by default), so logind
+/// starts no getty there.
+const HANDOFF_VT: u32 = 12;
 const ARGVUS: &str = "/usr/bin/argvus";
 /// Login marks on `CLOCK_MONOTONIC`, shared with the DRM handoff surface. The
 /// journal and the session log use the same clock.
@@ -43,6 +50,66 @@ pub fn exit_greeter_compositor() {
       "the greeter compositor did not accept the exit request"
     );
   }
+}
+
+/// Switches the seat to `HANDOFF_VT`, which deactivates the greeter session.
+///
+/// logind then takes DRM master from the greeter compositor without that
+/// compositor touching the outputs, so its last frame stays on screen until the
+/// DRM handoff surface replaces it. An inactive compositor also leaves the
+/// outputs on when it exits, where an active one turns them off and the monitor
+/// loses its signal. greetd switches back to its own VT for the user session.
+pub fn leave_vt() -> anyhow::Result<()> {
+  mark("greeter.vt-switch-requested");
+  let connection = zbus::blocking::Connection::system().context("connecting to the system bus")?;
+  // Not `seat/self`: Kitty moves the greeter into a systemd scope of its own,
+  // outside the logind session, so logind cannot resolve the caller's seat.
+  let seat_path = seat_object_path(std::env::var("XDG_SEAT").ok().as_deref());
+  let seat = zbus::blocking::Proxy::new(
+    &connection,
+    "org.freedesktop.login1",
+    seat_path.as_str(),
+    "org.freedesktop.login1.Seat",
+  )
+  .with_context(|| format!("reaching the logind seat {seat_path}"))?;
+  seat
+    .call::<_, _, ()>("SwitchTo", &(HANDOFF_VT))
+    .with_context(|| format!("switching to VT {HANDOFF_VT}"))?;
+  Ok(())
+}
+
+/// The logind object of `seat`, from the session's `XDG_SEAT`, or of `seat0`
+/// when it is unset or not a valid object path element.
+fn seat_object_path(seat: Option<&str>) -> String {
+  let seat = seat
+    .filter(|seat| {
+      !seat.is_empty()
+        && seat
+          .chars()
+          .all(|character| character.is_ascii_alphanumeric() || character == '_')
+    })
+    .unwrap_or("seat0");
+  format!("/org/freedesktop/login1/seat/{seat}")
+}
+
+/// Waits until the DRM handoff surface draws. The surface answers `ping` only
+/// once it shows its first frame, which needs the DRM master that the greeter
+/// compositor loses when the greeter leaves the VT.
+pub fn wait_for_handoff_frame() -> anyhow::Result<()> {
+  let mut stream =
+    UnixStream::connect(DRM_HANDOFF_SOCKET).context("connecting to the DRM handoff surface")?;
+  stream.set_read_timeout(Some(DRM_HANDOFF_DRAWING_TIMEOUT))?;
+  stream.set_write_timeout(Some(DRM_HANDOFF_DRAWING_TIMEOUT))?;
+  stream.write_all(b"ping\n")?;
+  let mut answer = String::new();
+  BufReader::new(&mut stream)
+    .read_line(&mut answer)
+    .context("waiting for the DRM handoff surface to draw")?;
+  if answer.trim() != "ok" {
+    bail!("the DRM handoff surface answered {:?}", answer.trim());
+  }
+  mark("greeter.handoff-drawing");
+  Ok(())
 }
 
 /// Appends `event` to `TIMING_LOG`. Timing is diagnostic, so a failure to
@@ -141,8 +208,9 @@ impl Drop for WaylandSplash {
 /// The DRM surface that keeps a frame on screen while the greeter compositor
 /// exits and the user compositor has not taken the display yet.
 ///
-/// The helper waits for DRM master, which the greeter compositor holds until it
-/// exits, and then draws. It is deliberately not owned by this process: it keeps
+/// The helper waits for DRM master, which the greeter compositor holds until
+/// the greeter leaves the VT (`leave_vt`) or the compositor exits, and then
+/// draws. It is deliberately not owned by this process: it keeps
 /// running after the greeter ends and stops only when the user session sends
 /// `release` (see `argvus-start`). Nothing here blocks the login on failure.
 pub struct DrmHandoff;
@@ -230,3 +298,25 @@ fn wait_for_ready(fd: RawFd, pid: u32) -> anyhow::Result<()> {
 }
 
 use std::os::fd::FromRawFd;
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  #[test]
+  fn the_seat_object_comes_from_xdg_seat() {
+    assert_eq!(
+      seat_object_path(Some("seat1")),
+      "/org/freedesktop/login1/seat/seat1"
+    );
+    assert_eq!(seat_object_path(None), "/org/freedesktop/login1/seat/seat0");
+    assert_eq!(
+      seat_object_path(Some("")),
+      "/org/freedesktop/login1/seat/seat0"
+    );
+    assert_eq!(
+      seat_object_path(Some("../x")),
+      "/org/freedesktop/login1/seat/seat0"
+    );
+  }
+}

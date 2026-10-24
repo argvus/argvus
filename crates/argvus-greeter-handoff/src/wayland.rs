@@ -10,7 +10,9 @@ use std::{
   fs::File,
   io::{self, Write},
   os::fd::{AsFd, AsRawFd, FromRawFd, OwnedFd},
+  path::Path,
   sync::atomic::{AtomicBool, Ordering},
+  thread,
 };
 
 use wayland_client::{
@@ -58,7 +60,7 @@ extern "C" fn request_stop(_signal: libc::c_int) {
 ///
 /// Returns an error when it cannot connect or the compositor lacks a required
 /// global, so the caller can retry on another socket.
-pub fn run(palette: Palette, ready_fd: Option<i32>) -> io::Result<()> {
+pub fn run(palette: Palette, ready_fd: Option<i32>, retire_handoff: bool) -> io::Result<()> {
   for signal in [libc::SIGTERM, libc::SIGINT] {
     let handler = request_stop as extern "C" fn(libc::c_int);
     // SAFETY: the handler only stores to an atomic, which is async-signal-safe.
@@ -97,6 +99,7 @@ pub fn run(palette: Palette, ready_fd: Option<i32>) -> io::Result<()> {
     layer_shell,
     surfaces: Vec::new(),
     ready_fd,
+    retire_handoff,
   };
   if outputs.is_empty() {
     splash.add_surface(None, &qh);
@@ -143,6 +146,9 @@ struct Splash {
   layer_shell: zwlr_layer_shell_v1::ZwlrLayerShellV1,
   surfaces: Vec<SplashSurface>,
   ready_fd: Option<i32>,
+  /// Sends `retire` to the DRM handoff surface once every output shows a
+  /// frame; cleared after it is sent.
+  retire_handoff: bool,
 }
 
 struct SplashSurface {
@@ -279,7 +285,8 @@ impl Splash {
     }
   }
 
-  /// Writes `READY` once every surface still open has shown a frame.
+  /// Writes `READY` once every surface still open has shown a frame, and then
+  /// lets the DRM handoff surface remove the overlay above this compositor.
   fn report_ready_when_presented(&mut self) {
     if !self
       .surfaces
@@ -287,6 +294,14 @@ impl Splash {
       .all(|surface| surface.closed || surface.presented)
     {
       return;
+    }
+    if std::mem::take(&mut self.retire_handoff) {
+      log_mark("retiring the DRM handoff surface");
+      // Off the event loop, so a slow acknowledgement cannot stall the
+      // animation. Without a running surface there is nothing to retire.
+      thread::spawn(|| {
+        let _ = crate::send_command(Path::new(crate::DEFAULT_SOCKET), "retire");
+      });
     }
     let Some(fd) = self.ready_fd.take() else {
       return;

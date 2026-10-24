@@ -139,12 +139,6 @@ fi
 # shellcheck disable=SC3045
 ulimit -c 0 2>/dev/null || true
 
-# Ask Hyprland to leave its last frame on the outputs when it exits, instead of
-# turning them off, so the DRM handoff surface takes them over with a page flip
-# and the monitor never loses its signal. Hyprland builds without this support
-# ignore the variable, and the output goes dark for a moment at that handoff.
-export HYPRLAND_RETAIN_FRAME_ON_EXIT=1
-
 # Start the minimal Hyprland compositor. The command variants cover Arch's
 # executable naming and the development launcher without changing policy.
 if command -v start-hyprland >/dev/null 2>&1; then
