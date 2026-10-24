@@ -140,7 +140,10 @@ sudo pacman -S blueman starship kooha nwg-look
 - Documentation: [argvus.github.io/docs/](https://argvus.github.io/docs/intro/)
 - Repository documentation: [docs/](./docs/)
 - Development workflow: [DEVELOPMENT.md](./docs/DEVELOPMENT.md)
-- Contribution guide: [CONTRIBUTING.md](./docs/CONTRIBUTING.md)
+- Contributing: [CONTRIBUTING.md](https://github.com/argvus/.github/blob/main/CONTRIBUTING.md)
+- Security policy: [SECURITY.md](https://github.com/argvus/.github/blob/main/SECURITY.md)
+- Code of Conduct: [CODE_OF_CONDUCT.md](https://github.com/argvus/.github/blob/main/policies/CODE_OF_CONDUCT.md)
+- AI usage policy: [IA_USAGE.md](https://github.com/argvus/.github/blob/main/policies/IA_USAGE.md)
 - Ecosystem workflow: [argvus/workflow](https://github.com/argvus/workflow)
 
 ## Related repositories

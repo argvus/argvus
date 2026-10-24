@@ -30,7 +30,7 @@ packaging/archlinux/pkgbuilds/local/  PKGBUILD for working-tree builds (same pac
 packaging/archlinux/pkgbuilds/common/ functions.sh shared by both PKGBUILDs
 packaging/archlinux/README.md        packaging layout and build notes
 tools/sh/                pkgbuild_local.sh, validate.sh, install helpers
-docs/                    documentation in en and pt-br; contributor files (CONTRIBUTING, SECURITY, CODE_OF_CONDUCT, AUTHORS, FLOWCHART)
+docs/                    documentation in en and pt-br; contributor files (AUTHORS, FLOWCHART); community policies (CONTRIBUTING, SECURITY, CODE_OF_CONDUCT) live in the .github repository
 .github/workflows/       ci.yml (validation on push and pull request to main)
                          release.yml (Arch packages for tags v*)
 ```
