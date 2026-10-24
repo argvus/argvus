@@ -36,7 +36,14 @@ pub struct NetworkBackend<R> {
   pub capabilities: Capabilities,
 }
 impl<R: ProcessRunner> NetworkBackend<R> {
-  /// Publish inventory before slower page-specific queries complete.
+  /// Loads what `page` shows, publishing each part as soon as it is known.
+  ///
+  /// The device inventory comes first, since every other query depends on
+  /// it. The remaining queries are independent `nmcli` calls, so they run
+  /// concurrently and every result is published on arrival instead of after
+  /// the slowest one. The Home and Status summaries only read what they show:
+  /// the details of the connected interfaces and the cached Wi-Fi list
+  /// (never a rescan), so they stay cheap on hosts with many interfaces.
   pub fn load_page(
     &self,
     page: NetworkPage,
@@ -77,89 +84,127 @@ impl<R: ProcessRunner> NetworkBackend<R> {
     }
     .into();
     publish(state.clone());
-    if matches!(
-      page,
-      NetworkPage::Home | NetworkPage::Status | NetworkPage::Wifi
-    ) {
-      state.wifi_enabled = self.radio_wifi();
-      publish(state.clone());
-    }
-    if matches!(page, NetworkPage::Home | NetworkPage::Vpn) {
-      let value = self.run(
-        "nmcli",
-        &["-t", "-f", "NAME,TYPE,DEVICE", "connection", "show"],
-        Duration::from_secs(3),
-      )?;
-      state.vpn = parse_vpn(&value);
-    }
-    if page == NetworkPage::Wifi
+
+    let summary = matches!(page, NetworkPage::Home | NetworkPage::Status);
+    let wants_radio = summary || page == NetworkPage::Wifi;
+    let wants_connections = summary || page == NetworkPage::Vpn;
+    let wants_wifi = (summary || page == NetworkPage::Wifi)
       && state
         .interfaces
         .iter()
-        .any(|i| matches!(i.kind.as_str(), "wifi" | "802-11-wireless" | "wireless"))
-    {
-      let value = self.run(
-        "nmcli",
-        &[
-          "-t",
-          "-f",
-          "IN-USE,SSID,SIGNAL,SECURITY,FREQ,ACTIVE",
-          "device",
-          "wifi",
-          "list",
-          "--rescan",
-          if scan { "yes" } else { "no" },
-        ],
-        Duration::from_secs(if scan { 20 } else { 3 }),
-      )?;
-      state.wifi = parse_wifi(&value);
-    }
-    if matches!(
-      page,
-      NetworkPage::Interfaces
-        | NetworkPage::Ethernet
-        | NetworkPage::Detail(_)
-        | NetworkPage::Dns
-        | NetworkPage::Status
-    ) {
-      let names = state
-        .interfaces
-        .iter()
-        .enumerate()
-        .filter(|(index, _)| !matches!(page, NetworkPage::Detail(selected) if selected != *index))
-        .map(|(index, interface)| (index, interface.name.clone()))
-        .collect::<Vec<_>>();
-      for batch in names.chunks(4) {
-        let results = std::thread::scope(|scope| {
-          batch
-            .iter()
-            .map(|(index, name)| {
-              (
-                *index,
-                scope.spawn(move || {
-                  self.run(
-                    "nmcli",
-                    &["-t", "-f", DEVICE_DETAIL_FIELDS, "device", "show", name],
-                    Duration::from_secs(3),
-                  )
-                }),
-              )
-            })
-            .collect::<Vec<_>>()
-            .into_iter()
-            .map(|(index, handle)| (index, handle.join().unwrap_or(Err(NetworkError::Timeout))))
-            .collect::<Vec<_>>()
+        .any(|interface| is_wifi_kind(&interface.kind));
+    let rescan = if scan && page == NetworkPage::Wifi {
+      "yes"
+    } else {
+      "no"
+    };
+    let wifi_args = [
+      "-t",
+      "-f",
+      "IN-USE,SSID,SIGNAL,SECURITY,FREQ,ACTIVE",
+      "device",
+      "wifi",
+      "list",
+      "--rescan",
+      rescan,
+    ];
+    let wifi_timeout = Duration::from_secs(if rescan == "yes" { 20 } else { 3 });
+    let details_for = state
+      .interfaces
+      .iter()
+      .enumerate()
+      .filter(|(index, interface)| match page {
+        NetworkPage::Interfaces | NetworkPage::Ethernet | NetworkPage::Dns => true,
+        NetworkPage::Detail(selected) => selected == *index,
+        NetworkPage::Home | NetworkPage::Status => interface.state == "connected",
+        _ => false,
+      })
+      .map(|(index, interface)| (index, interface.name.clone()))
+      .collect::<Vec<_>>();
+    let wants_dns = summary
+      || matches!(
+        page,
+        NetworkPage::Interfaces | NetworkPage::Ethernet | NetworkPage::Detail(_) | NetworkPage::Dns
+      );
+
+    let mut failure = None;
+    let next_detail = std::sync::atomic::AtomicUsize::new(0);
+    std::thread::scope(|scope| {
+      let (sender, receiver) = std::sync::mpsc::channel();
+      if wants_radio {
+        let sender = sender.clone();
+        scope.spawn(move || {
+          let _ = sender.send(PageReading::Radio(self.radio_wifi()));
         });
-        for (index, result) in results {
-          if let Ok(details) = result {
+      }
+      if wants_connections {
+        let sender = sender.clone();
+        scope.spawn(move || {
+          let connections = self.run(
+            "nmcli",
+            &["-t", "-f", "NAME,TYPE,DEVICE", "connection", "show"],
+            Duration::from_secs(3),
+          );
+          let _ = sender.send(PageReading::Connections(connections));
+        });
+      }
+      if wants_wifi {
+        let sender = sender.clone();
+        let wifi_args = &wifi_args;
+        scope.spawn(move || {
+          let wifi = self.run("nmcli", wifi_args, wifi_timeout);
+          let _ = sender.send(PageReading::Wifi(wifi));
+        });
+      }
+      // At most DETAIL_WORKERS `nmcli device show` at once: each worker takes
+      // the next interface until none is left.
+      for _ in 0..details_for.len().min(DETAIL_WORKERS) {
+        let sender = sender.clone();
+        let next_detail = &next_detail;
+        let details_for = &details_for;
+        scope.spawn(move || {
+          while let Some((index, name)) =
+            details_for.get(next_detail.fetch_add(1, std::sync::atomic::Ordering::Relaxed))
+          {
+            let details = self.run(
+              "nmcli",
+              &["-t", "-f", DEVICE_DETAIL_FIELDS, "device", "show", name],
+              Duration::from_secs(3),
+            );
+            let _ = sender.send(PageReading::Details(*index, details));
+          }
+        });
+      }
+      drop(sender);
+      // Results are applied on this thread only, in arrival order.
+      for reading in receiver {
+        match reading {
+          PageReading::Radio(enabled) => state.wifi_enabled = enabled,
+          PageReading::Connections(Ok(value)) => state.vpn = parse_vpn(&value),
+          PageReading::Wifi(Ok(value)) => state.wifi = parse_wifi(&value),
+          PageReading::Connections(Err(error)) | PageReading::Wifi(Err(error)) => {
+            failure.get_or_insert(error);
+            continue;
+          }
+          PageReading::Details(index, Ok(details)) => {
             apply_device_details(&mut state.interfaces[index], &details);
           }
+          // A failed detail query keeps the inventory row as it is.
+          PageReading::Details(_, Err(_)) => continue,
         }
         publish(state.clone());
       }
+    });
+    if wants_dns {
       state.dns = dns_from_interfaces(&state.interfaces).unwrap_or_else(|| read_dns(self));
     }
-    Ok(state)
+    match failure {
+      Some(error) => {
+        publish(state.clone());
+        Err(error)
+      }
+      None => Ok(state),
+    }
   }
 
   /// Constructs `new` with this module's expected initial state. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
@@ -402,6 +447,23 @@ impl<R: ProcessRunner> NetworkBackend<R> {
         _ => None,
       })
   }
+}
+
+/// How many `nmcli device show` calls a page load runs at once.
+const DETAIL_WORKERS: usize = 4;
+
+/// One result of the concurrent queries of [`NetworkBackend::load_page`].
+enum PageReading {
+  Radio(Option<bool>),
+  Connections(Result<String, NetworkError>),
+  Wifi(Result<String, NetworkError>),
+  Details(usize, Result<String, NetworkError>),
+}
+
+/// Whether an nmcli device type is a Wi-Fi card.
+pub fn is_wifi_kind(kind: &str) -> bool {
+  let kind = kind.to_ascii_lowercase();
+  kind.contains("wifi") || kind.contains("wireless")
 }
 
 /// Defines the constant `DEVICE_STATUS_FIELDS`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
@@ -758,8 +820,22 @@ mod tests {
     assert_eq!(updates.lock().unwrap()[0].interfaces.len(), 2);
   }
 
+  /// Requests whose arguments contain every one of `parts`.
+  fn requests_with(runner: &Mutex<Vec<ProcessRequest>>, parts: &[&str]) -> usize {
+    runner
+      .lock()
+      .unwrap()
+      .iter()
+      .filter(|request| {
+        parts
+          .iter()
+          .all(|part| request.args.iter().any(|argument| argument == part))
+      })
+      .count()
+  }
+
   #[test]
-  fn home_does_not_scan_wifi_probe_bluetooth_or_fetch_details() {
+  fn home_reads_its_summary_without_scanning_or_probing_bluetooth() {
     let backend = NetworkBackend::new(
       HostShapeRunner::default(),
       Capabilities {
@@ -768,18 +844,110 @@ mod tests {
         ..Default::default()
       },
     );
-    backend
-      .load_page(NetworkPage::Home, false, NetworkSnapshot::default(), |_| {})
+    let updates = Mutex::new(Vec::new());
+    let snapshot = backend
+      .load_page(
+        NetworkPage::Home,
+        false,
+        NetworkSnapshot::default(),
+        |state| updates.lock().unwrap().push(state),
+      )
       .unwrap();
+    // The inventory is published before any slower query has answered.
+    let first = updates.lock().unwrap()[0].clone();
+    assert_eq!(first.interfaces.len(), 2);
+    assert!(first.interfaces[0].ipv4.is_empty());
+    // What the Home shows: the connected interfaces' addresses and DNS.
+    assert_eq!(snapshot.interfaces[0].ipv4, ["192.168.0.2/24"]);
+    assert_eq!(snapshot.dns.servers, ["8.8.8.8"]);
+    assert_eq!(snapshot.wifi_enabled, Some(true));
+    assert_eq!(snapshot.vpn.len(), 1);
     let requests = backend.runner.0.lock().unwrap();
-    assert_eq!(requests.len(), 3);
-    assert!(requests.iter().all(|request| {
-      request.program != "bluetoothctl"
-        && !request
-          .args
-          .iter()
-          .any(|arg| arg == DEVICE_DETAIL_FIELDS || arg == "--rescan")
-    }));
+    assert!(
+      requests
+        .iter()
+        .all(|request| request.program != "bluetoothctl")
+    );
+    // No Wi-Fi card in this inventory: no Wi-Fi list at all.
+    assert!(
+      requests
+        .iter()
+        .all(|request| !request.args.iter().any(|argument| argument == "--rescan"))
+    );
+  }
+
+  /// A laptop: one Wi-Fi card, connected, and an unplugged Ethernet port.
+  #[derive(Default)]
+  struct LaptopRunner(Mutex<Vec<ProcessRequest>>);
+  impl ProcessRunner for LaptopRunner {
+    fn run(&self, request: &ProcessRequest) -> Result<ProcessOutput, ProcessError> {
+      self.0.lock().unwrap().push(request.clone());
+      let joined = request.args.join(" ");
+      let stdout = if joined.contains("device status") {
+        "wlan0:wifi:connected:Home\neno1:ethernet:unavailable:\n"
+      } else if joined.contains("device show wlan0") {
+        "GENERAL.DEVICE:wlan0\nIP4.ADDRESS[1]:10.0.0.5/24\nIP4.DNS[1]:10.0.0.1\n"
+      } else if joined == "radio wifi" {
+        "enabled\n"
+      } else if joined.contains("device wifi list") {
+        "*:Home:82:WPA2:2412:yes\n"
+      } else {
+        ""
+      };
+      Ok(ProcessOutput {
+        stdout: stdout.as_bytes().to_vec(),
+        stderr: Vec::new(),
+        status: Some(0),
+        timed_out: false,
+      })
+    }
+  }
+
+  #[test]
+  fn summary_pages_read_the_cached_wifi_list_and_only_connected_details() {
+    for page in [NetworkPage::Home, NetworkPage::Status] {
+      let backend = NetworkBackend::new(
+        LaptopRunner::default(),
+        Capabilities {
+          has_nmcli: true,
+          ..Default::default()
+        },
+      );
+      let snapshot = backend
+        .load_page(page, true, NetworkSnapshot::default(), |_| {})
+        .unwrap();
+      assert!(snapshot.wifi.iter().any(|network| network.connected));
+      assert_eq!(snapshot.interfaces[0].ipv4, ["10.0.0.5/24"]);
+      // Never a rescan outside the Wi-Fi page, even when asked for one.
+      assert_eq!(requests_with(&backend.runner.0, &["--rescan", "no"]), 1);
+      assert_eq!(requests_with(&backend.runner.0, &["--rescan", "yes"]), 0);
+      assert_eq!(
+        requests_with(&backend.runner.0, &["device", "show", "wlan0"]),
+        1
+      );
+      assert_eq!(
+        requests_with(&backend.runner.0, &["device", "show", "eno1"]),
+        0
+      );
+    }
+  }
+
+  #[test]
+  fn wifi_page_rescans_only_when_asked() {
+    for (scan, rescan) in [(false, "no"), (true, "yes")] {
+      let backend = NetworkBackend::new(
+        LaptopRunner::default(),
+        Capabilities {
+          has_nmcli: true,
+          ..Default::default()
+        },
+      );
+      backend
+        .load_page(NetworkPage::Wifi, scan, NetworkSnapshot::default(), |_| {})
+        .unwrap();
+      assert_eq!(requests_with(&backend.runner.0, &["--rescan", rescan]), 1);
+      assert_eq!(requests_with(&backend.runner.0, &[DEVICE_DETAIL_FIELDS]), 0);
+    }
   }
 
   #[test]

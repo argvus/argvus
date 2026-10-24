@@ -253,9 +253,10 @@ impl NetworkApp {
       + Send
       + 'static,
   {
-    if self.action.is_some() || self.job.is_some() {
+    if self.action.is_some() {
       return;
     }
+    self.cancel_refresh_for_action();
     let cap = self.capabilities.clone();
     let success = self.action_label(label);
     self.status = Some(StatusMessage {
@@ -282,6 +283,27 @@ impl NetworkApp {
     };
     tr(self.lang, key).into()
   }
+  /// Whether the host has a Wi-Fi card, from the device inventory (or a
+  /// Wi-Fi list kept from an earlier load).
+  fn has_wifi_hardware(&self) -> bool {
+    self
+      .snapshot
+      .interfaces
+      .iter()
+      .any(|interface| crate::backend::is_wifi_kind(&interface.kind))
+      || !self.snapshot.wifi.is_empty()
+  }
+
+  /// Drops a refresh in progress so that an action can start now instead of
+  /// being ignored until the refresh ends. The action refreshes the page
+  /// itself when it finishes, so nothing the refresh would show is lost.
+  fn cancel_refresh_for_action(&mut self) {
+    if let Some(job) = self.job.take() {
+      job.cancel();
+    }
+    self.updates = None;
+    self.scan = false;
+  }
   /// Executes the `home_pages` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn home_pages(&self) -> Vec<NetworkPage> {
     let mut pages = vec![
@@ -289,12 +311,7 @@ impl NetworkApp {
       NetworkPage::Interfaces,
       NetworkPage::Ethernet,
     ];
-    let has_wifi_hardware = self.snapshot.interfaces.iter().any(|i| {
-      i.kind.to_ascii_lowercase().contains("wifi")
-        || i.kind.to_ascii_lowercase().contains("wireless")
-        || i.kind.eq_ignore_ascii_case("802-11-wireless")
-    }) || !self.snapshot.wifi.is_empty();
-    if has_wifi_hardware {
+    if self.has_wifi_hardware() {
       pages.push(NetworkPage::Wifi);
     }
     let has_vpn = !self.snapshot.vpn.is_empty()
@@ -768,9 +785,10 @@ impl NetworkApp {
   }
   /// Applies the `apply_dns_privileged` operation while preserving the persistence and local-update contract. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn apply_dns_privileged(&mut self, connection: String, values: Vec<String>, automatic: bool) {
-    if self.action.is_some() || self.job.is_some() {
+    if self.action.is_some() {
       return;
     }
+    self.cancel_refresh_for_action();
     let executable = match std::env::current_exe() {
       Ok(path) => path.to_string_lossy().into_owned(),
       Err(error) => {
@@ -927,6 +945,7 @@ impl NetworkApp {
   }
   /// The Network home: one submenu per available page, with its state.
   fn home_rows(&self) -> Vec<Row<Item>> {
+    let loading = !self.snapshot.available && self.job.is_some();
     let active = self
       .snapshot
       .interfaces
@@ -1011,6 +1030,14 @@ impl NetworkApp {
           ),
           _ => return None,
         };
+        // Until the first inventory arrives the counts and addresses are not
+        // known yet; showing them as `0` or `None` would read as real values.
+        // The proxy comes from the environment and is always known.
+        let detail = if loading && page != NetworkPage::Proxy {
+          tr(self.lang, "control_center.loading").to_owned()
+        } else {
+          detail
+        };
         Some(
           Row::submenu(Item::Open(page), label)
             .icon(icon)
@@ -1026,9 +1053,20 @@ impl NetworkApp {
       .interfaces
       .iter()
       .find(|i| i.state == "connected");
+    // Before the inventory arrives the card is unknown, not missing; and the
+    // radio of a host without a card reports `enabled`, which is no switch.
     let wifi_row = match self.snapshot.wifi_enabled {
-      Some(on) => Row::toggle(Item::WifiToggle, tr(self.lang, "control_center.wi_fi"), on),
-      None => Row::toggle(
+      _ if !self.snapshot.available => Row::toggle(
+        Item::WifiToggle,
+        tr(self.lang, "control_center.wi_fi"),
+        false,
+      )
+      .enabled(false)
+      .detail(tr(self.lang, "control_center.loading")),
+      Some(on) if self.has_wifi_hardware() => {
+        Row::toggle(Item::WifiToggle, tr(self.lang, "control_center.wi_fi"), on)
+      }
+      _ => Row::toggle(
         Item::WifiToggle,
         tr(self.lang, "control_center.wi_fi"),
         false,
@@ -1402,6 +1440,7 @@ mod tests {
       },
     ];
     app.snapshot.wifi_enabled = Some(true);
+    app.snapshot.available = true;
   }
 
   #[test]
@@ -1560,6 +1599,81 @@ mod tests {
     assert!(!off.is_enabled());
     assert!(!off.is_selectable());
     assert!(off.detail_text().is_some());
+  }
+
+  /// The radio of a host without a Wi-Fi card still reports `enabled`; the
+  /// switch must not offer it. Before the inventory arrives the card is
+  /// unknown, so the switch says it is loading instead of "no Wi-Fi card".
+  fn wifi_toggle(app: &NetworkApp) -> Row<Item> {
+    app
+      .rows()
+      .into_iter()
+      .find(|row| row.id() == Some(&Item::WifiToggle))
+      .unwrap()
+  }
+
+  #[test]
+  fn wifi_switch_waits_for_the_inventory_and_needs_a_card() {
+    let mut app = app();
+    app.page = NetworkPage::Status;
+    let loading = wifi_toggle(&app);
+    assert!(!loading.is_selectable());
+    assert_eq!(
+      loading.detail_text(),
+      Some(tr(app.lang, "control_center.loading"))
+    );
+
+    with_network(&mut app);
+    app.snapshot.wifi.clear();
+    let without_card = wifi_toggle(&app);
+    assert!(!without_card.is_selectable());
+    assert_eq!(
+      without_card.detail_text(),
+      Some(tr(app.lang, "control_center.unavailable_no_wifi_card"))
+    );
+  }
+
+  #[test]
+  fn home_says_loading_until_the_inventory_arrives() {
+    let mut app = app();
+    app.job = Some(app.jobs.spawn(|_| {
+      std::thread::sleep(std::time::Duration::from_secs(2));
+      Ok(Ok(NetworkSnapshot::default()))
+    }));
+    let loading = tr(app.lang, "control_center.loading");
+    let rows = app.rows();
+    let detail = |page: NetworkPage| {
+      rows
+        .iter()
+        .find(|row| row.id() == Some(&Item::Open(page)))
+        .and_then(|row| row.detail_text().map(str::to_owned))
+    };
+    assert_eq!(detail(NetworkPage::Status).as_deref(), Some(loading));
+    assert_eq!(detail(NetworkPage::Interfaces).as_deref(), Some(loading));
+    assert_ne!(detail(NetworkPage::Proxy).as_deref(), Some(loading));
+
+    // Without a load running (no NetworkManager), the values are shown as is.
+    app.job = None;
+    let rows = app.rows();
+    assert!(rows.iter().all(|row| row.detail_text() != Some(loading)));
+  }
+
+  #[test]
+  fn an_action_replaces_a_refresh_instead_of_being_ignored() {
+    let mut app = app();
+    with_network(&mut app);
+    app.job = Some(app.jobs.spawn(|_| {
+      std::thread::sleep(std::time::Duration::from_secs(2));
+      Ok(Ok(NetworkSnapshot::default()))
+    }));
+    let (_sender, receiver) = std::sync::mpsc::channel();
+    app.updates = Some(receiver);
+
+    app.toggle_wifi();
+
+    assert!(app.job.is_none(), "the refresh is dropped");
+    assert!(app.updates.is_none());
+    assert!(app.action.is_some(), "the action started");
   }
 
   #[test]

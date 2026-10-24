@@ -208,6 +208,8 @@ Quando os recursos correspondentes estão instalados, o Control Center pode most
 
 A área de rede expõe o status e as páginas do provider de rede instalado, incluindo rotas de Wi-Fi, Ethernet, VPN, DNS e proxy quando disponíveis. O firewall fica listado em **Administração do sistema**. Bluetooth depende do suporte Bluetooth. A área de áudio aparece quando o recurso opcional correspondente está habilitado e integra-se ao serviço de áudio instalado.
 
+A tela inicial de **Rede e Wi-Fi** e a página **Status** se preenchem à medida que cada consulta ao NetworkManager responde, em vez de esperar a mais lenta: primeiro a lista de dispositivos, depois o rádio, os endereços e o DNS das interfaces conectadas, as conexões salvas e as redes Wi-Fi que o NetworkManager já conhece (uma nova varredura só é feita na página Wi-Fi, com `r`). Até a lista de dispositivos chegar, as linhas mostram *Carregando...*, e a chave do Wi-Fi só é oferecida quando o computador tem placa Wi-Fi. Iniciar uma ação (a chave do Wi-Fi, conectar, DNS) enquanto a página atualiza substitui a atualização, e a página se atualiza de novo quando a ação termina.
+
 ### Energia e sessão
 
 Energia oferece os controles de energia do sistema e as páginas de política disponíveis na instalação, incluindo a opção Manter acordado. Quando ativada, Manter acordado impede que a política de ociosidade do ARGVUS inicie os temporizadores automáticos de bloqueio da tela e desligamento do display. Sessão expõe status da sessão ARGVUS, componentes, autostart, diagnósticos e logs. Essas páginas podem exigir permissões do sistema e devem ser diferenciadas das ações rápidas do Control Panel.

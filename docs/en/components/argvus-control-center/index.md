@@ -208,6 +208,8 @@ When the corresponding capabilities are installed, the Control Center can show h
 
 The network area exposes the installed network provider's status and connection pages, including Wi-Fi, Ethernet, VPN, DNS and proxy routes when available. The firewall is listed under **System Administration**. Bluetooth is conditional on Bluetooth support. The audio area is provided when its optional capability is enabled and integrates with the installed audio service.
 
+The **Network & Wi-Fi** home and its **Status** page fill in as each NetworkManager query answers, instead of after the slowest one: the device list first, then the radio, the connected interfaces' addresses and DNS, the saved connections and the Wi-Fi networks NetworkManager already knows (a new scan only runs from the Wi-Fi page with `r`). Until the device list arrives the rows say *Loading...*, and the Wi-Fi switch is only offered when the computer has a Wi-Fi card. Starting an action (the Wi-Fi switch, connecting, DNS) while a page is refreshing replaces the refresh, and the page refreshes again when the action ends.
+
 ### Power and session
 
 Power provides the system power controls and policy pages available to the installation, including the Keep Awake toggle. When enabled, Keep Awake prevents the ARGVUS idle policy from starting automatic screen-lock and display-power timers. Session exposes ARGVUS session status, components, autostart, diagnostics and logs. These pages may require system permissions and should be distinguished from the quick actions in the Control Panel.
