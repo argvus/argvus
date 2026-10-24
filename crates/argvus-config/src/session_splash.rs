@@ -5,8 +5,8 @@
 //! so the reload that started it can stop it. Failing to start the splash never
 //! fails the reload.
 
-use crate::session_loading;
 use std::collections::BTreeMap;
+use std::ffi::OsString;
 use std::fs;
 use std::os::unix::fs::{FileTypeExt, PermissionsExt};
 use std::path::{Path, PathBuf};
@@ -275,14 +275,17 @@ pub struct SplashColors {
   pub accent: String,
 }
 
-/// One splash start. The session splash waits for the compositor and keeps
-/// the splash's own colours. The overlay of a theme switch already runs inside
-/// a live session, so it does not wait and passes the theme's colours.
+/// One splash start. The session splash waits for the compositor, shows an
+/// opaque spinner from its first frame and outlives the helper that starts it.
+/// The overlay of a theme switch already runs inside a live session, so it does
+/// not wait, fades in and passes the theme's colours.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SplashRequest<'a> {
   pub theme: &'a str,
   pub colors: Option<SplashColors>,
   pub await_compositor: bool,
+  pub spinner_only: bool,
+  pub detached: bool,
   pub owner: Owner,
 }
 
@@ -293,9 +296,34 @@ impl<'a> SplashRequest<'a> {
       theme,
       colors: None,
       await_compositor: true,
+      spinner_only: true,
+      detached: true,
       owner: Owner::Session,
     }
   }
+}
+
+/// The arguments the splash binary receives for `request`.
+fn splash_arguments(request: &SplashRequest, ready_file: &Path) -> Vec<OsString> {
+  let mut arguments: Vec<OsString> = vec!["--theme".into(), request.theme.into()];
+  if let Some(colors) = &request.colors {
+    arguments.extend([
+      "--background".into(),
+      colors.background.as_str().into(),
+      "--foreground".into(),
+      colors.foreground.as_str().into(),
+      "--accent".into(),
+      colors.accent.as_str().into(),
+    ]);
+  }
+  if request.spinner_only {
+    arguments.push("--spinner-only".into());
+  }
+  if request.detached {
+    arguments.push("--detached".into());
+  }
+  arguments.extend(["--ready-file".into(), ready_file.into()]);
+  arguments
 }
 
 /// The result of one start. Only `Started` leaves a splash running, and only
@@ -311,17 +339,6 @@ pub enum StartOutcome {
   NoCompositor,
   /// The splash did not write its readiness file, or could not be launched.
   NotReady,
-}
-
-/// Starts the splash with the binary the session uses. Returns `true` only when
-/// this call started it. Every failure returns `false` and leaves the reload to
-/// continue.
-pub fn start(environment: &SplashEnvironment, theme: &str) -> bool {
-  start_with(
-    environment,
-    &session_loading::splash_binary(),
-    &SplashRequest::session(theme),
-  ) == StartOutcome::Started
 }
 
 /// Starts the splash with `binary` and the options of `request`.
@@ -350,24 +367,12 @@ pub fn start_with(
     .runtime_dir()
     .join(format!("argvus-loading-theme-ready.{}", std::process::id()));
   let _ = fs::remove_file(&ready_file);
-  let mut command = Command::new(binary);
-  command.arg("--theme").arg(request.theme);
-  if let Some(colors) = &request.colors {
-    command
-      .arg("--background")
-      .arg(&colors.background)
-      .arg("--foreground")
-      .arg(&colors.foreground)
-      .arg("--accent")
-      .arg(&colors.accent);
-  }
   // stdout is not inherited: the caller reads it to learn whether this call
   // started the splash, and the splash lives on after the caller returns.
   // A pipe held open by the splash would block that read until the splash
   // exits. stderr stays attached to the unit's log.
-  let Ok(mut child) = command
-    .arg("--ready-file")
-    .arg(&ready_file)
+  let Ok(mut child) = Command::new(binary)
+    .args(splash_arguments(request, &ready_file))
     .envs(&environment.values)
     .stdin(Stdio::null())
     .stdout(Stdio::null())
@@ -500,6 +505,8 @@ mod tests {
         theme: "github-light",
         colors: None,
         await_compositor: false,
+        spinner_only: true,
+        detached: true,
         owner: Owner::Session,
       },
     );
@@ -527,6 +534,26 @@ mod tests {
     );
     assert_eq!(outcome, StartOutcome::AlreadyRunning);
     let _ = fs::remove_dir_all(runtime);
+  }
+
+  #[test]
+  fn session_splash_is_opaque_and_detached_while_the_overlay_is_not() {
+    let ready = Path::new("/run/ready");
+    let session = splash_arguments(&SplashRequest::session("github-light"), ready);
+    assert!(session.contains(&OsString::from("--spinner-only")));
+    assert!(session.contains(&OsString::from("--detached")));
+
+    let overlay = SplashRequest {
+      theme: "github-light",
+      colors: None,
+      await_compositor: false,
+      spinner_only: false,
+      detached: false,
+      owner: Owner::Transition,
+    };
+    let arguments = splash_arguments(&overlay, ready);
+    assert!(!arguments.contains(&OsString::from("--spinner-only")));
+    assert!(!arguments.contains(&OsString::from("--detached")));
   }
 
   #[test]
@@ -803,6 +830,8 @@ mod tests {
         theme: "github-light",
         colors: None,
         await_compositor: false,
+        spinner_only: false,
+        detached: false,
         owner: Owner::Transition,
       },
     );

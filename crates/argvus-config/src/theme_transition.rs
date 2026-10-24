@@ -90,6 +90,8 @@ pub fn start_overlay(theme: &str) -> StartOutcome {
     theme,
     colors: Some(colors),
     await_compositor: false,
+    spinner_only: false,
+    detached: false,
     owner: Owner::Transition,
   };
   session_splash::start_with(

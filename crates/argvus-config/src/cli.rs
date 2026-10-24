@@ -222,12 +222,20 @@ fn run(arguments: Vec<String>) -> Result<(), Box<dyn std::error::Error>> {
     "session-plan" => print_session_plan(&store)?,
     "session-splash" => match arguments.get(1).map(String::as_str) {
       Some("start") => {
-        let theme = effective_theme(&store)?;
+        let theme = splash_theme(&store);
         let environment = session_splash::SplashEnvironment::resolve();
+        let request = session_splash::SplashRequest::session(&theme);
         // Printed only when this call started the splash; the caller
-        // then owns the overlay and stops it later.
-        if session_splash::start(&environment, &theme) {
-          println!("started");
+        // then owns it and stops it when the reload ends. A splash that is
+        // already running is the normal case inside a reload, so it is silent.
+        match session_splash::start_with(
+          &environment,
+          &crate::session_loading::splash_binary(),
+          &request,
+        ) {
+          session_splash::StartOutcome::Started => println!("started"),
+          session_splash::StartOutcome::AlreadyRunning => {}
+          outcome => eprintln!("loading splash not shown: {outcome:?}"),
         }
       }
       Some("stop") => {
@@ -504,6 +512,13 @@ fn effective_theme(store: &ConfigStore) -> Result<String, Box<dyn std::error::Er
       .unwrap_or(session_splash::DEFAULT_THEME)
       .to_string(),
   )
+}
+
+/// The theme the session splash shows. A configuration that cannot be read
+/// falls back to the ARGVUS default, so the cover still goes up before the
+/// projection that would create it.
+fn splash_theme(store: &ConfigStore) -> String {
+  effective_theme(store).unwrap_or_else(|_| session_splash::DEFAULT_THEME.to_string())
 }
 
 /// The ARGVUS cache directory, resolved as the session scripts resolve it.

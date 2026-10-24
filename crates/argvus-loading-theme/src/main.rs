@@ -59,6 +59,11 @@ struct Cli {
   /// controlled by the existing SIGTERM path.
   #[arg(long)]
   session_handoff: bool,
+  /// Outlives the process that started it. A session reload starts the splash
+  /// from a short-lived helper, so it stops only on the SIGTERM the reload
+  /// sends from the pid file, not when its parent exits.
+  #[arg(long)]
+  detached: bool,
 }
 
 #[derive(Clone)]
@@ -135,8 +140,10 @@ fn tr_applying() -> String {
 }
 
 fn main() -> glib::ExitCode {
-  configure_parent_death();
   let cli = Cli::parse();
+  if !cli.detached {
+    configure_parent_death();
+  }
   let palette = Palette::from_cli(&cli);
   let application = Application::builder().application_id(APP_ID).build();
   application.connect_activate(move |application| {
