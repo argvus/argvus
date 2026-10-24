@@ -134,10 +134,16 @@ fi
 
 # The greeter compositor can crash while it tears down its DRM outputs. The
 # DRM handoff surface cannot take the display until the process is gone, and a
-# core dump keeps it alive for a few hundred milliseconds with the output off.
+# core dump keeps it alive for a few hundred milliseconds.
 # `ulimit -c` is not POSIX; a shell without it keeps core dumps enabled.
 # shellcheck disable=SC3045
 ulimit -c 0 2>/dev/null || true
+
+# Ask Hyprland to leave its last frame on the outputs when it exits, instead of
+# turning them off, so the DRM handoff surface takes them over with a page flip
+# and the monitor never loses its signal. Hyprland builds without this support
+# ignore the variable, and the output goes dark for a moment at that handoff.
+export HYPRLAND_RETAIN_FRAME_ON_EXIT=1
 
 # Start the minimal Hyprland compositor. The command variants cover Arch's
 # executable naming and the development launcher without changing policy.

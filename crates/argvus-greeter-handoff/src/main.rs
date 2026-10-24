@@ -33,8 +33,10 @@ const POLL_DELAY: Duration = Duration::from_millis(10);
 /// How long the last frame stays on screen after a release while the user
 /// compositor takes over the output.
 const REPLACEMENT_TIMEOUT: Duration = Duration::from_secs(10);
-/// Interval between the attempts to become DRM master.
-const MASTER_POLL: Duration = Duration::from_millis(10);
+/// Interval between the attempts to become DRM master. Each attempt is one
+/// `open`, and every millisecond the output spends between two masters is a
+/// frame that nobody draws.
+const MASTER_POLL: Duration = Duration::from_millis(1);
 const ACK_TIMEOUT: Duration = Duration::from_secs(20);
 /// How long the surface waits for one client to send its command line. The
 /// socket is open to every local user, so a client that connects and stays
@@ -241,6 +243,7 @@ unsafe extern "C" {
   fn drmModeGetResources(fd: libc::c_int) -> *mut ModeResources;
   fn drmModeFreeResources(resources: *mut ModeResources);
   fn drmModeGetConnector(fd: libc::c_int, connector_id: u32) -> *mut Connector;
+  fn drmModeGetConnectorCurrent(fd: libc::c_int, connector_id: u32) -> *mut Connector;
   fn drmModeFreeConnector(connector: *mut Connector);
   fn drmModeGetEncoder(fd: libc::c_int, encoder_id: u32) -> *mut Encoder;
   fn drmModeFreeEncoder(encoder: *mut Encoder);
@@ -554,6 +557,55 @@ fn prepare_socket(path: &Path) -> io::Result<UnixListener> {
   Ok(listener)
 }
 
+/// One CRTC as the handoff sees it while it waits for DRM master.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+struct CrtcSample {
+  crtc_id: u32,
+  framebuffer: u32,
+  mode_valid: bool,
+}
+
+/// Remembers the last state of every CRTC, so the wait logs only the changes.
+#[derive(Debug, Default)]
+struct CrtcWatch {
+  last: Vec<CrtcSample>,
+}
+
+impl CrtcWatch {
+  /// The samples of `current` that differ from the previous call.
+  fn changes(&mut self, current: Vec<CrtcSample>) -> Vec<CrtcSample> {
+    let changed = current
+      .iter()
+      .filter(|sample| !self.last.contains(sample))
+      .copied()
+      .collect();
+    self.last = current;
+    changed
+  }
+}
+
+/// The framebuffer and mode state of every CRTC of `fd`. Reading it needs no
+/// DRM master.
+fn crtc_samples(fd: RawFd) -> Vec<CrtcSample> {
+  let resources = unsafe { drmModeGetResources(fd) };
+  if resources.is_null() {
+    return Vec::new();
+  }
+  let resources_ref = unsafe { &*resources };
+  let samples = (0..resources_ref.count_crtcs)
+    .filter_map(|index| {
+      let crtc_id = unsafe { *resources_ref.crtcs.add(index as usize) };
+      crtc_state(fd, crtc_id).map(|(framebuffer, mode_valid)| CrtcSample {
+        crtc_id,
+        framebuffer,
+        mode_valid,
+      })
+    })
+    .collect();
+  unsafe { drmModeFreeResources(resources) };
+  samples
+}
+
 fn acquire_card() -> io::Result<RawFd> {
   let mut cards = fs::read_dir("/dev/dri")?
     .filter_map(Result::ok)
@@ -567,8 +619,39 @@ fn acquire_card() -> io::Result<RawFd> {
     .collect::<Vec<_>>();
   cards.sort();
 
+  // One descriptor per card stays open for the whole wait. When the greeter
+  // compositor's descriptor is the last one to close, the kernel restores the
+  // fbdev console mode, which blanks the output before this process can draw.
+  // The same descriptors read the CRTCs, so the timing log shows whether the
+  // output stayed on between the two masters.
+  let mut observers = cards
+    .iter()
+    .filter_map(|card| {
+      let file = OpenOptions::new().read(true).write(true).open(card).ok()?;
+      let name = card.file_name()?.to_string_lossy().into_owned();
+      Some((name, file, CrtcWatch::default()))
+    })
+    .collect::<Vec<_>>();
+
   let deadline = Instant::now() + Duration::from_secs(15);
   loop {
+    for (name, file, watch) in &mut observers {
+      for sample in watch.changes(crtc_samples(file.as_raw_fd())) {
+        mark(&format!(
+          "handoff.crtc card={name} crtc={} fb={} mode_valid={}",
+          sample.crtc_id, sample.framebuffer, sample.mode_valid
+        ));
+      }
+    }
+    // An observer opened while no process held DRM master became master
+    // itself, and then no new descriptor can.
+    if let Some(index) = observers
+      .iter()
+      .position(|(_, file, _)| unsafe { drmSetMaster(file.as_raw_fd()) } == 0)
+    {
+      let (_, file, _) = observers.swap_remove(index);
+      return Ok(file.into_raw_fd());
+    }
     for card in &cards {
       let Ok(file) = OpenOptions::new().read(true).write(true).open(card) else {
         continue;
@@ -610,8 +693,14 @@ fn run_surface(fd: RawFd, listener: &UnixListener, palette: &mut Palette) -> io:
   // When the greeter compositor left the output on in the same mode, a page
   // flip swaps the image without a modeset. A modeset can make the monitor
   // resynchronise, which shows as a black flash even with identical timings.
-  let flipped = crtc_mode(fd, crtc_id).is_some_and(|current| current.same_timings(&mode))
-    && unsafe { drmModePageFlip(fd, crtc_id, buffer.framebuffer, 0, std::ptr::null_mut()) } == 0;
+  let mut flipped = false;
+  if crtc_mode(fd, crtc_id).is_some_and(|current| current.same_timings(&mode)) {
+    // libdrm returns the negated errno.
+    match unsafe { drmModePageFlip(fd, crtc_id, buffer.framebuffer, 0, std::ptr::null_mut()) } {
+      0 => flipped = true,
+      error => mark(&format!("handoff.page-flip-failed errno={}", -error)),
+    }
+  }
   if flipped {
     mark("handoff.page-flip");
   } else {
@@ -659,7 +748,18 @@ fn run_surface(fd: RawFd, listener: &UnixListener, palette: &mut Palette) -> io:
   }
 }
 
+/// The first connected output, its CRTC and its preferred mode. The cached
+/// connector state comes first: the compositor that just left has probed the
+/// connectors, and probing again takes tens of milliseconds while the output
+/// waits for a frame.
 fn select_output(fd: RawFd) -> io::Result<(u32, u32, ModeInfo)> {
+  find_output(fd, drmModeGetConnectorCurrent).or_else(|_| find_output(fd, drmModeGetConnector))
+}
+
+fn find_output(
+  fd: RawFd,
+  get_connector: unsafe extern "C" fn(libc::c_int, u32) -> *mut Connector,
+) -> io::Result<(u32, u32, ModeInfo)> {
   let resources = unsafe { drmModeGetResources(fd) };
   if resources.is_null() {
     return Err(io::Error::last_os_error());
@@ -669,7 +769,7 @@ fn select_output(fd: RawFd) -> io::Result<(u32, u32, ModeInfo)> {
     let resources_ref = &*resources;
     for index in 0..resources_ref.count_connectors {
       let connector_id = *resources_ref.connectors.add(index as usize);
-      let connector = drmModeGetConnector(fd, connector_id);
+      let connector = get_connector(fd, connector_id);
       if connector.is_null() {
         continue;
       }
@@ -908,6 +1008,24 @@ mod tests {
     named.name[0] = b'1' as libc::c_char;
     assert!(mode(185_580, 75).same_timings(&named));
     assert!(!mode(185_580, 75).same_timings(&mode(148_500, 60)));
+  }
+
+  #[test]
+  fn the_crtc_watch_reports_only_changes() {
+    let on = CrtcSample {
+      crtc_id: 57,
+      framebuffer: 111,
+      mode_valid: true,
+    };
+    let off = CrtcSample {
+      framebuffer: 0,
+      mode_valid: false,
+      ..on
+    };
+    let mut watch = CrtcWatch::default();
+    assert_eq!(watch.changes(vec![on]), vec![on]);
+    assert!(watch.changes(vec![on]).is_empty());
+    assert_eq!(watch.changes(vec![off]), vec![off]);
   }
 
   /// Binds a socket in `directory` and serves one request through
