@@ -98,6 +98,10 @@ pub fn groups() -> [Group; 4] {
           name: "argvus-portal",
           key: "control_center.about_wayland_portals_dbus_and_integration_preferences",
         },
+        Module {
+          name: "argvus",
+          key: "control_center.about_master_package_command_and_shared_runtime",
+        },
       ],
     },
     Group {
@@ -116,15 +120,15 @@ pub fn groups() -> [Group; 4] {
           key: "control_center.about_themes_fonts_wallpapers_and_visual_integration",
         },
         Module {
-          name: "argvus-taskbar-calendar",
+          name: "argvus taskbar-calendar",
           key: "control_center.about_calendar_and_taskbar_popup_integration",
         },
         Module {
-          name: "argvus-removable-devices",
+          name: "argvus removable-devices",
           key: "control_center.about_removable_device_and_storage_module",
         },
         Module {
-          name: "argvus-greeter",
+          name: "argvus greeter",
           key: "control_center.about_argvus_graphical_login_screen",
         },
         Module {
@@ -137,15 +141,11 @@ pub fn groups() -> [Group; 4] {
       key: "control_center.about_configuration",
       modules: &[
         Module {
-          name: "argvus-control-center",
+          name: "argvus control-center",
           key: "control_center.about_argvus_control_center_including_fonts_and_default_applications",
         },
         Module {
-          name: "argvus-about",
-          key: "control_center.about_system_information_credits_and_argvus_license",
-        },
-        Module {
-          name: "argvus-accounts",
+          name: "argvus accounts",
           key: "control_center.about_account_and_user_settings",
         },
         Module {
@@ -158,7 +158,7 @@ pub fn groups() -> [Group; 4] {
       key: "control_center.about_services_and_power",
       modules: &[
         Module {
-          name: "argvus-network",
+          name: "argvus network",
           key: "control_center.about_networkmanager_wi_fi_and_bluetooth",
         },
         Module {
@@ -226,7 +226,14 @@ mod tests {
       .map(|module| module.name)
       .collect::<Vec<_>>();
     assert_eq!(names.len(), 16);
-    assert!(names.contains(&"argvus-about"));
-    assert!(names.contains(&"argvus-removable-devices"));
+    assert!(names.contains(&"argvus"));
+    assert!(names.contains(&"argvus removable-devices"));
+    assert!(
+      !names
+        .iter()
+        .any(|name| name.contains("argvus-taskbar-calendar")
+          || name.contains("argvus-removable-devices")
+          || name.contains("argvus-about"))
+    );
   }
 }

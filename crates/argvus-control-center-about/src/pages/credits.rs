@@ -40,13 +40,7 @@ pub fn doc(app: &App, width: usize, selected: usize) -> Doc<'static> {
     ),
     Row::Spacer,
     Row::Section(tr(lang, "control_center.technologies").to_string()),
-    Row::Para(
-      tr(
-        lang,
-        "control_center.built_on_hyprland_wayland_quickshell_rust_vala_and_the_free_libraries_",
-      )
-      .to_string(),
-    ),
+    Row::Para(tr(lang, "control_center.built_on_desktop_technologies").to_string()),
   ];
 
   simple_doc(&rows, &app.theme, width, selected)
