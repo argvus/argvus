@@ -646,6 +646,44 @@ fn theme_shortcuts_are_kept_and_shown_in_the_footer() {
 }
 
 #[test]
+fn taskbar_icons_lists_checks_first_and_submenus_last_with_icons() {
+  let rows = app(AppearancePage::TaskbarIcons).page_rows();
+  let first_submenu = rows
+    .iter()
+    .position(|row| row.kind() == RowKind::Submenu)
+    .expect("Taskbar icons ends with submenus");
+  assert_eq!(first_submenu, rows.len() - 2);
+  assert!(
+    rows[..first_submenu]
+      .iter()
+      .all(|row| matches!(row.kind(), RowKind::Toggle { .. }))
+  );
+  assert!(
+    rows[first_submenu..]
+      .iter()
+      .all(|row| row.kind() == RowKind::Submenu)
+  );
+  assert!(rows.iter().all(|row| row.icon_glyph().is_some()));
+}
+
+#[test]
+fn esc_from_taskbar_launcher_returns_to_taskbar_icons() {
+  let mut icons_page = draft_app(AppearancePage::TaskbarIcons);
+  select(&mut icons_page, Item::LauncherIcon);
+  icons_page.handle(KeyCode::Enter);
+  assert_eq!(
+    icons_page.page,
+    AppearancePage::SurfaceSection {
+      surface: EffectSurface::Taskbar,
+      section: SurfaceSection::Launcher,
+    }
+  );
+  icons_page.job = None;
+  icons_page.handle(KeyCode::Esc);
+  assert_eq!(icons_page.page, AppearancePage::TaskbarIcons);
+}
+
+#[test]
 fn draft_pages_end_with_an_apply_row_enabled_only_with_changes() {
   let pages = [
     AppearancePage::Taskbar,

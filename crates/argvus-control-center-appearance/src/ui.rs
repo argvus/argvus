@@ -1703,7 +1703,9 @@ impl AppearanceApp {
       }
       AppearancePage::SurfaceSection { surface, section } => {
         self.go(match (surface, section) {
-          (EffectSurface::Taskbar, SurfaceSection::UtilityIcons) => AppearancePage::TaskbarIcons,
+          (EffectSurface::Taskbar, SurfaceSection::UtilityIcons | SurfaceSection::Launcher) => {
+            AppearancePage::TaskbarIcons
+          }
           (EffectSurface::Taskbar, _) => AppearancePage::Taskbar,
           (EffectSurface::WidgetTelemetry, _) => AppearancePage::WidgetTelemetry,
           (EffectSurface::ControlPanel, _) => AppearancePage::ControlPanel,

@@ -102,6 +102,8 @@ pub const FOLDER: &str = "\u{f024b}";
 pub const LOCK: &str = "\u{f033e}";
 /// Nerd Fonts: nf-md-battery
 pub const BATTERY: &str = "\u{f0079}";
+/// Nerd Fonts: nf-md-thermometer
+pub const THERMOMETER: &str = "\u{f050f}";
 /// Nerd Fonts: nf-md-account-multiple
 pub const USERS: &str = "\u{f000e}";
 /// Nerd Fonts: nf-md-bell
@@ -361,6 +363,7 @@ mod tests {
     FOLDER,
     LOCK,
     BATTERY,
+    THERMOMETER,
     USERS,
     TEXT_EDITOR,
     PDF,

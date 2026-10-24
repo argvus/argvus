@@ -201,6 +201,7 @@ impl Item {
       Self::AudioPlayer => icons::MUSIC,
       Self::LauncherIcon | Self::LauncherEnabled => icons::LAUNCHER,
       Self::ChooseLauncherIcon => icons::FOLDER,
+      Self::UtilityWidget(widget) => utility_widget_icon(widget),
       Self::Utilities => icons::WIDGET,
       Self::Seconds => icons::TIMER,
       Self::Sessions => icons::LAYOUT,
@@ -209,7 +210,6 @@ impl Item {
       | Self::ImportArchive(_)
       | Self::WallpaperFile(_)
       | Self::IconTheme(_)
-      | Self::UtilityWidget(_)
       | Self::DateFormat(_)
       | Self::TimeFormat(_)
       | Self::UtilityGroup(_)
@@ -223,6 +223,19 @@ impl Item {
       }
     };
     Some(glyph)
+  }
+}
+
+/// Each Taskbar utility widget shows the glyph of the stat it displays.
+fn utility_widget_icon(widget: TaskbarUtilityWidget) -> &'static str {
+  match widget {
+    TaskbarUtilityWidget::Network => icons::NETWORK,
+    TaskbarUtilityWidget::PowerProfile => icons::POWER,
+    TaskbarUtilityWidget::KeyboardLayout => icons::KEYBOARD,
+    TaskbarUtilityWidget::Memory => icons::MEMORY,
+    TaskbarUtilityWidget::Cpu => icons::CPU,
+    TaskbarUtilityWidget::CpuTemperature => icons::THERMOMETER,
+    TaskbarUtilityWidget::GpuTemperature => icons::GPU,
   }
 }
 
@@ -617,16 +630,14 @@ impl AppearanceApp {
         self.submenu(Item::TaskbarDate, "control_center.date"),
         self.submenu(Item::TaskbarTime, "control_center.time"),
       ],
+      // Checks come first; the submenus follow in the last rows.
       AppearancePage::TaskbarIcons => {
         let draft = self.surface_draft();
-        let mut rows = vec![
-          self.toggle_row(
-            Item::AudioPlayer,
-            "control_center.taskbar_audio_player_view",
-            draft.is_some_and(|draft| draft.audio_player_enabled),
-          ),
-          self.submenu(Item::LauncherIcon, "control_center.launcher"),
-        ];
+        let mut rows = vec![self.toggle_row(
+          Item::AudioPlayer,
+          "control_center.taskbar_audio_player_view",
+          draft.is_some_and(|draft| draft.audio_player_enabled),
+        )];
         rows.extend(TaskbarUtilityWidget::ALL.into_iter().map(|widget| {
           self.toggle_row(
             Item::UtilityWidget(widget),
@@ -634,6 +645,7 @@ impl AppearanceApp {
             draft.is_some_and(|draft| draft.utility_widgets.enabled(widget)),
           )
         }));
+        rows.push(self.submenu(Item::LauncherIcon, "control_center.launcher"));
         rows.push(self.submenu(Item::Utilities, "control_center.utilities"));
         rows
       }

@@ -64,6 +64,8 @@ Aparência é a principal área de personalização. Seu grupo Área de trabalho
 
 A Taskbar configura a posição do painel, o espaçamento ao redor dele e das janelas, o grupo de ícones utilitários e os blocos de data/hora, além da própria transparência. Aparece no cartão **Aparência** da tela inicial.
 
+A página **Ícones** lista primeiro, como checks e cada um com seu ícone, a **Visualização do Player de Áudio** e cada widget utilitário (Rede, Perfil de energia, Layout do teclado, Uso de memória, Uso de CPU, Temperatura da CPU e Temperatura da GPU). Os submenus **Lançador** e **Utilitários** ficam por último.
+
 ### Control Panel
 
 O Control Panel configura a visibilidade e a ordem dos seus cards de ação rápida, além das próprias sessões e transparência.

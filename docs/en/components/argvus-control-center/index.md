@@ -64,6 +64,8 @@ Appearance is the main customization area. Its Desktop group holds the theme (wi
 
 Taskbar configures the panel's position, the spacing around it and its windows, the utility icon group, and the date/time blocks, plus its own transparency. It is listed under **Appearance** on the home.
 
+The **Icons** page lists the Audio Player view and each utility widget (Network, Power profile, Keyboard layout, Memory usage, CPU usage, CPU Temperature and GPU Temperature) first, as checks with their own icon. The **Launcher** and **Utilities** submenus come last.
+
 ### Control Panel
 
 Control Panel configures the visibility and order of its quick-action cards, plus its own sessions and transparency.
