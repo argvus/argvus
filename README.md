@@ -7,6 +7,20 @@
 
 <div align="center">
 
+[![CI](https://github.com/argvus/argvus/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/argvus/argvus/actions/workflows/ci.yml)
+[![License: GPL-3.0-only](https://img.shields.io/github/license/argvus/argvus)](./LICENSE)
+[![Rust 1.95+](https://img.shields.io/badge/Rust-1.95%2B-orange?logo=rust)](https://www.rust-lang.org/)
+[![Platform: Arch Linux | Wayland](https://img.shields.io/badge/platform-Arch%20Linux%20%7C%20Wayland-1793D1?logo=archlinux&logoColor=white)](https://archlinux.org/)
+[![Compositor: Hyprland 0.56.2](https://img.shields.io/badge/compositor-Hyprland%200.56.2-58E1FF)](https://hyprland.org/)
+[![Pull requests](https://img.shields.io/github/issues-pr/argvus/argvus)](https://github.com/argvus/argvus/pulls)
+[![Issues](https://img.shields.io/github/issues/argvus/argvus)](https://github.com/argvus/argvus/issues)
+[![Last commit](https://img.shields.io/github/last-commit/argvus/argvus)](https://github.com/argvus/argvus/commits/main)
+[![Docs](https://img.shields.io/badge/docs-argvus.github.io-blue)](https://argvus.github.io/docs/intro/)
+
+</div>
+
+<div align="center">
+
 **A modular desktop environment for Wayland and Arch Linux, built on Hyprland.**
 
 ARGVUS coordinates a modular Wayland desktop ecosystem: session lifecycle,
@@ -31,29 +45,30 @@ power, display, network, notifications and themes — all packaged for Arch Linu
 - **Terminal and TUI apps** — Terminal profiles, system monitor and app profiles for bundled TUI tools
 - **Themes** — 22 official theme families (44 variants with Light/Dark and Float styles)
 - **Games** — Optional. Snake for the terminal (`argvus-game-snake`, an independent project), with a local high score list
+- **Languages** — English (en-US, canonical) and Portuguese (pt-BR), managed by `argvus i18n`
 
 ## Modular Ecosystem
 
-`argvus` is the master package and the only package of the desktop. It installs the
-command, its in-process subcommands and the shared runtime, the helpers (the Control
-Center, a terminal application, and the GTK 4 taskbar calendar, removable devices and
-loading overlay) and the login greeter (built from `crates/argvus-greeter`). Every
-component package depends on it, so no install order is required.
+`argvus` is the master package and the only package built from this repository. It installs the
+command, its in-process subcommands and the shared runtime, the Control Center (a terminal
+application), the GTK 4 helpers for the taskbar calendar, removable devices and the loading
+overlay, and the login greeter (built from `crates/argvus-greeter`). Every component package
+depends on it, so no install order is required.
 
 | Area | Packages and commands |
 |------|-----------------------|
-| Session lifecycle, login and startup | `argvus-session`, `argvus-greeter`, `argvus-boot-splash` |
+| Session lifecycle, login and startup | `argvus-session`, `argvus greeter` (in `argvus`), `argvus-boot-splash` |
 | Hyprland configuration and scripts | `argvus-hyprland` |
 | Quickshell control panel | `argvus-control-panel` |
 | Taskbar, Waybar and widgets | `argvus-taskbar`, `argvus-waybar`, `argvus widget-telemetry` |
-| Settings application | `argvus control-center` (`argvus`) |
+| Settings application | `argvus control-center` (in `argvus`) |
 | Launcher and lock screen | `argvus-launcher`, `argvus-lock` |
 | Appearance, wallpapers, fonts and icons | `argvus-appearance`, `argvus-wallpapers`, `argvus-fonts`, `argvus-icons`, `argvus-branding` |
 | Themes | `argvus-theme-*` (one package per official theme) |
 | Terminal, TUI apps and system monitor | `argvus terminal`, `argvus tui-terminal`, `argvus system-monitor`, `argvus-app-profiles` (data) |
 | Display, power, network and notifications | `argvus-display`, `argvus-power`, `argvus network`, `argvus-notifications` |
 | Desktop portals and Wayland/DBus defaults | `argvus-portal` |
-| Removable storage | `argvus removable-devices` (`argvus`) |
+| Removable storage | `argvus removable-devices` (in `argvus`) |
 | Accounts | `argvus accounts` (runs as root through `pkexec`) |
 | Firewall | `argvus-firewall` |
 | Games | `argvus-games`; `argvus-game-snake` is independent and optional |
@@ -101,8 +116,9 @@ Hyprland. Change the accent color from the Highlight color control in the Contro
 | Universe              |                    |
 
 Every family above has a Float variant (for example `dracula-float`).
-Official themes are defined in `argvus-appearance`. The `argvus-theme-*`
-packages are optional and can be installed individually, for example `pacman -S argvus-theme-sunset`.
+The shared theme catalog ships in `argvus-appearance` (21 families). `nord-light` comes only
+from `argvus-theme-nord-light`. The `argvus-theme-*` packages are optional and can be installed
+individually, for example `pacman -S argvus-theme-sunset`.
 
 ## Install
 
@@ -196,6 +212,6 @@ If [ARGVUS](https://argvus.github.io) is useful to you, please consider supporti
 
 <div align="center">
 
-Licensed under [GPL-3.0-only](./LICENSE)
+Licensed under [GPL-3.0](./LICENSE)
 
 </div>
