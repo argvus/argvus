@@ -485,7 +485,7 @@ impl App {
   pub(crate) fn has_action_bar(&self) -> bool {
     matches!(
       self.page(),
-      Page::KeyboardLayout | Page::TimeZone | Page::SshKeys
+      Page::KeyboardLayout | Page::TimeZone | Page::SystemLocales | Page::SshKeys
     )
   }
 
@@ -502,6 +502,7 @@ impl App {
     match self.page() {
       Page::KeyboardLayout => self.keyboard_action_rows(),
       Page::TimeZone => self.timezone_action_rows(),
+      Page::SystemLocales => self.locales_action_rows(),
       Page::SshKeys => self.ssh_keys_action_rows(),
       _ => Vec::new(),
     }

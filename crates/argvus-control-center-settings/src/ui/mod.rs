@@ -171,6 +171,7 @@ fn scrollbar_position(offset: usize, rows: usize, viewport: usize) -> usize {
 fn list_title_key(page: Page) -> &'static str {
   match page {
     Page::TimeZone => "control_center.time_zone",
+    Page::SystemLocales => "control_center.system_locales",
     Page::SshKeys => "control_center.ssh_keys",
     Page::GpgKeys => "control_center.gpg_keys",
     Page::GpgFormExpiration => "control_center.gpg_keys_expiration",

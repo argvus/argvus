@@ -321,7 +321,6 @@ impl App {
         if rows.is_empty() {
           rows.push(self.empty_list_row(page));
         }
-        rows.extend(self.locales_apply_rows());
         rows
       }
       Page::Keyboard => vec![
@@ -476,11 +475,6 @@ impl App {
     }
   }
 
-  /// `Apply` of the System Locales selection.
-  fn locales_apply_rows(&self) -> Vec<Row<Item>> {
-    self.draft_apply_rows(Item::ApplyLocales, self.locales_changed())
-  }
-
   /// The action bar under Keyboard > Layout: its `Apply` button, enabled only
   /// while the draft differs from the system. It stays out of `rows`, so the
   /// list cursor never walks into it; `Tab` reaches it instead.
@@ -508,14 +502,16 @@ impl App {
     ]
   }
 
-  /// The trailing `Apply` group of a draft page: disabled while `changed` is
-  /// false, and flagged as changed when it is true.
-  fn draft_apply_rows(&self, apply: Item, changed: bool) -> Vec<Row<Item>> {
-    let mut rows = draft_actions(apply, self.label("control_center.apply"), changed);
-    if changed && let Some(apply) = rows.pop() {
-      rows.push(apply.detail(self.label("control_center.draft_changed")));
-    }
-    rows
+  /// The action bar under System Locales: its `Apply` button, enabled only
+  /// while the marked locales differ from `/etc/locale.gen`. Like Time Zone,
+  /// it stays out of `rows`; running it asks for confirmation first.
+  pub(super) fn locales_action_rows(&self) -> Vec<Row<Item>> {
+    vec![
+      Row::action(Item::ApplyLocales, self.label("control_center.apply"))
+        .icon(icons::APPLY)
+        .emphasis(Emphasis::Primary)
+        .enabled(self.locales_changed()),
+    ]
   }
 
   /// Whether the marked locales differ from the ones enabled in
