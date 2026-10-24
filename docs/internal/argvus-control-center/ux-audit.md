@@ -201,7 +201,7 @@ linhas no mesmo cursor (`selected - rows.len()`), desenhados com
 | Data e hora | Data/hora local (só sem NTP) | Edita | Value (desabilitada com NTP ligado, como hoje) | `Enter` | migrado |
 | Data e hora | Fuso horário | Info | Info | — | migrado |
 | Data e hora | NTP automático | `SetNtp` → confirmação | Toggle confirmado | `Enter`/`Space` | migrado |
-| Locales do sistema | Locales `[x]` | Marca; aplicar = `ApplySystemLocales` → confirmação | Toggle (rascunho; Enter também alterna) + `Aplicar` (`draft_actions`, última linha, apagada sem mudança, confirmada) (D20) | `Space`/`Enter`, `End` | migrado |
+| Locales do sistema | Locales `[x]` | Marca; aplicar = `ApplySystemLocales` → confirmação | Toggle (rascunho; Enter também alterna) + `Aplicar` na barra Ações (`locales_action_rows`, apagada sem mudança, confirmada) (D20) | `Space`/`Enter`, `/`, `Tab` | migrado |
 | Teclado | Layout, Variante, Mapa do console | Abre seletores | Submenu ×3 | `Enter` | migrado |
 | Teclado | Modelo, Opções | Info (já não selecionáveis) | Info | — | migrado |
 | Layouts | Layout | Enter define o padrão; Space liga/desliga na lista | Toggle (`[x]` = na lista; valor "· Padrão" no padrão); Enter mantém "definir padrão"; o rodapé mostra `Enter Definir padrão` e `Space Alternar` (D22) | `Enter`, `Space` | migrado |
@@ -1017,7 +1017,8 @@ Mudanças de comportamento, além da apresentação:
 - `Tab`/`BackTab` não fazem mais nada no `settings` (não há abas); `←/→`
   não navegam mais entre botões.
 - Locales do sistema: Enter numa linha alterna o locale (antes aplicava de
-  qualquer linha); `Aplicar` é a última linha, apagada sem mudança (D20).
+  qualquer linha); `Aplicar` fica na barra Ações embaixo da lista, apagada sem
+  mudança e confirmada (D20, revisado).
 - Fontes: o Tamanho é a primeira linha do seletor (Value), com prompt 8–32
   no Enter (D21).
 - Sistema > Hostname abre o popup direto (D21).
@@ -1553,7 +1554,7 @@ ações nem o momento em que cada mudança é efetivada.
 | D17 | `Bloquear senha`/`Desbloquear senha` continuam duas linhas: o snapshot de `argvus accounts` não traz o estado de bloqueio (`crates/argvus-accounts-core/src/admin.rs`, objeto `users`). | decidido (Fase 3) |
 | D18 | `Remover avatar`: Action com confirmação, sem estilo de perigo, na seção Avatar. `Aplicar regras salvas`: Action confirmada na seção Regras, fora da Zona de perigo; a confirmação avisa que o firewall será reiniciado. | decidido (Fase 3) |
 | D19 | `r` em Atalhos mantém o efeito de antes (restaura **só o atalho selecionado**; na edição, o atalho editado e volta) e passa pela confirmação única, como o D6 exige. `Restaurar todos os atalhos` é a linha Destructive da Zona de perigo. A linha `Restaurar padrão` da edição continua imediata, como antes. | decidido (Fase 3) |
-| D20 | Locales do sistema: Enter numa linha alterna o locale; `Aplicar` é a última linha (rascunho, confirmada). | decidido (Fase 3) |
+| D20 | Locales do sistema: Enter numa linha alterna o locale (rascunho); `Aplicar` fica na barra **Ações** embaixo da lista, com `/` para buscar no topo, `Tab`/`←/→` para o foco, como Fuso horário; apagada sem mudança e confirmada antes de gravar (revisado em 2026-10-24). | decidido (Fase 3, revisado) |
 | D21 | Fontes: Tamanho vira Value no topo do seletor (prompt 8–32 no Enter). Sistema > Hostname abre o popup direto; a página Hostname segue para a rota CLI. | decidido (Fase 3) |
 | D22 | Layouts: Enter define o padrão e Space liga/desliga o layout na lista; o rodapé mostra as duas teclas (`Enter Definir padrão`, `Space Alternar`). | decidido (Fase 3) |
 | D23 | Firewall: Iniciar/Parar viram uma linha de estado `Serviço · Ativo/Parado` cuja Enter alterna (o backend informa `active`), confirmada como antes. | decidido (Fase 3) |
