@@ -460,11 +460,11 @@ helper elevado do DNS (`SystemSettingsOperation`) não muda.
 | Home | Sistema, Usuário, Falhos, Logs | Abre páginas | Submenu ×4 | `Enter` | pendente |
 | Sistema / Usuário / Falhos | Unidade | Abre detalhe (que **já** lista ações como linhas) | Submenu | `Enter`, `/` busca | pendente |
 | Sistema / Usuário / Falhos | **`[ Start ]`**, **`[ Stop ]`**, **`[ Restart ]`** | `request` (confirmado) | Action ×3 no detalhe (já existem lá) | `Enter` | pendente |
-| Sistema / Usuário / Falhos | **`[ Filter: X ]`** | `cycle_filter` | Choice `Filtro` (cicla) no topo da lista | `Enter`/`←→` | pendente |
+| Sistema / Usuário / Falhos | **`[ Filter: X ]`** | `cycle_filter` | Linha `Filter:` fora do menu, com o valor à direita; cicla com `f` | `f` | migrado |
 | Detalhe | Start, Stop, Restart, Enable, Disable, Enable now, Disable now, Logs | `request` (confirmado) / abre logs | Action ×7 + Submenu (já são linhas) | `Enter` | pendente |
-| Logs | **`[ Boot: atual/anterior ]`** | Alterna boot | Toggle `Boot anterior` | `Space` | pendente |
-| Logs | **`[ Service: X ]`** | `cycle_log_unit` | Choice `Serviço` | `Enter`/`←→` | pendente |
-| Logs | **`[ Priority: X ]`** | `cycle_priority` | Choice `Prioridade` | `Enter`/`←→` | pendente |
+| Logs | **`[ Boot: atual/anterior ]`** | Alterna boot | Linha `Filter:` mostra `Boot: …`; `b` alterna | `b` | migrado |
+| Logs | **`[ Service: X ]`** | `cycle_log_unit` | Linha `Filter:` mostra `Service: …`; `u` cicla | `u` | migrado |
+| Logs | **`[ Priority: X ]`** | `cycle_priority` | Linha `Filter:` mostra `Priority: …`; `p` cicla (corrigido: a partir de "0-7" agora vai para "0") | `p` | migrado |
 | Logs | Entrada | Abre detalhe do log | Submenu | `Enter`, `/` | pendente |
 | Global | Atualizar | `refresh` | Atalho mantido | `r` | pendente |
 
@@ -903,7 +903,7 @@ Notas de projeto:
 | 3 | `boot` | concluída (`93bc44f`, `1d04196`, `a82ada7`; `argvus-i18n` `2e6be4e`) |
 | 3 | `packages` | concluída (`33a033f`, `63689aa`; `argvus-tui` `6beda24`; `argvus-i18n` `ef69e70`) |
 | 3 | `network` | concluída (`83a0461`, `d5df88d`; `argvus-tui` `541d788`; `argvus-i18n` `b46d99b`) |
-| 3 | `services` | parcial, sem commit: listas Sistema/Usuário/Falhos migradas (filtro como linha no topo, busca sempre visível com `/`, colunas Active/Enabled com bolinha cheia/vazia, Enter abre detalhe, detalhe da unidade como menu: bloco "Service" com informações somente leitura e bloco "Actions" com Start/Stop/Restart/Enable/Disable/Enable now/Disable now/Logs; filtro volta a All ao sair da lista). Pendentes: decisão "ações no topo da lista" (sem alvo com um cursor só), barra de botões de Logs (Boot/Service/Priority), cabeçalho "Name:" com dois-pontos; rótulo "View Logs" com a chave nova `control_center.view_logs` em argvus-i18n |
+| 3 | `services` | parcial, sem commit: listas Sistema/Usuário/Falhos e Logs no layout Filter / Search / bloco. Linha `Filter:` fora do menu com o valor à direita (`f` cicla; não é mais linha selecionável); caixa `Search:` com borda, destacada enquanto recebe texto (`/` busca nas unidades e nos logs); unidades no bloco `Services:` com bolinhas Active/Enabled; o cabeçalho `Name:` saiu. Logs: a linha `Filter:` resume Boot/Service/Priority, e `b`, `u` e `p` alteram cada um; a barra de botões saiu. `p` corrigido: a partir de "0-7" não ficava preso. Detalhe da unidade como menu: bloco "Service" com informações somente leitura e bloco "Actions" com Start/Stop/Restart/Enable/Disable/Enable now/Disable now/Logs; filtro volta a All ao sair da lista. Pendente: decisão "ações no topo da lista" (sem alvo com um cursor só); rótulo "View Logs" com a chave `control_center.view_logs` em argvus-i18n |
 | 3 | `audio` | migrada, sem commit (barra de botões removida; teclas no rodapé; `argvus-i18n` com a chave `navigate_volume_enter_set_default_r_refresh_esc_back_help`; `[Value]` em `v`, a confirmar) |
 | 3 | `bluetooth` | pendente |
 | 3 | `power` | pendente |
