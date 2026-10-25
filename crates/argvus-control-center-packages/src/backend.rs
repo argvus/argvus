@@ -5,6 +5,7 @@
 use crate::model::*;
 use argvus_control_center_core::{
   capabilities::{Capabilities, resolve_executable},
+  pacman_conf::{self, KeyInfo, PACMAN_CONF, Repository},
   process::{ProcessError, ProcessRequest, ProcessRunner},
   sanitize::terminal_text,
 };
@@ -29,11 +30,17 @@ pub enum PackageError {
   InvalidPackageName,
   #[error("invalid reflector option")]
   InvalidReflectorOption,
+  /// Only `https://` addresses are downloaded.
+  #[error("only https:// addresses are accepted")]
+  NotHttps,
   /// Removing the targets would break these installed packages, which
   /// depend on them; only a cascade removal can take them away together.
   #[error("required by: {}", .0.join(", "))]
   BreaksDependencies(Vec<String>),
 }
+/// Largest file downloaded for a repository (its configuration or its key).
+const MAX_DOWNLOAD_BYTES: usize = 256 * 1024;
+
 /// Fields of each package of a `--print` plan: name, version and size,
 /// separated by real tabs (pacman prints the format as given, without
 /// expanding a written backslash-t).
@@ -298,6 +305,82 @@ impl<R: ProcessRunner> PackageBackend<R> {
         .unwrap_or_default(),
     )
   }
+  /// The unofficial repositories of `/etc/pacman.conf` and the files it
+  /// includes, read without running anything.
+  pub fn repositories(&self) -> Result<Vec<Repository>, PackageError> {
+    let text = fs::read_to_string(PACMAN_CONF)
+      .map_err(|error| PackageError::Command(format!("{PACMAN_CONF}: {error}")))?;
+    Ok(pacman_conf::list_repositories(&text, |path| {
+      fs::read_to_string(path).ok()
+    }))
+  }
+  /// Downloads `url` as the user, following redirects only to https and
+  /// refusing files larger than a repository configuration or key.
+  pub fn fetch_https(&self, url: &str) -> Result<Vec<u8>, PackageError> {
+    if !url.starts_with("https://") || url.chars().any(|c| c.is_whitespace() || c.is_control()) {
+      return Err(PackageError::NotHttps);
+    }
+    let request = ProcessRequest::new("curl")
+      .arg("--fail")
+      .arg("--silent")
+      .arg("--show-error")
+      .arg("--location")
+      .arg("--proto")
+      .arg("=https")
+      .arg("--proto-redir")
+      .arg("=https")
+      .arg("--max-filesize")
+      .arg(MAX_DOWNLOAD_BYTES.to_string())
+      .arg("--max-time")
+      .arg("30")
+      .arg("--")
+      .arg(url)
+      .timeout(Duration::from_secs(40));
+    let output = self.runner.run(&request)?;
+    if output.timed_out {
+      return Err(PackageError::Command("timeout".into()));
+    }
+    if output.status != Some(0) {
+      return Err(PackageError::Command(terminal_text(
+        String::from_utf8_lossy(&output.stderr).trim(),
+      )));
+    }
+    if output.stdout.len() > MAX_DOWNLOAD_BYTES {
+      return Err(PackageError::Command(format!("{url}: file too large")));
+    }
+    Ok(output.stdout)
+  }
+  /// The public keys of `key` (armored or binary), read with
+  /// `gpg --show-keys` as the user without importing anything.
+  pub fn key_info(&self, key: &[u8]) -> Result<Vec<KeyInfo>, PackageError> {
+    let directory = std::env::var_os("XDG_RUNTIME_DIR")
+      .map(PathBuf::from)
+      .unwrap_or_else(std::env::temp_dir);
+    let key_file = directory.join(format!(
+      "argvus-repository-key-{}-{}.gpg",
+      std::process::id(),
+      key.len()
+    ));
+    write_private_file(&key_file, key)?;
+    let request = ProcessRequest::new("gpg")
+      .arg("--batch")
+      .arg("--no-autostart")
+      .arg("--with-colons")
+      .arg("--show-keys")
+      .arg(key_file.to_string_lossy().into_owned())
+      .timeout(Duration::from_secs(30));
+    let output = self.runner.run(&request);
+    let _ = fs::remove_file(&key_file);
+    let output = output?;
+    if output.status != Some(0) {
+      return Err(PackageError::Command(terminal_text(
+        String::from_utf8_lossy(&output.stderr).trim(),
+      )));
+    }
+    Ok(pacman_conf::parse_key_listing(&String::from_utf8_lossy(
+      &output.stdout,
+    )))
+  }
   /// Executes the `aur_helper` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn aur_helper(&self) -> Option<&'static str> {
     self
@@ -321,6 +404,10 @@ impl<R: ProcessRunner> PackageBackend<R> {
     let cache = self.cache();
     let mirrors = self.mirrors();
     let mut dashboard = PackageDashboard {
+      repository_count: self
+        .repositories()
+        .map(|list| list.len())
+        .unwrap_or_default(),
       cache_count: cache.len(),
       cache_bytes: cache.iter().map(|entry| entry.bytes).sum(),
       mirrors_total: mirrors.len(),
@@ -477,6 +564,20 @@ pub fn validate_package_names(values: &[String]) -> Result<(), PackageError> {
   values
     .iter()
     .try_for_each(|value| validate_package_name(value))
+}
+/// Writes `contents` to a new file only the user can read.
+fn write_private_file(path: &Path, contents: &[u8]) -> Result<(), PackageError> {
+  use std::io::Write as _;
+  use std::os::unix::fs::OpenOptionsExt as _;
+  let mut file = fs::OpenOptions::new()
+    .write(true)
+    .create_new(true)
+    .mode(0o600)
+    .open(path)
+    .map_err(|error| PackageError::Command(format!("{}: {error}", path.display())))?;
+  file
+    .write_all(contents)
+    .map_err(|error| PackageError::Command(format!("{}: {error}", path.display())))
 }
 /// Converts input data into `parse_installed` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn parse_installed(input: &str) -> Vec<Package> {

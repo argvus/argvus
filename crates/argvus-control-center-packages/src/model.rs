@@ -41,6 +41,15 @@ pub enum PackagesPage {
   /// Reflector options, opened from Mirrors; generating the preview asks
   /// for confirmation before the mirror list is replaced.
   MirrorEditor,
+  /// Add and List of the unofficial repositories, opened from Official
+  /// Repositories.
+  Repositories,
+  /// The form that adds a repository (configuration and signing key).
+  RepositoryAdd,
+  /// The unofficial repositories of `pacman.conf`, enabled and disabled.
+  RepositoryList,
+  /// One repository of the list, by its index in the loaded list.
+  RepositoryDetails(usize),
 }
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 /// Represents `Package`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
@@ -244,6 +253,8 @@ pub struct PackageDashboard {
   pub mirrors_total: usize,
   pub mirrors_enabled: usize,
   pub available_count: usize,
+  /// Unofficial repositories in `pacman.conf`, enabled or not.
+  pub repository_count: usize,
   pub aur_helper: Option<String>,
   /// Real failure reason instead of silently masking a query as zero.
   pub error: Option<String>,

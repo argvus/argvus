@@ -33,8 +33,9 @@ use argvus_tui::{
   icons,
   menu::{MenuEvent, MenuState, MenuStyle, Row, RowKind, draw_menu},
   page::{shell, status},
+  text_editor::{EditorOutcome, TextEditor},
 };
-use crossterm::event::KeyCode;
+use crossterm::event::{KeyCode, KeyEvent};
 use ratatui::{
   Frame,
   layout::{Alignment, Constraint, Layout, Rect},
@@ -42,6 +43,11 @@ use ratatui::{
   text::{Line, Span},
   widgets::{Block, Borders, Clear, Paragraph, Wrap},
 };
+
+mod repositories;
+
+use argvus_control_center_core::pacman_conf::Repository;
+use repositories::{DraftField, RepositoryDraft, RepositoryReview};
 
 /// Defines `Loaded`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 enum Loaded {
@@ -55,6 +61,9 @@ enum Loaded {
   MirrorPreview(String),
   MirrorCountries(Vec<String>),
   Dashboard(PackageDashboard),
+  Repositories(Vec<Repository>),
+  /// The checked draft of the Add page; its confirmation opens next.
+  RepositoryReview(Box<RepositoryReview>),
 }
 #[derive(Debug, Clone, PartialEq, Eq)]
 /// Defines `Action`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
@@ -83,6 +92,21 @@ enum Action {
   /// Updates every AUR package with the helper, as the normal user.
   AurUpgrade,
   ApplyMirrors(String),
+  /// Adds the reviewed repository: imports and locally signs its key, writes
+  /// its file in `/etc/pacman.d/` and includes it in `pacman.conf`.
+  RepoAdd(Box<RepositoryReview>),
+  /// The full upgrade offered right after a repository was added, so its
+  /// database is synchronized without a partial upgrade.
+  UpgradeAfterRepoAdd,
+  RepoEnable(String),
+  RepoDisable(String),
+  /// Removes a repository; `key` is the fingerprint it recorded, deleted
+  /// from the keyring too when `delete_key`.
+  RepoRemove {
+    name: String,
+    key: Option<String>,
+    delete_key: bool,
+  },
 }
 
 impl Action {
@@ -97,6 +121,8 @@ impl Action {
         | Self::RemoveCascade { .. }
         | Self::CleanCache(_)
         | Self::Downgrade(_)
+        | Self::RepoAdd(_)
+        | Self::RepoRemove { .. }
     )
   }
 
@@ -106,6 +132,18 @@ impl Action {
       Self::RemoveCascade { packages, .. } => {
         Some([Self::RemoveOnly(packages.clone()), self.clone()])
       }
+      Self::RepoRemove {
+        name,
+        key: Some(key),
+        delete_key: false,
+      } => Some([
+        self.clone(),
+        Self::RepoRemove {
+          name: name.clone(),
+          key: Some(key.clone()),
+          delete_key: true,
+        },
+      ]),
       _ => None,
     }
   }
@@ -168,6 +206,16 @@ enum Item {
   MirrorCount,
   MirrorSort,
   MirrorPreview,
+  /// A field of the repository Add page.
+  RepoField(DraftField),
+  /// `Review and add` on the Add page.
+  RepoReview,
+  /// Index into `repositories`, on the List page.
+  Repository(usize),
+  /// The Enabled toggle of the open repository.
+  RepoToggle,
+  /// Remove, in the Danger zone of the open repository.
+  RepoRemove,
 }
 
 impl Item {
@@ -263,6 +311,19 @@ pub struct PackagesApp {
   transaction_open: bool,
   transaction_scroll: u16,
   transaction_follow: bool,
+  /// The unofficial repositories of `pacman.conf`.
+  repositories: Vec<Repository>,
+  /// The repository being added on the Add page.
+  repo_draft: RepositoryDraft,
+  /// The text field open over the Add page, and the field it edits.
+  editor: Option<(DraftField, TextEditor)>,
+  /// The confirmation shown when leaving the Add page with a draft.
+  discard: Option<ConfirmState>,
+  /// The operation running now, to know what follows when it succeeds.
+  running: Option<Action>,
+  /// What to ask once the operation output is closed (the upgrade offered
+  /// after adding a repository).
+  follow_up: Option<Action>,
 }
 
 /// Defines the constant `TRANSACTION_POPUP_WIDTH`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
@@ -345,6 +406,12 @@ impl PackagesApp {
       transaction_open: false,
       transaction_scroll: 0,
       transaction_follow: false,
+      repositories: vec![],
+      repo_draft: RepositoryDraft::default(),
+      editor: None,
+      discard: None,
+      running: None,
+      follow_up: None,
     }
   }
   /// Executes the `busy` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
@@ -446,6 +513,12 @@ impl PackagesApp {
             .map_err(|e| e.to_string())?,
         )),
         PackagesPage::Home | PackagesPage::Source(_) => Loaded::Dashboard(b.dashboard()),
+        PackagesPage::Repositories
+        | PackagesPage::RepositoryAdd
+        | PackagesPage::RepositoryList
+        | PackagesPage::RepositoryDetails(_) => {
+          Loaded::Repositories(b.repositories().map_err(|e| e.to_string())?)
+        }
       };
       Ok(Ok(data))
     }));
@@ -520,14 +593,46 @@ impl PackagesApp {
           self.lang,
           "control_center.operation_completed_refreshing_packages",
         ));
+        self.after_success();
         self.reload_force();
         true
       }
       JobState::Finished(Ok(Err(e))) | JobState::Finished(Err(e)) => {
         self.action = None;
+        self.running = None;
         self.error(e);
         true
       }
+    }
+  }
+  /// What follows a successful operation: after adding a repository, the
+  /// draft is cleared, the List opens and the upgrade is offered; after
+  /// removing one, its page closes.
+  fn after_success(&mut self) {
+    match self.running.take() {
+      Some(Action::RepoAdd(_)) => {
+        self.repo_draft = RepositoryDraft::default();
+        if self.page == PackagesPage::RepositoryAdd {
+          self.go(PackagesPage::RepositoryList);
+        }
+        self.follow_up = Some(Action::UpgradeAfterRepoAdd);
+      }
+      Some(Action::RepoRemove { .. })
+        if matches!(self.page, PackagesPage::RepositoryDetails(_)) =>
+      {
+        self.go(PackagesPage::RepositoryList);
+      }
+      _ => {}
+    }
+    if !self.transaction_open {
+      self.ask_follow_up();
+    }
+  }
+  /// Opens the confirmation that follows an operation, once its output is
+  /// no longer on screen.
+  fn ask_follow_up(&mut self) {
+    if let Some(next) = self.follow_up.take() {
+      self.request(next);
     }
   }
   /// Applies the `apply` operation while preserving the persistence and local-update contract. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
@@ -558,6 +663,14 @@ impl PackagesApp {
         self.dashboard = v;
       }
       Loaded::Details(v) => self.details = Some(*v),
+      Loaded::Repositories(list) => self.repositories = list,
+      Loaded::RepositoryReview(review) => {
+        self.request(Action::RepoAdd(review));
+        self.status = None;
+        // Not a list refresh: skip the "refreshed" status under the
+        // confirmation.
+        reported_error = true;
+      }
       Loaded::MirrorPreview(content) => {
         self.mirror_options = None;
         if self.page == PackagesPage::MirrorEditor {
@@ -672,7 +785,7 @@ impl PackagesApp {
   /// confirmations, the transaction log and running operations sit above
   /// the list filter and do not take text.
   pub fn captures_text(&self) -> bool {
-    if self.input.is_some() {
+    if self.input.is_some() || self.editor.is_some() {
       return true;
     }
     self.pending.is_none()
@@ -683,8 +796,23 @@ impl PackagesApp {
 
   /// Processes `handle` in this module's event flow. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn handle(&mut self, key: KeyCode) -> bool {
+    if self.editor.is_some() {
+      return self.handle_key(KeyEvent::from(key));
+    }
     if self.input.is_some() {
       return self.handle_input(key);
+    }
+    if let Some(state) = self.discard.as_mut() {
+      match state.handle(key) {
+        ConfirmOutcome::Confirmed => {
+          self.discard = None;
+          self.repo_draft = RepositoryDraft::default();
+          return self.back();
+        }
+        ConfirmOutcome::Cancelled => self.discard = None,
+        ConfirmOutcome::Pending => {}
+      }
+      return false;
     }
     if let Some(choices) = self.pending.as_ref().and_then(Action::choices) {
       match self.choice.handle(key, choices.len()) {
@@ -762,6 +890,32 @@ impl PackagesApp {
     }
     false
   }
+  /// A key with its modifiers, from the event loop: the text editor of the
+  /// repository Add page needs `Ctrl+S`; every other key goes to
+  /// [`Self::handle`].
+  pub fn handle_key(&mut self, key: KeyEvent) -> bool {
+    let Some((field, editor)) = self.editor.as_mut() else {
+      return self.handle(key.code);
+    };
+    match editor.handle(key) {
+      EditorOutcome::Saved(text) => {
+        let field = *field;
+        self.editor = None;
+        self.save_repository_field(field, text);
+      }
+      EditorOutcome::Cancelled => self.editor = None,
+      EditorOutcome::Pending => {}
+    }
+    false
+  }
+
+  /// Pasted text (bracketed paste) goes to the open text editor.
+  pub fn paste(&mut self, text: &str) {
+    if let Some((_, editor)) = self.editor.as_mut() {
+      editor.paste(text);
+    }
+  }
+
   /// The action bar under the Update lists: `Tab` moves the focus to its
   /// buttons and back, `←/→` move between them, `Enter`/`Space` run the
   /// focused one, and `↑/↓` give the focus back to the list. On the list,
@@ -836,6 +990,9 @@ impl PackagesApp {
         self.transaction_live = None;
         self.transaction_scroll = 0;
         self.transaction_follow = false;
+        if self.action.is_none() {
+          self.ask_follow_up();
+        }
       }
       KeyCode::Up | KeyCode::Char('k') => {
         self.transaction_follow = false;
@@ -990,6 +1147,22 @@ impl PackagesApp {
       PackagesPage::MirrorEditor => {
         self.mirror_options = None;
         (PackagesPage::Mirrors, Some(Item::ConfigureMirrors))
+      }
+      PackagesPage::Repositories => (
+        PackagesPage::Source(PackageSource::Official),
+        Some(Item::Open(PackagesPage::Repositories)),
+      ),
+      PackagesPage::RepositoryAdd if self.repo_draft.is_touched() && self.discard.is_none() => {
+        // Leaving drops the draft: ask first (the confirmation calls back
+        // here once the draft is cleared).
+        self.discard = Some(ConfirmState::new());
+        return false;
+      }
+      page @ (PackagesPage::RepositoryAdd | PackagesPage::RepositoryList) => {
+        (PackagesPage::Repositories, Some(Item::Open(page)))
+      }
+      PackagesPage::RepositoryDetails(index) => {
+        (PackagesPage::RepositoryList, Some(Item::Repository(index)))
       }
       page => (PackagesPage::Home, Some(Item::Open(page))),
     };
@@ -1174,11 +1347,20 @@ impl PackagesApp {
           self.start_mirror_preview(options);
         }
       }
+      Item::RepoField(field) => self.activate_repository_field(field),
+      Item::RepoReview => self.start_repository_review(),
+      Item::Repository(index) => self.go(PackagesPage::RepositoryDetails(index)),
+      Item::RepoToggle => self.toggle_open_repository(),
+      Item::RepoRemove => self.remove_open_repository(),
     }
   }
   /// `←/→` (and Space) on a reflector option: cycles the choices or moves
   /// the number one step, within the same bounds as before.
   fn adjust(&mut self, item: Item, step: i32) {
+    if let Item::RepoField(field) = item {
+      self.adjust_repository_field(field, step);
+      return;
+    }
     let countries = self.mirror_countries.clone().unwrap_or_default();
     let Some(options) = self.mirror_options.as_mut() else {
       return;
@@ -1336,6 +1518,7 @@ impl PackagesApp {
   /// Executes the `start_pending` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn start_pending(&mut self) {
     let Some(a) = self.pending.take() else { return };
+    self.running = Some(a.clone());
     let caps = self.capabilities.clone();
     self.preview = None;
     self.status = Some(StatusMessage {
@@ -1464,6 +1647,10 @@ impl PackagesApp {
       PackagesPage::History | PackagesPage::HistoryDetails(_) => self.history_rows(),
       PackagesPage::Mirrors => self.mirror_rows(),
       PackagesPage::MirrorEditor => self.mirror_editor_rows(),
+      PackagesPage::Repositories => self.repositories_rows(),
+      PackagesPage::RepositoryAdd => self.repository_add_rows(),
+      PackagesPage::RepositoryList => self.repository_list_rows(),
+      PackagesPage::RepositoryDetails(index) => self.repository_details_rows(index),
     }
   }
   /// The row of an empty filtered list, saying why it is empty. `None` while
@@ -1638,6 +1825,14 @@ impl PackagesApp {
         None => row,
       }
     })
+    .chain((source == PackageSource::Official).then(|| {
+      Row::submenu(
+        Item::Open(PackagesPage::Repositories),
+        tr(lang, "control_center.repositories"),
+      )
+      .icon(icons::STORAGE)
+      .detail(self.repository_count_text(dashboard.repository_count))
+    }))
     .collect()
   }
   /// Install and Remove lists: Enter installs or removes the package, `→`
@@ -2045,6 +2240,9 @@ impl PackagesApp {
   }
   /// The footer derived from the selected row.
   fn footer_hints(&self, rows: &[Row<Item>]) -> String {
+    if self.discard.is_some() {
+      return confirm_hints(self.lang);
+    }
     if let Some(pending) = &self.pending {
       return if pending.choices().is_some() {
         choice_hints(self.lang)
@@ -2316,6 +2514,33 @@ impl PackagesApp {
         &self.confirmation,
       );
     }
+    if let Some(state) = &self.discard {
+      draw_confirm(
+        f,
+        f.area(),
+        &self.theme,
+        ConfirmDialog {
+          title: tr(self.lang, "control_center.repository_add"),
+          message: tr(self.lang, "control_center.repo_discard"),
+          confirm: tr(self.lang, "control_center.repo_discard_confirm"),
+          cancel: tr(self.lang, "control_center.cancel"),
+          danger: false,
+          deadline: None,
+        },
+        state,
+      );
+    }
+    if let Some((_, editor)) = &self.editor {
+      let hint = tr(
+        self.lang,
+        if editor.is_multiline() {
+          "control_center.repo_editor_multi"
+        } else {
+          "control_center.repo_editor_single"
+        },
+      );
+      editor.draw(f, f.area(), &self.theme, hint);
+    }
     if let Some(s) = &self.status {
       status(f, f.area(), &self.theme, s)
     }
@@ -2409,6 +2634,30 @@ impl PackagesApp {
         label("control_center.configure_mirrors")
       ),
       PackagesPage::Home => label("control_center.packages"),
+      PackagesPage::Repositories => format!(
+        "{} > {}",
+        self.source_label(PackageSource::Official),
+        label("control_center.repositories")
+      ),
+      PackagesPage::RepositoryAdd => format!(
+        "{} > {}",
+        self.label_of(PackagesPage::Repositories),
+        label("control_center.repository_add")
+      ),
+      PackagesPage::RepositoryList => format!(
+        "{} > {}",
+        self.label_of(PackagesPage::Repositories),
+        label("control_center.repository_list")
+      ),
+      PackagesPage::RepositoryDetails(index) => format!(
+        "{} > {}",
+        self.label_of(PackagesPage::RepositoryList),
+        self
+          .repositories
+          .get(index)
+          .map(|repository| repository.name.as_str())
+          .unwrap_or_default()
+      ),
     }
   }
 }
@@ -2513,6 +2762,17 @@ fn action_message(lang: Lang, a: &Action) -> String {
         "control_center.pkgbuilds_execute_build_instructions_as_the_normal_user"
       )
     ),
+    Action::RepoAdd(review) => repositories::add_message(lang, review),
+    Action::UpgradeAfterRepoAdd => tr(lang, "control_center.repo_sync_now").into(),
+    Action::RepoEnable(name) => {
+      tr(lang, "control_center.repo_enable_message").replace("{name}", name)
+    }
+    Action::RepoDisable(name) => {
+      tr(lang, "control_center.repo_disable_message").replace("{name}", name)
+    }
+    Action::RepoRemove { name, .. } => {
+      tr(lang, "control_center.repo_remove_message").replace("{name}", name)
+    }
     Action::ApplyMirrors(content) => format!(
       "{}\n{}",
       tr(lang, "control_center.apply_these_mirrors"),
@@ -2524,6 +2784,12 @@ fn action_message(lang: Lang, a: &Action) -> String {
 /// the cascade with the number of packages its `plan` removes.
 fn choice_label(lang: Lang, choice: &Action, plan: Option<&TransactionPlan>) -> String {
   match choice {
+    Action::RepoRemove {
+      delete_key: false, ..
+    } => tr(lang, "control_center.repo_remove_only").into(),
+    Action::RepoRemove {
+      delete_key: true, ..
+    } => tr(lang, "control_center.repo_remove_with_key").into(),
     Action::RemoveOnly(packages) => {
       tr(lang, "control_center.remove_only_selected").replace("{packages}", &packages.join(", "))
     }
@@ -2611,6 +2877,47 @@ fn action_command(a: Action, caps: &Capabilities) -> Result<ActionCommand, Strin
     Action::RefreshDatabase => privileged("$ pacman -Syy".into(), "refresh-db", vec![]),
     Action::CleanCache(v) => privileged("$ paccache -r".into(), "clean-cache", vec![v.into()]),
     Action::Downgrade(v) => privileged(format!("$ pacman -U {v}"), "downgrade", vec![v]),
+    Action::RepoAdd(review) => {
+      let name = review.name().to_owned();
+      let file = argvus_control_center_core::pacman_conf::repository_file(&name);
+      let mut echo = format!(
+        "$ write {} and Include it in /etc/pacman.conf",
+        file.display()
+      );
+      let mut arguments = vec![name, review.conf];
+      if let Some(key) = review.key {
+        echo = format!(
+          "$ pacman-key --add <key> && pacman-key --lsign-key {}\n{echo}",
+          key.info.fingerprint
+        );
+        arguments.extend([key.info.fingerprint, key.hex]);
+      }
+      privileged(echo, "repo-add", arguments)
+    }
+    Action::UpgradeAfterRepoAdd => privileged("$ pacman -Syu".into(), "upgrade", vec![]),
+    Action::RepoEnable(name) => privileged(
+      format!("$ enable [{name}] in /etc/pacman.conf"),
+      "repo-enable",
+      vec![name],
+    ),
+    Action::RepoDisable(name) => privileged(
+      format!("$ disable [{name}] in /etc/pacman.conf"),
+      "repo-disable",
+      vec![name],
+    ),
+    Action::RepoRemove {
+      name,
+      key,
+      delete_key,
+    } => {
+      let mut echo = format!("$ remove [{name}] from /etc/pacman.conf");
+      let mut arguments = vec![name];
+      if delete_key && let Some(key) = key {
+        echo.push_str(&format!(" && pacman-key --delete {key}"));
+        arguments.push("delete-key".into());
+      }
+      privileged(echo, "repo-remove", arguments)
+    }
     Action::ApplyMirrors(content) => {
       privileged("$ update mirrorlist".into(), "mirror-apply", vec![content])
     }
@@ -2954,7 +3261,14 @@ mod tests {
     for source in [PackageSource::Official, PackageSource::Aur] {
       let mut app = aur_app();
       app.page = PackagesPage::Source(source);
-      let rows = app.rows();
+      let mut rows = app.rows();
+      // Official Repositories also lists Repositories, after the tasks.
+      if source == PackageSource::Official {
+        assert_eq!(
+          rows.pop().and_then(|row| row.id().copied()),
+          Some(Item::Open(PackagesPage::Repositories))
+        );
+      }
       assert_eq!(
         rows.iter().filter_map(Row::id).copied().collect::<Vec<_>>(),
         [
@@ -4192,6 +4506,355 @@ mod tests {
       assert_eq!(process.program, "yay");
       assert_eq!(process.args, args);
     }
+  }
+
+  fn repository(name: &str, enabled: bool, key: Option<&str>) -> Repository {
+    use argvus_control_center_core::pacman_conf::RepositoryOrigin;
+    Repository {
+      name: name.into(),
+      servers: vec![format!("https://{name}.example.org/$arch")],
+      sig_level: None,
+      origin: RepositoryOrigin::Include(format!("/etc/pacman.d/{name}.conf").into()),
+      enabled,
+      key: key.map(str::to_owned),
+    }
+  }
+
+  fn ctrl(character: char) -> KeyEvent {
+    KeyEvent::new(
+      KeyCode::Char(character),
+      crossterm::event::KeyModifiers::CONTROL,
+    )
+  }
+
+  #[test]
+  fn official_repositories_lead_to_add_and_list() {
+    let mut app = app();
+    app.dashboard.repository_count = 3;
+    app.page = PackagesPage::Source(PackageSource::Official);
+    let rows = app.rows();
+    let repositories = row(&rows, Item::Open(PackagesPage::Repositories));
+    assert_eq!(repositories.label(), "Repositories");
+    assert_eq!(repositories.detail_text(), Some("3 repositories"));
+    app.page = PackagesPage::Source(PackageSource::Aur);
+    assert!(
+      !app
+        .rows()
+        .iter()
+        .any(|row| row.id() == Some(&Item::Open(PackagesPage::Repositories))),
+      "the AUR has no repositories"
+    );
+
+    app.go(PackagesPage::Repositories);
+    let labels: Vec<_> = app
+      .rows()
+      .iter()
+      .map(|row| row.label().to_owned())
+      .collect();
+    assert_eq!(labels, ["Add", "List"]);
+    for (page, path) in [
+      (
+        PackagesPage::Repositories,
+        "Official Repositories > Repositories",
+      ),
+      (
+        PackagesPage::RepositoryAdd,
+        "Official Repositories > Repositories > Add",
+      ),
+      (
+        PackagesPage::RepositoryList,
+        "Official Repositories > Repositories > List",
+      ),
+    ] {
+      app.page = page;
+      assert_eq!(
+        app.breadcrumb(),
+        format!("System Administration > Packages > {path}")
+      );
+    }
+    app.repositories = vec![repository("argvus", true, None)];
+    app.page = PackagesPage::RepositoryDetails(0);
+    assert!(app.breadcrumb().ends_with("Repositories > List > argvus"));
+    app.handle(KeyCode::Esc);
+    assert_eq!(app.page, PackagesPage::RepositoryList);
+    assert_eq!(app.menu.selected_id(&app.rows()), Some(Item::Repository(0)));
+    app.handle(KeyCode::Esc);
+    assert_eq!(app.page, PackagesPage::Repositories);
+    app.handle(KeyCode::Esc);
+    assert_eq!(app.page, PackagesPage::Source(PackageSource::Official));
+    assert_eq!(
+      app.menu.selected_id(&app.rows()),
+      Some(Item::Open(PackagesPage::Repositories))
+    );
+  }
+
+  #[test]
+  fn the_add_page_shows_the_fields_of_each_source() {
+    let mut app = app();
+    app.page = PackagesPage::RepositoryAdd;
+    let ids =
+      |app: &PackagesApp| -> Vec<Item> { app.rows().iter().filter_map(Row::id).copied().collect() };
+    assert_eq!(
+      ids(&app),
+      [
+        Item::RepoField(DraftField::Source),
+        Item::RepoField(DraftField::ConfUrl),
+        Item::RepoField(DraftField::KeySource),
+        Item::RepoReview,
+      ]
+    );
+    assert!(
+      !row(&app.rows(), Item::RepoReview).is_selectable(),
+      "nothing to review yet"
+    );
+    // Enter moves a choice forward, ←/→ both ways.
+    press(&mut app, Item::RepoField(DraftField::Source));
+    assert!(ids(&app).contains(&Item::RepoField(DraftField::ConfText)));
+    app.handle(KeyCode::Right);
+    assert!(ids(&app).contains(&Item::RepoField(DraftField::Server)));
+    assert!(ids(&app).contains(&Item::RepoField(DraftField::SigLevel)));
+    app.handle(KeyCode::Left);
+    app.handle(KeyCode::Left);
+    assert!(ids(&app).contains(&Item::RepoField(DraftField::ConfUrl)));
+    press(&mut app, Item::RepoField(DraftField::KeySource));
+    assert!(ids(&app).contains(&Item::RepoField(DraftField::KeyUrl)));
+    let text = screen(&mut app, 80, 24);
+    for expected in [
+      "Repository",
+      "Signing key",
+      "Configuration URL",
+      "Key URL",
+      "Review and add",
+    ] {
+      assert!(text.contains(expected), "{expected}\n{text}");
+    }
+  }
+
+  #[test]
+  fn text_fields_open_an_editor_that_saves_and_pastes() {
+    let mut app = app();
+    app.page = PackagesPage::RepositoryAdd;
+    press(&mut app, Item::RepoField(DraftField::ConfUrl));
+    assert!(app.captures_text(), "q and ? are text in the editor");
+    for character in "https://argvus.github.io/x.conf".chars() {
+      app.handle(KeyCode::Char(character));
+    }
+    app.handle(KeyCode::Enter);
+    assert!(app.editor.is_none());
+    assert_eq!(app.repo_draft.conf_url, "https://argvus.github.io/x.conf");
+    assert!(row(&app.rows(), Item::RepoReview).is_selectable());
+
+    // Text: a multi-line editor; Enter breaks lines and Ctrl+S saves.
+    app.repo_draft.source = repositories::ConfSource::Text;
+    press(&mut app, Item::RepoField(DraftField::ConfText));
+    app.paste("[argvus]\r\nServer = https://a/$arch\r\n");
+    app.handle(KeyCode::Enter);
+    let text = screen(&mut app, 80, 24);
+    assert!(text.contains("Ctrl+S save"), "{text}");
+    app.handle_key(ctrl('s'));
+    assert_eq!(
+      app.repo_draft.conf_text,
+      "[argvus]\nServer = https://a/$arch\n\n"
+    );
+    assert_eq!(
+      row(&app.rows(), Item::RepoField(DraftField::ConfText)).detail_text(),
+      Some("3 lines")
+    );
+    // Esc cancels the editor without touching the field.
+    press(&mut app, Item::RepoField(DraftField::ConfText));
+    app.handle(KeyCode::Char('x'));
+    app.handle(KeyCode::Esc);
+    assert!(app.editor.is_none());
+    assert!(!app.repo_draft.conf_text.contains('x'));
+  }
+
+  #[test]
+  fn leaving_the_add_page_with_a_draft_asks_first() {
+    let mut app = app();
+    app.page = PackagesPage::RepositoryAdd;
+    app.handle(KeyCode::Esc);
+    assert_eq!(
+      app.page,
+      PackagesPage::Repositories,
+      "an empty draft leaves at once"
+    );
+
+    app.go(PackagesPage::RepositoryAdd);
+    app.repo_draft.conf_url = "https://a/x.conf".into();
+    app.handle(KeyCode::Esc);
+    assert_eq!(app.page, PackagesPage::RepositoryAdd);
+    assert!(app.discard.is_some());
+    assert!(screen(&mut app, 80, 24).contains("Discard the repository being added?"));
+    app.handle(KeyCode::Enter);
+    assert!(app.discard.is_none(), "Enter on Cancel keeps the draft");
+    assert_eq!(app.repo_draft.conf_url, "https://a/x.conf");
+    app.handle(KeyCode::Esc);
+    app.handle(KeyCode::Char('y'));
+    assert_eq!(app.page, PackagesPage::Repositories);
+    assert_eq!(app.repo_draft, RepositoryDraft::default());
+  }
+
+  fn review(with_key: bool) -> RepositoryReview {
+    use argvus_control_center_core::pacman_conf::{KeyInfo, RepositorySection};
+    RepositoryReview {
+      conf: "[argvus]\nServer = https://argvus.github.io/packages/arch/$arch\n".into(),
+      sections: vec![RepositorySection {
+        name: "argvus".into(),
+        servers: vec!["https://argvus.github.io/packages/arch/$arch".into()],
+        sig_level: None,
+      }],
+      key: with_key.then(|| repositories::ReviewedKey {
+        info: KeyInfo {
+          fingerprint: "0123456789ABCDEF0123456789ABCDEF01234567".into(),
+          user_id: Some("ARGVUS <packages@argvus.org>".into()),
+        },
+        hex: "99010d".into(),
+      }),
+    }
+  }
+
+  #[test]
+  fn a_reviewed_repository_is_confirmed_then_offers_the_upgrade() {
+    let mut app = app();
+    app.page = PackagesPage::RepositoryAdd;
+    app.repo_draft.conf_url = "https://a/x.conf".into();
+    app.apply(Loaded::RepositoryReview(Box::new(review(true))));
+    let Some(Action::RepoAdd(pending)) = &app.pending else {
+      panic!("the review opens the confirmation");
+    };
+    assert_eq!(pending.name(), "argvus");
+    assert!(app.pending.as_ref().unwrap().is_destructive());
+    let text = screen(&mut app, 100, 30);
+    assert!(text.contains("0123 4567 89AB CDEF"), "{text}");
+    assert!(
+      !app.confirmation.is_confirm_focused(),
+      "focus starts on Cancel"
+    );
+
+    // Confirmed: it runs (no process starts in test builds); on success the
+    // draft is cleared, the List opens and, once the output is closed, the
+    // full upgrade is offered.
+    app.handle(KeyCode::Char('y'));
+    assert!(matches!(app.running, Some(Action::RepoAdd(_))));
+    app.action = None;
+    app.after_success();
+    assert_eq!(app.page, PackagesPage::RepositoryList);
+    assert_eq!(app.repo_draft, RepositoryDraft::default());
+    assert!(app.pending.is_none(), "the output window is still open");
+    app.handle(KeyCode::Esc);
+    assert_eq!(app.pending, Some(Action::UpgradeAfterRepoAdd));
+    assert!(screen(&mut app, 100, 30).contains("Synchronize the databases"));
+  }
+
+  #[test]
+  fn repository_operations_build_the_privileged_commands() {
+    let (echo, process) = privileged_process(Action::RepoAdd(Box::new(review(true))));
+    assert!(
+      echo.contains("pacman-key --lsign-key 0123456789ABCDEF"),
+      "{echo}"
+    );
+    assert_eq!(
+      &process.args[..5],
+      [
+        "system-settings",
+        "package",
+        "repo-add",
+        "argvus",
+        review(true).conf.as_str()
+      ]
+    );
+    assert_eq!(
+      &process.args[5..],
+      ["0123456789ABCDEF0123456789ABCDEF01234567", "99010d"]
+    );
+    let (_, unsigned) = privileged_process(Action::RepoAdd(Box::new(review(false))));
+    assert_eq!(unsigned.args.len(), 5, "no key arguments without a key");
+    for (action, expected) in [
+      (
+        Action::RepoEnable("argvus".into()),
+        vec!["repo-enable", "argvus"],
+      ),
+      (
+        Action::RepoDisable("argvus".into()),
+        vec!["repo-disable", "argvus"],
+      ),
+      (
+        Action::RepoRemove {
+          name: "argvus".into(),
+          key: Some("0123456789ABCDEF0123456789ABCDEF01234567".into()),
+          delete_key: true,
+        },
+        vec!["repo-remove", "argvus", "delete-key"],
+      ),
+      (
+        Action::RepoRemove {
+          name: "argvus".into(),
+          key: Some("0123456789ABCDEF0123456789ABCDEF01234567".into()),
+          delete_key: false,
+        },
+        vec!["repo-remove", "argvus"],
+      ),
+      (Action::UpgradeAfterRepoAdd, vec!["upgrade"]),
+    ] {
+      let (_, process) = privileged_process(action);
+      assert_eq!(&process.args[2..], expected);
+    }
+  }
+
+  #[test]
+  fn the_list_opens_a_repository_that_toggles_and_removes() {
+    let mut app = app();
+    app.page = PackagesPage::RepositoryList;
+    assert!(screen(&mut app, 80, 24).contains("No unofficial repositories"));
+    app.repositories = vec![
+      repository(
+        "argvus",
+        false,
+        Some("0123456789ABCDEF0123456789ABCDEF01234567"),
+      ),
+      repository("sublime-text", true, None),
+    ];
+    let rows = app.rows();
+    assert_eq!(
+      row(&rows, Item::Repository(0)).detail_text(),
+      Some("Disabled · argvus.conf")
+    );
+    press(&mut app, Item::Repository(1));
+    assert_eq!(app.page, PackagesPage::RepositoryDetails(1));
+    let rows = app.rows();
+    assert_eq!(
+      row(&rows, Item::RepoToggle).kind(),
+      RowKind::Toggle { on: true }
+    );
+    assert_eq!(row(&rows, Item::RepoRemove).kind(), RowKind::Destructive);
+    press(&mut app, Item::RepoToggle);
+    assert_eq!(
+      app.pending,
+      Some(Action::RepoDisable("sublime-text".into()))
+    );
+    app.handle(KeyCode::Esc);
+    // Without a recorded key, Remove is a plain confirmation.
+    press(&mut app, Item::RepoRemove);
+    assert!(app.pending.as_ref().unwrap().choices().is_none());
+    app.handle(KeyCode::Esc);
+
+    // With a key, Remove offers removing the key too.
+    app.go(PackagesPage::RepositoryDetails(0));
+    press(&mut app, Item::RepoToggle);
+    assert_eq!(app.pending, Some(Action::RepoEnable("argvus".into())));
+    app.handle(KeyCode::Esc);
+    press(&mut app, Item::RepoRemove);
+    let text = screen(&mut app, 100, 30);
+    assert!(text.contains("Remove the repository and its key"), "{text}");
+    app.handle(KeyCode::Up);
+    app.handle(KeyCode::Enter);
+    assert!(matches!(
+      app.running,
+      Some(Action::RepoRemove {
+        delete_key: true,
+        ..
+      })
+    ));
   }
 
   #[test]

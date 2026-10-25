@@ -18,6 +18,10 @@ pub fn handle(app: &mut App, event: Event) {
     if app.route == Route::Appearance {
       app.appearance.paste(&text);
     }
+    #[cfg(feature = "packages")]
+    if app.route == Route::Packages {
+      app.packages.paste(&text);
+    }
     return;
   }
   if let Event::Resize(width, height) = event {
@@ -160,7 +164,8 @@ pub fn handle(app: &mut App, event: Event) {
     }
     #[cfg(feature = "packages")]
     Route::Packages => {
-      if app.packages.handle(domain_key(key.code)) {
+      // The whole event: the repository editor saves with Ctrl+S.
+      if app.packages.handle_key(key) {
         app.route = Route::Home;
       }
     }

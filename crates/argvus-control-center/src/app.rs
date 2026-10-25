@@ -861,6 +861,22 @@ impl App {
       ),
       #[cfg(feature = "packages")]
       (
+        "packages.repositories-add",
+        "packages",
+        "control_center.search_repositories_add",
+        "repository repositório add adicionar pacman.conf pacman-key gpg key chave",
+        "packages/repositories-add",
+      ),
+      #[cfg(feature = "packages")]
+      (
+        "packages.repositories-list",
+        "packages",
+        "control_center.search_repositories_list",
+        "repository repositório list listar disable desativar remove remover pacman.conf",
+        "packages/repositories-list",
+      ),
+      #[cfg(feature = "packages")]
+      (
         "packages.aur",
         "packages",
         "control_center.search_aur_install",
@@ -1821,6 +1837,12 @@ impl App {
       ("packages", "aur-remove") => {
         self.open_packages_page(PackagesPage::Task(PackageSource::Aur, PackageTask::Remove))
       }
+      #[cfg(feature = "packages")]
+      ("packages", "repositories") => self.open_packages_page(PackagesPage::Repositories),
+      #[cfg(feature = "packages")]
+      ("packages", "repositories-add") => self.open_packages_page(PackagesPage::RepositoryAdd),
+      #[cfg(feature = "packages")]
+      ("packages", "repositories-list") => self.open_packages_page(PackagesPage::RepositoryList),
       #[cfg(feature = "packages")]
       ("packages", "aur-updates") => {
         self.open_packages_page(PackagesPage::Task(PackageSource::Aur, PackageTask::Update))
