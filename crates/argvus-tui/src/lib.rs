@@ -14,6 +14,7 @@ pub mod icons;
 pub mod image;
 pub mod menu;
 pub mod page;
+pub mod scroll;
 pub mod terminal;
 pub mod text;
 pub mod text_editor;

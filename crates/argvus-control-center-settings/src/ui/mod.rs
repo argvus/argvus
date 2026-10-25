@@ -13,6 +13,7 @@ use argvus_tui::action_buttons::{
   ActionButton, draw_aligned as draw_action_buttons, draw_aligned_transparent,
 };
 use argvus_tui::menu::{MenuStyle, Row, RowKind, draw_menu};
+use argvus_tui::scroll::thumb_position;
 use ratatui::Frame;
 use ratatui::layout::{Alignment, Constraint, Direction, Layout, Rect};
 use ratatui::style::{Modifier, Style};
@@ -124,7 +125,7 @@ pub fn draw(app: &mut App, frame: &mut Frame) {
     // `rows - viewport`. Map the offset onto the widget's range, so the thumb
     // ends at the bottom exactly when the list shows its last row.
     let viewport = menu_area.height as usize;
-    let position = scrollbar_position(app.navigation.current().menu.offset(), rows.len(), viewport);
+    let position = thumb_position(app.navigation.current().menu.offset(), rows.len(), viewport);
     let mut scrollbar_state = ScrollbarState::new(rows.len())
       .viewport_content_length(viewport)
       .position(position);
@@ -154,20 +155,6 @@ pub fn draw(app: &mut App, frame: &mut Frame) {
 
 /// Translation key of the title of the bordered list block on the pages that
 /// have an action bar: the list is named after what it chooses.
-/// Maps a list's scroll offset onto the scrollbar's position range.
-///
-/// `ScrollbarState` draws the thumb at its end only when its position is
-/// `content_length - 1`, but a list's last scroll offset is
-/// `rows - viewport`. Scaling the offset by that ratio puts the thumb at the
-/// bottom exactly when the list shows its last row.
-fn scrollbar_position(offset: usize, rows: usize, viewport: usize) -> usize {
-  let max_offset = rows.saturating_sub(viewport);
-  if max_offset == 0 {
-    return 0;
-  }
-  offset.min(max_offset) * rows.saturating_sub(1) / max_offset
-}
-
 fn list_title_key(page: Page) -> &'static str {
   match page {
     Page::DefaultApps => "control_center.default_apps",
@@ -465,19 +452,6 @@ mod tests {
   use crossterm::event::{Event, KeyCode, KeyEvent};
   use ratatui::{Terminal, backend::TestBackend};
   use serde_json::json;
-
-  #[test]
-  fn scrollbar_thumb_reaches_the_bottom_on_the_last_row() {
-    // 30 rows in a 10-row viewport: offsets run 0..=20, the thumb spans 0..=29.
-    assert_eq!(scrollbar_position(0, 30, 10), 0);
-    assert_eq!(scrollbar_position(20, 30, 10), 29);
-    assert!(scrollbar_position(10, 30, 10) < 29);
-  }
-
-  #[test]
-  fn scrollbar_stays_at_the_top_when_rows_fit() {
-    assert_eq!(scrollbar_position(0, 5, 10), 0);
-  }
 
   #[test]
   fn ssh_keys_search_opens_on_slash_and_filters_rows() {

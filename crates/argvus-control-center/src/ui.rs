@@ -6,6 +6,7 @@ use argvus_control_center_core::config::AppConfig;
 use argvus_control_center_core::navigation::HomeCardId;
 use argvus_i18n::tr;
 use argvus_tui::chrome::{Header, draw_footer, draw_header, draw_help, draw_too_small};
+use argvus_tui::scroll::thumb_position;
 use argvus_tui::text::ellipsize;
 use argvus_tui::{MIN_HEIGHT, MIN_WIDTH};
 use ratatui::Frame;
@@ -265,7 +266,11 @@ fn draw_home_cards(app: &mut App, frame: &mut Frame, area: Rect) {
       height: content.height,
     };
     if track.x >= content.x && track.width > 0 {
-      let mut state = ScrollbarState::new(rows.len()).position(app.home_scroll);
+      // Rows have different heights, so the last offset is the first row from which
+      // everything below fits; the thumb must reach the bottom exactly there.
+      let max_scroll = last_home_scroll(&row_heights, visible_height as usize);
+      let position = thumb_position(app.home_scroll, rows.len(), rows.len() - max_scroll);
+      let mut state = ScrollbarState::new(rows.len()).position(position);
       Scrollbar::new(ScrollbarOrientation::VerticalRight)
         .begin_symbol(None)
         .end_symbol(None)
@@ -275,6 +280,19 @@ fn draw_home_cards(app: &mut App, frame: &mut Frame, area: Rect) {
         .render(track, frame.buffer_mut(), &mut state);
     }
   }
+}
+
+/// Returns the smallest Home scroll offset from which every remaining card row fits in
+/// `visible_height`, which is the last offset the Home can reach.
+fn last_home_scroll(row_heights: &[u16], visible_height: usize) -> usize {
+  let mut below = 0;
+  for (index, height) in row_heights.iter().enumerate().rev() {
+    below += usize::from(*height);
+    if below > visible_height {
+      return (index + 1).min(row_heights.len().saturating_sub(1));
+    }
+  }
+  0
 }
 
 /// A Home card: its heading and the destinations it lists, in order.
@@ -527,6 +545,15 @@ fn search_category(lang: argvus_i18n::Lang, category: &str) -> String {
 
 #[cfg(test)]
 mod tests {
+  #[test]
+  fn last_home_scroll_is_the_first_row_from_which_the_rest_fits() {
+    // Rows of 6, 6, 4 and 4 lines in 10 visible lines: rows 2 and 3 fit together.
+    assert_eq!(super::last_home_scroll(&[6, 6, 4, 4], 10), 2);
+    assert_eq!(super::last_home_scroll(&[3, 3], 10), 0);
+    // A last row taller than the view is still reachable on its own.
+    assert_eq!(super::last_home_scroll(&[4, 12], 10), 1);
+  }
+
   use super::*;
   use crate::app::InitialRoute;
   use ratatui::{Terminal, backend::TestBackend};
