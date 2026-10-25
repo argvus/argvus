@@ -168,14 +168,23 @@ fn fonts_dashboard_icons_are_distinct() {
 fn default_apps_dashboard_uses_icons_and_status() {
   let app = app(Page::DefaultApps);
   let rows = app.rows();
-  assert_eq!(rows.len(), Category::ORDER.len() + 2);
+  assert_eq!(rows.len(), Category::ORDER.len());
   assert!(rows[0].label().contains("Terminal"), "{}", rows[0].label());
   assert_eq!(rows[0].icon_glyph(), Some(argvus_tui::icons::TERMINAL));
   assert_eq!(rows[0].kind(), RowKind::Submenu);
-  for row in &rows[..Category::ORDER.len()] {
+  for row in &rows {
     assert!(row.detail_text().is_some());
   }
-  assert_eq!(rows.last().unwrap().id(), Some(&Item::ResetDefaults));
+  assert!(
+    rows
+      .iter()
+      .all(|row| row.id() != Some(&Item::ResetDefaults)),
+    "Restore Defaults lives in the action bar, not in the list"
+  );
+  let actions = app.action_rows();
+  assert_eq!(actions.len(), 1);
+  assert_eq!(actions[0].id(), Some(&Item::ResetDefaults));
+  assert_eq!(actions[0].kind(), RowKind::Destructive);
 }
 
 #[test]
@@ -188,10 +197,10 @@ fn default_apps_dashboard_icons_are_distinct() {
 }
 
 #[test]
-fn reset_row_and_r_open_the_same_confirmation() {
+fn reset_button_and_r_open_the_same_confirmation() {
   let mut app = app(Page::DefaultApps);
-  press(&mut app, KeyCode::End);
-  assert_eq!(app.selected_item(), Some(Item::ResetDefaults));
+  press(&mut app, KeyCode::Right);
+  assert_eq!(app.action_cursor(), Some(0), "→ focuses Restore Defaults");
   press(&mut app, KeyCode::Enter);
   assert!(matches!(app.confirm, Some(PendingAction::ResetApps)));
   press(&mut app, KeyCode::Esc);

@@ -55,7 +55,8 @@ pub(crate) fn setting_values(setting: SettingKind) -> &'static [&'static str] {
 fn is_searchable(page: Page) -> bool {
   matches!(
     page,
-    Page::AppSelector(_)
+    Page::DefaultApps
+      | Page::AppSelector(_)
       | Page::FontSelector(_)
       | Page::TimeZone
       | Page::RegionalLocale
@@ -485,7 +486,11 @@ impl App {
   pub(crate) fn has_action_bar(&self) -> bool {
     matches!(
       self.page(),
-      Page::KeyboardLayout | Page::TimeZone | Page::SystemLocales | Page::SshKeys
+      Page::DefaultApps
+        | Page::KeyboardLayout
+        | Page::TimeZone
+        | Page::SystemLocales
+        | Page::SshKeys
     )
   }
 
@@ -500,6 +505,7 @@ impl App {
   /// The action bar of the current page; empty for pages without one.
   pub(crate) fn action_rows(&self) -> Vec<Row<Item>> {
     match self.page() {
+      Page::DefaultApps => self.default_apps_action_rows(),
       Page::KeyboardLayout => self.keyboard_action_rows(),
       Page::TimeZone => self.timezone_action_rows(),
       Page::SystemLocales => self.locales_action_rows(),
@@ -555,7 +561,12 @@ impl App {
       return;
     }
     if let Some(item) = row.id().copied() {
-      self.activate(item);
+      // A destructive button asks first, as its row does in the list.
+      if row.kind() == RowKind::Destructive {
+        self.confirm_item(item);
+      } else {
+        self.activate(item);
+      }
     }
   }
 

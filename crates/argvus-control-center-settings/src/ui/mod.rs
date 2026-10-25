@@ -12,7 +12,7 @@ use argvus_control_center_core::config::AppConfig;
 use argvus_tui::action_buttons::{
   ActionButton, draw_aligned as draw_action_buttons, draw_aligned_transparent,
 };
-use argvus_tui::menu::{MenuStyle, Row, draw_menu};
+use argvus_tui::menu::{MenuStyle, Row, RowKind, draw_menu};
 use ratatui::Frame;
 use ratatui::layout::{Alignment, Constraint, Direction, Layout, Rect};
 use ratatui::style::{Modifier, Style};
@@ -170,6 +170,7 @@ fn scrollbar_position(offset: usize, rows: usize, viewport: usize) -> usize {
 
 fn list_title_key(page: Page) -> &'static str {
   match page {
+    Page::DefaultApps => "control_center.default_apps",
     Page::TimeZone => "control_center.time_zone",
     Page::SystemLocales => "control_center.system_locales",
     Page::SshKeys => "control_center.ssh_keys",
@@ -210,7 +211,9 @@ fn draw_action_bar(app: &App, frame: &mut Frame, area: Rect, actions: &[Row<Item
       } else {
         ""
       };
-      if row.is_selectable() {
+      if row.is_selectable() && row.kind() == RowKind::Destructive {
+        ActionButton::danger(icon, row.label(), "")
+      } else if row.is_selectable() {
         ActionButton::primary(icon, row.label(), "")
       } else {
         ActionButton::secondary(icon, row.label(), "")
@@ -629,7 +632,11 @@ mod tests {
         .map(|cell| cell.symbol())
         .collect::<String>();
       assert!(rendered.contains(crate::i18n::tr(app.lang, "control_center.reset_defaults")));
-      assert!(!rendered.contains("[ "), "no button labels on {page:?}");
+      // Default Apps shows Restore Defaults as an action button, which is
+      // drawn with brackets; the list rows of Fonts still have none.
+      if page == Page::Fonts {
+        assert!(!rendered.contains("[ "), "no button labels on {page:?}");
+      }
     }
   }
 
@@ -661,13 +668,13 @@ mod tests {
   }
 
   #[test]
-  fn tab_no_longer_jumps_to_actions_and_end_reaches_the_reset_row() {
+  fn tab_focuses_restore_defaults_on_the_action_bar() {
     let mut app = App::new(Page::DefaultApps);
     app.error_modal = None;
     let before = app.selected_item();
     crate::event::handle(&mut app, Event::Key(KeyEvent::from(KeyCode::Tab)));
-    assert_eq!(app.selected_item(), before);
-    crate::event::handle(&mut app, Event::Key(KeyEvent::from(KeyCode::End)));
+    assert_eq!(app.selected_item(), before, "the list did not move");
+    assert_eq!(app.action_cursor(), Some(0));
     crate::event::handle(&mut app, Event::Key(KeyEvent::from(KeyCode::Enter)));
     assert!(matches!(
       app.confirm,

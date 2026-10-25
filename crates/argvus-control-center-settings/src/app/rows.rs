@@ -90,18 +90,20 @@ impl App {
       Page::DefaultApps => {
         let mut rows: Vec<Row<Item>> = Category::ORDER
           .into_iter()
-          .map(|category| {
-            Row::submenu(
-              Item::Category(category),
-              super::category_label(self.lang, category),
-            )
-            .icon(super::category_icon(category))
-            .detail(
-              self.default_detail(self.apps.current(category), self.apps.is_default(category)),
-            )
+          .filter_map(|category| {
+            let label = super::category_label(self.lang, category);
+            search_matches(&self.search, &[label]).then(|| {
+              Row::submenu(Item::Category(category), label)
+                .icon(super::category_icon(category))
+                .detail(
+                  self.default_detail(self.apps.current(category), self.apps.is_default(category)),
+                )
+            })
           })
           .collect();
-        self.reset_defaults_zone(&mut rows);
+        if rows.is_empty() {
+          rows.push(self.empty_list_row(page));
+        }
         rows
       }
       Page::AppSelector(category) => {
@@ -499,6 +501,19 @@ impl App {
         .icon(icons::APPLY)
         .emphasis(Emphasis::Primary)
         .enabled(self.timezone_changed()),
+    ]
+  }
+
+  /// The action bar under Default Apps: `Restore Defaults`, always enabled and
+  /// behind the same confirmation as the `r` shortcut. Like Time Zone, it stays
+  /// out of `rows`, so the list cursor never walks into it.
+  pub(super) fn default_apps_action_rows(&self) -> Vec<Row<Item>> {
+    vec![
+      Row::destructive(
+        Item::ResetDefaults,
+        self.label("control_center.reset_defaults"),
+      )
+      .icon(icons::RESTORE),
     ]
   }
 

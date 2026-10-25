@@ -13,19 +13,20 @@ use argvus_control_center_core::{
 };
 use argvus_i18n::{Lang, tr};
 use argvus_theme::Theme;
-use argvus_tui::buttons::{Button, ButtonKind};
+use argvus_tui::action_buttons::{ActionButton, ActionFocus, draw_aligned_transparent};
 use argvus_tui::chrome::centered;
 use argvus_tui::components::{
   ConfirmationDialog, ConfirmationOutcome, ConfirmationState, StatusKind, StatusMessage,
   draw_confirmation,
 };
+use argvus_tui::icons;
 use argvus_tui::page::{list, shell, status};
 use crossterm::event::KeyCode;
 use ratatui::Frame;
-use ratatui::layout::{Constraint, Layout, Rect};
+use ratatui::layout::{Alignment, Constraint, Layout, Rect};
 use ratatui::style::{Modifier, Style};
 use ratatui::text::{Line, Span};
-use ratatui::widgets::{Block, Clear, Paragraph};
+use ratatui::widgets::{Block, Borders, Clear, Paragraph};
 
 /// Defines the constant `LID_BEHAVIORS`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 const LID_BEHAVIORS: [PowerBehavior; 5] = [
@@ -93,9 +94,7 @@ enum JobData {
 pub struct PowerApp {
   pub page: PowerPage,
   selected: usize,
-  on_buttons: bool,
-  button_selected: usize,
-  button_from: Option<usize>,
+  actions: ActionFocus,
   state: Option<PowerState>,
   job: Option<JobHandle<JobData>>,
   action: Option<JobHandle<JobData>>,
@@ -124,9 +123,7 @@ impl PowerApp {
     let mut app = Self {
       page: PowerPage::Home,
       selected: 0,
-      on_buttons: false,
-      button_selected: 0,
-      button_from: None,
+      actions: ActionFocus::default(),
       state: None,
       job: None,
       action: None,
@@ -219,36 +216,45 @@ impl PowerApp {
       self.handle_picker(key);
       return false;
     }
-    if self.pending.is_none() && self.action.is_none() && self.job.is_none() && self.on_buttons {
+    // The action bar with the focus: `←/→` step through its buttons and Enter
+    // runs the focused one. A list key gives the list the focus back and is
+    // then handled as usual below.
+    if self.pending.is_none() && self.action.is_none() && self.job.is_none() {
       match key {
         KeyCode::Tab | KeyCode::BackTab => {
-          self.toggle_buttons(key == KeyCode::BackTab);
+          self.toggle_actions();
           return false;
         }
-        KeyCode::Left | KeyCode::Char('h') => {
-          self.move_button(-1);
+        KeyCode::Left | KeyCode::Char('h') | KeyCode::Right | KeyCode::Char('l')
+          if self.actions.cursor().is_some() =>
+        {
+          self.move_action(matches!(key, KeyCode::Left | KeyCode::Char('h')));
           return false;
         }
-        KeyCode::Right | KeyCode::Char('l') => {
-          self.move_button(1);
-          return false;
-        }
-        KeyCode::Enter | KeyCode::Char(' ') => {
+        KeyCode::Enter | KeyCode::Char(' ') if self.actions.cursor().is_some() => {
           self.activate_button();
           return false;
         }
-        KeyCode::Up | KeyCode::Char('k') | KeyCode::Down | KeyCode::Char('j') => return false,
+        KeyCode::Up
+        | KeyCode::Char('k')
+        | KeyCode::Down
+        | KeyCode::Char('j')
+        | KeyCode::Home
+        | KeyCode::End
+          if self.actions.cursor().is_some() =>
+        {
+          self.actions.focus_list();
+        }
         _ => {}
       }
     }
-    if matches!(key, KeyCode::Esc | KeyCode::Left) && self.pending.is_none() {
+    if key == KeyCode::Esc && self.pending.is_none() {
       if self.page == PowerPage::Home {
         return true;
       }
       self.page = PowerPage::Home;
       self.selected = 0;
-      self.on_buttons = false;
-      self.button_from = None;
+      self.actions.focus_list();
       self.refresh();
       return false;
     }
@@ -296,7 +302,10 @@ impl PowerApp {
       return false;
     }
     match key {
-      KeyCode::Tab | KeyCode::BackTab => self.toggle_buttons(key == KeyCode::BackTab),
+      KeyCode::Tab | KeyCode::BackTab => self.toggle_actions(),
+      // On the list, `←/→` reach the action bar, as `Tab` does.
+      KeyCode::Left | KeyCode::Char('h') => self.move_action(true),
+      KeyCode::Right | KeyCode::Char('l') => self.move_action(false),
       KeyCode::Char('r') => self.refresh(),
       KeyCode::Up | KeyCode::Char('k') => {
         self.selected = self.selected.saturating_sub(1);
@@ -627,66 +636,68 @@ impl PowerApp {
   }
 
   /// Executes the `buttons` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
-  fn buttons(&self) -> Vec<(PowerButton, Button)> {
-    let primary = ButtonKind::Primary;
-    let danger = ButtonKind::Danger;
-    let secondary = ButtonKind::Secondary;
+  fn buttons(&self) -> Vec<(PowerButton, ActionButton)> {
     let state = self.state.as_ref();
     let mut buttons = Vec::new();
     if state.is_none_or(|s| s.can_suspend) {
       buttons.push((
         PowerButton::Suspend,
-        Button::new(tr(self.lang, "control_center.suspend_now"), primary),
+        ActionButton::primary(
+          action_icon(icons::SLEEP),
+          tr(self.lang, "control_center.suspend_now"),
+          "",
+        ),
       ));
     }
     if state.is_none_or(|s| s.can_hibernate) {
       buttons.push((
         PowerButton::Hibernate,
-        Button::new(tr(self.lang, "control_center.hibernate_now"), danger),
+        ActionButton::danger(
+          action_icon(icons::HIBERNATE),
+          tr(self.lang, "control_center.hibernate_now"),
+          "",
+        ),
       ));
     }
     buttons.push((
       PowerButton::Refresh,
-      Button::new(tr(self.lang, "control_center.refresh"), secondary),
+      ActionButton::secondary(
+        action_icon(icons::REFRESH),
+        tr(self.lang, "control_center.refresh"),
+        "",
+      ),
     ));
     buttons
   }
 
-  /// Applies the `toggle_buttons` operation while preserving the persistence and local-update contract. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
-  fn toggle_buttons(&mut self, backwards: bool) {
-    let count = self.buttons().len();
-    if count == 0 {
-      return;
-    }
-    if self.on_buttons {
-      self.on_buttons = false;
-      if let Some(index) = self.button_from.take() {
-        self.selected = index;
-      }
-    } else {
-      self.button_from = Some(self.selected);
-      self.button_selected = if backwards { count - 1 } else { 0 };
-      self.on_buttons = true;
-    }
+  /// Indexes of the action buttons; every one of them is always enabled.
+  fn enabled_actions(&self) -> Vec<usize> {
+    (0..self.buttons().len()).collect()
   }
 
-  /// Executes the `move_button` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
-  fn move_button(&mut self, delta: isize) {
-    let count = self.buttons().len();
-    if count == 0 {
-      return;
-    }
-    self.button_selected =
-      (self.button_selected as isize + delta).rem_euclid(count as isize) as usize;
+  /// `Tab`: moves the focus between the list and the action bar.
+  fn toggle_actions(&mut self) {
+    let enabled = self.enabled_actions();
+    self.actions.toggle(&enabled);
   }
 
-  /// Executes the `activate_button` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
+  /// `←/→` on the action bar: steps through its buttons.
+  fn move_action(&mut self, backwards: bool) {
+    let enabled = self.enabled_actions();
+    self.actions.move_by(backwards, &enabled);
+  }
+
+  /// Enter/Space on the focused button: suspend and hibernate ask first,
+  /// refresh runs at once.
   fn activate_button(&mut self) {
     if self.job.is_some() || self.action.is_some() {
       return;
     }
+    let Some(index) = self.actions.cursor() else {
+      return;
+    };
     let actions = self.buttons();
-    let Some((power_button, _)) = actions.get(self.button_selected) else {
+    let Some((power_button, _)) = actions.get(index) else {
       return;
     };
     match power_button {
@@ -720,15 +731,17 @@ impl PowerApp {
         "control_center.navigate_tab_actions_enter_list_r_refresh_esc_back_help",
       ),
     );
-    let buttons = self.buttons();
-    let raw_buttons: Vec<Button> = buttons.into_iter().map(|(_, button)| button).collect();
-    let (body, button_area) = if raw_buttons.is_empty() {
+    let buttons: Vec<ActionButton> = self
+      .buttons()
+      .into_iter()
+      .map(|(_, button)| button)
+      .collect();
+    // The action bar stays fixed under the list, as in Time Zone: a bordered
+    // block titled `Actions · hint`, with the list above it.
+    let (body, action_area) = if buttons.is_empty() {
       (shell_body, None)
     } else {
-      let button_height =
-        argvus_tui::buttons::height(&raw_buttons, shell_body.width).min(shell_body.height);
-      let split =
-        Layout::vertical([Constraint::Min(1), Constraint::Length(button_height)]).split(shell_body);
+      let split = Layout::vertical([Constraint::Min(1), Constraint::Length(3)]).split(shell_body);
       (split[0], Some(split[1]))
     };
     let list_selection = if self.job.is_some() {
@@ -737,13 +750,19 @@ impl PowerApp {
       self.selected.min(lines.len().saturating_sub(1))
     };
     list(frame, body, &self.theme, &lines, list_selection);
-    if let Some(button_area) = button_area {
-      let focus = if self.on_buttons {
-        self.button_selected
-      } else {
-        usize::MAX
-      };
-      argvus_tui::buttons::draw(frame, button_area, &raw_buttons, focus, &self.theme);
+    if let Some(action_area) = action_area {
+      let block = Block::default()
+        .borders(Borders::ALL)
+        .border_style(Style::new().fg(self.theme.border_active))
+        .title(format!(
+          "{} · {}",
+          tr(self.lang, "control_center.actions"),
+          tr(self.lang, "control_center.actions_hint")
+        ));
+      let inner = block.inner(action_area);
+      frame.render_widget(block, action_area);
+      let focus = self.actions.cursor().unwrap_or(usize::MAX);
+      draw_aligned_transparent(frame, inner, &buttons, focus, &self.theme, Alignment::Left);
     }
     if let Some(s) = &self.status {
       status(frame, area, &self.theme, s);
@@ -773,6 +792,15 @@ impl PowerApp {
     if let Some(picker) = &self.picker {
       draw_picker(frame, area, &self.theme, self.lang, picker);
     }
+  }
+}
+
+/// Icon of an action button, left out when icons are disabled.
+fn action_icon(glyph: &'static str) -> &'static str {
+  if AppConfig::icons_enabled() {
+    glyph
+  } else {
+    ""
   }
 }
 
@@ -1119,7 +1147,7 @@ mod tests {
 
   #[test]
   /// Executes the `power_app_navigates_and_toggles_button_focus` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
-  fn power_app_navigates_and_toggles_button_focus() {
+  fn power_app_navigates_and_toggles_action_focus() {
     let mut app = PowerApp::new(Lang::for_locale("en-US"), Theme::load());
     app.job = None;
     app.action = None;
@@ -1127,11 +1155,47 @@ mod tests {
     app.handle(KeyCode::Down);
     assert_eq!(app.selected, 1);
     app.handle(KeyCode::Tab);
-    assert!(app.on_buttons);
+    assert_eq!(app.actions.cursor(), Some(0));
     app.handle(KeyCode::Tab);
-    assert!(!app.on_buttons);
+    assert_eq!(app.actions.cursor(), None);
     app.handle(KeyCode::BackTab);
-    assert!(app.on_buttons);
+    assert_eq!(
+      app.actions.cursor(),
+      Some(0),
+      "Tab and BackTab both focus the first button, as in Time Zone"
+    );
+  }
+
+  #[test]
+  fn power_arrows_on_the_list_reach_the_action_bar_and_up_gives_it_back() {
+    let mut app = PowerApp::new(Lang::for_locale("en-US"), Theme::load());
+    app.job = None;
+    app.action = None;
+    app.state = Some(laptop_state());
+    app.handle(KeyCode::Down);
+    let before = app.selected;
+    app.handle(KeyCode::Right);
+    assert_eq!(app.actions.cursor(), Some(0), "→ focuses the bar");
+    assert_eq!(app.selected, before, "the list did not move");
+    app.handle(KeyCode::Right);
+    assert_eq!(app.actions.cursor(), Some(1), "→ steps to the next button");
+    app.handle(KeyCode::Up);
+    assert_eq!(
+      app.actions.cursor(),
+      None,
+      "↑ gives the focus back to the list"
+    );
+    assert_eq!(app.selected, before - 1, "and moves the list");
+  }
+
+  #[test]
+  fn power_esc_goes_back_and_left_does_not_leave_the_page() {
+    let mut app = PowerApp::new(Lang::for_locale("en-US"), Theme::load());
+    app.job = None;
+    app.action = None;
+    app.state = Some(laptop_state());
+    assert!(!app.handle(KeyCode::Left), "← never leaves the page");
+    assert!(app.handle(KeyCode::Esc), "Esc on Home leaves the page");
   }
 
   #[test]
