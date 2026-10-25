@@ -45,12 +45,15 @@ impl PrivilegedRequest {
     {
       return Err("privileged domain and action must be non-empty and printable".into());
     }
-    let mirror_payload = self.domain == "package" && self.action == "mirror-apply";
+    // File contents written by root (a mirror list, a repository
+    // configuration) are the only arguments that may span lines.
+    let file_payload =
+      self.domain == "package" && matches!(self.action.as_str(), "mirror-apply" | "repo-add");
     if self.arguments.iter().any(|value| {
       value.len() > 256 * 1024
         || value
           .chars()
-          .any(|character| character.is_control() && !(mirror_payload && character == '\n'))
+          .any(|character| character.is_control() && !(file_payload && character == '\n'))
     }) {
       return Err("privileged arguments must not contain control characters".into());
     }
@@ -190,6 +193,15 @@ mod tests {
       .is_ok()
     );
     assert!(PrivilegedRequest::new("service", "restart", vec!["foo\nbar".into()]).is_err());
+    assert!(
+      PrivilegedRequest::new(
+        "package",
+        "repo-add",
+        vec!["x".into(), "[x]\nServer = https://a\n".into()],
+      )
+      .is_ok()
+    );
+    assert!(PrivilegedRequest::new("package", "remove", vec!["a\nb".into()]).is_err());
   }
 
   #[test]

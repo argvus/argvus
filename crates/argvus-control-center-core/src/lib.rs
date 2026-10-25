@@ -8,6 +8,7 @@ pub mod format;
 pub mod i18n;
 pub mod jobs;
 pub mod navigation;
+pub mod pacman_conf;
 pub mod paths;
 pub mod picker;
 pub mod privileged;
