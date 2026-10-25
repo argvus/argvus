@@ -99,6 +99,29 @@ enum Confirmation {
   ReplaceImport,
 }
 
+/// The taskbar part of `Apply`, in the order the files are written: the utility
+/// group, the height and border, the icons and format, then the surface
+/// effects, whose config reload restarts the taskbar once.
+fn apply_taskbar_draft(draft: &SurfaceDraft) -> Result<(), String> {
+  backend::set_taskbar_utility_group(draft.utility_group)?;
+  backend::set_taskbar_shape(draft.height, draft.border_enabled, draft.border_thickness)?;
+  backend::apply_taskbar_icons_and_format(
+    draft.audio_player_enabled,
+    draft.launcher_enabled,
+    &draft.utility_widgets,
+    draft.date_format,
+    draft.time_seconds_enabled,
+    draft.time_format,
+  )?;
+  backend::apply_surface_effects(
+    draft.surface,
+    draft.transparency_enabled,
+    draft.transparency,
+    draft.blur_enabled,
+    draft.blur,
+  )
+}
+
 fn theme_category_label_key(category: ThemeCategory) -> &'static str {
   match category {
     ThemeCategory::Dark => "control_center.theme_category_dark",
@@ -690,75 +713,63 @@ impl AppearanceApp {
     let current_state = self.state.clone();
     self.apply(
       tr(self.lang, "control_center.surface_settings_applied").into(),
-      move || match draft.surface {
-        EffectSurface::Taskbar => {
-          backend::set_taskbar_utility_group(draft.utility_group)?;
-          backend::set_taskbar_shape(draft.height, draft.border_enabled, draft.border_thickness)?;
-          backend::apply_taskbar_icons_and_format(
-            draft.audio_player_enabled,
-            draft.launcher_enabled,
-            &draft.utility_widgets,
-            draft.date_format,
-            draft.time_seconds_enabled,
-            draft.time_format,
-          )?;
-          backend::apply_surface_effects(
-            draft.surface,
-            draft.transparency_enabled,
-            draft.transparency,
-            draft.blur_enabled,
-            draft.blur,
-          )
-        }
-        EffectSurface::WidgetTelemetry => {
-          backend::apply_widget_telemetry(
-            draft.widget_enabled,
-            &draft.widget_blocks,
-            &draft.widget_order,
-          )?;
-          backend::apply_surface_effects(
-            draft.surface,
-            draft.transparency_enabled,
-            draft.transparency,
-            draft.blur_enabled,
-            draft.blur,
-          )
-        }
-        EffectSurface::ControlPanel => {
-          backend::set_control_panel_enabled(draft.control_panel_enabled)?;
-          let changes = ControlPanelCard::ALL
-            .into_iter()
-            .filter_map(|card| {
-              (draft.control_panel_cards.enabled(card)
-                != current_state.control_panel_cards.enabled(card))
-              .then_some((card, draft.control_panel_cards.enabled(card)))
-            })
-            .collect::<Vec<_>>();
-          if !changes.is_empty() {
-            backend::set_control_panel_cards(changes)?;
+      move || {
+        // The splash goes up before the first write and comes down when the
+        // guard drops after the last step, failed or not, so no change is
+        // visible before it.
+        let _overlay = backend::ApplyOverlay::start();
+        match draft.surface {
+          EffectSurface::Taskbar => apply_taskbar_draft(&draft),
+          EffectSurface::WidgetTelemetry => {
+            backend::apply_widget_telemetry(
+              draft.widget_enabled,
+              &draft.widget_blocks,
+              &draft.widget_order,
+            )?;
+            backend::apply_surface_effects(
+              draft.surface,
+              draft.transparency_enabled,
+              draft.transparency,
+              draft.blur_enabled,
+              draft.blur,
+            )
           }
-          backend::apply_surface_effects(
+          EffectSurface::ControlPanel => {
+            backend::set_control_panel_enabled(draft.control_panel_enabled)?;
+            let changes = ControlPanelCard::ALL
+              .into_iter()
+              .filter_map(|card| {
+                (draft.control_panel_cards.enabled(card)
+                  != current_state.control_panel_cards.enabled(card))
+                .then_some((card, draft.control_panel_cards.enabled(card)))
+              })
+              .collect::<Vec<_>>();
+            if !changes.is_empty() {
+              backend::set_control_panel_cards(changes)?;
+            }
+            backend::apply_surface_effects(
+              draft.surface,
+              draft.transparency_enabled,
+              draft.transparency,
+              draft.blur_enabled,
+              draft.blur,
+            )
+          }
+          EffectSurface::Terminal => backend::apply_surface_effects(
             draft.surface,
             draft.transparency_enabled,
             draft.transparency,
-            draft.blur_enabled,
-            draft.blur,
-          )
+            true,
+            0,
+          ),
+          EffectSurface::Launchers => backend::apply_surface_effects(
+            draft.surface,
+            draft.transparency_enabled,
+            draft.transparency,
+            true,
+            0,
+          ),
         }
-        EffectSurface::Terminal => backend::apply_surface_effects(
-          draft.surface,
-          draft.transparency_enabled,
-          draft.transparency,
-          true,
-          0,
-        ),
-        EffectSurface::Launchers => backend::apply_surface_effects(
-          draft.surface,
-          draft.transparency_enabled,
-          draft.transparency,
-          true,
-          0,
-        ),
       },
     );
   }
@@ -1894,6 +1905,8 @@ impl AppearanceApp {
     self.apply(
       tr(self.lang, "control_center.effect_value_applied").into(),
       move || {
+        // Same splash as the surface `Apply`, for the whole write and reload.
+        let _overlay = backend::ApplyOverlay::start();
         if kind == "transparency" && surface == EffectSurface::Terminal {
           backend::apply_surface_effects(surface, terminal_transparency_enabled, value, true, 0)
         } else if kind == "transparency" && surface == EffectSurface::Launchers {

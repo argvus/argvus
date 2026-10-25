@@ -18,7 +18,9 @@ use argvus_control_center_core::{
 };
 use serde_json::Value;
 use std::fs;
+use std::io::{BufRead, BufReader};
 use std::path::{Path, PathBuf};
+use std::process::{Child, Stdio};
 use std::time::Duration;
 
 pub use crate::profile::{
@@ -1610,6 +1612,60 @@ pub fn set_waybar_position(position: &str) -> Result<(), String> {
 /// the taskbar exactly once.
 pub fn set_taskbar_utility_group(mode: TaskbarUtilityGroupMode) -> Result<(), String> {
   run_script(&script("taskbar-right-2-mode.sh"), &["set", mode.value()])
+}
+
+/// The loading splash shown while an `Apply` changes a surface. It is up before
+/// the first write and stays until the guard is dropped after the last step, so
+/// no change is visible before it. The config reload of the same `Apply` finds
+/// it running and starts no splash of its own, so there is only one.
+///
+/// The overlay follows the process that started it, so it is held by
+/// `argvus config transition-overlay hold`, which keeps it up until its stdin
+/// closes. Dropping the guard closes that pipe, and so does the Control Center
+/// exiting, so the splash is never left covering the screen.
+pub struct ApplyOverlay {
+  holder: Option<Child>,
+}
+
+impl ApplyOverlay {
+  /// Shows the splash and returns once it is on screen. When it cannot be
+  /// shown, or another owner already shows one, the guard holds nothing.
+  pub fn start() -> Self {
+    let theme = canonical_theme_id(&read_first(&active_theme_file(), DEFAULT_THEME));
+    let holder = argvus_control_center_core::process::command("argvus")
+      .args(["config", "transition-overlay", "hold", &theme])
+      .stdin(Stdio::piped())
+      .stdout(Stdio::piped())
+      // The Control Center is a full-screen terminal UI; keep its screen clean.
+      .stderr(Stdio::null())
+      .spawn()
+      .ok()
+      .and_then(|mut holder| {
+        // `hold` prints `started` once the splash is on screen.
+        let started = holder.stdout.take().is_some_and(|stdout| {
+          let mut line = String::new();
+          BufReader::new(stdout).read_line(&mut line).is_ok() && line.trim() == "started"
+        });
+        if started {
+          Some(holder)
+        } else {
+          drop(holder.stdin.take());
+          let _ = holder.wait();
+          None
+        }
+      });
+    Self { holder }
+  }
+}
+
+impl Drop for ApplyOverlay {
+  fn drop(&mut self) {
+    if let Some(mut holder) = self.holder.take() {
+      // Closing stdin tells `hold` to stop the splash; waiting lets it fade out.
+      drop(holder.stdin.take());
+      let _ = holder.wait();
+    }
+  }
 }
 
 /// Writes the taskbar height and border to the live taskbar files. A border that
