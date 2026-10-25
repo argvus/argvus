@@ -895,6 +895,8 @@
   "control_center.service_bfe08e": "SERVIÇO",
   "control_center.service_not_found": "Serviço não encontrado",
   "control_center.services": "Serviços",
+  "control_center.services_list": "Serviços:",
+  "control_center.logs_list": "Logs:",
   "control_center.snippets": "Snippets",
   "control_center.snippets_unavailable": "argvus snippets não está instalado.",
   "control_center.snippets_hint": "Snippets são digitados na janela em foco 3 segundos depois de você pressionar Enter em Digitar ou Abrir seletor. Clique primeiro no campo de destino.",

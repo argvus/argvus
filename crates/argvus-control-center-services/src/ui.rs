@@ -17,14 +17,14 @@ use argvus_control_center_core::{
 };
 use argvus_i18n::{Lang, tr};
 use argvus_theme::Theme;
-use argvus_tui::buttons::{Button, ButtonKind};
 use argvus_tui::components::{
   ConfirmationDialog, ConfirmationOutcome, ConfirmationState, StatusKind, StatusMessage,
   draw_confirmation,
 };
+use argvus_tui::filter_search::{filter_line, search_box, titled_block};
 use argvus_tui::hints::{HintContext, hints};
 use argvus_tui::menu::{MenuEvent, MenuState, MenuStyle, Row, draw_menu};
-use argvus_tui::page::{list, readonly, shell, status};
+use argvus_tui::page::{list, shell, status};
 use crossterm::event::KeyCode;
 use ratatui::{
   Frame,
@@ -38,16 +38,9 @@ enum Pending {
   Action(String, String),
 }
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-/// Defines `ActionButton`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
-enum ActionButton {
-  PrevBoot,
-  NextUnit,
-  Priority,
-}
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-/// Identifies the rows of the unit lists (System, User, Failed).
+/// Identifies the rows of the unit lists (System, User, Failed) and the
+/// action rows of the details page.
 enum Item {
-  Filter,
   Unit(usize),
   DetailAction(&'static str),
 }
@@ -57,9 +50,6 @@ pub struct ServicesApp {
   detail_parent: ServicePage,
   detail_unit: Option<String>,
   selected: usize,
-  on_buttons: bool,
-  button_selected: usize,
-  button_from: Option<usize>,
   units: Vec<Unit>,
   logs: Vec<JournalEntry>,
   search: String,
@@ -137,9 +127,6 @@ impl ServicesApp {
       detail_parent: ServicePage::System,
       detail_unit: None,
       selected: 0,
-      on_buttons: false,
-      button_selected: 0,
-      button_from: None,
       units: vec![],
       logs: vec![],
       search: String::new(),
@@ -330,38 +317,6 @@ impl ServicesApp {
 
   /// Processes `handle` in this module's event flow. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn handle(&mut self, key: KeyCode) -> bool {
-    if self.pending.is_none()
-      && !self.searching
-      && self.action.is_none()
-      && self.job.is_none()
-      && self.on_buttons
-      && !self.buttons().is_empty()
-    {
-      match key {
-        KeyCode::Tab => {
-          self.toggle_buttons(false);
-          return false;
-        }
-        KeyCode::BackTab => {
-          self.toggle_buttons(true);
-          return false;
-        }
-        KeyCode::Left | KeyCode::Char('h') => {
-          self.move_button(-1);
-          return false;
-        }
-        KeyCode::Right | KeyCode::Char('l') => {
-          self.move_button(1);
-          return false;
-        }
-        KeyCode::Enter | KeyCode::Char(' ') => {
-          self.activate_button();
-          return false;
-        }
-        KeyCode::Up | KeyCode::Char('k') | KeyCode::Down | KeyCode::Char('j') => return false,
-        _ => {}
-      }
-    }
     if matches!(key, KeyCode::Esc | KeyCode::Left) && self.pending.is_none() && !self.searching {
       if self.page == ServicePage::Home {
         return true;
@@ -379,8 +334,6 @@ impl ServicesApp {
       };
       self.selected = 0;
       self.menu = MenuState::default();
-      self.on_buttons = false;
-      self.button_from = None;
       if self.page == ServicePage::Home {
         self.refresh();
       }
@@ -454,10 +407,10 @@ impl ServicesApp {
       match key {
         KeyCode::Char('r') => self.refresh(),
         KeyCode::Char('/') if self.is_list_page() => self.searching = true,
+        KeyCode::Char('f') if self.is_list_page() => self.cycle_filter(),
         _ => {
           let rows = self.menu_rows();
           match self.menu.handle(key, &rows, 8) {
-            MenuEvent::Activate(Item::Filter) => self.cycle_filter(),
             MenuEvent::Activate(Item::Unit(index)) => {
               self.selected = index;
               self.open();
@@ -470,7 +423,6 @@ impl ServicesApp {
       return false;
     }
     match key {
-      KeyCode::Tab | KeyCode::BackTab => self.toggle_buttons(key == KeyCode::BackTab),
       KeyCode::Char('r') => self.refresh(),
       KeyCode::Char('/')
         if matches!(
@@ -480,6 +432,10 @@ impl ServicesApp {
       {
         self.searching = true
       }
+      // The Logs filters: boot, unit and priority, as on the filter line.
+      KeyCode::Char('b') if self.page == ServicePage::Logs => self.toggle_previous_boot(),
+      KeyCode::Char('u') if self.page == ServicePage::Logs => self.cycle_log_unit(),
+      KeyCode::Char('p') if self.page == ServicePage::Logs => self.cycle_priority(),
       KeyCode::Up | KeyCode::Char('k') => self.selected = self.selected.saturating_sub(1),
       KeyCode::Down | KeyCode::Char('j') => self.selected = self.selected.saturating_add(1),
       KeyCode::Home => self.selected = 0,
@@ -695,106 +651,19 @@ impl ServicesApp {
   }
   /// Executes the `cycle_priority` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn cycle_priority(&mut self) {
+    // `None` is "0-7" (every level). Starting from it must reach "0"; the
+    // previous match sent `None` back to `None`, so the filter never moved.
     self.priority = match self.priority.as_deref() {
-      None | Some("7") => None,
+      None => Some("0".into()),
+      Some("7") => None,
       Some(value) => Some((value.parse::<u8>().unwrap_or(0) + 1).to_string()),
     };
     self.refresh();
   }
-  /// Applies the `toggle_buttons` operation while preserving the persistence and local-update contract. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
-  fn toggle_buttons(&mut self, backwards: bool) {
-    let count = self.buttons().len();
-    if count == 0 {
-      return;
-    }
-    if self.on_buttons {
-      self.on_buttons = false;
-      if let Some(index) = self.button_from.take() {
-        self.selected = index;
-      }
-    } else {
-      self.button_from = Some(self.selected);
-      self.button_selected = if backwards { count - 1 } else { 0 };
-      self.on_buttons = true;
-    }
-  }
-  /// Executes the `move_button` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
-  fn move_button(&mut self, delta: isize) {
-    let count = self.buttons().len();
-    if count == 0 {
-      return;
-    }
-    self.button_selected =
-      (self.button_selected as isize + delta).rem_euclid(count as isize) as usize;
-  }
-  /// Executes the `activate_button` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
-  fn activate_button(&mut self) {
-    if self.job.is_some() || self.action.is_some() {
-      return;
-    }
-    let actions = self.buttons();
-    let Some((action, _)) = actions.get(self.button_selected) else {
-      return;
-    };
-    match *action {
-      ActionButton::PrevBoot => {
-        self.previous_boot = !self.previous_boot;
-        self.refresh();
-      }
-      ActionButton::NextUnit => self.cycle_log_unit(),
-      ActionButton::Priority => self.cycle_priority(),
-    }
-  }
-  /// Executes the `buttons` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
-  fn buttons(&self) -> Vec<(ActionButton, Button)> {
-    let secondary = ButtonKind::Secondary;
-    match self.page {
-      ServicePage::Logs => vec![
-        (
-          ActionButton::PrevBoot,
-          Button::new(
-            format!(
-              "{}: {}",
-              tr(self.lang, "control_center.boot"),
-              if self.previous_boot {
-                tr(self.lang, "control_center.previous")
-              } else {
-                tr(self.lang, "control_center.current_c42247")
-              }
-            ),
-            secondary,
-          ),
-        ),
-        (
-          ActionButton::NextUnit,
-          Button::new(
-            format!(
-              "{}: {}",
-              tr(self.lang, "control_center.service"),
-              self.logs_unit.as_deref().unwrap_or("—")
-            ),
-            secondary,
-          ),
-        ),
-        (
-          ActionButton::Priority,
-          Button::new(
-            format!(
-              "{}: {}",
-              tr(self.lang, "control_center.priority"),
-              self.priority.as_deref().unwrap_or("0-7")
-            ),
-            secondary,
-          ),
-        ),
-      ],
-      ServicePage::System
-      | ServicePage::User
-      | ServicePage::Failed
-      | ServicePage::Home
-      | ServicePage::Detail
-      | ServicePage::LogDetail(_) => Vec::new(),
-    }
+  /// Shows the previous boot's journal or the current one, then reloads.
+  fn toggle_previous_boot(&mut self) {
+    self.previous_boot = !self.previous_boot;
+    self.refresh();
   }
   /// Whether the page is one of the unit lists (System, User, Failed).
   fn is_list_page(&self) -> bool {
@@ -803,41 +672,30 @@ impl ServicesApp {
       ServicePage::System | ServicePage::User | ServicePage::Failed
     )
   }
-  /// Builds the rows of a unit list: the filter, then the units with their
-  /// Active and Enabled columns.
+  /// Builds the rows of a unit list: one row per unit with its Active and
+  /// Enabled dots. The filter is not a row; it is cycled with `f`.
   fn list_rows(&self) -> Vec<Row<Item>> {
-    let mut rows = vec![
-      Row::value(
-        Item::Filter,
-        tr(self.lang, "control_center.filter"),
-        self.filter.label(self.lang),
-        None,
-      ),
-      Row::section(tr(self.lang, "control_center.name")).detail(format!(
-        "  {:<COLUMN$}  {}",
-        tr(self.lang, "control_center.active_095d39"),
-        tr(self.lang, "control_center.enabled_78438d"),
-        COLUMN = STATUS_COLUMN,
-      )),
-    ];
     if self.page == ServicePage::Failed && self.filtered().is_empty() {
-      rows.push(Row::info(
+      return vec![Row::info(
         format!("[OK] {}", tr(self.lang, "control_center.no_failed_units")),
         "",
-      ));
-      return rows;
+      )];
     }
-    rows.extend(self.filtered().iter().enumerate().map(|(index, unit)| {
-      let mut label = unit.name.clone();
-      if self.page == ServicePage::Failed && unit.scope == "user" {
-        label.push_str(&format!(
-          "   [{}]",
-          tr(self.lang, "control_center.user_e7acba")
-        ));
-      }
-      Row::submenu(Item::Unit(index), label).detail(self.status_cells(unit))
-    }));
-    rows
+    self
+      .filtered()
+      .iter()
+      .enumerate()
+      .map(|(index, unit)| {
+        let mut label = unit.name.clone();
+        if self.page == ServicePage::Failed && unit.scope == "user" {
+          label.push_str(&format!(
+            "   [{}]",
+            tr(self.lang, "control_center.user_e7acba")
+          ));
+        }
+        Row::submenu(Item::Unit(index), label).detail(self.status_cells(unit))
+      })
+      .collect()
   }
   /// The Active and Enabled cells of a unit. A filled dot means the state is
   /// on, an empty dot means it is off.
@@ -873,10 +731,25 @@ impl ServicesApp {
             can_go_back: true,
             search: true,
             refresh: true,
+            extra: &[("f", tr(self.lang, "control_center.filter"))],
             ..HintContext::default()
           },
         )
       }
+      ServicePage::Logs => hints(
+        self.lang,
+        &HintContext {
+          can_go_back: true,
+          search: true,
+          refresh: true,
+          extra: &[
+            ("b", tr(self.lang, "control_center.boot")),
+            ("u", tr(self.lang, "control_center.service")),
+            ("p", tr(self.lang, "control_center.priority")),
+          ],
+          ..HintContext::default()
+        },
+      ),
       ServicePage::Detail => {
         let mut menu = self.menu;
         let rows = self.detail_rows();
@@ -891,11 +764,6 @@ impl ServicesApp {
           },
         )
       }
-      _ => tr(
-        self.lang,
-        "control_center.navigate_tab_actions_enter_activate_move_search_r_refresh_esc_back_hel",
-      )
-      .into(),
     }
   }
   /// Renders `draw` while respecting the current domain state and semantic theme. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
@@ -913,19 +781,16 @@ impl ServicesApp {
       self.draw_list(frame, area, body);
       return;
     }
+    if self.page == ServicePage::Logs {
+      self.draw_logs(frame, area, body);
+      return;
+    }
     if self.page == ServicePage::Detail {
       self.draw_detail(frame, area, body);
       return;
     }
-    let mut lines: Vec<String> = if self.page == ServicePage::Home {
+    let lines: Vec<String> = if self.page == ServicePage::Home {
       self.home_rows()
-    } else if self.page == ServicePage::Logs {
-      self
-        .filtered_logs()
-        .iter()
-        .map(|entry| log_line(entry))
-        .map(|l| l.to_string())
-        .collect()
     } else if let ServicePage::LogDetail(index) = self.page {
       self
         .log_detail_lines(index)
@@ -935,81 +800,49 @@ impl ServicesApp {
     } else {
       Vec::new()
     };
-    if self.page == ServicePage::Logs {
-      lines.insert(0, self.logs_header());
-    }
-    if self.searching {
-      lines.insert(
-        0,
-        format!(
-          "{}: {}_",
-          tr(self.lang, "control_center.search"),
-          self.search
-        ),
-      )
-    }
-    let visual_offset = usize::from(self.page == ServicePage::Logs) + usize::from(self.searching);
-    let buttons = self.buttons();
-    let raw_buttons: Vec<Button> = buttons.iter().map(|(_, button)| button.clone()).collect();
-    let (body, button_area) = if raw_buttons.is_empty() {
-      (body, None)
-    } else {
-      let button_height = argvus_tui::buttons::height(&raw_buttons, body.width).min(body.height);
-      let split =
-        Layout::vertical([Constraint::Min(1), Constraint::Length(button_height)]).split(body);
-      (split[0], Some(split[1]))
-    };
     let list_selection = if self.job.is_some() {
       usize::MAX
     } else {
-      self
-        .selected
-        .saturating_add(visual_offset)
-        .min(lines.len().saturating_sub(1))
+      self.selected.min(lines.len().saturating_sub(1))
     };
     list(frame, body, &self.theme, &lines, list_selection);
-    if let Some(button_area) = button_area {
-      let focus = if self.on_buttons {
-        self.button_selected
-      } else {
-        usize::MAX
-      };
-      argvus_tui::buttons::draw(frame, button_area, &raw_buttons, focus, &self.theme);
-    }
-    if let Some(s) = &self.status {
-      status(frame, area, &self.theme, s)
-    }
-    if self.job.is_some() {
-      status(
-        frame,
-        area,
-        &self.theme,
-        &StatusMessage {
-          kind: StatusKind::Info,
-          text: tr(self.lang, "control_center.loading_services").into(),
-        },
-      );
-    }
-    if let Some(Pending::Action(a, u)) = &self.pending {
-      self.draw_pending(frame, area, a, u)
-    }
+    self.draw_overlays(frame, area);
   }
-  /// Renders a unit list: the search field stays visible on top, then the
-  /// menu with the filter and the units.
+  /// Renders a unit list in the shared layout: the filter line, the search
+  /// box and the units in a `Services:` block.
   fn draw_list(&mut self, frame: &mut Frame, area: Rect, body: Rect) {
     let rows = self.list_rows();
     self.menu.normalize(&rows);
-    let sections = Layout::vertical([Constraint::Length(1), Constraint::Min(1)]).split(body);
-    let search = format!(
-      "{}: {}{}",
-      tr(self.lang, "control_center.search"),
-      self.search,
-      if self.searching { "_" } else { "" },
+    let [filter_area, search_area, units_area] = Layout::vertical([
+      Constraint::Length(1),
+      Constraint::Length(3),
+      Constraint::Min(3),
+    ])
+    .areas(body);
+    filter_line(
+      frame,
+      filter_area,
+      &self.theme,
+      tr(self.lang, "control_center.filter"),
+      self.filter.label(self.lang),
     );
-    readonly(frame, sections[0], &self.theme, &[Line::from(search)]);
+    search_box(
+      frame,
+      search_area,
+      &self.theme,
+      tr(self.lang, "control_center.search_2c43ee"),
+      &self.search,
+      self.searching,
+    );
+    let menu_area = titled_block(
+      frame,
+      units_area,
+      &self.theme,
+      tr(self.lang, "control_center.services_list"),
+    );
     draw_menu(
       frame,
-      sections[1],
+      menu_area,
       &self.theme,
       &rows,
       &mut self.menu,
@@ -1017,6 +850,50 @@ impl ServicesApp {
         icons: AppConfig::icons_enabled(),
       },
     );
+    self.draw_overlays(frame, area);
+  }
+  /// Renders the journal in the same layout as the unit lists: the boot,
+  /// unit and priority filters on the filter line, the search over the
+  /// messages, then the entries in a `Logs:` block.
+  fn draw_logs(&mut self, frame: &mut Frame, area: Rect, body: Rect) {
+    let [filter_area, search_area, entries_area] = Layout::vertical([
+      Constraint::Length(1),
+      Constraint::Length(3),
+      Constraint::Min(3),
+    ])
+    .areas(body);
+    filter_line(
+      frame,
+      filter_area,
+      &self.theme,
+      tr(self.lang, "control_center.filter"),
+      &self.logs_filter_summary(),
+    );
+    search_box(
+      frame,
+      search_area,
+      &self.theme,
+      tr(self.lang, "control_center.search_2c43ee"),
+      &self.log_search,
+      self.searching,
+    );
+    let lines: Vec<String> = self
+      .filtered_logs()
+      .into_iter()
+      .map(|entry| log_line(entry).to_string())
+      .collect();
+    let list_area = titled_block(
+      frame,
+      entries_area,
+      &self.theme,
+      tr(self.lang, "control_center.logs_list"),
+    );
+    let list_selection = if self.job.is_some() {
+      usize::MAX
+    } else {
+      self.selected.min(lines.len().saturating_sub(1))
+    };
+    list(frame, list_area, &self.theme, &lines, list_selection);
     self.draw_overlays(frame, area);
   }
   /// Renders the details page: the service information and its actions.
@@ -1134,23 +1011,22 @@ impl ServicesApp {
       .count();
     (active, enabled)
   }
-  /// Executes the `logs_header` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
-  fn logs_header(&self) -> String {
+  /// The value of the Logs filter line: the boot, service and priority in
+  /// use. The keys `b`, `u` and `p` change them.
+  fn logs_filter_summary(&self) -> String {
     let boot = if self.previous_boot {
       tr(self.lang, "control_center.previous")
     } else {
       tr(self.lang, "control_center.current_c42247")
     };
     format!(
-      "{} {}  ·  {} {} · {} {} · {} {}",
-      AppConfig::icon(argvus_tui::icons::LOGS),
-      tr(self.lang, "control_center.logs"),
+      "{}: {} · {}: {} · {}: {}",
       tr(self.lang, "control_center.boot"),
       boot,
-      tr(self.lang, "control_center.priority"),
-      self.priority.as_deref().unwrap_or("0-7"),
       tr(self.lang, "control_center.service"),
       self.logs_unit.as_deref().unwrap_or("—"),
+      tr(self.lang, "control_center.priority"),
+      self.priority.as_deref().unwrap_or("0-7"),
     )
   }
   /// Executes the `detail_lines` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
@@ -1423,11 +1299,7 @@ mod tests {
     }];
     app.handle(KeyCode::Down);
     assert_eq!(app.selected, 0);
-    app.handle(KeyCode::Tab);
-    assert!(!app.on_buttons);
-    app.handle(KeyCode::Up);
-    assert_eq!(app.menu.selected_id(&app.list_rows()), Some(Item::Filter));
-    app.handle(KeyCode::Enter);
+    app.handle(KeyCode::Char('f'));
     assert_eq!(app.filter, UnitFilter::Running);
     assert_eq!(app.filtered().len(), 1);
     app.handle(KeyCode::Char('/'));
@@ -1477,38 +1349,69 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `services_expose_action_buttons_on_lists_but_not_home_or_detail` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
-  fn services_expose_action_buttons_on_lists_but_not_home_or_detail() {
-    let home = ServicesApp::new(Lang::for_locale("en-US"), Theme::load());
-    assert_eq!(home.buttons().len(), 0);
-    let mut system = ServicesApp::new(Lang::for_locale("en-US"), Theme::load());
-    system.page = ServicePage::System;
-    assert_eq!(
-      system.buttons().len(),
-      0,
-      "lists use menu rows, not buttons"
-    );
+  /// The Logs filters are keys, not buttons: the filter line shows them.
+  fn logs_filter_summary_names_boot_service_and_priority() {
     let mut logs = ServicesApp::new(Lang::for_locale("en-US"), Theme::load());
     logs.page = ServicePage::Logs;
-    assert_eq!(logs.buttons().len(), 3);
+    assert_eq!(
+      logs.logs_filter_summary(),
+      "Boot: Current · Service: — · Priority: 0-7"
+    );
+    logs.previous_boot = true;
+    logs.logs_unit = Some("sshd.service".into());
+    logs.priority = Some("3".into());
+    assert_eq!(
+      logs.logs_filter_summary(),
+      "Boot: Previous · Service: sshd.service · Priority: 3"
+    );
   }
 
   #[test]
-  /// Executes the `services_render_menu_rows_with_status_columns_on_lists` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
-  fn services_render_menu_rows_with_status_columns_on_lists() {
+  /// The unit list shows the filter line, the search box and the `Services:`
+  /// block, without the old `Name:` header.
+  fn services_list_uses_filter_search_and_block_layout() {
     let mut app = ServicesApp::new(Lang::for_locale("en-US"), Theme::load());
     app.page = ServicePage::System;
-    let mut terminal = ratatui::Terminal::new(ratatui::backend::TestBackend::new(90, 25)).unwrap();
+    app.units = vec![Unit {
+      name: "alsa-restore.service".into(),
+      active: "active".into(),
+      file_state: "enabled".into(),
+      ..Default::default()
+    }];
+    let text = render_text(&mut app, 90, 25);
+    assert!(text.contains("Filter:") && text.contains("All"));
+    assert!(text.contains("Search:"));
+    assert!(text.contains("Services:"));
+    assert!(text.contains("alsa-restore.service"));
+    assert!(text.contains("Active") && text.contains("Enabled"));
+    assert!(!text.contains("Name:"));
+    assert!(!text.contains("Start") && !text.contains("Iniciar"));
+  }
+
+  #[test]
+  /// The Logs page uses the same layout, with the `Logs:` block as its list.
+  fn logs_page_uses_filter_search_and_block_layout() {
+    let mut app = ServicesApp::new(Lang::for_locale("en-US"), Theme::load());
+    app.page = ServicePage::Logs;
+    let text = render_text(&mut app, 90, 25);
+    assert!(text.contains("Filter:") && text.contains("Priority: 0-7"));
+    assert!(text.contains("Search:"));
+    assert!(text.contains("Logs:"));
+  }
+
+  /// Draws `app` into a test terminal of `width` x `height` and returns the
+  /// rendered cells as text.
+  fn render_text(app: &mut ServicesApp, width: u16, height: u16) -> String {
+    let mut terminal =
+      ratatui::Terminal::new(ratatui::backend::TestBackend::new(width, height)).unwrap();
     terminal.draw(|frame| app.draw(frame)).unwrap();
-    let text = terminal
+    terminal
       .backend()
       .buffer()
       .content
       .iter()
       .map(|cell| cell.symbol())
-      .collect::<String>();
-    assert!(text.contains("Active") && text.contains("Enabled"));
-    assert!(!text.contains("Start") && !text.contains("Iniciar"));
+      .collect()
   }
 
   #[test]
@@ -1572,12 +1475,12 @@ mod tests {
       },
     ];
     let rows = app.list_rows();
-    // Filter, column header, then one row per unit.
-    assert_eq!(rows.len(), 5);
-    assert_eq!(rows[2].label(), "NetworkManager.service");
-    assert_eq!(rows[2].detail_text(), Some("● Active      ● Enabled"));
-    assert_eq!(rows[3].detail_text(), Some("○ Active      ○ Enabled"));
-    assert_eq!(rows[4].detail_text(), Some("○ Active      ● Enabled"));
+    // One row per unit: the filter is cycled with `f`, not listed.
+    assert_eq!(rows.len(), 3);
+    assert_eq!(rows[0].label(), "NetworkManager.service");
+    assert_eq!(rows[0].detail_text(), Some("● Active      ● Enabled"));
+    assert_eq!(rows[1].detail_text(), Some("○ Active      ○ Enabled"));
+    assert_eq!(rows[2].detail_text(), Some("○ Active      ● Enabled"));
   }
 
   #[test]
@@ -1662,8 +1565,8 @@ mod tests {
     app.handle(KeyCode::Down);
     app.handle(KeyCode::Up);
     app.handle(KeyCode::Home);
-    app.handle(KeyCode::Tab);
+    app.handle(KeyCode::Char('f'));
     assert_eq!(app.selected, 3);
-    assert!(!app.on_buttons);
+    assert_eq!(app.filter, UnitFilter::All);
   }
 }

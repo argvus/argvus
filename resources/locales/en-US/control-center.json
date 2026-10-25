@@ -895,6 +895,8 @@
   "control_center.service_bfe08e": "SERVICE",
   "control_center.service_not_found": "Service not found",
   "control_center.services": "Services",
+  "control_center.services_list": "Services:",
+  "control_center.logs_list": "Logs:",
   "control_center.snippets": "Snippets",
   "control_center.snippets_unavailable": "argvus snippets is not installed.",
   "control_center.snippets_hint": "Snippets are typed into the window focused 3 seconds after you press Enter on Type or Open picker. Click the target field first.",

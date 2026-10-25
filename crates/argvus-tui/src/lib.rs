@@ -7,6 +7,7 @@ pub mod buttons;
 pub mod chrome;
 pub mod components;
 pub mod confirm;
+pub mod filter_search;
 pub mod hints;
 pub mod icon_scale;
 pub mod icons;
