@@ -2,18 +2,38 @@
 //!
 //! External tool dependencies remain in backend layers;
 //! the UI consumes normalized models and results.
+/// Where a package comes from: the sync repositories or the AUR.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum PackageSource {
+  Official,
+  Aur,
+}
+
+/// What a package task screen does with the selected package.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum PackageTask {
+  /// Searches the source and installs the selected result.
+  Install,
+  /// Lists the installed packages of the source and removes one.
+  Remove,
+  /// Lists the pending updates of the source and updates one or all.
+  Update,
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum PackagesPage {
   Home,
-  Search,
-  Details(usize),
-  Installed,
-  Updates,
+  /// Install, Remove and Update of one source.
+  Source(PackageSource),
+  /// The package list of one task: the filter on top, the results below.
+  Task(PackageSource, PackageTask),
+  /// The package opened with `→` from a task list or with Enter from Orphans.
+  Details,
+  /// Orphans, opened from Official Repositories > Remove.
   Orphans,
   Cache,
   /// Read-only list of the files in the package cache, opened from Cache.
   CacheFiles,
-  Aur,
   History,
   HistoryDetails(usize),
   Downgrade,
@@ -214,6 +234,8 @@ pub struct AurPackage {
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct PackageDashboard {
   pub installed_count: usize,
+  /// Installed packages that no sync repository provides (`pacman -Qm`).
+  pub foreign_count: usize,
   pub update_count: usize,
   pub orphan_count: usize,
   pub cache_count: usize,

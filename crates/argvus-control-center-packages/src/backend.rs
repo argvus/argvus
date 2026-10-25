@@ -29,7 +29,16 @@ pub enum PackageError {
   InvalidPackageName,
   #[error("invalid reflector option")]
   InvalidReflectorOption,
+  /// Removing the targets would break these installed packages, which
+  /// depend on them; only a cascade removal can take them away together.
+  #[error("required by: {}", .0.join(", "))]
+  BreaksDependencies(Vec<String>),
 }
+/// Fields of each package of a `--print` plan: name, version and size,
+/// separated by real tabs (pacman prints the format as given, without
+/// expanding a written backslash-t).
+const PLAN_FORMAT: &str = "%n\t%v\t%s";
+
 /// Represents `PackageBackend`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub struct PackageBackend<R> {
   pub runner: R,
@@ -71,7 +80,9 @@ impl<R: ProcessRunner> PackageBackend<R> {
     }
     Ok(terminal_text(&String::from_utf8_lossy(&o.stdout)))
   }
-  /// Executes the `run_plan` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
+  /// Runs a `--print` transaction plan. pacman answers in English
+  /// (`LC_ALL=C`) so its failures can be classified, as
+  /// [`classify_pacman_failure`] and [`parse_breaking_dependents`] expect.
   fn run_plan(&self, args: &[String]) -> Result<String, PackageError> {
     if !self.capabilities.has_pacman {
       return Err(PackageError::BackendUnavailable);
@@ -84,6 +95,7 @@ impl<R: ProcessRunner> PackageBackend<R> {
       .fold(ProcessRequest::new(&self.pacman), |request, argument| {
         request.arg(argument)
       })
+      .env("LC_ALL", "C")
       .timeout(Duration::from_secs(60));
     let output = self.runner.run(&request)?;
     if output.timed_out {
@@ -91,12 +103,19 @@ impl<R: ProcessRunner> PackageBackend<R> {
         "transaction planning timed out".into(),
       ));
     }
+    let stdout = terminal_text(&String::from_utf8_lossy(&output.stdout));
     if output.status != Some(0) {
-      return Err(PackageError::Command(terminal_text(
-        &String::from_utf8_lossy(&output.stderr),
-      )));
+      // pacman prints the `error:` line on stderr and its details (such as
+      // `:: removing X breaks dependency 'Y' required by Z`) on stdout.
+      let stderr = terminal_text(&String::from_utf8_lossy(&output.stderr));
+      let details = [stderr.trim(), stdout.trim()]
+        .into_iter()
+        .filter(|part| !part.is_empty())
+        .collect::<Vec<_>>()
+        .join("\n");
+      return Err(PackageError::Command(details));
     }
-    Ok(terminal_text(&String::from_utf8_lossy(&output.stdout)))
+    Ok(stdout)
   }
   /// Executes the `plan_install` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn plan_install(&self, packages: &[String]) -> Result<TransactionPlan, PackageError> {
@@ -106,19 +125,47 @@ impl<R: ProcessRunner> PackageBackend<R> {
       "--print".into(),
       "--needed".into(),
       "--print-format".into(),
-      "%n\\t%v\\t%s".into(),
+      PLAN_FORMAT.into(),
     ];
     args.extend(packages.iter().cloned());
     Ok(parse_transaction_plan(&self.run_plan(&args)?, true))
   }
-  /// Executes the `plan_remove` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
+  /// Plans the removal of `packages` with the dependencies nothing else
+  /// needs (`-Rs`, as the `-Rns` that runs it). Fails with
+  /// [`PackageError::BreaksDependencies`] when other installed packages
+  /// depend on them.
   pub fn plan_remove(&self, packages: &[String]) -> Result<TransactionPlan, PackageError> {
+    self
+      .plan_removal("-Rs", packages)
+      .map_err(|error| match error {
+        PackageError::Command(stderr) => {
+          let dependents = parse_breaking_dependents(&stderr, packages);
+          if dependents.is_empty() {
+            PackageError::Command(stderr)
+          } else {
+            PackageError::BreaksDependencies(dependents)
+          }
+        }
+        error => error,
+      })
+  }
+  /// Plans the removal of `packages` together with every package that
+  /// depends on them (`-Rcs`, as the `-Rcns` that runs it).
+  pub fn plan_remove_cascade(&self, packages: &[String]) -> Result<TransactionPlan, PackageError> {
+    self.plan_removal("-Rcs", packages)
+  }
+  /// A removal plan with the operation flags `flags`.
+  fn plan_removal(
+    &self,
+    flags: &str,
+    packages: &[String],
+  ) -> Result<TransactionPlan, PackageError> {
     validate_package_names(packages)?;
     let mut args = vec![
-      "-R".into(),
+      flags.into(),
       "--print".into(),
       "--print-format".into(),
-      "%n\\t%v\\t%s".into(),
+      PLAN_FORMAT.into(),
     ];
     args.extend(packages.iter().cloned());
     Ok(parse_transaction_plan(&self.run_plan(&args)?, false))
@@ -130,7 +177,7 @@ impl<R: ProcessRunner> PackageBackend<R> {
         "-Syu".into(),
         "--print".into(),
         "--print-format".into(),
-        "%n\\t%v\\t%s".into(),
+        PLAN_FORMAT.into(),
       ])?,
       true,
     ))
@@ -160,6 +207,41 @@ impl<R: ProcessRunner> PackageBackend<R> {
       package.foreign = foreign.contains(&package.name);
     }
     Ok(packages)
+  }
+  /// Installed packages that no sync repository provides (`pacman -Qm`),
+  /// usually built from the AUR. pacman exits with 1 and prints nothing when
+  /// there is none, which is an empty list rather than a failure.
+  pub fn foreign(&self) -> Result<Vec<Package>, PackageError> {
+    let text = match self.run(&["-Qm"]) {
+      Err(PackageError::Command(message)) if message.trim().is_empty() => String::new(),
+      result => result?,
+    };
+    let mut packages = parse_installed(&text);
+    for package in &mut packages {
+      package.foreign = true;
+    }
+    Ok(packages)
+  }
+  /// Pending AUR updates reported by `helper -Qua`, run as the normal user.
+  /// The helpers exit with 1 and print nothing when every package is current.
+  pub fn aur_updates(&self, helper: &str) -> Result<Vec<Update>, PackageError> {
+    if !matches!(helper, "paru" | "yay") {
+      return Err(PackageError::InvalidPackageName);
+    }
+    let request = ProcessRequest::new(helper)
+      .arg("-Qua")
+      .timeout(Duration::from_secs(60));
+    let output = self.runner.run(&request)?;
+    if output.timed_out {
+      return Err(PackageError::Command("timeout".into()));
+    }
+    let stdout = terminal_text(&String::from_utf8_lossy(&output.stdout));
+    let stderr = terminal_text(&String::from_utf8_lossy(&output.stderr));
+    match output.status {
+      Some(0) => Ok(parse_updates(&stdout)),
+      Some(1) if stdout.trim().is_empty() && stderr.trim().is_empty() => Ok(Vec::new()),
+      _ => Err(PackageError::Command(stderr)),
+    }
   }
   /// Applies the `updates` operation while preserving the persistence and local-update contract. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn updates(&self) -> Result<Vec<Update>, PackageError> {
@@ -249,6 +331,7 @@ impl<R: ProcessRunner> PackageBackend<R> {
     let mut failure: Option<String> = None;
     std::thread::scope(|scope| {
       let installed = scope.spawn(|| self.installed().map(|v| v.len()));
+      let foreign = scope.spawn(|| self.foreign().map(|v| v.len()));
       let updates = scope.spawn(|| self.updates().map(|v| v.len()));
       let orphans = scope.spawn(|| self.orphans().map(|v| v.len()));
       let history = scope.spawn(|| self.history().map(|v| v.len()));
@@ -261,6 +344,12 @@ impl<R: ProcessRunner> PackageBackend<R> {
         "installed",
         installed.join(),
         &mut dashboard.installed_count,
+        &mut failure,
+      );
+      settle_count(
+        "foreign",
+        foreign.join(),
+        &mut dashboard.foreign_count,
         &mut failure,
       );
       settle_count(
@@ -460,6 +549,26 @@ pub fn parse_transaction_plan(input: &str, install: bool) -> TransactionPlan {
     }
   }
   plan
+}
+
+/// The installed packages that block removing `targets`, from pacman's
+/// English `:: removing X breaks dependency 'Y' required by Z` lines, in
+/// order and without repetition.
+pub fn parse_breaking_dependents(stderr: &str, targets: &[String]) -> Vec<String> {
+  let mut dependents: Vec<String> = Vec::new();
+  for line in stderr
+    .lines()
+    .filter(|line| line.contains("breaks dependency"))
+  {
+    let Some((_, name)) = line.rsplit_once("required by ") else {
+      continue;
+    };
+    let name = terminal_text(name.trim());
+    if !name.is_empty() && !targets.contains(&name) && !dependents.contains(&name) {
+      dependents.push(name);
+    }
+  }
+  dependents
 }
 
 /// Classifies pacman's stable error vocabulary without attempting to answer a
@@ -932,6 +1041,153 @@ mod tests {
   fn parses_updates() {
     let x = parse_updates("linux 6.1 -> 6.2");
     assert_eq!(x[0].available, "6.2");
+  }
+
+  /// Answers every request with the same output and records the requests.
+  /// `failing` splits pacman's refusal as pacman does: the `error:` line on
+  /// stderr and the details on stdout.
+  struct ScriptedRunner {
+    stdout: &'static str,
+    stderr: &'static str,
+    status: i32,
+    requests: Mutex<Vec<ProcessRequest>>,
+  }
+  impl ScriptedRunner {
+    fn new(stdout: &'static str, status: i32) -> Self {
+      Self {
+        stdout,
+        stderr: "",
+        status,
+        requests: Mutex::default(),
+      }
+    }
+    /// Fails with status 1, `stderr` and the details in `stdout`, as pacman
+    /// does when it refuses a transaction.
+    fn failing(stderr: &'static str, stdout: &'static str) -> Self {
+      Self {
+        stderr,
+        ..Self::new(stdout, 1)
+      }
+    }
+  }
+  impl ProcessRunner for ScriptedRunner {
+    fn run(&self, request: &ProcessRequest) -> Result<ProcessOutput, ProcessError> {
+      self.requests.lock().unwrap().push(request.clone());
+      Ok(ProcessOutput {
+        stdout: self.stdout.as_bytes().to_vec(),
+        stderr: self.stderr.as_bytes().to_vec(),
+        status: Some(self.status),
+        timed_out: false,
+      })
+    }
+  }
+  fn pacman_capabilities() -> Capabilities {
+    Capabilities {
+      has_pacman: true,
+      ..Default::default()
+    }
+  }
+
+  #[test]
+  fn foreign_lists_the_packages_outside_the_repositories() {
+    let backend = PackageBackend::new(
+      ScriptedRunner::new("yay-bin 12.4.2-1\n", 0),
+      pacman_capabilities(),
+    );
+    let packages = backend.foreign().unwrap();
+    assert_eq!(packages.len(), 1);
+    assert!(packages[0].foreign && packages[0].installed);
+    assert_eq!(backend.runner.requests.lock().unwrap()[0].args, ["-Qm"]);
+    let none = PackageBackend::new(ScriptedRunner::new("", 1), pacman_capabilities());
+    assert!(none.foreign().unwrap().is_empty());
+  }
+
+  /// pacman's stderr when a removal would break installed packages.
+  const DEPENDENCIES_ERROR: &str =
+    "error: failed to prepare transaction (could not satisfy dependencies)\n";
+  /// The stdout of the same refusal, which names the dependents.
+  const BREAKS_DEPENDENCIES: &str = ":: removing 7zip breaks dependency '7zip' required by julia
+:: removing 7zip breaks dependency '7zip' required by file-roller
+:: removing p7zip breaks dependency 'p7zip' required by julia
+";
+
+  #[test]
+  fn breaking_dependents_are_listed_once_and_in_order() {
+    let targets = ["7zip".to_owned(), "p7zip".to_owned()];
+    assert_eq!(
+      parse_breaking_dependents(BREAKS_DEPENDENCIES, &targets),
+      ["julia", "file-roller"]
+    );
+    let own = ":: removing a breaks dependency 'a' required by b\n:: removing b breaks dependency 'b' required by a";
+    assert_eq!(
+      parse_breaking_dependents(own, &["a".into(), "b".into()]),
+      Vec::<String>::new(),
+      "targets removed together do not block each other"
+    );
+    assert!(parse_breaking_dependents("error: target not found: zz", &[]).is_empty());
+  }
+
+  #[test]
+  fn removal_plans_report_the_dependents_and_plan_the_cascade() {
+    let backend = PackageBackend::new(
+      ScriptedRunner::failing(DEPENDENCIES_ERROR, BREAKS_DEPENDENCIES),
+      pacman_capabilities(),
+    );
+    let targets = ["7zip".to_owned()];
+    match backend.plan_remove(&targets) {
+      Err(PackageError::BreaksDependencies(dependents)) => {
+        assert_eq!(dependents, ["julia", "file-roller"]);
+      }
+      other => panic!("unexpected plan: {other:?}"),
+    }
+    let request = backend.runner.requests.lock().unwrap()[0].clone();
+    assert_eq!(
+      request.args,
+      ["-Rs", "--print", "--print-format", PLAN_FORMAT, "7zip"]
+    );
+    assert!(request.env.contains(&("LC_ALL".into(), "C".into())));
+
+    let other = PackageBackend::new(
+      ScriptedRunner::failing("error: target not found: zz\n", ""),
+      pacman_capabilities(),
+    );
+    assert!(matches!(
+      other.plan_remove(&["zz".into()]),
+      Err(PackageError::Command(_))
+    ));
+
+    let cascade = PackageBackend::new(
+      ScriptedRunner::new("julia\t2:1.13.2-1\t598270576\n7zip\t26.05-1\t6783359\n", 0),
+      pacman_capabilities(),
+    );
+    let plan = cascade.plan_remove_cascade(&targets).unwrap();
+    assert_eq!(
+      plan
+        .remove
+        .iter()
+        .map(|p| p.name.as_str())
+        .collect::<Vec<_>>(),
+      ["julia", "7zip"]
+    );
+    assert_eq!(plan.remove[0].size, Some(598_270_576));
+    assert_eq!(cascade.runner.requests.lock().unwrap()[0].args[0], "-Rcs");
+  }
+
+  #[test]
+  fn aur_updates_run_the_helper_and_treat_status_one_as_none() {
+    let backend = PackageBackend::new(
+      ScriptedRunner::new("yay-bin 12.4.1-1 -> 12.4.2-1\n", 0),
+      Capabilities::default(),
+    );
+    let updates = backend.aur_updates("yay").unwrap();
+    assert_eq!(updates[0].name, "yay-bin");
+    assert_eq!(updates[0].available, "12.4.2-1");
+    let request = backend.runner.requests.lock().unwrap()[0].clone();
+    assert_eq!(request.program, "yay");
+    assert_eq!(request.args, ["-Qua"]);
+    let current = PackageBackend::new(ScriptedRunner::new("", 1), Capabilities::default());
+    assert!(current.aur_updates("paru").unwrap().is_empty());
+    assert!(current.aur_updates("sh").is_err());
   }
   #[test]
   /// Converts input data into `parses_real_pacman_search_shape` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.

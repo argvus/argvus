@@ -22,7 +22,7 @@ use argvus_control_center_hardware::HardwarePage;
 #[cfg(feature = "network")]
 use argvus_control_center_network::NetworkPage;
 #[cfg(feature = "packages")]
-use argvus_control_center_packages::PackagesPage;
+use argvus_control_center_packages::{PackageSource, PackageTask, PackagesPage};
 #[cfg(feature = "services")]
 use argvus_control_center_services::ServicePage;
 #[cfg(feature = "session")]
@@ -363,13 +363,19 @@ fn parse_packages(args: &[String]) -> Result<PackagesPage, String> {
   if args.len() > 1 {
     return Err("packages accepts at most one page".into());
   }
+  use {PackageSource::*, PackageTask::*};
+  // `search`, `installed`, `updates` and `aur` keep opening the lists they
+  // named before the pages were grouped by source.
   Ok(match args.first().map(|v| option(v)) {
-    None | Some("search") => PackagesPage::Search,
-    Some("installed") => PackagesPage::Installed,
-    Some("updates") => PackagesPage::Updates,
+    None | Some("search") => PackagesPage::Task(Official, Install),
+    Some("installed") => PackagesPage::Task(Official, Remove),
+    Some("updates") => PackagesPage::Task(Official, Update),
+    Some("official") => PackagesPage::Source(Official),
     Some("orphans") => PackagesPage::Orphans,
     Some("cache") => PackagesPage::Cache,
-    Some("aur") => PackagesPage::Aur,
+    Some("aur") => PackagesPage::Task(Aur, Install),
+    Some("aur-remove") => PackagesPage::Task(Aur, Remove),
+    Some("aur-updates") => PackagesPage::Task(Aur, Update),
     Some("history") => PackagesPage::History,
     Some("downgrade") => PackagesPage::Downgrade,
     Some("mirrors") => PackagesPage::Mirrors,

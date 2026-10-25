@@ -345,7 +345,10 @@ mod tests {
   #[test]
   fn q_is_part_of_the_filter_on_package_lists_that_filter_while_typing() {
     let mut app = App::new(InitialRoute::Packages(
-      argvus_control_center_packages::PackagesPage::Search,
+      argvus_control_center_packages::PackagesPage::Task(
+        argvus_control_center_packages::PackageSource::Official,
+        argvus_control_center_packages::PackageTask::Install,
+      ),
     ));
     assert!(app.captures_text());
     handle(&mut app, press(KeyCode::Char('q')));
@@ -561,7 +564,9 @@ mod tests {
       ),
       #[cfg(feature = "packages")]
       (
-        InitialRoute::Packages(argvus_control_center_packages::PackagesPage::Updates),
+        InitialRoute::Packages(argvus_control_center_packages::PackagesPage::Source(
+          argvus_control_center_packages::PackageSource::Official,
+        )),
         Route::Packages,
       ),
       #[cfg(feature = "hardware")]
@@ -685,14 +690,19 @@ mod tests {
 
     #[cfg(feature = "packages")]
     {
+      use argvus_control_center_packages::{PackageSource, PackageTask, PackagesPage};
       let mut app = App::new(InitialRoute::Home);
       app.route = Route::Packages;
-      handle(&mut app, press(KeyCode::Down));
+      handle(&mut app, press(KeyCode::Enter));
+      assert_eq!(
+        app.packages.page,
+        PackagesPage::Source(PackageSource::Official)
+      );
       handle(&mut app, press(KeyCode::Down));
       handle(&mut app, press(KeyCode::Enter));
       assert_eq!(
         app.packages.page,
-        argvus_control_center_packages::PackagesPage::Installed
+        PackagesPage::Task(PackageSource::Official, PackageTask::Remove)
       );
     }
   }

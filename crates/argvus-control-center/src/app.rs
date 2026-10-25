@@ -37,7 +37,7 @@ use argvus_control_center_hardware::{HardwareApp, HardwarePage};
 #[cfg(feature = "network")]
 use argvus_control_center_network::{NetworkApp, NetworkPage};
 #[cfg(feature = "packages")]
-use argvus_control_center_packages::{PackagesApp, PackagesPage};
+use argvus_control_center_packages::{PackageSource, PackageTask, PackagesApp, PackagesPage};
 #[cfg(feature = "power")]
 use argvus_control_center_power::PowerApp;
 #[cfg(feature = "services")]
@@ -372,8 +372,7 @@ impl App {
     let mut packages = packages;
     #[cfg(feature = "packages")]
     if let InitialRoute::Packages(page) = initial {
-      packages.page = page;
-      packages.reload();
+      packages.open(page);
     }
     #[cfg(feature = "storage")]
     let mut storage = storage;
@@ -814,9 +813,17 @@ impl App {
       ),
       #[cfg(feature = "packages")]
       (
+        "packages.official",
+        "packages",
+        "control_center.official_repositories",
+        "pacman package pacote official oficial repositories repositórios",
+        "packages/official",
+      ),
+      #[cfg(feature = "packages")]
+      (
         "packages.search",
         "packages",
-        "control_center.install_official",
+        "control_center.search_official_install",
         "pacman package pacote install instalar official oficial search",
         "packages/search",
       ),
@@ -824,15 +831,15 @@ impl App {
       (
         "packages.installed",
         "packages",
-        "control_center.installed_official",
-        "installed instalados official oficial",
+        "control_center.search_official_remove",
+        "installed instalados remove remover uninstall desinstalar official oficial",
         "packages/installed",
       ),
       #[cfg(feature = "packages")]
       (
         "packages.updates",
         "packages",
-        "control_center.updates_official",
+        "control_center.search_official_update",
         "update upgrade atualizar official oficial",
         "packages/updates",
       ),
@@ -840,8 +847,8 @@ impl App {
       (
         "packages.orphans",
         "packages",
-        "control_center.installed_orphans",
-        "orphan órfão orfao installed instalados",
+        "control_center.search_orphans",
+        "orphan órfão orfao remove remover",
         "packages/orphans",
       ),
       #[cfg(feature = "packages")]
@@ -856,9 +863,25 @@ impl App {
       (
         "packages.aur",
         "packages",
-        "control_center.install_aur",
+        "control_center.search_aur_install",
         "aur paru yay install instalar",
         "packages/aur",
+      ),
+      #[cfg(feature = "packages")]
+      (
+        "packages.aur-remove",
+        "packages",
+        "control_center.search_aur_remove",
+        "aur paru yay remove remover uninstall desinstalar",
+        "packages/aur-remove",
+      ),
+      #[cfg(feature = "packages")]
+      (
+        "packages.aur-updates",
+        "packages",
+        "control_center.search_aur_update",
+        "aur paru yay update upgrade atualizar",
+        "packages/aur-updates",
       ),
       #[cfg(feature = "packages")]
       (
@@ -1766,19 +1789,42 @@ impl App {
       #[cfg(feature = "boot")]
       ("boot", "plymouth") => self.open_boot_page(BootPage::Plymouth),
       #[cfg(feature = "packages")]
-      ("packages", "search") => self.open_packages_page(PackagesPage::Search),
+      ("packages", "search") => self.open_packages_page(PackagesPage::Task(
+        PackageSource::Official,
+        PackageTask::Install,
+      )),
       #[cfg(feature = "packages")]
       ("packages", "home") => self.open_packages_page(PackagesPage::Home),
       #[cfg(feature = "packages")]
-      ("packages", "installed") => self.open_packages_page(PackagesPage::Installed),
+      ("packages", "official") => {
+        self.open_packages_page(PackagesPage::Source(PackageSource::Official))
+      }
       #[cfg(feature = "packages")]
-      ("packages", "updates") => self.open_packages_page(PackagesPage::Updates),
+      ("packages", "installed") => self.open_packages_page(PackagesPage::Task(
+        PackageSource::Official,
+        PackageTask::Remove,
+      )),
+      #[cfg(feature = "packages")]
+      ("packages", "updates") => self.open_packages_page(PackagesPage::Task(
+        PackageSource::Official,
+        PackageTask::Update,
+      )),
       #[cfg(feature = "packages")]
       ("packages", "orphans") => self.open_packages_page(PackagesPage::Orphans),
       #[cfg(feature = "packages")]
       ("packages", "cache") => self.open_packages_page(PackagesPage::Cache),
       #[cfg(feature = "packages")]
-      ("packages", "aur") => self.open_packages_page(PackagesPage::Aur),
+      ("packages", "aur") => {
+        self.open_packages_page(PackagesPage::Task(PackageSource::Aur, PackageTask::Install))
+      }
+      #[cfg(feature = "packages")]
+      ("packages", "aur-remove") => {
+        self.open_packages_page(PackagesPage::Task(PackageSource::Aur, PackageTask::Remove))
+      }
+      #[cfg(feature = "packages")]
+      ("packages", "aur-updates") => {
+        self.open_packages_page(PackagesPage::Task(PackageSource::Aur, PackageTask::Update))
+      }
       #[cfg(feature = "packages")]
       ("packages", "history") => self.open_packages_page(PackagesPage::History),
       #[cfg(feature = "packages")]
@@ -1926,8 +1972,7 @@ impl App {
   #[cfg(feature = "packages")]
   /// Executes the `open_packages_page` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn open_packages_page(&mut self, page: PackagesPage) {
-    self.packages.page = page;
-    self.packages.reload();
+    self.packages.open(page);
     self.route = Route::Packages;
   }
   #[cfg(feature = "storage")]

@@ -3,10 +3,10 @@
 //! External tool dependencies remain in backend layers;
 //! the UI consumes normalized models and results.
 use crate::{
-  backend::{PackageBackend, parse_reflector_countries, reflector_args},
+  backend::{PackageBackend, PackageError, parse_reflector_countries, reflector_args},
   model::{
     AurPackage, CachePackage, HistoryEntry, Mirror, Package, PackageDashboard, PackageDetails,
-    PackagesPage, ReflectorOptions, TransactionPlan, Update,
+    PackageSource, PackageTask, PackagesPage, ReflectorOptions, TransactionPlan, Update,
   },
 };
 use argvus_control_center_core::format::human_bytes;
@@ -25,8 +25,11 @@ use argvus_tui::{
   action_buttons::{ActionButton, ActionFocus, draw_aligned_transparent},
   chrome,
   components::{StatusKind, StatusMessage},
-  confirm::{ConfirmDialog, ConfirmOutcome, ConfirmState, draw_confirm},
-  hints::{HintContext, confirm_hints, hints},
+  confirm::{
+    ChoiceDialog, ChoiceOutcome, ChoiceState, ConfirmDialog, ConfirmOutcome, ConfirmState,
+    draw_choice, draw_confirm,
+  },
+  hints::{HintContext, choice_hints, confirm_hints, hints},
   icons,
   menu::{MenuEvent, MenuState, MenuStyle, Row, RowKind, draw_menu},
   page::{shell, status},
@@ -58,6 +61,16 @@ enum Loaded {
 enum Action {
   Install(Vec<String>),
   Remove(Vec<String>),
+  /// Removes only the packages, skipping the dependency checks (`-Rdd`):
+  /// the installed packages that need them stay and may stop working.
+  RemoveOnly(Vec<String>),
+  /// Removes the packages together with the installed packages that depend
+  /// on them (`dependents`). When a plain removal would break them, the
+  /// confirmation becomes a choice between this and [`Action::RemoveOnly`].
+  RemoveCascade {
+    packages: Vec<String>,
+    dependents: Vec<String>,
+  },
   Reinstall(String),
   UpgradePackage(String),
   Upgrade,
@@ -65,6 +78,10 @@ enum Action {
   CleanCache(&'static str),
   Downgrade(String),
   AurInstall(String),
+  /// Updates one AUR package with the helper, as the normal user.
+  AurUpgradePackage(String),
+  /// Updates every AUR package with the helper, as the normal user.
+  AurUpgrade,
   ApplyMirrors(String),
 }
 
@@ -75,8 +92,22 @@ impl Action {
   fn is_destructive(&self) -> bool {
     matches!(
       self,
-      Self::Remove(_) | Self::CleanCache(_) | Self::Downgrade(_)
+      Self::Remove(_)
+        | Self::RemoveOnly(_)
+        | Self::RemoveCascade { .. }
+        | Self::CleanCache(_)
+        | Self::Downgrade(_)
     )
+  }
+
+  /// The ways to run this action when the confirmation offers more than one.
+  fn choices(&self) -> Option<[Action; 2]> {
+    match self {
+      Self::RemoveCascade { packages, .. } => {
+        Some([Self::RemoveOnly(packages.clone()), self.clone()])
+      }
+      _ => None,
+    }
   }
 }
 
@@ -103,15 +134,15 @@ const QUERY_MAX: usize = 128;
 /// points an action at another package.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum Item {
-  /// A page opened from the Packages home.
+  /// A page opened from the Packages home, a source menu or the Remove list.
   Open(PackagesPage),
-  /// Index into `packages` on the Search and Installed lists.
+  /// Index into `packages` on the Install (Official) and Remove lists.
   Package(usize),
-  /// Index into `aur`.
+  /// Index into `aur`, on the Install (AUR) list.
   Aur(usize),
   /// Index into `packages` on the Orphans list.
   Orphan(usize),
-  /// Index into `updates`.
+  /// Index into `updates`, on the Update lists.
   Update(usize),
   /// Index into `cache`, on the Downgrade list.
   CacheFile(usize),
@@ -119,6 +150,7 @@ enum Item {
   Install,
   /// Removes the open package.
   Remove,
+  /// Upgrades every pending update of the open Update list.
   UpgradeAll,
   RefreshDatabase,
   /// Removes the orphans marked with Space.
@@ -145,7 +177,9 @@ impl Item {
   fn waits_for_jobs(self) -> bool {
     matches!(
       self,
-      Self::Install
+      Self::Package(_)
+        | Self::Aur(_)
+        | Self::Install
         | Self::Remove
         | Self::UpgradeAll
         | Self::RefreshDatabase
@@ -199,7 +233,9 @@ pub struct PackagesApp {
   /// Name of the package whose details page is open, known before its
   /// metadata arrives.
   details_name: Option<String>,
+  /// The list that opened the details page, and the row to return to.
   details_parent: PackagesPage,
+  details_origin: Option<Item>,
   query: String,
   job: Option<JobHandle<Result<Loaded, String>>>,
   last_loaded: Option<(String, std::time::Instant)>,
@@ -213,6 +249,9 @@ pub struct PackagesApp {
   input_mode: Option<InputMode>,
   pending: Option<Action>,
   confirmation: ConfirmState,
+  /// Focus of the choice that replaces the confirmation for actions with
+  /// more than one way to run (see [`Action::choices`]).
+  choice: ChoiceState,
   preview: Option<TransactionPlan>,
   pub status: Option<StatusMessage>,
   /// Names of the orphans marked with Space.
@@ -251,14 +290,12 @@ fn transaction_bottom_offset(output: &str) -> u16 {
 /// Whether typed characters filter the list on `page` (D8): letters,
 /// including `j`, `k`, `r`, `q` and `?`, become text of the filter.
 fn filters_while_typing(page: PackagesPage) -> bool {
-  matches!(
-    page,
-    PackagesPage::Search
-      | PackagesPage::Installed
-      | PackagesPage::Orphans
-      | PackagesPage::Updates
-      | PackagesPage::Aur
-  )
+  matches!(page, PackagesPage::Task(..) | PackagesPage::Orphans)
+}
+
+/// The Update lists, which keep the action bar under the list.
+fn has_action_bar(page: PackagesPage) -> bool {
+  matches!(page, PackagesPage::Task(_, PackageTask::Update))
 }
 
 impl PackagesApp {
@@ -283,7 +320,8 @@ impl PackagesApp {
       dashboard: PackageDashboard::default(),
       details: None,
       details_name: None,
-      details_parent: PackagesPage::Search,
+      details_parent: PackagesPage::Task(PackageSource::Official, PackageTask::Install),
+      details_origin: None,
       query: String::new(),
       job: None,
       last_loaded: None,
@@ -297,6 +335,7 @@ impl PackagesApp {
       input_mode: None,
       pending: None,
       confirmation: ConfirmState::new(),
+      choice: ChoiceState::new(),
       preview: None,
       status: None,
       marked: vec![],
@@ -341,13 +380,14 @@ impl PackagesApp {
     if self.job.is_some() {
       return;
     }
-    if matches!(self.page, PackagesPage::Search | PackagesPage::Aur) && self.query.trim().is_empty()
+    if let PackagesPage::Task(source, PackageTask::Install) = self.page
+      && self.query.trim().is_empty()
     {
       self.status = Some(StatusMessage {
         kind: StatusKind::Info,
-        text: match self.page {
-          PackagesPage::Aur => tr(self.lang, "control_center.press_to_search_the_aur"),
-          _ => tr(self.lang, "control_center.press_to_search_packages"),
+        text: match source {
+          PackageSource::Aur => tr(self.lang, "control_center.press_to_search_the_aur"),
+          PackageSource::Official => tr(self.lang, "control_center.press_to_search_packages"),
         }
         .into(),
       });
@@ -366,27 +406,46 @@ impl PackagesApp {
     let page = self.page;
     let query = self.query.clone();
     let name = self.details_target();
+    // With the AUR menu on the Home, its packages are removed from there.
+    let hide_foreign = self.has_aur_helper();
     self.job = Some(self.jobs.spawn(move |_| {
       let b = PackageBackend::new(SystemProcessRunner, caps);
+      let aur_helper = || b.aur_helper().ok_or("AUR helper is unavailable");
       let data = match page {
-        PackagesPage::Installed => Loaded::Packages(b.installed().map_err(|e| e.to_string())?),
-        PackagesPage::Search => Loaded::Packages(b.search(&query).map_err(|e| e.to_string())?),
-        PackagesPage::Updates => Loaded::Updates(b.updates().map_err(|e| e.to_string())?),
+        PackagesPage::Task(PackageSource::Official, PackageTask::Install) => {
+          Loaded::Packages(b.search(&query).map_err(|e| e.to_string())?)
+        }
+        PackagesPage::Task(PackageSource::Official, PackageTask::Remove) => {
+          let mut packages = b.installed().map_err(|e| e.to_string())?;
+          if hide_foreign {
+            packages.retain(|package| !package.foreign);
+          }
+          Loaded::Packages(packages)
+        }
+        PackagesPage::Task(PackageSource::Official, PackageTask::Update) => {
+          Loaded::Updates(b.updates().map_err(|e| e.to_string())?)
+        }
+        PackagesPage::Task(PackageSource::Aur, PackageTask::Install) => Loaded::Aur(
+          b.aur_search(aur_helper()?, &query)
+            .map_err(|e| e.to_string())?,
+        ),
+        PackagesPage::Task(PackageSource::Aur, PackageTask::Remove) => {
+          Loaded::Packages(b.foreign().map_err(|e| e.to_string())?)
+        }
+        PackagesPage::Task(PackageSource::Aur, PackageTask::Update) => {
+          Loaded::Updates(b.aur_updates(aur_helper()?).map_err(|e| e.to_string())?)
+        }
         PackagesPage::Orphans => Loaded::Packages(b.orphans().map_err(|e| e.to_string())?),
         PackagesPage::Cache | PackagesPage::CacheFiles | PackagesPage::Downgrade => {
           Loaded::Cache(b.cache())
         }
         PackagesPage::History => Loaded::History(b.history().map_err(|e| e.to_string())?),
         PackagesPage::Mirrors | PackagesPage::MirrorEditor => Loaded::Mirrors(b.mirrors()),
-        PackagesPage::Aur => {
-          let h = b.aur_helper().ok_or("AUR helper is unavailable")?;
-          Loaded::Aur(b.aur_search(h, &query).map_err(|e| e.to_string())?)
-        }
-        PackagesPage::Details(_) | PackagesPage::HistoryDetails(_) => Loaded::Details(Box::new(
+        PackagesPage::Details | PackagesPage::HistoryDetails(_) => Loaded::Details(Box::new(
           b.details(&name.ok_or("package not found")?)
             .map_err(|e| e.to_string())?,
         )),
-        PackagesPage::Home => Loaded::Dashboard(b.dashboard()),
+        PackagesPage::Home | PackagesPage::Source(_) => Loaded::Dashboard(b.dashboard()),
       };
       Ok(Ok(data))
     }));
@@ -546,7 +605,7 @@ impl PackagesApp {
   }
   /// Name of the package whose details page is open.
   fn details_target(&self) -> Option<String> {
-    if !matches!(self.page, PackagesPage::Details(_)) {
+    if self.page != PackagesPage::Details {
       return None;
     }
     self
@@ -555,21 +614,22 @@ impl PackagesApp {
       .map(|details| details.package.name.clone())
       .or_else(|| self.details_name.clone())
   }
-  /// Executes the `home_pages` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
+  /// Whether an AUR helper (paru or yay) is installed, which shows the AUR menu.
+  fn has_aur_helper(&self) -> bool {
+    self.capabilities.has_paru || self.capabilities.has_yay
+  }
+  /// The pages listed on the Packages home, in order.
   fn home_pages(&self) -> Vec<PackagesPage> {
-    let mut pages = vec![
-      PackagesPage::Search,
-      PackagesPage::Installed,
-      PackagesPage::Orphans,
-      PackagesPage::Updates,
+    let mut pages = vec![PackagesPage::Source(PackageSource::Official)];
+    if self.has_aur_helper() {
+      pages.push(PackagesPage::Source(PackageSource::Aur));
+    }
+    pages.extend([
       PackagesPage::Cache,
       PackagesPage::History,
       PackagesPage::Downgrade,
       PackagesPage::Mirrors,
-    ];
-    if self.capabilities.has_paru || self.capabilities.has_yay {
-      pages.insert(1, PackagesPage::Aur);
-    }
+    ]);
     pages
   }
   /// Executes the `matches_query` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
@@ -626,6 +686,24 @@ impl PackagesApp {
     if self.input.is_some() {
       return self.handle_input(key);
     }
+    if let Some(choices) = self.pending.as_ref().and_then(Action::choices) {
+      match self.choice.handle(key, choices.len()) {
+        ChoiceOutcome::Chosen(index) => {
+          // The choice is the confirmation: the chosen way starts now.
+          let [first, second] = choices;
+          self.pending = Some(if index == 0 { first } else { second });
+          self.choice = ChoiceState::new();
+          self.start_pending();
+        }
+        ChoiceOutcome::Cancelled => {
+          self.pending = None;
+          self.preview = None;
+          self.choice = ChoiceState::new();
+        }
+        ChoiceOutcome::Pending => {}
+      }
+      return false;
+    }
     if self.pending.is_some() {
       match self.confirmation.handle(key) {
         ConfirmOutcome::Confirmed => {
@@ -645,7 +723,10 @@ impl PackagesApp {
       self.handle_transaction(key);
       return false;
     }
-    if self.page == PackagesPage::Updates && self.handle_action_bar(key) {
+    if has_action_bar(self.page) && self.handle_action_bar(key) {
+      return false;
+    }
+    if key == KeyCode::Right && self.open_selected_details() {
       return false;
     }
     // Tab only switches tabs or panes; the other pages have none.
@@ -681,19 +762,17 @@ impl PackagesApp {
     }
     false
   }
-  /// The action bar under the Updates list, as on Time Zone: `←/→` and `Tab`
-  /// move the focus to its buttons, `Enter`/`Space` run the focused one, and
-  /// `↑/↓` give the focus back to the list. `true` when the key was consumed.
+  /// The action bar under the Update lists: `Tab` moves the focus to its
+  /// buttons and back, `←/→` move between them, `Enter`/`Space` run the
+  /// focused one, and `↑/↓` give the focus back to the list. On the list,
+  /// `→` opens the package details and `←` goes back (D58). `true` when the
+  /// key was consumed.
   fn handle_action_bar(&mut self, key: KeyCode) -> bool {
     let focused = self.actions.cursor().is_some();
     match key {
-      KeyCode::Left | KeyCode::Right => {
+      KeyCode::Left | KeyCode::Right if focused => {
         let enabled = self.enabled_action_indexes();
-        if focused {
-          self.actions.move_by(key == KeyCode::Left, &enabled);
-        } else {
-          self.actions.toggle(&enabled);
-        }
+        self.actions.move_by(key == KeyCode::Left, &enabled);
         true
       }
       KeyCode::Tab | KeyCode::BackTab => {
@@ -814,10 +893,10 @@ impl PackagesApp {
           self.cursor_to_first_entry();
         }
       }
-      // With nothing to open, Enter on the Search and AUR lists searches
-      // for the typed text, as before.
+      // With nothing to install, Enter on the Install lists searches for
+      // the typed text, as before.
       KeyCode::Enter
-        if matches!(self.page, PackagesPage::Search | PackagesPage::Aur)
+        if matches!(self.page, PackagesPage::Task(_, PackageTask::Install))
           && !self.rows().iter().any(Row::is_selectable) =>
       {
         if !self.destructive() {
@@ -830,11 +909,11 @@ impl PackagesApp {
   }
   /// Runs the remote search for the typed filter on Search and AUR.
   fn search_typed_query(&mut self) {
-    let minimum = if self.page == PackagesPage::Aur { 2 } else { 1 };
+    let minimum = if self.on_aur_search() { 2 } else { 1 };
     if self.query.trim().chars().count() < minimum {
       self.error(tr(
         self.lang,
-        if self.page == PackagesPage::Aur {
+        if self.on_aur_search() {
           "control_center.aur_search_requires_at_least_2_characters"
         } else {
           "control_center.enter_a_non_empty_search_query"
@@ -843,6 +922,10 @@ impl PackagesApp {
     } else {
       self.reload();
     }
+  }
+  /// The AUR Install list, whose remote search needs two characters.
+  fn on_aur_search(&self) -> bool {
+    self.page == PackagesPage::Task(PackageSource::Aur, PackageTask::Install)
   }
   /// After the filter changed, puts the cursor on the first package, as the
   /// lists did before (or on the first selectable row without matches).
@@ -885,14 +968,22 @@ impl PackagesApp {
   fn back(&mut self) -> bool {
     let (parent, origin) = match self.page {
       PackagesPage::Home => return true,
-      PackagesPage::Details(index) => {
-        let origin = match self.details_parent {
-          PackagesPage::Aur => Some(Item::Aur(index)),
-          PackagesPage::Orphans => Some(Item::Orphan(index)),
-          PackagesPage::Search | PackagesPage::Installed => Some(Item::Package(index)),
-          _ => None,
-        };
-        (self.details_parent, origin)
+      PackagesPage::Details => (self.details_parent, self.details_origin),
+      PackagesPage::Task(source, task) => (
+        PackagesPage::Source(source),
+        Some(Item::Open(PackagesPage::Task(source, task))),
+      ),
+      PackagesPage::Orphans => {
+        // The orphans replaced the installed list: load it again.
+        self.cancel_load();
+        self.packages.clear();
+        let remove = PackagesPage::Task(PackageSource::Official, PackageTask::Remove);
+        self.go(remove);
+        self.query.clear();
+        self.reload_force();
+        let rows = self.rows();
+        self.menu.select(&rows, &Item::Open(PackagesPage::Orphans));
+        return false;
       }
       PackagesPage::HistoryDetails(_) => (PackagesPage::History, None),
       PackagesPage::CacheFiles => (PackagesPage::Cache, Some(Item::CacheFiles)),
@@ -910,6 +1001,136 @@ impl PackagesApp {
     false
   }
 
+  /// Opens `page` from outside the Packages pages (a CLI route or the global
+  /// search), loading its data as the rows that open it do.
+  pub fn open(&mut self, page: PackagesPage) {
+    self.open_page(page);
+    if matches!(page, PackagesPage::Source(_)) {
+      self.reload();
+    }
+  }
+
+  /// Opens `page` from a row of the Home, a source menu or the Remove list.
+  fn open_page(&mut self, page: PackagesPage) {
+    self.go(page);
+    match page {
+      // The dashboard loaded with the Home already has the counters.
+      PackagesPage::Source(_) => {}
+      // Each list loads from scratch, so another list never shows its
+      // packages while this one loads.
+      PackagesPage::Task(..) | PackagesPage::Orphans => {
+        self.cancel_load();
+        self.query.clear();
+        self.packages.clear();
+        self.updates.clear();
+        self.aur.clear();
+        self.reload_force();
+      }
+      _ => self.reload(),
+    }
+  }
+
+  /// Drops the list still loading for the previous page, so its result never
+  /// fills the list that opens now.
+  fn cancel_load(&mut self) {
+    if let Some(job) = self.job.take() {
+      job.cancel();
+    }
+  }
+
+  /// `→` on a package of a task list opens its details; `false` when the
+  /// selected row is not a package.
+  fn open_selected_details(&mut self) -> bool {
+    if !matches!(self.page, PackagesPage::Task(..)) || self.destructive() {
+      return false;
+    }
+    let rows = self.rows();
+    self.menu.normalize(&rows);
+    match self.menu.selected_id(&rows) {
+      Some(item) if item.is_list_entry() => {
+        self.open_details(item);
+        true
+      }
+      _ => false,
+    }
+  }
+
+  /// Opens the details page of the package of `item`, remembering the list
+  /// and the row to return to.
+  fn open_details(&mut self, item: Item) {
+    let name = match item {
+      Item::Package(index) | Item::Orphan(index) => {
+        self.packages.get(index).map(|package| package.name.clone())
+      }
+      Item::Update(index) => self.updates.get(index).map(|update| update.name.clone()),
+      Item::Aur(index) => self.aur.get(index).map(|package| package.name.clone()),
+      _ => None,
+    };
+    let Some(name) = name else {
+      return;
+    };
+    self.details_parent = self.page;
+    self.details_origin = Some(item);
+    self.details_name = Some(name);
+    self.details = None;
+    self.go(PackagesPage::Details);
+    if let Item::Aur(index) = item
+      && let Some(package) = self.aur.get(index)
+    {
+      // AUR search results are not in the local database: the page shows
+      // what the search returned, as before.
+      self.details = Some(PackageDetails {
+        package: Package {
+          name: package.name.clone(),
+          version: package.version.clone(),
+          repository: Some("AUR".into()),
+          description: package.description.clone(),
+          installed: package.installed,
+          ..Default::default()
+        },
+        ..Default::default()
+      });
+    } else {
+      self.reload();
+    }
+  }
+
+  /// Enter on a package of a task list: the operation of that list, after
+  /// the same plan and confirmation as before.
+  fn run_task(&mut self, item: Item) {
+    let PackagesPage::Task(source, task) = self.page else {
+      return;
+    };
+    match (item, task) {
+      (Item::Package(index), PackageTask::Install) => {
+        if let Some(package) = self.packages.get(index) {
+          let (name, installed) = (package.name.clone(), package.installed);
+          self.install_package(name, installed, source);
+        }
+      }
+      (Item::Aur(index), PackageTask::Install) => {
+        if let Some(package) = self.aur.get(index) {
+          let (name, installed) = (package.name.clone(), package.installed);
+          self.install_package(name, installed, PackageSource::Aur);
+        }
+      }
+      (Item::Package(index), PackageTask::Remove) => {
+        if let Some(name) = self.packages.get(index).map(|package| package.name.clone()) {
+          self.begin_plan(Action::Remove(vec![name]));
+        }
+      }
+      (Item::Update(index), PackageTask::Update) => {
+        if let Some(name) = self.updates.get(index).map(|update| update.name.clone()) {
+          self.request(match source {
+            PackageSource::Official => Action::UpgradePackage(name),
+            PackageSource::Aur => Action::AurUpgradePackage(name),
+          });
+        }
+      }
+      _ => {}
+    }
+  }
+
   /// Runs the row `item`.
   fn activate(&mut self, item: Item) {
     if item.waits_for_jobs() && self.busy() {
@@ -919,47 +1140,9 @@ impl PackagesApp {
       return;
     }
     match item {
-      Item::Open(page) => {
-        self.go(page);
-        if matches!(page, PackagesPage::Search | PackagesPage::Installed) {
-          self.query.clear();
-          self.packages.clear();
-        }
-        self.reload();
-      }
-      Item::Package(index) | Item::Orphan(index) => {
-        if let Some(name) = self.packages.get(index).map(|package| package.name.clone()) {
-          self.details_parent = self.page;
-          self.details = None;
-          self.details_name = Some(name);
-          self.go(PackagesPage::Details(index));
-          self.reload();
-        }
-      }
-      Item::Aur(index) => {
-        if let Some(package) = self.aur.get(index) {
-          self.details = Some(PackageDetails {
-            package: Package {
-              name: package.name.clone(),
-              version: package.version.clone(),
-              repository: Some("AUR".into()),
-              description: package.description.clone(),
-              installed: package.installed,
-              ..Default::default()
-            },
-            ..Default::default()
-          });
-          self.details_name = Some(package.name.clone());
-          self.details_parent = PackagesPage::Aur;
-          self.go(PackagesPage::Details(index));
-        }
-      }
-      Item::Update(index) => {
-        if let Some(update) = self.updates.get(index) {
-          let name = update.name.clone();
-          self.request(Action::UpgradePackage(name));
-        }
-      }
+      Item::Open(page) => self.open_page(page),
+      Item::Package(_) | Item::Aur(_) | Item::Update(_) => self.run_task(item),
+      Item::Orphan(_) => self.open_details(item),
       Item::CacheFile(index) => {
         if let Some(file) = self.cache.get(index) {
           let path = file.path.clone();
@@ -968,7 +1151,10 @@ impl PackagesApp {
       }
       Item::Install => self.install_open_package(),
       Item::Remove => self.remove_open_package(),
-      Item::UpgradeAll => self.begin_plan(Action::Upgrade),
+      Item::UpgradeAll => match self.page {
+        PackagesPage::Task(PackageSource::Aur, _) => self.request(Action::AurUpgrade),
+        _ => self.begin_plan(Action::Upgrade),
+      },
       Item::RefreshDatabase => self.request(Action::RefreshDatabase),
       Item::RemoveMarked => {
         if !self.marked.is_empty() {
@@ -1009,6 +1195,7 @@ impl PackagesApp {
   /// Asks for confirmation before running `action`.
   fn request(&mut self, action: Action) {
     self.confirmation = ConfirmState::new();
+    self.choice = ChoiceState::new();
     self.preview = None;
     self.pending = Some(action);
   }
@@ -1106,9 +1293,9 @@ impl PackagesApp {
   }
   /// Confirms the `/` search field.
   fn apply_search_input(&mut self, candidate: String) {
-    let minimum = if self.page == PackagesPage::Aur { 2 } else { 1 };
+    let minimum = if self.on_aur_search() { 2 } else { 1 };
     if candidate.trim().chars().count() < minimum {
-      self.error(if self.page == PackagesPage::Aur {
+      self.error(if self.on_aur_search() {
         tr(
           self.lang,
           "control_center.aur_search_requires_at_least_2_characters",
@@ -1174,14 +1361,29 @@ impl PackagesApp {
     });
     self.plan = Some(self.jobs.spawn(move |_| {
       let backend = PackageBackend::new(SystemProcessRunner, caps);
+      if let Action::Remove(packages) = &action {
+        // Packages other installed packages need cannot be removed alone:
+        // the confirmation offers removing them together (cascade).
+        return Ok(match backend.plan_remove(packages) {
+          Ok(preview) => Ok((action, preview)),
+          Err(PackageError::BreaksDependencies(dependents)) => backend
+            .plan_remove_cascade(packages)
+            .map(|preview| {
+              let packages = packages.clone();
+              (
+                Action::RemoveCascade {
+                  packages,
+                  dependents,
+                },
+                preview,
+              )
+            })
+            .map_err(|error| error.to_string()),
+          Err(error) => Err(error.to_string()),
+        });
+      }
       let preview = match &action {
-        Action::Install(packages) | Action::Remove(packages) => {
-          if matches!(action, Action::Install(_)) {
-            backend.plan_install(packages)
-          } else {
-            backend.plan_remove(packages)
-          }
-        }
+        Action::Install(packages) => backend.plan_install(packages),
         Action::Reinstall(package) => backend.plan_install(std::slice::from_ref(package)),
         Action::Upgrade | Action::UpgradePackage(_) => backend.plan_upgrade(),
         _ => Ok(TransactionPlan::default()),
@@ -1196,15 +1398,22 @@ impl PackagesApp {
     if let Some(details) = &self.details {
       return details.package.installed;
     }
-    match (self.page, self.details_parent) {
-      (PackagesPage::Details(index), PackagesPage::Aur) => {
-        self.aur.get(index).is_some_and(|package| package.installed)
-      }
-      (PackagesPage::Details(index), _) => self
+    match self.details_origin {
+      Some(Item::Aur(index)) => self.aur.get(index).is_some_and(|package| package.installed),
+      Some(Item::Package(index) | Item::Orphan(index)) => self
         .packages
         .get(index)
         .is_some_and(|package| package.installed),
+      // Only installed packages have pending updates.
+      Some(Item::Update(_)) => true,
       _ => false,
+    }
+  }
+  /// The source of the list that opened the details page.
+  fn details_source(&self) -> PackageSource {
+    match self.details_parent {
+      PackagesPage::Task(source, _) => source,
+      _ => PackageSource::Official,
     }
   }
   /// `Install`/`Reinstall` on the package details page.
@@ -1212,14 +1421,18 @@ impl PackagesApp {
     let Some(name) = self.details_target() else {
       return;
     };
-    if self.open_package_installed() {
-      self.begin_plan(Action::Reinstall(name));
-    } else if self.details_parent == PackagesPage::Aur {
-      // The AUR helper has no transaction plan: the confirmation shows only
-      // the PKGBUILD warning, without the empty 0/0/0 counters.
-      self.request(Action::AurInstall(name));
-    } else {
-      self.begin_plan(Action::Install(vec![name]));
+    let installed = self.open_package_installed();
+    self.install_package(name, installed, self.details_source());
+  }
+  /// Installs `name`, or reinstalls it when `installed`. The AUR helper has
+  /// no transaction plan: its confirmation shows only the PKGBUILD warning,
+  /// without the empty 0/0/0 counters, and it also rebuilds an installed
+  /// AUR package, which `pacman -S` cannot find (D58).
+  fn install_package(&mut self, name: String, installed: bool, source: PackageSource) {
+    match (source, installed) {
+      (PackageSource::Aur, _) => self.request(Action::AurInstall(name)),
+      (PackageSource::Official, true) => self.begin_plan(Action::Reinstall(name)),
+      (PackageSource::Official, false) => self.begin_plan(Action::Install(vec![name])),
     }
   }
   /// `Remove` on the package details page; only installed packages.
@@ -1240,11 +1453,11 @@ impl PackagesApp {
   fn rows(&self) -> Vec<Row<Item>> {
     match self.page {
       PackagesPage::Home => self.home_rows(),
-      PackagesPage::Search | PackagesPage::Installed => self.package_rows(),
-      PackagesPage::Aur => self.aur_rows(),
+      PackagesPage::Source(source) => self.source_rows(source),
+      PackagesPage::Task(_, PackageTask::Install | PackageTask::Remove) => self.package_rows(),
+      PackagesPage::Task(_, PackageTask::Update) => self.update_rows(),
       PackagesPage::Orphans => self.orphan_rows(),
-      PackagesPage::Updates => self.update_rows(),
-      PackagesPage::Details(_) => self.details_rows(),
+      PackagesPage::Details => self.details_rows(),
       PackagesPage::Cache => self.cache_rows(),
       PackagesPage::CacheFiles => self.cache_file_rows(),
       PackagesPage::Downgrade => self.downgrade_rows(),
@@ -1260,16 +1473,57 @@ impl PackagesApp {
       return None;
     }
     let message = match self.page {
-      PackagesPage::Search if self.query.is_empty() => "control_center.press_to_search_packages",
-      PackagesPage::Aur if self.query.is_empty() => "control_center.press_to_search_the_aur",
-      PackagesPage::Updates if self.query.is_empty() => "control_center.no_pending_updates",
-      PackagesPage::Search | PackagesPage::Aur => "control_center.search_no_results",
+      PackagesPage::Task(PackageSource::Official, PackageTask::Install)
+        if self.query.is_empty() =>
+      {
+        "control_center.press_to_search_packages"
+      }
+      PackagesPage::Task(PackageSource::Aur, PackageTask::Install) if self.query.is_empty() => {
+        "control_center.press_to_search_the_aur"
+      }
+      PackagesPage::Task(_, PackageTask::Update) if self.query.is_empty() => {
+        "control_center.no_pending_updates"
+      }
+      PackagesPage::Task(_, PackageTask::Install) => "control_center.search_no_results",
       _ if self.query.is_empty() => "control_center.search_no_results",
       _ => "control_center.no_matching_items",
     };
     Some(Row::info(tr(self.lang, message), ""))
   }
-  /// Executes the `home_rows` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
+  /// The translated name of `source`, as the Home lists it.
+  fn source_label(&self, source: PackageSource) -> &'static str {
+    tr(
+      self.lang,
+      match source {
+        PackageSource::Official => "control_center.official_repositories",
+        PackageSource::Aur => "control_center.aur_repository",
+      },
+    )
+  }
+  /// The translated name of `task`, as the source menus list it.
+  fn task_label(&self, task: PackageTask) -> &'static str {
+    tr(
+      self.lang,
+      match task {
+        PackageTask::Install => "control_center.install",
+        PackageTask::Remove => "control_center.remove",
+        PackageTask::Update => "control_center.update",
+      },
+    )
+  }
+  /// Installed packages of the sync repositories. Without the AUR menu the
+  /// Official Remove list also keeps the AUR packages, so it counts them.
+  fn official_installed_count(&self) -> usize {
+    let dashboard = &self.dashboard;
+    if self.has_aur_helper() {
+      dashboard
+        .installed_count
+        .saturating_sub(dashboard.foreign_count)
+    } else {
+      dashboard.installed_count
+    }
+  }
+  /// The Packages home: one row per source, then the shared tools.
   fn home_rows(&self) -> Vec<Row<Item>> {
     let dashboard = &self.dashboard;
     let lang = self.lang;
@@ -1279,42 +1533,28 @@ impl PackagesApp {
       .into_iter()
       .map(|page| {
         let (icon, label, detail) = match page {
-          PackagesPage::Search => (
-            icons::SEARCH,
-            "control_center.install_official",
-            format!("{} {packages}", dashboard.available_count),
-          ),
-          PackagesPage::Aur => (
-            icons::ADD,
-            "control_center.install_aur",
-            dashboard.aur_helper.clone().unwrap_or_else(|| "—".into()),
-          ),
-          PackagesPage::Installed => (
-            icons::INSTALLED,
-            "control_center.installed_official",
-            format!("{} {packages}", dashboard.installed_count),
-          ),
-          PackagesPage::Orphans => (
-            icons::CLEAN,
-            "control_center.installed_orphans",
+          PackagesPage::Source(PackageSource::Official) => (
+            icons::PACKAGES,
+            self.source_label(PackageSource::Official),
             format!(
-              "{} {}",
-              dashboard.orphan_count,
-              tr(lang, "control_center.orphans")
-            ),
-          ),
-          PackagesPage::Updates => (
-            icons::UPDATE,
-            "control_center.updates_official",
-            format!(
-              "{} {}",
+              "{} {packages} · {} {}",
+              self.official_installed_count(),
               dashboard.update_count,
               tr(lang, "control_center.pending")
             ),
           ),
+          PackagesPage::Source(PackageSource::Aur) => (
+            icons::USERS,
+            self.source_label(PackageSource::Aur),
+            format!(
+              "{} · {} {packages}",
+              dashboard.aur_helper.as_deref().unwrap_or("—"),
+              dashboard.foreign_count
+            ),
+          ),
           PackagesPage::Cache => (
             icons::DATABASE,
-            "control_center.cache",
+            tr(lang, "control_center.cache"),
             format!(
               "{} {} · {}",
               dashboard.cache_count,
@@ -1324,7 +1564,7 @@ impl PackagesApp {
           ),
           PackagesPage::History => (
             icons::HISTORY,
-            "control_center.history",
+            tr(lang, "control_center.history"),
             format!(
               "{} {}",
               dashboard.history_count,
@@ -1333,7 +1573,7 @@ impl PackagesApp {
           ),
           PackagesPage::Downgrade => (
             icons::DOWNGRADE,
-            "control_center.downgrade",
+            tr(lang, "control_center.downgrade"),
             format!(
               "{} {}",
               dashboard.cache_count,
@@ -1342,7 +1582,7 @@ impl PackagesApp {
           ),
           _ => (
             icons::NETWORK,
-            "control_center.mirrors",
+            tr(lang, "control_center.mirrors"),
             format!(
               "{}/{} {}",
               dashboard.mirrors_enabled,
@@ -1351,49 +1591,107 @@ impl PackagesApp {
             ),
           ),
         };
-        Row::submenu(Item::Open(page), tr(lang, label))
+        Row::submenu(Item::Open(page), label)
           .icon(icon)
           .detail(detail)
       })
       .collect()
   }
-  /// Search and Installed: each package opens its details page.
-  fn package_rows(&self) -> Vec<Row<Item>> {
-    let installed = tr(self.lang, "control_center.installed");
-    let mut rows: Vec<Row<Item>> = Vec::new();
-    rows.extend(self.visible_packages().into_iter().map(|(index, package)| {
-      let mut parts = vec![package.version.clone()];
-      if self.page == PackagesPage::Search {
-        if let Some(repository) = &package.repository {
-          parts.push(repository.clone());
-        } else if package.foreign {
-          parts.push("AUR".into());
+  /// Install, Remove and Update of one source, with their counters.
+  fn source_rows(&self, source: PackageSource) -> Vec<Row<Item>> {
+    let dashboard = &self.dashboard;
+    let lang = self.lang;
+    let packages = tr(lang, "control_center.packages_c945db");
+    [
+      (PackageTask::Install, icons::ADD),
+      (PackageTask::Remove, icons::DELETE),
+      (PackageTask::Update, icons::UPDATE),
+    ]
+    .into_iter()
+    .map(|(task, icon)| {
+      let detail = match (source, task) {
+        (PackageSource::Official, PackageTask::Install) => {
+          Some(format!("{} {packages}", dashboard.available_count))
         }
+        (PackageSource::Official, PackageTask::Remove) => {
+          Some(format!("{} {packages}", self.official_installed_count()))
+        }
+        (PackageSource::Official, PackageTask::Update) => Some(format!(
+          "{} {}",
+          dashboard.update_count,
+          tr(lang, "control_center.pending")
+        )),
+        (PackageSource::Aur, PackageTask::Install) => dashboard.aur_helper.clone(),
+        (PackageSource::Aur, PackageTask::Remove) => {
+          Some(format!("{} {packages}", dashboard.foreign_count))
+        }
+        // Counting the AUR updates queries the AUR: the list does it on open.
+        (PackageSource::Aur, PackageTask::Update) => None,
+      };
+      let row = Row::submenu(
+        Item::Open(PackagesPage::Task(source, task)),
+        self.task_label(task),
+      )
+      .icon(icon);
+      match detail {
+        Some(detail) => row.detail(detail),
+        None => row,
+      }
+    })
+    .collect()
+  }
+  /// Install and Remove lists: Enter installs or removes the package, `→`
+  /// opens its details. Official Remove starts with the Orphans page.
+  fn package_rows(&self) -> Vec<Row<Item>> {
+    let lang = self.lang;
+    let installed = tr(lang, "control_center.installed");
+    let mut rows: Vec<Row<Item>> = Vec::new();
+    if self.page == PackagesPage::Task(PackageSource::Official, PackageTask::Remove) {
+      rows.push(
+        Row::submenu(
+          Item::Open(PackagesPage::Orphans),
+          tr(lang, "control_center.orphans_29aae8"),
+        )
+        .icon(icons::CLEAN)
+        .detail(format!(
+          "{} {}",
+          self.dashboard.orphan_count,
+          tr(lang, "control_center.orphans")
+        )),
+      );
+      rows.push(Row::section(installed));
+    }
+    if self.page == PackagesPage::Task(PackageSource::Aur, PackageTask::Install) {
+      rows.extend(self.visible_aur().into_iter().map(|(index, package)| {
+        let mut parts = vec![package.version.clone(), "AUR".into()];
         if package.installed {
           parts.push(installed.into());
         }
-      } else if package.foreign {
-        parts.push("AUR".into());
-      }
-      Row::submenu(Item::Package(index), package.name.clone()).detail(joined_parts(&parts))
-    }));
-    if rows.is_empty() {
-      rows.extend(self.empty_list_row());
+        Row::action(Item::Aur(index), package.name.clone()).detail(joined_parts(&parts))
+      }));
+    } else {
+      let searching = matches!(self.page, PackagesPage::Task(_, PackageTask::Install));
+      rows.extend(self.visible_packages().into_iter().map(|(index, package)| {
+        let mut parts = vec![package.version.clone()];
+        if searching {
+          if let Some(repository) = &package.repository {
+            parts.push(repository.clone());
+          } else if package.foreign {
+            parts.push("AUR".into());
+          }
+          if package.installed {
+            parts.push(installed.into());
+          }
+        } else if package.foreign {
+          parts.push("AUR".into());
+        }
+        Row::action(Item::Package(index), package.name.clone()).detail(joined_parts(&parts))
+      }));
     }
-    rows
-  }
-  /// AUR search results; each opens its details page.
-  fn aur_rows(&self) -> Vec<Row<Item>> {
-    let installed = tr(self.lang, "control_center.installed");
-    let mut rows: Vec<Row<Item>> = Vec::new();
-    rows.extend(self.visible_aur().into_iter().map(|(index, package)| {
-      let mut parts = vec![package.version.clone(), "AUR".into()];
-      if package.installed {
-        parts.push(installed.into());
-      }
-      Row::submenu(Item::Aur(index), package.name.clone()).detail(joined_parts(&parts))
-    }));
-    if rows.is_empty() {
+    if !rows
+      .iter()
+      .any(|row| row.id().is_some_and(|item| item.is_list_entry()))
+    {
       rows.extend(self.empty_list_row());
     }
     rows
@@ -1431,10 +1729,10 @@ impl PackagesApp {
     }
     rows
   }
-  /// Updates: one row per pending update (Enter updates it after the
-  /// confirmation); the Upgrade all and Refresh database buttons live in the
-  /// action bar (see `update_action_rows`). An empty list says why, as the
-  /// Time Zone list does, except while the list is still loading.
+  /// Update lists: one row per pending update (Enter updates it after the
+  /// confirmation, `→` opens its details); Upgrade all and Refresh database
+  /// live in the action bar (see `update_action_rows`). An empty list says
+  /// why, except while the list is still loading.
   fn update_rows(&self) -> Vec<Row<Item>> {
     let mut rows: Vec<Row<Item>> = self
       .visible_updates()
@@ -1449,16 +1747,28 @@ impl PackagesApp {
     }
     rows
   }
-  /// The action bar of Updates: Upgrade all (enabled with pending updates)
-  /// and Refresh database.
+  /// The action bar of the Update lists: Upgrade all (enabled with pending
+  /// updates), and Refresh database on the Official list only, since the
+  /// AUR helper refreshes its own metadata.
   fn update_action_rows(&self) -> Vec<Row<Item>> {
+    let has_updates = !self.visible_updates().is_empty();
+    if let PackagesPage::Task(PackageSource::Aur, _) = self.page {
+      return vec![
+        Row::action(
+          Item::UpgradeAll,
+          tr(self.lang, "control_center.upgrade_all_aur"),
+        )
+        .icon(icons::UPDATE)
+        .enabled(has_updates),
+      ];
+    }
     vec![
       Row::action(
         Item::UpgradeAll,
         tr(self.lang, "control_center.upgrade_all"),
       )
       .icon(icons::UPDATE)
-      .enabled(!self.visible_updates().is_empty()),
+      .enabled(has_updates),
       Row::action(
         Item::RefreshDatabase,
         tr(self.lang, "control_center.refresh_database"),
@@ -1735,11 +2045,15 @@ impl PackagesApp {
   }
   /// The footer derived from the selected row.
   fn footer_hints(&self, rows: &[Row<Item>]) -> String {
-    if self.pending.is_some() {
-      return confirm_hints(self.lang);
+    if let Some(pending) = &self.pending {
+      return if pending.choices().is_some() {
+        choice_hints(self.lang)
+      } else {
+        confirm_hints(self.lang)
+      };
     }
-    if self.page == PackagesPage::Updates {
-      return self.updates_footer_hints(rows);
+    if let PackagesPage::Task(_, task) = self.page {
+      return self.task_footer_hints(rows, task);
     }
     let mut menu = self.menu;
     menu.normalize(rows);
@@ -1766,27 +2080,32 @@ impl PackagesApp {
       },
     )
   }
-  /// The Updates footer. `←/→` belong to the action bar there, so `Enter`
-  /// alone runs the row or the focused button and only `Esc` goes back.
-  fn updates_footer_hints(&self, rows: &[Row<Item>]) -> String {
+  /// The footer of a task list: Enter runs the task on the package and `→`
+  /// opens its details; on the Update lists, `Tab` reaches the action bar.
+  fn task_footer_hints(&self, rows: &[Row<Item>], task: PackageTask) -> String {
     let label = |key| tr(self.lang, key);
     let bar_focused = self.actions.cursor().is_some();
     let mut menu = self.menu;
     menu.normalize(rows);
-    let runs_row = matches!(menu.selected_kind(rows), Some(RowKind::Action));
+    let selected = menu.selected_id(rows);
     let mut extra = Vec::new();
-    if bar_focused || runs_row {
+    if bar_focused {
       extra.push(("Enter", label("control_center.hint.run")));
+    } else if selected.is_some_and(Item::is_list_entry) {
+      extra.push(("Enter", self.task_label(task)));
+      extra.push(("→", label("control_center.details")));
+    } else if selected.is_some() {
+      extra.push(("→/Enter", label("control_center.hint.open")));
     }
-    if !bar_focused && !self.enabled_action_indexes().is_empty() {
-      extra.push(("←/→", label("control_center.actions")));
+    if has_action_bar(self.page) && !bar_focused && !self.enabled_action_indexes().is_empty() {
+      extra.push(("Tab", label("control_center.actions")));
     }
-    extra.push(("Esc", label("control_center.hint.back")));
     hints(
       self.lang,
       &HintContext {
-        // The row's own segment would name `→`; `Enter` is listed above.
+        // The row's own segment would name `→/Enter`; the task is listed above.
         row: Some(RowKind::Info),
+        can_go_back: true,
         search: !bar_focused,
         extra: &extra,
         ..HintContext::default()
@@ -1829,9 +2148,10 @@ impl PackagesApp {
   }
   /// The lists that filter while typing, in the layout of Time Zone: the
   /// filter fixed on top and the list in a bordered block (`Results`, or
-  /// `Updates` with its action bar at the bottom).
+  /// `Updates` with its action bar at the bottom). The six task lists share
+  /// this screen.
   fn draw_filtered_list(&mut self, f: &mut Frame, area: Rect, rows: &[Row<Item>]) {
-    let has_action_bar = self.page == PackagesPage::Updates;
+    let has_action_bar = has_action_bar(self.page);
     let [search, list, bar] = Layout::vertical([
       Constraint::Length(3),
       Constraint::Min(3),
@@ -1952,7 +2272,26 @@ impl PackagesApp {
         popup,
       );
     }
-    if let Some(a) = &self.pending {
+    if let Some(a) = &self.pending
+      && let Some(choices) = a.choices()
+    {
+      // Each option names what it removes, so the plan counters (which
+      // describe only the cascade) are left out.
+      let labels = choices.map(|choice| choice_label(self.lang, &choice, self.preview.as_ref()));
+      draw_choice(
+        f,
+        f.area(),
+        &self.theme,
+        ChoiceDialog {
+          title: tr(self.lang, "control_center.confirm_transaction"),
+          message: &action_message(self.lang, a),
+          options: &labels.each_ref().map(String::as_str),
+          cancel: tr(self.lang, "control_center.cancel"),
+          danger: true,
+        },
+        &self.choice,
+      );
+    } else if let Some(a) = &self.pending {
       let message = format!(
         "{}{}",
         action_message(self.lang, a),
@@ -2030,31 +2369,37 @@ impl PackagesApp {
       format!("{root} > {}", self.page_label())
     }
   }
-  /// Executes the `page_label` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
+  /// The path of the current page under `Packages`.
   fn page_label(&self) -> String {
+    self.label_of(self.page)
+  }
+  /// The path of `page` under `Packages`, built from the rows that open it.
+  fn label_of(&self, page: PackagesPage) -> String {
     let label = |key| tr(self.lang, key).to_owned();
-    match self.page {
-      PackagesPage::Search => label("control_center.breadcrumb_install_official"),
-      PackagesPage::Details(_) => format!(
+    match page {
+      PackagesPage::Source(source) => self.source_label(source).to_owned(),
+      PackagesPage::Task(source, task) => {
+        format!("{} > {}", self.source_label(source), self.task_label(task))
+      }
+      PackagesPage::Orphans => format!(
         "{} > {}",
-        match self.details_parent {
-          PackagesPage::Installed => label("control_center.breadcrumb_installed_official"),
-          PackagesPage::Orphans => label("control_center.breadcrumb_installed_orphans"),
-          PackagesPage::Aur => label("control_center.breadcrumb_install_aur"),
-          _ => label("control_center.breadcrumb_install_official"),
-        },
+        self.label_of(PackagesPage::Task(
+          PackageSource::Official,
+          PackageTask::Remove
+        )),
+        label("control_center.orphans_29aae8")
+      ),
+      PackagesPage::Details => format!(
+        "{} > {}",
+        self.label_of(self.details_parent),
         self.details_target().unwrap_or_default()
       ),
-      PackagesPage::Installed => label("control_center.breadcrumb_installed_official"),
-      PackagesPage::Updates => label("control_center.breadcrumb_updates_official"),
-      PackagesPage::Orphans => label("control_center.breadcrumb_installed_orphans"),
       PackagesPage::Cache => label("control_center.cache"),
       PackagesPage::CacheFiles => format!(
         "{} > {}",
         label("control_center.cache"),
         label("control_center.cache_files")
       ),
-      PackagesPage::Aur => label("control_center.breadcrumb_install_aur"),
       PackagesPage::History | PackagesPage::HistoryDetails(_) => label("control_center.history"),
       PackagesPage::Downgrade => label("control_center.downgrade"),
       PackagesPage::Mirrors => label("control_center.mirrors"),
@@ -2067,6 +2412,7 @@ impl PackagesApp {
     }
   }
 }
+
 /// Whether the open field takes `character`: the search takes any text up
 /// to its limit; the reflector numbers take digits only.
 fn accepts_input_char(mode: InputMode, input: &str, character: char) -> bool {
@@ -2126,6 +2472,17 @@ fn action_message(lang: Lang, a: &Action) -> String {
   match a {
     Action::Install(v) => format!("{}: {}", tr(lang, "control_center.install"), v.join(", ")),
     Action::Remove(v) => format!("{}: {}", tr(lang, "control_center.remove"), v.join(", ")),
+    Action::RemoveOnly(v) => format!(
+      "{}: {}",
+      tr(lang, "control_center.remove_only_title"),
+      v.join(", ")
+    ),
+    Action::RemoveCascade {
+      packages,
+      dependents,
+    } => tr(lang, "control_center.remove_with_dependents")
+      .replace("{packages}", &packages.join(", "))
+      .replace("{dependents}", &shortened_list(dependents)),
     Action::Reinstall(v) => format!("{}: {v}", tr(lang, "control_center.reinstall")),
     Action::Upgrade => tr(lang, "control_center.perform_a_full_system_upgrade").into(),
     Action::UpgradePackage(v) => format!("{}: {v}", tr(lang, "control_center.update_package")),
@@ -2140,6 +2497,22 @@ fn action_message(lang: Lang, a: &Action) -> String {
         "control_center.pkgbuilds_execute_build_instructions_as_the_normal_user"
       )
     ),
+    Action::AurUpgradePackage(v) => format!(
+      "{}: {v}? {}",
+      tr(lang, "control_center.update_aur_package"),
+      tr(
+        lang,
+        "control_center.pkgbuilds_execute_build_instructions_as_the_normal_user"
+      )
+    ),
+    Action::AurUpgrade => format!(
+      "{}? {}",
+      tr(lang, "control_center.upgrade_all_aur"),
+      tr(
+        lang,
+        "control_center.pkgbuilds_execute_build_instructions_as_the_normal_user"
+      )
+    ),
     Action::ApplyMirrors(content) => format!(
       "{}\n{}",
       tr(lang, "control_center.apply_these_mirrors"),
@@ -2147,6 +2520,38 @@ fn action_message(lang: Lang, a: &Action) -> String {
     ),
   }
 }
+/// The option row of `choice` in the removal choice: only the packages, or
+/// the cascade with the number of packages its `plan` removes.
+fn choice_label(lang: Lang, choice: &Action, plan: Option<&TransactionPlan>) -> String {
+  match choice {
+    Action::RemoveOnly(packages) => {
+      tr(lang, "control_center.remove_only_selected").replace("{packages}", &packages.join(", "))
+    }
+    _ => tr(lang, "control_center.remove_with_dependents_option").replace(
+      "{count}",
+      &plan.map_or(0, |plan| plan.remove.len()).to_string(),
+    ),
+  }
+}
+
+/// Most dependents named in the removal choice; the cascade option gives
+/// the number of packages it removes.
+const DEPENDENTS_SHOWN: usize = 8;
+
+/// `names` joined for a message, cut after [`DEPENDENTS_SHOWN`] with `…`.
+fn shortened_list(names: &[String]) -> String {
+  let mut text = names
+    .iter()
+    .take(DEPENDENTS_SHOWN)
+    .cloned()
+    .collect::<Vec<_>>()
+    .join(", ");
+  if names.len() > DEPENDENTS_SHOWN {
+    text.push_str(", …");
+  }
+  text
+}
+
 /// The transaction plan counters shown under the confirmation message, with
 /// the download size in readable units.
 fn preview_message(lang: Lang, plan: &TransactionPlan) -> String {
@@ -2194,6 +2599,12 @@ fn action_command(a: Action, caps: &Capabilities) -> Result<ActionCommand, Strin
       v,
     ),
     Action::Remove(v) => privileged(format!("$ pacman -Rns {}", v.join(" ")), "remove", v),
+    Action::RemoveOnly(v) => privileged(format!("$ pacman -Rdd {}", v.join(" ")), "remove-only", v),
+    Action::RemoveCascade { packages, .. } => privileged(
+      format!("$ pacman -Rcns {}", packages.join(" ")),
+      "remove-cascade",
+      packages,
+    ),
     Action::Reinstall(v) => privileged(format!("$ pacman -S {v}"), "reinstall", vec![v]),
     Action::Upgrade => privileged("$ pacman -Syu".into(), "upgrade", vec![]),
     Action::UpgradePackage(v) => privileged(format!("$ pacman -S {v}"), "upgrade-package", vec![v]),
@@ -2203,20 +2614,28 @@ fn action_command(a: Action, caps: &Capabilities) -> Result<ActionCommand, Strin
     Action::ApplyMirrors(content) => {
       privileged("$ update mirrorlist".into(), "mirror-apply", vec![content])
     }
-    Action::AurInstall(name) => {
-      let helper = if caps.has_paru {
-        "paru"
-      } else if caps.has_yay {
-        "yay"
-      } else {
-        return Err("AUR helper is unavailable".into());
-      };
-      Ok(ActionCommand::User {
-        echo: format!("$ {helper} -S {name}"),
-        process: ProcessRequest::new(helper).arg("-S").arg(name),
-      })
-    }
+    Action::AurInstall(name) | Action::AurUpgradePackage(name) => aur_command(caps, &["-S", &name]),
+    Action::AurUpgrade => aur_command(caps, &["-Sua"]),
   }
+}
+
+/// The AUR helper (paru first, then yay) with `args`, run as the normal user.
+fn aur_command(caps: &Capabilities, args: &[&str]) -> Result<ActionCommand, String> {
+  let helper = if caps.has_paru {
+    "paru"
+  } else if caps.has_yay {
+    "yay"
+  } else {
+    return Err("AUR helper is unavailable".into());
+  };
+  Ok(ActionCommand::User {
+    echo: format!("$ {helper} {}", args.join(" ")),
+    process: args
+      .iter()
+      .fold(ProcessRequest::new(helper), |process, arg| {
+        process.arg(*arg)
+      }),
+  })
 }
 
 /// Runs the command of `a`, streaming its output into `live`.
@@ -2433,6 +2852,34 @@ mod tests {
     app.handle(KeyCode::Enter);
   }
 
+  const OFFICIAL_INSTALL: PackagesPage =
+    PackagesPage::Task(PackageSource::Official, PackageTask::Install);
+  const OFFICIAL_REMOVE: PackagesPage =
+    PackagesPage::Task(PackageSource::Official, PackageTask::Remove);
+  const OFFICIAL_UPDATE: PackagesPage =
+    PackagesPage::Task(PackageSource::Official, PackageTask::Update);
+  const AUR_INSTALL: PackagesPage = PackagesPage::Task(PackageSource::Aur, PackageTask::Install);
+  const AUR_REMOVE: PackagesPage = PackagesPage::Task(PackageSource::Aur, PackageTask::Remove);
+  const AUR_UPDATE: PackagesPage = PackagesPage::Task(PackageSource::Aur, PackageTask::Update);
+
+  fn aur_app() -> PackagesApp {
+    PackagesApp::new(
+      Lang::for_locale("en-US"),
+      Theme::load(),
+      Capabilities {
+        has_paru: true,
+        ..Default::default()
+      },
+    )
+  }
+
+  /// Moves the cursor to the package `item` of a task list and presses `→`.
+  fn open_details_of(app: &mut PackagesApp, item: Item) {
+    let rows = app.rows();
+    assert!(app.menu.select(&rows, &item), "{item:?} is not selectable");
+    app.handle(KeyCode::Right);
+  }
+
   fn orphans_app() -> PackagesApp {
     let mut app = app();
     app.page = PackagesPage::Orphans;
@@ -2449,6 +2896,7 @@ mod tests {
     let mut app = app();
     app.dashboard = PackageDashboard {
       installed_count: 1200,
+      foreign_count: 20,
       update_count: 7,
       orphan_count: 3,
       cache_count: 12,
@@ -2461,15 +2909,12 @@ mod tests {
       ..Default::default()
     };
     let rows = app.home_rows();
-    assert_eq!(rows.len(), 8);
+    assert_eq!(rows.len(), 5);
     assert!(rows.iter().all(|row| row.kind() == RowKind::Submenu));
     assert_eq!(
       rows.iter().map(Row::icon_glyph).collect::<Vec<_>>(),
       [
-        icons::SEARCH,
-        icons::INSTALLED,
-        icons::CLEAN,
-        icons::UPDATE,
+        icons::PACKAGES,
         icons::DATABASE,
         icons::HISTORY,
         icons::DOWNGRADE,
@@ -2477,39 +2922,78 @@ mod tests {
       ]
       .map(Some)
     );
-    assert_eq!(rows[0].detail_text(), Some("18500 packages"));
-    assert_eq!(rows[1].label(), "Installed / Official");
-    assert_eq!(rows[3].detail_text(), Some("7 pending"));
-    assert_eq!(rows[4].detail_text(), Some("12 files · 223.6 GiB"));
-    assert_eq!(rows[7].detail_text(), Some("4/6 active"));
+    assert_eq!(rows[0].label(), "Official Repositories");
+    // Without the AUR menu, its packages stay on the Official Remove list.
+    assert_eq!(rows[0].detail_text(), Some("1200 packages · 7 pending"));
+    assert_eq!(rows[1].detail_text(), Some("12 files · 223.6 GiB"));
+    assert_eq!(rows[4].detail_text(), Some("4/6 active"));
   }
 
   #[test]
   fn aur_appears_on_the_home_only_with_a_helper() {
-    let app = PackagesApp::new(
-      Lang::for_locale("en-US"),
-      Theme::load(),
-      Capabilities {
-        has_paru: true,
-        ..Default::default()
-      },
-    );
+    let mut app = aur_app();
+    app.dashboard = PackageDashboard {
+      installed_count: 1200,
+      foreign_count: 20,
+      aur_helper: Some("paru".into()),
+      ..Default::default()
+    };
     let rows = app.home_rows();
-    assert_eq!(rows[1].id(), Some(&Item::Open(PackagesPage::Aur)));
-    assert_eq!(rows[1].icon_glyph(), Some(icons::ADD));
+    assert_eq!(
+      rows[1].id(),
+      Some(&Item::Open(PackagesPage::Source(PackageSource::Aur)))
+    );
+    assert_eq!(rows[1].label(), "AUR (Arch User Repository)");
+    assert_eq!(rows[1].icon_glyph(), Some(icons::USERS));
+    assert_eq!(rows[1].detail_text(), Some("paru · 20 packages"));
+    assert_eq!(rows[0].detail_text(), Some("1180 packages · 0 pending"));
+  }
+
+  #[test]
+  fn source_menus_list_install_remove_and_update() {
+    for source in [PackageSource::Official, PackageSource::Aur] {
+      let mut app = aur_app();
+      app.page = PackagesPage::Source(source);
+      let rows = app.rows();
+      assert_eq!(
+        rows.iter().filter_map(Row::id).copied().collect::<Vec<_>>(),
+        [
+          PackageTask::Install,
+          PackageTask::Remove,
+          PackageTask::Update
+        ]
+        .map(|task| Item::Open(PackagesPage::Task(source, task)))
+      );
+      assert_eq!(
+        rows.iter().map(Row::label).collect::<Vec<_>>(),
+        ["Install", "Remove", "Update"]
+      );
+      assert_eq!(
+        rows.iter().map(Row::icon_glyph).collect::<Vec<_>>(),
+        [icons::ADD, icons::DELETE, icons::UPDATE].map(Some)
+      );
+    }
   }
 
   #[test]
   fn package_home_is_navigable_and_back_returns_to_the_origin() {
     let mut app = app();
+    app.handle(KeyCode::Enter);
+    assert_eq!(app.page, PackagesPage::Source(PackageSource::Official));
     app.handle(KeyCode::Down);
     app.handle(KeyCode::Enter);
-    assert_eq!(app.page, PackagesPage::Installed);
+    assert_eq!(app.page, OFFICIAL_REMOVE);
     assert!(!app.handle(KeyCode::Esc));
+    assert_eq!(app.page, PackagesPage::Source(PackageSource::Official));
+    assert_eq!(
+      app.menu.selected_id(&app.rows()),
+      Some(Item::Open(OFFICIAL_REMOVE))
+    );
+    assert!(!app.handle(KeyCode::Left));
     assert_eq!(app.page, PackagesPage::Home);
     assert_eq!(
       app.menu.selected_id(&app.rows()),
-      Some(Item::Open(PackagesPage::Installed))
+      Some(Item::Open(PackagesPage::Source(PackageSource::Official)))
     );
     assert!(app.handle(KeyCode::Esc));
 
@@ -2522,7 +3006,7 @@ mod tests {
   #[test]
   fn packages_pages_have_no_button_bar_and_tab_does_nothing() {
     let mut app = app();
-    app.page = PackagesPage::Installed;
+    app.page = OFFICIAL_REMOVE;
     app.packages.push(package("linux", true));
     let before = app.menu;
     app.handle(KeyCode::Tab);
@@ -2542,6 +3026,9 @@ mod tests {
       .position(|row| row.id() == Some(&item))
       .unwrap_or_else(|| panic!("no action {item:?}"));
     assert!(rows[index].is_selectable(), "{item:?} is disabled");
+    if app.actions.cursor().is_none() {
+      app.handle(KeyCode::Tab);
+    }
     while app.actions.cursor() != Some(index) {
       app.handle(KeyCode::Right);
     }
@@ -2560,7 +3047,7 @@ mod tests {
   #[test]
   fn updates_show_the_filter_on_top_and_the_action_bar_below() {
     let mut app = app();
-    app.page = PackagesPage::Updates;
+    app.page = OFFICIAL_UPDATE;
     app.updates.push(update("linux"));
     let text = screen(&mut app, 90, 25);
     assert!(text.contains("Search:"), "{text}");
@@ -2579,9 +3066,10 @@ mod tests {
   #[test]
   fn filtered_lists_show_the_search_box_on_top_and_the_results_block() {
     for page in [
-      PackagesPage::Search,
-      PackagesPage::Aur,
-      PackagesPage::Installed,
+      OFFICIAL_INSTALL,
+      AUR_INSTALL,
+      OFFICIAL_REMOVE,
+      AUR_REMOVE,
       PackagesPage::Orphans,
     ] {
       let mut app = app();
@@ -2606,68 +3094,93 @@ mod tests {
   #[test]
   fn empty_filtered_lists_say_why() {
     let mut app = app();
-    app.page = PackagesPage::Installed;
+    app.page = OFFICIAL_REMOVE;
     app.packages = vec![package("linux", true)];
     app.handle(KeyCode::Char('z'));
     assert!(screen(&mut app, 90, 25).contains("No matching items"));
-    app.page = PackagesPage::Search;
+    app.page = OFFICIAL_INSTALL;
     app.packages.clear();
     app.query.clear();
     assert!(screen(&mut app, 90, 25).contains("Press / to search packages"));
   }
 
   #[test]
-  fn updates_arrows_move_between_the_list_and_the_action_bar() {
+  fn tab_moves_between_the_update_list_and_its_action_bar() {
     let mut app = app();
-    app.page = PackagesPage::Updates;
+    app.page = OFFICIAL_UPDATE;
     app.updates.push(update("linux"));
     assert_eq!(app.actions.cursor(), None);
-    app.handle(KeyCode::Right);
+    app.handle(KeyCode::Tab);
     assert_eq!(app.actions.cursor(), Some(0));
     app.handle(KeyCode::Right);
     assert_eq!(app.actions.cursor(), Some(1));
+    app.handle(KeyCode::Left);
+    assert_eq!(app.actions.cursor(), Some(0));
     app.handle(KeyCode::Up);
     assert_eq!(app.actions.cursor(), None);
     app.handle(KeyCode::Tab);
     assert_eq!(app.actions.cursor(), Some(0));
     app.handle(KeyCode::BackTab);
     assert_eq!(app.actions.cursor(), None);
+    // On the list, `→` opens the update's package instead of the bar.
+    app.handle(KeyCode::Right);
+    assert_eq!(app.page, PackagesPage::Details);
+    assert_eq!(app.details_target().as_deref(), Some("linux"));
+    assert_eq!(app.actions.cursor(), None);
+    app.handle(KeyCode::Esc);
+    assert_eq!(app.page, OFFICIAL_UPDATE);
+    assert_eq!(app.menu.selected_id(&app.rows()), Some(Item::Update(0)));
   }
 
   #[test]
-  fn updates_arrows_skip_the_disabled_upgrade_all_without_updates() {
+  fn tab_skips_the_disabled_upgrade_all_without_updates() {
     let mut app = app();
-    app.page = PackagesPage::Updates;
-    app.handle(KeyCode::Right);
+    app.page = OFFICIAL_UPDATE;
+    app.handle(KeyCode::Tab);
     assert_eq!(app.actions.cursor(), Some(1));
     app.handle(KeyCode::Enter);
     assert_eq!(app.pending, Some(Action::RefreshDatabase));
   }
 
   #[test]
-  fn packages_breadcrumbs_use_the_home_row_names() {
+  fn packages_breadcrumbs_follow_the_source_and_the_task() {
     let mut app = app();
     for (page, path) in [
-      (PackagesPage::Search, "Install Official"),
-      (PackagesPage::Aur, "Install AUR"),
-      (PackagesPage::Installed, "Installed Official"),
-      (PackagesPage::Orphans, "Installed Orphans"),
-      (PackagesPage::Updates, "Updates Official"),
+      (
+        PackagesPage::Source(PackageSource::Official),
+        "Official Repositories",
+      ),
+      (OFFICIAL_INSTALL, "Official Repositories > Install"),
+      (OFFICIAL_REMOVE, "Official Repositories > Remove"),
+      (OFFICIAL_UPDATE, "Official Repositories > Update"),
+      (
+        PackagesPage::Orphans,
+        "Official Repositories > Remove > Orphans",
+      ),
+      (
+        PackagesPage::Source(PackageSource::Aur),
+        "AUR (Arch User Repository)",
+      ),
+      (AUR_INSTALL, "AUR (Arch User Repository) > Install"),
+      (AUR_REMOVE, "AUR (Arch User Repository) > Remove"),
+      (AUR_UPDATE, "AUR (Arch User Repository) > Update"),
     ] {
       app.page = page;
       let expected = format!("System Administration > Packages > {path}");
       assert_eq!(app.breadcrumb(), expected);
     }
-    // A package page opened from a list keeps the name of that list.
+    // A package page opened from a list keeps the path of that list.
     app.details_name = Some("linux".into());
     for (parent, path) in [
-      (PackagesPage::Search, "Install Official"),
-      (PackagesPage::Aur, "Install AUR"),
-      (PackagesPage::Installed, "Installed Official"),
-      (PackagesPage::Orphans, "Installed Orphans"),
+      (OFFICIAL_INSTALL, "Official Repositories > Install"),
+      (AUR_UPDATE, "AUR (Arch User Repository) > Update"),
+      (
+        PackagesPage::Orphans,
+        "Official Repositories > Remove > Orphans",
+      ),
     ] {
       app.details_parent = parent;
-      app.page = PackagesPage::Details(0);
+      app.page = PackagesPage::Details;
       let expected = format!("System Administration > Packages > {path} > linux");
       assert_eq!(app.breadcrumb(), expected);
     }
@@ -2676,9 +3189,9 @@ mod tests {
   #[test]
   fn typing_on_the_updates_action_bar_goes_back_to_the_filter() {
     let mut app = app();
-    app.page = PackagesPage::Updates;
+    app.page = OFFICIAL_UPDATE;
     app.updates = vec![update("linux"), update("mesa")];
-    app.handle(KeyCode::Right);
+    app.handle(KeyCode::Tab);
     assert!(app.actions.cursor().is_some());
     app.handle(KeyCode::Char('m'));
     assert_eq!(app.actions.cursor(), None);
@@ -2689,33 +3202,43 @@ mod tests {
       .map(|(_, u)| u.name.clone())
       .collect();
     assert_eq!(names, ["mesa"]);
-    app.handle(KeyCode::Right);
+    app.handle(KeyCode::Tab);
     app.handle(KeyCode::Backspace);
     assert_eq!(app.actions.cursor(), None);
     assert!(app.query.is_empty());
   }
 
   #[test]
-  fn updates_footer_names_enter_and_leaves_the_arrows_to_the_action_bar() {
+  fn task_footers_name_the_task_the_details_and_the_action_bar() {
     let mut app = app();
-    app.page = PackagesPage::Updates;
+    app.page = OFFICIAL_UPDATE;
     app.updates.push(update("linux"));
     let footer = app.footer_hints(&app.rows());
-    assert!(footer.contains("Enter Run"), "{footer}");
-    assert!(footer.contains("←/→ Actions"), "{footer}");
-    assert!(footer.contains("Esc Back"), "{footer}");
+    assert!(footer.contains("Enter Update"), "{footer}");
+    assert!(footer.contains("→ Details"), "{footer}");
+    assert!(footer.contains("Tab Actions"), "{footer}");
+    assert!(footer.contains("←/Esc Back"), "{footer}");
     assert!(!footer.contains("→/Enter"), "{footer}");
-    assert!(!footer.contains("←/Esc"), "{footer}");
-    app.handle(KeyCode::Right);
+    app.handle(KeyCode::Tab);
     let footer = app.footer_hints(&app.rows());
     assert!(footer.contains("Enter Run"), "{footer}");
-    assert!(!footer.contains("←/→ Actions"), "{footer}");
+    assert!(!footer.contains("Tab Actions"), "{footer}");
+
+    app.go(OFFICIAL_REMOVE);
+    app.packages.push(package("zsh", true));
+    let footer = app.footer_hints(&app.rows());
+    assert!(footer.contains("→/Enter Open"), "the Orphans row: {footer}");
+    app.handle(KeyCode::Down);
+    let footer = app.footer_hints(&app.rows());
+    assert!(footer.contains("Enter Remove"), "{footer}");
+    assert!(footer.contains("→ Details"), "{footer}");
+    assert!(!footer.contains("Tab"), "{footer}");
   }
 
   #[test]
   fn empty_updates_say_why_and_keep_upgrade_all_disabled() {
     let mut app = app();
-    app.page = PackagesPage::Updates;
+    app.page = OFFICIAL_UPDATE;
     let text = screen(&mut app, 90, 25);
     assert!(text.contains("No pending updates"), "{text}");
     assert!(!row(&app.update_action_rows(), Item::UpgradeAll).is_selectable());
@@ -2729,7 +3252,7 @@ mod tests {
   #[test]
   fn typing_filters_lists_and_keeps_letters_as_text() {
     let mut app = app();
-    app.page = PackagesPage::Installed;
+    app.page = OFFICIAL_REMOVE;
     app.packages = vec![package("firefox", true), package("jq", true)];
     for key in ['j', 'q'] {
       app.handle(KeyCode::Char(key));
@@ -2737,7 +3260,11 @@ mod tests {
     assert_eq!(app.query, "jq");
     assert!(app.captures_text());
     let rows = app.rows();
-    assert_eq!(rows.iter().filter(|row| row.is_selectable()).count(), 1);
+    let entries = rows
+      .iter()
+      .filter(|row| row.id().is_some_and(|item| item.is_list_entry()))
+      .count();
+    assert_eq!(entries, 1);
     assert_eq!(app.menu.selected_id(&rows), Some(Item::Package(1)));
     app.handle(KeyCode::Backspace);
     app.handle(KeyCode::Char('r'));
@@ -2748,7 +3275,7 @@ mod tests {
   #[test]
   fn empty_search_does_not_create_package_action() {
     let mut app = app();
-    app.page = PackagesPage::Search;
+    app.page = OFFICIAL_INSTALL;
     app.handle(KeyCode::Tab);
     app.handle(KeyCode::Enter);
     assert!(app.pending.is_none());
@@ -2759,26 +3286,116 @@ mod tests {
   }
 
   #[test]
-  fn enter_opens_the_details_and_back_returns_to_the_package() {
+  fn right_opens_the_details_and_back_returns_to_the_package() {
     let mut app = app();
-    app.page = PackagesPage::Search;
+    app.page = OFFICIAL_INSTALL;
     app.packages = vec![package("firefox", false), package("zsh", false)];
     app.handle(KeyCode::Down);
-    app.handle(KeyCode::Enter);
-    assert_eq!(app.page, PackagesPage::Details(1));
+    app.handle(KeyCode::Right);
+    assert_eq!(app.page, PackagesPage::Details);
     assert_eq!(app.details_target().as_deref(), Some("zsh"));
     app.handle(KeyCode::Esc);
-    assert_eq!(app.page, PackagesPage::Search);
+    assert_eq!(app.page, OFFICIAL_INSTALL);
     assert_eq!(app.menu.selected_id(&app.rows()), Some(Item::Package(1)));
+  }
+
+  #[test]
+  fn enter_runs_the_task_of_each_list() {
+    let mut app = app();
+    app.page = OFFICIAL_INSTALL;
+    app.packages = vec![package("zsh", false)];
+    press(&mut app, Item::Package(0));
+    assert!(app.plan.is_some(), "installing plans the transaction first");
+    assert_eq!(
+      app.page, OFFICIAL_INSTALL,
+      "Enter does not open the details"
+    );
+
+    for page in [OFFICIAL_REMOVE, AUR_REMOVE] {
+      let mut app = aur_app();
+      app.page = page;
+      app.packages = vec![package("zsh", true)];
+      press(&mut app, Item::Package(0));
+      assert!(
+        app.plan.is_some(),
+        "{page:?}: removing plans the transaction"
+      );
+    }
+
+    for (page, action) in [
+      (OFFICIAL_UPDATE, Action::UpgradePackage("linux".into())),
+      (AUR_UPDATE, Action::AurUpgradePackage("linux".into())),
+    ] {
+      let mut app = aur_app();
+      app.page = page;
+      app.updates = vec![update("linux")];
+      press(&mut app, Item::Update(0));
+      assert_eq!(app.pending, Some(action), "{page:?}");
+    }
+  }
+
+  #[test]
+  fn official_remove_starts_with_the_orphans_page() {
+    let mut app = app();
+    app.page = OFFICIAL_REMOVE;
+    app.packages = vec![package("zsh", true)];
+    app.normalize();
+    let rows = app.rows();
+    assert_eq!(rows[0].id(), Some(&Item::Open(PackagesPage::Orphans)));
+    assert_eq!(rows[0].kind(), RowKind::Submenu);
+    assert_eq!(rows[0].icon_glyph(), Some(icons::CLEAN));
+    assert_eq!(
+      app.menu.selected_id(&rows),
+      Some(Item::Open(PackagesPage::Orphans))
+    );
+    // The installed list is still loading: its result must not fill Orphans.
+    app.reload_force();
+    assert!(app.job.is_some());
+    app.handle(KeyCode::Enter);
+    assert_eq!(app.page, PackagesPage::Orphans);
+    assert!(app.packages.is_empty(), "the orphans load from scratch");
+    assert_eq!(
+      app.reload_key(),
+      "Orphans||",
+      "the Orphans load replaced it"
+    );
+    app.job = None;
+    app.handle(KeyCode::Esc);
+    assert_eq!(app.page, OFFICIAL_REMOVE);
+    assert_eq!(
+      app.menu.selected_id(&app.rows()),
+      Some(Item::Open(PackagesPage::Orphans))
+    );
+    // AUR Remove has no Orphans row.
+    app.page = AUR_REMOVE;
+    assert!(
+      !app
+        .rows()
+        .iter()
+        .any(|row| row.id() == Some(&Item::Open(PackagesPage::Orphans)))
+    );
+  }
+
+  #[test]
+  fn aur_update_bar_upgrades_every_aur_package_with_the_helper() {
+    let mut app = aur_app();
+    app.page = AUR_UPDATE;
+    app.updates = vec![update("yay-bin")];
+    let rows = app.update_action_rows();
+    assert_eq!(rows.len(), 1, "the helper refreshes its own metadata");
+    assert_eq!(rows[0].label(), "Upgrade all (AUR)");
+    press_action(&mut app, Item::UpgradeAll);
+    assert_eq!(app.pending, Some(Action::AurUpgrade));
+    assert!(app.plan.is_none());
   }
 
   #[test]
   fn search_pages_do_not_spawn_until_a_valid_query_is_confirmed() {
     let mut app = app();
-    app.page = PackagesPage::Search;
+    app.page = OFFICIAL_INSTALL;
     app.reload();
     assert!(app.job.is_none());
-    app.page = PackagesPage::Aur;
+    app.page = AUR_INSTALL;
     app.reload();
     assert!(app.job.is_none());
     app.handle(KeyCode::Char('/'));
@@ -2795,7 +3412,7 @@ mod tests {
   #[test]
   fn cancelling_package_search_clears_the_query() {
     let mut app = app();
-    app.page = PackagesPage::Search;
+    app.page = OFFICIAL_INSTALL;
     app.query = "firefox".into();
     app.input = Some(app.query.clone());
     app.input_mode = Some(InputMode::Search);
@@ -2807,18 +3424,18 @@ mod tests {
   #[test]
   fn opening_package_details_keeps_the_selected_name_until_metadata_arrives() {
     let mut app = app();
-    app.page = PackagesPage::Search;
+    app.page = OFFICIAL_INSTALL;
     app.packages.push(package("firefox", false));
-    press(&mut app, Item::Package(0));
+    open_details_of(&mut app, Item::Package(0));
     assert!(app.details.is_none());
     assert_eq!(app.details_target().as_deref(), Some("firefox"));
-    assert_eq!(app.reload_key(), "Details(0)||firefox");
+    assert_eq!(app.reload_key(), "Details||firefox");
   }
 
   #[test]
   fn package_details_render_actions_sections_and_danger_zone() {
     let mut app = app();
-    app.page = PackagesPage::Details(0);
+    app.page = PackagesPage::Details;
     app.details = Some(PackageDetails {
       package: Package {
         name: "firefox".into(),
@@ -2871,9 +3488,9 @@ mod tests {
   #[test]
   fn install_and_remove_follow_the_open_package() {
     let mut app = app();
-    app.page = PackagesPage::Search;
+    app.page = OFFICIAL_INSTALL;
     app.packages.push(package("firefox", false));
-    press(&mut app, Item::Package(0));
+    open_details_of(&mut app, Item::Package(0));
     let rows = app.rows();
     assert_eq!(row(&rows, Item::Install).label(), "Install");
     assert!(
@@ -2892,9 +3509,9 @@ mod tests {
       Theme::load(),
       Capabilities::default(),
     );
-    installed.page = PackagesPage::Installed;
+    installed.page = OFFICIAL_REMOVE;
     installed.packages.push(package("zsh", true));
-    press(&mut installed, Item::Package(0));
+    open_details_of(&mut installed, Item::Package(0));
     installed.job = None;
     let rows = installed.rows();
     assert_eq!(row(&rows, Item::Install).label(), "Reinstall");
@@ -2903,9 +3520,9 @@ mod tests {
   }
 
   #[test]
-  fn aur_rows_open_the_filtered_package() {
+  fn aur_rows_open_and_install_the_filtered_package() {
     let mut app = app();
-    app.page = PackagesPage::Aur;
+    app.page = AUR_INSTALL;
     app.aur = vec![
       AurPackage {
         name: "yay-bin".into(),
@@ -2920,10 +3537,19 @@ mod tests {
     for key in "paru".chars() {
       app.handle(KeyCode::Char(key));
     }
-    app.handle(KeyCode::Enter);
-    assert_eq!(app.page, PackagesPage::Details(1));
+    app.handle(KeyCode::Right);
+    assert_eq!(app.page, PackagesPage::Details);
     assert_eq!(app.details_target().as_deref(), Some("paru-bin"));
-    assert_eq!(app.details_parent, PackagesPage::Aur);
+    assert_eq!(app.details_parent, AUR_INSTALL);
+    assert!(
+      app.job.is_none(),
+      "AUR results are not in the local database"
+    );
+    app.handle(KeyCode::Esc);
+    assert_eq!(app.menu.selected_id(&app.rows()), Some(Item::Aur(1)));
+    // An installed AUR package is rebuilt by the helper (D58).
+    app.handle(KeyCode::Enter);
+    assert_eq!(app.pending, Some(Action::AurInstall("paru-bin".into())));
   }
 
   #[test]
@@ -2959,7 +3585,7 @@ mod tests {
   fn enter_on_an_orphan_opens_its_details() {
     let mut app = orphans_app();
     app.handle(KeyCode::Enter);
-    assert_eq!(app.page, PackagesPage::Details(0));
+    assert_eq!(app.page, PackagesPage::Details);
     assert!(app.marked.is_empty());
     app.handle(KeyCode::Esc);
     assert_eq!(app.menu.selected_id(&app.rows()), Some(Item::Orphan(0)));
@@ -2976,7 +3602,7 @@ mod tests {
   #[test]
   fn update_rows_confirm_one_package_or_plan_all() {
     let mut app = app();
-    app.page = PackagesPage::Updates;
+    app.page = OFFICIAL_UPDATE;
     app.updates.push(Update {
       name: "linux".into(),
       current: "1".into(),
@@ -2997,7 +3623,7 @@ mod tests {
   #[test]
   fn upgrade_all_is_disabled_without_updates() {
     let mut app = app();
-    app.page = PackagesPage::Updates;
+    app.page = OFFICIAL_UPDATE;
     let rows = app.update_action_rows();
     assert!(!row(&rows, Item::UpgradeAll).is_selectable());
     assert!(row(&rows, Item::RefreshDatabase).is_selectable());
@@ -3311,6 +3937,11 @@ mod tests {
   fn only_removals_cleanups_and_downgrades_use_the_danger_style() {
     for action in [
       Action::Remove(vec!["zsh".into()]),
+      Action::RemoveOnly(vec!["7zip".into()]),
+      Action::RemoveCascade {
+        packages: vec!["7zip".into()],
+        dependents: vec!["julia".into()],
+      },
       Action::CleanCache("keep-one"),
       Action::Downgrade("/tmp/zsh.pkg.tar.zst".into()),
     ] {
@@ -3323,9 +3954,91 @@ mod tests {
       Action::Upgrade,
       Action::RefreshDatabase,
       Action::AurInstall("paru-bin".into()),
+      Action::AurUpgradePackage("paru-bin".into()),
+      Action::AurUpgrade,
       Action::ApplyMirrors(String::new()),
     ] {
       assert!(!action.is_destructive(), "{action:?}");
+    }
+  }
+
+  fn cascade(dependents: &[&str]) -> Action {
+    Action::RemoveCascade {
+      packages: vec!["7zip".into()],
+      dependents: dependents.iter().map(|name| (*name).to_owned()).collect(),
+    }
+  }
+
+  #[test]
+  fn removal_choice_names_the_dependents() {
+    let lang = Lang::for_locale("en-US");
+    let dependents: Vec<String> = (1..=10).map(|n| format!("dep{n}")).collect();
+    let names: Vec<&str> = dependents.iter().map(String::as_str).collect();
+    let message = action_message(lang, &cascade(&names));
+    assert!(message.starts_with("7zip is required by"), "{message}");
+    assert!(message.contains("dep1, dep2"), "{message}");
+    assert!(message.contains("dep8, …"), "{message}");
+    assert!(!message.contains("dep9"), "{message}");
+    assert!(!message.contains('{'), "placeholders are filled: {message}");
+  }
+
+  /// A Remove whose plan found dependents: the choice is open, on Cancel.
+  fn removal_choice_app() -> PackagesApp {
+    let mut app = app();
+    app.request(cascade(&["julia"]));
+    app.preview = Some(TransactionPlan {
+      remove: vec![package("julia", true), package("7zip", true)],
+      ..Default::default()
+    });
+    app
+  }
+
+  #[test]
+  fn removal_choice_offers_only_the_package_or_the_cascade() {
+    let mut app = removal_choice_app();
+    assert_eq!(app.choice.focused(), None, "focus starts on Cancel");
+    let text = screen(&mut app, 100, 30);
+    assert!(text.contains("julia"), "{text}");
+    assert!(text.contains("Remove only 7zip (-Rdd)"), "{text}");
+    assert!(
+      text.contains("Remove with dependents: 2 packages (-Rcns)"),
+      "{text}"
+    );
+    assert!(text.contains("> Cancel"), "{text}");
+    let footer = app.footer_hints(&app.rows());
+    assert!(footer.contains("Enter"), "{footer}");
+    assert!(
+      !footer.contains("y "),
+      "no y with several options: {footer}"
+    );
+
+    // Enter on Cancel, `y` and Esc never remove anything.
+    app.handle(KeyCode::Char('y'));
+    assert!(app.pending.is_some() && app.action.is_none());
+    app.handle(KeyCode::Enter);
+    assert!(app.pending.is_none() && app.action.is_none());
+  }
+
+  #[test]
+  fn removal_choice_runs_the_chosen_way() {
+    // Up from Cancel reaches the cascade (the row above), then only the package.
+    for (presses, expected) in [
+      (2, Action::RemoveOnly(vec!["7zip".into()])),
+      (1, cascade(&["julia"])),
+    ] {
+      let mut app = removal_choice_app();
+      for _ in 0..presses {
+        app.handle(KeyCode::Up);
+      }
+      let chosen = app.pending.as_ref().and_then(Action::choices).unwrap()
+        [app.choice.focused().unwrap()]
+      .clone();
+      assert_eq!(chosen, expected);
+      // The choice confirms: the job starts (no process runs in test builds).
+      app.handle(KeyCode::Enter);
+      assert!(app.pending.is_none());
+      assert!(app.action.is_some(), "{expected:?} starts");
+      assert!(app.transaction_open);
     }
   }
 
@@ -3347,12 +4060,12 @@ mod tests {
   #[test]
   fn aur_install_confirms_with_the_pkgbuild_warning_only() {
     let mut app = app();
-    app.page = PackagesPage::Aur;
+    app.page = AUR_INSTALL;
     app.aur.push(AurPackage {
       name: "paru-bin".into(),
       ..Default::default()
     });
-    app.handle(KeyCode::Enter);
+    app.handle(KeyCode::Right);
     press(&mut app, Item::Install);
     assert!(app.plan.is_none(), "the AUR helper has no transaction plan");
     assert_eq!(app.pending, Some(Action::AurInstall("paru-bin".into())));
@@ -3391,6 +4104,19 @@ mod tests {
         Action::Remove(vec!["zsh".into()]),
         "$ pacman -Rns zsh",
         vec!["remove", "zsh"],
+      ),
+      (
+        Action::RemoveOnly(vec!["7zip".into()]),
+        "$ pacman -Rdd 7zip",
+        vec!["remove-only", "7zip"],
+      ),
+      (
+        Action::RemoveCascade {
+          packages: vec!["7zip".into()],
+          dependents: vec!["julia".into()],
+        },
+        "$ pacman -Rcns 7zip",
+        vec!["remove-cascade", "7zip"],
       ),
       (
         Action::Reinstall("zsh".into()),
@@ -3451,6 +4177,21 @@ mod tests {
       assert_eq!(process.args, ["-S", "paru-bin"]);
     }
     assert!(action_command(Action::AurInstall("paru-bin".into()), &caps(false, false)).is_err());
+    for (action, args) in [
+      (
+        Action::AurUpgradePackage("yay-bin".into()),
+        vec!["-S", "yay-bin"],
+      ),
+      (Action::AurUpgrade, vec!["-Sua"]),
+    ] {
+      let Ok(ActionCommand::User { echo, process }) = action_command(action, &caps(false, true))
+      else {
+        panic!("the AUR update is not privileged");
+      };
+      assert_eq!(echo, format!("$ yay {}", args.join(" ")));
+      assert_eq!(process.program, "yay");
+      assert_eq!(process.args, args);
+    }
   }
 
   #[test]
@@ -3459,5 +4200,11 @@ mod tests {
     let text = screen(&mut app, 80, 24);
     assert!(text.contains("libfoo"));
     assert!(text.contains("Danger zone"));
+    let mut app = aur_app();
+    app.page = AUR_UPDATE;
+    app.updates = vec![update("yay-bin")];
+    let text = screen(&mut app, 80, 24);
+    assert!(text.contains("yay-bin"), "{text}");
+    assert!(text.contains("Upgrade all (AUR)"), "{text}");
   }
 }
