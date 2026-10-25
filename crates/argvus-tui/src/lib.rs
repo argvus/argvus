@@ -15,6 +15,7 @@ pub mod menu;
 pub mod page;
 pub mod terminal;
 pub mod text;
+pub mod text_editor;
 
 /// Defines the constant `MIN_WIDTH`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub const MIN_WIDTH: u16 = 60;
