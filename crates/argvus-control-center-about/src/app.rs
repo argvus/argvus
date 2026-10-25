@@ -3,11 +3,14 @@
 //! External tool dependencies remain in backend layers;
 //! the UI consumes normalized models and results.
 
+use argvus_control_center_core::clipboard;
+use argvus_control_center_core::jobs::{JobHandle, JobManager, JobState};
+
 use crate::AboutError;
 use crate::i18n::{Lang, na, tr};
 use crate::image::Logo;
 use crate::pages::{self, Doc};
-use crate::system::{self, SystemInfo};
+use crate::system::SystemInfo;
 use crate::theme::Theme;
 
 /// Defines the constant `MIN_WIDTH`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
@@ -60,7 +63,7 @@ impl Tab {
   /// Executes the `label` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn label(self, lang: Lang) -> &'static str {
     match self {
-      Tab::System => tr(lang, "control_center.system"),
+      Tab::System => tr(lang, "control_center.about_system_hardware"),
       Tab::About => tr(lang, "control_center.about"),
       Tab::Donate => tr(lang, "control_center.donate"),
       Tab::Credits => tr(lang, "control_center.credits"),
@@ -92,14 +95,23 @@ struct DocCache {
   doc: Doc<'static>,
 }
 
+/// Progress of the background read of [`SystemInfo`].
+enum SystemLoad {
+  /// Not requested yet: the page has not been drawn.
+  Pending,
+  /// The probes run on a worker thread; see [`App::poll`].
+  Loading(JobHandle<SystemInfo>),
+  Loaded,
+}
+
 /// Represents `App`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub struct App {
   pub lang: Lang,
   pub theme: Theme,
   pub system: SystemInfo,
-  pub argvus_version: String,
-  pub gtk_version: String,
-  pub hyprland_version: String,
+  /// Whether `system` has been gathered; see [`App::ensure_loaded`].
+  system_load: SystemLoad,
+  jobs: JobManager,
   pub logo: Option<Logo>,
   pub active_tab: Tab,
   pub scroll: usize,
@@ -108,6 +120,8 @@ pub struct App {
   pub viewport: usize,
   pub width: u16,
   pub height: u16,
+  /// Columns available to the text, set by the renderer; `0` until the first draw.
+  text_width: u16,
   cache: Option<DocCache>,
   tab_scroll: [usize; 5],
   tab_selected: [usize; 5],
@@ -127,7 +141,6 @@ impl App {
 
   /// Constructs `with_context` with this module's expected initial state. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn with_context(initial_tab: Tab, lang: Lang, theme: Theme) -> Self {
-    let missing = na(lang);
     let status = Status {
       text: tr(lang, "control_center.welcome_to_argvus").to_string(),
       kind: StatusKind::Info,
@@ -135,10 +148,11 @@ impl App {
     Self {
       lang,
       theme,
-      system: SystemInfo::gather(missing),
-      argvus_version: system::argvus_version(missing),
-      gtk_version: system::gtk_version(missing),
-      hyprland_version: system::hyprland::hyprland_version(missing),
+      // Gathered on first draw: the Control Center builds this state at startup even
+      // when the About page is never opened.
+      system: SystemInfo::default(),
+      system_load: SystemLoad::Pending,
+      jobs: JobManager::default(),
       logo: Some(Logo::new()),
       active_tab: initial_tab,
       scroll: 0,
@@ -147,6 +161,7 @@ impl App {
       viewport: 0,
       width: 80,
       height: 24,
+      text_width: 0,
       cache: None,
       tab_scroll: [0; 5],
       tab_selected: [0; 5],
@@ -156,25 +171,93 @@ impl App {
   #[cfg(test)]
   /// Executes the `test` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn test() -> Self {
+    use crate::system::battery::{Battery, BatteryStatus};
+    use crate::system::boot::BootMode;
+    use crate::system::displays::Display;
+    use crate::system::memory::MemoryUsage;
+    use crate::system::packages::PackageCounts;
+    use crate::system::storage::{DiskKind, Storage};
+
+    const GIB: u64 = 1024 * 1024 * 1024;
+
     let lang = Lang::for_locale("pt-BR");
     let theme = Theme::load();
     Self {
       lang,
       theme,
       system: SystemInfo {
-        hostname: "host".into(),
-        os_name: "Arch Linux".into(),
-        os_type: "64 bits".into(),
-        distributor: "Arch Linux".into(),
-        kernel: "6.14.4-arch1-1".into(),
-        window_system: "Wayland".into(),
-        cpu: "Intel Core i5 8 cores".into(),
-        memory: "15.5 GiB".into(),
-        gpus: "Intel Graphics".into(),
+        firmware: Some("AMI 1.40 (03/15/2024)".into()),
+        boot_mode: Some(BootMode::Uefi),
+        secure_boot: Some(false),
+        virtualization: Some("none".into()),
+        bootloader: Some("systemd-boot 258.1".into()),
+        argvus: Some("0.4.0".into()),
+        hostname: Some("host".into()),
+        os_name: Some("Arch Linux".into()),
+        distributor: Some("Arch Linux".into()),
+        kernel: Some("6.14.4-arch1-1".into()),
+        architecture: Some("x86_64".into()),
+        hyprland: Some("0.56.2".into()),
+        wayland: Some("1.26.0".into()),
+        gpu_drivers: Some("i915 (Mesa 25.2.3)".into()),
+        gtk: Some("4.22.4".into()),
+        displays: Some(vec![
+          Display {
+            name: "eDP-1".into(),
+            width: 1920,
+            height: 1200,
+            refresh_hz: 60.0,
+            scale: 1.0,
+          },
+          Display {
+            name: "HDMI-A-1".into(),
+            width: 2560,
+            height: 1440,
+            refresh_hz: 143.912,
+            scale: 1.25,
+          },
+        ]),
+        pipewire: Some("1.4.8".into()),
+        quickshell: Some("0.3.1".into()),
+        greetd: Some("0.10.3".into()),
+        systemd: Some("258.1".into()),
+        packages: Some(PackageCounts {
+          total: 1024,
+          explicit: 300,
+          foreign: 12,
+        }),
+        uptime_seconds: Some(2 * 86_400 + 3 * 3_600 + 4 * 60),
+        locale: Some("en_US.UTF-8".into()),
+        batteries: vec![Battery {
+          name: "BAT0".into(),
+          percent: Some(85),
+          status: BatteryStatus::Discharging,
+          health: Some(91),
+          cycles: Some(312),
+        }],
+        cpu: Some("Intel Core i5".into()),
+        cpu_max_mhz: Some(4200),
+        threads: Some(8),
+        cores: Some(4),
+        gpus: Some("Intel Graphics".into()),
+        memory: Some(MemoryUsage {
+          total_kib: 16_000_000,
+          available_kib: Some(10_000_000),
+          swap_total_kib: Some(8 * 1024 * 1024),
+          swap_free_kib: Some(7 * 1024 * 1024),
+        }),
+        storage: Some(Storage {
+          model: Some("Example SSD 1TB".into()),
+          kind: DiskKind::Nvme,
+          filesystem: "btrfs".into(),
+          total_bytes: Some(465 * GIB),
+          used_bytes: Some(120 * GIB),
+        }),
+        model: Some("LENOVO 21AH".into()),
+        motherboard: Some("LENOVO 21AHCTO1WW".into()),
       },
-      argvus_version: "0.4.0".into(),
-      gtk_version: "4.22.4".into(),
-      hyprland_version: "0.56.2".into(),
+      system_load: SystemLoad::Loaded,
+      jobs: JobManager::default(),
       logo: None,
       active_tab: Tab::System,
       scroll: 0,
@@ -183,15 +266,56 @@ impl App {
       viewport: 0,
       width: 80,
       height: 24,
+      text_width: 0,
       cache: None,
       tab_scroll: [0; 5],
       tab_selected: [0; 5],
     }
   }
 
+  /// Starts reading the system facts the first time the page is drawn, from any entry
+  /// point (Home, search or CLI route).
+  ///
+  /// The probes run commands such as `pacman`, which take a few hundred milliseconds
+  /// together, so they run on a worker thread and the page shows a loading line until
+  /// [`App::poll`] receives the result.
+  pub fn ensure_loaded(&mut self) {
+    if matches!(self.system_load, SystemLoad::Pending) {
+      let job = self.jobs.spawn(|_| Ok(SystemInfo::gather()));
+      self.system_load = SystemLoad::Loading(job);
+    }
+  }
+
+  /// Takes the background result when it is ready; returns `true` when the page must be redrawn.
+  pub fn poll(&mut self) -> bool {
+    let SystemLoad::Loading(job) = &self.system_load else {
+      return false;
+    };
+    match job.try_state() {
+      JobState::Running => false,
+      JobState::Finished(result) => {
+        // A failed worker leaves every value unknown ("N/A") instead of retrying forever.
+        self.system = result.unwrap_or_default();
+        self.system_load = SystemLoad::Loaded;
+        self.cache = None;
+        true
+      }
+    }
+  }
+
+  /// Whether the system facts are available.
+  pub fn is_loaded(&self) -> bool {
+    matches!(self.system_load, SystemLoad::Loaded)
+  }
+
+  /// Returns the installed ARGVUS version, or "N/A" in the interface language.
+  pub fn argvus_version(&self) -> &str {
+    self.system.argvus.as_deref().unwrap_or(na(self.lang))
+  }
+
   /// Executes the `current_doc` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn current_doc(&mut self) -> Doc<'static> {
-    let width = self.width.max(MIN_WIDTH) as usize;
+    let width = self.text_columns();
     if let Some(cache) = &self.cache
       && cache.tab == self.active_tab
       && cache.width == width
@@ -207,6 +331,23 @@ impl App {
       doc: doc.clone(),
     });
     doc
+  }
+
+  /// Records the area that shows the text: its height is the scroll viewport, and its
+  /// width, minus the scrollbar column, is the wrapping width of the document.
+  pub fn set_text_area(&mut self, width: u16, height: u16) {
+    self.text_width = width;
+    self.set_viewport(height as usize);
+  }
+
+  /// Wrapping width of the document. One column is kept free for the scrollbar, so the
+  /// text does not change its wrapping when the scrollbar appears.
+  fn text_columns(&self) -> usize {
+    if self.text_width > 0 {
+      usize::from(self.text_width.saturating_sub(1))
+    } else {
+      usize::from(self.width.max(MIN_WIDTH))
+    }
   }
 
   /// Applies the `set_viewport` operation while preserving the persistence and local-update contract. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
@@ -317,6 +458,23 @@ impl App {
     }
   }
 
+  /// Copies the System & Hardware tab as plain text to the Wayland clipboard,
+  /// for bug reports and support requests.
+  pub fn copy_report(&mut self) {
+    if self.active_tab != Tab::System || !self.is_loaded() {
+      return;
+    }
+    let report = pages::system::report_text(self);
+    let (key, kind) = match clipboard::copy(&report) {
+      Ok(()) => ("control_center.about_report_copied", StatusKind::Success),
+      Err(_) => ("control_center.about_report_copy_failed", StatusKind::Error),
+    };
+    self.status = Some(Status {
+      text: tr(self.lang, key).to_string(),
+      kind,
+    });
+  }
+
   /// Executes the `ensure_selected_visible` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn ensure_selected_visible(&mut self) {
     let line = self
@@ -401,6 +559,49 @@ mod tests {
     app.end();
     let expected = app.current_doc().height().saturating_sub(app.viewport);
     assert_eq!(app.scroll, expected);
+  }
+
+  #[test]
+  fn shows_loading_line_until_the_background_read_finishes() {
+    use std::time::{Duration, Instant};
+
+    let mut app = App::with_context(Tab::System, Lang::for_locale("en-US"), Theme::load());
+    assert!(!app.is_loaded());
+    app.ensure_loaded();
+    let loading = app
+      .current_doc()
+      .lines
+      .iter()
+      .map(ToString::to_string)
+      .collect::<String>();
+    assert!(loading.contains("Loading system information"));
+
+    let deadline = Instant::now() + Duration::from_secs(30);
+    while !app.poll() {
+      assert!(Instant::now() < deadline, "system read did not finish");
+      std::thread::sleep(Duration::from_millis(5));
+    }
+    assert!(app.is_loaded());
+    assert!(!app.poll(), "a finished read is delivered once");
+  }
+
+  #[test]
+  fn reports_clipboard_failure_in_the_status_line() {
+    // Test builds never start programs, so `wl-copy` always fails here.
+    let mut app = App::test();
+    app.lang = Lang::for_locale("en-US");
+    app.copy_report();
+    let status = app.status.expect("status");
+    assert_eq!(status.kind, StatusKind::Error);
+    assert!(status.text.contains("wl-copy"));
+  }
+
+  #[test]
+  fn copies_only_from_the_system_tab() {
+    let mut app = App::test();
+    app.goto_tab(Tab::Credits);
+    app.copy_report();
+    assert!(app.status.is_none());
   }
 
   #[test]

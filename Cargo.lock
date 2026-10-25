@@ -256,6 +256,8 @@ dependencies = [
  "ratatui",
  "ratatui-image",
  "resvg",
+ "rustix 1.1.5",
+ "serde_json",
  "thiserror 2.0.21",
 ]
 

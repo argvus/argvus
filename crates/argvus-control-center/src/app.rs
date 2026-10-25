@@ -495,9 +495,9 @@ impl App {
       #[cfg(feature = "about")]
       (
         "about",
-        "system",
-        "control_center.about",
-        "about information version license",
+        "card_tools",
+        "control_center.about_argvus",
+        "about information version license system hardware boot firmware uefi bios secure virtualization kernel battery cpu gpu driver memory motherboard sobre informacoes versao licenca sistema bateria memoria placa mae",
         "about/system",
       ),
       #[cfg(feature = "network")]
@@ -2219,6 +2219,7 @@ impl App {
         tr(self.lang, "control_center.navigate_scroll"),
         tr(self.lang, "control_center.pgup_pgdn_scroll"),
         tr(self.lang, "control_center.enter_open_action"),
+        tr(self.lang, "control_center.about_help_copy_report"),
       ]);
     }
     #[cfg(any(

@@ -244,6 +244,34 @@ Groups have their own list and edit pages, including member management and group
 
 **Settings** is the last entry of the home. Its **Language** page sets the interface language, and its **Style** page controls the decorative icons and the Control Center transparency. Style does not hold blur: blur is a global Hyprland setting, under Hyprland > Blur. The Style page changes the settings application's presentation; it is not a switch that disables ARGVUS services or removes settings providers. Saving the icons can require authorization, while the visual change is applied to the current application. Esc on Style returns to the Settings page, and Esc there returns to the home.
 
+### About ARGVUS
+
+**About ARGVUS** is in **Tools & Diagnostics → About ARGVUS** (search `about`, `hardware` or `firmware`, or run `argvus control-center about`). It has five tabs, switched with `Tab`/`Shift+Tab`, `←`/`→` or `h`/`l`: **System & Hardware**, **About**, **Donate**, **Credits** and **Copyright**. The header shows the full path, for example `Control Center > Tools & Diagnostics > About ARGVUS > System & Hardware`.
+
+**System & Hardware** is read-only and groups the facts of this machine in three sections, with the values aligned in one column:
+
+| Section | Fields |
+| --- | --- |
+| Boot | Firmware (vendor, version and date), Type (UEFI or Legacy (BIOS)), Secure Boot (UEFI only), Virtualization, Bootloader |
+| System | ARGVUS, Hostname, Operating system, Distributor, Kernel, Architecture, Window manager (Hyprland), Compositor (Wayland), GPU driver, GTK, Theme (with Dark or Light), Displays (one line per monitor), Audio (PipeWire), Shell (Quickshell), Login (greetd), Init (systemd), Packages, Uptime, Locale |
+| Hardware | Battery (one line per battery), CPU (with its maximum frequency), Threads, Cores, GPU, Memory (used / total), Swap, Storage, Model (only when it differs from the motherboard), Motherboard |
+
+Every value is read from the running system, without privileges, and the page works the same on any machine. A value that cannot be read is shown as `N/A`, and a line that does not apply is left out:
+
+- **Firmware**, **Model** and **Motherboard** come from DMI (`/sys/class/dmi/id`); placeholder values such as `To be filled by O.E.M.` are ignored. **Type** and **Secure Boot** come from `/sys/firmware/efi`, and **Virtualization** from `systemd-detect-virt`.
+- **Bootloader** is read from the `LoaderInfo` EFI variable, which systemd-boot, Limine and other bootloaders that follow the Boot Loader Interface publish. GRUB does not publish it, so it is recognized by `/boot/grub` (or `/efi/grub`) and shown with the version of the `grub` package.
+- The versions of ARGVUS, Wayland, Mesa, PipeWire, Quickshell, greetd, systemd and GRUB come from one `pacman -Q` query and are shown without the epoch and package release (`1:25.2.3-1` becomes `25.2.3`). The Hyprland version comes from `hyprctl version`, or from the package when no session answers.
+- **GPU driver** names the driver bound to each DRM card in `/sys/class/drm`. A proprietary driver shows its module version (for example `nvidia 580.82.07`); an in-kernel driver shows the Mesa version (for example `amdgpu (Mesa 25.2.3)`).
+- **Displays** lists the active monitors from `hyprctl monitors -j`: connector, resolution, refresh rate and scale (the scale is left out at 1).
+- **Packages** counts all installed packages, the explicitly installed ones and the foreign ones (AUR or built locally), from `pacman -Qq`, `-Qqe` and `-Qqm`.
+- **Uptime** comes from `/proc/uptime` and is the value when the page was opened. **Locale** comes from `LANG` in `/etc/locale.conf`.
+- **Battery** lists the batteries of the computer from `/sys/class/power_supply`, selected by type, so peripherals such as wireless mice are not counted. Each line shows the charge, the state, the health (full capacity compared with the design capacity) and the charge cycles when the firmware reports them. A machine without a battery shows **Not detected**.
+- **CPU** adds the highest maximum frequency among all cores (cpufreq), which is the rated maximum on hybrid processors; it is left out where cpufreq is not available, as in most virtual machines. **Threads** and **Cores** come from `/proc/cpuinfo`.
+- **Memory** and **Swap** come from `/proc/meminfo` (zram included); a system without swap shows **Disabled**.
+- **Storage** describes the disk under `/`: its model, its kind (NVMe, SSD, HDD or eMMC/SD; virtual disks show no kind), the file system and the used and total space. The disk is found through partitions, LUKS and LVM down to the physical device.
+
+The values are read in the background the first time the page is drawn, so neither the Control Center start nor the page opening waits for them; the tab shows **Loading system information...** meanwhile. Press `c` on this tab to copy the whole report as plain text to the clipboard (with `wl-copy`), for example to paste it in a bug report.
+
 ## Search and optional capabilities
 
 The home screen has a searchable registry of routes. Search terms include user-facing concepts such as appearance, themes, wallpapers, fonts, keyboard shortcuts, mouse, touchpad, displays, network and session. Optional providers are included only when their feature is compiled and their runtime capability is detected, so the visible menu is intentionally capability-aware.
@@ -301,7 +329,7 @@ argvus control-center keybindings
 
 Run `argvus control-center --help` for the routes available in the installed version. The command-line route is a shortcut into the same settings application, not a separate configuration system.
 
-Useful direct routes include `apps`, `window-rules`, `projects`, `snippets`, `ssh-keys`, `gpg-keys`, `firewall`, `fonts`, `locale`, `input`, `keybindings`, `language`, `config`, `system`, `hardware`, `services`, `dev-services`, `network`, `audio`, `bluetooth`, `boot`, `packages` (with the pages `official`, `search`, `installed`, `updates`, `orphans`, `aur`, `aur-remove`, `aur-updates`, `repositories`, `repositories-add`, `repositories-list`, `cache`, `history`, `downgrade` and `mirrors`), `storage`, `diagnostics`, `power`, `session`, `displays` and `appearance`. Appearance also accepts focused routes such as `themes`, `wallpapers`, `icons`, `accents`, `effects`, `spaces`, `taskbar` and `widget-telemetry`; display accepts `resolution`, `refresh`, `scale`, `position`, `orientation`, `primary`, `vrr` and `hdr`. Use the installed `--help` output when scripting because availability still depends on the installed build.
+Useful direct routes include `apps`, `window-rules`, `projects`, `snippets`, `ssh-keys`, `gpg-keys`, `firewall`, `fonts`, `locale`, `input`, `keybindings`, `language`, `config`, `system`, `hardware`, `services`, `dev-services`, `network`, `audio`, `bluetooth`, `boot`, `packages` (with the pages `official`, `search`, `installed`, `updates`, `orphans`, `aur`, `aur-remove`, `aur-updates`, `repositories`, `repositories-add`, `repositories-list`, `cache`, `history`, `downgrade` and `mirrors`), `storage`, `diagnostics`, `about` (with the tabs `system`, `about`, `donate`, `credits` and `copyright`), `power`, `session`, `displays` and `appearance`. Appearance also accepts focused routes such as `themes`, `wallpapers`, `icons`, `accents`, `effects`, `spaces`, `taskbar` and `widget-telemetry`; display accepts `resolution`, `refresh`, `scale`, `position`, `orientation`, `primary`, `vrr` and `hdr`. Use the installed `--help` output when scripting because availability still depends on the installed build.
 
 ## Related
 

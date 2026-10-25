@@ -19,6 +19,7 @@ use crate::pages::Doc;
 
 /// Renders `draw` while respecting the current domain state and semantic theme. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn draw(app: &mut App, frame: &mut Frame) {
+  app.ensure_loaded();
   let area = frame.area();
   if app.too_small() {
     draw_too_small(app, frame, area);
@@ -26,7 +27,10 @@ pub fn draw(app: &mut App, frame: &mut Frame) {
   }
 
   let areas = layout::areas(area);
-  app.set_viewport(areas.body.height as usize);
+  // The document is wrapped and scrolled against the area that actually shows it, so its
+  // height, the scroll range and the scrollbar all agree.
+  let text_area = text_area(app, areas.body);
+  app.set_text_area(text_area.width, text_area.height);
 
   header::draw(frame, areas.header, app);
   tabs::draw(frame, areas.tabs, app);
@@ -35,24 +39,42 @@ pub fn draw(app: &mut App, frame: &mut Frame) {
   match app.active_tab {
     Tab::System => draw_system_page(frame, areas.body, app, &doc),
     _ => {
-      draw_doc(frame, content_rect(areas.body, app, &doc), app, &doc);
-      scroll::draw(frame, areas.body, app, &doc);
+      draw_doc(frame, content_rect(text_area, app, &doc), app, &doc);
+      scroll::draw(frame, text_area, app, &doc);
     }
   }
 
   footer::draw(frame, areas.footer, app);
 }
 
+/// Returns the part of the body that holds the text: beside or below the logo on the
+/// System & Hardware tab, the whole body elsewhere.
+fn text_area(app: &App, body: Rect) -> Rect {
+  if app.active_tab == Tab::System && logo_visible(app) {
+    layout::system_body(body, is_wide(body)).1
+  } else {
+    body
+  }
+}
+
+fn logo_visible(app: &App) -> bool {
+  app.logo.as_ref().is_some_and(|logo| logo.is_visible())
+}
+
+/// Wide bodies put the logo beside the text instead of above it.
+fn is_wide(body: Rect) -> bool {
+  body.width >= 96
+}
+
 /// Renders `draw_system_page` while respecting the current domain state and semantic theme. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn draw_system_page(frame: &mut Frame, body: Rect, app: &mut App, doc: &Doc<'_>) {
-  let logo_visible = app.logo.as_ref().is_some_and(|logo| logo.is_visible());
-  if !logo_visible {
+  if !logo_visible(app) {
     draw_doc(frame, content_rect(body, app, doc), app, doc);
     scroll::draw(frame, body, app, doc);
     return;
   }
 
-  let wide = body.width >= 96;
+  let wide = is_wide(body);
   let (logo_area, doc_area) = layout::system_body(body, wide);
 
   if let Some(logo) = app.logo.as_mut() {

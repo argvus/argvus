@@ -34,7 +34,7 @@ pub fn doc(app: &App, width: usize, selected: usize) -> Doc<'static> {
     kv_row(
       lang,
       "control_center.about_version",
-      app.argvus_version.clone(),
+      app.argvus_version().to_string(),
     ),
     kv_row(
       lang,

@@ -4,18 +4,17 @@
 //! the UI consumes normalized models and results.
 use argvus_control_center_core::process;
 
-/// Returns the version of the Hyprland compositor answering `hyprctl`, or `na` when no session is reachable.
+/// Returns the version of the Hyprland compositor answering `hyprctl`, or `None` when no session is reachable.
 ///
 /// `hyprctl` talks to the compositor through `HYPRLAND_INSTANCE_SIGNATURE`, so the value reflects the
 /// session that is running the Control Center, not an installed package.
-pub fn hyprland_version(na: &str) -> String {
+pub fn running_version() -> Option<String> {
   process::command("hyprctl")
     .arg("version")
     .output()
     .ok()
     .filter(|output| output.status.success())
     .and_then(|output| parse_hyprland_version(&String::from_utf8_lossy(&output.stdout)))
-    .unwrap_or_else(|| na.to_string())
 }
 
 /// Extracts the version token from the first line of `hyprctl version`, such as `Hyprland 0.56.2 built from ...`.

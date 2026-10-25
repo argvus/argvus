@@ -6,7 +6,7 @@ use argvus_tui::chrome::{MessageKind, draw_footer};
 use ratatui::Frame;
 use ratatui::layout::Rect;
 
-use crate::app::{App, StatusKind};
+use crate::app::{App, StatusKind, Tab};
 use crate::i18n::tr;
 
 /// Renders `draw` while respecting the current domain state and semantic theme. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
@@ -19,7 +19,18 @@ pub fn draw(frame: &mut Frame, area: Rect, app: &App) {
     };
     (status.text.as_str(), kind)
   });
-  let hints = if area.width < 110 {
+  // System & Hardware has no links; its hints trade "Enter Open" for "c Copy".
+  let narrow = area.width < 110;
+  let hints = if app.active_tab == Tab::System {
+    tr(
+      app.lang,
+      if narrow {
+        "control_center.about_footer_system_narrow"
+      } else {
+        "control_center.about_footer_system_wide"
+      },
+    )
+  } else if narrow {
     tr(
       app.lang,
       "control_center.q_quit_esc_back_tabs_scroll_enter_open_help",

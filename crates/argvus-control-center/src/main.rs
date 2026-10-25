@@ -62,6 +62,10 @@ fn main() -> Result<()> {
     if app.poll_search_cursor() {
       dirty = true;
     }
+    #[cfg(feature = "about")]
+    if app.about.poll() {
+      dirty = true;
+    }
     #[cfg(any(
       feature = "hardware",
       feature = "services",

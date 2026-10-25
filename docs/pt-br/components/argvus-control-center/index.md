@@ -244,6 +244,34 @@ Os grupos possuem suas próprias páginas de lista e edição, incluindo gerenci
 
 **Configurações** é o último item da tela inicial. A página **Idioma** define o idioma da interface, e a página **Estilo** controla os ícones decorativos e a transparência do Control Center. O blur não fica em Estilo: ele é uma configuração global do Hyprland, em Hyprland > Blur. A página Estilo altera a apresentação do aplicativo de configurações; ela não desativa serviços ARGVUS nem remove providers. Salvar os ícones pode exigir autorização, enquanto a alteração visual é aplicada ao aplicativo atual. `Esc` em Estilo volta à página Configurações, e `Esc` nela volta à tela inicial.
 
+### Sobre o ARGVUS
+
+**Sobre o ARGVUS** fica em **Ferramentas e diagnóstico → Sobre o ARGVUS** (busque `sobre`, `hardware` ou `firmware`, ou execute `argvus control-center about`). A página tem cinco abas, trocadas com `Tab`/`Shift+Tab`, `←`/`→` ou `h`/`l`: **Sistema e hardware**, **Sobre**, **Donate**, **Créditos** e **Direitos autorais**. O cabeçalho mostra o caminho completo, por exemplo `Central de Controle > Ferramentas e diagnóstico > Sobre o ARGVUS > Sistema e hardware`.
+
+**Sistema e hardware** é somente leitura e agrupa os dados desta máquina em três seções, com os valores alinhados numa coluna:
+
+| Seção | Campos |
+| --- | --- |
+| Boot | Firmware (fabricante, versão e data), Tipo (UEFI ou Legado (BIOS)), Secure Boot (só em UEFI), Virtualização, Bootloader |
+| Sistema | ARGVUS, Hostname, Sistema operacional, Distribuidor, Kernel, Arquitetura, Gerenciador de janelas (Hyprland), Compositor (Wayland), Driver de GPU, GTK, Tema (com Escuro ou Claro), Monitores (uma linha por monitor), Áudio (PipeWire), Shell (Quickshell), Login (greetd), Init (systemd), Pacotes, Tempo ligado, Locale |
+| Hardware | Bateria (uma linha por bateria), CPU (com a frequência máxima), Threads, Núcleos, GPU, Memória (usada / total), Swap, Armazenamento, Modelo (só quando difere da placa-mãe), Placa-mãe |
+
+Todos os valores são lidos do sistema em execução, sem privilégios, e a página funciona do mesmo jeito em qualquer máquina. Um valor que não pode ser lido aparece como `N/D`, e uma linha que não se aplica é omitida:
+
+- **Firmware**, **Modelo** e **Placa-mãe** vêm do DMI (`/sys/class/dmi/id`); valores de preenchimento como `To be filled by O.E.M.` são ignorados. **Tipo** e **Secure Boot** vêm de `/sys/firmware/efi`, e **Virtualização** do `systemd-detect-virt`.
+- **Bootloader** é lido da variável EFI `LoaderInfo`, publicada pelo systemd-boot, pelo Limine e por outros bootloaders que seguem a Boot Loader Interface. O GRUB não a publica, então é reconhecido por `/boot/grub` (ou `/efi/grub`) e mostrado com a versão do pacote `grub`.
+- As versões do ARGVUS, Wayland, Mesa, PipeWire, Quickshell, greetd, systemd e GRUB vêm de uma única consulta `pacman -Q` e aparecem sem a época e sem o release do pacote (`1:25.2.3-1` vira `25.2.3`). A versão do Hyprland vem do `hyprctl version`, ou do pacote quando nenhuma sessão responde.
+- **Driver de GPU** mostra o driver de cada placa DRM em `/sys/class/drm`. Um driver proprietário mostra a versão do módulo (por exemplo `nvidia 580.82.07`); um driver do kernel mostra a versão do Mesa (por exemplo `amdgpu (Mesa 25.2.3)`).
+- **Monitores** lista os monitores ativos pelo `hyprctl monitors -j`: conector, resolução, taxa de atualização e escala (a escala é omitida quando é 1).
+- **Pacotes** conta todos os pacotes instalados, os instalados explicitamente e os externos (AUR ou construídos localmente), pelo `pacman -Qq`, `-Qqe` e `-Qqm`.
+- **Tempo ligado** vem de `/proc/uptime` e é o valor do momento em que a página foi aberta. **Locale** vem de `LANG` em `/etc/locale.conf`.
+- **Bateria** lista as baterias do computador em `/sys/class/power_supply`, escolhidas pelo tipo, então periféricos como mouses sem fio não entram. Cada linha mostra a carga, o estado, a saúde (capacidade atual comparada com a de fábrica) e os ciclos de carga quando o firmware os informa. Uma máquina sem bateria mostra **Não detectada**.
+- **CPU** acrescenta a maior frequência máxima entre todos os núcleos (cpufreq), que é a máxima nominal em processadores híbridos; ela é omitida onde o cpufreq não existe, como na maioria das máquinas virtuais. **Threads** e **Núcleos** vêm de `/proc/cpuinfo`.
+- **Memória** e **Swap** vêm de `/proc/meminfo` (zram incluído); um sistema sem swap mostra **Desativado**.
+- **Armazenamento** descreve o disco sob `/`: modelo, tipo (NVMe, SSD, HDD ou eMMC/SD; discos virtuais não mostram tipo), sistema de arquivos e espaço usado e total. O disco é encontrado atravessando partições, LUKS e LVM até o dispositivo físico.
+
+Os valores são lidos em segundo plano na primeira vez que a página é desenhada, então nem a abertura do Control Center nem a da página esperam por eles; enquanto isso, a aba mostra **Carregando informações do sistema...**. Pressione `c` nesta aba para copiar o relatório inteiro como texto para a área de transferência (com `wl-copy`), por exemplo para colar num relato de bug.
+
 ## Busca e recursos opcionais
 
 A tela inicial possui um registro pesquisável de rotas. Os termos incluem conceitos voltados ao usuário, como aparência, temas, wallpapers, fontes, atalhos de teclado, mouse, touchpad, displays, rede e sessão. Providers opcionais só aparecem quando o recurso foi compilado e sua capacidade de runtime foi detectada; por isso o menu visível é consciente das capacidades disponíveis.
@@ -301,7 +329,7 @@ argvus control-center keybindings
 
 Execute `argvus control-center --help` para ver as rotas disponíveis na versão instalada. A rota pela linha de comando é um atalho para o mesmo aplicativo, não um segundo sistema de configuração.
 
-Rotas diretas úteis incluem `apps`, `window-rules`, `projects`, `snippets`, `ssh-keys`, `gpg-keys`, `firewall`, `fonts`, `locale`, `input`, `keybindings`, `language`, `config`, `system`, `hardware`, `services`, `dev-services`, `network`, `audio`, `bluetooth`, `boot`, `packages` (com as páginas `official`, `search`, `installed`, `updates`, `orphans`, `aur`, `aur-remove`, `aur-updates`, `repositories`, `repositories-add`, `repositories-list`, `cache`, `history`, `downgrade` e `mirrors`), `storage`, `diagnostics`, `power`, `session`, `displays` e `appearance`. Appearance também aceita rotas específicas como `themes`, `wallpapers`, `icons`, `accents`, `effects`, `spaces`, `taskbar` e `widget-telemetry`; displays aceita `resolution`, `refresh`, `scale`, `position`, `orientation`, `primary`, `vrr` e `hdr`. Use a saída `--help` instalada ao criar scripts, pois a disponibilidade ainda depende do build instalado.
+Rotas diretas úteis incluem `apps`, `window-rules`, `projects`, `snippets`, `ssh-keys`, `gpg-keys`, `firewall`, `fonts`, `locale`, `input`, `keybindings`, `language`, `config`, `system`, `hardware`, `services`, `dev-services`, `network`, `audio`, `bluetooth`, `boot`, `packages` (com as páginas `official`, `search`, `installed`, `updates`, `orphans`, `aur`, `aur-remove`, `aur-updates`, `repositories`, `repositories-add`, `repositories-list`, `cache`, `history`, `downgrade` e `mirrors`), `storage`, `diagnostics`, `about` (com as abas `system`, `about`, `donate`, `credits` e `copyright`), `power`, `session`, `displays` e `appearance`. Appearance também aceita rotas específicas como `themes`, `wallpapers`, `icons`, `accents`, `effects`, `spaces`, `taskbar` e `widget-telemetry`; displays aceita `resolution`, `refresh`, `scale`, `position`, `orientation`, `primary`, `vrr` e `hdr`. Use a saída `--help` instalada ao criar scripts, pois a disponibilidade ainda depende do build instalado.
 
 ## Relacionados
 

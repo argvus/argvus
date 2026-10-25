@@ -293,6 +293,7 @@ fn handle_about(app: &mut App, key: KeyEvent) {
     KeyCode::Char('j') | KeyCode::Down => app.about.move_cursor(1),
     KeyCode::Char('k') | KeyCode::Up => app.about.move_cursor(-1),
     KeyCode::Enter => app.about.enter(),
+    KeyCode::Char('c') => app.about.copy_report(),
     KeyCode::PageDown => app.about.page(1),
     KeyCode::PageUp => app.about.page(-1),
     KeyCode::Home => app.about.home(),
