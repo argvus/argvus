@@ -147,11 +147,25 @@ fn overlay_colors(paths: &SessionPaths, theme: &str) -> SplashColors {
   )
   .unwrap_or_default();
   let text = fs::read_to_string(file).unwrap_or_default();
+  toolkit_colors(&text, theme)
+}
+
+/// The colours that `text` (a `hyprtoolkit.conf`) defines for `theme`. A key the
+/// file does not define, or defines in a form `colour_value` rejects, takes the
+/// theme's colour from the splash table, so the overlay never falls back to the
+/// dark default for a theme the table knows. The splash receives these colours
+/// as explicit arguments, which take precedence over its own table.
+fn toolkit_colors(text: &str, theme: &str) -> SplashColors {
+  let (mapped_background, mapped_foreground, mapped_accent) =
+    argvus_loading_theme_core::theme_colors(theme).unwrap_or((
+      FALLBACK_BACKGROUND,
+      FALLBACK_FOREGROUND,
+      FALLBACK_ACCENT,
+    ));
   SplashColors {
-    foreground: colour_value(&text, "text").unwrap_or_else(|| FALLBACK_FOREGROUND.to_string()),
-    background: colour_value(&text, "background")
-      .unwrap_or_else(|| FALLBACK_BACKGROUND.to_string()),
-    accent: colour_value(&text, "accent").unwrap_or_else(|| FALLBACK_ACCENT.to_string()),
+    foreground: colour_value(text, "text").unwrap_or_else(|| mapped_foreground.to_string()),
+    background: colour_value(text, "background").unwrap_or_else(|| mapped_background.to_string()),
+    accent: colour_value(text, "accent").unwrap_or_else(|| mapped_accent.to_string()),
   }
 }
 
@@ -207,6 +221,36 @@ mod tests {
   fn first_matching_line_wins() {
     let text = "accent = 0xFF000001\naccent = 0xFF000002\n";
     assert_eq!(colour_value(text, "accent").as_deref(), Some("#000001"));
+  }
+
+  #[test]
+  fn undefined_colour_takes_the_theme_table_value() {
+    let colours = toolkit_colors("text = 0xFF5C6A72\n", "everforest-light");
+    assert_eq!(colours.background, "#FDF6E3");
+    assert_eq!(colours.foreground, "#5C6A72");
+    assert_eq!(colours.accent, "#3A94C5");
+  }
+
+  #[test]
+  fn colour_in_another_byte_order_takes_the_theme_table_value() {
+    // The background used to be written as 0xRRGGBBAA, which `colour_value`
+    // rejects; the table then keeps the splash on the theme's own colour.
+    let colours = toolkit_colors("background = 0xFDF6E3FF\n", "everforest-light");
+    assert_eq!(colours.background, "#FDF6E3");
+  }
+
+  #[test]
+  fn defined_colour_takes_precedence_over_the_theme_table() {
+    let colours = toolkit_colors("background = 0xFF111316\n", "everforest-light");
+    assert_eq!(colours.background, "#111316");
+  }
+
+  #[test]
+  fn unknown_theme_without_colours_takes_the_default_fallbacks() {
+    let colours = toolkit_colors("", "custom-theme");
+    assert_eq!(colours.background, FALLBACK_BACKGROUND);
+    assert_eq!(colours.foreground, FALLBACK_FOREGROUND);
+    assert_eq!(colours.accent, FALLBACK_ACCENT);
   }
 
   #[test]
