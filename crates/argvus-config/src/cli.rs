@@ -176,6 +176,15 @@ pub fn run_command(arguments: Vec<String>) -> ExitCode {
   if arguments.first().map(String::as_str) == Some("jsonc-margin") {
     return jsonc_margin(&arguments[1..]);
   }
+  if arguments.first().map(String::as_str) == Some("taskbar-height") {
+    return taskbar_height(&arguments[1..]);
+  }
+  if arguments.first().map(String::as_str) == Some("taskbar-border") {
+    return taskbar_border(&arguments[1..]);
+  }
+  if arguments.first().map(String::as_str) == Some("taskbar-shape") {
+    return taskbar_shape(&arguments[1..]);
+  }
   if arguments.first().map(String::as_str) == Some("setting") {
     return setting(&arguments[1..]);
   }
@@ -993,6 +1002,75 @@ fn jsonc_margin(arguments: &[String]) -> ExitCode {
     Ok(()) => ExitCode::SUCCESS,
     Err(error) => {
       eprintln!("argvus-config: {}: {error}", path.display());
+      ExitCode::from(1)
+    }
+  }
+}
+
+/// `taskbar-height HEIGHT`: sets the height of the live taskbar. Only the
+/// heights in `waybar::TASKBAR_HEIGHTS` are accepted.
+fn taskbar_height(arguments: &[String]) -> ExitCode {
+  let [value] = arguments else {
+    eprintln!("usage: argvus config taskbar-height 24|28|32|36");
+    return ExitCode::from(64);
+  };
+  let Some(value) = value
+    .parse::<u32>()
+    .ok()
+    .filter(|value| waybar::TASKBAR_HEIGHTS.contains(value))
+  else {
+    eprintln!("argvus-config: taskbar height must be one of 24, 28, 32 or 36");
+    return ExitCode::from(64);
+  };
+  taskbar_setting(|paths| waybar::set_taskbar_height(paths, value))
+}
+
+/// `taskbar-border WIDTH`: sets the border of the live taskbar. `0` turns it
+/// off; `1` to `3` is its thickness in pixels.
+fn taskbar_border(arguments: &[String]) -> ExitCode {
+  let [value] = arguments else {
+    eprintln!("usage: argvus config taskbar-border 0|1|2|3");
+    return ExitCode::from(64);
+  };
+  let Some(value) = value
+    .parse::<u32>()
+    .ok()
+    .filter(|value| waybar::TASKBAR_BORDER_WIDTHS.contains(value))
+  else {
+    eprintln!("argvus-config: taskbar border width must be 0 (off), 1, 2 or 3");
+    return ExitCode::from(64);
+  };
+  taskbar_setting(|paths| waybar::set_taskbar_border(paths, value))
+}
+
+/// `taskbar-shape`: prints the live taskbar height and border width, one
+/// `key=value` line each. A value that cannot be read is printed empty.
+fn taskbar_shape(arguments: &[String]) -> ExitCode {
+  if !arguments.is_empty() {
+    eprintln!("usage: argvus config taskbar-shape");
+    return ExitCode::from(64);
+  }
+  let Some(paths) = session_paths::SessionPaths::from_environment() else {
+    eprintln!("argvus-config: cannot resolve the configuration directory");
+    return ExitCode::from(1);
+  };
+  let shape = waybar::taskbar_shape(&paths);
+  let show = |value: Option<u32>| value.map(|value| value.to_string()).unwrap_or_default();
+  println!("height={}", show(shape.height));
+  println!("border={}", show(shape.border_width));
+  ExitCode::SUCCESS
+}
+
+/// Runs one edit of the live taskbar files and reports its failure.
+fn taskbar_setting(edit: impl Fn(&session_paths::SessionPaths) -> std::io::Result<()>) -> ExitCode {
+  let Some(paths) = session_paths::SessionPaths::from_environment() else {
+    eprintln!("argvus-config: cannot resolve the configuration directory");
+    return ExitCode::from(1);
+  };
+  match edit(&paths) {
+    Ok(()) => ExitCode::SUCCESS,
+    Err(error) => {
+      eprintln!("argvus-config: taskbar: {error}");
       ExitCode::from(1)
     }
   }

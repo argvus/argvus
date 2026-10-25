@@ -44,6 +44,66 @@ const COMPACT_THEMES: [&str; 21] = [
   "monokai-dark",
 ];
 
+/// The taskbar heights the Control Center offers, in pixels.
+pub const TASKBAR_HEIGHTS: [u32; 4] = [24, 28, 32, 36];
+
+/// The taskbar border widths, in pixels. `0` turns the border off; the others
+/// are the thickness when it is on.
+pub const TASKBAR_BORDER_WIDTHS: [u32; 4] = [0, 1, 2, 3];
+
+/// The blocks whose borders follow the taskbar border width: the taskbar window,
+/// the right group with the MPRIS player, and the MPRIS player's hover edge.
+const TASKBAR_BORDER_BLOCKS: [&str; 4] = [
+  "window#waybar {",
+  "#right-0, #right-1, #right-2, #mpris, #custom-spotify-mpris {",
+  "#mpris,",
+  "#mpris:hover,",
+];
+
+/// Sets the border width of every taskbar block that draws a border.
+pub fn set_taskbar_border_width(text: &str, width: u32) -> String {
+  TASKBAR_BORDER_BLOCKS
+    .iter()
+    .fold(text.to_string(), |text, block| {
+      css_edit::set_border_width_in_blocks(&text, block, width)
+    })
+}
+
+/// The taskbar height and border width of the live taskbar files. Each one is
+/// `None` when its file is missing or has no such setting.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct TaskbarShape {
+  pub height: Option<u32>,
+  pub border_width: Option<u32>,
+}
+
+/// Sets the taskbar height in the live JSONC file. A missing file is skipped.
+pub fn set_taskbar_height(paths: &SessionPaths, height: u32) -> io::Result<()> {
+  match live(paths, "taskbar/config/argvus-taskbar.jsonc") {
+    Some(path) => edit_text(&path, |text| text_edit::set_jsonc_height(text, height)),
+    None => Ok(()),
+  }
+}
+
+/// Sets the taskbar border width in the live stylesheet. A missing file is skipped.
+pub fn set_taskbar_border(paths: &SessionPaths, width: u32) -> io::Result<()> {
+  match live(paths, "taskbar/config/argvus-taskbar.css") {
+    Some(path) => edit_text(&path, |text| set_taskbar_border_width(text, width)),
+    None => Ok(()),
+  }
+}
+
+/// Reads the taskbar height and border width from the live files.
+pub fn taskbar_shape(paths: &SessionPaths) -> TaskbarShape {
+  let read = |relative: &str| live(paths, relative).and_then(|path| fs::read_to_string(path).ok());
+  TaskbarShape {
+    height: read("taskbar/config/argvus-taskbar.jsonc")
+      .and_then(|text| text_edit::jsonc_height(&text)),
+    border_width: read("taskbar/config/argvus-taskbar.css")
+      .and_then(|text| css_edit::border_width_in_block(&text, "window#waybar {")),
+  }
+}
+
 /// The margins and radii of one theme class.
 struct Layout {
   /// Taskbar margins: top, left, right; the bottom is always zero.
@@ -281,6 +341,20 @@ mod tests {
       "new",
     );
     assert_eq!(edited, format!("a\n{FONTS_START}\nnew\n{FONTS_END}\n"));
+  }
+
+  #[test]
+  fn taskbar_border_width_reaches_every_bordered_block() {
+    let css = "window#waybar {\n  border: 1px solid @th-decorate;\n}\n\n#right-0, #right-1, #right-2, #mpris, #custom-spotify-mpris {\n  border: 1px solid @th-border-rights;\n}\n\n#mpris,\n#custom-spotify-mpris {\n  border: 1px solid @th-mpris-border;\n}\n\n#mpris:hover,\n#custom-spotify-mpris:hover {\n  border-bottom: 1px solid @th-decorate;\n}\n";
+    let off = set_taskbar_border_width(css, 0);
+    assert_eq!(off.matches("0px solid").count(), 4);
+    assert_eq!(off.matches("border-bottom: 0px").count(), 1);
+    let thick = set_taskbar_border_width(css, 3);
+    assert_eq!(thick.matches("3px solid").count(), 4);
+    assert_eq!(
+      css_edit::border_width_in_block(&thick, "window#waybar {"),
+      Some(3)
+    );
   }
 
   #[test]

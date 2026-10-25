@@ -82,6 +82,21 @@ pub fn set_jsonc_margin(text: &str, edge: &str, value: u32, signed: bool) -> Str
     .collect()
 }
 
+/// Sets the waybar `"height"` of a JSONC text. Only the first match is replaced,
+/// as the taskbar file has a single height. Comments and other keys are kept.
+pub fn set_jsonc_height(text: &str, value: u32) -> String {
+  let pattern = Regex::new(r#""height": [0-9]+"#).expect("valid pattern");
+  pattern
+    .replace(text, format!(r#""height": {value}"#).as_str())
+    .into_owned()
+}
+
+/// The waybar `"height"` of a JSONC text, if it has one.
+pub fn jsonc_height(text: &str) -> Option<u32> {
+  let pattern = Regex::new(r#""height": ([0-9]+)"#).expect("valid pattern");
+  pattern.captures(text)?[1].parse().ok()
+}
+
 /// A named line in one of the appearance configuration files. Each target has
 /// one pattern and one line template; the first match on each line is replaced.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -400,5 +415,14 @@ mod tests {
       set_setting("k = 1\n", "k", "a&b$1", Layout::Spaced),
       "k = a&b$1\n"
     );
+  }
+
+  #[test]
+  fn jsonc_height_is_replaced_and_read_back() {
+    let text = "{\n  \"margin-top\": 1,\n  \"height\": 28,\n  // keep me\n}\n";
+    let edited = set_jsonc_height(text, 36);
+    assert!(edited.contains("  \"height\": 36,\n  // keep me\n"));
+    assert_eq!(jsonc_height(&edited), Some(36));
+    assert_eq!(jsonc_height("{}"), None);
   }
 }
