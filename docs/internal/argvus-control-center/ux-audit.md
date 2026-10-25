@@ -473,9 +473,9 @@ helper elevado do DNS (`SystemSettingsOperation`) não muda.
 | Tela | Botão/opção atual | Ação (momento) | Nova linha equivalente | Atalho | Status |
 | --- | --- | --- | --- | --- | --- |
 | Energia | Tampa fechada (bateria/AC), botão de energia, tela desligada após (×2), bloquear após (×2), manter acordado | Abre picker → aplica (imediato) | Choice/Value (picker) ×7 (3 em desktop) | `Enter` | pendente |
-| Energia | **`[ Suspend now ]`** | `Pending::Suspend` (confirmado) | Destructive `Suspender agora` | `Enter` | pendente |
-| Energia | **`[ Hibernate now ]`** | `Pending::Hibernate` (confirmado) | Destructive `Hibernar agora` | `Enter` | pendente |
-| Energia | **`[ Refresh ]`** | `refresh` | Action `Atualizar` | `r` | pendente |
+| Energia | **`[ Suspend now ]`** | `Pending::Suspend` (confirmado) | Botão da barra Ações (`argvus_tui::action_buttons`, primário) | `←/→`, `Enter` | migrado |
+| Energia | **`[ Hibernate now ]`** | `Pending::Hibernate` (confirmado) | Botão da barra Ações (perigo) | `←/→`, `Enter` | migrado |
+| Energia | **`[ Refresh ]`** | `refresh` | Botão da barra Ações (secundário) | `r`, `←/→`, `Enter` | migrado |
 
 ### 0.13 `argvus-control-center-session`
 
