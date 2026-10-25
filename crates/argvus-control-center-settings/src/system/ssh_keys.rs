@@ -7,7 +7,7 @@
 //! prompts for the secret, so it is never a process argument.
 use argvus_control_center_core::process::command;
 
-use super::clipboard;
+use argvus_control_center_core::clipboard;
 use std::fs;
 use std::path::PathBuf;
 

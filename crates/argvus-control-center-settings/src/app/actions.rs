@@ -21,13 +21,13 @@ use crate::config::fonts::SettingKind;
 use crate::i18n::{Lang, tr};
 use crate::item::{Item, RatbagRow};
 use crate::navigation::Page;
-use crate::system::clipboard;
 use crate::system::date::{CalendarDate, DateOrder};
 use crate::system::gpg_keys;
 use crate::system::snippets;
 use crate::system::ssh_keys;
 use crate::system::window_rules;
 use crate::system::{keybindings, keyboard, locale, time};
+use argvus_control_center_core::clipboard;
 
 /// Values offered by a font rendering setting, in display order.
 pub(crate) fn setting_values(setting: SettingKind) -> &'static [&'static str] {

@@ -3,6 +3,7 @@
 //! External tool dependencies remain in backend layers;
 //! the UI consumes normalized models and results.
 pub mod capabilities;
+pub mod clipboard;
 pub mod config;
 pub mod format;
 pub mod i18n;
