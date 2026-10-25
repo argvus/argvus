@@ -40,4 +40,4 @@ Se `~/.config/locale.conf` estiver presente e contiver definições de locale co
 mv ~/.config/locale.conf ~/.config/locale.conf.backup
 ```
 
-`ARGVUS_CONFIG_HOME` e `ARGVUS_SYSTEM_CONFIG` controlam raízes de configuração e são separados do arquivo de seleção de idioma. `ARGVUS_I18N_DIR` pode selecionar uma raiz alternativa de catálogos para desenvolvimento ou testes e normalmente não deve ser definido como personalização do usuário.
+`ARGVUS_CONFIG_HOME` e `ARGVUS_SYSTEM_CONFIG` controlam raízes de configuração e são separados do arquivo de seleção de idioma. `ARGVUS_I18N_DIR` pode selecionar uma raiz alternativa de catálogos para desenvolvimento ou testes e normalmente não deve ser definido como personalização do usuário. Na árvore de código de `de/argvus`, o `.cargo/config.toml` o aponta para `resources/locales` nos processos que o cargo inicia (`cargo test`, `cargo run` e, portanto, `make validate` e o `check()` do pacote), para que chaves novas funcionem antes de o pacote ser instalado; um valor já definido no ambiente tem prioridade.

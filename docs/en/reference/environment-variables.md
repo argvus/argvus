@@ -39,4 +39,4 @@ If `~/.config/locale.conf` is present and contains conflicting locale assignment
 mv ~/.config/locale.conf ~/.config/locale.conf.backup
 ```
 
-`ARGVUS_CONFIG_HOME` and `ARGVUS_SYSTEM_CONFIG` control configuration roots; they are separate from the language-selection file. `ARGVUS_I18N_DIR` can select an alternate catalog root for development or testing and should not normally be set as a user customization.
+`ARGVUS_CONFIG_HOME` and `ARGVUS_SYSTEM_CONFIG` control configuration roots; they are separate from the language-selection file. `ARGVUS_I18N_DIR` can select an alternate catalog root for development or testing and should not normally be set as a user customization. Inside the `de/argvus` source tree, `.cargo/config.toml` sets it to `resources/locales` for the processes cargo starts (`cargo test`, `cargo run`, and so `make validate` and the package `check()`), so new keys work before the package is installed; a value already set in the environment wins.

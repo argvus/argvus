@@ -1,0 +1,6 @@
+# Processes started by cargo (`cargo test`, `cargo run`) read the i18n catalogs
+# of this tree instead of the installed ones in /usr/share/argvus/i18n, so new
+# keys work before the package is installed. An ARGVUS_I18N_DIR already set in
+# the environment wins.
+[env]
+ARGVUS_I18N_DIR = { value = "resources/locales", relative = true }
