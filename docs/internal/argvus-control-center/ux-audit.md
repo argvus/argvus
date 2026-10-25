@@ -684,6 +684,8 @@ Sessões › = `LAYOUT`; editores de valor = `BLUR` / `OPACITY`; `Apply` =
 | network > Home | Status / Interfaces / Ethernet / Wi-Fi / VPN / DNS / Proxy / Firewall | `NETWORK` / `ETHERNET` / `NETWORK` / `WIFI` / `LOCK` / `SEARCH` / `LOCK` / `WARNING` | `INFO` / `NETWORK` / `ETHERNET` / `WIFI` / `VPN` / `DNS` / `LINK` / `SHIELD` |
 | network > páginas | cabeçalhos de seção | `NETWORK`, `WIFI`, `ETHERNET`, `SEARCH`, `LOCK` | sem ícone (Info) |
 | packages > Home | Instalar oficial / AUR / Instalados / Órfãos / Atualizações / Cache / Histórico / Downgrade / Mirrors | `SEARCH` / `SUCCESS` / `PACKAGES` / `ERROR` / `REFRESH` / `STORAGE` / `LOGS` / `UPDATE` / `NETWORK` | `SEARCH` / `ADD` / `INSTALLED` / `CLEAN` / `UPDATE` / `DATABASE` / `HISTORY` / `DOWNGRADE` / `NETWORK` (Fase 3) |
+| packages > Home (D55) | Repositórios oficiais / AUR / Cache / Histórico / Downgrade / Mirrors | linha acima | `PACKAGES` / `USERS` / `DATABASE` / `HISTORY` / `DOWNGRADE` / `NETWORK` (2026-10-25) |
+| packages > origem (D55) | Instalar / Remover / Atualizar; Órfãos no topo de Remover | — | `ADD` / `DELETE` / `UPDATE`; `CLEAN` |
 | packages > detalhes | cabeçalhos | `PACKAGES`, `LINK`, `SETTINGS` | sem ícone (títulos de seção) (Fase 3) |
 | packages > ações | Instalar / Reinstalar / Remover / Remover marcados / Atualizar tudo / Atualizar banco / limpezas ×3 / Arquivos em cache / Configurar mirrors | — | `ADD` / `RESTART` / `DELETE` / `DELETE` / `UPDATE` / `SYNC` / `CLEAN` (mesmo sentido) / `FOLDER` / `EDIT` (Fase 3) |
 | packages > editor de mirrors | País / Protocolo / Idade máxima / Quantidade / Ordenação / Gerar preview | — | `EARTH` / `LINK` / `CLOCK` / `COUNTER` / `SORT` / `VISIBLE` (Fase 3; `COUNTER` e `SORT` novos) |
@@ -1288,6 +1290,31 @@ uso em outro crate: `dependencies`, `downgrade_c6e26f`, `download_bytes`,
 
 ---
 
+### 5.6.1 Pacotes agrupados por origem e tarefa (2026-10-25)
+
+A Home de Pacotes passou a ser `Repositórios oficiais`, `AUR (Arch User
+Repository)` (com helper), `Cache`, `Histórico`, `Downgrade` e `Mirrors`
+(D55). Cada origem abre `Instalar`, `Remover` e `Atualizar`, todas na tela
+de lista com filtro de antes (`draw_filtered_list`), com a barra de ações só
+em `Atualizar`. `PackagesPage` trocou `Search`, `Installed`, `Updates` e
+`Aur` por `Source(PackageSource)` e `Task(PackageSource, PackageTask)`, e
+`Details(usize)` por `Details`, com a linha de origem guardada no app.
+
+Atalhos: Enter executa a tarefa e `→` abre o pacote (D56, atalho novo);
+`Tab` leva à barra de Atualizar (D58). Órfãos fica em `Remover` (D57). O
+backend ganhou `foreign()` (`pacman -Qm`), `aur_updates()` (`<helper> -Qua`)
+e o contador `foreign_count` no painel; as ações novas `AurUpgradePackage` e
+`AurUpgrade` rodam o helper como usuário (D58).
+
+i18n: novas chaves `official_repositories`, `aur_repository`,
+`update_aur_package`, `upgrade_all_aur` e `search_*` (rótulos da busca
+global); saíram `install_official`, `install_aur`, `installed_official`,
+`installed_orphans`, `updates_official` e os cinco `breadcrumb_*` de
+Pacotes, sem outro uso no workspace. Rotas CLI novas: `official`,
+`aur-remove` e `aur-updates`.
+
+---
+
 ### 5.7 Notas da Fase 3: `network` (2026-10-05)
 
 Conferido no código antigo e preservado: Wi-Fi ligado/desligado (imediato, sem
@@ -1687,3 +1714,9 @@ Ajustes aprovados junto com o plano da Fase 1:
 | D52 | General sai da Home. Hostname vira item próprio, e a rota CLI `system` abre Hostname. Page::System foi removida. | decidido (2026-10-15), confirmar |
 | D53 | Notifications é uma página própria com Do Not Disturb, reaproveitando o toggle e o job existentes. | decidido (2026-10-15) |
 | D54 | Date & Time aparece com o caminho raso (`Preferences > Date & Time`) mesmo quando aberto pelo hub de Language & Region. | decidido (2026-10-15) |
+| D55 | (`packages`) A Home de Pacotes agrupa por origem: `Repositórios oficiais` e `AUR (Arch User Repository)` (só com `paru`/`yay`) abrem `Instalar`, `Remover` e `Atualizar`, que usam a mesma tela de lista com filtro; `Cache`, `Histórico`, `Downgrade` e `Mirrors` seguem na Home. As rotas antigas (`search`, `installed`, `updates`, `aur`, `orphans`) continuam abrindo as mesmas listas. | decidido (2026-10-25) |
+| D56 | (`packages`) Nas listas de tarefa, Enter executa a tarefa da tela no pacote (instalar, remover, atualizar, com o plano e a confirmação de antes) e `→` abre a página do pacote. A tecla dedicada não pode ser uma letra porque as letras vão para o filtro (D8). Órfãos mantém Enter abrindo o pacote (D31). | decidido (2026-10-25) |
+| D57 | (`packages`) Órfãos sai da Home e vira a primeira linha de `Repositórios oficiais > Remover`; voltar de Órfãos recarrega a lista de instalados com o cursor em Órfãos. | decidido (2026-10-25) |
+| D58 | (`packages`) Backend mínimo do AUR: Remover lista `pacman -Qm` e remove com o mesmo `pacman -Rns` privilegiado; Atualizar lista `<helper> -Qua` e roda `<helper> -S <pacote>`/`<helper> -Sua` como usuário normal, sem plano, com o aviso do PKGBUILD. Com o menu AUR na Home, os pacotes do AUR saem da lista oficial de Remover. Instalar um pacote do AUR já instalado passa a usar o helper (`-S`), porque o `pacman -S` antigo não encontra pacotes fora dos repositórios. Na barra de Atualizar, `Tab` entra e sai da barra e `←/→` só andam entre os botões com a barra focada (antes `←/→` também entravam nela), já que `→` abre o pacote e `←` volta. | decidido (2026-10-25) |
+| D59 | (`packages`) Remover um pacote exigido por outros instalados falhava no plano (`pacman -R --print`: "could not satisfy dependencies"). O plano agora usa `-Rs` (como o `-Rns` que executa) com `LC_ALL=C`; quando o pacman lista os dependentes (as linhas `:: removing … required by …` saem no stdout, junto com o `error:` do stderr), a confirmação de perigo (foco em Cancel) os nomeia e oferece a remoção em cascata, planejada com `-Rcs --print` e executada pela operação privilegiada `remove-cascade` (`pacman -Rcns`). O `--print-format` passou a usar tab real: o `\t` escrito não era expandido pelo pacman, e nome, versão e tamanho do plano nunca eram separados (o download aparecia como 0 B). | decidido (2026-10-25) |
+| D60 | (`packages`) Complementa o D59 a pedido do usuário: com dependentes, a confirmação vira uma escolha entre `Remover só <pacote>` (`pacman -Rdd`, operação privilegiada `remove-only`) e `Remover com os dependentes` (`pacman -Rcns`, `remove-cascade`), acima de `Cancelar`. Vale para Remover oficial e do AUR e para a página do pacote. A cascata mantém `-Rcns` em vez do `-Rdc` sugerido: o `-d` não muda nada quando os dependentes saem juntos, e `-ns` removem também as dependências que ficam sem uso e os `.pacsave`, como o Remover normal. Novo componente compartilhado `argvus_tui::confirm::draw_choice` (`ChoiceState`, foco inicial em Cancelar, sem `y`) e `hints::choice_hints`. | decidido (2026-10-25), confirmar flags |
