@@ -157,6 +157,8 @@ fn parse_appearance(args: &[String]) -> Result<AppearancePage, String> {
     Some("taskbar-icons") => AppearancePage::TaskbarIcons,
     Some("taskbar-date") => AppearancePage::TaskbarDate,
     Some("taskbar-time") => AppearancePage::TaskbarTime,
+    Some("taskbar-height") | Some("height") => AppearancePage::TaskbarHeight,
+    Some("taskbar-border") | Some("border") => AppearancePage::TaskbarBorder,
     Some("widget-telemetry") | Some("telemetry") => AppearancePage::WidgetTelemetry,
     Some("spaces") | Some("window-spaces") => AppearancePage::WindowSpaces,
     Some("borders") => AppearancePage::Borders,
@@ -787,6 +789,14 @@ mod tests {
     assert_eq!(
       parse(&args(&["appearance", "position"])).unwrap(),
       Some(InitialRoute::Appearance(AppearancePage::TaskbarPosition))
+    );
+    assert_eq!(
+      parse(&args(&["appearance", "taskbar-height"])).unwrap(),
+      Some(InitialRoute::Appearance(AppearancePage::TaskbarHeight))
+    );
+    assert_eq!(
+      parse(&args(&["appearance", "taskbar-border"])).unwrap(),
+      Some(InitialRoute::Appearance(AppearancePage::TaskbarBorder))
     );
     assert_eq!(
       parse(&args(&["appearance", "taskbar-group"])).unwrap(),

@@ -83,8 +83,9 @@ fn home_has_categories_and_spacing_is_nested() {
   assert_eq!(app(AppearancePage::Desktop).page_rows().len(), 6);
   assert_eq!(app(AppearancePage::ApplicationStyle).page_rows().len(), 2);
   // Position/Spaces (moved from the removed "Spaces, Borders & Position"
-  // hub) now live inside Taskbar, between Transparency and Icons.
-  assert_eq!(app(AppearancePage::Taskbar).page_rows().len(), 6);
+  // hub) now live inside Taskbar, between Transparency and Icons. Height and
+  // Border sit after Spaces.
+  assert_eq!(app(AppearancePage::Taskbar).page_rows().len(), 8);
   // "Borders" is entered directly from the Hyprland category (crate
   // principal) and just groups the two pre-existing border screens.
   assert_eq!(app(AppearancePage::Borders).page_rows().len(), 2);
@@ -494,6 +495,73 @@ fn selection_bounds_follow_each_page() {
     selected(&application),
     Some(Item::Spacing(PromptGoal::GapsOutBottom))
   );
+}
+
+#[test]
+fn taskbar_page_lists_height_and_border_after_the_spaces() {
+  let application = draft_app(AppearancePage::Taskbar);
+  let labels = labels(&application);
+  let spaces = labels.iter().position(|label| label == "Spaces");
+  let height = labels.iter().position(|label| label == "Height");
+  let border = labels.iter().position(|label| label == "Border");
+  assert!(spaces.is_some() && height > spaces && border > height);
+  assert_eq!(
+    application.surface_draft().unwrap().height,
+    28,
+    "the default height is 28"
+  );
+}
+
+#[test]
+fn height_and_border_pages_extend_the_taskbar_breadcrumb() {
+  let application = app(AppearancePage::Taskbar);
+  let taskbar = application.breadcrumb_of(AppearancePage::Taskbar);
+  assert_eq!(
+    application.breadcrumb_of(AppearancePage::TaskbarHeight),
+    format!("{taskbar} > Height")
+  );
+  assert_eq!(
+    application.breadcrumb_of(AppearancePage::TaskbarBorder),
+    format!("{taskbar} > Border")
+  );
+  assert_eq!(
+    application.breadcrumb_of(AppearancePage::TaskbarBorderThickness),
+    format!("{taskbar} > Border > Thickness")
+  );
+}
+
+#[test]
+fn height_option_edits_the_draft_until_apply() {
+  let mut application = draft_app(AppearancePage::TaskbarHeight);
+  assert!(!application.has_pending_changes());
+  application.activate(Item::TaskbarHeightOption(36));
+  assert_eq!(application.surface_draft().unwrap().height, 36);
+  assert!(application.has_pending_changes());
+}
+
+#[test]
+fn border_thickness_is_disabled_while_the_border_is_off() {
+  let mut application = draft_app(AppearancePage::TaskbarBorder);
+  assert!(application.surface_draft().unwrap().border_enabled);
+  application.activate(Item::BorderEnabled);
+  assert!(!application.surface_draft().unwrap().border_enabled);
+  assert!(application.has_pending_changes());
+
+  let rows = application.rows();
+  let mut menu = application.menu;
+  menu.normalize(&rows);
+  assert!(
+    !menu.select(&rows, &Item::BorderThickness),
+    "Thickness is skipped while Enable is off"
+  );
+}
+
+#[test]
+fn border_thickness_option_is_chosen_when_the_border_is_on() {
+  let mut application = draft_app(AppearancePage::TaskbarBorderThickness);
+  application.activate(Item::BorderThicknessOption(3));
+  assert_eq!(application.surface_draft().unwrap().border_thickness, 3);
+  assert!(application.has_pending_changes());
 }
 
 #[test]

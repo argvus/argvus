@@ -244,6 +244,9 @@ pub enum AppearancePage {
   TaskbarDateFormat,
   TaskbarTime,
   TaskbarTimeFormat,
+  TaskbarHeight,
+  TaskbarBorder,
+  TaskbarBorderThickness,
   WidgetTelemetry,
   ControlPanel,
   SurfaceSection {
@@ -954,6 +957,14 @@ pub fn accent_label(color: &str) -> String {
     .unwrap_or_else(|| color.to_string())
 }
 
+/// Taskbar heights in pixels that the Control Center offers. They mirror
+/// `TASKBAR_HEIGHTS` in `argvus-config`, which validates the value written.
+pub const TASKBAR_HEIGHTS: [u32; 4] = [24, 28, 32, 36];
+
+/// Taskbar border thicknesses in pixels that the Control Center offers. They
+/// mirror `argvus-config`, which writes `0` for a border that is off.
+pub const TASKBAR_BORDER_THICKNESSES: [u32; 3] = [1, 2, 3];
+
 #[derive(Debug, Clone, PartialEq)]
 /// Represents `AppearanceState`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub struct AppearanceState {
@@ -995,6 +1006,11 @@ pub struct AppearanceState {
   pub control_panel_cards: ControlPanelCards,
   pub control_panel_order: Vec<ControlPanelCard>,
   pub waybar_pos: TaskbarPosition,
+  /// Taskbar height in pixels, one of `waybar::TASKBAR_HEIGHTS`.
+  pub taskbar_height: u32,
+  pub taskbar_border_enabled: bool,
+  /// Taskbar border thickness in pixels, from 1 to 3.
+  pub taskbar_border_thickness: u32,
   pub taskbar_utility_group: TaskbarUtilityGroupMode,
   pub taskbar_audio_player_enabled: bool,
   pub taskbar_launcher_enabled: bool,
@@ -1071,6 +1087,9 @@ impl Default for AppearanceState {
       control_panel_cards: ControlPanelCards::default(),
       control_panel_order: ControlPanelCard::ALL.to_vec(),
       waybar_pos: TaskbarPosition::Top,
+      taskbar_height: 28,
+      taskbar_border_enabled: true,
+      taskbar_border_thickness: 1,
       taskbar_utility_group: TaskbarUtilityGroupMode::AlwaysExpanded,
       taskbar_audio_player_enabled: true,
       taskbar_launcher_enabled: true,

@@ -5,10 +5,10 @@
 use crate::animations::AnimationValues;
 use crate::blur::BlurValues;
 use crate::model::{
-  AppearanceState, ControlPanelCard, ControlPanelCards, EffectSurface, TaskbarDateFormat,
-  TaskbarPosition, TaskbarTimeFormat, TaskbarUtilityGroupMode, TaskbarUtilityWidget,
-  TaskbarUtilityWidgets, WallpaperCollection, WallpaperEntry, WallpaperMode, WidgetTelemetryBlock,
-  WidgetTelemetryBlocks, canonical_theme_id, normalize_hex_color,
+  AppearanceState, ControlPanelCard, ControlPanelCards, EffectSurface, TASKBAR_BORDER_THICKNESSES,
+  TASKBAR_HEIGHTS, TaskbarDateFormat, TaskbarPosition, TaskbarTimeFormat, TaskbarUtilityGroupMode,
+  TaskbarUtilityWidget, TaskbarUtilityWidgets, WallpaperCollection, WallpaperEntry, WallpaperMode,
+  WidgetTelemetryBlock, WidgetTelemetryBlocks, canonical_theme_id, normalize_hex_color,
 };
 use argvus_control_center_core::{
   config::reload_argvus_config_service,
@@ -306,6 +306,34 @@ fn parse_borders_status(output: &str, state: &mut AppearanceState) {
       "rounded" => state.rounded = value == "1",
       "rounding" => state.rounding = value.parse().unwrap_or(state.rounding),
       "thickness" => state.thickness = value.parse().unwrap_or(state.thickness),
+      _ => {}
+    }
+  }
+}
+
+/// Reads the `height=` and `border=` lines of `argvus config taskbar-shape`.
+/// A border of `0` is off and keeps the last thickness, so turning it back on
+/// restores it. Values outside the offered ones keep the state as it was.
+fn parse_taskbar_shape(output: &str, state: &mut AppearanceState) {
+  for (key, value) in parse_pairs(output) {
+    match key {
+      "height" => {
+        if let Some(height) = value
+          .parse()
+          .ok()
+          .filter(|height| TASKBAR_HEIGHTS.contains(height))
+        {
+          state.taskbar_height = height;
+        }
+      }
+      "border" => match value.parse::<u32>() {
+        Ok(0) => state.taskbar_border_enabled = false,
+        Ok(width) if TASKBAR_BORDER_THICKNESSES.contains(&width) => {
+          state.taskbar_border_enabled = true;
+          state.taskbar_border_thickness = width;
+        }
+        _ => {}
+      },
       _ => {}
     }
   }
@@ -936,6 +964,7 @@ struct LayoutStatus {
   utility_group: Option<String>,
   spacing: Option<String>,
   borders: Option<String>,
+  taskbar_shape: Option<String>,
 }
 
 /// The result of a reader that ran, or `None` when it did not run or panicked
@@ -1039,10 +1068,12 @@ fn read_layout_status() -> LayoutStatus {
       scope.spawn(|| run_script_output(&script("taskbar-right-2-mode.sh"), &["status"]));
     let spacing = scope.spawn(|| run_script_output(&script("spaces-switch.sh"), &["--status"]));
     let borders = run_script_output(&script("borders-switch.sh"), &["--status"]);
+    let taskbar_shape = scope.spawn(|| run_argvus_route_output("config", &["taskbar-shape"]));
     LayoutStatus {
       utility_group: utility_group.join().ok().flatten(),
       spacing: spacing.join().ok().flatten(),
       borders,
+      taskbar_shape: taskbar_shape.join().ok().flatten(),
     }
   })
 }
@@ -1113,6 +1144,9 @@ pub fn load_page(
       | AppearancePage::Taskbar
       | AppearancePage::TaskbarPosition
       | AppearancePage::TaskbarSpaces
+      | AppearancePage::TaskbarHeight
+      | AppearancePage::TaskbarBorder
+      | AppearancePage::TaskbarBorderThickness
       | AppearancePage::WindowSpaces
       | AppearancePage::WindowSpacesInner
       | AppearancePage::WindowSpacesOuter
@@ -1196,6 +1230,9 @@ pub fn load_page(
     }
     if let Some(output) = layout.borders {
       parse_borders_status(&output, &mut state);
+    }
+    if let Some(output) = layout.taskbar_shape {
+      parse_taskbar_shape(&output, &mut state);
     }
     apply_canonical_layout(&mut state);
   }
@@ -1575,6 +1612,31 @@ pub fn set_taskbar_utility_group(mode: TaskbarUtilityGroupMode) -> Result<(), St
   run_script(&script("taskbar-right-2-mode.sh"), &["set", mode.value()])
 }
 
+/// Writes the taskbar height and border to the live taskbar files. A border that
+/// is off is written as width `0`. The taskbar is restarted by the icon apply
+/// that always follows this in `Apply`, so the new shape is shown.
+pub fn set_taskbar_shape(
+  height: u32,
+  border_enabled: bool,
+  border_thickness: u32,
+) -> Result<(), String> {
+  let border_width = if border_enabled { border_thickness } else { 0 };
+  run_taskbar_config(&["taskbar-height", &height.to_string()])?;
+  run_taskbar_config(&["taskbar-border", &border_width.to_string()])
+}
+
+fn run_taskbar_config(arguments: &[&str]) -> Result<(), String> {
+  let status = argvus_control_center_core::process::command("argvus")
+    .arg("config")
+    .args(arguments)
+    .status()
+    .map_err(|error| format!("failed to set the taskbar shape: {error}"))?;
+  if !status.success() {
+    return Err("argvus config rejected the taskbar shape".into());
+  }
+  Ok(())
+}
+
 /// Persists the taskbar icon/date/time preferences to the canonical document,
 /// re-derives the generated Waybar config from them, then restarts the
 /// taskbar so it picks up the regenerated file.
@@ -1905,5 +1967,23 @@ mod tests {
     assert!(!cards.available(ControlPanelCard::Bluetooth));
     assert!(cards.enabled(ControlPanelCard::Bluetooth));
     assert_eq!(order, ControlPanelCard::ALL.to_vec());
+  }
+
+  #[test]
+  fn taskbar_shape_status_keeps_offered_values_only() {
+    let mut state = AppearanceState::default();
+    parse_taskbar_shape("height=36\nborder=2\n", &mut state);
+    assert_eq!(state.taskbar_height, 36);
+    assert!(state.taskbar_border_enabled);
+    assert_eq!(state.taskbar_border_thickness, 2);
+
+    // A border of 0 is off and keeps the last thickness for the next enable.
+    parse_taskbar_shape("border=0\n", &mut state);
+    assert!(!state.taskbar_border_enabled);
+    assert_eq!(state.taskbar_border_thickness, 2);
+
+    parse_taskbar_shape("height=30\nborder=9\n", &mut state);
+    assert_eq!(state.taskbar_height, 36, "30 is not offered");
+    assert!(!state.taskbar_border_enabled, "9 is not offered");
   }
 }

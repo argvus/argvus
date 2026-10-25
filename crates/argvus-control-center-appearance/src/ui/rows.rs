@@ -10,8 +10,9 @@ use crate::animations::{
 use crate::blur::BlurField;
 use crate::model::{
   AppearancePage, ControlPanelCard, EffectSurface, IconThemeSource, PromptGoal, SurfaceSection,
-  TaskbarDateFormat, TaskbarPosition, TaskbarTimeFormat, TaskbarUtilityGroupMode,
-  TaskbarUtilityWidget, WallpaperCollection, WallpaperMode, WidgetTelemetryBlock, accent_label,
+  TASKBAR_BORDER_THICKNESSES, TASKBAR_HEIGHTS, TaskbarDateFormat, TaskbarPosition,
+  TaskbarTimeFormat, TaskbarUtilityGroupMode, TaskbarUtilityWidget, WallpaperCollection,
+  WallpaperMode, WidgetTelemetryBlock, accent_label,
 };
 use argvus_i18n::tr;
 use argvus_theme::discovery::ThemeCategory;
@@ -107,6 +108,13 @@ pub(super) enum Item {
   Rounded,
   Rounding,
   Thickness,
+  // Taskbar height and border: the draft pages below apply them with `Apply`
+  TaskbarHeight,
+  TaskbarHeightOption(u32),
+  TaskbarBorder,
+  BorderEnabled,
+  BorderThickness,
+  BorderThicknessOption(u32),
   // Draft pages
   TaskbarTransparency,
   TaskbarIcons,
@@ -188,6 +196,11 @@ impl Item {
       },
       Self::BlurEnabled | Self::BlurField(_) => icons::BLUR,
       Self::TaskbarPosition => icons::TASKBAR,
+      Self::TaskbarHeight => icons::TASKBAR,
+      Self::TaskbarBorder | Self::BorderEnabled => icons::BORDER,
+      Self::BorderThickness => icons::THICKNESS,
+      // Options of the homogeneous height and thickness lists carry no icon.
+      Self::TaskbarHeightOption(_) | Self::BorderThicknessOption(_) => return None,
       Self::TaskbarSpaces | Self::WindowSpacesInner | Self::WindowSpacesOuter => icons::GAP,
       Self::GeneralBorders => icons::BORDER,
       Self::EdgeThickness | Self::Thickness => icons::THICKNESS,
@@ -626,6 +639,16 @@ impl AppearanceApp {
         self.submenu(Item::TaskbarTransparency, "control_center.transparency"),
         self.submenu(Item::TaskbarPosition, "control_center.position"),
         self.submenu(Item::TaskbarSpaces, "control_center.spaces"),
+        self.value_row(
+          Item::TaskbarHeight,
+          "control_center.height",
+          self
+            .surface_draft()
+            .map_or(self.state.taskbar_height, |draft| draft.height)
+            .to_string(),
+          None,
+        ),
+        self.submenu(Item::TaskbarBorder, "control_center.border"),
         self.submenu(Item::TaskbarIcons, "control_center.icons"),
         self.submenu(Item::TaskbarDate, "control_center.date"),
         self.submenu(Item::TaskbarTime, "control_center.time"),
@@ -648,6 +671,52 @@ impl AppearanceApp {
         rows.push(self.submenu(Item::LauncherIcon, "control_center.launcher"));
         rows.push(self.submenu(Item::Utilities, "control_center.utilities"));
         rows
+      }
+      AppearancePage::TaskbarHeight => {
+        let current = self.surface_draft().map(|draft| draft.height);
+        TASKBAR_HEIGHTS
+          .into_iter()
+          .map(|height| {
+            self.choice_row(
+              Item::TaskbarHeightOption(height),
+              height.to_string(),
+              current == Some(height),
+            )
+          })
+          .collect()
+      }
+      // The border is off when Enable is unchecked, so Thickness is disabled
+      // and skipped, as Rounding is on the General borders page.
+      AppearancePage::TaskbarBorder => {
+        let draft = self.surface_draft();
+        let enabled = draft.is_some_and(|draft| draft.border_enabled);
+        let thickness = draft.map_or(self.state.taskbar_border_thickness, |draft| {
+          draft.border_thickness
+        });
+        vec![
+          self.toggle_row(Item::BorderEnabled, "control_center.enable", enabled),
+          self
+            .value_row(
+              Item::BorderThickness,
+              "control_center.thickness",
+              thickness.to_string(),
+              None,
+            )
+            .enabled(enabled),
+        ]
+      }
+      AppearancePage::TaskbarBorderThickness => {
+        let current = self.surface_draft().map(|draft| draft.border_thickness);
+        TASKBAR_BORDER_THICKNESSES
+          .into_iter()
+          .map(|thickness| {
+            self.choice_row(
+              Item::BorderThicknessOption(thickness),
+              thickness.to_string(),
+              current == Some(thickness),
+            )
+          })
+          .collect()
       }
       AppearancePage::TaskbarDate => vec![self.submenu(Item::DateFormats, "control_center.format")],
       AppearancePage::TaskbarDateFormat => TaskbarDateFormat::ALL

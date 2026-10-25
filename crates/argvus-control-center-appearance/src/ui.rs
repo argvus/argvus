@@ -74,6 +74,9 @@ struct SurfaceDraft {
   date_format: TaskbarDateFormat,
   time_seconds_enabled: bool,
   time_format: TaskbarTimeFormat,
+  height: u32,
+  border_enabled: bool,
+  border_thickness: u32,
   widget_enabled: bool,
   widget_blocks: crate::model::WidgetTelemetryBlocks,
   widget_order: Vec<WidgetTelemetryBlock>,
@@ -599,7 +602,10 @@ impl AppearanceApp {
       | AppearancePage::TaskbarDate
       | AppearancePage::TaskbarDateFormat
       | AppearancePage::TaskbarTime
-      | AppearancePage::TaskbarTimeFormat => Some(EffectSurface::Taskbar),
+      | AppearancePage::TaskbarTimeFormat
+      | AppearancePage::TaskbarHeight
+      | AppearancePage::TaskbarBorder
+      | AppearancePage::TaskbarBorderThickness => Some(EffectSurface::Taskbar),
       AppearancePage::WidgetTelemetry => Some(EffectSurface::WidgetTelemetry),
       AppearancePage::ControlPanel => Some(EffectSurface::ControlPanel),
       AppearancePage::SurfaceSection { surface, .. } => Some(surface),
@@ -649,6 +655,9 @@ impl AppearanceApp {
       date_format: self.state.taskbar_date_format,
       time_seconds_enabled: self.state.taskbar_time_seconds_enabled,
       time_format: self.state.taskbar_time_format,
+      height: self.state.taskbar_height,
+      border_enabled: self.state.taskbar_border_enabled,
+      border_thickness: self.state.taskbar_border_thickness,
       widget_enabled: self.state.widget_telemetry,
       widget_blocks: self.state.widget_telemetry_blocks.clone(),
       widget_order: self.state.widget_telemetry_order.clone(),
@@ -684,6 +693,7 @@ impl AppearanceApp {
       move || match draft.surface {
         EffectSurface::Taskbar => {
           backend::set_taskbar_utility_group(draft.utility_group)?;
+          backend::set_taskbar_shape(draft.height, draft.border_enabled, draft.border_thickness)?;
           backend::apply_taskbar_icons_and_format(
             draft.audio_player_enabled,
             draft.launcher_enabled,
@@ -888,6 +898,25 @@ impl AppearanceApp {
       Item::TaskbarIcons => self.go(AppearancePage::TaskbarIcons),
       Item::TaskbarDate => self.go(AppearancePage::TaskbarDate),
       Item::TaskbarTime => self.go(AppearancePage::TaskbarTime),
+      Item::TaskbarHeight => self.go(AppearancePage::TaskbarHeight),
+      Item::TaskbarHeightOption(height) => self.edit_draft(|draft| draft.height = height),
+      Item::TaskbarBorder => self.go(AppearancePage::TaskbarBorder),
+      Item::BorderEnabled => self.edit_draft(|draft| {
+        draft.border_enabled = !draft.border_enabled;
+      }),
+      // Thickness is disabled while the border is off, so only an enabled
+      // border opens its page.
+      Item::BorderThickness => {
+        if self
+          .surface_draft()
+          .is_some_and(|draft| draft.border_enabled)
+        {
+          self.go(AppearancePage::TaskbarBorderThickness);
+        }
+      }
+      Item::BorderThicknessOption(thickness) => {
+        self.edit_draft(|draft| draft.border_thickness = thickness);
+      }
       Item::AudioPlayer => self.edit_draft(|draft| {
         draft.audio_player_enabled = !draft.audio_player_enabled;
       }),
@@ -1634,7 +1663,10 @@ impl AppearanceApp {
         self.go(AppearancePage::WallpaperModes { collection });
       }
       AppearancePage::ThemeImport => self.go(AppearancePage::Themes),
-      AppearancePage::TaskbarPosition | AppearancePage::TaskbarSpaces => {
+      AppearancePage::TaskbarPosition
+      | AppearancePage::TaskbarSpaces
+      | AppearancePage::TaskbarHeight
+      | AppearancePage::TaskbarBorder => {
         self.go(AppearancePage::Taskbar);
       }
       // Entry points reached directly from a Home (the Hyprland category or
@@ -1677,6 +1709,7 @@ impl AppearanceApp {
       }
       AppearancePage::TaskbarDateFormat => self.go(AppearancePage::TaskbarDate),
       AppearancePage::TaskbarTimeFormat => self.go(AppearancePage::TaskbarTime),
+      AppearancePage::TaskbarBorderThickness => self.go(AppearancePage::TaskbarBorder),
       AppearancePage::AccentEdit => self.go(AppearancePage::Accents),
       // Unreachable page kept until the Phase 4 cleanup (see rows.rs).
       AppearancePage::Transparency => self.go(AppearancePage::Home),
@@ -2027,6 +2060,19 @@ impl AppearanceApp {
       AppearancePage::TaskbarSpaces => format!(
         "{taskbar_root} > {}",
         tr(self.lang, "control_center.spaces")
+      ),
+      AppearancePage::TaskbarHeight => format!(
+        "{taskbar_root} > {}",
+        tr(self.lang, "control_center.height")
+      ),
+      AppearancePage::TaskbarBorder => format!(
+        "{taskbar_root} > {}",
+        tr(self.lang, "control_center.border")
+      ),
+      AppearancePage::TaskbarBorderThickness => format!(
+        "{taskbar_root} > {} > {}",
+        tr(self.lang, "control_center.border"),
+        tr(self.lang, "control_center.thickness")
       ),
       AppearancePage::Taskbar => taskbar_root.clone(),
       AppearancePage::TaskbarIcons => {

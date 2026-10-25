@@ -1214,6 +1214,22 @@ impl App {
       ),
       #[cfg(feature = "appearance")]
       (
+        "appearance.taskbar_height",
+        "taskbar",
+        "control_center.height",
+        "taskbar barra altura height tamanho size 24 28 32 36 pixels",
+        "appearance/taskbar-height",
+      ),
+      #[cfg(feature = "appearance")]
+      (
+        "appearance.taskbar_border",
+        "taskbar",
+        "control_center.border",
+        "taskbar barra borda border espessura thickness enable ligar desligar",
+        "appearance/taskbar-border",
+      ),
+      #[cfg(feature = "appearance")]
+      (
         "appearance.widget_telemetry",
         "appearance",
         "control_center.widget_telemetry",
@@ -1843,6 +1859,14 @@ impl App {
       ("appearance", "taskbar-date") => self.open_appearance_page(AppearancePage::TaskbarDate),
       #[cfg(feature = "appearance")]
       ("appearance", "taskbar-time") => self.open_appearance_page(AppearancePage::TaskbarTime),
+      #[cfg(feature = "appearance")]
+      ("appearance", "taskbar-height") | ("appearance", "height") => {
+        self.open_appearance_page(AppearancePage::TaskbarHeight)
+      }
+      #[cfg(feature = "appearance")]
+      ("appearance", "taskbar-border") | ("appearance", "border") => {
+        self.open_appearance_page(AppearancePage::TaskbarBorder)
+      }
       #[cfg(feature = "appearance")]
       ("appearance", "widget-telemetry") => {
         self.open_appearance_page(AppearancePage::WidgetTelemetry)
