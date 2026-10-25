@@ -925,11 +925,32 @@ fn transition_units(arguments: &[String]) -> ExitCode {
   }
 }
 
-/// `transition-overlay start THEME|stop`: the loading overlay of a theme switch.
-/// `start` prints `started` only when this call started the overlay, so the
-/// caller stops only what it started and never a session splash.
+/// `transition-overlay start THEME|hold THEME|stop`: the loading overlay of a
+/// theme switch. `start` prints `started` only when this call started the
+/// overlay, so the caller stops only what it started and never a session splash.
+///
+/// `hold` is for a caller that changes the desktop through several short
+/// commands, such as a Control Center `Apply`. The overlay follows the process
+/// that started it, so `start` from a short-lived command would close it at
+/// once. `hold` keeps this process, and the overlay, alive until its stdin
+/// closes, then stops the overlay. A caller that dies closes the pipe too, so
+/// the overlay cannot be left covering the screen.
 fn transition_overlay(arguments: &[String]) -> ExitCode {
   match arguments {
+    [action, theme] if action.as_str() == "hold" => {
+      let outcome = hold_overlay(
+        || theme_transition::start_overlay_with(theme, true),
+        || {
+          let _ = std::io::copy(&mut std::io::stdin().lock(), &mut std::io::sink());
+        },
+        theme_transition::stop_overlay,
+        &mut std::io::stdout(),
+      );
+      if let Some(message) = theme_transition::overlay_warning(outcome) {
+        eprintln!("{message}");
+      }
+      ExitCode::SUCCESS
+    }
     [action, theme] if action.as_str() == "start" => {
       let outcome = theme_transition::start_overlay(theme);
       if outcome == session_splash::StartOutcome::Started {
@@ -945,10 +966,30 @@ fn transition_overlay(arguments: &[String]) -> ExitCode {
       ExitCode::SUCCESS
     }
     _ => {
-      eprintln!("usage: argvus config transition-overlay start THEME|stop");
+      eprintln!("usage: argvus config transition-overlay start THEME|hold THEME|stop");
       ExitCode::from(64)
     }
   }
+}
+
+/// Starts the overlay and, only when this call started it, prints `started`,
+/// waits and then stops it. An overlay that another owner started is left as it
+/// is. The steps are passed in so the rule can be tested without a display.
+fn hold_overlay(
+  start: impl FnOnce() -> session_splash::StartOutcome,
+  wait: impl FnOnce(),
+  stop: impl FnOnce(),
+  out: &mut impl std::io::Write,
+) -> session_splash::StartOutcome {
+  let outcome = start();
+  if outcome == session_splash::StartOutcome::Started {
+    // The caller reads this line to know the overlay is up before it writes.
+    let _ = writeln!(out, "started");
+    let _ = out.flush();
+    wait();
+    stop();
+  }
+  outcome
 }
 
 /// Sets one named line of an appearance file: `theme-file TARGET FILE VALUE`.
@@ -1403,4 +1444,44 @@ fn read_path(arguments: &[String]) -> ExitCode {
   };
   println!("{}", paths.read_config(relative).display());
   ExitCode::SUCCESS
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+  use session_splash::StartOutcome;
+  use std::cell::RefCell;
+
+  #[test]
+  fn hold_waits_and_stops_only_an_overlay_it_started() {
+    let steps = RefCell::new(Vec::new());
+    let mut out = Vec::new();
+    let outcome = hold_overlay(
+      || StartOutcome::Started,
+      || steps.borrow_mut().push("wait"),
+      || steps.borrow_mut().push("stop"),
+      &mut out,
+    );
+    assert_eq!(outcome, StartOutcome::Started);
+    assert_eq!(out, b"started\n");
+    assert_eq!(*steps.borrow(), ["wait", "stop"]);
+  }
+
+  #[test]
+  fn hold_leaves_an_overlay_of_another_owner_alone() {
+    let steps = RefCell::new(Vec::new());
+    let mut out = Vec::new();
+    let outcome = hold_overlay(
+      || StartOutcome::AlreadyRunning,
+      || steps.borrow_mut().push("wait"),
+      || steps.borrow_mut().push("stop"),
+      &mut out,
+    );
+    assert_eq!(outcome, StartOutcome::AlreadyRunning);
+    assert!(
+      out.is_empty(),
+      "nothing is printed when the call did not start it"
+    );
+    assert!(steps.borrow().is_empty(), "no wait and no stop");
+  }
 }

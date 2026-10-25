@@ -82,6 +82,13 @@ fn systemctl_user(arguments: &[&str]) -> bool {
 /// Starts the overlay for `theme` with the theme's colours. The outcome tells
 /// the caller whether this call started it.
 pub fn start_overlay(theme: &str) -> StartOutcome {
+  start_overlay_with(theme, false)
+}
+
+/// `start_overlay`, optionally as the opaque spinner a session reload shows.
+/// The Control Center uses the spinner while it applies a surface, because the
+/// theme overlay's "applying the theme" text does not describe that change.
+pub fn start_overlay_with(theme: &str, spinner_only: bool) -> StartOutcome {
   let paths = SessionPaths::from_environment();
   let colors = paths
     .map(|paths| overlay_colors(&paths, theme))
@@ -90,7 +97,7 @@ pub fn start_overlay(theme: &str) -> StartOutcome {
     theme,
     colors: Some(colors),
     await_compositor: false,
-    spinner_only: false,
+    spinner_only,
     detached: false,
     owner: Owner::Transition,
   };
