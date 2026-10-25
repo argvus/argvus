@@ -492,9 +492,9 @@ impl App {
   /// Whether the page's search is a box above the list, as on the home
   /// screen, instead of the bottom line.
   pub(crate) fn search_on_top(&self) -> bool {
-    // The GPG key list has no action bar, but its search still sits on top,
-    // like the pages that have one.
-    self.has_action_bar() || self.page() == Page::GpgKeyList
+    // The GPG key list and the shortcuts list have no action bar, but their
+    // search still sits on top, like the pages that have one.
+    self.has_action_bar() || matches!(self.page(), Page::GpgKeyList | Page::Keybindings)
   }
 
   /// The action bar of the current page; empty for pages without one.
@@ -704,10 +704,6 @@ impl App {
       | Page::SettingSelector(_) => extra.push(("r", label("control_center.reset_defaults"))),
       Page::Keybindings => {
         extra.push(("Space", label("control_center.hint.toggle")));
-        extra.push(("r", label("control_center.restore_default")));
-      }
-      Page::KeybindingEdit => {
-        extra.push(("e", label("control_center.change_shortcut")));
         extra.push(("r", label("control_center.restore_default")));
       }
       Page::WindowRules if matches!(self.selected_item(), Some(Item::WindowRuleWorkspace(_))) => {

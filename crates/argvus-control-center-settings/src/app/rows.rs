@@ -788,10 +788,7 @@ impl App {
   }
 
   fn keybinding_rows(&self) -> Vec<Row<Item>> {
-    let mut rows = vec![Row::info(
-      self.label("control_center.search_shortcuts"),
-      self.search.clone(),
-    )];
+    let mut rows = Vec::new();
     let mut section = String::new();
     for index in self.visible_keybindings() {
       let binding = &self.keybindings[index];

@@ -1351,7 +1351,6 @@
   "control_center.home_navigation_search_help": "↑/↓ Items  ←/→ Categories  Tab Order  Enter Open  / Search  s Settings  ? Help  q Quit",
   "control_center.keyboard_shortcuts": "Keyboard Shortcuts",
   "control_center.keyboard_shortcuts_open": "Configure Hyprland shortcuts",
-  "control_center.search_shortcuts": "Search shortcuts",
   "control_center.keybindings.section.desktop": "Desktop Environment Shortcuts »",
   "control_center.keybindings.section.software": "Software Shortcuts »",
   "control_center.keybindings.section.media": "Media Shortcuts »",

@@ -453,6 +453,49 @@ fn r_on_shortcuts_restores_the_selected_shortcut_after_confirmation() {
 }
 
 #[test]
+fn keybindings_search_sits_on_top_without_an_action_bar() {
+  let mut app = app(Page::Keybindings);
+  assert!(app.search_on_top());
+  assert!(!app.has_action_bar());
+  assert!(app.action_rows().is_empty());
+  press(&mut app, KeyCode::Char('/'));
+  assert!(app.searching, "/ focuses the search box");
+  assert!(
+    app
+      .rows()
+      .iter()
+      .any(|row| row.id() == Some(&Item::RestoreAllShortcuts)),
+    "the list keeps its danger zone"
+  );
+}
+
+#[test]
+fn keybinding_edit_footer_has_no_change_or_restore_hints() {
+  let app = app(Page::KeybindingEdit);
+  let footer = app.footer();
+  assert!(
+    !footer.contains(tr(app.lang, "control_center.change_shortcut")),
+    "{footer}"
+  );
+  assert!(
+    !footer.contains(tr(app.lang, "control_center.restore_default")),
+    "{footer}"
+  );
+}
+
+#[test]
+fn keybindings_footer_keeps_restore_default() {
+  let app = app(Page::Keybindings);
+  assert!(
+    app
+      .footer()
+      .contains(tr(app.lang, "control_center.restore_default")),
+    "{}",
+    app.footer()
+  );
+}
+
+#[test]
 fn keyboard_layout_footer_lists_enter_and_space() {
   let mut app = app(Page::KeyboardLayout);
   app.keyboard_layouts = vec![keyboard::Layout {

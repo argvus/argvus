@@ -1351,7 +1351,6 @@
   "control_center.home_navigation_search_help": "↑/↓ Itens  ←/→ Categorias  Tab Ordem  Enter Abrir  / Pesquisar  s Configurações  ? Ajuda  q Sair",
   "control_center.keyboard_shortcuts": "Atalhos de Teclado",
   "control_center.keyboard_shortcuts_open": "Configurar atalhos do Hyprland",
-  "control_center.search_shortcuts": "Buscar atalhos",
   "control_center.keybindings.section.desktop": "Atalhos do ambiente de Desktop »",
   "control_center.keybindings.section.software": "Atalhos de software »",
   "control_center.keybindings.section.media": "Atalhos de mídia »",
