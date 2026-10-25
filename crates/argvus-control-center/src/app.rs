@@ -816,32 +816,32 @@ impl App {
       (
         "packages.search",
         "packages",
-        "control_center.search_2c43ee",
-        "pacman package pacote",
+        "control_center.install_official",
+        "pacman package pacote install instalar official oficial search",
         "packages/search",
       ),
       #[cfg(feature = "packages")]
       (
         "packages.installed",
         "packages",
-        "control_center.installed_e91b6d",
-        "installed instalados",
+        "control_center.installed_official",
+        "installed instalados official oficial",
         "packages/installed",
       ),
       #[cfg(feature = "packages")]
       (
         "packages.updates",
         "packages",
-        "control_center.updates",
-        "update upgrade atualizar",
+        "control_center.updates_official",
+        "update upgrade atualizar official oficial",
         "packages/updates",
       ),
       #[cfg(feature = "packages")]
       (
         "packages.orphans",
         "packages",
-        "control_center.orphans_29aae8",
-        "orphan órfão orfao",
+        "control_center.installed_orphans",
+        "orphan órfão orfao installed instalados",
         "packages/orphans",
       ),
       #[cfg(feature = "packages")]
@@ -856,8 +856,8 @@ impl App {
       (
         "packages.aur",
         "packages",
-        "control_center.aur",
-        "aur paru yay",
+        "control_center.install_aur",
+        "aur paru yay install instalar",
         "packages/aur",
       ),
       #[cfg(feature = "packages")]

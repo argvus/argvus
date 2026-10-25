@@ -1681,5 +1681,11 @@
   "control_center.taskbar_icons": "Ícones da barra de tarefas",
   "control_center.taskbar_date": "Data da barra de tarefas",
   "control_center.taskbar_time": "Hora da barra de tarefas",
-  "control_center.breadcrumb.root": "Central de Controle"
+  "control_center.breadcrumb.root": "Central de Controle",
+  "control_center.breadcrumb_install_aur": "Instalar AUR",
+  "control_center.breadcrumb_install_official": "Instalar Official",
+  "control_center.breadcrumb_installed_official": "Instalados Official",
+  "control_center.breadcrumb_installed_orphans": "Instalados Órfãos",
+  "control_center.breadcrumb_updates_official": "Atualizações Official",
+  "control_center.no_pending_updates": "Nenhuma atualização pendente"
 }

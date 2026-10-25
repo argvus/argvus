@@ -343,7 +343,7 @@ não tem mais `Button`, `ActionButton`, `on_buttons` nem linhas `[ ... ]`.
 | Tela | Botão/opção atual | Ação (momento) | Nova linha equivalente | Atalho | Status |
 | --- | --- | --- | --- | --- | --- |
 | Home | Instalar/Oficial, Instalar/AUR, Instalados, Órfãos, Atualizações, Cache, Histórico, Downgrade, Mirrors | Abre páginas | Submenu ×9 com o contador à direita (AUR só com paru/yay) | `Enter` | migrado |
-| Listas (busca, instalados, órfãos, atualizações, AUR) | Digitar | Filtra (`query`) | Mantido (D8): letras, inclusive `j`/`k`/`r`/`q`/`?`, viram texto; setas, PgUp/PgDn, Home/End, Enter e Esc navegam; a linha Info "Buscar" mostra o filtro | letras, `/` | migrado |
+| Listas (busca, instalados, órfãos, atualizações, AUR) | Digitar | Filtra (`query`) | Mantido (D8): letras, inclusive `j`/`k`/`r`/`q`/`?`, viram texto; setas, PgUp/PgDn, Home/End, Enter e Esc navegam; o filtro aparece na caixa `Buscar` fixa no topo e a lista no bloco `Resultados` (`Atualizações` na página Atualizações), sem a antiga linha Info "Buscar" (2026-10-24) | letras, `/` | migrado |
 | Busca / AUR | Enter sem resultado | Busca remota (mínimo 1/2 caracteres) | Mantido | `Enter` | migrado |
 | Listas | Pacote | Abre detalhes | Submenu (Busca, Instalados, AUR); em Órfãos, Toggle cuja Enter abre os detalhes | `Enter` | migrado |
 | Instalados | **`[ Reinstall ]`** | `install_selected` (plano → confirmado) | Action `Reinstalar` na página do pacote (D4) | `Enter` | migrado |
@@ -351,8 +351,8 @@ não tem mais `Button`, `ActionButton`, `on_buttons` nem linhas `[ ... ]`.
 | Busca / AUR / detalhes | **`[ Install ]`** | `install_selected` (plano → confirmado; AUR só confirmado) | Action `Instalar` (`Reinstalar` quando instalado) na seção Ações da página do pacote (D4) | `Enter` | migrado |
 | Atualizações | Pacote | `UpgradePackage` (confirmado) | Action por item (como hoje) | `Enter` | migrado |
 | Atualizações | **`[ Update ]`** | `UpgradePackage` do selecionado | Sem linha própria. **Equivalente: Enter na linha do item** (pacote) (D5) | `Enter` | migrado |
-| Atualizações | **`[ Upgrade all ]`** | `begin_plan(Upgrade)` → confirmação | Action `Atualizar tudo` na seção Ações; desabilitada sem atualizações (o botão só aparecia com elas) | `Enter` | migrado |
-| Atualizações | **`[ Refresh database ]`** | `RefreshDatabase` (confirmado) | Action `Atualizar banco` na seção Ações | `Enter` | migrado |
+| Atualizações | **`[ Upgrade all ]`** | `begin_plan(Upgrade)` → confirmação | Botão `Atualizar tudo` na barra `Ações` sob a lista, como em Fuso horário (2026-10-24); desabilitado e pulado pelas setas sem atualizações visíveis | `←/→`, `Enter` | migrado |
+| Atualizações | **`[ Refresh database ]`** | `RefreshDatabase` (confirmado) | Botão `Atualizar banco` na barra `Ações` sob a lista (2026-10-24) | `←/→`, `Enter` | migrado |
 | Órfãos | **`[ Select ]`** | `toggle_multi` (marca múltiplos) | Toggle por item, coluna `[x]` (D31) | `Space` | migrado |
 | Órfãos | **`[ Remove ]`** | Remove marcados, ou o selecionado sem marcas (plano → confirmado) | Destructive `Remover marcados (N)` na Zona de perigo, desabilitada sem marcas; o pacote sozinho sai pela página dele | `Enter` | migrado |
 | Cache | Lista de arquivos | Navegável, Enter sem efeito | Resumo (Info) + Submenu `Arquivos em cache`, página só de rolagem (D32) | `Enter` | migrado |
@@ -368,6 +368,20 @@ não tem mais `Button`, `ActionButton`, `on_buttons` nem linhas `[ ... ]`.
 | Confirmação | Popup Apply/Cancel | — | `ConfirmDialog` (foco em Cancelar, `y`/`n`); perigo em Remove, limpezas e Downgrade; contagens do plano com download legível; AUR só com o aviso do PKGBUILD (D35) | `y`, `n`, `Esc` | migrado |
 | Log da transação | Visualizador ao vivo | Rolagem e follow | Mantido sem mudança | `↑↓ jk PgUp/PgDn Home/End`, `Esc` | migrado |
 | Global | Recarregar | `reload_force` | Atalho mantido (nas listas com filtro `r` é texto, como antes) | `r` | migrado |
+
+**2026-10-24: caminhos e Atualizações no padrão Fuso horário.** O breadcrumb
+de cada lista repete a linha da Home sem a barra:
+`System Administration > Packages > Install Official`, `> Install AUR`,
+`> Installed Official`, `> Installed Orphans` e `> Updates Official`; a página
+de um pacote acrescenta o nome dele ao caminho da lista de origem. A busca
+global usa os mesmos rótulos. Atualizações ganhou a caixa `Buscar` fixa no
+topo, a lista com borda e a barra `Ações` (`Atualizar tudo`, `Atualizar
+banco`): `↑/↓` navegam na lista, `←/→` e `Tab` entram na barra e andam entre
+os botões, `Enter`/`Space` executam o botão focado, e digitar com a barra
+focada devolve o foco ao filtro. Lista vazia mostra "Nenhuma atualização
+pendente" (ou "Nenhum item encontrado" com filtro). As outras quatro listas (Instalar Official, Instalar AUR, Instalados Official, Instalados Órfãos) usam o mesmo layout, sem a barra: caixa `Buscar` no topo e bloco `Resultados`; vazias, mostram "Digite / para buscar…" (Busca e AUR sem filtro), "Nenhum resultado" ou "Nenhum item encontrado". Em Órfãos, `Remover marcados` continua na Zona de perigo dentro do bloco. O rodapé dessa página
+mostra `Enter Executar`, `←/→ Ações` e `Esc Voltar`, porque as setas laterais
+pertencem à barra.
 
 ### 0.7 `argvus-control-center-network`
 

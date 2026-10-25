@@ -22,6 +22,7 @@ use argvus_control_center_core::{
 use argvus_i18n::{Lang, tr};
 use argvus_theme::Theme;
 use argvus_tui::{
+  action_buttons::{ActionButton, ActionFocus, draw_aligned_transparent},
   chrome,
   components::{StatusKind, StatusMessage},
   confirm::{ConfirmDialog, ConfirmOutcome, ConfirmState, draw_confirm},
@@ -33,8 +34,9 @@ use argvus_tui::{
 use crossterm::event::KeyCode;
 use ratatui::{
   Frame,
-  style::Style,
-  text::Line,
+  layout::{Alignment, Constraint, Layout, Rect},
+  style::{Modifier, Style},
+  text::{Line, Span},
   widgets::{Block, Borders, Clear, Paragraph, Wrap},
 };
 
@@ -182,6 +184,8 @@ impl Item {
 pub struct PackagesApp {
   pub page: PackagesPage,
   menu: MenuState,
+  /// Focus of the action bar under the Updates list (the list has it by default).
+  actions: ActionFocus,
   /// Body height during the last draw, used as the PgUp/PgDn distance.
   list_height: u16,
   packages: Vec<Package>,
@@ -268,6 +272,7 @@ impl PackagesApp {
     Self {
       page: PackagesPage::Home,
       menu: MenuState::default(),
+      actions: ActionFocus::default(),
       list_height: 0,
       packages: vec![],
       updates: vec![],
@@ -640,7 +645,10 @@ impl PackagesApp {
       self.handle_transaction(key);
       return false;
     }
-    // Tab only switches tabs or panes; Packages has none.
+    if self.page == PackagesPage::Updates && self.handle_action_bar(key) {
+      return false;
+    }
+    // Tab only switches tabs or panes; the other pages have none.
     if matches!(key, KeyCode::Tab | KeyCode::BackTab) {
       return false;
     }
@@ -673,6 +681,74 @@ impl PackagesApp {
     }
     false
   }
+  /// The action bar under the Updates list, as on Time Zone: `←/→` and `Tab`
+  /// move the focus to its buttons, `Enter`/`Space` run the focused one, and
+  /// `↑/↓` give the focus back to the list. `true` when the key was consumed.
+  fn handle_action_bar(&mut self, key: KeyCode) -> bool {
+    let focused = self.actions.cursor().is_some();
+    match key {
+      KeyCode::Left | KeyCode::Right => {
+        let enabled = self.enabled_action_indexes();
+        if focused {
+          self.actions.move_by(key == KeyCode::Left, &enabled);
+        } else {
+          self.actions.toggle(&enabled);
+        }
+        true
+      }
+      KeyCode::Tab | KeyCode::BackTab => {
+        let enabled = self.enabled_action_indexes();
+        self.actions.toggle(&enabled);
+        true
+      }
+      KeyCode::Enter | KeyCode::Char(' ') if focused => {
+        self.activate_focused_action();
+        true
+      }
+      KeyCode::Up
+      | KeyCode::Down
+      | KeyCode::PageUp
+      | KeyCode::PageDown
+      | KeyCode::Home
+      | KeyCode::End
+      | KeyCode::Backspace
+      | KeyCode::Char(_)
+        if focused =>
+      {
+        // The list and its filter handle the key itself, below: typing on
+        // the bar goes back to the filter instead of leaving the focus there.
+        self.actions.focus_list();
+        false
+      }
+      _ => false,
+    }
+  }
+
+  /// Indexes of the enabled buttons of the Updates action bar.
+  fn enabled_action_indexes(&self) -> Vec<usize> {
+    self
+      .update_action_rows()
+      .iter()
+      .enumerate()
+      .filter(|(_, row)| row.is_selectable())
+      .map(|(index, _)| index)
+      .collect()
+  }
+
+  /// Enter/Space on the focused button: runs its row, as Enter on the row would.
+  fn activate_focused_action(&mut self) {
+    let rows = self.update_action_rows();
+    let Some(row) = self.actions.cursor().and_then(|index| rows.get(index)) else {
+      return;
+    };
+    if !row.is_selectable() {
+      return;
+    }
+    if let Some(item) = row.id().copied() {
+      self.activate(item);
+    }
+  }
+
   /// Scrolls the live transaction output; Esc closes it.
   fn handle_transaction(&mut self, key: KeyCode) {
     match key {
@@ -801,6 +877,7 @@ impl PackagesApp {
   fn go(&mut self, page: PackagesPage) {
     self.page = page;
     self.menu = MenuState::default();
+    self.actions = ActionFocus::default();
   }
 
   /// Esc/`←`: one level up, with the cursor back on the row that opened the
@@ -1176,12 +1253,21 @@ impl PackagesApp {
       PackagesPage::MirrorEditor => self.mirror_editor_rows(),
     }
   }
-  /// The filter typed on the list, shown as the first (read-only) row.
-  fn search_row(&self) -> Row<Item> {
-    Row::info(
-      self.field("control_center.search_2c43ee"),
-      format!("{}_", self.query),
-    )
+  /// The row of an empty filtered list, saying why it is empty. `None` while
+  /// the list is still loading, so the loading status is not contradicted.
+  fn empty_list_row(&self) -> Option<Row<Item>> {
+    if self.job.is_some() {
+      return None;
+    }
+    let message = match self.page {
+      PackagesPage::Search if self.query.is_empty() => "control_center.press_to_search_packages",
+      PackagesPage::Aur if self.query.is_empty() => "control_center.press_to_search_the_aur",
+      PackagesPage::Updates if self.query.is_empty() => "control_center.no_pending_updates",
+      PackagesPage::Search | PackagesPage::Aur => "control_center.search_no_results",
+      _ if self.query.is_empty() => "control_center.search_no_results",
+      _ => "control_center.no_matching_items",
+    };
+    Some(Row::info(tr(self.lang, message), ""))
   }
   /// Executes the `home_rows` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn home_rows(&self) -> Vec<Row<Item>> {
@@ -1274,7 +1360,7 @@ impl PackagesApp {
   /// Search and Installed: each package opens its details page.
   fn package_rows(&self) -> Vec<Row<Item>> {
     let installed = tr(self.lang, "control_center.installed");
-    let mut rows = vec![self.search_row()];
+    let mut rows: Vec<Row<Item>> = Vec::new();
     rows.extend(self.visible_packages().into_iter().map(|(index, package)| {
       let mut parts = vec![package.version.clone()];
       if self.page == PackagesPage::Search {
@@ -1291,12 +1377,15 @@ impl PackagesApp {
       }
       Row::submenu(Item::Package(index), package.name.clone()).detail(joined_parts(&parts))
     }));
+    if rows.is_empty() {
+      rows.extend(self.empty_list_row());
+    }
     rows
   }
   /// AUR search results; each opens its details page.
   fn aur_rows(&self) -> Vec<Row<Item>> {
     let installed = tr(self.lang, "control_center.installed");
-    let mut rows = vec![self.search_row()];
+    let mut rows: Vec<Row<Item>> = Vec::new();
     rows.extend(self.visible_aur().into_iter().map(|(index, package)| {
       let mut parts = vec![package.version.clone(), "AUR".into()];
       if package.installed {
@@ -1304,12 +1393,15 @@ impl PackagesApp {
       }
       Row::submenu(Item::Aur(index), package.name.clone()).detail(joined_parts(&parts))
     }));
+    if rows.is_empty() {
+      rows.extend(self.empty_list_row());
+    }
     rows
   }
   /// Orphans: Space marks (`[x]`), Enter opens the details; the marked set
   /// is removed from the Danger zone.
   fn orphan_rows(&self) -> Vec<Row<Item>> {
-    let mut rows = vec![self.search_row()];
+    let mut rows: Vec<Row<Item>> = Vec::new();
     rows.extend(self.visible_packages().into_iter().map(|(index, package)| {
       let marked = self.marked.contains(&package.name);
       let row = Row::toggle(Item::Orphan(index), package.name.clone(), marked);
@@ -1319,6 +1411,9 @@ impl PackagesApp {
         row.detail(package.version.clone())
       }
     }));
+    if rows.is_empty() {
+      rows.extend(self.empty_list_row());
+    }
     if !self.packages.is_empty() {
       rows.push(Row::section(tr(self.lang, "control_center.danger_zone")));
       rows.push(
@@ -1336,36 +1431,40 @@ impl PackagesApp {
     }
     rows
   }
-  /// Updates: the page actions, then one row per package (Enter updates
-  /// it after the confirmation, as before).
+  /// Updates: one row per pending update (Enter updates it after the
+  /// confirmation); the Upgrade all and Refresh database buttons live in the
+  /// action bar (see `update_action_rows`). An empty list says why, as the
+  /// Time Zone list does, except while the list is still loading.
   fn update_rows(&self) -> Vec<Row<Item>> {
-    let visible = self.visible_updates();
-    let mut rows = vec![
-      self.search_row(),
-      Row::section(tr(self.lang, "control_center.section_actions")),
+    let mut rows: Vec<Row<Item>> = self
+      .visible_updates()
+      .into_iter()
+      .map(|(index, update)| {
+        Row::action(Item::Update(index), update.name.clone())
+          .detail(format!("{} → {}", update.current, update.available))
+      })
+      .collect();
+    if rows.is_empty() {
+      rows.extend(self.empty_list_row());
+    }
+    rows
+  }
+  /// The action bar of Updates: Upgrade all (enabled with pending updates)
+  /// and Refresh database.
+  fn update_action_rows(&self) -> Vec<Row<Item>> {
+    vec![
       Row::action(
         Item::UpgradeAll,
         tr(self.lang, "control_center.upgrade_all"),
       )
       .icon(icons::UPDATE)
-      .enabled(!visible.is_empty()),
+      .enabled(!self.visible_updates().is_empty()),
       Row::action(
         Item::RefreshDatabase,
         tr(self.lang, "control_center.refresh_database"),
       )
       .icon(icons::SYNC),
-    ];
-    if !visible.is_empty() {
-      rows.push(Row::section(tr(
-        self.lang,
-        "control_center.section_packages",
-      )));
-      rows.extend(visible.into_iter().map(|(index, update)| {
-        Row::action(Item::Update(index), update.name.clone())
-          .detail(format!("{} → {}", update.current, update.available))
-      }));
-    }
-    rows
+    ]
   }
   /// Details of one package: its actions first, the metadata in sections,
   /// and `Remove` in the Danger zone.
@@ -1639,6 +1738,9 @@ impl PackagesApp {
     if self.pending.is_some() {
       return confirm_hints(self.lang);
     }
+    if self.page == PackagesPage::Updates {
+      return self.updates_footer_hints(rows);
+    }
     let mut menu = self.menu;
     menu.normalize(rows);
     let typing = filters_while_typing(self.page);
@@ -1664,6 +1766,33 @@ impl PackagesApp {
       },
     )
   }
+  /// The Updates footer. `←/→` belong to the action bar there, so `Enter`
+  /// alone runs the row or the focused button and only `Esc` goes back.
+  fn updates_footer_hints(&self, rows: &[Row<Item>]) -> String {
+    let label = |key| tr(self.lang, key);
+    let bar_focused = self.actions.cursor().is_some();
+    let mut menu = self.menu;
+    menu.normalize(rows);
+    let runs_row = matches!(menu.selected_kind(rows), Some(RowKind::Action));
+    let mut extra = Vec::new();
+    if bar_focused || runs_row {
+      extra.push(("Enter", label("control_center.hint.run")));
+    }
+    if !bar_focused && !self.enabled_action_indexes().is_empty() {
+      extra.push(("←/→", label("control_center.actions")));
+    }
+    extra.push(("Esc", label("control_center.hint.back")));
+    hints(
+      self.lang,
+      &HintContext {
+        // The row's own segment would name `→`; `Enter` is listed above.
+        row: Some(RowKind::Info),
+        search: !bar_focused,
+        extra: &extra,
+        ..HintContext::default()
+      },
+    )
+  }
   /// Renders `draw` while respecting the current domain state and semantic theme. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn draw(&mut self, f: &mut Frame) {
     let area = f.area();
@@ -1677,18 +1806,120 @@ impl PackagesApp {
       &self.breadcrumb(),
       &self.footer_hints(&rows),
     );
-    self.list_height = body.height;
+    if filters_while_typing(self.page) {
+      self.draw_filtered_list(f, body, &rows);
+    } else {
+      self.list_height = body.height;
+      self.draw_list(f, body, &rows);
+    }
+    self.overlays(f);
+  }
+  /// Draws `rows` as the page list, with the menu style of the Packages pages.
+  fn draw_list(&mut self, f: &mut Frame, area: Rect, rows: &[Row<Item>]) {
     draw_menu(
       f,
-      body,
+      area,
       &self.theme,
-      &rows,
+      rows,
       &mut self.menu,
       MenuStyle {
         icons: AppConfig::icons_enabled(),
       },
     );
-    self.overlays(f);
+  }
+  /// The lists that filter while typing, in the layout of Time Zone: the
+  /// filter fixed on top and the list in a bordered block (`Results`, or
+  /// `Updates` with its action bar at the bottom).
+  fn draw_filtered_list(&mut self, f: &mut Frame, area: Rect, rows: &[Row<Item>]) {
+    let has_action_bar = self.page == PackagesPage::Updates;
+    let [search, list, bar] = Layout::vertical([
+      Constraint::Length(3),
+      Constraint::Min(3),
+      Constraint::Length(if has_action_bar { 3 } else { 0 }),
+    ])
+    .areas(area);
+    self.draw_search_box(f, search);
+    let title = if has_action_bar {
+      "control_center.updates"
+    } else {
+      "control_center.search_results"
+    };
+    // As on Time Zone, the list and the bar keep the active border; the focus
+    // shows on the selected row or on the focused button.
+    let block = Block::bordered()
+      .border_style(Style::new().fg(self.theme.border_active))
+      .title(tr(self.lang, title));
+    let inner = block.inner(list);
+    f.render_widget(block, list);
+    self.list_height = inner.height;
+    self.draw_list(f, inner, rows);
+    if has_action_bar {
+      self.draw_updates_actions(f, bar);
+    }
+  }
+  /// The filter of a list: a bordered `Search:` line that shows the typed
+  /// text, highlighted while the letters go to it (the list has the focus).
+  fn draw_search_box(&self, f: &mut Frame, area: Rect) {
+    let (border, cursor) = if self.actions.cursor().is_none() && self.captures_text() {
+      (self.theme.border_active, "▌")
+    } else {
+      (self.theme.border, "")
+    };
+    let line = Line::from(vec![
+      Span::styled(
+        format!("{}: ", tr(self.lang, "control_center.search_2c43ee")),
+        Style::new()
+          .fg(self.theme.accent)
+          .add_modifier(Modifier::BOLD),
+      ),
+      Span::styled(
+        format!("{}{cursor}", self.query),
+        Style::new().fg(self.theme.foreground),
+      ),
+    ]);
+    f.render_widget(
+      Paragraph::new(line)
+        .style(Style::new().bg(self.theme.background))
+        .block(Block::bordered().border_style(Style::new().fg(border))),
+      area,
+    );
+  }
+  /// The Updates action bar: a bordered `Actions` block with one button per
+  /// action row; the focused button is highlighted while the bar has the focus.
+  fn draw_updates_actions(&self, f: &mut Frame, area: Rect) {
+    let rows = self.update_action_rows();
+    let block = Block::bordered()
+      .border_style(Style::new().fg(self.theme.border_active))
+      .title(format!(
+        "{} · {}",
+        tr(self.lang, "control_center.actions"),
+        tr(self.lang, "control_center.actions_hint")
+      ));
+    let inner = block.inner(area);
+    f.render_widget(block, area);
+    let buttons: Vec<ActionButton> = rows
+      .iter()
+      .map(|row| {
+        let icon = if AppConfig::icons_enabled() {
+          row.icon_glyph().unwrap_or("")
+        } else {
+          ""
+        };
+        if row.is_selectable() {
+          ActionButton::primary(icon, row.label(), "")
+        } else {
+          ActionButton::secondary(icon, row.label(), "")
+        }
+      })
+      .collect();
+    draw_aligned_transparent(
+      f,
+      inner,
+      &buttons,
+      self.actions.cursor().unwrap_or(usize::MAX),
+      &self.theme,
+      Alignment::Left,
+    );
   }
   /// Draws the input field, the confirmation, the status and the live
   /// transaction output over the page.
@@ -1803,27 +2034,27 @@ impl PackagesApp {
   fn page_label(&self) -> String {
     let label = |key| tr(self.lang, key).to_owned();
     match self.page {
-      PackagesPage::Search => label("control_center.search_2c43ee"),
+      PackagesPage::Search => label("control_center.breadcrumb_install_official"),
       PackagesPage::Details(_) => format!(
         "{} > {}",
         match self.details_parent {
-          PackagesPage::Installed => label("control_center.installed_e91b6d"),
-          PackagesPage::Orphans => label("control_center.orphans_29aae8"),
-          PackagesPage::Aur => label("control_center.aur"),
-          _ => label("control_center.search_2c43ee"),
+          PackagesPage::Installed => label("control_center.breadcrumb_installed_official"),
+          PackagesPage::Orphans => label("control_center.breadcrumb_installed_orphans"),
+          PackagesPage::Aur => label("control_center.breadcrumb_install_aur"),
+          _ => label("control_center.breadcrumb_install_official"),
         },
         self.details_target().unwrap_or_default()
       ),
-      PackagesPage::Installed => label("control_center.installed_e91b6d"),
-      PackagesPage::Updates => label("control_center.updates"),
-      PackagesPage::Orphans => label("control_center.orphans_29aae8"),
+      PackagesPage::Installed => label("control_center.breadcrumb_installed_official"),
+      PackagesPage::Updates => label("control_center.breadcrumb_updates_official"),
+      PackagesPage::Orphans => label("control_center.breadcrumb_installed_orphans"),
       PackagesPage::Cache => label("control_center.cache"),
       PackagesPage::CacheFiles => format!(
         "{} > {}",
         label("control_center.cache"),
         label("control_center.cache_files")
       ),
-      PackagesPage::Aur => label("control_center.aur"),
+      PackagesPage::Aur => label("control_center.breadcrumb_install_aur"),
       PackagesPage::History | PackagesPage::HistoryDetails(_) => label("control_center.history"),
       PackagesPage::Downgrade => label("control_center.downgrade"),
       PackagesPage::Mirrors => label("control_center.mirrors"),
@@ -2291,21 +2522,208 @@ mod tests {
   #[test]
   fn packages_pages_have_no_button_bar_and_tab_does_nothing() {
     let mut app = app();
-    app.page = PackagesPage::Updates;
-    app.updates.push(Update {
-      name: "linux".into(),
-      current: "1".into(),
-      available: "2".into(),
-      ..Default::default()
-    });
+    app.page = PackagesPage::Installed;
+    app.packages.push(package("linux", true));
     let before = app.menu;
     app.handle(KeyCode::Tab);
     app.handle(KeyCode::BackTab);
     assert_eq!(app.menu, before);
     let text = screen(&mut app, 90, 25);
     assert!(!text.contains("[ "), "{text}");
-    assert!(text.contains("Upgrade all"));
+    assert!(!text.contains("Actions"), "{text}");
     assert!(text.contains("linux"));
+  }
+
+  /// Moves the focus to `item` on the Updates action bar and presses Enter.
+  fn press_action(app: &mut PackagesApp, item: Item) {
+    let rows = app.update_action_rows();
+    let index = rows
+      .iter()
+      .position(|row| row.id() == Some(&item))
+      .unwrap_or_else(|| panic!("no action {item:?}"));
+    assert!(rows[index].is_selectable(), "{item:?} is disabled");
+    while app.actions.cursor() != Some(index) {
+      app.handle(KeyCode::Right);
+    }
+    app.handle(KeyCode::Enter);
+  }
+
+  fn update(name: &str) -> Update {
+    Update {
+      name: name.into(),
+      current: "1".into(),
+      available: "2".into(),
+      ..Default::default()
+    }
+  }
+
+  #[test]
+  fn updates_show_the_filter_on_top_and_the_action_bar_below() {
+    let mut app = app();
+    app.page = PackagesPage::Updates;
+    app.updates.push(update("linux"));
+    let text = screen(&mut app, 90, 25);
+    assert!(text.contains("Search:"), "{text}");
+    assert!(text.contains("Actions"), "{text}");
+    assert!(text.contains("Upgrade all"), "{text}");
+    assert!(text.contains("Refresh database"), "{text}");
+    assert!(text.contains("linux"), "{text}");
+    assert!(
+      !app
+        .rows()
+        .iter()
+        .any(|row| row.id() == Some(&Item::UpgradeAll))
+    );
+  }
+
+  #[test]
+  fn filtered_lists_show_the_search_box_on_top_and_the_results_block() {
+    for page in [
+      PackagesPage::Search,
+      PackagesPage::Aur,
+      PackagesPage::Installed,
+      PackagesPage::Orphans,
+    ] {
+      let mut app = app();
+      app.page = page;
+      app.packages = vec![package("linux", true)];
+      app.aur = vec![AurPackage {
+        name: "linux".into(),
+        version: "1.0".into(),
+        ..Default::default()
+      }];
+      app.handle(KeyCode::Char('l'));
+      let text = screen(&mut app, 90, 25);
+      assert!(text.contains("Search: l▌"), "{page:?}\n{text}");
+      assert!(text.contains("┌Results"), "{page:?}\n{text}");
+      assert!(text.contains("linux"), "{page:?}\n{text}");
+      assert!(!text.contains("Actions"), "{page:?}\n{text}");
+      // The filter lives in the box; the list has no read-only search row.
+      assert!(!text.contains("l_"), "{page:?}\n{text}");
+    }
+  }
+
+  #[test]
+  fn empty_filtered_lists_say_why() {
+    let mut app = app();
+    app.page = PackagesPage::Installed;
+    app.packages = vec![package("linux", true)];
+    app.handle(KeyCode::Char('z'));
+    assert!(screen(&mut app, 90, 25).contains("No matching items"));
+    app.page = PackagesPage::Search;
+    app.packages.clear();
+    app.query.clear();
+    assert!(screen(&mut app, 90, 25).contains("Press / to search packages"));
+  }
+
+  #[test]
+  fn updates_arrows_move_between_the_list_and_the_action_bar() {
+    let mut app = app();
+    app.page = PackagesPage::Updates;
+    app.updates.push(update("linux"));
+    assert_eq!(app.actions.cursor(), None);
+    app.handle(KeyCode::Right);
+    assert_eq!(app.actions.cursor(), Some(0));
+    app.handle(KeyCode::Right);
+    assert_eq!(app.actions.cursor(), Some(1));
+    app.handle(KeyCode::Up);
+    assert_eq!(app.actions.cursor(), None);
+    app.handle(KeyCode::Tab);
+    assert_eq!(app.actions.cursor(), Some(0));
+    app.handle(KeyCode::BackTab);
+    assert_eq!(app.actions.cursor(), None);
+  }
+
+  #[test]
+  fn updates_arrows_skip_the_disabled_upgrade_all_without_updates() {
+    let mut app = app();
+    app.page = PackagesPage::Updates;
+    app.handle(KeyCode::Right);
+    assert_eq!(app.actions.cursor(), Some(1));
+    app.handle(KeyCode::Enter);
+    assert_eq!(app.pending, Some(Action::RefreshDatabase));
+  }
+
+  #[test]
+  fn packages_breadcrumbs_use_the_home_row_names() {
+    let mut app = app();
+    for (page, path) in [
+      (PackagesPage::Search, "Install Official"),
+      (PackagesPage::Aur, "Install AUR"),
+      (PackagesPage::Installed, "Installed Official"),
+      (PackagesPage::Orphans, "Installed Orphans"),
+      (PackagesPage::Updates, "Updates Official"),
+    ] {
+      app.page = page;
+      let expected = format!("System Administration > Packages > {path}");
+      assert_eq!(app.breadcrumb(), expected);
+    }
+    // A package page opened from a list keeps the name of that list.
+    app.details_name = Some("linux".into());
+    for (parent, path) in [
+      (PackagesPage::Search, "Install Official"),
+      (PackagesPage::Aur, "Install AUR"),
+      (PackagesPage::Installed, "Installed Official"),
+      (PackagesPage::Orphans, "Installed Orphans"),
+    ] {
+      app.details_parent = parent;
+      app.page = PackagesPage::Details(0);
+      let expected = format!("System Administration > Packages > {path} > linux");
+      assert_eq!(app.breadcrumb(), expected);
+    }
+  }
+
+  #[test]
+  fn typing_on_the_updates_action_bar_goes_back_to_the_filter() {
+    let mut app = app();
+    app.page = PackagesPage::Updates;
+    app.updates = vec![update("linux"), update("mesa")];
+    app.handle(KeyCode::Right);
+    assert!(app.actions.cursor().is_some());
+    app.handle(KeyCode::Char('m'));
+    assert_eq!(app.actions.cursor(), None);
+    assert_eq!(app.query, "m");
+    let names: Vec<_> = app
+      .visible_updates()
+      .iter()
+      .map(|(_, u)| u.name.clone())
+      .collect();
+    assert_eq!(names, ["mesa"]);
+    app.handle(KeyCode::Right);
+    app.handle(KeyCode::Backspace);
+    assert_eq!(app.actions.cursor(), None);
+    assert!(app.query.is_empty());
+  }
+
+  #[test]
+  fn updates_footer_names_enter_and_leaves_the_arrows_to_the_action_bar() {
+    let mut app = app();
+    app.page = PackagesPage::Updates;
+    app.updates.push(update("linux"));
+    let footer = app.footer_hints(&app.rows());
+    assert!(footer.contains("Enter Run"), "{footer}");
+    assert!(footer.contains("←/→ Actions"), "{footer}");
+    assert!(footer.contains("Esc Back"), "{footer}");
+    assert!(!footer.contains("→/Enter"), "{footer}");
+    assert!(!footer.contains("←/Esc"), "{footer}");
+    app.handle(KeyCode::Right);
+    let footer = app.footer_hints(&app.rows());
+    assert!(footer.contains("Enter Run"), "{footer}");
+    assert!(!footer.contains("←/→ Actions"), "{footer}");
+  }
+
+  #[test]
+  fn empty_updates_say_why_and_keep_upgrade_all_disabled() {
+    let mut app = app();
+    app.page = PackagesPage::Updates;
+    let text = screen(&mut app, 90, 25);
+    assert!(text.contains("No pending updates"), "{text}");
+    assert!(!row(&app.update_action_rows(), Item::UpgradeAll).is_selectable());
+    app.updates.push(update("linux"));
+    app.handle(KeyCode::Char('z'));
+    let text = screen(&mut app, 90, 25);
+    assert!(text.contains("No matching items"), "{text}");
+    assert!(!row(&app.update_action_rows(), Item::UpgradeAll).is_selectable());
   }
 
   #[test]
@@ -2569,10 +2987,10 @@ mod tests {
     assert_eq!(app.pending, Some(Action::UpgradePackage("linux".into())));
     app.handle(KeyCode::Esc);
     assert!(app.pending.is_none());
-    press(&mut app, Item::RefreshDatabase);
+    press_action(&mut app, Item::RefreshDatabase);
     assert_eq!(app.pending, Some(Action::RefreshDatabase));
     app.handle(KeyCode::Esc);
-    press(&mut app, Item::UpgradeAll);
+    press_action(&mut app, Item::UpgradeAll);
     assert!(app.plan.is_some());
   }
 
@@ -2580,7 +2998,7 @@ mod tests {
   fn upgrade_all_is_disabled_without_updates() {
     let mut app = app();
     app.page = PackagesPage::Updates;
-    let rows = app.rows();
+    let rows = app.update_action_rows();
     assert!(!row(&rows, Item::UpgradeAll).is_selectable());
     assert!(row(&rows, Item::RefreshDatabase).is_selectable());
   }

@@ -1681,5 +1681,11 @@
   "control_center.taskbar_icons": "Taskbar icons",
   "control_center.taskbar_date": "Taskbar date",
   "control_center.taskbar_time": "Taskbar time",
-  "control_center.breadcrumb.root": "Control Center"
+  "control_center.breadcrumb.root": "Control Center",
+  "control_center.breadcrumb_install_aur": "Install AUR",
+  "control_center.breadcrumb_install_official": "Install Official",
+  "control_center.breadcrumb_installed_official": "Installed Official",
+  "control_center.breadcrumb_installed_orphans": "Installed Orphans",
+  "control_center.breadcrumb_updates_official": "Updates Official",
+  "control_center.no_pending_updates": "No pending updates"
 }
