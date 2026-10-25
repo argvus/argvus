@@ -564,7 +564,7 @@ fn validate_package(action: &str, values: &[String]) -> Result<(), String> {
     "upgrade" if values.is_empty() => Ok(()),
     "upgrade-package" if values.len() == 1 && valid_package_name(&values[0]) => Ok(()),
     "refresh-db" if values.is_empty() => Ok(()),
-    "install" | "remove" | "reinstall" => {
+    "install" | "remove" | "remove-only" | "remove-cascade" | "reinstall" => {
       if values.is_empty() || values.iter().any(|value| !valid_package_name(value)) {
         return Err("invalid package name".into());
       }
@@ -617,6 +617,11 @@ fn run_package(action: &str, values: &[String]) -> Result<(), String> {
   match action {
     "install" => stream_pacman(&["-S", "--needed"], values),
     "remove" => stream_pacman(&["-Rns"], values),
+    // The two ways the Control Center offers when other installed packages
+    // depend on `values`, after it listed them: only `values`, skipping the
+    // dependency checks, or `values` together with those packages.
+    "remove-only" => stream_pacman(&["-Rdd"], values),
+    "remove-cascade" => stream_pacman(&["-Rcns"], values),
     "reinstall" => stream_pacman(&["-S"], values),
     "upgrade" => stream_pacman(&["-Syu"], &[]),
     "upgrade-package" => stream_pacman(&["-S"], values),
@@ -1188,6 +1193,16 @@ mod tests {
   fn validates_individual_install_and_reinstall_operations() {
     assert!(validate_package("install", &["firefox".into()]).is_ok());
     assert!(validate_package("reinstall", &["firefox".into()]).is_ok());
+  }
+
+  #[test]
+  fn validates_dependent_aware_removal_names_without_options() {
+    for action in ["remove-only", "remove-cascade"] {
+      assert!(validate_package(action, &["7zip".into()]).is_ok());
+      assert!(validate_package(action, &[]).is_err());
+      assert!(validate_package(action, &["-dd".into(), "glibc".into()]).is_err());
+      assert!(validate_package(action, &["foo;reboot".into()]).is_err());
+    }
   }
 
   #[test]
