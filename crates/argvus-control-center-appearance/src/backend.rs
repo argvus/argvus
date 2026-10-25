@@ -1613,8 +1613,8 @@ pub fn set_taskbar_utility_group(mode: TaskbarUtilityGroupMode) -> Result<(), St
 }
 
 /// Writes the taskbar height and border to the live taskbar files. A border that
-/// is off is written as width `0`. The taskbar is restarted by the icon apply
-/// that always follows this in `Apply`, so the new shape is shown.
+/// is off is written as width `0`. It does not reload or restart anything: the
+/// surface effects step of the same `Apply` reloads and restarts the taskbar.
 pub fn set_taskbar_shape(
   height: u32,
   border_enabled: bool,
@@ -1637,14 +1637,12 @@ fn run_taskbar_config(arguments: &[&str]) -> Result<(), String> {
   Ok(())
 }
 
-/// Persists the taskbar icon/date/time preferences to the canonical document,
-/// re-derives the generated Waybar config from them, then restarts the
-/// taskbar so it picks up the regenerated file.
-///
-/// A plain `argvus-sessionctl reload` only reloads `argvus-config.service`
-/// and never touches `argvus-taskbar.service`, so module visibility and
-/// clock/date format changes would silently never apply — the taskbar must
-/// be restarted explicitly (see `reload_taskbar()`).
+/// Persists the taskbar icon/date/time preferences to the canonical document
+/// and re-derives the Waybar config from them. It does not reload
+/// `argvus-config.service` nor restart the taskbar: the `Apply` of the taskbar
+/// surface always ends with `apply_surface_effects`, which reloads the
+/// configuration once (one splash) and restarts `waybar`, so the new state is
+/// shown. Reloading here as well made every `Apply` open the splash twice.
 pub fn apply_taskbar_icons_and_format(
   audio_player_enabled: bool,
   launcher_enabled: bool,
@@ -1681,8 +1679,7 @@ pub fn apply_taskbar_icons_and_format(
     Value::String(time_format.value().into()),
   );
   persist_taskbar_patch(patch)?;
-  run_script(&script("taskbar-widgets-mode.sh"), &["apply"])?;
-  reload_taskbar()
+  run_script(&script("taskbar-widgets-mode.sh"), &["apply"])
 }
 
 /// Restarts the taskbar (Waybar) process so it re-parses its generated
@@ -1715,6 +1712,8 @@ fn reload_taskbar() -> Result<(), String> {
   Ok(())
 }
 
+/// Writes the taskbar patch without reloading the configuration. The caller's
+/// `Apply` reloads it once at the end (see `apply_taskbar_icons_and_format`).
 fn persist_taskbar_patch(patch: serde_json::Map<String, Value>) -> Result<(), String> {
   let patch = serde_json::to_string(&patch).map_err(|error| error.to_string())?;
   let status = argvus_control_center_core::process::command("argvus")
@@ -1725,7 +1724,7 @@ fn persist_taskbar_patch(patch: serde_json::Map<String, Value>) -> Result<(), St
   if !status.success() {
     return Err("argvus config rejected the taskbar settings".into());
   }
-  reload_argvus_config_service()
+  Ok(())
 }
 
 /// Persists a complete batch of Control Panel preferences and performs one
