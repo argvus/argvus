@@ -12,6 +12,7 @@ pub mod input;
 pub mod keybindings;
 pub mod keyboard;
 pub mod locale;
+mod pacman_repositories;
 pub mod privileged;
 pub mod projects;
 pub mod ratbag;

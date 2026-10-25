@@ -14,7 +14,7 @@ use std::time::{SystemTime, UNIX_EPOCH};
 
 use argvus_control_center_core::config::AppConfig;
 
-use super::{host, keyboard, locale, time};
+use super::{host, keyboard, locale, pacman_repositories, time};
 
 /// Defines the constant `ELEVATED_ENV`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 const ELEVATED_ENV: &str = "ARGVUS_SYSTEM_SETTINGS_ELEVATED";
@@ -561,6 +561,7 @@ fn valid_package_name(value: &str) -> bool {
 /// Executes the `validate_package` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn validate_package(action: &str, values: &[String]) -> Result<(), String> {
   match action {
+    repository if repository.starts_with("repo-") => pacman_repositories::validate(action, values),
     "upgrade" if values.is_empty() => Ok(()),
     "upgrade-package" if values.len() == 1 && valid_package_name(&values[0]) => Ok(()),
     "refresh-db" if values.is_empty() => Ok(()),
@@ -615,6 +616,7 @@ fn validate_package(action: &str, values: &[String]) -> Result<(), String> {
 /// Executes the `run_package` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn run_package(action: &str, values: &[String]) -> Result<(), String> {
   match action {
+    repository if repository.starts_with("repo-") => pacman_repositories::run(action, values),
     "install" => stream_pacman(&["-S", "--needed"], values),
     "remove" => stream_pacman(&["-Rns"], values),
     // The two ways the Control Center offers when other installed packages
@@ -889,7 +891,7 @@ fn update_boot_key(path: &Path, key: &str, value: &str) -> Result<(), String> {
 }
 
 /// Executes the `backup_file` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
-fn backup_file(path: &Path) -> Result<PathBuf, String> {
+pub(super) fn backup_file(path: &Path) -> Result<PathBuf, String> {
   let stamp = SystemTime::now()
     .duration_since(UNIX_EPOCH)
     .unwrap_or_default()
@@ -916,7 +918,7 @@ fn backup_file(path: &Path) -> Result<PathBuf, String> {
 }
 
 /// Executes the `boot_write_atomic` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
-fn boot_write_atomic(path: &Path, contents: &str) -> Result<(), String> {
+pub(super) fn boot_write_atomic(path: &Path, contents: &str) -> Result<(), String> {
   let metadata = fs::metadata(path).map_err(|error| error.to_string())?;
   let tmp = path.with_extension(format!("argvus-control-center-{}.tmp", std::process::id()));
   let mut file = fs::File::create(&tmp).map_err(|error| error.to_string())?;
@@ -940,7 +942,7 @@ fn locate_command(names: &[&str]) -> Option<PathBuf> {
 }
 
 /// Executes the `stream_command` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
-fn stream_command(command: &str, args: &[&str]) -> Result<(), String> {
+pub(super) fn stream_command(command: &str, args: &[&str]) -> Result<(), String> {
   stream_command_display(command, Path::new(command), args)
 }
 
