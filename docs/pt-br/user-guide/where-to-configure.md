@@ -11,7 +11,7 @@ Use esta tabela quando souber o que quer alterar, mas não qual superfície do A
 | Alterar a cor de destaque | **Control Center → Aparência → Acentos** |
 | Alterar o wallpaper | **Control Center → Aparência → Wallpapers** |
 | Ativar ou desativar efeitos visuais | **Control Center → Aparência → Efeitos**, **Control Center → Aparência → Inicializadores**, **Control Center → Configuração**, **Taskbar**, **Widget Telemetry** ou **Control Panel** |
-| Alterar posição ou agrupamento de utilitários da taskbar | **Control Center → Aparência → Barra de tarefas → Posição** e **Ícones** |
+| Alterar posição, altura, borda ou agrupamento de utilitários da taskbar | **Control Center → Aparência → Barra de tarefas → Posição**, **Altura**, **Borda** e **Ícones** |
 | Personalizar JSONC ou CSS da taskbar | [Overrides da Waybar e da taskbar](/pt/docs/argvus-waybar/) |
 | Alterar gaps ou bordas das janelas | **Control Center → Desktop e entrada → Hyprland → Espaços das janelas** e **Bordas** |
 | Escolher cards visíveis do Control Panel | **Control Center → Aparência → Control Panel** |

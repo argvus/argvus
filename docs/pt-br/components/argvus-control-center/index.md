@@ -62,7 +62,9 @@ Aparência é a principal área de personalização. Seu grupo Área de trabalho
 
 ### Taskbar
 
-A Taskbar configura a posição do painel, o espaçamento ao redor dele e das janelas, o grupo de ícones utilitários e os blocos de data/hora, além da própria transparência. Aparece no cartão **Aparência** da tela inicial.
+A Taskbar configura a posição do painel, o espaçamento ao redor dele e das janelas, a altura, a borda, o grupo de ícones utilitários e os blocos de data/hora, além da própria transparência. Aparece no cartão **Aparência** da tela inicial.
+
+**Altura** escolhe 24, 28 (padrão), 32 ou 36 pixels. **Borda** tem um interruptor **Ligar** e a **Espessura** de 1 a 3 pixels, com 1 como padrão. Com a borda desligada, a janela da barra, o grupo da direita e o player MPRIS ficam sem borda. Essas alterações são rascunho até **Aplicar**. Trocar de tema restaura a altura e a borda do tema.
 
 A página **Ícones** lista primeiro, como checks e cada um com seu ícone, a **Visualização do Player de Áudio** e cada widget utilitário (Rede, Perfil de energia, Layout do teclado, Uso de memória, Uso de CPU, Temperatura da CPU e Temperatura da GPU). Os submenus **Lançador** e **Utilitários** ficam por último.
 
