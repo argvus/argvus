@@ -181,6 +181,25 @@ pub fn confirm_hint_keys() -> Vec<Hint> {
   ]
 }
 
+/// Segments shown while the choice dialog is open: it has no `y`, the
+/// option is chosen with Enter.
+pub fn choice_hint_keys() -> Vec<Hint> {
+  vec![
+    hint("↑/↓", HintAction::Navigate),
+    hint("Enter", HintAction::Select),
+    hint("n/Esc", HintAction::Cancel),
+  ]
+}
+
+/// The translated footer while the choice dialog is open.
+pub fn choice_hints(lang: Lang) -> String {
+  choice_hint_keys()
+    .into_iter()
+    .map(|hint| translate(lang, hint))
+    .collect::<Vec<_>>()
+    .join(SEGMENT_GAP)
+}
+
 /// The translated footer while the confirmation component is open.
 pub fn confirm_hints(lang: Lang) -> String {
   confirm_hint_keys()
