@@ -1,10 +1,10 @@
 ---
 title: Loading overlay
-description: The overlay shown while a theme is applied or the session starts.
+description: The overlay shown while the session reloads directly.
 ---
 
-The loading overlay is a GTK 4 layer-shell surface shown while ARGVUS applies a theme or reloads
-the session directly. It is a helper shipped in the `argvus` package at
+The loading overlay is a GTK 4 layer-shell surface shown while ARGVUS reloads the session directly
+(`argvus sessionctl reload`). A theme switch does not use it: the desktop changes in place. It is a helper shipped in the `argvus` package at
 `/usr/lib/argvus/loading-theme/splash`, and it is not placed in `/usr/bin`.
 
 The login does not use it: the greeter splash and the session-start spinner are the Wayland mode of

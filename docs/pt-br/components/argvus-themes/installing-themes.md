@@ -28,7 +28,7 @@ sudo pacman -S argvus-theme-dracula
 sudo pacman -S argvus-theme-rose-pine
 ```
 
-O pacote instala o conteúdo do tema em `/usr/share/argvus/appearance/themes.d/<id-do-tema>/` e o wallpaper do tema em `/usr/share/backgrounds/argvus/`. Ele não grava no seu diretório pessoal e não altera o tema atual. Selecione-o depois pelo Control Center, veja [Temas oficiais](/pt/docs/components/argvus-themes/official-themes/).
+O pacote instala o manifesto do tema, `/usr/share/argvus/themes/<id-do-tema>/theme.toml` (nome, categoria, wallpaper e paleta, com `overrides/` opcionais), e o wallpaper do tema em `/usr/share/backgrounds/argvus/`. Os arquivos de cada componente são renderizados a partir da paleta quando o tema é aplicado. Ele não grava no seu diretório pessoal e não altera o tema atual. Selecione-o depois pelo Control Center, veja [Temas oficiais](/pt/docs/components/argvus-themes/official-themes/).
 
 ## Instalar vários temas
 
@@ -82,6 +82,46 @@ pacman -Qs argvus-theme
 ```
 
 Abra o Control Center e vá até **Aparência → Temas → Temas oficiais** para ver os temas disponíveis no seletor. Um tema instalado que não aparece nessa lista indica um problema de empacotamento; veja a seção de solução de problemas do [guia de temas](/pt/docs/components/argvus-themes/).
+
+## Adicionar um tema seu
+
+Um tema é um manifesto, então um tema seu não precisa de pacote. Crie
+`~/.local/share/argvus/themes/<id>/theme.toml`, em que o nome do diretório é o
+ID do tema (letras minúsculas, dígitos e hífens simples):
+
+```toml
+schema = 2
+id = "mist"
+name = "Mist"
+category = "dark"
+wallpaper = "/usr/share/backgrounds/argvus/argvus-dark.jxl"
+
+[palette]
+bg = "#101418"
+fg = "#D8DEE9"
+accent = "#88C0D0"
+```
+
+Só `bg`, `fg` e `accent` são obrigatórios: todas as outras cores têm um padrão
+derivado delas, e o manifesto define uma só para mudá-la. Confira o tema e
+aplique-o como qualquer outro:
+
+```bash
+argvus theme check ~/.local/share/argvus/themes/mist
+argvus theme apply mist
+```
+
+O `argvus theme list` mostra seus temas ao lado dos oficiais (um tema oficial
+com o mesmo ID vence). Seus temas aparecem no menu de temas (`SUPER + Shift + T`);
+o greeter, que roda antes do login, não consegue ler o seu diretório pessoal,
+então continua com o último tema oficial que você aplicou enquanto um tema seu está ativo.
+
+As cópias por tema que versões antigas do ARGVUS gravavam em
+`~/.config/argvus/data/<app>/themes/` não são mais lidas. A primeira troca de
+tema depois da atualização as move para
+`~/.config/argvus/data/backups/theme-copies-<hora>/`; para manter um arquivo que
+você editou, coloque-o num tema seu em `overrides/` e indique-o na tabela
+`[overrides]` do manifesto.
 
 ## Remover um tema
 

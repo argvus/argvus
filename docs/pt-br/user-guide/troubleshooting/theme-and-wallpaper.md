@@ -22,14 +22,21 @@ ler o `config.json`. Eles nunca escrevem em `data/generated/`, e a transação d
 tema não grava mais os arquivos de GTK, storage ou `mode.css` por scripts separados. Use `argvus config accent --apply` para reexecutar apenas a reconciliação
 de acento.
 
-Se o overlay de carregamento continuar na tela após uma troca de tema, verifique se alguma troca ainda está em execução. A troca registra a si mesma em `theme-switch.active`, ao lado do seu lock:
+Uma troca de tema não mostra overlay nem reinicia serviços: as barras, o Control Panel, o Dunst e o wallpaper em execução recebem as novas cores no lugar. Se alguma superfície ficar com as cores antigas, confira se o build do tema está ativo e se é o tema escolhido, e rode as recargas de novo:
+
+```sh
+cat "${XDG_CONFIG_HOME:-$HOME/.config}/argvus/data/generated/theme/current/build.toml"
+argvus config theme-runtime consumers
+```
+
+Todo arquivo de tema vem do build: um tema não instalado (sem `theme.toml` em `/usr/share/argvus/themes/` ou `~/.local/share/argvus/themes/`) ou que não renderiza é recusado, e o tema anterior continua. O `argvus theme check DIRETÓRIO` mostra o template e a linha de cada erro de renderização. Uma barra da Waybar só recarrega as cores com `reload_style_on_change` no JSONC dela. Se a troca parecer travada, verifique se ela ainda está em execução; ela se registra em `theme-switch.active`, ao lado do seu lock:
 
 ```sh
 cat "${XDG_CACHE_HOME:-$HOME/.cache}/argvus/theme-switch.active"
-ps -ef | grep -E 'theme-switch|loading-theme'
+ps -ef | grep -E 'theme-switch|theme-apply'
 ```
 
-Um pid no marcador que ainda está vivo significa que a troca não terminou. Uma troca que espera mais de 60 segundos pelo lock do tema, ou pelo reload da configuração, termina com mensagem de erro e remove o seu overlay; por isso, um overlay que continua na tela aponta para uma troca travada dentro do reload. Um marcador cujo processo já saiu é antigo, e a próxima troca o ignora. Envie a saída dos comandos acima ao relatar o problema.
+Um pid no marcador que ainda está vivo significa que a troca não terminou. A troca espera no máximo 60 segundos pelo lock do tema e pela projeção, e 5 segundos pelos comandos de recarga; um marcador cujo processo já saiu é antigo, e a próxima troca o ignora. Envie a saída dos comandos acima ao relatar o problema.
 
 Se apenas o greeter pré-login estiver branco ou usando o tema de fallback, compare a fonte privada com a projeção pública:
 

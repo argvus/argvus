@@ -1,10 +1,10 @@
 ---
 title: Overlay de carregamento
-description: O overlay exibido enquanto um tema é aplicado ou a sessão inicia.
+description: O overlay exibido enquanto a sessão recarrega diretamente.
 ---
 
-O overlay de carregamento é uma superfície GTK 4 de layer-shell exibida enquanto o ARGVUS aplica um
-tema ou recarrega a sessão diretamente. É um auxiliar do pacote `argvus` em
+O overlay de carregamento é uma superfície GTK 4 de layer-shell exibida enquanto o ARGVUS recarrega a
+sessão diretamente (`argvus sessionctl reload`). A troca de tema não o usa: o desktop muda no lugar. É um auxiliar do pacote `argvus` em
 `/usr/lib/argvus/loading-theme/splash`, e não fica em `/usr/bin`.
 
 O login não o usa: o splash do greeter e o indicador do início da sessão são o modo Wayland do helper

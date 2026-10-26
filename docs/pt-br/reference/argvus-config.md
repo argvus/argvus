@@ -181,9 +181,9 @@ pelo modelo de paths Rust.
 `patch` aplica um objeto JSON cujas chaves são JSON pointers em uma única
 operação protegida por lock. `apply-theme` executa a transação atômica do tema
 e preserva os valores `accent_custom` e `wallpaper_custom`. Os defaults de
-tema ficam no manifesto de cada tema (`appearance/themes.d/<tema>/theme.toml`): o accent padrão,
-o esquema de cores do GTK e os nomes das folhas de estilo. CSS, Lua, Rasi e Qt são projeções
-desse estado.
+tema ficam no manifesto de cada tema (`themes/<tema>/theme.toml`): o accent padrão
+(`palette.accent`), o esquema de cores do GTK e o wallpaper. CSS, Lua, Rasi e Qt são
+renderizados a partir dele no build do tema.
 
 Trocar de tema, inclusive entre claro e escuro, volta a cor de destaque ao padrão do tema, mesmo
 quando o usuário escolheu uma cor própria: a cor personalizada só é mantida até a próxima troca de

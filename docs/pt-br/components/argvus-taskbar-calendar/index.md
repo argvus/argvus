@@ -34,10 +34,10 @@ argvus taskbar-calendar service
 ## Caminhos
 
 - Configuração: `/etc/argvus/taskbar/calendar/config.toml` (válida para o sistema; um padrão é instalado pelo pacote).
-- Temas: `style.css`, `theme.css` e `themes/` no mesmo diretório.
+- Estilos: `style.css` e `theme.css` no mesmo diretório; as cores do tema ativo do ARGVUS vêm do build do tema, pelo cache abaixo.
 - Dados: `$XDG_DATA_HOME/argvus-taskbar-calendar/` (ou `~/.local/share/argvus-taskbar-calendar/`).
 - Estado: `$XDG_STATE_HOME/argvus/taskbar/calendar/` (ou `~/.local/state/...`); a chave de eventos fica ali.
 - Cache: `$XDG_CACHE_HOME/argvus-taskbar-calendar/` (ou `~/.cache/argvus-taskbar-calendar/`).
 
 A cor de destaque é lida de `~/.config/argvus/data/.accent-color` e aplicada em tempo de execução,
-sem substituir o tema selecionado.
+por cima das cores do tema.

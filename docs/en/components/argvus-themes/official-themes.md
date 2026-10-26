@@ -12,7 +12,7 @@ This page lists the official themes available as theme packages and explains how
 3. Choose **Dark** or **Light**.
 4. Choose the theme family. The theme is applied as soon as you select it.
 
-The selected theme is applied to the whole desktop. ARGVUS reloads the affected surfaces and keeps your wallpaper selection unless the theme is applied with its own wallpaper association.
+The selected theme is applied to the whole desktop at once: the running taskbar, panels, notifications, windows and wallpaper change colour in place, without a loading screen and without restarting. ARGVUS keeps your wallpaper selection unless the theme is applied with its own wallpaper association.
 
 You can also press `SUPER + SHIFT + T` to open the theme selector from the keyboard. Use the arrow keys to move through the categories, `Enter` to choose, and `Esc` to close.
 

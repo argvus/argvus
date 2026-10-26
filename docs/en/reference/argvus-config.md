@@ -187,8 +187,8 @@ all projectors, and only then publish the canonical JSON. An operational
 `.config-transaction.json` marker allows `argvus config recover` to reproject
 the previous configuration after a crash between data and JSON publication.
 Theme defaults are declared by each theme's manifest
-(`appearance/themes.d/<theme>/theme.toml`): the default accent, the GTK color scheme and
-the stylesheet names. CSS, Lua, Rasi and Qt files are projections of that state.
+(`themes/<theme>/theme.toml`): the default accent (`palette.accent`), the GTK color scheme
+and the wallpaper. CSS, Lua, Rasi and Qt files are rendered from it into the theme build.
 
 Changing the theme, including Light/Dark, resets the highlight color to the theme's default,
 even when the user chose a custom color: the custom color is kept only until the next theme

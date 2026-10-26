@@ -9,7 +9,7 @@ Run `argvus --help` for the list installed with your version. The subcommands ar
 
 ## Where each command runs
 
-- **In-process:** the command is a library of the workspace and runs inside `argvus`. No separate executable exists. These are `config`, `i18n`, `keys`, `gpg`, `projects`, `terminal`, `system-monitor`, `network`, `bluetooth`, `widget-telemetry`, `tui-terminal` and `setup`.
+- **In-process:** the command is a library of the workspace and runs inside `argvus`. No separate executable exists. These are `config`, `theme`, `i18n`, `keys`, `gpg`, `projects`, `terminal`, `system-monitor`, `network`, `bluetooth`, `widget-telemetry`, `tui-terminal` and `setup`.
 - **Helper:** a separate executable in `/usr/lib/argvus/commands/`, installed by the `argvus` package. These are `control-center` (a terminal application) and the GTK 4 applications `taskbar-calendar` and `removable-devices`.
 - **Private executable:** an executable that another package installs in `/usr/lib/argvus/commands/`. `argvus` only starts it. These include `session`, `start`, `tty`, `sessionctl`, `launcher`, `snippets`, `ssh`, `git`, `app-profiles-yazi-keymap`, `notifications`, `displayctl`, `firewall`, `accounts`, `taskbar-actions` and the `greeter-*` entry points.
 - **Script:** a packaged shell script run with `/bin/sh`. These are the Hyprland script commands listed below.
@@ -21,6 +21,7 @@ Run `argvus --help` for the list installed with your version. The subcommands ar
 | Command | Runs | Notes |
 | --- | --- | --- |
 | `argvus config ...` | In-process | Configuration model and tools. Also reached by `theme-switch` and `effects-toggle`. |
+| `argvus theme ...` | In-process | `apply ID` is the theme switch (the same as `theme-switch`). Theme builds: `list` the installed themes, `check DIRECTORY` a theme against the installed templates, `render ID [--variant sticky\|float] [--accent #RRGGBB] [--output DIRECTORY]`. See [Appearance and themes](/docs/developer-guide/subsystems/appearance-and-themes/). |
 | `argvus i18n ...` | In-process | Translations: `get DOMAIN KEY [name=value...]`, `locale`, `list`, `validate [LOCALE]`. |
 | `argvus keys ...` | In-process | SSH key manager. `gpg` is an alias for the GPG subcommands. |
 | `argvus gpg ...` | In-process | GPG keys: `list`, `status`, `generate`, `export-public`, `export-private`, `import`, `import-private`, `delete`, `edit`, `keyserver`. |
@@ -35,7 +36,7 @@ Run `argvus --help` for the list installed with your version. The subcommands ar
 | `argvus control-center [page]` | Helper (terminal application) | Opens the Control Center, or focuses the window that is already open. |
 | `argvus taskbar-calendar [args]` | GTK 4 application | Defaults to `toggle`. |
 | `argvus removable-devices [args]` | GTK 4 application | Defaults to `menu`. |
-| `argvus loading-theme ...` | Packaged `splash` at `/usr/lib/argvus/loading-theme/splash` | The overlay of theme transitions and direct reloads. |
+| `argvus loading-theme ...` | Packaged `splash` at `/usr/lib/argvus/loading-theme/splash` | The overlay of direct session reloads; a theme switch does not use it. |
 | `argvus session`, `start`, `tty`, `sessionctl` | Private executables | Session entry points and the session controller. |
 | `argvus greeter`, `greeter-session`, `greeter-tui`, `greeter-setup` | Private executables | Greeter entry points. |
 | `argvus accounts`, `firewall` | Private executables | Accounts and firewall tools. |

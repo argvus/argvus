@@ -22,14 +22,21 @@ are orchestrators: they validate, lock, show the splash, commit through
 not write the GTK, storage or `mode.css` files through separate scripts.
 Use `argvus config accent --apply` to re-run only the accent reconciliation.
 
-If the loading overlay stays on screen after a theme change, check whether a switch is still running. A switch records itself in `theme-switch.active`, beside its lock:
+A theme change shows no overlay and restarts no service: the running bars, Control Panel, Dunst and wallpaper take the new colours in place. If a surface keeps the old colours, check that the theme build is active and that it is the theme you chose, then run the reloads again:
+
+```sh
+cat "${XDG_CONFIG_HOME:-$HOME/.config}/argvus/data/generated/theme/current/build.toml"
+argvus config theme-runtime consumers
+```
+
+Every themed file comes from the build: a theme that is not installed (no `theme.toml` under `/usr/share/argvus/themes/` or `~/.local/share/argvus/themes/`) or does not render is refused, and the previous theme stays. `argvus theme check DIRECTORY` shows the template and line of each render error. A Waybar bar reloads its colours only with `reload_style_on_change` in its JSONC. If a switch seems stuck, check whether it is still running; it records itself in `theme-switch.active`, beside its lock:
 
 ```sh
 cat "${XDG_CACHE_HOME:-$HOME/.cache}/argvus/theme-switch.active"
-ps -ef | grep -E 'theme-switch|loading-theme'
+ps -ef | grep -E 'theme-switch|theme-apply'
 ```
 
-A pid in the marker that is still alive means the switch has not finished. A switch that waits more than 60 seconds for the theme lock, or for the configuration reload, ends with an error message and removes its overlay, so an overlay that stays up points to a switch hung inside its reload. A marker whose process has exited is stale and the next switch ignores it. Include the output of the commands above when reporting the problem.
+A pid in the marker that is still alive means the switch has not finished. A switch waits at most 60 seconds for the theme lock and for the projection, and 5 seconds for the reload commands; a marker whose process has exited is stale and the next switch ignores it. Include the output of the commands above when reporting the problem.
 
 If only the pre-login greeter is white or uses the fallback theme, compare the private source with its public projection:
 

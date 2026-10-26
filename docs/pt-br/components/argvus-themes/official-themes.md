@@ -12,7 +12,7 @@ Esta página lista os temas oficiais disponíveis pelos pacotes de tema oficiais
 3. Escolha **Escuro** ou **Claro**.
 4. Escolha a família do tema. O tema é aplicado assim que você o seleciona.
 
-O tema selecionado é aplicado a todo o desktop. O ARGVUS recarrega as superfícies afetadas e mantém a seleção de wallpaper, a menos que o tema seja aplicado com a associação de wallpaper dele.
+O tema selecionado é aplicado a todo o desktop de uma vez: a taskbar, os painéis, as notificações, as janelas e o wallpaper em execução mudam de cor no lugar, sem tela de carregamento e sem reiniciar. O ARGVUS mantém a seleção de wallpaper, a menos que o tema seja aplicado com a associação de wallpaper dele.
 
 Você também pode pressionar `SUPER + SHIFT + T` para abrir o seletor de temas pelo teclado. Use as setas para percorrer as categorias, `Enter` para escolher e `Esc` para fechar.
 

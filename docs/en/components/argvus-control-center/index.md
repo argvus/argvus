@@ -64,7 +64,7 @@ Appearance is the main customization area. Its Desktop group holds the theme (wi
 
 Taskbar configures the panel's position, the spacing around it and its windows, its height and border, the utility icon group, and the date/time blocks, plus its own transparency. It is listed under **Appearance** on the home.
 
-**Height** chooses 24, 28 (the default), 32 or 36 pixels. **Border** has an **Enable** switch and a **Thickness** of 1 to 3 pixels, with 1 as the default. With the border off, the taskbar window, the right group and the MPRIS player have no border. These changes are a draft until **Apply** is selected. Switching the theme restores the theme's height and border.
+**Height** chooses 24, 28 (the default), 32 or 36 pixels. **Border** has an **Enable** switch and a **Thickness** of 1 to 3 pixels, with 1 as the default. With the border off, the taskbar window, the right group and the MPRIS player have no border. These changes are a draft until **Apply** is selected. The applied height and border are kept when the theme changes; until they are applied, the theme decides them.
 
 The **Icons** page lists the Audio Player view and each utility widget (Network, Power profile, Keyboard layout, Memory usage, CPU usage, CPU Temperature and GPU Temperature) first, as checks with their own icon. The **Launcher** and **Utilities** submenus come last.
 

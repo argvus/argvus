@@ -26,6 +26,7 @@ description: Important installed ARGVUS files and directories.
 - `$XDG_CONFIG_HOME/argvus/data/generated/gtk/` — projected GTK theme files.
 - `$XDG_CONFIG_HOME/argvus/data/rofi/` — user copies of the Rofi configuration, themes and mode. ARGVUS creates each copy when it first changes the file; unchanged files are read from `/usr/share/argvus/launcher/config/`.
 - `$XDG_CONFIG_HOME/argvus/data/generated/removable-devices/theme.css` — projected removable-devices stylesheet.
+- `$XDG_CONFIG_HOME/argvus/data/generated/theme/` — theme builds (`builds/<id>-<variant>-<hash>/`), written by `argvus theme render` and by every theme switch and accent change, and the `current` symlink to the build of the active theme.
 - `$XDG_CONFIG_HOME/argvus/data/hypr/` — user Hyprland Lua overrides and native Hyprland projections.
 - `$XDG_CONFIG_HOME/hypr/hyprland.lua` — optional complete native Hyprland configuration selected by `argvus start`; it is not an incremental overlay.
 - `$XDG_STATE_HOME/argvus/config-projection.json` — projection manifest: generation, effective-config hash, changed sections and pending runtime work. Read by `argvus sessionctl reload`; never a source of truth.

@@ -40,7 +40,7 @@ The target commonly owns `argvus-control-panel.service`, `argvus-taskbar.service
 
 The services that need a Wayland client connection, including the Control Panel and idle manager, wait for a usable Hyprland runtime before launching their client. This avoids starting Quickshell or hypridle against a stale socket during compositor handoff; if Hyprland is replaced, systemd can start the component again after the new runtime is available.
 
-Theme transitions serialize their projection and service fan-out as one lifecycle operation. The transition reload reuses the existing projection and does not re-enter it while its theme lock is held, preventing concurrent reloads from blocking session preparation.
+A theme switch serializes its commit, build, projection and consumer reloads as one lifecycle operation under the theme lock. It does not reload `argvus-config.service` nor restart services: the projection it runs only writes files and leaves the theme to the switch while the lock is held, and the running consumers reload in place (see [Appearance and themes](/docs/developer-guide/subsystems/appearance-and-themes/)).
 
 When Hyprland exits, `argvus start` stops `argvus-session.target` and the services tied to it. This prevents taskbar, shell, notification, idle and clipboard processes from surviving logout.
 
