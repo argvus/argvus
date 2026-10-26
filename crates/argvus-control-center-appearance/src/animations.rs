@@ -592,7 +592,7 @@ impl AnimationValues {
   }
 
   /// `name=value` pairs for `argvus effects-toggle animations-settings set`. The
-  /// global switch is not included; it goes through `argvus effects-toggle animations`.
+  /// global switch is not included; `backend::apply_animations` adds it.
   pub fn script_arguments(&self) -> Vec<String> {
     let mut arguments = Vec::new();
     for leaf in AnimationLeaf::ALL {

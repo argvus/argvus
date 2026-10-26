@@ -17,6 +17,7 @@ pub mod error;
 pub mod expr;
 pub mod layout;
 pub mod manifest;
+pub mod package;
 pub mod paths;
 pub mod registry;
 pub mod render;

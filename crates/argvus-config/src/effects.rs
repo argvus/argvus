@@ -502,6 +502,8 @@ impl Effects {
   }
 
   /// `set name=value ...`: validates every pair, then writes them in one patch.
+  /// `enabled=enabled|disabled` sets the master switch of the same effect, so
+  /// the switch and the values reload the configuration once.
   fn settings_set(
     &self,
     table: &str,
@@ -512,8 +514,20 @@ impl Effects {
       return Err(64);
     }
     let mut patch = Map::new();
+    let mut switch_written = false;
     for argument in pairs {
       let (name, value) = argument.split_once('=').ok_or(64)?;
+      if name == "enabled" {
+        if value != "enabled" && value != "disabled" {
+          return Err(64);
+        }
+        patch.insert(
+          master_switch(prefix).ok_or(64)?.into(),
+          Value::Bool(value == "enabled"),
+        );
+        switch_written = true;
+        continue;
+      }
       let key = format!("{prefix}{name}");
       let row = table_row(table, &key).ok_or(64)?;
       if !settings_valid(&row.kind, &row.minimum, &row.maximum, value) {
@@ -528,6 +542,11 @@ impl Effects {
     }
     self.patch_store(&patch).map_err(|_| 1)?;
     self.request_config_reload().map_err(|_| 1)?;
+    if switch_written {
+      self
+        .apply_surfaces(self.status("transparency"), self.status("animations"))
+        .map_err(|_| 1)?;
+    }
     let output = self.settings_get(table, prefix);
     spawn_runtime();
     Ok(output)
@@ -869,15 +888,14 @@ impl Effects {
         .stderr(Stdio::null())
         .status();
     }
-    let sessionctl = self.commands_dir.join("sessionctl");
-    if sessionctl.is_file() {
-      for component in ["waybar", "dunst", "control-panel"] {
-        let _ = Command::new(&sessionctl)
-          .args(["restart", component])
-          .stdout(Stdio::null())
-          .stderr(Stdio::null())
-          .status();
-      }
+    // The bars, the Control Panel and Dunst reload their files in place:
+    // restarting them would move every window.
+    if on_path("argvus") {
+      let _ = Command::new("argvus")
+        .args(["config", "theme-runtime", "consumers"])
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .status();
     }
     let calendar = self.commands_dir.join("taskbar-calendar");
     if calendar.is_file() {
@@ -1188,23 +1206,12 @@ impl Effects {
           .apply_taskbar_surface(self.status("animations"))
           .map_err(|_| 1)?;
         self.apply_widget_telemetry_surface().map_err(|_| 1)?;
+        // The blur of a surface is a layer rule of the compositor. The bars
+        // reload the stylesheets just rewritten, and the configuration reload
+        // reaches the Control Panel: nothing is restarted.
         if on_path("argvus") {
           let _ = Command::new("argvus")
             .args(["config", "hyprland", "reload"])
-            .stdout(Stdio::null())
-            .stderr(Stdio::null())
-            .status();
-        }
-        let sessionctl = self.commands_dir.join("sessionctl");
-        let restart = match surface.as_str() {
-          "taskbar" => Some("waybar"),
-          "widget-telemetry" => Some("widget-telemetry"),
-          "control-panel" => Some("control-panel"),
-          _ => None,
-        };
-        if let (Some(component), true) = (restart, sessionctl.is_file()) {
-          let _ = Command::new(&sessionctl)
-            .args(["restart", component])
             .stdout(Stdio::null())
             .stderr(Stdio::null())
             .status();
@@ -1645,6 +1652,15 @@ fn signal_kitty() {
   }
 }
 
+/// The master switch of the effect whose settings carry `prefix`.
+fn master_switch(prefix: &str) -> Option<&'static str> {
+  match prefix {
+    "blur_" => Some("/effects/blur_global_enabled"),
+    "animation_" => Some("/effects/animations"),
+    _ => None,
+  }
+}
+
 /// Runs the runtime refresh in a detached process, so the command answers
 /// before the components restart.
 fn spawn_runtime() {
@@ -1767,6 +1783,13 @@ impl Effects {
 #[cfg(test)]
 mod tests {
   use super::*;
+
+  #[test]
+  fn each_settings_table_names_its_master_switch() {
+    assert_eq!(master_switch("blur_"), Some("/effects/blur_global_enabled"));
+    assert_eq!(master_switch("animation_"), Some("/effects/animations"));
+    assert_eq!(master_switch("shadow_"), None);
+  }
 
   #[test]
   fn booleans_and_enums_accept_only_their_choices() {

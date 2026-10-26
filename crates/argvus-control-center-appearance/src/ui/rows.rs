@@ -264,7 +264,6 @@ fn spacing_icon(goal: PromptGoal) -> Option<&'static str> {
     PromptGoal::Rounding => Some(icons::ROUNDED),
     PromptGoal::Thickness => Some(icons::THICKNESS),
     PromptGoal::ExportProfile
-    | PromptGoal::ImportProfile
     | PromptGoal::DraftValue
     | PromptGoal::BlurValue(_)
     | PromptGoal::AnimationValue(_) => None,
@@ -375,6 +374,10 @@ impl AppearanceApp {
           })
           .collect()
       }
+      AppearancePage::CustomThemes if self.state.custom_themes.is_empty() => vec![Row::info(
+        self.label("control_center.theme_profile_custom_empty"),
+        String::new(),
+      )],
       AppearancePage::CustomThemes => self
         .state
         .custom_themes

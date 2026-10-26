@@ -9,6 +9,7 @@ rust-version.workspace = true
 argvus-control-center-core = { workspace = true }
 argvus-i18n.workspace = true
 argvus-theme.workspace = true
+argvus-theme-core.workspace = true
 argvus-tui.workspace = true
 ratatui.workspace = true
 crossterm.workspace = true

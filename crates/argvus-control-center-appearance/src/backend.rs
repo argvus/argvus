@@ -23,11 +23,11 @@ use std::path::{Path, PathBuf};
 use std::process::{Child, Stdio};
 use std::time::Duration;
 
-pub use crate::profile::{
-  active_custom_theme, apply_custom_theme, custom_themes, delete_custom_theme,
-  export_named as export_theme_profile, import_archive as import_theme_profile,
-  inspect_archive as inspect_theme_profile, list_import_archives,
-  preview_export_path as preview_theme_profile_path,
+pub use crate::user_themes::{
+  active_custom_theme, apply_custom_theme, convert_legacy_profiles, custom_themes,
+  delete_custom_theme, export_named as export_theme, import_archive as import_theme,
+  inspect_archive as inspect_theme_archive, list_import_archives,
+  preview_export_path as preview_theme_export_path,
 };
 
 /// Defines the constant `WALLPAPERS_DIR`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
@@ -140,30 +140,6 @@ fn run_process(
     });
   }
   Ok(())
-}
-
-pub(crate) fn run_profile_script_with_env(
-  name: &str,
-  args: &[&str],
-  environment: &[(&str, &str)],
-) -> Result<(), String> {
-  if name == "argvus-widget-telemetry-toggle" {
-    let mut request = ProcessRequest::new("argvus").arg("widget-telemetry-toggle");
-    for argument in args {
-      request = request.arg(*argument);
-    }
-    for (name, value) in environment {
-      request = request.env(*name, *value);
-    }
-    let output = SystemProcessRunner
-      .run(&request)
-      .map_err(|error| error.to_string())?;
-    return (output.status == Some(0))
-      .then_some(())
-      .ok_or_else(|| "telemetry apply failed".into());
-  }
-  let path = script(name);
-  run_script_with_env(&path, args, environment)
 }
 
 /// Executes the `run_script_output` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
@@ -1190,6 +1166,7 @@ pub fn load_page(
       | AppearancePage::CustomThemes
       | AppearancePage::OfficialThemes
   ) {
+    state.theme_notices = convert_legacy_profiles();
     state.custom_themes = custom_themes();
     state.active_custom_theme = active_custom_theme();
     // Discover and load official themes (built-in + drop-in packages)
@@ -1229,23 +1206,16 @@ pub fn load_page(
 }
 
 /// Applies the `set_theme` operation while preserving the persistence and local-update contract. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
+///
+/// The theme's own highlight colour comes with it, for an official theme and a
+/// user theme alike.
 pub fn set_theme(name: &str) -> Result<(), String> {
   let canonical_name = canonical_theme_id(name);
-  // An official theme ends a custom profile; a failed switch keeps it.
-  let marker = argvus_data_home().join("state").join("custom-theme");
-  let previous_marker = fs::read(&marker).ok();
-  let _ = fs::remove_file(&marker);
-  let switched = run_argvus_route(
+  run_argvus_route(
     "theme-switch",
     &[canonical_name.as_str()],
     &[("ARGVUS_ACCENT_OFFICIAL", "1")],
-  );
-  if switched.is_err()
-    && let Some(previous) = previous_marker
-  {
-    let _ = fs::write(&marker, previous);
-  }
-  switched
+  )
 }
 
 /// Switches the Sticky/Float layout mode without changing the active theme.
@@ -1260,17 +1230,6 @@ pub fn set_theme(name: &str) -> Result<(), String> {
 /// with a non-zero status.
 pub fn set_layout_mode(variant: &str) -> Result<(), String> {
   run_script(&script("layout-mode-switch.sh"), &[variant])
-}
-
-pub(crate) fn set_theme_static(name: &str) -> Result<(), String> {
-  let canonical_name = canonical_theme_id(name);
-  run_argvus_route(
-    "theme-switch",
-    &[canonical_name.as_str()],
-    &[("ARGVUS_NO_RUNTIME", "1"), ("ARGVUS_THEME_SWITCH", "1")],
-  )?;
-  let _ = fs::remove_file(argvus_data_home().join("state").join("custom-theme"));
-  Ok(())
 }
 
 /// Applies the `set_accent` operation while preserving the persistence and local-update contract. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
@@ -1296,51 +1255,35 @@ fn reset_accent_to_theme_default() -> Result<(), String> {
   run_argvus_route("config", &["accent", "--theme-default"], &[])
 }
 
-/// Persists the accent decision in the canonical document before the runtime
-/// adapters run, so canonical state and generated state cannot disagree.
-pub(crate) fn persist_accent_canonical(accent: &str, is_custom: bool) -> Result<(), String> {
-  // An empty accent is meaningful only for the "back to theme default" action:
-  // it must not overwrite the stored color, it just drops the custom flag.
-  let mut patch = serde_json::Map::new();
-  if !accent.is_empty() {
-    patch.insert(
-      "/appearance/accent".to_string(),
-      Value::String(accent.to_string()),
-    );
-  }
-  patch.insert(
-    "/appearance/accent_custom".to_string(),
-    Value::Bool(is_custom),
-  );
-  let patch = serde_json::to_string(&Value::Object(patch)).map_err(|error| error.to_string())?;
-  let status = argvus_control_center_core::process::command("argvus")
-    .arg("config")
-    .args(["patch", &patch])
-    .status()
-    .map_err(|error| format!("failed to persist accent settings: {error}"))?;
-  if !status.success() {
-    return Err("argvus config rejected the accent settings".into());
-  }
-  Ok(())
+/// Writes the animations switch and values that changed in one call, so
+/// `Apply` reloads the configuration once. `argvus config effects` validates
+/// each value again.
+pub fn apply_animations(
+  enabled: Option<bool>,
+  values: Option<AnimationValues>,
+) -> Result<(), String> {
+  let arguments = settings_arguments(enabled, values.map(|values| values.script_arguments()));
+  apply_settings("animations-settings", &arguments)
 }
 
-/// Applies the `set_animations` operation through the shared session helper.
-pub fn set_animations(enabled: bool) -> Result<(), String> {
-  run_effects(&["animations", if enabled { "enable" } else { "disable" }])
+/// The `name=value` arguments of an effects `…-settings set`: the master
+/// switch first, when it changed, then the values, when they changed.
+fn settings_arguments(enabled: Option<bool>, values: Option<Vec<String>>) -> Vec<String> {
+  let switch =
+    enabled.map(|enabled| format!("enabled={}", if enabled { "enabled" } else { "disabled" }));
+  switch
+    .into_iter()
+    .chain(values.unwrap_or_default())
+    .collect()
 }
 
-/// Writes every animation value except the global switch in one call, so
-/// `Apply` triggers a single compositor reload. The script validates each
-/// value again.
-pub fn set_animation_values(values: AnimationValues) -> Result<(), String> {
-  let arguments = values.script_arguments();
-  let mut request = vec!["animations-settings", "set"];
+fn apply_settings(command: &str, arguments: &[String]) -> Result<(), String> {
+  if arguments.is_empty() {
+    return Ok(());
+  }
+  let mut request = vec![command, "set"];
   request.extend(arguments.iter().map(String::as_str));
   run_effects(&request)
-}
-
-pub fn set_blur(enabled: bool) -> Result<(), String> {
-  run_effects(&["blur", if enabled { "enable" } else { "disable" }])
 }
 
 pub fn set_effect_value(kind: &str, surface: EffectSurface, value: i32) -> Result<(), String> {
@@ -1354,13 +1297,12 @@ pub fn set_effect_value(kind: &str, surface: EffectSurface, value: i32) -> Resul
   run_effects(&[&format!("{kind}-value"), surface.key(), "set", &value])
 }
 
-/// Writes every Blur parameter in one call, so `Apply` triggers a single
-/// compositor reload. The script validates each value again.
-pub fn set_blur_values(values: BlurValues) -> Result<(), String> {
-  let arguments = values.script_arguments();
-  let mut request = vec!["blur-settings", "set"];
-  request.extend(arguments.iter().map(String::as_str));
-  run_effects(&request)
+/// Writes the blur switch and parameters that changed in one call, so `Apply`
+/// reloads the configuration once. `argvus config effects` validates each
+/// value again.
+pub fn apply_blur(enabled: Option<bool>, values: Option<BlurValues>) -> Result<(), String> {
+  let arguments = settings_arguments(enabled, values.map(BlurValues::script_arguments));
+  apply_settings("blur-settings", &arguments)
 }
 
 pub fn apply_surface_effects(
@@ -1594,10 +1536,10 @@ pub fn set_taskbar_utility_group(mode: TaskbarUtilityGroupMode) -> Result<(), St
   run_script(&script("taskbar-right-2-mode.sh"), &["set", mode.value()])
 }
 
-/// The loading splash shown while an `Apply` changes a surface. It is up before
-/// the first write and stays until the guard is dropped after the last step, so
-/// no change is visible before it. The config reload of the same `Apply` finds
-/// it running and starts no splash of its own, so there is only one.
+/// The loading splash shown while an `Apply` recreates a surface (a Waybar bar
+/// or the Control Panel). It is up before the first write and stays until the
+/// guard is dropped after the last step, so no change is visible before it.
+/// Changes that reload in place (styles, blur, transparency) show no splash.
 ///
 /// The overlay follows the process that started it, so it is held by
 /// `argvus config transition-overlay hold`, which keeps it up until its stdin
@@ -1608,9 +1550,13 @@ pub struct ApplyOverlay {
 }
 
 impl ApplyOverlay {
-  /// Shows the splash and returns once it is on screen. When it cannot be
-  /// shown, or another owner already shows one, the guard holds nothing.
-  pub fn start() -> Self {
+  /// Shows the splash when `needed` and returns once it is on screen. When it
+  /// is not needed, cannot be shown, or another owner already shows one, the
+  /// guard holds nothing.
+  pub fn start_if(needed: bool) -> Self {
+    if !needed {
+      return Self { holder: None };
+    }
     let theme = canonical_theme_id(&read_first(&active_theme_file(), DEFAULT_THEME));
     let holder = argvus_control_center_core::process::command("argvus")
       .args(["config", "transition-overlay", "hold", &theme])
@@ -1650,7 +1596,8 @@ impl Drop for ApplyOverlay {
 
 /// Writes the taskbar height and border to the live taskbar files. A border that
 /// is off is written as width `0`. It does not reload or restart anything: the
-/// surface effects step of the same `Apply` reloads and restarts the taskbar.
+/// border is a style the bar reloads by itself, and the `Apply` restarts the
+/// taskbar once when the height changed.
 pub fn set_taskbar_shape(
   height: u32,
   border_enabled: bool,
@@ -1676,9 +1623,7 @@ fn run_taskbar_config(arguments: &[&str]) -> Result<(), String> {
 /// Persists the taskbar icon/date/time preferences to the canonical document
 /// and re-derives the Waybar config from them. It does not reload
 /// `argvus-config.service` nor restart the taskbar: the `Apply` of the taskbar
-/// surface always ends with `apply_surface_effects`, which reloads the
-/// configuration once (one splash) and restarts `waybar`, so the new state is
-/// shown. Reloading here as well made every `Apply` open the splash twice.
+/// surface restarts it once, under the splash, when any of them changed.
 pub fn apply_taskbar_icons_and_format(
   audio_player_enabled: bool,
   launcher_enabled: bool,
@@ -1726,7 +1671,7 @@ pub fn apply_taskbar_icons_and_format(
 /// only way Waybar re-reads anything beyond CSS — `reload_style_on_change`
 /// only watches the stylesheet, and the SIGUSR1 binding in Hyprland merely
 /// toggles bar visibility, not a config reload.
-fn reload_taskbar() -> Result<(), String> {
+pub fn reload_taskbar() -> Result<(), String> {
   let output = SystemProcessRunner
     .run(
       &ProcessRequest::new("argvus")
@@ -1748,8 +1693,8 @@ fn reload_taskbar() -> Result<(), String> {
   Ok(())
 }
 
-/// Writes the taskbar patch without reloading the configuration. The caller's
-/// `Apply` reloads it once at the end (see `apply_taskbar_icons_and_format`).
+/// Writes the taskbar patch without reloading the configuration (see
+/// `apply_taskbar_icons_and_format`).
 fn persist_taskbar_patch(patch: serde_json::Map<String, Value>) -> Result<(), String> {
   let patch = serde_json::to_string(&patch).map_err(|error| error.to_string())?;
   let status = argvus_control_center_core::process::command("argvus")
@@ -1763,10 +1708,10 @@ fn persist_taskbar_patch(patch: serde_json::Map<String, Value>) -> Result<(), St
   Ok(())
 }
 
-/// Persists a complete batch of Control Panel preferences and performs one
-/// targeted restart after all writes have succeeded.
-pub fn set_control_panel_cards(changes: Vec<(ControlPanelCard, bool)>) -> Result<(), String> {
-  for &(card, enabled) in &changes {
+/// Persists a complete batch of Control Panel card switches. It does not
+/// restart the panel: the `Apply` restarts it once after every write.
+pub fn set_control_panel_cards(changes: &[(ControlPanelCard, bool)]) -> Result<(), String> {
+  for &(card, enabled) in changes {
     run_script(
       &control_panel_cards_script(),
       &[
@@ -1776,10 +1721,7 @@ pub fn set_control_panel_cards(changes: Vec<(ControlPanelCard, bool)>) -> Result
       ],
     )?;
   }
-  if changes.is_empty() {
-    return Ok(());
-  }
-  reload_control_panel()
+  Ok(())
 }
 
 /// Moves a Control Panel card to an absolute position in its package-owned
@@ -1794,7 +1736,7 @@ pub fn move_control_panel_card(card: ControlPanelCard, index: usize) -> Result<(
 /// Restarts only the Control Panel consumer instead of reapplying every
 /// mutable session component. This keeps rapid card toggles responsive while
 /// preserving the required immediate panel reload.
-fn reload_control_panel() -> Result<(), String> {
+pub fn reload_control_panel() -> Result<(), String> {
   let output = SystemProcessRunner
     .run(
       &ProcessRequest::new("argvus")
@@ -1814,31 +1756,6 @@ fn reload_control_panel() -> Result<(), String> {
     });
   }
   Ok(())
-}
-
-fn reload_session() -> Result<(), String> {
-  let output = SystemProcessRunner
-    .run(
-      &ProcessRequest::new("argvus")
-        .arg("sessionctl")
-        .arg("reload"),
-    )
-    .map_err(|error| error.to_string())?;
-  if output.status.is_none_or(|status| status != 0) {
-    let stderr = terminal_text(&String::from_utf8_lossy(&output.stderr))
-      .trim()
-      .to_string();
-    return Err(if stderr.is_empty() {
-      "argvus-sessionctl reload falhou".into()
-    } else {
-      stderr
-    });
-  }
-  Ok(())
-}
-
-pub(crate) fn reload_session_for_profile() -> Result<(), String> {
-  reload_session()
 }
 
 /// Applies the `set_border` operation while preserving the persistence and local-update contract. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
@@ -1874,6 +1791,17 @@ pub fn set_border(key: &str, value: &str) -> Result<(), String> {
   Ok(())
 }
 
+/// Turns rounded window corners on or off in one write. Turning them on also
+/// sets the rounding to `2`, the value the toggle has always started from.
+pub fn set_rounded(enabled: bool) -> Result<(), String> {
+  let mut patch = serde_json::Map::new();
+  patch.insert("/layout/window/rounded".into(), Value::Bool(enabled));
+  if enabled {
+    patch.insert("/layout/window/rounding".into(), Value::from(2_u64));
+  }
+  persist_layout_patch(patch)
+}
+
 fn persist_layout_patch(patch: serde_json::Map<String, Value>) -> Result<(), String> {
   let patch = serde_json::to_string(&patch).map_err(|error| error.to_string())?;
   let status = argvus_control_center_core::process::command("argvus")
@@ -1890,6 +1818,18 @@ fn persist_layout_patch(patch: serde_json::Map<String, Value>) -> Result<(), Str
 #[cfg(test)]
 mod tests {
   use super::*;
+
+  #[test]
+  fn effect_settings_carry_only_what_changed_in_one_call() {
+    let values = Some(vec!["size=6".to_string()]);
+    assert_eq!(
+      settings_arguments(Some(false), values.clone()),
+      ["enabled=disabled", "size=6"]
+    );
+    assert_eq!(settings_arguments(None, values), ["size=6"]);
+    assert_eq!(settings_arguments(Some(true), None), ["enabled=enabled"]);
+    assert!(settings_arguments(None, None).is_empty());
+  }
 
   #[test]
   fn wallpaper_paths_are_grouped_by_collection_and_mode() {

@@ -99,12 +99,57 @@ enum Confirmation {
   ReplaceImport,
 }
 
-/// The taskbar part of `Apply`, in the order the files are written: the utility
-/// group, the height and border, the icons and format, then the surface
-/// effects, whose config reload restarts the taskbar once.
-fn apply_taskbar_draft(draft: &SurfaceDraft) -> Result<(), String> {
-  backend::set_taskbar_utility_group(draft.utility_group)?;
+/// Whether applying `draft` over the saved `current` values recreates the
+/// surface: restarts a Waybar bar or the Control Panel. Only then does the
+/// `Apply` show the splash. Styles, borders, blur and transparency reload in
+/// place.
+fn recreates_surface(draft: &SurfaceDraft, current: &SurfaceDraft) -> bool {
+  match draft.surface {
+    // Waybar re-reads its JSONC only on a restart; the border is CSS.
+    EffectSurface::Taskbar => {
+      draft.height != current.height
+        || draft.utility_group != current.utility_group
+        || draft.audio_player_enabled != current.audio_player_enabled
+        || draft.launcher_enabled != current.launcher_enabled
+        || draft.utility_widgets != current.utility_widgets
+        || draft.date_format != current.date_format
+        || draft.time_seconds_enabled != current.time_seconds_enabled
+        || draft.time_format != current.time_format
+    }
+    EffectSurface::WidgetTelemetry => {
+      draft.widget_enabled != current.widget_enabled
+        || draft.widget_blocks != current.widget_blocks
+        || draft.widget_order != current.widget_order
+    }
+    // A hidden panel is not recreated by a card change.
+    EffectSurface::ControlPanel => {
+      draft.control_panel_enabled != current.control_panel_enabled
+        || (draft.control_panel_enabled && draft.control_panel_cards != current.control_panel_cards)
+    }
+    EffectSurface::Terminal | EffectSurface::Launchers => false,
+  }
+}
+
+fn apply_draft_effects(draft: &SurfaceDraft) -> Result<(), String> {
+  backend::apply_surface_effects(
+    draft.surface,
+    draft.transparency_enabled,
+    draft.transparency,
+    draft.blur_enabled,
+    draft.blur,
+  )
+}
+
+/// The taskbar part of `Apply`: the styles and effects first, which the bar
+/// reloads in place, then the utility group, height and icons, written to the
+/// JSONC that Waybar reads only when `recreate` restarts it once at the end.
+fn apply_taskbar_draft(draft: &SurfaceDraft, recreate: bool) -> Result<(), String> {
+  apply_draft_effects(draft)?;
   backend::set_taskbar_shape(draft.height, draft.border_enabled, draft.border_thickness)?;
+  if !recreate {
+    return Ok(());
+  }
+  backend::set_taskbar_utility_group(draft.utility_group)?;
   backend::apply_taskbar_icons_and_format(
     draft.audio_player_enabled,
     draft.launcher_enabled,
@@ -113,13 +158,30 @@ fn apply_taskbar_draft(draft: &SurfaceDraft) -> Result<(), String> {
     draft.time_seconds_enabled,
     draft.time_format,
   )?;
-  backend::apply_surface_effects(
-    draft.surface,
-    draft.transparency_enabled,
-    draft.transparency,
-    draft.blur_enabled,
-    draft.blur,
-  )
+  backend::reload_taskbar()
+}
+
+/// The Control Panel part of `Apply`: the effects reach the running panel by
+/// the configuration reload; the cards and the switch are written next, and
+/// the panel is restarted once, by the switch when it changes or else here.
+fn apply_control_panel_draft(draft: &SurfaceDraft, current: &SurfaceDraft) -> Result<(), String> {
+  apply_draft_effects(draft)?;
+  let changes = ControlPanelCard::ALL
+    .into_iter()
+    .filter_map(|card| {
+      let enabled = draft.control_panel_cards.enabled(card);
+      (enabled != current.control_panel_cards.enabled(card)).then_some((card, enabled))
+    })
+    .collect::<Vec<_>>();
+  backend::set_control_panel_cards(&changes)?;
+  if draft.control_panel_enabled != current.control_panel_enabled {
+    // `master set` restarts or stops the panel.
+    return backend::set_control_panel_enabled(draft.control_panel_enabled);
+  }
+  if draft.control_panel_enabled && !changes.is_empty() {
+    return backend::reload_control_panel();
+  }
+  Ok(())
 }
 
 fn theme_category_label_key(category: ThemeCategory) -> &'static str {
@@ -148,6 +210,7 @@ fn current_family_label(state: &AppearanceState, lang: &Lang) -> String {
     .unwrap_or_else(|| theme_family_label(&state.theme))
 }
 
+/// The official themes of a category; the user's own are in Custom Themes.
 fn family_indices(
   category: ThemeCategory,
   official_themes: &[argvus_theme::discovery::ThemeEntry],
@@ -155,7 +218,7 @@ fn family_indices(
   official_themes
     .iter()
     .enumerate()
-    .filter_map(|(index, entry)| (entry.category == category).then_some(index))
+    .filter_map(|(index, entry)| (entry.category == category && !entry.user).then_some(index))
     .collect()
 }
 
@@ -437,6 +500,16 @@ impl AppearanceApp {
     }
     self.loaded = true;
     self.status_loading = false;
+    if !self.state.theme_notices.is_empty() {
+      self.status = Some(StatusMessage {
+        kind: StatusKind::Info,
+        text: format!(
+          "{}: {}",
+          tr(self.lang, "control_center.theme_profiles_converted"),
+          self.state.theme_notices.join(", ")
+        ),
+      });
+    }
     if page == AppearancePage::ControlPanel && self.page == page {
       self.control_panel_draft = Some(self.state.control_panel_cards.clone());
     }
@@ -552,7 +625,7 @@ impl AppearanceApp {
     };
     self.apply(
       tr(self.lang, "control_center.theme_profile_imported").into(),
-      move || backend::import_theme_profile(&path).map(|_| ()),
+      move || backend::import_theme(&path).map(|_| ()),
     );
   }
 
@@ -710,59 +783,30 @@ impl AppearanceApp {
     // replaces it with a freshly loaded one. Clearing it here immediately
     // made every toggle/radio on the page flash back to its pre-edit state
     // for the duration of the apply + refresh round trip.
-    let current_state = self.state.clone();
+    let current = self.make_surface_draft(draft.surface);
+    let recreate = recreates_surface(&draft, &current);
     self.apply(
       tr(self.lang, "control_center.surface_settings_applied").into(),
       move || {
-        // The splash goes up before the first write and comes down when the
-        // guard drops after the last step, failed or not, so no change is
-        // visible before it.
-        let _overlay = backend::ApplyOverlay::start();
+        // A surface that is recreated gets the splash before the first write;
+        // it comes down when the guard drops after the last step, failed or
+        // not, so no change is visible before it.
+        let _overlay = backend::ApplyOverlay::start_if(recreate);
         match draft.surface {
-          EffectSurface::Taskbar => apply_taskbar_draft(&draft),
+          EffectSurface::Taskbar => apply_taskbar_draft(&draft, recreate),
           EffectSurface::WidgetTelemetry => {
+            apply_draft_effects(&draft)?;
+            if !recreate {
+              return Ok(());
+            }
             backend::apply_widget_telemetry(
               draft.widget_enabled,
               &draft.widget_blocks,
               &draft.widget_order,
-            )?;
-            backend::apply_surface_effects(
-              draft.surface,
-              draft.transparency_enabled,
-              draft.transparency,
-              draft.blur_enabled,
-              draft.blur,
             )
           }
-          EffectSurface::ControlPanel => {
-            backend::set_control_panel_enabled(draft.control_panel_enabled)?;
-            let changes = ControlPanelCard::ALL
-              .into_iter()
-              .filter_map(|card| {
-                (draft.control_panel_cards.enabled(card)
-                  != current_state.control_panel_cards.enabled(card))
-                .then_some((card, draft.control_panel_cards.enabled(card)))
-              })
-              .collect::<Vec<_>>();
-            if !changes.is_empty() {
-              backend::set_control_panel_cards(changes)?;
-            }
-            backend::apply_surface_effects(
-              draft.surface,
-              draft.transparency_enabled,
-              draft.transparency,
-              draft.blur_enabled,
-              draft.blur,
-            )
-          }
-          EffectSurface::Terminal => backend::apply_surface_effects(
-            draft.surface,
-            draft.transparency_enabled,
-            draft.transparency,
-            true,
-            0,
-          ),
-          EffectSurface::Launchers => backend::apply_surface_effects(
+          EffectSurface::ControlPanel => apply_control_panel_draft(&draft, &current),
+          EffectSurface::Terminal | EffectSurface::Launchers => backend::apply_surface_effects(
             draft.surface,
             draft.transparency_enabled,
             draft.transparency,
@@ -775,19 +819,10 @@ impl AppearanceApp {
   }
   /// Applies the `toggle` operation while preserving the persistence and local-update contract. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn toggle(&mut self) {
-    let value = if self.state.rounded { "0" } else { "1" };
     let enable = !self.state.rounded;
     self.apply(
       tr(self.lang, "control_center.border_settings_applied").into(),
-      move || {
-        backend::set_border("rounded", value).and_then(|_| {
-          if enable {
-            backend::set_border("rounding", "2")
-          } else {
-            Ok(())
-          }
-        })
-      },
+      move || backend::set_rounded(enable),
     );
   }
   /// Runs what activating `item` does: Enter/`→` (and Space, see
@@ -1150,17 +1185,8 @@ impl AppearanceApp {
     };
     let lang = self.lang;
     self.apply_result(move || {
-      backend::apply_custom_theme(&custom).map(|report| {
-        if report.wallpaper_missing {
-          format!(
-            "{}: {}",
-            tr(lang, "control_center.theme_profile_applied"),
-            tr(lang, "control_center.theme_profile_wallpaper_missing")
-          )
-        } else {
-          tr(lang, "control_center.theme_profile_applied").to_string()
-        }
-      })
+      backend::apply_custom_theme(&custom)
+        .map(|()| tr(lang, "control_center.theme_profile_applied").to_string())
     });
   }
 
@@ -1173,7 +1199,7 @@ impl AppearanceApp {
       text: tr(self.lang, "control_center.theme_profile_importing").into(),
     });
     self.action = Some(self.manager.spawn(move |_| {
-      let (name, duplicate) = backend::inspect_theme_profile(&path)?;
+      let (name, duplicate) = backend::inspect_theme_archive(&path)?;
       Ok(JobData::ImportReady {
         path,
         name,
@@ -1270,7 +1296,7 @@ impl AppearanceApp {
           }
           let message = tr(self.lang, "control_center.theme_profile_exported").to_string();
           self.apply_result(move || {
-            let path = backend::export_theme_profile(&value)?;
+            let path = backend::export_theme(&value)?;
             Ok(format!("{message}: {}", path.display()))
           });
           self.go(back);
@@ -1321,7 +1347,7 @@ impl AppearanceApp {
         if matches!(
           self.page,
           AppearancePage::Prompt {
-            goal: PromptGoal::ExportProfile | PromptGoal::ImportProfile
+            goal: PromptGoal::ExportProfile
           }
         ) && !c.is_control()
           && self.prompt_buffer.len() < 512 =>
@@ -1429,13 +1455,10 @@ impl AppearanceApp {
     self.apply(
       tr(self.lang, "control_center.blur_applied").into(),
       move || {
-        if enabled_changed {
-          backend::set_blur(draft.enabled)?;
-        }
-        if values_changed {
-          backend::set_blur_values(draft.values)?;
-        }
-        Ok(())
+        backend::apply_blur(
+          enabled_changed.then_some(draft.enabled),
+          values_changed.then_some(draft.values),
+        )
       },
     );
   }
@@ -1848,13 +1871,10 @@ impl AppearanceApp {
     self.apply(
       tr(self.lang, "control_center.animations_applied").into(),
       move || {
-        if enabled_changed {
-          backend::set_animations(draft.enabled)?;
-        }
-        if values_changed {
-          backend::set_animation_values(draft.values)?;
-        }
-        Ok(())
+        backend::apply_animations(
+          enabled_changed.then_some(draft.enabled),
+          values_changed.then_some(draft.values),
+        )
       },
     );
   }
@@ -1905,8 +1925,7 @@ impl AppearanceApp {
     self.apply(
       tr(self.lang, "control_center.effect_value_applied").into(),
       move || {
-        // Same splash as the surface `Apply`, for the whole write and reload.
-        let _overlay = backend::ApplyOverlay::start();
+        // A value reloads in place: no surface is recreated, so no splash.
         if kind == "transparency" && surface == EffectSurface::Terminal {
           backend::apply_surface_effects(surface, terminal_transparency_enabled, value, true, 0)
         } else if kind == "transparency" && surface == EffectSurface::Launchers {
@@ -1930,7 +1949,6 @@ impl AppearanceApp {
   fn prompt_label(&self, goal: PromptGoal) -> &'static str {
     match goal {
       PromptGoal::ExportProfile => "control_center.theme_profile_export_name",
-      PromptGoal::ImportProfile => "control_center.theme_profile_import_path",
       PromptGoal::WaybarTop => "control_center.top",
       PromptGoal::WaybarLeft => "control_center.left",
       PromptGoal::WaybarRight => "control_center.right",
@@ -2239,7 +2257,7 @@ impl AppearanceApp {
       .join(FOOTER_GAP),
       AppearancePage::Prompt { goal } => {
         let mut segments = Vec::new();
-        if !matches!(goal, PromptGoal::ExportProfile | PromptGoal::ImportProfile) {
+        if goal != PromptGoal::ExportProfile {
           segments.push(format!("0-9 {}", label("control_center.hint.edit")));
         }
         segments.push(format!("Enter {}", label("control_center.hint.confirm")));
@@ -2439,7 +2457,7 @@ impl AppearanceApp {
       chunks[1],
     );
     if matches!(goal, PromptGoal::ExportProfile) {
-      let output = backend::preview_theme_profile_path(&self.prompt_buffer)
+      let output = backend::preview_theme_export_path(&self.prompt_buffer)
         .map(|path| path.display().to_string())
         .unwrap_or_else(|| "—".into());
       frame.render_widget(

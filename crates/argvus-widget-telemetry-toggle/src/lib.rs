@@ -437,7 +437,11 @@ fn apply_state(arguments: &[String]) -> ExitCode {
     return ExitCode::from(2);
   }
   let _ = fs::create_dir_all(state_file().parent().unwrap_or(Path::new(".")));
-  let _ = set_canonical_master(master == "enabled");
+  // The widget restart below applies the state, so the configuration is only
+  // written (and reloaded) when the master switch changes.
+  if canonical_master_state() != Some(master.as_str()) {
+    let _ = set_canonical_master(master == "enabled");
+  }
   let _ = write_atomic(&state_file(), &format!("{master}\n"));
   // The Control Panel sends the states in this order, and the file keeps it.
   let block_states: Vec<(&str, bool)> = APPLY_ORDER.iter().copied().zip(parsed).collect();

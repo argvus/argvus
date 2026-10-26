@@ -249,10 +249,12 @@ impl FontSettings {
   pub fn reset_all(&mut self) -> Result<(), SettingsError> {
     let previous = self.clone();
     *self = Self::defaults();
+    // One write of the state (one configuration reload) and one refresh for
+    // every target together.
     let result = (|| {
       self.write_state()?;
       for target in FontTarget::ALL {
-        self.apply_target(target)?;
+        self.write_target(target)?;
       }
       self.apply_rendering()?;
       self.refresh_runtime();
@@ -323,6 +325,14 @@ impl FontSettings {
   /// Applies the `apply_target` operation while preserving the persistence and local-update contract. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn apply_target(&self, target: FontTarget) -> Result<(), String> {
     self.write_state()?;
+    self.write_target(target)?;
+    self.refresh_runtime();
+    Ok(())
+  }
+
+  /// Writes the font of `target` to the files and settings its programs read,
+  /// without storing the state or refreshing the running programs.
+  fn write_target(&self, target: FontTarget) -> Result<(), String> {
     match target {
       FontTarget::Taskbar | FontTarget::Sysinfo => self.write_waybar_settings()?,
       FontTarget::ControlPanel => {}
@@ -348,7 +358,6 @@ impl FontSettings {
       }
       FontTarget::Browser => self.write_browser_settings()?,
     }
-    self.refresh_runtime();
     Ok(())
   }
 
@@ -573,10 +582,12 @@ impl FontSettings {
     Ok(())
   }
 
-  /// Executes the `refresh_runtime` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
+  /// Shows the new fonts in the running programs without restarting them: the
+  /// theme consumers re-read their styles (the bars) or reload over IPC (the
+  /// Control Panel, which re-reads `fonts.conf`), so no splash is needed.
   fn refresh_runtime(&self) {
     spawn_if_available("hyprctl", &["reload"]);
-    spawn_if_available("argvus", &["sessionctl", "restart", "waybar", "shell"]);
+    spawn_if_available("argvus", &["config", "theme-runtime", "consumers"]);
     let script = paths::system_config_root().join("lock/sh/hyprlock-theme.sh");
     if script.is_file() {
       let script = script.to_string_lossy();

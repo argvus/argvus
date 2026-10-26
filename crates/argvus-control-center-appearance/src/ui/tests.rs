@@ -297,12 +297,12 @@ fn control_panel_sessions_toggle_the_card_on_the_row() {
 #[test]
 fn theme_rows_use_friendly_official_names() {
   let rows = labels(&app(AppearancePage::Themes));
-  // Official, Custom, export profile, import profile.
+  // Official, Custom, export, import.
   assert_eq!(rows.len(), 4);
   assert!(rows[0].contains("Official"));
   assert!(rows[1].contains("Custom"));
-  assert!(rows[2].contains("Export theme profile"));
-  assert!(rows[3].contains("Import theme profile"));
+  assert!(rows[2].contains("Export theme"));
+  assert!(rows[3].contains("Import theme"));
 }
 
 #[test]
@@ -689,9 +689,6 @@ fn theme_shortcuts_are_kept_and_shown_in_the_footer() {
   custom.state.custom_themes = vec![CustomTheme {
     id: "mine".into(),
     name: "Mine".into(),
-    base_theme: "argvus-dark".into(),
-    profile_path: "/tmp/mine".into(),
-    wallpaper_path: None,
   }];
   let rows = custom.rows();
   custom.menu.normalize(&rows);
@@ -1170,9 +1167,6 @@ fn custom_theme_app() -> AppearanceApp {
   custom.state.custom_themes = vec![CustomTheme {
     id: "mine".into(),
     name: "Mine".into(),
-    base_theme: "argvus-dark".into(),
-    profile_path: "/tmp/mine".into(),
-    wallpaper_path: None,
   }];
   custom
 }
@@ -1766,4 +1760,70 @@ fn card_availability_arrives_without_blocking_or_dirtying_the_draft() {
       .available(ControlPanelCard::Bluetooth)
   );
   assert!(!application.has_pending_changes());
+}
+
+#[test]
+fn only_structural_surface_changes_recreate_the_surface() {
+  let application = app(AppearancePage::Desktop);
+  let taskbar = application.make_surface_draft(EffectSurface::Taskbar);
+  let styled = SurfaceDraft {
+    border_enabled: !taskbar.border_enabled,
+    border_thickness: 3,
+    transparency: 40,
+    blur: 70,
+    ..taskbar.clone()
+  };
+  assert!(!recreates_surface(&styled, &taskbar));
+  let taller = SurfaceDraft {
+    height: taskbar.height + 4,
+    ..taskbar.clone()
+  };
+  assert!(recreates_surface(&taller, &taskbar));
+  let no_seconds = SurfaceDraft {
+    time_seconds_enabled: !taskbar.time_seconds_enabled,
+    ..taskbar.clone()
+  };
+  assert!(recreates_surface(&no_seconds, &taskbar));
+
+  let widget = application.make_surface_draft(EffectSurface::WidgetTelemetry);
+  let reordered = SurfaceDraft {
+    widget_order: widget.widget_order.iter().rev().copied().collect(),
+    ..widget.clone()
+  };
+  assert!(recreates_surface(&reordered, &widget));
+  let translucent = SurfaceDraft {
+    transparency_enabled: !widget.transparency_enabled,
+    ..widget.clone()
+  };
+  assert!(!recreates_surface(&translucent, &widget));
+
+  let terminal = application.make_surface_draft(EffectSurface::Terminal);
+  let clear = SurfaceDraft {
+    transparency: 10,
+    ..terminal.clone()
+  };
+  assert!(!recreates_surface(&clear, &terminal));
+}
+
+#[test]
+fn a_hidden_control_panel_is_not_recreated_by_its_cards() {
+  let application = app(AppearancePage::Desktop);
+  let mut current = application.make_surface_draft(EffectSurface::ControlPanel);
+  current.control_panel_enabled = false;
+  let mut cards = current.clone();
+  cards.control_panel_cards.set(
+    ControlPanelCard::ALL[0],
+    !current
+      .control_panel_cards
+      .enabled(ControlPanelCard::ALL[0]),
+  );
+  assert!(!recreates_surface(&cards, &current));
+  let shown = SurfaceDraft {
+    control_panel_enabled: true,
+    ..current.clone()
+  };
+  assert!(recreates_surface(&shown, &current));
+  current.control_panel_enabled = true;
+  cards.control_panel_enabled = true;
+  assert!(recreates_surface(&cards, &current));
 }

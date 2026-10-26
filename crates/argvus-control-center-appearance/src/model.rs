@@ -791,7 +791,6 @@ impl TaskbarTimeFormat {
 /// Defines `PromptGoal`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub enum PromptGoal {
   ExportProfile,
-  ImportProfile,
   WaybarTop,
   WaybarLeft,
   WaybarRight,
@@ -819,7 +818,6 @@ impl PromptGoal {
   pub fn key(self) -> &'static str {
     match self {
       Self::ExportProfile => "export_profile",
-      Self::ImportProfile => "import_profile",
       Self::WaybarTop => "waybar_top",
       Self::WaybarLeft => "waybar_left",
       Self::WaybarRight => "waybar_right",
@@ -839,7 +837,7 @@ impl PromptGoal {
   /// Executes the const function documented in this module. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
   pub const fn range(self) -> (i32, i32) {
     match self {
-      Self::ExportProfile | Self::ImportProfile => (0, 0),
+      Self::ExportProfile => (0, 0),
       Self::Rounding => (2, 10),
       Self::Thickness => (0, 10),
       _ => (0, 100),
@@ -1032,6 +1030,8 @@ pub struct AppearanceState {
   pub rounding: i32,
   pub thickness: i32,
   pub custom_themes: Vec<CustomTheme>,
+  /// What the one-time conversion of legacy appearance profiles did, shown once.
+  pub theme_notices: Vec<String>,
   pub active_custom_theme: Option<String>,
   /// Discovered official themes (built-in + drop-in packages).
   /// This replaces the hard-coded `THEMES`/`THEME_FAMILIES` constants.
@@ -1043,11 +1043,9 @@ pub struct AppearanceState {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CustomTheme {
+  /// The theme id: the name of its directory under `$XDG_DATA_HOME/argvus/themes`.
   pub id: String,
   pub name: String,
-  pub base_theme: String,
-  pub profile_path: String,
-  pub wallpaper_path: Option<String>,
 }
 impl Default for AppearanceState {
   /// Executes the `default` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
@@ -1111,6 +1109,7 @@ impl Default for AppearanceState {
       rounding: 0,
       thickness: 1,
       custom_themes: Vec::new(),
+      theme_notices: Vec::new(),
       active_custom_theme: None,
       official_themes: vec![
         argvus_theme::discovery::ThemeEntry {
@@ -1120,6 +1119,7 @@ impl Default for AppearanceState {
           accent: "#3590bd".to_string(),
           wallpaper: "argvus-dark.jxl".to_string(),
           name_i18n: std::collections::HashMap::new(),
+          user: false,
         },
         argvus_theme::discovery::ThemeEntry {
           id: "argvus-light".to_string(),
@@ -1128,6 +1128,7 @@ impl Default for AppearanceState {
           accent: "#181818".to_string(),
           wallpaper: "argvus-light.jxl".to_string(),
           name_i18n: std::collections::HashMap::new(),
+          user: false,
         },
       ],
       discovery_warnings: Vec::new(),

@@ -576,6 +576,7 @@ mod tests {
       accent: String::new(),
       wallpaper: String::new(),
       name_i18n: std::collections::HashMap::new(),
+      user: false,
     }];
     assert_eq!(
       default_icon_theme_for("argvus-dark", &[]),

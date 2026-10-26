@@ -7,8 +7,8 @@ mod backend;
 mod blur;
 mod icons;
 mod model;
-mod profile;
 mod ui;
+mod user_themes;
 
 pub use model::{
   ACCENTS, AppearancePage, AppearanceState, ControlPanelCard, ControlPanelCards, CustomTheme,

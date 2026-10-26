@@ -823,8 +823,31 @@ fn theme_runtime_command(arguments: &[String]) -> ExitCode {
       crate::theme_runtime::reload_consumers(&paths, None);
       ExitCode::SUCCESS
     }
+    // The wallpaper of the configuration, shown through hyprpaper's IPC.
+    [target] if target == "wallpaper" => {
+      let wallpaper = ConfigStore::at(&paths.config_home)
+        .load_effective()
+        .ok()
+        .and_then(|document| {
+          document
+            .get("/appearance/wallpaper")
+            .and_then(Value::as_str)
+            .map(str::to_owned)
+        })
+        .filter(|wallpaper| !wallpaper.is_empty());
+      match wallpaper {
+        Some(wallpaper) => {
+          crate::theme_runtime::show_wallpaper(&paths, &wallpaper);
+          ExitCode::SUCCESS
+        }
+        None => {
+          eprintln!("argvus-config: no wallpaper is configured");
+          ExitCode::from(1)
+        }
+      }
+    }
     _ => {
-      eprintln!("usage: argvus config theme-runtime hyprland|consumers");
+      eprintln!("usage: argvus config theme-runtime hyprland|consumers|wallpaper");
       ExitCode::from(64)
     }
   }

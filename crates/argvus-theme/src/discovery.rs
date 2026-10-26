@@ -37,6 +37,9 @@ pub struct ThemeEntry {
   /// Localized display names (e.g., {"en-US": "Dracula", "pt-BR": "Dracula"}).
   #[serde(default)]
   pub name_i18n: HashMap<String, String>,
+  /// A theme of the user (`$XDG_DATA_HOME/argvus/themes`), not a package.
+  #[serde(default)]
+  pub user: bool,
 }
 
 impl ThemeEntry {
@@ -117,6 +120,7 @@ pub fn discover_themes(system_config: &Path) -> DiscoveryReport {
           .iter()
           .map(|(locale, name)| (locale.clone(), name.clone()))
           .collect(),
+        user: installed.source == discovery::Source::User,
       }
     })
     .collect();
@@ -147,6 +151,7 @@ fn builtin_themes() -> [ThemeEntry; 2] {
       ("en-US".to_string(), name.to_string()),
       ("pt-BR".to_string(), name.to_string()),
     ]),
+    user: false,
   };
   [
     entry("argvus-dark", "ARGVUS Dark", ThemeCategory::Dark, "#3590bd"),
@@ -177,6 +182,7 @@ mod tests {
       accent: "#000000".to_string(),
       wallpaper: "test.jxl".to_string(),
       name_i18n: HashMap::new(),
+      user: false,
     };
     assert!(entry.validate_id().is_ok());
 
@@ -196,6 +202,7 @@ mod tests {
       accent: "#000000".to_string(),
       wallpaper: "test.jxl".to_string(),
       name_i18n: HashMap::new(),
+      user: false,
     };
 
     // Uppercase not allowed

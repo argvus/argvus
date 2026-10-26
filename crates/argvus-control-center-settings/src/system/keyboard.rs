@@ -134,7 +134,6 @@ pub fn set_x11_layouts(
   // and reloads Hyprland. `hyprctl keyword` is rejected by Hyprland 0.56.
   write_generated_hypr_input(Some(&layouts), Some(&variant))?;
   switch_active_layout(default_layout, &layouts);
-  reload_taskbar();
   Ok(())
 }
 
@@ -152,7 +151,6 @@ pub fn set_x11_variant(
   // Preserve the complete cycle list while changing only the variant of the
   // currently selected layout.
   write_generated_hypr_input(None, Some(&resolved_variant(layout, variant)))?;
-  reload_taskbar();
   Ok(())
 }
 
@@ -519,18 +517,6 @@ fn switch_active_layout(layout: &str, layouts: &str) {
     .unwrap_or(0);
   let _ = argvus_control_center_core::process::command("hyprctl")
     .args(["switchxkblayout", "all", &index.to_string()])
-    .stdin(Stdio::null())
-    .stdout(Stdio::null())
-    .stderr(Stdio::null())
-    .status();
-}
-
-/// Executes the `reload_taskbar` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
-fn reload_taskbar() {
-  // Keep this identical to SUPER+SHIFT+R, which is the supported ARGVUS
-  // session reload and is required for the managed Waybar configuration.
-  let _ = argvus_control_center_core::process::command("argvus")
-    .args(["sessionctl", "reload"])
     .stdin(Stdio::null())
     .stdout(Stdio::null())
     .stderr(Stdio::null())

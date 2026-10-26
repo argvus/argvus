@@ -155,6 +155,15 @@ pub fn project(store: &ConfigStore, force: bool) -> ConfigResult<String> {
       || manifest_field_changed(previous_manifest.as_ref(), "gtk_mode", &gtk_mode_hash));
   let wallpaper_changed = changed_sections.contains(&"appearance")
     && manifest_field_changed(previous_manifest.as_ref(), "wallpaper", &wallpaper_hash);
+  // The taskbar margins and position are layer-shell settings of the bars: only
+  // they recreate the bars. Window gaps and borders reload in place.
+  let taskbar_layout_hash = value_hash(document.get("/layout/taskbar"))?;
+  let taskbar_layout_changed = changed_sections.contains(&"layout")
+    && previous_manifest
+      .as_ref()
+      .and_then(|manifest| manifest.pointer("/layout_values/taskbar"))
+      .and_then(Value::as_str)
+      != Some(taskbar_layout_hash.as_str());
 
   let mut affected_consumers = Vec::new();
   if changed_sections.contains(&"appearance") {
@@ -202,6 +211,7 @@ pub fn project(store: &ConfigStore, force: bool) -> ConfigResult<String> {
     &changed_sections,
     appearance_visual_changed,
     wallpaper_changed,
+    taskbar_layout_changed,
   );
 
   let reload_plan = if changed_sections
@@ -286,6 +296,7 @@ pub fn project(store: &ConfigStore, force: bool) -> ConfigResult<String> {
           "gtk_mode": gtk_mode_hash,
           "wallpaper": wallpaper_hash,
       },
+      "layout_values": {"taskbar": taskbar_layout_hash},
       "changed_sections": changed_sections,
       "affected_consumers": affected_consumers,
       "reload_required": !affected_consumers.is_empty(),
@@ -346,10 +357,16 @@ fn manifest_field_changed(previous: Option<&Value>, field: &str, current_hash: &
     != Some(current_hash)
 }
 
+/// What the runtime half of a reload does for the changed sections. Only
+/// `taskbar`, `widget_telemetry` and `control_panel` recreate a surface (and
+/// show the splash); `consumers` reloads the themed consumers in place (the
+/// Waybar stylesheets, the Control Panel, Hyprland colours, Dunst, btop and
+/// kitty) and `wallpaper` goes through hyprpaper's IPC.
 fn reload_targets(
   changed_sections: &[&str],
   appearance_visual_changed: bool,
   wallpaper_changed: bool,
+  taskbar_layout_changed: bool,
 ) -> serde_json::Map<String, Value> {
   let mut targets = serde_json::Map::new();
   let mut enable = |name: &str| {
@@ -358,27 +375,25 @@ fn reload_targets(
 
   if appearance_visual_changed {
     enable("hyprland");
-    enable("taskbar");
-    enable("widget_telemetry");
-    enable("control_panel");
-    enable("notifications");
+    enable("consumers");
     enable("polkit");
     enable("wallpaper");
   } else if wallpaper_changed {
     enable("wallpaper");
   }
-
   if changed_sections.contains(&"effects") {
     enable("hyprland");
-    enable("taskbar");
-    enable("widget_telemetry");
-    enable("control_panel");
-    enable("notifications");
+    enable("consumers");
   }
   if changed_sections.contains(&"layout") {
     enable("hyprland");
-    enable("taskbar");
-    enable("widget_telemetry");
+    if taskbar_layout_changed {
+      enable("taskbar");
+      enable("widget_telemetry");
+    }
+  }
+  if changed_sections.contains(&"fonts") {
+    enable("consumers");
   }
   if changed_sections
     .iter()
@@ -1466,31 +1481,53 @@ mod tests {
 
   #[test]
   fn reload_targets_keep_power_changes_scoped_to_hypridle() {
-    let targets = reload_targets(&["power"], false, false);
+    let targets = reload_targets(&["power"], false, false, false);
     assert_eq!(targets.get("hypridle"), Some(&Value::Bool(true)));
     assert_eq!(targets.len(), 1);
   }
 
   #[test]
   fn reload_targets_keep_wallpaper_changes_scoped_to_wallpaper() {
-    let targets = reload_targets(&["appearance"], false, true);
+    let targets = reload_targets(&["appearance"], false, true, false);
     assert_eq!(targets.get("wallpaper"), Some(&Value::Bool(true)));
     assert_eq!(targets.len(), 1);
   }
 
-  #[test]
-  fn reload_targets_expand_theme_changes_to_visual_consumers() {
-    let targets = reload_targets(&["appearance"], true, true);
-    for target in [
-      "hyprland",
+  /// The targets that recreate a surface, and so show the splash.
+  fn restarts(targets: &serde_json::Map<String, Value>) -> Vec<&str> {
+    [
       "taskbar",
       "widget_telemetry",
       "control_panel",
       "notifications",
-      "wallpaper",
-    ] {
-      assert_eq!(targets.get(target), Some(&Value::Bool(true)), "{target}");
+    ]
+    .into_iter()
+    .filter(|target| targets.contains_key(*target))
+    .collect()
+  }
+
+  #[test]
+  fn theme_and_effect_changes_reload_in_place() {
+    let theme = reload_targets(&["appearance"], true, true, false);
+    for target in ["hyprland", "consumers", "wallpaper", "polkit"] {
+      assert_eq!(theme.get(target), Some(&Value::Bool(true)), "{target}");
     }
+    assert!(restarts(&theme).is_empty());
+    let effects = reload_targets(&["effects"], false, false, false);
+    assert!(effects.contains_key("hyprland") && effects.contains_key("consumers"));
+    assert!(restarts(&effects).is_empty());
+    let fonts = reload_targets(&["fonts"], false, false, false);
+    assert_eq!(fonts.keys().collect::<Vec<_>>(), ["consumers"]);
+  }
+
+  #[test]
+  fn only_the_taskbar_layout_recreates_the_bars() {
+    let window = reload_targets(&["layout"], false, false, false);
+    assert_eq!(window.keys().collect::<Vec<_>>(), ["hyprland"]);
+    let taskbar = reload_targets(&["layout"], false, false, true);
+    assert_eq!(restarts(&taskbar), ["taskbar", "widget_telemetry"]);
+    let panel = reload_targets(&["control_panel"], false, false, false);
+    assert_eq!(restarts(&panel), ["control_panel"]);
   }
 
   #[test]

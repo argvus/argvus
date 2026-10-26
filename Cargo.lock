@@ -270,6 +270,7 @@ dependencies = [
  "argvus-control-center-core",
  "argvus-i18n-core",
  "argvus-theme",
+ "argvus-theme-core",
  "argvus-tui",
  "crossterm",
  "flate2",
