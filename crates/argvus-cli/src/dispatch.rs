@@ -80,6 +80,12 @@ pub fn run(arguments: &[OsString]) -> Outcome {
     "theme-switch" => run_config(&with_leading("theme-apply", rest)),
     "effects-toggle" => run_config(&with_leading("effects", rest)),
     "config" => run_config(rest),
+    // Theme builds (palette, templates, render); the switch stays `theme-switch`.
+    // `theme apply` is the theme switch; the other theme commands are builds.
+    "theme" if rest.first().is_some_and(|word| word == "apply") => {
+      run_config(&with_leading("theme-apply", &rest[1..]))
+    }
+    "theme" => Ok(argvus_theme_core::run_command(owned_arguments(rest)?)),
     "gpg" => Ok(argvus_keys::run_command(command_words("gpg", rest)?)),
     "keys" => Ok(argvus_keys::run_command(owned_arguments(rest)?)),
     // Runs in-process: the i18n commands are a library of the workspace.

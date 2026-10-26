@@ -1,9 +1,0 @@
-/* theme: one-light — widget telemetry panel */
-@define-color th-background    #F0F0F1;
-@define-color th-header        #383A42;
-@define-color th-foreground    #383A42;
-@define-color th-window-bg     #FFFFFF;
-@define-color th-window-bg-rgba rgba(255, 255, 255, 0.82);
-@define-color th-border        rgba(215, 218, 224, 0.90);
-@define-color th-border-header rgba(215, 218, 224, 1);
-@define-color th-disconnected  rgba(105, 108, 119, 0.30);

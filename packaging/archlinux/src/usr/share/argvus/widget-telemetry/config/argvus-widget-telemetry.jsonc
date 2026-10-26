@@ -3,6 +3,8 @@
 // =============================================================================
 {
     "name": "argvus-widget-telemetry",
+    // A theme switch rewrites the stylesheet; Waybar then reloads only the CSS.
+    "reload_style_on_change": true,
     "layer": "bottom",
     "position": "left",
     "width": 380,

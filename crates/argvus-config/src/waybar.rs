@@ -5,10 +5,12 @@
 //! refreshed from the packaged ones first, and the font blocks are written last.
 //! Rust home of the Waybar section of the theme switch.
 
+use crate::ConfigDocument;
 use crate::css_edit::{self, Declaration};
 use crate::session_paths::SessionPaths;
 use crate::text_edit;
 use crate::user_copy;
+use serde_json::Value;
 use std::fs;
 use std::io;
 use std::path::{Path, PathBuf};
@@ -75,6 +77,35 @@ pub fn set_taskbar_border_width(text: &str, width: u32) -> String {
 pub struct TaskbarShape {
   pub height: Option<u32>,
   pub border_width: Option<u32>,
+}
+
+impl TaskbarShape {
+  /// The shape chosen in the canonical configuration under `/taskbar/shape`.
+  /// An unset value is `None` and follows the packaged taskbar and the theme.
+  pub fn chosen(document: &ConfigDocument) -> Self {
+    let pixels = |pointer: &str| {
+      document
+        .get(pointer)
+        .and_then(Value::as_u64)
+        .and_then(|pixels| u32::try_from(pixels).ok())
+    };
+    Self {
+      height: pixels("/taskbar/shape/height"),
+      border_width: pixels("/taskbar/shape/border_width"),
+    }
+  }
+}
+
+/// Writes a chosen shape into the live taskbar files. `None` values leave the
+/// files as they are.
+pub fn apply_taskbar_shape(paths: &SessionPaths, shape: TaskbarShape) -> io::Result<()> {
+  if let Some(height) = shape.height {
+    set_taskbar_height(paths, height)?;
+  }
+  if let Some(width) = shape.border_width {
+    set_taskbar_border(paths, width)?;
+  }
+  Ok(())
 }
 
 /// Sets the taskbar height in the live JSONC file. A missing file is skipped.
@@ -316,6 +347,29 @@ fn edit_text(path: &Path, edit: impl Fn(&str) -> String) -> io::Result<()> {
 #[cfg(test)]
 mod tests {
   use super::*;
+
+  #[test]
+  fn chosen_shape_reads_set_values_and_leaves_null_to_the_theme() {
+    let mut document = ConfigDocument::default();
+    document.sections.insert(
+      "taskbar".into(),
+      serde_json::json!({ "shape": { "height": 32, "border_width": null } }),
+    );
+    assert_eq!(
+      TaskbarShape::chosen(&document),
+      TaskbarShape {
+        height: Some(32),
+        border_width: None,
+      }
+    );
+    assert_eq!(
+      TaskbarShape::chosen(&ConfigDocument::default()),
+      TaskbarShape {
+        height: None,
+        border_width: None,
+      }
+    );
+  }
 
   #[test]
   fn compact_list_matches_exact_ids_only() {

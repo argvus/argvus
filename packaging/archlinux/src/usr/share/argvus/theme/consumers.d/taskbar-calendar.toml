@@ -1,0 +1,20 @@
+# Theme consumer: rendered into every theme build as taskbar-calendar/theme.css.
+id = "taskbar-calendar"
+template = "taskbar-calendar/theme-template/theme.css"
+output = "taskbar-calendar/theme.css"
+
+# Defaults for the tokens the template reads; a theme that defines one wins.
+[palette]
+calendar_accent = "@accent"
+calendar_accent_alpha = "@accent | alpha(0.45)"
+calendar_background = "@accent | alpha(0.16)"
+calendar_bg_alpha = "@bg"
+calendar_border = "@accent | alpha(0.28)"
+calendar_color = "@danger"
+calendar_dim = "@fg | mix(@bg, 0.3) | alpha(0.34)"
+calendar_fg = "@fg"
+calendar_focus = "@accent | alpha(0.75)"
+calendar_muted = "@fg | mix(@bg, 0.2)"
+calendar_surface = "@bg | mix(@accent, 0.1)"
+danger = "#E06C75"
+tui_bg = "@bg"

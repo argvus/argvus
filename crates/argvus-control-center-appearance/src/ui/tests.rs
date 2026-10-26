@@ -410,9 +410,8 @@ fn wallpaper_items_filter_by_collection_and_mode() {
   assert_eq!(rows[0].kind(), RowKind::Choice { current: true });
 }
 
-// TODO (Fase 3): Refactor to test with dynamic theme discovery
-// Currently themes are discovered dynamically from /usr/share/argvus/appearance/themes.d/
-// Test needs a temporary directory with sample theme.toml files to verify grouping
+// The test state lists only the built-in themes; installed packages are
+// discovered from /usr/share/argvus/themes at runtime.
 #[test]
 fn theme_families_are_grouped_by_identifier_category() {
   let dark_rows = app(AppearancePage::ThemeFamilies {

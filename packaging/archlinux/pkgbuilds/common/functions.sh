@@ -106,9 +106,6 @@ arch_install_payload() {
 	# The system monitor reads its btop configuration from its own directory.
 	install -Dm644 "${source_root}/packaging/archlinux/src/usr/share/argvus/system-monitor/config/btop/btop.conf" \
 		"${pkgdir}/usr/share/argvus-system-monitor/btop/btop.conf"
-	install -dm755 "${pkgdir}/usr/share/argvus-system-monitor/btop/themes"
-	install -m644 "${source_root}/packaging/archlinux/src/usr/share/argvus/system-monitor/config/btop/themes/"*.theme \
-		"${pkgdir}/usr/share/argvus-system-monitor/btop/themes/"
 }
 
 arch_package_argvus() {
@@ -150,12 +147,10 @@ arch_package_argvus_gtk() {
 		"${pkgdir}/usr/lib/argvus/taskbar-calendar/waybar-launcher"
 	install -Dm644 "${source_root}/packaging/archlinux/src/usr/lib/systemd/user/argvus-taskbar-calendar.service" \
 		"${pkgdir}/usr/lib/systemd/user/argvus-taskbar-calendar.service"
-	install -dm755 "${pkgdir}/etc/argvus/taskbar/calendar/themes"
+	install -dm755 "${pkgdir}/etc/argvus/taskbar/calendar"
 	install -m644 "${source_root}/packaging/archlinux/src/etc/argvus/taskbar/calendar/"*.toml \
 		"${source_root}/packaging/archlinux/src/etc/argvus/taskbar/calendar/"*.css \
 		"${pkgdir}/etc/argvus/taskbar/calendar/"
-	install -m644 "${source_root}/packaging/archlinux/src/etc/argvus/taskbar/calendar/themes/"*.css \
-		"${pkgdir}/etc/argvus/taskbar/calendar/themes/"
 
 }
 

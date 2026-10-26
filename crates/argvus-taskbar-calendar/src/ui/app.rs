@@ -16,10 +16,7 @@ use relm4::{ComponentParts, ComponentSender, RelmApp, SimpleComponent};
 use crate::calendar::{
   CalendarEvent, first_of_month, next_month, previous_month, shift_year_clamped, today,
 };
-use crate::config::{
-  Paths, Settings, active_theme_name, list_theme_names, load_events_enabled, save_events_enabled,
-  write_active_theme,
-};
+use crate::config::{Paths, Settings, load_events_enabled, save_events_enabled};
 use crate::i18n::{I18n, Language, Text};
 use crate::ipc::{IpcCommand, PopupAnchor};
 use crate::storage::Database;
@@ -147,7 +144,6 @@ pub enum AppMsg {
   SaveSettings,
   SettingsFontFamily(String),
   SettingsFontSize(u32),
-  SettingsTheme(String),
   SettingsLanguage(String),
   SettingsWeekStart(String),
   SettingsShowEvents(bool),
@@ -549,15 +545,6 @@ impl SimpleComponent for AppModel {
     settings_root.append(&font_size_label);
     settings_root.append(&font_size);
 
-    let theme_label = settings_label();
-    let theme_names: Vec<String> = list_theme_names(&model.paths);
-    let theme_refs: Vec<&str> = theme_names.iter().map(String::as_str).collect();
-    let theme_model = gtk::StringList::new(&theme_refs);
-    let theme = gtk::DropDown::new(Some(theme_model.clone()), None::<gtk::Expression>);
-    theme.add_css_class("editor-dropdown");
-    settings_root.append(&theme_label);
-    settings_root.append(&theme);
-
     let language_label = settings_label();
     let language_model = gtk::StringList::new(&["auto", "en-US", "pt-BR"]);
     let language = gtk::DropDown::new(Some(language_model.clone()), None::<gtk::Expression>);
@@ -790,13 +777,6 @@ impl SimpleComponent for AppModel {
       sender,
       move |spin: &gtk::SpinButton| {
         sender.input(AppMsg::SettingsFontSize(spin.value() as u32));
-      }
-    ));
-    let theme_handler = theme.connect_selected_notify(clone!(
-      #[strong]
-      sender,
-      move |dropdown: &gtk::DropDown| {
-        sender.input(AppMsg::SettingsTheme(dropdown_value(dropdown)));
       }
     ));
     let language_handler = language.connect_selected_notify(clone!(
@@ -1074,9 +1054,6 @@ impl SimpleComponent for AppModel {
         font_family,
         font_size_label,
         font_size,
-        theme_label,
-        theme,
-        theme_model,
         language_label,
         language,
         language_model,
@@ -1106,7 +1083,6 @@ impl SimpleComponent for AppModel {
         changed_handlers: SettingsChangedHandlers {
           font_family: font_family_handler,
           font_size: font_size_handler,
-          theme: theme_handler,
           language: language_handler,
           week_start: week_start_handler,
           show_events: show_events_handler,
@@ -1163,7 +1139,6 @@ impl SimpleComponent for AppModel {
         | AppMsg::EditorRepeatMinutes(_)
         | AppMsg::SettingsFontFamily(_)
         | AppMsg::SettingsFontSize(_)
-        | AppMsg::SettingsTheme(_)
         | AppMsg::SettingsLanguage(_)
         | AppMsg::SettingsWeekStart(_)
         | AppMsg::SettingsShowEvents(_)
@@ -1283,12 +1258,8 @@ impl SimpleComponent for AppModel {
         self.view = ViewState::Calendar;
       }
       AppMsg::OpenSettings => {
-        let theme = active_theme_name(&self.paths)
-          .or_else(|| list_theme_names(&self.paths).into_iter().next())
-          .unwrap_or_default();
         self.view = ViewState::Settings(Box::new(SettingsDraft::from_config(
           &self.settings,
-          &theme,
           self.events_enabled,
         )));
       }
@@ -1300,9 +1271,6 @@ impl SimpleComponent for AppModel {
       }
       AppMsg::SettingsFontSize(value) => {
         update_settings_draft(&mut self.view, |draft| draft.font_size = value)
-      }
-      AppMsg::SettingsTheme(value) => {
-        update_settings_draft(&mut self.view, |draft| draft.theme = value)
       }
       AppMsg::SettingsLanguage(value) => {
         update_settings_draft(&mut self.view, |draft| draft.language = value)
@@ -1337,10 +1305,6 @@ impl SimpleComponent for AppModel {
       AppMsg::SaveSettings => {
         if let ViewState::Settings(draft) = &self.view {
           let draft = *draft.clone();
-          let theme = draft.theme.clone();
-          if active_theme_name(&self.paths).as_deref() != Some(theme.as_str()) {
-            let _ = write_active_theme(&self.paths, &theme);
-          }
           let config = draft.into_config();
           if self.events_enabled != config.calendar.show_events {
             self.events_enabled = config.calendar.show_events;
@@ -2077,10 +2041,6 @@ fn load_css(paths: &Paths, providers: &Rc<RefCell<Vec<gtk::CssProvider>>>) {
 fn stylesheet_paths(paths: &Paths) -> Vec<std::path::PathBuf> {
   let mut stylesheets = vec![paths.user_style.clone(), paths.theme_file.clone()];
   let active_theme_id = active_theme_id(paths);
-  let active_theme = active_theme_name(paths);
-  if let Some(active_theme) = &active_theme {
-    stylesheets.push(paths.theme_dir.join(format!("{active_theme}.css")));
-  }
   if cache_theme_is_current(paths, active_theme_id.as_deref()) {
     stylesheets.push(paths.cache_theme_file.clone());
   }
@@ -2311,9 +2271,7 @@ mod tests {
   #[test]
   fn current_calendar_theme_cache_is_loaded() {
     let root = std::env::temp_dir().join(format!("argvus-calendar-theme-{}", uuid::Uuid::new_v4()));
-    let theme_dir = root.join("themes");
-    std::fs::create_dir_all(&theme_dir).unwrap();
-    let paths = test_theme_paths(&root, "gruvbox-dark-float");
+    let paths = test_theme_paths(&root);
     std::fs::create_dir_all(paths.active_argvus_theme_file.parent().unwrap()).unwrap();
     std::fs::create_dir_all(paths.cache_theme_file.parent().unwrap()).unwrap();
     std::fs::write(&paths.active_argvus_theme_file, "gruvbox-dark-float\n").unwrap();
@@ -2331,7 +2289,7 @@ mod tests {
   #[test]
   fn stale_calendar_theme_cache_is_ignored() {
     let root = std::env::temp_dir().join(format!("argvus-calendar-theme-{}", uuid::Uuid::new_v4()));
-    let paths = test_theme_paths(&root, "sunset");
+    let paths = test_theme_paths(&root);
     std::fs::create_dir_all(paths.active_argvus_theme_file.parent().unwrap()).unwrap();
     std::fs::write(&paths.active_argvus_theme_file, "sunset\n").unwrap();
     std::fs::create_dir_all(paths.cache_theme_file.parent().unwrap()).unwrap();
@@ -2347,10 +2305,9 @@ mod tests {
   }
 
   #[test]
-  fn current_cache_is_loaded_before_new_theme_asset_is_installed() {
+  fn current_cache_is_loaded_without_a_packaged_theme_stylesheet() {
     let root = std::env::temp_dir().join(format!("argvus-calendar-theme-{}", uuid::Uuid::new_v4()));
-    let paths = test_theme_paths(&root, "sunset");
-    std::fs::remove_file(paths.theme_dir.join("sunset.css")).unwrap();
+    let paths = test_theme_paths(&root);
     std::fs::create_dir_all(paths.active_argvus_theme_file.parent().unwrap()).unwrap();
     std::fs::write(&paths.active_argvus_theme_file, "sunset\n").unwrap();
     std::fs::create_dir_all(paths.cache_theme_file.parent().unwrap()).unwrap();
@@ -2361,15 +2318,14 @@ mod tests {
     std::fs::remove_dir_all(root).unwrap();
   }
 
-  fn test_theme_paths(root: &std::path::Path, theme: &str) -> Paths {
-    let paths = Paths {
+  fn test_theme_paths(root: &std::path::Path) -> Paths {
+    Paths {
       database: root.join("data/calendar.db"),
       config_file: root.join("config/config.toml"),
       legacy_settings_file: root.join("config/settings.toml"),
       user_config_file: root.join("user/config.toml"),
       user_style: root.join("config/style.css"),
       theme_file: root.join("config/theme.css"),
-      theme_dir: root.join("themes"),
       cache_theme_file: root.join("cache/theme.css"),
       active_argvus_theme_file: root.join("config/argvus/data/.active-theme"),
       events_enabled_file: root.join("state/events-enabled"),
@@ -2377,9 +2333,6 @@ mod tests {
       data_dir: root.join("data"),
       state_dir: root.join("state"),
       cache_dir: root.join("cache"),
-    };
-    std::fs::create_dir_all(&paths.theme_dir).unwrap();
-    std::fs::write(paths.theme_dir.join(format!("{theme}.css")), "").unwrap();
-    paths
+    }
   }
 }

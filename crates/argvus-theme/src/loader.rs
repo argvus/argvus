@@ -57,11 +57,20 @@ pub const OFFICIAL_THEMES: &[&str] = &[
   "everforest-light-float",
 ];
 
+/// One stylesheet the palette is read from.
+pub enum Source {
+  /// A file, read with its `@import` lines.
+  File(PathBuf),
+  /// A stylesheet rendered in memory.
+  Text(String),
+}
+
 /// Represents `Loader`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub struct Loader {
   resource_dir: PathBuf,
   active_file: PathBuf,
-  cache_file: PathBuf,
+  /// `generated/theme/current`, the build of the user's active theme.
+  current_build: PathBuf,
   active_name_override: Option<String>,
   accent_override: Option<Rgba>,
 }
@@ -85,13 +94,10 @@ impl Loader {
         development
       }
     });
-    let cache_home = std::env::var_os("XDG_CACHE_HOME")
-      .map(PathBuf::from)
-      .unwrap_or_else(|| home().join(".cache"));
     Self {
       resource_dir,
       active_file: argvus_data_home().join(".active-theme"),
-      cache_file: cache_home.join("argvus-control-center/theme.css"),
+      current_build: argvus_data_home().join("generated/theme/current"),
       active_name_override: None,
       accent_override: None,
     }
@@ -139,52 +145,89 @@ impl Loader {
       .unwrap_or_else(|| DEFAULT_THEME.to_string())
   }
 
-  /// Executes the `sources` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
-  pub fn sources(&self) -> Vec<PathBuf> {
+  /// The stylesheets of the palette, in order: the shared style, the base
+  /// theme and the palette of the active theme.
+  pub fn sources(&self) -> Vec<Source> {
     let active = self.active_name();
-    vec![
-      self.resource_dir.join("style.css"),
-      self.resource_dir.join("theme.css"),
-      self
-        .resource_dir
-        .join("themes")
-        .join(format!("{active}.css")),
-      self.cache_file.clone(),
-    ]
+    let mut sources = vec![
+      Source::File(self.resource_dir.join("style.css")),
+      Source::File(self.resource_dir.join("theme.css")),
+    ];
+    if let Some(build) = self.active_build_palette(&active) {
+      sources.push(Source::File(build));
+    } else if let Some(rendered) = self.rendered_palette(&active) {
+      sources.push(Source::Text(rendered));
+    }
+    sources
   }
+
+  /// The TUI palette of the theme build, when the active theme is the user's
+  /// own (not one chosen for another account) and the build was rendered for it.
+  fn active_build_palette(&self, active: &str) -> Option<PathBuf> {
+    if self.active_name_override.is_some() {
+      return None;
+    }
+    argvus_theme_core::build::current_file_for(&self.current_build, active, "tui/theme.css")
+  }
+
+  /// The TUI palette rendered from the theme's manifest, for a theme without a
+  /// build. A theme chosen for another account (the greeter) is looked up among
+  /// the official themes only, because that account's own themes are private.
+  fn rendered_palette(&self, active: &str) -> Option<String> {
+    let mut paths = argvus_theme_core::paths::ThemePaths::from_environment().unwrap_or_else(|| {
+      argvus_theme_core::paths::ThemePaths {
+        system_root: system_config(),
+        user_themes: PathBuf::new(),
+        generated: PathBuf::new(),
+      }
+    });
+    if self.active_name_override.is_some() {
+      paths.user_themes = PathBuf::new();
+    }
+    argvus_theme_core::render::render_file(&paths, active, None, "tui").ok()
+  }
+
+  /// What identifies the palette on disk: a different stamp means `sources`
+  /// would load other colours.
+  pub fn stamp(&self) -> ThemeStamp {
+    ThemeStamp {
+      build: fs::read_link(&self.current_build).ok(),
+      active: self.active_name(),
+    }
+  }
+}
+
+/// The identity of the active palette on disk (see [`Loader::stamp`]).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ThemeStamp {
+  build: Option<PathBuf>,
+  active: String,
 }
 
 /// Returns whether `name` is an official ARGVUS theme identifier.
 ///
-/// Built-in identifiers are listed in `OFFICIAL_THEMES`. A drop-in theme
-/// package is official as soon as its manifest is installed, so it needs no
-/// entry in this crate.
+/// Built-in identifiers are listed in `OFFICIAL_THEMES`. A theme package is
+/// official as soon as its manifest is installed, so it needs no entry in this
+/// crate.
 pub fn is_official_theme(name: &str) -> bool {
-  OFFICIAL_THEMES.contains(&name) || drop_in_manifest_installed(name)
+  OFFICIAL_THEMES.contains(&name) || manifest_installed_in(&system_config(), name)
 }
 
-fn drop_in_manifest_installed(name: &str) -> bool {
-  let system_config = std::env::var_os("ARGVUS_SYSTEM_CONFIG")
-    .map(std::path::PathBuf::from)
-    .unwrap_or_else(|| std::path::PathBuf::from("/usr/share/argvus"));
-  drop_in_manifest_installed_in(&system_config, name)
+fn system_config() -> PathBuf {
+  std::env::var_os("ARGVUS_SYSTEM_CONFIG")
+    .map(PathBuf::from)
+    .unwrap_or_else(|| PathBuf::from("/usr/share/argvus"))
 }
 
-/// Checks `appearance/themes.d/<family>/theme.toml` under `system_config`.
-/// `name` is untrusted (it can come from the greeter or a saved profile), so
-/// it is validated as a theme ID before it is used as a path component.
-fn drop_in_manifest_installed_in(system_config: &std::path::Path, name: &str) -> bool {
+/// Checks `themes/<family>/theme.toml` under `system_config`. `name` is
+/// untrusted (it can come from the greeter or a saved profile), so it is
+/// validated as a theme ID before it is used as a path component.
+fn manifest_installed_in(system_config: &Path, name: &str) -> bool {
   // Float is a layout mode of the same family; the manifest is keyed by family.
   let family = name.strip_suffix("-float").unwrap_or(name);
-  let is_valid_family = !family.is_empty()
-    && !family.starts_with('-')
-    && !family.ends_with('-')
-    && family.chars().all(|character| {
-      character.is_ascii_lowercase() || character.is_ascii_digit() || character == '-'
-    });
-  is_valid_family
+  argvus_theme_core::manifest::validate_id(family).is_ok()
     && system_config
-      .join("appearance/themes.d")
+      .join("themes")
       .join(family)
       .join("theme.toml")
       .is_file()
@@ -341,64 +384,21 @@ mod tests {
   use super::*;
 
   #[test]
-  /// Executes the `every_official_theme_exposes_the_shared_palette` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
-  fn every_official_theme_exposes_the_shared_palette() {
-    let themes = development_resources_dir().join("themes");
-    // The TUI themes live in the argvus-appearance repository. A package build
-    // only has this repository, so the check is skipped there; the development
-    // validation (make validate) runs it with the sibling checkout present.
-    if !themes.is_dir() {
-      eprintln!("skipped: {} is not in this source tree", themes.display());
-      return;
-    }
-    let entries = fs::read_dir(themes).expect("official theme directory");
-    let mut count = 0;
-    for entry in entries.flatten() {
-      if entry.path().extension().and_then(|value| value.to_str()) != Some("css") {
-        continue;
-      }
-      let css = read_recursive(&entry.path(), &mut Vec::new()).expect("read official theme");
-      let definitions = crate::parser::extract_define_colors(&css);
-      assert!(
-        definitions.iter().any(|(name, _)| name == "argvus_bg"),
-        "{} has no background",
-        entry.path().display()
-      );
-      assert!(
-        definitions.iter().any(|(name, _)| name == "argvus_accent"),
-        "{} has no accent",
-        entry.path().display()
-      );
-      count += 1;
-    }
-    assert!(count >= 10, "expected all packaged ARGVUS themes");
-  }
-
-  #[test]
-  fn drop_in_theme_is_official_only_when_its_manifest_is_installed() {
+  fn a_theme_is_official_only_when_its_manifest_is_installed() {
     // A process-unique directory keeps parallel test runs isolated; the crate
     // has no tempfile dependency, so the directory is removed by hand.
     let system_config =
       std::env::temp_dir().join(format!("argvus-theme-manifest-test-{}", std::process::id()));
-    let family_dir = system_config.join("appearance/themes.d/nord-light");
+    let family_dir = system_config.join("themes/nord-light");
     std::fs::create_dir_all(&family_dir).unwrap();
     std::fs::write(family_dir.join("theme.toml"), "id = \"nord-light\"\n").unwrap();
 
-    assert!(drop_in_manifest_installed_in(&system_config, "nord-light"));
-    assert!(drop_in_manifest_installed_in(
-      &system_config,
-      "nord-light-float"
-    ));
-    assert!(!drop_in_manifest_installed_in(
-      &system_config,
-      "not-installed"
-    ));
+    assert!(manifest_installed_in(&system_config, "nord-light"));
+    assert!(manifest_installed_in(&system_config, "nord-light-float"));
+    assert!(!manifest_installed_in(&system_config, "not-installed"));
     // Untrusted names must never escape the themes directory.
-    assert!(!drop_in_manifest_installed_in(
-      &system_config,
-      "../nord-light"
-    ));
-    assert!(!drop_in_manifest_installed_in(&system_config, "Nord-Light"));
+    assert!(!manifest_installed_in(&system_config, "../nord-light"));
+    assert!(!manifest_installed_in(&system_config, "Nord-Light"));
 
     std::fs::remove_dir_all(&system_config).unwrap();
   }

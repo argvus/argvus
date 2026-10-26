@@ -1,0 +1,18 @@
+# Theme consumer: rendered into every theme build as widget-telemetry/theme.css.
+id = "widget-telemetry"
+template = "widget-telemetry/theme-template/theme.css"
+output = "widget-telemetry/theme.css"
+# It reads the build directly, so it reloads as soon as the build is active.
+reload_stage = "build"
+
+# Waybar reloads its CSS when the stylesheet that imports the build is rewritten.
+[reload]
+kind = "rewrite"
+path = "argvus/data/waybar/argvus-widget-telemetry.css"
+
+# Defaults for the tokens the template reads; a theme that defines one wins.
+[palette]
+telemetry_background = "@bg"
+telemetry_disconnected = "@fg | mix(@bg, 0.3) | alpha(0.35)"
+telemetry_window_bg = "@bg | mix(@accent, 0.1)"
+telemetry_window_bg_rgba = "@bg | mix(@accent, 0.1) | alpha(0.35)"

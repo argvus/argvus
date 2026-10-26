@@ -1,83 +1,20 @@
-//! Service and overlay steps of a theme switch.
+//! The loading overlay that covers a change the desktop cannot apply in place.
 //!
-//! A theme switch rewrites the files of several session components, so it
-//! stops those services first and restarts the ones that were running. It also
-//! shows the loading overlay with the colours of the theme. These steps do not
-//! depend on the theme, so they live here. The transaction itself (the lock and
-//! the order of the writes) lives in `theme_apply` and `theme_body`.
+//! A theme switch no longer needs it: the consumers reload their build in
+//! place. The Control Center still shows it while an `Apply` of a surface
+//! restarts that surface (`argvus config transition-overlay hold`). The overlay
+//! takes the colours of the active theme from its build.
 
 use crate::session_paths::SessionPaths;
 use crate::session_splash::{
   self, Owner, SplashColors, SplashEnvironment, SplashRequest, StartOutcome,
 };
 use std::fs;
-use std::process::{Command, Stdio};
-
-/// The services a theme transition stops and restarts. Restart requests are
-/// checked against this table before any `systemctl` call.
-pub const TRANSITION_UNITS: [&str; 5] = [
-  "argvus-taskbar.service",
-  "argvus-widget-telemetry.service",
-  "argvus-control-panel.service",
-  "argvus-dunst.service",
-  "argvus-wallpaper.service",
-];
 
 /// Colours used when the theme does not define one.
 const FALLBACK_FOREGROUND: &str = "#f4f4f4";
 const FALLBACK_BACKGROUND: &str = "#101218";
 const FALLBACK_ACCENT: &str = "#7aa2f7";
-
-/// A restart request named a unit outside `TRANSITION_UNITS`.
-#[derive(Debug, PartialEq, Eq)]
-pub struct UnknownUnit(pub String);
-
-/// The transition units that are active now, in table order.
-pub fn active_units() -> Vec<&'static str> {
-  TRANSITION_UNITS
-    .iter()
-    .copied()
-    .filter(|unit| systemctl_user(&["is-active", "--quiet", unit]))
-    .collect()
-}
-
-/// Stops every transition unit. A unit that is not running is not an error.
-pub fn stop_units() {
-  for unit in TRANSITION_UNITS {
-    systemctl_user(&["stop", unit]);
-  }
-}
-
-/// Starts the units named in `list`, separated by blanks, as the script
-/// recorded them. Every name must be in `TRANSITION_UNITS`; a failed start is
-/// ignored, as it always was, so one unit cannot block the others.
-pub fn restart_units(list: &str) -> Result<(), UnknownUnit> {
-  let requested: Vec<&str> = list.split_whitespace().collect();
-  if let Some(unknown) = requested
-    .iter()
-    .find(|unit| !TRANSITION_UNITS.contains(unit))
-  {
-    return Err(UnknownUnit((*unknown).to_string()));
-  }
-  for unit in requested {
-    systemctl_user(&["start", unit]);
-  }
-  Ok(())
-}
-
-/// Runs `systemctl --user` with the given arguments. Returns whether it
-/// succeeded; output is discarded, as the script discarded it.
-fn systemctl_user(arguments: &[&str]) -> bool {
-  Command::new("systemctl")
-    .arg("--user")
-    .args(arguments)
-    .stdin(Stdio::null())
-    .stdout(Stdio::null())
-    .stderr(Stdio::null())
-    .status()
-    .map(|status| status.success())
-    .unwrap_or(false)
-}
 
 /// Starts the overlay for `theme` with the theme's colours. The outcome tells
 /// the caller whether this call started it.
@@ -136,17 +73,13 @@ fn default_colors() -> SplashColors {
   }
 }
 
-/// The colours the theme's `hyprtoolkit.conf` defines for `text`, `background`
-/// and `accent`, with the fallbacks for any it does not define.
+/// The colours the build's `hyprtoolkit.conf` defines for `text`, `background`
+/// and `accent` when the build is of `theme`, with the fallbacks for any it
+/// does not define.
 fn overlay_colors(paths: &SessionPaths, theme: &str) -> SplashColors {
-  // The shell read this file with the mutable `paths_config`, which also
-  // creates the theme's user directory. Keep that side effect as it was.
-  let file = crate::user_copy::config_path(
-    paths,
-    &format!("appearance/config/hypr/themes/{theme}/hyprtoolkit.conf"),
-  )
-  .unwrap_or_default();
-  let text = fs::read_to_string(file).unwrap_or_default();
+  let text = crate::theme_build::current_file_for(paths, theme, "hypr/hyprtoolkit.conf")
+    .and_then(|file| fs::read_to_string(file).ok())
+    .unwrap_or_default();
   toolkit_colors(&text, theme)
 }
 
@@ -251,14 +184,6 @@ mod tests {
     assert_eq!(colours.background, FALLBACK_BACKGROUND);
     assert_eq!(colours.foreground, FALLBACK_FOREGROUND);
     assert_eq!(colours.accent, FALLBACK_ACCENT);
-  }
-
-  #[test]
-  fn restart_rejects_units_outside_the_table_before_starting_any() {
-    assert_eq!(
-      restart_units("argvus-taskbar.service evil.service"),
-      Err(UnknownUnit("evil.service".to_string()))
-    );
   }
 
   #[test]

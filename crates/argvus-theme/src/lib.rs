@@ -39,6 +39,12 @@ impl Theme {
     resolver::resolve(&loader::Loader::new())
   }
 
+  /// The identity of the user's active palette: when it changes, `load`
+  /// returns other colours (another theme, layout or accent).
+  pub fn active_stamp() -> loader::ThemeStamp {
+    loader::Loader::new().stamp()
+  }
+
   /// Loads a theme selected by an external account or pre-authentication
   /// source without changing process-wide XDG environment variables.
   pub fn load_for_theme_name(name: &str) -> Self {

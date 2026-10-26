@@ -18,7 +18,11 @@ pub fn resolve(loader: &Loader) -> Theme {
     .map(|(name, value)| (name.to_string(), value.to_string()))
     .collect();
   for source in loader.sources() {
-    if let Some(css) = loader::read_recursive(&source, &mut Vec::new()) {
+    let css = match source {
+      loader::Source::File(path) => loader::read_recursive(&path, &mut Vec::new()),
+      loader::Source::Text(text) => Some(text),
+    };
+    if let Some(css) = css {
       definitions.extend(parser::extract_define_colors(&css));
     }
   }

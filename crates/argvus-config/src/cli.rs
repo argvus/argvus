@@ -5,10 +5,10 @@ use crate::{
   ConfigDocument, ConfigScope, ConfigStore, appearance_runtime, css_edit, session_loading,
   session_paths, session_prepare, session_reload, session_splash, session_units,
   text_edit::{self, replace_file},
-  theme_apply, theme_dirs, theme_resolve, theme_surfaces, theme_transition, user_copy,
+  theme_apply, theme_resolve, theme_transition, user_copy,
 };
 use crate::{ConfigError, ConfigResult};
-use crate::{accent, accent_switch, display, effects, monitor_state, theme_files, waybar};
+use crate::{accent, accent_switch, display, effects, monitor_state, waybar};
 use serde_json::{Map, Value};
 use std::env;
 use std::fs;
@@ -31,12 +31,6 @@ pub fn run_command(arguments: Vec<String>) -> ExitCode {
   }
   if arguments.first().map(String::as_str) == Some("gtk-theme-name") {
     return gtk_theme_name(&arguments[1..]);
-  }
-  if arguments.first().map(String::as_str) == Some("appearance-hypr") {
-    return appearance_hypr(&arguments[1..]);
-  }
-  if arguments.first().map(String::as_str) == Some("appearance-tail") {
-    return appearance_tail(&arguments[1..]);
   }
   if arguments.first().map(String::as_str) == Some("waybar-refresh") {
     return waybar_refresh(&arguments[1..]);
@@ -119,20 +113,8 @@ pub fn run_command(arguments: Vec<String>) -> ExitCode {
   if arguments.first().map(String::as_str) == Some("mutable-path") {
     return mutable_path(&arguments[1..]);
   }
-  if arguments.first().map(String::as_str) == Some("storage-theme") {
-    return storage_theme(&arguments[1..]);
-  }
-  if arguments.first().map(String::as_str) == Some("calendar-theme") {
-    return calendar_theme(&arguments[1..]);
-  }
-  if arguments.first().map(String::as_str) == Some("greeter-publish") {
-    return greeter_publish(&arguments[1..]);
-  }
   if arguments.first().map(String::as_str) == Some("gtk-files") {
     return gtk_files(&arguments[1..]);
-  }
-  if arguments.first().map(String::as_str) == Some("wallpaper-fallback") {
-    return wallpaper_fallback(&arguments[1..]);
   }
   if arguments.first().map(String::as_str) == Some("gtk-runtime") {
     return gtk_runtime(&arguments[1..]);
@@ -140,14 +122,8 @@ pub fn run_command(arguments: Vec<String>) -> ExitCode {
   if arguments.first().map(String::as_str) == Some("wallpaper-apply") {
     return wallpaper_apply(&arguments[1..]);
   }
-  if arguments.first().map(String::as_str) == Some("transition-units") {
-    return transition_units(&arguments[1..]);
-  }
   if arguments.first().map(String::as_str) == Some("transition-overlay") {
     return transition_overlay(&arguments[1..]);
-  }
-  if arguments.first().map(String::as_str) == Some("theme-parent") {
-    return theme_parent(&arguments[1..]);
   }
   if arguments.first().map(String::as_str) == Some("theme-apply") {
     let theme = arguments.get(1).map(String::as_str).unwrap_or("");
@@ -163,6 +139,9 @@ pub fn run_command(arguments: Vec<String>) -> ExitCode {
       }
     };
     return ExitCode::from(theme_apply::run(&paths, theme, &variant) as u8);
+  }
+  if arguments.first().map(String::as_str) == Some("theme-runtime") {
+    return theme_runtime_command(&arguments[1..]);
   }
   // Checked before the `theme-` prefix below, which routes theme queries only.
   if arguments.first().map(String::as_str) == Some("theme-file") {
@@ -362,14 +341,14 @@ fn apply_theme(
       .position(|value| value == name)
       .and_then(|index| arguments.get(index + 1))
   };
-  // The theme's own defaults come from its manifest (themes.d/<family>/theme.toml),
+  // The theme's own defaults come from its manifest (themes/<family>/theme.toml),
   // the same source the accent and GTK mode fallbacks use everywhere else.
   if !theme_resolve::is_valid_theme_id(theme) {
     return Err(format!("invalid theme id '{theme}'").into());
   }
-  let themes_dir = system_config_dir().join("appearance/themes.d");
-  let default_accent = accent::theme_default_accent(&themes_dir, theme);
-  let default_mode = theme_resolve::gtk_mode(&themes_dir, theme);
+  let theme_paths = theme_resolve::theme_paths();
+  let default_accent = accent::theme_default_accent(&theme_paths, theme);
+  let default_mode = theme_resolve::gtk_mode(&theme_paths, theme);
   let accent = option("--accent")
     .map(String::as_str)
     .or(default_accent.as_deref());
@@ -394,13 +373,6 @@ fn apply_mode(store: &ConfigStore, arguments: &[String]) -> Result<(), Box<dyn s
     .ok_or("usage: argvus config apply-mode <sticky|float>")?;
   store.apply_layout_variant(variant)?;
   Ok(())
-}
-
-fn system_config_dir() -> PathBuf {
-  env::var_os("ARGVUS_SYSTEM_CONFIG")
-    .filter(|value| !value.is_empty())
-    .map(PathBuf::from)
-    .unwrap_or_else(|| PathBuf::from("/usr/share/argvus"))
 }
 
 fn export_scope(
@@ -542,26 +514,6 @@ fn cache_home() -> Result<PathBuf, Box<dyn std::error::Error>> {
   Ok(PathBuf::from(home).join(".cache/argvus"))
 }
 
-/// `theme-parent RELATIVE THEME`: prints the user directory that holds the
-/// theme's files, after filling the missing ones. Exits 1 when no copy exists.
-fn theme_parent(arguments: &[String]) -> ExitCode {
-  let [relative, theme] = arguments else {
-    eprintln!("usage: argvus config theme-parent RELATIVE THEME");
-    return ExitCode::from(64);
-  };
-  let Some(paths) = session_paths::SessionPaths::from_environment() else {
-    eprintln!("argvus-config: cannot resolve the configuration directory");
-    return ExitCode::from(1);
-  };
-  match theme_dirs::theme_parent(&paths, relative, theme) {
-    Some(parent) => {
-      println!("{}", parent.display());
-      ExitCode::SUCCESS
-    }
-    None => ExitCode::from(1),
-  }
-}
-
 /// `gtk-theme-name THEME`: the GTK theme the theme uses. Exits 1 for an unknown theme.
 fn gtk_theme_name(arguments: &[String]) -> ExitCode {
   let [theme] = arguments else {
@@ -571,62 +523,13 @@ fn gtk_theme_name(arguments: &[String]) -> ExitCode {
   let Some(paths) = session_paths::SessionPaths::from_environment() else {
     return ExitCode::from(1);
   };
-  let themes_dir = paths.system_config("appearance/themes.d");
-  match appearance_runtime::gtk_theme_name(&themes_dir, theme) {
-    Some(name) => {
-      println!("{name}");
-      ExitCode::SUCCESS
-    }
-    None => ExitCode::from(1),
-  }
-}
-
-/// `appearance-hypr THEME SYSTEM_FAMILY SYSTEM_SIZE ICON`: the Hyprland toolkit,
-/// its application style and the qt6ct icon theme of the theme.
-fn appearance_hypr(arguments: &[String]) -> ExitCode {
-  let [theme, family, size, icon] = arguments else {
-    eprintln!("usage: argvus config appearance-hypr THEME SYSTEM_FAMILY SYSTEM_SIZE ICON");
-    return ExitCode::from(64);
-  };
-  let Some(paths) = session_paths::SessionPaths::from_environment() else {
-    eprintln!("argvus-config: cannot resolve the configuration directory");
+  let theme_paths = crate::theme_build::theme_paths(&paths);
+  if theme_resolve::manifest(&theme_paths, theme).is_none() {
     return ExitCode::from(1);
-  };
-  let hypr_themes = paths.system_config("appearance/config/hypr/themes");
-  let hypr_themes =
-    theme_dirs::theme_parent(&paths, "appearance/config/hypr/themes", theme).unwrap_or(hypr_themes);
-  match theme_files::apply_hypr_stage(&paths, &hypr_themes, theme, family, size, icon) {
-    Ok(()) => ExitCode::SUCCESS,
-    Err(error) => {
-      eprintln!("argvus-config: appearance: {error}");
-      ExitCode::from(1)
-    }
   }
-}
-
-/// `appearance-tail THEME`: yazi, superfile and the mode stylesheet.
-/// Prints `missing=PATH` and exits 0 when the yazi flavor is not installed; the
-/// shell reports that in the user's language.
-fn appearance_tail(arguments: &[String]) -> ExitCode {
-  let [theme] = arguments else {
-    eprintln!("usage: argvus config appearance-tail THEME");
-    return ExitCode::from(64);
-  };
-  let Some(paths) = session_paths::SessionPaths::from_environment() else {
-    eprintln!("argvus-config: cannot resolve the configuration directory");
-    return ExitCode::from(1);
-  };
-  match theme_files::apply_tail_stage(&paths, theme) {
-    Ok(Some(missing)) => {
-      println!("missing={}", missing.display());
-      ExitCode::SUCCESS
-    }
-    Ok(None) => ExitCode::SUCCESS,
-    Err(error) => {
-      eprintln!("argvus-config: appearance: {error}");
-      ExitCode::from(1)
-    }
-  }
+  let light = theme_resolve::gtk_mode(&theme_paths, theme) == "light";
+  println!("{}", appearance_runtime::gtk_theme_name(light));
+  ExitCode::SUCCESS
 }
 
 /// `waybar-refresh RELATIVE`: copies the packaged Waybar file over its managed copy.
@@ -720,109 +623,11 @@ fn mutable_path(arguments: &[String]) -> ExitCode {
   }
 }
 
-/// `storage-theme THEME WORKSPACE_ROOT USER_DIR DESTINATION`: the removable-devices
-/// panel theme. The shell resolves the user directory and the destination in
-/// its mutable config mode; an empty workspace means none. A failed copy is
-/// reported and the switch continues, as it always did.
-fn storage_theme(arguments: &[String]) -> ExitCode {
-  let [theme, workspace, user_dir, destination] = arguments else {
-    eprintln!("usage: argvus config storage-theme THEME WORKSPACE_ROOT USER_DIR DESTINATION");
-    return ExitCode::from(64);
-  };
-  let Some(paths) = session_paths::SessionPaths::from_environment() else {
-    eprintln!("argvus-config: cannot resolve the configuration directory");
-    return ExitCode::SUCCESS;
-  };
-  let themes_dir = paths.system_config("appearance/themes.d");
-  let system_dir = paths.system_config("removable-devices/config/themes");
-  let workspace_root = (!workspace.is_empty()).then(|| PathBuf::from(workspace));
-  let locations = theme_surfaces::StorageLocations {
-    user_dir: Path::new(user_dir),
-    system_dir: &system_dir,
-    destination: Path::new(destination),
-    workspace_root: workspace_root.as_deref(),
-  };
-  if let Err(error) = theme_surfaces::apply_storage_theme(&locations, &themes_dir, theme) {
-    eprintln!("argvus-config: removable-devices theme: {error}");
-  }
-  ExitCode::SUCCESS
-}
-
-/// `calendar-theme THEME [WORKSPACE_ROOT]`: the taskbar calendar stylesheet.
-fn calendar_theme(arguments: &[String]) -> ExitCode {
-  let Some((theme, workspace)) = theme_and_workspace(arguments, "calendar-theme") else {
-    return ExitCode::from(64);
-  };
-  let Some(paths) = session_paths::SessionPaths::from_environment() else {
-    eprintln!("argvus-config: cannot resolve the configuration directory");
-    return ExitCode::SUCCESS;
-  };
-  let cache_home = env::var_os("XDG_CACHE_HOME")
-    .filter(|value| !value.is_empty())
-    .map(PathBuf::from)
-    .unwrap_or_else(|| PathBuf::from(env::var_os("HOME").unwrap_or_default()).join(".cache"));
-  let cache_file = cache_home.join("argvus-taskbar-calendar/theme.css");
-  let themes_dir = paths.system_config("appearance/themes.d");
-  if let Err(error) = theme_surfaces::apply_calendar_theme(
-    &paths,
-    &themes_dir,
-    &cache_file,
-    theme,
-    workspace.as_deref(),
-  ) {
-    eprintln!("argvus-config: calendar theme: {error}");
-  }
-  ExitCode::SUCCESS
-}
-
-/// `greeter-publish THEME`: publishes the theme id the greeter may draw.
-fn greeter_publish(arguments: &[String]) -> ExitCode {
-  let [theme] = arguments else {
-    eprintln!("usage: argvus config greeter-publish THEME");
-    return ExitCode::from(64);
-  };
-  let Some(paths) = session_paths::SessionPaths::from_environment() else {
-    return ExitCode::SUCCESS;
-  };
-  let state_dir = env::var_os("ARGVUS_GREETER_THEME_STATE_DIR")
-    .filter(|value| !value.is_empty())
-    .map(PathBuf::from)
-    .unwrap_or_else(|| PathBuf::from("/var/lib/argvus/greeter/themes"));
-  let themes_dir = paths.system_config("appearance/themes.d");
-  if let Err(error) = theme_surfaces::publish_greeter_theme(
-    &themes_dir,
-    &state_dir,
-    theme,
-    theme_surfaces::current_user_id(),
-  ) {
-    eprintln!("argvus-config: greeter theme: {error}");
-  }
-  ExitCode::SUCCESS
-}
-
-/// Splits `THEME [WORKSPACE_ROOT]`. An empty workspace means none.
-fn theme_and_workspace<'a>(
-  arguments: &'a [String],
-  command: &str,
-) -> Option<(&'a str, Option<PathBuf>)> {
-  match arguments {
-    [theme] => Some((theme.as_str(), None)),
-    [theme, workspace] => Some((
-      theme.as_str(),
-      (!workspace.is_empty()).then(|| PathBuf::from(workspace)),
-    )),
-    _ => {
-      eprintln!("usage: argvus config {command} THEME [WORKSPACE_ROOT]");
-      None
-    }
-  }
-}
-
-/// `gtk-files THEME MODE NAME PREFER_DARK ICON FONT`: the GTK stylesheets,
-/// settings and mode marker of a theme.
+/// `gtk-files MODE NAME PREFER_DARK ICON FONT`: the GTK settings and mode
+/// marker of a theme.
 fn gtk_files(arguments: &[String]) -> ExitCode {
-  let [theme, mode, gtk_theme_name, prefer_dark, icon_theme, font] = arguments else {
-    eprintln!("usage: argvus config gtk-files THEME MODE NAME PREFER_DARK ICON FONT");
+  let [mode, gtk_theme_name, prefer_dark, icon_theme, font] = arguments else {
+    eprintln!("usage: argvus config gtk-files MODE NAME PREFER_DARK ICON FONT");
     return ExitCode::from(64);
   };
   let Some(paths) = session_paths::SessionPaths::from_environment() else {
@@ -832,7 +637,6 @@ fn gtk_files(arguments: &[String]) -> ExitCode {
   appearance_runtime::apply_gtk_theme_files(
     &paths,
     &appearance_runtime::GtkFiles {
-      theme: theme.clone(),
       mode: mode.clone(),
       gtk_theme_name: gtk_theme_name.clone(),
       prefer_dark: prefer_dark.clone(),
@@ -841,29 +645,6 @@ fn gtk_files(arguments: &[String]) -> ExitCode {
     },
   );
   ExitCode::SUCCESS
-}
-
-/// `wallpaper-fallback THEME`: the theme wallpaper found without its manifest.
-fn wallpaper_fallback(arguments: &[String]) -> ExitCode {
-  let [theme] = arguments else {
-    eprintln!("usage: argvus config wallpaper-fallback THEME");
-    return ExitCode::from(64);
-  };
-  let Some(paths) = session_paths::SessionPaths::from_environment() else {
-    eprintln!("argvus-config: cannot resolve the configuration directory");
-    return ExitCode::from(1);
-  };
-  let backgrounds_base = env::var_os("ARGVUS_BACKGROUNDS_DIR")
-    .filter(|value| !value.is_empty())
-    .map(PathBuf::from)
-    .unwrap_or_else(|| PathBuf::from("/usr/share/backgrounds"));
-  match appearance_runtime::fallback_wallpaper(&paths, &backgrounds_base.join("argvus"), theme) {
-    Some(wallpaper) => {
-      println!("{}", wallpaper.display());
-      ExitCode::SUCCESS
-    }
-    None => ExitCode::from(1),
-  }
 }
 
 /// `gtk-runtime SCHEME THEME FALLBACK FONT ICON`: the GTK settings of a theme,
@@ -897,32 +678,6 @@ fn wallpaper_apply(arguments: &[String]) -> ExitCode {
   };
   appearance_runtime::apply_wallpaper(Path::new(hyprpaper_file), wallpaper, runtime);
   ExitCode::SUCCESS
-}
-
-/// `transition-units record|stop|restart [UNITS]`: the services a theme switch
-/// stops and restarts. `record` prints the active ones, separated by blanks.
-fn transition_units(arguments: &[String]) -> ExitCode {
-  match arguments.first().map(String::as_str) {
-    Some("record") => {
-      println!("{}", theme_transition::active_units().join(" "));
-      ExitCode::SUCCESS
-    }
-    Some("stop") => {
-      theme_transition::stop_units();
-      ExitCode::SUCCESS
-    }
-    Some("restart") => match theme_transition::restart_units(&arguments[1..].join(" ")) {
-      Ok(()) => ExitCode::SUCCESS,
-      Err(theme_transition::UnknownUnit(unit)) => {
-        eprintln!("argvus-config: unknown theme transition unit: {unit}");
-        ExitCode::from(64)
-      }
-    },
-    _ => {
-      eprintln!("usage: argvus config transition-units record|stop|restart [UNITS]");
-      ExitCode::from(64)
-    }
-  }
 }
 
 /// `transition-overlay start THEME|hold THEME|stop`: the loading overlay of a
@@ -1048,8 +803,35 @@ fn jsonc_margin(arguments: &[String]) -> ExitCode {
   }
 }
 
-/// `taskbar-height HEIGHT`: sets the height of the live taskbar. Only the
-/// heights in `waybar::TASKBAR_HEIGHTS` are accepted.
+/// `theme-runtime hyprland|consumers`: applies the active theme to the running
+/// desktop without restarting it. `hyprland` evaluates the colours in the
+/// compositor; `consumers` runs the reload of every registered consumer.
+fn theme_runtime_command(arguments: &[String]) -> ExitCode {
+  let Some(paths) = session_paths::SessionPaths::from_environment() else {
+    eprintln!("argvus-config: cannot resolve the configuration directory");
+    return ExitCode::from(1);
+  };
+  match arguments {
+    [target] if target == "hyprland" => match crate::theme_runtime::apply_hyprland_colors(&paths) {
+      Ok(()) => ExitCode::SUCCESS,
+      Err(error) => {
+        eprintln!("argvus-config: hyprland theme: {error}");
+        ExitCode::from(1)
+      }
+    },
+    [target] if target == "consumers" => {
+      crate::theme_runtime::reload_consumers(&paths, None);
+      ExitCode::SUCCESS
+    }
+    _ => {
+      eprintln!("usage: argvus config theme-runtime hyprland|consumers");
+      ExitCode::from(64)
+    }
+  }
+}
+
+/// `taskbar-height HEIGHT`: stores the taskbar height and sets it in the live
+/// taskbar. Only the heights in `waybar::TASKBAR_HEIGHTS` are accepted.
 fn taskbar_height(arguments: &[String]) -> ExitCode {
   let [value] = arguments else {
     eprintln!("usage: argvus config taskbar-height 24|28|32|36");
@@ -1063,11 +845,13 @@ fn taskbar_height(arguments: &[String]) -> ExitCode {
     eprintln!("argvus-config: taskbar height must be one of 24, 28, 32 or 36");
     return ExitCode::from(64);
   };
-  taskbar_setting(|paths| waybar::set_taskbar_height(paths, value))
+  taskbar_setting("/taskbar/shape/height", value, |paths| {
+    waybar::set_taskbar_height(paths, value)
+  })
 }
 
-/// `taskbar-border WIDTH`: sets the border of the live taskbar. `0` turns it
-/// off; `1` to `3` is its thickness in pixels.
+/// `taskbar-border WIDTH`: stores the taskbar border and sets it in the live
+/// taskbar. `0` turns it off; `1` to `3` is its thickness in pixels.
 fn taskbar_border(arguments: &[String]) -> ExitCode {
   let [value] = arguments else {
     eprintln!("usage: argvus config taskbar-border 0|1|2|3");
@@ -1081,7 +865,9 @@ fn taskbar_border(arguments: &[String]) -> ExitCode {
     eprintln!("argvus-config: taskbar border width must be 0 (off), 1, 2 or 3");
     return ExitCode::from(64);
   };
-  taskbar_setting(|paths| waybar::set_taskbar_border(paths, value))
+  taskbar_setting("/taskbar/shape/border_width", value, |paths| {
+    waybar::set_taskbar_border(paths, value)
+  })
 }
 
 /// `taskbar-shape`: prints the live taskbar height and border width, one
@@ -1103,11 +889,23 @@ fn taskbar_shape(arguments: &[String]) -> ExitCode {
 }
 
 /// Runs one edit of the live taskbar files and reports its failure.
-fn taskbar_setting(edit: impl Fn(&session_paths::SessionPaths) -> std::io::Result<()>) -> ExitCode {
+fn taskbar_setting(
+  pointer: &str,
+  value: u32,
+  edit: impl Fn(&session_paths::SessionPaths) -> std::io::Result<()>,
+) -> ExitCode {
   let Some(paths) = session_paths::SessionPaths::from_environment() else {
     eprintln!("argvus-config: cannot resolve the configuration directory");
     return ExitCode::from(1);
   };
+  // The canonical value is what a theme switch writes back after it refreshes
+  // the managed Waybar files, so it is stored before the live file is edited.
+  if let Err(error) =
+    ConfigStore::from_environment().and_then(|store| store.update(pointer, Value::from(value)))
+  {
+    eprintln!("argvus-config: taskbar: {error}");
+    return ExitCode::from(1);
+  }
   match edit(&paths) {
     Ok(()) => ExitCode::SUCCESS,
     Err(error) => {
@@ -1190,10 +988,7 @@ fn theme_command(command: &str, arguments: &[String]) -> ExitCode {
     eprintln!("usage: argvus config {command} THEME");
     return ExitCode::from(64);
   };
-  let themes_dir = env::var_os("ARGVUS_SYSTEM_CONFIG")
-    .map(PathBuf::from)
-    .unwrap_or_else(|| PathBuf::from("/usr/share/argvus"))
-    .join("appearance/themes.d");
+  let theme_paths = theme_resolve::theme_paths();
   match command {
     "theme-resolve" => match layout_variant() {
       Ok(variant) => {
@@ -1206,16 +1001,18 @@ fn theme_command(command: &str, arguments: &[String]) -> ExitCode {
       }
     },
     "theme-gtk-mode" => {
-      println!("{}", theme_resolve::gtk_mode(&themes_dir, id));
+      println!("{}", theme_resolve::gtk_mode(&theme_paths, id));
       ExitCode::SUCCESS
     }
-    "theme-wallpaper" => match theme_resolve::theme_wallpaper(&themes_dir, &wallpaper_root(), id) {
-      Some(path) => {
-        println!("{}", path.display());
-        ExitCode::SUCCESS
+    "theme-wallpaper" => {
+      match theme_resolve::theme_wallpaper(&theme_paths, &wallpaper_root(), id) {
+        Some(path) => {
+          println!("{}", path.display());
+          ExitCode::SUCCESS
+        }
+        None => ExitCode::from(1),
       }
-      None => ExitCode::from(1),
-    },
+    }
     _ => {
       eprintln!("argvus-config: unknown theme command: {command}");
       ExitCode::from(64)

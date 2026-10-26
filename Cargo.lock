@@ -196,6 +196,7 @@ dependencies = [
  "argvus-projects",
  "argvus-system-monitor",
  "argvus-terminal",
+ "argvus-theme-core",
  "argvus-tui-terminal",
  "argvus-widget-telemetry-blocks",
  "argvus-widget-telemetry-toggle",
@@ -208,6 +209,7 @@ name = "argvus-config"
 version = "0.1.0"
 dependencies = [
  "argvus-loading-theme-core",
+ "argvus-theme-core",
  "libc",
  "regex",
  "serde",
@@ -635,6 +637,7 @@ name = "argvus-system-monitor"
 version = "0.1.0"
 dependencies = [
  "argvus-system-monitor-core",
+ "argvus-theme-core",
 ]
 
 [[package]]
@@ -671,6 +674,7 @@ name = "argvus-terminal"
 version = "0.1.0"
 dependencies = [
  "argvus-terminal-core",
+ "argvus-theme-core",
  "libc",
 ]
 
@@ -682,8 +686,19 @@ version = "0.1.0"
 name = "argvus-theme"
 version = "0.1.0"
 dependencies = [
+ "argvus-theme-core",
  "ratatui",
  "serde",
+ "toml 0.8.23",
+]
+
+[[package]]
+name = "argvus-theme-core"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "tempfile",
+ "thiserror 2.0.21",
  "toml 0.8.23",
 ]
 

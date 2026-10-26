@@ -246,33 +246,6 @@ fn discovered_default_accent_in(system_config: &Path, theme: &str) -> Option<Str
     .and_then(|entry| normalize_hex_color(&entry.accent))
 }
 
-/// Executes the `theme_default_accent` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
-fn theme_default_accent(theme: &str) -> Option<&'static str> {
-  match theme {
-    "dracula" | "dracula-float" => Some("#BD93F9"),
-    "argvus-dark" | "argvus-dark-float" => Some("#3590bd"),
-    "silver-dark" | "silver-dark-float" => Some("#595959"),
-    "argvus-light" | "argvus-light-float" => Some("#181818"),
-    "github-light" | "github-light-float" => Some("#0969DA"),
-    "one-light" | "one-light-float" => Some("#4078F2"),
-    "everforest-light" | "everforest-light-float" => Some("#3A94C5"),
-    "solarized-light" | "solarized-light-float" => Some("#268BD2"),
-    "rose-pine" | "rose-pine-float" => Some("#C4A7E7"),
-    "catppuccin-latte" | "catppuccin-latte-float" => Some("#1E66F5"),
-    "gruvbox-light" | "gruvbox-light-float" => Some("#458588"),
-    "slate-dark" | "slate-dark-float" => Some("#7391a5"),
-    "universe" | "universe-float" => Some("#eeeeee"),
-    "gruvbox-high-dark" | "gruvbox-high-dark-float" => Some("#D79921"),
-    "gruvbox-dark" | "gruvbox-dark-float" => Some("#D4BE98"),
-    "tokyo-night" | "tokyo-night-float" => Some("#7AA2F7"),
-    "solitude" | "solitude-float" => Some("#798186"),
-    "sunset" | "sunset-float" => Some("#E2BE8A"),
-    "matrix" | "matrix-float" => Some("#82FB9C"),
-    "monokai-dark" | "monokai-dark-float" => Some("#78DCE8"),
-    _ => None,
-  }
-}
-
 /// Converts input data into `parse_pairs` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn parse_pairs(output: &str) -> impl Iterator<Item = (&str, &str)> {
   output.lines().filter_map(|line| {
@@ -1089,9 +1062,8 @@ pub fn load_page(
   use crate::model::AppearancePage;
   let theme = canonical_theme_id(&read_first(&active_theme_file(), DEFAULT_THEME));
   state.theme = theme.clone();
-  let default_accent = discovered_default_accent(&theme)
-    .or_else(|| theme_default_accent(&theme).map(str::to_string))
-    .unwrap_or_else(|| DEFAULT_ACCENT.to_string());
+  let default_accent =
+    discovered_default_accent(&theme).unwrap_or_else(|| DEFAULT_ACCENT.to_string());
   state.accent = normalize_hex_color(&read_first(&accent_file(), &default_accent))
     .unwrap_or_else(|| default_accent.clone());
   // The Desktop page shows the active wallpaper name, so it loads the active
@@ -1259,13 +1231,21 @@ pub fn load_page(
 /// Applies the `set_theme` operation while preserving the persistence and local-update contract. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn set_theme(name: &str) -> Result<(), String> {
   let canonical_name = canonical_theme_id(name);
-  run_argvus_route(
+  // An official theme ends a custom profile; a failed switch keeps it.
+  let marker = argvus_data_home().join("state").join("custom-theme");
+  let previous_marker = fs::read(&marker).ok();
+  let _ = fs::remove_file(&marker);
+  let switched = run_argvus_route(
     "theme-switch",
     &[canonical_name.as_str()],
     &[("ARGVUS_ACCENT_OFFICIAL", "1")],
-  )?;
-  let _ = fs::remove_file(argvus_data_home().join("state").join("custom-theme"));
-  Ok(())
+  );
+  if switched.is_err()
+    && let Some(previous) = previous_marker
+  {
+    let _ = fs::write(&marker, previous);
+  }
+  switched
 }
 
 /// Switches the Sticky/Float layout mode without changing the active theme.
@@ -1943,11 +1923,12 @@ mod tests {
   #[test]
   fn drop_in_theme_accent_comes_from_its_manifest() {
     let system_config = tempfile::tempdir().unwrap();
-    let family_dir = system_config.path().join("appearance/themes.d/nord-light");
+    let family_dir = system_config.path().join("themes/nord-light");
     std::fs::create_dir_all(&family_dir).unwrap();
     std::fs::write(
       family_dir.join("theme.toml"),
-      "id = \"nord-light\"\nname = \"Nord Light\"\ncategory = \"light\"\naccent = \"#5E81AC\"\n",
+      "schema = 2\nid = \"nord-light\"\nname = \"Nord Light\"\ncategory = \"light\"\n\
+       [palette]\nbg = \"#ECEFF4\"\nfg = \"#2E3440\"\naccent = \"#5E81AC\"\n",
     )
     .unwrap();
 
@@ -1963,13 +1944,6 @@ mod tests {
       discovered_default_accent_in(system_config.path(), "not-installed"),
       None
     );
-  }
-
-  #[test]
-  /// Executes the `theme_default_accents_exist` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
-  fn theme_default_accents_exist() {
-    assert_eq!(theme_default_accent("slate-dark-float"), Some("#7391a5"));
-    assert_eq!(theme_default_accent("unknown"), None);
   }
 
   #[test]

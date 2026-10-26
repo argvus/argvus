@@ -9,6 +9,8 @@
 use argvus_system_monitor_core::btop::render_config;
 use argvus_system_monitor_core::command::{self, ALL_BOXES, Command, has_explicit_paths};
 use argvus_system_monitor_core::theme::{self, Selection};
+use argvus_theme_core::paths::ThemePaths;
+use argvus_theme_core::{build, discovery, render};
 use std::env;
 use std::fs;
 use std::io::Write;
@@ -18,7 +20,7 @@ use std::process::{Command as Process, ExitCode, Stdio};
 
 /// The name every message starts with.
 const PROGRAM: &str = "argvus-system-monitor";
-/// The btop configuration and themes that ship with the package.
+/// The btop configuration that ships with the package.
 const DEFAULT_BTOP_ROOT: &str = "/usr/share/argvus-system-monitor/btop";
 
 const USAGE: &str = "\
@@ -78,8 +80,16 @@ impl Paths {
     self.runtime_dir.join("themes")
   }
 
-  fn theme_source(&self, theme: &str) -> PathBuf {
-    self.btop_root.join("themes").join(format!("{theme}.theme"))
+  /// The btop theme: the current theme build when it is this theme, else the
+  /// theme rendered in memory (another theme, or before the first switch).
+  fn theme_text(&self, theme: &str) -> Result<String, String> {
+    let current = self.argvus_data.join("generated/theme/current");
+    if let Some(build) = build::current_file_for(&current, theme, "system-monitor/btop.theme") {
+      return fs::read_to_string(&build)
+        .map_err(|_| format!("btop theme not found: {}", build.display()));
+    }
+    let paths = ThemePaths::from_environment().ok_or("HOME is not set")?;
+    render::render_file(&paths, theme, None, "system-monitor")
   }
 }
 
@@ -152,8 +162,11 @@ fn exec_btop(prefix: &[&str], arguments: &[String]) -> Result<ExitCode, String> 
 fn active_theme(paths: &Paths) -> String {
   let canonical = config_get("/appearance/theme");
   let fallback = read_first_line(&paths.active_theme_file);
+  let installed = ThemePaths::from_environment();
   let selection = theme::select_theme(canonical.as_deref(), fallback.as_deref(), |name| {
-    paths.theme_source(name).is_file()
+    installed.as_ref().is_some_and(|installed| {
+      discovery::find(installed, name.strip_suffix("-float").unwrap_or(name)).is_some()
+    })
   });
   match selection {
     Selection::Found(theme) => theme,
@@ -185,9 +198,7 @@ fn accent(paths: &Paths) -> Option<String> {
 
 /// Writes the btop theme of `theme` with the accent applied, into the cache.
 fn build_runtime_theme(paths: &Paths, theme: &str) -> Result<(), String> {
-  let source = paths.theme_source(theme);
-  let text = fs::read_to_string(&source)
-    .map_err(|_| format!("btop theme not found: {}", source.display()))?;
+  let text = paths.theme_text(theme)?;
   fs::create_dir_all(paths.runtime_themes()).map_err(|error| error.to_string())?;
   let accent = accent(paths);
   let themed = theme::apply_accent(&text, accent.as_deref());
@@ -203,12 +214,6 @@ fn build_runtime_config(paths: &Paths, theme: &str, shown_boxes: &str) -> Result
   let source = paths.btop_root.join("btop.conf");
   if !source.is_file() {
     return Err(format!("btop config not found: {}", source.display()));
-  }
-  if !paths.btop_root.join("themes").is_dir() {
-    return Err(format!(
-      "btop themes directory not found: {}",
-      paths.btop_root.join("themes").display()
-    ));
   }
   fs::create_dir_all(&paths.runtime_dir).map_err(|error| error.to_string())?;
   build_runtime_theme(paths, theme)?;

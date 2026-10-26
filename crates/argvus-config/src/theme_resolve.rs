@@ -1,12 +1,15 @@
 //! Theme identity and the facts that depend only on it: the canonical id, the
 //! Sticky/Float variant, the GTK mode and the wallpaper.
 //!
-//! A theme is described by an optional drop-in manifest
-//! (`appearance/themes.d/<id>/theme.toml`), and the built-in tables cover the
-//! themes that ship without one. This is the Rust home of the logic that the
-//! former `theme-switch.sh`, `theme-manifest.sh` and `hypr.sh` held.
+//! A theme is described by its manifest (`themes/<id>/theme.toml`, schema 2),
+//! official under the system root or the user's own under
+//! `$XDG_DATA_HOME/argvus/themes`. The built-in tables cover ids that have no
+//! manifest: the legacy aliases, and the light list and wallpapers a greeter or
+//! an old marker may still name.
 
-use std::fs;
+use argvus_theme_core::discovery;
+use argvus_theme_core::manifest::{Category, ThemeManifest};
+use argvus_theme_core::paths::ThemePaths;
 use std::path::{Path, PathBuf};
 
 /// Light themes, by the id they are known under (family and Float).
@@ -164,13 +167,37 @@ pub fn resolve_theme(id: &str, variant: &str) -> String {
   }
 }
 
-/// The GTK colour scheme of a theme: `light` or `dark`. A manifest decides when
-/// one exists for the family; otherwise the built-in list does.
-pub fn gtk_mode(themes_dir: &Path, theme: &str) -> &'static str {
-  let family = theme.strip_suffix("-float").unwrap_or(theme);
-  if manifest_path(themes_dir, family).is_file() {
-    return match table_value(themes_dir, family, "appearance", "gtk_scheme").as_deref() {
-      Some("prefer-light") => "light",
+/// The installed manifest of a theme (`<id>` or `<id>-float`): the official
+/// one, or else the user's. An invalid id or manifest is `None`.
+pub fn manifest(paths: &ThemePaths, theme: &str) -> Option<ThemeManifest> {
+  discovery::find(paths, theme.strip_suffix("-float").unwrap_or(theme))
+}
+
+/// The theme roots of the environment, as `argvus theme` resolves them.
+pub fn theme_paths() -> ThemePaths {
+  ThemePaths::from_environment().unwrap_or_else(|| ThemePaths {
+    system_root: env_system_root(),
+    user_themes: PathBuf::new(),
+    generated: PathBuf::new(),
+  })
+}
+
+fn env_system_root() -> PathBuf {
+  std::env::var_os("ARGVUS_SYSTEM_CONFIG")
+    .filter(|value| !value.is_empty())
+    .map(PathBuf::from)
+    .unwrap_or_else(|| PathBuf::from("/usr/share/argvus"))
+}
+
+/// The GTK colour scheme of a theme: `light` or `dark`. The manifest decides
+/// (its `[gtk] scheme`, which defaults to its category); an id without one
+/// falls back to the built-in light list.
+pub fn gtk_mode(paths: &ThemePaths, theme: &str) -> &'static str {
+  if let Some(manifest) = manifest(paths, theme) {
+    return match manifest.gtk_scheme.as_str() {
+      "prefer-light" => "light",
+      "prefer-dark" => "dark",
+      _ if manifest.category == Category::Light => "light",
       _ => "dark",
     };
   }
@@ -181,76 +208,37 @@ pub fn gtk_mode(themes_dir: &Path, theme: &str) -> &'static str {
   }
 }
 
-/// The wallpaper file of a theme under `wallpaper_root`, when it exists. The
-/// manifest is consulted first, then the built-in table.
-pub fn theme_wallpaper(themes_dir: &Path, wallpaper_root: &Path, theme: &str) -> Option<PathBuf> {
+/// Where the official wallpapers are installed; a manifest names them there.
+const PACKAGED_WALLPAPERS: &str = "/usr/share/backgrounds/argvus";
+
+/// The wallpaper file of a theme, when it exists: the manifest's, then the
+/// built-in name under `wallpaper_root`. A manifest wallpaper under the
+/// packaged wallpaper directory is taken from `wallpaper_root`, which is that
+/// directory unless the environment moves it.
+pub fn theme_wallpaper(paths: &ThemePaths, wallpaper_root: &Path, theme: &str) -> Option<PathBuf> {
   let family = theme.strip_suffix("-float").unwrap_or(theme);
-  let manifest_name = top_value(themes_dir, family, "wallpaper");
-  let builtin_name = BUILTIN_WALLPAPERS
+  let from_manifest = manifest(paths, theme)
+    .and_then(|manifest| manifest.wallpaper)
+    .map(
+      |wallpaper| match wallpaper.strip_prefix(PACKAGED_WALLPAPERS) {
+        Ok(relative) => wallpaper_root.join(relative),
+        Err(_) => wallpaper,
+      },
+    );
+  let builtin = BUILTIN_WALLPAPERS
     .iter()
     .find(|(id, _)| *id == family)
-    .map(|(_, name)| (*name).to_string());
-  [manifest_name, builtin_name]
+    .map(|(_, name)| wallpaper_root.join(name));
+  [from_manifest, builtin]
     .into_iter()
     .flatten()
-    .map(|name| wallpaper_root.join(name))
     .find(|path| path.is_file())
 }
 
-fn manifest_path(themes_dir: &Path, family: &str) -> PathBuf {
-  themes_dir.join(family).join("theme.toml")
-}
-
-/// A top-level string key of a theme manifest. Reading stops at the first
-/// `[table]` header, so keys inside a table cannot shadow top-level keys.
-pub fn top_value(themes_dir: &Path, family: &str, key: &str) -> Option<String> {
-  let text = fs::read_to_string(manifest_path(themes_dir, family)).ok()?;
-  let prefix = format!("{key} = \"");
-  for line in text.lines() {
-    if line.starts_with('[') {
-      break;
-    }
-    if let Some(value) = quoted_value(line, &prefix) {
-      return non_empty(value);
-    }
-  }
-  None
-}
-
-/// A string key of one `[table]` of a theme manifest.
-pub fn table_value(themes_dir: &Path, family: &str, table: &str, key: &str) -> Option<String> {
-  let text = fs::read_to_string(manifest_path(themes_dir, family)).ok()?;
-  let header = format!("[{table}]");
-  let prefix = format!("{key} = \"");
-  let mut inside = false;
-  for line in text.lines() {
-    if line == header {
-      inside = true;
-      continue;
-    }
-    if inside && line.starts_with('[') {
-      break;
-    }
-    if inside && let Some(value) = quoted_value(line, &prefix) {
-      return non_empty(value);
-    }
-  }
-  None
-}
-
-/// The value of a `key = "value"` line, when the line has exactly that shape.
-fn quoted_value<'a>(line: &'a str, prefix: &str) -> Option<&'a str> {
-  // sed's `[[:space:]]*$` allows trailing blanks after the closing quote.
-  let rest = line.strip_prefix(prefix)?.trim_end();
-  let value = rest.strip_suffix('"')?;
-  if value.contains('"') {
-    return None;
-  }
-  Some(value)
-}
-
-fn non_empty(value: &str) -> Option<String> {
-  (!value.is_empty()).then(|| value.to_string())
+/// The accent a theme owns (`palette.accent`, `#RRGGBB`), when it is installed.
+pub fn theme_accent(paths: &ThemePaths, theme: &str) -> Option<String> {
+  let manifest = manifest(paths, theme)?;
+  manifest.token("accent").ok().map(|color| color.hex())
 }
 
 #[cfg(test)]
@@ -279,66 +267,86 @@ mod tests {
     assert_eq!(resolve_theme("", "float"), "");
   }
 
-  #[test]
-  fn gtk_mode_follows_the_builtin_light_list_without_a_manifest() {
-    let missing = Path::new("/nonexistent-themes-d");
-    assert_eq!(gtk_mode(missing, "github-light-float"), "light");
-    assert_eq!(gtk_mode(missing, "argvus-dark"), "dark");
+  fn theme_tree(name: &str) -> (PathBuf, ThemePaths) {
+    let root = std::env::temp_dir().join(format!(
+      "argvus-theme-resolve-{name}-{}",
+      std::process::id()
+    ));
+    let _ = std::fs::remove_dir_all(&root);
+    let paths = ThemePaths {
+      system_root: root.join("system"),
+      user_themes: root.join("user"),
+      generated: root.join("generated"),
+    };
+    (root, paths)
+  }
+
+  fn write_manifest(dir: &Path, id: &str, extra: &str) {
+    std::fs::create_dir_all(dir.join(id)).expect("theme dir");
+    std::fs::write(
+      dir.join(id).join("theme.toml"),
+      format!(
+        "schema = 2\nid = \"{id}\"\nname = \"{id}\"\n{extra}\n\
+         [palette]\nbg = \"#000000\"\nfg = \"#FFFFFF\"\naccent = \"#12AB34\"\n"
+      ),
+    )
+    .expect("manifest");
   }
 
   #[test]
-  fn manifest_values_are_read_top_level_and_per_table() {
-    let root = std::env::temp_dir().join(format!("argvus-theme-manifest-{}", std::process::id()));
-    let _ = fs::remove_dir_all(&root);
-    let family = root.join("demo");
-    fs::create_dir_all(&family).expect("family dir");
-    fs::write(
-            family.join("theme.toml"),
-            "wallpaper = \"demo.jxl\"\n[appearance]\ngtk_scheme = \"prefer-light\"\nwallpaper = \"ignored\"\n",
-        )
-        .expect("manifest");
-    assert_eq!(
-      top_value(&root, "demo", "wallpaper").as_deref(),
-      Some("demo.jxl")
+  fn gtk_mode_follows_the_builtin_light_list_without_a_manifest() {
+    let (root, paths) = theme_tree("builtin");
+    assert_eq!(gtk_mode(&paths, "github-light-float"), "light");
+    assert_eq!(gtk_mode(&paths, "argvus-dark"), "dark");
+    let _ = std::fs::remove_dir_all(root);
+  }
+
+  #[test]
+  fn manifest_values_come_from_the_official_then_the_user_theme() {
+    let (root, paths) = theme_tree("manifest");
+    write_manifest(&paths.system_themes(), "demo", "category = \"light\"");
+    write_manifest(
+      &paths.user_themes,
+      "mine",
+      "category = \"dark\"\n[gtk]\nscheme = \"prefer-light\"",
     );
-    assert_eq!(
-      table_value(&root, "demo", "appearance", "gtk_scheme").as_deref(),
-      Some("prefer-light")
-    );
-    assert_eq!(gtk_mode(&root, "demo-float"), "light");
-    assert_eq!(
-      table_value(&root, "demo", "appearance", "wallpaper").as_deref(),
-      Some("ignored")
-    );
-    let _ = fs::remove_dir_all(root);
+    assert_eq!(gtk_mode(&paths, "demo-float"), "light");
+    assert_eq!(gtk_mode(&paths, "mine"), "light");
+    assert_eq!(theme_accent(&paths, "mine").as_deref(), Some("#12AB34"));
+    assert_eq!(theme_accent(&paths, "../demo"), None);
+    let _ = std::fs::remove_dir_all(root);
   }
 
   #[test]
   fn wallpaper_prefers_the_manifest_then_the_builtin_table() {
-    let root = std::env::temp_dir().join(format!("argvus-theme-wall-{}", std::process::id()));
-    let _ = fs::remove_dir_all(&root);
-    let themes = root.join("themes.d");
+    let (root, paths) = theme_tree("wallpaper");
     let wallpapers = root.join("wallpapers");
-    fs::create_dir_all(themes.join("demo")).expect("themes dir");
-    fs::create_dir_all(wallpapers.join("abstract/dark")).expect("wallpaper dir");
-    fs::write(themes.join("demo/theme.toml"), "wallpaper = \"demo.png\"\n").expect("manifest");
-    fs::write(wallpapers.join("demo.png"), "").expect("manifest wallpaper");
-    fs::write(
+    std::fs::create_dir_all(wallpapers.join("abstract/dark")).expect("wallpaper dir");
+    std::fs::write(wallpapers.join("demo.png"), "").expect("manifest wallpaper");
+    write_manifest(
+      &paths.system_themes(),
+      "demo",
+      &format!(
+        "category = \"dark\"\nwallpaper = \"{}\"",
+        wallpapers.join("demo.png").display()
+      ),
+    );
+    std::fs::write(
       wallpapers.join("abstract/dark/dracula-abstract-dark.jxl"),
       "",
     )
     .expect("builtin");
 
     assert_eq!(
-      theme_wallpaper(&themes, &wallpapers, "demo-float"),
+      theme_wallpaper(&paths, &wallpapers, "demo-float"),
       Some(wallpapers.join("demo.png"))
     );
     assert_eq!(
-      theme_wallpaper(&themes, &wallpapers, "dracula"),
+      theme_wallpaper(&paths, &wallpapers, "dracula"),
       Some(wallpapers.join("abstract/dark/dracula-abstract-dark.jxl"))
     );
-    assert_eq!(theme_wallpaper(&themes, &wallpapers, "matrix"), None);
-    let _ = fs::remove_dir_all(root);
+    assert_eq!(theme_wallpaper(&paths, &wallpapers, "matrix"), None);
+    let _ = std::fs::remove_dir_all(root);
   }
 }
 

@@ -38,10 +38,12 @@ pub mod session_units;
 pub mod text_edit;
 pub mod theme_apply;
 pub mod theme_body;
-pub mod theme_dirs;
+pub mod theme_build;
 pub mod theme_files;
 pub mod theme_finish;
+pub mod theme_migration;
 pub mod theme_resolve;
+pub mod theme_runtime;
 pub mod theme_surfaces;
 pub mod theme_transition;
 pub mod user_copy;
@@ -1008,6 +1010,7 @@ const DEFAULTED_OBJECTS: &[&[&str]] = &[
   &["taskbar", "icons", "utilities"],
   &["taskbar", "date"],
   &["taskbar", "time"],
+  &["taskbar", "shape"],
   &["default_apps"],
   &["keyboard_shortcuts"],
   &["hyprland"],
@@ -1234,6 +1237,13 @@ fn apply_defaults(document: &mut ConfigDocument) -> ConfigResult<()> {
   time
     .entry("format")
     .or_insert_with(|| Value::String("24h".into()));
+  // An unset height or border follows the packaged taskbar and the theme class.
+  let shape = taskbar
+    .entry("shape")
+    .or_insert_with(|| Value::Object(Map::new()));
+  let shape = shape.as_object_mut().expect("taskbar.shape is object");
+  shape.entry("height").or_insert(Value::Null);
+  shape.entry("border_width").or_insert(Value::Null);
 
   let default_apps = document
     .sections
@@ -1627,7 +1637,39 @@ fn validate_taskbar(document: &ConfigDocument) -> ConfigResult<()> {
       "taskbar.time.format must be 24h or 12h (got {format})"
     )));
   }
-  Ok(())
+  validate_taskbar_shape(
+    document.get("/taskbar/shape/height"),
+    "height",
+    &waybar::TASKBAR_HEIGHTS,
+  )?;
+  validate_taskbar_shape(
+    document.get("/taskbar/shape/border_width"),
+    "border_width",
+    &waybar::TASKBAR_BORDER_WIDTHS,
+  )
+}
+
+/// A taskbar shape value is `null` (follow the packaged taskbar and the theme)
+/// or one of the pixel sizes the Control Center offers.
+fn validate_taskbar_shape(value: Option<&Value>, key: &str, offered: &[u32]) -> ConfigResult<()> {
+  let Some(value) = value.filter(|value| !value.is_null()) else {
+    return Ok(());
+  };
+  let valid = value
+    .as_u64()
+    .and_then(|pixels| u32::try_from(pixels).ok())
+    .is_some_and(|pixels| offered.contains(&pixels));
+  if valid {
+    return Ok(());
+  }
+  let offered = offered
+    .iter()
+    .map(u32::to_string)
+    .collect::<Vec<_>>()
+    .join(", ");
+  Err(ConfigError::Invalid(format!(
+    "taskbar.shape.{key} must be null or one of {offered} (got {value})"
+  )))
 }
 
 fn validate_fonts(document: &ConfigDocument) -> ConfigResult<()> {
@@ -2813,6 +2855,42 @@ mod tests {
         .get("/layout/taskbar")
         .is_some_and(Value::is_object)
     );
+  }
+
+  #[test]
+  fn taskbar_shape_defaults_to_null_and_accepts_only_offered_sizes() {
+    let mut document = ConfigDocument::default();
+    apply_defaults(&mut document).unwrap();
+    assert_eq!(document.get("/taskbar/shape/height"), Some(&Value::Null));
+    assert_eq!(
+      document.get("/taskbar/shape/border_width"),
+      Some(&Value::Null)
+    );
+    document.validate().unwrap();
+
+    document
+      .set("/taskbar/shape/height", Value::from(36))
+      .unwrap();
+    document
+      .set("/taskbar/shape/border_width", Value::from(0))
+      .unwrap();
+    document.validate().unwrap();
+
+    for (pointer, value) in [
+      ("/taskbar/shape/height", Value::from(30)),
+      ("/taskbar/shape/border_width", Value::from(4)),
+      ("/taskbar/shape/height", Value::from("36")),
+    ] {
+      let mut invalid = document.clone();
+      let error = invalid
+        .set(pointer, value)
+        .and_then(|()| invalid.validate())
+        .unwrap_err();
+      assert!(
+        error.to_string().contains("taskbar.shape"),
+        "{pointer}: {error}"
+      );
+    }
   }
 
   #[test]

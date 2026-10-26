@@ -1,0 +1,26 @@
+# Theme consumer: rendered into every theme build as terminal/theme.conf.
+id = "terminal"
+template = "terminal/theme-template/theme.conf"
+output = "terminal/theme.conf"
+
+# kitty re-reads its configuration, which includes the build file.
+[reload]
+kind = "signal"
+process = "kitty"
+signal = "SIGUSR1"
+
+# Defaults for the tokens the template reads; a theme that defines one wins.
+[palette]
+bg_card = "@bg | mix(@fg, 0.05) | alpha(0.814)"
+bg_header = "@bg | mix(@fg, 0.11) | alpha(0.814)"
+bg_item = "@bg | mix(@fg, 0.2) | alpha(0.08)"
+fg_subtle = "@fg | mix(@bg, 0.45)"
+term_active_tab_background = "@bg_card"
+term_active_tab_foreground = "@accent"
+term_cursor = "@fg"
+term_cursor_text_color = "@bg"
+term_inactive_tab_background = "@bg_header"
+term_inactive_tab_foreground = "@fg_subtle"
+term_selection_background = "@bg_item"
+term_selection_foreground = "@fg"
+toolkit_background = "@bg"

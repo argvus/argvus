@@ -47,6 +47,7 @@ members = [
   "crates/argvus-terminal",
   "crates/argvus-terminal-core",
   "crates/argvus-theme",
+  "crates/argvus-theme-core",
   "crates/argvus-tui",
   "crates/argvus-widget-telemetry-blocks",
   "crates/argvus-widget-telemetry-core",
@@ -108,6 +109,7 @@ argvus-taskbar-calendar = { version = "0.1.0", path = "crates/argvus-taskbar-cal
 argvus-terminal = { version = "0.1.0", path = "crates/argvus-terminal" }
 argvus-terminal-core = { version = "0.1.0", path = "crates/argvus-terminal-core" }
 argvus-theme = { version = "0.1.0", path = "crates/argvus-theme" }
+argvus-theme-core = { version = "0.1.0", path = "crates/argvus-theme-core" }
 argvus-tui-terminal = { version = "0.1.0", path = "crates/argvus-tui-terminal" }
 argvus-tui-terminal-core = { version = "0.1.0", path = "crates/argvus-tui-terminal-core" }
 argvus-tui = { version = "0.1.0", path = "crates/argvus-tui" }

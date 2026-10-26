@@ -24,7 +24,7 @@ pub const TEXT: &str = r#"Usage:
 Commands:
   argvus sessionctl | session | start | tty
   argvus greeter | greeter-session | greeter-tui | greeter-setup
-  argvus config | i18n | accounts | firewall
+  argvus config | theme | i18n | accounts | firewall
   argvus taskbar-calendar | removable-devices | notifications
   argvus networkctl | bluetoothctl | displayctl | widget-telemetry-toggle
   argvus launcher | projects | snippets | ssh | keys | gpg | git

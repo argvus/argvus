@@ -1,15 +1,16 @@
 //! The transaction of a theme switch.
 //!
-//! The switch holds an exclusive lock, shows the loading overlay, and stops the
-//! services whose files it rewrites. When the change is applied, it reloads the
-//! configuration and starts those services again. The body that rewrites the
-//! theme files is `theme_body`, and it runs here, under the lock.
+//! The switch holds an exclusive lock while `theme_body` commits the theme,
+//! renders its build and writes the consumer files, and while the projection
+//! writes the generated configuration. The running desktop then takes the new
+//! theme in place (`theme_runtime`): no overlay covers the screen and no service
+//! stops, so the switch is seen as the colours changing.
 
 use crate::session_paths::SessionPaths;
-use crate::session_splash::{self, StartOutcome};
+use crate::session_splash;
 use crate::theme_body;
 use crate::theme_resolve;
-use crate::theme_transition::{self, overlay_warning};
+use crate::theme_runtime;
 use std::env;
 use std::fs::{self, OpenOptions};
 use std::io;
@@ -28,8 +29,8 @@ const TRANSACTION_MARKER: &str = "theme-switch.active";
 /// How long a switch waits for the lock while another switch holds it.
 const LOCK_WAIT_LIMIT: Duration = Duration::from_secs(60);
 
-/// How long the configuration reload may take before this switch gives up on it.
-const RELOAD_WAIT_LIMIT: Duration = Duration::from_secs(60);
+/// How long the projection may take before this switch gives up on it.
+const PROJECTION_WAIT_LIMIT: Duration = Duration::from_secs(60);
 
 /// Interval between checks of the lock and of the reload child.
 const POLL_INTERVAL: Duration = Duration::from_millis(50);
@@ -47,27 +48,19 @@ pub fn run(paths: &SessionPaths, theme_argument: &str, layout_variant: &str) -> 
     return run_menu(paths);
   }
   let runtime = env::var("ARGVUS_NO_RUNTIME").as_deref() != Ok("1");
-  let systemctl = on_path("systemctl");
   let lock_path = cache_home().join("theme-switch.lock");
   if let Some(parent) = lock_path.parent() {
     let _ = fs::create_dir_all(parent);
   }
 
-  // The whole transaction runs under the lock, the record of the active units
-  // included. A switch that waited behind another one then records what is
-  // running when it starts, and restarts exactly that. The bindings below are
-  // dropped in reverse order: overlay, marker, then lock.
+  // The whole transaction runs under the lock. The bindings below are dropped
+  // in reverse order: marker, then lock.
   let _lock = match acquire_lock(&lock_path) {
     Ok(lock) => lock,
     Err(error) => {
       eprintln!("argvus-config: theme lock: {error}");
       return 1;
     }
-  };
-  let recorded_units = if systemctl {
-    theme_transition::active_units().join(" ")
-  } else {
-    String::new()
   };
   let _transaction = match TransactionMarker::record(cache_home().join(TRANSACTION_MARKER)) {
     Ok(marker) => marker,
@@ -76,36 +69,41 @@ pub fn run(paths: &SessionPaths, theme_argument: &str, layout_variant: &str) -> 
       return 1;
     }
   };
-  // The guard stops the overlay however this function returns, including a
-  // failed body, so the overlay cannot outlive the switch that started it.
-  let _overlay = (runtime && start_overlay(&theme)).then_some(OverlayGuard);
-  let mut status = theme_body::run(paths, &theme, runtime);
-
-  // Session preparation materializes files with NO_RUNTIME=1. Do not reload
-  // systemd components while their startup transaction is still in progress.
+  // The per-theme copies of older switches are not read any more: they move
+  // to a backup once, before this switch writes anything.
+  match crate::theme_migration::migrate(paths) {
+    Ok(Some(backup)) => crate::i18n::print(
+      "theme.copies_moved",
+      &[format!("path={}", backup.display())],
+      crate::i18n::Stream::Stderr,
+    ),
+    Ok(None) => {}
+    Err(error) => eprintln!("argvus-config: theme copies: {error}"),
+  }
+  // Session preparation and the configuration service run their own
+  // projection and runtime steps; a switch started by them only writes files.
   let projecting = env::var("ARGVUS_PROJECTING").as_deref() == Ok("1");
   let config_service = env::var("ARGVUS_CONFIG_SERVICE").as_deref() == Ok("1");
-  if runtime && !projecting && !config_service && systemctl {
-    if status == 0 {
-      let reload = run_bounded(
-        Command::new("systemctl")
-          .args(["--user", "reload", "argvus-config.service"])
-          .stdout(Stdio::null())
-          .stderr(Stdio::null()),
-        RELOAD_WAIT_LIMIT,
-      );
-      match reload {
-        Ok(result) if result.success() => {}
-        Ok(result) => status = exit_code(result),
-        Err(error) => {
-          eprintln!("argvus-config: reload of argvus-config.service: {error}");
-          status = 1;
-        }
+  let live = runtime && !projecting && !config_service;
+  let before = theme_runtime::Before::capture(paths);
+  let mut status = theme_body::run(paths, &theme, runtime, live);
+  if live && status == 0 {
+    // The projection sees this switch's marker and leaves the theme to it.
+    match run_bounded(
+      Command::new("argvus")
+        .args(["config", "project"])
+        .stdout(Stdio::null())
+        .stderr(Stdio::null()),
+      PROJECTION_WAIT_LIMIT,
+    ) {
+      Ok(result) if result.success() => {}
+      Ok(result) => status = exit_code(result),
+      Err(error) => {
+        eprintln!("argvus-config: projection: {error}");
+        status = 1;
       }
     }
-    // The body stops the services before it applies the theme. They must come
-    // back even when the switch failed part way.
-    let _ = theme_transition::restart_units(&recorded_units);
+    theme_runtime::apply(paths, &before, &theme);
   }
 
   status
@@ -119,24 +117,6 @@ fn run_menu(paths: &SessionPaths) -> i32 {
     .status()
     .map(exit_code)
     .unwrap_or(127)
-}
-
-/// Shows the overlay for `theme` and reports whether this call started it.
-fn start_overlay(theme: &str) -> bool {
-  let outcome = theme_transition::start_overlay(theme);
-  if let Some(message) = overlay_warning(outcome) {
-    eprintln!("{message}");
-  }
-  outcome == StartOutcome::Started
-}
-
-/// Stops the overlay that a switch started, when the switch ends.
-struct OverlayGuard;
-
-impl Drop for OverlayGuard {
-  fn drop(&mut self) {
-    theme_transition::stop_overlay();
-  }
 }
 
 /// The record of a running switch: the pid of its process and that process's
@@ -261,12 +241,6 @@ fn cache_home() -> PathBuf {
     .map(PathBuf::from)
     .unwrap_or_else(|| PathBuf::from(env::var_os("HOME").unwrap_or_default()).join(".cache"));
   base.join("argvus")
-}
-
-fn on_path(program: &str) -> bool {
-  env::var_os("PATH")
-    .map(|paths| env::split_paths(&paths).any(|dir| dir.join(program).is_file()))
-    .unwrap_or(false)
 }
 
 #[cfg(test)]

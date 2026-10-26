@@ -8,7 +8,6 @@ use crate::i18n::{I18n, Text};
 pub struct SettingsDraft {
   pub font_family: String,
   pub font_size: u32,
-  pub theme: String,
   pub language: String,
   pub week_start: String,
   pub show_events: bool,
@@ -22,11 +21,10 @@ pub struct SettingsDraft {
 }
 
 impl SettingsDraft {
-  pub fn from_config(settings: &Settings, theme: &str, events_enabled: bool) -> Self {
+  pub fn from_config(settings: &Settings, events_enabled: bool) -> Self {
     Self {
       font_family: settings.appearance.font_family.clone(),
       font_size: u32::from(settings.appearance.font_size),
-      theme: theme.to_string(),
       language: settings.locale.language.clone(),
       week_start: settings.calendar.week_start.clone(),
       show_events: events_enabled,
@@ -87,9 +85,6 @@ pub struct SettingsWidgets {
   pub font_family: gtk::Entry,
   pub font_size_label: gtk::Label,
   pub font_size: gtk::SpinButton,
-  pub theme_label: gtk::Label,
-  pub theme: gtk::DropDown,
-  pub theme_model: gtk::StringList,
   pub language_label: gtk::Label,
   pub language: gtk::DropDown,
   pub language_model: gtk::StringList,
@@ -122,7 +117,6 @@ pub struct SettingsWidgets {
 pub struct SettingsChangedHandlers {
   pub font_family: SignalHandlerId,
   pub font_size: SignalHandlerId,
-  pub theme: SignalHandlerId,
   pub language: SignalHandlerId,
   pub week_start: SignalHandlerId,
   pub show_events: SignalHandlerId,
@@ -164,7 +158,6 @@ pub fn populate_settings(widgets: &SettingsWidgets, draft: &SettingsDraft, i18n:
       widgets.font_size.upcast_ref::<gtk::Widget>(),
       &handlers.font_size,
     ),
-    (widgets.theme.upcast_ref::<gtk::Widget>(), &handlers.theme),
     (
       widgets.language.upcast_ref::<gtk::Widget>(),
       &handlers.language,
@@ -216,8 +209,6 @@ pub fn populate_settings(widgets: &SettingsWidgets, draft: &SettingsDraft, i18n:
   widgets.font_family.set_text(&draft.font_family);
   widgets.font_size_label.set_label(i18n.text(Text::FontSize));
   widgets.font_size.set_value(f64::from(draft.font_size));
-  widgets.theme_label.set_label(i18n.text(Text::Theme));
-  set_dropdown(&widgets.theme, &widgets.theme_model, &draft.theme);
   widgets.language_label.set_label(i18n.text(Text::Language));
   set_dropdown(&widgets.language, &widgets.language_model, &draft.language);
   widgets
@@ -282,7 +273,6 @@ pub fn populate_settings(widgets: &SettingsWidgets, draft: &SettingsDraft, i18n:
       widgets.font_size.upcast_ref::<gtk::Widget>(),
       &handlers.font_size,
     ),
-    (widgets.theme.upcast_ref::<gtk::Widget>(), &handlers.theme),
     (
       widgets.language.upcast_ref::<gtk::Widget>(),
       &handlers.language,
@@ -347,7 +337,7 @@ mod tests {
     config.terminal.command = "kitty".to_string();
     config.terminal.args = vec!["-f".to_string()];
 
-    let draft = SettingsDraft::from_config(&config, "slate-dark", true);
+    let draft = SettingsDraft::from_config(&config, true);
     let restored = draft.into_config();
 
     assert_eq!(restored.appearance.font_family, "Noto Sans");
@@ -368,17 +358,17 @@ mod tests {
   fn draft_keeps_explicit_language_override() {
     let mut config = Settings::default();
     config.locale.language = "pt-BR".to_string();
-    let restored = SettingsDraft::from_config(&config, "", true).into_config();
+    let restored = SettingsDraft::from_config(&config, true).into_config();
     assert_eq!(restored.locale.language, "pt-BR");
 
     config.locale.language = "en-US".to_string();
-    let restored = SettingsDraft::from_config(&config, "", true).into_config();
+    let restored = SettingsDraft::from_config(&config, true).into_config();
     assert_eq!(restored.locale.language, "en-US");
   }
 
   #[test]
   fn draft_clamps_invalid_values() {
-    let mut draft = SettingsDraft::from_config(&Settings::default(), "", true);
+    let mut draft = SettingsDraft::from_config(&Settings::default(), true);
     draft.font_size = 300;
     draft.font_family = "".to_string();
     draft.language = "xx".to_string();

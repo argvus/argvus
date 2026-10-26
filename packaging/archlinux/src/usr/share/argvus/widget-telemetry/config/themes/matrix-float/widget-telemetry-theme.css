@@ -1,9 +1,0 @@
-/* theme: matrix-float — widget telemetry panel */
-@define-color th-background    #0B0C16;
-@define-color th-header        #82FB9C;
-@define-color th-foreground    #DDF7FF;
-@define-color th-window-bg     #211E1B;
-@define-color th-window-bg-rgba rgba(33, 30, 27, 0.35);
-@define-color th-border        rgba(226, 190, 138, 0.15);
-@define-color th-border-header rgba(226, 190, 138, 0.20);
-@define-color th-disconnected  rgba(206, 163, 127, 0.35);

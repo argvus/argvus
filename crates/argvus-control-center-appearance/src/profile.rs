@@ -1474,6 +1474,7 @@ fn profile_root() -> PathBuf {
 fn custom_current_path() -> PathBuf {
   argvus_root().join("state").join("custom-theme")
 }
+
 fn pictures_dir() -> PathBuf {
   std::env::var_os("XDG_PICTURES_DIR")
     .map(PathBuf::from)

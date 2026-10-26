@@ -16,4 +16,5 @@ path = "src/main.rs"
 
 [dependencies]
 argvus-terminal-core.workspace = true
+argvus-theme-core.workspace = true
 libc.workspace = true

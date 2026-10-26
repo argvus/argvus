@@ -17,6 +17,10 @@
       "expanded": true
     }
   },
+  "shape": {
+    "border_width": null,
+    "height": null
+  },
   "time": {
     "format": "24h",
     "seconds_enabled": false

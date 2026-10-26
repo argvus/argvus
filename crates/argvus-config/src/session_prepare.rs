@@ -18,29 +18,8 @@ use std::process::{Command, Stdio};
 
 /// Theme used when none is recorded.
 const DEFAULT_THEME: &str = "argvus-dark";
-/// GTK theme for every ARGVUS theme that is not a light one.
-const DEFAULT_GTK_THEME: &str = "Adwaita-dark";
 /// Icon theme when the appearance helper is missing.
 const DEFAULT_ICON_THEME: &str = "Argvus Dark Icons";
-/// Themes whose GTK colour scheme is light.
-const LIGHT_THEMES: [&str; 16] = [
-  "argvus-light",
-  "argvus-light-float",
-  "github-light",
-  "github-light-float",
-  "solarized-light",
-  "solarized-light-float",
-  "one-light",
-  "one-light-float",
-  "everforest-light",
-  "everforest-light-float",
-  "catppuccin-latte",
-  "catppuccin-latte-float",
-  "gruvbox-light",
-  "gruvbox-light-float",
-  "nord-light",
-  "nord-light-float",
-];
 
 /// Message keys the shell printed through `argvus_tr`.
 const MESSAGE_GTK_APPLIED: &str = "gtk.theme_applied";
@@ -265,34 +244,35 @@ pub fn theme_fingerprint(paths: &SessionPaths, theme: &str) -> String {
   lines.join("\n")
 }
 
-/// The fingerprinted paths in the shell's order.
+/// The fingerprinted paths: the packaged files the switch reads, the theme
+/// manifest, the registry, the layouts and every registered template.
 fn fingerprint_roots(paths: &SessionPaths, theme: &str) -> Vec<PathBuf> {
-  let system = |relative: String| paths.system_config(&relative);
-  vec![
+  let theme_paths = crate::theme_build::theme_paths(paths);
+  let system = |relative: &str| paths.system_config(relative);
+  let family = theme.strip_suffix("-float").unwrap_or(theme);
+  let mut roots = vec![
     paths.read_config("hyprland/sh/spaces-switch.sh"),
-    system("session/sh/paths.sh".into()),
-    system(format!("appearance/config/hypr/themes/{theme}")),
-    system("taskbar/config/argvus-taskbar.jsonc".into()),
-    system("taskbar/config/argvus-taskbar.css".into()),
-    system(format!("taskbar/config/themes/{theme}")),
-    system("widget-telemetry/config/argvus-widget-telemetry.jsonc".into()),
-    system("widget-telemetry/config/argvus-widget-telemetry.css".into()),
-    system(format!("widget-telemetry/config/themes/{theme}")),
-    system("launcher/config/config.rasi".into()),
-    system("launcher/config/theme.rasi".into()),
-    system(format!(
-      "control-panel/config/quickshell/argvus-control-panel/themes/{theme}"
-    )),
-    system(format!("launcher/config/themes/{theme}")),
-    system(format!("notifications/config/themes/{theme}")),
-    system(format!("terminal/config/themes/{theme}")),
-    system(format!("system-monitor/config/btop/themes/{theme}")),
-    system(format!("appearance/config/gtk-3.0/themes/{theme}")),
-    system(format!("appearance/config/gtk-4.0/themes/{theme}")),
-    // The accent is reapplied only with the theme, so a new accent must
-    // invalidate the stamp as well.
-    accent_color_file(paths),
-  ]
+    system("session/sh/paths.sh"),
+    system("taskbar/config/argvus-taskbar.jsonc"),
+    system("taskbar/config/argvus-taskbar.css"),
+    system("widget-telemetry/config/argvus-widget-telemetry.jsonc"),
+    system("widget-telemetry/config/argvus-widget-telemetry.css"),
+    system("launcher/config/config.rasi"),
+    system("launcher/config/theme.rasi"),
+    theme_paths.system_themes().join(family),
+    theme_paths.user_themes.join(family),
+    theme_paths.registry(),
+    theme_paths.layouts(),
+  ];
+  if let Ok(consumers) =
+    argvus_theme_core::registry::load(&theme_paths.system_root, &theme_paths.registry())
+  {
+    roots.extend(consumers.into_iter().map(|consumer| consumer.template));
+  }
+  // The accent is reapplied only with the theme, so a new accent must
+  // invalidate the stamp as well.
+  roots.push(accent_color_file(paths));
+  roots
 }
 
 fn collect_files(directory: &Path, files: &mut Vec<String>) {
@@ -327,48 +307,40 @@ fn stat_line(path: &Path) -> String {
   }
 }
 
-/// Whether the user copies of the theme's files exist, so a matching stamp
-/// means the startup has nothing left to materialize.
+/// Whether the files of the theme are in place: the build of the theme is
+/// current and the user copies of the bars and the launcher exist, so a
+/// matching stamp means the startup has nothing left to write.
 pub(crate) fn theme_materialized(paths: &SessionPaths, theme: &str) -> bool {
-  if !paths
-    .config_home
-    .join("argvus/data/.active-theme")
-    .is_file()
+  if !paths.data_home.join(".active-theme").is_file()
+    || crate::theme_build::current_file_for(paths, theme, "build.toml").is_none()
   {
     return false;
   }
   let required = [
-    "taskbar/config/argvus-taskbar.jsonc".to_string(),
-    "taskbar/config/argvus-taskbar.css".to_string(),
-    format!("taskbar/config/themes/{theme}/theme.css"),
-    "widget-telemetry/config/argvus-widget-telemetry.jsonc".to_string(),
-    "widget-telemetry/config/argvus-widget-telemetry.css".to_string(),
-    format!("widget-telemetry/config/themes/{theme}/widget-telemetry-theme.css"),
-    "launcher/config/config.rasi".to_string(),
-    "launcher/config/theme.rasi".to_string(),
-    "appearance/config/waybar/mode.css".to_string(),
+    "taskbar/config/argvus-taskbar.jsonc",
+    "taskbar/config/argvus-taskbar.css",
+    "widget-telemetry/config/argvus-widget-telemetry.jsonc",
+    "widget-telemetry/config/argvus-widget-telemetry.css",
+    "launcher/config/config.rasi",
+    "launcher/config/theme.rasi",
+    "appearance/config/waybar/mode.css",
   ];
   for relative in required {
-    if paths.system_config(&relative).is_file() && !paths.user_config(&relative).is_file() {
+    if paths.system_config(relative).is_file() && !paths.user_config(relative).is_file() {
       return false;
     }
   }
   paths.user_config("gtk-4.0/settings.ini").is_file()
-    && paths
-      .user_config(&format!("quickshell/argvus-control-panel/themes/{theme}"))
-      .is_dir()
 }
 
 /// Sets the GTK interface through gsettings and reports the outcome in the
 /// user's language, as the shell did.
 fn set_gsettings(paths: &SessionPaths) {
   let theme = active_theme_name(paths);
-  let gtk_theme = gtk_theme_name_for_theme(&theme);
-  let scheme = if LIGHT_THEMES.contains(&theme.as_str()) {
-    "prefer-light"
-  } else {
-    "prefer-dark"
-  };
+  let light =
+    crate::theme_resolve::gtk_mode(&crate::theme_build::theme_paths(paths), &theme) == "light";
+  let gtk_theme = crate::appearance_runtime::gtk_theme_name(light);
+  let scheme = if light { "prefer-light" } else { "prefer-dark" };
   let default_font = font_default_value(paths);
   let monospace_font = font_monospace_value(paths);
   let icon_theme = icon_theme(paths);
@@ -379,7 +351,7 @@ fn set_gsettings(paths: &SessionPaths) {
   }
   let interface = [
     ("icon-theme", icon_theme.as_str()),
-    ("gtk-theme", gtk_theme.as_str()),
+    ("gtk-theme", gtk_theme),
     ("color-scheme", scheme),
     ("font-name", default_font.as_str()),
     ("document-font-name", default_font.as_str()),
@@ -427,16 +399,6 @@ pub fn active_theme_name(paths: &SessionPaths) -> String {
       "catppuccin-latte-float".into()
     }
     other => other.to_string(),
-  }
-}
-
-/// The GTK theme for an ARGVUS theme: Adwaita for the light themes, and the
-/// dark variant for everything else.
-pub fn gtk_theme_name_for_theme(theme: &str) -> String {
-  if LIGHT_THEMES.contains(&theme) {
-    "Adwaita".into()
-  } else {
-    DEFAULT_GTK_THEME.into()
   }
 }
 
@@ -576,7 +538,7 @@ mod tests {
   }
 
   #[test]
-  fn catppuccin_identifiers_map_to_gtk_names() {
+  fn catppuccin_identifiers_map_to_their_canonical_id() {
     let root = std::env::temp_dir().join(format!("argvus-gtk-theme-{}", std::process::id()));
     let _ = fs::remove_dir_all(&root);
     let paths = paths_under(&root);
@@ -587,16 +549,7 @@ mod tests {
     )
     .expect("theme");
     assert_eq!(active_theme_name(&paths), "catppuccin-latte");
-    assert_eq!(gtk_theme_name_for_theme("catppuccin-latte"), "Adwaita");
-    assert_eq!(gtk_theme_name_for_theme("argvus-dark"), "Adwaita-dark");
-    assert_eq!(gtk_theme_name_for_theme("gruvbox-light-float"), "Adwaita");
     let _ = fs::remove_dir_all(root);
-  }
-
-  #[test]
-  fn light_themes_use_the_light_scheme_list() {
-    assert!(LIGHT_THEMES.contains(&"github-light"));
-    assert!(!LIGHT_THEMES.contains(&"argvus-dark"));
   }
 
   #[test]

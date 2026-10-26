@@ -1,14 +1,15 @@
-//! Theme discovery from drop-in `theme.toml` manifests.
+//! The installed themes, for the theme pickers: the official packages under
+//! `/usr/share/argvus/themes/<id>/theme.toml` and the user's own under
+//! `$XDG_DATA_HOME/argvus/themes`, as `argvus-theme-core` discovers them.
 //!
-//! This module discovers additional themes installed as packages via
-//! `/usr/share/argvus/appearance/themes.d/<id>/theme.toml`.
-//!
-//! Built-in themes (`argvus-dark`, `argvus-light`) always take precedence.
+//! ARGVUS Dark and ARGVUS Light always come first.
 
+use argvus_theme_core::discovery;
+use argvus_theme_core::manifest::Category;
+use argvus_theme_core::paths::ThemePaths;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use std::fs;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 /// Theme category enumeration (serde-compatible).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -30,7 +31,7 @@ pub struct ThemeEntry {
   /// Default accent color (hex, e.g., "#BD93F9").
   #[serde(default)]
   pub accent: String,
-  /// Wallpaper path relative to argvus-wallpapers root.
+  /// The wallpaper file of the theme, or empty.
   #[serde(default)]
   pub wallpaper: String,
   /// Localized display names (e.g., {"en-US": "Dracula", "pt-BR": "Dracula"}).
@@ -74,91 +75,88 @@ pub struct DiscoveryReport {
   pub warnings: Vec<String>,
 }
 
-/// Discovers installed themes from `/usr/share/argvus/appearance/themes.d/`.
-///
-/// Built-in themes (`argvus-dark` and `argvus-light`) are always included.
-/// Additional themes are discovered from drop-in `theme.toml` files.
-/// Malformed manifests are logged in warnings and skipped.
+/// Discovers the installed themes under `system_config` and the user's theme
+/// directory. ARGVUS Dark and ARGVUS Light come first and are always listed;
+/// a theme whose manifest is broken is skipped with a warning.
 ///
 /// **Note**: Call this function once per application startup and cache the result.
 /// Do not call repeatedly in tight loops, as it reads from disk.
 pub fn discover_themes(system_config: &Path) -> DiscoveryReport {
-  let mut themes = Vec::new();
-  let mut warnings = Vec::new();
-
-  // Add built-in themes first (highest priority, cannot be overridden)
-  themes.push(ThemeEntry {
-    id: "argvus-dark".to_string(),
-    name: "ARGVUS Dark".to_string(),
-    category: ThemeCategory::Dark,
-    accent: "#3590bd".to_string(),
-    wallpaper: "argvus-dark.jxl".to_string(),
-    name_i18n: {
-      let mut map = HashMap::new();
-      map.insert("en-US".to_string(), "ARGVUS Dark".to_string());
-      map.insert("pt-BR".to_string(), "ARGVUS Dark".to_string());
-      map
-    },
-  });
-
-  themes.push(ThemeEntry {
-    id: "argvus-light".to_string(),
-    name: "ARGVUS Light".to_string(),
-    category: ThemeCategory::Light,
-    accent: "#181818".to_string(),
-    wallpaper: "argvus-light.jxl".to_string(),
-    name_i18n: {
-      let mut map = HashMap::new();
-      map.insert("en-US".to_string(), "ARGVUS Light".to_string());
-      map.insert("pt-BR".to_string(), "ARGVUS Light".to_string());
-      map
-    },
-  });
-
-  // Discover additional themes from drop-in manifests
-  let themes_dir = system_config.join("appearance/themes.d");
-  if let Ok(entries) = fs::read_dir(&themes_dir) {
-    for entry in entries.flatten() {
-      if let Ok(metadata) = entry.metadata()
-        && metadata.is_dir()
-      {
-        let manifest_path = entry.path().join("theme.toml");
-        if let Ok(content) = fs::read_to_string(&manifest_path) {
-          match toml::from_str::<ThemeEntry>(&content) {
-            Ok(theme) => {
-              // Validate and skip if invalid
-              if let Err(e) = theme.validate_id() {
-                warnings.push(format!(
-                  "Skipping invalid theme manifest {}: {}",
-                  manifest_path.display(),
-                  e
-                ));
-                continue;
-              }
-              // Skip if already exists (built-in wins)
-              if themes.iter().any(|t| t.id == theme.id) {
-                warnings.push(format!(
-                  "Theme {} already exists (built-in), skipping drop-in",
-                  theme.id
-                ));
-                continue;
-              }
-              themes.push(theme);
-            }
-            Err(e) => {
-              warnings.push(format!(
-                "Failed to parse {}: {}",
-                manifest_path.display(),
-                e
-              ));
-            }
-          }
-        }
+  let user_themes = ThemePaths::from_environment()
+    .map(|paths| paths.user_themes)
+    .unwrap_or_default();
+  let paths = ThemePaths {
+    system_root: system_config.to_path_buf(),
+    user_themes,
+    generated: PathBuf::new(),
+  };
+  let found = discovery::discover(&paths);
+  let mut themes: Vec<ThemeEntry> = found
+    .themes
+    .iter()
+    .map(|installed| {
+      let manifest = &installed.manifest;
+      ThemeEntry {
+        id: manifest.id.clone(),
+        name: manifest.name.clone(),
+        category: match manifest.category {
+          Category::Dark => ThemeCategory::Dark,
+          Category::Light => ThemeCategory::Light,
+        },
+        accent: manifest
+          .token("accent")
+          .map(|color| color.hex())
+          .unwrap_or_default(),
+        wallpaper: manifest
+          .wallpaper
+          .as_ref()
+          .map(|path| path.display().to_string())
+          .unwrap_or_default(),
+        name_i18n: manifest
+          .name_i18n
+          .iter()
+          .map(|(locale, name)| (locale.clone(), name.clone()))
+          .collect(),
       }
+    })
+    .collect();
+  for builtin in builtin_themes().into_iter().rev() {
+    match themes.iter().position(|theme| theme.id == builtin.id) {
+      Some(index) => {
+        let entry = themes.remove(index);
+        themes.insert(0, entry);
+      }
+      None => themes.insert(0, builtin),
     }
   }
+  DiscoveryReport {
+    themes,
+    warnings: found.warnings,
+  }
+}
 
-  DiscoveryReport { themes, warnings }
+/// ARGVUS Dark and ARGVUS Light, as listed when their manifests are missing.
+fn builtin_themes() -> [ThemeEntry; 2] {
+  let entry = |id: &str, name: &str, category, accent: &str| ThemeEntry {
+    id: id.to_string(),
+    name: name.to_string(),
+    category,
+    accent: accent.to_string(),
+    wallpaper: String::new(),
+    name_i18n: HashMap::from([
+      ("en-US".to_string(), name.to_string()),
+      ("pt-BR".to_string(), name.to_string()),
+    ]),
+  };
+  [
+    entry("argvus-dark", "ARGVUS Dark", ThemeCategory::Dark, "#3590bd"),
+    entry(
+      "argvus-light",
+      "ARGVUS Light",
+      ThemeCategory::Light,
+      "#181818",
+    ),
+  ]
 }
 
 /// Checks if a theme ID is known (built-in or discovered).

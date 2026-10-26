@@ -19,7 +19,6 @@ pub struct Paths {
   pub user_config_file: PathBuf,
   pub user_style: PathBuf,
   pub theme_file: PathBuf,
-  pub theme_dir: PathBuf,
   pub cache_theme_file: PathBuf,
   pub active_argvus_theme_file: PathBuf,
   pub events_enabled_file: PathBuf,
@@ -254,46 +253,6 @@ pub fn effective_config_file(paths: &Paths) -> PathBuf {
   }
 }
 
-/// Names of the themes available in the theme directory, used by the theme
-/// picker in the settings screen.
-pub fn list_theme_names(paths: &Paths) -> Vec<String> {
-  let mut names = Vec::new();
-  if let Ok(entries) = std::fs::read_dir(&paths.theme_dir) {
-    for entry in entries.flatten() {
-      let path = entry.path();
-      if path.extension().is_some_and(|extension| extension == "css")
-        && let Some(stem) = path.file_stem().and_then(|stem| stem.to_str())
-      {
-        names.push(stem.to_string());
-      }
-    }
-  }
-  names.sort();
-  names
-}
-
-/// The active theme name, when it still exists in the theme directory.
-pub fn active_theme_name(paths: &Paths) -> Option<String> {
-  let name = std::fs::read_to_string(&paths.active_argvus_theme_file).ok()?;
-  let name = name.trim().to_string();
-  if name.is_empty() {
-    return None;
-  }
-  list_theme_names(paths)
-    .iter()
-    .any(|available| available == &name)
-    .then_some(name)
-}
-
-/// Persist the selected theme name to the user-level ARGVUS state.
-pub fn write_active_theme(paths: &Paths, name: &str) -> Result<()> {
-  if let Some(parent) = paths.active_argvus_theme_file.parent() {
-    std::fs::create_dir_all(parent)?;
-  }
-  std::fs::write(&paths.active_argvus_theme_file, format!("{name}\n"))?;
-  Ok(())
-}
-
 pub fn resolve_paths() -> Result<Paths> {
   let config_dir = PathBuf::from("/etc/argvus/taskbar/calendar");
   let data_dir =
@@ -316,7 +275,6 @@ pub fn resolve_paths() -> Result<Paths> {
       .join("config.toml"),
     user_style: config_dir.join("style.css"),
     theme_file: config_dir.join("theme.css"),
-    theme_dir: config_dir.join("themes"),
     cache_theme_file: cache_dir.join("theme.css"),
     active_argvus_theme_file: argvus_config_dir.join("data/.active-theme"),
     events_enabled_file: state_dir.join("events-enabled"),
@@ -435,7 +393,6 @@ mod tests {
       user_config_file: root.join("user/config.toml"),
       user_style: root.join("config/style.css"),
       theme_file: root.join("config/theme.css"),
-      theme_dir: root.join("config/themes"),
       cache_theme_file: root.join("cache/theme.css"),
       active_argvus_theme_file: root.join("config/argvus/data/.active-theme"),
       events_enabled_file: root.join("state/events-enabled"),
@@ -461,7 +418,6 @@ mod tests {
       user_config_file: root.join("user/config.toml"),
       user_style: root.join("config/style.css"),
       theme_file: root.join("config/theme.css"),
-      theme_dir: root.join("config/themes"),
       cache_theme_file: root.join("cache/theme.css"),
       active_argvus_theme_file: root.join("config/argvus/data/.active-theme"),
       events_enabled_file: root.join("state/events-enabled"),
@@ -499,7 +455,6 @@ show_events = false
       user_config_file: root.join("user/config.toml"),
       user_style: root.join("config/style.css"),
       theme_file: root.join("config/theme.css"),
-      theme_dir: root.join("config/themes"),
       cache_theme_file: root.join("cache/theme.css"),
       active_argvus_theme_file: root.join("config/argvus/data/.active-theme"),
       events_enabled_file: root.join("state/events-enabled"),
@@ -521,7 +476,6 @@ show_events = false
       user_config_file: root.join("user/config.toml"),
       user_style: root.join("config/style.css"),
       theme_file: root.join("config/theme.css"),
-      theme_dir: root.join("config/themes"),
       cache_theme_file: root.join("cache/theme.css"),
       active_argvus_theme_file: root.join("config/argvus/data/.active-theme"),
       events_enabled_file: root.join("state/events-enabled"),

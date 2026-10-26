@@ -88,8 +88,8 @@ fn is_include(line: &str) -> bool {
   has_key(line, "include")
 }
 
-/// An include of a theme file: `include ...ID/theme.conf` where `ID` sits under a
-/// `themes` directory and contains no blanks.
+/// An include of a theme file: `include .../theme.conf`, the theme build's or
+/// an older per-theme copy, with no blanks in the path.
 fn is_theme_include(line: &str) -> bool {
   let trimmed = line.trim_start_matches(is_blank);
   let Some(rest) = trimmed.strip_prefix("include") else {
@@ -98,17 +98,8 @@ fn is_theme_include(line: &str) -> bool {
   if !rest.starts_with(is_blank) {
     return false;
   }
-  let body = rest.trim_end_matches(is_blank);
-  let Some(path) = body.strip_suffix("/theme.conf") else {
-    return false;
-  };
-  match path.rfind("/themes/") {
-    Some(index) => {
-      let identifier = &path[index + "/themes/".len()..];
-      !identifier.is_empty() && !identifier.chars().any(is_blank)
-    }
-    None => false,
-  }
+  let path = rest.trim_matches(is_blank);
+  path.ends_with("/theme.conf") && !path.chars().any(is_blank)
 }
 
 #[cfg(test)]
@@ -138,6 +129,17 @@ mod tests {
              \n\
              # Runtime ARGVUS accent override\n\
              active_tab_foreground   #3590bd\n"
+    );
+  }
+
+  #[test]
+  fn the_build_include_is_a_theme_include() {
+    let source = "include ${HOME}/.config/argvus/data/generated/theme/current/terminal/theme.conf\n\
+                  include other.conf\n";
+    assert!(
+      base_config(source, &settings(None)).starts_with(
+        "include /usr/share/argvus/terminal/config/themes/argvus-dark/theme.conf\ninclude other.conf\n"
+      )
     );
   }
 

@@ -12,6 +12,8 @@ use argvus_terminal_core::font::{self, Font};
 use argvus_terminal_core::kitty::{self, BaseSettings};
 use argvus_terminal_core::profile;
 use argvus_terminal_core::transparency::{self, Transparency};
+use argvus_theme_core::paths::ThemePaths;
+use argvus_theme_core::{build, discovery, render};
 use std::env;
 use std::fs::{self, File};
 use std::io::Write;
@@ -116,8 +118,6 @@ struct Paths {
   cache_home: PathBuf,
   /// The terminal package's own files: its kitty and theme configurations.
   terminal_root: PathBuf,
-  /// The shared ARGVUS system files, where the theme manifests live.
-  system_share: PathBuf,
 }
 
 impl Paths {
@@ -137,8 +137,6 @@ impl Paths {
       cache_home: cache_base,
       terminal_root: non_empty_path("ARGVUS_TERMINAL_SYSTEM_CONFIG")
         .unwrap_or_else(|| PathBuf::from("/usr/share/argvus/terminal")),
-      system_share: non_empty_path("ARGVUS_SYSTEM_CONFIG")
-        .unwrap_or_else(|| PathBuf::from("/usr/share/argvus")),
     })
   }
 
@@ -203,40 +201,15 @@ fn accent_for(paths: &Paths, theme: &str) -> String {
   config_stored("/appearance/accent")
     .filter(|accent| accent != "null")
     .or_else(|| read_first_line(&paths.data_dir().join(".accent-color")))
-    .unwrap_or_else(|| theme_default_accent(paths, theme))
+    .unwrap_or_else(|| theme_default_accent(theme))
 }
 
-/// The accent a theme declares: the appearance CLI first, then its manifest, then
-/// the built-in table.
-fn theme_default_accent(paths: &Paths, theme: &str) -> String {
-  let theme_id = accent::theme_id(theme);
-  if let Some(accent) = appearance_accent(theme_id) {
-    return accent;
-  }
-  let manifest = paths
-    .system_share
-    .join("appearance/themes.d")
-    .join(theme_id)
-    .join("theme.toml");
-  if let Some(accent) = fs::read_to_string(manifest)
-    .ok()
-    .and_then(|text| accent::from_manifest(&text))
-  {
-    return accent;
-  }
-  accent::built_in(theme_id).to_string()
-}
-
-fn appearance_accent(theme_id: &str) -> Option<String> {
-  let output = Process::new("argvus-appearance")
-    .args(["themes", "get", theme_id, "accent"])
-    .stderr(Stdio::null())
-    .output()
-    .ok()?;
-  let accent = String::from_utf8_lossy(&output.stdout)
-    .trim_end()
-    .to_string();
-  (output.status.success() && !accent.is_empty()).then_some(accent)
+/// The accent a theme declares: `palette.accent` of its manifest.
+fn theme_default_accent(theme: &str) -> String {
+  ThemePaths::from_environment()
+    .and_then(|paths| discovery::find(&paths, accent::theme_id(theme)))
+    .and_then(|manifest| manifest.token("accent").ok())
+    .map_or_else(|| accent::FALLBACK_ACCENT.to_string(), |color| color.hex())
 }
 
 /// The value a user stored at a canonical pointer (`null` when unset), or `None`
@@ -293,24 +266,19 @@ fn first_existing(candidates: &[PathBuf]) -> Option<PathBuf> {
   candidates.iter().find(|path| path.is_file()).cloned()
 }
 
-fn theme_file(paths: &Paths, theme: &str) -> PathBuf {
-  let user = paths
-    .data_dir()
-    .join("terminal/kitty/themes")
-    .join(theme)
-    .join("theme.conf");
-  let system = paths
-    .terminal_config()
-    .join("themes")
-    .join(theme)
-    .join("theme.conf");
-  first_existing(&[user, system]).unwrap_or_else(|| {
-    paths
-      .terminal_config()
-      .join("themes")
-      .join(DEFAULT_THEME)
-      .join("theme.conf")
-  })
+/// The theme colours: the current theme build when it is this theme, else the
+/// theme rendered into the cache (another theme than the active one, or a
+/// session before its first switch).
+fn theme_file(paths: &Paths, theme: &str) -> Result<PathBuf, String> {
+  let current = paths.data_dir().join("generated/theme/current");
+  if let Some(build) = build::current_file_for(&current, theme, "terminal/theme.conf") {
+    return Ok(build);
+  }
+  let theme_paths = ThemePaths::from_environment().ok_or("HOME is not set")?;
+  let text = render::render_file(&theme_paths, theme, None, "terminal")?;
+  let destination = paths.cached(&format!("terminal/themes/{theme}.conf"));
+  write_generated(&destination, &text)?;
+  Ok(destination)
 }
 
 fn base_source(paths: &Paths) -> Result<PathBuf, String> {
@@ -350,7 +318,7 @@ fn base_config(paths: &Paths, theme: &str, profile: &str) -> Result<PathBuf, Str
   let size = format!("{}.0", font.size);
   let opacity = transparency::opacity(&transparency_state());
   let accent = accent_for(paths, theme);
-  let theme_file = theme_file(paths, theme);
+  let theme_file = theme_file(paths, theme)?;
   let settings = BaseSettings {
     theme_file: &theme_file.display().to_string(),
     family: &font.family,

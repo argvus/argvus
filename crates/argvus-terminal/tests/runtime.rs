@@ -17,7 +17,39 @@ impl Fixture {
     let _ = fs::remove_dir_all(&root);
     fs::create_dir_all(root.join("argvus/data")).expect("create the data directory");
     fs::create_dir_all(root.join("cache")).expect("create the cache directory");
-    Self { root }
+    let fixture = Self { root };
+    for theme in ["argvus-dark", "dracula"] {
+      fixture.install_theme(theme);
+    }
+    fixture
+  }
+
+  /// Installs a theme and the terminal consumer of the registry, so the
+  /// launcher renders the theme's colours.
+  fn install_theme(&self, id: &str) {
+    let theme = self.root.join("themes").join(id);
+    fs::create_dir_all(&theme).expect("create the theme directory");
+    fs::write(
+      theme.join("theme.toml"),
+      format!(
+        "schema = 2\nid = \"{id}\"\nname = \"{id}\"\ncategory = \"dark\"\n\
+         [palette]\nbg = \"#000000\"\nfg = \"#FFFFFF\"\naccent = \"#3590BD\"\n"
+      ),
+    )
+    .expect("write the manifest");
+    fs::create_dir_all(self.root.join("theme/consumers.d")).expect("create the registry");
+    fs::write(
+      self.root.join("theme/consumers.d/terminal.toml"),
+      "id = \"terminal\"\ntemplate = \"terminal/theme-template/theme.conf\"\noutput = \"terminal/theme.conf\"\n",
+    )
+    .expect("write the registry entry");
+    fs::create_dir_all(self.root.join("terminal/theme-template"))
+      .expect("create the template directory");
+    fs::write(
+      self.root.join("terminal/theme-template/theme.conf"),
+      "foreground {{ @fg }}\n",
+    )
+    .expect("write the template");
   }
 
   /// The data directory of the ARGVUS configuration home.
@@ -47,6 +79,7 @@ impl Fixture {
       .env("ARGVUS_CACHE_HOME", self.root.join("cache"))
       .env("ARGVUS_TERMINAL_SYSTEM_CONFIG", system_root())
       .env("ARGVUS_SYSTEM_CONFIG", &self.root)
+      .env("XDG_DATA_HOME", self.root.join("xdg"))
       .env("ARGVUS_COMMANDS_DIR", "/nonexistent")
       .env("PATH", self.root.join("bin"));
     command
@@ -124,7 +157,7 @@ fn canonical_configuration_wins_over_the_legacy_files() {
     .to_string();
   let generated = fs::read_to_string(&path).unwrap();
   assert!(
-    generated.contains("/themes/dracula/theme.conf\n"),
+    generated.contains("terminal/themes/dracula.conf\n"),
     "{generated}"
   );
   assert!(

@@ -62,6 +62,9 @@ fn main() -> Result<()> {
     if app.poll_search_cursor() {
       dirty = true;
     }
+    if app.poll_theme_change() {
+      dirty = true;
+    }
     #[cfg(feature = "about")]
     if app.about.poll() {
       dirty = true;

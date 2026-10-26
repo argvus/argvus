@@ -16,3 +16,4 @@ path = "src/main.rs"
 
 [dependencies]
 argvus-system-monitor-core.workspace = true
+argvus-theme-core.workspace = true

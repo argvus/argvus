@@ -1,0 +1,22 @@
+[package]
+name = "argvus-theme-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+description = "Theme palettes, templates and atomic theme builds for ARGVUS"
+repository.workspace = true
+homepage.workspace = true
+
+[dependencies]
+serde.workspace = true
+thiserror.workspace = true
+toml.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true
+
+[lib]
+name = "argvus_theme_core"
+path = "src/lib.rs"

@@ -1,0 +1,102 @@
+@define-color argvus_bg {{ @tui_bg | hex }};
+@define-color argvus_bg_alpha {{ @calendar_bg_alpha | alpha(0.99) | rgba }};
+@define-color argvus_bg_effective @argvus_bg_alpha;
+@define-color argvus_surface {{ @calendar_surface | hex }};
+@define-color argvus_fg {{ @calendar_fg | hex }};
+@define-color argvus_muted {{ @calendar_muted | hex }};
+@define-color argvus_dim {{ @calendar_dim | rgba }};
+@define-color argvus_accent {{ @calendar_accent | hex }};
+@define-color argvus_accent_alpha {{ @calendar_accent_alpha | rgba }};
+@define-color argvus_border {{ @calendar_border | rgba }};
+@define-color argvus_focus {{ @calendar_focus | rgba }};
+
+.argvus-calendar {
+  background: @argvus_bg_effective;
+  color: @argvus_fg;
+  border-color: @argvus_border;
+  border-radius: 0;
+}
+
+.calendar-title,
+.agenda-title,
+.event-title,
+.editor-title,
+.day-has-event {
+  color: @argvus_fg;
+}
+
+.nav-button,
+.event-time,
+.editor-check,
+.editor-value,
+.editor-action,
+.events-toggle {
+  color: @argvus_muted;
+}
+
+.today-button,
+.add-event,
+.weekday,
+.day-current,
+.editor-label,
+.editor-save,
+.events-toggle:checked {
+  color: @argvus_accent;
+}
+
+.editor-delete {
+  color: {{ @calendar_color | hex }};
+}
+
+.nav-button:hover,
+.add-event:hover,
+.day:hover,
+.event-button:hover,
+.editor-action:hover,
+.agenda row:hover,
+.event-row:hover,
+.editor-entry,
+.event-editor entry {
+  background: @argvus_surface;
+  border-color: @argvus_border;
+}
+
+.nav-button:focus,
+.add-event:focus,
+.day:focus,
+.event-button:focus,
+.editor-action:focus,
+.editor-entry:focus,
+.event-editor entry:focus,
+.day-selected {
+  border-color: @argvus_focus;
+}
+
+.day-current.day-selected {
+  background: {{ @calendar_background | rgba }};
+}
+
+.day-outside-month,
+.agenda-empty {
+  color: @argvus_dim;
+}
+
+.event-divider {
+  color: @argvus_accent_alpha;
+}
+{{#if layout.rounded}}
+.argvus-calendar {
+  border-radius: 4px;
+}
+
+.day-selected,
+.nav-button:hover,
+.add-event:hover,
+.day:hover,
+.event-button:hover,
+.editor-action:hover,
+.editor-entry,
+.event-editor entry {
+  border-radius: 4px;
+}
+{{/if}}

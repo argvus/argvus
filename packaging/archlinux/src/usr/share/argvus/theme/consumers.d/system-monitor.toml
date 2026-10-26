@@ -1,0 +1,35 @@
+# Theme consumer: rendered into every theme build as system-monitor/btop.theme.
+id = "system-monitor"
+template = "system-monitor/theme-template/btop.theme"
+output = "system-monitor/btop.theme"
+
+# btop re-reads its configuration, which names the theme the switch wrote.
+[reload]
+kind = "signal"
+process = "btop"
+signal = "SIGUSR2"
+
+# Defaults for the tokens the template reads; a theme that defines one wins.
+[palette]
+btop_cached_end = "@bg | mix(@fg, 0.5)"
+btop_cached_mid = "@bg | mix(@fg, 0.2)"
+btop_cached_start = "@bg | mix(@accent, 0.1)"
+btop_cpu_end = "@fg | mix(@bg, 0.3)"
+btop_div_line = "@bg | mix(@fg, 0.2)"
+btop_download_end = "@fg | mix(@bg, 0.3)"
+btop_download_start = "@bg | mix(@fg, 0.2)"
+btop_free_end = "@fg | mix(@bg, 0.2)"
+btop_graph_text = "@fg | mix(@bg, 0.4)"
+btop_inactive_fg = "@bg | mix(@fg, 0.4)"
+btop_meter_bg = "@bg | mix(@fg, 0.1)"
+btop_selected_bg = "@bg | mix(@fg, 0.1)"
+btop_temp_end = "@danger"
+btop_temp_mid = "@danger | mix(@fg, 0.2)"
+btop_upload_end = "@fg | mix(@bg, 0.2)"
+btop_upload_start = "@bg | mix(@fg, 0.2)"
+btop_used_end = "@danger | mix(@fg, 0.1)"
+btop_used_mid = "@danger"
+btop_used_start = "@bg | mix(@danger, 0.1)"
+danger = "#E06C75"
+hypr_groupbar_inactive = "@bg | mix(@fg, 0.2)"
+toolkit_background = "@bg"

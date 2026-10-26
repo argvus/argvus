@@ -20,6 +20,7 @@ argvus-network-commands.workspace = true
 argvus-projects.workspace = true
 argvus-system-monitor.workspace = true
 argvus-terminal.workspace = true
+argvus-theme-core.workspace = true
 argvus-widget-telemetry-blocks.workspace = true
 argvus-widget-telemetry-toggle.workspace = true
 argvus-i18n-cli.workspace = true

@@ -162,14 +162,14 @@ fn apply(
   requested_mode: &str,
   icons: &IconNames,
 ) -> Result<Applied, Failure> {
-  let themes_dir = paths.system_config("appearance/themes.d");
+  let theme_paths = crate::theme_build::theme_paths(paths);
   let state_dir = paths.config_home.join("argvus/data");
   let active_file = state_dir.join(".active-theme");
   let accent_file = state_dir.join(".accent-color");
   let store = ConfigStore::from_environment().ok();
   let saved_accent = || {
     accent::state_accent(
-      &themes_dir,
+      &theme_paths,
       &state_dir,
       accent::canonical_accent(store.as_ref()),
     )
@@ -181,7 +181,7 @@ fn apply(
       let active =
         accent::canonical_theme_id(&accent::read_state(&active_file, accent::DEFAULT_THEME))
           .to_string();
-      match accent::theme_default_accent(&themes_dir, &active) {
+      match accent::theme_default_accent(&theme_paths, &active) {
         Some(default) => (false, false, default),
         None => return Err(Failure::DefaultMissing(active)),
       }
@@ -220,7 +220,7 @@ fn apply(
   }
   let active = accent::canonical_theme_id(&accent::read_state(&active_file, accent::DEFAULT_THEME))
     .to_string();
-  let theme = accent::applied_theme(&themes_dir, &active);
+  let theme = accent::applied_theme(&theme_paths, &active);
   let greeter_state_dir = env::var_os("ARGVUS_GREETER_THEME_STATE_DIR")
     .filter(|value| !value.is_empty())
     .map(PathBuf::from)
@@ -230,10 +230,6 @@ fn apply(
     .filter(|value| !value.is_empty())
     .map(PathBuf::from)
     .unwrap_or_else(|| home.join(".config"));
-  let cache_home = env::var_os("XDG_CACHE_HOME")
-    .filter(|value| !value.is_empty())
-    .map(PathBuf::from)
-    .unwrap_or_else(|| home.join(".cache"));
   let written = fs::create_dir_all(&state_dir)
     .and_then(|()| crate::text_edit::replace_file(&active_file, &format!("{theme}\n")))
     .and_then(|()| {
@@ -246,18 +242,16 @@ fn apply(
     &greeter_state_dir,
     &accent_value,
   ));
+  // The theme build carries the accent: every themed file follows it.
+  crate::theme_build::refresh_or_report(paths, &theme, Some(&accent_value.color));
   let context = accent::Context {
     paths,
-    themes_dir: &themes_dir,
-    accent: &accent_value,
     theme: &theme,
     icon_theme: &icons.current,
     icon_default_dark: &icons.dark,
     icon_default_light: &icons.light,
     runtime,
     theme_switch: env::var("ARGVUS_THEME_SWITCH").as_deref() == Ok("1"),
-    greeter_state_dir: &greeter_state_dir,
-    cache_home: &cache_home,
     xdg_config_home: &xdg_config_home,
   };
   accent::apply(&context);

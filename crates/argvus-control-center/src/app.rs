@@ -218,6 +218,9 @@ pub struct App {
   pub search_cursor_visible: bool,
   search_cursor_last_blink: Instant,
   pub jobs: JobManager,
+  /// The palette identity `theme` was loaded from, and when it was last read.
+  theme_stamp: argvus_theme::loader::ThemeStamp,
+  theme_checked: Instant,
 }
 
 impl App {
@@ -1346,6 +1349,8 @@ impl App {
       search_result_ids: Vec::new(),
       search_cursor_visible: true,
       search_cursor_last_blink: Instant::now(),
+      theme_stamp: Theme::active_stamp(),
+      theme_checked: Instant::now(),
       jobs: JobManager::default(),
     }
   }
@@ -1591,6 +1596,7 @@ impl App {
   /// scripts, so the process must re-read them instead of reusing the palette
   /// captured at startup.
   pub fn refresh_theme(&mut self) {
+    self.theme_stamp = Theme::active_stamp();
     let theme = Theme::load();
     self.theme = theme.clone();
     self.settings.set_theme(&theme);
@@ -1669,6 +1675,21 @@ impl App {
     self.search_query.clear();
     self.search_selected = 0;
     self.search_result_ids.clear();
+  }
+
+  /// Reloads the palette when the theme changed outside this window (a theme
+  /// switch from the keyboard, the Control Panel or the accent picker). The
+  /// disk is read at most once a second.
+  pub fn poll_theme_change(&mut self) -> bool {
+    if self.theme_checked.elapsed() < Duration::from_secs(1) {
+      return false;
+    }
+    self.theme_checked = Instant::now();
+    if Theme::active_stamp() == self.theme_stamp {
+      return false;
+    }
+    self.refresh_theme();
+    true
   }
 
   /// Executes the `poll_search_cursor` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.

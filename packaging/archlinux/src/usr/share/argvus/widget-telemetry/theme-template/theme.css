@@ -1,0 +1,9 @@
+/* theme: {{ theme.id }} — widget telemetry panel */
+@define-color th-background    {{ @telemetry_background | hex }};
+@define-color th-header        {{ @accent | hex }};
+@define-color th-foreground    {{ @fg | hex }};
+@define-color th-window-bg     {{ @telemetry_window_bg | hex }};
+@define-color th-window-bg-rgba {{ @telemetry_window_bg_rgba | rgba }};
+@define-color th-border        {{ @accent | alpha(0.15) | rgba }};
+@define-color th-border-header {{ @accent | alpha(0.2) | rgba }};
+@define-color th-disconnected  {{ @telemetry_disconnected | rgba }};

@@ -121,9 +121,11 @@ pub enum Target {
   NativeName,
   /// `@import url("…/waybar/mode.css")` in the taskbar and telemetry styles.
   WaybarModeImport,
-  /// `@import url("./themes/…/theme.css")` in the taskbar style.
+  /// The theme `@import url("…/theme.css")` of the taskbar style; the value is
+  /// the whole path.
   WaybarThemeImport,
-  /// `@import url("./themes/…/widget-telemetry-theme.css")` in the telemetry style.
+  /// The theme `@import` of the telemetry style (`…/widget-telemetry-theme.css`
+  /// or `…/widget-telemetry/theme.css`); the value is the whole path.
   WaybarTelemetryThemeImport,
   /// `rofi -config … -show drun` in the Waybar configuration.
   WaybarRofiDrun,
@@ -154,7 +156,7 @@ impl Target {
     match self {
       Self::RofiTheme => r#"^@theme ".*theme.rasi"$"#,
       Self::RofiFont => r#"font: ".*";"#,
-      Self::RofiImportTheme => r#"^@import ".*themes/.*/theme.rasi"$"#,
+      Self::RofiImportTheme => r#"^@import ".*/theme\.rasi"$"#,
       Self::RofiImportMode => r#"^@import ".*mode.rasi"$"#,
       Self::HyprpaperMonitor => r"^[[:space:]]*monitor[[:space:]]*=.*$",
       Self::HyprpaperPath => r"^[[:space:]]*path[[:space:]]*=.*$",
@@ -164,9 +166,9 @@ impl Target {
       Self::WaybarModeImport => {
         r#"@import url\("/usr/share/argvus/appearance/config/waybar/mode\.css"\);"#
       }
-      Self::WaybarThemeImport => r#"@import url\("\./themes/.*/theme\.css"\);"#,
+      Self::WaybarThemeImport => r#"@import url\("[^"]*/theme\.css"\);"#,
       Self::WaybarTelemetryThemeImport => {
-        r#"@import url\("\./themes/.*/widget-telemetry-theme\.css"\);"#
+        r#"@import url\("[^"]*widget-telemetry[-/]theme\.css"\);"#
       }
       Self::WaybarRofiDrun => r"rofi -config [^ ]* -show drun",
     }
@@ -183,10 +185,8 @@ impl Target {
       Self::Qt6ctColorScheme => format!("color_scheme_path={value}"),
       Self::Qt6ctCustomPalette => format!("custom_palette={value}"),
       Self::NativeName => format!("name = {value}"),
-      Self::WaybarModeImport => format!(r#"@import url("{value}");"#),
-      Self::WaybarThemeImport => format!(r#"@import url("./themes/{value}/theme.css");"#),
-      Self::WaybarTelemetryThemeImport => {
-        format!(r#"@import url("./themes/{value}/widget-telemetry-theme.css");"#)
+      Self::WaybarModeImport | Self::WaybarThemeImport | Self::WaybarTelemetryThemeImport => {
+        format!(r#"@import url("{value}");"#)
       }
       Self::WaybarRofiDrun => format!("rofi -config {value} -show drun"),
     }
@@ -386,9 +386,50 @@ mod tests {
       set_target(
         "@import url(\"./themes/old/widget-telemetry-theme.css\");\n@import url(\"./themes/old/theme.css\");\n",
         Target::WaybarTelemetryThemeImport,
-        "github-light"
+        "./themes/github-light/widget-telemetry-theme.css"
       ),
       "@import url(\"./themes/github-light/widget-telemetry-theme.css\");\n@import url(\"./themes/old/theme.css\");\n"
+    );
+    // The theme imports move between the per-theme copies and the theme build.
+    let build = "/data/generated/theme/current";
+    let taskbar = set_target(
+      "@import url(\"./themes/old/theme.css\");\n@import url(\"./mode.css\");\n",
+      Target::WaybarThemeImport,
+      &format!("{build}/taskbar/theme.css"),
+    );
+    assert_eq!(
+      taskbar,
+      format!("@import url(\"{build}/taskbar/theme.css\");\n@import url(\"./mode.css\");\n")
+    );
+    assert_eq!(
+      set_target(
+        &taskbar,
+        Target::WaybarThemeImport,
+        "./themes/sunset/theme.css"
+      ),
+      "@import url(\"./themes/sunset/theme.css\");\n@import url(\"./mode.css\");\n"
+    );
+    let telemetry = set_target(
+      "@import url(\"./themes/old/widget-telemetry-theme.css\");\n",
+      Target::WaybarTelemetryThemeImport,
+      &format!("{build}/widget-telemetry/theme.css"),
+    );
+    assert_eq!(
+      set_target(
+        &telemetry,
+        Target::WaybarTelemetryThemeImport,
+        "./themes/x/widget-telemetry-theme.css"
+      ),
+      "@import url(\"./themes/x/widget-telemetry-theme.css\");\n"
+    );
+    let rofi = set_target(
+      "@import \"/u/rofi/themes/old/theme.rasi\"\n@import \"/u/rofi/mode.rasi\"\n",
+      Target::RofiImportTheme,
+      &format!("{build}/launcher/theme.rasi"),
+    );
+    assert_eq!(
+      rofi,
+      format!("@import \"{build}/launcher/theme.rasi\"\n@import \"/u/rofi/mode.rasi\"\n")
     );
     assert_eq!(
       set_target(

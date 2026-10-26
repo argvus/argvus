@@ -1,0 +1,9 @@
+# Theme consumer: rendered into every theme build as removable-devices/theme.css.
+id = "removable-devices"
+template = "removable-devices/theme-template/theme.css"
+output = "removable-devices/theme.css"
+
+# Defaults for the tokens the template reads; a theme that defines one wins.
+[palette]
+storage_background_color = "@bg"
+storage_background_color_2 = "@accent"
