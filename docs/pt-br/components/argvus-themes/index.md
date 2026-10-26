@@ -19,7 +19,7 @@ Selecionar um tema não altera a identidade dele: a paleta, a cor de destaque pa
 - [Instalando temas](/pt/docs/components/argvus-themes/installing-themes/) — de onde vêm os temas oficiais e como instalar um ou todos com `pacman`.
 - [Temas oficiais](/pt/docs/components/argvus-themes/official-themes/) — o catálogo, a cor de destaque padrão de cada tema e como escolher um tema e o seu modo.
 - [Personalizando a cor de destaque](/pt/docs/components/argvus-themes/highlight-color/) — altere a cor de destaque independentemente do tema.
-- [Importando e exportando temas](/pt/docs/components/argvus-themes/import-and-export/) — salve a aparência atual como perfil `.tar.gz` e restaure-a depois ou em outra máquina.
+- [Importando e exportando temas](/pt/docs/components/argvus-themes/import-and-export/) — exporte o tema ativo, com a sua cor de destaque e o seu wallpaper, como um tema seu e importe-o em outra máquina.
 
 ## Referência rápida
 
@@ -28,13 +28,13 @@ Selecionar um tema não altera a identidade dele: a paleta, a cor de destaque pa
 | Escolher um tema | **Control Center → Aparência → Temas → Temas oficiais** |
 | Alternar entre Sticky e Float | **Control Center → Aparência → Modo** |
 | Alterar a cor de destaque | **Control Center → Aparência → Cor de destaque** |
-| Exportar a aparência atual | **Control Center → Aparência → Temas → Exportar / Importar → Exportar perfil do tema** |
-| Importar um perfil | **Control Center → Aparência → Temas → Exportar / Importar → Importar perfil do tema** |
+| Exportar o tema ativo | **Control Center → Aparência → Temas → Exportar tema** |
+| Importar um tema | **Control Center → Aparência → Temas → Importar tema** |
 | Abrir o seletor de temas pelo teclado | `SUPER + SHIFT + T` |
 
 ## De onde vêm os temas
 
-O ARGVUS inclui dois temas nativos, **ARGVUS Dark** e **ARGVUS Light**, junto com o pacote `argvus-appearance`. Todos os outros temas oficiais são pacotes separados `argvus-theme-<nome>`. Ao instalar um pacote de tema, ele passa a aparecer no seletor de temas; não é preciso reiniciar a sessão. Perfis importados ficam separados, em **Temas personalizados**.
+O ARGVUS inclui dois temas nativos, **ARGVUS Dark** e **ARGVUS Light**, junto com o pacote `argvus-appearance`. Todos os outros temas oficiais são pacotes separados `argvus-theme-<nome>`. Ao instalar um pacote de tema, ele passa a aparecer no seletor de temas; não é preciso reiniciar a sessão. Os seus temas, exportados ou importados, ficam separados, em **Temas personalizados**.
 
 ## Atalhos de teclado
 
@@ -42,13 +42,13 @@ As páginas de temas do Control Center mostram as teclas no rodapé:
 
 - `↑` / `↓` — navegar.
 - `Enter` — aplicar ou abrir.
-- `e` — exportar a aparência atual, na página de Temas.
-- `i` — importar um perfil, na página de Temas.
-- `d` — excluir um tema personalizado importado.
+- `e` — exportar o tema ativo, numa página de Temas.
+- `i` — importar um tema, numa página de Temas.
+- `d` — excluir um tema personalizado.
 - `Esc` — voltar.
 
 ## Solução de problemas
 
 - **Um tema que instalei não aparece.** Confirme que o pacote está instalado com `pacman -Q argvus-theme-<nome>` e depois reabra o Control Center. O pacote precisa de `argvus-appearance` instalado.
 - **A cor de destaque mudou depois que troquei de tema.** Uma cor de destaque personalizada sobrevive às trocas de tema. Use **Restaurar padrão do tema** para devolver ao tema a cor dele.
-- **Um perfil importado aparece, mas o wallpaper é diferente.** O perfil usa o wallpaper oficial quando o wallpaper salvo não pode ser restaurado. Veja [Importando e exportando temas](/pt/docs/components/argvus-themes/import-and-export/).
+- **Um arquivo de tema não aparece para importar.** Ele precisa estar diretamente na sua pasta pessoal e conter `<id>/theme.toml`. Veja [Importando e exportando temas](/pt/docs/components/argvus-themes/import-and-export/).

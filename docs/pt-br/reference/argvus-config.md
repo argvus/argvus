@@ -96,6 +96,34 @@ reprojetar reconstruiria uma árvore idêntica e descartaria o plano que a muta�
 acabou de produzir. A migração e a projeção só acontecem quando não existe um
 plano commitado, por exemplo durante o startup da sessão.
 
+### Alvos de reload
+
+O `argvus config session-plan` responde ao reload com os alvos das seções que
+mudaram, e o `argvus sessionctl` executa só esses. O splash cobre um reload
+apenas quando um alvo recria uma superfície: uma barra da Waybar ou o Control
+Panel voltando à tela desloca todas as janelas. Todo o resto recarrega no lugar.
+
+| Mudança | Alvos | Splash |
+| --- | --- | --- |
+| Tema, cor de destaque ou modo GTK | `hyprland`, `consumers`, `wallpaper`, `polkit` | não |
+| Só o wallpaper | `wallpaper` (IPC do hyprpaper; o serviço só reinicia com swaybg) | não |
+| `effects` (blur, animações, transparência) | `hyprland`, `consumers` | não |
+| `layout` das janelas (gaps, bordas) | `hyprland` | não |
+| `layout.taskbar` (posição, margens) | `hyprland`, `taskbar`, `widget_telemetry` | sim |
+| `fonts` | `consumers` | não |
+| `control_panel` (interruptor, cards) | `control_panel` | sim |
+| `default_apps`, `keyboard_shortcuts`, `hyprland`, `displays` | `hyprland` | não |
+| `power` | `hypridle` | não |
+
+`consumers` executa `argvus config theme-runtime consumers` (as folhas de
+estilo das barras, o Control Panel por IPC, as cores do Hyprland,
+`dunstctl reload`, btop e kitty), e `wallpaper` executa
+`argvus config theme-runtime wallpaper`, que mostra o `/appearance/wallpaper`
+efetivo. O hash de `layout.taskbar` fica separado do layout das janelas no
+manifesto de projeção, então mudar um gap não reinicia as barras. O plano
+`full`, usado quando não existe plano commitado, reinicia todas as superfícies
+sob o splash.
+
 Cada configuração efetiva possui uma generation operacional. Ela fica em
 `data/internal/generation.json` e no manifesto em
 `$XDG_STATE_HOME/argvus/config-projection.json`; não faz parte dos dotfiles.
@@ -108,7 +136,7 @@ e variante. Ele não interpreta arquivos gerados nem cria outra regra de preced�
 
 As projeções de tema e efeitos são implementadas pelo próprio `argvus-config`.
 A transação de tema (`argvus theme-switch`, que executa `theme-apply`), `argvus config accent` e `argvus effects-toggle` não projetam: eles
-validam, travam, exibem o splash, confirmam através desta CLI e então reconciliam
+validam, travam, confirmam através desta CLI e então reconciliam
 consumidores externos que não conseguem ler o `config.json`.
 `argvus effects-toggle` é um delegate fino, sem saída própria. Os helpers de
 aparência nunca são chamados pelo projetor e jamais podem escrever em
@@ -217,13 +245,13 @@ argvus config import --scope appearance appearance.json
 
 Use `--scope desktop` para o modelo completo gerenciado do desktop. Campos ausentes usam os defaults do ARGVUS; arquivos gerados não devem ser editados diretamente.
 
-Os perfis de tema do Control Center usam o escopo `appearance` dentro do arquivo. Perfis novos incluem o JSON canônico junto com os arquivos nativos legados para compatibilidade; ao aplicar um perfil, esse JSON é importado e suas projeções são regeneradas. O escopo `desktop` na linha de comando continua sendo a opção para um backup completo da configuração.
+Exportar e importar tema no Control Center trocam temas, não configuração: o arquivo contém um diretório de tema schema 2 (`<id>/theme.toml`, `overrides/`, o wallpaper) que é instalado em `$XDG_DATA_HOME/argvus/themes/`. Use o escopo `appearance` acima para levar as configurações de aparência, e o escopo `desktop` para um backup completo da configuração.
 
 O schema atual agrupa preferências em `appearance`, `layout`, `effects`, `fonts`, `control_panel`, `default_apps`, `keyboard_shortcuts`, `hyprland`, `displays`, `power`, `session`, `calendar` e `removable_devices`. `default_apps` é a única fonte persistente das preferências de aplicativos, e `keyboard_shortcuts` usa chaves estáveis, em inglês e independentes do locale, com strings ou `null` para atalhos desativados.
 
 O Control Center lê os valores canônicos de aparência ao abrir uma página de Aparência e grava as alterações através do `argvus-config`. Os arquivos nativos de estado continuam como projeções usadas pelos scripts de aparência e por instalações antigas.
 
-O Control Panel usa `control_panel.cards` para a ordem e a visibilidade dos cards, e `control_panel.enabled` para o interruptor geral do painel. Os arquivos `control-panel/cards.json` e `state/control-panel` continuam sendo mantidos como projeções de compatibilidade. Assim, as alterações feitas no Control Panel também ficam disponíveis nos perfis exportados/importados pelo Control Center.
+O Control Panel usa `control_panel.cards` para a ordem e a visibilidade dos cards, e `control_panel.enabled` para o interruptor geral do painel. Os arquivos `control-panel/cards.json` e `state/control-panel` continuam sendo mantidos como projeções de compatibilidade. Assim, as alterações feitas no Control Panel fazem parte do escopo de exportação `desktop`.
 
 As preferências de fontes usam `fonts.targets` para família, estilo e tamanho dos alvos taskbar, telemetry, Control Panel, sistema, aplicativos, terminal e navegador. `fonts.rendering` armazena antialiasing, hinting, ordem de subpixel e DPI. `fonts.conf`, a regra do fontconfig, as configurações do desktop e os blocos de fonte gerenciados dentro dos stylesheets do Waybar são projeções: o Control Center persiste `/fonts/targets/*` através do `argvus-config`, e o projetor reescreve apenas o bloco delimitado.
 

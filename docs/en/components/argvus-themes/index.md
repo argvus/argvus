@@ -19,7 +19,7 @@ Selecting a theme does not change its identity: the palette, the default highlig
 - [Installing themes](/docs/components/argvus-themes/installing-themes/) — where the official themes come from and how to install one or all of them with `pacman`.
 - [Official themes](/docs/components/argvus-themes/official-themes/) — the catalog, the default highlight color of each theme, and how to choose a theme and its mode.
 - [Customizing the highlight color](/docs/components/argvus-themes/highlight-color/) — change the accent color independently of the theme.
-- [Importing and exporting themes](/docs/components/argvus-themes/import-and-export/) — save your current appearance as a `.tar.gz` profile and restore it later or on another machine.
+- [Importing and exporting themes](/docs/components/argvus-themes/import-and-export/) — export the active theme, with your highlight color and wallpaper, as a theme of your own and import it on another machine.
 
 ## Quick reference
 
@@ -28,13 +28,13 @@ Selecting a theme does not change its identity: the palette, the default highlig
 | Pick a theme | **Control Center → Appearance → Themes → Official Themes** |
 | Switch Sticky and Float | **Control Center → Appearance → Mode** |
 | Change the highlight color | **Control Center → Appearance → Highlight color** |
-| Export the current appearance | **Control Center → Appearance → Themes → Export / Import → Export** |
-| Import a profile | **Control Center → Appearance → Themes → Export / Import → Import** |
+| Export the active theme | **Control Center → Appearance → Themes → Export theme** |
+| Import a theme | **Control Center → Appearance → Themes → Import theme** |
 | Open the theme selector from the keyboard | `SUPER + SHIFT + T` |
 
 ## Where themes come from
 
-ARGVUS ships two built-in themes, **ARGVUS Dark** and **ARGVUS Light**, with the `argvus-appearance` package. Every other official theme is a separate `argvus-theme-<name>` package. Installing a theme package adds it to the theme selector; no restart of the session is needed. Imported profiles are kept separately as **Custom Themes**.
+ARGVUS ships two built-in themes, **ARGVUS Dark** and **ARGVUS Light**, with the `argvus-appearance` package. Every other official theme is a separate `argvus-theme-<name>` package. Installing a theme package adds it to the theme selector; no restart of the session is needed. Your own themes, exported or imported, are listed separately as **Custom Themes**.
 
 ## Keyboard hints
 
@@ -42,13 +42,13 @@ The Control Center theme pages show their keys in the footer:
 
 - `↑` / `↓` — navigate.
 - `Enter` — apply or open.
-- `e` — export the current appearance from the Themes page.
-- `i` — import a profile from the Themes page.
-- `d` — delete an imported custom theme.
+- `e` — export the active theme, on a Themes page.
+- `i` — import a theme, on a Themes page.
+- `d` — delete a custom theme.
 - `Esc` — go back.
 
 ## Troubleshooting
 
 - **A theme I installed does not appear.** Confirm that the package is installed with `pacman -Q argvus-theme-<name>`, then reopen the Control Center. The package must be installed with `argvus-appearance` present.
 - **The highlight color changed after I switched theme.** A custom highlight color survives theme switches. Use **Reset to theme default** to give the theme its own color back.
-- **An imported profile is listed but its wallpaper is different.** The profile falls back to the official wallpaper when the saved wallpaper cannot be restored. See [Importing and exporting themes](/docs/components/argvus-themes/import-and-export/).
+- **A theme archive is not listed for import.** It must be directly in your home directory and hold `<id>/theme.toml`. See [Importing and exporting themes](/docs/components/argvus-themes/import-and-export/).

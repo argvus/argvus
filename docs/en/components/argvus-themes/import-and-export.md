@@ -1,75 +1,73 @@
 ---
 title: Importing and exporting themes
-description: Save your current appearance as a theme profile, import a profile, apply it and delete it.
+description: Export the active theme as a theme of your own, import a theme archive, apply it and delete it.
 ---
 
-A **theme profile** is a `.tar.gz` archive that stores your current appearance so you can restore it later, move it to another ARGVUS installation or share it. Profiles are managed in **Control Center → Appearance → Themes → Export / Import**.
+Export and import work with **themes**, in the same format as the official themes. Exporting saves the active theme, with your highlight color and wallpaper, as a new theme of your own. Importing installs a theme archive among your themes. Both are in **Control Center → Appearance → Themes**, and your themes are listed in **Custom Themes**.
 
-## What a profile contains
+## What an exported theme contains
 
-A profile records:
+The archive, `argvus-theme-<id>.tar.gz`, holds one theme directory, laid out like an official theme:
 
-- the active theme and its mode (Sticky or Float);
-- the highlight color, when you chose a custom one;
-- layout, effects, transparency and blur values, and the fonts and Control Panel card selection;
-- the wallpaper, when the current wallpaper is a readable file.
+```text
+<id>/theme.toml        the manifest (schema 2): name, category, palette, wallpaper
+<id>/overrides/...     the overrides of the theme it was made from, if any
+<id>/wallpaper.<ext>   the wallpaper on screen when you exported
+```
 
-Generated runtime files, such as the Hyprland, Waybar and shell configuration, are not part of the archive. ARGVUS recreates them when you apply the profile.
+The manifest is the one of the active theme, with your name, a new id, your highlight color as the palette accent and the wallpaper beside it. The theme keeps both modes, Sticky and Float, like any theme; the mode stays a separate setting. Fonts, effects, gaps and the other desktop settings are not part of a theme.
 
-## Export the current appearance
+Your themes are installed in `~/.local/share/argvus/themes/<id>/`. Extracting an archive there installs the theme too.
+
+## Export the active theme
 
 1. Open **Control Center → Appearance → Themes**.
-2. Choose **Export / Import**, then **Export theme profile**. You can also press `e` on the Themes page.
-3. Type a name for the theme. The name is shown in the list of custom themes.
-4. Press `Enter` to export.
+2. Choose **Export theme**, or press `e` on a Themes page.
+3. Type a name for the theme. The field shows the file that will be written.
+4. Press `Enter`.
 
-The archive is written to your home directory, named after the theme name and the export date and time, for example `my-theme-20260103-101500.tar.gz`. If a file with the same name already exists, a numeric suffix is added.
+The id is made from the name: lowercase letters, digits and hyphens. When the id is already used by an installed theme or by an archive in your home directory, `-2`, `-3` and so on are added. The archive is written to your home directory, for example `~/argvus-theme-my-theme.tar.gz`. ARGVUS checks the theme before writing it: the manifest must load and every component must render in both modes.
 
-## Import a profile
+## Import a theme
 
-1. Copy the `.tar.gz` profile into your home directory (`~`). ARGVUS looks for profiles there.
-2. Open **Control Center → Appearance → Themes → Export / Import**, then choose **Import theme profile**. You can also press `i` on the Themes page.
-3. Select the archive from the list and press `Enter`.
+1. Copy the `.tar.gz` archive into your home directory (`~`). ARGVUS lists the archives there that hold a theme.
+2. Open **Control Center → Appearance → Themes → Import theme**, or press `i` on a Themes page.
+3. Select the archive and press `Enter`.
 
-ARGVUS validates the archive before installing it. Validation checks the manifest, the checksums and the wallpaper payload. If the archive is invalid, the import is cancelled and nothing is installed.
+ARGVUS checks the archive before installing it. It must hold a single directory with a `theme.toml`, with relative paths only (no `..`, no links), at most 128 entries and a size limit per file; the id must match the directory, the wallpaper must be in the archive and every component must render in both modes. If any check fails, nothing is installed.
 
-The imported profile is added to **Custom Themes**. Importing and applying are separate steps: importing only adds the profile, and you choose when to apply it.
+The theme is added to **Custom Themes**. Importing does not apply it: you choose when.
 
 ### Name collisions
 
-If a custom theme with the same identity already exists, ARGVUS asks **Replace the existing imported theme?**. Choose **Replace** to overwrite it, or press `Esc` to keep the existing one.
-
-### Wallpapers
-
-The embedded wallpaper is restored under your home directory when possible:
-
-- ARGVUS uses the original path when it is available.
-- Otherwise it uses your pictures directory, or `~/Pictures/ARGVUS`.
-- If a file with that name already exists, the restored file receives an `-imported-N` suffix.
-
-When a profile wallpaper cannot be restored at all, the import fails instead of creating a profile that points to a missing file.
+- If one of your themes has the same id, ARGVUS asks **Replace your theme with the same ID?**. Choose **Replace** to replace it, or press `Esc` to keep yours. The replaced theme is kept as a backup until the new one is installed.
+- An archive with the id of an official theme is refused. Export it again under another name.
 
 ## Apply a custom theme
 
 1. Open **Control Center → Appearance → Themes → Custom Themes**.
-2. Select the imported theme and press `Enter`.
+2. Select the theme and press `Enter`.
 
-Applying restores the theme state, the accent, effects, layout and the included wallpaper. Selecting a profile reloads the affected desktop surfaces. If the profile wallpaper cannot be restored as a file, the profile is applied with the official wallpaper and you see a notice.
+The theme is applied like an official one, with its own highlight color and wallpaper, in the current mode.
 
-## Delete an imported theme
+## Delete a custom theme
 
 1. Open **Control Center → Appearance → Themes → Custom Themes**.
 2. Select the theme and press `d`.
-3. Confirm with `Enter`, or press `Esc` to cancel.
+3. Confirm with `y`, or press `n` or `Esc` to cancel.
 
-Deleting an imported theme removes the profile from ARGVUS. Its wallpaper is kept. If the deleted profile was the active one, ARGVUS falls back to **ARGVUS Dark**.
+The theme directory is removed from `~/.local/share/argvus/themes`. If it was the active theme, ARGVUS switches to **ARGVUS Dark** first.
 
-## Share a profile
+## Profiles of earlier versions
 
-A profile is a regular archive. Copy it to another machine that runs ARGVUS and import it there. The profile does not include the transparency and blur values saved for inactive themes.
+Earlier versions exported *theme profiles* (`profile.tar.gz`), a copy of the appearance settings. The first time a Themes page opens, each profile in `~/.local/share/argvus/themes/<name>/` is converted into a theme made from its base theme, with its highlight color and wallpaper. The original profile, and the old `custom-themes.json` list, move to `~/.config/argvus/data/backups/theme-profiles-<seconds>/`, and the status line reports the conversion. A profile whose base theme is not installed is only moved to the backup.
+
+## Share a theme
+
+An exported theme is a regular archive. Copy it to another machine that runs ARGVUS and import it there.
 
 ## Troubleshooting
 
-- **The archive is listed but import fails.** The profile is invalid or its wallpaper payload is unreadable. Export the appearance again from the source machine.
-- **The imported theme shows the official wallpaper.** The saved wallpaper could not be restored as a file. Choose a wallpaper again under **Control Center → Appearance → Wallpapers**.
-- **The profile does not appear in the list.** Check that the archive is directly inside your home directory and ends with `.tar.gz`.
+- **The archive is not listed.** It must be directly inside your home directory, end with `.tar.gz` and hold `<id>/theme.toml`.
+- **The import is refused.** The status line says why: an official theme with the same id, a missing wallpaper, a manifest that does not load or a component that does not render.
+- **The export is refused.** The name needs at least one letter or digit, and the active theme must be installed.

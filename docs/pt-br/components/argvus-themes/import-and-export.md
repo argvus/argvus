@@ -1,75 +1,73 @@
 ---
 title: Importando e exportando temas
-description: Salve a aparência atual como perfil de tema, importe um perfil, aplique-o e exclua-o.
+description: Exporte o tema ativo como um tema seu, importe um arquivo de tema, aplique-o e exclua-o.
 ---
 
-Um **perfil de tema** é um arquivo `.tar.gz` que guarda a sua aparência atual para que você possa restaurá-la depois, levá-la para outra instalação do ARGVUS ou compartilhá-la. Os perfis são gerenciados em **Control Center → Aparência → Temas → Exportar / Importar**.
+Exportar e importar trabalham com **temas**, no mesmo formato dos temas oficiais. Exportar salva o tema ativo, com a sua cor de destaque e o seu wallpaper, como um tema novo seu. Importar instala um arquivo de tema entre os seus temas. As duas ações ficam em **Control Center → Aparência → Temas**, e os seus temas aparecem em **Temas personalizados**.
 
-## O que um perfil contém
+## O que um tema exportado contém
 
-Um perfil registra:
+O arquivo, `argvus-theme-<id>.tar.gz`, guarda um diretório de tema, organizado como um tema oficial:
 
-- o tema ativo e o seu modo (Sticky ou Float);
-- a cor de destaque, quando você escolheu uma personalizada;
-- os valores de layout, efeitos, transparência e blur, além da fonte e da seleção de cards do Control Panel;
-- o wallpaper, quando o wallpaper atual é um arquivo legível.
+```text
+<id>/theme.toml        o manifesto (schema 2): nome, categoria, paleta, wallpaper
+<id>/overrides/...     os overrides do tema de origem, se houver
+<id>/wallpaper.<ext>   o wallpaper que estava na tela ao exportar
+```
 
-Arquivos de execução gerados, como a configuração do Hyprland, da Waybar e do shell, não fazem parte do arquivo. O ARGVUS os recria quando você aplica o perfil.
+O manifesto é o do tema ativo, com o seu nome, um id novo, a sua cor de destaque como destaque da paleta e o wallpaper ao lado. O tema mantém os dois modos, Sticky e Float, como qualquer tema; o modo continua sendo uma configuração separada. Fontes, efeitos, espaçamentos e as demais configurações do desktop não fazem parte de um tema.
 
-## Exportar a aparência atual
+Os seus temas ficam instalados em `~/.local/share/argvus/themes/<id>/`. Extrair um arquivo ali também instala o tema.
+
+## Exportar o tema ativo
 
 1. Abra **Control Center → Aparência → Temas**.
-2. Escolha **Exportar / Importar** e depois **Exportar perfil do tema**. Você também pode pressionar `e` na página de Temas.
-3. Digite um nome para o tema. O nome aparece na lista de temas personalizados.
-4. Pressione `Enter` para exportar.
+2. Escolha **Exportar tema**, ou pressione `e` numa página de Temas.
+3. Digite um nome para o tema. O campo mostra o arquivo que será gravado.
+4. Pressione `Enter`.
 
-O arquivo é gravado no seu diretório pessoal, com o nome do tema seguido da data e hora da exportação, por exemplo `meu-tema-20260103-101500.tar.gz`. Se já existir um arquivo com o mesmo nome, é acrescentado um sufixo numérico.
+O id vem do nome: letras minúsculas, dígitos e hífens. Quando o id já é usado por um tema instalado ou por um arquivo na sua pasta pessoal, são acrescentados `-2`, `-3` e assim por diante. O arquivo é gravado na sua pasta pessoal, por exemplo `~/argvus-theme-meu-tema.tar.gz`. O ARGVUS confere o tema antes de gravá-lo: o manifesto precisa carregar e todos os componentes precisam ser gerados nos dois modos.
 
-## Importar um perfil
+## Importar um tema
 
-1. Copie o perfil `.tar.gz` para o seu diretório pessoal (`~`). O ARGVUS procura perfis ali.
-2. Abra **Control Center → Aparência → Temas → Exportar / Importar** e escolha **Importar perfil do tema**. Você também pode pressionar `i` na página de Temas.
-3. Selecione o arquivo na lista e pressione `Enter`.
+1. Copie o arquivo `.tar.gz` para a sua pasta pessoal (`~`). O ARGVUS lista os arquivos dali que contêm um tema.
+2. Abra **Control Center → Aparência → Temas → Importar tema**, ou pressione `i` numa página de Temas.
+3. Selecione o arquivo e pressione `Enter`.
 
-O ARGVUS valida o arquivo antes de instalá-lo. A validação verifica o manifesto, as somas de verificação e o wallpaper incluído. Se o arquivo for inválido, a importação é cancelada e nada é instalado.
+O ARGVUS confere o arquivo antes de instalá-lo. Ele precisa conter um único diretório com um `theme.toml`, só com caminhos relativos (sem `..` e sem links), no máximo 128 entradas e um limite de tamanho por arquivo; o id precisa ser igual ao nome do diretório, o wallpaper precisa estar no arquivo e todos os componentes precisam ser gerados nos dois modos. Se alguma verificação falhar, nada é instalado.
 
-O perfil importado é adicionado a **Temas personalizados**. Importar e aplicar são etapas separadas: importar apenas adiciona o perfil, e você escolhe quando aplicá-lo.
+O tema entra em **Temas personalizados**. Importar não aplica o tema: você escolhe quando.
 
-### Conflitos de nome
+### Conflito de nomes
 
-Se já existir um tema personalizado com a mesma identidade, o ARGVUS pergunta **Substituir o tema importado existente?**. Escolha **Substituir** para sobrescrevê-lo, ou pressione `Esc` para manter o existente.
-
-### Wallpapers
-
-O wallpaper incluído é restaurado no seu diretório pessoal quando possível:
-
-- o ARGVUS usa o caminho original, quando ele está disponível;
-- caso contrário, usa a sua pasta de imagens, ou `~/Pictures/ARGVUS`;
-- se já existir um arquivo com esse nome, o arquivo restaurado recebe um sufixo `-imported-N`.
-
-Quando o wallpaper de um perfil não pode ser restaurado de forma alguma, a importação falha em vez de criar um perfil que aponta para um arquivo inexistente.
+- Se um tema seu tem o mesmo id, o ARGVUS pergunta **Substituir o seu tema com o mesmo ID?**. Escolha **Substituir** para trocá-lo, ou pressione `Esc` para manter o seu. O tema substituído fica guardado como backup até o novo ser instalado.
+- Um arquivo com o id de um tema oficial é recusado. Exporte-o de novo com outro nome.
 
 ## Aplicar um tema personalizado
 
 1. Abra **Control Center → Aparência → Temas → Temas personalizados**.
-2. Selecione o tema importado e pressione `Enter`.
+2. Selecione o tema e pressione `Enter`.
 
-Aplicar restaura o estado do tema, a cor de destaque, os efeitos, o layout e o wallpaper incluído. Selecionar um perfil recarrega as superfícies afetadas do desktop. Se o wallpaper do perfil não puder ser restaurado como arquivo, o perfil é aplicado com o wallpaper oficial e você verá um aviso.
+O tema é aplicado como um oficial, com a cor de destaque e o wallpaper dele, no modo atual.
 
-## Excluir um tema importado
+## Excluir um tema personalizado
 
 1. Abra **Control Center → Aparência → Temas → Temas personalizados**.
 2. Selecione o tema e pressione `d`.
-3. Confirme com `Enter`, ou pressione `Esc` para cancelar.
+3. Confirme com `y`, ou pressione `n` ou `Esc` para cancelar.
 
-Excluir um tema importado remove o perfil do ARGVUS. O wallpaper é mantido. Se o perfil excluído era o ativo, o ARGVUS volta para o **ARGVUS Dark**.
+O diretório do tema é removido de `~/.local/share/argvus/themes`. Se ele era o tema ativo, o ARGVUS troca antes para o **ARGVUS Dark**.
 
-## Compartilhar um perfil
+## Perfis de versões anteriores
 
-Um perfil é um arquivo comum. Copie-o para outra máquina que use o ARGVUS e importe-o ali. O perfil não inclui os valores de transparência e blur salvos para temas inativos.
+Versões anteriores exportavam *perfis de tema* (`profile.tar.gz`), uma cópia das configurações de aparência. Na primeira vez que uma página de Temas abre, cada perfil em `~/.local/share/argvus/themes/<nome>/` é convertido num tema feito a partir do tema base dele, com a cor de destaque e o wallpaper do perfil. O perfil original, e a antiga lista `custom-themes.json`, vão para `~/.config/argvus/data/backups/theme-profiles-<segundos>/`, e a linha de status informa a conversão. Um perfil cujo tema base não está instalado só é movido para o backup.
+
+## Compartilhar um tema
+
+Um tema exportado é um arquivo comum. Copie-o para outra máquina com ARGVUS e importe-o lá.
 
 ## Solução de problemas
 
-- **O arquivo aparece na lista, mas a importação falha.** O perfil é inválido ou o payload do wallpaper não pode ser lido. Exporte a aparência novamente na máquina de origem.
-- **O tema importado mostra o wallpaper oficial.** O wallpaper salvo não pôde ser restaurado como arquivo. Escolha um wallpaper novamente em **Control Center → Aparência → Papéis de parede**.
-- **O perfil não aparece na lista.** Confirme que o arquivo está diretamente no seu diretório pessoal e termina em `.tar.gz`.
+- **O arquivo não aparece na lista.** Ele precisa estar diretamente na sua pasta pessoal, terminar em `.tar.gz` e conter `<id>/theme.toml`.
+- **A importação é recusada.** A linha de status diz o motivo: um tema oficial com o mesmo id, wallpaper ausente, manifesto que não carrega ou componente que não é gerado.
+- **A exportação é recusada.** O nome precisa de pelo menos uma letra ou um dígito, e o tema ativo precisa estar instalado.

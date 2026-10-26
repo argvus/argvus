@@ -24,7 +24,7 @@ Para voltar à cor definida pelo tema selecionado, abra **Control Center → Apa
 
 - A cor de destaque que você escolhe é uma substituição independente. Ela sobrevive quando você troca para outro tema, então a cor escolhida continua a mesma.
 - Um tema aplicado depois de **Restaurar padrão do tema** volta a controlar a cor de destaque e usa o padrão dele.
-- Exportar e importar mantêm a cor de destaque ativa no momento da exportação. Veja [Importando e exportando temas](/pt/docs/components/argvus-themes/import-and-export/).
+- Exportar o tema ativo grava a cor de destaque ativa no momento da exportação como destaque da paleta do tema novo. Veja [Importando e exportando temas](/pt/docs/components/argvus-themes/import-and-export/).
 
 ## Onde o valor é guardado
 

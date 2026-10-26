@@ -24,7 +24,7 @@ To go back to the color defined by the selected theme, open **Control Center →
 
 - A highlight color you choose is an independent override. It survives when you switch to another theme, so the color you picked stays the same.
 - A theme that you apply after **Reset to theme default** takes over the highlight color again and uses its own default.
-- Export and import keep the highlight color that is active when you export. See [Importing and exporting themes](/docs/components/argvus-themes/import-and-export/).
+- Exporting the active theme stores the highlight color that is active when you export as the accent of the new theme's palette. See [Importing and exporting themes](/docs/components/argvus-themes/import-and-export/).
 
 ## Where the value is stored
 
