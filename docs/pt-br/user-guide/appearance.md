@@ -7,7 +7,7 @@ O sistema de aparência aplica um estado comum ao Hyprland, GTK, Qt, Waybar, Qui
 
 ## Famílias de tema
 
-As vinte e duas famílias abaixo são definidas pelo payload atual de temas. A coluna de cor mostra o valor restaurado pela ação **Restaurar padrão do tema**; o usuário pode escolher outra cor RGB válida independentemente.
+As vinte e três famílias abaixo são definidas pelo payload atual de temas. A coluna de cor mostra o valor restaurado pela ação **Restaurar padrão do tema**; o usuário pode escolher outra cor RGB válida independentemente.
 
 | Família | Cor de destaque restaurada | Fundo base | Modos |
 | --- | --- | --- | --- |
@@ -33,6 +33,7 @@ As vinte e duas famílias abaixo são definidas pelo payload atual de temas. A c
 | Everforest Light | `#3A94C5` | `#FDF6E3` | Sticky, Float |
 | Solarized Light | `#268BD2` | `#FDF6E3` | Sticky, Float |
 | Nord Light | `#5E81AC` | `#ECEFF4` | Sticky, Float |
+| Watercolor | `#1A639C` | `#E9E3D3` | Sticky, Float |
 
 **Sticky** é o layout compacto: janelas lado a lado usam gaps internos pequenos, os gaps externos são zero e a taskbar fica próxima da borda. **Float** adiciona gaps maiores, cantos arredondados, sombras e margens às superfícies do shell.
 

@@ -70,6 +70,7 @@ The packages below are the official theme packages published today.
 | `argvus-theme-everforest-light` | Everforest Light |
 | `argvus-theme-catppuccin-latte` | Catppuccin Latte |
 | `argvus-theme-gruvbox-light` | Gruvbox Light |
+| `argvus-theme-watercolor` | Watercolor |
 
 The built-in **ARGVUS Dark** and **ARGVUS Light** themes do not need a separate package; they come with `argvus-appearance`.
 

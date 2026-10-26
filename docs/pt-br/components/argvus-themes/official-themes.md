@@ -56,6 +56,7 @@ Para trocar o modo, abra **Control Center → Aparência → Modo** e escolha **
 | Everforest Light | `argvus-theme-everforest-light` | `#3A94C5` |
 | Catppuccin Latte | `argvus-theme-catppuccin-latte` | `#1E66F5` |
 | Gruvbox Light | `argvus-theme-gruvbox-light` | `#458588` |
+| Watercolor | `argvus-theme-watercolor` | `#1A639C` |
 
 ## Temas nativos
 

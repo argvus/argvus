@@ -7,7 +7,7 @@ The appearance system applies one theme state to Hyprland, GTK, Qt, Waybar, Quic
 
 ## Theme families
 
-The twenty-two families below are defined by the current theme payload. The color column is the family's default active-border/accent color; users may choose another valid RGB accent.
+The twenty-three families below are defined by the current theme payload. The color column is the family's default active-border/accent color; users may choose another valid RGB accent.
 
 | Family | Reset highlight color | Base background | Modes |
 | --- | --- | --- | --- |
@@ -33,6 +33,7 @@ The twenty-two families below are defined by the current theme payload. The colo
 | Everforest Light | `#3A94C5` | `#FDF6E3` | Sticky, Float |
 | Solarized Light | `#268BD2` | `#FDF6E3` | Sticky, Float |
 | Nord Light | `#5E81AC` | `#ECEFF4` | Sticky, Float |
+| Watercolor | `#1A639C` | `#E9E3D3` | Sticky, Float |
 
 The color shown in the table is the value written to `config.json` when that family is selected or when **Reset to theme default** is used. A manually chosen six-digit RGB accent applies until the next theme switch, which replaces it with the selected theme's default.
 
