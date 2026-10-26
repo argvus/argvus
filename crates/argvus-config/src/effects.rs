@@ -687,51 +687,23 @@ impl Effects {
     else {
       return Ok(());
     };
-    let background = if self.effect_enabled("launchers.transparency") == "disabled" {
-      theme_background(&self.active_theme()).to_string()
+    // Without transparency the launcher is opaque. With it, the alpha is the
+    // inverse of the transparency, rounded as the shell rounded it: the opacity
+    // is printed with two decimals first.
+    let opacity: f64 = if self.effect_enabled("launchers.transparency") == "disabled" {
+      1.0
     } else {
-      // The alpha is the inverse of the transparency, rounded as the shell
-      // rounded it: the opacity is printed with two decimals first.
-      let opacity: f64 = opacity_factor(self.effect_value("launchers.transparency"))
+      opacity_factor(self.effect_value("launchers.transparency"))
         .parse()
-        .unwrap_or(1.0);
-      let text = fs::read_to_string(&theme)?;
-      let import = text
-        .lines()
-        .find_map(|line| {
-          line
-            .strip_prefix("@import \"")
-            .and_then(|rest| rest.split('"').next())
-        })
-        .map(str::to_string);
-      let color = import
-        .and_then(|path| fs::read_to_string(path).ok())
-        .and_then(|imported| {
-          imported.lines().find_map(|line| {
-            let rest = line.trim_start().strip_prefix("th-bg:")?.trim_start();
-            rest.strip_suffix(';').map(str::to_string)
-          })
-        })
-        .unwrap_or_default();
-      let channels: Vec<String> = color
-        .replace("rgba", "")
-        .replace("rgb", "")
-        .replace(['(', ')', '%'], "")
-        .split(',')
-        .flat_map(str::split_whitespace)
-        .map(str::to_string)
-        .collect();
-      match channels.len() {
-        3 | 4 => {
-          let alpha = (opacity * 100.0).round() as i64;
-          format!(
-            "rgba({}, {}, {}, {}%)",
-            channels[0], channels[1], channels[2], alpha
-          )
-        }
-        _ => "@th-bg".to_string(),
-      }
+        .unwrap_or(1.0)
     };
+    // The colour always comes from the build the theme file imports, so every
+    // theme, official or the user's own, gets its own background in both modes.
+    let text = fs::read_to_string(&theme)?;
+    let build_theme = imported_build_theme(&theme, &text)
+      .and_then(|path| fs::read_to_string(path).ok())
+      .unwrap_or_default();
+    let background = launcher_background(&build_theme, opacity);
     let rules = [Rule::literal(
       r"^[[:space:]]*bg:[[:space:]].*;",
       format!("    bg:               {background};"),
@@ -1393,27 +1365,47 @@ fn opacity_factor(transparency: u32) -> String {
   format!("{:.2}", 1.0 - f64::from(transparency) / 100.0)
 }
 
-fn theme_background(theme: &str) -> &'static str {
-  match theme {
-    "dracula" | "dracula-float" => "#282A36",
-    "slate-dark" | "slate-dark-float" => "#2f3541",
-    "argvus-light" | "argvus-light-float" => "#f7f7f7",
-    "github-light" | "github-light-float" => "#ffffff",
-    "one-light" | "one-light-float" => "#FAFAFA",
-    "everforest-light" | "everforest-light-float" => "#FDF6E3",
-    "solarized-light" | "solarized-light-float" => "#FDF6E3",
-    "catppuccin-latte" | "catppuccin-latte-float" => "#EFF1F5",
-    "gruvbox-light" | "gruvbox-light-float" => "#FBF1C7",
-    "universe" | "universe-float" => "#000000",
-    "gruvbox-high-dark" | "gruvbox-high-dark-float" | "gruvbox-dark" | "gruvbox-dark-float" => {
-      "#282828"
+/// The build file the Rofi theme imports first (`@import "…/launcher/theme.rasi"`).
+/// A relative import is resolved against the theme file's directory, as Rofi
+/// resolves it.
+fn imported_build_theme(theme: &Path, text: &str) -> Option<PathBuf> {
+  let import = text.lines().find_map(|line| {
+    line
+      .strip_prefix("@import \"")
+      .and_then(|rest| rest.split('"').next())
+  })?;
+  let import = Path::new(import);
+  if import.is_absolute() {
+    Some(import.to_path_buf())
+  } else {
+    theme.parent().map(|directory| directory.join(import))
+  }
+}
+
+/// The `bg` value of the Rofi theme: the build's `th-bg` colour with `opacity`
+/// (0.0 to 1.0) as a whole percentage. A build without a readable `th-bg` keeps
+/// the build's own value, `@th-bg`.
+fn launcher_background(build_theme: &str, opacity: f64) -> String {
+  let color = build_theme
+    .lines()
+    .find_map(|line| {
+      let rest = line.trim_start().strip_prefix("th-bg:")?.trim_start();
+      rest.strip_suffix(';')
+    })
+    .unwrap_or_default();
+  let channels: Vec<&str> = color
+    .trim_start_matches("rgba")
+    .trim_start_matches("rgb")
+    .trim_matches(['(', ')'])
+    .split(',')
+    .map(|channel| channel.trim().trim_end_matches('%'))
+    .collect();
+  match channels.as_slice() {
+    [red, green, blue] | [red, green, blue, _] => {
+      let alpha = (opacity * 100.0).round() as i64;
+      format!("rgba({red}, {green}, {blue}, {alpha}%)")
     }
-    "solitude" | "solitude-float" => "#101315",
-    "sunset" | "sunset-float" => "#0F0F0F",
-    "matrix" | "matrix-float" => "#0B0C16",
-    "monokai-dark" | "monokai-dark-float" => "#2D2A2E",
-    "one-dark" | "one-dark-float" => "#282C34",
-    _ => "#111316",
+    _ => "@th-bg".to_string(),
   }
 }
 
@@ -1746,6 +1738,22 @@ pub fn run(arguments: &[String]) -> i32 {
   }
 }
 
+/// Writes the launcher background of the current build into the user's Rofi
+/// theme. Rofi reads its background from that file, not from the build, so a
+/// theme switch calls this as soon as the build is active: a launcher opened
+/// while the rest of the switch runs then shows the new theme. Failures are
+/// reported on stderr; the full `apply` at the end of the switch writes the
+/// file again.
+pub(crate) fn apply_launcher() {
+  let Some(effects) = Effects::from_environment() else {
+    eprintln!("argvus-config: cannot resolve the configuration directory");
+    return;
+  };
+  if let Err(error) = effects.apply_launcher_surface() {
+    eprintln!("argvus-config: launcher effects: {error}");
+  }
+}
+
 impl Effects {
   /// The usage line of the effects switch, translated when argvus-i18n is installed.
   fn usage(&self) {
@@ -1783,6 +1791,56 @@ impl Effects {
 #[cfg(test)]
 mod tests {
   use super::*;
+
+  #[test]
+  fn launcher_background_takes_the_build_colour_with_the_given_opacity() {
+    let build_theme = "* {\n    th-bg:            rgba(247, 247, 247, 96%);\n}\n";
+    assert_eq!(
+      launcher_background(build_theme, 0.5),
+      "rgba(247, 247, 247, 50%)"
+    );
+    // Transparency disabled: the same colour, opaque.
+    assert_eq!(
+      launcher_background(build_theme, 1.0),
+      "rgba(247, 247, 247, 100%)"
+    );
+  }
+
+  #[test]
+  fn launcher_background_reads_an_rgb_build_colour() {
+    let build_theme = "    th-bg:            rgb(40, 42, 54);\n";
+    assert_eq!(
+      launcher_background(build_theme, 0.88),
+      "rgba(40, 42, 54, 88%)"
+    );
+  }
+
+  #[test]
+  fn launcher_background_keeps_the_build_value_without_a_readable_colour() {
+    assert_eq!(launcher_background("", 0.5), "@th-bg");
+    assert_eq!(
+      launcher_background("    th-bg:            @other;\n", 0.5),
+      "@th-bg"
+    );
+  }
+
+  #[test]
+  fn imported_build_theme_resolves_absolute_and_relative_imports() {
+    let theme = Path::new("/home/user/.config/argvus/data/rofi/theme.rasi");
+    let absolute = "@import \"/build/current/launcher/theme.rasi\"\n";
+    assert_eq!(
+      imported_build_theme(theme, absolute),
+      Some(PathBuf::from("/build/current/launcher/theme.rasi"))
+    );
+    let relative = "@import \"../generated/theme/current/launcher/theme.rasi\"\n";
+    assert_eq!(
+      imported_build_theme(theme, relative),
+      Some(PathBuf::from(
+        "/home/user/.config/argvus/data/rofi/../generated/theme/current/launcher/theme.rasi"
+      ))
+    );
+    assert_eq!(imported_build_theme(theme, "* {}\n"), None);
+  }
 
   #[test]
   fn each_settings_table_names_its_master_switch() {

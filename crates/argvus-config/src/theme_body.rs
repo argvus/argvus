@@ -67,6 +67,11 @@ pub fn run(paths: &SessionPaths, theme: &str, runtime: bool, live: bool) -> i32 
 
   let mut status = 0;
   let _ = text_edit::replace_file(&active_file, theme);
+  // Rofi takes its background from its own theme file, which the effects step
+  // at the end of the switch used to write seconds after the build changed.
+  // Writing it now, once the theme is committed, keeps a launcher opened during
+  // the rest of the switch from showing the previous theme's background.
+  crate::effects::apply_launcher();
   // The consumers that read the build directly change now; the files the
   // others read are written below and reloaded when the switch ends.
   if live {
