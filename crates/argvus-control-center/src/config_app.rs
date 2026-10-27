@@ -553,7 +553,10 @@ mod tests {
     assert!(app.icons);
     app.toggle();
     assert!(!app.icons);
-    assert!(!AppConfig::icons_enabled());
+    // The live icon flag is process-wide, and every `App::new` in the tests
+    // running in parallel reloads it from disk, so reading it here races with
+    // them. `set_icons_matches_disk_and_session_state` in the core crate
+    // covers it under that crate's own lock.
     drain_poll(&mut app);
     let requested = recorder.0.lock().unwrap().clone().unwrap();
     assert_eq!(requested.domain, "config");
