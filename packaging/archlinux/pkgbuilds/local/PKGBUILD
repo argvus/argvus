@@ -90,6 +90,7 @@ depends=(
   'zathura'
   'zip'
   'zsh'
+  'wireguard-tools'
 )
 
 # Packages that this one replaces. The split packages argvus-gtk and argvus-greeter
@@ -150,6 +151,10 @@ install=argvus.install
 optdepends=(
   'fastfetch: system summary in the terminal'
   'wev: inspect Wayland input events when writing keybindings'
+  'networkmanager: Network & Wi-Fi pages and connection editor of the Control Center'
+  'ppp: DSL (PPPoE) connections'
+  'libteam: Team connections'
+  'networkmanager-openvpn: OpenVPN connections and .ovpn import'
 )
 source=(
   "${pkgbase}-${pkgver}.tar.gz"
