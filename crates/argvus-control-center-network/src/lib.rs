@@ -4,6 +4,7 @@
 //! the UI consumes normalized models and results.
 pub mod backend;
 pub mod model;
+pub mod profile;
 pub mod ui;
 
 pub use model::NetworkPage;

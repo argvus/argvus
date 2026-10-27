@@ -2,9 +2,15 @@
 //!
 //! External tool dependencies remain in backend layers;
 //! the UI consumes normalized models and results.
+#[cfg(test)]
+mod connection_tests;
+mod connections;
+mod editor;
+
 use crate::{
-  backend::NetworkBackend,
+  backend::{NetworkBackend, VpnPlugin},
   model::{NetworkPage, NetworkSnapshot},
+  profile::{ConnectionKind, PeerField, schema::SectionId},
 };
 use argvus_control_center_core::navigation::HomeCardId;
 use argvus_control_center_core::{
@@ -24,8 +30,10 @@ use argvus_tui::{
   icons,
   menu::{MenuEvent, MenuState, MenuStyle, Row, draw_menu},
   page::{shell, status},
+  text_editor::{EditorOutcome, TextEditor},
 };
-use crossterm::event::KeyCode;
+use crossterm::event::{KeyCode, KeyEvent};
+use editor::{EditTarget, EditorConfirm, EditorResult, EditorState};
 use ratatui::{
   Frame,
   text::Line,
@@ -56,6 +64,20 @@ pub struct NetworkApp {
   scan: bool,
   confirm_forget: bool,
   confirmation: ConfirmState,
+  /// The connection profile being edited, once loaded.
+  editor: Option<EditorState>,
+  /// The page the editor returns to.
+  editor_return: NetworkPage,
+  /// Loading, saving or deleting the edited profile.
+  editor_job: Option<JobHandle<Result<EditorResult, String>>>,
+  /// A confirmation asked by the editor.
+  editor_confirm: Option<(EditorConfirm, ConfirmState)>,
+  /// A text field being typed, and what it writes to.
+  text_edit: Option<(EditTarget, TextEditor)>,
+  /// The user a private connection profile is limited to.
+  owner: String,
+  /// VPN plugins installed, read when the Add page opens.
+  vpn_plugins: Vec<VpnPlugin>,
 }
 
 /// Stable identity of a Network menu row. List items carry their index in
@@ -77,6 +99,38 @@ enum Item {
   Refresh,
   DnsManual,
   DnsAutomatic,
+  /// Opens the profile of the current detail page in the editor.
+  EditConnection,
+  /// Index into `snapshot.profiles`: Enter edits it (Connections) or brings
+  /// it up or down (Activate).
+  Profile(usize),
+  AddKind(ConnectionKind),
+  /// Index into `vpn_plugins`.
+  AddVpn(usize),
+  /// Import a file of a plugin (index into `vpn_plugins`), or WireGuard.
+  ImportVpn(Option<usize>),
+  /// A field of the edited profile, by key.
+  Field(&'static str),
+  /// Folds or unfolds an editor section.
+  Section(SectionId),
+  OpenPorts,
+  /// Index into the port candidates.
+  Port(usize),
+  OpenPeers,
+  /// Index into the edited profile's peers.
+  Peer(usize),
+  AddPeer,
+  PeerField(PeerField),
+  RemovePeer,
+  /// Index into the entries of the list page's field.
+  ListEntry(usize),
+  AddListEntry,
+  GenerateKey,
+  Save,
+  Cancel,
+  /// Brings the edited profile up or down.
+  ToggleActive,
+  Delete,
 }
 
 impl NetworkApp {
@@ -110,10 +164,24 @@ impl NetworkApp {
       scan: false,
       confirm_forget: false,
       confirmation: ConfirmState::new(),
+      editor: None,
+      editor_return: NetworkPage::Connections,
+      editor_job: None,
+      editor_confirm: None,
+      text_edit: None,
+      owner: std::env::var("USER")
+        .or_else(|_| std::env::var("LOGNAME"))
+        .unwrap_or_default(),
+      vpn_plugins: Vec::new(),
     }
   }
   /// Executes the `reload` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn reload(&mut self) {
+    // Opened from a route (search, CLI), the Add page still lists the
+    // installed VPN plugins.
+    if self.page == NetworkPage::AddConnection {
+      self.refresh_vpn_plugins();
+    }
     if self.requested_page != self.page
       || self.refreshed.is_none_or(|at| at.elapsed().as_secs() >= 5)
     {
@@ -208,6 +276,7 @@ impl NetworkApp {
       self.start_refresh(false);
       changed = true;
     }
+    changed |= self.poll_editor();
     changed
   }
 
@@ -308,6 +377,8 @@ impl NetworkApp {
   fn home_pages(&self) -> Vec<NetworkPage> {
     let mut pages = vec![
       NetworkPage::Status,
+      NetworkPage::Connections,
+      NetworkPage::Activate,
       NetworkPage::Interfaces,
       NetworkPage::Ethernet,
     ];
@@ -338,10 +409,20 @@ impl NetworkApp {
       HomeCardId::Hardware.label(self.lang),
       tr(self.lang, "control_center.network_wifi")
     );
-    if self.page == NetworkPage::Home {
-      root
-    } else {
-      format!("{root} > {}", self.page_label())
+    let connections = tr(self.lang, "control_center.net_connections");
+    match self.page {
+      NetworkPage::Home => root,
+      NetworkPage::AddConnection => format!(
+        "{root} > {connections} > {}",
+        tr(self.lang, "control_center.net_add_connection")
+      ),
+      page if page.is_editor() => {
+        format!(
+          "{root} > {connections} > {}",
+          self.editor_breadcrumb().join(" > ")
+        )
+      }
+      _ => format!("{root} > {}", self.page_label()),
     }
   }
   /// Label of the current page, as shown in the breadcrumb.
@@ -369,6 +450,14 @@ impl NetworkApp {
         .get(i)
         .map(|v| terminal_text(&v.name))
         .unwrap_or_else(|| label("control_center.vpn")),
+      NetworkPage::Connections => label("control_center.net_connections"),
+      NetworkPage::Activate => label("control_center.net_activate_connection"),
+      NetworkPage::AddConnection => label("control_center.net_add_connection"),
+      NetworkPage::Editor
+      | NetworkPage::EditorList(_)
+      | NetworkPage::EditorPorts
+      | NetworkPage::EditorPeers
+      | NetworkPage::EditorPeer(_) => self.editor_breadcrumb().join(" > "),
     }
   }
   /// Executes the `connect_wifi` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
@@ -482,7 +571,12 @@ impl NetworkApp {
   fn is_list_page(&self) -> bool {
     matches!(
       self.page,
-      NetworkPage::Interfaces | NetworkPage::Ethernet | NetworkPage::Wifi | NetworkPage::Vpn
+      NetworkPage::Interfaces
+        | NetworkPage::Ethernet
+        | NetworkPage::Wifi
+        | NetworkPage::Vpn
+        | NetworkPage::Connections
+        | NetworkPage::Activate
     )
   }
   /// Whether typed characters currently go to text (Wi-Fi password, manual
@@ -490,11 +584,62 @@ impl NetworkApp {
   /// keys. Mirrors the precedence of [`Self::handle`]: the forget confirmation
   /// is not typing.
   pub fn captures_text(&self) -> bool {
-    !self.confirm_forget
-      && (self.password.is_some() || self.dns_input.is_some() || self.search.is_some())
+    if self.editor_confirm.is_some() {
+      return false;
+    }
+    self.text_edit.is_some()
+      || (!self.confirm_forget
+        && (self.password.is_some() || self.dns_input.is_some() || self.search.is_some()))
+  }
+
+  /// Handles a key with its modifiers: the text fields of the connection
+  /// pages take them (Ctrl+S saves); everything else goes to [`Self::handle`].
+  /// Returns `true` when the Network page should close.
+  pub fn handle_key(&mut self, key: KeyEvent) -> bool {
+    if self.editor_confirm.is_none()
+      && let Some((target, editor)) = &mut self.text_edit
+    {
+      match editor.handle(key) {
+        EditorOutcome::Pending => {}
+        EditorOutcome::Cancelled => self.text_edit = None,
+        EditorOutcome::Saved(value) => {
+          let target = *target;
+          self.text_edit = None;
+          self.apply_text(target, value);
+        }
+      }
+      return false;
+    }
+    self.handle(key.code)
+  }
+
+  /// Pasted text goes to the open text field.
+  pub fn paste(&mut self, text: &str) {
+    if let Some((_, editor)) = &mut self.text_edit {
+      editor.paste(text);
+    }
   }
 
   pub fn handle(&mut self, key: KeyCode) -> bool {
+    if let Some((confirm, state)) = &mut self.editor_confirm {
+      let confirm = *confirm;
+      match state.handle(key) {
+        ConfirmOutcome::Confirmed => {
+          self.editor_confirm = None;
+          match confirm {
+            EditorConfirm::Discard => self.close_editor(),
+            EditorConfirm::SaveActive => self.perform_save(),
+            EditorConfirm::Delete => self.perform_delete(),
+          }
+        }
+        ConfirmOutcome::Cancelled => self.editor_confirm = None,
+        ConfirmOutcome::Pending => {}
+      }
+      return false;
+    }
+    if self.text_edit.is_some() {
+      return self.handle_key(KeyEvent::from(key));
+    }
     if self.confirm_forget {
       match self.confirmation.handle(key) {
         ConfirmOutcome::Confirmed => {
@@ -566,6 +711,12 @@ impl NetworkApp {
     match key {
       KeyCode::Char('r') => self.start_refresh(self.page == NetworkPage::Wifi),
       KeyCode::Char('/') if self.is_list_page() => self.search = Some(String::new()),
+      KeyCode::Char('a')
+        if self.page == NetworkPage::Connections
+          && matches!(self.selected_item(), Some(Item::Profile(_))) =>
+      {
+        self.toggle_selected_profile()
+      }
       KeyCode::Char('i')
         if matches!(
           self.selected_item(),
@@ -579,6 +730,7 @@ impl NetworkApp {
         MenuEvent::Activate(item) | MenuEvent::Toggle(item) | MenuEvent::Confirm(item) => {
           self.activate(item)
         }
+        MenuEvent::Adjust(item, step) if self.page.is_editor() => self.editor_adjust(item, step),
         MenuEvent::Adjust(..) | MenuEvent::Moved | MenuEvent::None => {}
       },
     }
@@ -611,11 +763,16 @@ impl NetworkApp {
     if self.page == NetworkPage::Home {
       return true;
     }
+    if self.page.is_editor() {
+      self.editor_back();
+      return false;
+    }
     let from = self.page;
     let parent = match from {
       NetworkPage::Detail(_) | NetworkPage::WifiDetail(_) | NetworkPage::VpnDetail(_) => {
         self.detail_parent
       }
+      NetworkPage::AddConnection => NetworkPage::Connections,
       _ => NetworkPage::Home,
     };
     let opener = match from {
@@ -626,14 +783,30 @@ impl NetworkApp {
     };
     self.page = parent;
     self.menu = MenuState::default();
+    self.search = None;
     let rows = self.rows();
     self.menu.select(&rows, &opener);
     false
   }
   /// Runs the action of a menu row.
   fn activate(&mut self, item: Item) {
+    if self.page.is_editor() && self.editor_activate(item) {
+      return;
+    }
+    if self.connections_activate(item) {
+      return;
+    }
     match item {
+      Item::Open(NetworkPage::AddConnection) => {
+        self.refresh_vpn_plugins();
+        self.open_home_page(NetworkPage::AddConnection);
+      }
       Item::Open(page) => self.open_home_page(page),
+      Item::EditConnection => {
+        if let Some(selector) = self.detail_profile_selector() {
+          self.open_profile(selector);
+        }
+      }
       Item::Interface(i) => self.open_page_detail(NetworkPage::Detail(i)),
       Item::WifiNetwork(i) => self.connect_wifi(i),
       Item::VpnConnection(i) => self.connect_vpn(i),
@@ -644,6 +817,27 @@ impl NetworkApp {
       Item::Refresh => self.start_refresh(self.page == NetworkPage::Wifi),
       Item::DnsManual => self.dns_input = Some(String::new()),
       Item::DnsAutomatic => self.apply_dns(""),
+      // Rows of the connection pages, handled above (or not shown).
+      Item::Profile(_)
+      | Item::AddKind(_)
+      | Item::AddVpn(_)
+      | Item::ImportVpn(_)
+      | Item::Field(_)
+      | Item::Section(_)
+      | Item::OpenPorts
+      | Item::Port(_)
+      | Item::OpenPeers
+      | Item::Peer(_)
+      | Item::AddPeer
+      | Item::PeerField(_)
+      | Item::RemovePeer
+      | Item::ListEntry(_)
+      | Item::AddListEntry
+      | Item::GenerateKey
+      | Item::Save
+      | Item::Cancel
+      | Item::ToggleActive
+      | Item::Delete => {}
     }
   }
   /// Connects the network shown by the current detail page.
@@ -704,24 +898,47 @@ impl NetworkApp {
   /// Footer hints for the current row. `i Details` appears only on a Wi-Fi
   /// network or a VPN row, where it opens the details page.
   fn footer_hints(&self, rows: &[Row<Item>]) -> String {
-    if self.confirm_forget {
+    if self.confirm_forget || self.editor_confirm.is_some() {
       return confirm_hints(self.lang);
     }
     let mut menu = self.menu;
     menu.normalize(rows);
     let details = [("i", tr(self.lang, "control_center.details"))];
+    let selected = menu.selected_id(rows);
     let on_network = matches!(
-      menu.selected_id(rows),
+      selected,
       Some(Item::WifiNetwork(_) | Item::VpnConnection(_))
     );
-    let extra: &[(&str, &str)] = if on_network { &details } else { &[] };
+    let toggle_label = match selected {
+      Some(Item::Profile(index)) if self.page == NetworkPage::Connections => {
+        self.snapshot.profiles.get(index).map(|profile| {
+          tr(
+            self.lang,
+            if profile.active {
+              "control_center.disconnect"
+            } else {
+              "control_center.connect"
+            },
+          )
+        })
+      }
+      _ => None,
+    };
+    let activation = [("a", toggle_label.unwrap_or_default())];
+    let extra: &[(&str, &str)] = if on_network {
+      &details
+    } else if toggle_label.is_some() {
+      &activation
+    } else {
+      &[]
+    };
     hints(
       self.lang,
       &HintContext {
         row: menu.selected_kind(rows),
         can_go_back: true,
         search: self.is_list_page(),
-        refresh: true,
+        refresh: !self.page.is_editor(),
         extra,
         ..HintContext::default()
       },
@@ -886,6 +1103,31 @@ impl NetworkApp {
         &self.confirmation,
       );
     }
+    if let Some((confirm, state)) = &self.editor_confirm {
+      let (title, message, confirm_label, danger) = self.editor_confirm_text(*confirm);
+      draw_confirm(
+        f,
+        area,
+        &self.theme,
+        ConfirmDialog {
+          title: &title,
+          message: &message,
+          confirm: &confirm_label,
+          cancel: tr(self.lang, "control_center.cancel"),
+          danger,
+          deadline: None,
+        },
+        state,
+      );
+    }
+    if let Some((_, editor)) = &self.text_edit {
+      editor.draw(
+        f,
+        area,
+        &self.theme,
+        tr(self.lang, "control_center.enter_apply_esc_cancel"),
+      );
+    }
     if let Some(status_message) = &self.status {
       status(f, body, &self.theme, status_message);
     }
@@ -934,7 +1176,24 @@ impl NetworkApp {
       NetworkPage::VpnDetail(i) => self.vpn_detail_rows(i),
       NetworkPage::Dns => self.dns_rows(),
       NetworkPage::Proxy => self.proxy_rows(),
+      NetworkPage::Connections => self.connections_rows(),
+      NetworkPage::Activate => self.activate_rows(),
+      NetworkPage::AddConnection => self.add_rows(),
+      NetworkPage::Editor => self.editor_rows(),
+      NetworkPage::EditorList(key) => self.editor_list_rows(key),
+      NetworkPage::EditorPorts => self.editor_port_rows(),
+      NetworkPage::EditorPeers => self.editor_peer_rows(),
+      NetworkPage::EditorPeer(index) => self.editor_single_peer_rows(index),
     }
+  }
+
+  /// The `Edit connection` row of a detail page, opening its profile.
+  fn edit_connection_row(&self) -> Row<Item> {
+    Row::submenu(
+      Item::EditConnection,
+      tr(self.lang, "control_center.net_edit_connection"),
+    )
+    .icon(icons::EDIT)
   }
   /// The trailing Actions group of the list pages: `Refresh` (`r`).
   fn refresh_section(&self) -> Vec<Row<Item>> {
@@ -991,6 +1250,19 @@ impl NetworkApp {
       .iter()
       .filter(|i| i.kind.to_ascii_lowercase().contains("ethernet"))
       .count();
+    let mut active_connections = self
+      .snapshot
+      .interfaces
+      .iter()
+      .filter(|interface| interface.state == "connected" && interface.kind != "loopback")
+      .filter_map(|interface| interface.connection.as_deref().map(terminal_text))
+      .collect::<Vec<_>>();
+    active_connections.dedup();
+    let active_connections = if active_connections.is_empty() {
+      "—".to_owned()
+    } else {
+      active_connections.join(", ")
+    };
 
     self
       .home_pages()
@@ -1027,6 +1299,16 @@ impl NetworkApp {
             tr(self.lang, "control_center.proxy"),
             icons::PROXY,
             proxy.clone(),
+          ),
+          NetworkPage::Connections => (
+            tr(self.lang, "control_center.net_connections"),
+            icons::CONNECTIONS,
+            active_connections.clone(),
+          ),
+          NetworkPage::Activate => (
+            tr(self.lang, "control_center.net_activate_connection"),
+            icons::ACTIVATE_CONNECTION,
+            String::new(),
           ),
           _ => return None,
         };
@@ -1167,6 +1449,7 @@ impl NetworkApp {
       Row::action(Item::Connect, tr(self.lang, "control_center.connect")).icon(icons::LINK_ON),
       Row::action(Item::Disconnect, tr(self.lang, "control_center.disconnect"))
         .icon(icons::LINK_OFF),
+      self.edit_connection_row().enabled(v.connection.is_some()),
       Row::action(Item::Refresh, tr(self.lang, "control_center.refresh")).icon(icons::REFRESH),
       Row::section(tr(self.lang, "control_center.section_summary")),
       Row::info(tr(self.lang, "control_center.name"), v.name.clone()),
@@ -1239,6 +1522,7 @@ impl NetworkApp {
       Row::action(Item::Connect, tr(self.lang, "control_center.connect")).icon(icons::LINK_ON),
       Row::action(Item::Disconnect, tr(self.lang, "control_center.disconnect"))
         .icon(icons::LINK_OFF),
+      self.edit_connection_row().enabled(w.known),
       Row::action(Item::Refresh, tr(self.lang, "control_center.refresh")).icon(icons::REFRESH),
       Row::section(tr(self.lang, "control_center.section_summary")),
       Row::info(tr(self.lang, "control_center.name"), terminal_text(&w.ssid)),
@@ -1297,6 +1581,7 @@ impl NetworkApp {
       Row::action(Item::Connect, tr(self.lang, "control_center.connect")).icon(icons::LINK_ON),
       Row::action(Item::Disconnect, tr(self.lang, "control_center.disconnect"))
         .icon(icons::LINK_OFF),
+      self.edit_connection_row(),
       Row::action(Item::Refresh, tr(self.lang, "control_center.refresh")).icon(icons::REFRESH),
       Row::section(tr(self.lang, "control_center.section_summary")),
       Row::info(tr(self.lang, "control_center.name"), terminal_text(&v.name)),
@@ -1483,19 +1768,23 @@ mod tests {
     with_network(&mut app);
     app.snapshot.connectivity = "full".into();
     let rows = app.rows();
-    // Status, Interfaces, Ethernet, Wi-Fi (a card exists), DNS, Proxy. Firewall
-    // lives under Security on the Control Center Home.
-    assert_eq!(rows.len(), 6);
+    // Status, Connections, Activate, Interfaces, Ethernet, Wi-Fi (a card
+    // exists), DNS, Proxy. Firewall lives under System Administration on the
+    // Control Center Home.
+    assert_eq!(rows.len(), 8);
     assert!(rows.iter().all(|row| row.kind() == RowKind::Submenu));
     assert_eq!(rows[0].id(), Some(&Item::Open(NetworkPage::Status)));
-    assert_eq!(rows[4].id(), Some(&Item::Open(NetworkPage::Dns)));
+    assert_eq!(rows[1].id(), Some(&Item::Open(NetworkPage::Connections)));
+    assert_eq!(rows[2].id(), Some(&Item::Open(NetworkPage::Activate)));
+    assert_eq!(rows[6].id(), Some(&Item::Open(NetworkPage::Dns)));
+    assert_eq!(rows[1].detail_text(), Some("Wired connection 1"));
     assert!(rows[0].detail_text().unwrap().contains("full"));
     assert!(rows[0].detail_text().unwrap().contains("eno1"));
   }
 
   #[test]
-  /// Interface details offer Connect, Disconnect and Refresh; the properties
-  /// are information and never take the cursor.
+  /// Interface details offer Connect, Disconnect, Edit connection and
+  /// Refresh; the properties are information and never take the cursor.
   fn interface_detail_has_connect_disconnect_and_unselectable_info() {
     let mut app = app();
     with_network(&mut app);
@@ -1503,7 +1792,9 @@ mod tests {
     let rows = app.rows();
     assert_eq!(rows[1].id(), Some(&Item::Connect));
     assert_eq!(rows[2].id(), Some(&Item::Disconnect));
-    assert_eq!(rows[3].id(), Some(&Item::Refresh));
+    assert_eq!(rows[3].id(), Some(&Item::EditConnection));
+    assert!(rows[3].is_enabled());
+    assert_eq!(rows[4].id(), Some(&Item::Refresh));
     assert!(
       rows
         .iter()
@@ -1555,7 +1846,8 @@ mod tests {
     let rows = app.rows();
     assert_eq!(rows[1].id(), Some(&Item::Connect));
     assert_eq!(rows[2].id(), Some(&Item::Disconnect));
-    assert_eq!(rows[3].id(), Some(&Item::Refresh));
+    assert_eq!(rows[3].id(), Some(&Item::EditConnection));
+    assert_eq!(rows[4].id(), Some(&Item::Refresh));
     assert_eq!(rows.last().unwrap().id(), Some(&Item::Forget));
     assert_eq!(rows.last().unwrap().kind(), RowKind::Destructive);
   }

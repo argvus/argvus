@@ -15,6 +15,11 @@ use std::{
 };
 use thiserror::Error;
 
+mod connections;
+pub use connections::{
+  SaveOutcome, VpnPlugin, installed_vpn_plugins, parse_profiles, parse_vpn_plugin,
+};
+
 #[derive(Debug, Error)]
 /// Defines `NetworkError`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub enum NetworkError {
@@ -28,6 +33,9 @@ pub enum NetworkError {
   Timeout,
   #[error("network command failed: {0}")]
   Command(String),
+  /// NetworkManager refused the change (polkit denied or no agent answered).
+  #[error("not authorized to change network settings")]
+  NotAuthorized,
 }
 
 /// Represents `NetworkBackend`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
@@ -86,6 +94,7 @@ impl<R: ProcessRunner> NetworkBackend<R> {
     publish(state.clone());
 
     let summary = matches!(page, NetworkPage::Home | NetworkPage::Status);
+    let wants_profiles = page.needs_profiles();
     let wants_radio = summary || page == NetworkPage::Wifi;
     let wants_connections = summary || page == NetworkPage::Vpn;
     let wants_wifi = (summary || page == NetworkPage::Wifi)
@@ -148,6 +157,12 @@ impl<R: ProcessRunner> NetworkBackend<R> {
           let _ = sender.send(PageReading::Connections(connections));
         });
       }
+      if wants_profiles {
+        let sender = sender.clone();
+        scope.spawn(move || {
+          let _ = sender.send(PageReading::Profiles(self.list_profiles()));
+        });
+      }
       if wants_wifi {
         let sender = sender.clone();
         let wifi_args = &wifi_args;
@@ -182,7 +197,10 @@ impl<R: ProcessRunner> NetworkBackend<R> {
           PageReading::Radio(enabled) => state.wifi_enabled = enabled,
           PageReading::Connections(Ok(value)) => state.vpn = parse_vpn(&value),
           PageReading::Wifi(Ok(value)) => state.wifi = parse_wifi(&value),
-          PageReading::Connections(Err(error)) | PageReading::Wifi(Err(error)) => {
+          PageReading::Profiles(Ok(profiles)) => state.profiles = profiles,
+          PageReading::Connections(Err(error))
+          | PageReading::Wifi(Err(error))
+          | PageReading::Profiles(Err(error)) => {
             failure.get_or_insert(error);
             continue;
           }
@@ -220,14 +238,19 @@ impl<R: ProcessRunner> NetworkBackend<R> {
       .iter()
       .fold(ProcessRequest::new(program), |r, a| r.arg(*a))
       .timeout(timeout);
-    let output = self.runner.run(&request)?;
+    self.execute(&request)
+  }
+
+  /// Runs a request and returns its sanitized output, or the error its
+  /// standard error describes.
+  fn execute(&self, request: &ProcessRequest) -> Result<String, NetworkError> {
+    let output = self.runner.run(request)?;
     if output.timed_out {
       return Err(NetworkError::Timeout);
     }
+    let stderr = terminal_text(&String::from_utf8_lossy(&output.stderr));
     if output.status != Some(0) {
-      return Err(NetworkError::Command(terminal_text(
-        &String::from_utf8_lossy(&output.stderr),
-      )));
+      return Err(command_error(stderr));
     }
     Ok(terminal_text(&String::from_utf8_lossy(&output.stdout)))
   }
@@ -449,6 +472,17 @@ impl<R: ProcessRunner> NetworkBackend<R> {
   }
 }
 
+/// The error of a failed `nmcli`, from its standard error. A polkit refusal
+/// gets its own variant, so the page can explain it in the user's language.
+fn command_error(stderr: String) -> NetworkError {
+  let lowered = stderr.to_ascii_lowercase();
+  if lowered.contains("not authorized") || lowered.contains("insufficient privileges") {
+    NetworkError::NotAuthorized
+  } else {
+    NetworkError::Command(stderr.trim().to_owned())
+  }
+}
+
 /// How many `nmcli device show` calls a page load runs at once.
 const DETAIL_WORKERS: usize = 4;
 
@@ -457,6 +491,7 @@ enum PageReading {
   Radio(Option<bool>),
   Connections(Result<String, NetworkError>),
   Wifi(Result<String, NetworkError>),
+  Profiles(Result<Vec<ConnectionProfile>, NetworkError>),
   Details(usize, Result<String, NetworkError>),
 }
 
@@ -603,7 +638,7 @@ pub fn parse_vpn(input: &str) -> Vec<VpnConnection> {
     .lines()
     .filter_map(|line| {
       let f = split_nmcli(line);
-      if f.len() < 3 || !f[1].to_ascii_lowercase().contains("vpn") {
+      if f.len() < 3 || !is_vpn_kind(&f[1]) {
         return None;
       }
       Some(VpnConnection {
@@ -613,6 +648,11 @@ pub fn parse_vpn(input: &str) -> Vec<VpnConnection> {
       })
     })
     .collect()
+}
+/// Whether an nmcli connection type is a VPN: a VPN plugin or WireGuard.
+pub fn is_vpn_kind(kind: &str) -> bool {
+  let kind = kind.to_ascii_lowercase();
+  kind.contains("vpn") || kind == "wireguard"
 }
 /// Executes the `valid_ipv4` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn valid_ipv4(value: &str) -> bool {

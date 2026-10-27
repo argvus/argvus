@@ -18,6 +18,46 @@ pub enum NetworkPage {
   WifiDetail(usize),
   /// Details of the VPN connection at this index of `NetworkSnapshot::vpn`.
   VpnDetail(usize),
+  /// Every connection profile, grouped by kind (nmtui "Edit a connection").
+  Connections,
+  /// Every connection profile, grouped by device (nmtui "Activate a
+  /// connection"): Enter brings it up or down.
+  Activate,
+  /// The kinds of connection that can be created.
+  AddConnection,
+  /// The editor of the profile in `NetworkApp::editor`.
+  Editor,
+  /// One list field of the profile being edited (addresses, DNS, routes...).
+  EditorList(&'static str),
+  /// The ports of the bridge, bond or team being edited.
+  EditorPorts,
+  /// The WireGuard peers of the profile being edited.
+  EditorPeers,
+  /// The WireGuard peer at this index of the profile being edited.
+  EditorPeer(usize),
+}
+
+impl NetworkPage {
+  /// Whether the page shows the connection editor or one of its sub-pages,
+  /// which share one draft.
+  pub fn is_editor(self) -> bool {
+    matches!(
+      self,
+      Self::Editor
+        | Self::EditorList(_)
+        | Self::EditorPorts
+        | Self::EditorPeers
+        | Self::EditorPeer(_)
+    )
+  }
+
+  /// Whether the page needs the list of connection profiles.
+  pub fn needs_profiles(self) -> bool {
+    matches!(
+      self,
+      Self::Connections | Self::Activate | Self::AddConnection
+    ) || self.is_editor()
+  }
 }
 
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
@@ -32,6 +72,8 @@ pub struct NetworkSnapshot {
   pub bluetooth_present: bool,
   pub dns: DnsInfo,
   pub proxy: ProxyInfo,
+  /// Connection profiles, loaded only by the pages that list or edit them.
+  pub profiles: Vec<ConnectionProfile>,
 }
 
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
@@ -82,4 +124,22 @@ pub struct ProxyInfo {
   pub https: Option<String>,
   pub all: Option<String>,
   pub no_proxy: Option<String>,
+}
+
+/// One NetworkManager connection profile, as `nmcli connection show` lists it.
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
+pub struct ConnectionProfile {
+  pub name: String,
+  pub uuid: String,
+  /// The `nmcli` type (`802-3-ethernet`, `bridge`, `wireguard`...).
+  pub kind: String,
+  /// The device it is active on.
+  pub device: Option<String>,
+  pub active: bool,
+  pub autoconnect: bool,
+  /// `connection.port-type` when the profile joins a bridge, bond or team.
+  pub port_type: Option<String>,
+  /// Read-only profiles (from a file NetworkManager cannot write) cannot be
+  /// edited or deleted.
+  pub read_only: bool,
 }

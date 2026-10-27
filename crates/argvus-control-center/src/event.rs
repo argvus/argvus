@@ -22,6 +22,10 @@ pub fn handle(app: &mut App, event: Event) {
     if app.route == Route::Packages {
       app.packages.paste(&text);
     }
+    #[cfg(feature = "network")]
+    if app.route == Route::Network {
+      app.network.paste(&text);
+    }
     return;
   }
   if let Event::Resize(width, height) = event {
@@ -140,7 +144,8 @@ pub fn handle(app: &mut App, event: Event) {
     }
     #[cfg(feature = "network")]
     Route::Network => {
-      if app.network.handle(domain_key(key.code)) {
+      // The whole event: the connection editor fields take modifiers.
+      if app.network.handle_key(key) {
         app.route = Route::Home;
       }
     }
@@ -508,6 +513,31 @@ mod tests {
     );
   }
 
+  #[cfg(feature = "network")]
+  #[test]
+  /// The connection pages are found by what they manage and open with
+  /// their data: Add lists the kinds, Connections loads the profiles.
+  fn global_search_opens_the_connection_pages() {
+    use argvus_control_center_network::NetworkPage;
+    for (query, id, page) in [
+      (
+        "bridge",
+        "network.add_connection",
+        NetworkPage::AddConnection,
+      ),
+      ("nmtui", "network.connections", NetworkPage::Connections),
+      ("activate", "network.activate", NetworkPage::Activate),
+    ] {
+      let mut app = App::new(InitialRoute::Home);
+      app.begin_global_search();
+      app.update_global_search(query.into());
+      assert_eq!(app.search_result_ids.first().map(String::as_str), Some(id));
+      app.open_global_search_result();
+      assert_eq!(app.route, Route::Network);
+      assert_eq!(app.network.page, page);
+    }
+  }
+
   #[cfg(feature = "fonts")]
   #[test]
   /// An active settings search is a text field: `q` and `?` are typed into
@@ -662,11 +692,12 @@ mod tests {
     {
       let mut app = App::new(InitialRoute::Home);
       app.route = Route::Network;
+      // Status, then Connections.
       handle(&mut app, press(KeyCode::Down));
       handle(&mut app, press(KeyCode::Enter));
       assert_eq!(
         app.network.page,
-        argvus_control_center_network::NetworkPage::Interfaces
+        argvus_control_center_network::NetworkPage::Connections
       );
     }
 

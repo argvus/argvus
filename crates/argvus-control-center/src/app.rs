@@ -720,6 +720,30 @@ impl App {
       ),
       #[cfg(feature = "network")]
       (
+        "network.connections",
+        "network",
+        "control_center.net_connections",
+        "connections connection profiles edit nmtui conexoes conexões perfis editar",
+        "network/connections",
+      ),
+      #[cfg(feature = "network")]
+      (
+        "network.activate",
+        "network",
+        "control_center.net_activate_connection",
+        "activate connection up down ativar conexao conexão",
+        "network/activate",
+      ),
+      #[cfg(feature = "network")]
+      (
+        "network.add_connection",
+        "network",
+        "control_center.net_add_connection",
+        "add new connection bridge bond team vlan tunnel loopback wireguard hotspot pppoe dsl openvpn import adicionar nova conexao conexão importar",
+        "network/add",
+      ),
+      #[cfg(feature = "network")]
+      (
         "network.proxy",
         "network",
         "control_center.proxy",
@@ -1795,6 +1819,12 @@ impl App {
       ("network", "dns") => self.open_network_page(NetworkPage::Dns),
       #[cfg(feature = "network")]
       ("network", "proxy") => self.open_network_page(NetworkPage::Proxy),
+      #[cfg(feature = "network")]
+      ("network", "connections") => self.open_network_page(NetworkPage::Connections),
+      #[cfg(feature = "network")]
+      ("network", "activate") => self.open_network_page(NetworkPage::Activate),
+      #[cfg(feature = "network")]
+      ("network", "add") => self.open_network_page(NetworkPage::AddConnection),
       #[cfg(feature = "audio")]
       ("audio", "summary") => self.open_audio_page(AudioPage::Summary),
       #[cfg(feature = "audio")]

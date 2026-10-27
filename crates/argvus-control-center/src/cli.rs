@@ -311,6 +311,9 @@ fn parse_network(args: &[String]) -> Result<NetworkPage, String> {
     Some("vpn") => NetworkPage::Vpn,
     Some("dns") => NetworkPage::Dns,
     Some("proxy") => NetworkPage::Proxy,
+    Some("connections") => NetworkPage::Connections,
+    Some("activate") => NetworkPage::Activate,
+    Some("add") => NetworkPage::AddConnection,
     Some(v) => return Err(format!("unknown Network page '{v}'")),
   })
 }
@@ -524,7 +527,7 @@ pub fn print_help() {
   println!(
     "argvus-control-center - keyboard-first ARGVUS control center\n\n\
      Usage:\n  argvus-control-center [apps|fonts|locale|language|config|hardware|services|system|power|session|displays|appearance|about [TAB]]\n  argvus-control-center system-settings <domain> <action> [value...]\n\n\
-     Page selectors:\n  apps [terminal|file-manager|text-editor|terminal-editor|browser|image-viewer|pdf-viewer|video-player|audio-player|archive|launcher]\n  fonts [taskbar|widget-telemetry|control-panel|system|apps|terminal|browser|antialiasing|hinting|subpixel|dpi]\n  locale [timezone|date-time|regional-locale|system-locales|keyboard|keyboard-layout|keyboard-variant|console-keymap]\n  system [hostname|users|groups]\n  network [status|interfaces|wifi|ethernet|vpn|dns|proxy]\n  session [summary|components|autostart|diagnostics|logs]\n  displays [summary|res|refresh|scale|position|orientation|primary|vrr|hdr]\n  appearance [summary|themes|wallpapers|icons|accents|taskbar]\n\n\
+     Page selectors:\n  apps [terminal|file-manager|text-editor|terminal-editor|browser|image-viewer|pdf-viewer|video-player|audio-player|archive|launcher]\n  fonts [taskbar|widget-telemetry|control-panel|system|apps|terminal|browser|antialiasing|hinting|subpixel|dpi]\n  locale [timezone|date-time|regional-locale|system-locales|keyboard|keyboard-layout|keyboard-variant|console-keymap]\n  system [hostname|users|groups]\n  network [status|connections|activate|add|interfaces|wifi|ethernet|vpn|dns|proxy]\n  session [summary|components|autostart|diagnostics|logs]\n  displays [summary|res|refresh|scale|position|orientation|primary|vrr|hdr]\n  appearance [summary|themes|wallpapers|icons|accents|taskbar]\n\n\
      About tabs:\n  system, about, donate, credits, copyright\n\n\
      Options:\n  -h, --help       Print help\n  -V, --version    Print version\n\n\
      Global keys:\n  q                Quit\n  Esc              Back\n  ?                Contextual help"
@@ -575,6 +578,18 @@ mod tests {
       parse(&args(&["network", "firewall"])).unwrap(),
       Some(InitialRoute::Settings(Page::Firewall))
     );
+    #[cfg(feature = "network")]
+    for (page, expected) in [
+      ("connections", NetworkPage::Connections),
+      ("activate", NetworkPage::Activate),
+      ("add", NetworkPage::AddConnection),
+      ("--add", NetworkPage::AddConnection),
+    ] {
+      assert_eq!(
+        parse(&args(&["network", page])).unwrap(),
+        Some(InitialRoute::Network(expected))
+      );
+    }
     assert_eq!(
       parse(&args(&["about", "credits"])).unwrap(),
       Some(InitialRoute::About(Tab::Credits))
