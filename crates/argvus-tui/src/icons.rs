@@ -313,6 +313,36 @@ pub const COUNTER: &str = "\u{f0199}";
 pub const PROXY: &str = "\u{f046a}";
 /// Nerd Fonts: nf-md-autorenew
 pub const AUTORENEW: &str = "\u{f006a}";
+/// Nerd Fonts: nf-md-lan, for network connection profiles.
+pub const CONNECTIONS: &str = "\u{f0317}";
+/// Nerd Fonts: nf-md-play_network, for activating a network connection.
+pub const ACTIVATE_CONNECTION: &str = "\u{f088b}";
+/// Nerd Fonts: nf-md-bridge, for bridge connections.
+pub const BRIDGE: &str = "\u{f0618}";
+/// Nerd Fonts: nf-md-call_merge, for bond connections.
+pub const BOND: &str = "\u{f00f8}";
+/// Nerd Fonts: nf-md-source_merge, for team connections.
+pub const TEAM: &str = "\u{f062d}";
+/// Nerd Fonts: nf-md-tag, for VLAN connections.
+pub const VLAN: &str = "\u{f04f9}";
+/// Nerd Fonts: nf-md-tunnel, for IP tunnel connections.
+pub const TUNNEL: &str = "\u{f183d}";
+/// Nerd Fonts: nf-md-rotate_left, for the loopback connection.
+pub const LOOPBACK: &str = "\u{f0465}";
+/// Nerd Fonts: nf-md-phone_classic, for DSL (PPPoE) connections.
+pub const DSL: &str = "\u{f0602}";
+/// Nerd Fonts: nf-md-access_point, for Wi-Fi hotspots.
+pub const HOTSPOT: &str = "\u{f0003}";
+/// Nerd Fonts: nf-md-shield_key, for WireGuard connections.
+pub const WIREGUARD: &str = "\u{f0bc4}";
+/// Nerd Fonts: nf-md-ip_network, for IP addresses.
+pub const IP_ADDRESS: &str = "\u{f0a60}";
+/// Nerd Fonts: nf-md-map_marker_path, for static routes.
+pub const ROUTES: &str = "\u{f0d20}";
+/// Nerd Fonts: nf-md-vector_link, for ports of a bridge, bond or team.
+pub const PORT: &str = "\u{f0fe8}";
+/// Nerd Fonts: nf-md-key_plus, for generating a key.
+pub const KEY_GENERATE: &str = "\u{f0309}";
 
 #[cfg(test)]
 mod tests {
@@ -467,6 +497,21 @@ mod tests {
     COUNTER,
     PROXY,
     AUTORENEW,
+    CONNECTIONS,
+    ACTIVATE_CONNECTION,
+    BRIDGE,
+    BOND,
+    TEAM,
+    VLAN,
+    TUNNEL,
+    LOOPBACK,
+    DSL,
+    HOTSPOT,
+    WIREGUARD,
+    IP_ADDRESS,
+    ROUTES,
+    PORT,
+    KEY_GENERATE,
   ];
 
   #[test]

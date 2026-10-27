@@ -3,7 +3,9 @@
 //!
 //! Keys: the arrows, Home/End, Backspace and Delete edit; Enter saves a
 //! single line or breaks a line; `Ctrl+S` saves; Esc cancels. Pasted text
-//! (bracketed paste) is inserted at the cursor.
+//! (bracketed paste) is inserted at the cursor. A masked editor (a password,
+//! a private key) draws one `•` per character and never shows its text in
+//! `Debug`.
 
 use argvus_theme::Theme;
 use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
@@ -27,13 +29,35 @@ pub enum EditorOutcome {
   Cancelled,
 }
 
+/// Glyph drawn for each character of a masked editor.
+const MASK: char = '•';
+
 /// The text being edited and its cursor, counted in characters.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Clone, PartialEq, Eq)]
 pub struct TextEditor {
   title: String,
   value: Vec<char>,
   cursor: usize,
   multiline: bool,
+  masked: bool,
+}
+
+impl std::fmt::Debug for TextEditor {
+  fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    let value = if self.masked {
+      format!("<{} masked characters>", self.value.len())
+    } else {
+      self.text()
+    };
+    formatter
+      .debug_struct("TextEditor")
+      .field("title", &self.title)
+      .field("value", &value)
+      .field("cursor", &self.cursor)
+      .field("multiline", &self.multiline)
+      .field("masked", &self.masked)
+      .finish()
+  }
 }
 
 impl TextEditor {
@@ -54,7 +78,18 @@ impl TextEditor {
       cursor: value.len(),
       value,
       multiline,
+      masked: false,
     }
+  }
+
+  /// Draws `•` instead of each character, for passwords and private keys.
+  pub fn masked(mut self) -> Self {
+    self.masked = true;
+    self
+  }
+
+  pub fn is_masked(&self) -> bool {
+    self.masked
   }
 
   pub fn is_multiline(&self) -> bool {
@@ -152,6 +187,21 @@ impl TextEditor {
     }
   }
 
+  /// The characters as drawn: themselves, or one mask glyph each (line
+  /// breaks kept, so the cursor lands on the same line).
+  fn shown(&self, characters: &[char]) -> String {
+    characters
+      .iter()
+      .map(|character| {
+        if self.masked && *character != '\n' {
+          MASK
+        } else {
+          *character
+        }
+      })
+      .collect()
+  }
+
   /// Draws the editor in a popup over `area`, with `hint` (the translated
   /// keys) on the bottom border, and places the terminal cursor.
   pub fn draw(&self, frame: &mut Frame, area: Rect, theme: &Theme, hint: &str) {
@@ -171,7 +221,7 @@ impl TextEditor {
     frame.render_widget(block, popup);
 
     // Scroll so the cursor stays visible in both directions.
-    let before: String = self.value[..self.cursor].iter().collect();
+    let before = self.shown(&self.value[..self.cursor]);
     let line = before.matches('\n').count();
     let column = Line::from(before.rsplit('\n').next().unwrap_or_default()).width();
     let vertical = line.saturating_sub(usize::from(inner.height.saturating_sub(1)));
@@ -180,7 +230,10 @@ impl TextEditor {
       u16::try_from(vertical).unwrap_or(u16::MAX),
       u16::try_from(horizontal).unwrap_or(u16::MAX),
     );
-    frame.render_widget(Paragraph::new(self.text()).scroll(scroll), inner);
+    frame.render_widget(
+      Paragraph::new(self.shown(&self.value)).scroll(scroll),
+      inner,
+    );
     let cursor_x = u16::try_from(column - horizontal).unwrap_or(u16::MAX);
     let cursor_y = u16::try_from(line - vertical).unwrap_or(u16::MAX);
     frame.set_cursor_position((
@@ -246,6 +299,30 @@ mod tests {
     editor.handle(key(KeyCode::Left));
     editor.handle(key(KeyCode::Delete));
     assert_eq!(editor.text(), "abcd\nef\nij");
+  }
+
+  #[test]
+  fn masked_editor_hides_the_text_on_screen_and_in_debug() {
+    let mut editor = TextEditor::single_line("Password", "").masked();
+    type_text(&mut editor, "hunter2");
+    assert!(!format!("{editor:?}").contains("hunter2"));
+    let mut terminal = Terminal::new(TestBackend::new(40, 8)).unwrap();
+    terminal
+      .draw(|frame| editor.draw(frame, frame.area(), &Theme::load(), "Enter"))
+      .unwrap();
+    let screen: String = terminal
+      .backend()
+      .buffer()
+      .content
+      .iter()
+      .map(|cell| cell.symbol())
+      .collect();
+    assert!(!screen.contains("hunter2"));
+    assert!(screen.contains("•••••••"));
+    assert_eq!(
+      editor.handle(key(KeyCode::Enter)),
+      EditorOutcome::Saved("hunter2".into())
+    );
   }
 
   #[test]
