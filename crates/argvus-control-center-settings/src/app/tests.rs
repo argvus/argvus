@@ -773,9 +773,42 @@ fn keyboard_layout_app() -> App {
     },
   ];
   app.keyboard_info.hypr_layout = "br".into();
+  app.keyboard_info.default_layout = "br".into();
+  app.keyboard_info.x11_layout = "br".into();
   app.keyboard_draft = keyboard_draft::LayoutDraft::loaded(&app.keyboard_info);
   app.navigation.current_mut().menu = argvus_tui::menu::MenuState::default();
   app
+}
+
+#[test]
+fn keyboard_marker_follows_the_layout_in_use_without_dirtying_apply() {
+  let mut app = keyboard_layout_app();
+  assert!(
+    app.apply_live_layout("us"),
+    "a switch elsewhere moves the marker"
+  );
+  let rows = app.rows();
+  assert!(!row_of(&rows, Item::Layout(0)).is_marked());
+  assert!(row_of(&rows, Item::Layout(1)).is_marked());
+  assert!(
+    !app.keyboard_layout_changed(),
+    "the taskbar switch is not a pending change to Apply"
+  );
+  assert!(
+    !app.apply_live_layout("us"),
+    "an unchanged layout reports nothing"
+  );
+}
+
+#[test]
+fn keyboard_default_is_named_in_the_detail_not_the_marker() {
+  let mut app = keyboard_layout_app();
+  app.apply_live_layout("us");
+  let default_label = crate::i18n::tr(app.lang, "control_center.default");
+  let rows = app.rows();
+  let detail_of = |item: Item| row_of(&rows, item).detail_text().unwrap_or_default();
+  assert!(detail_of(Item::Layout(0)).contains(default_label));
+  assert!(!detail_of(Item::Layout(1)).contains(default_label));
 }
 
 #[test]

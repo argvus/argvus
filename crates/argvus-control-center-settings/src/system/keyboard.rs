@@ -28,7 +28,11 @@ pub struct Variant {
 #[derive(Debug, Clone, Default)]
 /// Represents `KeyboardInfo`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub struct KeyboardInfo {
+  /// The layout in use right now, which the taskbar and shortcuts change.
   pub x11_layout: String,
+  /// The first configured layout: the one Hyprland starts with and the one the
+  /// variant belongs to. It only changes when the layout list is applied.
+  pub default_layout: String,
   pub x11_variant: String,
   pub x11_model: String,
   pub x11_options: String,
@@ -50,6 +54,7 @@ pub fn info() -> KeyboardInfo {
   // privileged localectl database.  The generated Hyprland input is therefore
   // the authoritative state shown by this page.
   if !info.hypr_layout.is_empty() {
+    info.default_layout = first_csv_value(&info.hypr_layout);
     info.x11_layout = active_layout(&info.hypr_layout);
   }
   if !info.hypr_variant.is_empty() {
@@ -58,6 +63,13 @@ pub fn info() -> KeyboardInfo {
     info.x11_variant.clear();
   }
   info
+}
+
+/// The layout in use right now. The Control Center polls it so the page follows
+/// changes made elsewhere, such as the taskbar or a keyboard shortcut.
+pub fn current_layout() -> String {
+  let (configured, _, _) = parse_hypr_keyboard_config();
+  active_layout(&configured)
 }
 
 /// Renders `layouts` while respecting the current domain state and semantic theme. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
@@ -344,15 +356,7 @@ fn active_layout(layouts: &str) -> String {
   let Ok(root) = serde_json::from_str::<Value>(&output) else {
     return fallback;
   };
-  let Some(index) = root
-    .get("keyboards")
-    .and_then(Value::as_array)
-    .and_then(|keyboards| {
-      keyboards
-        .iter()
-        .find_map(|keyboard| keyboard.get("active_layout_index").and_then(Value::as_u64))
-    })
-  else {
+  let Some(index) = active_layout_index(&root) else {
     return fallback;
   };
   layouts
@@ -362,6 +366,29 @@ fn active_layout(layouts: &str) -> String {
     .nth(index as usize)
     .unwrap_or(&fallback)
     .to_string()
+}
+
+/// The active layout index reported for the main keyboard. Hyprland also lists
+/// virtual keyboards (power keys, consumer control) whose index can differ, so
+/// the physical keyboard wins and the first keyboard is only a fallback.
+fn active_layout_index(devices: &Value) -> Option<u64> {
+  let keyboards = devices.get("keyboards")?.as_array()?;
+  let indexes: Vec<(bool, u64)> = keyboards
+    .iter()
+    .filter_map(|keyboard| {
+      let index = keyboard.get("active_layout_index")?.as_u64()?;
+      let is_main = keyboard
+        .get("main")
+        .and_then(Value::as_bool)
+        .unwrap_or(false);
+      Some((is_main, index))
+    })
+    .collect();
+  indexes
+    .iter()
+    .find(|(is_main, _)| *is_main)
+    .or_else(|| indexes.first())
+    .map(|(_, index)| *index)
 }
 
 /// Applies the `write_generated_hypr_input` operation while preserving the persistence and local-update contract. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
@@ -655,5 +682,26 @@ mod tests {
       Some("br,us")
     );
     assert_eq!(extract_lua_string(packaged, "kb_variant"), None);
+  }
+
+  #[test]
+  fn active_layout_index_prefers_the_main_keyboard() {
+    let devices: Value = serde_json::from_str(
+      r#"{"keyboards":[
+        {"name":"power-button","main":false,"active_layout_index":0},
+        {"name":"keyboard","main":true,"active_layout_index":1}
+      ]}"#,
+    )
+    .unwrap();
+    assert_eq!(active_layout_index(&devices), Some(1));
+  }
+
+  #[test]
+  fn active_layout_index_falls_back_to_the_first_keyboard_without_a_main_one() {
+    let devices: Value =
+      serde_json::from_str(r#"{"keyboards":[{"name":"keyboard","active_layout_index":1}]}"#)
+        .unwrap();
+    assert_eq!(active_layout_index(&devices), Some(1));
+    assert_eq!(active_layout_index(&Value::Null), None);
   }
 }

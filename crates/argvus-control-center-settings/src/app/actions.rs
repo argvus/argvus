@@ -649,15 +649,15 @@ impl App {
   }
 
   /// Puts the cursor on the current choice of the page (the active theme
-  /// of a list, the default keyboard layout...), or on its first row.
+  /// of a list, the layout in use...), or on its first row.
   pub fn select_current(&mut self) {
     let rows = self.rows();
     let current = if self.page() == Page::KeyboardLayout {
-      let default_layout = self.keyboard_draft.default.clone();
+      let active_layout = self.keyboard_info.x11_layout.clone();
       self
         .keyboard_layouts
         .iter()
-        .position(|layout| layout.code == default_layout)
+        .position(|layout| layout.code == active_layout)
         .map(Item::Layout)
     } else {
       rows
@@ -890,7 +890,7 @@ impl App {
     let Some(variant) = self.keyboard_variants.get(index).cloned() else {
       return;
     };
-    let layout = self.keyboard_info.x11_layout.clone();
+    let layout = self.keyboard_info.default_layout.clone();
     match keyboard::set_x11_variant(&layout, &variant.code, &self.keyboard_variants) {
       Ok(()) => {
         self.refresh_keyboard();

@@ -364,15 +364,26 @@ impl App {
           .enumerate()
           .filter(|(_, layout)| search_matches(&self.search, &[&layout.code, &layout.description]))
           .map(|(index, layout)| {
-            // `●` marks the default, the first layout Hyprland uses; `[x]`
-            // marks the enabled layouts. Both come from the draft.
+            // `●` marks the layout in use, which the taskbar and shortcuts change
+            // at runtime. `[x]` marks the enabled layouts, from the draft. The
+            // configured default, the first layout Hyprland starts with, is named
+            // in the detail.
+            let detail = if draft.is_default(&layout.code) {
+              format!(
+                "{}  ·  {}",
+                layout.description,
+                self.label("control_center.default")
+              )
+            } else {
+              layout.description.clone()
+            };
             Row::toggle(
               Item::Layout(index),
               layout.code.clone(),
               draft.is_enabled(&layout.code),
             )
-            .marked(draft.is_default(&layout.code))
-            .detail(layout.description.clone())
+            .marked(self.keyboard_info.x11_layout == layout.code)
+            .detail(detail)
           })
           .collect();
         if rows.is_empty() {

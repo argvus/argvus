@@ -150,6 +150,8 @@ pub struct App {
   keyboard_variants: Vec<keyboard::Variant>,
   /// Pending edits of Keyboard > Layout, written only by its `Apply` row.
   keyboard_draft: keyboard_draft::LayoutDraft,
+  /// Last poll of the layout in use, so the keyboard pages follow the taskbar.
+  keyboard_last_refresh: Instant,
   console_keymaps: Vec<String>,
   input: input::InputSettings,
   keybindings: Vec<keybindings::Binding>,
@@ -270,7 +272,7 @@ impl App {
       generated_locales: locale::generated_locales(),
       locale_gen_entries,
       selected_locales,
-      keyboard_variants: keyboard::variants(&keyboard_info.x11_layout),
+      keyboard_variants: keyboard::variants(&keyboard_info.default_layout),
       keyboard_draft: keyboard_draft::LayoutDraft::loaded(&keyboard_info),
       keyboard_info,
       keyboard_layouts: keyboard::layouts(),
@@ -328,6 +330,7 @@ impl App {
       dnd_enabled: false,
       dnd_job: None,
       dnd_last_refresh: Instant::now() - Duration::from_secs(2),
+      keyboard_last_refresh: Instant::now() - Duration::from_secs(1),
       ssh_keys_job: None,
       ssh_keys_last_refresh: Instant::now() - Duration::from_secs(3),
       task_job: None,
@@ -1002,6 +1005,12 @@ impl App {
   /// Executes the `poll` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn poll(&mut self) -> bool {
     let mut changed = false;
+    if self.keyboard_page_is_open()
+      && self.keyboard_last_refresh.elapsed() >= Duration::from_secs(1)
+    {
+      self.keyboard_last_refresh = Instant::now();
+      changed |= self.apply_live_layout(&keyboard::current_layout());
+    }
     if self.dnd_job.is_none()
       && self.page() == Page::Notifications
       && self.dnd_last_refresh.elapsed() >= Duration::from_secs(2)
@@ -1364,10 +1373,30 @@ impl App {
     // follows the system, so it never shows a stale layout list.
     let dirty = self.keyboard_layout_changed();
     self.keyboard_info = keyboard::info();
-    self.keyboard_variants = keyboard::variants(&self.keyboard_info.x11_layout);
+    self.keyboard_variants = keyboard::variants(&self.keyboard_info.default_layout);
     if !dirty {
       self.keyboard_draft = keyboard_draft::LayoutDraft::loaded(&self.keyboard_info);
     }
+  }
+
+  /// Whether a page that shows the layout in use is open. Only those pages poll
+  /// Hyprland, so the rest of the Control Center never spawns `hyprctl`.
+  fn keyboard_page_is_open(&self) -> bool {
+    matches!(
+      self.page(),
+      Page::LocaleRegion | Page::Keyboard | Page::KeyboardLayout | Page::KeyboardVariant
+    )
+  }
+
+  /// Follows the layout in use when it changes outside the Control Center.
+  /// Only the marker and the detail move; the draft and the variant list belong
+  /// to the configured default, so the pending `Apply` state is not touched.
+  pub(super) fn apply_live_layout(&mut self, active_layout: &str) -> bool {
+    if active_layout.is_empty() || self.keyboard_info.x11_layout == active_layout {
+      return false;
+    }
+    self.keyboard_info.x11_layout = active_layout.to_string();
+    true
   }
 
   /// Whether Time Zone has a pick that `Apply` has not written yet.
