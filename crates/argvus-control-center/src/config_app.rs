@@ -380,7 +380,7 @@ fn checkbox(enabled: bool) -> &'static str {
 /// defaults are used so the screen still reflects what the effect path applies.
 fn load_effects(runner: &Arc<dyn ProcessRunner + Send + Sync>) -> (bool, i32, bool) {
   let transparency = read_effect_flag(runner, "transparency_control-center_enabled", true);
-  let transparency_value = read_effect_value(runner, "transparency_control-center_value", 50);
+  let transparency_value = read_effect_value(runner, "transparency_control-center_value", 15);
   let blur = read_effect_flag(runner, "blur_control-center_enabled", true);
   (transparency, transparency_value, blur)
 }
@@ -647,7 +647,7 @@ mod tests {
         "surface-apply",
         "control-center",
         "disabled",
-        "50",
+        "15",
         "enabled",
         "50"
       ]
@@ -678,7 +678,7 @@ mod tests {
     );
     assert!(!app.handle(KeyCode::Down));
     assert!(!app.handle(KeyCode::Right));
-    assert_eq!(app.transparency_value, 55);
+    assert_eq!(app.transparency_value, 20);
     drain_poll(&mut app);
     let requested = recorder.0.lock().unwrap().clone().unwrap();
     let tail = requested.args[requested.args.len() - 6..].to_vec();
@@ -688,13 +688,13 @@ mod tests {
         "surface-apply",
         "control-center",
         "enabled",
-        "55",
+        "20",
         "enabled",
         "50"
       ]
     );
     assert!(!app.handle(KeyCode::Left));
-    assert_eq!(app.transparency_value, 50);
+    assert_eq!(app.transparency_value, 15);
     drain_poll(&mut app);
     let requested = recorder.0.lock().unwrap().clone().unwrap();
     let tail = requested.args[requested.args.len() - 6..].to_vec();
@@ -704,13 +704,13 @@ mod tests {
         "surface-apply",
         "control-center",
         "enabled",
-        "50",
+        "15",
         "enabled",
         "50"
       ]
     );
     assert!(!app.handle(KeyCode::Left));
-    assert_eq!(app.transparency_value, 45);
+    assert_eq!(app.transparency_value, 10);
     drain_poll(&mut app);
     let requested = recorder.0.lock().unwrap().clone().unwrap();
     let tail = requested.args[requested.args.len() - 6..].to_vec();
@@ -720,7 +720,7 @@ mod tests {
         "surface-apply",
         "control-center",
         "enabled",
-        "45",
+        "10",
         "enabled",
         "50"
       ]

@@ -1135,11 +1135,11 @@ fn apply_defaults(document: &mut ConfigDocument) -> ConfigResult<()> {
     .or_insert_with(|| Value::Bool(true));
   for (surface, transparency) in [
     ("taskbar", 50),
-    ("launchers", 50),
+    ("launchers", 15),
     ("widget-telemetry", 50),
     ("control-panel", 50),
     ("terminal", 50),
-    ("control-center", 50),
+    ("control-center", 15),
   ] {
     effects
       .entry(format!("transparency_{surface}_enabled"))
@@ -3147,11 +3147,11 @@ mod tests {
     );
     assert_eq!(
       effects.get("transparency_launchers_value"),
-      Some(&Value::Number(50.into()))
+      Some(&Value::Number(15.into()))
     );
     assert_eq!(
       effects.get("transparency_control-center_value"),
-      Some(&Value::Number(50.into()))
+      Some(&Value::Number(15.into()))
     );
     assert_eq!(effects.get("blur_size").and_then(Value::as_f64), Some(6.0));
     assert_eq!(

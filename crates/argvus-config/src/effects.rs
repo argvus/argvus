@@ -343,7 +343,7 @@ impl Effects {
       "widget-telemetry.blur.enabled=enabled",
       "terminal.transparency=50",
       "terminal.transparency.enabled=enabled",
-      "launchers.transparency=50",
+      "launchers.transparency=15",
       "launchers.transparency.enabled=enabled",
     ];
     for entry in DEFAULTS {
@@ -1010,7 +1010,7 @@ impl Effects {
             Ok(number) if number <= 100 && !raw.starts_with('+') => {
               println!("{number}")
             }
-            _ => println!("50"),
+            _ => println!("15"),
           }
           Ok(())
         }

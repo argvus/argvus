@@ -211,7 +211,7 @@ fn config_value(pointer: &str) -> String {
 }
 
 /// The Control Center background opacity from the effect settings. Without the
-/// `argvus` command the defaults apply: transparency at 50 percent, both on.
+/// `argvus` command the defaults apply: transparency at 15 percent, both on.
 fn control_center_opacity() -> String {
   let (transparency, value, blur) = if argvus_on_path() {
     (
@@ -220,7 +220,7 @@ fn control_center_opacity() -> String {
       config_value("/effects/blur_control-center_enabled"),
     )
   } else {
-    ("true".to_string(), "50".to_string(), "true".to_string())
+    ("true".to_string(), "15".to_string(), "true".to_string())
   };
   background_opacity(&transparency, &value, &blur)
 }

@@ -1077,7 +1077,7 @@ impl Default for AppearanceState {
       terminal_transparency_enabled: true,
       terminal_transparency: 50,
       launcher_transparency_enabled: true,
-      launcher_transparency: 50,
+      launcher_transparency: 15,
       widget_telemetry: true,
       control_panel_enabled: true,
       widget_telemetry_blocks: WidgetTelemetryBlocks::default(),
