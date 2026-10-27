@@ -5,7 +5,7 @@ use serde::Deserialize;
 use serde_json::{Value, json};
 
 use crate::{
-  AccountManager, Error, Result, autologin, groups, metadata, passwd, password, validation,
+  AccountManager, Error, Result, autologin, avatar, groups, metadata, passwd, password, validation,
 };
 
 #[derive(Deserialize)]
@@ -64,6 +64,15 @@ enum Request {
     user: String,
     enabled: bool,
   },
+}
+
+/// The deployed avatar of `info` as a path string, or `""` when none is set.
+/// The snapshot field is always present so that clients can tell "no avatar"
+/// from a missing field.
+fn avatar_of(info: &passwd::UserInfo) -> String {
+  avatar::find_avatar(&info.home)
+    .map(|path| path.display().to_string())
+    .unwrap_or_default()
 }
 
 fn invalid(message: impl Into<String>) -> Error {
@@ -189,6 +198,7 @@ fn execute_request(request: Request) -> Result<Value> {
       users.push(json!({
                 "user": info.username, "name": info.display_name().unwrap_or(""),
                 "uid": info.uid, "gid": info.gid, "home": info.home, "shell": info.shell,
+                "avatar": avatar_of(&info),
                 "primary_group": memberships.iter().find(|group| group.gid == info.gid).map(|group| group.name.clone()).unwrap_or_default(),
                 "groups": memberships.iter().filter(|group| group.gid != info.gid).map(|group| group.name.clone()).collect::<Vec<_>>()
             }));
@@ -776,5 +786,27 @@ mod tests {
       )
       .is_err()
     );
+  }
+
+  fn user_with_home(home: &std::path::Path) -> passwd::UserInfo {
+    passwd::UserInfo {
+      username: "alice".into(),
+      uid: 1000,
+      gid: 1000,
+      gecos: String::new(),
+      home: home.to_path_buf(),
+      shell: "/bin/bash".into(),
+    }
+  }
+
+  #[test]
+  fn snapshot_avatar_is_the_deployed_face_path_or_empty() {
+    let home = tempfile::tempdir().expect("temporary home");
+    let info = user_with_home(home.path());
+    assert_eq!(avatar_of(&info), "");
+
+    let face = home.path().join(avatar::AVATAR_FILENAME);
+    std::fs::write(&face, b"png").expect("avatar file");
+    assert_eq!(avatar_of(&info), face.display().to_string());
   }
 }
