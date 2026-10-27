@@ -413,6 +413,19 @@ helper elevado do DNS (`SystemSettingsOperation`) não muda.
 | DNS | **`[ Automatic DNS ]`** | `apply_dns("")` (imediato) | Action `DNS automático` (ícone `AUTORENEW`) | `Enter` | migrado |
 | Proxy | Refresh | `start_refresh` | Action `Atualizar` | `r`, `Enter` | migrado |
 | Firewall | Página do settings embutida | Igual a 0.3 | Igual a 0.3, sem mudança | — | migrado |
+| Home | **Conexões** (novo, 2026-10-27) | Abre a lista de perfis | Submenu `Conexões`, com as conexões ativas à direita | `Enter` | adição (D68) |
+| Home | **Ativar uma conexão** (novo) | Abre a lista de ativação | Submenu | `Enter` | adição (D68) |
+| Conexões | Perfil | Abre o editor | Submenu por perfil, agrupado por tipo | `Enter`, `/` filtro | adição (D68) |
+| Conexões | Conectar/desconectar o perfil | `connection up/down uuid` (imediato) | Atalho `a` no perfil (rodapé mostra Conectar/Desconectar) | `a` | adição (D68) |
+| Conexões | Adicionar conexão | Abre os tipos | Submenu no topo (Ações) | `Enter` | adição |
+| Ativar uma conexão | Perfil | `connection up/down uuid` (imediato) | Action por perfil | `Enter` | adição |
+| Adicionar conexão | Tipo, plugin VPN, importar arquivo | Abre o editor com o rascunho novo; importar pede o caminho | Action por tipo; desabilitada com motivo sem `teamd`/`pppd`/plugin | `Enter` | adição |
+| Editor | Campos | Rascunho | Value (←/→ em escolhas, números e dispositivos), Toggle, Submenu para listas | `Enter`, `←/→`, `Space` | adição |
+| Editor | **Salvar** | `nmcli connection add/modify` + segredos pela stdin; reaplica se ativa (confirmação) | `draft_actions`: desabilitada sem mudança ou com erro, motivo no detalhe | `Enter` | adição (D70) |
+| Editor | Cancelar | Descarta (confirma se houver mudança) | Action | `Enter`, `Esc` | adição |
+| Editor | Conectar/Desconectar | `connection up/down uuid` (imediato) | Action na seção Conexão | `Enter` | adição |
+| Editor | **Excluir conexão** | `connection delete uuid` (+ portas) | Destructive na Zona de perigo, `ConfirmDialog` com foco em Cancelar | `Enter`, `y` | adição (D71) |
+| Detalhe de interface, Wi-Fi salva, VPN | **Editar conexão** | Abre o perfil no editor | Submenu nas Ações | `Enter` | adição |
 
 ### 0.8 `argvus-control-center-audio`
 
@@ -575,6 +588,13 @@ emoji literal `"🪟"` (largura 2, fora do catálogo).
 | `VOLUME_UP` / `VOLUME_DOWN` / `MUTE` | nf-md-volume_plus / volume_minus / volume_off | `f075d` / `f075e` / `f0581` | Áudio |
 | `TRUST` | nf-md-shield_check | `f0565` | Bluetooth confiável |
 | `VISIBLE` | nf-md-eye | `f0208` | Bluetooth visível |
+| `CONNECTIONS` | nf-md-lan | `f0317` | Rede > Conexões (2026-10-27) |
+| `ACTIVATE_CONNECTION` | nf-md-play_network | `f088b` | Rede > Ativar uma conexão |
+| `BRIDGE` / `BOND` / `TEAM` | nf-md-bridge / call_merge / source_merge | `f0618` / `f00f8` / `f062d` | Tipos de conexão |
+| `VLAN` / `TUNNEL` / `LOOPBACK` | nf-md-tag / tunnel / rotate_left | `f04f9` / `f183d` / `f0465` | Tipos de conexão |
+| `DSL` / `HOTSPOT` / `WIREGUARD` | nf-md-phone_classic / access_point / shield_key | `f0602` / `f0003` / `f0bc4` | Tipos de conexão |
+| `IP_ADDRESS` / `ROUTES` | nf-md-ip_network / map_marker_path | `f0a60` / `f0d20` | Reservados para listas de endereço e rota |
+| `PORT` / `KEY_GENERATE` | nf-md-vector_link / key_plus | `f0fe8` / `f0309` | Portas de bridge/bond/team; gerar chave WireGuard |
 
 ### 1.3 Home (`argvus-control-center/src/ui.rs`)
 
@@ -903,6 +923,7 @@ Notas de projeto:
 | 3 | `boot` | concluída (`93bc44f`, `1d04196`, `a82ada7`; `argvus-i18n` `2e6be4e`) |
 | 3 | `packages` | concluída (`33a033f`, `63689aa`; `argvus-tui` `6beda24`; `argvus-i18n` `ef69e70`) |
 | 3 | `network` | concluída (`83a0461`, `d5df88d`; `argvus-tui` `541d788`; `argvus-i18n` `b46d99b`) |
+| 3 | `network` > Conexões (editor de perfis no estilo nmtui, D68–D72; ver 5.12) | concluída, sem commit. 84 testes da crate; validação real com `nmcli` em perfis descartáveis (criados e apagados, nunca ativados). Teste interativo em terminal real pendente |
 | 3 | `services` | parcial, sem commit: listas Sistema/Usuário/Falhos e Logs no layout Filter / Search / bloco. Linha `Filter:` fora do menu com o valor à direita (`f` cicla; não é mais linha selecionável); caixa `Search:` com borda, destacada enquanto recebe texto (`/` busca nas unidades e nos logs); unidades no bloco `Services:` com bolinhas Active/Enabled; o cabeçalho `Name:` saiu. Logs: a linha `Filter:` resume Boot/Service/Priority, e `b`, `u` e `p` alteram cada um; a barra de botões saiu. `p` corrigido: a partir de "0-7" não ficava preso. Detalhe da unidade como menu: bloco "Service" com informações somente leitura e bloco "Actions" com Start/Stop/Restart/Enable/Disable/Enable now/Disable now/Logs; filtro volta a All ao sair da lista. Pendente: decisão "ações no topo da lista" (sem alvo com um cursor só); rótulo "View Logs" com a chave `control_center.view_logs` em argvus-i18n |
 | 3 | `audio` | migrada, sem commit (barra de botões removida; teclas no rodapé; `argvus-i18n` com a chave `navigate_volume_enter_set_default_r_refresh_esc_back_help`; `[Value]` em `v`, a confirmar) |
 | 3 | `bluetooth` | pendente |
@@ -1570,6 +1591,22 @@ ações nem o momento em que cada mudança é efetivada.
   `control_panel_description`, `widget_telemetry_description`,
   `themes_and_visuals` e `themes`, em en-US e pt-BR.
 
+### 5.12 Notas: Conexões de rede (2026-10-27)
+
+Funcionalidade nova, não migração: Rede e Wi-Fi ganhou **Conexões**, **Ativar uma conexão** e **Adicionar conexão**, com um editor de perfis do NetworkManager no modelo de lista única.
+
+- Domínio puro em `argvus-control-center-network/src/profile/`. `schema.rs` tem uma tabela de propriedades por seção (widget, padrão do NetworkManager, condições de exibição e de habilitação), da qual saem as linhas, a validação e os argumentos do `nmcli`. `draft.rs` guarda o rascunho, `validate.rs` faz as checagens e `nmcli.rs` traduz de e para o `nmcli`.
+- Backend em `backend/connections.rs`: listar, carregar, salvar (só o que mudou), ativar, excluir, importar, plugins de VPN e chaves WireGuard.
+- UI em `ui/connections.rs` e `ui/editor.rs`.
+- Peças compartilhadas novas:
+  - `ProcessRequest::stdin` em `argvus-control-center-core`, com `Debug` que só mostra o tamanho;
+  - `TextEditor::masked` em `argvus-tui`;
+  - os glyphs da seção 1.2;
+  - `Capabilities::has_teamd` e `has_pppd`.
+- A rede passou a receber o `KeyEvent` inteiro e o paste (`event.rs`).
+- Rotas: busca `network.connections`, `network.activate` e `network.add_connection`; CLI `network connections|activate|add`.
+- Breadcrumbs: `Hardware & Connectivity > Network & Wi-Fi > Connections > <perfil>`, `… > Connections > Add connection > <tipo>` e as subpáginas (lista, Portas, Peers) depois do perfil.
+
 ## 6. Pontos de decisão
 
 ### 6.1 Decisões registradas (2026-10-04)
@@ -1727,3 +1764,8 @@ Ajustes aprovados junto com o plano da Fase 1:
 | D65 | (`about`) O cabeçalho do About mostrava só a aba (`Control Center > System`), sem o cartão da Home. Passa a `Control Center > Tools & Diagnostics > About ARGVUS > <aba>` (chaves `card_tools` e `about_argvus` do `catalog.rs`), em todas as abas. A aba System vira `System & Hardware` (`about_system_hardware`), agrupada em Boot, System e Hardware, com rótulos alinhados numa coluna. A busca `about` passa ao cartão `card_tools`. Os dados são coletados no primeiro desenho da página (`App::ensure_loaded`), não mais na abertura do Control Center. | decidido (2026-10-25) |
 | D66 | (`about`) System & Hardware ganha Bootloader (EFI `LoaderInfo`; GRUB por `/boot/grub`), Tema, Monitores (`hyprctl monitors -j`), Áudio/Shell/Login/Init (PipeWire, Quickshell, greetd, systemd na mesma consulta `pacman -Q`, versões sem época e pkgrel), Pacotes (total, explícitos, externos), Tempo ligado, Locale, todas as baterias (por `type`, sem periféricos `scope=Device`, com saúde e ciclos), frequência máxima da CPU (maior `cpuinfo_max_freq`, correta em híbridas), Memória usada/total, Swap e Armazenamento de `/` (atravessa partição, LUKS e LVM; Btrfs resolvido pela fonte do mountinfo; discos virtuais sem tipo). Toda detecção é genérica: o que não se aplica é omitido e o que não se lê vira N/A. A coleta (~200 ms, dominada por `pacman -Qqm`) passou para um job em segundo plano (`JobManager`, `App::poll` no loop principal) com a linha "Carregando informações do sistema...". `c` copia a aba como texto (`wl-copy`); o helper de clipboard saiu de `argvus-control-center-settings` para `argvus_control_center_core::clipboard`, sem mudar o comportamento das páginas SSH/GPG. | decidido (2026-10-25) |
 | D67 | (`about`, Home, Settings) A barra de rolagem do About parava antes do fim: o `ScrollbarState` só chega ao fim na posição `content_length - 1`, e o último deslocamento é `linhas - viewport`. O mapeamento que a Settings já fazia virou `argvus_tui::scroll::thumb_position`, usado por About, Settings e Home (a Home tinha o mesmo defeito; como as linhas de cartões têm alturas diferentes, o último deslocamento é calculado por `last_home_scroll`). No About, o documento passa a ser quebrado e rolado pela área que o mostra (ao lado ou abaixo do logo na aba System & Hardware), e não pela largura e altura do terminal inteiro. | decidido (2026-10-25) |
+| D68 | (`network`) Em **Conexões**, Enter abre o editor do perfil (a ação mais comum ao gerenciar perfis) e a tecla nova `a` conecta ou desconecta o perfil sob o cursor, mostrada no rodapé só nessa linha. **Ativar uma conexão** (como no `nmtui`) é a lista em que Enter ativa ou desativa. As páginas antigas (Interfaces, Ethernet, Wi-Fi, VPN) continuam e ganham **Editar conexão**. | decidido (2026-10-27) |
+| D69 | (`network`) Tipos oferecidos: Ethernet, Wi-Fi, Hotspot, DSL (PPPoE), Bridge, Bond, Team, VLAN, túnel IP, Loopback, WireGuard e VPN por plugin (formulário OpenVPN; demais plugins como `chave=valor`), mais importação de arquivo. Ficam de fora WEP (obsoleto e inseguro), InfiniBand, MACsec e OVS; perfis desses tipos aparecem em "Outros", com nome, IPv4 e IPv6 editáveis. | decidido (2026-10-27) |
+| D70 | (`network`) Escrita como o usuário da sessão, sem `pkexec`: o polkit do NetworkManager autoriza `wheel` local e pede senha aos demais pelo agente da sessão. Segredos (senha Wi-Fi/802.1X/PPPoE, chave privada, peers WireGuard com PSK, `vpn.secrets`) vão só pela stdin de `nmcli connection edit` e nunca são lidos de volta (exceto os peers, lidos com `-s` para não perder a PSK ao regravar). Como o `edit` sai com 0 mesmo recusando um valor, qualquer linha `Error` na stderr é falha. Salvar um perfil ativo pede confirmação e o reativa (`connection up`). | decidido (2026-10-27) |
+| D71 | (`network`) Excluir uma bridge, bond ou team exclui também os perfis de porta que apontam para ela (por UUID ou nome de interface), como o `nmtui`; a confirmação lista as portas. As portas são escolhidas no rascunho (um toggle por dispositivo Ethernet) e criadas ou apagadas no Salvar. | decidido (2026-10-27) |
+| D72 | (`network`) Perfis WireGuard passam a aparecer na página VPN (antes só tipos com "vpn" no nome). | decidido (2026-10-27) |
