@@ -23,6 +23,10 @@ pub struct Capabilities {
   pub has_resolvectl: bool,
   pub has_ip: bool,
   pub has_wireguard_tools: bool,
+  /// `teamd`, which NetworkManager needs to run Team connections.
+  pub has_teamd: bool,
+  /// `pppd`, which NetworkManager needs to run DSL (PPPoE) connections.
+  pub has_pppd: bool,
   pub has_bluetooth: bool,
   pub has_bluetoothctl: bool,
   pub has_pipewire: bool,
@@ -76,6 +80,8 @@ impl Capabilities {
       has_resolvectl: executable("resolvectl"),
       has_ip: executable("ip"),
       has_wireguard_tools: executable("wg"),
+      has_teamd: executable("teamd"),
+      has_pppd: executable("pppd"),
       has_bluetooth: bluetooth_adapter_present(),
       has_bluetoothctl: executable("bluetoothctl"),
       has_pipewire: executable("wpctl") || executable("pipewire"),

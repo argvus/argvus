@@ -51,6 +51,30 @@ pub struct ProcessRequest {
   pub env: Vec<(String, String)>,
   /// Optional deadline for terminating the operation and avoiding an indefinite wait.
   pub timeout: Option<Duration>,
+  /// Bytes written to the standard input of the child, which is closed after them.
+  /// Without it the child reads an empty, closed input.
+  pub stdin: Option<ProcessInput>,
+}
+
+/// Bytes for the standard input of a child process.
+///
+/// Arguments of any process are readable by every local user in `/proc`, so
+/// secrets (passwords, private keys) travel through the standard input instead.
+/// `Debug` shows only the length, so logging a request never leaks them.
+#[derive(Clone, Default, PartialEq, Eq)]
+pub struct ProcessInput(Vec<u8>);
+
+impl ProcessInput {
+  /// The bytes written to the child.
+  pub fn as_bytes(&self) -> &[u8] {
+    &self.0
+  }
+}
+
+impl std::fmt::Debug for ProcessInput {
+  fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    write!(formatter, "ProcessInput(<{} bytes>)", self.0.len())
+  }
 }
 
 impl ProcessRequest {
@@ -61,6 +85,7 @@ impl ProcessRequest {
       args: Vec::new(),
       env: Vec::new(),
       timeout: None,
+      stdin: None,
     }
   }
 
@@ -79,6 +104,12 @@ impl ProcessRequest {
   /// Executes the `timeout` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn timeout(mut self, timeout: Duration) -> Self {
     self.timeout = Some(timeout);
+    self
+  }
+
+  /// Writes `input` to the standard input of the child and then closes it.
+  pub fn stdin(mut self, input: impl Into<Vec<u8>>) -> Self {
+    self.stdin = Some(ProcessInput(input.into()));
     self
   }
 }
@@ -203,11 +234,12 @@ impl ProcessRunner for SystemProcessRunner {
       .process_group(0)
       .args(&request.args)
       .envs(request.env.iter().map(|(name, value)| (name, value)))
-      .stdin(Stdio::null())
+      .stdin(stdin_mode(request))
       .stdout(Stdio::piped())
       .stderr(Stdio::piped())
       .spawn()
       .map_err(ProcessError::Io)?;
+    feed_stdin(&mut child, request);
     let stdout = child
       .stdout
       .take()
@@ -274,11 +306,12 @@ impl ProcessRunner for SystemProcessRunner {
       .process_group(0)
       .args(&request.args)
       .envs(request.env.iter().map(|(name, value)| (name, value)))
-      .stdin(Stdio::null())
+      .stdin(stdin_mode(request))
       .stdout(Stdio::piped())
       .stderr(Stdio::piped())
       .spawn()
       .map_err(ProcessError::Io)?;
+    feed_stdin(&mut child, request);
     let stdout = child
       .stdout
       .take()
@@ -387,6 +420,28 @@ impl Drop for ProcessMeasurement {
   }
 }
 
+/// A pipe when the request carries input, else a closed, empty input.
+fn stdin_mode(request: &ProcessRequest) -> Stdio {
+  if request.stdin.is_some() {
+    Stdio::piped()
+  } else {
+    Stdio::null()
+  }
+}
+
+/// Writes the request input on its own thread, so a child that reads slowly
+/// (or not at all) never blocks the deadline loop, and closes the pipe after it.
+fn feed_stdin(child: &mut std::process::Child, request: &ProcessRequest) {
+  if let (Some(mut pipe), Some(input)) = (child.stdin.take(), request.stdin.clone()) {
+    std::thread::spawn(move || {
+      use std::io::Write;
+      // A child that exits before reading closes the pipe; the exit status
+      // reports that failure, not this write.
+      let _ = pipe.write_all(input.as_bytes());
+    });
+  }
+}
+
 fn read_pipe(mut pipe: impl std::io::Read) -> Vec<u8> {
   let mut output = Vec::new();
   let _ = pipe.read_to_end(&mut output);
@@ -417,6 +472,27 @@ fn read_pipe_live(mut pipe: impl BufRead, live: &LiveProcess) -> Vec<u8> {
 #[cfg(test)]
 mod tests {
   use super::*;
+
+  #[test]
+  fn stdin_reaches_the_child_and_is_closed_after_it() {
+    let output = SystemProcessRunner
+      .run(
+        &ProcessRequest::new("cat")
+          .stdin("set psk secret\n")
+          .timeout(Duration::from_secs(5)),
+      )
+      .unwrap();
+    assert_eq!(output.status, Some(0));
+    assert_eq!(output.stdout, b"set psk secret\n");
+  }
+
+  #[test]
+  fn debug_never_shows_the_input() {
+    let request = ProcessRequest::new("nmcli").stdin("hunter2");
+    let shown = format!("{request:?}");
+    assert!(!shown.contains("hunter2"));
+    assert!(shown.contains("<7 bytes>"));
+  }
 
   #[test]
   fn timeout_closes_inherited_pipes() {
