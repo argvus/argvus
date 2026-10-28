@@ -1,7 +1,4 @@
-//! Implements isolated integration with system tools and APIs in crate `argvus control center diagnostics`. This separation keeps external effects from contaminating models, routes, or rendering.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
+//! Isolated integration with system tools and APIs of the Diagnostics page.
 use crate::model::*;
 use argvus_control_center_core::{
   capabilities::Capabilities,
@@ -12,7 +9,6 @@ use argvus_control_center_storage::model::{SmartHealth, UsageLevel, usage_level}
 use argvus_i18n::{Lang, tr};
 use std::{fs, time::Duration};
 
-/// Executes the `collect` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn collect(cap: &Capabilities) -> DiagnosticFacts {
   let mut facts = DiagnosticFacts {
     storage: argvus_control_center_storage::backend::collect(cap).unwrap_or_default(),
@@ -51,7 +47,6 @@ pub fn collect(cap: &Capabilities) -> DiagnosticFacts {
   facts
 }
 
-/// Executes the `failed_units` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn failed_units(args: &[&str]) -> Option<usize> {
   let mut arguments = vec!["--failed", "--no-legend", "--plain"];
   arguments.extend_from_slice(args);
@@ -63,12 +58,10 @@ fn failed_units(args: &[&str]) -> Option<usize> {
   })
 }
 
-/// Executes the `run` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn run(program: &str, args: &[&str]) -> String {
   run_output(program, args).unwrap_or_default()
 }
 
-/// Executes the `run_output` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn run_output(program: &str, args: &[&str]) -> Option<String> {
   let request = args
     .iter()
@@ -83,7 +76,6 @@ fn run_output(program: &str, args: &[&str]) -> Option<String> {
     .map(|output| terminal_text(&String::from_utf8_lossy(&output.stdout)))
 }
 
-/// Executes the `run_status` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn run_status(program: &str, args: &[&str]) -> bool {
   let request = args
     .iter()
@@ -96,7 +88,6 @@ fn run_status(program: &str, args: &[&str]) -> bool {
     .is_ok_and(|output| output.status == Some(0) && !output.timed_out)
 }
 
-/// Executes the `evaluate` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn evaluate(lang: Lang, facts: &DiagnosticFacts, cap: &Capabilities) -> Vec<DiagnosticCheck> {
   let mut checks = Vec::new();
   match facts.failed_system_units {
@@ -327,7 +318,6 @@ pub fn evaluate(lang: Lang, facts: &DiagnosticFacts, cap: &Capabilities) -> Vec<
   checks.sort_by_key(|c| c.severity);
   checks
 }
-/// Executes the `info` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn info(_lang: Lang, id: &str, title: &str, summary: &str) -> DiagnosticCheck {
   DiagnosticCheck {
     id: id.into(),
@@ -339,14 +329,12 @@ fn info(_lang: Lang, id: &str, title: &str, summary: &str) -> DiagnosticCheck {
     ..Default::default()
   }
 }
-/// Executes the `unknown` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn unknown(lang: Lang, id: &str, title: &str, summary: &str) -> DiagnosticCheck {
   DiagnosticCheck {
     severity: Severity::Unknown,
     ..info(lang, id, title, summary)
   }
 }
-/// Executes the `ok` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn ok(lang: Lang, id: &str, title: &str, summary: &str) -> DiagnosticCheck {
   DiagnosticCheck {
     severity: Severity::Ok,
@@ -359,7 +347,6 @@ mod tests {
   use super::*;
   use argvus_control_center_storage::model::Filesystem;
   #[test]
-  /// Executes the `root_usage_severity_is_objective` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn root_usage_severity_is_objective() {
     let mut f = DiagnosticFacts::default();
     f.storage.filesystems.push(Filesystem {
@@ -375,7 +362,6 @@ mod tests {
     );
   }
   #[test]
-  /// Executes the `unavailable_smart_is_info` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn unavailable_smart_is_info() {
     let c = evaluate(
       Lang::for_locale("en-US"),
@@ -389,7 +375,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `reports_failed_services_and_software_rendering` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn reports_failed_services_and_software_rendering() {
     let facts = DiagnosticFacts {
       failed_system_units: Some(2),
@@ -410,7 +395,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `reports_nvidia_module_gap` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn reports_nvidia_module_gap() {
     let facts = DiagnosticFacts {
       nvidia_present: Some(true),

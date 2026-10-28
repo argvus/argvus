@@ -1,13 +1,10 @@
-//! Implements controlled external-process execution in crate `argvus control center core`. This separation keeps external effects from contaminating models, routes, or rendering.
+//! Controlled external-process execution.
 //!
 //! The runner receives the program and each argument separately; it never passes the
 //! request through a shell. This boundary matters because backends may receive
 //! names, filters, and paths from the interface. Timeout handling is also centralized
 //! here so a missing or stalled tool cannot block the
 //! TUI rendering loop.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
 use std::ffi::OsStr;
 use std::io::{self, BufRead, BufReader};
 use std::os::unix::process::CommandExt;
@@ -41,7 +38,6 @@ pub fn command(program: impl AsRef<OsStr>) -> Command {
 }
 
 #[derive(Debug, Clone)]
-/// Represents `ProcessRequest`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub struct ProcessRequest {
   /// Executable name resolved by the system, without shell interpolation.
   pub program: String,
@@ -78,7 +74,6 @@ impl std::fmt::Debug for ProcessInput {
 }
 
 impl ProcessRequest {
-  /// Constructs `new` with this module's expected initial state. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn new(program: impl Into<String>) -> Self {
     Self {
       program: program.into(),
@@ -89,7 +84,6 @@ impl ProcessRequest {
     }
   }
 
-  /// Executes the `arg` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn arg(mut self, value: impl Into<String>) -> Self {
     self.args.push(value.into());
     self
@@ -101,7 +95,6 @@ impl ProcessRequest {
     self
   }
 
-  /// Executes the `timeout` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn timeout(mut self, timeout: Duration) -> Self {
     self.timeout = Some(timeout);
     self
@@ -115,7 +108,6 @@ impl ProcessRequest {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-/// Represents `ProcessOutput`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub struct ProcessOutput {
   /// Standard output preserved as bytes so each backend can choose its decoding.
   pub stdout: Vec<u8>,
@@ -128,14 +120,12 @@ pub struct ProcessOutput {
 }
 
 #[derive(Debug)]
-/// Defines `ProcessError`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub enum ProcessError {
   Io(io::Error),
   EmptyProgram,
 }
 
 impl std::fmt::Display for ProcessError {
-  /// Executes the `fmt` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
     match self {
       Self::Io(error) => write!(formatter, "process failed: {error}"),
@@ -147,13 +137,11 @@ impl std::fmt::Display for ProcessError {
 impl std::error::Error for ProcessError {}
 
 #[derive(Debug, Default)]
-/// Represents `LiveProcess`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub struct LiveProcess {
   /// State shared by stdout/stderr readers and the rendering thread.
   inner: Arc<LiveInner>,
 }
 #[derive(Debug, Default)]
-/// Represents `LiveInner`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 struct LiveInner {
   /// Lines already received, kept in order for incremental display.
   lines: Mutex<Vec<String>>,
@@ -162,19 +150,16 @@ struct LiveInner {
 }
 
 impl LiveProcess {
-  /// Constructs `new` with this module's expected initial state. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn new() -> Self {
     Self::default()
   }
 
-  /// Executes the `push_line` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn push_line(&self, line: &str) {
     if let Ok(mut lines) = self.inner.lines.lock() {
       lines.push(line.to_owned());
     }
   }
 
-  /// Executes the `output` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn output(&self) -> String {
     self
       .inner
@@ -184,19 +169,16 @@ impl LiveProcess {
       .unwrap_or_default()
   }
 
-  /// Checks the condition represented by `is_finished` using only the state available to the module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn is_finished(&self) -> bool {
     self.inner.finished.load(Ordering::Acquire)
   }
 
-  /// Executes the `finish` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn finish(&self) {
     self.inner.finished.store(true, Ordering::Release);
   }
 }
 
 impl Clone for LiveProcess {
-  /// Executes the `clone` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn clone(&self) -> Self {
     Self {
       inner: Arc::clone(&self.inner),
@@ -204,12 +186,9 @@ impl Clone for LiveProcess {
   }
 }
 
-/// Defines the `ProcessRunner`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub trait ProcessRunner: Send + Sync {
-  /// Executes the `run` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn run(&self, request: &ProcessRequest) -> Result<ProcessOutput, ProcessError>;
 
-  /// Executes the `run_live` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn run_live(
     &self,
     request: &ProcessRequest,
@@ -220,11 +199,9 @@ pub trait ProcessRunner: Send + Sync {
 }
 
 #[derive(Debug, Default, Clone, Copy)]
-/// Represents `SystemProcessRunner`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub struct SystemProcessRunner;
 
 impl ProcessRunner for SystemProcessRunner {
-  /// Executes the `run` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn run(&self, request: &ProcessRequest) -> Result<ProcessOutput, ProcessError> {
     let _measurement = ProcessMeasurement::new(request);
     if request.program.trim().is_empty() {
@@ -292,7 +269,6 @@ impl ProcessRunner for SystemProcessRunner {
     }
   }
 
-  /// Executes the `run_live` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn run_live(
     &self,
     request: &ProcessRequest,
@@ -366,7 +342,6 @@ impl ProcessRunner for SystemProcessRunner {
   }
 }
 
-/// Retrieves data for `read_pipe` without mixing collection with TUI rendering. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn terminate_descendants(pid: u32) {
   if let Ok(pid) = i32::try_from(pid) {
     // Each managed child owns its process group; never target our own group.
@@ -448,7 +423,6 @@ fn read_pipe(mut pipe: impl std::io::Read) -> Vec<u8> {
   output
 }
 
-/// Retrieves data for `read_pipe_live` without mixing collection with TUI rendering. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn read_pipe_live(mut pipe: impl BufRead, live: &LiveProcess) -> Vec<u8> {
   let mut output = Vec::new();
   let mut line = String::new();
@@ -551,7 +525,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `builds_arguments_without_a_shell` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn builds_arguments_without_a_shell() {
     let request = ProcessRequest::new("printf")
       .arg("%s")
@@ -574,7 +547,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `rejects_empty_program` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn rejects_empty_program() {
     assert!(matches!(
       SystemProcessRunner.run(&ProcessRequest::new(" ")),
@@ -583,7 +555,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `drains_large_stdout_without_deadlocking` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn drains_large_stdout_without_deadlocking() {
     let request = ProcessRequest::new("head")
       .arg("-c")
@@ -597,7 +568,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `run_live_streams_lines_into_the_sink` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn run_live_streams_lines_into_the_sink() {
     let live = LiveProcess::new();
     let request = ProcessRequest::new("printf").arg("%s").arg("alpha\nbeta\n");
@@ -609,7 +579,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `run_live_captures_stderr_but_only_streams_non_empty_lines` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn run_live_captures_stderr_but_only_streams_non_empty_lines() {
     let live = LiveProcess::new();
     let request = ProcessRequest::new("sh")
@@ -624,13 +593,10 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `run_live_default_falls_back_to_buffered_run` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn run_live_default_falls_back_to_buffered_run() {
     #[derive(Debug, Default)]
-    /// Represents `RecordingRunner`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
     struct RecordingRunner(std::sync::Mutex<Option<ProcessRequest>>);
     impl ProcessRunner for RecordingRunner {
-      /// Executes the `run` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
       fn run(&self, request: &ProcessRequest) -> Result<ProcessOutput, ProcessError> {
         *self.0.lock().unwrap() = Some(request.clone());
         Ok(ProcessOutput {

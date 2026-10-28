@@ -1,4 +1,4 @@
-//! Root module of crate `argvus control center`. It exposes public boundaries and composes internal responsibilities without duplicating domain rules.
+//! ARGVUS Control Center: Home, navigation, search, CLI routes and the page shell.
 //!
 //! External tool dependencies remain in backend layers;
 //! the UI consumes normalized models and results.

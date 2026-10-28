@@ -1,7 +1,4 @@
 //! Reads how the machine booted: firmware, boot mode, Secure Boot and virtualization.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
 use std::fs;
 use std::path::Path;
 

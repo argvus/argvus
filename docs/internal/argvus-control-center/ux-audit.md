@@ -291,7 +291,7 @@ mais `Button`, `ActionButton`, `on_buttons` nem linhas `[ ... ]`.
 
 Conferido no código antigo (Fase 3): toda ação do boot pede confirmação e
 só então roda `<exe> system-settings boot <ação>`, elevado por `pkexec`
-(`ensure_root` em `settings/src/system/command.rs`), com o painel de saída
+(`ensure_root` em `settings/src/system/command/privileges.rs`), com o painel de saída
 ao vivo aberto na hora. Não há rascunho: o efeito é imediato após
 confirmar. O timeout e a linha do kernel abrem um campo antes da
 confirmação.

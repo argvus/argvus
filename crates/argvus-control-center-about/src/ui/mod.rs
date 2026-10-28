@@ -1,7 +1,4 @@
-//! Implements module declarations for the `ui` subsystem in crate `argvus about`. This separation keeps external effects from contaminating models, routes, or rendering.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
+//! Module declarations for the `ui` subsystem of the About page.
 pub mod footer;
 pub mod header;
 pub mod layout;
@@ -17,7 +14,6 @@ use ratatui::widgets::{Block, Borders, Clear, Paragraph, Widget};
 use crate::app::{App, Tab};
 use crate::pages::Doc;
 
-/// Renders `draw` while respecting the current domain state and semantic theme. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn draw(app: &mut App, frame: &mut Frame) {
   app.ensure_loaded();
   let area = frame.area();
@@ -66,7 +62,6 @@ fn is_wide(body: Rect) -> bool {
   body.width >= 96
 }
 
-/// Renders `draw_system_page` while respecting the current domain state and semantic theme. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn draw_system_page(frame: &mut Frame, body: Rect, app: &mut App, doc: &Doc<'_>) {
   if !logo_visible(app) {
     draw_doc(frame, content_rect(body, app, doc), app, doc);
@@ -112,7 +107,6 @@ fn draw_system_page(frame: &mut Frame, body: Rect, app: &mut App, doc: &Doc<'_>)
   }
 }
 
-/// Renders `draw_doc` while respecting the current domain state and semantic theme. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn draw_doc(frame: &mut Frame, area: Rect, app: &App, doc: &Doc<'_>) {
   let paragraph = Paragraph::new(doc.lines.clone())
     .style(Style::new().bg(app.theme.background))
@@ -120,7 +114,6 @@ fn draw_doc(frame: &mut Frame, area: Rect, app: &App, doc: &Doc<'_>) {
   frame.render_widget(paragraph, area);
 }
 
-/// Executes the `content_rect` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn content_rect(area: Rect, app: &App, doc: &Doc<'_>) -> Rect {
   if app.viewport > 0 && doc.height() > app.viewport {
     Rect {
@@ -134,7 +127,6 @@ fn content_rect(area: Rect, app: &App, doc: &Doc<'_>) -> Rect {
   }
 }
 
-/// Renders `draw_too_small` while respecting the current domain state and semantic theme. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn draw_too_small(app: &App, frame: &mut Frame, area: Rect) {
   Block::new()
     .bg(app.theme.background)

@@ -1,13 +1,9 @@
-//! Implements `credits` responsibilities in crate `argvus about`. This separation keeps external effects from contaminating models, routes, or rendering.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
+//! Credits page of About.
 use crate::app::App;
 use crate::i18n::tr;
 
 use super::{ARGVUS_URL, Doc, Row, WILLIAM_CANIN_URL, simple_doc};
 
-/// Executes the `doc` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn doc(app: &App, width: usize, selected: usize) -> Doc<'static> {
   let lang = app.lang;
   let rows = vec![
@@ -52,7 +48,6 @@ mod tests {
   use crate::app::App;
 
   #[test]
-  /// Executes the `credits_have_author_and_project_links` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn credits_have_author_and_project_links() {
     let app = App::test();
     let doc = doc(&app, 100, 0);

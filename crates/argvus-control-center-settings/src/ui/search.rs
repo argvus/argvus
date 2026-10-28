@@ -1,7 +1,4 @@
-//! Implements search interaction in crate `argvus control center settings`. This separation keeps external effects from contaminating models, routes, or rendering.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
+//! Search interaction of the Settings pages.
 use ratatui::Frame;
 use ratatui::layout::Rect;
 use ratatui::style::{Modifier, Style};
@@ -42,7 +39,6 @@ pub fn draw_box(frame: &mut Frame, area: Rect, app: &App) {
   );
 }
 
-/// Renders `draw` while respecting the current domain state and semantic theme. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn draw(frame: &mut Frame, area: Rect, app: &App) {
   // On a page with a top search the box shows the query, so the bottom line
   // only carries status messages.

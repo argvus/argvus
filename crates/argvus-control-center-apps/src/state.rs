@@ -1,4 +1,4 @@
-//! Implements persistent application state in crate `argvus control center apps`. This separation keeps external effects from contaminating models, routes, or rendering.
+//! Persistent application state of the Default applications page.
 
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -121,7 +121,6 @@ pub struct AppState {
 }
 
 impl AppState {
-  /// Constructs `new` with this module's expected initial state. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn new() -> Self {
     AppState {
       version: Some(STATE_VERSION),
@@ -129,7 +128,6 @@ impl AppState {
     }
   }
 
-  /// Executes the `field` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn field(&mut self, cat: Category) -> &mut Option<String> {
     macro_rules! field {
       ($c:expr, $name:ident) => {
@@ -152,7 +150,6 @@ impl AppState {
     unreachable!("category {} not covered", cat.key())
   }
 
-  /// Executes the `field_ref` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn field_ref(&self, cat: Category) -> Option<&String> {
     match cat {
       Category::Terminal => self.terminal.as_ref(),
@@ -368,7 +365,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `round_trip` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn round_trip() {
     let mut state = AppState::new();
     state.set(Category::Browser, "firefox");
@@ -384,7 +380,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `missing_file_yields_empty_state` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn missing_file_yields_empty_state() {
     let dir = scratch();
     let path = dir.path().join("missing.json");
@@ -394,7 +389,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `invalid_json_yields_empty_state` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn invalid_json_yields_empty_state() {
     let dir = scratch();
     let path = dir.path().join("invalid.json");
@@ -404,7 +398,6 @@ mod tests {
   }
 
   #[test]
-  /// Applies the `set_clears_on_empty` operation while preserving the persistence and local-update contract. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn set_clears_on_empty() {
     let mut state = AppState::new();
     state.set(Category::Browser, "firefox");
@@ -415,7 +408,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `explicit_only_lists_differences` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn explicit_only_lists_differences() {
     let mut state = AppState::new();
     state.set(Category::Browser, "chromium");
@@ -426,7 +418,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `env_config_home_is_respected` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn env_config_home_is_respected() {
     let p = PathBuf::from("/tmp/argvus-default-apps-test-config");
     unsafe {
@@ -439,7 +430,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `config_pointer_matches_category_key` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn config_pointer_matches_category_key() {
     for category in Category::ORDER {
       assert_eq!(
@@ -450,7 +440,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `config_default_matches_catalog_fallback` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn config_default_matches_catalog_fallback() {
     for category in Category::ORDER {
       let fallback = category.fallback();
@@ -517,7 +506,6 @@ mod tests {
     assert_eq!(state.get(Category::FileManager).as_deref(), Some("yazi"));
   }
 
-  /// Executes the `explicit_ignores_canonical_typed_values` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   #[test]
   fn explicit_ignores_canonical_typed_values() {
     let mut state = AppState::new();

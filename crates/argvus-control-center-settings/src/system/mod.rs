@@ -1,7 +1,4 @@
-//! Implements module declarations for the `system` subsystem in crate `argvus control center settings`. This separation keeps external effects from contaminating models, routes, or rendering.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
+//! Module declarations for the `system` subsystem of the Settings pages.
 pub mod command;
 pub mod date;
 pub mod fonts;

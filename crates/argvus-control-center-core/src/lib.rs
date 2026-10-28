@@ -1,4 +1,4 @@
-//! Root module of crate `argvus control center core`. It exposes public boundaries and composes internal responsibilities without duplicating domain rules.
+//! Shared building blocks of the ARGVUS Control Center pages: jobs, processes, privileges, navigation, search and configuration helpers.
 //!
 //! External tool dependencies remain in backend layers;
 //! the UI consumes normalized models and results.

@@ -1,7 +1,4 @@
-//! Implements isolated integration with system tools and APIs in crate `argvus control center boot`. This separation keeps external effects from contaminating models, routes, or rendering.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
+//! Isolated integration with system tools and APIs of the Boot page.
 use crate::model::*;
 use argvus_control_center_core::{
   capabilities::Capabilities,
@@ -17,7 +14,6 @@ use std::{
 use thiserror::Error;
 
 #[derive(Debug, Error)]
-/// Defines `BootError`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub enum BootError {
   #[error("boot information unavailable")]
   Unavailable,
@@ -29,20 +25,17 @@ pub enum BootError {
   Command(String),
 }
 
-/// Represents `BootBackend`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub struct BootBackend<R> {
   pub runner: R,
   pub capabilities: Capabilities,
 }
 impl<R: ProcessRunner> BootBackend<R> {
-  /// Constructs `new` with this module's expected initial state. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn new(runner: R, capabilities: Capabilities) -> Self {
     Self {
       runner,
       capabilities,
     }
   }
-  /// Executes the `collect` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn collect(&self) -> BootSnapshot {
     let firmware = if self.capabilities.is_uefi {
       "UEFI"
@@ -69,7 +62,6 @@ impl<R: ProcessRunner> BootBackend<R> {
   }
 }
 
-/// Executes the `uname` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn uname<R: ProcessRunner>(runner: &R) -> Option<String> {
   let o = runner
     .run(
@@ -86,14 +78,12 @@ fn uname<R: ProcessRunner>(runner: &R) -> Option<String> {
     })
     .filter(|v| !v.is_empty())
 }
-/// Retrieves data for `detect_esp` without mixing collection with TUI rendering. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn detect_esp() -> Option<String> {
   ["/boot", "/efi", "/boot/efi"]
     .iter()
     .find(|p| Path::new(p).join("EFI").is_dir())
     .map(|p| (*p).into())
 }
-/// Retrieves data for `detect_bootloader` without mixing collection with TUI rendering. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn detect_bootloader(cap: &Capabilities) -> (BootloaderKind, BootloaderInfo) {
   let mut info = BootloaderInfo::default();
   let systemd = Path::new("/boot/loader/loader.conf").is_file()
@@ -123,7 +113,6 @@ fn detect_bootloader(cap: &Capabilities) -> (BootloaderKind, BootloaderInfo) {
   }
   (BootloaderKind::Unknown, info)
 }
-/// Converts input data into `parse_systemd_boot` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn parse_systemd_boot(root: &Path) -> BootloaderInfo {
   let loader = root.join("loader/loader.conf");
   let mut info = BootloaderInfo::default();
@@ -162,7 +151,6 @@ pub fn parse_systemd_boot(root: &Path) -> BootloaderInfo {
   });
   info
 }
-/// Converts input data into `parse_entry` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn parse_entry(id: String, text: &str, default: Option<&str>) -> BootEntry {
   let mut e = BootEntry {
     id: id.clone(),
@@ -183,7 +171,6 @@ fn parse_entry(id: String, text: &str, default: Option<&str>) -> BootEntry {
   }
   e
 }
-/// Converts input data into `parse_grub_defaults` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn parse_grub_defaults(path: &Path) -> Option<BootloaderInfo> {
   let text = fs::read_to_string(path).ok()?;
   let mut values = BTreeMap::new();
@@ -203,7 +190,6 @@ pub fn parse_grub_defaults(path: &Path) -> Option<BootloaderInfo> {
     ..Default::default()
   })
 }
-/// Retrieves data for `detect_kernels` without mixing collection with TUI rendering. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn detect_kernels(current: &str, bootloader: &BootloaderInfo) -> Vec<KernelInfo> {
   let mut out = Vec::new();
   if let Ok(entries) = fs::read_dir("/usr/lib/modules") {
@@ -252,7 +238,6 @@ fn detect_kernels(current: &str, bootloader: &BootloaderInfo) -> Vec<KernelInfo>
   });
   out
 }
-/// Retrieves data for `read_initramfs` without mixing collection with TUI rendering. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn read_initramfs(cap: &Capabilities) -> InitramfsInfo {
   let mut i = InitramfsInfo {
     available: cap.has_mkinitcpio,
@@ -293,7 +278,6 @@ fn read_initramfs(cap: &Capabilities) -> InitramfsInfo {
   }
   i
 }
-/// Retrieves data for `read_plymouth` without mixing collection with TUI rendering. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn read_plymouth<R: ProcessRunner>(cap: &Capabilities, runner: &R) -> PlymouthInfo {
   let installed = cap.has_plymouth;
   let current = runner
@@ -347,7 +331,6 @@ fn default_theme_from(path: &str) -> Option<String> {
   None
 }
 
-/// Retrieves data for `detect_secure_boot` without mixing collection with TUI rendering. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn detect_secure_boot() -> Option<bool> {
   let entry = fs::read_dir("/sys/firmware/efi/efivars")
     .ok()?
@@ -363,7 +346,6 @@ fn detect_secure_boot() -> Option<bool> {
 mod tests {
   use super::*;
   #[test]
-  /// Retrieves data for `loader_preserves_unknown_and_parses_fields` without mixing collection with TUI rendering. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn loader_preserves_unknown_and_parses_fields() {
     let root = std::env::temp_dir().join(format!("argvus-boot-{}", std::process::id()));
     let _ = fs::create_dir_all(root.join("loader/entries"));
@@ -384,7 +366,6 @@ mod tests {
     let _ = fs::remove_dir_all(root);
   }
   #[test]
-  /// Executes the `grub_quotes_parse` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn grub_quotes_parse() {
     let p = std::env::temp_dir().join(format!("argvus-grub-{}", std::process::id()));
     fs::write(&p, "GRUB_DEFAULT=\"saved\"\nGRUB_TIMEOUT=7\n# x\n").unwrap();
@@ -395,7 +376,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `plymouth_fallback_reads_only_the_daemon_theme` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn plymouth_fallback_reads_only_the_daemon_theme() {
     let path = std::env::temp_dir().join(format!("argvus-plymouth-{}", std::process::id()));
     fs::write(
@@ -414,7 +394,6 @@ mod tests {
     assert_eq!(default_theme_from(absent.to_str().unwrap()), None);
   }
   #[test]
-  /// Executes the `systemd_entries_are_sorted_default_first` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn systemd_entries_are_sorted_default_first() {
     let root = std::env::temp_dir().join(format!("argvus-boot-sort-{}", std::process::id()));
     let _ = fs::create_dir_all(root.join("loader/entries"));

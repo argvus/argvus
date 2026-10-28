@@ -1,7 +1,4 @@
-//! Implements argument parsing and startup route selection in crate `argvus control center apps`. This separation keeps external effects from contaminating models, routes, or rendering.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
+//! Argument parsing and startup route selection of the Default applications page.
 use std::process::ExitCode;
 
 use argvus_control_center_core::i18n::label;
@@ -12,12 +9,9 @@ use crate::catalog::{Category, effective_values, find_app};
 use crate::detect;
 use crate::state::AppState;
 
-/// Defines the constant `PROG`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 const PROG: &str = "argvus-control-center";
-/// Defines the constant `CATEGORY_KEYS`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 const CATEGORY_KEYS: &str = "terminal, file_manager, text_editor, terminal_editor, browser, image_viewer, pdf_viewer, video_player, audio_player, archive, launcher";
 
-/// Executes the `run` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn run(args: &[String]) -> ExitCode {
   let Some(cmd) = args.first().map(String::as_str) else {
     usage(false);
@@ -53,7 +47,6 @@ pub fn run(args: &[String]) -> ExitCode {
   }
 }
 
-/// Executes the `bad_category` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn bad_category(key: &str) -> ExitCode {
   eprintln!(
     "{PROG}: {} '{key}' ({}: {CATEGORY_KEYS})",
@@ -63,7 +56,6 @@ fn bad_category(key: &str) -> ExitCode {
   ExitCode::from(2)
 }
 
-/// Executes the `cmd_list` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn cmd_list(args: &[String]) -> ExitCode {
   let desktops = detect::scan_desktop_files();
   let cats: Vec<Category> = match args.first() {
@@ -111,7 +103,6 @@ fn cmd_list(args: &[String]) -> ExitCode {
   ExitCode::SUCCESS
 }
 
-/// Executes the `cmd_get` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn cmd_get(args: &[String]) -> ExitCode {
   let state = AppState::load();
   match args.first() {
@@ -141,7 +132,6 @@ fn cmd_get(args: &[String]) -> ExitCode {
   }
 }
 
-/// Executes the `cmd_set` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn cmd_set(args: &[String]) -> ExitCode {
   if args.len() < 2 {
     eprintln!(
@@ -251,7 +241,6 @@ fn cmd_set(args: &[String]) -> ExitCode {
   }
 }
 
-/// Executes the `as_list` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn as_list(state: &AppState) -> Vec<(Category, Option<String>)> {
   Category::ORDER
     .iter()
@@ -260,7 +249,6 @@ fn as_list(state: &AppState) -> Vec<(Category, Option<String>)> {
     .collect()
 }
 
-/// Executes the `usage` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn usage(verbose: bool) {
   println!("{}", label("control_center.apps_usage"));
 

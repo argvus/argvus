@@ -1,7 +1,4 @@
 //! Reads the computer and motherboard identification exposed by DMI/SMBIOS.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
 use std::fs;
 
 use argvus_control_center_core::sanitize::terminal_text;

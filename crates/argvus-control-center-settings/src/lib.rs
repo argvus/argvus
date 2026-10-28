@@ -1,4 +1,4 @@
-//! Root module of crate `argvus control center settings`. It exposes public boundaries and composes internal responsibilities without duplicating domain rules.
+//! Settings pages of the ARGVUS Control Center (input, locale, fonts, administration and system).
 //!
 //! External tool dependencies remain in backend layers;
 //! the UI consumes normalized models and results.

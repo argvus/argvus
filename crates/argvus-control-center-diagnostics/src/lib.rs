@@ -1,4 +1,4 @@
-//! Root module of crate `argvus control center diagnostics`. It exposes public boundaries and composes internal responsibilities without duplicating domain rules.
+//! Diagnostics page of the ARGVUS Control Center (health checks of the desktop).
 //!
 //! External tool dependencies remain in backend layers;
 //! the UI consumes normalized models and results.

@@ -1,4 +1,4 @@
-//! Root module of crate `argvus about`. It exposes public boundaries and composes internal responsibilities without duplicating domain rules.
+//! About page of the ARGVUS Control Center (system, version and environment information).
 //!
 //! External tool dependencies remain in backend layers;
 //! the UI consumes normalized models and results.

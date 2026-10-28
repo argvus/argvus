@@ -1,17 +1,11 @@
-//! Implements safe fallback rendering in crate `argvus about`. This separation keeps external effects from contaminating models, routes, or rendering.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
+//! Safe fallback rendering of the About page.
 use image::imageops;
 use ratatui::style::{Color, Style};
 use ratatui::text::{Line, Span};
 
-/// Defines the constant `HALF_BLOCK`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 const HALF_BLOCK: char = '\u{2580}'; // ▲ upper half block ▀
-/// Defines the constant `ASCII_RAMP`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 const ASCII_RAMP: [char; 10] = [' ', '.', ':', '-', '=', '+', '*', '#', '%', '@'];
 
-/// Executes the `half_blocks` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn half_blocks(
   source: &image::RgbaImage,
   cols: usize,
@@ -45,7 +39,6 @@ pub fn half_blocks(
   lines
 }
 
-/// Executes the `ascii` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn ascii(
   source: &image::RgbaImage,
   cols: usize,
@@ -76,7 +69,6 @@ pub fn ascii(
   lines
 }
 
-/// Executes the `blend` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn blend(pixel: [u8; 4], background: Color) -> Color {
   let (br, bg, bb) = rgb_tuple(background);
   let alpha = pixel[3] as f32 / 255.0;
@@ -91,12 +83,10 @@ fn blend(pixel: [u8; 4], background: Color) -> Color {
   Color::Rgb(mix(pixel[0], br), mix(pixel[1], bg), mix(pixel[2], bb))
 }
 
-/// Executes the `style` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn style(bg: Color) -> Style {
   Style::new().bg(bg)
 }
 
-/// Executes the `rgb_tuple` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn rgb_tuple(color: Color) -> (u8, u8, u8) {
   match color {
     Color::Rgb(r, g, b) => (r, g, b),
@@ -126,7 +116,6 @@ mod tests {
   use super::*;
   use image::Rgba;
 
-  /// Executes the `solid_square` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn solid_square(size: u32, color: [u8; 4]) -> image::RgbaImage {
     let mut image = image::RgbaImage::new(size, size);
     for x in 0..size {
@@ -138,7 +127,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `half_blocks_emit_full_lines` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn half_blocks_emit_full_lines() {
     let logo = solid_square(4, [0x35, 0x90, 0xbd, 255]);
     let lines = half_blocks(&logo, 4, 3, Color::Rgb(0x11, 0x13, 0x16));
@@ -147,7 +135,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `ascii_emits_ramp_for_opaque_logo` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn ascii_emits_ramp_for_opaque_logo() {
     let logo = solid_square(4, [0x35, 0x90, 0xbd, 255]);
     let lines = ascii(&logo, 4, 3, Color::Rgb(0x35, 0x90, 0xbd));
@@ -156,7 +143,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `empty_input_yields_no_lines` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn empty_input_yields_no_lines() {
     let logo = solid_square(2, [0, 0, 0, 0]);
     assert!(

@@ -1,7 +1,4 @@
-//! Implements module declarations for the `pages` subsystem in crate `argvus about`. This separation keeps external effects from contaminating models, routes, or rendering.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
+//! Module declarations for the `pages` subsystem of the About page.
 use ratatui::style::{Modifier, Style};
 use ratatui::text::{Line, Span};
 
@@ -16,14 +13,10 @@ pub mod credits;
 pub mod donate;
 pub mod system;
 
-/// Defines the constant `DONATE_URL`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub const DONATE_URL: &str = "https://argvus.github.io/#support";
-/// Defines the constant `ARGVUS_URL`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub const ARGVUS_URL: &str = "https://argvus.github.io";
-/// Defines the constant `WILLIAM_CANIN_URL`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub const WILLIAM_CANIN_URL: &str = "https://williamcanin.github.io";
 
-/// Executes the `doc_for` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn doc_for(app: &App, width: usize, selected: usize) -> Doc<'static> {
   match app.active_tab {
     Tab::System => system::doc(app, width, selected),
@@ -35,27 +28,23 @@ pub fn doc_for(app: &App, width: usize, selected: usize) -> Doc<'static> {
 }
 
 #[derive(Debug, Clone)]
-/// Represents `Action`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub struct Action {
   pub line: usize,
   pub url: String,
 }
 
 #[derive(Debug, Clone, Default)]
-/// Represents `Doc`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub struct Doc<'a> {
   pub lines: Vec<Line<'a>>,
   pub actions: Vec<Action>,
 }
 
 impl Doc<'_> {
-  /// Executes the `height` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn height(&self) -> usize {
     self.lines.len()
   }
 }
 
-/// Defines `Row`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub enum Row {
   Spacer,
   Section(String),
@@ -68,7 +57,6 @@ pub enum Row {
   Link { label: String, url: String },
 }
 
-/// Executes the `simple_doc` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn simple_doc(rows: &[Row], theme: &Theme, width: usize, selected: usize) -> Doc<'static> {
   let width = width.max(10);
   let mut doc = Doc::default();
@@ -128,7 +116,6 @@ pub fn simple_doc(rows: &[Row], theme: &Theme, width: usize, selected: usize) ->
   doc
 }
 
-/// Executes the `append_key_value` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn append_key_value(doc: &mut Doc, key: &str, value: &str, theme: &Theme, width: usize) {
   let key_span = Span::styled(key.to_string(), Style::new().fg(theme.muted));
   let separator = Span::raw("  ");
@@ -175,7 +162,6 @@ fn append_key_value(doc: &mut Doc, key: &str, value: &str, theme: &Theme, width:
   }
 }
 
-/// Executes the `continuation_line` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn continuation_line(text: &str, indent: usize, theme: &Theme) -> Line<'static> {
   Line::from(vec![
     Span::styled(" ".repeat(indent), Style::new().fg(theme.muted)),
@@ -183,7 +169,6 @@ fn continuation_line(text: &str, indent: usize, theme: &Theme) -> Line<'static> 
   ])
 }
 
-/// Executes the `divider_line` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn divider_line(label: Option<&str>, theme: &Theme, width: usize) -> Line<'static> {
   let width = width.max(1);
   let Some(label) = label.filter(|label| !label.trim().is_empty()) else {
@@ -212,7 +197,6 @@ fn divider_line(label: Option<&str>, theme: &Theme, width: usize) -> Line<'stati
   ])
 }
 
-/// Executes the `append_module` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn append_module(doc: &mut Doc, name: &str, description: &str, theme: &Theme, width: usize) {
   doc.lines.push(Line::styled(
     format!("▪ {}", name),
@@ -224,7 +208,6 @@ fn append_module(doc: &mut Doc, name: &str, description: &str, theme: &Theme, wi
   }
 }
 
-/// Executes the `line_for_link` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn line_for_link(
   label: &str,
   _url: &str,
@@ -247,7 +230,6 @@ fn line_for_link(
   Line::styled(text, style)
 }
 
-/// Executes the `wrap_paragraphs` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn wrap_paragraphs(text: &str, width: usize) -> Vec<String> {
   let width = width.max(1);
   text
@@ -262,7 +244,6 @@ fn wrap_paragraphs(text: &str, width: usize) -> Vec<String> {
     .collect()
 }
 
-/// Executes the `wrap_words` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn wrap_words(paragraph: &str, width: usize) -> Vec<String> {
   let mut lines = Vec::new();
   let mut current = String::new();
@@ -288,7 +269,6 @@ mod tests {
   use super::*;
 
   #[test]
-  /// Executes the `wraps_long_paragraphs` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn wraps_long_paragraphs() {
     let lines = wrap_paragraphs("aaa bbb ccc ddd", 7);
     assert!(lines.iter().all(|line| line.chars().count() <= 7));
@@ -296,7 +276,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `preserves_paragraph_breaks` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn preserves_paragraph_breaks() {
     let lines = wrap_paragraphs("one\n\ntwo", 80);
     assert_eq!(
@@ -306,7 +285,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `link_rows_become_actions` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn link_rows_become_actions() {
     let rows = vec![
       Row::Spacer,
@@ -328,7 +306,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `dividers_fit_the_full_width_and_keep_labels` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn dividers_fit_the_full_width_and_keep_labels() {
     let rows = vec![Row::Divider {
       label: Some("Núcleo".into()),
@@ -341,7 +318,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `module_rows_bullet_and_indent_description` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn module_rows_bullet_and_indent_description() {
     let rows = vec![Row::Module {
       name: "argvus-session".into(),
@@ -354,7 +330,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `lead_is_emphasized_and_wraps_like_paragraphs` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn lead_is_emphasized_and_wraps_like_paragraphs() {
     let rows = vec![Row::Lead("aaa bbb ccc ddd".into())];
     let doc = simple_doc(&rows, &Theme::load(), 7, 0);

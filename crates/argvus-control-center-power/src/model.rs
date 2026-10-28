@@ -1,7 +1,4 @@
-//! Implements domain state and models consumed by the UI in crate `argvus control center power`. This separation keeps external effects from contaminating models, routes, or rendering.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
+//! Domain state and models consumed by the UI of the Power page.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum PowerPage {
   Home,
@@ -25,7 +22,6 @@ pub enum PowerBehavior {
 }
 
 impl PowerBehavior {
-  /// Defines the constant `ALL`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
   pub const ALL: [Self; 9] = [
     Self::Ignore,
     Self::Suspend,
@@ -38,7 +34,6 @@ impl PowerBehavior {
     Self::HandledBySystem,
   ];
 
-  /// Converts input data into `parse` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn parse(value: &str) -> Option<Self> {
     Some(match value.trim().to_ascii_lowercase().as_str() {
       "ignore" => Self::Ignore,
@@ -55,7 +50,6 @@ impl PowerBehavior {
     })
   }
 
-  /// Executes the `value` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn value(self) -> &'static str {
     match self {
       Self::Ignore => "ignore",
@@ -73,7 +67,6 @@ impl PowerBehavior {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-/// Defines `PowerButtonBehavior`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub enum PowerButtonBehavior {
   Ignore,
   Poweroff,
@@ -84,7 +77,6 @@ pub enum PowerButtonBehavior {
 }
 
 impl PowerButtonBehavior {
-  /// Defines the constant `ALL`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
   pub const ALL: [Self; 6] = [
     Self::Poweroff,
     Self::Suspend,
@@ -94,7 +86,6 @@ impl PowerButtonBehavior {
     Self::Halt,
   ];
 
-  /// Converts input data into `parse` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn parse(value: &str) -> Option<Self> {
     Some(match value.trim().to_ascii_lowercase().as_str() {
       "ignore" => Self::Ignore,
@@ -107,7 +98,6 @@ impl PowerButtonBehavior {
     })
   }
 
-  /// Executes the `value` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn value(self) -> &'static str {
     match self {
       Self::Ignore => "ignore",
@@ -121,19 +111,16 @@ impl PowerButtonBehavior {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-/// Defines `LidContext`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub enum LidContext {
   Battery,
   Ac,
 }
 
 impl LidContext {
-  /// Defines the constant `ALL`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
   pub const ALL: [Self; 2] = [Self::Battery, Self::Ac];
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-/// Represents `PowerState`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub struct PowerState {
   /// HandleLidSwitch (battery) and HandleLidSwitchExternalPower (AC).
   pub lid: [PowerBehavior; 2],
@@ -153,7 +140,6 @@ pub struct PowerState {
 }
 
 impl PowerState {
-  /// Executes the `lid_for` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn lid_for(&self, context: LidContext) -> PowerBehavior {
     match context {
       LidContext::Battery => self.lid[0],
@@ -167,7 +153,6 @@ mod tests {
   use super::*;
 
   #[test]
-  /// Executes the `behaviors_parse_and_serialize_like_logind` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn behaviors_parse_and_serialize_like_logind() {
     for behavior in PowerBehavior::ALL {
       assert_eq!(PowerBehavior::parse(behavior.value()), Some(behavior));
@@ -181,7 +166,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `state_reads_per_context_lid` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn state_reads_per_context_lid() {
     let state = PowerState {
       lid: [PowerBehavior::Lock, PowerBehavior::Ignore],

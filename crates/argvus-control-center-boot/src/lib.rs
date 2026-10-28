@@ -1,4 +1,4 @@
-//! Root module of crate `argvus control center boot`. It exposes public boundaries and composes internal responsibilities without duplicating domain rules.
+//! Boot page of the ARGVUS Control Center (GRUB and systemd-boot settings).
 //!
 //! External tool dependencies remain in backend layers;
 //! the UI consumes normalized models and results.

@@ -1,7 +1,4 @@
-//! Implements tab navigation in crate `argvus about`. This separation keeps external effects from contaminating models, routes, or rendering.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
+//! Tab navigation of the About page.
 use ratatui::Frame;
 use ratatui::layout::{Margin, Rect};
 use ratatui::style::{Modifier, Style, Stylize};
@@ -10,7 +7,6 @@ use ratatui::widgets::{Block, Paragraph, Widget};
 
 use crate::app::{App, Tab};
 
-/// Renders `draw` while respecting the current domain state and semantic theme. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn draw(frame: &mut Frame, area: Rect, app: &App) {
   Block::new()
     .bg(app.theme.surface)

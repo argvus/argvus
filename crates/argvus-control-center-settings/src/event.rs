@@ -1,7 +1,4 @@
-//! Implements input event normalization and dispatch in crate `argvus control center settings`. This separation keeps external effects from contaminating models, routes, or rendering.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
+//! Input event normalization and dispatch of the Settings pages.
 use argvus_tui::confirm::ConfirmOutcome;
 use crossterm::event::{Event, KeyCode, KeyEvent, KeyEventKind, KeyModifiers};
 
@@ -9,7 +6,6 @@ use crate::administration::is_user_form;
 use crate::app::App;
 use crate::navigation::Page;
 
-/// Processes `handle` in this module's event flow. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn handle(app: &mut App, event: Event) {
   match event {
     Event::Resize(width, height) => app.resize(width, height),
@@ -18,7 +14,6 @@ pub fn handle(app: &mut App, event: Event) {
   }
 }
 
-/// Processes `handle_key` in this module's event flow. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn handle_key(app: &mut App, key: KeyEvent) {
   if app.task_open {
     match key.code {
@@ -258,7 +253,6 @@ mod tests {
   use super::*;
 
   #[test]
-  /// Executes the `resize_is_forwarded` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn resize_is_forwarded() {
     let mut app = App::new(Page::Main);
     handle(&mut app, Event::Resize(100, 30));

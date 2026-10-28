@@ -1,7 +1,4 @@
 //! Reads RAM and swap totals and usage from `/proc/meminfo`.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 /// Memory and swap sizes in KiB, as `/proc/meminfo` reports them.

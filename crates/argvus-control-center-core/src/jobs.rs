@@ -1,12 +1,9 @@
-//! Implements asynchronous work and cooperative cancellation in crate `argvus control center core`. This separation keeps external effects from contaminating models, routes, or rendering.
+//! Asynchronous work and cooperative cancellation.
 //!
 //! Jobs are deliberately simple: one thread executes the operation, one channel
 //! delivers exactly one result, and the token enables cooperative cancellation.
 //! This model keeps slow probes out of the render loop; the
 //! screen only reads the state available through `try_state`.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
 use std::sync::{
   Arc,
   atomic::{AtomicBool, Ordering},
@@ -14,11 +11,9 @@ use std::sync::{
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-/// Represents `JobId`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub struct JobId(u64);
 
 #[derive(Debug, Clone)]
-/// Represents `CancellationToken`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub struct CancellationToken(Arc<AtomicBool>);
 
 thread_local! {
@@ -35,14 +30,12 @@ pub(crate) fn current_cancelled() -> bool {
 }
 
 impl CancellationToken {
-  /// Checks the condition represented by `is_cancelled` using only the state available to the module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn is_cancelled(&self) -> bool {
     self.0.load(Ordering::Acquire)
   }
 }
 
 #[derive(Debug)]
-/// Defines `JobState`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub enum JobState<T> {
   /// The producer may still publish the result.
   Running,
@@ -50,7 +43,6 @@ pub enum JobState<T> {
   Finished(Result<T, String>),
 }
 
-/// Represents `JobHandle`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub struct JobHandle<T> {
   /// Monotonic identifier used to correlate refreshes and results.
   id: JobId,
@@ -61,15 +53,12 @@ pub struct JobHandle<T> {
 }
 
 impl<T> JobHandle<T> {
-  /// Executes the const function documented in this module. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
   pub const fn id(&self) -> JobId {
     self.id
   }
-  /// Executes the `cancel` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn cancel(&self) {
     self.cancel.store(true, Ordering::Release);
   }
-  /// Executes the `try_state` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn try_state(&self) -> JobState<T> {
     match self.receiver.try_recv() {
       Ok(result) => JobState::Finished(result),
@@ -82,13 +71,11 @@ impl<T> JobHandle<T> {
 }
 
 #[derive(Debug, Default)]
-/// Represents `JobManager`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub struct JobManager {
   next_id: std::sync::atomic::AtomicU64,
 }
 
 impl JobManager {
-  /// Executes the `spawn` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn spawn<T, F>(&self, task: F) -> JobHandle<T>
   where
     T: Send + 'static,
@@ -117,7 +104,6 @@ mod tests {
   use std::time::Duration;
 
   #[test]
-  /// Executes the `job_runs_off_thread_and_can_be_cancelled` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn job_runs_off_thread_and_can_be_cancelled() {
     let manager = JobManager::default();
     let handle = manager.spawn(|token| {

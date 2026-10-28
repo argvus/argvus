@@ -1,11 +1,7 @@
-//! Implements domain state and models consumed by the UI in crate `argvus control center diagnostics`. This separation keeps external effects from contaminating models, routes, or rendering.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
+//! Domain state and models consumed by the UI of the Diagnostics page.
 use argvus_control_center_storage::StorageSnapshot;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-/// Defines `DiagnosticPage`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub enum DiagnosticPage {
   Home,
   Summary,
@@ -22,7 +18,6 @@ pub enum DiagnosticPage {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Default)]
-/// Defines `Severity`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub enum Severity {
   Error,
   Warning,
@@ -33,7 +28,6 @@ pub enum Severity {
 }
 
 #[derive(Debug, Clone, Default)]
-/// Represents `DiagnosticCheck`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub struct DiagnosticCheck {
   pub id: String,
   pub category: String,
@@ -46,7 +40,6 @@ pub struct DiagnosticCheck {
 }
 
 #[derive(Debug, Clone, Default)]
-/// Represents `DiagnosticFacts`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub struct DiagnosticFacts {
   pub storage: StorageSnapshot,
   pub package_updates: Option<usize>,

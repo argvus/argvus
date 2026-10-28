@@ -1,4 +1,4 @@
-//! Root module of crate `argvus control center session`. It exposes public boundaries and composes internal responsibilities without duplicating domain rules.
+//! Session page of the ARGVUS Control Center (autostart, idle and the session journal).
 //!
 //! External tool dependencies remain in backend layers;
 //! the UI consumes normalized models and results.

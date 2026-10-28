@@ -1,7 +1,4 @@
-//! Implements module declarations for the `system` subsystem in crate `argvus about`. This separation keeps external effects from contaminating models, routes, or rendering.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
+//! Module declarations for the `system` subsystem of the About page.
 use std::collections::HashMap;
 use std::fs;
 
@@ -193,7 +190,6 @@ fn gtk_version() -> Option<String> {
     .find_map(|name| pc_file_version(name))
 }
 
-/// Executes the `pc_file_version` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn pc_file_version(name: &str) -> Option<String> {
   for dir in pc_dirs() {
     let path = dir.join(format!("{name}.pc"));
@@ -206,7 +202,6 @@ pub fn pc_file_version(name: &str) -> Option<String> {
   None
 }
 
-/// Converts input data into `parse_pc_version` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn parse_pc_version(contents: &str) -> Option<String> {
   contents.lines().find_map(|line| {
     let (key, value) = line.split_once(':')?;
@@ -214,7 +209,6 @@ fn parse_pc_version(contents: &str) -> Option<String> {
   })
 }
 
-/// Executes the `pc_dirs` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn pc_dirs() -> Vec<std::path::PathBuf> {
   let mut dirs = Vec::new();
   if let Some(path) = std::env::var_os("PKG_CONFIG_PATH") {
@@ -232,7 +226,6 @@ fn pc_dirs() -> Vec<std::path::PathBuf> {
   dirs
 }
 
-/// Executes the `hostname` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn hostname() -> Option<String> {
   read_to_string("/etc/hostname")
     .map(|value| value.trim().to_string())
@@ -245,7 +238,6 @@ fn non_empty(value: String) -> Option<String> {
   (!value.is_empty()).then_some(value)
 }
 
-/// Retrieves data for `read_to_string` without mixing collection with TUI rendering. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn read_to_string(path: &str) -> Option<String> {
   fs::read_to_string(path).ok()
 }
@@ -277,7 +269,6 @@ mod tests {
   use super::*;
 
   #[test]
-  /// Converts input data into `parses_pkgconfig_version` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn parses_pkgconfig_version() {
     assert_eq!(
       parse_pc_version("prefix=/usr\ndescription=GTK\nVersion: 4.22.4\n"),

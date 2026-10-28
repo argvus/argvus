@@ -1,14 +1,10 @@
-//! Implements keyboard-binding defaults and overrides in crate `argvus control center settings`. This separation keeps external effects from contaminating models, routes, or rendering.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
+//! Keyboard-binding defaults and overrides of the Settings pages.
 use serde::{Deserialize, Serialize};
 use std::{fs, path::PathBuf};
 
 use argvus_i18n::Lang;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-/// Represents `Binding`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub struct Binding {
   pub id: String,
   pub category: String,
@@ -26,29 +22,24 @@ pub struct Binding {
   #[serde(default)]
   pub enabled: bool,
 }
-/// Executes the `default_true` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn default_true() -> bool {
   true
 }
 #[derive(Debug, Clone, Serialize, Deserialize)]
-/// Represents `Manifest`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 struct Manifest {
   version: u32,
   bindings: Vec<Binding>,
 }
-/// Executes the `manifest_path` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn manifest_path() -> PathBuf {
   std::env::var_os("ARGVUS_SYSTEM_CONFIG")
     .map(PathBuf::from)
     .unwrap_or_else(|| PathBuf::from("/usr/share/argvus"))
     .join("hyprland/keybindings.json")
 }
-/// Executes the `generated_cheatsheet_path` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn generated_cheatsheet_path() -> PathBuf {
   crate::config::paths::argvus_data_home().join("generated/hypr/keybindings.txt")
 }
 
-/// Executes the `cheatsheet_description` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn cheatsheet_description(lang: Lang, binding: &Binding) -> Option<String> {
   let portuguese = lang.locale().starts_with("pt");
   if let Some(number) = binding.id.strip_prefix("workspace.switch.") {
@@ -227,7 +218,6 @@ pub fn cheatsheet_description(lang: Lang, binding: &Binding) -> Option<String> {
     description.0.to_string()
   })
 }
-/// Retrieves data for `load` without mixing collection with TUI rendering. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn load() -> Vec<Binding> {
   let Ok(raw) = fs::read_to_string(manifest_path()) else {
     return Vec::new();
@@ -305,7 +295,6 @@ fn persist_canonical_shortcut(id: &str, shortcut: Option<&str>) -> Result<(), St
 fn project_canonical_config() -> Result<(), String> {
   argvus_control_center_core::config::reload_argvus_config_service()
 }
-/// Executes the `normalize_keys` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn normalize_keys(value: &str) -> Result<String, String> {
   let mut parts: Vec<String> = value
     .split('+')
@@ -384,7 +373,6 @@ pub fn normalize_keys(value: &str) -> Result<String, String> {
   })
 }
 
-/// Executes the `display_key` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn display_key(key: &str) -> String {
   match key {
     "slash" => "/".into(),
@@ -418,11 +406,9 @@ pub fn display_key(key: &str) -> String {
     other => other.into(),
   }
 }
-/// Executes the `conflicts` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn conflicts(bindings: &[Binding], id: &str, keys: &str) -> Vec<String> {
   conflicts_in_context(bindings, id, keys, "", "")
 }
-/// Executes the `conflicts_in_context` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn conflicts_in_context(
   bindings: &[Binding],
   id: &str,
@@ -445,7 +431,6 @@ pub fn conflicts_in_context(
     .map(|b| b.id.clone())
     .collect()
 }
-/// Applies the `save_override` operation while preserving the persistence and local-update contract. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn save_override(
   id: &str,
   keys: Option<String>,
@@ -465,7 +450,6 @@ pub fn save_override(
   persist_canonical_shortcut(id, shortcut)?;
   project_canonical_config()
 }
-/// Executes the `restore_all` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn restore_all(bindings: &[Binding]) -> Result<(), String> {
   for binding in defaults()
     .into_iter()
@@ -476,7 +460,6 @@ pub fn restore_all(bindings: &[Binding]) -> Result<(), String> {
   project_canonical_config()?;
   generate(bindings)
 }
-/// Executes the `restore` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn restore(id: &str, bindings: &[Binding]) -> Result<(), String> {
   let default = defaults()
     .into_iter()
@@ -486,7 +469,6 @@ pub fn restore(id: &str, bindings: &[Binding]) -> Result<(), String> {
   project_canonical_config()?;
   generate(bindings)
 }
-/// Executes the `generate` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn generate(bindings: &[Binding]) -> Result<(), String> {
   let mut cheatsheet =
     String::from("ARGVUS effective Hyprland shortcuts\n===================================\n\n");
@@ -516,7 +498,6 @@ pub fn generate(bindings: &[Binding]) -> Result<(), String> {
   fs::write(&cheat_tmp, cheatsheet).map_err(|e| e.to_string())?;
   fs::rename(cheat_tmp, cheat_path).map_err(|e| e.to_string())
 }
-/// Executes the `display_keys` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn display_keys(keys: &str) -> String {
   let mut modifiers = Vec::new();
   let mut key = "";
@@ -547,7 +528,6 @@ pub fn display_keys(keys: &str) -> String {
   }
   output.join(" + ")
 }
-/// Executes the `defaults` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn defaults() -> Vec<Binding> {
   let Ok(raw) = fs::read_to_string(manifest_path()) else {
     return Vec::new();
@@ -560,7 +540,6 @@ fn defaults() -> Vec<Binding> {
 mod tests {
   use super::*;
   #[test]
-  /// Executes the `canonicalizes_modifiers` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn canonicalizes_modifiers() {
     assert_eq!(
       normalize_keys("shift + super + q").unwrap(),
@@ -568,17 +547,14 @@ mod tests {
     );
   }
   #[test]
-  /// Executes the `rejects_empty` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn rejects_empty() {
     assert!(normalize_keys("CTRL +").is_err());
   }
   #[test]
-  /// Executes the `deduplicates_modifiers` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn deduplicates_modifiers() {
     assert_eq!(normalize_keys("SUPER + super + q").unwrap(), "SUPER + Q");
   }
   #[test]
-  /// Executes the `canonicalizes_symbols_and_special_keys` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn canonicalizes_symbols_and_special_keys() {
     for (raw, expected) in [
       ("/", "slash"),
@@ -602,7 +578,6 @@ mod tests {
     }
   }
   #[test]
-  /// Executes the `display_keys_hides_internal_keysyms` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn display_keys_hides_internal_keysyms() {
     assert_eq!(display_keys("SUPER + SHIFT + slash"), "SUPER + Shift + /");
     assert_eq!(

@@ -1,11 +1,7 @@
-//! Implements `capabilities` responsibilities in crate `argvus control center core`. This separation keeps external effects from contaminating models, routes, or rendering.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
+//! External tools installed on the system, so pages only offer the actions they can run.
 use std::path::{Path, PathBuf};
 
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
-/// Represents `Capabilities`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub struct Capabilities {
   pub has_lspci: bool,
   pub has_glxinfo: bool,
@@ -61,7 +57,6 @@ pub struct Capabilities {
 }
 
 impl Capabilities {
-  /// Retrieves data for `detect` without mixing collection with TUI rendering. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn detect() -> Self {
     Self {
       has_lspci: executable("lspci"),
@@ -117,7 +112,6 @@ impl Capabilities {
   }
 }
 
-/// Executes the `virtual_machine` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn virtual_machine() -> bool {
   [
     "/sys/class/dmi/id/product_name",
@@ -133,7 +127,6 @@ fn virtual_machine() -> bool {
   })
 }
 
-/// Executes the `executable` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn executable(name: &str) -> bool {
   resolve_executable(name).is_some()
 }
@@ -165,12 +158,10 @@ const STANDARD_BIN_DIRS: &[&str] = &[
   "/sbin",
 ];
 
-/// Executes the `path_exists` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn path_exists(path: &str) -> bool {
   Path::new(path).exists()
 }
 
-/// Executes the `battery_present` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn battery_present() -> bool {
   std::fs::read_dir("/sys/class/power_supply")
     .ok()
@@ -180,7 +171,6 @@ fn battery_present() -> bool {
     .any(|entry| entry.file_name().to_string_lossy().starts_with("BAT"))
 }
 
-/// Executes the `bluetooth_adapter_present` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn bluetooth_adapter_present() -> bool {
   std::fs::read_dir("/sys/class/bluetooth")
     .ok()
@@ -198,7 +188,6 @@ mod tests {
   use super::*;
 
   #[test]
-  /// Executes the `default_capabilities_are_safe_and_false` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn default_capabilities_are_safe_and_false() {
     let capabilities = Capabilities::default();
     assert!(!capabilities.has_battery);

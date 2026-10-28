@@ -6,10 +6,9 @@ use argvus_control_center_apps::catalog::Category;
 use argvus_tui::icons;
 use argvus_tui::menu::{Emphasis, Row, draft_actions};
 
-use super::{
-  App, keybinding_category, keybinding_label, keybinding_section, non_empty, search_matches,
-  setting_value_label,
-};
+use super::App;
+use super::keybinding_capture::{keybinding_category, keybinding_label, keybinding_section};
+use super::labels::{non_empty, search_matches, setting_value_label};
 use crate::config::fonts::{FontTarget, SettingKind};
 use crate::i18n::{Lang, na, tr};
 use crate::item::{GpgSection, Item, RatbagRow};
@@ -76,379 +75,25 @@ impl App {
       return rows;
     }
     match page {
-      Page::Main => vec![
-        Row::submenu(Item::DefaultApps, self.label("control_center.default_apps"))
-          .icon(icons::APPS),
-        Row::submenu(Item::Fonts, self.label("control_center.fonts")).icon(icons::FONTS),
-        Row::submenu(
-          Item::LocaleRegion,
-          self.label("control_center.locale_region"),
-        )
-        .icon(icons::EARTH),
-        Row::submenu(Item::System, self.label("control_center.system")).icon(icons::SETTINGS),
-      ],
-      Page::DefaultApps => {
-        let mut rows: Vec<Row<Item>> = Category::ORDER
-          .into_iter()
-          .filter_map(|category| {
-            let label = super::category_label(self.lang, category);
-            search_matches(&self.search, &[label]).then(|| {
-              Row::submenu(Item::Category(category), label)
-                .icon(super::category_icon(category))
-                .detail(
-                  self.default_detail(self.apps.current(category), self.apps.is_default(category)),
-                )
-            })
-          })
-          .collect();
-        if rows.is_empty() {
-          rows.push(self.empty_list_row(page));
-        }
-        rows
-      }
-      Page::AppSelector(category) => {
-        let current = self.apps.current(category);
-        let mut rows: Vec<Row<Item>> = self
-          .apps
-          .installed(category)
-          .iter()
-          .enumerate()
-          .filter(|(_, app)| search_matches(&self.search, &[&app.display, &app.binary]))
-          .map(|(index, app)| {
-            Row::choice(Item::App(index), app.display.clone(), app.binary == current)
-              .detail(app.binary.clone())
-          })
-          .collect();
-        if rows.is_empty() {
-          rows.push(self.empty_list_row(page));
-        }
-        self.reset_defaults_zone(&mut rows);
-        rows
-      }
-      Page::Fonts => {
-        let mut rows = vec![Row::section(self.label("control_center.fonts"))];
-        rows.extend(FontTarget::ALL.into_iter().map(|target| {
-          let font = self.fonts.get(target);
-          Row::submenu(
-            Item::FontTarget(target),
-            super::font_target_label(self.lang, target),
-          )
-          .icon(super::font_target_icon(target))
-          .detail(format!("{} · {}", font.display_name(), font.size))
-        }));
-        rows.push(Row::section(self.label("control_center.section_rendering")));
-        rows.extend(SettingKind::ALL.into_iter().map(|setting| {
-          Row::submenu(
-            Item::FontSetting(setting),
-            super::setting_label(self.lang, setting),
-          )
-          .icon(super::setting_icon(setting))
-          .detail(setting_value_label(
-            self.lang,
-            &self.fonts.setting_value(setting),
-          ))
-        }));
-        self.reset_defaults_zone(&mut rows);
-        rows
-      }
-      Page::FontSelector(target) => {
-        let current = self.fonts.get(target);
-        let mut rows = vec![
-          Row::value(
-            Item::FontSize,
-            self.label("control_center.font_size"),
-            self.pending_size.to_string(),
-            Some(1),
-          )
-          .icon(icons::FONT_SIZE),
-          Row::separator(),
-        ];
-        let fonts: Vec<Row<Item>> = self
-          .system_fonts
-          .iter()
-          .enumerate()
-          .filter(|(_, font)| search_matches(&self.search, &[&font.family, &font.style]))
-          .map(|(index, font)| {
-            Row::choice(
-              Item::Font(index),
-              font.display_name(),
-              font.family == current.family && font.style == current.style,
-            )
-          })
-          .collect();
-        if fonts.is_empty() {
-          rows.push(self.empty_list_row(page));
-        }
-        rows.extend(fonts);
-        self.reset_defaults_zone(&mut rows);
-        rows
-      }
-      Page::SettingSelector(setting) => {
-        let current = self.fonts.setting_value(setting);
-        let mut rows: Vec<Row<Item>> = super::setting_values(setting)
-          .iter()
-          .enumerate()
-          .map(|(index, value)| {
-            Row::choice(
-              Item::SettingOption(index),
-              setting_value_label(self.lang, value),
-              *value == current,
-            )
-            .detail(*value)
-          })
-          .collect();
-        self.reset_defaults_zone(&mut rows);
-        rows
-      }
-      Page::LocaleRegion => vec![
-        Row::submenu(Item::TimeZone, self.label("control_center.time_zone"))
-          .icon(icons::CLOCK)
-          .detail(non_empty(&self.datetime.time_zone)),
-        Row::submenu(Item::DateTime, self.label("control_center.date_time"))
-          .icon(icons::CALENDAR)
-          .detail(non_empty(&self.datetime.local_time)),
-        Row::submenu(
-          Item::RegionalLocale,
-          self.label("control_center.regional_locale"),
-        )
-        .icon(icons::EARTH)
-        .detail(locale::current_lang()),
-        Row::submenu(
-          Item::SystemLocales,
-          self.label("control_center.system_locales"),
-        )
-        .icon(icons::TRANSLATE)
-        .detail(format!(
-          "{} / {}",
-          self.selected_locales.len(),
-          self.locale_gen_entries.len()
-        )),
-        Row::submenu(Item::Keyboard, self.label("control_center.keyboard"))
-          .icon(icons::KEYBOARD)
-          .detail(format!(
-            "{}  ·  {}",
-            non_empty(&self.keyboard_info.x11_layout),
-            non_empty(&self.keyboard_info.x11_variant)
-          )),
-      ],
-      Page::TimeZone => {
-        let mut rows: Vec<Row<Item>> = self
-          .timezones
-          .iter()
-          .enumerate()
-          .filter(|(_, zone)| search_matches(&self.search, &[zone]))
-          .map(|(index, zone)| {
-            // `●` marks the draft; the system zone changes only through `Apply`.
-            Row::choice(
-              Item::Zone(index),
-              zone.clone(),
-              *zone == self.timezone_draft,
-            )
-          })
-          .collect();
-        if rows.is_empty() {
-          rows.push(self.empty_list_row(page));
-        }
-        rows
-      }
-      Page::DateTime => {
-        let ntp = self.datetime.ntp.unwrap_or(false);
-        vec![
-          Row::value(
-            Item::LocalDateTime,
-            self.label("control_center.local_date_time"),
-            self.datetime.local_time.clone(),
-            None,
-          )
-          .icon(icons::CALENDAR)
-          .enabled(!ntp),
-          Row::info(
-            self.label("control_center.time_zone"),
-            self.datetime.time_zone.clone(),
-          ),
-          Row::toggle(
-            Item::Ntp,
-            self.label("control_center.automatic_date_time_ntp"),
-            ntp,
-          )
-          .icon(icons::SATELLITE),
-          Row::info(
-            "RTC",
-            if self.datetime.rtc_local.unwrap_or(false) {
-              self.label("control_center.local")
-            } else {
-              "UTC"
-            },
-          ),
-        ]
-      }
-      Page::RegionalLocale => {
-        let current = locale::current_lang();
-        let mut rows = vec![
-          Row::info(
-            self.label("control_center.current_locale"),
-            non_empty(&current),
-          ),
-          Row::info(
-            self.label("control_center.encoding"),
-            non_empty(&locale::encoding_from_locale(&current)),
-          ),
-          Row::separator(),
-        ];
-        let locales: Vec<Row<Item>> = self
-          .generated_locales
-          .iter()
-          .enumerate()
-          .filter(|(_, value)| search_matches(&self.search, &[value]))
-          .map(|(index, value)| Row::choice(Item::Locale(index), value.clone(), *value == current))
-          .collect();
-        if locales.is_empty() {
-          rows.push(self.empty_list_row(page));
-        }
-        rows.extend(locales);
-        rows
-      }
-      Page::SystemLocales => {
-        let mut rows: Vec<Row<Item>> = self
-          .locale_gen_entries
-          .iter()
-          .enumerate()
-          .filter(|(_, entry)| search_matches(&self.search, &[&entry.locale, &entry.encoding]))
-          .map(|(index, entry)| {
-            let key = format!("{} {}", entry.locale, entry.encoding);
-            let on = self.selected_locales.contains(&key);
-            Row::toggle(Item::LocaleGen(index), key, on)
-          })
-          .collect();
-        if rows.is_empty() {
-          rows.push(self.empty_list_row(page));
-        }
-        rows
-      }
-      Page::Keyboard => vec![
-        Row::submenu(Item::KeyboardLayout, self.label("control_center.layout"))
-          .icon(icons::KEYBOARD)
-          .detail(non_empty(&self.keyboard_info.x11_layout)),
-        Row::submenu(Item::KeyboardVariant, self.label("control_center.variant"))
-          .icon(icons::KEYBOARD_VARIANT)
-          .detail(non_empty(&self.keyboard_info.x11_variant)),
-        Row::info(
-          self.label("control_center.model"),
-          non_empty(&self.keyboard_info.x11_model),
-        ),
-        Row::info(
-          self.label("control_center.options"),
-          non_empty(&self.keyboard_info.x11_options),
-        ),
-        Row::submenu(
-          Item::ConsoleKeymap,
-          self.label("control_center.console_keymap"),
-        )
-        .icon(icons::TERMINAL)
-        .detail(non_empty(&self.keyboard_info.console_keymap)),
-        Row::info(
-          "Hyprland XKB",
-          format!(
-            "{} {} {}",
-            non_empty(&self.keyboard_info.hypr_layout),
-            non_empty(&self.keyboard_info.hypr_variant),
-            non_empty(&self.keyboard_info.hypr_options)
-          ),
-        ),
-      ],
-      Page::KeyboardLayout => {
-        let draft = &self.keyboard_draft;
-        let mut rows: Vec<Row<Item>> = self
-          .keyboard_layouts
-          .iter()
-          .enumerate()
-          .filter(|(_, layout)| search_matches(&self.search, &[&layout.code, &layout.description]))
-          .map(|(index, layout)| {
-            // `●` marks the layout in use, which the taskbar and shortcuts change
-            // at runtime. `[x]` marks the enabled layouts, from the draft. The
-            // configured default, the first layout Hyprland starts with, is named
-            // in the detail.
-            let detail = if draft.is_default(&layout.code) {
-              format!(
-                "{}  ·  {}",
-                layout.description,
-                self.label("control_center.default")
-              )
-            } else {
-              layout.description.clone()
-            };
-            Row::toggle(
-              Item::Layout(index),
-              layout.code.clone(),
-              draft.is_enabled(&layout.code),
-            )
-            .marked(self.keyboard_info.x11_layout == layout.code)
-            .detail(detail)
-          })
-          .collect();
-        if rows.is_empty() {
-          rows.push(self.empty_list_row(page));
-        }
-        rows
-      }
-      Page::KeyboardVariant => {
-        let mut rows: Vec<Row<Item>> = self
-          .keyboard_variants
-          .iter()
-          .enumerate()
-          .filter(|(_, variant)| {
-            search_matches(&self.search, &[&variant.code, &variant.description])
-          })
-          .map(|(index, variant)| {
-            let label = if variant.code.is_empty() {
-              self.label("control_center.default").to_string()
-            } else {
-              variant.code.clone()
-            };
-            Row::choice(
-              Item::Variant(index),
-              label,
-              variant.code == self.keyboard_info.x11_variant,
-            )
-            .detail(variant.description.clone())
-          })
-          .collect();
-        if rows.is_empty() {
-          rows.push(self.empty_list_row(page));
-        }
-        rows
-      }
-      Page::ConsoleKeymap => {
-        let mut rows: Vec<Row<Item>> = self
-          .console_keymaps
-          .iter()
-          .enumerate()
-          .filter(|(_, keymap)| search_matches(&self.search, &[keymap]))
-          .map(|(index, keymap)| {
-            Row::choice(
-              Item::Keymap(index),
-              keymap.clone(),
-              *keymap == self.keyboard_info.console_keymap,
-            )
-          })
-          .collect();
-        if rows.is_empty() {
-          rows.push(self.empty_list_row(page));
-        }
-        rows
-      }
+      Page::Main => self.main_rows(),
+      Page::DefaultApps => self.default_apps_rows(),
+      Page::AppSelector(category) => self.app_selector_rows(category),
+      Page::Fonts => self.fonts_rows(),
+      Page::FontSelector(target) => self.font_selector_rows(target),
+      Page::SettingSelector(setting) => self.setting_selector_rows(setting),
+      Page::LocaleRegion => self.locale_region_rows(),
+      Page::TimeZone => self.time_zone_rows(),
+      Page::DateTime => self.date_time_rows(),
+      Page::RegionalLocale => self.regional_locale_rows(),
+      Page::SystemLocales => self.system_locales_rows(),
+      Page::Keyboard => self.keyboard_rows(),
+      Page::KeyboardLayout => self.keyboard_layout_rows(),
+      Page::KeyboardVariant => self.keyboard_variant_rows(),
+      Page::ConsoleKeymap => self.console_keymap_rows(),
       Page::Language => self.language_rows(),
       Page::UsersGroups => self.users_groups_rows(),
       Page::Notifications => self.notification_rows(),
-      Page::Hostname => vec![
-        Row::value(
-          Item::Hostname,
-          self.label("control_center.current_hostname"),
-          self.hostname.clone(),
-          None,
-        )
-        .icon(icons::MONITOR),
-      ],
+      Page::Hostname => self.hostname_rows(),
       Page::MouseTouchpad => self.input_rows(),
       Page::Keybindings => self.keybinding_rows(),
       Page::WindowRules => self.window_rules_rows(),
@@ -486,6 +131,406 @@ impl App {
       | Page::GroupMembers
       | Page::CreateGroup => unreachable!("account and firewall rows come from Administration"),
     }
+  }
+
+  fn main_rows(&self) -> Vec<Row<Item>> {
+    vec![
+      Row::submenu(Item::DefaultApps, self.label("control_center.default_apps")).icon(icons::APPS),
+      Row::submenu(Item::Fonts, self.label("control_center.fonts")).icon(icons::FONTS),
+      Row::submenu(
+        Item::LocaleRegion,
+        self.label("control_center.locale_region"),
+      )
+      .icon(icons::EARTH),
+      Row::submenu(Item::System, self.label("control_center.system")).icon(icons::SETTINGS),
+    ]
+  }
+
+  fn default_apps_rows(&self) -> Vec<Row<Item>> {
+    let page = self.page();
+    let mut rows: Vec<Row<Item>> = Category::ORDER
+      .into_iter()
+      .filter_map(|category| {
+        let label = super::category_label(self.lang, category);
+        search_matches(&self.search, &[label]).then(|| {
+          Row::submenu(Item::Category(category), label)
+            .icon(super::category_icon(category))
+            .detail(
+              self.default_detail(self.apps.current(category), self.apps.is_default(category)),
+            )
+        })
+      })
+      .collect();
+    if rows.is_empty() {
+      rows.push(self.empty_list_row(page));
+    }
+    rows
+  }
+
+  fn app_selector_rows(&self, category: Category) -> Vec<Row<Item>> {
+    let page = self.page();
+    let current = self.apps.current(category);
+    let mut rows: Vec<Row<Item>> = self
+      .apps
+      .installed(category)
+      .iter()
+      .enumerate()
+      .filter(|(_, app)| search_matches(&self.search, &[&app.display, &app.binary]))
+      .map(|(index, app)| {
+        Row::choice(Item::App(index), app.display.clone(), app.binary == current)
+          .detail(app.binary.clone())
+      })
+      .collect();
+    if rows.is_empty() {
+      rows.push(self.empty_list_row(page));
+    }
+    self.reset_defaults_zone(&mut rows);
+    rows
+  }
+
+  fn fonts_rows(&self) -> Vec<Row<Item>> {
+    let mut rows = vec![Row::section(self.label("control_center.fonts"))];
+    rows.extend(FontTarget::ALL.into_iter().map(|target| {
+      let font = self.fonts.get(target);
+      Row::submenu(
+        Item::FontTarget(target),
+        super::font_target_label(self.lang, target),
+      )
+      .icon(super::font_target_icon(target))
+      .detail(format!("{} · {}", font.display_name(), font.size))
+    }));
+    rows.push(Row::section(self.label("control_center.section_rendering")));
+    rows.extend(SettingKind::ALL.into_iter().map(|setting| {
+      Row::submenu(
+        Item::FontSetting(setting),
+        super::setting_label(self.lang, setting),
+      )
+      .icon(super::setting_icon(setting))
+      .detail(setting_value_label(
+        self.lang,
+        &self.fonts.setting_value(setting),
+      ))
+    }));
+    self.reset_defaults_zone(&mut rows);
+    rows
+  }
+
+  fn font_selector_rows(&self, target: FontTarget) -> Vec<Row<Item>> {
+    let page = self.page();
+    let current = self.fonts.get(target);
+    let mut rows = vec![
+      Row::value(
+        Item::FontSize,
+        self.label("control_center.font_size"),
+        self.pending_size.to_string(),
+        Some(1),
+      )
+      .icon(icons::FONT_SIZE),
+      Row::separator(),
+    ];
+    let fonts: Vec<Row<Item>> = self
+      .system_fonts
+      .iter()
+      .enumerate()
+      .filter(|(_, font)| search_matches(&self.search, &[&font.family, &font.style]))
+      .map(|(index, font)| {
+        Row::choice(
+          Item::Font(index),
+          font.display_name(),
+          font.family == current.family && font.style == current.style,
+        )
+      })
+      .collect();
+    if fonts.is_empty() {
+      rows.push(self.empty_list_row(page));
+    }
+    rows.extend(fonts);
+    self.reset_defaults_zone(&mut rows);
+    rows
+  }
+
+  fn setting_selector_rows(&self, setting: SettingKind) -> Vec<Row<Item>> {
+    let current = self.fonts.setting_value(setting);
+    let mut rows: Vec<Row<Item>> = super::setting_values(setting)
+      .iter()
+      .enumerate()
+      .map(|(index, value)| {
+        Row::choice(
+          Item::SettingOption(index),
+          setting_value_label(self.lang, value),
+          *value == current,
+        )
+        .detail(*value)
+      })
+      .collect();
+    self.reset_defaults_zone(&mut rows);
+    rows
+  }
+
+  fn locale_region_rows(&self) -> Vec<Row<Item>> {
+    vec![
+      Row::submenu(Item::TimeZone, self.label("control_center.time_zone"))
+        .icon(icons::CLOCK)
+        .detail(non_empty(&self.datetime.time_zone)),
+      Row::submenu(Item::DateTime, self.label("control_center.date_time"))
+        .icon(icons::CALENDAR)
+        .detail(non_empty(&self.datetime.local_time)),
+      Row::submenu(
+        Item::RegionalLocale,
+        self.label("control_center.regional_locale"),
+      )
+      .icon(icons::EARTH)
+      .detail(locale::current_lang()),
+      Row::submenu(
+        Item::SystemLocales,
+        self.label("control_center.system_locales"),
+      )
+      .icon(icons::TRANSLATE)
+      .detail(format!(
+        "{} / {}",
+        self.selected_locales.len(),
+        self.locale_gen_entries.len()
+      )),
+      Row::submenu(Item::Keyboard, self.label("control_center.keyboard"))
+        .icon(icons::KEYBOARD)
+        .detail(format!(
+          "{}  ·  {}",
+          non_empty(&self.keyboard_info.x11_layout),
+          non_empty(&self.keyboard_info.x11_variant)
+        )),
+    ]
+  }
+
+  fn time_zone_rows(&self) -> Vec<Row<Item>> {
+    let page = self.page();
+    let mut rows: Vec<Row<Item>> = self
+      .timezones
+      .iter()
+      .enumerate()
+      .filter(|(_, zone)| search_matches(&self.search, &[zone]))
+      .map(|(index, zone)| {
+        // `●` marks the draft; the system zone changes only through `Apply`.
+        Row::choice(
+          Item::Zone(index),
+          zone.clone(),
+          *zone == self.timezone_draft,
+        )
+      })
+      .collect();
+    if rows.is_empty() {
+      rows.push(self.empty_list_row(page));
+    }
+    rows
+  }
+
+  fn date_time_rows(&self) -> Vec<Row<Item>> {
+    let ntp = self.datetime.ntp.unwrap_or(false);
+    vec![
+      Row::value(
+        Item::LocalDateTime,
+        self.label("control_center.local_date_time"),
+        self.datetime.local_time.clone(),
+        None,
+      )
+      .icon(icons::CALENDAR)
+      .enabled(!ntp),
+      Row::info(
+        self.label("control_center.time_zone"),
+        self.datetime.time_zone.clone(),
+      ),
+      Row::toggle(
+        Item::Ntp,
+        self.label("control_center.automatic_date_time_ntp"),
+        ntp,
+      )
+      .icon(icons::SATELLITE),
+      Row::info(
+        "RTC",
+        if self.datetime.rtc_local.unwrap_or(false) {
+          self.label("control_center.local")
+        } else {
+          "UTC"
+        },
+      ),
+    ]
+  }
+
+  fn regional_locale_rows(&self) -> Vec<Row<Item>> {
+    let page = self.page();
+    let current = locale::current_lang();
+    let mut rows = vec![
+      Row::info(
+        self.label("control_center.current_locale"),
+        non_empty(&current),
+      ),
+      Row::info(
+        self.label("control_center.encoding"),
+        non_empty(&locale::encoding_from_locale(&current)),
+      ),
+      Row::separator(),
+    ];
+    let locales: Vec<Row<Item>> = self
+      .generated_locales
+      .iter()
+      .enumerate()
+      .filter(|(_, value)| search_matches(&self.search, &[value]))
+      .map(|(index, value)| Row::choice(Item::Locale(index), value.clone(), *value == current))
+      .collect();
+    if locales.is_empty() {
+      rows.push(self.empty_list_row(page));
+    }
+    rows.extend(locales);
+    rows
+  }
+
+  fn system_locales_rows(&self) -> Vec<Row<Item>> {
+    let page = self.page();
+    let mut rows: Vec<Row<Item>> = self
+      .locale_gen_entries
+      .iter()
+      .enumerate()
+      .filter(|(_, entry)| search_matches(&self.search, &[&entry.locale, &entry.encoding]))
+      .map(|(index, entry)| {
+        let key = format!("{} {}", entry.locale, entry.encoding);
+        let on = self.selected_locales.contains(&key);
+        Row::toggle(Item::LocaleGen(index), key, on)
+      })
+      .collect();
+    if rows.is_empty() {
+      rows.push(self.empty_list_row(page));
+    }
+    rows
+  }
+
+  fn keyboard_rows(&self) -> Vec<Row<Item>> {
+    vec![
+      Row::submenu(Item::KeyboardLayout, self.label("control_center.layout"))
+        .icon(icons::KEYBOARD)
+        .detail(non_empty(&self.keyboard_info.x11_layout)),
+      Row::submenu(Item::KeyboardVariant, self.label("control_center.variant"))
+        .icon(icons::KEYBOARD_VARIANT)
+        .detail(non_empty(&self.keyboard_info.x11_variant)),
+      Row::info(
+        self.label("control_center.model"),
+        non_empty(&self.keyboard_info.x11_model),
+      ),
+      Row::info(
+        self.label("control_center.options"),
+        non_empty(&self.keyboard_info.x11_options),
+      ),
+      Row::submenu(
+        Item::ConsoleKeymap,
+        self.label("control_center.console_keymap"),
+      )
+      .icon(icons::TERMINAL)
+      .detail(non_empty(&self.keyboard_info.console_keymap)),
+      Row::info(
+        "Hyprland XKB",
+        format!(
+          "{} {} {}",
+          non_empty(&self.keyboard_info.hypr_layout),
+          non_empty(&self.keyboard_info.hypr_variant),
+          non_empty(&self.keyboard_info.hypr_options)
+        ),
+      ),
+    ]
+  }
+
+  fn keyboard_layout_rows(&self) -> Vec<Row<Item>> {
+    let page = self.page();
+    let draft = &self.keyboard_draft;
+    let mut rows: Vec<Row<Item>> = self
+      .keyboard_layouts
+      .iter()
+      .enumerate()
+      .filter(|(_, layout)| search_matches(&self.search, &[&layout.code, &layout.description]))
+      .map(|(index, layout)| {
+        // `●` marks the layout in use, which the taskbar and shortcuts change
+        // at runtime. `[x]` marks the enabled layouts, from the draft. The
+        // configured default, the first layout Hyprland starts with, is named
+        // in the detail.
+        let detail = if draft.is_default(&layout.code) {
+          format!(
+            "{}  ·  {}",
+            layout.description,
+            self.label("control_center.default")
+          )
+        } else {
+          layout.description.clone()
+        };
+        Row::toggle(
+          Item::Layout(index),
+          layout.code.clone(),
+          draft.is_enabled(&layout.code),
+        )
+        .marked(self.keyboard_info.x11_layout == layout.code)
+        .detail(detail)
+      })
+      .collect();
+    if rows.is_empty() {
+      rows.push(self.empty_list_row(page));
+    }
+    rows
+  }
+
+  fn keyboard_variant_rows(&self) -> Vec<Row<Item>> {
+    let page = self.page();
+    let mut rows: Vec<Row<Item>> = self
+      .keyboard_variants
+      .iter()
+      .enumerate()
+      .filter(|(_, variant)| search_matches(&self.search, &[&variant.code, &variant.description]))
+      .map(|(index, variant)| {
+        let label = if variant.code.is_empty() {
+          self.label("control_center.default").to_string()
+        } else {
+          variant.code.clone()
+        };
+        Row::choice(
+          Item::Variant(index),
+          label,
+          variant.code == self.keyboard_info.x11_variant,
+        )
+        .detail(variant.description.clone())
+      })
+      .collect();
+    if rows.is_empty() {
+      rows.push(self.empty_list_row(page));
+    }
+    rows
+  }
+
+  fn console_keymap_rows(&self) -> Vec<Row<Item>> {
+    let page = self.page();
+    let mut rows: Vec<Row<Item>> = self
+      .console_keymaps
+      .iter()
+      .enumerate()
+      .filter(|(_, keymap)| search_matches(&self.search, &[keymap]))
+      .map(|(index, keymap)| {
+        Row::choice(
+          Item::Keymap(index),
+          keymap.clone(),
+          *keymap == self.keyboard_info.console_keymap,
+        )
+      })
+      .collect();
+    if rows.is_empty() {
+      rows.push(self.empty_list_row(page));
+    }
+    rows
+  }
+
+  fn hostname_rows(&self) -> Vec<Row<Item>> {
+    vec![
+      Row::value(
+        Item::Hostname,
+        self.label("control_center.current_hostname"),
+        self.hostname.clone(),
+        None,
+      )
+      .icon(icons::MONITOR),
+    ]
   }
 
   /// The action bar under Keyboard > Layout: its `Apply` button, enabled only

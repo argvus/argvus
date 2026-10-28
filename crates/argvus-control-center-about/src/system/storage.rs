@@ -1,7 +1,4 @@
 //! Describes the disk and file system that hold the root (`/`) mount.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
 use std::fs;
 use std::path::Path;
 

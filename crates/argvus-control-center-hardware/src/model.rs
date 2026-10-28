@@ -1,7 +1,4 @@
-//! Implements domain state and models consumed by the UI in crate `argvus control center hardware`. This separation keeps external effects from contaminating models, routes, or rendering.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
+//! Domain state and models consumed by the UI of the Hardware page.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum HardwarePage {
   Home,
@@ -16,7 +13,6 @@ pub enum HardwarePage {
 }
 
 #[derive(Debug, Clone, Default)]
-/// Represents `HardwareSnapshot`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub struct HardwareSnapshot {
   pub manufacturer: Option<String>,
   pub model: Option<String>,
@@ -37,7 +33,6 @@ pub struct HardwareSnapshot {
 }
 
 #[derive(Debug, Clone, Default)]
-/// Represents `CpuInfo`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub struct CpuInfo {
   pub vendor: Option<String>,
   pub model: Option<String>,
@@ -53,7 +48,6 @@ pub struct CpuInfo {
   pub management: Option<String>,
 }
 #[derive(Debug, Clone, Default)]
-/// Represents `MemoryInfo`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub struct MemoryInfo {
   pub total_kib: Option<u64>,
   pub available_kib: Option<u64>,
@@ -62,7 +56,6 @@ pub struct MemoryInfo {
   pub swap_free_kib: Option<u64>,
 }
 #[derive(Debug, Clone, Default)]
-/// Represents `GpuInfo`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub struct GpuInfo {
   pub index: usize,
   pub model: Option<String>,
@@ -79,7 +72,6 @@ pub struct GpuInfo {
   pub driver_status: Option<String>,
 }
 #[derive(Debug, Clone, Default)]
-/// Represents `BatteryInfo`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub struct BatteryInfo {
   pub device: String,
   pub manufacturer: Option<String>,
@@ -95,7 +87,6 @@ pub struct BatteryInfo {
   pub ac_online: Option<bool>,
 }
 #[derive(Debug, Clone, Default)]
-/// Represents `EnergyInfo`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub struct EnergyInfo {
   pub backend: Option<String>,
   pub profile: Option<String>,
@@ -103,7 +94,6 @@ pub struct EnergyInfo {
   pub tlp_active: Option<bool>,
 }
 #[derive(Debug, Clone, Default)]
-/// Represents `DeviceInfo`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub struct DeviceInfo {
   pub name: String,
   pub kind: String,
@@ -115,7 +105,6 @@ pub struct DeviceInfo {
   pub status: Option<String>,
 }
 
-/// Executes the `format_kib` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn format_kib(value: Option<u64>) -> String {
   value
     .map(|v| format!("{:.1} GiB", v as f64 / 1_048_576.0))
@@ -126,7 +115,6 @@ pub fn format_kib(value: Option<u64>) -> String {
 mod tests {
   use super::*;
   #[test]
-  /// Executes the `formats_missing_memory_safely` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn formats_missing_memory_safely() {
     assert_eq!(format_kib(None), "N/A");
   }

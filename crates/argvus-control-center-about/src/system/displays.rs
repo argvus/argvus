@@ -1,7 +1,4 @@
 //! Reads the active monitors of the running Hyprland session.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
 use argvus_control_center_core::process;
 use argvus_control_center_core::sanitize::terminal_text;
 use serde_json::Value;

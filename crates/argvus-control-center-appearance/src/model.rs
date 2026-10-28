@@ -1,7 +1,4 @@
-//! Implements domain state and models consumed by the UI in crate `argvus control center appearance`. This separation keeps external effects from contaminating models, routes, or rendering.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
+//! Domain state and models consumed by the UI of the Appearance page.
 
 use crate::animations::{
   AnimationCurve, AnimationField, AnimationGroup, AnimationLeaf, AnimationValues,
@@ -9,6 +6,22 @@ use crate::animations::{
 use crate::blur::{BlurField, BlurValues};
 use argvus_theme::discovery::ThemeCategory;
 use std::str::FromStr;
+
+mod control_panel_model;
+mod media_model;
+mod taskbar_model;
+mod telemetry_model;
+
+pub use control_panel_model::{ControlPanelCard, ControlPanelCards};
+pub use media_model::{
+  IconThemeEntry, IconThemeSource, IconThemeVariant, WallpaperCollection, WallpaperEntry,
+  WallpaperMode,
+};
+pub use taskbar_model::{
+  TaskbarDateFormat, TaskbarPosition, TaskbarTimeFormat, TaskbarUtilityGroupMode,
+  TaskbarUtilityWidget, TaskbarUtilityWidgets,
+};
+pub use telemetry_model::{WidgetTelemetryBlock, WidgetTelemetryBlocks};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct HexColor {
@@ -106,79 +119,6 @@ pub fn canonical_theme_id(theme_id: &str) -> String {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum WallpaperCollection {
-  Abstract,
-  Landscape,
-}
-
-impl WallpaperCollection {
-  pub const ALL: [Self; 2] = [Self::Abstract, Self::Landscape];
-
-  pub fn label_key(self) -> &'static str {
-    match self {
-      Self::Abstract => "control_center.wallpaper_category_abstract",
-      Self::Landscape => "control_center.wallpaper_category_landscape",
-    }
-  }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum WallpaperMode {
-  Dark,
-  Light,
-}
-
-impl WallpaperMode {
-  pub const ALL: [Self; 2] = [Self::Dark, Self::Light];
-
-  pub fn label_key(self) -> &'static str {
-    match self {
-      Self::Dark => "control_center.wallpaper_category_dark",
-      Self::Light => "control_center.wallpaper_category_light",
-    }
-  }
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct WallpaperEntry {
-  pub path: String,
-  pub collection: WallpaperCollection,
-  pub mode: WallpaperMode,
-}
-
-/// Where an installed icon theme was found. Only system themes can be
-/// official, so the Icons page can tell the two apart.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum IconThemeSource {
-  /// Installed by a package under `/usr/share/icons`.
-  System,
-  /// Found in `~/.icons` or `$XDG_DATA_HOME/icons`.
-  User,
-}
-
-/// The variant an official ARGVUS icon theme declares in its manifest.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum IconThemeVariant {
-  Default,
-  Dark,
-  Light,
-}
-
-/// One icon theme the user can select. `directory_name` is the value stored
-/// in `/appearance/icon_theme`, because the shell helper looks the theme up
-/// by that directory.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct IconThemeEntry {
-  pub directory_name: String,
-  /// `Name=` from `index.theme`, falling back to the directory name.
-  pub display_name: String,
-  pub comment: Option<String>,
-  pub source: IconThemeSource,
-  /// Set only for system themes that have an official ARGVUS manifest.
-  pub official: Option<IconThemeVariant>,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum AppearancePage {
   Home,
   /// Appearance > Desktop: Theme, Appearance Mode, Accent Color and Wallpaper.
@@ -228,13 +168,10 @@ pub enum AppearancePage {
   AnimationsLeaf {
     leaf: AnimationLeaf,
   },
-  #[allow(dead_code)]
   Transparency,
-  #[allow(dead_code)]
   TransparencySurface {
     surface: EffectSurface,
   },
-  #[allow(dead_code)]
   Blur,
   TaskbarPosition,
   TaskbarSpaces,
@@ -323,472 +260,6 @@ impl EffectSurface {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-/// Defines `TaskbarPosition`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
-pub enum TaskbarPosition {
-  Top,
-  Bottom,
-}
-
-/// Identifies a separately configurable Widget Telemetry section.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum WidgetTelemetryBlock {
-  System,
-  CpuGpu,
-  Memory,
-  Storage,
-  Processes,
-  Network,
-  DevDashboard,
-  Shortcuts,
-}
-
-impl WidgetTelemetryBlock {
-  pub const ALL: [Self; 8] = [
-    Self::System,
-    Self::CpuGpu,
-    Self::Memory,
-    Self::Storage,
-    Self::Processes,
-    Self::Network,
-    Self::DevDashboard,
-    Self::Shortcuts,
-  ];
-
-  /// Returns the stable command-line identifier owned by the widget package.
-  pub fn key(self) -> &'static str {
-    match self {
-      Self::System => "system",
-      Self::CpuGpu => "cpu_gpu",
-      Self::Memory => "memory",
-      Self::Storage => "storage",
-      Self::Processes => "processes",
-      Self::Network => "network",
-      Self::Shortcuts => "keys",
-      Self::DevDashboard => "dev_dashboard",
-    }
-  }
-
-  /// Returns the localization key for the Control Center row.
-  pub fn label_key(self) -> &'static str {
-    match self {
-      Self::System => "control_center.widget_telemetry_system",
-      Self::CpuGpu => "control_center.widget_telemetry_cpu_gpu",
-      Self::Memory => "control_center.widget_telemetry_memory",
-      Self::Storage => "control_center.widget_telemetry_storage",
-      Self::Processes => "control_center.widget_telemetry_processes",
-      Self::Network => "control_center.widget_telemetry_network",
-      Self::Shortcuts => "control_center.widget_telemetry_shortcuts",
-      Self::DevDashboard => "control_center.widget_telemetry_dev_dashboard",
-    }
-  }
-}
-
-/// Stores the sparse Widget Telemetry preferences represented by the UI.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct WidgetTelemetryBlocks {
-  pub system: bool,
-  pub cpu_gpu: bool,
-  pub memory: bool,
-  pub storage: bool,
-  pub processes: bool,
-  pub network: bool,
-  pub shortcuts: bool,
-  pub dev_dashboard: bool,
-}
-
-impl Default for WidgetTelemetryBlocks {
-  fn default() -> Self {
-    Self {
-      system: true,
-      cpu_gpu: true,
-      memory: true,
-      storage: true,
-      processes: true,
-      network: true,
-      shortcuts: true,
-      dev_dashboard: true,
-    }
-  }
-}
-
-impl WidgetTelemetryBlocks {
-  pub fn enabled(&self, block: WidgetTelemetryBlock) -> bool {
-    match block {
-      WidgetTelemetryBlock::System => self.system,
-      WidgetTelemetryBlock::CpuGpu => self.cpu_gpu,
-      WidgetTelemetryBlock::Memory => self.memory,
-      WidgetTelemetryBlock::Storage => self.storage,
-      WidgetTelemetryBlock::Processes => self.processes,
-      WidgetTelemetryBlock::Network => self.network,
-      WidgetTelemetryBlock::Shortcuts => self.shortcuts,
-      WidgetTelemetryBlock::DevDashboard => self.dev_dashboard,
-    }
-  }
-
-  pub fn set(&mut self, block: WidgetTelemetryBlock, enabled: bool) {
-    match block {
-      WidgetTelemetryBlock::System => self.system = enabled,
-      WidgetTelemetryBlock::CpuGpu => self.cpu_gpu = enabled,
-      WidgetTelemetryBlock::Memory => self.memory = enabled,
-      WidgetTelemetryBlock::Storage => self.storage = enabled,
-      WidgetTelemetryBlock::Processes => self.processes = enabled,
-      WidgetTelemetryBlock::Network => self.network = enabled,
-      WidgetTelemetryBlock::Shortcuts => self.shortcuts = enabled,
-      WidgetTelemetryBlock::DevDashboard => self.dev_dashboard = enabled,
-    }
-  }
-}
-
-/// Identifies a configurable Control Panel card using its stable helper ID.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum ControlPanelCard {
-  User,
-  Notifications,
-  Calendar,
-  Weather,
-  Volume,
-  Brightness,
-  Network,
-  Bluetooth,
-  System,
-  Appearance,
-  Session,
-  Display,
-  Power,
-}
-
-impl ControlPanelCard {
-  pub const ALL: [Self; 13] = [
-    Self::User,
-    Self::Notifications,
-    Self::Calendar,
-    Self::Weather,
-    Self::Volume,
-    Self::Brightness,
-    Self::Network,
-    Self::Bluetooth,
-    Self::System,
-    Self::Appearance,
-    Self::Session,
-    Self::Display,
-    Self::Power,
-  ];
-
-  /// Returns the machine-readable ID owned by the Control Panel helper.
-  pub fn key(self) -> &'static str {
-    match self {
-      Self::User => "user",
-      Self::Notifications => "notifications",
-      Self::Calendar => "calendar",
-      Self::Weather => "weather",
-      Self::Volume => "volume",
-      Self::Brightness => "brightness",
-      Self::Network => "network",
-      Self::Bluetooth => "bluetooth",
-      Self::System => "system",
-      Self::Appearance => "appearance",
-      Self::Session => "session",
-      Self::Display => "display",
-      Self::Power => "power",
-    }
-  }
-
-  /// Returns the shared catalog key for the Control Center row.
-  pub fn label_key(self) -> &'static str {
-    match self {
-      Self::User => "control_center.control_panel_card_user",
-      Self::Notifications => "control_center.control_panel_card_notifications",
-      Self::Calendar => "control_center.control_panel_card_calendar",
-      Self::Weather => "control_center.control_panel_card_weather",
-      Self::Volume => "control_center.control_panel_card_volume",
-      Self::Brightness => "control_center.control_panel_card_brightness",
-      Self::Network => "control_center.control_panel_card_network",
-      Self::Bluetooth => "control_center.control_panel_card_bluetooth",
-      Self::System => "control_center.control_panel_card_system",
-      Self::Appearance => "control_center.control_panel_card_appearance",
-      Self::Session => "control_center.control_panel_card_session",
-      Self::Display => "control_center.control_panel_card_display",
-      Self::Power => "control_center.control_panel_card_power",
-    }
-  }
-}
-
-/// Stores effective Control Panel visibility while its package owns ordering.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct ControlPanelCards {
-  enabled: [bool; 14],
-  available: [bool; 14],
-}
-
-impl Default for ControlPanelCards {
-  fn default() -> Self {
-    Self {
-      enabled: [true; 14],
-      available: [true; 14],
-    }
-  }
-}
-
-impl ControlPanelCards {
-  pub fn enabled(&self, card: ControlPanelCard) -> bool {
-    self.enabled[ControlPanelCard::ALL
-      .iter()
-      .position(|candidate| *candidate == card)
-      .expect("all Control Panel cards have a stable index")]
-  }
-
-  pub fn set(&mut self, card: ControlPanelCard, enabled: bool) {
-    let index = ControlPanelCard::ALL
-      .iter()
-      .position(|candidate| *candidate == card)
-      .expect("all Control Panel cards have a stable index");
-    self.enabled[index] = enabled;
-  }
-
-  /// Reports whether the card's required hardware is present on this host.
-  pub fn available(&self, card: ControlPanelCard) -> bool {
-    self.available[ControlPanelCard::ALL
-      .iter()
-      .position(|candidate| *candidate == card)
-      .expect("all Control Panel cards have a stable index")]
-  }
-
-  /// Updates hardware availability while preserving the user's enabled state.
-  pub fn set_available(&mut self, card: ControlPanelCard, available: bool) {
-    let index = ControlPanelCard::ALL
-      .iter()
-      .position(|candidate| *candidate == card)
-      .expect("all Control Panel cards have a stable index");
-    self.available[index] = available;
-  }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-/// Defines the presentation mode for the taskbar utility group.
-pub enum TaskbarUtilityGroupMode {
-  Auto,
-  AlwaysExpanded,
-}
-impl TaskbarUtilityGroupMode {
-  pub fn value(self) -> &'static str {
-    match self {
-      Self::Auto => "auto",
-      Self::AlwaysExpanded => "always-expanded",
-    }
-  }
-
-  pub fn from_value(value: &str) -> Self {
-    if value.trim() == "always-expanded" {
-      Self::AlwaysExpanded
-    } else {
-      Self::Auto
-    }
-  }
-}
-impl TaskbarPosition {
-  /// Executes the `value` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
-  pub fn value(self) -> &'static str {
-    match self {
-      Self::Top => "top",
-      Self::Bottom => "bottom",
-    }
-  }
-  /// Converts input data into `from_value` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
-  pub fn from_value(value: &str) -> Self {
-    if value.trim() == "bottom" {
-      Self::Bottom
-    } else {
-      Self::Top
-    }
-  }
-}
-
-/// Identifies a separately toggleable Taskbar utility widget.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum TaskbarUtilityWidget {
-  Network,
-  PowerProfile,
-  KeyboardLayout,
-  Memory,
-  Cpu,
-  CpuTemperature,
-  GpuTemperature,
-}
-
-impl TaskbarUtilityWidget {
-  pub const ALL: [Self; 7] = [
-    Self::Network,
-    Self::PowerProfile,
-    Self::KeyboardLayout,
-    Self::Memory,
-    Self::Cpu,
-    Self::CpuTemperature,
-    Self::GpuTemperature,
-  ];
-
-  /// Returns the stable config-pointer identifier (`taskbar.icons.<key>_enabled`).
-  pub fn key(self) -> &'static str {
-    match self {
-      Self::Network => "network",
-      Self::PowerProfile => "power_profile",
-      Self::KeyboardLayout => "keyboard_layout",
-      Self::Memory => "memory",
-      Self::Cpu => "cpu",
-      Self::CpuTemperature => "cpu_temperature",
-      Self::GpuTemperature => "gpu_temperature",
-    }
-  }
-
-  /// Returns the localization key for the Control Center row.
-  pub fn label_key(self) -> &'static str {
-    match self {
-      Self::Network => "control_center.network",
-      Self::PowerProfile => "control_center.taskbar_power_profile",
-      Self::KeyboardLayout => "control_center.keyboard_layout",
-      Self::Memory => "control_center.taskbar_memory_usage",
-      Self::Cpu => "control_center.taskbar_cpu_usage",
-      Self::CpuTemperature => "control_center.taskbar_cpu_temperature",
-      Self::GpuTemperature => "control_center.taskbar_gpu_temperature",
-    }
-  }
-}
-
-/// Stores the sparse Taskbar Utilities preferences represented by the UI.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct TaskbarUtilityWidgets {
-  pub network: bool,
-  pub power_profile: bool,
-  pub keyboard_layout: bool,
-  pub memory: bool,
-  pub cpu: bool,
-  pub cpu_temperature: bool,
-  pub gpu_temperature: bool,
-}
-
-impl Default for TaskbarUtilityWidgets {
-  fn default() -> Self {
-    Self {
-      network: true,
-      power_profile: true,
-      keyboard_layout: true,
-      memory: true,
-      cpu: true,
-      cpu_temperature: true,
-      gpu_temperature: true,
-    }
-  }
-}
-
-impl TaskbarUtilityWidgets {
-  pub fn enabled(&self, widget: TaskbarUtilityWidget) -> bool {
-    match widget {
-      TaskbarUtilityWidget::Network => self.network,
-      TaskbarUtilityWidget::PowerProfile => self.power_profile,
-      TaskbarUtilityWidget::KeyboardLayout => self.keyboard_layout,
-      TaskbarUtilityWidget::Memory => self.memory,
-      TaskbarUtilityWidget::Cpu => self.cpu,
-      TaskbarUtilityWidget::CpuTemperature => self.cpu_temperature,
-      TaskbarUtilityWidget::GpuTemperature => self.gpu_temperature,
-    }
-  }
-
-  pub fn set(&mut self, widget: TaskbarUtilityWidget, enabled: bool) {
-    match widget {
-      TaskbarUtilityWidget::Network => self.network = enabled,
-      TaskbarUtilityWidget::PowerProfile => self.power_profile = enabled,
-      TaskbarUtilityWidget::KeyboardLayout => self.keyboard_layout = enabled,
-      TaskbarUtilityWidget::Memory => self.memory = enabled,
-      TaskbarUtilityWidget::Cpu => self.cpu = enabled,
-      TaskbarUtilityWidget::CpuTemperature => self.cpu_temperature = enabled,
-      TaskbarUtilityWidget::GpuTemperature => self.gpu_temperature = enabled,
-    }
-  }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-/// Defines the taskbar clock's date format. Values mirror the
-/// `taskbar.date.format` config pointer and the `argvus-i18n` taskbar domain
-/// template keys (`date.format.<value>`).
-pub enum TaskbarDateFormat {
-  WeekdayDayMonth,
-  WeekdayDayMonthYear,
-  WeekdayDaySlashMonthYear,
-  NumericShortLocaleAware,
-}
-
-impl TaskbarDateFormat {
-  pub const ALL: [Self; 4] = [
-    Self::WeekdayDayMonth,
-    Self::WeekdayDayMonthYear,
-    Self::WeekdayDaySlashMonthYear,
-    Self::NumericShortLocaleAware,
-  ];
-
-  pub fn value(self) -> &'static str {
-    match self {
-      Self::WeekdayDayMonth => "weekday_day_month",
-      Self::WeekdayDayMonthYear => "weekday_day_month_year",
-      Self::WeekdayDaySlashMonthYear => "weekday_day_slash_month_year",
-      Self::NumericShortLocaleAware => "numeric_short_locale_aware",
-    }
-  }
-
-  pub fn from_value(value: &str) -> Self {
-    match value.trim() {
-      "weekday_day_month_year" => Self::WeekdayDayMonthYear,
-      "weekday_day_slash_month_year" => Self::WeekdayDaySlashMonthYear,
-      "numeric_short_locale_aware" => Self::NumericShortLocaleAware,
-      _ => Self::WeekdayDayMonth,
-    }
-  }
-
-  pub fn label_key(self) -> &'static str {
-    match self {
-      Self::WeekdayDayMonth => "control_center.taskbar_date_format_weekday_day_month",
-      Self::WeekdayDayMonthYear => "control_center.taskbar_date_format_weekday_day_month_year",
-      Self::WeekdayDaySlashMonthYear => {
-        "control_center.taskbar_date_format_weekday_day_slash_month_year"
-      }
-      Self::NumericShortLocaleAware => "control_center.taskbar_date_format_numeric_short",
-    }
-  }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-/// Defines the taskbar clock's time format (`taskbar.time.format`).
-pub enum TaskbarTimeFormat {
-  TwentyFourHour,
-  TwelveHour,
-}
-
-impl TaskbarTimeFormat {
-  pub const ALL: [Self; 2] = [Self::TwentyFourHour, Self::TwelveHour];
-
-  pub fn value(self) -> &'static str {
-    match self {
-      Self::TwentyFourHour => "24h",
-      Self::TwelveHour => "12h",
-    }
-  }
-
-  pub fn from_value(value: &str) -> Self {
-    if value.trim() == "12h" {
-      Self::TwelveHour
-    } else {
-      Self::TwentyFourHour
-    }
-  }
-
-  pub fn label_key(self) -> &'static str {
-    match self {
-      Self::TwentyFourHour => "control_center.taskbar_time_format_24h",
-      Self::TwelveHour => "control_center.taskbar_time_format_12h",
-    }
-  }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-/// Defines `PromptGoal`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub enum PromptGoal {
   ExportProfile,
   WaybarTop,
@@ -814,7 +285,6 @@ pub enum PromptGoal {
   AnimationValue(AnimationField),
 }
 impl PromptGoal {
-  /// Executes the `key` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn key(self) -> &'static str {
     match self {
       Self::ExportProfile => "export_profile",
@@ -834,7 +304,6 @@ impl PromptGoal {
       Self::AnimationValue(_) => "animation_value",
     }
   }
-  /// Executes the const function documented in this module. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
   pub const fn range(self) -> (i32, i32) {
     match self {
       Self::ExportProfile => (0, 0),
@@ -845,7 +314,6 @@ impl PromptGoal {
   }
 }
 
-/// Defines the constant `THEMES`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub const THEMES: &[(&str, &str)] = &[
   ("argvus-dark", "ARGVUS Dark"),
   ("argvus-dark-float", "ARGVUS Dark Float"),
@@ -892,7 +360,6 @@ pub const THEMES: &[(&str, &str)] = &[
   ("nord-light", "Nord Light"),
   ("nord-light-float", "Nord Light Float"),
 ];
-/// Defines the constant `THEME_FAMILIES`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub const THEME_FAMILIES: &[(&str, &str)] = &[
   ("argvus-dark", "ARGVUS Dark"),
   ("dracula", "Dracula"),
@@ -917,7 +384,6 @@ pub const THEME_FAMILIES: &[(&str, &str)] = &[
   ("everforest-light", "Everforest Light"),
   ("nord-light", "Nord Light"),
 ];
-/// Executes the `theme_label` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn theme_label(name: &str) -> String {
   THEMES
     .iter()
@@ -925,7 +391,6 @@ pub fn theme_label(name: &str) -> String {
     .map(|(_, label)| (*label).to_string())
     .unwrap_or_else(|| name.to_string())
 }
-/// Executes the `theme_family_label` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn theme_family_label(name: &str) -> String {
   let family = name.strip_suffix("-float").unwrap_or(name);
   THEME_FAMILIES
@@ -934,7 +399,6 @@ pub fn theme_family_label(name: &str) -> String {
     .map(|(_, label)| (*label).to_string())
     .unwrap_or_else(|| theme_label(family))
 }
-/// Defines the constant `ACCENTS`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub const ACCENTS: &[(&str, &str)] = &[
   ("Blue", "#3590bd"),
   ("Slate Blue", "#7391a5"),
@@ -946,7 +410,6 @@ pub const ACCENTS: &[(&str, &str)] = &[
   ("Purple", "#9617d1"),
   ("Silver", "#595959"),
 ];
-/// Executes the `accent_label` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn accent_label(color: &str) -> String {
   ACCENTS
     .iter()
@@ -964,7 +427,6 @@ pub const TASKBAR_HEIGHTS: [u32; 4] = [24, 28, 32, 36];
 pub const TASKBAR_BORDER_THICKNESSES: [u32; 3] = [1, 2, 3];
 
 #[derive(Debug, Clone, PartialEq)]
-/// Represents `AppearanceState`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub struct AppearanceState {
   pub theme: String,
   pub accent: String,
@@ -1048,7 +510,6 @@ pub struct CustomTheme {
   pub name: String,
 }
 impl Default for AppearanceState {
-  /// Executes the `default` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn default() -> Self {
     Self {
       theme: "argvus-dark".into(),
@@ -1136,7 +597,6 @@ impl Default for AppearanceState {
   }
 }
 impl AppearanceState {
-  /// Checks the condition represented by `is_float_theme` using only the state available to the module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn is_float_theme(&self) -> bool {
     self.theme.ends_with("-float")
   }
@@ -1169,7 +629,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `prompt_metadata_is_explicit` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn prompt_metadata_is_explicit() {
     assert_eq!(
       (PromptGoal::WaybarTop.key(), PromptGoal::WaybarTop.range()),
@@ -1192,7 +651,6 @@ mod tests {
     );
   }
   #[test]
-  /// Executes the `position_is_type_safe` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn position_is_type_safe() {
     assert_eq!(
       TaskbarPosition::from_value("bottom"),
@@ -1212,7 +670,6 @@ mod tests {
     assert!(ControlPanelCards::default().enabled(ControlPanelCard::Power));
   }
   #[test]
-  /// Executes the `float_theme_detection` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn float_theme_detection() {
     assert!(
       AppearanceState {

@@ -1,4 +1,4 @@
-//! Root module of crate `argvus control center audio`. It exposes public boundaries and composes internal responsibilities without duplicating domain rules.
+//! Audio page of the ARGVUS Control Center (outputs, inputs and volume).
 //!
 //! External tool dependencies remain in backend layers;
 //! the UI consumes normalized models and results.

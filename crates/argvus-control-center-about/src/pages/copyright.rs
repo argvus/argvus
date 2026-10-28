@@ -1,16 +1,11 @@
-//! Implements `copyright` responsibilities in crate `argvus about`. This separation keeps external effects from contaminating models, routes, or rendering.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
+//! Copyright page of About.
 use crate::app::App;
 use crate::i18n::tr;
 
 use super::{Doc, Row, simple_doc};
 
-/// Defines the constant `LICENSE_TEXT`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 const LICENSE_TEXT: &str = include_str!("../../../../LICENSE");
 
-/// Executes the `doc` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn doc(app: &App, width: usize, selected: usize) -> Doc<'static> {
   let lang = app.lang;
   let rows = vec![
@@ -58,7 +53,6 @@ mod tests {
   use crate::app::App;
 
   #[test]
-  /// Executes the `copyright_embeds_license` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn copyright_embeds_license() {
     let app = App::test();
     let doc = doc(&app, 100, 0);

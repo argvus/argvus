@@ -1,4 +1,4 @@
-//! Root module of crate `argvus control center network`. It exposes public boundaries and composes internal responsibilities without duplicating domain rules.
+//! Network page of the ARGVUS Control Center (NetworkManager connections and profiles).
 //!
 //! External tool dependencies remain in backend layers;
 //! the UI consumes normalized models and results.

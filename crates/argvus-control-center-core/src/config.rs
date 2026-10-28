@@ -1,7 +1,4 @@
-//! Implements configuration loading, validation, and persistence in crate `argvus control center core`. This separation keeps external effects from contaminating models, routes, or rendering.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
+//! Configuration loading, validation, and persistence.
 use std::path::PathBuf;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::Duration;
@@ -12,7 +9,6 @@ use crate::process::{ProcessRequest, ProcessRunner, SystemProcessRunner};
 
 /// Default location of the ARGVUS Control Center configuration file.
 pub const CONFIG_DIR: &str = "/etc/argvus/control-center";
-/// Defines the constant `CONFIG_PATH`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub const CONFIG_PATH: &str = "/etc/argvus/control-center/config.toml";
 
 /// Applies the canonical ARGVUS configuration through the user service that
@@ -47,7 +43,6 @@ pub fn reload_argvus_config_service_with(runner: &impl ProcessRunner) -> Result<
   }
 }
 
-/// Maintains the static state `ICONS_ENABLED`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 static ICONS_ENABLED: AtomicBool = AtomicBool::new(true);
 
 /// Global appearance/behavior settings for the ARGVUS Control Center.
@@ -60,13 +55,11 @@ pub struct AppConfig {
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(default)]
-/// Represents `Appearance`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub struct Appearance {
   pub icons: bool,
 }
 
 impl Default for Appearance {
-  /// Executes the `default` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn default() -> Self {
     Self { icons: true }
   }
@@ -91,7 +84,6 @@ impl AppConfig {
     config
   }
 
-  /// Executes the `icons` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn icons(&self) -> bool {
     self.appearance.icons
   }
@@ -116,7 +108,6 @@ impl AppConfig {
     std::fs::write(&path, rendered).map_err(|error| error.to_string())
   }
 
-  /// Applies the `set_icon_state` operation while preserving the persistence and local-update contract. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn set_icon_state(enabled: bool) {
     ICONS_ENABLED.store(enabled, Ordering::Relaxed);
   }
@@ -141,7 +132,6 @@ impl AppConfig {
     }
   }
 
-  /// Executes the `terminal_safe_icon` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn terminal_safe_icon(glyph: &str) -> &str {
     match glyph {
       "⚙️" => "⚙",
@@ -165,12 +155,9 @@ mod tests {
   use std::sync::Mutex;
   use std::sync::atomic::AtomicUsize;
 
-  /// Maintains the static state `CONFIG_TEST_LOCK`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
   static CONFIG_TEST_LOCK: Mutex<()> = Mutex::new(());
-  /// Maintains the static state `CONFIG_TEST_SEQUENCE`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
   static CONFIG_TEST_SEQUENCE: AtomicUsize = AtomicUsize::new(0);
 
-  /// Executes the `run_with_config` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn run_with_config(toml: &str, test: fn(config_path: &std::path::Path)) {
     let _guard = CONFIG_TEST_LOCK.lock().unwrap();
     let sequence = CONFIG_TEST_SEQUENCE.fetch_add(1, Ordering::Relaxed);
@@ -193,7 +180,6 @@ mod tests {
     let _ = std::fs::remove_dir_all(&dir);
   }
 
-  /// Executes the `temp_dir` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn temp_dir() -> PathBuf {
     std::env::var_os("TMPDIR")
       .map(PathBuf::from)
@@ -201,7 +187,6 @@ mod tests {
   }
 
   #[test]
-  /// Retrieves data for `load_parses_appearance_section` without mixing collection with TUI rendering. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn load_parses_appearance_section() {
     run_with_config("[Appearance]\nicons = true\n", |path| {
       let config = AppConfig::load();
@@ -212,7 +197,6 @@ mod tests {
   }
 
   #[test]
-  /// Retrieves data for `load_defaults_to_enabled_icons_when_missing` without mixing collection with TUI rendering. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn load_defaults_to_enabled_icons_when_missing() {
     run_with_config("", |_| {
       let config = AppConfig::load();
@@ -222,7 +206,6 @@ mod tests {
   }
 
   #[test]
-  /// Retrieves data for `load_matches_wrong_table_names` without mixing collection with TUI rendering. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn load_matches_wrong_table_names() {
     run_with_config("[nope]\nicons = false\n", |path| {
       let config = AppConfig::load();
@@ -232,7 +215,6 @@ mod tests {
   }
 
   #[test]
-  /// Applies the `set_icons_matches_disk_and_session_state` operation while preserving the persistence and local-update contract. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn set_icons_matches_disk_and_session_state() {
     run_with_config("[Appearance]\nicons = true\n", |path| {
       let mut config = AppConfig::load();
@@ -245,7 +227,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `icon_returns_empty_when_disabled` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn icon_returns_empty_when_disabled() {
     run_with_config("[Appearance]\nicons = false\n", |_| {
       AppConfig::load();
@@ -255,7 +236,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `icon_returns_glyph_when_enabled` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn icon_returns_glyph_when_enabled() {
     run_with_config("[Appearance]\nicons = true\n", |_| {
       AppConfig::load();
@@ -265,7 +245,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `icon_removes_vs16_from_terminal_icons` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn icon_removes_vs16_from_terminal_icons() {
     run_with_config("[Appearance]\nicons = true\n", |_| {
       AppConfig::load();

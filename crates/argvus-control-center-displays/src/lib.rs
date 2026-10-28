@@ -1,4 +1,4 @@
-//! Root module of crate `argvus control center displays`. It exposes public boundaries and composes internal responsibilities without duplicating domain rules.
+//! Displays page of the ARGVUS Control Center (monitors, layout and modes).
 //!
 //! External tool dependencies remain in backend layers;
 //! the UI consumes normalized models and results.

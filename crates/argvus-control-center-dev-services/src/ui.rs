@@ -1,7 +1,4 @@
-//! Implements terminal UI rendering and interaction in crate `argvus control center dev services`. This separation keeps external effects from contaminating models, routes, or rendering.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
+//! Terminal UI rendering and interaction of the Developer services page.
 use crate::{backend, model::DevServicesSnapshot};
 use argvus_control_center_core::navigation::HomeCardId;
 use argvus_control_center_core::{
@@ -18,7 +15,6 @@ use argvus_tui::page::{list, shell, status};
 use crossterm::event::KeyCode;
 use ratatui::Frame;
 
-/// Represents `DevServicesApp`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub struct DevServicesApp {
   capabilities: Capabilities,
   snapshot: DevServicesSnapshot,
@@ -31,7 +27,6 @@ pub struct DevServicesApp {
 }
 
 impl DevServicesApp {
-  /// Constructs `new` with this module's expected initial state. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn new(lang: Lang, theme: Theme, capabilities: Capabilities) -> Self {
     Self {
       capabilities,
@@ -50,7 +45,6 @@ impl DevServicesApp {
     self.theme = theme.clone();
   }
 
-  /// Executes the `reload` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn reload(&mut self) {
     if self.job.is_some() {
       return;
@@ -99,7 +93,6 @@ impl DevServicesApp {
     false
   }
 
-  /// Executes the `poll` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn poll(&mut self) -> bool {
     let Some(job) = &self.job else {
       return false;
@@ -123,7 +116,6 @@ impl DevServicesApp {
     false
   }
 
-  /// Processes `handle` in this module's event flow. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn handle(&mut self, key: KeyCode) -> bool {
     if self.job.is_some() {
       return false;
@@ -141,7 +133,6 @@ impl DevServicesApp {
     false
   }
 
-  /// Executes the `breadcrumb` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn breadcrumb(&self) -> String {
     format!(
       "{} > {}",
@@ -150,7 +141,6 @@ impl DevServicesApp {
     )
   }
 
-  /// Executes the `footer_hints` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn footer_hints(&self) -> String {
     hints(
       self.lang,
@@ -235,7 +225,6 @@ impl DevServicesApp {
     rows
   }
 
-  /// Renders `draw` while respecting the current domain state and semantic theme. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn draw(&mut self, frame: &mut Frame) {
     let area = frame.area();
     let body = shell(
@@ -266,7 +255,6 @@ mod tests {
   use argvus_control_center_services::Unit;
 
   #[test]
-  /// Executes the `rows_render_each_section_with_its_count` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn rows_render_each_section_with_its_count() {
     let mut app = DevServicesApp::new(
       Lang::for_locale("en-US"),
@@ -293,7 +281,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `empty_sections_show_their_fallback_message` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn empty_sections_show_their_fallback_message() {
     let app = DevServicesApp::new(
       Lang::for_locale("en-US"),
@@ -308,7 +295,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `esc_requests_leaving_the_page` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn esc_requests_leaving_the_page() {
     let mut app = DevServicesApp::new(
       Lang::for_locale("en-US"),

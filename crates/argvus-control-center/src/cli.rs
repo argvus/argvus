@@ -1,7 +1,4 @@
-//! Implements argument parsing and startup route selection in crate `argvus control center`. This separation keeps external effects from contaminating models, routes, or rendering.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
+//! Argument parsing and startup route selection.
 use anyhow::{Result, bail};
 #[cfg(feature = "about")]
 use argvus_control_center_about::Tab;
@@ -37,10 +34,8 @@ use argvus_control_center_storage::StoragePage;
 
 use crate::app::InitialRoute;
 
-/// Defines the constant `VERSION`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 
-/// Converts input data into `parse_or_print` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn parse_or_print() -> Result<Option<InitialRoute>> {
   let args: Vec<String> = std::env::args().skip(1).collect();
   match parse(&args) {
@@ -54,7 +49,6 @@ pub fn parse_or_print() -> Result<Option<InitialRoute>> {
   }
 }
 
-/// Converts input data into `parse` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn parse(args: &[String]) -> Result<Option<InitialRoute>, String> {
   if args.is_empty() {
     return Ok(Some(InitialRoute::Home));
@@ -141,7 +135,6 @@ pub fn parse(args: &[String]) -> Result<Option<InitialRoute>, String> {
 }
 
 #[cfg(feature = "appearance")]
-/// Converts input data into `parse_appearance` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn parse_appearance(args: &[String]) -> Result<AppearancePage, String> {
   if args.len() > 1 {
     return Err("appearance accepts at most one page".into());
@@ -167,7 +160,6 @@ fn parse_appearance(args: &[String]) -> Result<AppearancePage, String> {
 }
 
 #[cfg(feature = "storage")]
-/// Converts input data into `parse_storage` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn parse_storage(args: &[String]) -> Result<StoragePage, String> {
   if args.len() > 1 {
     return Err("storage accepts at most one page".into());
@@ -185,7 +177,6 @@ fn parse_storage(args: &[String]) -> Result<StoragePage, String> {
 }
 
 #[cfg(feature = "session")]
-/// Converts input data into `parse_session` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn parse_session(args: &[String]) -> Result<SessionPage, String> {
   if args.len() > 1 {
     return Err("session accepts at most one page".into());
@@ -201,7 +192,6 @@ fn parse_session(args: &[String]) -> Result<SessionPage, String> {
 }
 
 #[cfg(feature = "displays")]
-/// Converts input data into `parse_displays` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn parse_displays(args: &[String]) -> Result<DisplayPage, String> {
   if args.len() > 1 {
     return Err("displays accepts at most one page".into());
@@ -245,7 +235,6 @@ fn parse_displays(args: &[String]) -> Result<DisplayPage, String> {
 }
 
 #[cfg(feature = "diagnostics")]
-/// Converts input data into `parse_diagnostics` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn parse_diagnostics(args: &[String]) -> Result<DiagnosticPage, String> {
   if args.len() > 1 {
     return Err("diagnostics accepts at most one page".into());
@@ -266,7 +255,6 @@ fn parse_diagnostics(args: &[String]) -> Result<DiagnosticPage, String> {
 }
 
 #[cfg(feature = "hardware")]
-/// Converts input data into `parse_hardware` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn parse_hardware(args: &[String]) -> Result<HardwarePage, String> {
   if args.len() > 1 {
     return Err("hardware accepts at most one page".into());
@@ -283,7 +271,6 @@ fn parse_hardware(args: &[String]) -> Result<HardwarePage, String> {
 }
 
 #[cfg(feature = "services")]
-/// Converts input data into `parse_services` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn parse_services(args: &[String]) -> Result<ServicePage, String> {
   if args.len() > 1 {
     return Err("services accepts at most one page".into());
@@ -298,7 +285,6 @@ fn parse_services(args: &[String]) -> Result<ServicePage, String> {
 }
 
 #[cfg(feature = "network")]
-/// Converts input data into `parse_network` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn parse_network(args: &[String]) -> Result<NetworkPage, String> {
   if args.len() > 1 {
     return Err("network accepts at most one page".into());
@@ -318,7 +304,6 @@ fn parse_network(args: &[String]) -> Result<NetworkPage, String> {
   })
 }
 #[cfg(feature = "audio")]
-/// Converts input data into `parse_audio` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn parse_audio(args: &[String]) -> Result<AudioPage, String> {
   if args.len() > 1 {
     return Err("audio accepts at most one page".into());
@@ -331,7 +316,6 @@ fn parse_audio(args: &[String]) -> Result<AudioPage, String> {
   })
 }
 #[cfg(feature = "bluetooth")]
-/// Converts input data into `parse_bluetooth` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn parse_bluetooth(args: &[String]) -> Result<BluetoothPage, String> {
   if args.len() > 1 {
     return Err("bluetooth accepts at most one page".into());
@@ -345,7 +329,6 @@ fn parse_bluetooth(args: &[String]) -> Result<BluetoothPage, String> {
 }
 
 #[cfg(feature = "boot")]
-/// Converts input data into `parse_boot` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn parse_boot(args: &[String]) -> Result<BootPage, String> {
   if args.len() > 1 {
     return Err("boot accepts at most one page".into());
@@ -361,7 +344,6 @@ fn parse_boot(args: &[String]) -> Result<BootPage, String> {
 }
 
 #[cfg(feature = "packages")]
-/// Converts input data into `parse_packages` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn parse_packages(args: &[String]) -> Result<PackagesPage, String> {
   if args.len() > 1 {
     return Err("packages accepts at most one page".into());
@@ -389,7 +371,6 @@ fn parse_packages(args: &[String]) -> Result<PackagesPage, String> {
   })
 }
 
-/// Executes the `settings_route` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn settings_route(page: Page) -> Option<InitialRoute> {
   Some(InitialRoute::Settings(page))
 }
@@ -412,13 +393,11 @@ fn settings_route(page: Page) -> Option<InitialRoute> {
   feature = "displays",
   feature = "appearance"
 ))]
-/// Executes the `option` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn option(value: &str) -> &str {
   value.strip_prefix("--").unwrap_or(value)
 }
 
 #[cfg(feature = "apps")]
-/// Converts input data into `parse_apps` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn parse_apps(args: &[String]) -> Result<Page, String> {
   if args.is_empty() {
     return Ok(Page::DefaultApps);
@@ -444,7 +423,6 @@ fn parse_apps(args: &[String]) -> Result<Page, String> {
 }
 
 #[cfg(feature = "fonts")]
-/// Converts input data into `parse_fonts` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn parse_fonts(args: &[String]) -> Result<Page, String> {
   if args.is_empty() {
     return Ok(Page::Fonts);
@@ -470,7 +448,6 @@ fn parse_fonts(args: &[String]) -> Result<Page, String> {
 }
 
 #[cfg(feature = "locale")]
-/// Converts input data into `parse_locale` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn parse_locale(args: &[String]) -> Result<Page, String> {
   if args.is_empty() {
     return Ok(Page::LocaleRegion);
@@ -492,7 +469,6 @@ fn parse_locale(args: &[String]) -> Result<Page, String> {
 }
 
 #[cfg(feature = "system")]
-/// Converts input data into `parse_system` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn parse_system(args: &[String]) -> Result<Page, String> {
   if args.is_empty() {
     return Ok(Page::Hostname);
@@ -510,7 +486,6 @@ fn parse_system(args: &[String]) -> Result<Page, String> {
 }
 
 #[cfg(feature = "about")]
-/// Converts input data into `parse_about_tab` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn parse_about_tab(value: &str) -> Result<Tab, String> {
   match value {
     "system" => Ok(Tab::System),
@@ -522,7 +497,6 @@ fn parse_about_tab(value: &str) -> Result<Tab, String> {
   }
 }
 
-/// Executes the `print_help` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn print_help() {
   println!(
     "argvus-control-center - keyboard-first ARGVUS control center\n\n\
@@ -535,314 +509,4 @@ pub fn print_help() {
 }
 
 #[cfg(test)]
-mod tests {
-  use super::*;
-
-  /// Executes the `args` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
-  fn args(values: &[&str]) -> Vec<String> {
-    values.iter().map(ToString::to_string).collect()
-  }
-
-  #[cfg(all(
-    feature = "apps",
-    feature = "fonts",
-    feature = "locale",
-    feature = "system",
-    feature = "network",
-    feature = "about"
-  ))]
-  #[test]
-  /// Converts input data into `parses_direct_routes` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
-  fn parses_direct_routes() {
-    assert_eq!(
-      parse(&args(&["apps"])).unwrap(),
-      Some(InitialRoute::Settings(Page::DefaultApps))
-    );
-    assert_eq!(
-      parse(&args(&["fonts"])).unwrap(),
-      Some(InitialRoute::Settings(Page::Fonts))
-    );
-    assert_eq!(
-      parse(&args(&["locale", "--keyboard"])).unwrap(),
-      Some(InitialRoute::Settings(Page::Keyboard))
-    );
-    assert_eq!(
-      parse(&args(&["input"])).unwrap(),
-      Some(InitialRoute::Settings(Page::MouseTouchpad))
-    );
-    assert_eq!(
-      parse(&args(&["system", "hostname"])).unwrap(),
-      Some(InitialRoute::Settings(Page::Hostname))
-    );
-    assert_eq!(
-      parse(&args(&["network", "firewall"])).unwrap(),
-      Some(InitialRoute::Settings(Page::Firewall))
-    );
-    #[cfg(feature = "network")]
-    for (page, expected) in [
-      ("connections", NetworkPage::Connections),
-      ("activate", NetworkPage::Activate),
-      ("add", NetworkPage::AddConnection),
-      ("--add", NetworkPage::AddConnection),
-    ] {
-      assert_eq!(
-        parse(&args(&["network", page])).unwrap(),
-        Some(InitialRoute::Network(expected))
-      );
-    }
-    assert_eq!(
-      parse(&args(&["about", "credits"])).unwrap(),
-      Some(InitialRoute::About(Tab::Credits))
-    );
-  }
-
-  #[cfg(all(
-    feature = "apps",
-    feature = "fonts",
-    feature = "locale",
-    feature = "language",
-    feature = "system"
-  ))]
-  #[test]
-  /// Executes the `maps_every_settings_page` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
-  fn maps_every_settings_page() {
-    let cases = [
-      (
-        vec!["apps", "terminal"],
-        Page::AppSelector(Category::Terminal),
-      ),
-      (
-        vec!["apps", "file-manager"],
-        Page::AppSelector(Category::FileManager),
-      ),
-      (
-        vec!["apps", "text-editor"],
-        Page::AppSelector(Category::TextEditor),
-      ),
-      (
-        vec!["apps", "terminal-editor"],
-        Page::AppSelector(Category::TerminalEditor),
-      ),
-      (
-        vec!["apps", "browser"],
-        Page::AppSelector(Category::Browser),
-      ),
-      (
-        vec!["apps", "image-viewer"],
-        Page::AppSelector(Category::ImageViewer),
-      ),
-      (
-        vec!["apps", "pdf-viewer"],
-        Page::AppSelector(Category::PdfViewer),
-      ),
-      (
-        vec!["apps", "video-player"],
-        Page::AppSelector(Category::VideoPlayer),
-      ),
-      (
-        vec!["apps", "audio-player"],
-        Page::AppSelector(Category::AudioPlayer),
-      ),
-      (
-        vec!["apps", "archive"],
-        Page::AppSelector(Category::Archive),
-      ),
-      (
-        vec!["apps", "launcher"],
-        Page::AppSelector(Category::Launcher),
-      ),
-      (
-        vec!["fonts", "taskbar"],
-        Page::FontSelector(FontTarget::Taskbar),
-      ),
-      (
-        vec!["fonts", "widget-telemetry"],
-        Page::FontSelector(FontTarget::Sysinfo),
-      ),
-      (
-        vec!["fonts", "control-panel"],
-        Page::FontSelector(FontTarget::ControlPanel),
-      ),
-      (
-        vec!["fonts", "system"],
-        Page::FontSelector(FontTarget::System),
-      ),
-      (vec!["fonts", "apps"], Page::FontSelector(FontTarget::Apps)),
-      (
-        vec!["fonts", "terminal"],
-        Page::FontSelector(FontTarget::Terminal),
-      ),
-      (
-        vec!["fonts", "browser"],
-        Page::FontSelector(FontTarget::Browser),
-      ),
-      (
-        vec!["fonts", "antialiasing"],
-        Page::SettingSelector(SettingKind::Antialiasing),
-      ),
-      (
-        vec!["fonts", "hinting"],
-        Page::SettingSelector(SettingKind::Hinting),
-      ),
-      (
-        vec!["fonts", "subpixel"],
-        Page::SettingSelector(SettingKind::Subpixel),
-      ),
-      (
-        vec!["fonts", "dpi"],
-        Page::SettingSelector(SettingKind::Dpi),
-      ),
-      (vec!["locale", "timezone"], Page::TimeZone),
-      (vec!["locale", "date-time"], Page::DateTime),
-      (vec!["locale", "regional-locale"], Page::RegionalLocale),
-      (vec!["locale", "system-locales"], Page::SystemLocales),
-      (vec!["locale", "keyboard"], Page::Keyboard),
-      (vec!["locale", "keyboard-layout"], Page::KeyboardLayout),
-      (vec!["locale", "keyboard-variant"], Page::KeyboardVariant),
-      (vec!["locale", "console-keymap"], Page::ConsoleKeymap),
-      (vec!["language"], Page::Language),
-      (vec!["system"], Page::Hostname),
-      (vec!["system", "hostname"], Page::Hostname),
-      (vec!["system", "firewall"], Page::Firewall),
-      (vec!["system", "--users"], Page::Users),
-      (vec!["system", "groups"], Page::Groups),
-    ];
-
-    for (arguments, expected) in cases {
-      assert_eq!(
-        parse(&args(&arguments)).unwrap(),
-        Some(InitialRoute::Settings(expected)),
-        "arguments: {arguments:?}"
-      );
-    }
-  }
-
-  #[test]
-  /// Executes the `rejects_invalid_routes` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
-  fn rejects_invalid_routes() {
-    assert!(parse(&args(&["about", "unknown"])).is_err());
-    assert!(parse(&args(&["fonts", "extra"])).is_err());
-  }
-
-  #[cfg(feature = "power")]
-  #[test]
-  /// Converts input data into `parses_the_power_route` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
-  fn parses_the_power_route() {
-    assert_eq!(parse(&args(&["power"])).unwrap(), Some(InitialRoute::Power));
-  }
-
-  #[cfg(feature = "session")]
-  #[test]
-  /// Converts input data into `parses_every_session_page` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
-  fn parses_every_session_page() {
-    let cases = [
-      (vec!["session"], SessionPage::Home),
-      (vec!["session", "summary"], SessionPage::Home),
-      (vec!["session", "components"], SessionPage::Components),
-      (vec!["session", "autostart"], SessionPage::Autostart),
-      (vec!["session", "diagnostics"], SessionPage::Diagnostics),
-      (vec!["session", "logs"], SessionPage::Logs),
-    ];
-    for (arguments, expected) in cases {
-      assert_eq!(
-        parse(&args(&arguments)).unwrap(),
-        Some(InitialRoute::Session(expected)),
-        "arguments: {arguments:?}"
-      );
-    }
-    assert!(parse(&args(&["session", "unknown"])).is_err());
-  }
-
-  #[cfg(feature = "displays")]
-  #[test]
-  /// Converts input data into `parses_displays_pages` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
-  fn parses_displays_pages() {
-    assert_eq!(
-      parse(&args(&["displays"])).unwrap(),
-      Some(InitialRoute::Displays(DisplayPage::Home))
-    );
-    assert_eq!(
-      parse(&args(&["monitors", "vrr"])).unwrap(),
-      Some(InitialRoute::Displays(DisplayPage::Picker {
-        monitor: 0,
-        setting: MonitorSetting::Vrr,
-      }))
-    );
-    assert_eq!(
-      parse(&args(&["displays", "orientation"])).unwrap(),
-      Some(InitialRoute::Displays(DisplayPage::Picker {
-        monitor: 0,
-        setting: MonitorSetting::Orientation,
-      }))
-    );
-    assert!(parse(&args(&["displays", "unknown"])).is_err());
-  }
-
-  #[cfg(feature = "appearance")]
-  #[test]
-  /// Converts input data into `parses_appearance_pages` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
-  fn parses_appearance_pages() {
-    assert_eq!(
-      parse(&args(&["appearance"])).unwrap(),
-      Some(InitialRoute::Appearance(AppearancePage::Home))
-    );
-    assert_eq!(
-      parse(&args(&["appearance", "themes"])).unwrap(),
-      Some(InitialRoute::Appearance(AppearancePage::Themes))
-    );
-    assert_eq!(
-      parse(&args(&["appearance", "wallpapers"])).unwrap(),
-      Some(InitialRoute::Appearance(AppearancePage::Wallpapers))
-    );
-    assert_eq!(
-      parse(&args(&["appearance", "icons"])).unwrap(),
-      Some(InitialRoute::Appearance(AppearancePage::Icons))
-    );
-    assert_eq!(
-      parse(&args(&["appearance", "accent"])).unwrap(),
-      Some(InitialRoute::Appearance(AppearancePage::Accents))
-    );
-    assert_eq!(
-      parse(&args(&["appearance", "taskbar"])).unwrap(),
-      Some(InitialRoute::Appearance(AppearancePage::Taskbar))
-    );
-    assert_eq!(
-      parse(&args(&["appearance", "taskbar-position"])).unwrap(),
-      Some(InitialRoute::Appearance(AppearancePage::TaskbarPosition))
-    );
-    assert_eq!(
-      parse(&args(&["appearance", "position"])).unwrap(),
-      Some(InitialRoute::Appearance(AppearancePage::TaskbarPosition))
-    );
-    assert_eq!(
-      parse(&args(&["appearance", "taskbar-height"])).unwrap(),
-      Some(InitialRoute::Appearance(AppearancePage::TaskbarHeight))
-    );
-    assert_eq!(
-      parse(&args(&["appearance", "taskbar-border"])).unwrap(),
-      Some(InitialRoute::Appearance(AppearancePage::TaskbarBorder))
-    );
-    assert_eq!(
-      parse(&args(&["appearance", "taskbar-group"])).unwrap(),
-      Some(InitialRoute::Appearance(AppearancePage::Taskbar))
-    );
-    assert_eq!(
-      parse(&args(&["appearance", "utility-group"])).unwrap(),
-      Some(InitialRoute::Appearance(AppearancePage::Taskbar))
-    );
-    assert_eq!(
-      parse(&args(&["appearance", "widget-telemetry"])).unwrap(),
-      Some(InitialRoute::Appearance(AppearancePage::WidgetTelemetry))
-    );
-    assert!(parse(&args(&["appearance", "unknown"])).is_err());
-  }
-
-  #[test]
-  /// Converts input data into `parses_the_config_route` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
-  fn parses_the_config_route() {
-    assert_eq!(
-      parse(&args(&["config"])).unwrap(),
-      Some(InitialRoute::Config)
-    );
-  }
-}
+mod tests;

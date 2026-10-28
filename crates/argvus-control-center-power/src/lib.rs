@@ -1,4 +1,4 @@
-//! Root module of crate `argvus control center power`. It exposes public boundaries and composes internal responsibilities without duplicating domain rules.
+//! Power page of the ARGVUS Control Center (profiles, battery and sleep).
 //!
 //! External tool dependencies remain in backend layers;
 //! the UI consumes normalized models and results.

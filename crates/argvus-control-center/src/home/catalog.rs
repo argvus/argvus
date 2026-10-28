@@ -193,14 +193,89 @@ pub struct HomeAvailability {
 /// Builds the Home catalog for a language and the detected availability. The
 /// cards appear in the order of the approved layout; a card without any
 /// available destination is not listed at all.
-#[allow(clippy::vec_init_then_push)]
-pub fn home_rows(
-  lang: Lang,
-  // Unread when no feature that depends on availability is compiled in.
-  #[allow(unused_variables)] availability: HomeAvailability,
-) -> Vec<HomeRow> {
+pub fn home_rows(lang: Lang, availability: HomeAvailability) -> Vec<HomeRow> {
   let mut rows = Vec::new();
 
+  push_card(
+    &mut rows,
+    card(
+      lang,
+      HomeCardId::Appearance.title_key(),
+      "control_center.card_appearance_description",
+      icons::PALETTE,
+    ),
+    appearance_card_items(lang),
+  );
+
+  push_card(
+    &mut rows,
+    card(
+      lang,
+      HomeCardId::DesktopInput.title_key(),
+      "control_center.card_desktop_input_description",
+      icons::KEYBOARD,
+    ),
+    desktop_input_card_items(lang, availability),
+  );
+
+  push_card(
+    &mut rows,
+    card(
+      lang,
+      HomeCardId::Preferences.title_key(),
+      "control_center.card_preferences_description",
+      icons::ACCOUNT_COG,
+    ),
+    preferences_card_items(lang, availability),
+  );
+
+  push_card(
+    &mut rows,
+    card(
+      lang,
+      HomeCardId::Hardware.title_key(),
+      "control_center.card_hardware_description",
+      icons::HARDWARE,
+    ),
+    hardware_card_items(lang, availability),
+  );
+
+  push_card(
+    &mut rows,
+    card(
+      lang,
+      HomeCardId::System.title_key(),
+      "control_center.card_system_description",
+      icons::SETTINGS,
+    ),
+    system_card_items(lang),
+  );
+
+  push_card(
+    &mut rows,
+    card(
+      lang,
+      HomeCardId::Tools.title_key(),
+      "control_center.card_tools_description",
+      icons::WRENCH,
+    ),
+    tools_card_items(lang, availability),
+  );
+
+  rows.push(HomeRow::Standalone {
+    label: tr(lang, "control_center.settings"),
+    destination: HomeDestination::Settings,
+  });
+  rows
+}
+
+/// Items of the Appearance card, limited to the features compiled in.
+#[allow(clippy::vec_init_then_push)]
+fn appearance_card_items(
+  // Unread when none of the features of this card is compiled in.
+  #[allow(unused_variables)] lang: Lang,
+) -> Vec<HomeRow> {
+  // Every push may be compiled out, which leaves `items` unmodified.
   #[allow(unused_mut)]
   let mut items = Vec::new();
   #[cfg(feature = "appearance")]
@@ -233,17 +308,17 @@ pub fn home_rows(
     "control_center.widget_telemetry",
     HomeDestination::WidgetTelemetry,
   ));
-  push_card(
-    &mut rows,
-    card(
-      lang,
-      HomeCardId::Appearance.title_key(),
-      "control_center.card_appearance_description",
-      icons::PALETTE,
-    ),
-    items,
-  );
+  items
+}
 
+/// Items of the DesktopInput card, limited to the features compiled in.
+#[allow(clippy::vec_init_then_push)]
+fn desktop_input_card_items(
+  lang: Lang,
+  // Unread when no feature that depends on availability is compiled in.
+  #[allow(unused_variables)] availability: HomeAvailability,
+) -> Vec<HomeRow> {
+  // Every push may be compiled out, which leaves `items` unmodified.
   #[allow(unused_mut)]
   let mut items = Vec::new();
   items.push(item(
@@ -271,17 +346,18 @@ pub fn home_rows(
     "control_center.mouse_touchpad",
     HomeDestination::MouseTouchpad,
   ));
-  push_card(
-    &mut rows,
-    card(
-      lang,
-      HomeCardId::DesktopInput.title_key(),
-      "control_center.card_desktop_input_description",
-      icons::KEYBOARD,
-    ),
-    items,
-  );
+  items
+}
 
+/// Items of the Preferences card, limited to the features compiled in.
+#[allow(clippy::vec_init_then_push)]
+fn preferences_card_items(
+  // Unread when none of the features of this card is compiled in.
+  #[allow(unused_variables)] lang: Lang,
+  // Unread when no feature that depends on availability is compiled in.
+  #[allow(unused_variables)] availability: HomeAvailability,
+) -> Vec<HomeRow> {
+  // Every push may be compiled out, which leaves `items` unmodified.
   #[allow(unused_mut)]
   let mut items = Vec::new();
   #[cfg(feature = "locale")]
@@ -314,17 +390,18 @@ pub fn home_rows(
       HomeDestination::Session,
     ));
   }
-  push_card(
-    &mut rows,
-    card(
-      lang,
-      HomeCardId::Preferences.title_key(),
-      "control_center.card_preferences_description",
-      icons::ACCOUNT_COG,
-    ),
-    items,
-  );
+  items
+}
 
+/// Items of the Hardware card, limited to the features compiled in.
+#[allow(clippy::vec_init_then_push)]
+fn hardware_card_items(
+  // Unread when none of the features of this card is compiled in.
+  #[allow(unused_variables)] lang: Lang,
+  // Unread when no feature that depends on availability is compiled in.
+  #[allow(unused_variables)] availability: HomeAvailability,
+) -> Vec<HomeRow> {
+  // Every push may be compiled out, which leaves `items` unmodified.
   #[allow(unused_mut)]
   let mut items = Vec::new();
   #[cfg(feature = "hardware")]
@@ -355,17 +432,16 @@ pub fn home_rows(
     "control_center.storage",
     HomeDestination::Storage,
   ));
-  push_card(
-    &mut rows,
-    card(
-      lang,
-      HomeCardId::Hardware.title_key(),
-      "control_center.card_hardware_description",
-      icons::HARDWARE,
-    ),
-    items,
-  );
+  items
+}
 
+/// Items of the System card, limited to the features compiled in.
+#[allow(clippy::vec_init_then_push)]
+fn system_card_items(
+  // Unread when none of the features of this card is compiled in.
+  #[allow(unused_variables)] lang: Lang,
+) -> Vec<HomeRow> {
+  // Every push may be compiled out, which leaves `items` unmodified.
   #[allow(unused_mut)]
   let mut items = Vec::new();
   #[cfg(feature = "packages")]
@@ -406,17 +482,18 @@ pub fn home_rows(
     "control_center.notifications",
     HomeDestination::Notifications,
   ));
-  push_card(
-    &mut rows,
-    card(
-      lang,
-      HomeCardId::System.title_key(),
-      "control_center.card_system_description",
-      icons::SETTINGS,
-    ),
-    items,
-  );
+  items
+}
 
+/// Items of the Tools card, limited to the features compiled in.
+#[allow(clippy::vec_init_then_push)]
+fn tools_card_items(
+  // Unread when none of the features of this card is compiled in.
+  #[allow(unused_variables)] lang: Lang,
+  // Unread when no feature that depends on availability is compiled in.
+  #[allow(unused_variables)] availability: HomeAvailability,
+) -> Vec<HomeRow> {
+  // Every push may be compiled out, which leaves `items` unmodified.
   #[allow(unused_mut)]
   let mut items = Vec::new();
   #[cfg(feature = "apps")]
@@ -463,22 +540,7 @@ pub fn home_rows(
     "control_center.about_argvus",
     HomeDestination::About,
   ));
-  push_card(
-    &mut rows,
-    card(
-      lang,
-      HomeCardId::Tools.title_key(),
-      "control_center.card_tools_description",
-      icons::WRENCH,
-    ),
-    items,
-  );
-
-  rows.push(HomeRow::Standalone {
-    label: tr(lang, "control_center.settings"),
-    destination: HomeDestination::Settings,
-  });
-  rows
+  items
 }
 
 /// Builds the heading of a card from its i18n keys and icon.

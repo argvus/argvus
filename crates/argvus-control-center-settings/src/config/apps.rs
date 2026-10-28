@@ -1,7 +1,4 @@
-//! Implements `apps` responsibilities in crate `argvus control center settings`. This separation keeps external effects from contaminating models, routes, or rendering.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
+//! Default applications backend: desktop files, installed applications per category and the saved choices.
 use std::collections::HashMap;
 
 use crate::error::SettingsError;
@@ -12,7 +9,6 @@ use argvus_control_center_apps::{
   state::AppState,
 };
 
-/// Represents `AppsBackend`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub struct AppsBackend {
   desktops: Vec<DesktopFile>,
   installed: HashMap<Category, Vec<InstalledApp>>,
@@ -31,7 +27,6 @@ impl AppsBackend {
     }
   }
 
-  /// Retrieves data for `load` without mixing collection with TUI rendering. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn load() -> Self {
     let desktops = detect::scan_desktop_files();
     let installed: HashMap<Category, Vec<InstalledApp>> = Category::ORDER
@@ -66,22 +61,18 @@ impl AppsBackend {
     }
   }
 
-  /// Executes the `installed` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn installed(&self, category: Category) -> &[InstalledApp] {
     self.installed.get(&category).map_or(&[], Vec::as_slice)
   }
 
-  /// Executes the `current` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn current(&self, category: Category) -> String {
     self.current.get(&category).cloned().unwrap_or_default()
   }
 
-  /// Checks the condition represented by `is_default` using only the state available to the module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn is_default(&self, category: Category) -> bool {
     self.state.get(category).is_none()
   }
 
-  /// Applies the `set_default` operation while preserving the persistence and local-update contract. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn set_default(&mut self, category: Category, binary: &str) -> Result<(), SettingsError> {
     let canonical = find_app(category, binary)
       .map(|app| app.binary)
@@ -107,7 +98,6 @@ impl AppsBackend {
     Ok(())
   }
 
-  /// Executes the `reset_default` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn reset_default(&mut self, category: Category) -> Result<(), SettingsError> {
     let previous = self.state.get(category);
     self.state.reset(category);
@@ -129,7 +119,6 @@ impl AppsBackend {
     Ok(())
   }
 
-  /// Executes the `reset_all` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn reset_all(&mut self) -> Result<(), SettingsError> {
     let previous = self.state.clone();
     self.state.reset_all();
@@ -153,7 +142,6 @@ impl AppsBackend {
   }
 }
 
-/// Executes the `default_from_mimeapps` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn default_from_mimeapps(
   category: Category,
   contents: &str,
@@ -194,7 +182,6 @@ mod tests {
   use super::*;
 
   #[test]
-  /// Executes the `resolves_xdg_default_from_default_applications_section` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn resolves_xdg_default_from_default_applications_section() {
     let installed = vec![InstalledApp {
       binary: "firefox".into(),
@@ -211,7 +198,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `internal_categories_do_not_resolve_from_mime` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn internal_categories_do_not_resolve_from_mime() {
     assert_eq!(default_from_mimeapps(Category::Launcher, "", &[]), None);
   }

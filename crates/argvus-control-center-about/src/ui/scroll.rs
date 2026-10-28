@@ -1,7 +1,4 @@
-//! Implements scroll state management in crate `argvus about`. This separation keeps external effects from contaminating models, routes, or rendering.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
+//! Scroll state management of the About page.
 use argvus_tui::scroll::thumb_position;
 use ratatui::Frame;
 use ratatui::layout::Rect;
@@ -11,7 +8,6 @@ use ratatui::widgets::{Scrollbar, ScrollbarOrientation, ScrollbarState, Stateful
 use crate::app::App;
 use crate::pages::Doc;
 
-/// Renders `draw` while respecting the current domain state and semantic theme. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn draw(frame: &mut Frame, area: Rect, app: &App, doc: &Doc<'_>) {
   if app.viewport == 0 || doc.height() <= app.viewport {
     return;

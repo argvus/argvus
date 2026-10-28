@@ -1,4 +1,4 @@
-//! Root module of crate `argvus control center dev services`. It exposes public boundaries and composes internal responsibilities without duplicating domain rules.
+//! Developer services page of the ARGVUS Control Center (Docker and Podman services).
 //!
 //! External tool dependencies remain in backend layers;
 //! the UI consumes normalized models and results.

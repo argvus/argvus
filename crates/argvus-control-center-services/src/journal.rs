@@ -1,11 +1,7 @@
-//! Implements journal parsing and presentation in crate `argvus control center services`. This separation keeps external effects from contaminating models, routes, or rendering.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
+//! Journal parsing and presentation of the Services page.
 use argvus_control_center_core::sanitize::terminal_text;
 use serde::Deserialize;
 #[derive(Debug, Clone, Default, Deserialize, PartialEq, Eq)]
-/// Represents `JournalEntry`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub struct JournalEntry {
   #[serde(rename = "__REALTIME_TIMESTAMP")]
   pub timestamp: Option<String>,
@@ -23,7 +19,6 @@ pub struct JournalEntry {
   pub boot_id: Option<String>,
 }
 impl JournalEntry {
-  /// Executes the `sanitized` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn sanitized(mut self) -> Self {
     self.message = self.message.map(|v| terminal_text(&v));
     self.unit = self.unit.map(|v| terminal_text(&v));
@@ -32,7 +27,6 @@ impl JournalEntry {
     self.boot_id = self.boot_id.map(|v| terminal_text(&v));
     self
   }
-  /// Executes the `priority_name` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn priority_name(&self) -> &str {
     match self.priority.as_deref() {
       Some("0") => "emerg",
@@ -47,7 +41,6 @@ impl JournalEntry {
     }
   }
 }
-/// Converts input data into `parse_line` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn parse_line(line: &str) -> Result<JournalEntry, String> {
   serde_json::from_str::<JournalEntry>(line)
     .map(|v| v.sanitized())
@@ -57,7 +50,6 @@ pub fn parse_line(line: &str) -> Result<JournalEntry, String> {
 mod tests {
   use super::*;
   #[test]
-  /// Converts input data into `parses_and_sanitizes` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn parses_and_sanitizes() {
     let e = parse_line(
       r#"{"MESSAGE":"bad\u001b[31m text","PRIORITY":"3","_EXE":"/usr/bin/sshd\u001b[2J"}"#,

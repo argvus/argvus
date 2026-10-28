@@ -1,7 +1,4 @@
-//! Implements application state and main-flow coordination in crate `argvus about`. This separation keeps external effects from contaminating models, routes, or rendering.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
+//! Application state and main-flow coordination of the About page.
 
 use argvus_control_center_core::clipboard;
 use argvus_control_center_core::jobs::{JobHandle, JobManager, JobState};
@@ -13,13 +10,10 @@ use crate::pages::{self, Doc};
 use crate::system::SystemInfo;
 use crate::theme::Theme;
 
-/// Defines the constant `MIN_WIDTH`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub const MIN_WIDTH: u16 = 60;
-/// Defines the constant `MIN_HEIGHT`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub const MIN_HEIGHT: u16 = 18;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-/// Defines `Tab`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub enum Tab {
   System,
   About,
@@ -29,7 +23,6 @@ pub enum Tab {
 }
 
 impl Tab {
-  /// Defines the constant `ALL`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
   pub const ALL: [Tab; 5] = [
     Tab::System,
     Tab::About,
@@ -38,7 +31,6 @@ impl Tab {
     Tab::Copyright,
   ];
 
-  /// Executes the const function documented in this module. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
   pub const fn index(self) -> usize {
     match self {
       Tab::System => 0,
@@ -49,7 +41,6 @@ impl Tab {
     }
   }
 
-  /// Executes the const function documented in this module. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
   pub const fn from_index(index: usize) -> Self {
     match index % Self::ALL.len() {
       0 => Tab::System,
@@ -60,7 +51,6 @@ impl Tab {
     }
   }
 
-  /// Executes the `label` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn label(self, lang: Lang) -> &'static str {
     match self {
       Tab::System => tr(lang, "control_center.about_system_hardware"),
@@ -73,7 +63,6 @@ impl Tab {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-/// Defines `StatusKind`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub enum StatusKind {
   Info,
   Success,
@@ -81,13 +70,11 @@ pub enum StatusKind {
 }
 
 #[derive(Debug, Clone)]
-/// Represents `Status`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub struct Status {
   pub text: String,
   pub kind: StatusKind,
 }
 
-/// Represents `DocCache`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 struct DocCache {
   tab: Tab,
   width: usize,
@@ -104,7 +91,6 @@ enum SystemLoad {
   Loaded,
 }
 
-/// Represents `App`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub struct App {
   pub lang: Lang,
   pub theme: Theme,
@@ -128,7 +114,6 @@ pub struct App {
 }
 
 impl App {
-  /// Constructs `new` with this module's expected initial state. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn new(initial_tab: Tab) -> Self {
     let lang = Lang::detect();
     Self::with_context(initial_tab, lang, Theme::load())
@@ -139,7 +124,6 @@ impl App {
     self.theme = theme.clone();
   }
 
-  /// Constructs `with_context` with this module's expected initial state. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn with_context(initial_tab: Tab, lang: Lang, theme: Theme) -> Self {
     let status = Status {
       text: tr(lang, "control_center.welcome_to_argvus").to_string(),
@@ -169,7 +153,6 @@ impl App {
   }
 
   #[cfg(test)]
-  /// Executes the `test` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn test() -> Self {
     use crate::system::battery::{Battery, BatteryStatus};
     use crate::system::boot::BootMode;
@@ -313,7 +296,6 @@ impl App {
     self.system.argvus.as_deref().unwrap_or(na(self.lang))
   }
 
-  /// Executes the `current_doc` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn current_doc(&mut self) -> Doc<'static> {
     let width = self.text_columns();
     if let Some(cache) = &self.cache
@@ -350,24 +332,20 @@ impl App {
     }
   }
 
-  /// Applies the `set_viewport` operation while preserving the persistence and local-update contract. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn set_viewport(&mut self, viewport: usize) {
     self.viewport = viewport;
     self.clamp_scroll();
   }
 
-  /// Executes the `next_tab` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn next_tab(&mut self) {
     self.goto_tab(Tab::from_index(self.active_tab.index() + 1));
   }
 
-  /// Executes the `prev_tab` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn prev_tab(&mut self) {
     let count = Tab::ALL.len();
     self.goto_tab(Tab::from_index(self.active_tab.index() + count - 1));
   }
 
-  /// Executes the `goto_tab` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn goto_tab(&mut self, tab: Tab) {
     if tab == self.active_tab {
       return;
@@ -382,7 +360,6 @@ impl App {
     self.clamp_scroll();
   }
 
-  /// Executes the `move_cursor` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn move_cursor(&mut self, delta: isize) {
     let doc = self.current_doc();
     if doc.actions.is_empty() {
@@ -395,7 +372,6 @@ impl App {
     self.ensure_selected_visible();
   }
 
-  /// Executes the `scroll_lines` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn scroll_lines(&mut self, delta: isize) {
     let doc = self.current_doc();
     let max = doc.height().saturating_sub(self.viewport);
@@ -403,13 +379,11 @@ impl App {
     self.scroll = next.clamp(0, max as isize) as usize;
   }
 
-  /// Executes the `page` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn page(&mut self, delta: isize) {
     let step = self.viewport.max(1) as isize;
     self.scroll_lines(delta * step);
   }
 
-  /// Executes the `home` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn home(&mut self) {
     let doc = self.current_doc();
     if doc.actions.is_empty() {
@@ -420,7 +394,6 @@ impl App {
     self.scroll = 0;
   }
 
-  /// Executes the `end` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn end(&mut self) {
     let doc = self.current_doc();
     if doc.actions.is_empty() {
@@ -432,7 +405,6 @@ impl App {
     self.ensure_selected_visible();
   }
 
-  /// Executes the `enter` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn enter(&mut self) {
     let doc = self.current_doc();
     let Some(action) = doc.actions.get(self.selected) else {
@@ -475,7 +447,6 @@ impl App {
     });
   }
 
-  /// Executes the `ensure_selected_visible` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn ensure_selected_visible(&mut self) {
     let line = self
       .current_doc()
@@ -494,26 +465,22 @@ impl App {
     }
   }
 
-  /// Executes the `clamp_scroll` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn clamp_scroll(&mut self) {
     let height = self.current_doc().height();
     let max = height.saturating_sub(self.viewport);
     self.scroll = self.scroll.min(max);
   }
 
-  /// Executes the `resize` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn resize(&mut self, width: u16, height: u16) {
     self.width = width;
     self.height = height;
   }
 
-  /// Executes the `too_small` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn too_small(&self) -> bool {
     self.width < MIN_WIDTH || self.height < MIN_HEIGHT
   }
 }
 
-/// Executes the `open_url` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn open_url(url: &str) -> Result<(), AboutError> {
   argvus_control_center_core::process::command("xdg-open")
     .arg(url)
@@ -527,7 +494,6 @@ mod tests {
   use super::*;
 
   #[test]
-  /// Executes the `tab_switching_wraps_around` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn tab_switching_wraps_around() {
     let mut app = App::test();
     assert_eq!(app.active_tab, Tab::System);
@@ -538,7 +504,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `cursor_moves_within_links` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn cursor_moves_within_links() {
     let mut app = App::test();
     app.active_tab = Tab::About;
@@ -548,7 +513,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `scrolls_plain_content_without_links` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn scrolls_plain_content_without_links() {
     let mut app = App::test();
     app.active_tab = Tab::Copyright;
@@ -605,7 +569,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `resize_updates_dimensions` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn resize_updates_dimensions() {
     let mut app = App::test();
     app.resize(120, 40);
@@ -613,7 +576,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `each_tab_restores_its_scroll_and_selection` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn each_tab_restores_its_scroll_and_selection() {
     let mut app = App::test();
     app.active_tab = Tab::About;

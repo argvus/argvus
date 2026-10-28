@@ -1,7 +1,4 @@
-//! Implements font discovery and configuration in crate `argvus control center settings`. This separation keeps external effects from contaminating models, routes, or rendering.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
+//! Font discovery and configuration of the Settings pages.
 use std::collections::HashMap;
 use std::fmt::Write as _;
 use std::fs;
@@ -12,19 +9,13 @@ use crate::config::paths;
 use crate::error::SettingsError;
 use crate::system::fonts::FontEntry;
 
-/// Defines the constant `DEFAULT_FAMILY`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 const DEFAULT_FAMILY: &str = "IBM Plex Mono";
-/// Defines the constant `MANAGED_START`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 const MANAGED_START: &str = "/* argvus-control-center-fonts:start */";
-/// Defines the constant `MANAGED_END`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 const MANAGED_END: &str = "/* argvus-control-center-fonts:end */";
-/// Defines the constant `LEGACY_MANAGED_START`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 const LEGACY_MANAGED_START: &str = "/* argvus-settings-fonts:start */";
-/// Defines the constant `LEGACY_MANAGED_END`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 const LEGACY_MANAGED_END: &str = "/* argvus-settings-fonts:end */";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-/// Defines `FontTarget`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub enum FontTarget {
   Taskbar,
   Sysinfo,
@@ -36,7 +27,6 @@ pub enum FontTarget {
 }
 
 impl FontTarget {
-  /// Defines the constant `ALL`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
   pub const ALL: [Self; 7] = [
     Self::Taskbar,
     Self::Sysinfo,
@@ -47,7 +37,6 @@ impl FontTarget {
     Self::Browser,
   ];
 
-  /// Executes the const function documented in this module. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
   pub const fn key(self) -> &'static str {
     match self {
       Self::Taskbar => "taskbar",
@@ -60,7 +49,6 @@ impl FontTarget {
     }
   }
 
-  /// Executes the const function documented in this module. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
   pub const fn default_size(self) -> u16 {
     match self {
       Self::Taskbar | Self::System | Self::Terminal => 13,
@@ -70,19 +58,16 @@ impl FontTarget {
     }
   }
 
-  /// Executes the const function documented in this module. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
   const fn default_family(self) -> &'static str {
     DEFAULT_FAMILY
   }
 
-  /// Executes the const function documented in this module. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
   const fn default_style(self) -> &'static str {
     "Regular"
   }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-/// Defines `SettingKind`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub enum SettingKind {
   Antialiasing,
   Hinting,
@@ -91,12 +76,10 @@ pub enum SettingKind {
 }
 
 impl SettingKind {
-  /// Defines the constant `ALL`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
   pub const ALL: [Self; 4] = [Self::Antialiasing, Self::Hinting, Self::Subpixel, Self::Dpi];
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-/// Represents `FontSelection`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub struct FontSelection {
   pub family: String,
   pub style: String,
@@ -104,7 +87,6 @@ pub struct FontSelection {
 }
 
 impl FontSelection {
-  /// Executes the `display_name` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn display_name(&self) -> String {
     FontEntry {
       family: self.family.clone(),
@@ -113,14 +95,12 @@ impl FontSelection {
     .display_name()
   }
 
-  /// Executes the `value` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn value(&self) -> String {
     format!("{} {}", self.display_name(), self.size)
   }
 }
 
 #[derive(Debug, Clone)]
-/// Represents `FontSettings`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub struct FontSettings {
   profile: HashMap<FontTarget, FontSelection>,
   pub antialias: bool,
@@ -131,7 +111,6 @@ pub struct FontSettings {
 }
 
 impl FontSettings {
-  /// Retrieves data for `load` without mixing collection with TUI rendering. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn load() -> Self {
     let mut state = parse_state(&fs::read_to_string(paths::fonts_file()).unwrap_or_default());
     if let Some(fonts) = canonical_fonts() {
@@ -183,7 +162,6 @@ impl FontSettings {
     }
   }
 
-  /// Executes the `get` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn get(&self, target: FontTarget) -> &FontSelection {
     self
       .profile
@@ -191,7 +169,6 @@ impl FontSettings {
       .expect("every font target is initialized")
   }
 
-  /// Applies the `apply_font` operation while preserving the persistence and local-update contract. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn apply_font(
     &mut self,
     target: FontTarget,
@@ -215,7 +192,6 @@ impl FontSettings {
     result.map_err(SettingsError::Fonts)
   }
 
-  /// Executes the `reset_font` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn reset_font(&mut self, target: FontTarget) -> Result<(), SettingsError> {
     let previous = self.get(target).clone();
     self.profile.insert(
@@ -234,7 +210,6 @@ impl FontSettings {
     result.map_err(SettingsError::Fonts)
   }
 
-  /// Executes the `reset_setting` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn reset_setting(&mut self, setting: SettingKind) -> Result<(), SettingsError> {
     let value = match setting {
       SettingKind::Antialiasing => "enabled",
@@ -245,7 +220,6 @@ impl FontSettings {
     self.apply_setting(setting, value)
   }
 
-  /// Executes the `reset_all` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn reset_all(&mut self) -> Result<(), SettingsError> {
     let previous = self.clone();
     *self = Self::defaults();
@@ -267,7 +241,6 @@ impl FontSettings {
     result.map_err(SettingsError::Fonts)
   }
 
-  /// Applies the `apply_setting` operation while preserving the persistence and local-update contract. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn apply_setting(&mut self, setting: SettingKind, value: &str) -> Result<(), SettingsError> {
     let previous = self.clone();
     match setting {
@@ -301,7 +274,6 @@ impl FontSettings {
     result.map_err(SettingsError::Fonts)
   }
 
-  /// Executes the `setting_value` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn setting_value(&self, setting: SettingKind) -> String {
     match setting {
       SettingKind::Antialiasing => if self.antialias {
@@ -322,7 +294,6 @@ impl FontSettings {
     }
   }
 
-  /// Applies the `apply_target` operation while preserving the persistence and local-update contract. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn apply_target(&self, target: FontTarget) -> Result<(), String> {
     self.write_state()?;
     self.write_target(target)?;
@@ -361,7 +332,6 @@ impl FontSettings {
     Ok(())
   }
 
-  /// Executes the `defaults` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn defaults() -> Self {
     let mut profile = HashMap::new();
     for target in FontTarget::ALL {
@@ -384,7 +354,6 @@ impl FontSettings {
     }
   }
 
-  /// Applies the `apply_rendering` operation while preserving the persistence and local-update contract. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn apply_rendering(&self) -> Result<(), String> {
     gsettings_set(
       "org.gnome.desktop.interface",
@@ -398,7 +367,6 @@ impl FontSettings {
     Ok(())
   }
 
-  /// Applies the `write_state` operation while preserving the persistence and local-update contract. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn write_state(&self) -> Result<(), String> {
     let mut output = String::from("# Written by argvus-control-center. Edit with care.\n");
     for target in FontTarget::ALL {
@@ -454,7 +422,6 @@ impl FontSettings {
     argvus_control_center_core::config::reload_argvus_config_service()
   }
 
-  /// Applies the `write_gtk_settings` operation while preserving the persistence and local-update contract. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn write_gtk_settings(&self) -> Result<(), String> {
     let value = self.get(FontTarget::Apps).value();
     for directory in [
@@ -468,7 +435,6 @@ impl FontSettings {
     Ok(())
   }
 
-  /// Applies the `write_rofi_settings` operation while preserving the persistence and local-update contract. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn write_rofi_settings(&self) -> Result<(), String> {
     let system = paths::system_config_root().join("launcher/config/theme.rasi");
     let user_theme = paths::argvus_data_home().join("rofi/theme.rasi");
@@ -496,7 +462,6 @@ impl FontSettings {
     Ok(())
   }
 
-  /// Applies the `write_waybar_settings` operation while preserving the persistence and local-update contract. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn write_waybar_settings(&self) -> Result<(), String> {
     let taskbar = self.get(FontTarget::Taskbar);
     let widget_telemetry = self.get(FontTarget::Sysinfo);
@@ -516,7 +481,6 @@ impl FontSettings {
     )
   }
 
-  /// Applies the `write_waybar_profile` operation while preserving the persistence and local-update contract. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn write_waybar_profile(&self, name: &str, block: &str) -> Result<(), String> {
     let user = paths::argvus_data_home().join("waybar").join(name);
     if user.exists() {
@@ -543,7 +507,6 @@ impl FontSettings {
     )
   }
 
-  /// Applies the `write_terminal_settings` operation while preserving the persistence and local-update contract. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn write_terminal_settings(&self) -> Result<(), String> {
     // The terminal family and size were already written to fonts.conf by
     // write_state; argvus-terminal --apply folds them into the Kitty profiles
@@ -552,7 +515,6 @@ impl FontSettings {
     Ok(())
   }
 
-  /// Applies the `write_browser_settings` operation while preserving the persistence and local-update contract. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn write_browser_settings(&self) -> Result<(), String> {
     let font = self.get(FontTarget::Browser);
     let mut matches = String::new();
@@ -596,7 +558,6 @@ impl FontSettings {
   }
 }
 
-/// Converts input data into `parse_state` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn canonical_fonts() -> Option<serde_json::Value> {
   let output = argvus_control_center_core::process::command("argvus")
     .arg("config")
@@ -669,7 +630,6 @@ pub fn parse_state(contents: &str) -> HashMap<String, String> {
     .collect()
 }
 
-/// Executes the `rgba_order` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn rgba_order(subpixel: &str) -> Option<&str> {
   match subpixel {
     "rgba" | "rgb" | "bgr" | "vrgb" | "vbgr" => Some(subpixel),
@@ -677,7 +637,6 @@ fn rgba_order(subpixel: &str) -> Option<&str> {
   }
 }
 
-/// Executes the `gsettings_set` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn gsettings_set(schema: &str, key: &str, value: &str) -> Result<(), String> {
   let status = argvus_control_center_core::process::command("gsettings")
     .args(["set", schema, key, value])
@@ -693,7 +652,6 @@ fn gsettings_set(schema: &str, key: &str, value: &str) -> Result<(), String> {
   }
 }
 
-/// Executes the `spawn_if_available` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn spawn_if_available(command: &str, args: &[&str]) {
   let _ = argvus_control_center_core::process::command(command)
     .args(args)
@@ -703,7 +661,6 @@ fn spawn_if_available(command: &str, args: &[&str]) {
     .spawn();
 }
 
-/// Executes the `replace_ini_setting` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn replace_ini_setting(path: &Path, key: &str, value: &str) -> Result<(), String> {
   let mut lines: Vec<String> = if path.exists() {
     fs::read_to_string(path)
@@ -721,7 +678,6 @@ fn replace_ini_setting(path: &Path, key: &str, value: &str) -> Result<(), String
   write_file(path, &(lines.join("\n") + "\n"))
 }
 
-/// Executes the `replace_or_append` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn replace_or_append(lines: &mut Vec<String>, key: &str, replacement: &str) {
   if let Some(line) = lines.iter_mut().find(|line| {
     let trimmed = line.trim_start();
@@ -733,7 +689,6 @@ fn replace_or_append(lines: &mut Vec<String>, key: &str, replacement: &str) {
   }
 }
 
-/// Applies the `write_managed_block` operation while preserving the persistence and local-update contract. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn write_managed_block(path: &Path, block: &str) -> Result<(), String> {
   let existing = fs::read_to_string(path).unwrap_or_default();
   let managed = format!("{MANAGED_START}\n{block}{MANAGED_END}\n");
@@ -762,7 +717,6 @@ fn write_managed_block(path: &Path, block: &str) -> Result<(), String> {
   write_file(path, &contents)
 }
 
-/// Applies the `write_file` operation while preserving the persistence and local-update contract. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn write_file(path: &Path, contents: &str) -> Result<(), String> {
   if let Some(parent) = path.parent() {
     fs::create_dir_all(parent).map_err(|error| error.to_string())?;
@@ -770,12 +724,10 @@ fn write_file(path: &Path, contents: &str) -> Result<(), String> {
   fs::write(path, contents).map_err(|error| format!("{}: {error}", path.display()))
 }
 
-/// Executes the `escape` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn escape(value: &str) -> String {
   value.replace('\\', "\\\\").replace('"', "\\\"")
 }
 
-/// Executes the `xml_escape` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn xml_escape(value: &str) -> String {
   value
     .replace('&', "&amp;")
@@ -790,7 +742,6 @@ mod tests {
   use super::*;
 
   #[test]
-  /// Converts input data into `parses_state_and_ignores_comments` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn parses_state_and_ignores_comments() {
     let state = parse_state("# header\napps_family=Noto Sans\napps_size=12\n");
     assert_eq!(
@@ -801,7 +752,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `all_targets_have_valid_defaults` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn all_targets_have_valid_defaults() {
     let settings = FontSettings::load();
     for target in FontTarget::ALL {
@@ -811,13 +761,11 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `xml_values_are_escaped` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn xml_values_are_escaped() {
     assert_eq!(xml_escape("A&B <Mono>"), "A&amp;B &lt;Mono&gt;");
   }
 
   #[test]
-  /// Executes the `subpixel_none_is_not_mapped_to_an_invalid_rgba_order` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn subpixel_none_is_not_mapped_to_an_invalid_rgba_order() {
     assert_eq!(rgba_order("none"), None);
     assert_eq!(rgba_order("rgb"), Some("rgb"));

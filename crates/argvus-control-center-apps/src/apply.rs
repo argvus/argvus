@@ -1,4 +1,4 @@
-//! Implements default-application persistence in crate `argvus control center apps`. This separation keeps external effects from contaminating models, routes, or rendering.
+//! Default-application persistence of the Default applications page.
 //! nudge the running Argvus session to re-read the state.
 
 use std::fs;
@@ -87,7 +87,6 @@ fn run_xdg_settings(desktop_id: &str) -> bool {
     .unwrap_or(false)
 }
 
-/// Executes the `resolve_desktop_id` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn resolve_desktop_id(cat: Category, binary: &str, desktops: &[DesktopFile]) -> Option<String> {
   // Prefer the desktop file actually installed on this system, then fall back
   // to the catalog. Distros may ship a different id than upstream examples.
@@ -118,7 +117,6 @@ fn update_mimeapps(associations: &[(String, String)]) -> Option<std::path::PathB
 /// `mimeapps.list` content string. Existing entries for the same mime types are
 /// replaced in place; other sections are preserved verbatim.
 pub fn update_default_applications(content: &str, associations: &[(String, String)]) -> String {
-  /// Defines the constant `HEADER`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
   const HEADER: &str = "[Default Applications]";
 
   let mut lines: Vec<String> = content.lines().map(str::to_string).collect();
@@ -219,13 +217,11 @@ fn notify_user(body: &str) -> bool {
 mod tests {
   use super::*;
 
-  /// Executes the `assoc` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn assoc(mime: &str, id: &str) -> (String, String) {
     (mime.to_string(), id.to_string())
   }
 
   #[test]
-  /// Executes the `adds_section_when_missing` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn adds_section_when_missing() {
     let input = "# comment\nsome=thing\n";
     let result = update_default_applications(input, &[assoc("application/pdf", "x.desktop")]);
@@ -235,7 +231,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `replaces_existing_entry` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn replaces_existing_entry() {
     let input =
       "[Default Applications]\napplication/pdf=old.desktop;\n\n[Added Associations]\nfoo=bar\n";
@@ -247,7 +242,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `one_section_per_mime` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn one_section_per_mime() {
     let input = "[Default Applications]\n";
     let result = update_default_applications(
@@ -261,7 +255,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `preserves_other_sections` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn preserves_other_sections() {
     let input =
       "[Default Applications]\naudio/mpeg=old.desktop;\n\n[Removed Associations]\nx=kill;\n";
@@ -271,7 +264,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `noop_when_unchanged` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn noop_when_unchanged() {
     let input = "[Default Applications]\ntext/plain=e.desktop;\n";
     let result = update_default_applications(input, &[assoc("text/plain", "e.desktop")]);
@@ -279,7 +271,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `installed_desktop_id_wins_over_catalog` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn installed_desktop_id_wins_over_catalog() {
     let desktops = vec![DesktopFile {
       id: "org.example.Ristretto.desktop".to_string(),
@@ -293,7 +284,6 @@ mod tests {
     );
   }
 
-  /// Executes the `trimmable` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn trimmable(s: &str) -> String {
     s.lines().map(str::trim_end).collect::<Vec<_>>().join("\n")
   }

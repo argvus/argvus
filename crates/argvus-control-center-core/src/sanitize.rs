@@ -1,7 +1,4 @@
-//! Implements safe normalization of external output for the TUI in crate `argvus control center core`. This separation keeps external effects from contaminating models, routes, or rendering.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
+//! Safe normalization of external output for the TUI.
 pub fn terminal_text(input: &str) -> String {
   let mut output = String::new();
   let mut chars = input.chars().peekable();
@@ -39,7 +36,6 @@ mod tests {
   use super::*;
 
   #[test]
-  /// Executes the `removes_ansi_and_control_characters_but_keeps_layout` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn removes_ansi_and_control_characters_but_keeps_layout() {
     assert_eq!(
       terminal_text("ok\u{1b}[31m red\u{1b}[0m\nnext\tline\u{7}"),

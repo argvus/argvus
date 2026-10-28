@@ -1,4 +1,4 @@
-//! Root module of crate `argvus control center packages`. It exposes public boundaries and composes internal responsibilities without duplicating domain rules.
+//! Packages page of the ARGVUS Control Center (pacman, AUR and repositories).
 //!
 //! External tool dependencies remain in backend layers;
 //! the UI consumes normalized models and results.

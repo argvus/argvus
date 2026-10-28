@@ -1,7 +1,4 @@
-//! Implements isolated integration with system tools and APIs in crate `argvus control center session`. This separation keeps external effects from contaminating models, routes, or rendering.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
+//! Isolated integration with system tools and APIs of the Session page.
 use crate::{
   journal::{self, JournalEntry},
   model::{AutostartEntry, Component, ComponentStatus, DiagnosticsEntry, manifest},
@@ -14,7 +11,6 @@ use argvus_control_center_core::{
 use std::fs;
 use std::path::{Path, PathBuf};
 
-/// Executes the `list_components` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn list_components() -> Vec<Component> {
   let components = manifest();
   components
@@ -36,7 +32,6 @@ pub fn list_components() -> Vec<Component> {
     .collect()
 }
 
-/// Executes the `unit_state` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn unit_state(unit: &str) -> (Option<ComponentStatus>, Option<u32>) {
   let out = SystemProcessRunner.run(
     &ProcessRequest::new("systemctl")
@@ -78,7 +73,6 @@ fn unit_state(unit: &str) -> (Option<ComponentStatus>, Option<u32>) {
   (status, pid)
 }
 
-/// Processes `process_state` in this module's event flow. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn process_state(aliases: &[String]) -> (Option<ComponentStatus>, Option<u32>) {
   for alias in aliases {
     if let Some(pid) = find_process(alias) {
@@ -88,7 +82,6 @@ fn process_state(aliases: &[String]) -> (Option<ComponentStatus>, Option<u32>) {
   (None, None)
 }
 
-/// Executes the `find_process` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn find_process(alias: &str) -> Option<u32> {
   let mut best: Option<u32> = None;
   let entries = fs::read_dir("/proc").ok()?;
@@ -117,7 +110,6 @@ fn find_process(alias: &str) -> Option<u32> {
   best
 }
 
-/// Executes the `matches_process` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn matches_process(value: &str, alias: &str) -> bool {
   let base = Path::new(value)
     .file_name()
@@ -126,15 +118,12 @@ fn matches_process(value: &str, alias: &str) -> bool {
   base == alias
 }
 
-/// Defines the constant `AUTOSTART_SYSTEM_CANDIDATES`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 const AUTOSTART_SYSTEM_CANDIDATES: [&str; 2] = ["/etc/xdg/autostart", "/usr/share/autostart"];
 
-/// Executes the `autostart_dir` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn autostart_dir() -> PathBuf {
   config_home().join("autostart")
 }
 
-/// Executes the `desktop_files` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn desktop_files(dir: &Path) -> Vec<PathBuf> {
   let Ok(entries) = fs::read_dir(dir) else {
     return Vec::new();
@@ -150,7 +139,6 @@ fn desktop_files(dir: &Path) -> Vec<PathBuf> {
     .collect()
 }
 
-/// Executes the `autostart_entries` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn autostart_entries() -> Vec<AutostartEntry> {
   let user_dir = autostart_dir();
   let mut entries: Vec<AutostartEntry> = Vec::new();
@@ -181,7 +169,6 @@ pub fn autostart_entries() -> Vec<AutostartEntry> {
   entries
 }
 
-/// Executes the `file_stem` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn file_stem(path: &Path) -> String {
   path
     .file_name()
@@ -189,7 +176,6 @@ fn file_stem(path: &Path) -> String {
     .unwrap_or_default()
 }
 
-/// Converts input data into `parse_desktop` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn parse_desktop(id: &str, path: &Path, from_system: bool) -> Option<AutostartEntry> {
   let content = fs::read_to_string(path).ok()?;
   let mut name = id.to_string();
@@ -245,7 +231,6 @@ pub fn set_autostart(entry_id: &str, enabled: bool) -> Result<(), String> {
   Ok(())
 }
 
-/// Executes the `find_system_autostart` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn find_system_autostart(entry_id: &str) -> Option<PathBuf> {
   let target = format!("{entry_id}.desktop");
   AUTOSTART_SYSTEM_CANDIDATES
@@ -257,7 +242,6 @@ fn find_system_autostart(entry_id: &str) -> Option<PathBuf> {
     })
 }
 
-/// Executes the `validate_autostart_id` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn validate_autostart_id(entry_id: &str) -> Result<(), String> {
   if !entry_id.is_empty()
     && entry_id.len() <= 128
@@ -271,7 +255,6 @@ fn validate_autostart_id(entry_id: &str) -> Result<(), String> {
   }
 }
 
-/// Executes the `rewrite_desktop_flags` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn rewrite_desktop_flags(content: &str, enabled: bool) -> String {
   let hidden = if enabled { "false" } else { "true" };
   let mut has_hidden = false;
@@ -299,7 +282,6 @@ fn rewrite_desktop_flags(content: &str, enabled: bool) -> String {
   rewritten
 }
 
-/// Executes the `diagnostics` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn diagnostics(components: &[Component]) -> Vec<DiagnosticsEntry> {
   let mut entries = Vec::new();
   let session_running = components
@@ -359,7 +341,6 @@ pub fn diagnostics(components: &[Component]) -> Vec<DiagnosticsEntry> {
   entries
 }
 
-/// Executes the `user_manager_state` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn user_manager_state() -> DiagnosticsEntry {
   let out = SystemProcessRunner.run(
     &ProcessRequest::new("systemctl")
@@ -414,7 +395,6 @@ pub fn restart_component(id: &str) -> Result<(), String> {
   Err(format!("não foi possível reiniciar o componente '{id}'"))
 }
 
-/// Executes the `run_user_command` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn run_user_command(command: &[String]) -> Result<(), String> {
   let status = argvus_control_center_core::process::command(&command[0])
     .args(&command[1..])
@@ -427,7 +407,6 @@ fn run_user_command(command: &[String]) -> Result<(), String> {
   }
 }
 
-/// Executes the `logs` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn logs(filter: Option<&str>, limit: u32) -> Result<Vec<JournalEntry>, String> {
   let mut request = ProcessRequest::new("journalctl")
     .arg("--user")
@@ -461,7 +440,6 @@ mod tests {
   use super::*;
 
   #[test]
-  /// Executes the `matches_process_names_basename_only` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn matches_process_names_basename_only() {
     assert!(matches_process("/usr/bin/waybar", "waybar"));
     assert!(matches_process("waybar", "waybar"));
@@ -469,7 +447,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `rewrites_desktop_hidden_flag` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn rewrites_desktop_hidden_flag() {
     let content = "Name=Foo\nExec=foo --bar\nHidden=false\n";
     let disabled = rewrite_desktop_flags(content, false);
@@ -479,14 +456,12 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `appends_hidden_when_absent` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn appends_hidden_when_absent() {
     let content = "Name=Foo\nExec=foo\ndefault=True\n";
     assert!(rewrite_desktop_flags(content, false).contains("Hidden=true"));
   }
 
   #[test]
-  /// Executes the `autostart_ids_are_validated` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn autostart_ids_are_validated() {
     assert!(validate_autostart_id("foo-bar").is_ok());
     assert!(validate_autostart_id("").is_err());
@@ -494,7 +469,6 @@ mod tests {
   }
 
   #[test]
-  /// Converts input data into `parses_desktop_entries` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn parses_desktop_entries() {
     let dir = std::env::temp_dir().join(format!("argvus-autostart-{}", std::process::id()));
     fs::create_dir_all(&dir).unwrap();
@@ -511,7 +485,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `desktops_hidden_true_disables` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn desktops_hidden_true_disables() {
     let dir = std::env::temp_dir().join(format!("argvus-autostart-2-{}", std::process::id()));
     fs::create_dir_all(&dir).unwrap();
@@ -523,7 +496,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `git_shadowing_prefers_user_entry` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn git_shadowing_prefers_user_entry() {
     let dir = std::env::temp_dir().join(format!("argvus-autostart-3-{}", std::process::id()));
     fs::create_dir_all(dir.join("user")).unwrap();

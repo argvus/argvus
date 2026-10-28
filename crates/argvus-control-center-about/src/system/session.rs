@@ -1,7 +1,4 @@
 //! Reads the uptime and the system locale.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
 use std::{env, fs};
 
 /// Seconds since boot, from the first field of `/proc/uptime`.

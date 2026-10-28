@@ -1,7 +1,4 @@
-//! Implements `cpu` responsibilities in crate `argvus about`. This separation keeps external effects from contaminating models, routes, or rendering.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
+//! CPU model, cores, threads and maximum frequency shown in About.
 use std::collections::HashSet;
 use std::fs;
 use std::path::Path;

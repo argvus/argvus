@@ -1,7 +1,4 @@
 //! Counts the installed pacman packages.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
 use super::command_stdout;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

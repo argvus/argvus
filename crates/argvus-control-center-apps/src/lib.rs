@@ -1,5 +1,4 @@
-#![allow(dead_code)]
-//! Root module of crate `argvus control center apps`. It exposes public boundaries and composes internal responsibilities without duplicating domain rules.
+//! Default applications page of the ARGVUS Control Center.
 //!
 //! External tool dependencies remain in backend layers;
 //! the UI consumes normalized models and results.

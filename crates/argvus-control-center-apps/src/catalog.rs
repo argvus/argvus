@@ -1,4 +1,4 @@
-//! Implements default-application catalog definitions in crate `argvus control center apps`. This separation keeps external effects from contaminating models, routes, or rendering.
+//! Default-application catalog definitions of the Default applications page.
 //!
 //! The catalog maps every supported category to the applications Argvus knows
 //! about. It is intentionally independent from any desktop environment
@@ -49,7 +49,6 @@ pub struct CategorySpec {
 }
 
 impl Category {
-  /// Defines the constant `ORDER`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
   pub const ORDER: [Category; 11] = [
     Category::Terminal,
     Category::FileManager,
@@ -310,7 +309,6 @@ impl Category {
   }
 
   /// Categories that are only meaningful inside a terminal (TUI).
-  #[allow(dead_code)]
   pub fn is_tui(self) -> bool {
     matches!(self, Category::Terminal | Category::TerminalEditor)
   }
@@ -504,7 +502,6 @@ pub const CATALOG: &[CategorySpec] = &[
   },
 ];
 
-/// Executes the const function documented in this module. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 const fn known(binary: &'static str, display: &'static str, desktop_id: &'static str) -> KnownApp {
   KnownApp {
     binary,
@@ -514,7 +511,6 @@ const fn known(binary: &'static str, display: &'static str, desktop_id: &'static
   }
 }
 
-/// Executes the const function documented in this module. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 const fn tui(binary: &'static str, display: &'static str) -> KnownApp {
   KnownApp {
     binary,
@@ -572,7 +568,6 @@ mod tests {
   use super::*;
 
   #[test]
-  /// Executes the `category_keys_round_trip` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn category_keys_round_trip() {
     for cat in Category::ORDER {
       assert_eq!(Category::from_key(cat.key()), Some(cat));
@@ -581,7 +576,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `every_category_has_a_spec_and_apps` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn every_category_has_a_spec_and_apps() {
     for cat in Category::ORDER {
       let s = spec(cat);
@@ -591,7 +585,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `every_default_is_present_in_catalog` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn every_default_is_present_in_catalog() {
     for cat in Category::ORDER {
       let fallback = cat.fallback();
@@ -607,7 +600,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `desktop_ids_are_unique_within_category` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn desktop_ids_are_unique_within_category() {
     for cat in Category::ORDER {
       let mut ids: Vec<&str> = spec(cat)
@@ -624,7 +616,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `find_app_matches_by_binary` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn find_app_matches_by_binary() {
     let a = find_app(Category::Browser, "firefox").expect("firefox in catalog");
     assert_eq!(a.binary, "firefox");
@@ -632,14 +623,12 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `find_app_matches_by_desktop_id` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn find_app_matches_by_desktop_id() {
     let a = find_app(Category::PdfViewer, "org.pwmt.zathura").unwrap();
     assert_eq!(a.binary, "zathura");
   }
 
   #[test]
-  /// Executes the `effective_values_uses_fallback` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn effective_values_uses_fallback() {
     let stored = vec![(Category::Browser, Some("chromium".to_string()))];
     let values = effective_values(&stored);
@@ -650,7 +639,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `common_file_mimes_are_registered` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn common_file_mimes_are_registered() {
     assert!(Category::ImageViewer.mimes().contains(&"image/jpeg"));
     assert!(Category::ImageViewer.mimes().contains(&"image/png"));

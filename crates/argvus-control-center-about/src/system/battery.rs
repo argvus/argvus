@@ -1,7 +1,4 @@
 //! Reads the system batteries from `/sys/class/power_supply`.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
 use std::fs;
 use std::path::Path;
 

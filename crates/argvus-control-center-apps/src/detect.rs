@@ -1,4 +1,4 @@
-//! Implements default-application detection in crate `argvus control center apps`. This separation keeps external effects from contaminating models, routes, or rendering.
+//! Default-application detection of the Default applications page.
 //!
 //! Three complementary signals are combined, as described in the project
 //! spec:
@@ -76,7 +76,6 @@ fn private_commands_dir() -> std::path::PathBuf {
     .unwrap_or_else(|| std::path::PathBuf::from("/usr/lib/argvus/commands"))
 }
 
-/// Checks the condition represented by `is_executable` using only the state available to the module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn is_executable(path: &Path) -> bool {
   use std::os::unix::fs::PermissionsExt;
   fs::metadata(path).is_ok_and(|m| m.is_file() && m.permissions().mode() & 0o111 != 0)
@@ -110,7 +109,6 @@ pub fn scan_desktop_files() -> Vec<DesktopFile> {
   out
 }
 
-/// Converts input data into `parse_desktop_file` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn parse_desktop_file(id: &str, path: &Path) -> Option<DesktopFile> {
   let content = fs::read_to_string(path).ok()?;
   let mut in_entry = false;
@@ -324,7 +322,6 @@ mod tests {
   use super::*;
 
   #[test]
-  /// Executes the `exec_binary_plain` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn exec_binary_plain() {
     assert_eq!(exec_binary("firefox %U").as_deref(), Some("firefox"));
     assert_eq!(
@@ -334,7 +331,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `exec_binary_env_prefix` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn exec_binary_env_prefix() {
     assert_eq!(
       exec_binary("env GTK_THEME=dark firefox %U").as_deref(),
@@ -343,7 +339,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `exec_binary_quoted` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn exec_binary_quoted() {
     assert_eq!(
       exec_binary("\"/usr/bin/min\" https:// %U").as_deref(),
@@ -352,21 +347,18 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `exec_binary_shell_wrappers_ignored` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn exec_binary_shell_wrappers_ignored() {
     assert_eq!(exec_binary("sh -c 'exec kitty %U'"), None);
     assert_eq!(exec_binary(""), None);
   }
 
   #[test]
-  /// Executes the `command_exists_truthy_for_env` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn command_exists_truthy_for_env() {
     assert!(command_exists("sh"));
     assert!(!command_exists("argvus-definitely-not-a-command-xyz"));
   }
 
   #[test]
-  /// Executes the `command_exists_finds_private_commands` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn command_exists_finds_private_commands() {
     use std::os::unix::fs::PermissionsExt;
 
@@ -392,7 +384,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `desktop_id_resolution_uses_scan` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn desktop_id_resolution_uses_scan() {
     let id = desktop_id_for_binary("kitty", &[]);
     assert_eq!(id.as_deref(), Some("org.kitt.humans.kitty.desktop"));
@@ -401,7 +392,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `preferred_catalog_desktop_wins_over_wrapper_exec_match` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn preferred_catalog_desktop_wins_over_wrapper_exec_match() {
     let desktops = vec![
       DesktopFile {
@@ -424,7 +414,6 @@ mod tests {
   }
 
   #[test]
-  /// Converts input data into `parse_desktop_file_requires_application_type` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn parse_desktop_file_requires_application_type() {
     let dir = std::env::temp_dir().join("argvus-default-apps-detect-test");
     fs::create_dir_all(&dir).unwrap();

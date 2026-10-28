@@ -1,7 +1,4 @@
-//! Implements isolated integration with system tools and APIs in crate `argvus control center services`. This separation keeps external effects from contaminating models, routes, or rendering.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
+//! Isolated integration with system tools and APIs of the Services page.
 use crate::{
   journal::{self, JournalEntry},
   model::Unit,
@@ -37,7 +34,6 @@ pub fn list_progressive(user: bool, publish: impl Fn(Vec<Unit>)) -> Result<Vec<U
   publish(units.clone());
   Ok(units)
 }
-/// Executes the `list` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn list(user: bool) -> Result<Vec<Unit>, String> {
   let (units, files) = rayon::join(|| list_units(user), || list_unit_files(user));
   let mut units = units?;
@@ -55,22 +51,22 @@ pub fn list(user: bool) -> Result<Vec<Unit>, String> {
   Ok(units)
 }
 
-/// Executes the `list_units` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn list_units(user: bool) -> Result<Vec<Unit>, String> {
-  let mut r = ProcessRequest::new("systemctl")
+  let mut request = ProcessRequest::new("systemctl")
     .arg("--no-pager")
     .arg("--type=service")
     .arg("--all")
     .arg("--output=json")
     .timeout(Duration::from_secs(5));
   if user {
-    r = r.arg("--user")
+    request = request.arg("--user")
   }
-  let out = SystemProcessRunner.run(&r).map_err(|e| e.to_string())?;
+  let out = SystemProcessRunner
+    .run(&request)
+    .map_err(|e| e.to_string())?;
   parse_units(&out)
 }
 
-/// Executes the `list_unit_files` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn list_unit_files(user: bool) -> Result<Vec<(String, String)>, String> {
   let mut files = ProcessRequest::new("systemctl")
     .arg("--no-pager")
@@ -85,7 +81,6 @@ fn list_unit_files(user: bool) -> Result<Vec<(String, String)>, String> {
   Ok(parse_unit_files(&output))
 }
 
-/// Converts input data into `parse_unit_files` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn parse_unit_files(output: &ProcessOutput) -> Vec<(String, String)> {
   serde_json::from_slice::<Value>(&output.stdout)
     .ok()
@@ -100,7 +95,6 @@ fn parse_unit_files(output: &ProcessOutput) -> Vec<(String, String)> {
     })
     .collect()
 }
-/// Converts input data into `parse_units` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn parse_units(out: &ProcessOutput) -> Result<Vec<Unit>, String> {
   if out.timed_out {
     return Err("systemctl timed out".into());
@@ -157,31 +151,32 @@ pub fn parse_units(out: &ProcessOutput) -> Result<Vec<Unit>, String> {
       .collect(),
   )
 }
-/// Executes the `logs` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn logs(
   unit: Option<&str>,
   previous: bool,
   priority: Option<&str>,
   limit: u32,
 ) -> Result<Vec<JournalEntry>, String> {
-  let mut r = ProcessRequest::new("journalctl")
+  let mut request = ProcessRequest::new("journalctl")
     .arg("--no-pager")
     .arg("--output=json")
     .arg("-n")
     .arg(limit.to_string());
-  r = r.timeout(Duration::from_secs(5));
+  request = request.timeout(Duration::from_secs(5));
   if previous {
-    r = r.arg("-b").arg("-1")
+    request = request.arg("-b").arg("-1")
   } else {
-    r = r.arg("-b").arg("0")
+    request = request.arg("-b").arg("0")
   }
   if let Some(unit) = unit {
-    r = r.arg("-u").arg(unit)
+    request = request.arg("-u").arg(unit)
   }
   if let Some(priority) = priority {
-    r = r.arg("-p").arg(priority);
+    request = request.arg("-p").arg(priority);
   }
-  let out = SystemProcessRunner.run(&r).map_err(|e| e.to_string())?;
+  let out = SystemProcessRunner
+    .run(&request)
+    .map_err(|e| e.to_string())?;
   if out.status.is_none_or(|s| s != 0) {
     return Err(
       terminal_text(&String::from_utf8_lossy(&out.stderr))
@@ -196,7 +191,6 @@ pub fn logs(
       .collect(),
   )
 }
-/// Executes the `action_args` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn action_args(action: &str, unit: &str) -> Result<Vec<String>, String> {
   if !Unit::valid_name(unit) {
     return Err("invalid systemd unit name".into());
@@ -224,7 +218,6 @@ pub fn action_args(action: &str, unit: &str) -> Result<Vec<String>, String> {
 mod tests {
   use super::*;
   #[test]
-  /// Executes the `normalizes_units` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn normalizes_units() {
     let o=ProcessOutput{stdout:br#"[{"unit":"a.service","description":"A","load":"loaded","active":"failed","sub":"failed","unit_file_state":"enabled"}]"#.to_vec(),stderr:vec![],status:Some(0),timed_out:false};
     let u = parse_units(&o).unwrap();
@@ -232,7 +225,6 @@ mod tests {
     assert_eq!(u[0].file_state, "enabled");
   }
   #[test]
-  /// Executes the `validates_actions` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn validates_actions() {
     assert!(action_args("restart", "NetworkManager.service").is_ok());
     assert!(action_args("restart", "bad unit.service").is_err());

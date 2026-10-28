@@ -1,7 +1,4 @@
-//! Reads the Hyprland compositor version of the running session. This separation keeps external effects from contaminating models, routes, or rendering.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
+//! Reads the Hyprland compositor version of the running session.
 use argvus_control_center_core::process;
 
 /// Returns the version of the Hyprland compositor answering `hyprctl`, or `None` when no session is reachable.

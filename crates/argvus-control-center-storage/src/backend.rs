@@ -1,7 +1,4 @@
-//! Implements isolated integration with system tools and APIs in crate `argvus control center storage`. This separation keeps external effects from contaminating models, routes, or rendering.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
+//! Isolated integration with system tools and APIs of the Storage page.
 use crate::model::*;
 use argvus_control_center_core::{
   capabilities::Capabilities,
@@ -15,7 +12,6 @@ use std::os::unix::fs::FileTypeExt;
 use thiserror::Error;
 
 #[derive(Debug, Error)]
-/// Defines `StorageError`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub enum StorageError {
   #[error("storage backend unavailable")]
   BackendUnavailable,
@@ -27,7 +23,6 @@ pub enum StorageError {
   MalformedOutput,
 }
 
-/// Executes the `collect` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn collect(cap: &Capabilities) -> Result<StorageSnapshot, StorageError> {
   let devices = if executable(cap, "lsblk") {
     let output = run(
@@ -93,7 +88,6 @@ pub fn collect(cap: &Capabilities) -> Result<StorageSnapshot, StorageError> {
   })
 }
 
-/// Converts input data into `parse_lsblk` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn parse_lsblk(input: &str) -> Result<Vec<StorageDevice>, StorageError> {
   let root: Value = serde_json::from_str(input).map_err(|_| StorageError::MalformedOutput)?;
   let rows = root
@@ -108,7 +102,6 @@ pub fn parse_lsblk(input: &str) -> Result<Vec<StorageDevice>, StorageError> {
   )
 }
 
-/// Converts input data into `parse_device` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn parse_device(row: &Value, parent: Option<&str>) -> Option<StorageDevice> {
   let name = row.get("name").and_then(Value::as_str).map(terminal_text)?;
   let children = row
@@ -146,7 +139,6 @@ fn parse_device(row: &Value, parent: Option<&str>) -> Option<StorageDevice> {
   })
 }
 
-/// Executes the `text` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn text(row: &Value, key: &str) -> Option<String> {
   row
     .get(key)
@@ -154,14 +146,12 @@ fn text(row: &Value, key: &str) -> Option<String> {
     .filter(|v| !v.is_empty())
     .map(terminal_text)
 }
-/// Executes the `boolish` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn boolish(row: &Value, key: &str) -> Option<bool> {
   row
     .get(key)
     .and_then(|v| v.as_bool().or_else(|| v.as_u64().map(|n| n != 0)))
 }
 
-/// Converts input data into `parse_findmnt` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn parse_findmnt(input: &str) -> Result<Vec<Mount>, StorageError> {
   let root: Value = serde_json::from_str(input).map_err(|_| StorageError::MalformedOutput)?;
   let rows = root
@@ -193,7 +183,6 @@ pub fn parse_findmnt(input: &str) -> Result<Vec<Mount>, StorageError> {
   )
 }
 
-/// Executes the `filesystems_from_mounts` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn filesystems_from_mounts(mounts: &[Mount]) -> Vec<Filesystem> {
   mounts
     .iter()
@@ -213,7 +202,6 @@ fn filesystems_from_mounts(mounts: &[Mount]) -> Vec<Filesystem> {
     .collect()
 }
 
-/// Executes the `filesystem_usage` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn filesystem_usage(path: &str) -> Result<(u64, u64, u64), StorageError> {
   if path.is_empty() {
     return Err(StorageError::Command("missing mountpoint".into()));
@@ -235,7 +223,6 @@ fn filesystem_usage(path: &str) -> Result<(u64, u64, u64), StorageError> {
     .ok_or(StorageError::MalformedOutput)
 }
 
-/// Converts input data into `parse_swaps` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn parse_swaps(input: &str) -> Vec<SwapDevice> {
   input
     .lines()
@@ -261,7 +248,6 @@ pub fn parse_swaps(input: &str) -> Vec<SwapDevice> {
     .collect()
 }
 
-/// Converts input data into `parse_smart` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn parse_smart(device: &str, input: &str) -> Result<SmartStatus, StorageError> {
   if !is_block_device(device) {
     return Err(StorageError::InvalidDevice);
@@ -315,7 +301,6 @@ pub fn parse_smart(device: &str, input: &str) -> Result<SmartStatus, StorageErro
   })
 }
 
-/// Checks the condition represented by `is_block_device` using only the state available to the module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn is_block_device(path: &str) -> bool {
   if !path.starts_with("/dev/") || path.contains("..") {
     return false;
@@ -329,13 +314,11 @@ fn is_block_device(path: &str) -> bool {
     false
   }
 }
-/// Executes the `executable` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn executable(cap: &Capabilities, name: &str) -> bool {
   matches!(name, "lsblk" if cap.has_lsblk)
     || matches!(name, "findmnt" if cap.has_findmnt)
     || matches!(name, "smartctl" if cap.has_smartctl)
 }
-/// Executes the `run` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn run(program: &str, args: &[&str]) -> Result<String, StorageError> {
   let request = args
     .iter()
@@ -357,14 +340,12 @@ fn run(program: &str, args: &[&str]) -> Result<String, StorageError> {
 mod tests {
   use super::*;
   #[test]
-  /// Converts input data into `parses_nested_devices_and_filters_no_fields` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn parses_nested_devices_and_filters_no_fields() {
     let x = r#"{"blockdevices":[{"name":"nvme0n1","type":"disk","size":1000,"children":[{"name":"nvme0n1p1","type":"part","size":100}]}]}"#;
     let d = parse_lsblk(x).unwrap();
     assert_eq!(d[0].children[0].parent.as_deref(), Some("nvme0n1"));
   }
   #[test]
-  /// Converts input data into `parses_mounts_and_swap` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn parses_mounts_and_swap() {
     let m = r#"{"filesystems":[{"target":"/","source":"/dev/sda1","fstype":"ext4","options":"rw,relatime","ro":false}]}"#;
     assert_eq!(parse_findmnt(m).unwrap()[0].target, "/");
@@ -374,7 +355,6 @@ mod tests {
     );
   }
   #[test]
-  /// Executes the `usage_thresholds_are_centralized` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn usage_thresholds_are_centralized() {
     assert_eq!(usage_level(100, 50), UsageLevel::Ok);
     assert_eq!(usage_level(100, 15), UsageLevel::Warning);

@@ -1,7 +1,4 @@
 //! Builds the System & Hardware tab: Boot, System and Hardware sections with aligned labels.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
 use argvus_control_center_core::format::human_bytes;
 use argvus_tui::text::display_width;
 

@@ -1,4 +1,4 @@
-//! Root module of crate `argvus control center hardware`. It exposes public boundaries and composes internal responsibilities without duplicating domain rules.
+//! Hardware page of the ARGVUS Control Center (detected devices and their details).
 //!
 //! External tool dependencies remain in backend layers;
 //! the UI consumes normalized models and results.

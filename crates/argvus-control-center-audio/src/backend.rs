@@ -1,7 +1,4 @@
-//! Implements isolated integration with system tools and APIs in crate `argvus control center audio`. This separation keeps external effects from contaminating models, routes, or rendering.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
+//! Isolated integration with system tools and APIs of the Audio page.
 use crate::model::*;
 use argvus_control_center_core::{
   capabilities::Capabilities,
@@ -11,7 +8,6 @@ use argvus_control_center_core::{
 use std::time::Duration;
 use thiserror::Error;
 #[derive(Debug, Error)]
-/// Defines `AudioError`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub enum AudioError {
   #[error("audio backend unavailable")]
   BackendUnavailable,
@@ -22,20 +18,17 @@ pub enum AudioError {
   #[error("invalid audio value")]
   InvalidValue,
 }
-/// Represents `AudioBackend`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub struct AudioBackend<R> {
   pub runner: R,
   pub capabilities: Capabilities,
 }
 impl<R: ProcessRunner> AudioBackend<R> {
-  /// Constructs `new` with this module's expected initial state. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn new(runner: R, capabilities: Capabilities) -> Self {
     Self {
       runner,
       capabilities,
     }
   }
-  /// Executes the `run` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn run(&self, args: &[&str]) -> Result<String, AudioError> {
     let req = args
       .iter()
@@ -73,7 +66,6 @@ impl<R: ProcessRunner> AudioBackend<R> {
     argvus_control_center_core::config::reload_argvus_config_service_with(&self.runner)
       .map_err(AudioError::Command)
   }
-  /// Retrieves data for `snapshot` without mixing collection with TUI rendering. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn snapshot(&self) -> Result<AudioSnapshot, AudioError> {
     if !self.capabilities.has_wpctl {
       return Err(AudioError::BackendUnavailable);
@@ -99,7 +91,6 @@ impl<R: ProcessRunner> AudioBackend<R> {
       default_input,
     })
   }
-  /// Executes the `default_id` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn default_id(&self, target: &str) -> Option<u32> {
     self.run(&["inspect", target]).ok().and_then(|v| {
       v.lines().find_map(|l| {
@@ -111,12 +102,10 @@ impl<R: ProcessRunner> AudioBackend<R> {
       })
     })
   }
-  /// Applies the `set_default` operation while preserving the persistence and local-update contract. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn set_default(&self, id: u32) -> Result<(), AudioError> {
     validate_node_id(id)?;
     self.run(&["set-default", &id.to_string()]).map(|_| ())
   }
-  /// Applies the `set_volume` operation while preserving the persistence and local-update contract. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn set_volume(&self, id: u32, percent: u8) -> Result<(), AudioError> {
     validate_node_id(id)?;
     if percent > 100 {
@@ -125,18 +114,15 @@ impl<R: ProcessRunner> AudioBackend<R> {
     self.run(&["set-volume", &id.to_string(), &format!("{}%", percent)])?;
     self.persist_default_output("/audio/output_volume", &percent.to_string())
   }
-  /// Applies the `set_mute` operation while preserving the persistence and local-update contract. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn set_mute(&self, id: u32, mute: bool) -> Result<(), AudioError> {
     validate_node_id(id)?;
     self.run(&["set-mute", &id.to_string(), if mute { "1" } else { "0" }])?;
     self.persist_default_output("/audio/output_muted", if mute { "true" } else { "false" })
   }
 }
-/// Executes the `validate_node_id` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn validate_node_id(id: u32) -> Result<(), AudioError> {
   (id > 0).then_some(()).ok_or(AudioError::InvalidValue)
 }
-/// Converts input data into `parse_status` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn parse_status(input: &str) -> Vec<AudioDevice> {
   let mut section = None;
   input
@@ -196,7 +182,6 @@ pub fn parse_status(input: &str) -> Vec<AudioDevice> {
     })
     .collect()
 }
-/// Executes the `clamp_volume` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn clamp_volume(value: i16) -> u8 {
   value.clamp(0, 100) as u8
 }
@@ -207,10 +192,8 @@ mod tests {
   use std::sync::Mutex;
 
   #[derive(Default)]
-  /// Represents `RecordingRunner`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
   struct RecordingRunner(Mutex<Vec<ProcessRequest>>);
   impl ProcessRunner for RecordingRunner {
-    /// Executes the `run` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
     fn run(&self, request: &ProcessRequest) -> Result<ProcessOutput, ProcessError> {
       self.0.lock().unwrap().push(request.clone());
       Ok(ProcessOutput {
@@ -222,7 +205,6 @@ mod tests {
     }
   }
   #[test]
-  /// Converts input data into `parses_devices` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn parses_devices() {
     let x = parse_status(
       "Audio\n ├─ Sinks:\n │  *   42. Built-in Audio [vol: 0.72]\n ├─ Sources:\n │      43. USB Headset [vol: 0.40] [MUTED]\nSettings\n └─ Default Configured Devices:\n         0. Audio/Sink alsa_output.pci",
@@ -235,7 +217,6 @@ mod tests {
     assert!(x[1].muted);
   }
   #[test]
-  /// Executes the `ignores_headers_clients_streams_and_configured_default_ids` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn ignores_headers_clients_streams_and_configured_default_ids() {
     let x = parse_status(
       "PipeWire 'pipewire-0'\n └─ Clients:\n        32. WirePlumber\nAudio\n ├─ Devices:\n │      48. Audio Controller [alsa]\n ├─ Sinks:\n │  *   46. USB Audio Device [vol: 1.00]\n └─ Streams:\n        84. Browser\nSettings\n └─ Default Configured Devices:\n         0. Audio/Sink alsa_output.usb\n         1. Audio/Source alsa_input.usb",
@@ -244,7 +225,6 @@ mod tests {
     assert!(x.iter().all(|device| device.id > 0));
   }
   #[test]
-  /// Executes the `actions_reject_zero_node_id` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn actions_reject_zero_node_id() {
     let backend = AudioBackend::new(
       argvus_control_center_core::process::SystemProcessRunner,
@@ -264,7 +244,6 @@ mod tests {
     ));
   }
   #[test]
-  /// Executes the `audio_actions_use_separate_valid_wpctl_arguments` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn audio_actions_use_separate_valid_wpctl_arguments() {
     let backend = AudioBackend::new(RecordingRunner::default(), Capabilities::default());
     backend.set_default(46).unwrap();
@@ -280,13 +259,11 @@ mod tests {
     assert_eq!(wpctl_requests[2].args, ["set-mute", "57", "1"]);
   }
   #[test]
-  /// Executes the `volume_is_bounded` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn volume_is_bounded() {
     assert_eq!(clamp_volume(-2), 0);
     assert_eq!(clamp_volume(140), 100)
   }
   #[test]
-  /// Converts input data into `parses_real_wpctl_status_shape` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn parses_real_wpctl_status_shape() {
     let real = concat!(
       "PipeWire 'pipewire-0' [1.6.8, boss@archlinux, cookie:505526840]\n",
@@ -333,12 +310,9 @@ mod tests {
     );
   }
   #[test]
-  /// Executes the `default_id_extracts_digit_before_comma_in_inspect_first_line` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn default_id_extracts_digit_before_comma_in_inspect_first_line() {
-    /// Represents `InspectFixture`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
     struct InspectFixture;
     impl ProcessRunner for InspectFixture {
-      /// Executes the `run` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
       fn run(&self, _: &ProcessRequest) -> Result<ProcessOutput, ProcessError> {
         Ok(ProcessOutput {
           stdout: b"id 62, type PipeWire:Interface:Node\n\tnode.name = \"alsa_output.usb\"\n"

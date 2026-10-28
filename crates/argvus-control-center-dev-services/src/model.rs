@@ -1,7 +1,4 @@
-//! Implements domain state and models consumed by the UI in crate `argvus control center dev services`. This separation keeps external effects from contaminating models, routes, or rendering.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
+//! Domain state and models consumed by the UI of the Developer services page.
 use argvus_control_center_services::Unit;
 
 #[derive(Debug, Clone, Default, PartialEq, Eq)]

@@ -1,7 +1,4 @@
-//! Implements popup and editor rendering in crate `argvus control center settings`. This separation keeps external effects from contaminating models, routes, or rendering.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
+//! Popup and editor rendering of the Settings pages.
 use argvus_tui::confirm::{ConfirmDialog, draw_confirm};
 use ratatui::Frame;
 use ratatui::layout::{Alignment, Rect};
@@ -12,7 +9,6 @@ use ratatui::widgets::{Block, Clear, Paragraph};
 use crate::app::App;
 use crate::i18n::tr;
 
-/// Renders `draw_error` while respecting the current domain state and semantic theme. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn draw_error(frame: &mut Frame, area: Rect, app: &App, message: &str) {
   let width = area.width.saturating_sub(8).clamp(30, 64);
   let height = 7.min(area.height);
@@ -68,7 +64,6 @@ pub fn draw_confirmation(frame: &mut Frame, area: Rect, app: &App) {
   draw_confirm(frame, area, &app.theme, dialog, &app.confirm_focus);
 }
 
-/// Renders `draw_hostname_input` while respecting the current domain state and semantic theme. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn draw_hostname_input(frame: &mut Frame, area: Rect, app: &App) {
   let width = area.width.saturating_sub(8).clamp(40, 52);
   let height = 7.min(area.height);

@@ -1,7 +1,4 @@
-//! Implements system time and timezone configuration in crate `argvus control center settings`. This separation keeps external effects from contaminating models, routes, or rendering.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
+//! System time and timezone configuration of the Settings pages.
 use std::collections::BTreeSet;
 use std::fs;
 use std::process::Stdio;
@@ -9,7 +6,6 @@ use std::process::Stdio;
 use crate::error::SettingsError;
 
 #[derive(Debug, Clone, Default)]
-/// Represents `DateTimeInfo`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub struct DateTimeInfo {
   pub local_time: String,
   pub time_zone: String,
@@ -17,7 +13,6 @@ pub struct DateTimeInfo {
   pub rtc_local: Option<bool>,
 }
 
-/// Executes the `current_timezone` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn current_timezone() -> String {
   command_stdout("timedatectl", &["show", "-p", "Timezone", "--value"])
     .filter(|value| !value.trim().is_empty())
@@ -37,7 +32,6 @@ pub fn current_timezone() -> String {
     .to_string()
 }
 
-/// Executes the `list_timezones` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn list_timezones() -> Vec<String> {
   command_stdout("timedatectl", &["list-timezones"])
     .unwrap_or_default()
@@ -50,7 +44,6 @@ pub fn list_timezones() -> Vec<String> {
     .collect()
 }
 
-/// Executes the `datetime_info` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn datetime_info() -> DateTimeInfo {
   let mut info = DateTimeInfo {
     time_zone: current_timezone(),
@@ -76,7 +69,6 @@ pub fn datetime_info() -> DateTimeInfo {
   info
 }
 
-/// Applies the `set_timezone` operation while preserving the persistence and local-update contract. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn set_timezone(zone: &str, valid: &[String]) -> Result<(), SettingsError> {
   if !valid.iter().any(|candidate| candidate == zone) {
     return Err(SettingsError::System(format!("invalid time zone: {zone}")));
@@ -84,12 +76,10 @@ pub fn set_timezone(zone: &str, valid: &[String]) -> Result<(), SettingsError> {
   super::privileged::run(&["timezone", "set", zone]).map(|_| ())
 }
 
-/// Applies the `set_ntp` operation while preserving the persistence and local-update contract. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn set_ntp(enabled: bool) -> Result<(), SettingsError> {
   super::privileged::run(&["datetime", "ntp", if enabled { "true" } else { "false" }]).map(|_| ())
 }
 
-/// Applies the `set_local_time` operation while preserving the persistence and local-update contract. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn set_local_time(value: &str) -> Result<(), SettingsError> {
   if !is_valid_datetime(value) {
     return Err(SettingsError::System("invalid date/time".into()));
@@ -97,7 +87,6 @@ pub fn set_local_time(value: &str) -> Result<(), SettingsError> {
   super::privileged::run(&["datetime", "set", value]).map(|_| ())
 }
 
-/// Checks the condition represented by `is_valid_datetime` using only the state available to the module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn is_valid_datetime(value: &str) -> bool {
   value.len() == 19
     && value.as_bytes()[4] == b'-'
@@ -111,7 +100,6 @@ pub fn is_valid_datetime(value: &str) -> bool {
       .all(|(index, byte)| matches!(index, 4 | 7 | 10 | 13 | 16) || byte.is_ascii_digit())
 }
 
-/// Checks the condition represented by `is_valid_timezone_name` using only the state available to the module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn is_valid_timezone_name(value: &str) -> bool {
   !value.is_empty()
     && !value.starts_with('/')
@@ -121,7 +109,6 @@ pub fn is_valid_timezone_name(value: &str) -> bool {
       .all(|b| b.is_ascii_alphanumeric() || matches!(b, b'/' | b'_' | b'-' | b'+'))
 }
 
-/// Executes the `command_stdout` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn command_stdout(command: &str, args: &[&str]) -> Option<String> {
   let output = argvus_control_center_core::process::command(command)
     .args(args)
@@ -139,7 +126,6 @@ mod tests {
   use super::*;
 
   #[test]
-  /// Executes the `validates_timezone_names` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn validates_timezone_names() {
     assert!(is_valid_timezone_name("America/Sao_Paulo"));
     assert!(is_valid_timezone_name("Etc/GMT+3"));

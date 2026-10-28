@@ -1,7 +1,4 @@
-//! Implements terminal UI rendering and interaction in crate `argvus control center`. This separation keeps external effects from contaminating models, routes, or rendering.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
+//! Terminal UI rendering and interaction.
 use argvus_control_center_core::config::AppConfig;
 use argvus_control_center_core::navigation::HomeCardId;
 use argvus_i18n::tr;
@@ -21,7 +18,6 @@ use ratatui::widgets::{
 use crate::app::{App, Route};
 use crate::home::{HomeCategory, HomeDestination, HomeRow};
 
-/// Renders `draw` while respecting the current domain state and semantic theme. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn draw(app: &mut App, frame: &mut Frame) {
   let area = frame.area();
   app.resize(area.width, area.height);
@@ -85,7 +81,6 @@ pub fn draw(app: &mut App, frame: &mut Frame) {
   }
 }
 
-/// Renders `draw_home` while respecting the current domain state and semantic theme. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn draw_home(app: &mut App, frame: &mut Frame) {
   let area = frame.area();
   Block::new()
@@ -465,7 +460,6 @@ fn draw_home_card(app: &App, frame: &mut Frame, area: Rect, card: &HomeCard) {
   }
 }
 
-/// Renders `draw_search` while respecting the current domain state and semantic theme. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn draw_search(app: &App, frame: &mut Frame, area: ratatui::layout::Rect) {
   let value = &app.search_query;
   let style = if app.search_active {
@@ -513,13 +507,11 @@ fn draw_search(app: &App, frame: &mut Frame, area: ratatui::layout::Rect) {
   );
 }
 
-/// Executes the `home_icon_for_item` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn home_icon_for_item(destination: HomeDestination) -> String {
   let icon = AppConfig::icon(destination.glyph());
   argvus_tui::icons::icon_label(icon, "")
 }
 
-/// Executes the `search_category` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn search_category(lang: argvus_i18n::Lang, category: &str) -> String {
   // A card category shares its label with the Home and the breadcrumbs.
   if let Some(card) = HomeCardId::from_search_category(category) {
@@ -578,7 +570,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `home_renders_existing_and_phase_two_destinations` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn home_renders_existing_and_phase_two_destinations() {
     let mut app = App::new(InitialRoute::Home);
     let mut terminal = Terminal::new(TestBackend::new(90, 32)).unwrap();
@@ -596,7 +587,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `domain_pages_use_the_shared_chrome` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn domain_pages_use_the_shared_chrome() {
     let cases: [(Route, [&str; 2]); _] = [
       #[cfg(feature = "network")]
@@ -626,7 +616,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `home_renders_the_live_global_query_and_result` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn home_renders_the_live_global_query_and_result() {
     let mut app = App::new(InitialRoute::Home);
     app.begin_global_search();
@@ -646,7 +635,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `config_screen_renders_with_chrome_and_checkbox` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn config_screen_renders_with_chrome_and_checkbox() {
     let mut app = App::new(InitialRoute::Home);
     app.route = Route::Config;

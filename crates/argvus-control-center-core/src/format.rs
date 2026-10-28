@@ -3,13 +3,9 @@
 /// Formats a byte count with the largest binary unit that keeps it at or above
 /// one, using one decimal for TiB and GiB and whole numbers below that.
 pub fn human_bytes(bytes: u64) -> String {
-  /// Defines the constant `KIB`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
   const KIB: u64 = 1024;
-  /// Defines the constant `MIB`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
   const MIB: u64 = 1024 * 1024;
-  /// Defines the constant `GIB`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
   const GIB: u64 = 1024 * 1024 * 1024;
-  /// Defines the constant `TIB`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
   const TIB: u64 = 1024 * 1024 * 1024 * 1024;
   if bytes >= TIB {
     format!("{:.1} TiB", bytes as f64 / TIB as f64)
