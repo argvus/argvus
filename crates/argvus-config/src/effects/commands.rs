@@ -438,6 +438,7 @@ pub(super) fn master_switch(prefix: &str) -> Option<&'static str> {
   match prefix {
     "blur_" => Some(json_pointers::EFFECTS_BLUR_GLOBAL_ENABLED),
     "animation_" => Some(json_pointers::EFFECTS_ANIMATIONS),
+    "shadow_" => Some(json_pointers::EFFECTS_SHADOW_ENABLED),
     _ => None,
   }
 }

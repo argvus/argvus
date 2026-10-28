@@ -1,6 +1,6 @@
 //! Defaults of the configuration document: built-in values, packaged defaults and the sections that must exist as objects.
 
-use super::config_validation::BLUR_SETTINGS_DEFAULTS;
+use super::config_validation::{BLUR_SETTINGS_DEFAULTS, SHADOW_SETTINGS_DEFAULTS};
 use super::legacy_import::manifest_shortcut_defaults;
 use super::*;
 
@@ -179,7 +179,10 @@ fn default_effects(document: &mut ConfigDocument) {
       .entry(format!("transparency_{surface}_value"))
       .or_insert_with(|| Value::Number(transparency.into()));
   }
-  for (key, value) in BLUR_SETTINGS_DEFAULTS {
+  for (key, value) in BLUR_SETTINGS_DEFAULTS
+    .into_iter()
+    .chain(SHADOW_SETTINGS_DEFAULTS)
+  {
     effects.entry(key).or_insert_with(|| {
       // Whole defaults are written as integers, like effects.json, so the
       // integer fields (size, passes) read back without a fractional part.
@@ -190,6 +193,15 @@ fn default_effects(document: &mut ConfigDocument) {
       }
     });
   }
+  effects
+    .entry("shadow_enabled")
+    .or_insert_with(|| Value::Bool(false));
+  effects
+    .entry("shadow_sharp")
+    .or_insert_with(|| Value::Bool(false));
+  effects
+    .entry("shadow_color")
+    .or_insert_with(|| Value::String(String::new()));
   effects
     .entry("transparency_control-center_enabled")
     .or_insert_with(|| Value::Bool(true));

@@ -61,6 +61,19 @@ blur_contrast 0 2 number 0.9
 blur_vibrancy 0 1 number 0.1
 blur_vibrancy_darkness 0 1 number 0";
 
+/// The window shadow parameters, `key minimum maximum kind default`. An empty
+/// `shadow_color` follows the accent of the active theme, see
+/// `SHADOW_SETTINGS_DEFAULTS`. `enabled=` in `shadow-settings set` writes
+/// `shadow_enabled` through the master switch.
+const SHADOW_SETTINGS: &str = "shadow_enabled - - boolean false
+shadow_range 0 100 integer 6
+shadow_render_power 1 10 integer 6
+shadow_color - - color
+shadow_sharp - - boolean false
+shadow_offset_x -100 100 integer 0
+shadow_offset_y -100 100 integer 0
+shadow_scale 0 1 number 1";
+
 /// The animation parameters, in the same format.
 const ANIMATION_SETTINGS: &str = "animation_opening_enabled - - boolean true
 animation_opening_style - - enum:slide,popin,gnomed popin
@@ -352,6 +365,13 @@ pub fn run(arguments: &[String]) -> i32 {
       effects.surface_value_command(kind, surface, operation, rest.get(2).map(String::as_str))
     }
     "blur-settings" => match effects.settings_get_or_set(BLUR_SETTINGS, "blur_", rest) {
+      Ok(lines) => {
+        lines.iter().for_each(|line| println!("{line}"));
+        Ok(())
+      }
+      Err(code) => Err(code),
+    },
+    "shadow-settings" => match effects.settings_get_or_set(SHADOW_SETTINGS, "shadow_", rest) {
       Ok(lines) => {
         lines.iter().for_each(|line| println!("{line}"));
         Ok(())

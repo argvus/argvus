@@ -16,6 +16,7 @@ pub(crate) const TASKBAR_SHAPE_BORDER_WIDTH: &str = "/taskbar/shape/border_width
 
 pub(crate) const EFFECTS_BLUR_GLOBAL_ENABLED: &str = "/effects/blur_global_enabled";
 pub(crate) const EFFECTS_ANIMATIONS: &str = "/effects/animations";
+pub(crate) const EFFECTS_SHADOW_ENABLED: &str = "/effects/shadow_enabled";
 pub(crate) const EFFECTS_CONTROL_CENTER_TRANSPARENCY: &str =
   "/effects/transparency_control-center_value";
 

@@ -60,7 +60,7 @@ fn imported_build_theme_resolves_absolute_and_relative_imports() {
 fn each_settings_table_names_its_master_switch() {
   assert_eq!(master_switch("blur_"), Some("/effects/blur_global_enabled"));
   assert_eq!(master_switch("animation_"), Some("/effects/animations"));
-  assert_eq!(master_switch("shadow_"), None);
+  assert_eq!(master_switch("shadow_"), Some("/effects/shadow_enabled"));
 }
 
 #[test]
@@ -70,6 +70,14 @@ fn booleans_and_enums_accept_only_their_choices() {
   assert!(settings_valid("enum:slide,popin", "-", "-", "popin"));
   assert!(!settings_valid("enum:slide,popin", "-", "-", "pop"));
   assert!(!settings_valid("enum:slide,popin", "-", "-", ""));
+}
+
+#[test]
+fn shadow_color_is_empty_for_the_accent_or_rrggbbaa() {
+  assert!(settings_valid("color", "-", "-", ""));
+  assert!(settings_valid("color", "-", "-", "3590bd99"));
+  assert!(!settings_valid("color", "-", "-", "3590bd"));
+  assert!(!settings_valid("color", "-", "-", "3590bdzz"));
 }
 
 #[test]

@@ -64,7 +64,7 @@ impl Effects {
       if !settings_valid(&row.kind, &row.minimum, &row.maximum, value) {
         return Err(64);
       }
-      let literal = if row.kind.starts_with("enum:") {
+      let literal = if row.kind.starts_with("enum:") || row.kind == "color" {
         Value::String(value.to_string())
       } else {
         serde_json::from_str(value).map_err(|_| 64)?
@@ -89,6 +89,11 @@ impl Effects {
 pub fn settings_valid(kind: &str, minimum: &str, maximum: &str, value: &str) -> bool {
   match kind {
     "boolean" => return value == "true" || value == "false",
+    // An empty color means "follow the theme accent"; anything else is RRGGBBAA.
+    "color" => {
+      return value.is_empty()
+        || (value.len() == 8 && value.bytes().all(|byte| byte.is_ascii_hexdigit()));
+    }
     _ if kind.starts_with("enum:") => {
       return kind["enum:".len()..]
         .split(',')

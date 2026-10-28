@@ -99,6 +99,28 @@ pub(super) const BLUR_SETTINGS_DEFAULTS: [(&str, f64); 7] = [
   ("blur_vibrancy_darkness", 0.0),
 ];
 
+/// Window shadow parameters stored under `effects`, in the same format as
+/// [`BLUR_SETTINGS`]. `shadow_enabled`, `shadow_sharp` and the color are checked
+/// separately: a boolean needs no bounds and the color is a string.
+pub(super) const SHADOW_SETTINGS: [(&str, f64, f64, bool); 5] = [
+  ("shadow_range", 0.0, 100.0, true),
+  ("shadow_render_power", 1.0, 10.0, true),
+  ("shadow_offset_x", -100.0, 100.0, true),
+  ("shadow_offset_y", -100.0, 100.0, true),
+  ("shadow_scale", 0.0, 1.0, false),
+];
+
+/// Defaults written into new profiles for the window shadow. The color is
+/// empty, which means "follow the accent of the active theme": argvus-hyprland
+/// then appends the `99` alpha to that accent.
+pub(super) const SHADOW_SETTINGS_DEFAULTS: [(&str, f64); 5] = [
+  ("shadow_range", 6.0),
+  ("shadow_render_power", 6.0),
+  ("shadow_offset_x", 0.0),
+  ("shadow_offset_y", 0.0),
+  ("shadow_scale", 1.0),
+];
+
 /// Styles that render on the window open/close leaves in Hyprland 0.56.2. The
 /// compositor accepts `slidefade`, `slidevert` and `slidefadevert` here too, but
 /// it draws them as pop-in, so they are not offered.
@@ -152,11 +174,21 @@ pub(super) fn validate_effects(document: &ConfigDocument) -> ConfigResult<()> {
       validate_animation_setting(key, value)?;
       continue;
     }
+    if key == "shadow_color" {
+      validate_shadow_color(value)?;
+      continue;
+    }
     if value.is_boolean() {
       continue;
     }
     if let Some((_, minimum, maximum, integer)) =
       BLUR_SETTINGS.iter().find(|(name, ..)| name == key)
+    {
+      validate_blur_setting(key, value, *minimum, *maximum, *integer)?;
+      continue;
+    }
+    if let Some((_, minimum, maximum, integer)) =
+      SHADOW_SETTINGS.iter().find(|(name, ..)| name == key)
     {
       validate_blur_setting(key, value, *minimum, *maximum, *integer)?;
       continue;
@@ -223,6 +255,23 @@ pub(super) fn validate_animation_setting(key: &str, value: &Value) -> ConfigResu
     }
   };
   validate_blur_setting(key, value, minimum, maximum, integer)
+}
+
+/// `effects.shadow_color` is `""` (follow the theme accent) or an `RRGGBBAA`
+/// hex color, as Hyprland's `rgba()` takes it.
+pub(super) fn validate_shadow_color(value: &Value) -> ConfigResult<()> {
+  let valid = match value.as_str() {
+    Some("") => true,
+    Some(color) => color.len() == 8 && color.bytes().all(|byte| byte.is_ascii_hexdigit()),
+    None => false,
+  };
+  if valid {
+    Ok(())
+  } else {
+    Err(ConfigError::Invalid(
+      "effects.shadow_color must be empty or an RRGGBBAA hex color".into(),
+    ))
+  }
 }
 
 pub(super) fn validate_blur_setting(

@@ -199,7 +199,6 @@ fn colors_lua(values: &[(String, String)]) -> Option<String> {
   let inactive = get("border_inactive")?;
   let group_active = get("groupbar_active")?;
   let group_inactive = get("groupbar_inactive")?;
-  let shadow = get("shadow_color")?;
   let shadow_inactive = get("shadow_color_inactive")?;
   let rounding_power = get("rounding_power")
     .map(|value| format!(", rounding_power = {value}"))
@@ -210,7 +209,7 @@ group = {{ col = {{ border_active = {active}, border_inactive = {inactive}, \
 border_locked_active = {active}, border_locked_inactive = {inactive} }}, \
 groupbar = {{ col = {{ active = {group_active}, inactive = {group_inactive}, \
 locked_active = {group_active}, locked_inactive = {group_inactive} }} }} }}, \
-decoration = {{ shadow = {{ color = {shadow}, color_inactive = {shadow_inactive} }}{rounding_power} }} }})"
+decoration = {{ shadow = {{ color_inactive = {shadow_inactive} }}{rounding_power} }} }})"
   ))
 }
 
@@ -471,9 +470,7 @@ return {
         "groupbar = { col = { active = \"rgba(e2be8aff)\", inactive = \"rgba(3a332dcc)\""
       )
     );
-    assert!(lua.contains(
-      "shadow = { color = 0xCC000000, color_inactive = 0x660F0F0F }, rounding_power = 2"
-    ));
+    assert!(lua.contains("shadow = { color_inactive = 0x660F0F0F }, rounding_power = 2"));
     assert!(
       colors_lua(&lua_values(
         "return {\n  border_active = \"rgba(000000ff)\",\n}\n"
