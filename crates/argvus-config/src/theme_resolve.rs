@@ -7,6 +7,7 @@
 //! manifest: the legacy aliases, and the light list and wallpapers a greeter or
 //! an old marker may still name.
 
+use crate::session_paths;
 use argvus_theme_core::discovery;
 use argvus_theme_core::manifest::{Category, ThemeManifest};
 use argvus_theme_core::paths::ThemePaths;
@@ -186,7 +187,7 @@ fn env_system_root() -> PathBuf {
   std::env::var_os("ARGVUS_SYSTEM_CONFIG")
     .filter(|value| !value.is_empty())
     .map(PathBuf::from)
-    .unwrap_or_else(|| PathBuf::from("/usr/share/argvus"))
+    .unwrap_or_else(|| PathBuf::from(session_paths::PACKAGED_SYSTEM_CONFIG))
 }
 
 /// The GTK colour scheme of a theme: `light` or `dark`. The manifest decides

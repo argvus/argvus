@@ -12,6 +12,7 @@ use crate::ConfigStore;
 use crate::accent;
 use crate::i18n::{self, Stream};
 use crate::icons::{self, IconNames};
+use crate::json_pointers;
 use crate::session_paths::SessionPaths;
 use std::env;
 use std::fs;
@@ -211,10 +212,13 @@ fn apply(
     store
       .modify(|document| {
         document.set(
-          "/appearance/accent",
+          json_pointers::APPEARANCE_ACCENT,
           serde_json::Value::String(color.clone()),
         )?;
-        document.set("/appearance/accent_custom", serde_json::Value::Bool(custom))
+        document.set(
+          json_pointers::APPEARANCE_ACCENT_CUSTOM,
+          serde_json::Value::Bool(custom),
+        )
       })
       .map_err(|error| Failure::State(error.to_string()))?;
   }

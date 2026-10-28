@@ -7,6 +7,7 @@
 //! consumers. The callers reach it through `argvus config accent` (see
 //! `accent_switch`), which adds the picker, the icon theme and the messages.
 
+use crate::json_pointers;
 use crate::session_paths::SessionPaths;
 use crate::text_edit;
 use crate::theme_files::{self, Fonts};
@@ -86,7 +87,7 @@ pub fn read_state(path: &Path, fallback: &str) -> String {
 pub fn canonical_accent(config_store: Option<&crate::ConfigStore>) -> Option<String> {
   let store = config_store?;
   let document = store.load().ok()?;
-  let owned = match document.get("/appearance/accent_custom") {
+  let owned = match document.get(json_pointers::APPEARANCE_ACCENT_CUSTOM) {
     Some(serde_json::Value::Bool(value)) => *value,
     Some(serde_json::Value::String(value)) => value == "true",
     _ => false,
@@ -94,7 +95,7 @@ pub fn canonical_accent(config_store: Option<&crate::ConfigStore>) -> Option<Str
   if !owned {
     return None;
   }
-  Some(match document.get("/appearance/accent") {
+  Some(match document.get(json_pointers::APPEARANCE_ACCENT) {
     Some(serde_json::Value::String(value)) => value.trim().to_string(),
     Some(other) => other.to_string(),
     None => "null".to_string(),

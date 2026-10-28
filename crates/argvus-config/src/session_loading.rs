@@ -7,6 +7,7 @@
 //! connecting. The GTK splash needed about 300 ms, during which the compositor
 //! already showed its background without the spinner.
 
+use crate::accent::DEFAULT_THEME;
 use crate::session_paths::SessionPaths;
 use std::fs;
 use std::os::unix::fs::FileTypeExt;
@@ -17,7 +18,6 @@ use std::time::Duration;
 
 const DEFAULT_SPLASH_BIN: &str = "/usr/lib/argvus/loading-theme/splash";
 const DEFAULT_SPINNER_BIN: &str = "/usr/lib/argvus/greeter/handoff";
-const DEFAULT_THEME: &str = "argvus-dark";
 /// Pause after a round that found sockets but no accepting compositor. A round
 /// starts the spinner process, which only connects and exits on failure.
 const RETRY_WITH_SOCKETS: Duration = Duration::from_millis(10);

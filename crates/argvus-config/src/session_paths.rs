@@ -9,6 +9,9 @@ use std::env;
 use std::fs;
 use std::path::{Path, PathBuf};
 
+/// Packaged defaults, used when `ARGVUS_SYSTEM_CONFIG` is not set.
+pub(crate) const PACKAGED_SYSTEM_CONFIG: &str = "/usr/share/argvus";
+
 /// Directories the resolution order is built from.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SessionPaths {
@@ -29,8 +32,8 @@ impl SessionPaths {
       .or_else(|| non_empty_var("HOME").map(|home| home.join(".config")))?;
     let data_home =
       non_empty_var("ARGVUS_DATA_HOME").unwrap_or_else(|| config_home.join("argvus/data"));
-    let system_config =
-      non_empty_var("ARGVUS_SYSTEM_CONFIG").unwrap_or_else(|| PathBuf::from("/usr/share/argvus"));
+    let system_config = non_empty_var("ARGVUS_SYSTEM_CONFIG")
+      .unwrap_or_else(|| PathBuf::from(PACKAGED_SYSTEM_CONFIG));
     Some(Self {
       config_home,
       data_home,

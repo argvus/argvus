@@ -6,16 +6,15 @@
 //! depends on (lock, spacing, borders, display) run unchanged, through the
 //! same resolved paths the shell used.
 
+use crate::accent::DEFAULT_THEME;
 use crate::hyprland_ipc;
+use crate::json_pointers;
 use crate::session_paths::{SessionPaths, font_default_value};
 use crate::session_timing::timed;
 use std::fs;
 use std::io;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
-
-/// Theme used when no active theme is recorded (`ACTIVE_THEME` in the shell).
-const DEFAULT_THEME: &str = "argvus-dark";
 
 /// Inputs that vary per run.
 pub struct ReloadContext<'a> {
@@ -45,7 +44,7 @@ pub fn active_theme(paths: &SessionPaths) -> String {
 fn canonical_theme(config_home: &Path) -> Option<String> {
   let document = crate::ConfigStore::at(config_home).load().ok()?;
   document
-    .get("/appearance/theme")
+    .get(json_pointers::APPEARANCE_THEME)
     .and_then(serde_json::Value::as_str)
     .filter(|theme| !theme.is_empty())
     .map(str::to_string)

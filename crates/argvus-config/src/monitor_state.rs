@@ -10,6 +10,7 @@
 //! joined into one `mode` as `WxH@R`.
 
 use crate::ConfigStore;
+use crate::json_pointers;
 use crate::{ConfigDocument, ConfigError, ConfigResult};
 use serde_json::Value;
 use std::fs;
@@ -132,7 +133,7 @@ pub fn sync_legacy(store: &ConfigStore, state_file: &Path) -> ConfigResult<()> {
 pub fn import_legacy_if_needed(store: &ConfigStore, state_file: &Path) -> ConfigResult<bool> {
   let document = store.load()?;
   let has_monitors = document
-    .get("/displays/monitors")
+    .get(json_pointers::DISPLAYS_MONITORS)
     .and_then(Value::as_object)
     .is_some_and(|monitors| !monitors.is_empty());
   if !has_monitors && state_file.is_file() {

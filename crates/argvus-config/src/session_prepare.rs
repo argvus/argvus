@@ -7,6 +7,7 @@
 //! orchestrates them and owns the state around them: the startup stamp, the
 //! GTK settings, the monitor state migration and the session environment.
 
+use crate::accent::DEFAULT_THEME;
 use crate::session_paths::{SessionPaths, font_default_value, font_state_value};
 use crate::session_reload::{ReloadContext, active_theme, run_script, sync_user_files};
 use crate::session_timing::timed;
@@ -16,8 +17,6 @@ use std::os::unix::fs::PermissionsExt;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 
-/// Theme used when none is recorded.
-const DEFAULT_THEME: &str = "argvus-dark";
 /// Icon theme when the appearance helper is missing.
 const DEFAULT_ICON_THEME: &str = "Argvus Dark Icons";
 

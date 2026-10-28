@@ -7,6 +7,7 @@
 
 use crate::ConfigDocument;
 use crate::css_edit::{self, Declaration};
+use crate::json_pointers;
 use crate::session_paths::SessionPaths;
 use crate::text_edit;
 use crate::user_copy;
@@ -90,8 +91,8 @@ impl TaskbarShape {
         .and_then(|pixels| u32::try_from(pixels).ok())
     };
     Self {
-      height: pixels("/taskbar/shape/height"),
-      border_width: pixels("/taskbar/shape/border_width"),
+      height: pixels(json_pointers::TASKBAR_SHAPE_HEIGHT),
+      border_width: pixels(json_pointers::TASKBAR_SHAPE_BORDER_WIDTH),
     }
   }
 }

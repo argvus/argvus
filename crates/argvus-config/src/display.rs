@@ -8,6 +8,7 @@
 
 use crate::ConfigStore;
 use crate::i18n::{self, Stream};
+use crate::json_pointers;
 use crate::monitor_state;
 use crate::session_paths::SessionPaths;
 use serde_json::Value;
@@ -259,7 +260,7 @@ fn apply(store: &ConfigStore, mode: ApplyMode) -> i32 {
     return 1;
   };
   let monitors = document
-    .get("/displays/monitors")
+    .get(json_pointers::DISPLAYS_MONITORS)
     .and_then(Value::as_object)
     .cloned()
     .unwrap_or_default();
@@ -323,7 +324,7 @@ fn migrate_nwg(store: &ConfigStore) -> i32 {
   let has_layout = store
     .load()
     .ok()
-    .and_then(|document| document.get("/displays/monitors").cloned())
+    .and_then(|document| document.get(json_pointers::DISPLAYS_MONITORS).cloned())
     .and_then(|monitors| monitors.as_object().map(|object| !object.is_empty()))
     .unwrap_or(false);
   if has_layout {
