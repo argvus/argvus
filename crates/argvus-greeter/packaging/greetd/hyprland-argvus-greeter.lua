@@ -49,6 +49,12 @@ hl.config({
     background_color = "rgb(16, 18, 24)",
     force_default_wallpaper = 0,
   },
+
+  -- Kitty and the handoff surfaces are Wayland clients. Without Xwayland the
+  -- greeter starts and ends without an X server to launch or tear down.
+  xwayland = {
+    enabled = false,
+  },
 })
 
 hl.on("hyprland.start", function()
