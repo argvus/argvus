@@ -1,3 +1,5 @@
+//! GTK user interface of the calendar popup.
+
 pub mod agenda;
 pub mod app;
 pub mod calendar;

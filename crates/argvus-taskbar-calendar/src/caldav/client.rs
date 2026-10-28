@@ -1,3 +1,5 @@
+//! Minimal CalDAV/WebDAV client (`PROPFIND`, `REPORT`, `PUT`, `DELETE`) and the parsers of its XML replies.
+
 use quick_xml::Reader;
 use quick_xml::events::Event as XmlEvent;
 use reqwest::{Method, StatusCode};

@@ -1,3 +1,5 @@
+//! Command-line actions that do not open the popup: iCalendar import and export, one sync pass and the status report.
+
 use std::path::PathBuf;
 
 use crate::config::{Paths, Settings, service_events_enabled};

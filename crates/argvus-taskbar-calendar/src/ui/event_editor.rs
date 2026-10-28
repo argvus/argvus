@@ -1,3 +1,5 @@
+//! Event editor page: draft, widgets, filling and saving.
+
 use chrono::{DateTime, Days, Duration, Local, NaiveDate, NaiveTime, TimeZone, Timelike, Utc};
 use gtk::glib::SignalHandlerId;
 use gtk::prelude::*;
@@ -147,9 +149,23 @@ pub fn build_editor() -> gtk::Box {
   gtk::Box::new(gtk::Orientation::Vertical, 10)
 }
 
+/// Fills the editor from `draft`. The change handlers are blocked meanwhile,
+/// otherwise every value set here would come back as an edit message.
 pub fn populate_editor(widgets: &EditorWidgets, draft: &EditorDraft, i18n: I18n) {
+  let bindings = handler_bindings(widgets);
+  for (widget, id) in bindings {
+    widget.block_signal(id);
+  }
+  fill_editor(widgets, draft, i18n);
+  for (widget, id) in bindings {
+    widget.unblock_signal(id);
+  }
+}
+
+/// Each editable widget with the id of its change handler.
+fn handler_bindings(widgets: &EditorWidgets) -> [(&gtk::Widget, &SignalHandlerId); 14] {
   let handlers = &widgets.changed_handlers;
-  for (widget, id) in [
+  [
     (widgets.title.upcast_ref::<gtk::Widget>(), &handlers.title),
     (
       widgets.location.upcast_ref::<gtk::Widget>(),
@@ -203,10 +219,10 @@ pub fn populate_editor(widgets: &EditorWidgets, draft: &EditorDraft, i18n: I18n)
       widgets.repeat_minutes.upcast_ref::<gtk::Widget>(),
       &handlers.repeat_minutes,
     ),
-  ] {
-    widget.block_signal(id);
-  }
+  ]
+}
 
+fn fill_editor(widgets: &EditorWidgets, draft: &EditorDraft, i18n: I18n) {
   widgets.header.set_label(match draft.kind {
     EditorKind::New => i18n.text(Text::NewEvent),
     EditorKind::Edit(_) => i18n.text(Text::EditEvent),
@@ -285,64 +301,6 @@ pub fn populate_editor(widgets: &EditorWidgets, draft: &EditorDraft, i18n: I18n)
     .set_visible(matches!(draft.kind, EditorKind::Edit(_)));
   widgets.cancel.set_label(i18n.text(Text::Cancel));
   widgets.save.set_label(i18n.text(Text::Save));
-
-  for (widget, id) in [
-    (widgets.title.upcast_ref::<gtk::Widget>(), &handlers.title),
-    (
-      widgets.location.upcast_ref::<gtk::Widget>(),
-      &handlers.location,
-    ),
-    (
-      widgets.description.upcast_ref::<gtk::Widget>(),
-      &handlers.description,
-    ),
-    (
-      widgets.start_hour.upcast_ref::<gtk::Widget>(),
-      &handlers.start_hour,
-    ),
-    (
-      widgets.start_minute.upcast_ref::<gtk::Widget>(),
-      &handlers.start_minute,
-    ),
-    (
-      widgets.end_hour.upcast_ref::<gtk::Widget>(),
-      &handlers.end_hour,
-    ),
-    (
-      widgets.end_minute.upcast_ref::<gtk::Widget>(),
-      &handlers.end_minute,
-    ),
-    (
-      widgets.all_day.upcast_ref::<gtk::Widget>(),
-      &handlers.all_day,
-    ),
-    (
-      widgets.reminder_enabled.upcast_ref::<gtk::Widget>(),
-      &handlers.reminder_enabled,
-    ),
-    (
-      widgets.reminder_hours.upcast_ref::<gtk::Widget>(),
-      &handlers.reminder_hours,
-    ),
-    (
-      widgets.reminder_minutes.upcast_ref::<gtk::Widget>(),
-      &handlers.reminder_minutes,
-    ),
-    (
-      widgets.repeat_all_day.upcast_ref::<gtk::Widget>(),
-      &handlers.repeat_all_day,
-    ),
-    (
-      widgets.repeat_hours.upcast_ref::<gtk::Widget>(),
-      &handlers.repeat_hours,
-    ),
-    (
-      widgets.repeat_minutes.upcast_ref::<gtk::Widget>(),
-      &handlers.repeat_minutes,
-    ),
-  ] {
-    widget.unblock_signal(id);
-  }
 }
 
 pub fn save_editor(

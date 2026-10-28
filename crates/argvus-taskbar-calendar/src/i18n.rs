@@ -1,3 +1,5 @@
+//! User-visible texts of the calendar in English and Brazilian Portuguese.
+
 use chrono::{Datelike, NaiveDate};
 
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]

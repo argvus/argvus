@@ -1,3 +1,5 @@
+//! Synchronization pass between a CalDAV server and the local database.
+
 use chrono::Utc;
 
 use crate::error::Result;

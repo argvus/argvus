@@ -1,3 +1,5 @@
+//! CalDAV passwords stored in the Secret Service keyring.
+
 use std::collections::HashMap;
 
 use secret_service::{EncryptionType, SecretService};

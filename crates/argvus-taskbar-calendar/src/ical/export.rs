@@ -1,3 +1,5 @@
+//! iCalendar (`.ics`) export.
+
 use std::path::Path;
 
 use icalendar::{Alarm, Calendar as ICalendar, Component, Event, EventLike, Property};

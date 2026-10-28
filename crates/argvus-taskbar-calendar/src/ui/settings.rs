@@ -1,3 +1,5 @@
+//! Settings page: draft, widgets, filling and conversion back to the configuration.
+
 use gtk::glib::SignalHandlerId;
 use gtk::prelude::*;
 
@@ -147,9 +149,23 @@ pub fn dropdown_value(dropdown: &gtk::DropDown) -> String {
     .map_or_else(String::new, |item| item.string().to_string())
 }
 
+/// Fills the settings form from `draft`. The change handlers are blocked
+/// meanwhile, otherwise every value set here would come back as an edit.
 pub fn populate_settings(widgets: &SettingsWidgets, draft: &SettingsDraft, i18n: I18n) {
+  let bindings = handler_bindings(widgets);
+  for (widget, id) in bindings {
+    widget.block_signal(id);
+  }
+  fill_settings(widgets, draft, i18n);
+  for (widget, id) in bindings {
+    widget.unblock_signal(id);
+  }
+}
+
+/// Each editable widget with the id of its change handler.
+fn handler_bindings(widgets: &SettingsWidgets) -> [(&gtk::Widget, &SignalHandlerId); 12] {
   let handlers = &widgets.changed_handlers;
-  for (widget, id) in [
+  [
     (
       widgets.font_family.upcast_ref::<gtk::Widget>(),
       &handlers.font_family,
@@ -198,10 +214,10 @@ pub fn populate_settings(widgets: &SettingsWidgets, draft: &SettingsDraft, i18n:
       widgets.terminal_args.upcast_ref::<gtk::Widget>(),
       &handlers.terminal_args,
     ),
-  ] {
-    widget.block_signal(id);
-  }
+  ]
+}
 
+fn fill_settings(widgets: &SettingsWidgets, draft: &SettingsDraft, i18n: I18n) {
   widgets.header.set_label(i18n.text(Text::Settings));
   widgets
     .font_family_label
@@ -263,59 +279,6 @@ pub fn populate_settings(widgets: &SettingsWidgets, draft: &SettingsDraft, i18n:
   widgets.edit_file.set_label(i18n.text(Text::EditConfigFile));
   widgets.cancel.set_label(i18n.text(Text::Cancel));
   widgets.save.set_label(i18n.text(Text::Save));
-
-  for (widget, id) in [
-    (
-      widgets.font_family.upcast_ref::<gtk::Widget>(),
-      &handlers.font_family,
-    ),
-    (
-      widgets.font_size.upcast_ref::<gtk::Widget>(),
-      &handlers.font_size,
-    ),
-    (
-      widgets.language.upcast_ref::<gtk::Widget>(),
-      &handlers.language,
-    ),
-    (
-      widgets.week_start.upcast_ref::<gtk::Widget>(),
-      &handlers.week_start,
-    ),
-    (
-      widgets.show_events.upcast_ref::<gtk::Widget>(),
-      &handlers.show_events,
-    ),
-    (
-      widgets.default_duration.upcast_ref::<gtk::Widget>(),
-      &handlers.default_duration,
-    ),
-    (
-      widgets.default_reminder.upcast_ref::<gtk::Widget>(),
-      &handlers.default_reminder,
-    ),
-    (
-      widgets.sync_interval.upcast_ref::<gtk::Widget>(),
-      &handlers.sync_interval,
-    ),
-    (
-      widgets.editor_command.upcast_ref::<gtk::Widget>(),
-      &handlers.editor_command,
-    ),
-    (
-      widgets.editor_args.upcast_ref::<gtk::Widget>(),
-      &handlers.editor_args,
-    ),
-    (
-      widgets.terminal_command.upcast_ref::<gtk::Widget>(),
-      &handlers.terminal_command,
-    ),
-    (
-      widgets.terminal_args.upcast_ref::<gtk::Widget>(),
-      &handlers.terminal_args,
-    ),
-  ] {
-    widget.unblock_signal(id);
-  }
 }
 
 #[cfg(test)]

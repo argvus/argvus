@@ -1,3 +1,5 @@
+//! Calendar domain: dates, events and recurrence.
+
 pub mod date;
 pub mod event;
 pub mod recurrence;

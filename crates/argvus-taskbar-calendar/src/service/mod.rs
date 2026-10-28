@@ -1,3 +1,5 @@
+//! Reminder service started by the systemd user unit; it exits when events are disabled.
+
 use crate::config::{Paths, service_events_enabled};
 use crate::error::Result;
 use crate::reminders::ReminderScheduler;

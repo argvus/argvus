@@ -1,3 +1,5 @@
+//! Calendar, event and reminder types stored in the database.
+
 use chrono::{DateTime, Duration, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;

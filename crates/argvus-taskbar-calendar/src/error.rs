@@ -1,3 +1,5 @@
+//! Error type shared by the calendar modules.
+
 use thiserror::Error;
 
 pub type Result<T> = std::result::Result<T, ArgvusError>;
@@ -11,7 +13,6 @@ pub enum ArgvusError {
   #[error("iCalendar error: {0}")]
   Ics(String),
   #[error("CalDAV error: {0}")]
-  #[allow(dead_code)]
   CalDav(String),
   #[error("network error: {0}")]
   Network(#[from] reqwest::Error),

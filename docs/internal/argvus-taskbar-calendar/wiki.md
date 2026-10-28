@@ -90,8 +90,6 @@ Single-instance control over a UNIX socket in the cache dir.
 
 - `WeekStart::offset_for(date)` — weekday offset for Monday- or Sunday-start.
 - `today()` — the current local date.
-- `start_of_local_day_utc(date)` — midnight of the local day as UTC.
-- `start_of_today_utc()` — midnight of today in UTC.
 - `first_of_month(date)` / `next_month(date)` / `previous_month(date)` — month
   navigation.
 - `shift_year_clamped(date, years)` — shifts the year, clamping a Feb 29 to
@@ -125,8 +123,6 @@ SQLite persistence (rusqlite). `Database::open(path)` runs migrations on open.
 - `upsert_event(&mut event)` — inserts or updates an event plus its reminders,
   returning the id.
 - `mark_deleted(id)` — soft-deletes an event.
-- `purge_events_ended_before(cutoff)` — removes ended events and their
-  reminders.
 - `purge_expired_local_single_events(now)` — removes local non-recurring events
   10 minutes after their end time, preserving CalDAV/ICS and recurring events.
 - `due_reminders(now)` — reminders whose trigger time has passed and have not
@@ -146,7 +142,6 @@ SQLite persistence (rusqlite). `Database::open(path)` runs migrations on open.
   reminder `TRIGGER`s and `RRULE` recurrence into `CalendarEvent`s.
 - `parse_ics_datetime(value)` — flexible date/datetime parsing.
 - `trigger_to_minutes(trigger)` — ISO-8601 `TRIGGER` to minutes.
-- `midnight()` — helper for all-day boundary.
 - `export_ics_file(path, events)` — writes events as an ICS file.
 - `export_ics(events)` — serializes events to an ICS string.
 
@@ -200,26 +195,45 @@ SQLite persistence (rusqlite). `Database::open(path)` runs migrations on open.
 
 - Re-exports the popup command used by `main.rs`.
 
-### `app.rs`
+### `app.rs` and `app/`
 
-The Relm4 component: the whole popup is one layer-shell surface.
+The Relm4 component: the whole popup is one layer-shell surface. `app.rs` holds
+the model, the messages and their handling; the submodules of `app/` hold the
+widget construction and the helpers.
+
+`app.rs`:
 
 - `run_ui(paths, settings, command, fixed_position)` — entry point. Pins the
   popup to the click position supplied by the Waybar launcher, with an
   in-process fallback read for direct CLI calls, before building the GTK app.
-- `AppModel::init` — builds the window, calendar, agenda and editor widgets,
-  starts the theme watcher and the IPC listener, and presents when the command
-  asks for it.
+- `AppModel::init` — creates the model, starts the theme watcher and the IPC
+  listener, assembles the calendar, editor and settings views from `app/build.rs`
+  and presents when the command asks for it.
 - `AppModel::update` — handles navigation, day selection, event CRUD, settings
-  editing and popup show/hide; reloads events when the state changed.
-- `render_model` — pushes the current month/selection/agenda into the widgets.
+  editing and popup show/hide; reloads events when `AppMsg::reloads_events` says
+  the state may have changed. Saving, deleting, toggling and showing the popup
+  are the `AppModel` methods `save_editor`, `delete_edited_event`,
+  `save_settings`, `toggle_popup` and `show_popup`.
 - `reapply_runtime` — reapplies locale, CSS and layer-shell settings after a
   config save.
+
+`app/build.rs` — the widget tree and its signals:
+
+- `build_calendar_view`, `build_editor_view`, `build_settings_view` — each
+  builds one page of the stack and connects the signals of its own widgets.
+- `connect_focus_dismiss` — outside-click dismissal on focus loss.
+- `install_keyboard_shortcuts` — Escape, `t`, `n`, arrows and Page Up/Down.
+- `watch_theme` — re-reads the theme fingerprint every 700 ms.
+- `serve_ipc` — forwards the IPC commands of later launches.
+
+`app/popup.rs` — placement:
+
 - `present_popup(window, popup, state, fixed_position)` — repositions the window
   at the fixed click position, starts a new presentation generation, sets
   exclusive keyboard mode and presents. After 800ms it arms outside-click
   dismissal and downgrades keyboard mode; stale timers cannot affect a newer
   opening.
+- `hide_popup` — hides the window and returns to the calendar view.
 - `set_monitor_at_pointer(window, fixed_position)` — moves the surface to the
   monitor that contains the click position.
 - `apply_layer_shell(window)` — layer-shell setup: overlay layer, anchored
@@ -234,19 +248,31 @@ The Relm4 component: the whole popup is one layer-shell surface.
 - `current_pointer_position()` — reads the cursor via `hyprctl cursorpos -j`.
 - `current_monitor_geometry(x, y)` — the monitor geometry and reserved top strip
   for a point, via `hyprctl monitors -j`.
+
+`app/styling.rs` — CSS:
+
 - `load_css(paths)` — loads the CSS cascade.
 - `stylesheet_paths(paths)` — style.css, theme.css, the active ARGVUS theme and
   the user cache theme, in that order.
 - `runtime_css(paths)` — font CSS generated from config.
 - `css_string(value)` — CSS-escaping helper.
+- `file_fingerprint`, `theme_fingerprint` — change detection of the theme files.
+
+`app/render.rs`:
+
+- `render_model` — pushes the current month/selection/agenda into the widgets.
 - `load_day_and_month(paths, selected, month)` — events + event-day set.
-- `hide_popup`, `cancel_editor`, `update_draft`, `update_settings_draft` — small
-  state helpers.
+
+`app/drafts.rs`:
+
+- `cancel_editor`, `update_draft`, `update_settings_draft`,
+  `apply_editor_field`, `apply_settings_field` — view-state and draft helpers.
+- `can_create_event` — events can only be created from today on.
 - `control_reminder_service(enabled)` — enables/disables the user systemd unit.
-- Widget builders: `editor_row`, `editor_label`, `editor_entry`,
-  `editor_number_spin`, `editor_control_has_focus`, `settings_label`,
-  `settings_section_label`, `settings_number_spin`, `can_create_event`,
-  `file_fingerprint`, `theme_fingerprint` — GTK construction/helpers.
+
+`app/form_widgets.rs` — GTK builders: `editor_row`, `editor_label`,
+`editor_entry`, `editor_number_spin`, `editor_control_has_focus`,
+`settings_label`, `settings_section_label`, `settings_number_spin`.
 
 ### `calendar.rs`
 
@@ -263,8 +289,9 @@ The Relm4 component: the whole popup is one layer-shell surface.
 - `EditorDraft::new(date, default_reminder_minutes)` / `from_event(event)` —
   build a draft for a new or existing event.
 - `build_editor()` — the editor form widgets.
-- `populate_editor(widgets, draft, i18n)` — fills the form and blocks signals so
-  typing does not re-enter the UI loop.
+- `populate_editor(widgets, draft, i18n)` — fills the form (`fill_editor`) with
+  the change handlers listed by `handler_bindings` blocked, so the values set
+  here do not come back as edit messages.
 - `save_editor(widgets, draft, paths)` — writes the event to the database.
 - `build_reminders(start, all_day, enabled, hours, minutes, repeat_*)` — expands
   repeat/all-day reminders into concrete `Reminder`s.
@@ -279,8 +306,8 @@ The Relm4 component: the whole popup is one layer-shell surface.
 - `build_settings()` — the settings form container.
 - `set_dropdown(dropdown, model, value)` / `dropdown_value(dropdown)` — dropdown
   helpers.
-- `populate_settings(widgets, draft, i18n)` — fill the form, blocking signal
-  handlers while setting values.
+- `populate_settings(widgets, draft, i18n)` — fill the form (`fill_settings`)
+  with the change handlers listed by `handler_bindings` blocked.
 
 ## Errors — `src/error.rs`
 

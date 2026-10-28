@@ -1,3 +1,5 @@
+//! SQLite storage of calendars, events and reminders.
+
 use std::path::Path;
 
 use chrono::{DateTime, Duration, NaiveDate, Utc};
@@ -203,21 +205,12 @@ impl Database {
     Ok(id)
   }
 
-  #[allow(dead_code)]
   pub fn mark_deleted(&self, event_id: i64) -> Result<()> {
     self.conn.execute(
       "UPDATE events SET deleted = 1, dirty = 1, updated_at = ?2 WHERE id = ?1",
       params![event_id, Utc::now().to_rfc3339()],
     )?;
     Ok(())
-  }
-
-  #[allow(dead_code)]
-  pub fn purge_events_ended_before(&self, cutoff: DateTime<Utc>) -> Result<usize> {
-    Ok(self.conn.execute(
-      "DELETE FROM events WHERE datetime(end_utc) <= datetime(?1)",
-      params![cutoff.to_rfc3339()],
-    )?)
   }
 
   pub fn purge_expired_local_single_events(&self, now: DateTime<Utc>) -> Result<usize> {
@@ -496,35 +489,6 @@ mod tests {
     assert_eq!(due.len(), 1);
     assert_eq!(due[0].1.title, "Unscheduled");
     assert_eq!(due[0].0.minutes_before, 0);
-
-    drop(db);
-    std::fs::remove_dir_all(test_dir).unwrap();
-  }
-
-  #[test]
-  fn purge_removes_ended_events_and_their_reminders() {
-    let test_dir =
-      std::env::temp_dir().join(format!("argvus-calendar-purge-{}", uuid::Uuid::new_v4()));
-    std::fs::create_dir_all(&test_dir).unwrap();
-    let database_path = test_dir.join("calendar.db");
-    let mut db = Database::open(&database_path).unwrap();
-    let cutoff = Utc.with_ymd_and_hms(2026, 8, 12, 3, 0, 0).unwrap();
-
-    let mut ended = CalendarEvent::new_local(1, "Ended", cutoff - Duration::hours(1));
-    ended.end = cutoff;
-    db.upsert_event(&mut ended).unwrap();
-    let mut current = CalendarEvent::new_local(1, "Current", cutoff);
-    db.upsert_event(&mut current).unwrap();
-
-    assert_eq!(db.purge_events_ended_before(cutoff).unwrap(), 1);
-    assert_eq!(
-      db.all_events()
-        .unwrap()
-        .into_iter()
-        .map(|event| event.title)
-        .collect::<Vec<_>>(),
-      vec!["Current"]
-    );
 
     drop(db);
     std::fs::remove_dir_all(test_dir).unwrap();

@@ -1,3 +1,5 @@
+//! Desktop notification and bell sound of a due reminder.
+
 use std::process::{Command, Stdio};
 
 use chrono::Local;

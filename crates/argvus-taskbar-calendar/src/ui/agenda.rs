@@ -1,3 +1,5 @@
+//! Agenda list of the selected day.
+
 use chrono::Local;
 use gtk::prelude::*;
 

@@ -1,4 +1,6 @@
-use chrono::{DateTime, Datelike, Days, Local, NaiveDate, TimeZone, Utc};
+//! Date helpers: week start, today and month or year navigation.
+
+use chrono::{Datelike, Days, Local, NaiveDate};
 
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
 pub enum WeekStart {
@@ -17,20 +19,6 @@ impl WeekStart {
 
 pub fn today() -> NaiveDate {
   Local::now().date_naive()
-}
-
-#[allow(dead_code)]
-pub fn start_of_local_day_utc(date: NaiveDate) -> DateTime<Utc> {
-  Local
-    .from_local_datetime(&date.and_hms_opt(0, 0, 0).expect("valid midnight"))
-    .earliest()
-    .expect("local day has a start")
-    .with_timezone(&Utc)
-}
-
-#[allow(dead_code)]
-pub fn start_of_today_utc() -> DateTime<Utc> {
-  start_of_local_day_utc(today())
 }
 
 pub fn first_of_month(date: NaiveDate) -> NaiveDate {
@@ -99,13 +87,5 @@ mod tests {
       shift_year_clamped(date, 1),
       NaiveDate::from_ymd_opt(2025, 2, 28).unwrap()
     );
-  }
-
-  #[test]
-  fn local_day_start_round_trips_to_midnight() {
-    let date = NaiveDate::from_ymd_opt(2026, 8, 12).unwrap();
-    let local = start_of_local_day_utc(date).with_timezone(&Local);
-    assert_eq!(local.date_naive(), date);
-    assert_eq!(local.time(), chrono::NaiveTime::MIN);
   }
 }

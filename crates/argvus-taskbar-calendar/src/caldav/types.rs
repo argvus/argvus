@@ -1,3 +1,5 @@
+//! CalDAV account, collection and remote object types.
+
 use chrono::{DateTime, Utc};
 
 #[derive(Debug, Clone)]

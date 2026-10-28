@@ -1,3 +1,5 @@
+//! Recurrence rule of an event, kept as the iCalendar properties it came from.
+
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Default, Eq, PartialEq, Serialize, Deserialize)]
@@ -7,7 +9,6 @@ pub struct Recurrence {
 }
 
 impl Recurrence {
-  #[allow(dead_code)]
   pub fn is_empty(&self) -> bool {
     self.rrule.is_none() && self.raw_properties.is_empty()
   }

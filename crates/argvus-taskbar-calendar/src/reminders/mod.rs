@@ -1,3 +1,5 @@
+//! Event reminders: scheduling and desktop notifications.
+
 pub mod notification;
 pub mod scheduler;
 

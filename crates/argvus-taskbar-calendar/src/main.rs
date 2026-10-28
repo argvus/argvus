@@ -1,3 +1,5 @@
+//! Entry point of `argvus-taskbar-calendar`: the popup, the reminder service and the command-line actions.
+
 mod app;
 mod caldav;
 mod calendar;

@@ -1,3 +1,5 @@
+//! Unix socket protocol that lets a new launch control the running popup (toggle, show, hide, reload).
+
 use std::io::{BufRead, BufReader, Write};
 use std::os::unix::net::{UnixListener, UnixStream};
 use std::path::PathBuf;

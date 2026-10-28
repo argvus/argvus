@@ -1,3 +1,5 @@
+//! Loop of the reminder service: finds due reminders and notifies them once.
+
 use std::time::Duration;
 
 use crate::config::{Paths, service_events_enabled};

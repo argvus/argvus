@@ -1,3 +1,5 @@
+//! iCalendar import and export.
+
 pub mod export;
 pub mod import;
 

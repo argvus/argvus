@@ -1,3 +1,5 @@
+//! Discovery of the calendar collections of a CalDAV account.
+
 use crate::error::Result;
 
 use super::{CalDavClient, CalendarCollection};

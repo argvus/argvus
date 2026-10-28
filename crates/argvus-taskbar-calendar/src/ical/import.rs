@@ -1,6 +1,8 @@
+//! iCalendar (`.ics`) import.
+
 use std::path::Path;
 
-use chrono::{DateTime, Duration, NaiveDate, NaiveDateTime, NaiveTime, Utc};
+use chrono::{DateTime, Duration, NaiveDate, NaiveDateTime, Utc};
 use icalendar::{Calendar as ICalendar, Component, EventLike};
 
 use crate::calendar::{CalendarEvent, CalendarSource, Recurrence, Reminder};
@@ -117,9 +119,4 @@ fn trigger_to_minutes(trigger: &str) -> Option<i64> {
     .trim_end_matches('M')
     .parse::<i64>()
     .ok()
-}
-
-#[allow(dead_code)]
-fn midnight() -> NaiveTime {
-  NaiveTime::from_hms_opt(0, 0, 0).unwrap()
 }

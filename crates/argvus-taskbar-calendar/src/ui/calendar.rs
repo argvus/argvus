@@ -1,3 +1,5 @@
+//! Month grid cells and weekday headers.
+
 use chrono::{Datelike, NaiveDate};
 
 use crate::calendar::{WeekStart, month_grid};
