@@ -2,6 +2,7 @@
 
 use super::commands::{read_first_or_default, run_effects, run_effects_output};
 use super::*;
+use crate::shadow::ShadowSettings;
 
 /// Reads one independent visual state from the shared session contract.
 pub(super) fn effect_state(component: &str) -> bool {
@@ -41,6 +42,14 @@ pub(super) fn blur_values() -> BlurValues {
     .unwrap_or_default()
 }
 
+/// Reads the Hyprland window shadow from the session script. A missing script
+/// or config falls back to the defaults (shadow off).
+pub(super) fn shadow_settings() -> ShadowSettings {
+  run_effects_output(&["shadow-settings", "get"])
+    .map(|output| ShadowSettings::from_script_output(&output))
+    .unwrap_or_default()
+}
+
 pub(super) fn effect_enabled(kind: &str, surface: EffectSurface) -> bool {
   run_effects_output(&["effect-enabled", surface.key(), kind])
     .is_some_and(|value| value.trim() == "enabled")
@@ -61,6 +70,7 @@ pub(super) struct GlobalEffects {
   pub(super) transparency: bool,
   pub(super) blur: bool,
   pub(super) blur_values: BlurValues,
+  pub(super) shadow: ShadowSettings,
 }
 
 /// One surface's transparency, and its blur when the surface has one.
@@ -73,6 +83,7 @@ pub(super) struct SurfaceEffects {
 pub(super) fn read_global_effects() -> GlobalEffects {
   std::thread::scope(|scope| {
     let blur_values = scope.spawn(blur_values);
+    let shadow = scope.spawn(shadow_settings);
     let animations = scope.spawn(|| effect_state("animations"));
     let transparency = scope.spawn(|| effect_state("transparency"));
     let blur = effect_state("blur");
@@ -81,6 +92,7 @@ pub(super) fn read_global_effects() -> GlobalEffects {
       transparency: transparency.join().unwrap_or_default(),
       blur,
       blur_values: blur_values.join().unwrap_or_default(),
+      shadow: shadow.join().unwrap_or_default(),
     }
   })
 }
@@ -187,6 +199,16 @@ pub fn set_effect_value(kind: &str, surface: EffectSurface, value: i32) -> Resul
 pub fn apply_blur(enabled: Option<bool>, values: Option<BlurValues>) -> Result<(), String> {
   let arguments = settings_arguments(enabled, values.map(BlurValues::script_arguments));
   apply_settings("blur-settings", &arguments)
+}
+
+/// Writes the shadow switch and settings that changed in one call, so `Apply`
+/// reloads the configuration once. `argvus config effects` validates each value.
+pub fn apply_shadow(enabled: Option<bool>, settings: Option<ShadowSettings>) -> Result<(), String> {
+  let arguments = settings_arguments(
+    enabled,
+    settings.map(|settings| settings.script_arguments()),
+  );
+  apply_settings("shadow-settings", &arguments)
 }
 
 pub fn apply_surface_effects(

@@ -50,6 +50,14 @@ impl AppearanceApp {
           self.commit_blur_value(field, &value);
           return false;
         }
+        if let PromptGoal::ShadowValue(field) = goal {
+          self.commit_shadow_value(field, &value);
+          return false;
+        }
+        if goal == PromptGoal::ShadowColor {
+          self.commit_shadow_color(&value);
+          return false;
+        }
         if let PromptGoal::AnimationValue(field) = goal {
           self.commit_animation_value(field, &value);
           return false;
@@ -124,6 +132,13 @@ impl AppearanceApp {
         false
       }
       KeyCode::Char(c)
+        if self.shadow_color_prompt() && c.is_ascii_hexdigit() && self.prompt_buffer.len() < 8 =>
+      {
+        self.prompt_buffer.push(c.to_ascii_uppercase());
+        self.prompt_error = None;
+        false
+      }
+      KeyCode::Char(c)
         if c.is_ascii_digit() && self.prompt_buffer.len() < self.prompt_digit_limit() =>
       {
         self.prompt_buffer.push(c);
@@ -133,12 +148,7 @@ impl AppearanceApp {
         self.prompt_buffer.push('.');
         false
       }
-      KeyCode::Char('-')
-        if self
-          .animation_prompt_field()
-          .is_some_and(AnimationField::allows_negative)
-          && self.prompt_buffer.is_empty() =>
-      {
+      KeyCode::Char('-') if self.prompt_buffer.is_empty() && self.allows_negative_prompt() => {
         self.prompt_buffer.push('-');
         false
       }
@@ -160,6 +170,37 @@ impl AppearanceApp {
     }
   }
 
+  /// The Shadow field whose value the open prompt is typing, if any.
+  pub(super) fn shadow_prompt_field(&self) -> Option<ShadowField> {
+    match self.page {
+      AppearancePage::Prompt {
+        goal: PromptGoal::ShadowValue(field),
+      } => Some(field),
+      _ => None,
+    }
+  }
+
+  /// Whether the open prompt types the Shadow color (`RRGGBBAA`).
+  pub(super) fn shadow_color_prompt(&self) -> bool {
+    matches!(
+      self.page,
+      AppearancePage::Prompt {
+        goal: PromptGoal::ShadowColor
+      }
+    )
+  }
+
+  /// Whether the open prompt accepts a leading `-`: the Animations curve
+  /// parameters and the Shadow offsets.
+  pub(super) fn allows_negative_prompt(&self) -> bool {
+    self
+      .animation_prompt_field()
+      .is_some_and(AnimationField::allows_negative)
+      || self
+        .shadow_prompt_field()
+        .is_some_and(|field| field.bounds().0 < 0.0)
+  }
+
   /// The Animations field whose value the open prompt is typing, if any.
   pub(super) fn animation_prompt_field(&self) -> Option<AnimationField> {
     match self.page {
@@ -177,12 +218,21 @@ impl AppearanceApp {
       || self
         .animation_prompt_field()
         .is_some_and(|field| !field.is_integer())
+      || self
+        .shadow_prompt_field()
+        .is_some_and(|field| !field.is_integer())
   }
 
   /// Longest text a numeric prompt accepts. Decimal values need room for a
   /// value such as `0.900000`.
   pub(super) fn prompt_digit_limit(&self) -> usize {
-    if self.decimal_prompt() { 8 } else { 3 }
+    if self.decimal_prompt() {
+      8
+    } else if self.allows_negative_prompt() {
+      4
+    } else {
+      3
+    }
   }
 
   pub(super) fn prompt_label(&self, goal: PromptGoal) -> &'static str {
@@ -201,6 +251,8 @@ impl AppearanceApp {
       PromptGoal::DraftValue => "control_center.value",
       PromptGoal::BlurValue(field) => field.label_key(),
       PromptGoal::AnimationValue(field) => field.label_key(),
+      PromptGoal::ShadowValue(field) => field.label_key(),
+      PromptGoal::ShadowColor => "control_center.shadow_color",
     }
   }
 

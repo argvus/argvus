@@ -155,6 +155,7 @@ fn parse_appearance(args: &[String]) -> Result<AppearancePage, String> {
     Some("widget-telemetry") | Some("telemetry") => AppearancePage::WidgetTelemetry,
     Some("spaces") | Some("window-spaces") => AppearancePage::WindowSpaces,
     Some("borders") => AppearancePage::Borders,
+    Some("borders-shadow") | Some("shadow") => AppearancePage::BordersShadow,
     Some(v) => return Err(format!("unknown Appearance page '{v}'")),
   })
 }

@@ -95,6 +95,9 @@ impl AppearanceApp {
     if self.page == AppearancePage::Blur {
       return self.blur_draft_has_changes();
     }
+    if self.page == AppearancePage::BordersShadow {
+      return self.shadow_draft_has_changes();
+    }
     if Self::effect_spec(self.page).is_some() {
       return self.effect_draft_has_changes();
     }
@@ -174,6 +177,11 @@ impl AppearanceApp {
         self.go(AppearancePage::WindowSpaces);
       }
       AppearancePage::GeneralBorders | AppearancePage::EdgeThickness => {
+        self.go(AppearancePage::Borders);
+      }
+      // The Shadow draft is dropped on the way back, as the discard prompt warns.
+      AppearancePage::BordersShadow => {
+        self.shadow_draft = None;
         self.go(AppearancePage::Borders);
       }
       AppearancePage::TaskbarIcons | AppearancePage::TaskbarDate | AppearancePage::TaskbarTime => {
@@ -484,6 +492,11 @@ impl AppearanceApp {
         "{hyprland_root} > {} > {}",
         tr(self.lang, "control_center.borders"),
         tr(self.lang, "control_center.thickness")
+      ),
+      AppearancePage::BordersShadow => format!(
+        "{hyprland_root} > {} > {}",
+        tr(self.lang, "control_center.borders"),
+        tr(self.lang, "control_center.shadow")
       ),
       AppearancePage::Prompt { goal } => format!(
         "{} > {}",

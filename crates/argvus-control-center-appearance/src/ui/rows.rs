@@ -14,6 +14,7 @@ use crate::model::{
   TaskbarTimeFormat, TaskbarUtilityGroupMode, TaskbarUtilityWidget, WallpaperCollection,
   WallpaperMode, WidgetTelemetryBlock, accent_label,
 };
+use crate::shadow::ShadowField;
 use argvus_i18n::tr;
 use argvus_theme::discovery::ThemeCategory;
 use argvus_tui::{
@@ -96,6 +97,16 @@ pub(super) enum Item {
   BlurEnabled,
   /// One Blur parameter row (size, passes, brightness, ...).
   BlurField(BlurField),
+  /// Entry to the Shadow page from the Borders hub.
+  BordersShadow,
+  /// "Enable" on the Shadow page. Edits the draft until `Apply`.
+  ShadowEnabled,
+  /// "Sharp" on the Shadow page: square corners instead of the rounded falloff.
+  ShadowSharp,
+  /// The color row of the Shadow page; Enter types `RRGGBBAA` or empty.
+  ShadowColor,
+  /// One numeric row of the Shadow page (range, render power, offsets, scale).
+  ShadowField(ShadowField),
   // Taskbar position/spaces, window spaces and borders
   TaskbarPosition,
   TaskbarSpaces,
@@ -195,6 +206,11 @@ impl Item {
         AnimationGroup::OtherAnimations => icons::EFFECT,
       },
       Self::BlurEnabled | Self::BlurField(_) => icons::BLUR,
+      Self::BordersShadow
+      | Self::ShadowEnabled
+      | Self::ShadowSharp
+      | Self::ShadowColor
+      | Self::ShadowField(_) => icons::SHADOW,
       Self::TaskbarPosition => icons::TASKBAR,
       Self::TaskbarHeight => icons::TASKBAR,
       Self::TaskbarBorder | Self::BorderEnabled => icons::BORDER,
@@ -266,7 +282,9 @@ fn spacing_icon(goal: PromptGoal) -> Option<&'static str> {
     PromptGoal::ExportProfile
     | PromptGoal::DraftValue
     | PromptGoal::BlurValue(_)
-    | PromptGoal::AnimationValue(_) => None,
+    | PromptGoal::AnimationValue(_)
+    | PromptGoal::ShadowValue(_)
+    | PromptGoal::ShadowColor => None,
   }
 }
 
@@ -392,6 +410,7 @@ impl AppearanceApp {
       // switch and every Hyprland blur parameter edit the draft; `Apply`
       // (added by `rows`) writes them in one step.
       AppearancePage::Blur => self.blur_page_rows(),
+      AppearancePage::BordersShadow => self.shadow_page_rows(),
       // Entered directly from the Hyprland category (crate principal). The
       // switch, the custom curves and every leaf edit the shared Animations
       // draft; `Apply` (added by `rows`) writes it in one step.
@@ -419,6 +438,7 @@ impl AppearanceApp {
       AppearancePage::Borders => vec![
         self.submenu(Item::EdgeThickness, "control_center.thickness"),
         self.submenu(Item::GeneralBorders, "control_center.rounded"),
+        self.submenu(Item::BordersShadow, "control_center.shadow"),
       ],
       AppearancePage::TaskbarPosition => self.taskbar_position_page_rows(),
       AppearancePage::TaskbarSpaces => self.taskbar_spaces_page_rows(),
@@ -632,6 +652,37 @@ impl AppearanceApp {
       }));
       rows
     }
+  }
+
+  /// The Shadow page: the switches, the color and the numeric parameters.
+  /// The color row shows the value the compositor will use, so an empty
+  /// setting reads as the accent with its alpha.
+  fn shadow_page_rows(&self) -> Vec<Row<Item>> {
+    let draft = self.shadow_editor();
+    let mut rows = vec![
+      self.toggle_row(Item::ShadowEnabled, "control_center.enable", draft.enabled),
+      self.toggle_row(
+        Item::ShadowSharp,
+        "control_center.shadow_sharp",
+        draft.sharp,
+      ),
+      self.value_row(
+        Item::ShadowColor,
+        "control_center.shadow_color",
+        draft.color.effective(&self.state.accent),
+        None,
+      ),
+      Row::section(self.label("control_center.shadow_values")),
+    ];
+    rows.extend(ShadowField::ALL.map(|field| {
+      self.value_row(
+        Item::ShadowField(field),
+        field.label_key(),
+        field.format(draft.values.get(field)),
+        Some(1),
+      )
+    }));
+    rows
   }
 
   fn animations_page_rows(&self) -> Vec<Row<Item>> {

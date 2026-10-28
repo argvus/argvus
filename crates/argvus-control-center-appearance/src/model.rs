@@ -4,6 +4,7 @@ use crate::animations::{
   AnimationCurve, AnimationField, AnimationGroup, AnimationLeaf, AnimationValues,
 };
 use crate::blur::{BlurField, BlurValues};
+use crate::shadow::{ShadowField, ShadowSettings};
 use argvus_theme::discovery::ThemeCategory;
 use std::str::FromStr;
 
@@ -198,6 +199,8 @@ pub enum AppearancePage {
   Borders,
   GeneralBorders,
   EdgeThickness,
+  /// Shadow of the window borders (Borders > Shadow). Edits a draft until `Apply`.
+  BordersShadow,
   Prompt {
     goal: PromptGoal,
   },
@@ -283,6 +286,11 @@ pub enum PromptGoal {
   /// A speed, pop-in percentage or curve parameter typed into the Animations
   /// draft. Like `BlurValue`, it only edits the draft.
   AnimationValue(AnimationField),
+  /// A numeric shadow parameter typed into the Shadow page draft.
+  ShadowValue(ShadowField),
+  /// The shadow color typed as `RRGGBBAA`, or empty to follow the accent. It
+  /// only edits the Shadow draft.
+  ShadowColor,
 }
 impl PromptGoal {
   pub fn key(self) -> &'static str {
@@ -302,6 +310,8 @@ impl PromptGoal {
       Self::DraftValue => "draft_value",
       Self::BlurValue(field) => field.name(),
       Self::AnimationValue(_) => "animation_value",
+      Self::ShadowValue(field) => field.name(),
+      Self::ShadowColor => "shadow_color",
     }
   }
   pub const fn range(self) -> (i32, i32) {
@@ -441,6 +451,7 @@ pub struct AppearanceState {
   pub transparency: bool,
   pub blur: bool,
   pub blur_values: BlurValues,
+  pub shadow: ShadowSettings,
   /// Animation values other than the global switch, which is `animations`.
   pub animation_values: AnimationValues,
   pub taskbar_transparency_enabled: bool,
@@ -522,6 +533,7 @@ impl Default for AppearanceState {
       transparency: true,
       blur: true,
       blur_values: BlurValues::default(),
+      shadow: ShadowSettings::default(),
       animation_values: AnimationValues::default(),
       taskbar_transparency_enabled: true,
       control_panel_transparency_enabled: true,

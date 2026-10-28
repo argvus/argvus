@@ -1,4 +1,4 @@
-//! Unsaved edits of the surfaces, effects, blur and animations pages: what changed and how Save applies it.
+//! Unsaved edits of the surfaces, effects, blur, shadow and animations pages: what changed and how Save applies it.
 
 use super::*;
 
@@ -134,12 +134,42 @@ impl AppearanceApp {
     self.blur_draft = Some(draft);
   }
 
+  /// The Shadow page as stored, before any unapplied edit.
+  pub(super) fn shadow_saved(&self) -> ShadowSettings {
+    self.state.shadow.clone()
+  }
+
+  /// The Shadow page as shown: the draft when there is one, otherwise the stored state.
+  pub(super) fn shadow_editor(&self) -> ShadowSettings {
+    self
+      .shadow_draft
+      .clone()
+      .unwrap_or_else(|| self.shadow_saved())
+  }
+
+  /// Whether the Shadow draft differs from the stored settings.
+  pub(super) fn shadow_draft_has_changes(&self) -> bool {
+    self
+      .shadow_draft
+      .as_ref()
+      .is_some_and(|draft| *draft != self.shadow_saved())
+  }
+
+  /// Changes the Shadow draft; nothing is written until `Apply`.
+  pub(super) fn edit_shadow(&mut self, edit: impl FnOnce(&mut ShadowSettings)) {
+    let mut draft = self.shadow_editor();
+    edit(&mut draft);
+    self.shadow_draft = Some(draft);
+  }
+
   /// Whether the current page has an unapplied draft, which enables `Apply`.
   pub(super) fn has_pending_changes(&self) -> bool {
     if self.page.is_animations() {
       self.animations_draft_has_changes()
     } else if self.page == AppearancePage::Blur {
       self.blur_draft_has_changes()
+    } else if self.page == AppearancePage::BordersShadow {
+      self.shadow_draft_has_changes()
     } else if Self::effect_spec(self.page).is_some() {
       self.effect_draft_has_changes()
     } else {
@@ -150,6 +180,7 @@ impl AppearanceApp {
   /// Whether this page edits a draft that is applied with the `Apply` row.
   pub(super) fn is_draft_page(page: AppearancePage) -> bool {
     page == AppearancePage::Blur
+      || page == AppearancePage::BordersShadow
       || page.is_animations()
       || Self::surface_for_page(page).is_some()
       || Self::effect_spec(page).is_some()
@@ -330,6 +361,69 @@ impl AppearanceApp {
         backend::apply_blur(
           enabled_changed.then_some(draft.enabled),
           values_changed.then_some(draft.values),
+        )
+      },
+    );
+  }
+
+  /// Writes a typed Shadow parameter into the Shadow draft and returns to the
+  /// page with its row selected. Same rules as the Blur parameters.
+  pub(super) fn commit_shadow_value(&mut self, field: ShadowField, text: &str) {
+    let Some(value) = field.parse(text) else {
+      let (minimum, maximum) = field.bounds();
+      self.prompt_error = Some(format!(
+        "{} ({}–{})",
+        tr(self.lang, "control_center.enter_a_valid_number"),
+        field.format(minimum),
+        field.format(maximum)
+      ));
+      return;
+    };
+    self.prompt_back = None;
+    self.go(AppearancePage::BordersShadow);
+    self.edit_shadow(|draft| draft.values.set(field, value));
+    let rows = self.rows();
+    self.menu.normalize(&rows);
+    self.menu.select(&rows, &Item::ShadowField(field));
+  }
+
+  /// Writes a typed Shadow color into the draft: `RRGGBBAA`, or empty to follow
+  /// the accent. An invalid text keeps the prompt open.
+  pub(super) fn commit_shadow_color(&mut self, text: &str) {
+    let Some(color) = ShadowColor::parse(text) else {
+      self.prompt_error = Some(tr(self.lang, "control_center.shadow_color_invalid").into());
+      return;
+    };
+    self.prompt_back = None;
+    self.go(AppearancePage::BordersShadow);
+    self.edit_shadow(|draft| draft.color = color);
+    let rows = self.rows();
+    self.menu.normalize(&rows);
+    self.menu.select(&rows, &Item::ShadowColor);
+  }
+
+  /// Writes the Shadow draft. The switches, the color and the parameters go to
+  /// the session script, which reloads the compositor. The page stays open.
+  pub(super) fn apply_shadow_changes(&mut self) {
+    if self.action.is_some() {
+      return;
+    }
+    let Some(draft) = self.shadow_draft.take() else {
+      return;
+    };
+    let saved = self.shadow_saved();
+    let enabled_changed = draft.enabled != saved.enabled;
+    let settings_changed =
+      draft.sharp != saved.sharp || draft.color != saved.color || draft.values != saved.values;
+    if !enabled_changed && !settings_changed {
+      return;
+    }
+    self.apply(
+      tr(self.lang, "control_center.shadow_applied").into(),
+      move || {
+        backend::apply_shadow(
+          enabled_changed.then_some(draft.enabled),
+          settings_changed.then_some(draft),
         )
       },
     );

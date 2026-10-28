@@ -96,7 +96,7 @@ fn home_has_categories_and_spacing_is_nested() {
   assert_eq!(app(AppearancePage::Taskbar).page_rows().len(), 8);
   // "Borders" is entered directly from the Hyprland category (crate
   // principal) and just groups the two pre-existing border screens.
-  assert_eq!(app(AppearancePage::Borders).page_rows().len(), 2);
+  assert_eq!(app(AppearancePage::Borders).page_rows().len(), 3);
   assert_eq!(
     app(AppearancePage::TaskbarIcons).page_rows().len(),
     2 + TaskbarUtilityWidget::ALL.len() + 1
@@ -384,6 +384,64 @@ fn space_keeps_activating_actions_submenus_choices_and_editors() {
 /// Blur value as the page currently shows it (draft first, then stored).
 fn blur_value(application: &AppearanceApp, field: BlurField) -> f64 {
   application.blur_editor().values.get(field)
+}
+
+/// Shadow value as the page currently shows it (draft first, then stored).
+fn shadow_value(application: &AppearanceApp, field: ShadowField) -> f64 {
+  application.shadow_editor().values.get(field)
+}
+
+#[test]
+fn shadow_page_starts_disabled_and_follows_the_accent() {
+  let shadow = app(AppearancePage::BordersShadow).rows();
+  assert_eq!(shadow[0].kind(), RowKind::Toggle { on: false }, "Enable");
+  assert_eq!(shadow[1].kind(), RowKind::Toggle { on: false }, "Sharp");
+  assert_eq!(
+    shadow[2].detail_text(),
+    Some("3590bd99"),
+    "accent with alpha 99"
+  );
+  assert_eq!(shadow[3].kind(), RowKind::Separator, "Values heading");
+  assert_eq!(shadow[4].label(), "Range");
+  assert_eq!(shadow[4].detail_text(), Some("6"));
+  assert_eq!(shadow[5].label(), "Render power");
+  assert_eq!(shadow[5].detail_text(), Some("6"));
+  assert_eq!(shadow[8].detail_text(), Some("1.00"), "scale");
+}
+
+#[test]
+fn shadow_values_and_color_are_committed_to_the_draft_only() {
+  let mut application = app(AppearancePage::BordersShadow);
+  application.commit_shadow_value(ShadowField::RenderPower, "9");
+  assert_eq!(shadow_value(&application, ShadowField::RenderPower), 9.0);
+  assert!(
+    application.has_pending_changes(),
+    "Apply is enabled by the draft"
+  );
+
+  application.commit_shadow_value(ShadowField::RenderPower, "11");
+  assert_eq!(
+    shadow_value(&application, ShadowField::RenderPower),
+    9.0,
+    "out of range keeps the draft"
+  );
+  assert!(application.prompt_error.is_some());
+
+  application.commit_shadow_color("aabbcc11");
+  assert_eq!(
+    application.shadow_editor().color,
+    ShadowColor::Custom("aabbcc11".into())
+  );
+  application.commit_shadow_color("aabbcc");
+  assert_eq!(
+    application.shadow_editor().color,
+    ShadowColor::Custom("aabbcc11".into()),
+    "invalid color keeps the previous value"
+  );
+  assert!(
+    application.state.shadow == ShadowSettings::default(),
+    "stored state untouched"
+  );
 }
 
 fn custom_theme_app() -> AppearanceApp {

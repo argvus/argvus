@@ -47,7 +47,9 @@ use effects::{
   GlobalEffects, SURFACES_WITH_EFFECTS, SurfaceEffects, animation_values, effect_state,
   read_global_effects, read_surface_effects, store_surface_effects,
 };
-pub use effects::{apply_animations, apply_blur, apply_surface_effects, set_effect_value};
+pub use effects::{
+  apply_animations, apply_blur, apply_shadow, apply_surface_effects, set_effect_value,
+};
 pub(crate) use icon_themes::load_icon_themes;
 pub use icon_themes::{choose_launcher_icon, set_icon_theme};
 use layout::{
@@ -119,6 +121,7 @@ pub fn load_page(
   let wants_global_effects = matches!(
     page,
     AppearancePage::Blur
+      | AppearancePage::BordersShadow
       | AppearancePage::Animations
       | AppearancePage::Taskbar
       | AppearancePage::WidgetTelemetry
@@ -204,6 +207,7 @@ pub fn load_page(
     state.transparency = global_effects.transparency;
     state.blur = global_effects.blur;
     state.blur_values = global_effects.blur_values;
+    state.shadow = global_effects.shadow;
   }
   if page.is_animations() {
     state.animations = effect_state("animations");

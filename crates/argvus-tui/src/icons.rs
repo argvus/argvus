@@ -175,6 +175,8 @@ pub const THICKNESS: &str = "\u{f05c9}";
 pub const OPACITY: &str = "\u{f05cc}";
 /// Nerd Fonts: nf-md-blur
 pub const BLUR: &str = "\u{f00b5}";
+/// Nerd Fonts: nf-md-box_shadow
+pub const SHADOW: &str = "\u{f0637}";
 /// Nerd Fonts: nf-md-animation-play
 pub const ANIMATION: &str = "\u{f093a}";
 /// Nerd Fonts: nf-md-calendar
@@ -428,6 +430,7 @@ mod tests {
     THICKNESS,
     OPACITY,
     BLUR,
+    SHADOW,
     ANIMATION,
     CALENDAR,
     TIMER,

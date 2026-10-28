@@ -12,6 +12,7 @@ use crate::{
     TaskbarUtilityGroupMode, TaskbarUtilityWidgets, WidgetTelemetryBlock, normalize_hex_color,
     theme_family_label,
   },
+  shadow::{ShadowColor, ShadowField, ShadowSettings},
 };
 use argvus_control_center_core::navigation::HomeCardId;
 use argvus_theme::discovery::ThemeCategory;
@@ -171,6 +172,8 @@ pub struct AppearanceApp {
   effect_draft: Option<i32>,
   /// Unapplied Blur page edits: the enable switch and the parameters.
   blur_draft: Option<BlurSettings>,
+  /// Unapplied Shadow page edits: the switches, the color and the parameters.
+  shadow_draft: Option<ShadowSettings>,
   /// Unapplied Animations edits, shared by every Animations page.
   animations_draft: Option<AnimationSettings>,
   surface_draft: Option<SurfaceDraft>,
@@ -228,6 +231,7 @@ impl AppearanceApp {
       control_panel_draft: None,
       effect_draft: None,
       blur_draft: None,
+      shadow_draft: None,
       animations_draft: None,
       surface_draft: None,
       theme_dirty: false,

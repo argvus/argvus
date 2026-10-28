@@ -88,6 +88,7 @@ impl AppearanceApp {
       Item::EffectValue | Item::SectionValue => self.open_prompt(PromptGoal::DraftValue),
       Item::BlurField(field) => self.open_prompt(PromptGoal::BlurValue(field)),
       Item::Apply if self.page == AppearancePage::Blur => self.apply_blur_changes(),
+      Item::Apply if self.page == AppearancePage::BordersShadow => self.apply_shadow_changes(),
       Item::Apply if self.page.is_animations() => self.apply_animations_changes(),
       Item::Apply if Self::effect_spec(self.page).is_some() => self.apply_effect_changes(),
       Item::Apply => self.apply_surface_changes(),
@@ -105,6 +106,11 @@ impl AppearanceApp {
       }
       Item::AnimationField(field) => self.open_prompt(PromptGoal::AnimationValue(field)),
       Item::BlurEnabled => self.edit_blur(|draft| draft.enabled = !draft.enabled),
+      Item::BordersShadow => self.go(AppearancePage::BordersShadow),
+      Item::ShadowEnabled => self.edit_shadow(|draft| draft.enabled = !draft.enabled),
+      Item::ShadowSharp => self.edit_shadow(|draft| draft.sharp = !draft.sharp),
+      Item::ShadowColor => self.open_prompt(PromptGoal::ShadowColor),
+      Item::ShadowField(field) => self.open_prompt(PromptGoal::ShadowValue(field)),
       Item::TaskbarPosition => self.go(AppearancePage::TaskbarPosition),
       Item::TaskbarSpaces => self.go(AppearancePage::TaskbarSpaces),
       Item::WindowSpacesInner => self.go(AppearancePage::WindowSpacesInner),
@@ -212,6 +218,9 @@ impl AppearanceApp {
     match (item, self.page) {
       (Item::BlurField(field), AppearancePage::Blur) => {
         self.edit_blur(|draft| draft.values.adjust(field, delta));
+      }
+      (Item::ShadowField(field), AppearancePage::BordersShadow) => {
+        self.edit_shadow(|draft| draft.values.adjust(field, delta));
       }
       (Item::AnimationField(field), _) => {
         self.edit_animations(|draft| draft.values.adjust(field, delta));
