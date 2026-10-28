@@ -2,8 +2,9 @@ use std::cmp::Ordering;
 use std::collections::HashMap;
 
 use crate::config::Config;
+use crate::filesystem;
+use crate::text;
 use crate::udisks::{Enumerated, RawBlock, RawDrive};
-use crate::util;
 
 #[derive(Debug, Clone, Default)]
 pub struct Device {
@@ -40,11 +41,12 @@ fn basename(path: &str) -> &str {
 }
 
 // A partition that lives on the EFI system partition path is hidden by default.
-fn is_efi_system(b: &RawBlock, mount_point: &str) -> bool {
+fn is_efi_system(block: &RawBlock, mount_point: &str) -> bool {
   if !mount_point.is_empty() && mount_point.to_lowercase().contains("/boot/efi") {
     return true;
   }
-  if b.id_type.eq_ignore_ascii_case("vfat") && b.partition_type.eq_ignore_ascii_case("0xef") {
+  if block.id_type.eq_ignore_ascii_case("vfat") && block.partition_type.eq_ignore_ascii_case("0xef")
+  {
     return true;
   }
   false
@@ -52,9 +54,18 @@ fn is_efi_system(b: &RawBlock, mount_point: &str) -> bool {
 
 fn is_removable_drive(drive: Option<&RawDrive>) -> bool {
   match drive {
-    Some(d) => d.removable || d.media_removable || d.ejectable || d.optical,
+    Some(drive) => drive.removable || drive.media_removable || drive.ejectable || drive.optical,
     None => false,
   }
+}
+
+/// Only blocks that carry a filesystem or an encrypted container can become
+/// devices; partition tables, unlocked cleartext and loop devices are skipped.
+fn is_candidate_block(block: &RawBlock) -> bool {
+  if block.is_partition_table || block.is_cleartext || block.is_loop || block.device.is_empty() {
+    return false;
+  }
+  block.has_filesystem || block.has_encrypted
 }
 
 pub fn build_devices(
@@ -65,148 +76,176 @@ pub fn build_devices(
   next_insertion: &mut u64,
 ) -> Vec<Device> {
   let mut drives: HashMap<String, &RawDrive> = HashMap::new();
-  for d in &raw.drives {
-    drives.insert(d.object_path.clone(), d);
+  for drive in &raw.drives {
+    drives.insert(drive.object_path.clone(), drive);
   }
 
-  let mut out: Vec<Device> = Vec::with_capacity(raw.blocks.len());
+  let mut devices: Vec<Device> = Vec::with_capacity(raw.blocks.len());
 
-  for b in &raw.blocks {
-    if b.is_partition_table || b.is_cleartext || b.is_loop || b.device.is_empty() {
+  for block in &raw.blocks {
+    if !is_candidate_block(block) {
       continue;
     }
-    if !b.has_filesystem && !b.has_encrypted {
-      continue;
-    }
-    let drive = if b.drive.is_empty() {
+    let drive = if block.drive.is_empty() {
       None
     } else {
-      drives.get(&b.drive).copied()
+      drives.get(&block.drive).copied()
     };
     if !is_removable_drive(drive) {
       continue;
     }
 
-    let mut d = Device {
-      object_path: b.object_path.clone(),
-      drive_path: b.drive.clone(),
-      block: b.device.clone(),
-      encrypted: b.has_encrypted,
-      locked: b.has_encrypted && (b.cleartext.is_empty() || b.cleartext == "/"),
-      cleartext: String::new(),
-      ..Device::default()
-    };
-    if !d.locked {
-      d.cleartext = b.cleartext.clone();
-    }
-
-    if let Some(mp) = b.mount_points.iter().find(|mp| !mp.is_empty()) {
-      d.mount_point = mp.clone();
-    }
-    d.mounted = !d.mount_point.is_empty();
-
-    if let Some(drv) = drive {
-      d.vendor = util::trim(&drv.vendor).to_string();
-      d.model = util::trim(&drv.model).to_string();
-      d.removable = drv.removable || drv.media_removable;
-      d.ejectable = drv.ejectable;
-      d.is_optical = drv.optical;
-    }
-    d.can_power_off = !d.drive_path.is_empty() && (d.removable || d.ejectable);
-
-    d.filesystem = b.id_type.clone();
-    if d.encrypted && d.filesystem.is_empty() {
-      d.filesystem = "crypto_LUKS".to_string();
-    }
-
-    d.read_only = b.read_only;
-    if d.mounted {
-      if let Some((total, used, free, ro)) = util::statvfs_usage(&d.mount_point) {
-        d.capacity = total;
-        d.used = used;
-        d.free = free;
-        d.read_only = d.read_only || ro;
-      }
-    } else {
-      d.capacity = b.size;
-    }
-
-    d.hidden = b.hint_ignore || is_efi_system(b, &d.mount_point);
-    if d.hidden && !cfg.show_hidden {
+    let mut device = device_from_block(block, drive);
+    // Hidden devices are dropped before their insertion order and mount time
+    // are recorded, so showing them later starts them fresh.
+    if device.hidden && !cfg.show_hidden {
       continue;
     }
+    device.name = display_name(block, &device);
+    device.insertion_seq = record_insertion(&device, insertion_seq, next_insertion);
+    device.mount_time = record_mount_time(&device, mount_time);
 
-    if !b.id_label.is_empty() {
-      d.name = b.id_label.clone();
-    } else if !b.hint_name.is_empty() {
-      d.name = b.hint_name.clone();
-    } else if !d.vendor.is_empty() || !d.model.is_empty() {
-      if !d.vendor.is_empty() && !d.model.is_empty() {
-        d.name = format!("{} {}", d.vendor, d.model);
-      } else if !d.vendor.is_empty() {
-        d.name = d.vendor.clone();
-      } else {
-        d.name = d.model.clone();
-      }
-    } else {
-      d.name = basename(&d.block).to_string();
-    }
-
-    let seq = insertion_seq
-      .entry(d.object_path.clone())
-      .or_insert_with(|| {
-        let n = *next_insertion;
-        *next_insertion += 1;
-        n
-      });
-    d.insertion_seq = *seq;
-
-    if d.mounted {
-      let now = now_epoch();
-      let mt = mount_time.entry(d.object_path.clone()).or_insert(0);
-      if *mt <= 0 {
-        *mt = now;
-      }
-      d.mount_time = *mt;
-    } else {
-      mount_time.insert(d.object_path.clone(), 0);
-      d.mount_time = 0;
-    }
-
-    out.push(d);
+    devices.push(device);
   }
 
-  let mode = cfg.sort.as_str();
-  out.sort_by(|a, b| match mode {
-    "name" => a.name.to_lowercase().cmp(&b.name.to_lowercase()),
-    "size" => {
-      if a.capacity != b.capacity {
-        return b.capacity.cmp(&a.capacity);
-      }
-      a.insertion_seq.cmp(&b.insertion_seq)
+  sort_devices(&mut devices, cfg.sort.as_str());
+  devices
+}
+
+/// Builds a device from its UDisks block and drive: identity, lock state,
+/// mount point, drive capabilities, filesystem, usage and visibility.
+fn device_from_block(block: &RawBlock, drive: Option<&RawDrive>) -> Device {
+  let mut device = Device {
+    object_path: block.object_path.clone(),
+    drive_path: block.drive.clone(),
+    block: block.device.clone(),
+    encrypted: block.has_encrypted,
+    locked: block.has_encrypted && (block.cleartext.is_empty() || block.cleartext == "/"),
+    cleartext: String::new(),
+    ..Device::default()
+  };
+  if !device.locked {
+    device.cleartext = block.cleartext.clone();
+  }
+
+  if let Some(mount_point) = block
+    .mount_points
+    .iter()
+    .find(|mount_point| !mount_point.is_empty())
+  {
+    device.mount_point = mount_point.clone();
+  }
+  device.mounted = !device.mount_point.is_empty();
+
+  if let Some(drive) = drive {
+    device.vendor = text::trim_line_whitespace(&drive.vendor).to_string();
+    device.model = text::trim_line_whitespace(&drive.model).to_string();
+    device.removable = drive.removable || drive.media_removable;
+    device.ejectable = drive.ejectable;
+    device.is_optical = drive.optical;
+  }
+  device.can_power_off = !device.drive_path.is_empty() && (device.removable || device.ejectable);
+
+  device.filesystem = block.id_type.clone();
+  if device.encrypted && device.filesystem.is_empty() {
+    device.filesystem = "crypto_LUKS".to_string();
+  }
+
+  device.read_only = block.read_only;
+  if device.mounted {
+    if let Some(usage) = filesystem::statvfs_usage(&device.mount_point) {
+      device.capacity = usage.total;
+      device.used = usage.used;
+      device.free = usage.free;
+      device.read_only = device.read_only || usage.read_only;
     }
-    "insertion" => a.insertion_seq.cmp(&b.insertion_seq),
+  } else {
+    device.capacity = block.size;
+  }
+
+  device.hidden = block.hint_ignore || is_efi_system(block, &device.mount_point);
+  device
+}
+
+/// The filesystem label wins, then the UDisks name hint, then vendor and
+/// model, and finally the block device file name.
+fn display_name(block: &RawBlock, device: &Device) -> String {
+  if !block.id_label.is_empty() {
+    return block.id_label.clone();
+  }
+  if !block.hint_name.is_empty() {
+    return block.hint_name.clone();
+  }
+  match (device.vendor.is_empty(), device.model.is_empty()) {
+    (false, false) => format!("{} {}", device.vendor, device.model),
+    (false, true) => device.vendor.clone(),
+    (true, false) => device.model.clone(),
+    (true, true) => basename(&device.block).to_string(),
+  }
+}
+
+/// Returns the insertion order of the device, assigning the next number the
+/// first time the object path is seen.
+fn record_insertion(
+  device: &Device,
+  insertion_seq: &mut HashMap<String, u64>,
+  next_insertion: &mut u64,
+) -> u64 {
+  *insertion_seq
+    .entry(device.object_path.clone())
+    .or_insert_with(|| {
+      let assigned = *next_insertion;
+      *next_insertion += 1;
+      assigned
+    })
+}
+
+/// Keeps the first time a device was seen mounted; an unmounted device resets
+/// its entry to 0.
+fn record_mount_time(device: &Device, mount_time: &mut HashMap<String, i64>) -> i64 {
+  if !device.mounted {
+    mount_time.insert(device.object_path.clone(), 0);
+    return 0;
+  }
+  let now = now_epoch();
+  let mounted_since = mount_time.entry(device.object_path.clone()).or_insert(0);
+  if *mounted_since <= 0 {
+    *mounted_since = now;
+  }
+  *mounted_since
+}
+
+/// Sorts by the configured mode: `name`, `size`, `insertion`, or by default
+/// mounted devices first, the most recently mounted on top.
+fn sort_devices(devices: &mut [Device], mode: &str) {
+  devices.sort_by(|left, right| match mode {
+    "name" => left.name.to_lowercase().cmp(&right.name.to_lowercase()),
+    "size" => {
+      if left.capacity != right.capacity {
+        return right.capacity.cmp(&left.capacity);
+      }
+      left.insertion_seq.cmp(&right.insertion_seq)
+    }
+    "insertion" => left.insertion_seq.cmp(&right.insertion_seq),
     _ => {
-      if a.mounted != b.mounted {
-        return if a.mounted {
+      if left.mounted != right.mounted {
+        return if left.mounted {
           Ordering::Less
         } else {
           Ordering::Greater
         };
       }
-      if a.mounted && b.mounted && a.mount_time != b.mount_time {
-        return b.mount_time.cmp(&a.mount_time);
+      if left.mounted && right.mounted && left.mount_time != right.mount_time {
+        return right.mount_time.cmp(&left.mount_time);
       }
-      a.insertion_seq.cmp(&b.insertion_seq)
+      left.insertion_seq.cmp(&right.insertion_seq)
     }
   });
-
-  out
 }
 
 fn now_epoch() -> i64 {
   std::time::SystemTime::now()
     .duration_since(std::time::UNIX_EPOCH)
-    .map(|d| d.as_secs() as i64)
+    .map(|elapsed| elapsed.as_secs() as i64)
     .unwrap_or(0)
 }

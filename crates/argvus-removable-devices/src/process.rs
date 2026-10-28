@@ -1,36 +1,8 @@
+//! Shell commands launched by the module: detached launches, captured runs,
+//! quoting and desktop notifications.
+
 use std::io::Write;
 use std::process::{Command, Stdio};
-
-pub fn human_bytes(bytes: u64) -> String {
-  const UNITS: [&str; 6] = ["B", "KB", "MB", "GB", "TB", "PB"];
-  let mut value = bytes as f64;
-  let mut unit = 0;
-  while value >= 1000.0 && unit < 5 {
-    value /= 1000.0;
-    unit += 1;
-  }
-  if unit == 0 {
-    format!("{} B", bytes)
-  } else {
-    format!("{:.1} {}", value, UNITS[unit])
-  }
-}
-
-#[allow(dead_code)]
-pub fn human_bytes_short(bytes: u64) -> String {
-  const UNITS: [&str; 6] = ["B", "K", "M", "G", "T", "P"];
-  let mut value = bytes as f64;
-  let mut unit = 0;
-  while value >= 1000.0 && unit < 5 {
-    value /= 1000.0;
-    unit += 1;
-  }
-  if unit == 0 {
-    format!("{}", bytes)
-  } else {
-    format!("{:.0}{}", value, UNITS[unit])
-  }
-}
 
 // Launch a command without waiting (fire and forget), detached from the
 // terminal. A thread reaps the child, so the long-running `watch` does not
@@ -89,76 +61,40 @@ pub fn run_capture(command: &str, input: &[String]) -> Option<(String, String)> 
   ))
 }
 
-// Filesystem usage for a mount point via statvfs. Also reports read-only state.
-pub fn statvfs_usage(mountpoint: &str) -> Option<(u64, u64, u64, bool)> {
-  let mut st: libc::statvfs = unsafe { std::mem::zeroed() };
-  let c_path = std::ffi::CString::new(mountpoint).ok()?;
-  if unsafe { libc::statvfs(c_path.as_ptr(), &mut st) } != 0 {
-    return None;
-  }
-  let frsize = if st.f_frsize > 0 {
-    st.f_frsize as u64
-  } else {
-    512
-  };
-  let total = (st.f_blocks as u64).wrapping_mul(frsize);
-  let free = (st.f_bavail as u64).wrapping_mul(frsize);
-  let used = total.saturating_sub(free);
-  let read_only = (st.f_flag as u64 & libc::ST_RDONLY) != 0;
-  Some((total, used, free, read_only))
-}
-
 // Desktop notification via notify-send (best effort).
 pub fn notify(summary: &str, body: &str, critical: bool) {
-  let mut cmd = String::from("notify-send --app-name=argvus-removable-devices ");
-  cmd += if critical {
+  let mut command = String::from("notify-send --app-name=argvus-removable-devices ");
+  command += if critical {
     "-u critical "
   } else {
     "-u normal "
   };
-  cmd += &shell_quote(summary);
+  command += &shell_quote(summary);
   if !body.is_empty() {
-    cmd.push(' ');
-    cmd += &shell_quote(body);
+    command.push(' ');
+    command += &shell_quote(body);
   }
-  fork_exec(&cmd);
+  fork_exec(&command);
 }
 
-pub fn trim(s: &str) -> &str {
-  s.trim_matches(|c| matches!(c, ' ' | '\t' | '\r' | '\n'))
-}
-
-pub fn shell_quote(s: &str) -> String {
-  let mut out = String::from("'");
-  for c in s.chars() {
-    if c == '\'' {
-      out.push_str("'\\''");
+/// Quotes `text` as one POSIX shell word, so it can be appended to a command
+/// line that runs through `/bin/sh -c`.
+pub fn shell_quote(text: &str) -> String {
+  let mut quoted = String::from("'");
+  for character in text.chars() {
+    if character == '\'' {
+      quoted.push_str("'\\''");
     } else {
-      out.push(c);
+      quoted.push(character);
     }
   }
-  out.push('\'');
-  out
+  quoted.push('\'');
+  quoted
 }
 
 #[cfg(test)]
 mod tests {
   use super::*;
-
-  #[test]
-  fn human_bytes_values() {
-    assert_eq!(human_bytes(0), "0 B");
-    assert_eq!(human_bytes(512), "512 B");
-    assert_eq!(human_bytes(1024), "1.0 KB");
-    assert_eq!(human_bytes(512 * 1024 * 1024), "536.9 MB");
-    assert_eq!(human_bytes_short(12 * 1024 * 1024 * 1024), "13G");
-  }
-
-  #[test]
-  fn trim_whitespace() {
-    assert_eq!(trim("  foo \n"), "foo");
-    assert_eq!(trim("\t\r\n"), "");
-  }
 
   #[test]
   fn launched_commands_are_reaped() {

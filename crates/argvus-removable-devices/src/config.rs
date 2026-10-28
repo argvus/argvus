@@ -19,7 +19,6 @@ pub struct Config {
   pub tooltip_format: String,
   pub open_command: String,
   pub file_manager_command: String,
-  #[allow(dead_code)]
   pub copy_command: String,
   pub unlock_command: String,
   pub mode: String,

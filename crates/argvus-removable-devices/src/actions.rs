@@ -3,8 +3,8 @@ use std::collections::HashMap;
 use crate::config::Config;
 use crate::device::{Device, build_devices};
 use crate::i18n;
+use crate::process;
 use crate::udisks::UdisksClient;
-use crate::util;
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum ActionKind {
@@ -124,9 +124,9 @@ impl<'a> Actions<'a> {
     let cmd = format!(
       "{} udisksctl unlock --block-device {}",
       self.config.unlock_command,
-      util::shell_quote(&d.block)
+      process::shell_quote(&d.block)
     );
-    if util::fork_exec(&cmd) < 0 {
+    if process::fork_exec(&cmd) < 0 {
       return Err(
         i18n::tr(
           "failed to launch unlock terminal",
@@ -152,8 +152,8 @@ impl<'a> Actions<'a> {
     } else {
       manager.to_string()
     };
-    let cmd = format!("{} {}", command, util::shell_quote(&target));
-    if util::fork_exec(&cmd) < 0 {
+    let cmd = format!("{} {}", command, process::shell_quote(&target));
+    if process::fork_exec(&cmd) < 0 {
       return Err(
         i18n::tr(
           "failed to launch the file manager",
@@ -253,7 +253,7 @@ impl<'a> Actions<'a> {
     };
     if let Err(e) = result {
       err = e;
-      util::notify("argvus-removable-devices", &err, true);
+      process::notify("argvus-removable-devices", &err, true);
       eprintln!("argvus-removable-devices: {}", err);
       return 1;
     }

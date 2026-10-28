@@ -1,7 +1,7 @@
 use crate::config::Config;
 use crate::device::Device;
 use crate::i18n;
-use crate::util;
+use crate::text;
 
 pub struct RenderResult {
   pub json: String,
@@ -44,7 +44,7 @@ impl<'a> Renderer<'a> {
     // Drop empty lines (e.g. no mount point) so the tooltip stays tidy.
     let mut out = String::new();
     for line in tip.split('\n') {
-      let line = util::trim(line);
+      let line = text::trim_line_whitespace(line);
       if line.is_empty() {
         continue;
       }
@@ -184,9 +184,9 @@ fn replace_all(haystack: &mut String, needle: &str, replacement: &str) {
 }
 
 fn expand_tokens(out: &mut String, d: &Device) {
-  let used = util::human_bytes(d.used);
-  let free = util::human_bytes(d.free);
-  let capacity = util::human_bytes(d.capacity);
+  let used = text::human_bytes(d.used);
+  let free = text::human_bytes(d.free);
+  let capacity = text::human_bytes(d.capacity);
 
   let mut state = String::new();
   if d.encrypted && d.locked {

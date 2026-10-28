@@ -127,7 +127,7 @@ impl<'a> Monitor<'a> {
         .filter(|(path, _)| !previous.contains_key(*path))
         .map(|(_, name)| name)
       {
-        crate::util::notify(
+        crate::process::notify(
           crate::i18n::tr("Device connected", "Dispositivo conectado"),
           name,
           false,
@@ -138,7 +138,7 @@ impl<'a> Monitor<'a> {
         .filter(|(path, _)| !current.contains_key(*path))
         .map(|(_, name)| name)
       {
-        crate::util::notify(
+        crate::process::notify(
           crate::i18n::tr("Device disconnected", "Dispositivo desconectado"),
           name,
           false,

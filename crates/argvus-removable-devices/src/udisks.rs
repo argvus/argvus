@@ -106,14 +106,14 @@ impl UdisksClient {
       }
     };
     let builder = match zbus::fdo::ObjectManagerProxy::builder(&conn).destination(SERVICE) {
-      Ok(b) => b,
+      Ok(builder) => builder,
       Err(e) => {
         self.error = e.to_string();
         return out;
       }
     };
     let builder = match builder.path(MANAGER_PATH) {
-      Ok(b) => b,
+      Ok(builder) => builder,
       Err(e) => {
         self.error = e.to_string();
         return out;
@@ -140,30 +140,30 @@ impl UdisksClient {
       for (iface, props) in interfaces {
         let iface = iface.to_string();
         if iface == IFACE_DRIVE {
-          let mut d = RawDrive {
+          let mut drive = RawDrive {
             object_path: path.clone(),
             ..RawDrive::default()
           };
-          parse_drive(&props, &mut d);
-          out.drives.push(d);
+          parse_drive(&props, &mut drive);
+          out.drives.push(drive);
         } else if iface == IFACE_BLOCK {
-          let b = block.get_or_insert_with(|| RawBlock {
+          let raw_block = block.get_or_insert_with(|| RawBlock {
             object_path: path.clone(),
             ..RawBlock::default()
           });
-          parse_block(&props, b, BlockSource::Block);
+          parse_block(&props, raw_block, BlockSource::Block);
         } else if iface == IFACE_FILESYSTEM {
-          let b = block.get_or_insert_with(|| RawBlock {
+          let raw_block = block.get_or_insert_with(|| RawBlock {
             object_path: path.clone(),
             ..RawBlock::default()
           });
-          parse_block(&props, b, BlockSource::Filesystem);
+          parse_block(&props, raw_block, BlockSource::Filesystem);
         } else if iface == IFACE_ENCRYPTED {
-          let b = block.get_or_insert_with(|| RawBlock {
+          let raw_block = block.get_or_insert_with(|| RawBlock {
             object_path: path.clone(),
             ..RawBlock::default()
           });
-          parse_block(&props, b, BlockSource::Encrypted);
+          parse_block(&props, raw_block, BlockSource::Encrypted);
         } else if iface == IFACE_PARTITION_TABLE {
           block
             .get_or_insert_with(|| RawBlock {
@@ -172,13 +172,13 @@ impl UdisksClient {
             })
             .is_partition_table = true;
         } else if iface == IFACE_PARTITION {
-          if let Some(t) = prop_string(&props, "Type") {
+          if let Some(partition_type) = prop_string(&props, "Type") {
             block
               .get_or_insert_with(|| RawBlock {
                 object_path: path.clone(),
                 ..RawBlock::default()
               })
-              .partition_type = t;
+              .partition_type = partition_type;
           }
         } else if iface == IFACE_LOOP {
           block
@@ -189,8 +189,8 @@ impl UdisksClient {
             .is_loop = true;
         }
       }
-      if let Some(b) = block {
-        out.blocks.push(b);
+      if let Some(raw_block) = block {
+        out.blocks.push(raw_block);
       }
     }
 
@@ -199,12 +199,12 @@ impl UdisksClient {
     let cleartext_set: std::collections::HashSet<String> = out
       .blocks
       .iter()
-      .filter(|b| !b.cleartext.is_empty() && b.cleartext != "/")
-      .map(|b| b.cleartext.clone())
+      .filter(|raw_block| !raw_block.cleartext.is_empty() && raw_block.cleartext != "/")
+      .map(|raw_block| raw_block.cleartext.clone())
       .collect();
-    for b in out.blocks.iter_mut() {
-      if cleartext_set.contains(&b.object_path) {
-        b.is_cleartext = true;
+    for raw_block in out.blocks.iter_mut() {
+      if cleartext_set.contains(&raw_block.object_path) {
+        raw_block.is_cleartext = true;
       }
     }
     out
@@ -314,33 +314,33 @@ fn empty_options() -> HashMap<String, Value<'static>> {
 }
 
 fn prop_string(props: &HashMap<String, OwnedValue>, name: &str) -> Option<String> {
-  let v = props.get(name)?;
-  if let Ok(s) = <&str>::try_from(v) {
-    return Some(s.to_string());
+  let value = props.get(name)?;
+  if let Ok(text) = <&str>::try_from(value) {
+    return Some(text.to_string());
   }
-  if let Ok(s) = <&zvariant::Str>::try_from(v) {
-    return Some(s.to_string());
+  if let Ok(text) = <&zvariant::Str>::try_from(value) {
+    return Some(text.to_string());
   }
-  if let Ok(o) = <&zvariant::ObjectPath>::try_from(v) {
-    return Some(o.to_string());
+  if let Ok(object_path) = <&zvariant::ObjectPath>::try_from(value) {
+    return Some(object_path.to_string());
   }
   None
 }
 
 fn prop_bool(props: &HashMap<String, OwnedValue>, name: &str) -> Option<bool> {
-  let v = props.get(name)?;
-  <bool>::try_from(v).ok()
+  let value = props.get(name)?;
+  <bool>::try_from(value).ok()
 }
 
 fn prop_u64(props: &HashMap<String, OwnedValue>, name: &str) -> Option<u64> {
-  let v = props.get(name)?;
-  <u64>::try_from(v).ok()
+  let value = props.get(name)?;
+  <u64>::try_from(value).ok()
 }
 
 // `ay` byte arrays (Device, ...), trailing NULs stripped.
 fn prop_bytes(props: &HashMap<String, OwnedValue>, name: &str) -> Option<Vec<u8>> {
-  let v = props.get(name)?.try_clone().ok()?;
-  let mut bytes: Vec<u8> = Vec::try_from(v).ok()?;
+  let value = props.get(name)?.try_clone().ok()?;
+  let mut bytes: Vec<u8> = Vec::try_from(value).ok()?;
   while bytes.last() == Some(&0) {
     bytes.pop();
   }
@@ -349,8 +349,8 @@ fn prop_bytes(props: &HashMap<String, OwnedValue>, name: &str) -> Option<Vec<u8>
 
 // `aay` (MountPoints), trailing NULs stripped.
 fn prop_mount_points(props: &HashMap<String, OwnedValue>, name: &str) -> Option<Vec<String>> {
-  let v = props.get(name)?.try_clone().ok()?;
-  let arrays: Vec<Vec<u8>> = Vec::try_from(v).ok()?;
+  let value = props.get(name)?.try_clone().ok()?;
+  let arrays: Vec<Vec<u8>> = Vec::try_from(value).ok()?;
   let mut out = Vec::new();
   for mut bytes in arrays {
     while bytes.last() == Some(&0) {
@@ -370,79 +370,79 @@ enum BlockSource {
   Encrypted,
 }
 
-fn parse_block(props: &HashMap<String, OwnedValue>, b: &mut RawBlock, source: BlockSource) {
+fn parse_block(props: &HashMap<String, OwnedValue>, raw_block: &mut RawBlock, source: BlockSource) {
   match source {
     BlockSource::Block => {
       if let Some(bytes) = prop_bytes(props, "Device") {
-        b.device = String::from_utf8_lossy(&bytes).into_owned();
+        raw_block.device = String::from_utf8_lossy(&bytes).into_owned();
       }
-      if let Some(v) = prop_string(props, "Drive") {
-        b.drive = v;
+      if let Some(value) = prop_string(props, "Drive") {
+        raw_block.drive = value;
       }
-      if let Some(v) = prop_string(props, "IdLabel") {
-        b.id_label = v;
+      if let Some(value) = prop_string(props, "IdLabel") {
+        raw_block.id_label = value;
       }
-      if let Some(v) = prop_string(props, "IdType") {
-        b.id_type = v;
+      if let Some(value) = prop_string(props, "IdType") {
+        raw_block.id_type = value;
       }
-      if let Some(v) = prop_string(props, "HintName") {
-        b.hint_name = v;
+      if let Some(value) = prop_string(props, "HintName") {
+        raw_block.hint_name = value;
       }
-      if let Some(v) = prop_string(props, "PreferredDevice") {
-        b.preferred_device = v;
+      if let Some(value) = prop_string(props, "PreferredDevice") {
+        raw_block.preferred_device = value;
       }
-      if let Some(v) = prop_string(props, "PartitionType") {
-        b.partition_type = v;
+      if let Some(value) = prop_string(props, "PartitionType") {
+        raw_block.partition_type = value;
       }
-      if let Some(v) = prop_u64(props, "Size") {
-        b.size = v;
+      if let Some(value) = prop_u64(props, "Size") {
+        raw_block.size = value;
       }
-      if let Some(v) = prop_bool(props, "ReadOnly") {
-        b.read_only = v;
+      if let Some(value) = prop_bool(props, "ReadOnly") {
+        raw_block.read_only = value;
       }
-      if let Some(v) = prop_bool(props, "HintIgnore") {
-        b.hint_ignore = v;
+      if let Some(value) = prop_bool(props, "HintIgnore") {
+        raw_block.hint_ignore = value;
       }
-      if let Some(v) = prop_string(props, "HintEncryptionType") {
-        b.encryption_type = v;
+      if let Some(value) = prop_string(props, "HintEncryptionType") {
+        raw_block.encryption_type = value;
       }
     }
     BlockSource::Filesystem => {
-      if let Some(v) = prop_mount_points(props, "MountPoints") {
-        b.mount_points = v;
+      if let Some(value) = prop_mount_points(props, "MountPoints") {
+        raw_block.mount_points = value;
       }
-      b.has_filesystem = props.contains_key("MountPoints");
+      raw_block.has_filesystem = props.contains_key("MountPoints");
     }
     BlockSource::Encrypted => {
-      if let Some(v) = prop_string(props, "CleartextDevice") {
-        b.cleartext = v;
+      if let Some(value) = prop_string(props, "CleartextDevice") {
+        raw_block.cleartext = value;
       }
-      b.has_encrypted = true;
+      raw_block.has_encrypted = true;
     }
   }
 }
 
-fn parse_drive(props: &HashMap<String, OwnedValue>, d: &mut RawDrive) {
-  if let Some(v) = prop_string(props, "Vendor") {
-    d.vendor = v;
+fn parse_drive(props: &HashMap<String, OwnedValue>, drive: &mut RawDrive) {
+  if let Some(value) = prop_string(props, "Vendor") {
+    drive.vendor = value;
   }
-  if let Some(v) = prop_string(props, "Model") {
-    d.model = v;
+  if let Some(value) = prop_string(props, "Model") {
+    drive.model = value;
   }
-  if let Some(v) = prop_string(props, "ConnectionBus") {
-    d.connection_bus = v;
+  if let Some(value) = prop_string(props, "ConnectionBus") {
+    drive.connection_bus = value;
   }
-  if let Some(v) = prop_bool(props, "Removable") {
-    d.removable = v;
+  if let Some(value) = prop_bool(props, "Removable") {
+    drive.removable = value;
   }
-  if let Some(v) = prop_bool(props, "Ejectable") {
-    d.ejectable = v;
+  if let Some(value) = prop_bool(props, "Ejectable") {
+    drive.ejectable = value;
   }
-  if let Some(v) = prop_bool(props, "MediaRemovable") {
-    d.media_removable = v;
+  if let Some(value) = prop_bool(props, "MediaRemovable") {
+    drive.media_removable = value;
   }
-  if let Some(v) = prop_bool(props, "Optical") {
-    d.optical = v;
+  if let Some(value) = prop_bool(props, "Optical") {
+    drive.optical = value;
   }
 }
 

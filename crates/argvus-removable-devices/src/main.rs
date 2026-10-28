@@ -1,13 +1,15 @@
 mod actions;
 mod config;
 mod device;
+mod filesystem;
 mod gui;
 mod i18n;
 mod menu;
 mod monitor;
+mod process;
 mod renderer;
+mod text;
 mod udisks;
-mod util;
 
 use std::collections::HashMap;
 use std::io::Write;
@@ -179,7 +181,7 @@ fn run_list(devs: &[Device]) -> i32 {
       d.name,
       d.filesystem,
       if d.mounted { &d.mount_point } else { "-" },
-      util::human_bytes(d.capacity)
+      text::human_bytes(d.capacity)
     );
   }
   0

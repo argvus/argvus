@@ -4,7 +4,8 @@ use crate::actions::{ActionKind, Actions};
 use crate::config::Config;
 use crate::device::Device;
 use crate::i18n;
-use crate::util;
+use crate::process;
+use crate::text;
 
 pub struct MenuEntry {
   pub kind: ActionKind,
@@ -29,7 +30,7 @@ impl<'a> Menu<'a> {
       .filter(|&i| !device_entries(devices, i).is_empty())
       .collect();
     if valid.is_empty() {
-      util::notify(
+      process::notify(
         "argvus-removable-devices",
         i18n::tr(
           "No removable storage devices",
@@ -48,11 +49,11 @@ impl<'a> Menu<'a> {
         .map(|&i| submenu_device_label(&devices[i]))
         .collect();
       let cmd = self.menu_cmd(devices_prompt);
-      let Some((output, _error)) = util::run_capture(&cmd, &rows) else {
+      let Some((output, _error)) = process::run_capture(&cmd, &rows) else {
         // Cancelled at the device list (dmenu returns non-zero).
         return 1;
       };
-      let selection = util::trim(&output);
+      let selection = text::trim_line_whitespace(&output);
       if selection.is_empty() {
         return 1;
       }
@@ -64,11 +65,11 @@ impl<'a> Menu<'a> {
       let entries = device_entries(devices, index);
       let lines: Vec<String> = entries.iter().map(|e| e.label.clone()).collect();
       let sub_cmd = self.menu_cmd(&submenu_prompt(&devices[index]));
-      let Some((output, _error)) = util::run_capture(&sub_cmd, &lines) else {
+      let Some((output, _error)) = process::run_capture(&sub_cmd, &lines) else {
         // Cancelled inside the submenu: go back to the device list.
         continue;
       };
-      let selection = util::trim(&output);
+      let selection = text::trim_line_whitespace(&output);
       if selection.is_empty() {
         continue;
       }
@@ -83,7 +84,7 @@ impl<'a> Menu<'a> {
 
   pub async fn run_devices(&self, devices: &[Device]) -> i32 {
     if devices.is_empty() {
-      util::notify(
+      process::notify(
         "argvus-removable-devices",
         i18n::tr(
           "No removable storage devices",
@@ -97,10 +98,10 @@ impl<'a> Menu<'a> {
     let entries: Vec<String> = devices.iter().map(device_label).collect();
     let prompt = i18n::tr("Removable devices", "Dispositivos removíveis");
     let cmd = self.menu_cmd(prompt);
-    let Some((output, _error)) = util::run_capture(&cmd, &entries) else {
+    let Some((output, _error)) = process::run_capture(&cmd, &entries) else {
       return 1;
     };
-    let selection = util::trim(&output);
+    let selection = text::trim_line_whitespace(&output);
     if selection.is_empty() {
       return 1;
     }
@@ -125,7 +126,7 @@ impl<'a> Menu<'a> {
       let has_config = flags.clone().any(|t| t == "-config");
       if !has_config && let Some(cfg) = rofi_config_path() {
         cmd.push_str(" -config ");
-        cmd.push_str(&util::shell_quote(&cfg));
+        cmd.push_str(&process::shell_quote(&cfg));
       }
       cmd.push_str(" -kb-move-char-back \"Control+b\" -kb-move-char-forward \"Control+f\" -kb-accept-entry \"Return,KP_Enter,Right\" -kb-cancel \"Escape,Left\"");
     }
@@ -135,7 +136,7 @@ impl<'a> Menu<'a> {
       cmd.push_str(&flags);
     }
     cmd.push_str(" -p ");
-    cmd.push_str(&util::shell_quote(prompt));
+    cmd.push_str(&process::shell_quote(prompt));
     cmd
   }
 }
@@ -143,10 +144,10 @@ impl<'a> Menu<'a> {
 // Actions offered for a single device (the submenu rows). Open is available for
 // any unlocked/mountable device so a mounted drive can be opened too.
 fn device_entries(devices: &[Device], index: usize) -> Vec<MenuEntry> {
-  let d = &devices[index];
+  let device = &devices[index];
   let mut entries: Vec<MenuEntry> = Vec::new();
-  let can_mount = !(d.mounted || d.encrypted && d.locked);
-  if can_mount || d.mounted {
+  let can_mount = !(device.mounted || device.encrypted && device.locked);
+  if can_mount || device.mounted {
     entries.push(MenuEntry {
       kind: ActionKind::Open,
       device_index: index,
@@ -160,42 +161,42 @@ fn device_entries(devices: &[Device], index: usize) -> Vec<MenuEntry> {
       label: i18n::tr("Mount", "Montar").to_string(),
     });
   }
-  if d.mounted {
+  if device.mounted {
     entries.push(MenuEntry {
       kind: ActionKind::Unmount,
       device_index: index,
       label: i18n::tr("Unmount", "Desmontar").to_string(),
     });
   }
-  if d.encrypted && d.locked {
+  if device.encrypted && device.locked {
     entries.push(MenuEntry {
       kind: ActionKind::Unlock,
       device_index: index,
       label: i18n::tr("Unlock", "Desbloquear").to_string(),
     });
   }
-  if d.encrypted && !d.locked && d.mounted {
+  if device.encrypted && !device.locked && device.mounted {
     entries.push(MenuEntry {
       kind: ActionKind::Lock,
       device_index: index,
       label: i18n::tr("Lock", "Bloquear").to_string(),
     });
   }
-  if d.ejectable {
+  if device.ejectable {
     entries.push(MenuEntry {
       kind: ActionKind::Eject,
       device_index: index,
       label: i18n::tr("Eject", "Ejetar").to_string(),
     });
   }
-  if d.can_power_off {
+  if device.can_power_off {
     entries.push(MenuEntry {
       kind: ActionKind::PowerOff,
       device_index: index,
       label: i18n::tr("Power Off", "Desligar").to_string(),
     });
   }
-  if d.mounted {
+  if device.mounted {
     entries.push(MenuEntry {
       kind: ActionKind::Copy,
       device_index: index,
@@ -214,7 +215,7 @@ fn submenu_prompt(d: &Device) -> String {
 }
 
 fn device_short_name(d: &Device) -> String {
-  let name = util::trim(&d.name);
+  let name = text::trim_line_whitespace(&d.name);
   if name.is_empty() {
     d.block.clone()
   } else {
@@ -245,7 +246,7 @@ fn device_label(d: &Device) -> String {
     details.push(d.filesystem.clone());
   }
   if d.capacity > 0 {
-    details.push(util::human_bytes(d.capacity));
+    details.push(text::human_bytes(d.capacity));
   }
   details.push(state.to_string());
   if !d.mount_point.is_empty() {
@@ -277,10 +278,10 @@ fn rofi_config_path() -> Option<String> {
     "argvus/rofi/config.rasi",
   ];
   for dir in dirs {
-    for rel in relative {
-      let p = dir.join(rel);
-      if p.is_file() {
-        return p.to_str().map(String::from);
+    for relative_path in relative {
+      let candidate = dir.join(relative_path);
+      if candidate.is_file() {
+        return candidate.to_str().map(String::from);
       }
     }
   }
