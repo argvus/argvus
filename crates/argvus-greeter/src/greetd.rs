@@ -194,135 +194,26 @@ fn handle_response(
   loop {
     match Response::read_from(stream)? {
       Response::Success => {
-        // Authentication succeeded, so the selected session is handed to
-        // greetd rather than launched by the greeter process itself.
-        info!(session = %session.id, monotonic_ns = monotonic_ns(), "authentication succeeded");
-        handoff::mark("greeter.auth-succeeded");
-        // The overlay must be mapped while Kitty and the greeter compositor
-        // are still alive. A Wayland client cannot survive their later DRM
-        // handover, but it eliminates the pre-handover empty screen. It only
-        // hides the switch, so an authenticated user still logs in without it.
-        let splash = match WaylandSplash::start(&theme, accent.as_deref()) {
-          Ok(splash) => {
-            handoff::mark("greeter.splash-ready");
-            Some(splash)
-          }
-          Err(error) => {
-            error!(%error, "could not start the greeter handoff splash; continuing without it");
-            None
-          }
-        };
-        // The DRM surface must be listening before the greeter compositor exits,
-        // because it waits for that compositor to release DRM master.
-        let handoff_listening = match DrmHandoff::start(&theme, accent.as_deref()) {
-          Ok(_) => {
-            handoff::mark("greeter.handoff-listening");
-            true
-          }
-          Err(error) => {
-            error!(%error, "could not start the DRM handoff surface; continuing without it");
-            false
-          }
-        };
-        let _ = events.send(Event::SessionStarting);
-        Request::StartSession {
-          cmd: session.command.clone(),
-          env: session.launch_env(),
-        }
-        .write_to(stream)?;
-
-        match Response::read_from(stream)? {
-          Response::Success => {
-            info!(session = %session.id, "session started");
-            handoff::mark("greeter.session-started");
-            // greetd terminates the greeter session after accepting the user
-            // command. Keep the splash parented here until that SIGTERM, so
-            // terminal cleanup cannot uncover the compositor in between.
-            if let Some(splash) = splash {
-              splash.detach();
-            }
-            let _ = events.send(Event::SessionStarted);
-            // The DRM handoff surface takes the display while the greeter
-            // compositor is still alive but inactive, so the output keeps its
-            // signal. Without that, the compositor exits as before and turns
-            // the outputs off.
-            if handoff_listening
-              && let Err(error) =
-                handoff::leave_vt().and_then(|()| handoff::wait_for_handoff_frame())
-            {
-              warn!(%error, "the DRM handoff surface did not take the display before the compositor exit");
-              // The greeter log lives in the greeter's runtime directory,
-              // which logind removes at logout; the timing log survives it.
-              handoff::mark(&format!("greeter.handoff-takeover-failed error={error:#}"));
-            }
-            // greetd starts the user session only after the greeter session
-            // ends, and gives it 5 seconds before killing it. The compositor
-            // does not leave on that SIGTERM, so it is asked to exit now.
-            handoff::exit_greeter_compositor();
-          }
-          Response::Error {
-            error_type: _,
-            description,
-          } => {
-            error!(session = %session.id, "session start failed");
-            // A failed StartSession still owns greetd's configuring slot on
-            // some PAM/session-manager paths. Explicitly cancel it before
-            // notifying the UI so the next login can create a fresh session.
-            cancel_session(stream);
-            let _ = events.send(Event::Error(description));
-          }
-          Response::AuthMessage { .. } => {
-            // Authentication after StartSession is a protocol violation. The
-            // best-effort cancellation keeps a malformed backend response
-            // from poisoning the next login attempt.
-            cancel_session(stream);
-            let _ = events.send(Event::Error(
-              "greetd requested authentication after StartSession.".into(),
-            ));
-          }
-        }
+        start_authenticated_session(stream, &session, &theme, accent.as_deref(), events)?;
         return Ok(WorkerState::Disconnected);
       }
       Response::Error {
         error_type,
         description,
       } => {
-        // greetd documents automatic cleanup for errors, but an explicit
-        // CancelSession is required for reliable recovery across PAM stacks
-        // and daemon versions. Consume its response before exposing failure
-        // to the UI, preventing a rapid retry from racing cleanup.
-        cancel_session(stream);
-        if matches!(error_type, ErrorType::AuthError) {
-          info!("authentication failed");
-          let _ = events.send(Event::AuthFailed(description));
-        } else {
-          warn!(%description, "greetd returned an error");
-          let _ = events.send(Event::Error(description));
-        }
+        report_greetd_error(stream, error_type, description, events);
         return Ok(WorkerState::Disconnected);
       }
       Response::AuthMessage {
         auth_message_type,
         auth_message,
       } => match auth_message_type {
-        AuthMessageType::Secret => {
+        AuthMessageType::Secret | AuthMessageType::Visible => {
           // Returning after a prompt prevents reading past the point where
           // greetd expects user input.
           let _ = events.send(Event::AuthMessage(AuthPrompt {
             message: auth_message,
-            secret: true,
-          }));
-          return Ok(WorkerState::Authenticating {
-            stream: stream.try_clone().map_err(GreeterError::Connect)?,
-            session,
-            theme,
-            accent,
-          });
-        }
-        AuthMessageType::Visible => {
-          let _ = events.send(Event::AuthMessage(AuthPrompt {
-            message: auth_message,
-            secret: false,
+            secret: matches!(auth_message_type, AuthMessageType::Secret),
           }));
           return Ok(WorkerState::Authenticating {
             stream: stream.try_clone().map_err(GreeterError::Connect)?,
@@ -342,6 +233,127 @@ fn handle_response(
         }
       },
     }
+  }
+}
+
+/// Starts the user session after a successful authentication: maps the
+/// handoff splash, starts the DRM handoff surface, asks greetd to start the
+/// session and, once it accepts, hands the display over.
+fn start_authenticated_session(
+  stream: &mut UnixStream,
+  session: &Session,
+  theme: &str,
+  accent: Option<&str>,
+  events: &Sender<Event>,
+) -> Result<(), GreeterError> {
+  // Authentication succeeded, so the selected session is handed to
+  // greetd rather than launched by the greeter process itself.
+  info!(session = %session.id, monotonic_ns = monotonic_ns(), "authentication succeeded");
+  handoff::mark("greeter.auth-succeeded");
+  // The overlay must be mapped while Kitty and the greeter compositor
+  // are still alive. A Wayland client cannot survive their later DRM
+  // handover, but it eliminates the pre-handover empty screen. It only
+  // hides the switch, so an authenticated user still logs in without it.
+  let splash = match WaylandSplash::start(theme, accent) {
+    Ok(splash) => {
+      handoff::mark("greeter.splash-ready");
+      Some(splash)
+    }
+    Err(error) => {
+      error!(%error, "could not start the greeter handoff splash; continuing without it");
+      None
+    }
+  };
+  // The DRM surface must be listening before the greeter compositor exits,
+  // because it waits for that compositor to release DRM master.
+  let handoff_listening = match DrmHandoff::start(theme, accent) {
+    Ok(_) => {
+      handoff::mark("greeter.handoff-listening");
+      true
+    }
+    Err(error) => {
+      error!(%error, "could not start the DRM handoff surface; continuing without it");
+      false
+    }
+  };
+  let _ = events.send(Event::SessionStarting);
+  Request::StartSession {
+    cmd: session.command.clone(),
+    env: session.launch_env(),
+  }
+  .write_to(stream)?;
+
+  match Response::read_from(stream)? {
+    Response::Success => {
+      info!(session = %session.id, "session started");
+      handoff::mark("greeter.session-started");
+      // greetd terminates the greeter session after accepting the user
+      // command. Keep the splash parented here until that SIGTERM, so
+      // terminal cleanup cannot uncover the compositor in between.
+      if let Some(splash) = splash {
+        splash.detach();
+      }
+      let _ = events.send(Event::SessionStarted);
+      // The DRM handoff surface takes the display while the greeter
+      // compositor is still alive but inactive, so the output keeps its
+      // signal. Without that, the compositor exits as before and turns
+      // the outputs off.
+      if handoff_listening
+        && let Err(error) = handoff::leave_vt().and_then(|()| handoff::wait_for_handoff_frame())
+      {
+        warn!(%error, "the DRM handoff surface did not take the display before the compositor exit");
+        // The greeter log lives in the greeter's runtime directory,
+        // which logind removes at logout; the timing log survives it.
+        handoff::mark(&format!("greeter.handoff-takeover-failed error={error:#}"));
+      }
+      // greetd starts the user session only after the greeter session
+      // ends, and gives it 5 seconds before killing it. The compositor
+      // does not leave on that SIGTERM, so it is asked to exit now.
+      handoff::exit_greeter_compositor();
+    }
+    Response::Error {
+      error_type: _,
+      description,
+    } => {
+      error!(session = %session.id, "session start failed");
+      // A failed StartSession still owns greetd's configuring slot on
+      // some PAM/session-manager paths. Explicitly cancel it before
+      // notifying the UI so the next login can create a fresh session.
+      cancel_session(stream);
+      let _ = events.send(Event::Error(description));
+    }
+    Response::AuthMessage { .. } => {
+      // Authentication after StartSession is a protocol violation. The
+      // best-effort cancellation keeps a malformed backend response
+      // from poisoning the next login attempt.
+      cancel_session(stream);
+      let _ = events.send(Event::Error(
+        "greetd requested authentication after StartSession.".into(),
+      ));
+    }
+  }
+  Ok(())
+}
+
+/// Cancels the failed session and tells the UI whether the password was
+/// rejected or greetd failed for another reason.
+fn report_greetd_error(
+  stream: &mut UnixStream,
+  error_type: ErrorType,
+  description: String,
+  events: &Sender<Event>,
+) {
+  // greetd documents automatic cleanup for errors, but an explicit
+  // CancelSession is required for reliable recovery across PAM stacks
+  // and daemon versions. Consume its response before exposing failure
+  // to the UI, preventing a rapid retry from racing cleanup.
+  cancel_session(stream);
+  if matches!(error_type, ErrorType::AuthError) {
+    info!("authentication failed");
+    let _ = events.send(Event::AuthFailed(description));
+  } else {
+    warn!(%description, "greetd returned an error");
+    let _ = events.send(Event::Error(description));
   }
 }
 

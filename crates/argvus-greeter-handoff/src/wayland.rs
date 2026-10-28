@@ -27,7 +27,9 @@ use wayland_client::{
 };
 use wayland_protocols_wlr::layer_shell::v1::client::{zwlr_layer_shell_v1, zwlr_layer_surface_v1};
 
-use crate::{Image, Palette, monotonic_millis, monotonic_nanos, paint_spinner, spinner};
+use crate::drawing::{Image, Palette, paint_spinner};
+use crate::spinner;
+use crate::timing::{monotonic_millis, monotonic_nanos};
 
 /// The layer namespace of the session-loading splash. The Hyprland
 /// configuration matches it to map the splash without an animation.
