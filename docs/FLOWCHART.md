@@ -199,6 +199,11 @@ in the Control Center and stored in
 
 If no value is set, the packaged default for that category is used.
 
+`get-default.sh --all` prints every category as `<category><TAB><app>` with a
+single `jq` call, each app reduced to its first non-empty line. The session
+shell module `variables.sh` uses it, so a component wrapper resolves all its
+default applications with one process instead of one per category.
+
 ---
 
 ## 7. `argvus --setup` (optional)
