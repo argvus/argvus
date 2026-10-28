@@ -6,6 +6,9 @@ use crate::i18n;
 use crate::process;
 use crate::udisks::UdisksClient;
 
+/// Used when `copy_command` is empty in every configuration layer.
+const DEFAULT_COPY_COMMAND: &str = "wl-copy";
+
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum ActionKind {
   Mount,
@@ -106,6 +109,10 @@ impl<'a> Actions<'a> {
     if !client.connect().await {
       return Err(client.last_error().to_string());
     }
+    // UDisks2 refuses to lock a volume whose cleartext filesystem is in use.
+    if d.mounted {
+      client.unmount(d).await?;
+    }
     client.lock(d).await
   }
 
@@ -165,28 +172,28 @@ impl<'a> Actions<'a> {
     Ok(())
   }
 
+  // The copy goes through an external program (`wl-copy` by default) because
+  // a Wayland selection belongs to the client that set it: copying in this
+  // process would lose the text as soon as the menu exits.
   async fn copy(&self, d: &Device) -> Result<(), String> {
     let target = self.resolve_mount(d).await?;
-    let mut clipboard = arboard::Clipboard::new().map_err(|e| {
+    let command = match self.config.copy_command.trim() {
+      "" => DEFAULT_COPY_COMMAND,
+      configured => configured,
+    };
+    process::run_with_input(command, &target).map_err(|error| {
       format!(
-        "{}: {}",
+        "{} ({command}): {error}",
         i18n::tr(
-          "clipboard unavailable",
-          "área de transferência indisponível"
-        ),
-        e
+          "failed to copy the mount path",
+          "falha ao copiar o ponto de montagem"
+        )
       )
     })?;
-    clipboard.set_text(target).map_err(|e| {
-      format!(
-        "{}: {}",
-        i18n::tr(
-          "failed to set clipboard",
-          "falha ao definir a área de transferência"
-        ),
-        e
-      )
-    })
+    if self.config.show_notification {
+      process::notify(i18n::tr("Path copied", "Caminho copiado"), &target, false);
+    }
+    Ok(())
   }
 
   // Resolve the mount point, mounting first if needed.

@@ -13,7 +13,7 @@ if [ "${1:-}" = "--surface" ] && [ "$#" -ge 3 ] && command -v jq >/dev/null 2>&1
           | select($output == "" or .key == $output)
           | .value.levels
           | to_entries[].value[]
-          | select(.namespace == "waybar" and .w > (.h * 4))
+          | select((.namespace == "argvus-taskbar" or .namespace == "waybar") and .w > (.h * 4))
           | [.x, .y, .h]
         ]
         | first // empty

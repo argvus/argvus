@@ -277,7 +277,7 @@ async fn main() {
       match fixed_x.zip(fixed_y) {
         Some(pos) => {
           if cfg.mode == "gui" {
-            gui::run(&cfg, &devs, &config_path, Some(pos), bar_bottom)
+            gui::run(&cfg, &devs, &config_path, pos, bar_bottom)
           } else {
             Menu::new(&cfg).run(&devs).await
           }

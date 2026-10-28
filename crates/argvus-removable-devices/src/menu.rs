@@ -175,7 +175,7 @@ fn device_entries(devices: &[Device], index: usize) -> Vec<MenuEntry> {
       label: i18n::tr("Unlock", "Desbloquear").to_string(),
     });
   }
-  if device.encrypted && !device.locked && device.mounted {
+  if device.encrypted && !device.locked {
     entries.push(MenuEntry {
       kind: ActionKind::Lock,
       device_index: index,

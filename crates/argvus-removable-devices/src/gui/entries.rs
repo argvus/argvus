@@ -35,7 +35,7 @@ pub(super) fn device_entries(d: &Device) -> Vec<DeviceEntry> {
       device: d.clone(),
     });
   }
-  if d.encrypted && !d.locked && d.mounted {
+  if d.encrypted && !d.locked {
     out.push(DeviceEntry {
       kind: ActionKind::Lock,
       device: d.clone(),

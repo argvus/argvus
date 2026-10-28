@@ -9,7 +9,6 @@ description.workspace = true
 [dependencies]
 zbus = { version = "5", features = ["tokio"] }
 zvariant = "5"
-arboard = { version = "3", default-features = false, features = ["wayland-data-control"] }
 serde_json = "1"
 futures-lite = "2"
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "time", "signal"] }

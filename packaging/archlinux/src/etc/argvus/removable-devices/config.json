@@ -15,7 +15,7 @@
   "show_capacity": false,   // append used/total to the label
   "hide_when_empty": true,  // hide the waybar module when no devices are present
   "show_hidden": false,     // show EFI/reserved partitions
-  "show_notification": true, // notify when removable devices connect/disconnect
+  "show_notification": true, // notify when removable devices connect/disconnect and when a path is copied
   "max_devices": 0,         // 0 = unlimited; extra devices are shown as "+N"
 
   "sort": "mount_time",     // mount_time | insertion | name | size
@@ -29,7 +29,7 @@
   // "file_manager_command": "...",     // e.g. "nautilus", "spf" or "yazi"
   "copy_command": "wl-copy",
   "unlock_command": "kitty -e",   // prefix used to open a terminal for the LUKS passphrase
-  "mode": "gui",                  // gui = GTK context menu on right click | rofi = dmenu-style list
+  "mode": "gui",                  // gui = GTK menu attached to the taskbar on click | rofi = dmenu-style list
   "menu": "rofi",                 // rofi | wofi | dmenu (only used when mode = rofi)
   // rofi mode auto-resolves the ARGVUS theme (-config <argvus>/launcher/config/config.rasi),
   // uses the "-p" value as a base prompt, and navigates devices -> actions with
