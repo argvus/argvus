@@ -36,11 +36,7 @@ pub(super) fn run_component_adapters(
     appearance_visual_changed,
     theme_transaction,
     theme_materialized: theme_outputs_present(paths, theme),
-    effects_materialized: crate::effects::theme_effects_path(
-      &crate::effects::effects_state_home(&paths.data),
-      theme,
-    )
-    .is_file(),
+    effects_materialized: effects_outputs_present(paths, theme),
   });
   if plan.theme_switch {
     timed("project.theme-switch", || run_theme_switch(theme, paths))?;
@@ -99,18 +95,39 @@ pub(super) fn plan_adapters(inputs: &AdapterInputs<'_>) -> AdapterPlan {
 /// callers agree on what "applied" means. Without a resolvable environment
 /// the outputs are treated as missing, which keeps the safe behavior.
 pub(super) fn theme_outputs_present(paths: &ArgvusPaths, theme: &str) -> bool {
-  let Some(config_home) = paths.root.parent() else {
+  projection_session_paths(paths)
+    .is_some_and(|session_paths| crate::session_prepare::theme_materialized(&session_paths, theme))
+}
+
+/// Whether the effects file of the theme is in place. The file is named by the
+/// theme the switch renders (`<id>-float` on Float), so the same identity as
+/// the theme check is used; a bare id would never match and the adapter would
+/// repeat on every login.
+pub(super) fn effects_outputs_present(paths: &ArgvusPaths, theme: &str) -> bool {
+  let Some(session_paths) = projection_session_paths(paths) else {
     return false;
   };
-  let Some(environment_paths) = crate::session_paths::SessionPaths::from_environment() else {
+  let Some(built_theme) = crate::session_prepare::built_theme(&session_paths, theme) else {
     return false;
   };
-  let session_paths = crate::session_paths::SessionPaths {
+  crate::effects::theme_effects_path(
+    &crate::effects::effects_state_home(&paths.data),
+    &built_theme,
+  )
+  .is_file()
+}
+
+/// The session paths of this store's directories, as the session preparation
+/// reads them. `None` without a resolvable environment, which the callers treat
+/// as missing outputs.
+fn projection_session_paths(paths: &ArgvusPaths) -> Option<crate::session_paths::SessionPaths> {
+  let config_home = paths.root.parent()?;
+  let environment_paths = crate::session_paths::SessionPaths::from_environment()?;
+  Some(crate::session_paths::SessionPaths {
     config_home: config_home.to_path_buf(),
     data_home: paths.data.clone(),
     system_config: environment_paths.system_config,
-  };
-  crate::session_prepare::theme_materialized(&session_paths, theme)
+  })
 }
 
 pub(super) fn run_adapter(

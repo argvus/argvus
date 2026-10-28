@@ -8,6 +8,7 @@
 //! GTK settings, the monitor state migration and the session environment.
 
 use crate::accent::DEFAULT_THEME;
+use crate::json_pointers;
 use crate::session_paths::{SessionPaths, font_default_value, font_state_value};
 use crate::session_reload::{ReloadContext, active_theme, run_script, sync_user_files};
 use crate::session_timing::timed;
@@ -53,7 +54,12 @@ pub fn prepare(paths: &SessionPaths, commands_dir: &Path, cache_home: &Path) -> 
     });
   }
 
-  timed("prepare.gsettings", || set_gsettings(paths));
+  // GTK settings are kept by dconf between logins. They are written when the
+  // startup theme was reapplied, which is when they can have changed, and not
+  // on every stable login.
+  if theme_reapplied {
+    timed("prepare.gsettings", || set_gsettings(paths));
+  }
 
   let context = ReloadContext {
     paths,
@@ -309,9 +315,17 @@ fn stat_line(path: &Path) -> String {
 /// Whether the files of the theme are in place: the build of the theme is
 /// current and the user copies of the bars and the launcher exist, so a
 /// matching stamp means the startup has nothing left to write.
+///
+/// The switch renders the theme with the canonical Sticky/Float variant, so the
+/// build expected here is the id that variant resolves to (`argvus-dark-float`
+/// on Float). Comparing the bare id never matches a Float build, and the switch
+/// would then repeat on every login.
 pub(crate) fn theme_materialized(paths: &SessionPaths, theme: &str) -> bool {
+  let Some(built_theme) = built_theme(paths, theme) else {
+    return false;
+  };
   if !paths.data_home.join(".active-theme").is_file()
-    || crate::theme_build::current_file_for(paths, theme, "build.toml").is_none()
+    || crate::theme_build::current_file_for(paths, &built_theme, "build.toml").is_none()
   {
     return false;
   }
@@ -330,6 +344,19 @@ pub(crate) fn theme_materialized(paths: &SessionPaths, theme: &str) -> bool {
     }
   }
   paths.user_config("gtk-4.0/settings.ini").is_file()
+}
+
+/// The theme id that `theme-switch` renders for `theme` under the canonical
+/// Sticky/Float variant: `<id>-float` on Float, `<id>` on Sticky. The build and
+/// the effects file are named by this id. `None` when the configuration cannot
+/// be read, so the caller treats the outputs as missing.
+pub(crate) fn built_theme(paths: &SessionPaths, theme: &str) -> Option<String> {
+  let document = crate::ConfigStore::at(&paths.config_home).load().ok()?;
+  let variant = document
+    .get(json_pointers::LAYOUT_VARIANT)
+    .and_then(serde_json::Value::as_str)
+    .unwrap_or_default();
+  Some(crate::theme_resolve::resolve_theme(theme, variant))
 }
 
 /// Sets the GTK interface through gsettings and reports the outcome in the
@@ -577,6 +604,68 @@ mod tests {
       jsonc_index < css_index,
       "jsonc is listed before css, as in the shell"
     );
+    let _ = fs::remove_dir_all(root);
+  }
+
+  /// Lays out a materialized theme: the canonical layout variant, the active
+  /// marker, the user GTK copy and a current build rendered for `build_variant`.
+  fn materialize_theme(paths: &SessionPaths, layout_variant: &str, build_variant: &str) {
+    let layout_directory = paths.config_home.join("argvus/config");
+    fs::create_dir_all(&layout_directory).expect("layout dir");
+    fs::write(
+      layout_directory.join("layout.json"),
+      format!("{{\"variant\": \"{layout_variant}\"}}"),
+    )
+    .expect("layout");
+    fs::create_dir_all(&paths.data_home).expect("data dir");
+    fs::write(paths.data_home.join(".active-theme"), "argvus-dark-float\n").expect("active");
+    let current = paths.data_home.join("generated/theme/current");
+    fs::create_dir_all(&current).expect("build dir");
+    fs::write(
+      current.join("build.toml"),
+      format!("theme = \"argvus-dark\"\nvariant = \"{build_variant}\"\n"),
+    )
+    .expect("build");
+    let settings = paths.user_config("gtk-4.0/settings.ini");
+    fs::create_dir_all(settings.parent().expect("parent")).expect("gtk dir");
+    fs::write(settings, "[Settings]\n").expect("settings");
+  }
+
+  #[test]
+  fn float_build_is_materialized_for_the_float_layout() {
+    let root = std::env::temp_dir().join(format!("argvus-materialized-{}", std::process::id()));
+    let _ = fs::remove_dir_all(&root);
+    let paths = paths_under(&root);
+    materialize_theme(&paths, "float", "float");
+    assert!(theme_materialized(&paths, "argvus-dark"));
+    let _ = fs::remove_dir_all(root);
+  }
+
+  #[test]
+  fn built_theme_follows_the_canonical_layout_variant() {
+    let root = std::env::temp_dir().join(format!("argvus-built-theme-{}", std::process::id()));
+    let _ = fs::remove_dir_all(&root);
+    let paths = paths_under(&root);
+    materialize_theme(&paths, "float", "float");
+    assert_eq!(
+      built_theme(&paths, "argvus-dark").as_deref(),
+      Some("argvus-dark-float")
+    );
+    materialize_theme(&paths, "sticky", "sticky");
+    assert_eq!(
+      built_theme(&paths, "argvus-dark").as_deref(),
+      Some("argvus-dark")
+    );
+    let _ = fs::remove_dir_all(root);
+  }
+
+  #[test]
+  fn float_build_is_not_materialized_for_the_sticky_layout() {
+    let root = std::env::temp_dir().join(format!("argvus-sticky-{}", std::process::id()));
+    let _ = fs::remove_dir_all(&root);
+    let paths = paths_under(&root);
+    materialize_theme(&paths, "sticky", "float");
+    assert!(!theme_materialized(&paths, "argvus-dark"));
     let _ = fs::remove_dir_all(root);
   }
 }
