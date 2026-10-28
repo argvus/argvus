@@ -44,6 +44,7 @@ To switch the mode, open **Control Center → Appearance → Mode** and choose *
 | Sunset | `argvus-theme-sunset` | `#E2BE8A` |
 | Matrix | `argvus-theme-matrix` | `#82FB9C` |
 | Monokai Dark | `argvus-theme-monokai-dark` | `#78DCE8` |
+| Lady Mist | `argvus-theme-lady-mist` | `#354B78` |
 
 ## Light themes
 

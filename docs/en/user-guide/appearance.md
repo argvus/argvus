@@ -29,6 +29,7 @@ The twenty-three families below are defined by the current theme payload. The co
 | Sunset | `#E2BE8A` | `#0F0F0F` | Sticky, Float |
 | Matrix | `#82FB9C` | `#0B0C16` | Sticky, Float |
 | Monokai Dark | `#78DCE8` | `#2D2A2E` | Sticky, Float |
+| Lady Mist | `#354B78` | `#131313` | Sticky, Float |
 | One Light | `#4078F2` | `#FAFAFA` | Sticky, Float |
 | Everforest Light | `#3A94C5` | `#FDF6E3` | Sticky, Float |
 | Solarized Light | `#268BD2` | `#FDF6E3` | Sticky, Float |
