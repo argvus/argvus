@@ -23,6 +23,9 @@ A login with no configuration change repeats no expensive work:
 
 - The projection runs the theme switch and the effects adapter only when the appearance or effects sections changed, or when their real outputs (the materialized user copies and `data/state/effects/<theme>.conf`) are missing.
 - Preparation applies the startup theme, and the accent on top of it, only when the stamp in `$XDG_CACHE_HOME/argvus/session/theme-startup.stamp` no longer matches the packaged theme files and the accent marker. A package update or a new accent invalidates it once. When the theme is reapplied, preparation also reloads Hyprland, which started on the previous files.
+- The GTK settings (`gsettings`) are written only when the startup theme was reapplied. Between logins dconf keeps them, so a stable login does not run them again.
+- `argvus-dunst.service` is `Type=dbus`: it counts as started once Dunst owns `org.freedesktop.Notifications`, so the session target does not wait for the pause state to be restored.
+- Projection rewrites a generated file only when its contents changed. Unchanged files are left alone, so a stable login does not fsync them again.
 - The display step of preparation (`argvus config display session-prepare`) applies only DPMS and disabled outputs: it neither projects again nor reloads the compositor.
 - `argvus-session-reload.service` runs `argvus sessionctl reload-desktop --login`, which reloads Hyprland only when the projection manifest lists `hyprland` among the affected consumers. The desktop components do not wait for it.
 
