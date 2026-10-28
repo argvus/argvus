@@ -44,7 +44,10 @@ fn append_timing(log_path: &Path, label: &str, elapsed_millis: u128) -> io::Resu
     .duration_since(UNIX_EPOCH)
     .map(|duration| duration.as_millis())
     .unwrap_or_default();
-  writeln!(log, "{epoch_millis} timing {label} {elapsed_millis}ms")
+  // One write per entry: steps timed from several threads append to the same
+  // file, and with O_APPEND a single write lands whole.
+  let entry = format!("{epoch_millis} timing {label} {elapsed_millis}ms\n");
+  log.write_all(entry.as_bytes())
 }
 
 #[cfg(test)]

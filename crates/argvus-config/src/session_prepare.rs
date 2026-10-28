@@ -71,16 +71,25 @@ pub fn prepare(paths: &SessionPaths, commands_dir: &Path, cache_home: &Path) -> 
   }
 
   let data = paths.config_home.join("argvus/data");
-  if data.join(".active-theme").is_file() || data.join(".spaces").is_file() {
-    timed("prepare.spaces-switch", || {
-      let _ = run_script(paths, "hyprland/sh/spaces-switch.sh", &environment);
-    });
-  }
-  if data.join(".active-theme").is_file() || data.join(".borders").is_file() {
-    timed("prepare.borders-switch", || {
-      let _ = run_script(paths, "hyprland/sh/borders-switch.sh", &environment);
-    });
-  }
+  let run_spaces = data.join(".active-theme").is_file() || data.join(".spaces").is_file();
+  let run_borders = data.join(".active-theme").is_file() || data.join(".borders").is_file();
+  // The two scripts write disjoint files with `--apply-static`: spaces edits
+  // the bars' JSONC margins and the effective geometry, borders the bars' CSS
+  // and the Rofi theme. Running them side by side halves this step.
+  std::thread::scope(|scope| {
+    if run_spaces {
+      scope.spawn(|| {
+        timed("prepare.spaces-switch", || {
+          let _ = run_script(paths, "hyprland/sh/spaces-switch.sh", &environment);
+        });
+      });
+    }
+    if run_borders {
+      timed("prepare.borders-switch", || {
+        let _ = run_script(paths, "hyprland/sh/borders-switch.sh", &environment);
+      });
+    }
+  });
 
   timed("prepare.display", || apply_display_at_prepare(&environment));
 
