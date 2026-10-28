@@ -4,7 +4,7 @@ DESTDIR ?=
 
 WORKSPACE_VERSION := $(shell sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -n1)
 
-.PHONY: help install uninstall set-permissions validate build package clean
+.PHONY: help install uninstall set-permissions fmt validate build package clean
 
 help:
 	@echo "Available targets:"
@@ -13,10 +13,14 @@ help:
 	@echo "  make set-permissions"
 	@echo "  make install"
 	@echo "  make uninstall"
+	@echo "  make fmt"
 	@echo "  make validate"
 
 set-permissions:
 	@find tools/sh -type f -name "*.sh" -exec chmod +x {} \; 2>/dev/null || true
+
+fmt:
+	@cargo fmt --all
 
 validate:
 	@[ -n "$(WORKSPACE_VERSION)" ] || { echo "version not found in Cargo.toml" >&2; exit 1; }
