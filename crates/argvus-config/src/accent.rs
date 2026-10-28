@@ -127,6 +127,14 @@ pub fn state_accent(paths: &ThemePaths, state_dir: &Path, canonical: Option<Stri
   if is_color { accent } else { state_default }
 }
 
+/// The theme a session or a projection applies for the configured one: the
+/// theme itself when it is installed, else the ARGVUS Dark or Light theme of its
+/// mode. A removed theme must never stop the desktop from starting or from
+/// projecting the configuration.
+pub fn effective_theme(configured: &str) -> String {
+  applied_theme(&crate::theme_resolve::theme_paths(), configured)
+}
+
 /// The theme id the accent applies to: the active theme when it is installed,
 /// else the ARGVUS theme of its mode.
 pub fn applied_theme(paths: &ThemePaths, active_theme: &str) -> String {

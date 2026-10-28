@@ -41,7 +41,7 @@ pub fn prepare(paths: &SessionPaths, commands_dir: &Path, cache_home: &Path) -> 
     migrate_monitor_state(paths, commands_dir)
   });
 
-  let theme = active_theme(paths);
+  let theme = crate::accent::effective_theme(&active_theme(paths));
   let theme_reapplied = timed("prepare.startup-theme", || {
     apply_startup_theme(paths, cache_home, &theme)
   });
