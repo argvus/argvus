@@ -1,4 +1,4 @@
-//! Implements shared action buttons bar rendering in crate `argvus tui`. This separation keeps external effects from contaminating models, routes, or rendering.
+//! Shared action buttons bar rendering.
 //!
 //! Action buttons are a horizontal bar of buttons with icon, label, and keyboard shortcut.
 //! They are ideal for action menus like user management or confirmation dialogs.
@@ -10,7 +10,6 @@ use ratatui::text::{Line, Span};
 use ratatui::widgets::Paragraph;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-/// Defines `ActionButtonKind`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub enum ActionButtonKind {
   Primary,
   Secondary,
@@ -18,7 +17,6 @@ pub enum ActionButtonKind {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-/// Represents `ActionButton`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub struct ActionButton {
   pub icon: String,
   pub label: String,
@@ -27,7 +25,6 @@ pub struct ActionButton {
 }
 
 impl ActionButton {
-  /// Constructs `new` with this module's expected initial state. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn new(
     icon: impl Into<String>,
     label: impl Into<String>,
@@ -127,7 +124,6 @@ impl ActionFocus {
   }
 }
 
-/// Executes the `height` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn height(buttons: &[ActionButton], width: u16) -> u16 {
   if buttons.is_empty() {
     return 0;
@@ -148,7 +144,6 @@ pub fn height(buttons: &[ActionButton], width: u16) -> u16 {
   lines as u16
 }
 
-/// Renders `draw` while respecting the current domain state and semantic theme. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn draw(
   frame: &mut Frame,
   area: Rect,
@@ -260,7 +255,6 @@ fn item_width(button: &ActionButton) -> usize {
   button_part + 1 + shortcut_part
 }
 
-/// Executes the `style_for` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn style_for(button: &ActionButton, focused: bool, theme: &Theme) -> Style {
   if focused {
     return Style::new()
@@ -279,13 +273,11 @@ fn style_for(button: &ActionButton, focused: bool, theme: &Theme) -> Style {
 mod tests {
   use super::*;
 
-  /// Executes the `theme` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn theme() -> Theme {
     Theme::load()
   }
 
   #[test]
-  /// Executes the `height_accounts_for_wrapping` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn height_accounts_for_wrapping() {
     let buttons = vec![
       ActionButton::primary("💾", "Salvar alterações", "Ctrl+S"),
@@ -298,7 +290,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `button_kinds_style_differs` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn button_kinds_style_differs() {
     let theme = theme();
     let primary = style_for(

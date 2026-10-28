@@ -1,7 +1,4 @@
-//! Implements text measurement and truncation in crate `argvus tui`. This separation keeps external effects from contaminating models, routes, or rendering.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
+//! Text measurement and truncation.
 use unicode_width::{UnicodeWidthChar, UnicodeWidthStr};
 
 /// Number of terminal columns `text` occupies when rendered. Emoji and other
@@ -50,7 +47,6 @@ mod tests {
   use super::*;
 
   #[test]
-  /// Executes the `display_width_counts_visual_columns_not_chars` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn display_width_counts_visual_columns_not_chars() {
     assert_eq!(display_width("NO"), 2);
     assert_eq!(display_width("🌍"), 2);
@@ -61,7 +57,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `truncate_keeps_whole_codepoints_and_respects_width` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn truncate_keeps_whole_codepoints_and_respects_width() {
     assert_eq!(truncate_to_width("abcdef", 3), "abc");
     assert_eq!(truncate_to_width("abcde", 10), "abcde");
@@ -71,7 +66,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `ellipsize_reserves_a_column_for_the_marker` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn ellipsize_reserves_a_column_for_the_marker() {
     assert_eq!(ellipsize("short", 10), "short");
     assert_eq!(ellipsize("abcdef", 3), "ab…");

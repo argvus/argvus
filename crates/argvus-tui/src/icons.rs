@@ -1,4 +1,4 @@
-//! Implements shared icon catalog in crate `argvus tui`. This separation keeps external effects from contaminating models, routes, or rendering.
+//! Shared icon catalog.
 //!
 //! Icons use the Material Design Icons section of Nerd Fonts (`nf-md-*`).
 //! Keep constants to one glyph with no layout whitespace; spacing belongs to
@@ -348,7 +348,6 @@ pub const KEY_GENERATE: &str = "\u{f0309}";
 mod tests {
   use super::*;
 
-  /// Defines the constant `ALL`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
   const ALL: &[&str] = &[
     NETWORK,
     WIFI,
@@ -515,7 +514,6 @@ mod tests {
   ];
 
   #[test]
-  /// Executes the `catalog_entries_are_single_non_whitespace_glyphs` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn catalog_entries_are_single_non_whitespace_glyphs() {
     for icon in ALL {
       assert!(!icon.is_empty());
@@ -536,7 +534,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `icon_label_has_stable_geometry_and_safe_narrow_widths` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn icon_label_has_stable_geometry_and_safe_narrow_widths() {
     assert_eq!(icon_label(WIFI, "Network"), format!("{WIFI} Network"));
     assert_eq!(crate::text::display_width(&icon_label(WIFI, "Network")), 9);

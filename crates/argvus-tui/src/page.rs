@@ -1,7 +1,4 @@
-//! Implements shared page navigation primitives in crate `argvus tui`. This separation keeps external effects from contaminating models, routes, or rendering.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
+//! Shared page navigation primitives.
 use argvus_i18n::{Lang, tr};
 use argvus_theme::Theme;
 use crossterm::event::KeyCode;
@@ -59,7 +56,6 @@ pub fn shell(
   rows[1]
 }
 
-/// Executes the `list` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn list(frame: &mut Frame, area: Rect, theme: &Theme, rows: &[String], selected: usize) {
   let no_selection = selected == usize::MAX;
   let len = rows.len();
@@ -119,7 +115,6 @@ pub fn readonly(frame: &mut Frame, area: Rect, theme: &Theme, rows: &[Line<'stat
   );
 }
 
-/// Executes the `status` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn status(frame: &mut Frame, outer: Rect, theme: &Theme, message: &StatusMessage) {
   let inner = outer.inner(Margin::new(1, 1));
   let lines = crate::components::status_line_count(message, inner.width).max(1);
@@ -134,16 +129,13 @@ pub fn status(frame: &mut Frame, outer: Rect, theme: &Theme, message: &StatusMes
 }
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
-/// Represents `Selection`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub struct Selection {
   pub index: usize,
 }
 impl Selection {
-  /// Executes the `normalize` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn normalize(&mut self, len: usize) {
     self.index = self.index.min(len.saturating_sub(1));
   }
-  /// Processes `handle` in this module's event flow. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn handle(&mut self, key: KeyCode, len: usize, page: usize) -> bool {
     let old = self.index;
     match key {
@@ -191,7 +183,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `selection_is_bounded_and_supports_navigation` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn selection_is_bounded_and_supports_navigation() {
     let mut s = Selection { index: 99 };
     s.normalize(3);
@@ -204,7 +195,6 @@ mod tests {
     assert_eq!(s.index, 0);
   }
 
-  /// Renders `rendered_rows` while respecting the current domain state and semantic theme. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn rendered_rows(selected: usize, height: u16, count: usize) -> String {
     let mut terminal = Terminal::new(TestBackend::new(40, height)).unwrap();
     let rows: Vec<String> = (0..count).map(|i| format!("row{i}")).collect();
@@ -225,7 +215,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `list_scrolls_to_keep_selection_visible` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn list_scrolls_to_keep_selection_visible() {
     let visible = rendered_rows(0, 3, 10);
     assert!(visible.contains("row0"));
@@ -243,7 +232,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `list_without_selection_stays_top_aligned` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn list_without_selection_stays_top_aligned() {
     let text = rendered_rows(usize::MAX, 3, 10);
     assert!(text.contains("row0"));

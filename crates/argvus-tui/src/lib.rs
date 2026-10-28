@@ -1,4 +1,4 @@
-//! Root module of crate `argvus tui`. It exposes public boundaries and composes internal responsibilities without duplicating domain rules.
+//! Shared Ratatui widgets, menus, dialogs and chrome for the ARGVUS terminal interfaces.
 //!
 //! External tool dependencies remain in backend layers;
 //! the UI consumes normalized models and results.
@@ -19,7 +19,5 @@ pub mod terminal;
 pub mod text;
 pub mod text_editor;
 
-/// Defines the constant `MIN_WIDTH`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub const MIN_WIDTH: u16 = 60;
-/// Defines the constant `MIN_HEIGHT`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub const MIN_HEIGHT: u16 = 18;

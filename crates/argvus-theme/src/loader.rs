@@ -1,13 +1,9 @@
-//! Implements resource loading in crate `argvus theme`. This separation keeps external effects from contaminating models, routes, or rendering.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
+//! Resource loading.
 use std::fs;
 use std::path::{Path, PathBuf};
 
 use super::parser::{self, Rgba};
 
-/// Defines the constant `DEFAULT_THEME`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub const DEFAULT_THEME: &str = "argvus-dark";
 
 /// Official ARGVUS TUI theme identifiers accepted by pre-authentication
@@ -65,7 +61,6 @@ pub enum Source {
   Text(String),
 }
 
-/// Represents `Loader`. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
 pub struct Loader {
   resource_dir: PathBuf,
   active_file: PathBuf,
@@ -76,7 +71,6 @@ pub struct Loader {
 }
 
 impl Loader {
-  /// Constructs `new` with this module's expected initial state. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn new() -> Self {
     let explicit = std::env::var_os("ARGVUS_CONTROL_CENTER_RESOURCE_DIR").map(PathBuf::from);
     let installed_root = std::env::var_os("ARGVUS_SYSTEM_CONFIG")
@@ -133,7 +127,6 @@ impl Loader {
     self.accent_override
   }
 
-  /// Executes the `active_name` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   pub fn active_name(&self) -> String {
     if let Some(name) = &self.active_name_override {
       return name.clone();
@@ -285,13 +278,11 @@ pub fn normalize_theme_name(name: &str) -> &str {
 }
 
 impl Default for Loader {
-  /// Executes the `default` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn default() -> Self {
     Self::new()
   }
 }
 
-/// Executes the `argvus_config_home` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn argvus_config_home() -> PathBuf {
   std::env::var_os("ARGVUS_CONFIG_HOME")
     .map(PathBuf::from)
@@ -309,14 +300,12 @@ fn argvus_data_home() -> PathBuf {
   argvus_config_home().join("data")
 }
 
-/// Executes the `home` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn home() -> PathBuf {
   std::env::var_os("HOME")
     .map(PathBuf::from)
     .unwrap_or_else(|| PathBuf::from("/tmp"))
 }
 
-/// Executes the `development_resources_dir` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn development_resources_dir() -> PathBuf {
   #[cfg(not(debug_assertions))]
   {
@@ -351,7 +340,6 @@ fn development_resources_dir() -> PathBuf {
   }
 }
 
-/// Retrieves data for `read_recursive` without mixing collection with TUI rendering. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn read_recursive(path: &Path, stack: &mut Vec<PathBuf>) -> Option<String> {
   let contents = fs::read_to_string(path).ok()?;
   let mut output = String::new();

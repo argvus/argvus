@@ -1,7 +1,4 @@
-//! Implements resource parsing in crate `argvus theme`. This separation keeps external effects from contaminating models, routes, or rendering.
-//!
-//! External tool dependencies remain in backend layers;
-//! the UI consumes normalized models and results.
+//! Resource parsing.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Rgba {
   pub r: u8,
@@ -11,13 +8,11 @@ pub struct Rgba {
 }
 
 impl Rgba {
-  /// Executes the const function documented in this module. Its explicit shape preserves the contract consumed by the rest of the workspace and keeps the intent visible as the module evolves.
   pub const fn opaque(r: u8, g: u8, b: u8) -> Self {
     Self { r, g, b, a: 255 }
   }
 }
 
-/// Converts input data into `parse_color` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn parse_color(input: &str) -> Option<Rgba> {
   let input = input.trim();
   if let Some(hex) = input.strip_prefix('#') {
@@ -55,7 +50,6 @@ pub fn parse_color(input: &str) -> Option<Rgba> {
   None
 }
 
-/// Converts input data into `parse_hex` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 fn parse_hex(hex: &str) -> Option<Rgba> {
   match hex.len() {
     3 => Some(Rgba::opaque(
@@ -77,7 +71,6 @@ fn parse_hex(hex: &str) -> Option<Rgba> {
   }
 }
 
-/// Executes the `extract_define_colors` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
 pub fn extract_define_colors(css: &str) -> Vec<(String, String)> {
   let mut output = Vec::new();
   let mut rest = css;
@@ -103,7 +96,6 @@ mod tests {
   use super::*;
 
   #[test]
-  /// Converts input data into `parses_supported_css_colors` while applying local validation. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn parses_supported_css_colors() {
     assert_eq!(parse_color("#123"), Some(Rgba::opaque(0x11, 0x22, 0x33)));
     assert_eq!(parse_color("#112233"), Some(Rgba::opaque(0x11, 0x22, 0x33)));
@@ -112,7 +104,6 @@ mod tests {
   }
 
   #[test]
-  /// Executes the `extracts_palette_declarations` step in this module. The behavior is encapsulated here so callers depend on a clear domain decision instead of duplicating system or UI details.
   fn extracts_palette_declarations() {
     let defs = extract_define_colors(
       "@define-color argvus_bg #111316; @define-color argvus_border rgba(223, 229, 234, 0.22);",
