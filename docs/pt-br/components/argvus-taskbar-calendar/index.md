@@ -31,6 +31,38 @@ argvus taskbar-calendar status
 argvus taskbar-calendar service
 ```
 
+## Eventos e lembretes
+
+Os eventos começam desativados. Ative-os no popup em **Configurações > Eventos**; a
+escolha fica no diretório de estado e também ativa e inicia o
+`argvus-taskbar-calendar.service`, que mostra os lembretes. Ao desativar, o serviço para.
+
+- **+ EVENTO** (ou `n`) abre o editor no dia selecionado. Eventos podem ser criados e
+  alterados a partir de hoje; um evento de um dia passado ainda pode ser aberto e excluído.
+- Um evento novo começa às 09:00 e dura o tempo padrão definido nas Configurações. Mudar a
+  hora inicial mantém a duração; uma hora final menor que a inicial significa que o evento
+  termina no dia seguinte.
+- Todo evento mostra uma notificação com som no início, independentemente das caixas
+  **Lembrete** e **Repetir**. Um evento salvo depois de começar (um evento de dia inteiro
+  criado durante o dia, por exemplo) avisa em até 30 segundos.
+- **Lembrete** acrescenta um aviso antecipado, o tempo escolhido antes do início (no início,
+  se esse horário já passou).
+- Num evento de dia inteiro o campo de hora vira **AVISAR ÀS**: o evento ocupa o dia todo e
+  avisa nesse horário (00:00 avisa no começo do dia). O horário é mantido ao reabrir o evento.
+- Em eventos de dia inteiro, **Repetir** avisa de novo no intervalo escolhido a partir desse
+  horário.
+- Editar um evento sem mudar o início não repete lembretes já mostrados.
+- As notificações seguem o idioma do calendário (Configurações > Idioma).
+- Um dia mostra um ponto (`•`) quando há evento nele, incluindo todos os dias de um evento
+  que atravessa a noite ou dura vários dias. Os dias seguem o fuso horário local.
+- Eventos locais são removidos automaticamente 10 minutos depois de terminarem.
+
+Arquivos `.ics` importados mantêm datas, fusos horários (`TZID`) e alarmes (`VALARM`).
+Eventos importados também avisam no início, além dos próprios alarmes. Eventos recorrentes (`RRULE`) são
+guardados e exportados, mas só a primeira ocorrência aparece e gera lembrete. Depois de uma atualização do pacote, o serviço de lembretes sai e o systemd inicia a versão
+nova em até 30 segundos. `sync` apenas
+informa os calendários remotos configurados; a sincronização CalDAV ainda não existe.
+
 ## Caminhos
 
 - Configuração: `/etc/argvus/taskbar/calendar/config.toml` (válida para o sistema; um padrão é instalado pelo pacote).

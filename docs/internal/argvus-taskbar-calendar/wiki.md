@@ -96,12 +96,17 @@ Single-instance control over a UNIX socket in the cache dir.
   Feb 28 on non-leap years.
 - `month_grid(anchor, week_start)` — the calendar grid of `NaiveDate`s for the
   month, padded with days from adjacent months.
+- `day_bounds(tz, date)` — the half-open UTC range `[local midnight, next local
+  midnight)` of a day; every day query goes through it, so the local day (not
+  the UTC day) decides where an event appears.
 
 ### `event.rs`
 
 - `CalendarSource` — `Local` / `CalDav` / `ImportedIcs`, with string conversion
   for storage.
 - `CalendarEvent::new_local(...)` — builds an event in the local calendar.
+- `CalendarEvent::local_days(tz)` — the local days an event occupies, with an
+  exclusive end (an all-day event covers one day; an overnight event two).
 - `CalendarEvent::validate()` — checks title non-empty and start before end.
 
 ### `recurrence.rs`
@@ -116,20 +121,24 @@ SQLite persistence (rusqlite). `Database::open(path)` runs migrations on open.
 - `migrate()` — applies pending migrations.
 - `default_calendar_id()` — the Local calendar id.
 - `calendars()` — all calendars.
-- `events_for_day(date)` — events for one local day (all-day included).
-- `events_between(start, end)` — events in a UTC range.
+- `events_for_day(tz, date)` — events for one local day (all-day included).
+- `events_between(start, end)` — events overlapping the half-open UTC range
+  `[start, end)`; an event ending exactly at `start` is left out.
 - `all_events()` — every event.
 - `event_by_id(id)` — one event with its reminders.
 - `upsert_event(&mut event)` — inserts or updates an event plus its reminders,
   returning the id.
 - `mark_deleted(id)` — soft-deletes an event.
-- `purge_expired_local_single_events(now)` — removes local non-recurring events
-  10 minutes after their end time, preserving CalDAV/ICS and recurring events.
+- `purge_expired_local_single_events(now)` — removes local events deleted in the
+  popup and local non-recurring events 10 minutes after their end time,
+  preserving CalDAV/ICS and recurring events.
 - `due_reminders(now)` — reminders whose trigger time has passed and have not
   fired, joined with their events, including recently missed reminders inside a
   short grace window.
-- `ensure_start_reminders_for_unscheduled_due_events(now)` — creates a start-time
-  reminder for due events that were saved without explicit reminders.
+- `ensure_start_reminders_for_unscheduled_due_events(now)` — creates the start
+  reminder (`minutes_before = 0`) for every event that started a moment ago or
+  is still in progress and lacks one, so each event notifies at least once
+  (imported events, rows saved before the start reminder existed).
 - `mark_reminder_fired(id, when)` — records that a reminder fired.
 - `event_from_row` / `event_from_offset_row` / `reminders_for_event` — row
   mapping helpers.
@@ -139,27 +148,36 @@ SQLite persistence (rusqlite). `Database::open(path)` runs migrations on open.
 
 - `import_ics_file(path, calendar_id)` — reads a file and parses it.
 - `parse_ics(contents, calendar_id)` — parses `DTSTART`/`DTEND`, all-day flags,
-  reminder `TRIGGER`s and `RRULE` recurrence into `CalendarEvent`s.
-- `parse_ics_datetime(value)` — flexible date/datetime parsing.
-- `trigger_to_minutes(trigger)` — ISO-8601 `TRIGGER` to minutes.
+  reminder `TRIGGER`s and `RRULE` recurrence into `CalendarEvent`s. `RRULE`
+  is stored and exported but not expanded: only the first occurrence is shown
+  and reminded.
+- `to_utc(value)` — `DATE` values start at the local midnight, floating times
+  are local, `TZID` times use that zone (local fallback for unknown ids).
+- `trigger_to_minutes(trigger)` — relative ISO-8601 `TRIGGER` (`W`, `D`, `H`,
+  `M`, `S`) to minutes before the start.
 - `export_ics_file(path, events)` — writes events as an ICS file.
-- `export_ics(events)` — serializes events to an ICS string.
+- `export_ics(events)` — serializes events to an ICS string; all-day events go
+  out as `DATE` values so they import back unchanged.
 
 ## Reminders — `src/reminders/`
 
 ### `notification.rs`
 
-- `notify_event(event, minutes_before)` — shows a desktop notification
-  (notify-rust) with a message appropriate to all-day/now/later and requests a
-  bell sound, with desktop audio command fallbacks.
+- `notify_event(event, minutes_before, i18n)` — shows a desktop notification
+  (notify-rust) with a translated message for all-day/in progress/now/later
+  (`reminder_body`) and requests a bell sound, with desktop audio command
+  fallbacks.
 
 ### `scheduler.rs`
 
 - `ReminderScheduler::new(paths)` — scheduler polling every 30s.
-- `run()` — endless loop calling `tick` and sleeping.
+- `run()` — loop calling `tick` and sleeping. When `/proc/self/exe` shows the
+  binary was replaced (package update) it returns an error, so systemd
+  (`Restart=on-failure`) restarts the service on the new version.
 - `tick()` — purges expired local non-recurring events, creates start-time
-  reminders for due events without explicit reminders, fetches due reminders,
-  skips stale repeat triggers and fires notifications.
+  reminders for due imported events without alarms, fetches due reminders,
+  skips stale repeat triggers and fires notifications in the language of the
+  calendar settings (re-read on every tick).
 - `is_stale_repeat(start, minutes_before, now)` — avoids re-notifying old
   repetitions of an in-progress all-day event.
 
@@ -211,7 +229,10 @@ widget construction and the helpers.
   and presents when the command asks for it.
 - `AppModel::update` — handles navigation, day selection, event CRUD, settings
   editing and popup show/hide; reloads events when `AppMsg::reloads_events` says
-  the state may have changed. Saving, deleting, toggling and showing the popup
+  the state may have changed. Calendar navigation and "new event" messages
+  (`AppMsg::applies_to`) are ignored outside the calendar page, so a shortcut
+  cannot discard an editor or settings draft. A failed save logs a warning and
+  keeps the editor open. Saving, deleting, toggling and showing the popup
   are the `AppModel` methods `save_editor`, `delete_edited_event`,
   `save_settings`, `toggle_popup` and `show_popup`.
 - `reapply_runtime` — reapplies locale, CSS and layer-shell settings after a
@@ -268,10 +289,13 @@ widget construction and the helpers.
 - `cancel_editor`, `update_draft`, `update_settings_draft`,
   `apply_editor_field`, `apply_settings_field` — view-state and draft helpers.
 - `can_create_event` — events can only be created from today on.
-- `control_reminder_service(enabled)` — enables/disables the user systemd unit.
+- `control_reminder_service(enabled)` — enables/disables the user systemd unit;
+  on disable it also signals a manually started `taskbar-calendar service`
+  process of the current user.
 
 `app/form_widgets.rs` — GTK builders: `editor_row`, `editor_label`,
-`editor_entry`, `editor_number_spin`, `editor_control_has_focus`,
+`editor_entry`, `editor_number_spin`, `editor_control_has_focus` (any
+`gtk::Editable`, so spin buttons count as text fields),
 `settings_label`, `settings_section_label`, `settings_number_spin`.
 
 ### `calendar.rs`
@@ -286,15 +310,24 @@ widget construction and the helpers.
 
 ### `event_editor.rs`
 
-- `EditorDraft::new(date, default_reminder_minutes)` / `from_event(event)` —
-  build a draft for a new or existing event.
+- `EditorDraft::new(date, defaults)` / `from_event(event)` — build a draft for a
+  new event (09:00 plus the default length, default reminder) or an existing one.
+- `EditorDraft::set_start_time(hour, minute)` — moves the start and keeps the
+  length; `can_save()` — false for past dates (Save is disabled, Delete stays).
 - `build_editor()` — the editor form widgets.
 - `populate_editor(widgets, draft, i18n)` — fills the form (`fill_editor`) with
   the change handlers listed by `handler_bindings` blocked, so the values set
   here do not come back as edit messages.
-- `save_editor(widgets, draft, paths)` — writes the event to the database.
-- `build_reminders(start, all_day, enabled, hours, minutes, repeat_*)` — expands
-  repeat/all-day reminders into concrete `Reminder`s.
+- `save_editor(db_path, settings, draft, i18n)` — writes the event to the
+  database. A blank title becomes the translated "New event" text; an end time
+  before the start time means the event ends on the next day (`timed_range`).
+- `build_reminders(draft, previous, start, end, now)` — always includes the start
+  reminder, plus the optional earlier reminder and the all-day repetitions; when
+  an edit keeps the start, reminders already fired keep `fired_at` and are not
+  shown again.
+- `all_day_range(draft)` — an all-day event is stored from the typed time
+  ("NOTIFY AT", the time its start reminder fires) to the next local midnight;
+  `from_event` reads that time back into the form.
 - `local_datetime(date, hour, minute)` — local components to `DateTime<Utc>`.
 - `empty_to_none`, `set_entry_text`, `set_number` — widget helpers.
 
