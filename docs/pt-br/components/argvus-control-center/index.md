@@ -21,7 +21,7 @@ A tela inicial atual do Control Center oferece estas áreas:
 A tela inicial é um catálogo de destinos agrupados em seis cartões. Cada destino abre a própria página diretamente, e a busca o encontra independentemente do cartão.
 
 * **Aparência** — personalize o desktop: Estilo do desktop (tema, modo de aparência, cor de destaque, wallpapers, ícones e fontes), Estilo dos aplicativos (transparência do terminal e do lançador), Taskbar, Painel de Controle e Widget Telemetry.
-* **Desktop e entrada** — configure seu espaço de trabalho: Hyprland (regras de janela, espaços de janela, animações, blur, bordas e a versão instalada), Displays, Teclado e atalhos e Mouse e touchpad.
+* **Desktop e entrada** — configure seu espaço de trabalho: Hyprland (regras de janela, espaços de janela, animações, blur, bordas, sombra e a versão instalada), Displays, Teclado e atalhos e Mouse e touchpad.
 * **Preferências** — configurações pessoais e regionais: Idioma e região (o hub de idioma, fuso horário, formatos e layout do teclado), Data e hora, Aplicativos padrão, Energia e Sessão.
 * **Hardware e conectividade** — dispositivos e conexões: Visão geral do hardware, Rede e Wi-Fi, Bluetooth, Áudio e Armazenamento.
 * **Administração do sistema** — gerencie o sistema operacional: Pacotes, Serviços, Boot, Nome do host, Usuários e grupos, Firewall e Notificações (Não perturbe).
@@ -43,7 +43,7 @@ A árvore atual de configurações inclui:
 | Área | Destinos atuais |
 | --- | --- |
 | Aparência | Estilo do desktop: tema, modo de aparência, cor de destaque, wallpapers, ícones e fontes; Estilo dos aplicativos: transparência do terminal e do lançador; Taskbar; Painel de Controle; Widget Telemetry |
-| Desktop e entrada | Hyprland (regras de janela, espaços de janela, animações, blur, bordas), Displays, Teclado e atalhos, Mouse e touchpad |
+| Desktop e entrada | Hyprland (regras de janela, espaços de janela, animações, blur, bordas e sombra), Displays, Teclado e atalhos, Mouse e touchpad |
 | Preferências | Idioma e região (idioma, fuso horário, formatos, locales do sistema e layout do teclado), Data e hora, Aplicativos padrão, Energia, Sessão |
 | Hardware e conectividade | Visão geral do hardware (resumo, CPU, GPU, memória, dispositivos), Rede e Wi-Fi, Bluetooth, Áudio, Armazenamento |
 | Administração do sistema | Pacotes, Serviços, Boot, Nome do host, Usuários e grupos, Firewall, Notificações |

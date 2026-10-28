@@ -14,6 +14,7 @@ Use this table when you know what you want to change but not which ARGVUS surfac
 | Change taskbar position, height, border or utility grouping | **Control Center → Appearance → Taskbar → Position**, **Height**, **Border** and **Icons** |
 | Customize taskbar JSONC or CSS | [Waybar and taskbar overrides](/docs/argvus-waybar/) |
 | Change window gaps or borders | **Control Center → Desktop & Input → Hyprland → Window spaces** and **Borders** |
+| Change the window shadow | **Control Center → Desktop & Input → Hyprland → Borders → Shadow** |
 | Choose visible Control Panel cards | **Control Center → Appearance → Control Panel** |
 | Change keyboard shortcuts | **Control Center → Locale & Region → Keyboard shortcuts** |
 | Add an advanced Hyprland rule, monitor setting or new keybinding | [Hyprland overrides](/docs/argvus-hyprland/hyprland-overrides/) |

@@ -21,7 +21,7 @@ The current Control Center home provides these areas:
 The home is a catalog of destinations grouped in six cards. Each destination opens its page directly, and the search finds it under any card.
 
 - **Appearance** — customize the desktop: Desktop Style (theme, appearance mode, accent color, wallpapers, icons and fonts), Application Style (terminal and launcher transparency), Taskbar, Control Panel and Widget Telemetry.
-- **Desktop & Input** — configure the workspace: Hyprland (window rules, window spaces, animations, blur, borders and the installed version), Displays, Keyboard & Shortcuts and Mouse & Touchpad.
+- **Desktop & Input** — configure the workspace: Hyprland (window rules, window spaces, animations, blur, borders, shadow and the installed version), Displays, Keyboard & Shortcuts and Mouse & Touchpad.
 - **Preferences** — personal and regional settings: Language & Region (the language, time zone, formats and keyboard layout hub), Date & Time, Default Applications, Power and Session.
 - **Hardware & Connectivity** — devices and connections: Hardware Overview, Network & Wi-Fi, Bluetooth, Audio and Storage.
 - **System Administration** — manage the operating system: Packages, Services, Boot, Hostname, Users & Groups, Firewall and Notifications (Do Not Disturb).
@@ -43,7 +43,7 @@ The main settings tree currently includes:
 | Area | Current destinations |
 | --- | --- |
 | Appearance | Desktop Style: theme, appearance mode, accent color, wallpapers, icons and fonts; Application Style: terminal and launcher transparency; Taskbar; Control Panel; Widget Telemetry |
-| Desktop & Input | Hyprland (window rules, window spaces, animations, blur, borders), Displays, Keyboard & Shortcuts, Mouse & Touchpad |
+| Desktop & Input | Hyprland (window rules, window spaces, animations, blur, borders and shadow), Displays, Keyboard & Shortcuts, Mouse & Touchpad |
 | Preferences | Language & Region (language, time zone, formats, system locales and keyboard layout), Date & Time, Default Applications, Power, Session |
 | Hardware & Connectivity | Hardware Overview (summary, CPU, GPU, memory, devices), Network & Wi-Fi, Bluetooth, Audio, Storage |
 | System Administration | Packages, Services, Boot, Hostname, Users & Groups, Firewall, Notifications |
