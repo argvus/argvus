@@ -298,18 +298,27 @@ fn start_authenticated_session(
       // compositor is still alive but inactive, so the output keeps its
       // signal. Without that, the compositor exits as before and turns
       // the outputs off.
-      if handoff_listening
-        && let Err(error) = handoff::leave_vt().and_then(|()| handoff::wait_for_handoff_frame())
-      {
-        warn!(%error, "the DRM handoff surface did not take the display before the compositor exit");
-        // The greeter log lives in the greeter's runtime directory,
-        // which logind removes at logout; the timing log survives it.
-        handoff::mark(&format!("greeter.handoff-takeover-failed error={error:#}"));
-      }
+      let handoff_took_display = handoff_listening
+        && match handoff::leave_vt().and_then(|()| handoff::wait_for_handoff_frame()) {
+          Ok(()) => true,
+          Err(error) => {
+            warn!(%error, "the DRM handoff surface did not take the display before the compositor exit");
+            // The greeter log lives in the greeter's runtime directory,
+            // which logind removes at logout; the timing log survives it.
+            handoff::mark(&format!("greeter.handoff-takeover-failed error={error:#}"));
+            false
+          }
+        };
       // greetd starts the user session only after the greeter session
       // ends, and gives it 5 seconds before killing it. The compositor
-      // does not leave on that SIGTERM, so it is asked to exit now.
-      handoff::exit_greeter_compositor();
+      // does not leave on that SIGTERM. Once the handoff surface shows
+      // the frame, the session ends without waiting for the compositor's
+      // exit; otherwise the greeter waits for it as before.
+      if handoff_took_display {
+        handoff::end_greeter_compositor();
+      } else {
+        handoff::exit_greeter_compositor();
+      }
     }
     Response::Error {
       error_type: _,
