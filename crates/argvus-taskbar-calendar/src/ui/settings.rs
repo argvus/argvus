@@ -94,7 +94,6 @@ pub struct SettingsWidgets {
   pub week_start: gtk::DropDown,
   pub week_start_model: gtk::StringList,
   pub show_events_label: gtk::Label,
-  pub show_events_experimental: gtk::Label,
   pub show_events: gtk::Switch,
   pub default_duration_label: gtk::Label,
   pub default_duration: gtk::SpinButton,
@@ -236,15 +235,6 @@ fn fill_settings(widgets: &SettingsWidgets, draft: &SettingsDraft, i18n: I18n) {
     &draft.week_start,
   );
   widgets.show_events_label.set_label(i18n.text(Text::Events));
-  widgets
-    .show_events_experimental
-    .set_label(i18n.text(Text::Experimental));
-  widgets
-    .show_events_experimental
-    .set_tooltip_text(Some(i18n.text(Text::EventsExperimentalTooltip)));
-  widgets
-    .show_events
-    .set_tooltip_text(Some(i18n.text(Text::EventsExperimentalTooltip)));
   widgets.show_events.set_active(draft.show_events);
   widgets
     .default_duration_label

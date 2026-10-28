@@ -22,4 +22,6 @@ pub enum ArgvusError {
   Io(#[from] std::io::Error),
   #[error("serialization error: {0}")]
   Serialization(String),
+  #[error("service error: {0}")]
+  Service(String),
 }

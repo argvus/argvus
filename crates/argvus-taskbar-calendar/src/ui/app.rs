@@ -16,7 +16,7 @@ use gtk4_layer_shell::LayerShell;
 use relm4::{ComponentParts, ComponentSender, RelmApp, SimpleComponent};
 
 use crate::calendar::{
-  CalendarEvent, first_of_month, next_month, previous_month, shift_year_clamped, today,
+  CalendarEvent, day_bounds, first_of_month, next_month, previous_month, shift_year_clamped, today,
 };
 use crate::config::{Paths, Settings, load_events_enabled, save_events_enabled};
 use crate::i18n::{I18n, Language, Text};
@@ -158,6 +158,28 @@ pub enum AppMsg {
 }
 
 impl AppMsg {
+  /// Whether this message moves around the month grid or opens a new event.
+  /// Those come from the calendar page and its shortcuts.
+  fn is_calendar_navigation(&self) -> bool {
+    matches!(
+      self,
+      AppMsg::PreviousMonth
+        | AppMsg::NextMonth
+        | AppMsg::PreviousYear
+        | AppMsg::NextYear
+        | AppMsg::Today
+        | AppMsg::MoveDays(_)
+        | AppMsg::SelectDay(_)
+        | AppMsg::OpenNewEvent
+    )
+  }
+
+  /// Whether the message applies to `view`. Calendar shortcuts are ignored on
+  /// the editor and settings pages, where they would discard the draft.
+  fn applies_to(&self, view: &ViewState) -> bool {
+    !self.is_calendar_navigation() || matches!(view, ViewState::Calendar)
+  }
+
   /// Whether handling this message can change the selected day, the visible
   /// month or the stored events, so the events must be read again. Popup,
   /// theme, settings and in-progress editor messages leave them unchanged.
@@ -364,6 +386,9 @@ impl SimpleComponent for AppModel {
   }
 
   fn update(&mut self, msg: Self::Input, _sender: ComponentSender<Self>) {
+    if !msg.applies_to(&self.view) {
+      return;
+    }
     let should_reload = msg.reloads_events();
     match msg {
       AppMsg::PreviousMonth => self.month = previous_month(self.month),
@@ -401,7 +426,7 @@ impl SimpleComponent for AppModel {
         if self.events_enabled && can_create_event(self.selected) {
           self.view = ViewState::Editor(Box::new(EditorDraft::new(
             self.selected,
-            self.settings.calendar.default_reminder_minutes,
+            &self.settings.calendar,
           )));
         }
       }
@@ -489,11 +514,15 @@ impl SimpleComponent for AppModel {
 }
 
 impl AppModel {
+  /// Saves the editor draft and returns to the calendar. On failure the
+  /// editor stays open, so the typed values are not lost.
   fn save_editor(&mut self) {
     if let ViewState::Editor(draft) = &self.view {
       let draft = *draft.clone();
-      let _ = save_editor(&self.paths.database, &self.settings, draft);
-      self.view = ViewState::Calendar;
+      match save_editor(&self.paths.database, &self.settings, draft, self.i18n) {
+        Ok(()) => self.view = ViewState::Calendar,
+        Err(err) => log::warn!("could not save the event: {err}"),
+      }
     }
   }
 
@@ -616,7 +645,10 @@ mod tests {
   #[test]
   fn view_transitions_calendar_new_cancel_calendar() {
     let date = NaiveDate::from_ymd_opt(2026, 8, 11).unwrap();
-    let view = ViewState::Editor(Box::new(EditorDraft::new(date, 10)));
+    let view = ViewState::Editor(Box::new(EditorDraft::new(
+      date,
+      &Settings::default().calendar,
+    )));
     assert!(matches!(view, ViewState::Editor(_)));
     let view = ViewState::Calendar;
     assert!(matches!(view, ViewState::Calendar));
@@ -625,7 +657,10 @@ mod tests {
   #[test]
   fn draft_updates_are_applied() {
     let date = NaiveDate::from_ymd_opt(2026, 8, 11).unwrap();
-    let mut view = ViewState::Editor(Box::new(EditorDraft::new(date, 10)));
+    let mut view = ViewState::Editor(Box::new(EditorDraft::new(
+      date,
+      &Settings::default().calendar,
+    )));
     update_draft(&mut view, |draft| draft.title = "Meeting".to_string());
     let ViewState::Editor(draft) = view else {
       panic!("expected editor");
@@ -634,9 +669,37 @@ mod tests {
   }
 
   #[test]
+  fn calendar_shortcuts_are_ignored_outside_the_calendar() {
+    let date = NaiveDate::from_ymd_opt(2026, 8, 12).unwrap();
+    let editor = ViewState::Editor(Box::new(EditorDraft::new(
+      date,
+      &Settings::default().calendar,
+    )));
+    let settings = ViewState::Settings(Box::new(SettingsDraft::from_config(
+      &Settings::default(),
+      true,
+    )));
+    for message in [
+      AppMsg::OpenNewEvent,
+      AppMsg::Today,
+      AppMsg::MoveDays(1),
+      AppMsg::NextMonth,
+    ] {
+      assert!(message.applies_to(&ViewState::Calendar));
+      assert!(!message.applies_to(&editor));
+      assert!(!message.applies_to(&settings));
+    }
+    assert!(AppMsg::SaveEditor.applies_to(&editor));
+    assert!(AppMsg::Hide.applies_to(&settings));
+  }
+
+  #[test]
   fn cancel_editor_restores_calendar_view() {
     let date = NaiveDate::from_ymd_opt(2026, 8, 12).unwrap();
-    let mut view = ViewState::Editor(Box::new(EditorDraft::new(date, 10)));
+    let mut view = ViewState::Editor(Box::new(EditorDraft::new(
+      date,
+      &Settings::default().calendar,
+    )));
     cancel_editor(&mut view);
     assert!(matches!(view, ViewState::Calendar));
   }

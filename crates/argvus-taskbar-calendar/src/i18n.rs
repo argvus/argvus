@@ -81,8 +81,12 @@ pub enum Text {
   AllDay,
   NoEvents,
   Events,
-  Experimental,
-  EventsExperimentalTooltip,
+  UntitledEvent,
+  NotifyAt,
+  ReminderStartsNow,
+  ReminderInProgress,
+  ReminderStartedAt,
+  ReminderAllDay,
   Delete,
   Settings,
   PreviousMonth,
@@ -138,8 +142,12 @@ impl I18n {
         Text::AllDay => "ALL DAY",
         Text::NoEvents => "NO EVENTS",
         Text::Events => "Events",
-        Text::Experimental => "Experimental",
-        Text::EventsExperimentalTooltip => "May contain inconsistencies",
+        Text::UntitledEvent => "New event",
+        Text::NotifyAt => "NOTIFY AT",
+        Text::ReminderStartsNow => "Starts now",
+        Text::ReminderInProgress => "Event in progress",
+        Text::ReminderStartedAt => "Started at",
+        Text::ReminderAllDay => "All-day event reminder",
         Text::Delete => "DELETE",
         Text::Settings => "Settings",
         Text::PreviousMonth => "Previous month",
@@ -182,8 +190,12 @@ impl I18n {
         Text::AllDay => "DIA INTEIRO",
         Text::NoEvents => "NENHUM EVENTO",
         Text::Events => "Eventos",
-        Text::Experimental => "Experimental",
-        Text::EventsExperimentalTooltip => "Pode conter inconsistências",
+        Text::UntitledEvent => "Novo evento",
+        Text::NotifyAt => "AVISAR ÀS",
+        Text::ReminderStartsNow => "Começa agora",
+        Text::ReminderInProgress => "Evento em andamento",
+        Text::ReminderStartedAt => "Começou às",
+        Text::ReminderAllDay => "Lembrete de evento de dia inteiro",
         Text::Delete => "EXCLUIR",
         Text::Settings => "Configurações",
         Text::PreviousMonth => "Mês anterior",
@@ -205,6 +217,16 @@ impl I18n {
         Text::Terminal => "TERMINAL",
         Text::Editor => "EDITOR",
       },
+    }
+  }
+
+  /// "Starts in N minutes", with the singular for one minute.
+  pub fn reminder_starts_in(self, minutes: i64) -> String {
+    match (self.language, minutes) {
+      (Language::EnUs, 1) => "Starts in 1 minute".to_string(),
+      (Language::EnUs, _) => format!("Starts in {minutes} minutes"),
+      (Language::PtBr, 1) => "Começa em 1 minuto".to_string(),
+      (Language::PtBr, _) => format!("Começa em {minutes} minutos"),
     }
   }
 

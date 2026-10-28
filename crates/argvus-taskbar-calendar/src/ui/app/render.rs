@@ -116,18 +116,21 @@ pub(super) fn load_day_and_month(
     return (Vec::new(), HashSet::new());
   };
   let _ = db.purge_expired_local_single_events(chrono::Utc::now());
-  let events = db.events_for_day(selected).unwrap_or_default();
+  let events = db.events_for_day(&Local, selected).unwrap_or_default();
   let first = first_of_month(month);
   let last = next_month(month)
     .checked_sub_days(Days::new(1))
     .unwrap_or(first);
-  let start = first.and_hms_opt(0, 0, 0).unwrap().and_utc();
-  let end = last.and_hms_opt(23, 59, 59).unwrap().and_utc();
+  let (start, _) = day_bounds(&Local, first);
+  let (_, end) = day_bounds(&Local, last);
+  // A multi-day or overnight event marks every day it covers, not just its
+  // first one.
   let event_days = db
     .events_between(start, end)
     .unwrap_or_default()
-    .into_iter()
-    .map(|event| event.start.with_timezone(&Local).date_naive())
+    .iter()
+    .flat_map(|event| event.local_days(&Local))
+    .filter(|day| (first..=last).contains(day))
     .collect();
   (events, event_days)
 }

@@ -1,13 +1,16 @@
 //! Event editor page: draft, widgets, filling and saving.
 
-use chrono::{DateTime, Days, Duration, Local, NaiveDate, NaiveTime, TimeZone, Timelike, Utc};
+use chrono::{DateTime, Duration, Local, NaiveDate, NaiveTime, TimeZone, Timelike, Utc};
 use gtk::glib::SignalHandlerId;
 use gtk::prelude::*;
 
-use crate::calendar::{CalendarEvent, Reminder, today};
-use crate::config::Settings;
+use crate::calendar::{CalendarEvent, Reminder, day_bounds, today};
+use crate::config::{CalendarConfig, Settings};
 use crate::i18n::{I18n, Text};
 use crate::storage::Database;
+
+const MINUTES_PER_DAY: u32 = 24 * 60;
+const DEFAULT_START_HOUR: u32 = 9;
 
 #[derive(Debug, Clone)]
 pub enum EditorKind {
@@ -88,18 +91,26 @@ pub struct EditorChangedHandlers {
 }
 
 impl EditorDraft {
-  pub fn new(date: NaiveDate, default_reminder_minutes: i64) -> Self {
-    let reminder = default_reminder_minutes.max(0) as u32;
+  /// A draft for a new event on `date`: it starts at 09:00, lasts the
+  /// configured default length (kept within the day) and carries the default
+  /// reminder.
+  pub fn new(date: NaiveDate, defaults: &CalendarConfig) -> Self {
+    let reminder = defaults.default_reminder_minutes.max(0) as u32;
+    let start = DEFAULT_START_HOUR * 60;
+    let length = defaults
+      .default_event_duration_minutes
+      .clamp(0, i64::from(MINUTES_PER_DAY)) as u32;
+    let end = (start + length).min(MINUTES_PER_DAY - 1);
     Self {
       kind: EditorKind::New,
       date,
       title: String::new(),
       location: String::new(),
       description: String::new(),
-      start_hour: 9,
+      start_hour: DEFAULT_START_HOUR,
       start_minute: 0,
-      end_hour: 10,
-      end_minute: 0,
+      end_hour: end / 60,
+      end_minute: end % 60,
       all_day: false,
       reminder_enabled: true,
       reminder_hours: reminder / 60,
@@ -112,11 +123,19 @@ impl EditorDraft {
 
   pub fn from_event(event: CalendarEvent) -> Self {
     let start = event.start.with_timezone(&Local);
-    let end = event.end.with_timezone(&Local);
+    // An all-day event ends at midnight; the form shows one hour after the
+    // notification time instead, so unchecking "all day" gives a usable range.
+    let end = if event.all_day {
+      start + Duration::hours(1)
+    } else {
+      event.end.with_timezone(&Local)
+    };
+    // Every event has a reminder at its start; only an earlier one is the
+    // optional "Reminder" of the form.
     let reminder = event
       .reminders
       .iter()
-      .find(|reminder| reminder.minutes_before >= 0)
+      .find(|reminder| reminder.minutes_before > 0)
       .map(|reminder| reminder.minutes_before as u32);
     let repeat = event
       .reminders
@@ -142,6 +161,30 @@ impl EditorDraft {
       repeat_hours: repeat.unwrap_or(120) / 60,
       repeat_minutes: repeat.unwrap_or(120) % 60,
     }
+  }
+
+  /// Moves the start and keeps the length of the event, as calendars usually
+  /// do. An end that passes midnight wraps to the next day.
+  pub fn set_start_time(&mut self, hour: u32, minute: u32) {
+    let length = self.length_minutes();
+    self.start_hour = hour;
+    self.start_minute = minute;
+    let end = (hour * 60 + minute + length) % MINUTES_PER_DAY;
+    self.end_hour = end / 60;
+    self.end_minute = end % 60;
+  }
+
+  /// Minutes from the start to the end time; an end before the start means
+  /// the event runs past midnight.
+  fn length_minutes(&self) -> u32 {
+    let start = self.start_hour * 60 + self.start_minute;
+    let end = self.end_hour * 60 + self.end_minute;
+    (end + MINUTES_PER_DAY - start) % MINUTES_PER_DAY
+  }
+
+  /// Events can only be created or changed from today on.
+  pub fn can_save(&self) -> bool {
+    self.date >= today()
   }
 }
 
@@ -233,20 +276,20 @@ fn fill_editor(widgets: &EditorWidgets, draft: &EditorDraft, i18n: I18n) {
   widgets
     .date_value
     .set_label(&draft.date.format("%Y-%m-%d").to_string());
+  // On an all-day event the start time is when the notification fires.
   widgets
     .start_time_label
-    .set_label(i18n.text(Text::StartTime));
+    .set_label(i18n.text(if draft.all_day {
+      Text::NotifyAt
+    } else {
+      Text::StartTime
+    }));
   widgets.end_time_label.set_label(i18n.text(Text::EndTime));
   set_number(&widgets.start_hour, draft.start_hour);
   set_number(&widgets.start_minute, draft.start_minute);
   set_number(&widgets.end_hour, draft.end_hour);
   set_number(&widgets.end_minute, draft.end_minute);
-  for entry in [
-    &widgets.start_hour,
-    &widgets.start_minute,
-    &widgets.end_hour,
-    &widgets.end_minute,
-  ] {
+  for entry in [&widgets.end_hour, &widgets.end_minute] {
     entry.set_sensitive(!draft.all_day);
   }
   widgets.all_day.set_label(Some(i18n.text(Text::AllDay)));
@@ -301,14 +344,24 @@ fn fill_editor(widgets: &EditorWidgets, draft: &EditorDraft, i18n: I18n) {
     .set_visible(matches!(draft.kind, EditorKind::Edit(_)));
   widgets.cancel.set_label(i18n.text(Text::Cancel));
   widgets.save.set_label(i18n.text(Text::Save));
+  // An event of a past day can still be opened and deleted, not changed.
+  let can_save = draft.can_save();
+  widgets.save.set_sensitive(can_save);
+  widgets
+    .save
+    .set_tooltip_text((!can_save).then_some(i18n.text(Text::PastDate)));
 }
 
+/// Stores the draft as a new event or over the edited one. An empty title
+/// becomes the translated "untitled" text for a new event and keeps the old
+/// title for an edited one.
 pub fn save_editor(
   db_path: &std::path::Path,
   settings: &Settings,
   draft: EditorDraft,
+  i18n: I18n,
 ) -> crate::error::Result<()> {
-  if draft.date < today() {
+  if !draft.can_save() {
     return Err(crate::error::ArgvusError::Configuration(
       "cannot create or update an event in the past".to_string(),
     ));
@@ -316,39 +369,33 @@ pub fn save_editor(
   let mut db = Database::open(db_path)?;
   let calendar_id = db.default_calendar_id()?;
   let (start, end) = if draft.all_day {
-    let start = local_datetime(draft.date, 0, 0).expect("valid all-day start");
-    let next_day = draft
-      .date
-      .checked_add_days(Days::new(1))
-      .expect("valid next day");
-    let end = local_datetime(next_day, 0, 0).expect("valid all-day end");
-    (start, end)
+    all_day_range(&draft)
   } else {
-    let start = local_datetime(draft.date, draft.start_hour, draft.start_minute)
-      .unwrap_or_else(|| local_datetime(draft.date, 9, 0).expect("valid default"));
-    let end = local_datetime(draft.date, draft.end_hour, draft.end_minute).unwrap_or_else(|| {
-      start + Duration::minutes(settings.calendar.default_event_duration_minutes)
-    });
-    (start, end.max(start))
+    timed_range(&draft, settings.calendar.default_event_duration_minutes)
   };
-  let reminders = build_reminders(&draft, None, start, end, Utc::now());
+  // Reminders of an edited event that keeps its start remember that they
+  // already fired; otherwise saving would notify them again.
+  let previous_reminders = match &draft.kind {
+    EditorKind::Edit(event) if event.start == start => event.reminders.as_slice(),
+    _ => &[],
+  };
+  let reminders = build_reminders(&draft, previous_reminders, start, end, Utc::now());
+  let title = draft.title.trim();
   let mut event = match draft.kind {
     EditorKind::New => CalendarEvent::new_local(
       calendar_id,
-      if draft.title.is_empty() {
-        "New event"
+      if title.is_empty() {
+        i18n.text(Text::UntitledEvent)
       } else {
-        &draft.title
+        title
       },
       start,
     ),
     EditorKind::Edit(event) => {
       let mut event = *event;
-      event.title = if draft.title.is_empty() {
-        event.title
-      } else {
-        draft.title.clone()
-      };
+      if !title.is_empty() {
+        event.title = title.to_string();
+      }
       event
     }
   };
@@ -363,30 +410,75 @@ pub fn save_editor(
   Ok(())
 }
 
+/// Start and end of an all-day event. It runs until the next local midnight
+/// and starts at the time typed in the form, which is when its notification
+/// fires (00:00 notifies at the start of the day).
+fn all_day_range(draft: &EditorDraft) -> (DateTime<Utc>, DateTime<Utc>) {
+  let (day_start, day_end) = day_bounds(&Local, draft.date);
+  let start = local_datetime(draft.date, draft.start_hour, draft.start_minute)
+    .unwrap_or(day_start)
+    .clamp(day_start, day_end);
+  (start, day_end)
+}
+
+/// Start and end of a timed event. An end time before the start time means
+/// the event runs past midnight, so the end falls on the next day.
+fn timed_range(draft: &EditorDraft, default_length_minutes: i64) -> (DateTime<Utc>, DateTime<Utc>) {
+  let start = local_datetime(draft.date, draft.start_hour, draft.start_minute)
+    .unwrap_or_else(|| local_datetime(draft.date, DEFAULT_START_HOUR, 0).expect("valid default"));
+  let ends_next_day = (draft.end_hour, draft.end_minute) < (draft.start_hour, draft.start_minute);
+  let end_date = if ends_next_day {
+    draft.date.succ_opt().unwrap_or(draft.date)
+  } else {
+    draft.date
+  };
+  let end = local_datetime(end_date, draft.end_hour, draft.end_minute)
+    .unwrap_or_else(|| start + Duration::minutes(default_length_minutes));
+  (start, end.max(start))
+}
+
+/// The reminders of the draft. Every event notifies at its start; the
+/// "Reminder" of the form adds an earlier notification and "Repeat" more
+/// during an all-day event. One that matches a reminder in `previous` keeps
+/// its `fired_at`, so a reminder already shown is not shown again.
 fn build_reminders(
   draft: &EditorDraft,
-  event_id: Option<i64>,
+  previous: &[Reminder],
   start: DateTime<Utc>,
   end: DateTime<Utc>,
   now: DateTime<Utc>,
 ) -> Vec<Reminder> {
+  let reminder = |minutes_before: i64| Reminder {
+    id: None,
+    event_id: None,
+    minutes_before,
+    fired_at: previous
+      .iter()
+      .find(|reminder| reminder.minutes_before == minutes_before)
+      .and_then(|reminder| reminder.fired_at),
+  };
   let mut reminders = Vec::new();
   if draft.reminder_enabled {
     let configured_minutes_before =
       i64::from(draft.reminder_hours) * 60 + i64::from(draft.reminder_minutes);
-    let minutes_before = if configured_minutes_before > 0
+    let configured = reminder(configured_minutes_before);
+    // A reminder time already in the past is moved to the start, unless it
+    // was shown already.
+    let minutes_before = if configured.fired_at.is_none()
+      && configured_minutes_before > 0
       && start - Duration::minutes(configured_minutes_before) <= now
     {
       0
     } else {
       configured_minutes_before
     };
-    reminders.push(Reminder {
-      id: None,
-      event_id,
-      minutes_before,
-      fired_at: None,
-    });
+    reminders.push(reminder(minutes_before));
+  }
+  if !reminders
+    .iter()
+    .any(|reminder| reminder.minutes_before == 0)
+  {
+    reminders.push(reminder(0));
   }
 
   let interval = i64::from(draft.repeat_hours) * 60 + i64::from(draft.repeat_minutes);
@@ -394,12 +486,7 @@ fn build_reminders(
     let duration = (end - start).num_minutes();
     let mut elapsed = interval;
     while elapsed < duration {
-      reminders.push(Reminder {
-        id: None,
-        event_id,
-        minutes_before: -elapsed,
-        fired_at: None,
-      });
+      reminders.push(reminder(-elapsed));
       elapsed += interval;
     }
   }
@@ -433,7 +520,118 @@ fn set_number(spin: &gtk::SpinButton, value: u32) {
 
 #[cfg(test)]
 mod tests {
+  use chrono::Days;
+
+  use crate::i18n::Language;
+
   use super::*;
+
+  fn defaults(reminder_minutes: i64) -> CalendarConfig {
+    CalendarConfig {
+      default_reminder_minutes: reminder_minutes,
+      ..CalendarConfig::default()
+    }
+  }
+
+  fn english() -> I18n {
+    I18n::new(Language::EnUs)
+  }
+
+  fn temp_database(name: &str) -> std::path::PathBuf {
+    let test_dir =
+      std::env::temp_dir().join(format!("argvus-calendar-{name}-{}", uuid::Uuid::new_v4()));
+    std::fs::create_dir_all(&test_dir).unwrap();
+    test_dir.join("calendar.db")
+  }
+
+  fn tomorrow() -> NaiveDate {
+    today().checked_add_days(Days::new(1)).unwrap()
+  }
+
+  #[test]
+  fn new_draft_lasts_the_default_length() {
+    let date = NaiveDate::from_ymd_opt(2026, 8, 12).unwrap();
+    let mut config = defaults(10);
+    config.default_event_duration_minutes = 90;
+    let draft = EditorDraft::new(date, &config);
+    assert_eq!((draft.end_hour, draft.end_minute), (10, 30));
+
+    config.default_event_duration_minutes = 1440;
+    let draft = EditorDraft::new(date, &config);
+    assert_eq!((draft.end_hour, draft.end_minute), (23, 59));
+  }
+
+  #[test]
+  fn moving_the_start_keeps_the_length() {
+    let date = NaiveDate::from_ymd_opt(2026, 8, 12).unwrap();
+    let mut draft = EditorDraft::new(date, &defaults(10));
+    draft.set_start_time(14, 15);
+    assert_eq!((draft.end_hour, draft.end_minute), (15, 15));
+    draft.set_start_time(23, 30);
+    assert_eq!((draft.end_hour, draft.end_minute), (0, 30));
+  }
+
+  #[test]
+  fn end_before_start_runs_past_midnight() {
+    let mut draft = EditorDraft::new(tomorrow(), &defaults(10));
+    draft.start_hour = 23;
+    draft.end_hour = 1;
+    let (start, end) = timed_range(&draft, 60);
+    assert_eq!(end - start, Duration::hours(2));
+  }
+
+  #[test]
+  fn blank_title_gets_the_untitled_text() {
+    let database_path = temp_database("blank-title");
+    let mut draft = EditorDraft::new(tomorrow(), &defaults(10));
+    draft.title = "   ".to_string();
+    save_editor(&database_path, &Settings::default(), draft, english()).unwrap();
+
+    let events = Database::open(&database_path)
+      .unwrap()
+      .all_events()
+      .unwrap();
+    assert_eq!(events[0].title, english().text(Text::UntitledEvent));
+    std::fs::remove_dir_all(database_path.parent().unwrap()).unwrap();
+  }
+
+  #[test]
+  fn past_drafts_cannot_be_saved() {
+    let yesterday = today().checked_sub_days(Days::new(1)).unwrap();
+    assert!(!EditorDraft::new(yesterday, &defaults(10)).can_save());
+    assert!(EditorDraft::new(today(), &defaults(10)).can_save());
+  }
+
+  #[test]
+  fn editing_without_moving_the_start_keeps_fired_reminders() {
+    let database_path = temp_database("edit-fired");
+    let mut draft = EditorDraft::new(tomorrow(), &defaults(10));
+    draft.title = "Meeting".to_string();
+    save_editor(&database_path, &Settings::default(), draft, english()).unwrap();
+
+    let db = Database::open(&database_path).unwrap();
+    let event = db.all_events().unwrap().remove(0);
+    let fired_at = Utc::now();
+    db.mark_reminder_fired(event.reminders[0].id.unwrap(), fired_at)
+      .unwrap();
+    let event = db.event_by_id(event.id.unwrap()).unwrap().unwrap();
+
+    let mut edit = EditorDraft::from_event(event.clone());
+    edit.title = "Renamed".to_string();
+    save_editor(&database_path, &Settings::default(), edit, english()).unwrap();
+    let renamed = db.event_by_id(event.id.unwrap()).unwrap().unwrap();
+    assert_eq!(renamed.title, "Renamed");
+    assert!(renamed.reminders[0].fired_at.is_some());
+
+    let mut moved = EditorDraft::from_event(renamed.clone());
+    moved.set_start_time(15, 0);
+    save_editor(&database_path, &Settings::default(), moved, english()).unwrap();
+    let moved = db.event_by_id(event.id.unwrap()).unwrap().unwrap();
+    assert!(moved.reminders[0].fired_at.is_none());
+
+    drop(db);
+    std::fs::remove_dir_all(database_path.parent().unwrap()).unwrap();
+  }
 
   #[test]
   fn local_datetime_accepts_valid_time() {
@@ -453,7 +651,7 @@ mod tests {
   #[test]
   fn all_day_repeat_builds_reminders_during_the_day() {
     let date = NaiveDate::from_ymd_opt(2026, 8, 12).unwrap();
-    let mut draft = EditorDraft::new(date, 90);
+    let mut draft = EditorDraft::new(date, &defaults(90));
     draft.all_day = true;
     draft.repeat_all_day = true;
     draft.repeat_hours = 6;
@@ -461,40 +659,87 @@ mod tests {
     let end = local_datetime(date.checked_add_days(Days::new(1)).unwrap(), 0, 0).unwrap();
 
     let now = start - Duration::hours(12);
-    let values: Vec<_> = build_reminders(&draft, None, start, end, now)
+    let values: Vec<_> = build_reminders(&draft, &[], start, end, now)
       .into_iter()
       .map(|reminder| reminder.minutes_before)
       .collect();
-    assert_eq!(values, vec![90, -360, -720, -1080]);
+    assert_eq!(values, vec![90, 0, -360, -720, -1080]);
   }
 
   #[test]
-  fn disabled_reminder_produces_no_schedule() {
+  fn disabled_reminder_still_notifies_at_the_start() {
     let date = NaiveDate::from_ymd_opt(2026, 8, 12).unwrap();
-    let mut draft = EditorDraft::new(date, 10);
+    let mut draft = EditorDraft::new(date, &defaults(10));
     draft.reminder_enabled = false;
     let start = local_datetime(date, 9, 0).unwrap();
-    assert!(
-      build_reminders(
-        &draft,
-        None,
-        start,
-        start + Duration::hours(1),
-        start - Duration::hours(1)
-      )
-      .is_empty()
-    );
+    let values: Vec<_> = build_reminders(
+      &draft,
+      &[],
+      start,
+      start + Duration::hours(1),
+      start - Duration::hours(1),
+    )
+    .into_iter()
+    .map(|reminder| reminder.minutes_before)
+    .collect();
+    assert_eq!(values, vec![0]);
+  }
+
+  #[test]
+  fn all_day_event_keeps_its_notification_time() {
+    let database_path = temp_database("all-day-time");
+    let mut draft = EditorDraft::new(tomorrow(), &defaults(10));
+    draft.title = "Birthday".to_string();
+    draft.set_start_time(14, 30);
+    draft.all_day = true;
+    draft.reminder_enabled = false;
+    save_editor(&database_path, &Settings::default(), draft, english()).unwrap();
+
+    let event = Database::open(&database_path)
+      .unwrap()
+      .all_events()
+      .unwrap()
+      .remove(0);
+    assert!(event.all_day);
+    let start = event.start.with_timezone(&Local);
+    assert_eq!((start.hour(), start.minute()), (14, 30));
+    assert_eq!(event.end, day_bounds(&Local, tomorrow()).1);
+    assert_eq!(event.local_days(&Local), vec![tomorrow()]);
+    let reopened = EditorDraft::from_event(event);
+    assert!(reopened.all_day && !reopened.reminder_enabled);
+    assert_eq!((reopened.start_hour, reopened.start_minute), (14, 30));
+    std::fs::remove_dir_all(database_path.parent().unwrap()).unwrap();
+  }
+
+  #[test]
+  fn all_day_event_saved_during_the_day_is_due_at_once() {
+    let database_path = temp_database("all-day-due");
+    let mut draft = EditorDraft::new(today(), &defaults(10));
+    draft.title = "Today".to_string();
+    draft.set_start_time(0, 0);
+    draft.all_day = true;
+    draft.reminder_enabled = false;
+    save_editor(&database_path, &Settings::default(), draft, english()).unwrap();
+
+    let due = Database::open(&database_path)
+      .unwrap()
+      .due_reminders(Utc::now())
+      .unwrap();
+    assert_eq!(due.len(), 1);
+    assert_eq!(due[0].1.title, "Today");
+    assert_eq!(due[0].0.minutes_before, 0);
+    std::fs::remove_dir_all(database_path.parent().unwrap()).unwrap();
   }
 
   #[test]
   fn short_notice_events_remind_at_start_instead_of_in_the_past() {
     let now = Utc::now();
     let start = now + Duration::minutes(1);
-    let mut draft = EditorDraft::new(start.with_timezone(&Local).date_naive(), 10);
+    let mut draft = EditorDraft::new(start.with_timezone(&Local).date_naive(), &defaults(10));
     draft.reminder_hours = 0;
     draft.reminder_minutes = 10;
 
-    let reminders = build_reminders(&draft, None, start, start + Duration::hours(1), now);
+    let reminders = build_reminders(&draft, &[], start, start + Duration::hours(1), now);
     assert_eq!(reminders.len(), 1);
     assert_eq!(reminders[0].minutes_before, 0);
   }
@@ -509,14 +754,14 @@ mod tests {
     let database_path = test_dir.join("calendar.db");
     let local_start = Local::now() + Duration::minutes(1);
     let local_end = local_start + Duration::hours(1);
-    let mut draft = EditorDraft::new(local_start.date_naive(), 10);
+    let mut draft = EditorDraft::new(local_start.date_naive(), &defaults(10));
     draft.title = "Short notice".to_string();
     draft.start_hour = local_start.hour();
     draft.start_minute = local_start.minute();
     draft.end_hour = local_end.hour();
     draft.end_minute = local_end.minute();
 
-    save_editor(&database_path, &Settings::default(), draft).unwrap();
+    save_editor(&database_path, &Settings::default(), draft, english()).unwrap();
 
     let db = Database::open(&database_path).unwrap();
     let events = db.all_events().unwrap();

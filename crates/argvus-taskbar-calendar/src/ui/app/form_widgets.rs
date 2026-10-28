@@ -22,10 +22,10 @@ pub(super) fn editor_entry() -> gtk::Entry {
   entry
 }
 
+/// Whether keyboard input goes to a text field. Entries and spin buttons
+/// hand the focus to an inner `GtkText`, which is editable as well.
 pub(super) fn editor_control_has_focus(window: &gtk::Window) -> bool {
-  gtk::prelude::RootExt::focus(window).is_some_and(|widget| {
-    widget.is::<gtk::Entry>() || widget.ancestor(gtk::Entry::static_type()).is_some()
-  })
+  gtk::prelude::RootExt::focus(window).is_some_and(|widget| widget.is::<gtk::Editable>())
 }
 
 pub(super) fn editor_number_spin(max: u32) -> gtk::SpinButton {

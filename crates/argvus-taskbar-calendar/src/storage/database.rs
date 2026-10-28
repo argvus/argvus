@@ -2,10 +2,10 @@
 
 use std::path::Path;
 
-use chrono::{DateTime, Duration, NaiveDate, Utc};
+use chrono::{DateTime, Duration, NaiveDate, TimeZone, Utc};
 use rusqlite::{Connection, params};
 
-use crate::calendar::{Calendar, CalendarEvent, CalendarSource, Reminder};
+use crate::calendar::{Calendar, CalendarEvent, CalendarSource, Reminder, day_bounds};
 use crate::error::{ArgvusError, Result};
 
 use super::migrations::{CURRENT_SCHEMA_VERSION, V1};
@@ -71,12 +71,19 @@ impl Database {
       .map_err(Into::into)
   }
 
-  pub fn events_for_day(&self, date: NaiveDate) -> Result<Vec<CalendarEvent>> {
-    let start = date.and_hms_opt(0, 0, 0).unwrap().and_utc();
-    let end = date.and_hms_opt(23, 59, 59).unwrap().and_utc();
+  /// Events that take place on `date`, a calendar day in `tz`.
+  pub fn events_for_day<Tz: TimeZone>(
+    &self,
+    tz: &Tz,
+    date: NaiveDate,
+  ) -> Result<Vec<CalendarEvent>> {
+    let (start, end) = day_bounds(tz, date);
     self.events_between(start, end)
   }
 
+  /// Events that overlap the half-open range `[start, end)`. An event that
+  /// ends exactly at `start` is left out; one without duration counts when it
+  /// starts inside the range.
   pub fn events_between(
     &self,
     start: DateTime<Utc>,
@@ -89,8 +96,14 @@ impl Database {
                    external_etag, remote_url, dirty, deleted
             FROM events
             WHERE deleted = 0
-              AND datetime(start_utc) <= datetime(?2)
-              AND datetime(end_utc) >= datetime(?1)
+              AND datetime(start_utc) < datetime(?2)
+              AND (
+                    datetime(end_utc) > datetime(?1)
+                    OR (
+                      datetime(end_utc) = datetime(start_utc)
+                      AND datetime(start_utc) >= datetime(?1)
+                    )
+                  )
             ORDER BY all_day DESC, start_utc ASC, title ASC
             "#,
     )?;
@@ -213,7 +226,19 @@ impl Database {
     Ok(())
   }
 
+  /// Removes local events that are no longer needed: the ones deleted in the
+  /// popup (local events are never synchronised, so the soft-deleted row has
+  /// no further use) and the non-recurring ones that ended more than the grace
+  /// period ago.
   pub fn purge_expired_local_single_events(&self, now: DateTime<Utc>) -> Result<usize> {
+    let deleted = self.conn.execute(
+      "DELETE FROM events WHERE source = 'local' AND deleted = 1",
+      [],
+    )?;
+    Ok(deleted + self.purge_ended_local_single_events(now)?)
+  }
+
+  fn purge_ended_local_single_events(&self, now: DateTime<Utc>) -> Result<usize> {
     let cutoff = now - Duration::minutes(EXPIRED_LOCAL_EVENT_GRACE_MINUTES);
     let mut stmt = self.conn.prepare(
       r#"
@@ -281,6 +306,10 @@ impl Database {
       .map_err(Into::into)
   }
 
+  /// Gives every event that has started (a moment ago, or that is still in
+  /// progress) a reminder at its start when it has none, so each event
+  /// notifies at least once. This covers imported events whose alarms are all
+  /// earlier and events saved before the start reminder existed.
   pub fn ensure_start_reminders_for_unscheduled_due_events(
     &self,
     now: DateTime<Utc>,
@@ -293,9 +322,13 @@ impl Database {
             FROM events e
             WHERE e.deleted = 0
               AND datetime(e.start_utc) <= datetime(?1)
-              AND datetime(e.start_utc) >= datetime(?2)
+              AND (
+                    datetime(e.start_utc) >= datetime(?2)
+                    OR datetime(e.end_utc) > datetime(?1)
+                  )
               AND NOT EXISTS (
-                    SELECT 1 FROM reminders r WHERE r.event_id = e.id
+                    SELECT 1 FROM reminders r
+                    WHERE r.event_id = e.id AND r.minutes_before = 0
                   )
             "#,
       params![now.to_rfc3339(), missed_since.to_rfc3339()],
@@ -478,17 +511,43 @@ mod tests {
 
     let mut event = CalendarEvent::new_local(1, "Unscheduled", now - Duration::seconds(30));
     event.reminders.clear();
+    event.source = CalendarSource::ImportedIcs;
     db.upsert_event(&mut event).unwrap();
+
+    // An all-day event saved in the afternoon without any reminder.
+    let mut all_day = CalendarEvent::new_local(1, "All day", now - Duration::hours(15));
+    all_day.end = now + Duration::hours(9);
+    all_day.all_day = true;
+    all_day.reminders.clear();
+    db.upsert_event(&mut all_day).unwrap();
+
+    // Earlier alarms only: the start still notifies.
+    let mut early_only = CalendarEvent::new_local(1, "Early only", now - Duration::minutes(1));
+    db.upsert_event(&mut early_only).unwrap();
+
+    let mut ended = CalendarEvent::new_local(1, "Ended", now - Duration::hours(2));
+    ended.reminders.clear();
+    db.upsert_event(&mut ended).unwrap();
 
     assert_eq!(
       db.ensure_start_reminders_for_unscheduled_due_events(now)
         .unwrap(),
-      1
+      3
     );
-    let due = db.due_reminders(now).unwrap();
-    assert_eq!(due.len(), 1);
-    assert_eq!(due[0].1.title, "Unscheduled");
-    assert_eq!(due[0].0.minutes_before, 0);
+    let mut due: Vec<_> = db
+      .due_reminders(now)
+      .unwrap()
+      .into_iter()
+      .filter(|(reminder, _)| reminder.minutes_before == 0)
+      .map(|(_, event)| event.title)
+      .collect();
+    due.sort();
+    assert_eq!(due, vec!["All day", "Early only", "Unscheduled"]);
+    assert_eq!(
+      db.ensure_start_reminders_for_unscheduled_due_events(now)
+        .unwrap(),
+      0
+    );
 
     drop(db);
     std::fs::remove_dir_all(test_dir).unwrap();
@@ -555,6 +614,71 @@ mod tests {
 
     assert_eq!(db.purge_expired_local_single_events(now).unwrap(), 1);
     assert!(db.all_events().unwrap().is_empty());
+
+    drop(db);
+    std::fs::remove_dir_all(test_dir).unwrap();
+  }
+
+  #[test]
+  fn events_for_day_uses_the_local_day() {
+    let test_dir = std::env::temp_dir().join(format!(
+      "argvus-calendar-local-day-{}",
+      uuid::Uuid::new_v4()
+    ));
+    std::fs::create_dir_all(&test_dir).unwrap();
+    let mut db = Database::open(&test_dir.join("calendar.db")).unwrap();
+    let tz = chrono::FixedOffset::west_opt(3 * 3600).unwrap();
+    let local = |day, hour| {
+      tz.with_ymd_and_hms(2026, 10, day, hour, 0, 0)
+        .unwrap()
+        .with_timezone(&Utc)
+    };
+
+    let mut late = CalendarEvent::new_local(1, "Late", local(13, 22));
+    late.end = local(13, 23);
+    db.upsert_event(&mut late).unwrap();
+
+    let mut all_day = CalendarEvent::new_local(1, "All day", local(13, 0));
+    all_day.end = local(14, 0);
+    all_day.all_day = true;
+    db.upsert_event(&mut all_day).unwrap();
+
+    let titles = |day| {
+      db.events_for_day(&tz, NaiveDate::from_ymd_opt(2026, 10, day).unwrap())
+        .unwrap()
+        .into_iter()
+        .map(|event| event.title)
+        .collect::<Vec<_>>()
+    };
+    assert_eq!(titles(13), vec!["All day", "Late"]);
+    assert!(titles(14).is_empty());
+
+    drop(db);
+    std::fs::remove_dir_all(test_dir).unwrap();
+  }
+
+  #[test]
+  fn purge_removes_deleted_local_events() {
+    let test_dir = std::env::temp_dir().join(format!(
+      "argvus-calendar-purge-deleted-{}",
+      uuid::Uuid::new_v4()
+    ));
+    std::fs::create_dir_all(&test_dir).unwrap();
+    let mut db = Database::open(&test_dir.join("calendar.db")).unwrap();
+    let now = Utc.with_ymd_and_hms(2026, 8, 12, 18, 0, 0).unwrap();
+
+    let mut deleted = CalendarEvent::new_local(1, "Deleted", now + Duration::days(1));
+    db.upsert_event(&mut deleted).unwrap();
+    db.mark_deleted(deleted.id.unwrap()).unwrap();
+    let mut kept = CalendarEvent::new_local(1, "Kept", now + Duration::days(1));
+    db.upsert_event(&mut kept).unwrap();
+
+    assert_eq!(db.purge_expired_local_single_events(now).unwrap(), 1);
+    let remaining: i64 = db
+      .conn
+      .query_row("SELECT COUNT(*) FROM events", [], |row| row.get(0))
+      .unwrap();
+    assert_eq!(remaining, 1);
 
     drop(db);
     std::fs::remove_dir_all(test_dir).unwrap();

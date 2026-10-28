@@ -1,9 +1,11 @@
 //! Loop of the reminder service: finds due reminders and notifies them once.
 
+use std::path::Path;
 use std::time::Duration;
 
-use crate::config::{Paths, service_events_enabled};
-use crate::error::Result;
+use crate::config::{Paths, Settings, service_events_enabled};
+use crate::error::{ArgvusError, Result};
+use crate::i18n::{I18n, Language};
 use crate::storage::Database;
 use chrono::{Duration as ChronoDuration, Utc};
 use log::{debug, info, warn};
@@ -25,8 +27,16 @@ impl ReminderScheduler {
     }
   }
 
+  /// Polls until the executable is replaced by a package update. It then
+  /// fails on purpose, so systemd (`Restart=on-failure`) starts the new
+  /// version instead of keeping the old code running.
   pub fn run(self) -> Result<()> {
     loop {
+      if std::fs::read_link("/proc/self/exe").is_ok_and(|exe| is_replaced_executable(&exe)) {
+        return Err(ArgvusError::Service(
+          "the executable was updated; exiting so the service restarts".to_string(),
+        ));
+      }
       if let Err(err) = self.tick() {
         eprintln!("argvus-taskbar-calendar: reminder scheduler tick failed: {err}");
         warn!("reminder scheduler tick failed: {err}");
@@ -47,11 +57,12 @@ impl ReminderScheduler {
       debug!("created {added_start_reminders} start reminders for unscheduled due events");
     }
     let due = db.due_reminders(now)?;
+    let i18n = self.notification_language();
     let mut fired = 0;
     for (reminder, event) in due {
       if let Some(id) = reminder.id {
         if !is_stale_repeat(event.start, reminder.minutes_before, now) {
-          notify_event(&event, reminder.minutes_before)?;
+          notify_event(&event, reminder.minutes_before, i18n)?;
           fired += 1;
         }
         db.mark_reminder_fired(id, now)?;
@@ -65,6 +76,21 @@ impl ReminderScheduler {
     }
     Ok(fired)
   }
+
+  /// The language of the notifications, read on each tick so a change made
+  /// in the popup settings applies without restarting the service.
+  fn notification_language(&self) -> I18n {
+    let language = Settings::load(&self.paths)
+      .map(|settings| settings.locale.language)
+      .unwrap_or_default();
+    I18n::new(Language::resolve(&language))
+  }
+}
+
+/// Linux marks the target of `/proc/self/exe` as deleted once the running
+/// file has been replaced on disk.
+fn is_replaced_executable(exe: &Path) -> bool {
+  exe.to_string_lossy().ends_with(" (deleted)")
 }
 
 fn is_stale_repeat(
@@ -81,6 +107,16 @@ mod tests {
   use chrono::TimeZone;
 
   use super::*;
+
+  #[test]
+  fn replaced_executable_is_detected() {
+    assert!(is_replaced_executable(Path::new(
+      "/usr/lib/argvus/commands/taskbar-calendar (deleted)"
+    )));
+    assert!(!is_replaced_executable(Path::new(
+      "/usr/lib/argvus/commands/taskbar-calendar"
+    )));
+  }
 
   #[test]
   fn old_repetitions_are_skipped_without_skipping_primary_reminders() {

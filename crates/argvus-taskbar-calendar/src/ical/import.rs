@@ -2,8 +2,8 @@
 
 use std::path::Path;
 
-use chrono::{DateTime, Duration, NaiveDate, NaiveDateTime, Utc};
-use icalendar::{Calendar as ICalendar, Component, EventLike};
+use chrono::{DateTime, Duration, Local, NaiveDateTime, NaiveTime, TimeZone, Utc};
+use icalendar::{Calendar as ICalendar, CalendarDateTime, Component, DatePerhapsTime, EventLike};
 
 use crate::calendar::{CalendarEvent, CalendarSource, Recurrence, Reminder};
 use crate::error::{ArgvusError, Result};
@@ -23,18 +23,17 @@ pub fn parse_ics(contents: &str, calendar_id: i64) -> Result<Vec<CalendarEvent>>
     let Some(start_raw) = event.property_value("DTSTART") else {
       continue;
     };
-    let start = parse_ics_datetime(start_raw)?;
-    let end = event
-      .property_value("DTEND")
-      .map(parse_ics_datetime)
-      .transpose()?
-      .unwrap_or_else(|| start + Duration::hours(1));
-    let all_day = event
-      .properties()
-      .get("DTSTART")
-      .and_then(|property| property.params().get("VALUE"))
-      .map(|param| param.value() == "DATE")
-      .unwrap_or_else(|| start_raw.len() == 8);
+    let start_value = event
+      .get_start()
+      .ok_or_else(|| ArgvusError::Ics(format!("unsupported datetime: {start_raw}")))?;
+    let all_day = matches!(start_value, DatePerhapsTime::Date(_));
+    let start = to_utc(&start_value)?;
+    // RFC 5545: without DTEND an all-day event lasts one day.
+    let end = match event.get_end() {
+      Some(end) => to_utc(&end)?,
+      None if all_day => start + Duration::days(1),
+      None => start + Duration::hours(1),
+    };
     let uid = event
       .get_uid()
       .map(ToOwned::to_owned)
@@ -94,29 +93,110 @@ pub fn parse_ics(contents: &str, calendar_id: i64) -> Result<Vec<CalendarEvent>>
   Ok(events)
 }
 
-fn parse_ics_datetime(value: &str) -> Result<DateTime<Utc>> {
-  if value.len() == 8 {
-    let date = NaiveDate::parse_from_str(value, "%Y%m%d")
-      .map_err(|err| ArgvusError::Ics(format!("invalid date {value}: {err}")))?;
-    return Ok(date.and_hms_opt(0, 0, 0).unwrap().and_utc());
+/// Converts a `DTSTART`/`DTEND` value to UTC. A date (all-day) starts at the
+/// local midnight, like the events created in the popup; a floating time is a
+/// local time (RFC 5545 form #1); a time with `TZID` uses that zone, or the
+/// local zone when the identifier is unknown.
+fn to_utc(value: &DatePerhapsTime) -> Result<DateTime<Utc>> {
+  let local = |naive: &NaiveDateTime| {
+    Local
+      .from_local_datetime(naive)
+      .earliest()
+      .map(|date_time| date_time.with_timezone(&Utc))
+      .ok_or_else(|| ArgvusError::Ics(format!("nonexistent local time: {naive}")))
+  };
+  match value {
+    DatePerhapsTime::Date(date) => local(&date.and_time(NaiveTime::MIN)),
+    DatePerhapsTime::DateTime(CalendarDateTime::Utc(date_time)) => Ok(*date_time),
+    DatePerhapsTime::DateTime(CalendarDateTime::Floating(naive)) => local(naive),
+    DatePerhapsTime::DateTime(zoned @ CalendarDateTime::WithTimezone { date_time, .. }) => {
+      zoned.try_into_utc().map_or_else(|| local(date_time), Ok)
+    }
   }
-  if let Ok(dt) = DateTime::parse_from_rfc3339(value) {
-    return Ok(dt.with_timezone(&Utc));
-  }
-  if let Ok(dt) = NaiveDateTime::parse_from_str(value.trim_end_matches('Z'), "%Y%m%dT%H%M%S") {
-    return Ok(dt.and_utc());
-  }
-  Err(ArgvusError::Ics(format!("unsupported datetime: {value}")))
 }
 
+/// Minutes before the start of a `TRIGGER` relative to it, such as `-PT15M`,
+/// `-PT1H30M`, `-PT900S`, `-P1D` or `PT0S`. A positive offset (after the
+/// start) becomes a negative value; unsupported forms are skipped.
 fn trigger_to_minutes(trigger: &str) -> Option<i64> {
   let value = trigger.trim();
-  if !value.starts_with("-PT") || !value.ends_with('M') {
-    return None;
+  let (sign, duration) = match value.strip_prefix('-') {
+    Some(rest) => (1, rest),
+    None => (-1, value.strip_prefix('+').unwrap_or(value)),
+  };
+  let duration = duration.strip_prefix('P')?;
+  let (date_part, time_part) = duration.split_once('T').unwrap_or((duration, ""));
+  let mut seconds = 0_i64;
+  for (part, units) in [
+    (date_part, &[('W', 7 * 86_400), ('D', 86_400)][..]),
+    (time_part, &[('H', 3_600), ('M', 60), ('S', 1)][..]),
+  ] {
+    let mut rest = part;
+    for (unit, seconds_per_unit) in units {
+      if let Some((number, tail)) = rest.split_once(*unit) {
+        seconds += number.parse::<i64>().ok()? * seconds_per_unit;
+        rest = tail;
+      }
+    }
+    if !rest.is_empty() {
+      return None;
+    }
   }
-  value
-    .trim_start_matches("-PT")
-    .trim_end_matches('M')
-    .parse::<i64>()
-    .ok()
+  Some(sign * seconds / 60)
+}
+
+#[cfg(test)]
+mod tests {
+  use chrono::{NaiveDate, Timelike};
+
+  use super::*;
+
+  fn single_event(body: &str) -> CalendarEvent {
+    let contents = format!(
+      "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:test\r\nBEGIN:VEVENT\r\nUID:test@argvus\r\nSUMMARY:Test\r\n{body}END:VEVENT\r\nEND:VCALENDAR\r\n"
+    );
+    parse_ics(&contents, 1).unwrap().remove(0)
+  }
+
+  #[test]
+  fn all_day_dates_start_at_the_local_midnight() {
+    let event = single_event("DTSTART;VALUE=DATE:20261013\r\n");
+    assert!(event.all_day);
+    let start = event.start.with_timezone(&Local);
+    assert_eq!(
+      start.date_naive(),
+      NaiveDate::from_ymd_opt(2026, 10, 13).unwrap()
+    );
+    assert_eq!((start.hour(), start.minute()), (0, 0));
+    assert_eq!(event.end - event.start, Duration::days(1));
+  }
+
+  #[test]
+  fn utc_floating_and_zoned_times_are_converted() {
+    let event = single_event("DTSTART:20261013T120000Z\r\nDTEND:20261013T130000Z\r\n");
+    assert_eq!(event.start.to_rfc3339(), "2026-10-13T12:00:00+00:00");
+    assert!(!event.all_day);
+
+    let event = single_event("DTSTART;TZID=America/Sao_Paulo:20261013T090000\r\n");
+    assert_eq!(event.start.to_rfc3339(), "2026-10-13T12:00:00+00:00");
+    assert_eq!(event.end - event.start, Duration::hours(1));
+
+    let event = single_event("DTSTART:20261013T090000\r\n");
+    let start = event.start.with_timezone(&Local);
+    assert_eq!((start.hour(), start.minute()), (9, 0));
+  }
+
+  #[test]
+  fn alarm_triggers_become_minutes_before() {
+    assert_eq!(trigger_to_minutes("-PT15M"), Some(15));
+    assert_eq!(trigger_to_minutes("-PT1H"), Some(60));
+    assert_eq!(trigger_to_minutes("-PT1H30M"), Some(90));
+    assert_eq!(trigger_to_minutes("-P1D"), Some(1440));
+    assert_eq!(trigger_to_minutes("-P1W"), Some(10080));
+    assert_eq!(trigger_to_minutes("PT0S"), Some(0));
+    assert_eq!(trigger_to_minutes("-PT3600S"), Some(60));
+    assert_eq!(trigger_to_minutes("PT30M"), Some(-30));
+    assert_eq!(trigger_to_minutes("19980101T050000Z"), None);
+    assert_eq!(trigger_to_minutes("-PTxM"), None);
+  }
 }

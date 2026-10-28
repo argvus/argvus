@@ -1,6 +1,6 @@
 //! Date helpers: week start, today and month or year navigation.
 
-use chrono::{Datelike, Days, Local, NaiveDate};
+use chrono::{DateTime, Datelike, Days, Local, NaiveDate, NaiveTime, TimeDelta, TimeZone, Utc};
 
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
 pub enum WeekStart {
@@ -19,6 +19,26 @@ impl WeekStart {
 
 pub fn today() -> NaiveDate {
   Local::now().date_naive()
+}
+
+/// The instants that open `date` and the following day in `tz`, as a
+/// half-open range: an event that ends exactly at the second instant belongs
+/// to `date` only.
+pub fn day_bounds<Tz: TimeZone>(tz: &Tz, date: NaiveDate) -> (DateTime<Utc>, DateTime<Utc>) {
+  let next = date.succ_opt().unwrap_or(date);
+  (start_of_day(tz, date), start_of_day(tz, next))
+}
+
+/// The first instant of `date` in `tz`. Where a daylight-saving change skips
+/// midnight, the day starts at the first hour that exists.
+fn start_of_day<Tz: TimeZone>(tz: &Tz, date: NaiveDate) -> DateTime<Utc> {
+  let midnight = date.and_time(NaiveTime::MIN);
+  (0..=2)
+    .find_map(|hours| {
+      tz.from_local_datetime(&(midnight + TimeDelta::hours(hours)))
+        .earliest()
+    })
+    .map_or_else(|| midnight.and_utc(), |start| start.with_timezone(&Utc))
 }
 
 pub fn first_of_month(date: NaiveDate) -> NaiveDate {
@@ -70,6 +90,15 @@ pub fn month_grid(anchor: NaiveDate, week_start: WeekStart) -> Vec<NaiveDate> {
 #[cfg(test)]
 mod tests {
   use super::*;
+
+  #[test]
+  fn day_bounds_follow_the_local_midnight() {
+    let sao_paulo = chrono::FixedOffset::west_opt(3 * 3600).unwrap();
+    let date = NaiveDate::from_ymd_opt(2026, 10, 13).unwrap();
+    let (start, end) = day_bounds(&sao_paulo, date);
+    assert_eq!(start.to_rfc3339(), "2026-10-13T03:00:00+00:00");
+    assert_eq!(end.to_rfc3339(), "2026-10-14T03:00:00+00:00");
+  }
 
   #[test]
   fn shift_year_preserves_valid_date() {

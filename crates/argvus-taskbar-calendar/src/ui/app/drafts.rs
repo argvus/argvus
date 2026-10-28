@@ -52,7 +52,9 @@ pub(super) fn control_reminder_service(enabled: bool) {
   let _ = Command::new("systemctl").args(systemctl_args).status();
   if !enabled {
     // Only this user's reminder service: the uid comes from /proc/self, as
-    // this crate does not link libc. Without it nothing is signalled.
+    // this crate does not link libc. Without it nothing is signalled. The
+    // dispatcher execs the private executable, so the command line is
+    // `/usr/lib/argvus/commands/taskbar-calendar service`.
     if let Ok(metadata) = std::fs::metadata("/proc/self") {
       use std::os::unix::fs::MetadataExt as _;
       let _ = Command::new("pkill")
@@ -60,7 +62,7 @@ pub(super) fn control_reminder_service(enabled: bool) {
           "-u",
           metadata.uid().to_string().as_str(),
           "-f",
-          "argvus taskbar-calendar service",
+          "taskbar-calendar service",
         ])
         .status();
     }
@@ -73,8 +75,12 @@ pub(super) fn apply_editor_field(view: &mut ViewState, field: AppMsg) {
     AppMsg::EditorTitle(value) => update_draft(view, |draft| draft.title = value),
     AppMsg::EditorLocation(value) => update_draft(view, |draft| draft.location = value),
     AppMsg::EditorDescription(value) => update_draft(view, |draft| draft.description = value),
-    AppMsg::EditorStartHour(value) => update_draft(view, |draft| draft.start_hour = value),
-    AppMsg::EditorStartMinute(value) => update_draft(view, |draft| draft.start_minute = value),
+    AppMsg::EditorStartHour(value) => update_draft(view, |draft| {
+      draft.set_start_time(value, draft.start_minute)
+    }),
+    AppMsg::EditorStartMinute(value) => {
+      update_draft(view, |draft| draft.set_start_time(draft.start_hour, value))
+    }
     AppMsg::EditorEndHour(value) => update_draft(view, |draft| draft.end_hour = value),
     AppMsg::EditorEndMinute(value) => update_draft(view, |draft| draft.end_minute = value),
     AppMsg::EditorAllDay(value) => update_draft(view, |draft| draft.all_day = value),

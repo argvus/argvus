@@ -19,8 +19,8 @@ language = "auto"
 # monday | sunday
 week_start = "monday"
 
-# Events/reminders are experimental and disabled by default. Enable them from
-# the settings panel when you want the service to create event notifications.
+# Events and reminders are disabled by default. Enable them from the settings
+# panel when you want the service to create event notifications.
 show_events = false
 
 default_event_duration_minutes = 60

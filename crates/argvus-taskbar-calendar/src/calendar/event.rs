@@ -1,6 +1,6 @@
 //! Calendar, event and reminder types stored in the database.
 
-use chrono::{DateTime, Duration, Utc};
+use chrono::{DateTime, Duration, NaiveDate, TimeZone, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
@@ -105,6 +105,19 @@ impl CalendarEvent {
     }
   }
 
+  /// The days this event occupies in `tz`. The end is exclusive, so an
+  /// all-day event that ends at the next midnight covers a single day.
+  pub fn local_days<Tz: TimeZone>(&self, tz: &Tz) -> Vec<NaiveDate> {
+    let first = self.start.with_timezone(tz).date_naive();
+    let last_instant = if self.end > self.start {
+      self.end - Duration::nanoseconds(1)
+    } else {
+      self.start
+    };
+    let last = last_instant.with_timezone(tz).date_naive();
+    first.iter_days().take_while(|day| *day <= last).collect()
+  }
+
   pub fn validate(&self) -> crate::error::Result<()> {
     if self.title.trim().is_empty() {
       return Err(crate::error::ArgvusError::Configuration(
@@ -117,5 +130,48 @@ impl CalendarEvent {
       ));
     }
     Ok(())
+  }
+}
+
+#[cfg(test)]
+mod tests {
+  use chrono::{FixedOffset, TimeZone};
+
+  use super::*;
+
+  fn sao_paulo() -> FixedOffset {
+    FixedOffset::west_opt(3 * 3600).unwrap()
+  }
+
+  fn day(day: u32) -> NaiveDate {
+    NaiveDate::from_ymd_opt(2026, 10, day).unwrap()
+  }
+
+  #[test]
+  fn all_day_event_covers_only_its_own_day() {
+    let tz = sao_paulo();
+    let start = tz.with_ymd_and_hms(2026, 10, 13, 0, 0, 0).unwrap();
+    let mut event = CalendarEvent::new_local(1, "All day", start.with_timezone(&Utc));
+    event.end = tz
+      .with_ymd_and_hms(2026, 10, 14, 0, 0, 0)
+      .unwrap()
+      .with_timezone(&Utc);
+    event.all_day = true;
+    assert_eq!(event.local_days(&tz), vec![day(13)]);
+  }
+
+  #[test]
+  fn late_and_overnight_events_use_local_days() {
+    let tz = sao_paulo();
+    let late = tz.with_ymd_and_hms(2026, 10, 13, 22, 0, 0).unwrap();
+    let mut event = CalendarEvent::new_local(1, "Late", late.with_timezone(&Utc));
+    event.end = event.start + Duration::minutes(30);
+    assert_eq!(event.local_days(&tz), vec![day(13)]);
+
+    event.end = event.start + Duration::hours(3);
+    assert_eq!(event.local_days(&tz), vec![day(13), day(14)]);
+
+    event.end = event.start;
+    assert_eq!(event.local_days(&tz), vec![day(13)]);
   }
 }
