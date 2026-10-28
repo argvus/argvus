@@ -11,13 +11,6 @@ Most changes here are dispatcher routes, packaging metadata or install and
 validation tooling. Still, test the full session behavior in a real ARGVUS
 session when possible, not only syntax.
 
-## Workflow
-
-The ecosystem workflow for building and managing ARGVUS is maintained in
-[github.com/argvus/workflow](https://github.com/argvus/workflow). Use it as the
-reference for the shared development process. This document only covers what is
-specific to this repository.
-
 ## Repository layout
 
 ```text

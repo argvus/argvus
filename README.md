@@ -160,7 +160,6 @@ sudo pacman -S blueman starship kooha nwg-look
 - Security policy: [SECURITY.md](https://github.com/argvus/.github/blob/main/SECURITY.md)
 - Code of Conduct: [CODE_OF_CONDUCT.md](https://github.com/argvus/.github/blob/main/policies/CODE_OF_CONDUCT.md)
 - AI usage policy: [IA_USAGE.md](https://github.com/argvus/.github/blob/main/policies/IA_USAGE.md)
-- Ecosystem workflow: [argvus/workflow](https://github.com/argvus/workflow)
 
 ## Related repositories
 
