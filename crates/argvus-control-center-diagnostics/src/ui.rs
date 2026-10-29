@@ -26,9 +26,12 @@ pub struct DiagnosticsApp {
   job: Option<JobHandle<Vec<DiagnosticCheck>>>,
   jobs: JobManager,
   cap: Capabilities,
+  cache: argvus_control_center_storage::backend::StorageCache,
   pub status: Option<StatusMessage>,
   pub lang: Lang,
   pub theme: Theme,
+  last_run: Option<std::time::SystemTime>,
+  requested_route: Option<String>,
 }
 impl DiagnosticsApp {
   /// Replaces the semantic theme used by this page.
@@ -37,19 +40,32 @@ impl DiagnosticsApp {
   }
 
   pub fn new(lang: Lang, theme: Theme, cap: Capabilities) -> Self {
-    let mut a = Self {
+    Self::new_with_cache(lang, theme, cap, Default::default())
+  }
+
+  pub fn new_with_cache(
+    lang: Lang,
+    theme: Theme,
+    cap: Capabilities,
+    cache: argvus_control_center_storage::backend::StorageCache,
+  ) -> Self {
+    Self {
       page: DiagnosticPage::Home,
       checks: Vec::new(),
       selected: Selection::default(),
       job: None,
       jobs: JobManager::default(),
       cap,
+      cache,
       status: None,
       lang,
       theme,
-    };
-    a.refresh();
-    a
+      last_run: None,
+      requested_route: None,
+    }
+  }
+  pub fn take_requested_route(&mut self) -> Option<String> {
+    self.requested_route.take()
   }
   fn len(&self) -> usize {
     match self.page {
@@ -109,8 +125,14 @@ impl DiagnosticsApp {
     if self.busy() {
       return false;
     }
+    if key == KeyCode::Char('o') {
+      if let DiagnosticPage::Detail(index) = self.page {
+        self.requested_route = self.checks.get(index).and_then(|check| check.route.clone());
+      }
+      return false;
+    }
     if key == KeyCode::Char('r') {
-      self.refresh();
+      self.refresh_forced();
       return false;
     }
     self.selected.handle(key, self.len(), 8);
@@ -183,6 +205,10 @@ impl DiagnosticsApp {
     }
   }
   fn preview(&self, checks: &[&DiagnosticCheck]) -> String {
+    let problems = checks
+      .iter()
+      .filter(|check| check.severity == Severity::Problem)
+      .count();
     let errors = checks
       .iter()
       .filter(|check| check.severity == Severity::Error)
@@ -193,12 +219,25 @@ impl DiagnosticsApp {
       .count();
     if checks.is_empty() {
       tr(self.lang, "control_center.no_data").into()
+    } else if problems > 0 {
+      format!(
+        "{} {}",
+        problems,
+        tr(self.lang, "control_center.doctor_problem")
+      )
     } else if errors > 0 {
       format!("{} {}", errors, tr(self.lang, "control_center.error_s"))
     } else if warnings > 0 {
       format!("{} {}", warnings, tr(self.lang, "control_center.warning_s"))
-    } else {
+    } else if checks
+      .iter()
+      .any(|check| check.severity == Severity::Unknown)
+    {
+      tr(self.lang, "control_center.doctor_unavailable").into()
+    } else if checks.iter().any(|check| check.severity == Severity::Ok) {
       tr(self.lang, "control_center.ok").into()
+    } else {
+      tr(self.lang, "control_center.info").into()
     }
   }
 }
@@ -219,7 +258,8 @@ fn page_for_category(category: &str) -> Option<DiagnosticPage> {
 }
 fn severity_glyph(severity: Severity) -> &'static str {
   match severity {
-    Severity::Error => "✖",
+    Severity::Problem => "✖",
+    Severity::Error => "!",
     Severity::Warning => "▲",
     Severity::Unknown => "?",
     Severity::Info => "•",
@@ -243,7 +283,7 @@ fn category_icon(category: &str) -> &'static str {
 fn completion_status(lang: Lang, checks: &[DiagnosticCheck]) -> StatusMessage {
   let errors = checks
     .iter()
-    .filter(|check| check.severity == Severity::Error)
+    .filter(|check| matches!(check.severity, Severity::Problem | Severity::Error))
     .count();
   let warnings = checks
     .iter()
@@ -265,8 +305,8 @@ fn completion_status(lang: Lang, checks: &[DiagnosticCheck]) -> StatusMessage {
     }
   } else {
     StatusMessage {
-      kind: StatusKind::Success,
-      text: tr(lang, "control_center.diagnostics_completed_all_systems_ok").into(),
+      kind: StatusKind::Info,
+      text: tr(lang, "control_center.doctor_completed").into(),
     }
   }
 }

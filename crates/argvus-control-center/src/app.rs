@@ -329,9 +329,21 @@ impl App {
     let mut boot = BootApp::new(lang, theme.clone(), capabilities.clone());
     #[cfg(feature = "packages")]
     let mut packages = PackagesApp::new(lang, theme.clone(), capabilities.clone());
-    #[cfg(feature = "storage")]
+    #[cfg(all(feature = "storage", feature = "diagnostics"))]
+    let storage_cache = argvus_control_center_storage::backend::StorageCache::default();
+    #[cfg(all(feature = "storage", feature = "diagnostics"))]
+    let mut storage = StorageApp::new_with_cache(
+      lang,
+      theme.clone(),
+      capabilities.clone(),
+      storage_cache.clone(),
+    );
+    #[cfg(all(feature = "storage", not(feature = "diagnostics")))]
     let mut storage = StorageApp::new(lang, theme.clone(), capabilities.clone());
-    #[cfg(feature = "diagnostics")]
+    #[cfg(all(feature = "storage", feature = "diagnostics"))]
+    let mut diagnostics =
+      DiagnosticsApp::new_with_cache(lang, theme.clone(), capabilities.clone(), storage_cache);
+    #[cfg(all(feature = "diagnostics", not(feature = "storage")))]
     let mut diagnostics = DiagnosticsApp::new(lang, theme.clone(), capabilities.clone());
     #[cfg(feature = "power")]
     let power = PowerApp::new(lang, theme.clone());

@@ -9,11 +9,31 @@ use argvus_control_center_storage::model::{SmartHealth, UsageLevel, usage_level}
 use argvus_i18n::{Lang, tr};
 use std::{fs, time::Duration};
 
-pub fn collect(cap: &Capabilities) -> DiagnosticFacts {
+pub fn collect(
+  cap: &Capabilities,
+  cache: &argvus_control_center_storage::backend::StorageCache,
+  force: bool,
+) -> DiagnosticFacts {
+  let storage_result = cache.collect(cap, force);
   let mut facts = DiagnosticFacts {
-    storage: argvus_control_center_storage::backend::collect(cap).unwrap_or_default(),
+    storage_failed: storage_result.is_err() && cap.has_lsblk,
+    storage: storage_result.unwrap_or_default(),
     ..Default::default()
   };
+  if cap.has_pacman {
+    facts.package_lock = std::path::Path::new("/var/lib/pacman/db.lck")
+      .try_exists()
+      .ok();
+    match argvus_control_center_packages::backend::PackageBackend::new(
+      SystemProcessRunner,
+      cap.clone(),
+    )
+    .updates()
+    {
+      Ok(updates) => facts.package_updates = Some(updates.len()),
+      Err(_) => facts.package_probe_failed = true,
+    }
+  }
   facts.failed_system_units = cap
     .has_systemd
     .then(|| failed_units(&["--system", "--type=service"]))
@@ -23,8 +43,10 @@ pub fn collect(cap: &Capabilities) -> DiagnosticFacts {
     .then(|| failed_units(&["--user", "--type=service"]))
     .flatten();
   if cap.has_lspci {
-    let devices = run("lspci", &["-nnk"]);
-    facts.nvidia_present = Some(devices.to_ascii_lowercase().contains("nvidia"));
+    match run_output("lspci", &["-nnk"]) {
+      Some(devices) => facts.nvidia_present = Some(devices.to_ascii_lowercase().contains("nvidia")),
+      None => facts.nvidia_probe_failed = true,
+    }
   }
   facts.nvidia_module_loaded = fs::read_to_string("/proc/modules").ok().map(|value| {
     value.lines().any(|line| {
@@ -35,14 +57,19 @@ pub fn collect(cap: &Capabilities) -> DiagnosticFacts {
     })
   });
   if cap.has_glxinfo {
-    let output = run("glxinfo", &["-B"]);
+    let output = run_output("glxinfo", &["-B"]);
+    facts.opengl_probe_failed = output.is_none();
     facts.opengl_renderer = output
+      .as_deref()
+      .unwrap_or_default()
       .lines()
       .find_map(|line| line.strip_prefix("OpenGL renderer string:"))
-      .map(|value| terminal_text(value.trim()));
+      .map(|value| terminal_text(value.trim()).chars().take(256).collect());
+    facts.opengl_probe_failed |= facts.opengl_renderer.is_none();
   }
   if cap.has_vulkaninfo {
-    facts.vulkan_available = Some(run_status("vulkaninfo", &["--summary"]));
+    facts.vulkan_available = run_output("vulkaninfo", &["--summary"]).map(|_| true);
+    facts.vulkan_probe_failed = facts.vulkan_available.is_none();
   }
   facts
 }
@@ -58,34 +85,23 @@ fn failed_units(args: &[&str]) -> Option<usize> {
   })
 }
 
-fn run(program: &str, args: &[&str]) -> String {
-  run_output(program, args).unwrap_or_default()
+fn run_output(program: &str, args: &[&str]) -> Option<String> {
+  run_output_with(&SystemProcessRunner, program, args)
 }
 
-fn run_output(program: &str, args: &[&str]) -> Option<String> {
+fn run_output_with(runner: &impl ProcessRunner, program: &str, args: &[&str]) -> Option<String> {
   let request = args
     .iter()
     .fold(ProcessRequest::new(program), |request, arg| {
       request.arg(*arg)
     })
-    .timeout(Duration::from_secs(5));
-  SystemProcessRunner
+    .timeout(Duration::from_secs(5))
+    .output_limit(1024 * 1024);
+  runner
     .run(&request)
     .ok()
     .filter(|output| output.status == Some(0) && !output.timed_out)
     .map(|output| terminal_text(&String::from_utf8_lossy(&output.stdout)))
-}
-
-fn run_status(program: &str, args: &[&str]) -> bool {
-  let request = args
-    .iter()
-    .fold(ProcessRequest::new(program), |request, arg| {
-      request.arg(*arg)
-    })
-    .timeout(Duration::from_secs(5));
-  SystemProcessRunner
-    .run(&request)
-    .is_ok_and(|output| output.status == Some(0) && !output.timed_out)
 }
 
 pub fn evaluate(lang: Lang, facts: &DiagnosticFacts, cap: &Capabilities) -> Vec<DiagnosticCheck> {
@@ -116,6 +132,25 @@ pub fn evaluate(lang: Lang, facts: &DiagnosticFacts, cap: &Capabilities) -> Vec<
       tr(lang, "control_center.system_services"),
       tr(lang, "control_center.service_state_unavailable"),
     )),
+  }
+  if facts.failed_user_units == Some(0) {
+    let mut check = ok(
+      lang,
+      "user.failed_units",
+      tr(lang, "control_center.failed_user_units"),
+      tr(lang, "control_center.doctor_user_units_ok"),
+    );
+    check.category = "services".into();
+    checks.push(check);
+  } else if facts.failed_user_units.is_none() {
+    let mut check = unknown(
+      lang,
+      "user.failed_units",
+      tr(lang, "control_center.failed_user_units"),
+      tr(lang, "control_center.service_state_unavailable"),
+    );
+    check.category = "services".into();
+    checks.push(check);
   }
   if facts.failed_user_units.is_some_and(|n| n > 0) {
     checks.push(DiagnosticCheck {
@@ -169,14 +204,14 @@ pub fn evaluate(lang: Lang, facts: &DiagnosticFacts, cap: &Capabilities) -> Vec<
       severity: if software {
         Severity::Warning
       } else {
-        Severity::Ok
+        Severity::Info
       },
       title: tr(lang, "control_center.opengl_renderer").into(),
       summary: renderer.into(),
       details: if software {
         tr(lang, "control_center.opengl_software_rendering").into()
       } else {
-        tr(lang, "control_center.opengl_hardware_rendering").into()
+        tr(lang, "control_center.doctor_renderer_reported").into()
       },
       remediation_hint: software.then(|| tr(lang, "control_center.check_hardware_gpu").into()),
       route: Some("hardware/gpu".into()),
@@ -220,7 +255,7 @@ pub fn evaluate(lang: Lang, facts: &DiagnosticFacts, cap: &Capabilities) -> Vec<
         severity: match level {
           UsageLevel::Ok => Severity::Ok,
           UsageLevel::Warning => Severity::Warning,
-          UsageLevel::Critical => Severity::Error,
+          UsageLevel::Critical => Severity::Problem,
         },
         title: lang.tr_args(
           "control_center.filesystem_usage",
@@ -242,13 +277,26 @@ pub fn evaluate(lang: Lang, facts: &DiagnosticFacts, cap: &Capabilities) -> Vec<
       });
     }
   }
-  if facts.storage.smart_available {
+  if !checks
+    .iter()
+    .any(|check| check.id.starts_with("storage.usage."))
+  {
+    let mut check = unknown(
+      lang,
+      "storage.usage",
+      tr(lang, "control_center.storage"),
+      tr(lang, "control_center.doctor_storage_usage_unavailable"),
+    );
+    check.category = "storage".into();
+    checks.push(check);
+  }
+  if facts.storage.smart_available && !facts.storage.smart.is_empty() {
     for smart in &facts.storage.smart {
       let severity = match smart.health {
-        SmartHealth::Failed => Severity::Error,
+        SmartHealth::Failed => Severity::Problem,
         SmartHealth::Warning => Severity::Warning,
         SmartHealth::Passed => Severity::Ok,
-        SmartHealth::Unsupported => Severity::Info,
+        SmartHealth::Unsupported => Severity::Unknown,
         SmartHealth::Unknown => Severity::Unknown,
       };
       checks.push(DiagnosticCheck {
@@ -259,30 +307,41 @@ pub fn evaluate(lang: Lang, facts: &DiagnosticFacts, cap: &Capabilities) -> Vec<
           "control_center.smart_device",
           [("device", smart.device.as_str())],
         ),
-        summary: format!("{:?}", smart.health),
+        summary: tr(
+          lang,
+          match smart.health {
+            SmartHealth::Failed => "control_center.doctor_smart_failed",
+            SmartHealth::Warning => "control_center.warning",
+            SmartHealth::Passed => "control_center.ok",
+            SmartHealth::Unsupported | SmartHealth::Unknown => "control_center.doctor_unavailable",
+          },
+        )
+        .into(),
         details: tr(lang, "control_center.smart_evidence").into(),
         remediation_hint: None,
         route: Some("storage/smart".into()),
       });
     }
   } else {
-    checks.push(info(
+    let mut check = unknown(
       lang,
       "storage.smart",
       "SMART",
-      "smartctl is unavailable",
-    ));
+      tr(lang, "control_center.doctor_smart_unavailable"),
+    );
+    check.category = "storage".into();
+    checks.push(check);
   }
-  if facts.package_lock {
+  if facts.package_lock == Some(true) {
     checks.push(DiagnosticCheck {
       id: "packages.lock".into(),
       category: "packages".into(),
       severity: Severity::Warning,
       title: tr(lang, "control_center.package_database_lock").into(),
-      summary: tr(lang, "control_center.package_operation_active").into(),
+      summary: tr(lang, "control_center.doctor_package_lock_present").into(),
       details: tr(lang, "control_center.package_lock_evidence").into(),
       remediation_hint: None,
-      route: Some("packages".into()),
+      route: Some("packages/home".into()),
     });
   }
   if let Some(n) = facts.package_updates {
@@ -299,6 +358,114 @@ pub fn evaluate(lang: Lang, facts: &DiagnosticFacts, cap: &Capabilities) -> Vec<
       remediation_hint: None,
       route: Some("packages/updates".into()),
     });
+  }
+  if !cap.has_pacman || facts.package_lock.is_none() {
+    let mut check = unknown(
+      lang,
+      "packages.lock",
+      tr(lang, "control_center.package_database_lock"),
+      tr(lang, "control_center.doctor_package_unavailable"),
+    );
+    check.category = "packages".into();
+    checks.push(check);
+  }
+  if !cap.has_pacman {
+    let mut check = unknown(
+      lang,
+      "packages.updates",
+      tr(lang, "control_center.package_updates"),
+      tr(lang, "control_center.doctor_package_unavailable"),
+    );
+    check.category = "packages".into();
+    checks.push(check);
+  }
+  for (id, category, title, failed) in [
+    (
+      "packages.updates",
+      "packages",
+      tr(lang, "control_center.package_updates"),
+      facts.package_probe_failed,
+    ),
+    (
+      "storage.collect",
+      "storage",
+      tr(lang, "control_center.storage"),
+      facts.storage_failed,
+    ),
+    (
+      "graphics.pci",
+      "graphics",
+      tr(lang, "control_center.graphics"),
+      facts.nvidia_probe_failed,
+    ),
+    (
+      "graphics.opengl",
+      "graphics",
+      tr(lang, "control_center.opengl_renderer"),
+      facts.opengl_probe_failed,
+    ),
+    (
+      "graphics.vulkan",
+      "graphics",
+      tr(lang, "control_center.vulkan"),
+      facts.vulkan_probe_failed,
+    ),
+  ] {
+    if failed {
+      checks.push(DiagnosticCheck {
+        id: id.into(),
+        category: category.into(),
+        severity: Severity::Error,
+        title: title.into(),
+        summary: tr(lang, "control_center.doctor_check_failed").into(),
+        details: tr(lang, "control_center.doctor_check_failed_detail").into(),
+        ..Default::default()
+      });
+    }
+  }
+  for (available, id, title) in [
+    (
+      cap.has_lspci,
+      "graphics.pci",
+      tr(lang, "control_center.graphics"),
+    ),
+    (
+      cap.has_glxinfo,
+      "graphics.opengl",
+      tr(lang, "control_center.opengl_renderer"),
+    ),
+    (
+      cap.has_vulkaninfo,
+      "graphics.vulkan",
+      tr(lang, "control_center.vulkan"),
+    ),
+  ] {
+    if !available {
+      let mut check = unknown(
+        lang,
+        id,
+        title,
+        tr(lang, "control_center.doctor_tool_unavailable"),
+      );
+      check.category = "graphics".into();
+      checks.push(check);
+    }
+  }
+  if !cap.has_lsblk {
+    let mut check = unknown(
+      lang,
+      "storage.collect",
+      tr(lang, "control_center.storage"),
+      tr(lang, "control_center.doctor_storage_unavailable"),
+    );
+    check.category = "storage".into();
+    checks.push(check);
+  }
+  if let Some(check) = checks
+    .iter_mut()
+    .find(|check| check.id == "services.system")
+  {
+    check.category = "services".into();
   }
   checks.push(if cap.is_virtual_machine {
     info(
@@ -347,6 +514,98 @@ mod tests {
   use super::*;
   use argvus_control_center_storage::model::Filesystem;
   #[test]
+  fn package_updates_are_informational_and_missing_data_is_unavailable() {
+    let capabilities = Capabilities {
+      has_pacman: true,
+      ..Default::default()
+    };
+    let facts = DiagnosticFacts {
+      package_updates: Some(3),
+      package_lock: Some(true),
+      ..Default::default()
+    };
+    let checks = evaluate(Lang::for_locale("en-US"), &facts, &capabilities);
+    assert!(checks.iter().any(|check| check.id == "packages.updates"
+      && check.severity == Severity::Info
+      && check.summary.contains('3')));
+    assert!(checks.iter().any(|check| check.id == "packages.lock"
+      && check.severity == Severity::Warning
+      && check.summary.contains("may")));
+    let checks = evaluate(
+      Lang::for_locale("en-US"),
+      &DiagnosticFacts::default(),
+      &Capabilities::default(),
+    );
+    assert!(
+      checks
+        .iter()
+        .any(|check| check.id == "packages.updates" && check.severity == Severity::Unknown)
+    );
+  }
+
+  #[test]
+  fn timed_out_probe_is_inconclusive_and_has_limits() {
+    use argvus_control_center_core::process::{ProcessError, ProcessOutput};
+    struct TimeoutRunner;
+    impl ProcessRunner for TimeoutRunner {
+      fn run(&self, request: &ProcessRequest) -> Result<ProcessOutput, ProcessError> {
+        assert_eq!(request.program, "vulkaninfo");
+        assert_eq!(request.args, ["--summary"]);
+        assert_eq!(request.timeout, Some(Duration::from_secs(5)));
+        assert_eq!(request.output_limit, Some(1024 * 1024));
+        Ok(ProcessOutput {
+          stdout: b"partial".to_vec(),
+          stderr: vec![],
+          status: None,
+          timed_out: true,
+        })
+      }
+    }
+    assert_eq!(
+      run_output_with(&TimeoutRunner, "vulkaninfo", &["--summary"]),
+      None
+    );
+  }
+
+  #[test]
+  fn failed_probes_do_not_claim_a_hardware_problem() {
+    let facts = DiagnosticFacts {
+      nvidia_probe_failed: true,
+      vulkan_probe_failed: true,
+      storage_failed: true,
+      ..Default::default()
+    };
+    let checks = evaluate(Lang::for_locale("en-US"), &facts, &Capabilities::default());
+    for id in ["graphics.pci", "graphics.vulkan", "storage.collect"] {
+      assert!(
+        checks
+          .iter()
+          .any(|check| check.id == id && check.severity == Severity::Error)
+      );
+    }
+    assert!(!checks.iter().any(|check| check.id == "graphics.nvidia"));
+  }
+
+  #[test]
+  fn optional_hardware_and_smart_are_not_problems() {
+    let checks = evaluate(
+      Lang::for_locale("en-US"),
+      &DiagnosticFacts::default(),
+      &Capabilities::default(),
+    );
+    assert!(
+      !checks
+        .iter()
+        .any(|check| check.severity == Severity::Problem)
+    );
+    assert!(
+      checks
+        .iter()
+        .any(|check| check.id == "storage.smart" && check.severity == Severity::Unknown)
+    );
+  }
+
+  #[test]
   fn root_usage_severity_is_objective() {
     let mut f = DiagnosticFacts::default();
     f.storage.filesystems.push(Filesystem {
@@ -358,7 +617,7 @@ mod tests {
     let c = evaluate(Lang::for_locale("en-US"), &f, &Capabilities::default());
     assert!(
       c.iter()
-        .any(|v| v.severity == Severity::Error && v.id == "storage.usage./")
+        .any(|v| v.severity == Severity::Problem && v.id == "storage.usage./")
     );
   }
   #[test]
@@ -370,7 +629,7 @@ mod tests {
     );
     assert!(
       c.iter()
-        .any(|v| v.id == "storage.smart" && v.severity == Severity::Info)
+        .any(|v| v.id == "storage.smart" && v.severity == Severity::Unknown)
     );
   }
 

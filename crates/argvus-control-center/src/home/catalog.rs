@@ -531,7 +531,7 @@ fn tools_card_items(
   #[cfg(feature = "diagnostics")]
   items.push(item(
     lang,
-    "control_center.diagnostics",
+    "control_center.system_doctor",
     HomeDestination::Diagnostics,
   ));
   #[cfg(feature = "about")]

@@ -370,6 +370,7 @@ name = "argvus-control-center-diagnostics"
 version = "0.1.0"
 dependencies = [
  "argvus-control-center-core",
+ "argvus-control-center-packages",
  "argvus-control-center-storage",
  "argvus-i18n-core",
  "argvus-theme",

@@ -189,8 +189,8 @@ pub(super) fn build_search_registry(lang: Lang) -> SearchRegistry {
     (
       "diagnostics",
       "diagnostics",
-      "control_center.diagnostics",
-      "diagnostics health",
+      "control_center.system_doctor",
+      "system doctor diagnostics diagnóstico health saúde",
       "diagnostics/home",
     ),
     #[cfg(feature = "hardware")]

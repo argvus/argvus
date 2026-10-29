@@ -26,7 +26,7 @@ The home is a catalog of destinations grouped in six cards. Each destination ope
 - **Hardware & Connectivity** — devices and connections: Hardware Overview, Network & Wi-Fi, Bluetooth, Audio and Storage.
 - **System Administration** — manage the operating system: Packages, Services, Boot, Hostname, Users & Groups, Firewall and Notifications (Do Not Disturb).
 - **Settings** — the Control Center itself, listed after the cards: Language (the interface language) and Style (decorative icons and transparency). Press `s` to open it.
-- **Tools & Diagnostics** — developer and maintenance tools: Projects, Snippets (text saved for `argvus snippets`, typed with `SUPER + ALT + N`), SSH keys (key pairs in `~/.ssh` managed by `argvus keys`), GPG keys (the keyring managed by `argvus gpg`; gpg-agent uses pinentry-gtk), Dev Services, Diagnostics and About ARGVUS.
+- **Tools & Diagnostics** — developer and maintenance tools: Projects, Snippets (text saved for `argvus snippets`, typed with `SUPER + ALT + N`), SSH keys (key pairs in `~/.ssh` managed by `argvus keys`), GPG keys (the keyring managed by `argvus gpg`; gpg-agent uses pinentry-gtk), Dev Services, System Doctor and About ARGVUS.
 
 The exact provider pages can depend on installed packages and permissions. Do not assume that a missing optional domain is a broken Control Center.
 
@@ -48,7 +48,7 @@ The main settings tree currently includes:
 | Hardware & Connectivity | Hardware Overview (summary, CPU, GPU, memory, devices), Network & Wi-Fi, Bluetooth, Audio, Storage |
 | System Administration | Packages, Services, Boot, Hostname, Users & Groups, Firewall, Notifications |
 | Settings | Language (interface language), Style (icons and transparency) |
-| Tools & Diagnostics | Projects, Snippets, SSH keys, GPG keys, Dev Services, Diagnostics, About ARGVUS |
+| Tools & Diagnostics | Projects, Snippets, SSH keys, GPG keys, Dev Services, System Doctor, About ARGVUS |
 
 Some of these are full pages and some are subpages reached through search or a domain summary. The exact list is determined by the installed ARGVUS providers.
 
@@ -341,7 +341,7 @@ argvus control-center keybindings
 
 Run `argvus control-center --help` for the routes available in the installed version. The command-line route is a shortcut into the same settings application, not a separate configuration system.
 
-Useful direct routes include `apps`, `window-rules`, `projects`, `snippets`, `ssh-keys`, `gpg-keys`, `firewall`, `fonts`, `locale`, `input`, `keybindings`, `language`, `config`, `system`, `hardware`, `services`, `dev-services`, `network` (with the pages `status`, `connections`, `activate`, `add`, `interfaces`, `wifi`, `ethernet`, `vpn`, `dns` and `proxy`), `audio`, `bluetooth`, `boot`, `packages` (with the pages `official`, `search`, `installed`, `updates`, `orphans`, `aur`, `aur-remove`, `aur-updates`, `repositories`, `repositories-add`, `repositories-list`, `cache`, `history`, `downgrade` and `mirrors`), `storage`, `diagnostics`, `about` (with the tabs `system`, `about`, `donate`, `credits` and `copyright`), `power`, `session`, `displays` and `appearance`. Appearance also accepts focused routes such as `themes`, `wallpapers`, `icons`, `accents`, `effects`, `spaces`, `taskbar` and `widget-telemetry`; display accepts `resolution`, `refresh`, `scale`, `position`, `orientation`, `primary`, `vrr` and `hdr`. Use the installed `--help` output when scripting because availability still depends on the installed build.
+Useful direct routes include `apps`, `window-rules`, `projects`, `snippets`, `ssh-keys`, `gpg-keys`, `firewall`, `fonts`, `locale`, `input`, `keybindings`, `language`, `config`, `system`, `hardware`, `services`, `dev-services`, `network` (with the pages `status`, `connections`, `activate`, `add`, `interfaces`, `wifi`, `ethernet`, `vpn`, `dns` and `proxy`), `audio`, `bluetooth`, `boot`, `packages` (with the pages `official`, `search`, `installed`, `updates`, `orphans`, `aur`, `aur-remove`, `aur-updates`, `repositories`, `repositories-add`, `repositories-list`, `cache`, `history`, `downgrade` and `mirrors`), `storage`, `system-doctor` (`diagnostics` and `diagnostic` remain aliases), `about` (with the tabs `system`, `about`, `donate`, `credits` and `copyright`), `power`, `session`, `displays` and `appearance`. Appearance also accepts focused routes such as `themes`, `wallpapers`, `icons`, `accents`, `effects`, `spaces`, `taskbar` and `widget-telemetry`; display accepts `resolution`, `refresh`, `scale`, `position`, `orientation`, `primary`, `vrr` and `hdr`. Use the installed `--help` output when scripting because availability still depends on the installed build.
 
 ## Related
 
@@ -350,3 +350,11 @@ Useful direct routes include `apps`, `window-rules`, `projects`, `snippets`, `ss
 - [Appearance](/docs/user-guide/appearance/)
 - [Keyboard shortcuts](/docs/argvus-hyprland/keyboard-shortcuts/)
 - [Mouse and touchpad](/docs/argvus-hyprland/input/)
+
+### System Doctor
+
+Open **Tools & Diagnostics → System Doctor**, search for it, or run `argvus control-center system-doctor`. The previous `diagnostics` and `diagnostic` routes and category selectors remain available. Press `r` to refresh, Enter to inspect a check, `o` in a detail to open its related page, and Esc to go back. Collection runs in the background and is read-only.
+
+Checks use systemd failed-unit counts, graphics tools and the Storage snapshot for filesystem usage and SMART health. A problem requires evidence; unavailable tools or inaccessible SMART data are shown as unavailable, and a failed or timed-out probe is an error. Categories without collected evidence do not imply a successful check. Package updates use the local pacman database and do not synchronize repositories; a lock file can be stale and does not prove an operation is running. SMART can require permissions and no elevated access is requested. The summary records the last completed collection as Unix time.
+
+Storage and System Doctor share an in-memory snapshot for up to 10 seconds. Pressing `r` explicitly collects fresh data; concurrent requests reuse a collection that has just completed. Diagnostic and Storage subprocess output is limited to 1 MiB per stream, and oversized output is treated as a failed collection.

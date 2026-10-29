@@ -19,6 +19,7 @@ pub enum DiagnosticPage {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Default)]
 pub enum Severity {
+  Problem,
   Error,
   Warning,
   #[default]
@@ -42,8 +43,13 @@ pub struct DiagnosticCheck {
 #[derive(Debug, Clone, Default)]
 pub struct DiagnosticFacts {
   pub storage: StorageSnapshot,
+  pub storage_failed: bool,
+  pub nvidia_probe_failed: bool,
+  pub opengl_probe_failed: bool,
+  pub vulkan_probe_failed: bool,
   pub package_updates: Option<usize>,
-  pub package_lock: bool,
+  pub package_lock: Option<bool>,
+  pub package_probe_failed: bool,
   pub failed_system_units: Option<usize>,
   pub failed_user_units: Option<usize>,
   pub nvidia_present: Option<bool>,

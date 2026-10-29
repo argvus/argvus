@@ -47,6 +47,8 @@ pub struct ProcessRequest {
   pub env: Vec<(String, String)>,
   /// Optional deadline for terminating the operation and avoiding an indefinite wait.
   pub timeout: Option<Duration>,
+  /// Maximum captured bytes per stream; the pipe is still drained beyond this limit.
+  pub output_limit: Option<usize>,
   /// Bytes written to the standard input of the child, which is closed after them.
   /// Without it the child reads an empty, closed input.
   pub stdin: Option<ProcessInput>,
@@ -80,6 +82,7 @@ impl ProcessRequest {
       args: Vec::new(),
       env: Vec::new(),
       timeout: None,
+      output_limit: None,
       stdin: None,
     }
   }
@@ -97,6 +100,12 @@ impl ProcessRequest {
 
   pub fn timeout(mut self, timeout: Duration) -> Self {
     self.timeout = Some(timeout);
+    self
+  }
+
+  /// Reject output exceeding this many bytes per stream.
+  pub fn output_limit(mut self, bytes: usize) -> Self {
+    self.output_limit = Some(bytes);
     self
   }
 
@@ -123,6 +132,7 @@ pub struct ProcessOutput {
 pub enum ProcessError {
   Io(io::Error),
   EmptyProgram,
+  OutputLimit,
 }
 
 impl std::fmt::Display for ProcessError {
@@ -130,6 +140,7 @@ impl std::fmt::Display for ProcessError {
     match self {
       Self::Io(error) => write!(formatter, "process failed: {error}"),
       Self::EmptyProgram => formatter.write_str("process program cannot be empty"),
+      Self::OutputLimit => formatter.write_str("process output exceeded the configured limit"),
     }
   }
 }
@@ -229,8 +240,9 @@ impl ProcessRunner for SystemProcessRunner {
     // (e.g. `pacman -Sl`, which emits hundreds of KB) do not fill the pipe
     // buffer while the parent polls `try_wait`, which would block the child
     // until the timeout kills it.
-    let stdout_reader = std::thread::spawn(|| read_pipe(stdout));
-    let stderr_reader = std::thread::spawn(|| read_pipe(stderr));
+    let limit = request.output_limit;
+    let stdout_reader = std::thread::spawn(move || read_pipe(stdout, limit));
+    let stderr_reader = std::thread::spawn(move || read_pipe(stderr, limit));
     // An absolute deadline prevents polling delays from accumulating on each iteration.
     let deadline = request.timeout.map(|timeout| Instant::now() + timeout);
     loop {
@@ -239,8 +251,11 @@ impl ProcessRunner for SystemProcessRunner {
           if request.timeout.is_some() {
             terminate_descendants(child.id());
           }
-          let stdout = stdout_reader.join().unwrap_or_default();
-          let stderr = stderr_reader.join().unwrap_or_default();
+          let (stdout, stdout_exceeded) = stdout_reader.join().unwrap_or_default();
+          let (stderr, stderr_exceeded) = stderr_reader.join().unwrap_or_default();
+          if stdout_exceeded || stderr_exceeded {
+            return Err(ProcessError::OutputLimit);
+          }
           return Ok(ProcessOutput {
             stdout,
             stderr,
@@ -255,8 +270,11 @@ impl ProcessRunner for SystemProcessRunner {
           terminate_descendants(child.id());
           let _ = child.kill();
           let _ = child.wait();
-          let stdout = stdout_reader.join().unwrap_or_default();
-          let stderr = stderr_reader.join().unwrap_or_default();
+          let (stdout, stdout_exceeded) = stdout_reader.join().unwrap_or_default();
+          let (stderr, stderr_exceeded) = stderr_reader.join().unwrap_or_default();
+          if stdout_exceeded || stderr_exceeded {
+            return Err(ProcessError::OutputLimit);
+          }
           return Ok(ProcessOutput {
             stdout,
             stderr,
@@ -417,10 +435,21 @@ fn feed_stdin(child: &mut std::process::Child, request: &ProcessRequest) {
   }
 }
 
-fn read_pipe(mut pipe: impl std::io::Read) -> Vec<u8> {
+fn read_pipe(mut pipe: impl std::io::Read, limit: Option<usize>) -> (Vec<u8>, bool) {
   let mut output = Vec::new();
-  let _ = pipe.read_to_end(&mut output);
-  output
+  let mut buffer = [0_u8; 8192];
+  let mut exceeded = false;
+  while let Ok(count) = pipe.read(&mut buffer) {
+    if count == 0 {
+      break;
+    }
+    let remaining = limit.map_or(count, |maximum| {
+      maximum.saturating_sub(output.len()).min(count)
+    });
+    output.extend_from_slice(&buffer[..remaining]);
+    exceeded |= remaining < count;
+  }
+  (output, exceeded)
 }
 
 fn read_pipe_live(mut pipe: impl BufRead, live: &LiveProcess) -> Vec<u8> {
@@ -446,6 +475,17 @@ fn read_pipe_live(mut pipe: impl BufRead, live: &LiveProcess) -> Vec<u8> {
 #[cfg(test)]
 mod tests {
   use super::*;
+
+  #[test]
+  fn limited_pipe_drains_and_rejects_oversized_output() {
+    let data = vec![b'x'; 100_000];
+    let (captured, exceeded) = read_pipe(std::io::Cursor::new(data), Some(32));
+    assert_eq!(captured.len(), 32);
+    assert!(exceeded);
+    let (captured, exceeded) = read_pipe(std::io::Cursor::new(b"small"), Some(32));
+    assert_eq!(captured, b"small");
+    assert!(!exceeded);
+  }
 
   #[test]
   fn stdin_reaches_the_child_and_is_closed_after_it() {

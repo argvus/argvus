@@ -180,6 +180,8 @@ pub fn handle(app: &mut App, event: Event) {
     Route::Diagnostics => {
       if app.diagnostics.handle(domain_key(key.code)) {
         app.route = Route::Home;
+      } else if let Some(route) = app.diagnostics.take_requested_route() {
+        app.open_search_route(&route);
       }
     }
     #[cfg(feature = "power")]

@@ -8,7 +8,7 @@ impl DiagnosticsApp {
     let root = format!(
       "{} > {}",
       HomeCardId::Tools.label(self.lang),
-      tr(self.lang, "control_center.diagnostics")
+      tr(self.lang, "control_center.system_doctor")
     );
     match self.page {
       DiagnosticPage::Home => root,
@@ -33,9 +33,8 @@ impl DiagnosticsApp {
         self.lang,
         "control_center.navigate_enter_open_r_refresh_esc_back_help",
       ),
-      DiagnosticPage::Summary | DiagnosticPage::Detail(_) => {
-        tr(self.lang, "control_center.r_refresh_esc_back_help")
-      }
+      DiagnosticPage::Summary => tr(self.lang, "control_center.r_refresh_esc_back_help"),
+      DiagnosticPage::Detail(_) => tr(self.lang, "control_center.doctor_detail_help"),
       _ => tr(
         self.lang,
         "control_center.navigate_enter_details_r_refresh_esc_back_help",

@@ -1769,3 +1769,7 @@ Ajustes aprovados junto com o plano da Fase 1:
 | D70 | (`network`) Escrita como o usuário da sessão, sem `pkexec`: o polkit do NetworkManager autoriza `wheel` local e pede senha aos demais pelo agente da sessão. Segredos (senha Wi-Fi/802.1X/PPPoE, chave privada, peers WireGuard com PSK, `vpn.secrets`) vão só pela stdin de `nmcli connection edit` e nunca são lidos de volta (exceto os peers, lidos com `-s` para não perder a PSK ao regravar). Como o `edit` sai com 0 mesmo recusando um valor, qualquer linha `Error` na stderr é falha. Salvar um perfil ativo pede confirmação e o reativa (`connection up`). | decidido (2026-10-27) |
 | D71 | (`network`) Excluir uma bridge, bond ou team exclui também os perfis de porta que apontam para ela (por UUID ou nome de interface), como o `nmtui`; a confirmação lista as portas. As portas são escolhidas no rascunho (um toggle por dispositivo Ethernet) e criadas ou apagadas no Salvar. | decidido (2026-10-27) |
 | D72 | (`network`) Perfis WireGuard passam a aparecer na página VPN (antes só tipos com "vpn" no nome). | decidido (2026-10-27) |
+
+## System Doctor
+
+The Diagnostics Home destination is presented as System Doctor under Tools & Diagnostics. The `system-doctor` CLI route shares the existing diagnostics implementation and its `diagnostics` and `diagnostic` aliases. Detail pages can open supported related domains with `o`. Collection is read-only and uses background jobs.

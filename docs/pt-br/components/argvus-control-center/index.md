@@ -26,7 +26,7 @@ A tela inicial é um catálogo de destinos agrupados em seis cartões. Cada dest
 * **Hardware e conectividade** — dispositivos e conexões: Visão geral do hardware, Rede e Wi-Fi, Bluetooth, Áudio e Armazenamento.
 * **Administração do sistema** — gerencie o sistema operacional: Pacotes, Serviços, Boot, Nome do host, Usuários e grupos, Firewall e Notificações (Não perturbe).
 * **Configurações** — o próprio Control Center, listado depois dos cartões: Idioma (idioma da interface) e Estilo (ícones decorativos e transparência). Pressione `s` para abri-la.
-* **Ferramentas e diagnóstico** — ferramentas de desenvolvimento e manutenção: Projetos, Snippets (textos salvos para o `argvus snippets`, digitados com `SUPER + ALT + N`), Chaves SSH (pares de chaves em `~/.ssh` gerenciados pelo `argvus keys`), Chaves GPG (o keyring gerenciado pelo `argvus gpg`; o gpg-agent usa o pinentry-gtk), Serviços de desenvolvimento, Diagnóstico e Sobre o ARGVUS.
+* **Ferramentas e diagnóstico** — ferramentas de desenvolvimento e manutenção: Projetos, Snippets (textos salvos para o `argvus snippets`, digitados com `SUPER + ALT + N`), Chaves SSH (pares de chaves em `~/.ssh` gerenciados pelo `argvus keys`), Chaves GPG (o keyring gerenciado pelo `argvus gpg`; o gpg-agent usa o pinentry-gtk), Serviços de desenvolvimento, System Doctor e Sobre o ARGVUS.
 
 As páginas exatas dos providers podem depender dos pacotes instalados e das permissões. A ausência de um domínio opcional não significa necessariamente que o Control Center esteja quebrado.
 
@@ -48,7 +48,7 @@ A árvore atual de configurações inclui:
 | Hardware e conectividade | Visão geral do hardware (resumo, CPU, GPU, memória, dispositivos), Rede e Wi-Fi, Bluetooth, Áudio, Armazenamento |
 | Administração do sistema | Pacotes, Serviços, Boot, Nome do host, Usuários e grupos, Firewall, Notificações |
 | Configurações | Idioma (idioma da interface), Estilo (ícones e transparência) |
-| Ferramentas e diagnóstico | Projetos, Snippets, Chaves SSH, Chaves GPG, Serviços de desenvolvimento, Diagnóstico, Sobre o ARGVUS |
+| Ferramentas e diagnóstico | Projetos, Snippets, Chaves SSH, Chaves GPG, Serviços de desenvolvimento, System Doctor, Sobre o ARGVUS |
 
 Alguns itens são páginas completas e outros são subpáginas alcançadas pela busca ou por um resumo de domínio. A lista exata depende dos providers ARGVUS instalados.
 
@@ -341,7 +341,7 @@ argvus control-center keybindings
 
 Execute `argvus control-center --help` para ver as rotas disponíveis na versão instalada. A rota pela linha de comando é um atalho para o mesmo aplicativo, não um segundo sistema de configuração.
 
-Rotas diretas úteis incluem `apps`, `window-rules`, `projects`, `snippets`, `ssh-keys`, `gpg-keys`, `firewall`, `fonts`, `locale`, `input`, `keybindings`, `language`, `config`, `system`, `hardware`, `services`, `dev-services`, `network` (com as páginas `status`, `connections`, `activate`, `add`, `interfaces`, `wifi`, `ethernet`, `vpn`, `dns` e `proxy`), `audio`, `bluetooth`, `boot`, `packages` (com as páginas `official`, `search`, `installed`, `updates`, `orphans`, `aur`, `aur-remove`, `aur-updates`, `repositories`, `repositories-add`, `repositories-list`, `cache`, `history`, `downgrade` e `mirrors`), `storage`, `diagnostics`, `about` (com as abas `system`, `about`, `donate`, `credits` e `copyright`), `power`, `session`, `displays` e `appearance`. Appearance também aceita rotas específicas como `themes`, `wallpapers`, `icons`, `accents`, `effects`, `spaces`, `taskbar` e `widget-telemetry`; displays aceita `resolution`, `refresh`, `scale`, `position`, `orientation`, `primary`, `vrr` e `hdr`. Use a saída `--help` instalada ao criar scripts, pois a disponibilidade ainda depende do build instalado.
+Rotas diretas úteis incluem `apps`, `window-rules`, `projects`, `snippets`, `ssh-keys`, `gpg-keys`, `firewall`, `fonts`, `locale`, `input`, `keybindings`, `language`, `config`, `system`, `hardware`, `services`, `dev-services`, `network` (com as páginas `status`, `connections`, `activate`, `add`, `interfaces`, `wifi`, `ethernet`, `vpn`, `dns` e `proxy`), `audio`, `bluetooth`, `boot`, `packages` (com as páginas `official`, `search`, `installed`, `updates`, `orphans`, `aur`, `aur-remove`, `aur-updates`, `repositories`, `repositories-add`, `repositories-list`, `cache`, `history`, `downgrade` e `mirrors`), `storage`, `system-doctor` (com aliases `diagnostics` e `diagnostic`), `about` (com as abas `system`, `about`, `donate`, `credits` e `copyright`), `power`, `session`, `displays` e `appearance`. Appearance também aceita rotas específicas como `themes`, `wallpapers`, `icons`, `accents`, `effects`, `spaces`, `taskbar` e `widget-telemetry`; displays aceita `resolution`, `refresh`, `scale`, `position`, `orientation`, `primary`, `vrr` e `hdr`. Use a saída `--help` instalada ao criar scripts, pois a disponibilidade ainda depende do build instalado.
 
 ## Relacionados
 
@@ -350,3 +350,11 @@ Rotas diretas úteis incluem `apps`, `window-rules`, `projects`, `snippets`, `ss
 * [Aparência](/pt/docs/user-guide/appearance/)
 * [Atalhos de teclado](/pt/docs/argvus-hyprland/keyboard-shortcuts/)
 * [Mouse e touchpad](/pt/docs/argvus-hyprland/input/)
+
+### System Doctor
+
+Abra **Ferramentas e diagnóstico → System Doctor**, procure pelo nome ou execute `argvus control-center system-doctor`. As rotas anteriores `diagnostics` e `diagnostic` e seus seletores de categoria permanecem disponíveis. Use `r` para atualizar, Enter para abrir uma verificação, `o` nos detalhes para abrir a página relacionada e Esc para voltar. A coleta ocorre em segundo plano e é somente leitura.
+
+As verificações usam contagens de unidades systemd com falha, ferramentas gráficas e o snapshot de Storage para uso dos sistemas de arquivos e saúde SMART. Um problema exige evidência; ferramentas ausentes ou dados SMART inacessíveis aparecem como indisponíveis, e uma sondagem que falhou ou excedeu o tempo limite aparece como erro. Categorias sem evidência coletada não indicam sucesso. As atualizações usam o banco local do pacman sem sincronizar repositórios; um arquivo de lock pode ser antigo e não comprova que há uma operação em andamento. SMART pode exigir permissões e não solicita acesso elevado. O resumo registra a última coleta concluída em tempo Unix.
+
+Storage e System Doctor compartilham um snapshot em memória por até 10 segundos. A tecla `r` solicita uma nova coleta; solicitações simultâneas reutilizam uma coleta recém-concluída. A saída dos subprocessos de Storage e do diagnóstico é limitada a 1 MiB por fluxo; uma saída maior é tratada como falha de coleta.

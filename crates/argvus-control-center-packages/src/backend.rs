@@ -80,6 +80,9 @@ impl<R: ProcessRunner> PackageBackend<R> {
     }
   }
   fn run(&self, args: &[&str]) -> Result<String, PackageError> {
+    self.run_with_limit(args, None)
+  }
+  fn run_with_limit(&self, args: &[&str], limit: Option<usize>) -> Result<String, PackageError> {
     if !self.capabilities.has_pacman {
       return Err(PackageError::BackendUnavailable);
     }
@@ -87,6 +90,11 @@ impl<R: ProcessRunner> PackageBackend<R> {
       .iter()
       .fold(ProcessRequest::new(&self.pacman), |r, a| r.arg(*a))
       .timeout(Duration::from_secs(30));
+    let req = if let Some(limit) = limit {
+      req.output_limit(limit)
+    } else {
+      req
+    };
     let o = self.runner.run(&req)?;
     if o.timed_out {
       return Err(PackageError::Command("timeout".into()));
@@ -259,7 +267,7 @@ impl<R: ProcessRunner> PackageBackend<R> {
     }
   }
   pub fn updates(&self) -> Result<Vec<Update>, PackageError> {
-    let text = self.run(&["-Qu"])?;
+    let text = self.run_with_limit(&["-Qu"], Some(1024 * 1024))?;
     Ok(parse_updates(&text))
   }
   pub fn search(&self, query: &str) -> Result<Vec<Package>, PackageError> {

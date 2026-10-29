@@ -68,7 +68,7 @@ impl App {
     self.open_search_route(&route);
   }
 
-  pub(super) fn open_search_route(&mut self, route: &str) {
+  pub(crate) fn open_search_route(&mut self, route: &str) {
     let Some((domain, page)) = route.split_once('/') else {
       return;
     };

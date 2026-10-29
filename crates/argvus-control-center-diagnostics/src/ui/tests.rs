@@ -135,7 +135,7 @@ fn diagnostics_uses_shared_chrome_and_contextual_footer() {
     .map(|cell| cell.symbol())
     .collect::<String>();
   assert!(text.contains("ARGVUS"));
-  assert!(text.contains("Diagnostics"));
+  assert!(text.contains("System Doctor"));
   assert!(text.contains("Enter") && text.contains("Back"));
 
   app.page = DiagnosticPage::Services;
@@ -168,7 +168,7 @@ fn diagnostics_header_is_translated_in_pt_br() {
     .map(|cell| cell.symbol())
     .collect::<String>();
   assert!(
-    rendered.contains("Central de Controle > Ferramentas e diagnóstico > Diagnóstico"),
+    rendered.contains("Central de Controle > Ferramentas e diagnóstico > System Doctor"),
     "{rendered}"
   );
   assert!(!rendered.contains("Tools & Diagnostics"), "{rendered}");
@@ -177,7 +177,7 @@ fn diagnostics_header_is_translated_in_pt_br() {
 #[test]
 fn diagnostics_detail_footer_and_breadcrumb_follow_the_parent_category() {
   let app = app();
-  assert_eq!(app.breadcrumb(), "Tools & Diagnostics > Diagnostics");
+  assert_eq!(app.breadcrumb(), "Tools & Diagnostics > System Doctor");
   let mut detail = app;
   detail.page = DiagnosticPage::Detail(2);
   assert!(detail.breadcrumb().ends_with("System"));
@@ -188,7 +188,7 @@ fn diagnostics_detail_footer_and_breadcrumb_follow_the_parent_category() {
 fn completion_status_reflects_worst_severity() {
   assert_eq!(
     completion_status(Lang::for_locale("en-US"), &[]).kind,
-    StatusKind::Success
+    StatusKind::Info
   );
   let mut checks = app();
   checks.checks = vec![DiagnosticCheck {
@@ -212,4 +212,55 @@ fn completion_status_reflects_worst_severity() {
     completion_status(Lang::for_locale("en-US"), &warnings.checks).kind,
     StatusKind::Warning
   );
+}
+
+#[test]
+fn unavailable_does_not_report_an_all_clear() {
+  let mut app = app();
+  app.checks = vec![DiagnosticCheck {
+    severity: Severity::Unknown,
+    ..Default::default()
+  }];
+  assert_eq!(
+    app.preview(&app.checks.iter().collect::<Vec<_>>()),
+    "Unavailable"
+  );
+  assert_eq!(
+    completion_status(app.lang, &app.checks).kind,
+    StatusKind::Info
+  );
+}
+
+#[test]
+fn related_page_is_requested_from_detail() {
+  let mut app = app();
+  app.checks[0].route = Some("services/failed".into());
+  app.page = DiagnosticPage::Detail(0);
+  app.handle(KeyCode::Char('o'));
+  assert_eq!(
+    app.take_requested_route().as_deref(),
+    Some("services/failed")
+  );
+}
+
+#[test]
+fn small_terminal_keeps_check_status_and_name_visible() {
+  let mut app = app();
+  app.page = DiagnosticPage::Services;
+  let mut terminal = Terminal::new(TestBackend::new(40, 12)).unwrap();
+  terminal.draw(|frame| app.draw(frame)).unwrap();
+  let rendered = terminal
+    .backend()
+    .buffer()
+    .content
+    .iter()
+    .map(|cell| cell.symbol())
+    .collect::<String>();
+  assert!(rendered.contains("▲"), "{rendered}");
+  assert!(rendered.contains("Failed system units"), "{rendered}");
+  assert!(rendered.contains("2 system"), "{rendered}");
+  app.handle(KeyCode::Enter);
+  assert!(matches!(app.page, DiagnosticPage::Detail(_)));
+  app.handle(KeyCode::Esc);
+  assert_eq!(app.page, DiagnosticPage::Services);
 }

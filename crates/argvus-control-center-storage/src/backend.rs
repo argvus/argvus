@@ -6,9 +6,13 @@ use argvus_control_center_core::{
   sanitize::terminal_text,
 };
 use serde_json::Value;
-use std::fs;
 #[cfg(unix)]
 use std::os::unix::fs::FileTypeExt;
+use std::{
+  fs,
+  sync::{Arc, Mutex},
+  time::{Duration, Instant},
+};
 use thiserror::Error;
 
 #[derive(Debug, Error)]
@@ -21,6 +25,44 @@ pub enum StorageError {
   InvalidDevice,
   #[error("malformed structured output")]
   MalformedOutput,
+}
+
+/// Shared, short-lived snapshot cache for Storage and System Doctor.
+#[derive(Clone, Default)]
+pub struct StorageCache(Arc<Mutex<Option<(Instant, StorageSnapshot)>>>);
+
+impl StorageCache {
+  /// Reuses a recent snapshot; explicit refreshes collect a new one unless another
+  /// refresh completed after this request started.
+  pub fn collect(&self, cap: &Capabilities, force: bool) -> Result<StorageSnapshot, StorageError> {
+    self.collect_with(force, || collect(cap))
+  }
+
+  fn collect_with(
+    &self,
+    force: bool,
+    collect_snapshot: impl FnOnce() -> Result<StorageSnapshot, StorageError>,
+  ) -> Result<StorageSnapshot, StorageError> {
+    let requested = Instant::now();
+    let mut cached = self
+      .0
+      .lock()
+      .unwrap_or_else(|poisoned| poisoned.into_inner());
+    if let Some((collected, snapshot)) = cached.as_ref()
+      && ((!force && collected.elapsed() < Duration::from_secs(10)) || *collected >= requested)
+    {
+      return Ok(snapshot.clone());
+    }
+    let snapshot = match collect_snapshot() {
+      Ok(snapshot) => snapshot,
+      Err(error) => {
+        *cached = None;
+        return Err(error);
+      }
+    };
+    *cached = Some((Instant::now(), snapshot.clone()));
+    Ok(snapshot)
+  }
 }
 
 pub fn collect(cap: &Capabilities) -> Result<StorageSnapshot, StorageError> {
@@ -324,11 +366,13 @@ fn run(program: &str, args: &[&str]) -> Result<String, StorageError> {
     .iter()
     .fold(ProcessRequest::new(program), |request, arg| {
       request.arg(*arg)
-    });
+    })
+    .timeout(Duration::from_secs(5))
+    .output_limit(1024 * 1024);
   let out = SystemProcessRunner
     .run(&request)
     .map_err(|e| StorageError::Command(e.to_string()))?;
-  if out.status != Some(0) {
+  if out.timed_out || !usable_status(program, out.status) {
     return Err(StorageError::Command(terminal_text(
       &String::from_utf8_lossy(&out.stderr),
     )));
@@ -336,9 +380,48 @@ fn run(program: &str, args: &[&str]) -> Result<String, StorageError> {
   Ok(terminal_text(&String::from_utf8_lossy(&out.stdout)))
 }
 
+fn usable_status(program: &str, status: Option<i32>) -> bool {
+  match status {
+    Some(0) => true,
+    // smartctl uses higher bits to report health findings in its JSON output.
+    Some(code) if program == "smartctl" => code & 0b111 == 0,
+    _ => false,
+  }
+}
+
 #[cfg(test)]
 mod tests {
   use super::*;
+  #[test]
+  fn shared_cache_reuses_snapshot_and_forced_refresh_replaces_it() {
+    use std::sync::atomic::{AtomicUsize, Ordering};
+    let cache = StorageCache::default();
+    let calls = AtomicUsize::new(0);
+    let collect = || {
+      calls.fetch_add(1, Ordering::SeqCst);
+      Ok(StorageSnapshot::default())
+    };
+    cache.collect_with(false, collect).unwrap();
+    cache.clone().collect_with(false, collect).unwrap();
+    assert_eq!(calls.load(Ordering::SeqCst), 1);
+    cache.collect_with(true, collect).unwrap();
+    assert_eq!(calls.load(Ordering::SeqCst), 2);
+    assert!(
+      cache
+        .collect_with(true, || Err(StorageError::BackendUnavailable))
+        .is_err()
+    );
+    cache.collect_with(false, collect).unwrap();
+    assert_eq!(calls.load(Ordering::SeqCst), 3);
+  }
+
+  #[test]
+  fn smart_health_exit_bits_preserve_evidence() {
+    assert!(usable_status("smartctl", Some(8)));
+    assert!(!usable_status("smartctl", Some(2)));
+    assert!(!usable_status("lsblk", Some(8)));
+    assert!(!usable_status("smartctl", None));
+  }
   #[test]
   fn parses_nested_devices_and_filters_no_fields() {
     let x = r#"{"blockdevices":[{"name":"nvme0n1","type":"disk","size":1000,"children":[{"name":"nvme0n1p1","type":"part","size":100}]}]}"#;

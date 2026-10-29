@@ -29,6 +29,7 @@ pub struct StorageApp {
   job: Option<JobHandle<StorageSnapshot>>,
   jobs: JobManager,
   cap: Capabilities,
+  cache: backend::StorageCache,
   pub lang: Lang,
   pub theme: Theme,
   pub status: Option<StatusMessage>,
@@ -40,6 +41,15 @@ impl StorageApp {
   }
 
   pub fn new(lang: Lang, theme: Theme, cap: Capabilities) -> Self {
+    Self::new_with_cache(lang, theme, cap, backend::StorageCache::default())
+  }
+
+  pub fn new_with_cache(
+    lang: Lang,
+    theme: Theme,
+    cap: Capabilities,
+    cache: backend::StorageCache,
+  ) -> Self {
     let mut s = Self {
       page: StoragePage::Home,
       snapshot: Default::default(),
@@ -47,6 +57,7 @@ impl StorageApp {
       job: None,
       jobs: JobManager::default(),
       cap,
+      cache,
       lang,
       theme,
       status: None,
@@ -102,7 +113,7 @@ impl StorageApp {
       return false;
     }
     if key == KeyCode::Char('r') {
-      self.refresh();
+      self.refresh_forced();
       return false;
     }
     self.selection.handle(key, self.len(), 8);

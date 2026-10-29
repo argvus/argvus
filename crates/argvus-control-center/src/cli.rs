@@ -111,9 +111,9 @@ pub fn parse(args: &[String]) -> Result<Option<InitialRoute>, String> {
     #[cfg(feature = "storage")]
     "storage" => Ok(Some(InitialRoute::Storage(parse_storage(&args[1..])?))),
     #[cfg(feature = "diagnostics")]
-    "diagnostics" | "diagnostic" => Ok(Some(InitialRoute::Diagnostics(parse_diagnostics(
-      &args[1..],
-    )?))),
+    "system-doctor" | "diagnostics" | "diagnostic" => Ok(Some(InitialRoute::Diagnostics(
+      parse_diagnostics(&args[1..])?,
+    ))),
     #[cfg(feature = "about")]
     "about" if args.len() == 1 => Ok(Some(InitialRoute::About(Tab::System))),
     #[cfg(feature = "about")]
@@ -501,8 +501,8 @@ fn parse_about_tab(value: &str) -> Result<Tab, String> {
 pub fn print_help() {
   println!(
     "argvus-control-center - keyboard-first ARGVUS control center\n\n\
-     Usage:\n  argvus-control-center [apps|fonts|locale|language|config|hardware|services|system|power|session|displays|appearance|about [TAB]]\n  argvus-control-center system-settings <domain> <action> [value...]\n\n\
-     Page selectors:\n  apps [terminal|file-manager|text-editor|terminal-editor|browser|image-viewer|pdf-viewer|video-player|audio-player|archive|launcher]\n  fonts [taskbar|widget-telemetry|control-panel|system|apps|terminal|browser|antialiasing|hinting|subpixel|dpi]\n  locale [timezone|date-time|regional-locale|system-locales|keyboard|keyboard-layout|keyboard-variant|console-keymap]\n  system [hostname|users|groups]\n  network [status|connections|activate|add|interfaces|wifi|ethernet|vpn|dns|proxy]\n  session [summary|components|autostart|diagnostics|logs]\n  displays [summary|res|refresh|scale|position|orientation|primary|vrr|hdr]\n  appearance [summary|themes|wallpapers|icons|accents|taskbar]\n\n\
+     Usage:\n  argvus-control-center [apps|fonts|locale|language|config|hardware|services|system|power|session|displays|appearance|system-doctor|about [TAB]]\n  argvus-control-center system-settings <domain> <action> [value...]\n\n\
+     Page selectors:\n  apps [terminal|file-manager|text-editor|terminal-editor|browser|image-viewer|pdf-viewer|video-player|audio-player|archive|launcher]\n  fonts [taskbar|widget-telemetry|control-panel|system|apps|terminal|browser|antialiasing|hinting|subpixel|dpi]\n  locale [timezone|date-time|regional-locale|system-locales|keyboard|keyboard-layout|keyboard-variant|console-keymap]\n  system [hostname|users|groups]\n  network [status|connections|activate|add|interfaces|wifi|ethernet|vpn|dns|proxy]\n  session [summary|components|autostart|diagnostics|logs]\n  system-doctor [summary|services|boot|graphics|network|audio|bluetooth|storage|packages|argvus]\n  displays [summary|res|refresh|scale|position|orientation|primary|vrr|hdr]\n  appearance [summary|themes|wallpapers|icons|accents|taskbar]\n\n\
      About tabs:\n  system, about, donate, credits, copyright\n\n\
      Options:\n  -h, --help       Print help\n  -V, --version    Print version\n\n\
      Global keys:\n  q                Quit\n  Esc              Back\n  ?                Contextual help"

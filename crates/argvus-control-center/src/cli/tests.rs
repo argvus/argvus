@@ -298,3 +298,27 @@ fn parses_the_config_route() {
     Some(InitialRoute::Config)
   );
 }
+
+#[cfg(feature = "diagnostics")]
+#[test]
+fn system_doctor_and_legacy_routes_share_all_pages() {
+  for route in ["system-doctor", "diagnostics", "diagnostic"] {
+    for (selector, page) in [
+      ("summary", DiagnosticPage::Home),
+      ("services", DiagnosticPage::Services),
+      ("boot", DiagnosticPage::Boot),
+      ("graphics", DiagnosticPage::Graphics),
+      ("network", DiagnosticPage::Network),
+      ("audio", DiagnosticPage::Audio),
+      ("bluetooth", DiagnosticPage::Bluetooth),
+      ("storage", DiagnosticPage::Storage),
+      ("packages", DiagnosticPage::Packages),
+      ("argvus", DiagnosticPage::Argvus),
+    ] {
+      assert_eq!(
+        parse(&args(&[route, selector])).unwrap(),
+        Some(InitialRoute::Diagnostics(page))
+      );
+    }
+  }
+}

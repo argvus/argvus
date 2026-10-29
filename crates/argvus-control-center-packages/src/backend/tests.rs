@@ -217,6 +217,19 @@ fn removal_plans_report_the_dependents_and_plan_the_cascade() {
 }
 
 #[test]
+fn official_updates_use_bounded_read_only_query() {
+  let backend = PackageBackend::new(
+    ScriptedRunner::new("example 1-1 -> 2-1\n", 0),
+    pacman_capabilities(),
+  );
+  assert_eq!(backend.updates().unwrap().len(), 1);
+  let request = backend.runner.requests.lock().unwrap()[0].clone();
+  assert_eq!(request.args, ["-Qu"]);
+  assert_eq!(request.output_limit, Some(1024 * 1024));
+  assert_eq!(request.timeout, Some(Duration::from_secs(30)));
+}
+
+#[test]
 fn aur_updates_run_the_helper_and_treat_status_one_as_none() {
   let backend = PackageBackend::new(
     ScriptedRunner::new("yay-bin 12.4.1-1 -> 12.4.2-1\n", 0),

@@ -8,14 +8,23 @@ impl StorageApp {
   }
 
   pub fn refresh(&mut self) {
+    self.start_refresh(false);
+  }
+
+  pub fn refresh_forced(&mut self) {
+    self.start_refresh(true);
+  }
+
+  fn start_refresh(&mut self, force: bool) {
     if self.job.is_some() {
       return;
     }
     let cap = self.cap.clone();
+    let cache = self.cache.clone();
     self.job = Some(
       self
         .jobs
-        .spawn(move |_| backend::collect(&cap).map_err(|e| e.to_string())),
+        .spawn(move |_| cache.collect(&cap, force).map_err(|e| e.to_string())),
     );
     self.status = Some(StatusMessage {
       kind: StatusKind::Info,

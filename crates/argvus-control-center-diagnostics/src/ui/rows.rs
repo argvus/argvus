@@ -5,11 +5,32 @@ use super::*;
 impl DiagnosticsApp {
   pub(super) fn dashboard_rows(&self) -> Vec<String> {
     let all: Vec<&DiagnosticCheck> = self.checks.iter().collect();
+    let problems = self
+      .checks
+      .iter()
+      .filter(|check| check.severity == Severity::Problem)
+      .count();
+    let warnings = self
+      .checks
+      .iter()
+      .filter(|check| check.severity == Severity::Warning)
+      .count();
+    let unavailable = self
+      .checks
+      .iter()
+      .filter(|check| check.severity == Severity::Unknown)
+      .count();
     let summary = format!(
-      "{} {}  ·  {}",
+      "{} {}  ·  {} · {} {} · {} {} · {} {}",
       AppConfig::icon(argvus_tui::icons::MONITOR),
       tr(self.lang, "control_center.summary"),
-      self.entry_status(&all)
+      self.entry_status(&all),
+      problems,
+      tr(self.lang, "control_center.doctor_problem"),
+      warnings,
+      tr(self.lang, "control_center.warnings"),
+      unavailable,
+      tr(self.lang, "control_center.doctor_unavailable")
     );
     vec![
       summary,
@@ -62,7 +83,7 @@ impl DiagnosticsApp {
   }
 
   pub(super) fn category_rows(&self) -> Vec<String> {
-    self
+    let rows: Vec<String> = self
       .category_checks()
       .map(|(_, check)| {
         format!(
@@ -72,10 +93,20 @@ impl DiagnosticsApp {
           check.summary
         )
       })
-      .collect()
+      .collect();
+    if rows.is_empty() {
+      vec![tr(self.lang, "control_center.no_data_collected").into()]
+    } else {
+      rows
+    }
   }
 
   pub(super) fn summary_rows(&self) -> Vec<String> {
+    let problems = self
+      .checks
+      .iter()
+      .filter(|check| check.severity == Severity::Problem)
+      .count();
     let errors = self
       .checks
       .iter()
@@ -104,6 +135,11 @@ impl DiagnosticsApp {
       ),
       format!(
         "   {:<14} {}",
+        tr(self.lang, "control_center.doctor_problem"),
+        problems
+      ),
+      format!(
+        "   {:<14} {}",
         tr(self.lang, "control_center.errors"),
         errors
       ),
@@ -114,10 +150,20 @@ impl DiagnosticsApp {
       ),
       format!(
         "   {:<14} {}",
-        tr(self.lang, "control_center.unknown_5951be"),
+        tr(self.lang, "control_center.doctor_unavailable"),
         unknown
       ),
     ];
+    if let Some(time) = self
+      .last_run
+      .and_then(|time| time.duration_since(std::time::UNIX_EPOCH).ok())
+    {
+      rows.push(format!(
+        "   {}: {}",
+        tr(self.lang, "control_center.doctor_last_run"),
+        time.as_secs()
+      ));
+    }
     let system: Vec<&DiagnosticCheck> = self
       .checks
       .iter()
@@ -193,9 +239,10 @@ impl DiagnosticsApp {
 
 pub(super) fn severity_label(lang: Lang, severity: Severity) -> &'static str {
   match severity {
+    Severity::Problem => tr(lang, "control_center.doctor_problem"),
     Severity::Error => tr(lang, "control_center.error"),
     Severity::Warning => tr(lang, "control_center.warning"),
-    Severity::Unknown => tr(lang, "control_center.unknown_f9ac0c"),
+    Severity::Unknown => tr(lang, "control_center.doctor_unavailable"),
     Severity::Info => tr(lang, "control_center.info"),
     Severity::Ok => tr(lang, "control_center.ok"),
   }
