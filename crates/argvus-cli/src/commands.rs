@@ -58,6 +58,8 @@ private_commands! {
   Firewall => "firewall" => "firewall",
   TaskbarCalendar => "taskbar-calendar" => "taskbar-calendar",
   RemovableDevices => "removable-devices" => "removable-devices",
+  Focus => "focus" => "focus",
+  Clock => "clock" => "clock",
   Notifications => "notifications" => "notifications",
   Displayctl => "displayctl" => "displayctl",
   Launcher => "launcher" => "launcher",

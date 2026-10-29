@@ -64,6 +64,11 @@ fn only_structural_surface_changes_recreate_the_surface() {
     ..taskbar.clone()
   };
   assert!(recreates_surface(&no_seconds, &taskbar));
+  let focus_icon = SurfaceDraft {
+    focus_enabled: !taskbar.focus_enabled,
+    ..taskbar.clone()
+  };
+  assert!(recreates_surface(&focus_icon, &taskbar));
 
   let widget = application.make_surface_draft(EffectSurface::WidgetTelemetry);
   let reordered = SurfaceDraft {

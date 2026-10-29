@@ -1,0 +1,21 @@
+# Theme consumer: rendered into every theme build as time/theme.css, read by
+# ARGVUS Focus and ARGVUS Clock.
+id = "time"
+template = "time/theme-template/theme.css"
+output = "time/theme.css"
+
+# Defaults for the tokens the template reads; a theme that defines one wins.
+[palette]
+time_bg = "@bg"
+time_fg = "@fg"
+time_accent = "@accent"
+time_on_accent = "@accent | contrast"
+time_surface = "@bg | mix(@accent, 0.07)"
+time_surface_strong = "@bg | mix(@accent, 0.14)"
+time_muted = "@fg | mix(@bg, 0.35)"
+time_border = "@accent | alpha(0.28)"
+time_focus = "@accent | alpha(0.75)"
+time_track = "@fg | alpha(0.12)"
+time_break = "#5FB38A"
+time_long_break = "#9A86D6"
+time_danger = "#E06C75"

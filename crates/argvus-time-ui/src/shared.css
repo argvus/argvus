@@ -1,0 +1,182 @@
+/* Rules shared by ARGVUS Focus and ARGVUS Clock. Every selector starts at the
+   .argvus-time window class, and every colour comes from the theme colours
+   (time_*), so these rules follow the active ARGVUS theme and accent. */
+
+window.argvus-time,
+window.argvus-time .page {
+  background-color: @time_bg;
+  color: @time_fg;
+}
+
+window.argvus-time headerbar {
+  background-color: @time_bg;
+  color: @time_fg;
+  box-shadow: none;
+  border-bottom: 1px solid @time_border;
+}
+
+window.argvus-time .card {
+  background-color: @time_surface;
+  border: 1px solid @time_border;
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+
+window.argvus-time .dim-label,
+window.argvus-time .caption {
+  color: @time_muted;
+}
+
+window.argvus-time .caption {
+  font-size: 0.85em;
+}
+
+window.argvus-time .section-title {
+  font-weight: 700;
+  font-size: 0.8em;
+  letter-spacing: 0.08em;
+  color: @time_muted;
+}
+
+window.argvus-time .digits {
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
+}
+
+window.argvus-time .display {
+  font-size: 3.6em;
+  font-weight: 300;
+}
+
+window.argvus-time .display-large {
+  font-size: 4.6em;
+  font-weight: 200;
+}
+
+window.argvus-time button {
+  border-radius: 10px;
+}
+
+window.argvus-time button.suggested-action,
+window.argvus-time button.primary {
+  background-image: none;
+  background-color: @time_accent;
+  color: @time_on_accent;
+  border-color: @time_accent;
+}
+
+window.argvus-time button.destructive-action {
+  background-image: none;
+  background-color: alpha(@time_danger, 0.18);
+  color: @time_danger;
+}
+
+window.argvus-time button.round {
+  border-radius: 999px;
+  min-width: 52px;
+  min-height: 52px;
+}
+
+window.argvus-time *:focus-visible {
+  outline: 2px solid @time_focus;
+  outline-offset: 2px;
+}
+
+window.argvus-time stackswitcher button:checked {
+  background-color: @time_surface_strong;
+  color: @time_accent;
+}
+
+window.argvus-time list,
+window.argvus-time listview {
+  background-color: transparent;
+  color: @time_fg;
+}
+
+window.argvus-time row {
+  border-radius: 8px;
+}
+
+window.argvus-time row:selected {
+  background-color: @time_surface_strong;
+  color: @time_fg;
+}
+
+window.argvus-time .banner {
+  background-color: alpha(@time_accent, 0.14);
+  border: 1px solid @time_border;
+  border-radius: 10px;
+  padding: 8px 12px;
+}
+
+window.argvus-time .banner.warning {
+  background-color: alpha(@time_danger, 0.14);
+  border-color: alpha(@time_danger, 0.4);
+}
+
+window.argvus-time .empty-state {
+  color: @time_muted;
+  padding: 24px;
+}
+
+window.argvus-time switch:checked {
+  background-color: @time_accent;
+}
+
+window.argvus-time scale highlight {
+  background-color: @time_accent;
+}
+
+/* Popups that open next to the taskbar (.argvus-popup), in the look of the
+   taskbar calendar: a transparent window around one card with a thin accent
+   border, square corners and the monospace font. */
+window.argvus-time.argvus-popup {
+  background-color: transparent;
+  background-image: none;
+  box-shadow: none;
+}
+
+window.argvus-popup .time-card {
+  background-color: @time_bg;
+  color: @time_fg;
+  border: 1px solid @time_border;
+  border-radius: 4px;
+  padding: 12px 14px;
+  font-family: monospace;
+  font-size: 13px;
+}
+
+window.argvus-popup .time-card .page {
+  background-color: transparent;
+}
+
+window.argvus-popup .popup-title {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+window.argvus-popup .popup-header button.flat {
+  background: transparent;
+  background-image: none;
+  box-shadow: none;
+  border-color: transparent;
+  color: @time_muted;
+  min-width: 0;
+  min-height: 0;
+  padding: 2px 6px;
+}
+
+window.argvus-popup .popup-header button.flat:hover,
+window.argvus-popup .popup-header button.flat:focus-visible {
+  color: @time_accent;
+}
+
+window.argvus-popup button,
+window.argvus-popup button.round,
+window.argvus-popup .pill-button {
+  border-radius: 4px;
+}
+
+window.argvus-popup .card {
+  border-radius: 4px;
+}

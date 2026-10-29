@@ -269,6 +269,19 @@ fn git_maps_to_argvus_git_and_forwards_its_arguments() {
 }
 
 #[test]
+fn focus_and_clock_run_their_private_executables() {
+  let sandbox = Sandbox::new("time-apps");
+  for name in ["focus", "clock"] {
+    sandbox.fake(&sandbox.commands(), name);
+    for route in [name.to_owned(), format!("--{name}")] {
+      let output = sandbox.run(&sandbox.tools_path(), &[route.as_str(), "--toggle"], "");
+      assert!(output.status.success(), "{route} failed");
+      assert_eq!(text(&output.stdout), expected(&["[--toggle]", "stdin="]));
+    }
+  }
+}
+
+#[test]
 fn script_route_forwards_arguments_to_the_packaged_script() {
   let sandbox = Sandbox::new("script");
   let system = sandbox.root.join("system");

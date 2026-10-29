@@ -247,28 +247,14 @@ widget construction and the helpers.
 - `watch_theme` — re-reads the theme fingerprint every 700 ms.
 - `serve_ipc` — forwards the IPC commands of later launches.
 
-`app/popup.rs` — placement:
-
-- `present_popup(window, popup, state, fixed_position)` — repositions the window
-  at the fixed click position, starts a new presentation generation, sets
-  exclusive keyboard mode and presents. After 800ms it arms outside-click
-  dismissal and downgrades keyboard mode; stale timers cannot affect a newer
-  opening.
-- `hide_popup` — hides the window and returns to the calendar view.
-- `set_monitor_at_pointer(window, fixed_position)` — moves the surface to the
-  monitor that contains the click position.
-- `apply_layer_shell(window)` — layer-shell setup: overlay layer, anchored
-  top-right, exclusive zone 0.
-- `position_popup(window, fixed_position)` — sets the top/right margins from the
-  computed position and returns the popup bounds for outside-click detection.
-- `popup_position(fixed_position)` — math: converts the pointer position into
-  margin values 12 pixels below the click (relative to the top-right anchor and
-  the reserved Waybar strip), clamped to the monitor.
-- `pointer_is_outside_popup(bounds)` — checks the live cursor against the stored
-  bounds.
-- `current_pointer_position()` — reads the cursor via `hyprctl cursorpos -j`.
-- `current_monitor_geometry(x, y)` — the monitor geometry and reserved top strip
-  for a point, via `hyprctl monitors -j`.
+Popup placement and dismissal now live in `crates/argvus-taskbar-popup` and are
+shared with ARGVUS Focus and ARGVUS Clock. `PopupController` applies the
+layer-shell overlay, selects the monitor and horizontal bar from the click's
+desktop coordinates, and positions the popup at the bar's right edge with a
+4-pixel gap (below a top bar or above a bottom bar). Without click coordinates,
+it uses the pointer position. After 800 ms, focus loss with the pointer outside
+dismisses the popup; a 400 ms guard prevents the same outside click from
+immediately reopening it. The calendar retains its own namespace and dimensions.
 
 `app/styling.rs` — CSS:
 

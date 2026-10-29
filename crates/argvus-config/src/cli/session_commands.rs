@@ -91,7 +91,9 @@ pub(super) fn session_restart(components: &[String]) -> ExitCode {
       return ExitCode::from(1);
     }
   };
-  let units = match session_units::units_for(&names, || session_units::telemetry_enabled(&cache)) {
+  let units = match session_units::units_for(&names, || {
+    session_units::telemetry_enabled(&cache, session_units::configured_telemetry_default)
+  }) {
     Ok(units) => units,
     Err(unknown) => {
       eprintln!("argvus-config: unknown session component: {}", unknown.0);

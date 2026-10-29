@@ -74,6 +74,7 @@ struct SurfaceDraft {
   surface: EffectSurface,
   utility_group: TaskbarUtilityGroupMode,
   audio_player_enabled: bool,
+  focus_enabled: bool,
   launcher_enabled: bool,
   utility_widgets: TaskbarUtilityWidgets,
   date_format: TaskbarDateFormat,

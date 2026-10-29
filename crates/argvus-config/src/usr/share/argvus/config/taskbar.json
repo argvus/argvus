@@ -4,6 +4,7 @@
   },
   "icons": {
     "audio_player_enabled": true,
+    "focus_enabled": true,
     "launcher_enabled": false,
     "launcher_custom_icon_path": null,
     "cpu_enabled": true,

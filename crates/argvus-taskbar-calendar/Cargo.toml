@@ -14,6 +14,7 @@ name = "argvus-taskbar-calendar"
 path = "src/main.rs"
 
 [dependencies]
+argvus-taskbar-popup.workspace = true
 chrono = { version = "0.4.42", features = ["serde", "clock"] }
 clap = { version = "4.6.6", features = ["derive"] }
 env_logger = "0.11.8"

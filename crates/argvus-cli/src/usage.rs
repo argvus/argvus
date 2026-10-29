@@ -13,6 +13,9 @@ pub const TEXT: &str = r#"Usage:
   argvus --about [about tab]
   argvus --calendar [argvus taskbar-calendar options]
   argvus --game-snake
+  argvus --focus [argvus focus options]
+  argvus focus status --waybar [--follow]
+  argvus --clock [argvus clock options]
   argvus --default-apps [control center Apps options]
   argvus --removable-devices [argvus removable-devices options]
   argvus --displays [control center Displays page]
@@ -25,7 +28,7 @@ Commands:
   argvus sessionctl | session | start | tty
   argvus greeter | greeter-session | greeter-tui | greeter-setup
   argvus config | theme | i18n | accounts | firewall
-  argvus taskbar-calendar | removable-devices | notifications
+  argvus taskbar-calendar | removable-devices | notifications | focus | clock
   argvus networkctl | bluetoothctl | displayctl | widget-telemetry-toggle
   argvus launcher | projects | snippets | ssh | keys | gpg | git
   argvus tui-terminal | app-profiles-yazi-keymap | game-snake | terminal
@@ -37,7 +40,7 @@ Hyprland script commands (used by the Hyprland configuration):
   argvus idle-timeout | keep-awake | hypr-power-menu | effects-toggle
 
 Aliases:
-  argvus setup | system-monitor | control-center | terminal | spf | yazi | about | calendar | game-snake | default-apps | removable-devices | displays | version
+  argvus setup | system-monitor | control-center | terminal | spf | yazi | about | calendar | game-snake | focus | clock | default-apps | removable-devices | displays | version
 
 Setup options:
   --copy <app>   Copy /usr/share/argvus/<app> to ~/.config/argvus/data/<app>.

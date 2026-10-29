@@ -132,6 +132,8 @@ pub(super) enum Item {
   TaskbarDate,
   TaskbarTime,
   AudioPlayer,
+  FocusIcon,
+  FocusEnabled,
   LauncherIcon,
   LauncherEnabled,
   ChooseLauncherIcon,
@@ -228,6 +230,7 @@ impl Item {
       Self::TaskbarDate | Self::DateFormats => icons::CALENDAR,
       Self::TaskbarTime | Self::TimeFormats => icons::CLOCK,
       Self::AudioPlayer => icons::MUSIC,
+      Self::FocusIcon | Self::FocusEnabled => icons::TIMER,
       Self::LauncherIcon | Self::LauncherEnabled => icons::LAUNCHER,
       Self::ChooseLauncherIcon => icons::FOLDER,
       Self::UtilityWidget(widget) => utility_widget_icon(widget),
@@ -814,6 +817,7 @@ impl AppearanceApp {
       }));
       rows.push(self.submenu(Item::LauncherIcon, "control_center.launcher"));
       rows.push(self.submenu(Item::Utilities, "control_center.utilities"));
+      rows.push(self.submenu(Item::FocusIcon, "control_center.taskbar_focus_icon"));
       rows
     }
   }
@@ -1055,6 +1059,11 @@ impl AppearanceApp {
   fn section_rows(&self, surface: EffectSurface, section: SurfaceSection) -> Vec<Row<Item>> {
     let draft = self.surface_draft();
     match section {
+      SurfaceSection::Focus => vec![self.toggle_row(
+        Item::FocusEnabled,
+        "control_center.enable",
+        draft.is_some_and(|draft| draft.focus_enabled),
+      )],
       SurfaceSection::Launcher => vec![
         self.toggle_row(
           Item::LauncherEnabled,

@@ -7,11 +7,13 @@
 # in one package: the public CLI and its data, the GTK 4 helpers (kept out of the
 # command path) and the login greeter with its greetd files.
 
-# Helpers that are GTK 4 programs, installed in the private commands directory
-# under their subcommand names (control-center, removable-devices, taskbar-calendar).
+# Helpers and applications that are GTK 4 programs, installed in the private
+# commands directory under their subcommand names (for example `argvus clock`).
 # Cargo builds them as argvus-<name>; the installed file drops the prefix.
 ARGVUS_GTK_COMMANDS=(
+	clock
 	control-center
+	focus
 	removable-devices
 	taskbar-calendar
 )
@@ -59,7 +61,9 @@ arch_build_argvus_workspace() {
 		-p argvus-loading-theme \
 		-p argvus-removable-devices \
 		-p argvus-taskbar-calendar \
-		-p argvus-accounts
+		-p argvus-accounts \
+		-p argvus-focus \
+		-p argvus-clock
 
 	# The greeter is a member of the root workspace, built with the compact
 	# `greeter` profile, so its binaries land in target/greeter/ and not in release/.

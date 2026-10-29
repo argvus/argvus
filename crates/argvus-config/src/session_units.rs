@@ -8,6 +8,10 @@
 use std::fs;
 use std::path::{Path, PathBuf};
 
+use serde_json::Value;
+
+use crate::ConfigStore;
+
 const TASKBAR_UNIT: &str = "argvus-taskbar.service";
 const TELEMETRY_UNIT: &str = "argvus-widget-telemetry.service";
 
@@ -69,19 +73,37 @@ pub fn units_for(
 ///
 /// The current state file wins. Without it, the legacy desktop state file is
 /// read, then the legacy sysinfo state file. Only a first line of `enabled`
-/// counts as enabled.
-pub fn telemetry_enabled(cache_home: &Path) -> bool {
+/// counts as enabled. When no state file exists, `configured_default` decides:
+/// a new account has no state file, and the systemd unit must follow the same
+/// master switch that the widget toggle reads.
+pub fn telemetry_enabled(cache_home: &Path, configured_default: impl FnOnce() -> bool) -> bool {
   let waybar = cache_home.join("waybar");
-  let current = waybar.join("widget-telemetry-state");
-  let legacy_desktop = waybar.join("desktop-telemetry-state");
-  let state_file = if current.is_file() {
-    current
-  } else if legacy_desktop.is_file() {
-    legacy_desktop
-  } else {
-    waybar.join("sysinfo-state")
-  };
-  first_line(&state_file).as_deref() == Some("enabled")
+  let state_file = [
+    waybar.join("widget-telemetry-state"),
+    waybar.join("desktop-telemetry-state"),
+    waybar.join("sysinfo-state"),
+  ]
+  .into_iter()
+  .find(|path| path.is_file());
+  match state_file {
+    Some(path) => first_line(&path).as_deref() == Some("enabled"),
+    None => configured_default(),
+  }
+}
+
+/// The master switch `effects.widget_telemetry_enabled` from the stored
+/// configuration. The packaged default is on, so an unreadable configuration
+/// keeps the widget on.
+pub fn configured_telemetry_default() -> bool {
+  ConfigStore::from_environment()
+    .and_then(|store| store.load_effective())
+    .ok()
+    .and_then(|document| {
+      document
+        .get("/effects/widget_telemetry_enabled")
+        .and_then(Value::as_bool)
+    })
+    .unwrap_or(true)
 }
 
 /// Reads the first line of a state file, or `None` when it cannot be read.
@@ -147,19 +169,48 @@ mod tests {
   fn telemetry_state_follows_the_legacy_precedence() {
     let cache = unique_cache("precedence");
     let waybar = cache.join("waybar");
-    assert!(!telemetry_enabled(&cache), "no state file means disabled");
 
     fs::write(waybar.join("sysinfo-state"), "enabled\n").expect("legacy state");
-    assert!(telemetry_enabled(&cache));
+    assert!(telemetry_enabled(&cache, || false));
 
     fs::write(waybar.join("desktop-telemetry-state"), "disabled\n").expect("desktop state");
     assert!(
-      !telemetry_enabled(&cache),
+      !telemetry_enabled(&cache, || true),
       "desktop legacy overrides sysinfo"
     );
 
     fs::write(waybar.join("widget-telemetry-state"), "enabled\n").expect("current state");
-    assert!(telemetry_enabled(&cache), "current state overrides legacy");
+    assert!(
+      telemetry_enabled(&cache, || false),
+      "current state overrides legacy"
+    );
+    let _ = fs::remove_dir_all(cache);
+  }
+
+  #[test]
+  fn configured_default_applies_only_without_a_state_file() {
+    let cache = unique_cache("default");
+    let waybar = cache.join("waybar");
+
+    assert!(
+      telemetry_enabled(&cache, || true),
+      "new account follows the default on"
+    );
+    assert!(!telemetry_enabled(&cache, || false), "and the default off");
+
+    fs::write(waybar.join("widget-telemetry-state"), "disabled\n").expect("current state");
+    assert!(
+      !telemetry_enabled(&cache, || true),
+      "an explicit disabled state beats the default"
+    );
+    let _ = fs::remove_dir_all(cache);
+  }
+
+  #[test]
+  fn state_file_skips_reading_the_configured_default() {
+    let cache = unique_cache("skip-default");
+    fs::write(cache.join("waybar/widget-telemetry-state"), "enabled\n").expect("current state");
+    assert!(telemetry_enabled(&cache, || panic!("must not be read")));
     let _ = fs::remove_dir_all(cache);
   }
 }

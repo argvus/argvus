@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <!-- ARGVUS Focus: a progress ring around a focus dot. Original artwork, GPL-3.0-only. -->
+  <rect x="8" y="8" width="112" height="112" rx="26" fill="#14171b"/>
+  <circle cx="64" cy="64" r="36" fill="none" stroke="#2a3138" stroke-width="10"/>
+  <path d="M64 28 A36 36 0 1 1 28.6 70.3" fill="none" stroke="#3791be" stroke-width="10" stroke-linecap="round"/>
+  <circle cx="64" cy="64" r="11" fill="#3791be"/>
+</svg>

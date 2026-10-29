@@ -808,7 +808,7 @@ fn reset_layout_geometry(document: &mut ConfigDocument, variant: &str) -> Config
   let (gaps_in, gaps_out, rounded, rounding, border_size, margins) = if variant == "float" {
     (10, 18, true, 4, 1, [18, 18, 18, 18])
   } else {
-    (2, 0, false, 0, 1, [0, 0, 0, 0])
+    (2, 0, false, 0, 1, [0, 0, 0, 1])
   };
   let values = [
     ("/layout/window/gaps_in", Value::from(gaps_in)),

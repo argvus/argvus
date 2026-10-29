@@ -1,0 +1,29 @@
+[package]
+name = "argvus-focus"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+description = "ARGVUS Focus: Pomodoro and focus sessions for the ARGVUS desktop"
+repository.workspace = true
+homepage.workspace = true
+
+[[bin]]
+name = "argvus-focus"
+path = "src/main.rs"
+
+[dependencies]
+argvus-taskbar-popup.workspace = true
+argvus-time-core.workspace = true
+argvus-time-ui.workspace = true
+chrono.workspace = true
+clap.workspace = true
+env_logger.workspace = true
+gtk.workspace = true
+log.workspace = true
+serde.workspace = true
+
+[dev-dependencies]
+serde_json.workspace = true
+tempfile.workspace = true

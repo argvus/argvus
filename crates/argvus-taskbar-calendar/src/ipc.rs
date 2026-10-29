@@ -39,13 +39,7 @@ impl IpcCommand {
   }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct PopupAnchor {
-  pub x: i32,
-  pub y: i32,
-  pub bar_bottom: Option<i32>,
-  pub bar_right: Option<i32>,
-}
+pub use argvus_taskbar_popup::PopupAnchor;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct IpcMessage {

@@ -26,6 +26,11 @@ description: Arquivos e diretórios instalados importantes.
 * `$XDG_CONFIG_HOME/argvus/data/generated/gtk/` — arquivos de tema do GTK projetados.
 * `$XDG_CONFIG_HOME/argvus/data/rofi/` — cópias do usuário da configuração, dos temas e do modo do Rofi. O ARGVUS cria cada cópia quando altera o arquivo pela primeira vez; arquivos não alterados são lidos de `/usr/share/argvus/launcher/config/`.
 * `$XDG_CONFIG_HOME/argvus/data/generated/removable-devices/theme.css` — stylesheet projetado de dispositivos removíveis.
+* `$XDG_CONFIG_HOME/argvus/data/focus/settings.json`, `$XDG_DATA_HOME/argvus/focus/history.json`, `$XDG_STATE_HOME/argvus/focus/session.json` — configurações, histórico de sessões e checkpoint da sessão atual do ARGVUS Focus.
+* `$XDG_RUNTIME_DIR/argvus/focus/status.json` — status temporário do ARGVUS Focus consumido pela taskbar; removido quando o Focus encerra.
+* `$XDG_CONFIG_HOME/argvus/data/clock/settings.json`, `$XDG_DATA_HOME/argvus/clock/alarms.json`, `$XDG_STATE_HOME/argvus/clock/timers.json` — configurações e relógios mundiais, alarmes e checkpoint do temporizador e do cronômetro do ARGVUS Clock.
+* `$XDG_CONFIG_HOME/argvus/data/generated/theme/current/time/theme.css` — cores do ARGVUS Focus e do ARGVUS Clock (consumidor de tema `time`).
+* `/usr/share/argvus/sounds/` — sons do ARGVUS Focus e do ARGVUS Clock (`argvus-chime.oga`, `argvus-beacon.oga`, `argvus-bell.oga`).
 * `$XDG_CONFIG_HOME/argvus/data/generated/theme/` — builds de tema (`builds/<id>-<variante>-<hash>/`), gravados pelo `argvus theme render` e por toda troca de tema e de destaque, e o symlink `current` para o build do tema ativo.
 * `$XDG_CONFIG_HOME/argvus/data/hypr/` — overrides Lua e projeções nativas do Hyprland.
 * `$XDG_CONFIG_HOME/hypr/hyprland.lua` — configuração nativa completa opcional do Hyprland, selecionada pelo `argvus start`; não é um overlay incremental.

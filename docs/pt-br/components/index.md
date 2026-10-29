@@ -16,6 +16,8 @@ Estes componentes foram consolidados no workspace `argvus`. As páginas de usuá
 | Login (greetd) | `argvus greeter` | [Greeter](/pt/docs/components/argvus-greeter/) |
 | Calendário | `argvus taskbar-calendar` | [Calendário](/pt/docs/components/argvus-taskbar-calendar/) |
 | Dispositivos removíveis | `argvus removable-devices` | [Dispositivos removíveis](/pt/docs/components/argvus-removable-devices/) |
+| Foco (Pomodoro) | `argvus focus` | [ARGVUS Focus](/pt/docs/components/argvus-focus/) |
+| Relógio, temporizadores e alarmes | `argvus clock` | [ARGVUS Clock](/pt/docs/components/argvus-clock/) |
 | Temas | `argvus theme-switch` | [Temas](/docs/components/argvus-themes/) |
 | Chaves | `argvus keys`, `argvus gpg` | [Chaves](/docs/components/argvus-keys/) |
 | Projetos | `argvus projects` | [Projetos](/docs/components/argvus-projects/) |

@@ -12,7 +12,6 @@ use std::{
 use chrono::{Datelike, Days, Local, NaiveDate};
 use gtk::glib::clone;
 use gtk::prelude::*;
-use gtk4_layer_shell::LayerShell;
 use relm4::{ComponentParts, ComponentSender, RelmApp, SimpleComponent};
 
 use crate::calendar::{
@@ -40,6 +39,8 @@ mod popup;
 mod render;
 mod styling;
 
+pub(crate) use argvus_taskbar_popup::geometry::current_pointer_position;
+use argvus_taskbar_popup::{PopupController, PopupSize};
 use build::{
   build_calendar_view, build_editor_view, build_settings_view, connect_focus_dismiss,
   install_keyboard_shortcuts, serve_ipc, watch_theme,
@@ -52,32 +53,16 @@ use form_widgets::{
   editor_control_has_focus, editor_entry, editor_label, editor_number_spin, editor_row,
   settings_label, settings_number_spin, settings_section_label,
 };
-pub(crate) use popup::current_pointer_position;
-use popup::{apply_layer_shell, hide_popup, pointer_is_outside_popup, present_popup};
+use popup::{apply_layer_shell, hide_popup, present_popup};
 use render::{load_day_and_month, render_model};
 use styling::{load_css, theme_fingerprint};
 
 const POPUP_WIDTH: i32 = 398;
 const POPUP_HEIGHT_ESTIMATE: i32 = 520;
-const POPUP_GAP_Y: i32 = 4;
-// Layer namespaces that identify the horizontal bar. ARGVUS taskbar runs Waybar
-// with the `argvus-taskbar` namespace; plain Waybar uses `waybar`.
-const WAYBAR_LAYER_NAMESPACES: [&str; 2] = ["argvus-taskbar", "waybar"];
-
-type PopupBounds = (i32, i32, i32, i32);
-
-#[derive(Default)]
-struct PopupState {
-  bounds: Cell<Option<PopupBounds>>,
-  dismiss_armed: Cell<bool>,
-  presentation_id: Cell<u64>,
-  // Tracks whether the window has actually gained keyboard focus since the
-  // current presentation. Guards against a spurious `has-focus-notify`
-  // firing before the compositor ever granted focus (e.g. right after the
-  // keyboard mode switches from Exclusive to OnDemand), which would
-  // otherwise be mistaken for the user clicking outside the popup.
-  focused_once: Cell<bool>,
-}
+const POPUP_SIZE: PopupSize = PopupSize {
+  width: POPUP_WIDTH,
+  height_estimate: POPUP_HEIGHT_ESTIMATE,
+};
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 struct ThemeFingerprint {
@@ -247,7 +232,7 @@ pub struct AppModel {
   fixed_position: Option<PopupAnchor>,
   view: ViewState,
   i18n: I18n,
-  popup_state: Rc<PopupState>,
+  popup_state: Rc<PopupController>,
   _theme_watcher: Rc<Cell<ThemeFingerprint>>,
   css_providers: Rc<RefCell<Vec<gtk::CssProvider>>>,
 }
@@ -309,7 +294,7 @@ impl SimpleComponent for AppModel {
     popup.set_size_request(POPUP_WIDTH, -1);
     popup.set_hexpand(true);
     popup.set_vexpand(false);
-    let popup_state = Rc::new(PopupState::default());
+    let popup_state = PopupController::new();
     let theme_watcher = Rc::new(Cell::new(theme_fingerprint(&init.paths)));
     let model = AppModel {
       window: window.clone(),
@@ -636,7 +621,6 @@ pub fn run_ui(
 #[cfg(test)]
 mod tests {
   use super::drafts::update_draft;
-  use super::popup::{WaybarGeometry, popup_origin, select_waybar};
   use super::styling::stylesheet_paths;
   use chrono::NaiveDate;
 
@@ -713,77 +697,6 @@ mod tests {
     assert!(can_create_event(
       today().checked_add_days(Days::new(1)).unwrap()
     ));
-  }
-
-  #[test]
-  fn popup_opens_below_the_fixed_click_position() {
-    assert_eq!(popup_origin(1902, 46, 0, 0, 1920, 1080), (1504, 50));
-    assert_eq!(popup_origin(1920, 1060, 0, 0, 1920, 1080), (1522, 560));
-  }
-
-  #[test]
-  fn popup_right_edge_follows_waybar_not_click_position() {
-    let layers = serde_json::json!({"HDMI-A-1": {"levels": {"1": [
-      {"namespace":"waybar", "x":18, "y":18, "w":1884, "h":28},
-      {"namespace":"waybar", "x":18, "y":64, "w":384, "h":998}
-    ]}}});
-    for y in [0, 7, 17, 18, 30, 45, 46] {
-      let bar = select_waybar(&layers, 1600, y, (0, 0, 1920, 1080, 64)).unwrap();
-      assert_eq!(
-        bar,
-        WaybarGeometry {
-          top: 18,
-          right: 1902,
-          bottom: 46
-        }
-      );
-      assert_eq!(
-        popup_origin(bar.right, bar.bottom, 0, 0, 1920, 1080),
-        (1504, 50)
-      );
-    }
-  }
-
-  #[test]
-  fn argvus_taskbar_layer_is_recognized_at_top_and_bottom() {
-    let top = serde_json::json!({"HDMI-A-1": {"levels": {"1": [
-      {"namespace":"argvus-taskbar", "x":18, "y":18, "w":1884, "h":28},
-      {"namespace":"argvus-widget-telemetry", "x":18, "y":64, "w":384, "h":998}
-    ]}}});
-    let bar = select_waybar(&top, 1600, 30, (0, 0, 1920, 1080, 64)).unwrap();
-    assert_eq!(
-      bar,
-      WaybarGeometry {
-        top: 18,
-        right: 1902,
-        bottom: 46
-      }
-    );
-    assert_eq!(
-      popup_origin(bar.right, bar.bottom, 0, 0, 1920, 1080),
-      (1504, 50)
-    );
-
-    let bottom = serde_json::json!({"HDMI-A-1": {"levels": {"1": [
-      {"namespace":"argvus-taskbar", "x":18, "y":1034, "w":1884, "h":28}
-    ]}}});
-    let bar = select_waybar(&bottom, 1600, 1040, (0, 0, 1920, 1080, 0)).unwrap();
-    assert_eq!(bar.top, 1034);
-    assert_eq!(bar.right, 1902);
-    assert_eq!(bar.bottom, 1062);
-  }
-
-  #[test]
-  fn bottom_bar_is_found_even_with_surface_local_click_coordinates() {
-    let layers = serde_json::json!({"HDMI-A-1": {"levels": {"1": [
-      {"namespace":"waybar", "x":0, "y":1050, "w":1920, "h":28},
-      {"namespace":"waybar", "x":0, "y":0, "w":384, "h":1050}
-    ]}}});
-    for y in [7, 1050, 1077] {
-      let bar = select_waybar(&layers, 1600, y, (0, 0, 1920, 1080, 0)).unwrap();
-      assert_eq!(bar.top, 1050);
-      assert_eq!(bar.right, 1920);
-    }
   }
 
   #[test]

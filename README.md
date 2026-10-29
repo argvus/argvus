@@ -42,6 +42,8 @@ power, display, network, notifications and themes — all packaged for Arch Linu
 - **Lock screen** — Hyprlock-based lock screen synchronized with the active theme
 - **Notifications, power, display, network** — Desktop providers with their own packaged configuration
 - **Removable devices** — UDisks2-backed storage actions in the taskbar and menus
+- **ARGVUS Focus** — Pomodoro and focus sessions with breaks, notifications and a local history
+- **ARGVUS Clock** — Clock, world clocks, stopwatch, timer and alarms with sound, snooze and missed-alarm reports
 - **Terminal and TUI apps** — Terminal profiles, system monitor and app profiles for bundled TUI tools
 - **Themes** — 23 official theme families, each in the Sticky and Float layouts
 - **Games** — Optional. Snake for the terminal (`argvus-game-snake`, an independent project), with a local high score list
@@ -52,7 +54,7 @@ power, display, network, notifications and themes — all packaged for Arch Linu
 `argvus` is the master package and the only package built from this repository. It installs the
 command, its in-process subcommands and the shared runtime, the Control Center (a terminal
 application), the GTK 4 helpers for the taskbar calendar, removable devices and the loading
-overlay, and the login greeter (built from `crates/argvus-greeter`). Every component package
+overlay, the ARGVUS Focus and ARGVUS Clock applications, and the login greeter (built from `crates/argvus-greeter`). Every component package
 depends on it, so no install order is required.
 
 | Area | Packages and commands |
@@ -69,6 +71,7 @@ depends on it, so no install order is required.
 | Display, power, network and notifications | `argvus-display`, `argvus-power`, `argvus network`, `argvus-notifications` |
 | Desktop portals and Wayland/DBus defaults | `argvus-portal` |
 | Removable storage | `argvus removable-devices` (in `argvus`) |
+| Focus sessions, clock, timers and alarms | `argvus focus`, `argvus clock` (in `argvus`) |
 | Accounts | `argvus accounts` (runs as root through `pkexec`) |
 | Firewall | `argvus-firewall` |
 | Games | `argvus-games`; `argvus-game-snake` is independent and optional |

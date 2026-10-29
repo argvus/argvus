@@ -158,6 +158,13 @@ impl AppearanceApp {
       Item::AudioPlayer => self.edit_draft(|draft| {
         draft.audio_player_enabled = !draft.audio_player_enabled;
       }),
+      Item::FocusIcon => self.go(AppearancePage::SurfaceSection {
+        surface: EffectSurface::Taskbar,
+        section: SurfaceSection::Focus,
+      }),
+      Item::FocusEnabled => self.edit_draft(|draft| {
+        draft.focus_enabled = !draft.focus_enabled;
+      }),
       Item::LauncherIcon => self.go(AppearancePage::SurfaceSection {
         surface: EffectSurface::Taskbar,
         section: SurfaceSection::Launcher,

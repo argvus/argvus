@@ -92,10 +92,48 @@ fn defaults_report_nested_values_that_are_not_objects() {
   }
   let mut document = ConfigDocument::default();
   apply_defaults(&mut document).unwrap();
+  assert_eq!(
+    document.get("/taskbar/icons/focus_enabled"),
+    Some(&Value::Bool(true))
+  );
+  let mut disabled = ConfigDocument::default();
+  disabled
+    .set("/taskbar/icons/focus_enabled", Value::Bool(false))
+    .unwrap();
+  apply_defaults(&mut disabled).unwrap();
+  assert_eq!(
+    disabled.get("/taskbar/icons/focus_enabled"),
+    Some(&Value::Bool(false))
+  );
   assert!(
     document
       .get("/layout/taskbar")
       .is_some_and(Value::is_object)
+  );
+  assert_eq!(
+    document.get("/layout/taskbar/margin_bottom"),
+    Some(&Value::from(1))
+  );
+
+  let mut float = ConfigDocument::default();
+  float
+    .set("/layout/variant", Value::String("float".into()))
+    .unwrap();
+  apply_defaults(&mut float).unwrap();
+  assert_eq!(
+    float.get("/layout/taskbar/margin_bottom"),
+    Some(&Value::from(18))
+  );
+
+  let mut customized = ConfigDocument::default();
+  customized
+    .set("/layout/taskbar/margin_bottom", Value::from(0))
+    .unwrap();
+  apply_defaults(&mut customized).unwrap();
+  assert_eq!(
+    customized.get("/layout/taskbar/margin_bottom"),
+    Some(&Value::from(0)),
+    "defaults must preserve explicit user margins"
   );
 }
 

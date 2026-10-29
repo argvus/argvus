@@ -173,17 +173,39 @@ version = "0.1.0"
 dependencies = [
  "argvus-config",
  "argvus-i18n",
+ "argvus-i18n-core",
  "argvus-keys",
  "argvus-network-commands",
  "argvus-projects",
  "argvus-system-monitor",
  "argvus-terminal",
  "argvus-theme-core",
+ "argvus-time-core",
  "argvus-tui-terminal",
  "argvus-widget-telemetry-blocks",
  "argvus-widget-telemetry-toggle",
+ "chrono",
  "libc",
  "serde_json",
+]
+
+[[package]]
+name = "argvus-clock"
+version = "0.1.0"
+dependencies = [
+ "argvus-taskbar-popup",
+ "argvus-time-core",
+ "argvus-time-ui",
+ "chrono",
+ "chrono-tz",
+ "clap",
+ "env_logger",
+ "gtk4",
+ "gtk4-layer-shell",
+ "log",
+ "serde",
+ "serde_json",
+ "tempfile",
 ]
 
 [[package]]
@@ -484,6 +506,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "argvus-focus"
+version = "0.1.0"
+dependencies = [
+ "argvus-taskbar-popup",
+ "argvus-time-core",
+ "argvus-time-ui",
+ "chrono",
+ "clap",
+ "env_logger",
+ "gtk4",
+ "log",
+ "serde",
+ "serde_json",
+ "tempfile",
+]
+
+[[package]]
 name = "argvus-greeter"
 version = "0.1.0"
 dependencies = [
@@ -630,6 +669,7 @@ version = "0.1.0"
 name = "argvus-taskbar-calendar"
 version = "0.1.0"
 dependencies = [
+ "argvus-taskbar-popup",
  "chrono",
  "clap",
  "env_logger",
@@ -649,6 +689,15 @@ dependencies = [
  "tokio",
  "toml 0.9.12+spec-1.1.0",
  "uuid",
+]
+
+[[package]]
+name = "argvus-taskbar-popup"
+version = "0.1.0"
+dependencies = [
+ "gtk4",
+ "gtk4-layer-shell",
+ "serde_json",
 ]
 
 [[package]]
@@ -681,6 +730,35 @@ dependencies = [
  "serde",
  "tempfile",
  "thiserror 2.0.21",
+ "toml 0.8.23",
+]
+
+[[package]]
+name = "argvus-time-core"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "chrono-tz",
+ "iana-time-zone",
+ "log",
+ "rustix 1.1.5",
+ "serde",
+ "serde_json",
+ "tempfile",
+ "thiserror 2.0.21",
+]
+
+[[package]]
+name = "argvus-time-ui"
+version = "0.1.0"
+dependencies = [
+ "argvus-i18n-core",
+ "argvus-theme-core",
+ "chrono",
+ "gtk4",
+ "log",
+ "serde",
+ "tempfile",
  "toml 0.8.23",
 ]
 

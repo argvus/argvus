@@ -54,7 +54,10 @@ pub(super) fn run(arguments: Vec<String>) -> Result<(), Box<dyn std::error::Erro
       _ => return Err("usage: argvus config session-splash start|stop".into()),
     },
     "session-telemetry" => {
-      let enabled = session_units::telemetry_enabled(&cache_home()?);
+      let enabled = session_units::telemetry_enabled(
+        &cache_home()?,
+        session_units::configured_telemetry_default,
+      );
       println!("{}", if enabled { "enabled" } else { "disabled" });
     }
     "audio" => crate::audio::run(&store, &arguments[1..])?,

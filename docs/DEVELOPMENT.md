@@ -126,6 +126,15 @@ The removable-devices helper is the `argvus removable-devices` route, provided b
 `/usr/share/argvus/removable-devices/config` (shipped by `argvus`), and its system-wide
 JSON config lives under `/etc/argvus/removable-devices/`.
 
+ARGVUS Focus (`argvus focus`) and ARGVUS Clock (`argvus clock`) are GTK 4 applications of the
+`argvus` package (crates `argvus-focus`, `argvus-clock`, sharing `argvus-time-core` and
+`argvus-time-ui`). Their preferences live in `$XDG_CONFIG_HOME/argvus/data/{focus,clock}/`,
+their records in `$XDG_DATA_HOME/argvus/{focus,clock}/` and their checkpoints in
+`$XDG_STATE_HOME/argvus/{focus,clock}/`. Packaged sounds are in `/usr/share/argvus/sounds/`
+and their colours come from the `time` theme consumer. `cargo run` and `cargo test` read the
+sounds and application icons of the source tree through `ARGVUS_SOUNDS_DIR` and
+`ARGVUS_ICONS_DIR` (set in `.cargo/config.toml`).
+
 `argvus-wallpapers` and `argvus-fonts` own wallpapers and bundled fonts. Desktop
 configs should reference `/usr/share/backgrounds/argvus` and system fonts rather
 than copying those assets into `~/.config`.

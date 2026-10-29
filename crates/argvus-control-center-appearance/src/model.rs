@@ -232,6 +232,7 @@ pub enum EffectSurface {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SurfaceSection {
+  Focus,
   Launcher,
   UtilityIcons,
   Sessions,
@@ -484,6 +485,7 @@ pub struct AppearanceState {
   pub taskbar_border_thickness: u32,
   pub taskbar_utility_group: TaskbarUtilityGroupMode,
   pub taskbar_audio_player_enabled: bool,
+  pub taskbar_focus_enabled: bool,
   pub taskbar_launcher_enabled: bool,
   pub taskbar_launcher_custom_icon_path: Option<String>,
   pub taskbar_utility_widgets: TaskbarUtilityWidgets,
@@ -563,6 +565,7 @@ impl Default for AppearanceState {
       taskbar_border_thickness: 1,
       taskbar_utility_group: TaskbarUtilityGroupMode::AlwaysExpanded,
       taskbar_audio_player_enabled: true,
+      taskbar_focus_enabled: true,
       taskbar_launcher_enabled: true,
       taskbar_launcher_custom_icon_path: None,
       taskbar_utility_widgets: TaskbarUtilityWidgets::default(),
@@ -572,7 +575,7 @@ impl Default for AppearanceState {
       waybar_top: 0,
       waybar_left: 0,
       waybar_right: 0,
-      waybar_bottom: 0,
+      waybar_bottom: 1,
       gaps_in: 3,
       gaps_out_top: 1,
       gaps_out_left: 1,

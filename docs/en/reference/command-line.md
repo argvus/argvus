@@ -9,8 +9,8 @@ Run `argvus --help` for the list installed with your version. The subcommands ar
 
 ## Where each command runs
 
-- **In-process:** the command is a library of the workspace and runs inside `argvus`. No separate executable exists. These are `config`, `theme`, `i18n`, `keys`, `gpg`, `projects`, `terminal`, `system-monitor`, `network`, `bluetooth`, `widget-telemetry`, `tui-terminal` and `setup`.
-- **Helper:** a separate executable in `/usr/lib/argvus/commands/`, installed by the `argvus` package. These are `control-center` (a terminal application) and the GTK 4 applications `taskbar-calendar` and `removable-devices`.
+- **In-process:** the command is a library of the workspace and runs inside `argvus`. No separate executable exists. These are `config`, `theme`, `i18n`, `keys`, `gpg`, `projects`, `terminal`, `system-monitor`, `network`, `bluetooth`, `focus status`, `widget-telemetry`, `tui-terminal` and `setup`.
+- **Helper:** a separate executable in `/usr/lib/argvus/commands/`, installed by the `argvus` package. These are `control-center` (a terminal application) and the GTK 4 applications `taskbar-calendar`, `removable-devices`, `focus` and `clock`.
 - **Private executable:** an executable that another package installs in `/usr/lib/argvus/commands/`. `argvus` only starts it. These include `session`, `start`, `tty`, `sessionctl`, `launcher`, `snippets`, `ssh`, `git`, `app-profiles-yazi-keymap`, `notifications`, `displayctl`, `firewall`, `accounts`, `taskbar-actions` and the `greeter-*` entry points.
 - **Script:** a packaged shell script run with `/bin/sh`. These are the Hyprland script commands listed below.
 
@@ -36,6 +36,9 @@ Run `argvus --help` for the list installed with your version. The subcommands ar
 | `argvus control-center [page]` | Helper (terminal application) | Opens the Control Center, or focuses the window that is already open. |
 | `argvus taskbar-calendar [args]` | GTK 4 application | Defaults to `toggle`. |
 | `argvus removable-devices [args]` | GTK 4 application | Defaults to `menu`. |
+| `argvus focus [--toggle] [--start\|--pause] [--x X --y Y] [--bar-bottom PX --bar-right PX]` | GTK 4 application | ARGVUS Focus popup. One instance per session. |
+| `argvus focus status --waybar [--follow]` | In-process | Emits the Focus taskbar indicator as Waybar JSON; `--follow` streams changes without loading GTK. |
+| `argvus clock [--toggle] [--background] [--page PAGE] [--x X --y Y] [--bar-bottom PX --bar-right PX]` | GTK 4 application | ARGVUS Clock popup. One instance per session; `--background` keeps alarms active without a popup. |
 | `argvus loading-theme ...` | Packaged `splash` at `/usr/lib/argvus/loading-theme/splash` | The overlay of direct session reloads; a theme switch does not use it. |
 | `argvus session`, `start`, `tty`, `sessionctl` | Private executables | Session entry points and the session controller. |
 | `argvus greeter`, `greeter-session`, `greeter-tui`, `greeter-setup` | Private executables | Greeter entry points. |
@@ -59,6 +62,7 @@ These names exist so that keybindings, desktop entries and older scripts keep wo
 | `--network-interfaces` | `control-center network interfaces` |
 | `--system-monitor`, `--terminal`, `--game-snake` | `system-monitor`, `terminal`, `game-snake` |
 | `--calendar`, `--removable-devices`, `--storage` | `taskbar-calendar`, `removable-devices` |
+| `--focus`, `--clock` | `focus`, `clock` |
 | `--spf`, `--superfile` | the file manager (`spf`) |
 | `--yazi`, `--yazy` | the file browser (`yazi`) |
 | `--setup` | `setup` |

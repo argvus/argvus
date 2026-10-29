@@ -3,6 +3,6 @@ title: UI components
 description: ARGVUS user-interface packages.
 ---
 
-UI packages include `argvus-control-panel`, `argvus-taskbar` and `argvus-launcher`, and the `argvus` subcommands `argvus control-center` (helper in `argvus`), `argvus taskbar-calendar`, `argvus widget-telemetry`, `argvus terminal`, `argvus system-monitor` and `argvus removable-devices`.
+UI packages include `argvus-control-panel`, `argvus-taskbar` and `argvus-launcher`, and the `argvus` subcommands `argvus control-center` (helper in `argvus`), `argvus taskbar-calendar`, `argvus widget-telemetry`, `argvus terminal`, `argvus system-monitor`, `argvus removable-devices`, `argvus focus` and `argvus clock`. The calendar, Focus and Clock use the shared `argvus-taskbar-popup` crate for layer-shell positioning and dismissal; Focus also exposes its Waybar status reader through the in-process `argvus focus status` route.
 
 Their user-facing behavior is documented by feature; this page records package ownership.

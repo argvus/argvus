@@ -1,0 +1,31 @@
+[package]
+name = "argvus-clock"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+description = "ARGVUS Clock: clock, world clocks, stopwatch, timer and alarms for the ARGVUS desktop"
+repository.workspace = true
+homepage.workspace = true
+
+[[bin]]
+name = "argvus-clock"
+path = "src/main.rs"
+
+[dependencies]
+argvus-taskbar-popup.workspace = true
+argvus-time-core.workspace = true
+argvus-time-ui.workspace = true
+chrono.workspace = true
+chrono-tz.workspace = true
+clap.workspace = true
+env_logger.workspace = true
+gtk.workspace = true
+gtk4-layer-shell.workspace = true
+log.workspace = true
+serde.workspace = true
+
+[dev-dependencies]
+serde_json.workspace = true
+tempfile.workspace = true

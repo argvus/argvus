@@ -6,7 +6,7 @@ description: ARGVUS package responsibilities.
 | Package | Responsibility |
 | --- | --- |
 | `argvus` | Master package: dispatcher, in-process commands (configuration, translations, keys, projects, terminal, system monitor, network, Bluetooth, telemetry, TUI terminal, setup), the shared data and the i18n catalogs. Every component package depends on it. |
-| `argvus` (helpers) | Helpers in the same package: the Control Center (a terminal application), and the GTK 4 applications for the taskbar calendar, removable devices and the loading overlay. |
+| `argvus` (helpers) | Helpers in the same package: the Control Center (a terminal application), and the GTK 4 applications for the taskbar calendar, removable devices, the loading overlay, ARGVUS Focus and ARGVUS Clock. |
 | `argvus` (greeter) | Login greeter for greetd, shipped in the same package and built from `crates/argvus-greeter`. |
 | `argvus-session` | Session entry points and user lifecycle. |
 | `argvus-hyprland` | Hyprland configuration. |

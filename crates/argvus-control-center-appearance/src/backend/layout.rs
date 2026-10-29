@@ -153,6 +153,9 @@ pub(super) fn apply_canonical_taskbar(state: &mut AppearanceState) {
   if let Some(value) = boolean(icons, "audio_player_enabled") {
     state.taskbar_audio_player_enabled = value;
   }
+  if let Some(value) = boolean(icons, "focus_enabled") {
+    state.taskbar_focus_enabled = value;
+  }
   if let Some(value) = boolean(icons, "launcher_enabled") {
     state.taskbar_launcher_enabled = value;
   }

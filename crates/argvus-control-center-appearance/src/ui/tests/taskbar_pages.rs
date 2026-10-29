@@ -15,6 +15,7 @@ fn taskbar_page_lists_height_and_border_after_the_spaces() {
     28,
     "the default height is 28"
   );
+  assert_eq!(application.state.waybar_bottom, 1);
 }
 
 #[test]
@@ -32,6 +33,14 @@ fn height_and_border_pages_extend_the_taskbar_breadcrumb() {
   assert_eq!(
     application.breadcrumb_of(AppearancePage::TaskbarBorderThickness),
     format!("{taskbar} > Border > Thickness")
+  );
+  let icons = application.breadcrumb_of(AppearancePage::TaskbarIcons);
+  assert_eq!(
+    application.breadcrumb_of(AppearancePage::SurfaceSection {
+      surface: EffectSurface::Taskbar,
+      section: SurfaceSection::Focus,
+    }),
+    format!("{icons} > Focus")
   );
 }
 
@@ -76,7 +85,7 @@ fn taskbar_icons_lists_checks_first_and_submenus_last_with_icons() {
     .iter()
     .position(|row| row.kind() == RowKind::Submenu)
     .expect("Taskbar icons ends with submenus");
-  assert_eq!(first_submenu, rows.len() - 2);
+  assert_eq!(first_submenu, rows.len() - 3);
   assert!(
     rows[..first_submenu]
       .iter()
@@ -113,13 +122,35 @@ fn taskbar_icons_date_time_pages_toggle_and_end_with_apply() {
   let draft = |application: &AppearanceApp| application.surface_draft().unwrap().clone();
 
   let before = draft(&icons_page);
+  assert!(before.focus_enabled, "Focus is enabled by default");
   select(&mut icons_page, Item::AudioPlayer);
   icons_page.handle(KeyCode::Enter);
+  select(&mut icons_page, Item::FocusIcon);
+  icons_page.handle(KeyCode::Enter);
+  assert_eq!(
+    icons_page.page,
+    AppearancePage::SurfaceSection {
+      surface: EffectSurface::Taskbar,
+      section: SurfaceSection::Focus,
+    }
+  );
+  icons_page.job = None;
+  select(&mut icons_page, Item::FocusEnabled);
+  icons_page.handle(KeyCode::Enter);
+  assert_eq!(
+    icons_page.surface_draft().unwrap().focus_enabled,
+    !before.focus_enabled
+  );
+  icons_page.handle(KeyCode::Esc);
+  assert_eq!(icons_page.page, AppearancePage::TaskbarIcons);
+  icons_page.job = None;
+
   let widget = TaskbarUtilityWidget::GpuTemperature;
   select(&mut icons_page, Item::UtilityWidget(widget));
   icons_page.handle(KeyCode::Enter);
   let after = draft(&icons_page);
   assert_eq!(after.audio_player_enabled, !before.audio_player_enabled);
+  assert_eq!(after.focus_enabled, !before.focus_enabled);
   assert_eq!(
     after.utility_widgets.enabled(widget),
     !before.utility_widgets.enabled(widget)

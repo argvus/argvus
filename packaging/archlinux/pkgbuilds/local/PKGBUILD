@@ -63,6 +63,8 @@ depends=(
   'gtk4'
   'gtk-layer-shell'
   'gtk4-layer-shell'
+  'gst-plugins-base'
+  'gst-plugins-good'
   'imv'
   'audacious'
   'udisks2'

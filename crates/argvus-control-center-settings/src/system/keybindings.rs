@@ -181,6 +181,14 @@ pub fn cheatsheet_description(lang: Lang, binding: &Binding) -> Option<String> {
     "app.scratchpad" => ("Terminal scratchpad", "Terminal suspenso (scratchpad)"),
     "app.file_manager" => ("File Manager", "Gerenciador de arquivos"),
     "app.removable_devices" => ("Removable devices menu", "Menu de dispositivos removíveis"),
+    "app.focus" => (
+      "ARGVUS Focus (Pomodoro and focus sessions)",
+      "ARGVUS Focus (Pomodoro e sessões de foco)",
+    ),
+    "app.clock" => (
+      "ARGVUS Clock (clock, timers and alarms)",
+      "ARGVUS Clock (relógio, temporizadores e alarmes)",
+    ),
     "app.browser" => ("Default Browser", "Navegador padrão"),
     "app.launcher" => ("Program Launcher", "Lançador de programas"),
     "app.calculator" => ("Calculator", "Calculadora"),

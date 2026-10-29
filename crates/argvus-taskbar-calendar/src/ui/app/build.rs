@@ -598,25 +598,10 @@ pub(super) fn build_settings_view(
 pub(super) fn connect_focus_dismiss(
   window: &gtk::Window,
   sender: &ComponentSender<AppModel>,
-  popup_state: &Rc<PopupState>,
+  popup_state: &Rc<PopupController>,
 ) {
-  window.connect_has_focus_notify(clone!(
-    #[strong]
-    sender,
-    #[strong]
-    popup_state,
-    move |window| {
-      if window.has_focus() {
-        popup_state.focused_once.set(true);
-      } else if window.is_visible()
-        && popup_state.dismiss_armed.get()
-        && popup_state.focused_once.get()
-        && pointer_is_outside_popup(popup_state.bounds.get())
-      {
-        sender.input(AppMsg::ClickOutside);
-      }
-    }
-  ));
+  let sender = sender.clone();
+  popup_state.connect_focus_dismiss(window, move || sender.input(AppMsg::ClickOutside));
 }
 
 /// Window-wide shortcuts. While a text field or spin button has focus only

@@ -1,0 +1,14 @@
+[Desktop Entry]
+Type=Application
+Name=ARGVUS Focus
+GenericName=Focus Timer
+GenericName[pt_BR]=Temporizador de foco
+Comment=Pomodoro and focus sessions with breaks and a session history
+Comment[pt_BR]=Pomodoro e sessões de foco com pausas e histórico de sessões
+Exec=argvus focus
+Icon=sh.argvus.Focus
+Terminal=false
+Categories=Utility;Clock;
+Keywords=Pomodoro;Focus;Timer;Productivity;Break;Concentration;
+Keywords[pt_BR]=Pomodoro;Foco;Temporizador;Produtividade;Pausa;Concentração;
+StartupNotify=true

@@ -19,3 +19,14 @@ the bar shows and moves the scroll window.
 
 The blocks are `header`, `keys`, `system`, `cpu_gpu`, `memory`, `storage`, `processes`,
 `network` and `dev_dashboard`. The taskbar also uses the `cpu-temp` and `gpu` probes.
+
+## Starting with the session
+
+The `argvus-widget-telemetry.service` user unit starts with the session only when the widget is
+enabled. The master switch is `effects.widget_telemetry_enabled` in the configuration, which is
+enabled by default, so a new account starts the widget at login.
+
+Once the toggle has written `$XDG_CACHE_HOME/argvus/waybar/widget-telemetry-state`, that file
+decides instead. Only a first line of `enabled` starts the widget. The older
+`desktop-telemetry-state` and `sysinfo-state` files are still read when the current file is
+missing.

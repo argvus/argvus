@@ -1,0 +1,69 @@
+/* ARGVUS Focus. Only the colour names of the time theme consumer are used. */
+
+window.argvus-focus .mode-switch button {
+  padding: 4px 14px;
+}
+
+window.argvus-focus .mode-switch button:checked {
+  background-color: @time_surface_strong;
+  color: @time_accent;
+}
+
+window.argvus-focus .phase-pill {
+  font-weight: 700;
+  font-size: 0.8em;
+  letter-spacing: 0.1em;
+  padding: 2px 10px;
+  border-radius: 4px;
+  background-color: alpha(@time_accent, 0.14);
+  color: @time_accent;
+}
+
+window.argvus-focus .phase-pill.short-break {
+  background-color: alpha(@time_break, 0.16);
+  color: @time_break;
+}
+
+window.argvus-focus .phase-pill.long-break {
+  background-color: alpha(@time_long_break, 0.16);
+  color: @time_long_break;
+}
+
+/* The ring is drawn in the widget colour. */
+window.argvus-focus .focus-ring {
+  color: @time_accent;
+}
+
+window.argvus-focus .focus-ring.short-break {
+  color: @time_break;
+}
+
+window.argvus-focus .focus-ring.long-break {
+  color: @time_long_break;
+}
+
+window.argvus-focus .cycle-dot {
+  min-width: 10px;
+  min-height: 10px;
+  border-radius: 999px;
+  background-color: @time_track;
+}
+
+window.argvus-focus .cycle-dot.done {
+  background-color: @time_accent;
+}
+
+window.argvus-focus .pill-button {
+  min-width: 132px;
+  min-height: 40px;
+  font-weight: 600;
+}
+
+window.argvus-focus .summary-today {
+  font-size: 1.15em;
+  font-weight: 600;
+}
+
+window.argvus-focus .hint {
+  opacity: 0.8;
+}

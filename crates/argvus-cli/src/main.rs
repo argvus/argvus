@@ -9,6 +9,7 @@ mod control_center;
 mod copy;
 mod dispatch;
 mod exec;
+mod focus_status;
 mod paths;
 mod script;
 mod setup;

@@ -8,6 +8,8 @@ ARGVUS exposes common applications through the `argvus` dispatcher and focused p
 - [Launcher](/docs/argvus-launcher/)
 - [Terminal](/docs/components/argvus-terminal/)
 - [Calendar](/docs/components/argvus-taskbar-calendar/)
+- [ARGVUS Focus](/docs/components/argvus-focus/) (Pomodoro and focus sessions)
+- [ARGVUS Clock](/docs/components/argvus-clock/) (clock, world clocks, stopwatch, timer and alarms)
 - [Games](/docs/argvus-games/) (including [Snake](/docs/argvus-games/snake/))
 - [System monitor](/docs/components/argvus-system-monitor/)
 - [Default applications](/docs/components/argvus-control-center/)

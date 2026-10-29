@@ -103,6 +103,7 @@ pub(super) fn run_taskbar_config(arguments: &[&str]) -> Result<(), String> {
 /// surface restarts it once, under the splash, when any of them changed.
 pub fn apply_taskbar_icons_and_format(
   audio_player_enabled: bool,
+  focus_enabled: bool,
   launcher_enabled: bool,
   utility_widgets: &TaskbarUtilityWidgets,
   date_format: TaskbarDateFormat,
@@ -113,6 +114,10 @@ pub fn apply_taskbar_icons_and_format(
   patch.insert(
     "/taskbar/icons/audio_player_enabled".into(),
     Value::Bool(audio_player_enabled),
+  );
+  patch.insert(
+    "/taskbar/icons/focus_enabled".into(),
+    Value::Bool(focus_enabled),
   );
   patch.insert(
     "/taskbar/icons/launcher_enabled".into(),

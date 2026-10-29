@@ -1,0 +1,27 @@
+[package]
+name = "argvus-time-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+description = "Timers, Pomodoro cycles, alarms, time zones and storage shared by ARGVUS Focus and ARGVUS Clock"
+repository.workspace = true
+homepage.workspace = true
+
+[dependencies]
+chrono.workspace = true
+chrono-tz.workspace = true
+iana-time-zone.workspace = true
+log.workspace = true
+rustix = { workspace = true, features = ["time"] }
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true
+
+[lib]
+name = "argvus_time_core"
+path = "src/lib.rs"

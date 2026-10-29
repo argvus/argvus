@@ -99,7 +99,7 @@ fn home_has_categories_and_spacing_is_nested() {
   assert_eq!(app(AppearancePage::Borders).page_rows().len(), 3);
   assert_eq!(
     app(AppearancePage::TaskbarIcons).page_rows().len(),
-    2 + TaskbarUtilityWidget::ALL.len() + 1
+    3 + TaskbarUtilityWidget::ALL.len() + 1
   );
   assert_eq!(app(AppearancePage::TaskbarDate).page_rows().len(), 1);
   assert_eq!(app(AppearancePage::TaskbarDateFormat).page_rows().len(), 4);

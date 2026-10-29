@@ -9,8 +9,8 @@ Execute `argvus --help` para ver a lista da sua versão instalada. Os subcomando
 
 ## Onde cada comando roda
 
-- **Em processo:** o comando é uma biblioteca do workspace e roda dentro do `argvus`. Não existe executável separado. São `config`, `theme`, `i18n`, `keys`, `gpg`, `projects`, `terminal`, `system-monitor`, `network`, `bluetooth`, `widget-telemetry`, `tui-terminal` e `setup`.
-- **Auxiliar:** um executável separado em `/usr/lib/argvus/commands/`, instalado pelo pacote `argvus`. São `control-center` (aplicativo de terminal) e os aplicativos GTK 4 `taskbar-calendar` e `removable-devices`.
+- **Em processo:** o comando é uma biblioteca do workspace e roda dentro do `argvus`. Não existe executável separado. São `config`, `theme`, `i18n`, `keys`, `gpg`, `projects`, `terminal`, `system-monitor`, `network`, `bluetooth`, `focus status`, `widget-telemetry`, `tui-terminal` e `setup`.
+- **Auxiliar:** um executável separado em `/usr/lib/argvus/commands/`, instalado pelo pacote `argvus`. São `control-center` (aplicativo de terminal) e os aplicativos GTK 4 `taskbar-calendar`, `removable-devices`, `focus` e `clock`.
 - **Executável privado:** um executável que outro pacote instala em `/usr/lib/argvus/commands/`. O `argvus` apenas o inicia. Incluem `session`, `start`, `tty`, `sessionctl`, `launcher`, `snippets`, `ssh`, `git`, `app-profiles-yazi-keymap`, `notifications`, `displayctl`, `firewall`, `accounts`, `taskbar-actions` e os pontos de entrada `greeter-*`.
 - **Script:** um script de shell empacotado, executado com `/bin/sh`. São os comandos de script do Hyprland listados abaixo.
 
@@ -36,6 +36,9 @@ Execute `argvus --help` para ver a lista da sua versão instalada. Os subcomando
 | `argvus control-center [página]` | Auxiliar (aplicativo de terminal) | Abre o Centro de Controle, ou foca a janela que já está aberta. |
 | `argvus taskbar-calendar [args]` | Auxiliar GTK 4 | O padrão é `toggle`. |
 | `argvus removable-devices [args]` | Auxiliar GTK 4 | O padrão é `menu`. |
+| `argvus focus [--toggle] [--start\|--pause] [--x X --y Y] [--bar-bottom PX --bar-right PX]` | Aplicativo GTK 4 | Popup do ARGVUS Focus. Uma instância por sessão. |
+| `argvus focus status --waybar [--follow]` | Em processo | Emite o indicador da taskbar em JSON Waybar; `--follow` transmite mudanças sem carregar GTK. |
+| `argvus clock [--toggle] [--background] [--page PÁGINA] [--x X --y Y] [--bar-bottom PX --bar-right PX]` | Aplicativo GTK 4 | Popup do ARGVUS Clock. Uma instância por sessão; `--background` mantém alarmes ativos sem popup. |
 | `argvus loading-theme ...` | `splash` empacotado em `/usr/lib/argvus/loading-theme/splash` | O overlay dos reloads diretos da sessão; a troca de tema não o usa. |
 | `argvus session`, `start`, `tty`, `sessionctl` | Executáveis privados | Pontos de entrada da sessão e o controlador da sessão. |
 | `argvus greeter`, `greeter-session`, `greeter-tui`, `greeter-setup` | Executáveis privados | Pontos de entrada do greeter. |
@@ -59,6 +62,7 @@ Esses nomes existem para que atalhos do Hyprland, entradas de aplicativos e scri
 | `--network-interfaces` | `control-center network interfaces` |
 | `--system-monitor`, `--terminal`, `--game-snake` | `system-monitor`, `terminal`, `game-snake` |
 | `--calendar`, `--removable-devices`, `--storage` | `taskbar-calendar`, `removable-devices` |
+| `--focus`, `--clock` | `focus`, `clock` |
 | `--spf`, `--superfile` | o gerenciador de arquivos (`spf`) |
 | `--yazi`, `--yazy` | o navegador de arquivos (`yazi`) |
 | `--setup` | `setup` |

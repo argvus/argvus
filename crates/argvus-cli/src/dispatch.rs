@@ -6,7 +6,7 @@ use crate::commands::{
   TASKBAR_CALENDAR, required_executable,
 };
 use crate::exec::{Failure, Outcome, is_executable, replace_process};
-use crate::{apps, control_center, script, setup, usage};
+use crate::{apps, control_center, focus_status, script, setup, usage};
 use std::ffi::OsString;
 use std::io::{self, IsTerminal};
 use std::path::Path;
@@ -43,6 +43,11 @@ pub fn run(arguments: &[OsString]) -> Outcome {
       Ok(argvus_system_monitor::run_command(owned_arguments(rest)?))
     }
     "--control-center" | "control-center" => control_center::run(rest.to_vec()),
+    // The taskbar indicator of ARGVUS Focus runs in this process, so the bar
+    // never loads the GTK application for it.
+    "focus" if rest.first().is_some_and(|argument| argument == "status") => {
+      focus_status::run(&owned_arguments(&rest[1..])?)
+    }
     "tui-terminal" => Ok(argvus_tui_terminal::run_command(owned_arguments(rest)?)),
     "--terminal" | "terminal" => Ok(argvus_terminal::run_command(owned_arguments(rest)?)),
     "projects" => Ok(argvus_projects::run_command(owned_arguments(rest)?)),
@@ -69,6 +74,8 @@ pub fn run(arguments: &[OsString]) -> Outcome {
     "--about" | "about" => control_center::run(with_leading("--about", rest)),
     "--calendar" | "calendar" => exec_named(TASKBAR_CALENDAR, &default_arguments(rest, "toggle")),
     "--game-snake" | "game-snake" => game_snake(rest),
+    "--focus" => exec_private(PrivateCommand::Focus, rest),
+    "--clock" => exec_private(PrivateCommand::Clock, rest),
     "--default-apps" | "default-apps" => control_center::run(with_leading("apps", rest)),
     "--removable-devices" | "removable-devices" | "--storage" | "storage" => {
       exec_named(REMOVABLE_DEVICES, &default_arguments(rest, "menu"))

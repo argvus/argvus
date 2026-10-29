@@ -1,0 +1,25 @@
+[Desktop Entry]
+Type=Application
+Name=ARGVUS Clock
+GenericName=Clock
+GenericName[pt_BR]=Relógio
+Comment=Clock, world clocks, stopwatch, timer and alarms
+Comment[pt_BR]=Relógio, relógios mundiais, cronômetro, temporizador e alarmes
+Exec=argvus clock
+Icon=sh.argvus.Clock
+Terminal=false
+Categories=Utility;Clock;
+Keywords=Clock;Alarm;Timer;Stopwatch;World;Time zone;
+Keywords[pt_BR]=Relógio;Alarme;Temporizador;Cronômetro;Mundo;Fuso horário;
+StartupNotify=true
+Actions=Alarms;Timer;
+
+[Desktop Action Alarms]
+Name=Alarms
+Name[pt_BR]=Alarmes
+Exec=argvus clock --page alarms
+
+[Desktop Action Timer]
+Name=Timer
+Name[pt_BR]=Temporizador
+Exec=argvus clock --page timer

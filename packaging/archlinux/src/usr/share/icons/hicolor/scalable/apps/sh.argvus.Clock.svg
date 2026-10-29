@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <!-- ARGVUS Clock: a clock face with an alarm bell accent. Original artwork, GPL-3.0-only. -->
+  <rect x="8" y="8" width="112" height="112" rx="26" fill="#14171b"/>
+  <circle cx="64" cy="66" r="38" fill="#1c2127" stroke="#3791be" stroke-width="7"/>
+  <path d="M64 42 V66 L80 76" fill="none" stroke="#dfe5ea" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M30 30 a14 14 0 0 1 18 -6" fill="none" stroke="#3791be" stroke-width="7" stroke-linecap="round"/>
+  <path d="M98 30 a14 14 0 0 0 -18 -6" fill="none" stroke="#3791be" stroke-width="7" stroke-linecap="round"/>
+  <circle cx="64" cy="66" r="4" fill="#dfe5ea"/>
+</svg>

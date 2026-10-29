@@ -13,6 +13,7 @@ pub(super) fn recreates_surface(draft: &SurfaceDraft, current: &SurfaceDraft) ->
       draft.height != current.height
         || draft.utility_group != current.utility_group
         || draft.audio_player_enabled != current.audio_player_enabled
+        || draft.focus_enabled != current.focus_enabled
         || draft.launcher_enabled != current.launcher_enabled
         || draft.utility_widgets != current.utility_widgets
         || draft.date_format != current.date_format
@@ -55,6 +56,7 @@ pub(super) fn apply_taskbar_draft(draft: &SurfaceDraft, recreate: bool) -> Resul
   backend::set_taskbar_utility_group(draft.utility_group)?;
   backend::apply_taskbar_icons_and_format(
     draft.audio_player_enabled,
+    draft.focus_enabled,
     draft.launcher_enabled,
     &draft.utility_widgets,
     draft.date_format,
@@ -241,6 +243,7 @@ impl AppearanceApp {
       surface,
       utility_group: self.state.taskbar_utility_group,
       audio_player_enabled: self.state.taskbar_audio_player_enabled,
+      focus_enabled: self.state.taskbar_focus_enabled,
       launcher_enabled: self.state.taskbar_launcher_enabled,
       utility_widgets: self.state.taskbar_utility_widgets.clone(),
       date_format: self.state.taskbar_date_format,

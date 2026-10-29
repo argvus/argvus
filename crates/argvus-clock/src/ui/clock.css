@@ -1,0 +1,106 @@
+/* ARGVUS Clock. Only the colour names of the time theme consumer are used. */
+
+window.argvus-clock .tabs button {
+  padding: 2px 5px;
+  font-size: 12px;
+}
+
+window.argvus-clock .tabs button:checked {
+  background-color: @time_surface_strong;
+  color: @time_accent;
+}
+
+window.argvus-clock .period {
+  font-size: 1.4em;
+  color: @time_muted;
+}
+
+window.argvus-clock .date {
+  font-size: 1.1em;
+}
+
+window.argvus-clock .next-alarm {
+  color: @time_accent;
+}
+
+window.argvus-clock .city {
+  font-weight: 600;
+}
+
+window.argvus-clock .world-time {
+  font-size: 1.5em;
+  font-weight: 300;
+}
+
+window.argvus-clock .alarm-time {
+  font-size: 1.8em;
+  font-weight: 300;
+}
+
+window.argvus-clock row.disabled .alarm-time,
+window.argvus-clock row.disabled .caption {
+  opacity: 0.55;
+}
+
+window.argvus-clock .pill-button {
+  min-width: 120px;
+  min-height: 38px;
+  font-weight: 600;
+}
+
+window.argvus-clock .timer-fields spinbutton,
+window.argvus-clock .time-spin {
+  font-size: 2em;
+  font-weight: 300;
+}
+
+window.argvus-clock .timer-progress progress {
+  background-color: @time_accent;
+}
+
+window.argvus-clock .timer-progress trough {
+  background-color: @time_track;
+}
+
+window.argvus-clock .weekdays button {
+  padding: 3px 2px;
+  min-width: 0;
+}
+
+window.argvus-clock .weekdays button:checked {
+  background-color: @time_accent;
+  color: @time_on_accent;
+}
+
+window.argvus-clock .heading {
+  font-weight: 700;
+}
+
+/* The ringing alert. */
+window.argvus-ring {
+  background-color: transparent;
+}
+
+window.argvus-ring .ring-card {
+  background-color: @time_bg;
+  color: @time_fg;
+  border: 1px solid @time_border;
+  border-radius: 4px;
+  padding: 12px 14px;
+  min-width: 420px;
+  font-family: monospace;
+  font-size: 13px;
+}
+
+window.argvus-ring .ring-icon {
+  color: @time_accent;
+}
+
+window.argvus-ring .ring-title {
+  font-size: 1.3em;
+  font-weight: 700;
+}
+
+window.argvus-ring .ring-sound-error {
+  color: @time_danger;
+}

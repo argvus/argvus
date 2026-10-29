@@ -154,6 +154,7 @@
           "type": "object",
           "properties": {
             "audio_player_enabled": { "type": "boolean" },
+            "focus_enabled": { "type": "boolean" },
             "launcher_enabled": { "type": "boolean" },
             "launcher_custom_icon_path": { "type": ["string", "null"] },
             "network_enabled": { "type": "boolean" },

@@ -4,3 +4,7 @@
 # the environment wins.
 [env]
 ARGVUS_I18N_DIR = { value = "resources/locales", relative = true }
+# The same for the sounds and application icons of ARGVUS Focus and ARGVUS Clock,
+# which the package installs in /usr/share/argvus/sounds and /usr/share/icons.
+ARGVUS_SOUNDS_DIR = { value = "packaging/archlinux/src/usr/share/argvus/sounds", relative = true }
+ARGVUS_ICONS_DIR = { value = "packaging/archlinux/src/usr/share/icons", relative = true }

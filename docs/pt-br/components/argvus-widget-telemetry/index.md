@@ -19,3 +19,14 @@ barra mostra e move a janela de rolagem.
 
 Os blocos são `header`, `keys`, `system`, `cpu_gpu`, `memory`, `storage`, `processes`, `network` e
 `dev_dashboard`. A taskbar também usa as sondas `cpu-temp` e `gpu`.
+
+## Início com a sessão
+
+A unit de usuário `argvus-widget-telemetry.service` só inicia com a sessão quando o widget está
+ativado. O interruptor mestre é `effects.widget_telemetry_enabled` na configuração, que vem
+ligado por padrão, então uma conta nova inicia o widget no login.
+
+Depois que a alternância grava `$XDG_CACHE_HOME/argvus/waybar/widget-telemetry-state`, esse
+arquivo passa a decidir. Só uma primeira linha `enabled` inicia o widget. Os arquivos antigos
+`desktop-telemetry-state` e `sysinfo-state` continuam sendo lidos quando o arquivo atual não
+existe.

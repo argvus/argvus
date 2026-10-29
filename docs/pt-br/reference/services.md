@@ -5,7 +5,7 @@ description: Serviços systemd do ARGVUS.
 
 O target principal é `argvus-session.target`. Serviços comuns incluem `argvus-taskbar.service`, `argvus-control-panel.service`, `argvus-widget-telemetry.service`, `argvus-dunst.service`, `argvus-wallpaper.service`, `argvus-hypridle.service` e `argvus-session-loading.service`.
 
-O firewall usa `argvus-firewall.service`; o calendário instala `argvus-taskbar-calendar.service` como unit de usuário.
+O firewall usa `argvus-firewall.service`; o calendário instala `argvus-taskbar-calendar.service` como unit de usuário, e `argvus-clock.service` (desativada por padrão) inicia o ARGVUS Clock oculto após o login quando **Iniciar com a sessão** está ligado.
 
 ```sh
 systemctl --user status argvus-session.target
@@ -45,7 +45,7 @@ systemctl --user status argvus-session.target
 journalctl --user -u argvus-session.target -u 'argvus-*.service'
 ```
 
-O serviço de sistema `argvus-firewall.service` pertence ao `argvus-firewall`. O pacote do calendário fornece separadamente `argvus-taskbar-calendar.service` como uma unit de usuário.
+O serviço de sistema `argvus-firewall.service` pertence ao `argvus-firewall`. O pacote do calendário fornece separadamente `argvus-taskbar-calendar.service` como uma unit de usuário. `argvus-clock.service` é uma unit de usuário do pacote `argvus`, `WantedBy=graphical-session.target`, ativada nas configurações do ARGVUS Clock.
 
 ## Comandos de gerenciamento de sessão
 

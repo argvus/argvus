@@ -5,7 +5,7 @@ description: ARGVUS systemd and user services.
 
 The main user target is `argvus-session.target`. Common user services include `argvus-taskbar.service`, `argvus-control-panel.service`, `argvus-widget-telemetry.service`, `argvus-dunst.service`, `argvus-wallpaper.service`, `argvus-hypridle.service`, clipboard services and `argvus-session-loading.service`.
 
-The firewall is a system service named `argvus-firewall.service`. The calendar package installs `argvus-taskbar-calendar.service` as a user unit.
+The firewall is a system service named `argvus-firewall.service`. The calendar package installs `argvus-taskbar-calendar.service` as a user unit, and `argvus-clock.service` (disabled by default) starts ARGVUS Clock hidden after login when **Start with the session** is on.
 
 Inspect active units with:
 
@@ -47,7 +47,7 @@ systemctl --user status argvus-session.target
 journalctl --user -u argvus-session.target -u 'argvus-*.service'
 ```
 
-The system-level `argvus-firewall.service` belongs to `argvus-firewall`. The calendar package separately ships `argvus-taskbar-calendar.service` as a user unit.
+The system-level `argvus-firewall.service` belongs to `argvus-firewall`. The calendar package separately ships `argvus-taskbar-calendar.service` as a user unit. `argvus-clock.service` is a user unit of the `argvus` package, `WantedBy=graphical-session.target`, enabled from the ARGVUS Clock settings.
 
 ## Session management commands
 

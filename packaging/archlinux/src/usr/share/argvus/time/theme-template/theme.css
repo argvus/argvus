@@ -1,0 +1,15 @@
+/* Colours of ARGVUS Focus and ARGVUS Clock. Rendered by the theme build; the
+   applications' own stylesheets only use these names. */
+@define-color time_bg {{ @time_bg | hex }};
+@define-color time_fg {{ @time_fg | hex }};
+@define-color time_accent {{ @time_accent | hex }};
+@define-color time_on_accent {{ @time_on_accent | hex }};
+@define-color time_surface {{ @time_surface | hex }};
+@define-color time_surface_strong {{ @time_surface_strong | hex }};
+@define-color time_muted {{ @time_muted | hex }};
+@define-color time_border {{ @time_border | rgba }};
+@define-color time_focus {{ @time_focus | rgba }};
+@define-color time_track {{ @time_track | rgba }};
+@define-color time_break {{ @time_break | hex }};
+@define-color time_long_break {{ @time_long_break | hex }};
+@define-color time_danger {{ @time_danger | hex }};

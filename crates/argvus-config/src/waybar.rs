@@ -58,7 +58,7 @@ pub const TASKBAR_BORDER_WIDTHS: [u32; 4] = [0, 1, 2, 3];
 /// the right group with the MPRIS player, and the MPRIS player's hover edge.
 const TASKBAR_BORDER_BLOCKS: [&str; 4] = [
   "window#waybar {",
-  "#right-0, #right-1, #right-2, #mpris, #custom-spotify-mpris {",
+  "#right-0, #right-1, #right-2, #focus, #mpris, #custom-spotify-mpris {",
   "#mpris,",
   "#mpris:hover,",
 ];
@@ -225,7 +225,7 @@ pub fn apply_layout(paths: &SessionPaths, theme: &str) -> io::Result<()> {
       ("#workspaces button.active,", layout.taskbar_radii[1]),
       ("tooltip {", layout.taskbar_radii[2]),
       (
-        "#right-0, #right-1, #right-2, #right-search, #mpris",
+        "#right-0, #right-1, #right-2, #focus, #right-search, #mpris",
         layout.taskbar_radii[3],
       ),
     ];
@@ -400,7 +400,7 @@ mod tests {
 
   #[test]
   fn taskbar_border_width_reaches_every_bordered_block() {
-    let css = "window#waybar {\n  border: 1px solid @th-decorate;\n}\n\n#right-0, #right-1, #right-2, #mpris, #custom-spotify-mpris {\n  border: 1px solid @th-border-rights;\n}\n\n#mpris,\n#custom-spotify-mpris {\n  border: 1px solid @th-mpris-border;\n}\n\n#mpris:hover,\n#custom-spotify-mpris:hover {\n  border-bottom: 1px solid @th-decorate;\n}\n";
+    let css = "window#waybar {\n  border: 1px solid @th-decorate;\n}\n\n#right-0, #right-1, #right-2, #focus, #mpris, #custom-spotify-mpris {\n  border: 1px solid @th-border-rights;\n}\n\n#mpris,\n#custom-spotify-mpris {\n  border: 1px solid @th-mpris-border;\n}\n\n#mpris:hover,\n#custom-spotify-mpris:hover {\n  border-bottom: 1px solid @th-decorate;\n}\n";
     let off = set_taskbar_border_width(css, 0);
     assert_eq!(off.matches("0px solid").count(), 4);
     assert_eq!(off.matches("border-bottom: 0px").count(), 1);

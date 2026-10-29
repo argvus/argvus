@@ -6,7 +6,7 @@ description: Responsabilidades dos pacotes do ARGVUS.
 | Pacote | Responsabilidade |
 | --- | --- |
 | `argvus` | Pacote mestre: dispatcher, comandos em processo (configuração, traduções, chaves, projetos, terminal, monitor do sistema, rede, Bluetooth, telemetria, terminal TUI, setup), os dados compartilhados e os catálogos de i18n. Todo pacote de componente depende dele. |
-| `argvus` (auxiliares) | Auxiliares no mesmo pacote: o Centro de Controle (aplicativo de terminal) e os aplicativos GTK 4 do calendário da barra, dispositivos removíveis e overlay de carregamento. |
+| `argvus` (auxiliares) | Auxiliares no mesmo pacote: o Centro de Controle (aplicativo de terminal) e os aplicativos GTK 4 do calendário da barra, dispositivos removíveis, overlay de carregamento, ARGVUS Focus e ARGVUS Clock. |
 | `argvus` (greeter) | Greeter de login para o greetd, no mesmo pacote, gerado a partir de `crates/argvus-greeter`. |
 | `argvus-session` | Pontos de entrada da sessão e ciclo de vida do usuário. |
 | `argvus-hyprland` | Configuração do Hyprland. |

@@ -330,6 +330,7 @@ fn apply_keeps_rendering_the_just_applied_draft_until_refresh_replaces_it() {
   let mut application = draft_app(AppearancePage::TaskbarIcons);
   let draft = application.surface_draft.as_mut().unwrap();
   draft.audio_player_enabled = false;
+  draft.focus_enabled = false;
   draft.launcher_enabled = false;
 
   application.apply_surface_changes();
@@ -338,6 +339,7 @@ fn apply_keeps_rendering_the_just_applied_draft_until_refresh_replaces_it() {
     .surface_draft()
     .expect("the just-edited draft must still be present right after Apply");
   assert!(!draft.audio_player_enabled);
+  assert!(!draft.focus_enabled);
   assert!(!draft.launcher_enabled);
   assert!(application.action.is_some());
 }

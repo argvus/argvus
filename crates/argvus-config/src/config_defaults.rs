@@ -111,6 +111,10 @@ fn default_layout(document: &mut ConfigDocument, theme: &str) {
   layout
     .entry("variant")
     .or_insert_with(|| Value::String(theme_layout_variant(theme).into()));
+  let taskbar_bottom_default = match layout.get("variant").and_then(Value::as_str) {
+    Some("float") => 18,
+    _ => 1,
+  };
   {
     let taskbar = layout
       .entry("taskbar")
@@ -118,7 +122,7 @@ fn default_layout(document: &mut ConfigDocument, theme: &str) {
       .as_object_mut()
       .expect("layout.taskbar is object");
     for (key, value) in [
-      ("margin_bottom", Value::from(0)),
+      ("margin_bottom", Value::from(taskbar_bottom_default)),
       ("margin_left", Value::from(0)),
       ("margin_right", Value::from(0)),
       ("margin_top", Value::from(0)),
@@ -237,6 +241,9 @@ fn default_taskbar(document: &mut ConfigDocument) {
   let icons = icons.as_object_mut().expect("taskbar.icons is object");
   icons
     .entry("audio_player_enabled")
+    .or_insert_with(|| Value::Bool(true));
+  icons
+    .entry("focus_enabled")
     .or_insert_with(|| Value::Bool(true));
   icons
     .entry("launcher_enabled")

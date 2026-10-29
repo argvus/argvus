@@ -996,6 +996,7 @@
   "control_center.taskbar_utility_group_always_expanded": "Always expanded",
   "control_center.taskbar_utility_group_changed": "Taskbar utility group updated",
   "control_center.taskbar_audio_player_view": "Audio Player view",
+  "control_center.taskbar_focus_icon": "Focus",
   "control_center.utilities": "Utilities",
   "control_center.taskbar_power_profile": "Power profile",
   "control_center.keyboard_layout": "Keyboard layout",
