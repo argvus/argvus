@@ -326,3 +326,13 @@ fn system_doctor_and_legacy_routes_share_all_pages() {
     }
   }
 }
+
+#[cfg(feature = "snapshot")]
+#[test]
+fn snapshot_route_has_no_arbitrary_page_or_action_arguments() {
+  assert_eq!(
+    parse(&args(&["snapshot"])).unwrap(),
+    Some(InitialRoute::Snapshot)
+  );
+  assert!(parse(&args(&["snapshot", "delete", "1"])).is_err());
+}

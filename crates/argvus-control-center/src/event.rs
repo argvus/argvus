@@ -7,6 +7,10 @@ use crate::app::{App, Route};
 
 pub fn handle(app: &mut App, event: Event) {
   if let Event::Paste(text) = event {
+    #[cfg(feature = "snapshot")]
+    if app.route == Route::Snapshot {
+      app.snapshot.paste(&text);
+    }
     if app.route == Route::Settings {
       app.settings.admin_paste(&text);
     }
@@ -167,6 +171,12 @@ pub fn handle(app: &mut App, event: Event) {
     Route::Packages => {
       // The whole event: the repository editor saves with Ctrl+S.
       if app.packages.handle_key(key) {
+        app.route = Route::Home;
+      }
+    }
+    #[cfg(feature = "snapshot")]
+    Route::Snapshot => {
+      if app.snapshot.handle_key(key) {
         app.route = Route::Home;
       }
     }

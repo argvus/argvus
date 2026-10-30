@@ -11,6 +11,10 @@ impl App {
       tr(self.lang, "control_center.close_help"),
       "",
     ];
+    #[cfg(feature = "snapshot")]
+    if self.route == Route::Snapshot {
+      lines.push(self.snapshot.help_text());
+    }
     if self.route == Route::Home {
       lines.extend([
         tr(self.lang, "control_center.menu"),

@@ -149,8 +149,9 @@ backup=(
 )
 install=argvus.install
 
-# Tools that no ARGVUS component runs; they are offered, not required.
+# Optional runtime integrations and companion tools.
 optdepends=(
+  'snapper: root Btrfs snapshot management in the Control Center'
   'fastfetch: system summary in the terminal'
   'wev: inspect Wayland input events when writing keybindings'
   'networkmanager: Network & Wi-Fi pages and connection editor of the Control Center'

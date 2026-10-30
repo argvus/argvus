@@ -170,6 +170,8 @@ impl App {
         self.route = Route::Audio;
         self.audio.reload();
       }
+      #[cfg(feature = "snapshot")]
+      HomeDestination::Snapshot => self.open_snapshot(),
       #[cfg(feature = "storage")]
       HomeDestination::Storage => {
         self.route = Route::Storage;

@@ -311,3 +311,56 @@ selected-row treatment and contextual footer. `argvus-tui::page` provides this
 shell and the bounded keyboard selection primitive. Esc and Left return one
 level, and domain-home Back returns to global Home. Background probes remain
 outside rendering. See [docs/RECOVERY1.md](docs/RECOVERY1.md).
+
+## Snapshot
+
+Open **Control Center > System Administration > Snapshot**, search for
+`Snapper`, or run `argvus control-center snapshot`. The `snapshot` Cargo feature
+is included in `full` (the default), and is independent of `storage`.
+
+This page manages only an existing Snapper configuration whose `SUBVOLUME` is
+`/` and whose `FSTYPE` is `btrfs`. It checks the mount containing `/` with
+`findmnt`; a configuration named `root` pointing elsewhere is not accepted.
+Multiple matching configurations require a selection. The `snapper` Arch package
+is optional and must be installed manually. Snapper must support `--jsonout` and
+explicit active/default columns. No configuration is created automatically.
+
+On a non-Btrfs root the page displays **This filesystem is not Btrfs** and offers
+no snapshot operations. Detection failure, missing Snapper, missing root
+configuration, permission denial and backend errors are separate states.
+If normal-user queries are denied, press **a — Authorize** to request Polkit
+access. Administrative actions run in the restricted `system-settings` helper,
+not in an elevated TUI; authentication may be requested again on later queries.
+An existing graphical Polkit agent is required for authentication.
+
+Keys: **↑/↓** select, **Enter** details/configuration, **c** create, **d** delete,
+**r** refresh, **Esc** back, **?** help. Creation opens an optional description
+(up to 256 printable characters); an empty description uses “ARGVUS manual
+snapshot”. Both creation and deletion require confirmation, initially focused on
+Cancel. Deletion applies to one selected snapshot and rejects snapshot 0, the
+currently active snapshot and the default snapshot. The helper rechecks these
+conditions before invoking Snapper. Lists refresh after operations; an interrupted
+operation is never retried automatically. Inspect the refreshed list first.
+
+Manual snapshots are `single`, read-only by Snapper's default, with no cleanup
+algorithm assigned by this page. Existing Snapper timers and external operations
+continue to apply. Snapshots are not full-system images: separate subvolumes,
+including a separate `/home`, are not included. This version provides **no
+rollback, restore, automatic cleanup, installation or Snapper configuration**.
+
+### Manual validation
+
+- On an ext4/xfs root, open the page in English and Portuguese. In Portuguese,
+  verify the exact message **Este sistema de arquivos não é Btrfs** and verify
+  that c/d do not open an operation.
+- In a disposable Btrfs VM, test Snapper absent, Snapper without a root
+  configuration, and a configuration named `root` pointing to another subvolume.
+- With an existing root configuration, list snapshots, open details, create a
+  snapshot with spaces/special characters, cancel a deletion, then delete only
+  the newly created snapshot after confirming its number and description.
+- Check denied/cancelled authentication, protected active/default snapshots,
+  refresh, keyboard navigation, resize and both languages. Do not test deletion
+  against snapshots needed for recovery.
+
+Only the `argvus` package changes. Rebuild from `de/argvus` with `make build` to
+produce the `.pkg.tar.zst` package; installing it is a separate operator action.

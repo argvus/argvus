@@ -18,6 +18,8 @@ mod dns;
 mod packages;
 mod power;
 mod privileges;
+#[cfg(feature = "snapshot")]
+mod snapshot;
 mod streaming;
 
 pub(super) use boot::{backup_file, boot_write_atomic};
@@ -75,6 +77,8 @@ pub fn run(args: &[String]) -> Result<(), String> {
     }
     [area, action, governor] if area == "governor" && action == "set" => set_governor(governor),
     [area, action, values @ ..] if area == "power" => run_power(action, values),
+    #[cfg(feature = "snapshot")]
+    [area, action, values @ ..] if area == "snapshot" => snapshot::run(action, values),
     [area, action, values @ ..] if area == "boot" => run_boot(action, values),
     [area, action, values @ ..] if area == "package" => run_package(action, values),
     [area, action, values @ ..] if area == "network" => run_network(action, values),
@@ -162,6 +166,11 @@ fn validate_args(args: &[String]) -> Result<(), String> {
     .then_some(())
     .ok_or_else(|| "unsupported governor".into()),
     [area, action, values @ ..] if area == "power" => validate_power(action, values),
+    #[cfg(feature = "snapshot")]
+    [area, action, values @ ..] if area == "snapshot" => {
+      argvus_control_center_snapshot::backend::validate_helper(action, values)
+        .map_err(|error| error.to_string())
+    }
     [area, action, values @ ..] if area == "boot" => validate_boot(action, values),
     [area, action, values @ ..] if area == "package" => validate_package(action, values),
     [area, action, values @ ..] if area == "network" => validate_network(action, values),

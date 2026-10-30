@@ -8,6 +8,8 @@ use argvus_tui::terminal::{TerminalGuard, install_panic_hook};
 
 /// Polls one domain when its feature is compiled in and folds its change flag
 /// into `$dirty`. The `cfg` is evaluated where the macro is expanded.
+// A build with no optional domain features has no polling sites.
+#[allow(unused_macros)]
 macro_rules! poll_domain {
   ($dirty:ident, $feature:literal, $domain:expr) => {
     #[cfg(feature = $feature)]
@@ -75,6 +77,7 @@ fn main() -> Result<()> {
       feature = "boot",
       feature = "packages",
       feature = "storage",
+      feature = "snapshot",
       feature = "diagnostics",
       feature = "power",
       feature = "session",
@@ -92,6 +95,7 @@ fn main() -> Result<()> {
       poll_domain!(domain_dirty, "boot", app.boot);
       poll_domain!(domain_dirty, "packages", app.packages);
       poll_domain!(domain_dirty, "storage", app.storage);
+      poll_domain!(domain_dirty, "snapshot", app.snapshot);
       poll_domain!(domain_dirty, "diagnostics", app.diagnostics);
       poll_domain!(domain_dirty, "power", app.power);
       poll_domain!(domain_dirty, "session", app.session);

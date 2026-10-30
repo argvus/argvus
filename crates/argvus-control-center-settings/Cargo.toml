@@ -5,7 +5,11 @@ edition.workspace = true
 license.workspace = true
 rust-version.workspace = true
 
+[features]
+snapshot = ["dep:argvus-control-center-snapshot"]
+
 [dependencies]
+argvus-control-center-snapshot = { workspace = true, optional = true }
 argvus-i18n.workspace = true
 argvus-theme.workspace = true
 argvus-tui.workspace = true

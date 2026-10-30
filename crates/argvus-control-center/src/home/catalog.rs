@@ -49,6 +49,8 @@ pub enum HomeDestination {
   Audio,
   #[cfg(feature = "storage")]
   Storage,
+  #[cfg(feature = "snapshot")]
+  Snapshot,
   #[cfg(feature = "packages")]
   Packages,
   #[cfg(feature = "services")]
@@ -121,6 +123,8 @@ impl HomeDestination {
       Self::Audio => icons::AUDIO,
       #[cfg(feature = "storage")]
       Self::Storage => icons::STORAGE,
+      #[cfg(feature = "snapshot")]
+      Self::Snapshot => icons::STORAGE,
       #[cfg(feature = "packages")]
       Self::Packages => icons::PACKAGES,
       #[cfg(feature = "services")]
@@ -458,6 +462,12 @@ fn system_card_items(
   ));
   #[cfg(feature = "boot")]
   items.push(item(lang, "control_center.boot", HomeDestination::Boot));
+  #[cfg(feature = "snapshot")]
+  items.push(item(
+    lang,
+    "control_center.snapshot.title",
+    HomeDestination::Snapshot,
+  ));
   #[cfg(feature = "system")]
   items.push(item(
     lang,

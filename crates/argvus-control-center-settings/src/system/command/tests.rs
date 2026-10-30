@@ -219,3 +219,25 @@ fn resolv_conf_content_marks_manual_servers() {
   assert!(valid_ipv6("2001:db8::1"));
   assert!(!valid_ipv6("not-an-ip"));
 }
+
+#[cfg(feature = "snapshot")]
+#[test]
+fn snapshot_dispatch_accepts_only_the_closed_root_management_grammar() {
+  for arguments in [
+    vec!["snapshot", "inspect"],
+    vec!["snapshot", "inspect", "system"],
+    vec!["snapshot", "create", "system", "spaces $HOME; `id`"],
+    vec!["snapshot", "delete", "system", "12"],
+  ] {
+    assert!(validate_args(&arguments.into_iter().map(String::from).collect::<Vec<_>>()).is_ok());
+  }
+  for arguments in [
+    vec!["snapshot", "rollback", "system", "12"],
+    vec!["snapshot", "delete", "system", "0"],
+    vec!["snapshot", "delete", "system", "1-12"],
+    vec!["snapshot", "inspect", "../etc"],
+    vec!["snapshot", "create-config", "/"],
+  ] {
+    assert!(validate_args(&arguments.into_iter().map(String::from).collect::<Vec<_>>()).is_err());
+  }
+}

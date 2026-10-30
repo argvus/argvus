@@ -229,6 +229,8 @@ impl App {
       ("packages", "mirrors") => self.open_packages_page(PackagesPage::Mirrors),
       #[cfg(feature = "storage")]
       ("storage", "summary") => self.open_storage_page(StoragePage::Summary),
+      #[cfg(feature = "snapshot")]
+      ("snapshot", "home") => self.open_snapshot(),
       #[cfg(feature = "storage")]
       ("storage", "home") => self.open_storage_page(StoragePage::Home),
       #[cfg(feature = "storage")]

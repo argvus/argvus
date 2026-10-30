@@ -1777,3 +1777,17 @@ The Diagnostics Home destination is presented as System Doctor under Tools & Dia
 ## Luz noturna (2026-10-29)
 
 A página `Desktop & Input > Displays > Night Light` reutiliza o menu e os jobs de Displays. A navegação por Home > Displays, busca `displays/night-light` e CLI `argvus control-center displays night-light` carrega o mesmo status JSON. Os controles ficam desativados sem backend; erros de aplicação preservam a exibição do estado persistido e efetivo. A edição valida Kelvin e HH:MM antes de disparar a CLI.
+
+### Snapshot (2026-10-30)
+
+Destination: `Control Center > System Administration > Snapshot`, also
+reached by search and `argvus control-center snapshot`. Independent feature
+`snapshot`, included in `full`. Cached typed state is populated by `JobManager`;
+rendering performs no process I/O. Non-Btrfs roots cannot enter mutations.
+Read permission failures offer explicit `a — Authorize`; no automatic Polkit
+prompt on opening. The existing confirmation and single-line editor are reused;
+confirmation starts on Cancel. Selection survives refresh by snapshot number.
+The restricted helper repeats root/configuration/membership/protection checks.
+Snapshot 0, active and default cannot be deleted. No rollback or setup workflow.
+
+Implementation and privilege contract: [Snapshot](snapshot.md).

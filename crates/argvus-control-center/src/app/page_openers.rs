@@ -3,6 +3,12 @@
 use super::*;
 
 impl App {
+  #[cfg(feature = "snapshot")]
+  pub(super) fn open_snapshot(&mut self) {
+    self.snapshot.lang = self.lang;
+    self.snapshot.reload();
+    self.route = Route::Snapshot;
+  }
   #[cfg(feature = "hardware")]
   pub(super) fn open_hardware_page(&mut self, page: HardwarePage) {
     self.hardware.page = page;

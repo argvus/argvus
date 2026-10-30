@@ -362,3 +362,53 @@ Storage e System Doctor compartilham um snapshot em memória por até 10 segundo
 ## Luz noturna
 
 Abra **Área de trabalho e entrada > Monitores > Luz noturna** ou execute `argvus control-center displays night-light`. Configure temperatura, ativação manual e horários locais por `argvus config display night-light`. Veja [Luz noturna](/pt/docs/user-guide/night-light/) para comandos, estado e requisitos de runtime.
+
+## Snapshot
+
+Abra **Central de Controle > Administração do sistema > Snapshot**, pesquise
+`Snapper` ou execute `argvus control-center snapshot`. A feature Cargo `snapshot`
+está em `full` (padrão) e independe de `storage`.
+
+A página gerencia somente uma configuração Snapper existente com `SUBVOLUME=/`
+e `FSTYPE=btrfs`. A raiz é detectada com `findmnt`; o nome `root` sozinho não
+identifica uma configuração válida. Se houver várias configurações correspondentes,
+é necessário selecionar uma. O pacote Arch `snapper` é opcional e sua instalação
+é manual. É necessário suporte a `--jsonout` e às colunas ativo/padrão.
+Nenhuma configuração é criada automaticamente.
+
+Em uma raiz que não usa Btrfs, a mensagem é **Este sistema de arquivos não é Btrfs**,
+sem ações de snapshot. Erro de detecção, Snapper ausente, ausência de configuração
+da raiz e permissão negada são estados separados. Se a consulta sem privilégios
+for negada, pressione **a — Autorizar** para solicitar acesso via Polkit. A TUI
+permanece como usuário comum; somente o helper restrito `system-settings` executa
+ações administrativas. Consultas posteriores podem pedir nova autenticação.
+É necessário um agente gráfico Polkit disponível na sessão.
+
+Teclas: **↑/↓** selecionar, **Enter** detalhes/configuração, **c** criar, **d**
+excluir, **r** atualizar, **Esc** voltar e **?** ajuda. A descrição é opcional,
+com até 256 caracteres imprimíveis; vazia, usa “Snapshot manual do ARGVUS”.
+Criação e exclusão exigem confirmação, inicialmente focada em Cancelar. A exclusão
+atinge apenas um snapshot selecionado e bloqueia o número 0, o snapshot ativo e o
+padrão. O helper verifica novamente essas condições antes de chamar Snapper.
+Após uma operação, a lista é atualizada. Operações interrompidas não são repetidas
+automaticamente: confira a lista atualizada antes de tentar novamente.
+
+Os snapshots manuais usam o tipo `single`, somente leitura pelo padrão do Snapper,
+e nenhum algoritmo de limpeza é atribuído pela página. Timers e operações externas
+do Snapper continuam valendo. Um snapshot não é uma imagem completa: subvolumes
+separados, como um `/home` separado, não são incluídos. Esta versão **não oferece
+rollback, restauração, limpeza automática, instalação ou configuração do Snapper**.
+
+### Validação manual
+
+- Em raiz ext4/xfs, confira a mensagem exata em português e que c/d não abrem operações.
+- Em VM Btrfs descartável, verifique Snapper ausente, ausência de configuração da
+  raiz e uma configuração chamada `root` que aponta para outro subvolume.
+- Com configuração válida para `/`, liste snapshots, veja detalhes, crie um snapshot
+  com espaços/caracteres especiais, cancele uma exclusão e exclua apenas o snapshot
+  recém-criado, confirmando número e descrição.
+- Confira autenticação negada/cancelada, proteção ativo/padrão, atualização,
+  teclado, redimensionamento e ambos os idiomas. Preserve snapshots de recuperação.
+
+Somente o pacote `argvus` muda. Execute `make build` em `de/argvus` para gerar o
+`.pkg.tar.zst`; a instalação é uma ação separada do operador.

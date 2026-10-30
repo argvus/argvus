@@ -58,6 +58,8 @@ pub fn draw(app: &mut App, frame: &mut Frame) {
     Route::Packages => app.packages.draw(frame),
     #[cfg(feature = "storage")]
     Route::Storage => app.storage.draw(frame),
+    #[cfg(feature = "snapshot")]
+    Route::Snapshot => app.snapshot.draw(frame),
     #[cfg(feature = "diagnostics")]
     Route::Diagnostics => app.diagnostics.draw(frame),
     #[cfg(feature = "power")]

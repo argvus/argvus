@@ -25,6 +25,7 @@ members = [
   "crates/argvus-control-center-session",
   "crates/argvus-control-center-settings",
   "crates/argvus-control-center-storage",
+  "crates/argvus-control-center-snapshot",
   "crates/argvus-focus",
   "crates/argvus-greeter",
   "crates/argvus-greeter-handoff",
@@ -93,6 +94,7 @@ argvus-control-center-power = { version = "0.1.0", path = "crates/argvus-control
 argvus-control-center-services = { version = "0.1.0", path = "crates/argvus-control-center-services" }
 argvus-control-center-session = { version = "0.1.0", path = "crates/argvus-control-center-session" }
 argvus-control-center-settings = { version = "0.1.0", path = "crates/argvus-control-center-settings" }
+argvus-control-center-snapshot = { version = "0.1.0", path = "crates/argvus-control-center-snapshot" }
 argvus-control-center-storage = { version = "0.1.0", path = "crates/argvus-control-center-storage" }
 argvus-i18n = { package = "argvus-i18n-core", version = "0.1.0", path = "crates/argvus-i18n-core" }
 argvus-i18n-cli = { version = "0.1.0", package = "argvus-i18n", path = "crates/argvus-i18n" }

@@ -177,6 +177,14 @@ pub(super) fn build_search_registry(lang: Lang) -> SearchRegistry {
       "package pacman software",
       "packages/home",
     ),
+    #[cfg(feature = "snapshot")]
+    (
+      "snapshot",
+      "card_system",
+      "control_center.snapshot.title",
+      "snapper btrfs snapshot backup",
+      "snapshot/home",
+    ),
     #[cfg(feature = "storage")]
     (
       "storage",

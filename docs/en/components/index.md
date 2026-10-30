@@ -26,3 +26,5 @@ These components were consolidated into the `argvus` workspace. Their user pages
 | Snake | `argvus game-snake` | [Snake](/docs/argvus-games/snake/) |
 
 The command reference is in [Command line](/docs/reference/command-line/).
+
+See [Snapshot](argvus-control-center/index.md#snapshot) for root Btrfs snapshots.

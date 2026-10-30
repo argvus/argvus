@@ -244,6 +244,7 @@ dependencies = [
  "argvus-control-center-services",
  "argvus-control-center-session",
  "argvus-control-center-settings",
+ "argvus-control-center-snapshot",
  "argvus-control-center-storage",
  "argvus-i18n-core",
  "argvus-theme",
@@ -482,6 +483,7 @@ version = "0.1.0"
 dependencies = [
  "argvus-control-center-apps",
  "argvus-control-center-core",
+ "argvus-control-center-snapshot",
  "argvus-i18n-core",
  "argvus-theme",
  "argvus-tui",
@@ -492,6 +494,20 @@ dependencies = [
  "thiserror 2.0.21",
  "toml 0.8.23",
  "zbus",
+]
+
+[[package]]
+name = "argvus-control-center-snapshot"
+version = "0.1.0"
+dependencies = [
+ "argvus-control-center-core",
+ "argvus-i18n-core",
+ "argvus-theme",
+ "argvus-tui",
+ "crossterm",
+ "ratatui",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]

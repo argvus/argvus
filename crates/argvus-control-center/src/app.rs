@@ -42,6 +42,8 @@ use argvus_control_center_services::{ServicePage, ServicesApp};
 #[cfg(feature = "session")]
 use argvus_control_center_session::{SessionApp, SessionPage};
 use argvus_control_center_settings::{App as SettingsState, Page};
+#[cfg(feature = "snapshot")]
+use argvus_control_center_snapshot::SnapshotApp;
 #[cfg(feature = "storage")]
 use argvus_control_center_storage::{StorageApp, StoragePage};
 use argvus_i18n::{Lang, tr};
@@ -84,6 +86,8 @@ pub enum Route {
   Packages,
   #[cfg(feature = "storage")]
   Storage,
+  #[cfg(feature = "snapshot")]
+  Snapshot,
   #[cfg(feature = "diagnostics")]
   Diagnostics,
   #[cfg(feature = "power")]
@@ -135,6 +139,8 @@ pub enum InitialRoute {
   Packages(PackagesPage),
   #[cfg(feature = "storage")]
   Storage(StoragePage),
+  #[cfg(feature = "snapshot")]
+  Snapshot,
   #[cfg(feature = "diagnostics")]
   Diagnostics(DiagnosticPage),
   #[cfg(feature = "power")]
@@ -184,6 +190,8 @@ impl InitialRoute {
       InitialRoute::Packages(_) => Route::Packages,
       #[cfg(feature = "storage")]
       InitialRoute::Storage(_) => Route::Storage,
+      #[cfg(feature = "snapshot")]
+      InitialRoute::Snapshot => Route::Snapshot,
       #[cfg(feature = "diagnostics")]
       InitialRoute::Diagnostics(_) => Route::Diagnostics,
       #[cfg(feature = "power")]
@@ -265,6 +273,8 @@ pub struct App {
   pub packages: PackagesApp,
   #[cfg(feature = "storage")]
   pub storage: StorageApp,
+  #[cfg(feature = "snapshot")]
+  pub snapshot: SnapshotApp,
   #[cfg(feature = "diagnostics")]
   pub diagnostics: DiagnosticsApp,
   #[cfg(feature = "power")]
@@ -329,6 +339,12 @@ impl App {
     let mut boot = BootApp::new(lang, theme.clone(), capabilities.clone());
     #[cfg(feature = "packages")]
     let mut packages = PackagesApp::new(lang, theme.clone(), capabilities.clone());
+    #[cfg(feature = "snapshot")]
+    let mut snapshot = SnapshotApp::new(lang, theme.clone());
+    #[cfg(feature = "snapshot")]
+    if matches!(initial, InitialRoute::Snapshot) {
+      snapshot.reload();
+    }
     #[cfg(all(feature = "storage", feature = "diagnostics"))]
     let storage_cache = argvus_control_center_storage::backend::StorageCache::default();
     #[cfg(all(feature = "storage", feature = "diagnostics"))]
@@ -454,6 +470,8 @@ impl App {
       packages,
       #[cfg(feature = "storage")]
       storage,
+      #[cfg(feature = "snapshot")]
+      snapshot,
       #[cfg(feature = "diagnostics")]
       diagnostics,
       #[cfg(feature = "power")]
@@ -509,6 +527,8 @@ impl App {
     self.packages.set_theme(&theme);
     #[cfg(feature = "storage")]
     self.storage.set_theme(&theme);
+    #[cfg(feature = "snapshot")]
+    self.snapshot.set_theme(&theme);
     #[cfg(feature = "diagnostics")]
     self.diagnostics.set_theme(&theme);
     #[cfg(feature = "power")]
@@ -542,6 +562,8 @@ impl App {
   pub fn captures_text(&self) -> bool {
     match self.route {
       Route::Home => self.search_active,
+      #[cfg(feature = "snapshot")]
+      Route::Snapshot => self.snapshot.captures_text(),
       Route::Settings => self.settings.captures_text(),
       #[cfg(feature = "network")]
       Route::Network => self.network.captures_text(),
@@ -619,6 +641,14 @@ impl App {
       #[cfg(feature = "packages")]
       Route::Packages => {
         if self.packages.handle(crossterm::event::KeyCode::Esc) {
+          self.route = Route::Home;
+        }
+      }
+      #[cfg(feature = "snapshot")]
+      Route::Snapshot => {
+        if self.snapshot.handle_key(crossterm::event::KeyEvent::from(
+          crossterm::event::KeyCode::Esc,
+        )) {
           self.route = Route::Home;
         }
       }
@@ -835,5 +865,25 @@ mod tests {
     app.route = Route::Config;
     app.back();
     assert_eq!(app.route, Route::AppSettings);
+  }
+}
+
+#[cfg(all(test, feature = "snapshot"))]
+mod snapshot_tests {
+  use super::*;
+
+  #[test]
+  fn home_search_and_cli_open_the_same_snapshot_page_and_start_loading() {
+    let mut app = App::new(InitialRoute::Home);
+    app.open_destination(HomeDestination::Snapshot);
+    assert_eq!(app.route, Route::Snapshot);
+    assert!(app.snapshot.busy());
+    let mut app = App::new(InitialRoute::Home);
+    app.open_search_route("snapshot/home");
+    assert_eq!(app.route, Route::Snapshot);
+    assert!(app.snapshot.busy());
+    let app = App::new(InitialRoute::Snapshot);
+    assert_eq!(app.route, Route::Snapshot);
+    assert!(app.snapshot.busy());
   }
 }

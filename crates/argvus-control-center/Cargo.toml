@@ -32,6 +32,7 @@ full = [
   "dev-services",
   "system",
   "storage",
+  "snapshot",
   "diagnostics",
   "power",
   "session",
@@ -57,6 +58,7 @@ audio = ["dep:argvus-control-center-audio"]
 bluetooth = ["dep:argvus-control-center-bluetooth"]
 boot = ["dep:argvus-control-center-boot"]
 packages = ["dep:argvus-control-center-packages"]
+snapshot = ["dep:argvus-control-center-snapshot", "argvus-control-center-settings/snapshot"]
 storage = ["dep:argvus-control-center-storage"]
 diagnostics = ["dep:argvus-control-center-diagnostics"]
 power = ["dep:argvus-control-center-power"]
@@ -81,6 +83,7 @@ argvus-control-center-audio = { workspace = true, optional = true }
 argvus-control-center-bluetooth = { workspace = true, optional = true }
 argvus-control-center-boot = { workspace = true, optional = true }
 argvus-control-center-packages = { workspace = true, optional = true }
+argvus-control-center-snapshot = { workspace = true, optional = true }
 argvus-control-center-storage = { workspace = true, optional = true }
 argvus-control-center-diagnostics = { workspace = true, optional = true }
 argvus-control-center-power = { workspace = true, optional = true }
