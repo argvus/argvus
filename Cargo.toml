@@ -55,6 +55,7 @@ members = [
   "crates/argvus-time-core",
   "crates/argvus-time-ui",
   "crates/argvus-tui",
+  "crates/argvus-sensors",
   "crates/argvus-widget-telemetry-blocks",
   "crates/argvus-widget-telemetry-core",
   "crates/argvus-widget-telemetry-toggle",
@@ -123,6 +124,7 @@ argvus-time-ui = { version = "0.1.0", path = "crates/argvus-time-ui" }
 argvus-tui-terminal = { version = "0.1.0", path = "crates/argvus-tui-terminal" }
 argvus-tui-terminal-core = { version = "0.1.0", path = "crates/argvus-tui-terminal-core" }
 argvus-tui = { version = "0.1.0", path = "crates/argvus-tui" }
+argvus-sensors = { version = "0.1.0", path = "crates/argvus-sensors" }
 argvus-widget-telemetry-blocks = { version = "0.1.0", path = "crates/argvus-widget-telemetry-blocks" }
 argvus-widget-telemetry-core = { version = "0.1.0", path = "crates/argvus-widget-telemetry-core" }
 argvus-widget-telemetry-toggle = { version = "0.1.0", path = "crates/argvus-widget-telemetry-toggle" }

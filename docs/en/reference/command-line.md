@@ -9,7 +9,7 @@ Run `argvus --help` for the list installed with your version. The subcommands ar
 
 ## Where each command runs
 
-- **In-process:** the command is a library of the workspace and runs inside `argvus`. No separate executable exists. These are `config`, `theme`, `i18n`, `keys`, `gpg`, `projects`, `terminal`, `system-monitor`, `network`, `bluetooth`, `focus status`, `widget-telemetry`, `tui-terminal` and `setup`.
+- **In-process:** the command is a library of the workspace and runs inside `argvus`. No separate executable exists. These are `config`, `theme`, `i18n`, `keys`, `gpg`, `projects`, `terminal`, `system-monitor`, `network`, `bluetooth`, `focus status`, `widget-telemetry`, `tui-terminal`, `sensors` and `setup`.
 - **Helper:** a separate executable in `/usr/lib/argvus/commands/`, installed by the `argvus` package. These are `control-center` (a terminal application) and the GTK 4 applications `taskbar-calendar`, `removable-devices`, `focus` and `clock`.
 - **Private executable:** an executable that another package installs in `/usr/lib/argvus/commands/`. `argvus` only starts it. These include `session`, `start`, `tty`, `sessionctl`, `launcher`, `snippets`, `ssh`, `git`, `app-profiles-yazi-keymap`, `notifications`, `displayctl`, `firewall`, `accounts`, `taskbar-actions` and the `greeter-*` entry points.
 - **Script:** a packaged shell script run with `/bin/sh`. These are the Hyprland script commands listed below.
@@ -45,6 +45,7 @@ Run `argvus --help` for the list installed with your version. The subcommands ar
 | `argvus accounts`, `firewall` | Private executables | Accounts and firewall tools. |
 | `argvus launcher`, `snippets`, `ssh`, `git` | Private executables | Launcher and picker tools. |
 | `argvus tui-terminal` | In-process | Terminal wrapper for TUI applications. |
+| `argvus sensors` | In-process | Live temperature overview from `sensors -j`. |
 | `app-profiles-yazi-keymap` | Private executable | Keymap helper. |
 | `argvus notifications`, `displayctl`, `taskbar-actions` | Private executables | Notifications, display and taskbar actions. |
 | `argvus setup [options]` | In-process | Copies packaged defaults into the user configuration. See below. |

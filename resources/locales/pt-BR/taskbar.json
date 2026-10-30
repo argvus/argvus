@@ -4,6 +4,7 @@
   "session.unsupported": "Sessão não suportada: {session}",
   "parameter.invalid": "Parâmetro inválido: {parameter}",
   "prompt.press_enter": "Pressione Enter para fechar...",
+  "prompt.press_q_to_close": "Pressione q para fechar",
   "network.disconnected": "Desconectado",
   "notifications.enabled": "Notificações ativadas",
   "notifications.dnd_enabled": "Não perturbe ativado",

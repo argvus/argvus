@@ -177,6 +177,7 @@ dependencies = [
  "argvus-keys",
  "argvus-network-commands",
  "argvus-projects",
+ "argvus-sensors",
  "argvus-system-monitor",
  "argvus-terminal",
  "argvus-theme-core",
@@ -664,6 +665,19 @@ dependencies = [
 [[package]]
 name = "argvus-runtime"
 version = "0.1.0"
+
+[[package]]
+name = "argvus-sensors"
+version = "0.1.0"
+dependencies = [
+ "argvus-i18n-core",
+ "argvus-theme",
+ "crossterm",
+ "env_logger",
+ "log",
+ "ratatui",
+ "serde_json",
+]
 
 [[package]]
 name = "argvus-system"

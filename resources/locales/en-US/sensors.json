@@ -1,0 +1,10 @@
+{
+  "sensors.command_failed": "Could not run sensors -j",
+  "sensors.invalid_data": "Could not read sensors JSON",
+  "sensors.no_sensors": "No temperature sensors were found.",
+  "sensors.title": "Temperature sensors",
+  "sensors.live": "LIVE · 2 s",
+  "sensors.loading": "Reading sensors…",
+  "sensors.unavailable": "Temperature readings are unavailable. Retrying automatically.",
+  "sensors.shortcuts": "Esc  Close   ·   Updates every 2 seconds"
+}

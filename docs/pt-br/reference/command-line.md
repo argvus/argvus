@@ -9,7 +9,7 @@ Execute `argvus --help` para ver a lista da sua versão instalada. Os subcomando
 
 ## Onde cada comando roda
 
-- **Em processo:** o comando é uma biblioteca do workspace e roda dentro do `argvus`. Não existe executável separado. São `config`, `theme`, `i18n`, `keys`, `gpg`, `projects`, `terminal`, `system-monitor`, `network`, `bluetooth`, `focus status`, `widget-telemetry`, `tui-terminal` e `setup`.
+- **Em processo:** o comando é uma biblioteca do workspace e roda dentro do `argvus`. Não existe executável separado. São `config`, `theme`, `i18n`, `keys`, `gpg`, `projects`, `terminal`, `system-monitor`, `network`, `bluetooth`, `focus status`, `widget-telemetry`, `tui-terminal`, `sensors` e `setup`.
 - **Auxiliar:** um executável separado em `/usr/lib/argvus/commands/`, instalado pelo pacote `argvus`. São `control-center` (aplicativo de terminal) e os aplicativos GTK 4 `taskbar-calendar`, `removable-devices`, `focus` e `clock`.
 - **Executável privado:** um executável que outro pacote instala em `/usr/lib/argvus/commands/`. O `argvus` apenas o inicia. Incluem `session`, `start`, `tty`, `sessionctl`, `launcher`, `snippets`, `ssh`, `git`, `app-profiles-yazi-keymap`, `notifications`, `displayctl`, `firewall`, `accounts`, `taskbar-actions` e os pontos de entrada `greeter-*`.
 - **Script:** um script de shell empacotado, executado com `/bin/sh`. São os comandos de script do Hyprland listados abaixo.
@@ -45,6 +45,7 @@ Execute `argvus --help` para ver a lista da sua versão instalada. Os subcomando
 | `argvus accounts`, `firewall` | Executáveis privados | Ferramentas de contas e de firewall. |
 | `argvus launcher`, `snippets`, `ssh`, `git` | Executáveis privados | Ferramentas de lançador e seletor. |
 | `argvus tui-terminal` | Em processo | Wrapper de terminal para aplicativos TUI. |
+| `argvus sensors` | Em processo | Painel ao vivo de temperaturas usando `sensors -j`. |
 | `app-profiles-yazi-keymap` | Executável privado | Auxiliar de keymap. |
 | `argvus notifications`, `displayctl`, `taskbar-actions` | Executáveis privados | Notificações, controles de display e ações da barra. |
 | `argvus setup [opções]` | Em processo | Copia os padrões empacotados para a configuração do usuário. Veja abaixo. |

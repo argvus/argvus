@@ -45,7 +45,10 @@ com a integração de shell já ativa, então não é preciso alterar `~/.zshrc`
 ## Modo App para TUI
 
 O Control Center e os popups TUI da Taskbar usam `argvus tui-terminal` com um
-perfil dedicado do Kitty. Ele herda o tema e a fonte ativos do ARGVUS, oculta
-as abas, atribui uma classe estável à janela e encerra com o processo filho,
-sem abrir um shell. O Control Center possui valores independentes de
-Transparência e Blur; o terminal normal mantém suas abas e configurações.
+perfil dedicado do Kitty. Ele herda o tema e a fonte ativos do ARGVUS, atribui
+uma classe estável à janela e encerra com o processo filho, sem abrir um shell.
+O Control Center oculta as abas e possui valores independentes de Transparência
+e Blur; os popups de monitoramento e temperatura da taskbar usam uma barra
+inferior com o título localizado `Pressione q para fechar`. O launcher aceita
+`--title TÍTULO` para definir um título fixo para a janela e a aba do Kitty. O
+terminal normal mantém suas abas e configurações.

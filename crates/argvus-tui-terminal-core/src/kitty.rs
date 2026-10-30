@@ -41,9 +41,34 @@ pub fn control_center_policy(opacity: &str) -> String {
   )
 }
 
+/// The Kitty policy for the taskbar system-monitor popup: keep one bottom tab
+/// visible so its fixed window title can show the available close key.
+pub fn taskbar_monitor_policy(title: &str) -> String {
+  let title = escape_config_value(title);
+  format!(
+    "\n# ARGVUS taskbar monitor policy: show its close hint in a bottom tab bar.\ntab_bar_edge bottom\ntab_bar_min_tabs 1\ntab_bar_style separator\ntab_title_template \"{title}\"\n"
+  )
+}
+
+/// Escapes a value for a quoted Kitty configuration setting.
+fn escape_config_value(value: &str) -> String {
+  let mut escaped = String::with_capacity(value.len());
+  for character in value.chars() {
+    match character {
+      '\\' | '"' => {
+        escaped.push('\\');
+        escaped.push(character);
+      }
+      character if character.is_control() => escaped.push(' '),
+      character => escaped.push(character),
+    }
+  }
+  escaped
+}
+
 #[cfg(test)]
 mod tests {
-  use super::{control_center_policy, greeter_policy, rewrite_fonts};
+  use super::{control_center_policy, greeter_policy, rewrite_fonts, taskbar_monitor_policy};
 
   #[test]
   fn only_the_font_lines_are_replaced() {
@@ -58,5 +83,19 @@ mod tests {
   fn policies_end_with_the_tab_key_bindings() {
     assert!(greeter_policy().contains("tab_bar_style hidden\n"));
     assert!(control_center_policy("0.50").contains("background_opacity 0.50\n"));
+  }
+
+  #[test]
+  fn taskbar_monitor_policy_shows_the_fixed_title_in_a_bottom_tab() {
+    let policy = taskbar_monitor_policy("Press q to close");
+    assert!(policy.contains("tab_bar_edge bottom\n"));
+    assert!(policy.contains("tab_bar_min_tabs 1\n"));
+    assert!(policy.contains("tab_title_template \"Press q to close\"\n"));
+  }
+
+  #[test]
+  fn taskbar_monitor_policy_escapes_title_values() {
+    let policy = taskbar_monitor_policy("Say \"q\"\\now\nclose");
+    assert!(policy.contains("tab_title_template \"Say \\\"q\\\"\\\\now close\"\n"));
   }
 }

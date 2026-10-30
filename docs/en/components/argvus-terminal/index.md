@@ -49,6 +49,9 @@ in the Kitty configuration.
 
 ARGVUS Control Center and taskbar TUI popups use `argvus tui-terminal` with a
 dedicated Kitty app profile. It inherits the active ARGVUS theme and font,
-hides tabs, assigns a stable window class, and exits with its child instead of
-opening a shell. Control Center has independent Transparency and Blur values;
-the normal terminal keeps its tabs and settings.
+assigns a stable window class, and exits with its child instead of opening a
+shell. Control Center hides tabs and has independent Transparency and Blur
+values; taskbar monitor and temperature popups use a bottom tab bar for their
+localized `Press q to close` title. The launcher accepts `--title TITLE` to set
+a fixed Kitty window and tab title. The normal terminal keeps its tabs and
+settings.

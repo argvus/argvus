@@ -49,6 +49,7 @@ pub fn run(arguments: &[OsString]) -> Outcome {
       focus_status::run(&owned_arguments(&rest[1..])?)
     }
     "tui-terminal" => Ok(argvus_tui_terminal::run_command(owned_arguments(rest)?)),
+    "sensors" => Ok(argvus_sensors::run_command(owned_arguments(rest)?)),
     "--terminal" | "terminal" => Ok(argvus_terminal::run_command(owned_arguments(rest)?)),
     "projects" => Ok(argvus_projects::run_command(owned_arguments(rest)?)),
     "widget-telemetry" => widget_telemetry(rest),

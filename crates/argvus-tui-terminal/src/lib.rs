@@ -2,7 +2,7 @@
 //! profile. The window runs in the terminal backend (`--term`): Kitty by
 //! default, or `argvus-terminal`, Alacritty, or any command that takes `-e`.
 //!
-//! Usage: argvus-tui-terminal [--class C] [--term T] [--profile P] [--materialize-kitty] [--] COMMAND...
+//! Usage: argvus-tui-terminal [--class C] [--term T] [--profile P] [--title TITLE] [--materialize-kitty] [--] COMMAND...
 
 mod messages;
 
@@ -21,6 +21,7 @@ struct Options {
   class: String,
   term: Option<String>,
   profile: String,
+  title: Option<String>,
   materialize: bool,
   command: Vec<String>,
 }
@@ -62,8 +63,11 @@ pub fn run_command(arguments: Vec<String>) -> ExitCode {
       let mut command = Command::new("kitty");
       command
         .args(["--class", &options.class, "--config"])
-        .arg(config)
-        .arg("-e");
+        .arg(config);
+      if let Some(title) = &options.title {
+        command.args(["--title", title]);
+      }
+      command.arg("-e");
       command
     }
     "alacritty" => {
@@ -90,6 +94,7 @@ fn parse(arguments: &[String]) -> Result<Options, ExitCode> {
     class: "argvus-tui".to_string(),
     term: None,
     profile: "default".to_string(),
+    title: None,
     materialize: false,
     command: Vec::new(),
   };
@@ -101,7 +106,7 @@ fn parse(arguments: &[String]) -> Result<Options, ExitCode> {
         options.materialize = true;
         index += 1;
       }
-      "--class" | "--term" | "--terminal" | "--profile" => {
+      "--class" | "--term" | "--terminal" | "--profile" | "--title" => {
         let Some(value) = arguments.get(index + 1) else {
           if argument == "--class" {
             messages::error("launcher.class_requires_value", &[]);
@@ -116,6 +121,7 @@ fn parse(arguments: &[String]) -> Result<Options, ExitCode> {
         match argument {
           "--class" => options.class = value.clone(),
           "--profile" => options.profile = value.clone(),
+          "--title" => options.title = Some(value.clone()),
           _ => options.term = Some(value.clone()),
         }
         index += 2;
@@ -132,6 +138,8 @@ fn parse(arguments: &[String]) -> Result<Options, ExitCode> {
           .or_else(|| argument.strip_prefix("--terminal="))
         {
           options.term = Some(value.to_string());
+        } else if let Some(value) = argument.strip_prefix("--title=") {
+          options.title = Some(value.to_string());
         } else if let Some(value) = argument.strip_prefix("--profile=") {
           options.profile = value.to_string();
         } else {
@@ -264,6 +272,7 @@ fn runtime_kitty_config(options: &Options, selection: Selection) -> Result<PathB
   let destination = match options.profile.as_str() {
     "greeter" => cache.join("kitty-tui/kitty-greeter.conf"),
     "control-center" => cache.join("kitty-tui/kitty-control-center.conf"),
+    "taskbar-monitor" => cache.join("kitty-tui/kitty-taskbar-monitor.conf"),
     _ if selection.file_manager => cache.join("kitty-tui/kitty-file-manager.conf"),
     _ => cache.join(format!("kitty-tui/kitty-{}.conf", selection.font.name())),
   };
@@ -282,10 +291,53 @@ fn runtime_kitty_config(options: &Options, selection: Selection) -> Result<PathB
   match options.profile.as_str() {
     "greeter" => output.push_str(kitty::greeter_policy()),
     "control-center" => output.push_str(&kitty::control_center_policy(&control_center_opacity())),
+    "taskbar-monitor" => output.push_str(&kitty::taskbar_monitor_policy(
+      options.title.as_deref().unwrap_or("System monitor"),
+    )),
     _ => {}
   }
   write_file(&destination, &output)?;
   Ok(destination)
+}
+
+#[cfg(test)]
+mod tests {
+  use super::parse;
+
+  fn arguments(values: &[&str]) -> Vec<String> {
+    values.iter().map(|value| value.to_string()).collect()
+  }
+
+  #[test]
+  fn parses_title_and_keeps_command_arguments_after_separator() {
+    let options = parse(&arguments(&[
+      "--title",
+      "Press q to close",
+      "--profile",
+      "taskbar-monitor",
+      "--",
+      "argvus",
+      "--system-monitor",
+      "--mem",
+    ]))
+    .expect("valid launcher arguments");
+
+    assert_eq!(options.title.as_deref(), Some("Press q to close"));
+    assert_eq!(options.profile, "taskbar-monitor");
+    assert_eq!(
+      options.command,
+      arguments(&["argvus", "--system-monitor", "--mem"])
+    );
+  }
+
+  #[test]
+  fn parses_inline_title() {
+    let options =
+      parse(&arguments(&["--title=Press q to close", "btop"])).expect("valid launcher arguments");
+
+    assert_eq!(options.title.as_deref(), Some("Press q to close"));
+    assert_eq!(options.command, arguments(&["btop"]));
+  }
 }
 
 /// Writes a file, creating its directory first.

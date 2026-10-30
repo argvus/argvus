@@ -6,6 +6,7 @@ pub const TEXT: &str = r#"Usage:
   argvus --start-desktop
   argvus --setup [setup options]
   argvus --system-monitor [btop options]
+  argvus sensors
   argvus --control-center [page]
   argvus --terminal [terminal options]
   argvus --spf [superfile options]
@@ -31,7 +32,7 @@ Commands:
   argvus taskbar-calendar | removable-devices | notifications | focus | clock
   argvus networkctl | bluetoothctl | displayctl | widget-telemetry-toggle
   argvus launcher | projects | snippets | ssh | keys | gpg | git
-  argvus tui-terminal | app-profiles-yazi-keymap | game-snake | terminal
+  argvus tui-terminal | sensors | app-profiles-yazi-keymap | game-snake | terminal
 
 Hyprland script commands (used by the Hyprland configuration):
   argvus cheatsheets-hypr | cheatsheets-launcher | scratchpad | hypr-screenshot

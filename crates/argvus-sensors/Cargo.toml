@@ -1,0 +1,20 @@
+[package]
+name = "argvus-sensors"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+description = "The ARGVUS temperature sensors TUI"
+repository.workspace = true
+homepage.workspace = true
+readme = "../../README.md"
+
+[dependencies]
+argvus-i18n.workspace = true
+argvus-theme.workspace = true
+crossterm.workspace = true
+env_logger.workspace = true
+log.workspace = true
+ratatui.workspace = true
+serde_json.workspace = true
