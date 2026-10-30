@@ -4,6 +4,9 @@
 
 use crate::gpu;
 use crate::hardware;
+use argvus_runtime::messages;
+use argvus_runtime::process::program_exists;
+use argvus_widget_telemetry_core::gpu::maximum_temperature;
 use argvus_widget_telemetry_core::sensors::cpu_celsius;
 use std::process::ExitCode;
 
@@ -20,17 +23,47 @@ pub fn cpu_temp(arguments: &[String]) -> Option<ExitCode> {
   ))
 }
 
-/// `gpu --temp | --available-temp`.
+/// `gpu --temp | --available-temp | --present | --available`.
 pub fn gpu_temp(arguments: &[String]) -> Option<ExitCode> {
-  let available_only = match arguments {
-    [flag] if flag == "--temp" => false,
-    [flag] if flag == "--available-temp" => true,
-    _ => return None,
-  };
-  let temperature = gpu::reading()
-    .and_then(|(_, reading)| reading.temperature)
-    .map(|celsius| format!("{celsius}°C"));
-  Some(report(temperature, available_only))
+  match arguments {
+    [flag] if flag == "--present" => Some(report_presence(gpu::present())),
+    [flag] if flag == "--available" => Some(report_presence(gpu_panel_available(
+      gpu::present(),
+      program_exists("btop"),
+    ))),
+    [flag] if flag == "--available-temp" => Some(report(
+      maximum_temperature(gpu::temperatures()).map(|celsius| celsius.to_string()),
+      true,
+    )),
+    [flag] if flag == "--temp" => {
+      let temperature = gpu_temperature_text(
+        &gpu::temperatures(),
+        &messages::text("gpu.temperature.unavailable", &[]),
+      );
+      println!("{temperature}");
+      Some(ExitCode::SUCCESS)
+    }
+    _ => None,
+  }
+}
+
+fn gpu_panel_available(has_supported_gpu: bool, has_btop: bool) -> bool {
+  has_supported_gpu && has_btop
+}
+
+fn gpu_temperature_text(temperatures: &[Option<i64>], unavailable: &str) -> String {
+  maximum_temperature(temperatures.iter().copied())
+    .map(|celsius| format!("{celsius}°C"))
+    .unwrap_or_else(|| unavailable.to_string())
+}
+
+/// Reports a capability using the same success/failure contract as sensors.
+fn report_presence(is_available: bool) -> ExitCode {
+  if is_available {
+    ExitCode::SUCCESS
+  } else {
+    ExitCode::from(1)
+  }
 }
 
 /// Prints a value and exits 0, or exits 1 without output when there is none.
@@ -43,5 +76,29 @@ fn report(value: Option<String>, available_only: bool) -> ExitCode {
       ExitCode::SUCCESS
     }
     None => ExitCode::from(1),
+  }
+}
+
+#[cfg(test)]
+mod tests {
+  use super::{gpu_panel_available, gpu_temperature_text};
+
+  #[test]
+  fn panel_requires_a_supported_gpu_and_btop() {
+    assert!(gpu_panel_available(true, true));
+    assert!(!gpu_panel_available(false, true));
+    assert!(!gpu_panel_available(true, false));
+  }
+
+  #[test]
+  fn temperature_uses_maximum_or_localized_unavailable_state() {
+    assert_eq!(
+      gpu_temperature_text(&[Some(45), None, Some(68)], "Indisponível"),
+      "68°C"
+    );
+    assert_eq!(
+      gpu_temperature_text(&[None, Some(250)], "Indisponível"),
+      "Indisponível"
+    );
   }
 }

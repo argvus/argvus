@@ -3,6 +3,9 @@
 
 /// The boxes of the full monitor.
 pub const ALL_BOXES: &str = "cpu mem net proc";
+/// The six GPU slots supported by btop 1.4.7. The command trims this list to
+/// the GPUs the host exposes before starting btop.
+pub const GPU_BOXES: &str = "gpu0 gpu1 gpu2 gpu3 gpu4 gpu5";
 
 /// What the command line asks for.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -33,6 +36,7 @@ pub fn parse(arguments: &[String]) -> Command {
     Some("--cpu") => run(false, "cpu", rest(1)),
     Some("--net") => run(false, "net", rest(1)),
     Some("--proc") => run(false, "proc", rest(1)),
+    Some("--gpu") => run(false, GPU_BOXES, rest(1)),
     _ => run(false, ALL_BOXES, rest(0)),
   }
 }
@@ -40,6 +44,7 @@ pub fn parse(arguments: &[String]) -> Command {
 fn parse_panel(arguments: &[String]) -> Command {
   let module = arguments.get(1).map(String::as_str);
   let (shown_boxes, argument_start) = match module {
+    Some("--gpu") => (GPU_BOXES, 2),
     Some("--mem") => ("mem", 2),
     Some("--cpu") => ("cpu", 2),
     Some("--net") => ("net", 2),
@@ -104,6 +109,14 @@ mod tests {
     assert_eq!(parse(&words(&["--print-theme"])), Command::PrintTheme);
     assert_eq!(parse(&words(&["--apply"])), Command::Apply(None));
     assert_eq!(
+      parse(&words(&["--gpu"])),
+      Command::Run {
+        panel: false,
+        shown_boxes: super::GPU_BOXES,
+        arguments: words(&[]),
+      }
+    );
+    assert_eq!(
       parse(&words(&["--apply", "nord"])),
       Command::Apply(Some("nord".into()))
     );
@@ -133,6 +146,14 @@ mod tests {
         panel: true,
         shown_boxes: "mem",
         arguments: words(&[]),
+      }
+    );
+    assert_eq!(
+      parse(&words(&["--panel", "--gpu", "--utf-force"])),
+      Command::Run {
+        panel: true,
+        shown_boxes: super::GPU_BOXES,
+        arguments: words(&["--utf-force"]),
       }
     );
   }

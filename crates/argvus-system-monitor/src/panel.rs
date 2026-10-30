@@ -16,7 +16,7 @@ use ratatui::{
   layout::{Constraint, Layout, Rect},
   style::{Modifier, Style},
   text::Line,
-  widgets::Paragraph,
+  widgets::{Paragraph, Wrap},
 };
 use std::{
   io::{Read, Write},
@@ -27,6 +27,8 @@ use std::{
 };
 
 const EVENT_POLL: Duration = Duration::from_millis(30);
+const GPU_PANEL_TIMEOUT: Duration = Duration::from_secs(3);
+const GPU_BOX_MARKER: &str = "gpu0";
 
 pub struct Catalog(Option<I18n>);
 
@@ -50,6 +52,7 @@ impl Catalog {
 enum PanelState {
   Running,
   LaunchError,
+  MetricsUnavailable,
 }
 
 struct RunningBtop {
@@ -131,6 +134,32 @@ impl Drop for RunningBtop {
 }
 
 pub fn run(arguments: &[String], title: String, catalog: Catalog) -> Result<ExitCode, String> {
+  run_panel(Some(arguments), false, title, catalog)
+}
+
+/// Runs btop while checking that it actually rendered a GPU box.
+pub fn run_gpu(arguments: &[String], title: String, catalog: Catalog) -> Result<ExitCode, String> {
+  run_panel(Some(arguments), true, title, catalog)
+}
+
+/// Shows a branded, closable message when no usable GPU panel can be selected.
+pub fn run_unavailable(title: String, catalog: Catalog) -> Result<ExitCode, String> {
+  run_panel(None, false, title, catalog)
+}
+
+struct PanelOptions<'a> {
+  expect_gpu: bool,
+  title: &'a str,
+  catalog: &'a Catalog,
+  theme: &'a Theme,
+}
+
+fn run_panel(
+  arguments: Option<&[String]>,
+  expect_gpu: bool,
+  title: String,
+  catalog: Catalog,
+) -> Result<ExitCode, String> {
   argvus_tui::terminal::install_panic_hook();
   let theme = Theme::load();
   let mut guard = TerminalGuard::new().map_err(|error| format!("cannot open TUI: {error}"))?;
@@ -140,9 +169,21 @@ pub fn run(arguments: &[String], title: String, catalog: Catalog) -> Result<Exit
     .map_err(|error| format!("cannot read terminal size: {error}"))?;
   let initial_area = content_area(Rect::new(0, 0, initial_size.width, initial_size.height));
   let mut view = TerminalView::new(initial_area.height, initial_area.width);
-  let (mut state, mut child) = start_btop("btop", arguments, initial_area);
+  let (mut state, mut child) = match arguments {
+    Some(arguments) => start_btop("btop", arguments, initial_area),
+    None => (PanelState::MetricsUnavailable, None),
+  };
   let result = event_loop(
-    terminal, &mut child, &mut view, &title, &catalog, &theme, &mut state,
+    terminal,
+    &mut child,
+    &mut view,
+    PanelOptions {
+      expect_gpu,
+      title: &title,
+      catalog: &catalog,
+      theme: &theme,
+    },
+    &mut state,
   );
   result.map(|()| ExitCode::SUCCESS)
 }
@@ -165,11 +206,10 @@ fn event_loop(
   terminal: &mut argvus_tui::terminal::TuiTerminal,
   child: &mut Option<RunningBtop>,
   view: &mut TerminalView,
-  title: &str,
-  catalog: &Catalog,
-  theme: &Theme,
+  options: PanelOptions<'_>,
   state: &mut PanelState,
 ) -> Result<(), String> {
+  let started_at = std::time::Instant::now();
   loop {
     if let Some(running) = child.as_mut() {
       while let Ok(output) = running.output.try_recv() {
@@ -184,8 +224,28 @@ fn event_loop(
         return Ok(());
       }
     }
+    if options.expect_gpu
+      && matches!(state, PanelState::Running)
+      && started_at.elapsed() >= GPU_PANEL_TIMEOUT
+      && !gpu_box_is_visible(view)
+    {
+      if let Some(running) = child.as_mut() {
+        running.stop();
+      }
+      *child = None;
+      *state = PanelState::MetricsUnavailable;
+    }
     terminal
-      .draw(|frame| draw(frame, view, title, catalog, theme, state))
+      .draw(|frame| {
+        draw(
+          frame,
+          view,
+          options.title,
+          options.catalog,
+          options.theme,
+          state,
+        )
+      })
       .map_err(|error| format!("cannot render btop panel: {error}"))?;
     if event::poll(EVENT_POLL).map_err(|error| format!("cannot read TUI events: {error}"))? {
       match event::read().map_err(|error| format!("cannot read TUI event: {error}"))? {
@@ -229,6 +289,10 @@ fn event_loop(
   }
 }
 
+fn gpu_box_is_visible(view: &TerminalView) -> bool {
+  view.contains_text(GPU_BOX_MARKER)
+}
+
 fn draw(
   frame: &mut Frame,
   view: &TerminalView,
@@ -249,6 +313,12 @@ fn draw(
     PanelState::Running => view.render(frame, areas[1], theme),
     PanelState::LaunchError => frame.render_widget(
       Paragraph::new(Line::from(catalog.tr("system-monitor.unavailable")))
+        .style(Style::new().fg(theme.warning).add_modifier(Modifier::BOLD)),
+      areas[1],
+    ),
+    PanelState::MetricsUnavailable => frame.render_widget(
+      Paragraph::new(Line::from(catalog.tr("system-monitor.gpu.unavailable")))
+        .wrap(Wrap { trim: true })
         .style(Style::new().fg(theme.warning).add_modifier(Modifier::BOLD)),
       areas[1],
     ),
@@ -294,7 +364,7 @@ fn read_output(mut reader: Box<dyn Read + Send>, sender: mpsc::Sender<Vec<u8>>) 
 }
 
 fn closes_panel(key: KeyEvent) -> bool {
-  key.code == KeyCode::Esc && key.kind != KeyEventKind::Release
+  matches!(key.code, KeyCode::Esc | KeyCode::Char('q')) && key.kind != KeyEventKind::Release
 }
 
 fn encode_key(key: KeyEvent) -> Option<Vec<u8>> {
@@ -383,16 +453,16 @@ fn encode_mouse(event: MouseEvent, area: Rect, enabled: bool) -> Option<Vec<u8>>
 
 #[cfg(test)]
 mod tests {
-  use super::{PanelState, closes_panel, encode_key, pty_size, start_btop};
+  use super::{PanelState, closes_panel, encode_key, gpu_box_is_visible, pty_size, start_btop};
   use crossterm::event::{KeyCode, KeyEvent, KeyEventKind, KeyModifiers};
   use ratatui::layout::Rect;
 
   #[test]
-  fn escape_closes_but_q_is_forwarded_to_btop() {
+  fn escape_and_q_close_the_panel() {
     let escape = KeyEvent::new(KeyCode::Esc, KeyModifiers::NONE);
     let quit = KeyEvent::new(KeyCode::Char('q'), KeyModifiers::NONE);
     assert!(closes_panel(escape));
-    assert!(!closes_panel(quit));
+    assert!(closes_panel(quit));
     assert_eq!(encode_key(quit), Some(b"q".to_vec()));
   }
 
@@ -407,6 +477,17 @@ mod tests {
     let mut key = KeyEvent::new(KeyCode::Esc, KeyModifiers::NONE);
     key.kind = KeyEventKind::Release;
     assert!(!closes_panel(key));
+    key.code = KeyCode::Char('q');
+    assert!(!closes_panel(key));
+  }
+
+  #[test]
+  fn btop_must_render_a_gpu_slot_in_gpu_mode() {
+    let mut view = argvus_tui::terminal_view::TerminalView::new(2, 24);
+    view.process(b"CPU MEM NET PROC");
+    assert!(!gpu_box_is_visible(&view));
+    view.process(b"\x1b[1;1H\x1b[2K\x1b[1mgpu0");
+    assert!(gpu_box_is_visible(&view));
   }
 
   #[test]

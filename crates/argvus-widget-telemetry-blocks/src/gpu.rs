@@ -4,9 +4,14 @@
 
 use crate::hardware::{self, Card};
 use argvus_runtime::messages;
-use argvus_runtime::process::{output_any, program_exists, read_text, run_quiet};
-use argvus_widget_telemetry_core::gpu::{self, Driver, Reading, VENDOR_AMD, VENDOR_NVIDIA};
+use argvus_runtime::process::{output_any, program_exists, read_text, run_quiet, run_with_limit};
+use argvus_widget_telemetry_core::gpu::{
+  self, Driver, Reading, VENDOR_AMD, VENDOR_NVIDIA, Vendor, normalize_pci_bus_id, recognized_vendor,
+};
 use argvus_widget_telemetry_core::sensors::chip_celsius;
+use std::time::Duration;
+
+const PROVIDER_TIMEOUT: Duration = Duration::from_secs(3);
 
 /// The GPU of the machine, when its driver is known.
 pub fn reading() -> Option<(Driver, Reading)> {
@@ -23,9 +28,69 @@ pub fn reading() -> Option<(Driver, Reading)> {
     Driver::NvidiaProprietary => nvidia_proprietary(),
     Driver::NvidiaNouveau => nvidia_nouveau(&cards),
     Driver::Amd | Driver::AmdRadeon => amd(&cards),
+    Driver::Intel => intel(),
     Driver::Unknown => return None,
   };
+  let reading = Reading {
+    temperature: gpu::maximum_temperature(temperatures()),
+    ..reading
+  };
   Some((driver, reading))
+}
+
+/// Whether a supported graphics device is currently exposed by DRM/sysfs.
+pub fn present() -> bool {
+  hardware::has_supported_gpu(&hardware::cards())
+}
+
+/// The highest valid temperature for each supported GPU, in DRM card order.
+pub fn temperatures() -> Vec<Option<i64>> {
+  let cards = hardware::cards();
+  let hwmons = hardware::hwmons();
+  let sysfs = hardware::gpu_temperatures(&cards, &hwmons);
+  let nvidia_temperatures = nvidia_temperatures(&cards);
+  cards
+    .iter()
+    .filter(|card| recognized_vendor(card.vendor.as_deref()).is_some())
+    .zip(sysfs)
+    .map(|(card, sysfs_temperature)| {
+      card
+        .bus_id
+        .as_deref()
+        .and_then(normalize_pci_bus_id)
+        .and_then(|bus_id| {
+          nvidia_temperatures
+            .iter()
+            .filter(|(candidate, _)| *candidate == bus_id)
+            .map(|(_, temperature)| *temperature)
+            .next()
+            .flatten()
+        })
+        .or(sysfs_temperature)
+    })
+    .collect()
+}
+
+fn nvidia_temperatures(cards: &[Card]) -> Vec<(String, Option<i64>)> {
+  if !cards
+    .iter()
+    .any(|card| recognized_vendor(card.vendor.as_deref()) == Some(Vendor::Nvidia))
+    || !program_exists("nvidia-smi")
+  {
+    return Vec::new();
+  }
+  let output = run_with_limit(
+    "nvidia-smi",
+    &[
+      "--query-gpu=pci.bus_id,temperature.gpu",
+      "--format=csv,noheader,nounits",
+    ],
+    PROVIDER_TIMEOUT,
+  )
+  .filter(|finished| finished.status.success())
+  .map(|finished| finished.stdout)
+  .unwrap_or_default();
+  gpu::parse_nvidia_temperatures(&output)
 }
 
 /// The NVIDIA proprietary driver, read through its first GPU.
@@ -87,5 +152,14 @@ fn amd(cards: &[Card]) -> Reading {
       &["temp2", "temp1"],
     ),
     name: gpu::amd_name(model.as_deref(), &default_name),
+  }
+}
+
+/// Intel graphics data is intentionally limited to attributable hwmon sensors.
+fn intel() -> Reading {
+  Reading {
+    usage: None,
+    temperature: None,
+    name: "Intel GPU".to_string(),
   }
 }

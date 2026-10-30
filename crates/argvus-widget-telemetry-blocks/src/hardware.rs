@@ -4,6 +4,7 @@
 
 use argvus_runtime::process::read_text;
 use argvus_widget_telemetry_core::cpu::{self, Sample};
+use argvus_widget_telemetry_core::gpu::{self, HwmonTemperatures, recognized_vendor};
 use argvus_widget_telemetry_core::sensors::{Hwmon, Temperature};
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -11,6 +12,7 @@ use std::path::{Path, PathBuf};
 /// A display card and its PCI vendor id, when sysfs reports one.
 pub struct Card {
   pub device: PathBuf,
+  pub bus_id: Option<String>,
   pub vendor: Option<String>,
 }
 
@@ -47,6 +49,7 @@ pub fn hwmons() -> Vec<Hwmon> {
     .into_iter()
     .filter_map(|directory| {
       let name = attribute(&directory.join("name"))?;
+      let device = fs::canonicalize(directory.join("device")).ok();
       let mut stems: Vec<String> = sorted_entries(directory.to_str()?)
         .iter()
         .filter_map(|path| path.file_name()?.to_str().and_then(temperature_stem))
@@ -63,7 +66,11 @@ pub fn hwmons() -> Vec<Hwmon> {
           stem,
         })
         .collect();
-      Some(Hwmon { name, temperatures })
+      Some(Hwmon {
+        name,
+        device,
+        temperatures,
+      })
     })
     .collect()
 }
@@ -82,8 +89,51 @@ pub fn cards() -> Vec<Card> {
     .map(|card| {
       let device = card.join("device");
       let vendor = attribute(&device.join("vendor")).map(|vendor| vendor.trim().to_string());
-      Card { device, vendor }
+      let device = fs::canonicalize(&device).unwrap_or(device);
+      let bus_id = device
+        .file_name()
+        .and_then(|name| name.to_str())
+        .map(String::from);
+      Card {
+        device,
+        bus_id,
+        vendor,
+      }
     })
+    .collect()
+}
+
+/// Whether sysfs currently exposes a supported display GPU.
+pub fn has_supported_gpu(cards: &[Card]) -> bool {
+  cards
+    .iter()
+    .any(|card| recognized_vendor(card.vendor.as_deref()).is_some())
+}
+
+/// The highest valid sensor reading associated with each supported GPU.
+pub fn gpu_temperatures(cards: &[Card], hwmons: &[Hwmon]) -> Vec<Option<i64>> {
+  let devices = cards
+    .iter()
+    .filter(|card| recognized_vendor(card.vendor.as_deref()).is_some())
+    .map(|card| card.device.clone())
+    .collect::<Vec<_>>();
+  let hwmon_temperatures: Vec<HwmonTemperatures> = hwmons
+    .iter()
+    .filter_map(|hwmon| {
+      Some((
+        hwmon.device.clone()?,
+        hwmon
+          .temperatures
+          .iter()
+          .map(|temperature| temperature.celsius())
+          .collect(),
+      ))
+    })
+    .collect();
+  cards
+    .iter()
+    .filter(|card| recognized_vendor(card.vendor.as_deref()).is_some())
+    .map(|card| gpu::device_temperature(&card.device, &devices, &hwmon_temperatures))
     .collect()
 }
 

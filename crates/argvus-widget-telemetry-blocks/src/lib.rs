@@ -11,7 +11,7 @@
 //!                                                      storage, processes, network,
 //!                                                      dev_dashboard)
 //!   argvus-widget-telemetry-block cpu-temp [--available]
-//!   argvus-widget-telemetry-block gpu --temp | --available-temp
+//!   argvus-widget-telemetry-block gpu --temp | --available-temp | --present | --available
 
 mod cpu_gpu;
 mod dev_dashboard;

@@ -13,6 +13,8 @@ use std::num::NonZeroU16;
 /// A terminal screen that consumes ANSI output from a child process.
 pub struct TerminalView {
   parser: vt100::Parser,
+  rows: u16,
+  columns: u16,
 }
 
 impl TerminalView {
@@ -20,6 +22,8 @@ impl TerminalView {
   pub fn new(rows: u16, columns: u16) -> Self {
     Self {
       parser: vt100::Parser::new(nonzero(rows), nonzero(columns), 0),
+      rows: rows.max(1),
+      columns: columns.max(1),
     }
   }
 
@@ -30,7 +34,30 @@ impl TerminalView {
 
   /// Resizes the emulated screen after the containing TUI changes size.
   pub fn resize(&mut self, rows: u16, columns: u16) {
-    self.parser.set_size(nonzero(rows), nonzero(columns));
+    self.rows = rows.max(1);
+    self.columns = columns.max(1);
+    self
+      .parser
+      .set_size(nonzero(self.rows), nonzero(self.columns));
+  }
+
+  /// Whether the current terminal screen contains the given visible text.
+  pub fn contains_text(&self, text: &str) -> bool {
+    let screen = self.parser.screen();
+    (0..self.rows).any(|row| {
+      let mut line = String::new();
+      for column in 0..self.columns {
+        let Some(cell) = screen.cell(row, column) else {
+          continue;
+        };
+        if cell.has_contents() && !cell.is_wide_continuation() {
+          line.push_str(cell.contents());
+        } else {
+          line.push(' ');
+        }
+      }
+      line.contains(text)
+    })
   }
 
   /// Whether the child currently requests terminal mouse events.
@@ -124,5 +151,14 @@ mod tests {
       .map(|cell| cell.symbol())
       .collect::<String>();
     assert!(content.contains("CPU 42%"), "{content}");
+    assert!(view.contains_text("CPU 42%"));
+    assert!(!view.contains_text("gpu0"));
+  }
+
+  #[test]
+  fn detects_a_gpu_box_by_its_btop_slot_name() {
+    let mut view = TerminalView::new(2, 20);
+    view.process("╭─┐⁵gpu0┌────╮".as_bytes());
+    assert!(view.contains_text("gpu0"));
   }
 }

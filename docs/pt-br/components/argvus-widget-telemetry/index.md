@@ -18,7 +18,9 @@ argvus widget-telemetry toggle ...        liga e desliga os blocos, e define a o
 barra mostra e move a janela de rolagem.
 
 Os blocos são `header`, `keys`, `system`, `cpu_gpu`, `memory`, `storage`, `processes`, `network` e
-`dev_dashboard`. A taskbar também usa as sondas `cpu-temp` e `gpu`.
+`dev_dashboard`. A taskbar também usa as sondas `cpu-temp` e `gpu`. A sonda de GPU aceita `--present` (uma GPU suportada está visível em DRM/sysfs), `--available` (há uma GPU e o comando btop para abrir o painel), `--available-temp` (uma temperatura atribuível pode ser lida) e `--temp` (a maior temperatura válida ou `Indisponível`).
+
+As temperaturas de GPU são associadas ao dispositivo PCI correspondente. Leituras NVIDIA proprietárias usam os IDs de barramento de `nvidia-smi`/NVML; leituras NVIDIA nouveau, AMD e Intel usam hwmon somente quando o vínculo do dispositivo em sysfs corresponde exclusivamente àquela GPU. A temperatura da taskbar é o maior valor válido entre as GPUs detectadas. Leituras ausentes, inválidas ou ambíguas permanecem indisponíveis. Temperaturas NVIDIA proprietárias dependem do provider do driver; temperaturas AMD e Intel dependem de o kernel expor um sensor hwmon vinculado. A GPU Intel não fornece temperatura pelo painel do btop 1.4.7.
 
 ## Início com a sessão
 

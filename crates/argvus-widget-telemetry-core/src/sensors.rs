@@ -1,6 +1,8 @@
 //! The temperature sensors of the hardware monitor (hwmon) interface. The files
 //! are read by the binary; the rules that choose a sensor live here.
 
+use std::path::PathBuf;
+
 /// The chip drivers whose sensors describe the CPU.
 const CPU_DRIVERS: [&str; 3] = ["coretemp", "k10temp", "zenpower"];
 /// The sensor labels that name the CPU package, in the order they are preferred.
@@ -29,6 +31,8 @@ impl Temperature {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Hwmon {
   pub name: String,
+  /// Resolved device link, for safe association with a GPU.
+  pub device: Option<PathBuf>,
   pub temperatures: Vec<Temperature>,
 }
 
@@ -96,10 +100,12 @@ mod tests {
     let hwmons = vec![
       Hwmon {
         name: "acpitz".into(),
+        device: None,
         temperatures: vec![sensor("temp1", None, Some(90_000))],
       },
       Hwmon {
         name: "coretemp".into(),
+        device: None,
         temperatures: vec![
           sensor("temp1", Some("Core 0"), Some(51_000)),
           sensor("temp2", Some("Package id 0"), Some(62_400)),
@@ -113,12 +119,14 @@ mod tests {
   fn cpu_falls_back_to_the_first_sensor_then_to_any_sensor() {
     let cpu_without_label = vec![Hwmon {
       name: "k10temp".into(),
+      device: None,
       temperatures: vec![sensor("temp1", None, Some(45_500))],
     }];
     assert_eq!(cpu_celsius(&cpu_without_label), Some(46));
 
     let other_chip = vec![Hwmon {
       name: "nvme".into(),
+      device: None,
       temperatures: vec![sensor("temp1", None, Some(38_000))],
     }];
     assert_eq!(cpu_celsius(&other_chip), Some(38));
@@ -129,6 +137,7 @@ mod tests {
   fn chip_reads_the_first_available_stem() {
     let hwmons = vec![Hwmon {
       name: "amdgpu".into(),
+      device: None,
       temperatures: vec![sensor("temp1", None, Some(55_000))],
     }];
     assert_eq!(

@@ -18,7 +18,9 @@ argvus widget-telemetry toggle ...        switches the blocks on and off, and th
 the bar shows and moves the scroll window.
 
 The blocks are `header`, `keys`, `system`, `cpu_gpu`, `memory`, `storage`, `processes`,
-`network` and `dev_dashboard`. The taskbar also uses the `cpu-temp` and `gpu` probes.
+`network` and `dev_dashboard`. The taskbar also uses the `cpu-temp` and `gpu` probes. The GPU probe accepts `--present` (a supported GPU is visible in DRM/sysfs), `--available` (a GPU and the btop command are available for the panel), `--available-temp` (an attributable temperature can be read), and `--temp` (the highest valid temperature, or `N/A`).
+
+GPU temperatures are matched to a GPU's PCI device. NVIDIA proprietary readings use `nvidia-smi`/NVML bus IDs; NVIDIA nouveau, AMD, and Intel readings use hwmon only when its sysfs device link uniquely matches that GPU. The taskbar temperature is the maximum valid value across detected GPUs. Missing, invalid, or ambiguous readings stay unavailable. NVIDIA proprietary temperature requires the driver provider; AMD and Intel temperature depends on the kernel exposing a linked hwmon sensor. Intel temperature is not supplied by btop 1.4.7's GPU panel.
 
 ## Starting with the session
 

@@ -50,6 +50,7 @@
   "gpu.driver.proprietary": "proprietário",
   "gpu.usage": "Uso",
   "gpu.temperature": "Temp.",
+  "gpu.temperature.unavailable": "Indisponível",
   "gpu.name.amd": "GPU AMD",
   "gpu.unknown_driver": "Desconhecido",
   "cli.usage": "Uso: {command} {options}",

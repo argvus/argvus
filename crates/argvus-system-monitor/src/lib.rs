@@ -7,7 +7,10 @@
 //! source.
 
 use argvus_system_monitor_core::btop::render_config;
-use argvus_system_monitor_core::command::{self, ALL_BOXES, Command, has_explicit_paths};
+use argvus_system_monitor_core::command::{
+  self, ALL_BOXES, Command, GPU_BOXES, has_explicit_paths,
+};
+use argvus_system_monitor_core::gpu as gpu_slots;
 use argvus_system_monitor_core::theme::{self, Selection};
 use argvus_theme_core::paths::ThemePaths;
 use argvus_theme_core::{build, discovery, render};
@@ -33,6 +36,7 @@ Usage:
   argvus-system-monitor --cpu [btop options]
   argvus-system-monitor --net [btop options]
   argvus-system-monitor --proc [btop options]
+  argvus-system-monitor --gpu [btop options]
   argvus-system-monitor --print-config
   argvus-system-monitor --print-theme
 
@@ -41,6 +45,7 @@ Module shortcuts:
   --cpu   Show only CPU
   --net   Show only network
   --proc  Show only processes
+  --gpu   {gpu_help}
 
 --panel keeps btop inside an ARGVUS TUI frame; without it, btop occupies the terminal directly.
 
@@ -119,7 +124,11 @@ pub fn run_command(arguments: Vec<String>) -> ExitCode {
 fn run(arguments: &[String]) -> Result<ExitCode, String> {
   match command::parse(arguments) {
     Command::Help => {
-      print!("{USAGE}");
+      let catalog = panel::Catalog::load();
+      print!(
+        "{}",
+        USAGE.replace("{gpu_help}", &catalog.tr("system-monitor.help.gpu"))
+      );
       Ok(ExitCode::SUCCESS)
     }
     Command::PrintTheme => {
@@ -145,11 +154,25 @@ fn run(arguments: &[String]) -> Result<ExitCode, String> {
       shown_boxes,
       arguments,
     } => {
+      let shown_boxes = if shown_boxes == GPU_BOXES {
+        let Some(shown_boxes) = gpu_slots::shown_boxes(supported_gpu_count()) else {
+          let catalog = panel::Catalog::load();
+          if use_panel {
+            let _ = env_logger::try_init();
+            return panel::run_unavailable(catalog.tr("system-monitor.title.gpu"), catalog)
+              .map_err(|error| error.to_string());
+          }
+          return Err(catalog.tr("system-monitor.gpu.unavailable"));
+        };
+        shown_boxes
+      } else {
+        shown_boxes.to_string()
+      };
       let paths = Paths::from_environment()?;
       let mut btop_arguments = Vec::new();
       if !has_explicit_paths(&arguments) {
         let theme = active_theme(&paths);
-        build_runtime_config(&paths, &theme, shown_boxes)?;
+        build_runtime_config(&paths, &theme, &shown_boxes)?;
         btop_arguments.extend([
           "--config".to_string(),
           paths.runtime_config().display().to_string(),
@@ -161,17 +184,46 @@ fn run(arguments: &[String]) -> Result<ExitCode, String> {
       if use_panel {
         let _ = env_logger::try_init();
         let catalog = panel::Catalog::load();
-        let title_key = match shown_boxes {
+        let title_key = match shown_boxes.as_str() {
           "cpu" => "system-monitor.title.cpu",
           "mem" => "system-monitor.title.memory",
+          value if value.starts_with("gpu") => "system-monitor.title.gpu",
           _ => "system-monitor.title.overview",
         };
-        panel::run(&btop_arguments, catalog.tr(title_key), catalog)
+        if shown_boxes.starts_with("gpu") {
+          panel::run_gpu(&btop_arguments, catalog.tr(title_key), catalog)
+        } else {
+          panel::run(&btop_arguments, catalog.tr(title_key), catalog)
+        }
       } else {
         exec_btop(&btop_arguments)
       }
     }
   }
+}
+
+/// Reads only the PCI metadata needed to select btop's GPU box slots.
+fn supported_gpu_count() -> usize {
+  let devices = fs::read_dir("/sys/class/drm")
+    .into_iter()
+    .flatten()
+    .filter_map(Result::ok)
+    .filter_map(|entry| {
+      let name = entry.file_name();
+      let name = name.to_str()?;
+      let index = name.strip_prefix("card")?;
+      if index.is_empty() || !index.bytes().all(|byte| byte.is_ascii_digit()) {
+        return None;
+      }
+      let device = fs::canonicalize(entry.path().join("device")).ok()?;
+      let vendor = fs::read_to_string(device.join("vendor")).ok()?;
+      let class = fs::read_to_string(device.join("class")).ok()?;
+      Some((
+        vendor.trim().to_ascii_lowercase(),
+        class.trim().to_ascii_lowercase(),
+      ))
+    });
+  gpu_slots::supported_gpu_count(devices)
 }
 
 /// Replaces this process with btop. Returns only when btop cannot start.

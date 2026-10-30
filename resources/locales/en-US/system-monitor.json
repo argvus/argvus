@@ -1,8 +1,11 @@
 {
   "system-monitor.title.cpu": "CPU monitor",
   "system-monitor.title.memory": "Memory monitor",
+  "system-monitor.title.gpu": "GPU monitor",
+  "system-monitor.help.gpu": "Show GPU panels only (up to six GPUs)",
   "system-monitor.title.overview": "System monitor",
   "system-monitor.live": "LIVE",
   "system-monitor.footer.close": "Esc Close",
-  "system-monitor.unavailable": "btop could not be started. Press Esc to close."
+  "system-monitor.unavailable": "btop could not be started. Press Esc to close.",
+  "system-monitor.gpu.unavailable": "No GPU metrics are available. Check btop GPU support, provider libraries, and device access."
 }

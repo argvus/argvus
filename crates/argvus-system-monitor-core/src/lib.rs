@@ -4,4 +4,5 @@
 
 pub mod btop;
 pub mod command;
+pub mod gpu;
 pub mod theme;
