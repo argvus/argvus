@@ -12,6 +12,66 @@ pub struct Header<'a> {
   pub version_label: &'a str,
 }
 
+/// Draws the compact ARGVUS header used by live monitor panels.
+pub fn draw_live_header(
+  frame: &mut Frame,
+  area: Rect,
+  theme: &Theme,
+  title: &str,
+  status: Option<&str>,
+) {
+  let inner = area.inner(Margin::new(1, 0));
+  let minimum_title_width =
+    u16::try_from(crate::text::display_width(title).saturating_add(10)).unwrap_or(u16::MAX);
+  let status_width = status
+    .map(|value| {
+      u16::try_from(crate::text::display_width(value).saturating_add(1)).unwrap_or(u16::MAX)
+    })
+    .unwrap_or_default()
+    .min(inner.width.saturating_sub(minimum_title_width));
+  let columns =
+    Layout::horizontal([Constraint::Fill(1), Constraint::Length(status_width)]).split(inner);
+  frame.render_widget(
+    Paragraph::new(Line::from(vec![
+      Span::styled(
+        " ARGVUS ",
+        Style::new()
+          .fg(theme.background)
+          .bg(theme.accent)
+          .add_modifier(Modifier::BOLD),
+      ),
+      Span::styled(
+        format!("  {title}"),
+        Style::new()
+          .fg(theme.foreground)
+          .add_modifier(Modifier::BOLD),
+      ),
+    ]))
+    .block(
+      Block::default()
+        .borders(Borders::BOTTOM)
+        .border_style(Style::new().fg(theme.border)),
+    ),
+    columns[0],
+  );
+  if let Some(status) = status {
+    frame.render_widget(
+      Paragraph::new(status)
+        .alignment(Alignment::Right)
+        .style(Style::new().fg(theme.success)),
+      columns[1],
+    );
+  }
+}
+
+/// Draws a compact one-line footer for live panels.
+pub fn draw_live_footer(frame: &mut Frame, area: Rect, theme: &Theme, hints: &str) {
+  frame.render_widget(
+    Paragraph::new(hints).style(Style::new().fg(theme.muted)),
+    area,
+  );
+}
+
 #[derive(Debug, Clone, Copy)]
 pub enum MessageKind {
   Info,

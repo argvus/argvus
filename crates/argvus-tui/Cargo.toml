@@ -16,6 +16,7 @@ resvg.workspace = true
 unicode-width.workspace = true
 clap.workspace = true
 serde_json.workspace = true
+vt100.workspace = true
 
 [[bin]]
 name = "argvus-appearance"

@@ -9,7 +9,7 @@ Open the configured monitor with:
 argvus --system-monitor
 ```
 
-The `argvus system-monitor` subcommand provides the native entry point and btop integration. Telemetry shown in the taskbar is a separate feature provided by `argvus widget-telemetry`.
+The `argvus system-monitor` subcommand provides the native entry point and btop integration. Telemetry shown in the taskbar is a separate feature provided by `argvus widget-telemetry`. Clicking its CPU and Memory modules opens `btop` inside an ARGVUS TUI panel with the matching module selected, a branded header, and an `Esc Close` footer. The bottom Kitty tab remains localized and names the selected module. Press `Esc` to close the panel; `q` is sent to btop and closes its view. Standalone `argvus system-monitor --cpu` and `--mem` calls continue to open btop directly.
 
 The monitor reads the selected theme and accent from
 `$XDG_CONFIG_HOME/argvus/config.json` first. Its generated btop files remain
@@ -29,3 +29,5 @@ committed; it is not part of the generated tree.
 - The module shortcuts (`--mem`, `--cpu`, `--net`, `--proc`) are read only as the first argument.
   Passing btop's own `-c`/`--config` or `--themes-dir` runs btop with those paths and writes no
   configuration.
+- `--panel [--cpu|--mem]` embeds btop in the ARGVUS TUI shell. This mode is used by the taskbar;
+  without `--panel`, the monitor continues to replace itself with btop.

@@ -27,7 +27,7 @@ Execute `argvus --help` para ver a lista da sua versão instalada. Os subcomando
 | `argvus gpg ...` | Em processo | Chaves GPG: `list`, `status`, `generate`, `export-public`, `export-private`, `import`, `import-private`, `delete`, `edit`, `keyserver`. |
 | `argvus projects ...` | Em processo | Seletor de projetos. |
 | `argvus terminal ...` | Em processo | O perfil de terminal do ARGVUS. |
-| `argvus system-monitor ...` | Em processo | O monitor do sistema. |
+| `argvus system-monitor ...` | Em processo | O monitor btop; `--panel [--cpu|--mem]` o embute na moldura TUI ARGVUS. |
 | `argvus network ...` | Em processo | Estado e controles do NetworkManager (`networkctl` continua como alias). |
 | `argvus bluetooth ...` | Em processo | Estado e controles do Bluetooth (`bluetoothctl` continua como alias). |
 | `argvus widget-telemetry block ...` | Em processo | O bloco de telemetria da Waybar. É o caminho quente da barra. |

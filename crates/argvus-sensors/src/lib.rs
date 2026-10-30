@@ -2,6 +2,7 @@
 
 use argvus_i18n::I18n;
 use argvus_theme::Theme;
+use argvus_tui::chrome::{draw_live_footer, draw_live_header};
 use crossterm::{
   event::{self, Event, KeyCode, KeyEventKind},
   execute,
@@ -243,31 +244,13 @@ fn draw(frame: &mut ratatui::Frame<'_>, state: &SensorsState, catalog: &Catalog,
     Constraint::Length(1),
   ])
   .split(area);
-  let header = Paragraph::new(Line::from(vec![
-    Span::styled(
-      " ARGVUS ",
-      Style::default()
-        .fg(theme.background)
-        .bg(theme.accent)
-        .add_modifier(Modifier::BOLD),
-    ),
-    Span::styled(
-      format!("  {}", catalog.tr("sensors.title")),
-      Style::default()
-        .fg(theme.foreground)
-        .add_modifier(Modifier::BOLD),
-    ),
-    Span::styled(
-      format!("   {}", catalog.tr("sensors.live")),
-      Style::default().fg(theme.success),
-    ),
-  ]))
-  .block(
-    Block::default()
-      .borders(Borders::BOTTOM)
-      .border_style(Style::default().fg(theme.border)),
+  draw_live_header(
+    frame,
+    chunks[0],
+    theme,
+    &catalog.tr("sensors.title"),
+    Some(&catalog.tr("sensors.live")),
   );
-  frame.render_widget(header, chunks[0]);
   match state {
     SensorsState::Loading => frame.render_widget(
       Paragraph::new(catalog.tr("sensors.loading")).style(Style::default().fg(theme.muted)),
@@ -285,10 +268,7 @@ fn draw(frame: &mut ratatui::Frame<'_>, state: &SensorsState, catalog: &Catalog,
     ),
     SensorsState::Updated(chips) => render_chips(frame, chunks[1], chips, theme),
   }
-  frame.render_widget(
-    Paragraph::new(catalog.tr("sensors.shortcuts")).style(Style::default().fg(theme.muted)),
-    chunks[2],
-  );
+  draw_live_footer(frame, chunks[2], theme, &catalog.tr("sensors.shortcuts"));
 }
 
 fn render_chips(

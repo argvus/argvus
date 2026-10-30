@@ -34,5 +34,7 @@
   "date.month.9": "September",
   "date.month.10": "October",
   "date.month.11": "November",
-  "date.month.12": "December"
+  "date.month.12": "December",
+  "monitor.cpu.title": "CPU · Esc to close",
+  "monitor.memory.title": "Memory · Esc to close"
 }

@@ -27,7 +27,7 @@ Run `argvus --help` for the list installed with your version. The subcommands ar
 | `argvus gpg ...` | In-process | GPG keys: `list`, `status`, `generate`, `export-public`, `export-private`, `import`, `import-private`, `delete`, `edit`, `keyserver`. |
 | `argvus projects ...` | In-process | Project picker. |
 | `argvus terminal ...` | In-process | The ARGVUS terminal profile. |
-| `argvus system-monitor ...` | In-process | The system monitor. |
+| `argvus system-monitor ...` | In-process | The btop system monitor; `--panel [--cpu|--mem]` embeds it in the ARGVUS TUI shell. |
 | `argvus network ...` | In-process | NetworkManager status and controls (`networkctl` is kept as an alias). |
 | `argvus bluetooth ...` | In-process | Bluetooth status and controls (`bluetoothctl` is kept as an alias). |
 | `argvus widget-telemetry block ...` | In-process | The Waybar telemetry block. This is the hot path of the bar. |

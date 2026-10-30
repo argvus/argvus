@@ -16,6 +16,7 @@ pub mod menu;
 pub mod page;
 pub mod scroll;
 pub mod terminal;
+pub mod terminal_view;
 pub mod text;
 pub mod text_editor;
 

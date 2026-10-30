@@ -130,6 +130,7 @@ argvus-widget-telemetry-core = { version = "0.1.0", path = "crates/argvus-widget
 argvus-widget-telemetry-toggle = { version = "0.1.0", path = "crates/argvus-widget-telemetry-toggle" }
 clap = { version = "4.5", features = ["derive"] }
 crossterm = "0.29"
+portable-pty = "0.9"
 env_logger = "0.11.8"
 gtk = { package = "gtk4", version = "0.11.4", features = ["v4_12"] }
 gtk4-layer-shell = "0.8.1"
@@ -153,6 +154,7 @@ signal-hook = "0.3"
 tempfile = "3"
 thiserror = "2"
 toml = "0.8"
+vt100 = "0.18"
 unicode-width = "0.2"
 zbus = "5"
 

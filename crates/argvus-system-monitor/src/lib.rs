@@ -18,6 +18,8 @@ use std::os::unix::process::CommandExt;
 use std::path::{Path, PathBuf};
 use std::process::{Command as Process, ExitCode, Stdio};
 
+mod panel;
+
 /// The name every message starts with.
 const PROGRAM: &str = "argvus-system-monitor";
 /// The btop configuration that ships with the package.
@@ -26,6 +28,7 @@ const DEFAULT_BTOP_ROOT: &str = "/usr/share/argvus-system-monitor/btop";
 const USAGE: &str = "\
 Usage:
   argvus-system-monitor [btop options]
+  argvus-system-monitor --panel [--cpu|--mem] [btop options]
   argvus-system-monitor --mem [btop options]
   argvus-system-monitor --cpu [btop options]
   argvus-system-monitor --net [btop options]
@@ -38,6 +41,8 @@ Module shortcuts:
   --cpu   Show only CPU
   --net   Show only network
   --proc  Show only processes
+
+--panel keeps btop inside an ARGVUS TUI frame; without it, btop occupies the terminal directly.
 
 With no module shortcut, all standard boxes are shown.
 
@@ -136,25 +141,42 @@ fn run(arguments: &[String]) -> Result<ExitCode, String> {
       Ok(ExitCode::SUCCESS)
     }
     Command::Run {
+      panel: use_panel,
       shown_boxes,
       arguments,
     } => {
       let paths = Paths::from_environment()?;
-      if has_explicit_paths(&arguments) {
-        return exec_btop(&[], &arguments);
+      let mut btop_arguments = Vec::new();
+      if !has_explicit_paths(&arguments) {
+        let theme = active_theme(&paths);
+        build_runtime_config(&paths, &theme, shown_boxes)?;
+        btop_arguments.extend([
+          "--config".to_string(),
+          paths.runtime_config().display().to_string(),
+          "--themes-dir".to_string(),
+          paths.runtime_themes().display().to_string(),
+        ]);
       }
-      let theme = active_theme(&paths);
-      build_runtime_config(&paths, &theme, shown_boxes)?;
-      let config = paths.runtime_config().display().to_string();
-      let themes = paths.runtime_themes().display().to_string();
-      exec_btop(&["--config", &config, "--themes-dir", &themes], &arguments)
+      btop_arguments.extend(arguments);
+      if use_panel {
+        let _ = env_logger::try_init();
+        let catalog = panel::Catalog::load();
+        let title_key = match shown_boxes {
+          "cpu" => "system-monitor.title.cpu",
+          "mem" => "system-monitor.title.memory",
+          _ => "system-monitor.title.overview",
+        };
+        panel::run(&btop_arguments, catalog.tr(title_key), catalog)
+      } else {
+        exec_btop(&btop_arguments)
+      }
     }
   }
 }
 
 /// Replaces this process with btop. Returns only when btop cannot start.
-fn exec_btop(prefix: &[&str], arguments: &[String]) -> Result<ExitCode, String> {
-  let error = Process::new("btop").args(prefix).args(arguments).exec();
+fn exec_btop(arguments: &[String]) -> Result<ExitCode, String> {
+  let error = Process::new("btop").args(arguments).exec();
   Err(format!("cannot run btop: {error}"))
 }
 

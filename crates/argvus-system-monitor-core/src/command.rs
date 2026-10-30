@@ -14,6 +14,7 @@ pub enum Command {
   Apply(Option<String>),
   /// Runs btop with the boxes of the module and the remaining arguments.
   Run {
+    panel: bool,
     shown_boxes: &'static str,
     arguments: Vec<String>,
   },
@@ -27,16 +28,34 @@ pub fn parse(arguments: &[String]) -> Command {
     Some("--print-theme") => Command::PrintTheme,
     Some("--print-config") => Command::PrintConfig,
     Some("--apply") => Command::Apply(arguments.get(1).filter(|theme| !theme.is_empty()).cloned()),
-    Some("--mem") => run("mem", rest(1)),
-    Some("--cpu") => run("cpu", rest(1)),
-    Some("--net") => run("net", rest(1)),
-    Some("--proc") => run("proc", rest(1)),
-    _ => run(ALL_BOXES, rest(0)),
+    Some("--panel") => parse_panel(arguments),
+    Some("--mem") => run(false, "mem", rest(1)),
+    Some("--cpu") => run(false, "cpu", rest(1)),
+    Some("--net") => run(false, "net", rest(1)),
+    Some("--proc") => run(false, "proc", rest(1)),
+    _ => run(false, ALL_BOXES, rest(0)),
   }
 }
 
-fn run(shown_boxes: &'static str, arguments: Vec<String>) -> Command {
+fn parse_panel(arguments: &[String]) -> Command {
+  let module = arguments.get(1).map(String::as_str);
+  let (shown_boxes, argument_start) = match module {
+    Some("--mem") => ("mem", 2),
+    Some("--cpu") => ("cpu", 2),
+    Some("--net") => ("net", 2),
+    Some("--proc") => ("proc", 2),
+    _ => (ALL_BOXES, 1),
+  };
+  run(
+    true,
+    shown_boxes,
+    arguments.iter().skip(argument_start).cloned().collect(),
+  )
+}
+
+fn run(panel: bool, shown_boxes: &'static str, arguments: Vec<String>) -> Command {
   Command::Run {
+    panel,
     shown_boxes,
     arguments,
   }
@@ -65,6 +84,7 @@ mod tests {
     assert_eq!(
       parse(&words(&["--mem", "--utf-force"])),
       Command::Run {
+        panel: false,
         shown_boxes: "mem",
         arguments: words(&["--utf-force"]),
       }
@@ -72,6 +92,7 @@ mod tests {
     assert_eq!(
       parse(&words(&["--utf-force", "--mem"])),
       Command::Run {
+        panel: false,
         shown_boxes: ALL_BOXES,
         arguments: words(&["--utf-force", "--mem"]),
       }
@@ -94,5 +115,25 @@ mod tests {
     assert!(has_explicit_paths(&words(&["--config=/tmp/x.conf"])));
     assert!(has_explicit_paths(&words(&["-c", "x"])));
     assert!(!has_explicit_paths(&words(&["--utf-force"])));
+  }
+
+  #[test]
+  fn panel_mode_reads_module_before_forwarding_btop_arguments() {
+    assert_eq!(
+      parse(&words(&["--panel", "--cpu", "--utf-force"])),
+      Command::Run {
+        panel: true,
+        shown_boxes: "cpu",
+        arguments: words(&["--utf-force"]),
+      }
+    );
+    assert_eq!(
+      parse(&words(&["--panel", "--mem"])),
+      Command::Run {
+        panel: true,
+        shown_boxes: "mem",
+        arguments: words(&[]),
+      }
+    );
   }
 }

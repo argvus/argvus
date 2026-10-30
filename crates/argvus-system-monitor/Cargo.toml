@@ -17,3 +17,12 @@ path = "src/main.rs"
 [dependencies]
 argvus-system-monitor-core.workspace = true
 argvus-theme-core.workspace = true
+argvus-i18n.workspace = true
+argvus-theme.workspace = true
+argvus-tui.workspace = true
+crossterm.workspace = true
+env_logger.workspace = true
+log.workspace = true
+portable-pty.workspace = true
+ratatui.workspace = true
+vt100.workspace = true
