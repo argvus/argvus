@@ -113,7 +113,7 @@ fn default_layout(document: &mut ConfigDocument, theme: &str) {
     .or_insert_with(|| Value::String(theme_layout_variant(theme).into()));
   let taskbar_bottom_default = match layout.get("variant").and_then(Value::as_str) {
     Some("float") => 18,
-    _ => 1,
+    _ => 2,
   };
   {
     let taskbar = layout

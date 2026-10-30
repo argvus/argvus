@@ -112,7 +112,7 @@ fn defaults_report_nested_values_that_are_not_objects() {
   );
   assert_eq!(
     document.get("/layout/taskbar/margin_bottom"),
-    Some(&Value::from(1))
+    Some(&Value::from(2))
   );
 
   let mut float = ConfigDocument::default();

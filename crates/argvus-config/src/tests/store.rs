@@ -29,7 +29,7 @@ fn float_variant_resets_geometry_to_the_documented_float_values() {
 }
 
 #[test]
-fn sticky_variant_resets_taskbar_bottom_margin_to_one() {
+fn sticky_variant_resets_taskbar_bottom_margin_to_two() {
   let mut document = ConfigDocument::default();
 
   reset_layout_geometry(&mut document, "sticky").unwrap();
@@ -38,7 +38,7 @@ fn sticky_variant_resets_taskbar_bottom_margin_to_one() {
     document
       .get("/layout/taskbar/margin_bottom")
       .and_then(Value::as_i64),
-    Some(1)
+    Some(2)
   );
 }
 
@@ -298,7 +298,7 @@ fn apply_theme_is_one_transaction_and_preserves_explicit_overrides() {
     document
       .get("/layout/taskbar/margin_bottom")
       .and_then(Value::as_i64),
-    Some(1)
+    Some(2)
   );
   assert_eq!(
     document.get("/appearance/accent").and_then(Value::as_str),

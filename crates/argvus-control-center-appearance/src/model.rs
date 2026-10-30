@@ -575,7 +575,7 @@ impl Default for AppearanceState {
       waybar_top: 0,
       waybar_left: 0,
       waybar_right: 0,
-      waybar_bottom: 1,
+      waybar_bottom: 2,
       gaps_in: 3,
       gaps_out_top: 1,
       gaps_out_left: 1,
