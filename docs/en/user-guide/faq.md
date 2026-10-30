@@ -7,7 +7,7 @@ This page answers common questions about what ARGVUS is, how it is distributed a
 
 ## What is ARGVUS?
 
-ARGVUS is a modular desktop environment for Wayland and Arch Linux, built around Hyprland. It coordinates the graphical session, shell surfaces, settings applications, appearance, desktop services and integrated tools through a collection of packages.
+ARGVUS is a modular desktop environment for Wayland and Arch Linux, built around Hyprland. It is not a desktop environment independent of Hyprland; it is a desktop experience assembled on top of Hyprland and tailored to Arch Linux. ARGVUS coordinates the graphical session, shell surfaces, settings applications, appearance, desktop services and integrated tools through a collection of packages.
 
 It is more than a Hyprland configuration or a collection of personal dotfiles: it provides a supported session entry point, shared configuration and appearance state, and defined ownership for components such as the taskbar, Control Center, notifications, networking and displays. See the [introduction](/docs/introduction/) for an overview of how the pieces fit together.
 
