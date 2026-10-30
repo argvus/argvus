@@ -118,3 +118,7 @@ Setup validates every option before it changes anything. Invalid app names (empt
 ## Session and reload
 
 `SUPER + SHIFT + R` runs `argvus sessionctl reload`. The session controller applies the generated configuration and restarts only the components it owns. It does not copy `/usr/share/argvus` into the home directory, and it does not replace a malformed JSON file.
+
+## Night Light
+
+Open **Desktop & Input > Displays > Night Light** or run `argvus control-center displays night-light`. Configure temperature, manual activation and fixed local schedules through `argvus config display night-light`. See [Night Light](/docs/user-guide/night-light/) for commands, state and runtime requirements.

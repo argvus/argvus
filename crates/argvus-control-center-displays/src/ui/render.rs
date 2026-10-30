@@ -10,8 +10,25 @@ impl DisplaysApp {
       HomeCardId::DesktopInput.label(self.lang),
       tr(self.lang, "control_center.displays")
     );
+    let root = if matches!(
+      self.page,
+      DisplayPage::Prompt {
+        goal: PromptGoal::NightTemperature | PromptGoal::NightStart | PromptGoal::NightEnd
+      }
+    ) {
+      format!(
+        "{root} > {}",
+        tr(self.lang, "control_center.night_light.title")
+      )
+    } else {
+      root
+    };
     match self.page {
       DisplayPage::Home => root,
+      DisplayPage::NightLight => format!(
+        "{root} > {}",
+        tr(self.lang, "control_center.night_light.title")
+      ),
       DisplayPage::Detail(index) => {
         let name = self
           .monitors
@@ -38,6 +55,9 @@ impl DisplaysApp {
       DisplayPage::Prompt { goal } => format!(
         "{root} > {}",
         match goal {
+          PromptGoal::NightTemperature => tr(self.lang, "control_center.night_light.temperature"),
+          PromptGoal::NightStart => tr(self.lang, "control_center.night_light.start"),
+          PromptGoal::NightEnd => tr(self.lang, "control_center.night_light.end"),
           PromptGoal::Position(_) => tr(self.lang, "control_center.position"),
           PromptGoal::Scale(_) => tr(self.lang, "control_center.scale"),
           PromptGoal::SdrBrightness(_) => tr(self.lang, "control_center.sdr_brightness"),
@@ -57,6 +77,9 @@ impl DisplaysApp {
     let box_area = Rect::new(x, y, width, height);
     frame.render_widget(Clear, box_area);
     let title = match goal {
+      PromptGoal::NightTemperature => tr(self.lang, "control_center.night_light.temperature"),
+      PromptGoal::NightStart => tr(self.lang, "control_center.night_light.start"),
+      PromptGoal::NightEnd => tr(self.lang, "control_center.night_light.end"),
       PromptGoal::Position(_) => tr(self.lang, "control_center.position_x_y"),
       PromptGoal::Scale(_) => tr(self.lang, "control_center.scale"),
       PromptGoal::SdrBrightness(_) => tr(self.lang, "control_center.sdr_brightness"),
@@ -138,6 +161,7 @@ impl DisplaysApp {
         refresh: matches!(
           self.page,
           DisplayPage::Home
+            | DisplayPage::NightLight
             | DisplayPage::Detail(_)
             | DisplayPage::Profiles
             | DisplayPage::Profile(_)

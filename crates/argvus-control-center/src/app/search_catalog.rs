@@ -739,6 +739,14 @@ pub(super) fn build_search_registry(lang: Lang) -> SearchRegistry {
     ),
     #[cfg(feature = "displays")]
     (
+      "displays.night-light",
+      "displays",
+      "control_center.night_light.title",
+      "night light luz noturna temperatura temperature kelvin schedule horarios",
+      "displays/night-light",
+    ),
+    #[cfg(feature = "displays")]
+    (
       "displays.summary",
       "displays",
       "control_center.summary",

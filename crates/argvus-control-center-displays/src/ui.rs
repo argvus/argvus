@@ -29,6 +29,7 @@ use std::time::{Duration, Instant};
 
 mod input;
 mod jobs;
+mod night_light;
 mod picker;
 mod profiles;
 mod prompts;
@@ -72,9 +73,11 @@ enum JobData {
     config: PersistedConfig,
     state: crate::model::DisplayState,
     version: (u32, u32),
+    night_light: crate::model::NightLightStatus,
   },
   Hotplug(Vec<Monitor>),
   Action(String),
+  NightLight(crate::model::NightLightStatus, Option<String>),
 }
 
 struct RevertState {
@@ -111,6 +114,12 @@ enum Item {
   /// Index into the saved configurations of monitors that are not present.
   Stale(usize),
   Profiles,
+  NightLight,
+  NightToggle,
+  NightTemperature,
+  NightSchedule,
+  NightStart,
+  NightEnd,
   Refresh,
   Setting(MonitorSetting),
   /// Re-applies the saved configuration with the revert countdown.
@@ -152,6 +161,8 @@ pub struct DisplaysApp {
   prompt_buffer: String,
   prompt_error: Option<String>,
   prompt_back: Option<DisplayPage>,
+  night_light: crate::model::NightLightStatus,
+  night_error: Option<String>,
   manager: JobManager,
 }
 
@@ -185,6 +196,8 @@ impl DisplaysApp {
       prompt_buffer: String::new(),
       prompt_error: None,
       prompt_back: None,
+      night_light: Default::default(),
+      night_error: None,
       manager: JobManager::default(),
     };
     app.refresh();

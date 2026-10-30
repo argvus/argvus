@@ -7,6 +7,7 @@ impl DisplaysApp {
   pub(super) fn rows(&self) -> Vec<Row<Item>> {
     match self.page {
       DisplayPage::Home => self.home_rows(),
+      DisplayPage::NightLight => self.night_rows(),
       DisplayPage::Detail(index) => self.detail_rows(index),
       DisplayPage::Picker { monitor, setting } => self.picker_rows(monitor, setting),
       DisplayPage::Profiles => self.profile_rows(),
@@ -76,6 +77,7 @@ impl DisplaysApp {
     match self.page {
       DisplayPage::Detail(index) | DisplayPage::Picker { monitor: index, .. } => Some(index),
       DisplayPage::Home
+      | DisplayPage::NightLight
       | DisplayPage::Profiles
       | DisplayPage::Profile(_)
       | DisplayPage::Prompt { .. } => None,
@@ -140,6 +142,13 @@ impl DisplaysApp {
         "",
       ));
     }
+    rows.push(
+      Row::submenu(
+        Item::NightLight,
+        tr(lang, "control_center.night_light.title"),
+      )
+      .icon(icons::BRIGHTNESS),
+    );
     rows.push(
       Row::submenu(Item::Profiles, tr(lang, "control_center.profiles"))
         .icon(icons::PROFILE)

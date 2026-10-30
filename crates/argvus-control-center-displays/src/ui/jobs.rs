@@ -26,16 +26,26 @@ impl DisplaysApp {
         config,
         state,
         version,
+        night_light: backend::night_light_status(),
       })
     }));
     self.status = Some(StatusMessage {
       kind: StatusKind::Info,
-      text: tr(lang, "control_center.loading_monitors").into(),
+      text: tr(
+        lang,
+        if self.page == DisplayPage::NightLight {
+          "control_center.night_light.loading"
+        } else {
+          "control_center.loading_monitors"
+        },
+      )
+      .into(),
     });
   }
 
   pub fn poll(&mut self) -> bool {
     let mut changed = false;
+    let mut night_action_finished = false;
     if let Some(job) = &self.job
       && let JobState::Finished(result) = job.try_state()
     {
@@ -46,14 +56,16 @@ impl DisplaysApp {
           config,
           state,
           version,
+          night_light,
         }) => {
           self.monitors = monitors;
           self.config = config;
           self.state = state;
           self.version = version;
+          self.night_light = night_light;
           self.status = None;
         }
-        Ok(JobData::Hotplug(_)) | Ok(JobData::Action(_)) => {}
+        Ok(JobData::Hotplug(_)) | Ok(JobData::Action(_)) | Ok(JobData::NightLight(..)) => {}
         Err(e) => {
           self.status = Some(StatusMessage {
             kind: StatusKind::Error,
@@ -69,6 +81,27 @@ impl DisplaysApp {
     {
       self.action = None;
       match result {
+        Ok(JobData::NightLight(snapshot, error)) => {
+          night_action_finished = true;
+          self.night_light = snapshot;
+          self.night_error = error;
+          self.status = Some(StatusMessage {
+            kind: if self.night_error.is_some() {
+              StatusKind::Error
+            } else {
+              StatusKind::Success
+            },
+            text: tr(
+              self.lang,
+              if self.night_error.is_some() {
+                "control_center.night_light.apply_failed"
+              } else {
+                "control_center.applied"
+              },
+            )
+            .into(),
+          });
+        }
         Ok(JobData::Action(text)) => {
           self.status = Some(StatusMessage {
             kind: StatusKind::Success,
@@ -95,6 +128,13 @@ impl DisplaysApp {
       && let JobState::Finished(result) = hotplug.try_state()
     {
       self.hotplug = None;
+      if let Ok(JobData::NightLight(snapshot, _)) = &result
+        && self.action.is_none()
+        && !night_action_finished
+      {
+        self.night_light = snapshot.clone();
+        changed = true;
+      }
       if let Ok(JobData::Hotplug(monitors)) = result {
         let changed_monitors = fingerprint(&self.monitors) != fingerprint(&monitors);
         if changed_monitors {
@@ -120,10 +160,16 @@ impl DisplaysApp {
       && !matches!(self.page, DisplayPage::Prompt { .. })
       && self.last_hotplug.elapsed() >= HOTPLUG_INTERVAL
     {
-      self.hotplug = Some(self.manager.spawn(|_| {
-        let monitors = backend::list_monitors().unwrap_or_default();
-        Ok(JobData::Hotplug(monitors))
-      }));
+      self.hotplug = Some(if self.page == DisplayPage::NightLight {
+        self
+          .manager
+          .spawn(|_| Ok(JobData::NightLight(backend::night_light_status(), None)))
+      } else {
+        self.manager.spawn(|_| {
+          let monitors = backend::list_monitors().unwrap_or_default();
+          Ok(JobData::Hotplug(monitors))
+        })
+      });
       self.last_hotplug = Instant::now();
     }
     changed
@@ -237,6 +283,7 @@ impl DisplaysApp {
       DisplayPage::Picker { monitor, setting } => Some((monitor, setting)),
       DisplayPage::Detail(_)
       | DisplayPage::Home
+      | DisplayPage::NightLight
       | DisplayPage::Profiles
       | DisplayPage::Profile(_)
       | DisplayPage::Prompt { .. } => None,

@@ -16,3 +16,5 @@ O desktop combina uma sessão Hyprland, uma taskbar Waybar, um painel Quickshell
 * [Hardware](/pt/docs/user-guide/hardware/)
 * [Privacidade e segurança](/pt/docs/user-guide/privacy-and-security/)
 * [Solução de problemas](/pt/docs/user-guide/troubleshooting/)
+
+- [Luz noturna](/pt/docs/user-guide/night-light/)

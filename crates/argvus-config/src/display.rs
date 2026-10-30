@@ -36,6 +36,7 @@ pub fn run(arguments: &[String]) -> i32 {
   let rest = &arguments[1..];
   match (subcommand.as_str(), rest) {
     ("status", []) => status(),
+    ("night-light", arguments) => crate::night_light::run(&store, arguments),
     ("list-modes", [monitor]) => list_modes(monitor),
     ("set", [monitor, key, value]) => set(&store, monitor, key, value),
     ("apply" | "session-reload", []) => apply(&store, ApplyMode::Full),

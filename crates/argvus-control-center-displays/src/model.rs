@@ -2,6 +2,7 @@
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum DisplayPage {
   Home,
+  NightLight,
   Profiles,
   /// One saved profile, with its Apply, Rename and Delete rows.
   Profile(usize),
@@ -17,6 +18,9 @@ pub enum DisplayPage {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum PromptGoal {
+  NightTemperature,
+  NightStart,
+  NightEnd,
   /// Free-form "x,y" position editor for a monitor index.
   Position(usize),
   /// Free-form fractional scale editor for a monitor index.
@@ -587,4 +591,29 @@ mod tests {
     assert!(rows.contains(&MonitorSetting::SdrBrightness));
     assert!(rows.len() >= 14);
   }
+}
+
+/// Read-only projection of the public night-light JSON contract.
+#[derive(Debug, Clone, Default, serde::Deserialize)]
+#[serde(default)]
+pub(crate) struct NightLightStatus {
+  #[serde(skip)]
+  pub loaded: bool,
+  pub available: bool,
+  pub unavailable_reason: Option<String>,
+  pub settings: NightLightSettings,
+  pub active: Option<bool>,
+  pub effective_temperature: Option<u32>,
+  pub next_transition: Option<String>,
+  pub manual_override: bool,
+}
+
+#[derive(Debug, Clone, Default, serde::Deserialize)]
+#[serde(default)]
+pub(crate) struct NightLightSettings {
+  pub enabled: bool,
+  pub temperature: u32,
+  pub schedule_enabled: bool,
+  pub start: String,
+  pub end: String,
 }

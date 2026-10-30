@@ -1773,3 +1773,7 @@ Ajustes aprovados junto com o plano da Fase 1:
 ## System Doctor
 
 The Diagnostics Home destination is presented as System Doctor under Tools & Diagnostics. The `system-doctor` CLI route shares the existing diagnostics implementation and its `diagnostics` and `diagnostic` aliases. Detail pages can open supported related domains with `o`. Collection is read-only and uses background jobs.
+
+## Luz noturna (2026-10-29)
+
+A página `Desktop & Input > Displays > Night Light` reutiliza o menu e os jobs de Displays. A navegação por Home > Displays, busca `displays/night-light` e CLI `argvus control-center displays night-light` carrega o mesmo status JSON. Os controles ficam desativados sem backend; erros de aplicação preservam a exibição do estado persistido e efetivo. A edição valida Kelvin e HH:MM antes de disparar a CLI.

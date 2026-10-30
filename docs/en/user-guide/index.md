@@ -25,3 +25,5 @@ The desktop combines a Hyprland session, a Waybar taskbar, a Quickshell control 
 - [Hardware](/docs/user-guide/hardware/)
 - [Privacy and security](/docs/user-guide/privacy-and-security/)
 - [Troubleshooting](/docs/user-guide/troubleshooting/)
+
+- [Night Light](/docs/user-guide/night-light/)

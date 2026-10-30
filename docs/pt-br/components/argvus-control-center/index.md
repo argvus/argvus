@@ -358,3 +358,7 @@ Abra **Ferramentas e diagnóstico → System Doctor**, procure pelo nome ou exec
 As verificações usam contagens de unidades systemd com falha, ferramentas gráficas e o snapshot de Storage para uso dos sistemas de arquivos e saúde SMART. Um problema exige evidência; ferramentas ausentes ou dados SMART inacessíveis aparecem como indisponíveis, e uma sondagem que falhou ou excedeu o tempo limite aparece como erro. Categorias sem evidência coletada não indicam sucesso. As atualizações usam o banco local do pacman sem sincronizar repositórios; um arquivo de lock pode ser antigo e não comprova que há uma operação em andamento. SMART pode exigir permissões e não solicita acesso elevado. O resumo registra a última coleta concluída em tempo Unix.
 
 Storage e System Doctor compartilham um snapshot em memória por até 10 segundos. A tecla `r` solicita uma nova coleta; solicitações simultâneas reutilizam uma coleta recém-concluída. A saída dos subprocessos de Storage e do diagnóstico é limitada a 1 MiB por fluxo; uma saída maior é tratada como falha de coleta.
+
+## Luz noturna
+
+Abra **Área de trabalho e entrada > Monitores > Luz noturna** ou execute `argvus control-center displays night-light`. Configure temperatura, ativação manual e horários locais por `argvus config display night-light`. Veja [Luz noturna](/pt/docs/user-guide/night-light/) para comandos, estado e requisitos de runtime.

@@ -698,6 +698,25 @@ mod tests {
   }
 
   #[test]
+  #[cfg(feature = "displays")]
+  fn night_light_search_and_cli_open_the_same_page() {
+    let mut app = App::new(InitialRoute::Home);
+    assert!(
+      app
+        .search_registry
+        .entries()
+        .iter()
+        .any(|entry| entry.id == "displays.night-light")
+    );
+    app.open_search_route("displays/night-light");
+    assert_eq!(app.route, Route::Displays);
+    assert_eq!(app.displays.page, DisplayPage::NightLight);
+    let cli = App::new(InitialRoute::Displays(DisplayPage::NightLight));
+    assert_eq!(cli.route, Route::Displays);
+    assert_eq!(cli.displays.page, DisplayPage::NightLight);
+  }
+
+  #[test]
   fn home_navigation_is_bounded() {
     let mut app = App::new(InitialRoute::Home);
     app.move_home(-1);

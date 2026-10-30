@@ -260,7 +260,18 @@
       "properties": {
         "primary_monitor": { "type": ["string", "null"] },
         "monitors": { "type": "object" },
-        "workspaces": { "type": "object" }
+        "workspaces": { "type": "object" },
+        "night_light": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": { "type": "boolean", "default": false },
+            "temperature": { "type": "integer", "minimum": 1000, "maximum": 20000, "default": 4500 },
+            "schedule_enabled": { "type": "boolean", "default": false },
+            "start": { "type": "string", "pattern": "^([01][0-9]|2[0-3]):[0-5][0-9]$", "default": "20:00" },
+            "end": { "type": "string", "pattern": "^([01][0-9]|2[0-3]):[0-5][0-9]$", "default": "07:00" }
+          }
+        }
       }
     },
     "power": {

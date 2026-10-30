@@ -227,3 +227,41 @@ fn without_an_answer_the_previous_configuration_comes_back_at_the_deadline() {
     "same message as before"
   );
 }
+
+#[test]
+fn night_light_navigation_validation_and_resize() {
+  use ratatui::{Terminal, backend::TestBackend};
+  let mut app = app_with(false);
+  app.page = DisplayPage::NightLight;
+  assert_eq!(app.breadcrumb(), "Desktop & Input > Displays > Night Light");
+  assert!(
+    !app
+      .rows()
+      .iter()
+      .any(|row| row.id() == Some(&Item::NightToggle) && row.is_selectable())
+  );
+  app.night_light = crate::model::NightLightStatus {
+    available: true,
+    settings: crate::model::NightLightSettings {
+      temperature: 4500,
+      start: "20:00".into(),
+      end: "07:00".into(),
+      ..Default::default()
+    },
+    ..Default::default()
+  };
+  select(&mut app, Item::NightStart);
+  for (width, height) in [(80, 24), (120, 35), (30, 8), (10, 3)] {
+    let mut terminal = Terminal::new(TestBackend::new(width, height)).unwrap();
+    terminal.draw(|frame| app.draw(frame)).unwrap();
+    assert_eq!(selected(&app), Some(Item::NightStart));
+  }
+  app.open_prompt(PromptGoal::NightStart);
+  app.prompt_buffer = "24:00".into();
+  app.commit_prompt(PromptGoal::NightStart);
+  assert!(app.prompt_error.is_some());
+  app.handle(KeyCode::Esc);
+  assert_eq!(app.page, DisplayPage::NightLight);
+  assert!(!app.handle(KeyCode::Esc));
+  assert_eq!(app.page, DisplayPage::Home);
+}

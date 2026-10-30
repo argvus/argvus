@@ -36,6 +36,9 @@ impl DisplaysApp {
       | PromptGoal::Scale(i)
       | PromptGoal::SdrBrightness(i)
       | PromptGoal::SdrSaturation(i) => DisplayPage::Detail(i),
+      PromptGoal::NightTemperature | PromptGoal::NightStart | PromptGoal::NightEnd => {
+        DisplayPage::NightLight
+      }
       PromptGoal::ProfileCreate => DisplayPage::Profiles,
       PromptGoal::ProfileRename(i) => DisplayPage::Profile(i),
     });
@@ -45,6 +48,12 @@ impl DisplaysApp {
   pub(super) fn commit_prompt(&mut self, goal: PromptGoal) {
     let buffer = self.prompt_buffer.clone();
     match goal {
+      PromptGoal::NightTemperature | PromptGoal::NightStart | PromptGoal::NightEnd => {
+        if !self.commit_night_prompt(goal, &buffer) {
+          return;
+        }
+        self.leave_prompt(DisplayPage::NightLight);
+      }
       PromptGoal::Position(index) => {
         let Some((x, y)) = parse_position(&buffer) else {
           self.prompt_error = Some(
@@ -206,6 +215,9 @@ impl DisplaysApp {
 
   pub(super) fn prompt_prefill(&self, goal: PromptGoal) -> String {
     match goal {
+      PromptGoal::NightTemperature => self.night_light.settings.temperature.to_string(),
+      PromptGoal::NightStart => self.night_light.settings.start.clone(),
+      PromptGoal::NightEnd => self.night_light.settings.end.clone(),
       PromptGoal::Position(index) => self
         .monitors
         .get(index)
@@ -280,6 +292,8 @@ pub(super) fn parse_number(buffer: &str) -> Option<f64> {
 
 pub(super) fn prompt_allowed(goal: PromptGoal, character: char) -> bool {
   match goal {
+    PromptGoal::NightTemperature => character.is_ascii_digit(),
+    PromptGoal::NightStart | PromptGoal::NightEnd => character.is_ascii_digit() || character == ':',
     PromptGoal::Position(_) => {
       character.is_ascii_digit() || character == 'x' || character == ',' || character == '-'
     }

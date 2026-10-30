@@ -44,5 +44,8 @@
   "layout_mode.select": "Select mode",
   "layout_mode.usage": "Usage: layout-mode-switch <sticky|float>",
   "wallpaper.notification.title": "Wallpaper",
-  "wallpaper.notification.message": "Changed to:\n{name}"
+  "wallpaper.notification.message": "Changed to:\n{name}",
+  "brightness.night_light_on": "Night Light: on ({temperature} K) — toggle",
+  "brightness.night_light_off": "Night Light: off — toggle",
+  "brightness.night_light_failed": "Could not change Night Light"
 }

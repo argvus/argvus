@@ -118,3 +118,7 @@ O setup valida todas as opções antes de alterar qualquer coisa. Nomes de app i
 ## Sessão e recarga
 
 `SUPER + SHIFT + R` executa `argvus sessionctl reload`. O controlador da sessão aplica a configuração gerada e reinicia só os componentes de que é responsável. Ele não copia `/usr/share/argvus` para o diretório pessoal, e não substitui um JSON malformado.
+
+## Luz noturna
+
+Abra **Área de trabalho e entrada > Monitores > Luz noturna** ou execute `argvus control-center displays night-light`. Configure temperatura, ativação manual e horários locais por `argvus config display night-light`. Veja [Luz noturna](/pt/docs/user-guide/night-light/) para comandos, estado e requisitos de runtime.

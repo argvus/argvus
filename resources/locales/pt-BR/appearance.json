@@ -44,5 +44,8 @@
   "layout_mode.select": "Selecionar modo",
   "layout_mode.usage": "Uso: layout-mode-switch <sticky|float>",
   "wallpaper.notification.title": "Papel de parede",
-  "wallpaper.notification.message": "Alterado para:\n{name}"
+  "wallpaper.notification.message": "Alterado para:\n{name}",
+  "brightness.night_light_on": "Luz noturna: ligada ({temperature} K) — alternar",
+  "brightness.night_light_off": "Luz noturna: desligada — alternar",
+  "brightness.night_light_failed": "Não foi possível alterar a luz noturna"
 }

@@ -144,5 +144,8 @@
   ,"weather.condition.rain_showers": "Rain showers"
   ,"weather.condition.snow_showers": "Snow showers"
   ,"weather.condition.thunderstorm": "Thunderstorm"
-  ,"weather.condition.unknown": "Unknown"
+  ,"weather.condition.unknown": "Unknown",
+  "display.night_light": "Night Light",
+  "display.night_light_off": "Night Light off",
+  "display.night_light_failed": "Could not change Night Light"
 }

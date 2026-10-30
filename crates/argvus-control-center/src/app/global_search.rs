@@ -277,6 +277,8 @@ impl App {
       ("session", "logs") => self.open_session_page(SessionPage::Logs),
       #[cfg(feature = "displays")]
       ("displays", "summary") => self.open_displays_page(DisplayPage::Home),
+      #[cfg(feature = "displays")]
+      ("displays", "night-light") => self.open_displays_page(DisplayPage::NightLight),
       #[cfg(feature = "appearance")]
       ("appearance", "summary") => self.open_appearance_page(AppearancePage::Home),
       #[cfg(feature = "appearance")]

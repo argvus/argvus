@@ -27,6 +27,7 @@ pub mod i18n;
 pub mod icons;
 mod json_pointers;
 pub mod monitor_state;
+pub mod night_light;
 pub mod project;
 pub mod session_loading;
 pub mod session_paths;

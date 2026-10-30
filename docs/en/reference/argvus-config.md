@@ -320,3 +320,7 @@ binary and assets explicitly; they must not silently use `argvus config`
 or `~/.config/argvus`. `apply` safely normalizes legacy combined identifiers
 such as `argvus-dark-float` into separate theme and variant values before
 rebuilding projections. Packaged asset identity is not recorded in a manifest in this release.
+
+## Night Light
+
+Open **Desktop & Input > Displays > Night Light** or run `argvus control-center displays night-light`. Configure temperature, manual activation and fixed local schedules through `argvus config display night-light`. See [Night Light](/docs/user-guide/night-light/) for commands, state and runtime requirements.

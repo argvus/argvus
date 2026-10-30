@@ -942,3 +942,41 @@ impl StoredProfile {
 
 #[cfg(test)]
 mod tests;
+
+/// Runs the shared CLI through the bounded process runner, never on the UI thread.
+pub(crate) fn night_light_command(arguments: &[String]) -> Result<String, String> {
+  let mut request = ProcessRequest::new("argvus")
+    .arg("config")
+    .arg("display")
+    .arg("night-light")
+    .timeout(std::time::Duration::from_secs(10))
+    .output_limit(65536);
+  for argument in arguments {
+    request = request.arg(argument);
+  }
+  let output = SystemProcessRunner
+    .run(&request)
+    .map_err(|error| error.to_string())?;
+  if output.status != Some(0) || output.timed_out {
+    return Err(terminal_text(
+      String::from_utf8_lossy(&output.stderr).trim(),
+    ));
+  }
+  Ok(String::from_utf8_lossy(&output.stdout).into_owned())
+}
+
+pub(crate) fn night_light_status() -> crate::model::NightLightStatus {
+  night_light_command(&["status".into()])
+    .and_then(|json| {
+      serde_json::from_str::<crate::model::NightLightStatus>(&json)
+        .map_err(|error| error.to_string())
+    })
+    .map(|mut snapshot| {
+      snapshot.loaded = true;
+      snapshot
+    })
+    .unwrap_or_else(|error| crate::model::NightLightStatus {
+      unavailable_reason: Some(error),
+      ..Default::default()
+    })
+}

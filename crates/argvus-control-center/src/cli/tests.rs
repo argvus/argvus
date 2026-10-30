@@ -212,6 +212,10 @@ fn parses_every_session_page() {
 #[cfg(feature = "displays")]
 #[test]
 fn parses_displays_pages() {
+  assert!(matches!(
+    parse(&args(&["displays", "night-light"])).unwrap(),
+    Some(InitialRoute::Displays(DisplayPage::NightLight))
+  ));
   assert_eq!(
     parse(&args(&["displays"])).unwrap(),
     Some(InitialRoute::Displays(DisplayPage::Home))

@@ -64,7 +64,7 @@ impl DisplaysApp {
       KeyCode::Tab | KeyCode::BackTab => return false,
       KeyCode::Char('r') if !busy => {
         match self.page {
-          DisplayPage::Home | DisplayPage::Detail(_) => self.refresh(),
+          DisplayPage::Home | DisplayPage::NightLight | DisplayPage::Detail(_) => self.refresh(),
           DisplayPage::Profiles | DisplayPage::Profile(_) => self.reload_state(),
           // `r` (and `q`, when it reaches the page) cancel the picker.
           DisplayPage::Picker { .. } => self.exit_picker(),
@@ -101,7 +101,9 @@ impl DisplaysApp {
   pub(super) fn back(&mut self) -> bool {
     match self.page {
       DisplayPage::Home => return true,
-      DisplayPage::Profiles | DisplayPage::Detail(_) => self.go(DisplayPage::Home),
+      DisplayPage::Profiles | DisplayPage::NightLight | DisplayPage::Detail(_) => {
+        self.go(DisplayPage::Home)
+      }
       DisplayPage::Profile(_) => self.go(DisplayPage::Profiles),
       DisplayPage::Picker { monitor, .. } => self.go(DisplayPage::Detail(monitor)),
       DisplayPage::Prompt { goal } => self.restore_prompt(goal),
@@ -114,6 +116,19 @@ impl DisplaysApp {
     match item {
       Item::Monitor(index) => self.go(DisplayPage::Detail(index)),
       Item::Stale(offset) => self.go(DisplayPage::Detail(self.stale_start() + offset)),
+      Item::NightLight => {
+        self.go(DisplayPage::NightLight);
+        self.refresh();
+      }
+      Item::NightToggle => self.night_action(vec!["toggle".into()]),
+      Item::NightTemperature => self.open_prompt(PromptGoal::NightTemperature),
+      Item::NightStart => self.open_prompt(PromptGoal::NightStart),
+      Item::NightEnd => self.open_prompt(PromptGoal::NightEnd),
+      Item::NightSchedule => self.night_schedule(
+        !self.night_light.settings.schedule_enabled,
+        self.night_light.settings.start.clone(),
+        self.night_light.settings.end.clone(),
+      ),
       Item::Profiles => self.go(DisplayPage::Profiles),
       Item::Refresh => self.refresh(),
       Item::Setting(setting) => {

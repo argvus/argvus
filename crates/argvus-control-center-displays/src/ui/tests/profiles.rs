@@ -11,6 +11,7 @@ fn home_lists_monitors_profiles_and_refresh_as_rows() {
     ids(&app),
     vec![
       Some(Item::Monitor(0)),
+      Some(Item::NightLight),
       Some(Item::Profiles),
       None,
       Some(Item::Refresh)
@@ -23,7 +24,7 @@ fn home_lists_monitors_profiles_and_refresh_as_rows() {
     !rows[0].detail_text().unwrap().contains("escala"),
     "no fixed Portuguese text"
   );
-  assert_eq!(rows[1].detail_text(), Some("1"));
+  assert_eq!(rows[2].detail_text(), Some("1"));
 }
 
 #[test]

@@ -2005,5 +2005,18 @@
   "control_center.net_section_ipv4": "IPv4",
   "control_center.net_section_ipv6": "IPv6",
   "control_center.net_section_openvpn": "OpenVPN",
-  "control_center.net_section_security": "Security"
+  "control_center.net_section_security": "Security",
+  "control_center.night_light.title": "Night Light",
+  "control_center.night_light.temperature": "Color temperature (Kelvin)",
+  "control_center.night_light.schedule": "Fixed local schedule",
+  "control_center.night_light.start": "Start (HH:MM)",
+  "control_center.night_light.end": "End (HH:MM)",
+  "control_center.night_light.effective": "Effective state",
+  "control_center.night_light.next": "Next transition",
+  "control_center.night_light.saved_manual": "Saved manual activation",
+  "control_center.night_light.override": "Manual override until the next transition",
+  "control_center.night_light.unavailable": "Night Light unavailable — Hyprland and a responding Hyprsunset are required",
+  "control_center.night_light.apply_failed": "Could not apply Night Light; saved and effective state are shown below",
+  "control_center.night_light.invalid": "Use 1000–20000 K or different valid times in HH:MM",
+  "control_center.night_light.loading": "Reading Night Light…"
 }

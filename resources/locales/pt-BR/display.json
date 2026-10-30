@@ -22,5 +22,6 @@
   "notification.migrated": "A configuração do nwg-displays foi migrada para o ARGVUS",
   "notification.legacy_applied": "O layout antigo do nwg-displays foi aplicado",
   "notification.layout_saved": "Layout das telas salvo pelo nwg-displays",
-  "adapter.launching": "Iniciando o nwg-displays com um XDG_CONFIG_HOME isolado: {config}"
+  "adapter.launching": "Iniciando o nwg-displays com um XDG_CONFIG_HOME isolado: {config}",
+  "night_light.error": "A luz noturna não conseguiu concluir a operação: {error}"
 }

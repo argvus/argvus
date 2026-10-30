@@ -444,9 +444,15 @@ pub(super) fn validate_hyprland(document: &ConfigDocument) -> ConfigResult<()> {
 }
 
 pub(super) fn validate_displays(document: &ConfigDocument) -> ConfigResult<()> {
+  if let Some(value) = document.get("/displays/night_light") {
+    crate::night_light::Settings::from_value(value)?;
+  }
   let Some(value) = document.sections.get("displays") else {
     return Ok(());
   };
+  if !value.is_object() {
+    return Err(ConfigError::Invalid("displays must be an object".into()));
+  }
   if value
     .get("primary_monitor")
     .is_some_and(|value| !value.is_string() && !value.is_null())

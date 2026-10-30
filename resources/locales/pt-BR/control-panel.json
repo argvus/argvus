@@ -144,5 +144,8 @@
   ,"weather.condition.rain_showers": "Pancadas de chuva"
   ,"weather.condition.snow_showers": "Pancadas de neve"
   ,"weather.condition.thunderstorm": "Tempestade"
-  ,"weather.condition.unknown": "Desconhecido"
+  ,"weather.condition.unknown": "Desconhecido",
+  "display.night_light": "Luz noturna",
+  "display.night_light_off": "Luz noturna desligada",
+  "display.night_light_failed": "Não foi possível alterar a luz noturna"
 }

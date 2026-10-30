@@ -358,3 +358,7 @@ Open **Tools & Diagnostics → System Doctor**, search for it, or run `argvus co
 Checks use systemd failed-unit counts, graphics tools and the Storage snapshot for filesystem usage and SMART health. A problem requires evidence; unavailable tools or inaccessible SMART data are shown as unavailable, and a failed or timed-out probe is an error. Categories without collected evidence do not imply a successful check. Package updates use the local pacman database and do not synchronize repositories; a lock file can be stale and does not prove an operation is running. SMART can require permissions and no elevated access is requested. The summary records the last completed collection as Unix time.
 
 Storage and System Doctor share an in-memory snapshot for up to 10 seconds. Pressing `r` explicitly collects fresh data; concurrent requests reuse a collection that has just completed. Diagnostic and Storage subprocess output is limited to 1 MiB per stream, and oversized output is treated as a failed collection.
+
+## Night Light
+
+Open **Desktop & Input > Displays > Night Light** or run `argvus control-center displays night-light`. Configure temperature, manual activation and fixed local schedules through `argvus config display night-light`. See [Night Light](/docs/user-guide/night-light/) for commands, state and runtime requirements.

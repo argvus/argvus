@@ -325,3 +325,7 @@ assets; não devem usar `argvus config` ou `~/.config/argvus`
 silenciosamente. `apply` normaliza com segurança identificadores legados como
 `argvus-dark-float` para theme e variant separados antes de reconstruir as
 projeções. A identidade dos assets empacotados não é registrada em manifesto nesta versão.
+
+## Luz noturna
+
+Abra **Área de trabalho e entrada > Monitores > Luz noturna** ou execute `argvus control-center displays night-light`. Configure temperatura, ativação manual e horários locais por `argvus config display night-light`. Veja [Luz noturna](/pt/docs/user-guide/night-light/) para comandos, estado e requisitos de runtime.

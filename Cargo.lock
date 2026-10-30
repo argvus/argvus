@@ -214,6 +214,8 @@ version = "0.1.0"
 dependencies = [
  "argvus-loading-theme-core",
  "argvus-theme-core",
+ "chrono",
+ "chrono-tz",
  "libc",
  "regex",
  "serde",
