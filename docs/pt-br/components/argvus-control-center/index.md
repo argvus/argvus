@@ -441,6 +441,24 @@ do primeiro, e políticas de limpeza não são executadas sem o agendamento ativ
 A página apenas consulta o estado das unidades e não as habilita. Limites de espaço exigem qgroups Btrfs
 configurados e não são expostos nesta tela.
 
+### Snapshots pré-atualização
+
+Depois de revisar e confirmar uma atualização oficial de pacotes, o helper cria
+um snapshot `single` da raiz Btrfs configurada imediatamente antes de iniciar o
+pacman. Isso cobre atualização completa, atualização individual de pacote oficial
+e a atualização completa oferecida após adicionar um repositório. Pesquisa,
+verificação de atualizações, planejamento, sincronização de metadados do
+repositório, operações AUR/yay e outras ações de pacotes não são cobertas. Se a
+raiz não tiver Btrfs/Snapper compatível ou a criação falhar, a atualização é
+bloqueada; não há opção para continuar sem snapshot. Se o pacman falhar, o
+snapshot é mantido e seu ID aparece no erro. Se o helper for interrompido depois
+que o pacman iniciar, o resultado será indicado como indeterminado; confira o
+estado dos pacotes antes de tentar novamente. Somente uma atualização protegida
+do ARGVUS pode ocorrer por vez. O snapshot representa o subvolume raiz
+configurado e não garante recuperar ESP, subvolumes separados, dados externos ou
+bancos de dados de aplicações. Nenhum algoritmo de limpeza é atribuído ao
+snapshot; ele pode permanecer até uma limpeza Snapper executada pelo usuário.
+
 ### Validação manual
 
 - Em raiz ext4/xfs, confira a mensagem exata em português e que c/d não abrem operações.

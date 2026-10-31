@@ -364,6 +364,7 @@ impl PackagesApp {
     if self.transaction_open
       && let Some(output) = self.transaction_live.as_ref().map(|live| live.output())
     {
+      let output = transaction_output(self.lang, &output);
       let popup = chrome::centered(f.area(), TRANSACTION_POPUP_WIDTH, TRANSACTION_POPUP_HEIGHT);
       let total = transaction_wrapped_lines(&output);
       let shown_total = total.max(1);

@@ -6,10 +6,17 @@ use std::sync::Mutex;
 struct Fake {
   replies: Mutex<VecDeque<Result<ProcessOutput, ProcessError>>>,
   requests: Mutex<Vec<ProcessRequest>>,
+  events: Option<std::sync::Arc<Mutex<Vec<String>>>>,
 }
 impl ProcessRunner for Fake {
   fn run(&self, request: &ProcessRequest) -> Result<ProcessOutput, ProcessError> {
     self.requests.lock().unwrap().push(request.clone());
+    if let Some(events) = &self.events {
+      events
+        .lock()
+        .unwrap()
+        .push(format!("{} {:?}", request.program, request.args));
+    }
     self
       .replies
       .lock()
@@ -30,6 +37,17 @@ fn backend(replies: Vec<Result<ProcessOutput, ProcessError>>) -> SnapshotBackend
   SnapshotBackend::new(Fake {
     replies: Mutex::new(replies.into()),
     requests: Mutex::new(vec![]),
+    events: None,
+  })
+}
+fn backend_with_events(
+  replies: Vec<Result<ProcessOutput, ProcessError>>,
+  events: std::sync::Arc<Mutex<Vec<String>>>,
+) -> SnapshotBackend<Fake> {
+  SnapshotBackend::new(Fake {
+    replies: Mutex::new(replies.into()),
+    requests: Mutex::new(vec![]),
+    events: Some(events),
   })
 }
 fn root(filesystem: &str) -> String {
@@ -228,6 +246,104 @@ fn retention_save_uses_one_configdata_argument_and_verifies_readback() {
     })
     .unwrap();
   assert_eq!(set.args, ["-c", "system", "set-config", "NUMBER_LIMIT=20"]);
+}
+
+#[test]
+fn pre_upgrade_snapshot_is_confirmed_before_transaction_and_failure_keeps_it() {
+  let events = std::sync::Arc::new(Mutex::new(Vec::new()));
+  let mut replies = ready(vec![row(1, false, false)]);
+  replies.extend(ready(vec![row(1, false, false)]));
+  replies.push(output("42\n"));
+  let snapshot_backend = backend_with_events(replies, events.clone());
+  let id = run_pre_upgrade_transaction(&snapshot_backend, |snapshot_number| {
+    assert_eq!(snapshot_number, 42);
+    events.lock().unwrap().push("pacman starts".into());
+    Ok(())
+  })
+  .unwrap();
+  assert_eq!(id, 42);
+  let events = events.lock().unwrap();
+  let snapshot = events
+    .iter()
+    .position(|event| event.contains("create") && event.contains("--print-number"))
+    .unwrap();
+  let pacman = events
+    .iter()
+    .position(|event| event == "pacman starts")
+    .unwrap();
+  assert!(snapshot < pacman);
+
+  let mut replies = ready(vec![row(1, false, false)]);
+  replies.extend(ready(vec![row(1, false, false)]));
+  replies.push(output("43\n"));
+  let backend = backend(replies);
+  let failure = run_pre_upgrade_transaction(&backend, |_| Err("pacman failed".into())).unwrap_err();
+  assert!(failure.contains("ARGVUS_PRE_UPDATE_FAILED:43"));
+}
+
+#[test]
+fn pre_upgrade_blocked_filesystem_never_starts_the_transaction() {
+  let backend = backend(vec![output(&root("ext4"))]);
+  let mut started = false;
+  let error = run_pre_upgrade_transaction(&backend, |_| {
+    started = true;
+    Ok(())
+  })
+  .unwrap_err();
+  assert!(error.contains("ARGVUS_PRE_UPDATE_BLOCKED"));
+  assert!(!started);
+  assert_eq!(backend.runner.requests.lock().unwrap().len(), 1);
+}
+
+#[test]
+fn pre_upgrade_without_snapper_or_root_configuration_never_starts_the_transaction() {
+  let missing_snapper = Err(ProcessError::Io(std::io::Error::from(
+    IoErrorKind::NotFound,
+  )));
+  let missing_backend = backend(vec![output(&root("btrfs")), missing_snapper]);
+  let mut started = false;
+  assert!(
+    run_pre_upgrade_transaction(&missing_backend, |_| {
+      started = true;
+      Ok(())
+    })
+    .is_err()
+  );
+  assert!(!started);
+
+  let backend = backend(vec![
+    output(&root("btrfs")),
+    output("--jsonout"),
+    output(r#"{"configs":[]}"#),
+  ]);
+  let mut started = false;
+  assert!(
+    run_pre_upgrade_transaction(&backend, |_| {
+      started = true;
+      Ok(())
+    })
+    .is_err()
+  );
+  assert!(!started);
+}
+
+#[test]
+fn pre_upgrade_rejects_missing_and_malformed_snapshot_numbers() {
+  for number in ["", "0", "not-a-number"] {
+    let mut replies = ready(vec![row(1, false, false)]);
+    replies.extend(ready(vec![row(1, false, false)]));
+    replies.push(output(number));
+    let backend = backend(replies);
+    let mut started = false;
+    assert!(
+      run_pre_upgrade_transaction(&backend, |_| {
+        started = true;
+        Ok(())
+      })
+      .is_err()
+    );
+    assert!(!started);
+  }
 }
 
 #[test]

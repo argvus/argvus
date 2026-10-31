@@ -111,6 +111,34 @@ enum Action {
   },
 }
 
+fn transaction_output(lang: Lang, output: &str) -> String {
+  output
+    .lines()
+    .map(|line| {
+      if line == "ARGVUS_PRE_UPDATE_SNAPSHOT_CREATING" {
+        tr(lang, "control_center.package_update_snapshot_checking").into()
+      } else if let Some(number) = line
+        .strip_prefix("ARGVUS_PRE_UPDATE_SNAPSHOT_CREATED:")
+        .and_then(|value| value.parse::<u32>().ok())
+        .filter(|number| *number > 0)
+      {
+        tr(lang, "control_center.package_update_snapshot_created")
+          .replace("{number}", &number.to_string())
+      } else if let Some(number) = line
+        .strip_prefix("ARGVUS_PRE_UPDATE_COMPLETED:")
+        .and_then(|value| value.parse::<u32>().ok())
+        .filter(|number| *number > 0)
+      {
+        tr(lang, "control_center.package_update_snapshot_success")
+          .replace("{number}", &number.to_string())
+      } else {
+        line.to_owned()
+      }
+    })
+    .collect::<Vec<_>>()
+    .join("\n")
+}
+
 impl Action {
   /// Removals, cache cleanups and downgrades, confirmed in the danger style
   /// like the Danger zone rows that start them; the other operations use

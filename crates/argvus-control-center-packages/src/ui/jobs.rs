@@ -1,5 +1,8 @@
 //! Background work of the page: loading each view, polling the jobs and reporting their results.
 
+use super::actions::{
+  PRE_UPDATE_BLOCKED, PRE_UPDATE_COMPLETED, PRE_UPDATE_FAILED, PRE_UPDATE_INDETERMINATE,
+};
 use super::render::transaction_bottom_offset;
 use super::*;
 
@@ -169,19 +172,38 @@ impl PackagesApp {
           if self.transaction_follow
             && let Some(live) = &self.transaction_live
           {
-            self.transaction_scroll = transaction_bottom_offset(&live.output());
+            self.transaction_scroll =
+              transaction_bottom_offset(&transaction_output(self.lang, &live.output()));
           }
           true
         } else {
           false
         }
       }
-      JobState::Finished(Ok(Ok(_output))) => {
+      JobState::Finished(Ok(Ok(output))) => {
         self.action = None;
-        self.success(tr(
-          self.lang,
-          "control_center.operation_completed_refreshing_packages",
-        ));
+        if matches!(
+          self.running,
+          Some(Action::Upgrade | Action::UpgradePackage(_) | Action::UpgradeAfterRepoAdd)
+        ) {
+          if let Some(number) = snapshot_number_after(&output, PRE_UPDATE_COMPLETED) {
+            self.success(
+              tr(self.lang, "control_center.package_update_snapshot_success")
+                .replace("{number}", &number.to_string()),
+            );
+          } else {
+            self.error(tr(
+              self.lang,
+              "control_center.package_update_snapshot_unverified",
+            ));
+            return true;
+          }
+        } else {
+          self.success(tr(
+            self.lang,
+            "control_center.operation_completed_refreshing_packages",
+          ));
+        }
         self.after_success();
         self.reload_force();
         true
@@ -189,7 +211,7 @@ impl PackagesApp {
       JobState::Finished(Ok(Err(e))) | JobState::Finished(Err(e)) => {
         self.action = None;
         self.running = None;
-        self.error(e);
+        self.error(pre_update_error_text(self.lang, &e));
         true
       }
     }
@@ -345,5 +367,85 @@ impl PackagesApp {
       }
       _ => {}
     }
+  }
+}
+
+fn snapshot_number_after(output: &str, marker: &str) -> Option<u32> {
+  output.lines().find_map(|line| {
+    line
+      .strip_prefix(marker)?
+      .parse::<u32>()
+      .ok()
+      .filter(|number| *number > 0)
+  })
+}
+
+fn pre_update_error_text(lang: Lang, error: &str) -> String {
+  if let Some(reason) = error.strip_prefix(PRE_UPDATE_BLOCKED) {
+    return format!(
+      "{}: {reason}",
+      tr(lang, "control_center.package_update_snapshot_blocked")
+    );
+  }
+  if let Some(details) = error.strip_prefix(PRE_UPDATE_FAILED)
+    && let Some((number, reason)) = details.split_once(':')
+    && let Ok(number) = number.parse::<u32>()
+  {
+    return tr(lang, "control_center.package_update_snapshot_failed")
+      .replace("{number}", &number.to_string())
+      .replace("{details}", reason);
+  }
+  if let Some(number) = error
+    .strip_prefix(PRE_UPDATE_INDETERMINATE)
+    .and_then(|number| number.parse::<u32>().ok())
+  {
+    return tr(lang, "control_center.package_update_snapshot_indeterminate")
+      .replace("{number}", &number.to_string());
+  }
+  if error == "ARGVUS_PRE_UPDATE_RESULT_UNKNOWN" {
+    return tr(lang, "control_center.package_update_snapshot_unverified").into();
+  }
+  error.into()
+}
+
+#[cfg(test)]
+mod pre_update_tests {
+  use super::*;
+
+  #[test]
+  fn accepts_only_a_positive_snapshot_id_from_the_completion_marker() {
+    assert_eq!(
+      snapshot_number_after(
+        "pacman output\nARGVUS_PRE_UPDATE_COMPLETED:42\n",
+        PRE_UPDATE_COMPLETED
+      ),
+      Some(42)
+    );
+    assert_eq!(
+      snapshot_number_after("ARGVUS_PRE_UPDATE_COMPLETED:0", PRE_UPDATE_COMPLETED),
+      None
+    );
+    assert_eq!(
+      snapshot_number_after("ARGVUS_PRE_UPDATE_COMPLETED:bad", PRE_UPDATE_COMPLETED),
+      None
+    );
+  }
+
+  #[test]
+  fn translates_blocked_failed_and_indeterminate_upgrade_outcomes() {
+    let lang = Lang::for_locale("en-US");
+    assert!(
+      pre_update_error_text(lang, "ARGVUS_PRE_UPDATE_BLOCKED: no Btrfs config")
+        .contains("update was not started")
+    );
+    let failed = pre_update_error_text(lang, "ARGVUS_PRE_UPDATE_FAILED:42:pacman exited with 1");
+    assert!(failed.contains("#42") && failed.contains("pacman exited with 1"));
+    assert!(
+      pre_update_error_text(lang, "ARGVUS_PRE_UPDATE_INDETERMINATE:42")
+        .contains("result is unknown")
+    );
+    assert!(
+      pre_update_error_text(lang, "ARGVUS_PRE_UPDATE_RESULT_UNKNOWN").contains("Could not verify")
+    );
   }
 }

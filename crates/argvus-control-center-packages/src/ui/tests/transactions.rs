@@ -12,6 +12,19 @@ fn package_confirmation_cancel_does_not_start_an_operation() {
 }
 
 #[test]
+fn pre_update_progress_markers_render_as_localized_status_lines() {
+  for locale in ["en-US", "pt-BR"] {
+    let lang = Lang::for_locale(locale);
+    let output = transaction_output(
+      lang,
+      "ARGVUS_PRE_UPDATE_SNAPSHOT_CREATING\nARGVUS_PRE_UPDATE_SNAPSHOT_CREATED:17\nARGVUS_PRE_UPDATE_COMPLETED:17",
+    );
+    assert!(!output.contains("ARGVUS_PRE_UPDATE_"));
+    assert!(output.contains("17"));
+  }
+}
+
+#[test]
 fn transaction_window_scrolls_closes_and_generates_action_plans() {
   let mut app = app();
   let live = LiveProcess::new();

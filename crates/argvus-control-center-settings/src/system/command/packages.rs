@@ -3,6 +3,32 @@
 use super::boot::{backup_file, boot_write_atomic};
 use super::streaming::stream_command;
 use super::*;
+use std::fs::{File, OpenOptions};
+use std::os::fd::AsRawFd;
+use std::os::unix::fs::OpenOptionsExt;
+
+struct PackageUpdateLock {
+  _file: File,
+}
+
+impl PackageUpdateLock {
+  fn acquire(path: &Path) -> Result<Self, String> {
+    let file = OpenOptions::new()
+      .read(true)
+      .write(true)
+      .create(true)
+      .mode(0o600)
+      .custom_flags(libc::O_CLOEXEC | libc::O_NOFOLLOW)
+      .open(path)
+      .map_err(|error| format!("package update lock: {error}"))?;
+    // SAFETY: `file` owns a valid descriptor for the duration of the lock.
+    let result = unsafe { libc::flock(file.as_raw_fd(), libc::LOCK_EX | libc::LOCK_NB) };
+    if result != 0 {
+      return Err("another ARGVUS package update is in progress".into());
+    }
+    Ok(Self { _file: file })
+  }
+}
 
 pub(super) fn valid_package_name(value: &str) -> bool {
   !value.is_empty()
@@ -80,8 +106,8 @@ pub(super) fn run_package(action: &str, values: &[String]) -> Result<(), String>
     "remove-only" => stream_pacman(&["-Rdd"], values),
     "remove-cascade" => stream_pacman(&["-Rcns"], values),
     "reinstall" => stream_pacman(&["-S"], values),
-    "upgrade" => stream_pacman(&["-Syu"], &[]),
-    "upgrade-package" => stream_pacman(&["-S"], values),
+    "upgrade" => run_pre_snapshot_upgrade(&[], true),
+    "upgrade-package" => run_pre_snapshot_upgrade(values, false),
     "refresh-db" => stream_pacman(&["-Syy"], &[]),
     "downgrade" => stream_pacman(&["-U"], values),
     "clean-cache" => stream_command(
@@ -101,6 +127,34 @@ pub(super) fn run_package(action: &str, values: &[String]) -> Result<(), String>
       Ok(())
     }
     _ => Err("unsupported package operation".into()),
+  }
+}
+
+fn run_pre_snapshot_upgrade(packages: &[String], full_upgrade: bool) -> Result<(), String> {
+  let _lock =
+    PackageUpdateLock::acquire(Path::new("/run/lock/argvus-package-update-snapshot.lock"))?;
+  #[cfg(feature = "snapshot")]
+  {
+    use argvus_control_center_core::process::SystemProcessRunner;
+    use argvus_control_center_snapshot::backend::{SnapshotBackend, run_pre_upgrade_transaction};
+
+    println!("ARGVUS_PRE_UPDATE_SNAPSHOT_CREATING");
+    let backend = SnapshotBackend::new(SystemProcessRunner);
+    let snapshot_number = run_pre_upgrade_transaction(&backend, |snapshot_number| {
+      println!("ARGVUS_PRE_UPDATE_SNAPSHOT_CREATED:{snapshot_number}");
+      if full_upgrade {
+        stream_pacman(&["-Syu"], &[])
+      } else {
+        stream_pacman(&["-S"], packages)
+      }
+    })?;
+    println!("ARGVUS_PRE_UPDATE_COMPLETED:{snapshot_number}");
+    Ok(())
+  }
+  #[cfg(not(feature = "snapshot"))]
+  {
+    let _ = (packages, full_upgrade);
+    Err("ARGVUS_PRE_UPDATE_BLOCKED: snapshot integration is not compiled in".into())
   }
 }
 
@@ -137,4 +191,19 @@ pub(super) fn service_args(action: &str, unit: &str) -> Result<Vec<String>, Stri
     _ => return Err("unsupported service action".into()),
   };
   Ok(args)
+}
+
+#[cfg(test)]
+mod update_lock_tests {
+  use super::*;
+
+  #[test]
+  fn update_lock_prevents_concurrent_transactions_and_releases_on_drop() {
+    let directory = tempfile::tempdir().unwrap();
+    let path = directory.path().join("update.lock");
+    let first = PackageUpdateLock::acquire(&path).unwrap();
+    assert!(PackageUpdateLock::acquire(&path).is_err());
+    drop(first);
+    assert!(PackageUpdateLock::acquire(&path).is_ok());
+  }
 }

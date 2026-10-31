@@ -439,6 +439,23 @@ the timeline timer, and configured cleanup policies do not run without cleanup
 scheduling. The page reads unit state only and does not enable timers. Space limits require configured Btrfs
 qgroups and are not exposed here.
 
+### Pre-update snapshots
+
+After reviewing and confirming an official package upgrade, the helper takes one
+`single` snapshot of the configured Btrfs root immediately before pacman runs.
+This covers full upgrades, individual official package updates, and the full
+upgrade offered after adding a repository. Search, update checks, transaction
+planning, repository metadata refresh, AUR/yay operations and other package
+actions are not covered. A missing/unsupported root Snapper configuration or a
+snapshot creation error blocks the update; there is no continue-without-snapshot
+bypass. If pacman fails, the snapshot is retained and its ID is included in the
+error. If the helper is interrupted after starting pacman, the outcome is
+reported as indeterminate and package state should be checked before retrying.
+Only one ARGVUS protected upgrade can run at a time. The snapshot is a point in
+time for the configured root subvolume, not a guarantee that ESP, separate
+subvolumes, external data or application databases can be recovered. It has no
+cleanup algorithm assigned and can remain until a user runs Snapper cleanup.
+
 ### Manual validation
 
 - On an ext4/xfs root, open the page in English and Portuguese. In Portuguese,

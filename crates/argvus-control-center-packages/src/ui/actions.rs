@@ -3,6 +3,11 @@
 use super::input::step_within;
 use super::*;
 
+pub(super) const PRE_UPDATE_BLOCKED: &str = "ARGVUS_PRE_UPDATE_BLOCKED:";
+pub(super) const PRE_UPDATE_FAILED: &str = "ARGVUS_PRE_UPDATE_FAILED:";
+pub(super) const PRE_UPDATE_INDETERMINATE: &str = "ARGVUS_PRE_UPDATE_INDETERMINATE:";
+pub(super) const PRE_UPDATE_COMPLETED: &str = "ARGVUS_PRE_UPDATE_COMPLETED:";
+
 impl PackagesApp {
   /// Runs the row `item`.
   pub(super) fn activate(&mut self, item: Item) {
@@ -495,6 +500,10 @@ pub(super) fn run_action(
   caps: Capabilities,
   live: LiveProcess,
 ) -> Result<String, String> {
+  let protected_upgrade = matches!(
+    &a,
+    Action::Upgrade | Action::UpgradePackage(_) | Action::UpgradeAfterRepoAdd
+  );
   match action_command(a, &caps)? {
     ActionCommand::Privileged { echo, request } => {
       live.push_line(&echo);
@@ -504,6 +513,12 @@ pub(super) fn run_action(
         .into_owned();
       let o = SystemSettingsOperation::new(SystemProcessRunner, executable)
         .execute_live(&request, &live)?;
+      if o.timed_out && protected_upgrade {
+        if let Some(number) = snapshot_number_in_log(&live.output()) {
+          return Err(format!("{PRE_UPDATE_INDETERMINATE}{number}"));
+        }
+        return Err("ARGVUS_PRE_UPDATE_RESULT_UNKNOWN".into());
+      }
       if o.status == Some(0) {
         let stdout = terminal_text(&String::from_utf8_lossy(&o.stdout))
           .trim()
@@ -529,6 +544,15 @@ pub(super) fn run_action(
       }
     }
   }
+}
+
+fn snapshot_number_in_log(output: &str) -> Option<u32> {
+  output.lines().find_map(|line| {
+    line
+      .strip_prefix("ARGVUS_PRE_UPDATE_SNAPSHOT_CREATED:")
+      .and_then(|number| number.parse::<u32>().ok())
+      .filter(|number| *number > 0)
+  })
 }
 
 pub(super) fn generate_mirror_preview(

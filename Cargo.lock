@@ -492,6 +492,7 @@ dependencies = [
  "argvus-theme",
  "argvus-tui",
  "crossterm",
+ "libc",
  "ratatui",
  "serde",
  "serde_json",

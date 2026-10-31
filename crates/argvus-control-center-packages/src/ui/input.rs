@@ -241,7 +241,8 @@ impl PackagesApp {
       }
       KeyCode::End => {
         if let Some(live) = &self.transaction_live {
-          self.transaction_scroll = transaction_bottom_offset(&live.output());
+          self.transaction_scroll =
+            transaction_bottom_offset(&transaction_output(self.lang, &live.output()));
         }
       }
       _ => {}
