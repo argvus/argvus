@@ -391,10 +391,6 @@ impl DisplaysApp {
       match persist {
         PersistChange::Dpms(true) => backend::set_dpms(&name, true)?,
         PersistChange::Dpms(_) => backend::set_dpms(&name, false)?,
-        PersistChange::Workspace(workspace, target) => {
-          backend::apply_workspace(workspace, target.as_deref())?;
-          backend::save_config(&config)?;
-        }
         _ => {
           backend::apply_all(&config)?;
         }

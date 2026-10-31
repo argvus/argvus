@@ -214,8 +214,22 @@ impl ConfigDocument {
     let mut document: Self = serde_json::from_str(&text)?;
     migrate_legacy_sections(&mut document)?;
     document.migrate_animation_settings();
+    document.migrate_shadow_settings();
     document.validate()?;
     Ok(document)
+  }
+
+  // Older releases accepted powers up to 10; Hyprland 0.57 caps them at 4.
+  fn migrate_shadow_settings(&mut self) {
+    if let Some(effects) = self
+      .sections
+      .get_mut("effects")
+      .and_then(Value::as_object_mut)
+      && let Some(power) = effects.get("shadow_render_power").and_then(Value::as_u64)
+      && power > 4
+    {
+      effects.insert("shadow_render_power".into(), Value::from(4));
+    }
   }
 
   /// Brings stored animation values in line with Hyprland 0.56.2. Retired keys are
@@ -560,6 +574,7 @@ impl ConfigStore {
       }
     }
     document.migrate_animation_settings();
+    document.migrate_shadow_settings();
     if apply_default_values {
       apply_packaged_defaults(&mut document)?;
       apply_defaults(&mut document)?;
@@ -966,5 +981,26 @@ mod save_tests {
     drop(LockGuard(&writer));
     assert_eq!(receiver.recv_timeout(Duration::from_secs(5)), Ok(true));
     let _ = fs::remove_dir_all(&directory);
+  }
+}
+
+#[cfg(test)]
+mod shadow_compatibility_tests {
+  use super::*;
+
+  #[test]
+  fn old_shadow_power_is_clamped_without_changing_valid_values() {
+    for (stored, expected) in [(1, 1), (4, 4), (6, 4), (10, 4)] {
+      let mut document = ConfigDocument::default();
+      document.sections.insert(
+        "effects".into(),
+        serde_json::json!({"shadow_render_power": stored}),
+      );
+      document.migrate_shadow_settings();
+      assert_eq!(
+        document.sections["effects"]["shadow_render_power"],
+        expected
+      );
+    }
   }
 }

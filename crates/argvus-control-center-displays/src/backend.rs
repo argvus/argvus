@@ -268,34 +268,23 @@ fn run_hyprctl(arguments: &[&str]) -> Result<(), String> {
   Ok(())
 }
 
-/// Applies an immediate Hyprland monitor change:
-/// `hyprctl keyword monitor <comma-separated arguments>`.
-pub fn apply_keyword(arguments: &str) -> Result<(), String> {
-  if arguments.is_empty()
-    || arguments
-      .chars()
-      .any(|character| character.is_control() || character == '\n')
-  {
-    return Err("invalid hyprctl keyword arguments".into());
-  }
-  run_hyprctl(&["keyword", "monitor", arguments])
-}
-
-pub fn apply_workspace(workspace: u32, monitor: Option<&str>) -> Result<(), String> {
-  match monitor {
-    Some(monitor) => {
-      let argument = format!("{workspace},monitor:{monitor}");
-      run_hyprctl(&["keyword", "workspace", &argument])
-    }
-    None => {
-      let argument = format!("{workspace},monitor:");
-      run_hyprctl(&["keyword", "workspace", &argument])
-    }
-  }
-}
-
+/// Changes monitor power through the Lua dispatcher used by Hyprland 0.56.
 pub fn set_dpms(name: &str, on: bool) -> Result<(), String> {
-  run_hyprctl(&["dispatch", "dpms", if on { "on" } else { "off" }, name])
+  let monitor = lua_string(name)?;
+  let action = if on { "on" } else { "off" };
+  run_hyprctl(&[
+    "dispatch",
+    &format!("hl.dsp.dpms({{ action = \"{action}\", monitor = {monitor} }})"),
+  ])
+}
+
+// JSON's quoted strings share Lua's escapes for the printable output names
+// accepted here. Reject controls rather than emitting JSON-only Unicode escapes.
+fn lua_string(value: &str) -> Result<String, String> {
+  if value.is_empty() || value.chars().any(char::is_control) {
+    return Err("invalid monitor name".into());
+  }
+  serde_json::to_string(value).map_err(|error| error.to_string())
 }
 
 /// Applies the full persisted configuration: writes the generated Lua and

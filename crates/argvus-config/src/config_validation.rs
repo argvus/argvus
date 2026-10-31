@@ -104,7 +104,7 @@ pub(super) const BLUR_SETTINGS_DEFAULTS: [(&str, f64); 7] = [
 /// separately: a boolean needs no bounds and the color is a string.
 pub(super) const SHADOW_SETTINGS: [(&str, f64, f64, bool); 5] = [
   ("shadow_range", 0.0, 100.0, true),
-  ("shadow_render_power", 1.0, 10.0, true),
+  ("shadow_render_power", 1.0, 4.0, true),
   ("shadow_offset_x", -100.0, 100.0, true),
   ("shadow_offset_y", -100.0, 100.0, true),
   ("shadow_scale", 0.0, 1.0, false),
@@ -115,7 +115,7 @@ pub(super) const SHADOW_SETTINGS: [(&str, f64, f64, bool); 5] = [
 /// then appends the `99` alpha to that accent.
 pub(super) const SHADOW_SETTINGS_DEFAULTS: [(&str, f64); 5] = [
   ("shadow_range", 6.0),
-  ("shadow_render_power", 6.0),
+  ("shadow_render_power", 4.0),
   ("shadow_offset_x", 0.0),
   ("shadow_offset_y", 0.0),
   ("shadow_scale", 1.0),

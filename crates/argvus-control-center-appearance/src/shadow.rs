@@ -52,7 +52,7 @@ impl ShadowField {
   pub const fn default_value(self) -> f64 {
     match self {
       Self::Range => 6.0,
-      Self::RenderPower => 6.0,
+      Self::RenderPower => 4.0,
       Self::OffsetX | Self::OffsetY => 0.0,
       Self::Scale => 1.0,
     }
@@ -62,7 +62,7 @@ impl ShadowField {
   pub const fn bounds(self) -> (f64, f64) {
     match self {
       Self::Range => (0.0, 100.0),
-      Self::RenderPower => (1.0, 10.0),
+      Self::RenderPower => (1.0, 4.0),
       Self::OffsetX | Self::OffsetY => (-100.0, 100.0),
       Self::Scale => (0.0, 1.0),
     }
@@ -260,7 +260,7 @@ mod tests {
     );
     assert_eq!(
       ShadowField::RenderPower.format(settings.values.get(ShadowField::RenderPower)),
-      "6"
+      "4"
     );
     assert_eq!(
       ShadowField::Scale.format(settings.values.get(ShadowField::Scale)),

@@ -11,7 +11,7 @@
   "blur_vibrancy_darkness": 0,
   "shadow_enabled": false,
   "shadow_range": 6,
-  "shadow_render_power": 6,
+  "shadow_render_power": 4,
   "shadow_color": "",
   "shadow_sharp": false,
   "shadow_offset_x": 0,

@@ -304,3 +304,10 @@ fn serialize_config(config: &PersistedConfig) -> String {
   append_workspace_rules(&mut text, config);
   text
 }
+
+#[test]
+fn monitor_lua_strings_escape_quotes_and_reject_controls() {
+  assert_eq!(super::lua_string("DP-1\"\\").unwrap(), "\"DP-1\\\"\\\\\"");
+  assert!(super::lua_string("").is_err());
+  assert!(super::lua_string("DP-1\n").is_err());
+}

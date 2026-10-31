@@ -72,7 +72,7 @@
         "blur_vibrancy_darkness": { "type": "number", "minimum": 0, "maximum": 1 },
         "shadow_enabled": { "type": "boolean" },
         "shadow_range": { "type": "integer", "minimum": 0, "maximum": 100 },
-        "shadow_render_power": { "type": "integer", "minimum": 1, "maximum": 10 },
+        "shadow_render_power": { "type": "integer", "minimum": 1, "maximum": 4 },
         "shadow_color": { "type": "string", "pattern": "^([0-9a-fA-F]{8})?$" },
         "shadow_sharp": { "type": "boolean" },
         "shadow_offset_x": { "type": "integer", "minimum": -100, "maximum": 100 },

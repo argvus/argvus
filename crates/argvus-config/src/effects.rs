@@ -67,7 +67,7 @@ blur_vibrancy_darkness 0 1 number 0";
 /// `shadow_enabled` through the master switch.
 const SHADOW_SETTINGS: &str = "shadow_enabled - - boolean false
 shadow_range 0 100 integer 6
-shadow_render_power 1 10 integer 6
+shadow_render_power 1 4 integer 4
 shadow_color - - color
 shadow_sharp - - boolean false
 shadow_offset_x -100 100 integer 0

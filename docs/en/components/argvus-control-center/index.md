@@ -452,3 +452,7 @@ Language and the session keyboard layout are personal preferences and do not req
 For a Brazilian session keyboard, select `br`, apply the layout, then select `abnt2` under Variant. This writes the personal Hyprland configuration without administrative authorization; the console keymap is separate. ABNT2 uses dead keys: `~` followed by `a` produces `ã`, and `~` followed by Space produces `~`. Applying the variant activates its configured default layout; activation failures are reported.
 
 Time Zone saves TZ under `$XDG_CONFIG_HOME/environment.d/20-timezone.conf` without authorization. Log out and back in for applications to inherit it. Date & Time continues to show and edit the system clock in the system timezone, with administrative authorization; NTP is unchanged.
+
+Display profiles and workspace assignments are applied through the generated Lua configuration and a Hyprland reload. Monitor power uses the Lua DPMS dispatcher supported by Hyprland 0.56.2.
+
+Shadow render power is limited to 1–4 (default 4) for Hyprland 0.57 compatibility. Older stored values above 4 are clamped when loading the configuration.

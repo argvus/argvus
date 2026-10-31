@@ -450,3 +450,7 @@ O idioma e o layout do teclado da sessão são preferências pessoais e não exi
 Para teclado brasileiro na sessão, selecione `br`, aplique o layout e escolha `abnt2` em Variante. Isso grava a configuração pessoal do Hyprland sem autorização administrativa; o mapa do console é separado. ABNT2 usa teclas de composição: `~` seguido de `a` produz `ã`, e `~` seguido de Espaço produz `~`. Aplicar a variante ativa o layout padrão configurado; falhas de ativação são informadas.
 
 Fuso horário salva TZ em `$XDG_CONFIG_HOME/environment.d/20-timezone.conf` sem autorização. Saia e entre novamente para os aplicativos herdarem a preferência. Data e hora continua mostrando e editando o relógio global no fuso do sistema, com autorização administrativa; NTP permanece igual.
+
+Perfis de monitores e associações de workspaces são aplicados pela configuração Lua gerada e um reload do Hyprland. A energia dos monitores usa o dispatcher Lua DPMS suportado pelo Hyprland 0.56.2.
+
+A potência de renderização da sombra é limitada a 1–4 (padrão 4) para compatibilidade com Hyprland 0.57. Valores antigos acima de 4 são limitados ao carregar a configuração.

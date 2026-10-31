@@ -405,24 +405,24 @@ fn shadow_page_starts_disabled_and_follows_the_accent() {
   assert_eq!(shadow[4].label(), "Range");
   assert_eq!(shadow[4].detail_text(), Some("6"));
   assert_eq!(shadow[5].label(), "Render power");
-  assert_eq!(shadow[5].detail_text(), Some("6"));
+  assert_eq!(shadow[5].detail_text(), Some("4"));
   assert_eq!(shadow[8].detail_text(), Some("1.00"), "scale");
 }
 
 #[test]
 fn shadow_values_and_color_are_committed_to_the_draft_only() {
   let mut application = app(AppearancePage::BordersShadow);
-  application.commit_shadow_value(ShadowField::RenderPower, "9");
-  assert_eq!(shadow_value(&application, ShadowField::RenderPower), 9.0);
+  application.commit_shadow_value(ShadowField::RenderPower, "3");
+  assert_eq!(shadow_value(&application, ShadowField::RenderPower), 3.0);
   assert!(
     application.has_pending_changes(),
     "Apply is enabled by the draft"
   );
 
-  application.commit_shadow_value(ShadowField::RenderPower, "11");
+  application.commit_shadow_value(ShadowField::RenderPower, "5");
   assert_eq!(
     shadow_value(&application, ShadowField::RenderPower),
-    9.0,
+    3.0,
     "out of range keeps the draft"
   );
   assert!(application.prompt_error.is_some());

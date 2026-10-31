@@ -432,5 +432,6 @@ pub(super) fn apply_packaged_defaults(document: &mut ConfigDocument) -> ConfigRe
     }
     document.sections.insert(section.to_owned(), value);
   }
+  document.migrate_shadow_settings();
   Ok(())
 }

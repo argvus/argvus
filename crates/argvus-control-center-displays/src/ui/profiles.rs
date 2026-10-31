@@ -85,28 +85,10 @@ impl DisplaysApp {
     self.state.active_profile = Some(profile.name.clone());
     let config = self.config.clone();
     let state = self.state.clone();
-    let rules: Vec<String> = profile
-      .config
-      .monitors
-      .iter()
-      .map(|(name, persisted)| rule_from_persisted(name, persisted))
-      .collect();
-    let workspaces: Vec<(u32, String)> = profile
-      .config
-      .workspaces
-      .iter()
-      .flat_map(|(monitor, ids)| ids.iter().map(|id| (*id, monitor.clone())))
-      .collect();
     let lang = self.lang;
     let profile_applied = tr(lang, "control_center.profile_applied").to_string();
     self.action = Some(self.manager.spawn(move |_| {
-      for rule in &rules {
-        backend::apply_keyword(rule)?;
-      }
-      for (workspace, monitor) in &workspaces {
-        backend::apply_workspace(*workspace, Some(monitor))?;
-      }
-      backend::save_config(&config)?;
+      backend::apply_all(&config)?;
       backend::save_state(&state)?;
       Ok(JobData::Action(format!(
         "{profile_applied} · {}",
@@ -117,6 +99,7 @@ impl DisplaysApp {
   }
 }
 
+#[cfg(test)]
 pub(super) fn rule_from_persisted(name: &str, persisted: &PersistedMonitor) -> String {
   let mode = persisted.mode.clone().unwrap_or_else(|| "auto".into());
   let position = persisted.position.clone().unwrap_or_else(|| "auto".into());
