@@ -210,7 +210,7 @@ fn activate(app: &mut App, item: Item) {
 }
 
 #[cfg(feature = "appearance")]
-fn open_appearance_page(app: &mut App, page: AppearancePage) {
+pub(crate) fn open_appearance_page(app: &mut App, page: AppearancePage) {
   app.return_route = Route::Hyprland;
   app.appearance.open(page);
   app.route = Route::Appearance;

@@ -48,3 +48,29 @@ The mode changes geometry and surface treatment; it does not create a sixth colo
 - [Effects](/docs/argvus-appearance/effects/)
 
 The Control Center exposes the user-facing settings. The implementation is shared by `argvus-appearance`, `argvus-session`, the shell components and the asset packages. See [appearance architecture](/docs/developer-guide/subsystems/appearance-and-themes/).
+
+## Window wobble
+
+Open **Desktop & Input → Hyprland → Animations → Windows** and use the
+**Wobble** controls. Search for `wobble`, or open the page directly:
+
+```sh
+argvus control-center hyprland animations windows
+```
+
+Wobble is disabled by default. Its ARGVUS defaults are stiffness `100`, damping
+`10`, mass `1`, intensity `1` and mesh resolution `8`. Stiffness and mass accept
+`0.0001–1000`, damping `0–1000`, intensity `0–2`, and mesh an integer `2–32`.
+Higher mesh resolution increases rendering cost. Use the arrow keys to adjust
+values or Enter to type them. **Restore Wobble defaults** changes the draft;
+**Apply** saves all pending animation edits and reloads Hyprland once, without
+restarting the session. Going back within Animations keeps the shared draft.
+
+The global Animations switch suppresses Wobble while retaining its individual
+settings. The canonical values live under `effects.wobble_*` in ARGVUS state;
+`hypr/state.lua` is generated and must not be edited manually.
+
+This requires Hyprland **0.57.0 or newer**, enforced by `argvus-hyprland`'s
+package dependency. Version 0.56 is unsupported for this configuration. The
+intensity maximum follows the [released 0.57.0 source](https://github.com/hyprwm/Hyprland/blob/v0.57.0/src/config/values/ConfigValues.cpp),
+which limits it to `2`, even though newer documentation may list `3`.

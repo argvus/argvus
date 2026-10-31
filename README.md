@@ -11,7 +11,7 @@
 [![License: GPL-3.0-only](https://img.shields.io/github/license/argvus/argvus)](./LICENSE)
 [![Rust 1.95+](https://img.shields.io/badge/Rust-1.95%2B-orange?logo=rust)](https://www.rust-lang.org/)
 [![Platform: Arch Linux | Wayland](https://img.shields.io/badge/platform-Arch%20Linux%20%7C%20Wayland-1793D1?logo=archlinux&logoColor=white)](https://archlinux.org/)
-[![Compositor: Hyprland 0.56.2](https://img.shields.io/badge/compositor-Hyprland%200.56.2-58E1FF)](https://hyprland.org/)
+[![Compositor: Hyprland 0.57.0](https://img.shields.io/badge/compositor-Hyprland%200.57.0-58E1FF)](https://hyprland.org/)
 [![Pull requests](https://img.shields.io/github/issues-pr/argvus/argvus)](https://github.com/argvus/argvus/pulls)
 [![Issues](https://img.shields.io/github/issues/argvus/argvus)](https://github.com/argvus/argvus/issues)
 [![Last commit](https://img.shields.io/github/last-commit/argvus/argvus)](https://github.com/argvus/argvus/commits/main)

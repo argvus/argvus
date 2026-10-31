@@ -216,3 +216,48 @@ fn leaving_a_leaf_keeps_the_draft_and_leaving_the_root_asks() {
   );
   assert!(animations.confirm.is_some(), "leaving the root asks first");
 }
+
+#[test]
+fn windows_wobble_controls_edit_the_shared_draft_and_restore_defaults() {
+  use crate::wobble::{WobbleField, WobbleSettings};
+  let mut application = app(AppearancePage::AnimationsGroup {
+    group: AnimationGroup::Windows,
+  });
+  assert_eq!(
+    application.breadcrumb(),
+    "Desktop & Input > Hyprland > Animations > Windows"
+  );
+  application
+    .refreshed
+    .push((application.page, std::time::Instant::now()));
+  let rows = application.rows();
+  assert!(rows.iter().any(|row| row.label() == "Wobble"));
+  for field in WobbleField::ALL {
+    assert!(
+      rows
+        .iter()
+        .any(|row| row.id() == Some(&Item::AnimationField(AnimationField::Wobble(field))))
+    );
+  }
+  select(&mut application, Item::WobbleEnabled);
+  application.handle(KeyCode::Enter);
+  assert!(application.animations_editor().values.wobble.enabled);
+  assert!(!application.state.animation_values.wobble.enabled);
+  let mesh = AnimationField::Wobble(WobbleField::Mesh);
+  select(&mut application, Item::AnimationField(mesh));
+  application.handle(KeyCode::Right);
+  assert_eq!(application.animations_editor().values.get(mesh), 9.0);
+  application.handle(KeyCode::Enter);
+  application.commit_animation_value(mesh, "32");
+  assert_eq!(application.animations_editor().values.get(mesh), 32.0);
+  application.handle(KeyCode::Enter);
+  application.commit_animation_value(mesh, "32.5");
+  assert_eq!(application.animations_editor().values.get(mesh), 32.0);
+  application.handle(KeyCode::Esc);
+  select(&mut application, Item::WobbleDefaults);
+  application.handle(KeyCode::Enter);
+  assert_eq!(
+    application.animations_editor().values.wobble,
+    WobbleSettings::default()
+  );
+}

@@ -262,3 +262,51 @@ fn language_is_no_longer_a_writable_config_setting() {
     .set("/appearance/theme", serde_json::json!("argvus-dark"))
     .unwrap();
 }
+
+#[test]
+fn wobble_validates_types_and_released_hyprland_bounds() {
+  for (key, valid, invalid) in [
+    ("wobble_enabled", Value::Bool(true), Value::from(1)),
+    ("wobble_stiffness", Value::from(0.0001), Value::from(0)),
+    ("wobble_damping", Value::from(0), Value::from(-1)),
+    ("wobble_mass", Value::from(1000), Value::from(1001)),
+    ("wobble_intensity", Value::from(2), Value::from(3)),
+    ("wobble_mesh", Value::from(32), Value::from(8.5)),
+  ] {
+    let mut document = ConfigDocument::default();
+    document.set(&format!("/effects/{key}"), valid).unwrap();
+    assert!(document.validate().is_ok(), "{key}");
+    assert!(
+      document.set(&format!("/effects/{key}"), invalid).is_err(),
+      "{key}"
+    );
+    assert_eq!(
+      document
+        .set(&format!("/effects/{key}"), Value::Bool(false))
+        .is_ok(),
+      key == "wobble_enabled",
+      "{key}"
+    );
+  }
+}
+
+#[test]
+fn wobble_defaults_preserve_existing_choices() {
+  let mut document = ConfigDocument::default();
+  document
+    .set("/effects/wobble_enabled", Value::Bool(true))
+    .unwrap();
+  document
+    .set("/effects/wobble_mesh", Value::from(16))
+    .unwrap();
+  apply_defaults(&mut document).unwrap();
+  assert_eq!(
+    document.get("/effects/wobble_enabled"),
+    Some(&Value::Bool(true))
+  );
+  assert_eq!(document.get("/effects/wobble_mesh"), Some(&Value::from(16)));
+  assert_eq!(
+    document.get("/effects/wobble_stiffness"),
+    Some(&Value::from(100))
+  );
+}

@@ -163,6 +163,14 @@ pub(super) fn animation_styles(key: &str) -> &'static [&'static str] {
 pub(super) const ANIMATION_CURVES: [&str; 5] =
   ["default", "bezier", "spring", "linear", "ease_out"];
 
+pub(super) const WOBBLE_SETTINGS: [(&str, f64, f64, bool); 5] = [
+  ("wobble_stiffness", 0.0001, 1000.0, false),
+  ("wobble_damping", 0.0, 1000.0, false),
+  ("wobble_mass", 0.0001, 1000.0, false),
+  ("wobble_intensity", 0.0, 2.0, false),
+  ("wobble_mesh", 2.0, 32.0, true),
+];
+
 pub(super) fn validate_effects(document: &ConfigDocument) -> ConfigResult<()> {
   let Some(effects) = document.sections.get("effects") else {
     return Ok(());
@@ -176,6 +184,20 @@ pub(super) fn validate_effects(document: &ConfigDocument) -> ConfigResult<()> {
     }
     if key == "shadow_color" {
       validate_shadow_color(value)?;
+      continue;
+    }
+    if key == "wobble_enabled" {
+      if !value.is_boolean() {
+        return Err(ConfigError::Invalid(
+          "effects.wobble_enabled must be a boolean".into(),
+        ));
+      }
+      continue;
+    }
+    if let Some((_, minimum, maximum, integer)) =
+      WOBBLE_SETTINGS.iter().find(|(name, ..)| name == key)
+    {
+      validate_blur_setting(key, value, *minimum, *maximum, *integer)?;
       continue;
     }
     if value.is_boolean() {

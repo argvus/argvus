@@ -6,6 +6,8 @@
 //! and the tests agree. The bounds must match `ANIMATION_SETTINGS` in
 //! `argvus effects-toggle` and the schema in `argvus-config`.
 
+use crate::wobble::{WobbleField, WobbleSettings};
+
 /// Animation leaves the pages expose. Only leaves that change what Hyprland 0.56.2
 /// draws are listed. `windows`, `layers` and `workspaces` are parents that the
 /// compositor never reads on their own, so their values would have no effect.
@@ -449,6 +451,7 @@ pub enum AnimationField {
   Speed(AnimationLeaf),
   Popin(AnimationLeaf),
   Param(CurveParam),
+  Wobble(WobbleField),
 }
 
 impl AnimationField {
@@ -458,6 +461,7 @@ impl AnimationField {
       Self::Speed(_) => "control_center.animation_speed",
       Self::Popin(_) => "control_center.animation_popin",
       Self::Param(param) => param.label_key(),
+      Self::Wobble(field) => field.label_key(),
     }
   }
 
@@ -466,11 +470,12 @@ impl AnimationField {
       Self::Speed(_) => (1.0, 10.0),
       Self::Popin(_) => (1.0, 100.0),
       Self::Param(param) => param.bounds(),
+      Self::Wobble(field) => field.bounds(),
     }
   }
 
   pub const fn is_integer(self) -> bool {
-    matches!(self, Self::Popin(_))
+    matches!(self, Self::Popin(_) | Self::Wobble(WobbleField::Mesh))
   }
 
   /// Whether the prompt accepts a minus sign for this field.
@@ -483,6 +488,7 @@ impl AnimationField {
       Self::Speed(_) => 0.1,
       Self::Popin(_) => 5.0,
       Self::Param(param) => param.step(),
+      Self::Wobble(field) => field.step(),
     }
   }
 
@@ -546,6 +552,7 @@ pub struct LeafValues {
 /// (same order as `CurveParam::ALL`).
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct AnimationValues {
+  pub wobble: WobbleSettings,
   leaves: [LeafValues; 15],
   params: [f64; 7],
 }
@@ -553,6 +560,7 @@ pub struct AnimationValues {
 impl Default for AnimationValues {
   fn default() -> Self {
     Self {
+      wobble: WobbleSettings::default(),
       leaves: AnimationLeaf::ALL.map(AnimationLeaf::default_values),
       params: CurveParam::ALL.map(CurveParam::default_value),
     }
@@ -573,6 +581,7 @@ impl AnimationValues {
       AnimationField::Speed(leaf) => self.leaf(leaf).speed,
       AnimationField::Popin(leaf) => f64::from(self.leaf(leaf).popin),
       AnimationField::Param(param) => self.params[param as usize],
+      AnimationField::Wobble(field) => self.wobble.values[field as usize],
     }
   }
 
@@ -582,6 +591,7 @@ impl AnimationValues {
       AnimationField::Speed(leaf) => self.leaf_mut(leaf).speed = value,
       AnimationField::Popin(leaf) => self.leaf_mut(leaf).popin = value as i32,
       AnimationField::Param(param) => self.params[param as usize] = value,
+      AnimationField::Wobble(field) => self.wobble.values[field as usize] = value,
     }
   }
 
@@ -594,7 +604,14 @@ impl AnimationValues {
   /// `name=value` pairs for `argvus effects-toggle animations-settings set`. The
   /// global switch is not included; `backend::apply_animations` adds it.
   pub fn script_arguments(&self) -> Vec<String> {
-    let mut arguments = Vec::new();
+    let mut arguments = vec![format!("wobble_enabled={}", self.wobble.enabled)];
+    arguments.extend(WobbleField::ALL.map(|field| {
+      format!(
+        "wobble_{}={}",
+        field.name(),
+        self.get(AnimationField::Wobble(field))
+      )
+    }));
     for leaf in AnimationLeaf::ALL {
       let values = self.leaf(leaf);
       let key = leaf.key();
@@ -634,6 +651,22 @@ impl AnimationValues {
   }
 
   fn apply_script_entry(&mut self, name: &str, raw: &str) {
+    if name == "wobble_enabled" {
+      if let Ok(enabled) = raw.parse() {
+        self.wobble.enabled = enabled;
+      }
+      return;
+    }
+    if let Some(field) = WobbleField::ALL
+      .into_iter()
+      .find(|field| name.strip_prefix("wobble_") == Some(field.name()))
+    {
+      let field = AnimationField::Wobble(field);
+      if let Some(value) = field.parse(raw) {
+        self.set(field, value);
+      }
+      return;
+    }
     if let Some(param) = CurveParam::ALL
       .into_iter()
       .find(|param| param.name() == name)
@@ -888,5 +921,46 @@ mod tests {
       "opening_speed=abc\nopening_style=wobble\nclosing_popin=500\nunknown=3\nmoving_enabled=maybe\n",
     );
     assert_eq!(values, AnimationValues::default());
+  }
+}
+
+#[cfg(test)]
+mod wobble_tests {
+  use super::*;
+
+  #[test]
+  fn wobble_round_trips_with_animations_and_preserves_exact_minima() {
+    let mut values = AnimationValues::default();
+    values.wobble.enabled = true;
+    for field in WobbleField::ALL {
+      let numeric = AnimationField::Wobble(field);
+      values.set(numeric, field.bounds().0);
+    }
+    let encoded = values.script_arguments().join("\n");
+    assert_eq!(AnimationValues::from_script_output(&encoded), values);
+    assert_eq!(
+      values.get(AnimationField::Wobble(WobbleField::Mass)),
+      0.0001
+    );
+  }
+
+  #[test]
+  fn invalid_wobble_values_keep_defaults_and_mesh_rejects_fractions() {
+    for raw in ["NaN", "inf", "-1", "1001", "garbage"] {
+      assert!(
+        AnimationField::Wobble(WobbleField::Mass)
+          .parse(raw)
+          .is_none()
+      );
+    }
+    assert!(
+      AnimationField::Wobble(WobbleField::Mesh)
+        .parse("8.5")
+        .is_none()
+    );
+    let values = AnimationValues::from_script_output(
+      "wobble_enabled=maybe\nwobble_mesh=99\nwobble_intensity=3\nwobble_mass=NaN",
+    );
+    assert_eq!(values.wobble, WobbleSettings::default());
   }
 }

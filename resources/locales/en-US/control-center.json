@@ -1,4 +1,11 @@
 {
+  "control_center.wobble": "Wobble",
+  "control_center.wobble_stiffness": "Stiffness",
+  "control_center.wobble_damping": "Damping",
+  "control_center.wobble_mass": "Mass",
+  "control_center.wobble_intensity": "Intensity",
+  "control_center.wobble_mesh": "Mesh resolution",
+  "control_center.wobble_restore_defaults": "Restore Wobble defaults",
   "control_center.admin_privileges_required": "Changing settings on this page requires administrator (root) privileges.",
   "control_center.user_locale_not_generated": "This locale is not available. Enable it in System Locales first.",
   "control_center.user_locale_save_failed": "Could not save your language preference. Check access to your configuration directory.",

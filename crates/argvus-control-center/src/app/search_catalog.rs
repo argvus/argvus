@@ -10,6 +10,14 @@ use super::*;
 pub(super) fn build_search_registry(lang: Lang) -> SearchRegistry {
   let mut search_registry = SearchRegistry::default();
   let entries: [(&str, &str, &str, &str, &str); _] = [
+    #[cfg(feature = "appearance")]
+    (
+      "hyprland.wobble",
+      "hyprland",
+      "control_center.wobble",
+      "wobble windows animations stiffness damping mesh deformacao janelas animacoes malha",
+      "hyprland/animations-windows",
+    ),
     (
       "welcome",
       "card_tools",

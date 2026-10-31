@@ -30,3 +30,14 @@ The Hyprland `SUPER + Shift + T` binding opens `theme-menu.sh`, which selects a 
 - **Official data.** Every official theme package, and `argvus-appearance` for ARGVUS Dark and Light, ships only `/usr/share/argvus/themes/<id>/theme.toml` (with `overrides/` when needed) and its wallpaper; the per-application copies of the old format are gone. Each component ships its templates under `/usr/share/argvus/<component>/theme-template/` and one registry entry per file in `/usr/share/argvus/theme/consumers.d/` (19 consumers: control panel, taskbar and its menu icon, telemetry, TUI, calendar, launcher, notifications, Hyprtoolkit, application style, Hyprland, Qt6ct, lock screen, terminal, system monitor, Superfile, Yazi flavor and syntax theme, removable devices). `argvus-appearance` ships the Sticky and Float layouts. The palettes and templates were extracted from the old per-theme files and checked for identical output; the manifests keep only the entries that differ from the registry defaults, and a theme whose file has its own structure keeps it as an override. `argvus-appearance/tools/test-theme-switch.py` renders every official theme, and a theme with only the required colours, in both layouts.
 - **Template sections.** `{{#if expression}}…{{/if}}` keeps its text only when the value is a non-zero number, non-empty text or a colour; the calendar and TUI stylesheets use it for the rules that exist only in Float. The `contrast` filter gives black or white for text on a colour, `rgba_percent` writes `rgba(r, g, b, NN%)` and `rgb_hex` writes `rgb(rrggbb)`.
 - **Commands.** `argvus theme list`, `argvus theme check DIRECTORY` (renders every registered consumer in both layouts and reports every error with its template and line) and `argvus theme render ID` (writes a build, or the files under `--output`, without activating it).
+
+## Wobble integration decisions
+
+Wobble belongs to Hyprland → Animations → Windows and shares the animation draft.
+`effects.wobble_*` is authoritative; `hypr/state.lua` and `decoration.wobble` are
+its projection and consumer. The combined animation settings command saves one
+atomic patch and requests one reload. Hyprland 0.57.0 is the minimum dependency
+(option A); runtime version detection is unnecessary for package-supported
+installations. Wobble starts disabled because its rendering cost on modest
+hardware has not been measured. The ARGVUS mesh default is 8. Version 0.57.0's
+source limits intensity to 2, so the schema, CLI, UI and Lua use that bound.

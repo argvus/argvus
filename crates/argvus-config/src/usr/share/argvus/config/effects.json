@@ -1,5 +1,11 @@
 {
   "animations": true,
+  "wobble_enabled": false,
+  "wobble_stiffness": 100,
+  "wobble_damping": 10,
+  "wobble_mass": 1,
+  "wobble_intensity": 1,
+  "wobble_mesh": 8,
   "blur_control-center_enabled": true,
   "blur_global_enabled": true,
   "blur_brightness": 1,

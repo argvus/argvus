@@ -1,4 +1,11 @@
 {
+  "control_center.wobble": "Wobble",
+  "control_center.wobble_stiffness": "Rigidez",
+  "control_center.wobble_damping": "Amortecimento",
+  "control_center.wobble_mass": "Massa",
+  "control_center.wobble_intensity": "Intensidade",
+  "control_center.wobble_mesh": "Resolução da malha",
+  "control_center.wobble_restore_defaults": "Restaurar padrões do Wobble",
   "control_center.admin_privileges_required": "Alterar configurações nesta tela exige privilégios de administrador (root).",
   "control_center.user_locale_not_generated": "Este locale não está disponível. Habilite-o primeiro em Locales do Sistema.",
   "control_center.user_locale_save_failed": "Não foi possível salvar seu idioma. Verifique o acesso ao seu diretório de configuração.",

@@ -92,6 +92,12 @@ impl AppearanceApp {
       Item::Apply if self.page.is_animations() => self.apply_animations_changes(),
       Item::Apply if Self::effect_spec(self.page).is_some() => self.apply_effect_changes(),
       Item::Apply => self.apply_surface_changes(),
+      Item::WobbleEnabled => {
+        self.edit_animations(|draft| draft.values.wobble.enabled = !draft.values.wobble.enabled)
+      }
+      Item::WobbleDefaults => {
+        self.edit_animations(|draft| draft.values.wobble = Default::default())
+      }
       Item::Animations => self.edit_animations(|draft| draft.enabled = !draft.enabled),
       Item::AnimationsCustomCurves => self.go(AppearancePage::AnimationsCustomCurves),
       Item::AnimationsGroup(group) => self.go(AppearancePage::AnimationsGroup { group }),

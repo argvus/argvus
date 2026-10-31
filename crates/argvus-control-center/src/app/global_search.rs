@@ -73,6 +73,13 @@ impl App {
       return;
     };
     match (domain, page) {
+      #[cfg(feature = "appearance")]
+      ("hyprland", "animations-windows") => crate::hyprland::open_appearance_page(
+        self,
+        AppearancePage::AnimationsGroup {
+          group: argvus_control_center_appearance::AnimationGroup::Windows,
+        },
+      ),
       (_, "welcome") => self.open_destination(crate::home::HomeDestination::Welcome),
       #[cfg(feature = "apps")]
       (_, "default-apps") => self.open_settings(Page::DefaultApps),

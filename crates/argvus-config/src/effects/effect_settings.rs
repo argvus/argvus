@@ -10,7 +10,7 @@ impl Effects {
     let value = self
       .store_raw(&format!("/effects/{key}"))
       .unwrap_or_else(|| "null".to_string());
-    if settings_valid(&row.kind, &row.minimum, &row.maximum, &value) {
+    if settings_entry_valid(key, &row.kind, &row.minimum, &row.maximum, &value) {
       Some(value)
     } else {
       Some(row.default)
@@ -59,9 +59,15 @@ impl Effects {
         switch_written = true;
         continue;
       }
-      let key = format!("{prefix}{name}");
+      // Animations owns the Windows draft, including decoration.wobble.
+      // Its combined table still validates every key before the atomic patch.
+      let key = if prefix == "animation_" && name.starts_with("wobble_") {
+        name.to_owned()
+      } else {
+        format!("{prefix}{name}")
+      };
       let row = table_row(table, &key).ok_or(64)?;
-      if !settings_valid(&row.kind, &row.minimum, &row.maximum, value) {
+      if !settings_entry_valid(&key, &row.kind, &row.minimum, &row.maximum, value) {
         return Err(64);
       }
       let literal = if row.kind.starts_with("enum:") || row.kind == "color" {
@@ -82,6 +88,13 @@ impl Effects {
     spawn_runtime();
     Ok(output)
   }
+}
+
+/// Wobble permits an exact zero for damping and intensity. Preserve the legacy
+/// settings parser's leading-zero contract for the other effects.
+fn settings_entry_valid(key: &str, kind: &str, minimum: &str, maximum: &str, value: &str) -> bool {
+  (key.starts_with("wobble_") && kind == "number" && minimum == "0" && value == "0")
+    || settings_valid(kind, minimum, maximum, value)
 }
 
 /// Checks a value against its row. The rules are the shell's, including its
@@ -141,4 +154,42 @@ pub(super) fn is_leading_zero(value: &str) -> bool {
     },
   };
   rest.bytes().all(|byte| byte.is_ascii_digit())
+}
+
+#[cfg(test)]
+mod wobble_tests {
+  use super::*;
+
+  #[test]
+  fn wobble_zero_is_valid_only_for_parameters_with_a_zero_minimum() {
+    assert!(settings_entry_valid(
+      "wobble_damping",
+      "number",
+      "0",
+      "1000",
+      "0"
+    ));
+    assert!(settings_entry_valid(
+      "wobble_intensity",
+      "number",
+      "0",
+      "2",
+      "0"
+    ));
+    assert!(!settings_entry_valid(
+      "wobble_mass",
+      "number",
+      "0.0001",
+      "1000",
+      "0"
+    ));
+    assert!(!settings_entry_valid(
+      "wobble_mesh",
+      "integer",
+      "2",
+      "32",
+      "0"
+    ));
+    assert!(!settings_entry_valid("blur_noise", "number", "0", "1", "0"));
+  }
 }

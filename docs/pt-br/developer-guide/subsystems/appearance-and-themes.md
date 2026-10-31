@@ -30,3 +30,15 @@ O `argvus-theme-core` renderiza temas a partir de dados, e a transação acima o
 - **Dados oficiais.** Cada pacote de tema oficial, e o `argvus-appearance` para o ARGVUS Dark e o Light, entrega só `/usr/share/argvus/themes/<id>/theme.toml` (com `overrides/` quando precisa) e o wallpaper; as cópias por aplicação do formato antigo saíram. Cada componente entrega seus templates em `/usr/share/argvus/<componente>/theme-template/` e uma entrada de registro por arquivo em `/usr/share/argvus/theme/consumers.d/` (19 consumidores: control panel, taskbar e o ícone do menu dela, telemetria, TUI, calendário, lançador, notificações, Hyprtoolkit, estilo de aplicação, Hyprland, Qt6ct, tela de bloqueio, terminal, monitor do sistema, Superfile, flavor e tema de sintaxe do Yazi, dispositivos removíveis). O `argvus-appearance` entrega os layouts Sticky e Float. As paletas e os templates foram extraídos dos arquivos por tema antigos e conferidos com saída idêntica; os manifestos guardam só as entradas que diferem dos padrões do registro, e um tema cujo arquivo tem estrutura própria mantém esse arquivo como override. O `argvus-appearance/tools/test-theme-switch.py` renderiza cada tema oficial, e um tema só com as cores obrigatórias, nos dois layouts.
 - **Seções de template.** `{{#if expressão}}…{{/if}}` mantém o texto só quando o valor é um número diferente de zero, um texto não vazio ou uma cor; as folhas de estilo do calendário e da TUI usam isso para as regras que só existem no Float. O filtro `contrast` dá preto ou branco para texto sobre uma cor, `rgba_percent` escreve `rgba(r, g, b, NN%)` e `rgb_hex` escreve `rgb(rrggbb)`.
 - **Comandos.** `argvus theme list`, `argvus theme check DIRETÓRIO` (renderiza todos os consumidores registrados nos dois layouts e informa cada erro com o template e a linha) e `argvus theme render ID` (grava um build, ou os arquivos em `--output`, sem ativá-lo).
+
+## Decisões da integração do Wobble
+
+O Wobble fica em Hyprland → Animações → Janelas e compartilha o rascunho de
+animações. `effects.wobble_*` é a fonte de verdade; `hypr/state.lua` e
+`decoration.wobble` são sua projeção e seu consumidor. O comando combinado de
+configurações de animação grava um patch atômico e solicita uma recarga.
+A dependência mínima é Hyprland 0.57.0 (opção A); instalações compatíveis com os
+pacotes dispensam detecção de versão em runtime. O Wobble começa desligado porque
+seu custo em hardware modesto ainda não foi medido. A malha padrão ARGVUS é 8.
+O código da versão 0.57.0 limita intensidade a 2; schema, CLI, UI e Lua seguem
+esse limite.

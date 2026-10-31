@@ -10,6 +10,8 @@ mod model;
 mod shadow;
 mod ui;
 mod user_themes;
+mod wobble;
+pub use animations::AnimationGroup;
 
 pub use model::{
   ACCENTS, AppearancePage, AppearanceState, ControlPanelCard, ControlPanelCards, CustomTheme,

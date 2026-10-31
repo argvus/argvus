@@ -48,3 +48,30 @@ O modo altera geometria e tratamento das superfícies; não cria uma nova famíl
 * [Efeitos](/pt/docs/argvus-appearance/effects/)
 
 As interfaces estão no Control Center e no Control Panel. A implementação atravessa `argvus-appearance`, `argvus-session` e pacotes de assets.
+
+## Wobble das janelas
+
+Abra **Desktop e entrada → Hyprland → Animações → Janelas** e use os controles
+**Wobble**. Busque por `wobble` ou abra a página diretamente:
+
+```sh
+argvus control-center hyprland animations windows
+```
+
+O Wobble começa desativado. Os padrões do ARGVUS são rigidez `100`, amortecimento
+`10`, massa `1`, intensidade `1` e resolução da malha `8`. Rigidez e massa aceitam
+`0.0001–1000`, amortecimento `0–1000`, intensidade `0–2` e malha um inteiro `2–32`.
+Uma malha maior aumenta o custo de renderização. Use as setas para ajustar valores
+ou Enter para digitá-los. **Restaurar padrões do Wobble** altera o rascunho;
+**Aplicar** salva todas as edições de animações pendentes e recarrega o Hyprland
+uma vez, sem reiniciar a sessão. Voltar dentro de Animações mantém o rascunho
+compartilhado.
+
+A chave global de Animações desativa o Wobble sem perder suas configurações
+individuais. Os valores canônicos ficam em `effects.wobble_*` no estado do ARGVUS;
+`hypr/state.lua` é gerado e não deve ser editado manualmente.
+
+O recurso exige Hyprland **0.57.0 ou superior**, garantido pela dependência do
+pacote `argvus-hyprland`. A versão 0.56 não é compatível com esta configuração.
+O máximo de intensidade segue o [código da versão 0.57.0](https://github.com/hyprwm/Hyprland/blob/v0.57.0/src/config/values/ConfigValues.cpp),
+que limita o valor a `2`, embora a documentação mais recente possa indicar `3`.

@@ -721,6 +721,28 @@ impl App {
 mod tests {
   use super::*;
 
+  #[cfg(feature = "appearance")]
+  #[test]
+  fn wobble_search_opens_windows_under_hyprland() {
+    let mut app = App::new(InitialRoute::Home);
+    assert!(
+      app
+        .search_registry
+        .entries()
+        .iter()
+        .any(|entry| entry.id == "hyprland.wobble")
+    );
+    app.open_search_route("hyprland/animations-windows");
+    assert_eq!(app.route, Route::Appearance);
+    assert_eq!(
+      app.appearance.page,
+      AppearancePage::AnimationsGroup {
+        group: argvus_control_center_appearance::AnimationGroup::Windows
+      }
+    );
+    assert_eq!(app.return_route, Route::Hyprland);
+  }
+
   #[test]
   /// Every search result shows its translated title. A raw catalog key here
   /// means an entry points at a key that the catalogs do not define.

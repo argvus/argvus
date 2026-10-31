@@ -336,3 +336,15 @@ fn snapshot_route_has_no_arbitrary_page_or_action_arguments() {
   );
   assert!(parse(&args(&["snapshot", "delete", "1"])).is_err());
 }
+
+#[cfg(feature = "appearance")]
+#[test]
+fn hyprland_windows_route_opens_the_wobble_controls() {
+  assert_eq!(
+    parse(&args(&["hyprland", "animations", "windows"])).unwrap(),
+    Some(InitialRoute::Appearance(AppearancePage::AnimationsGroup {
+      group: argvus_control_center_appearance::AnimationGroup::Windows
+    }))
+  );
+  assert!(parse(&args(&["hyprland", "animations", "windows", "extra"])).is_err());
+}

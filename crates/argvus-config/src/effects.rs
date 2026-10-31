@@ -74,6 +74,14 @@ shadow_offset_x -100 100 integer 0
 shadow_offset_y -100 100 integer 0
 shadow_scale 0 1 number 1";
 
+/// Wobble parameters for Hyprland 0.57, in the same format.
+const WOBBLE_SETTINGS: &str = "wobble_enabled - - boolean false
+wobble_stiffness 0.0001 1000 number 100
+wobble_damping 0 1000 number 10
+wobble_mass 0.0001 1000 number 1
+wobble_intensity 0 2 number 1
+wobble_mesh 2 32 integer 8";
+
 /// The animation parameters, in the same format.
 const ANIMATION_SETTINGS: &str = "animation_opening_enabled - - boolean true
 animation_opening_style - - enum:slide,popin,gnomed popin
@@ -371,6 +379,13 @@ pub fn run(arguments: &[String]) -> i32 {
       }
       Err(code) => Err(code),
     },
+    "wobble-settings" => match effects.settings_get_or_set(WOBBLE_SETTINGS, "wobble_", rest) {
+      Ok(lines) => {
+        lines.iter().for_each(|line| println!("{line}"));
+        Ok(())
+      }
+      Err(code) => Err(code),
+    },
     "shadow-settings" => match effects.settings_get_or_set(SHADOW_SETTINGS, "shadow_", rest) {
       Ok(lines) => {
         lines.iter().for_each(|line| println!("{line}"));
@@ -379,7 +394,11 @@ pub fn run(arguments: &[String]) -> i32 {
       Err(code) => Err(code),
     },
     "animations-settings" => {
-      match effects.settings_get_or_set(ANIMATION_SETTINGS, "animation_", rest) {
+      match effects.settings_get_or_set(
+        &format!("{ANIMATION_SETTINGS}\n{WOBBLE_SETTINGS}"),
+        "animation_",
+        rest,
+      ) {
         Ok(lines) => {
           lines.iter().for_each(|line| println!("{line}"));
           Ok(())

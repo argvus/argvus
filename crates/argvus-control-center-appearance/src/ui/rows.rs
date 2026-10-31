@@ -15,6 +15,7 @@ use crate::model::{
   WallpaperMode, WidgetTelemetryBlock, accent_label,
 };
 use crate::shadow::ShadowField;
+use crate::wobble::WobbleField;
 use argvus_i18n::tr;
 use argvus_theme::discovery::ThemeCategory;
 use argvus_tui::{
@@ -76,6 +77,8 @@ pub(super) enum Item {
   /// "Enable" on the Animations page (entry point from Hyprland). Like every
   /// Animations value, it edits the draft until `Apply`.
   Animations,
+  WobbleEnabled,
+  WobbleDefaults,
   /// "Custom curves" on the Animations page.
   AnimationsCustomCurves,
   /// One animation category on the Animations page.
@@ -192,6 +195,7 @@ impl Item {
       | Self::LauncherTransparencyValue
       | Self::TaskbarTransparency
       | Self::SurfaceTransparency => icons::OPACITY,
+      Self::WobbleEnabled | Self::WobbleDefaults => icons::ANIMATION,
       Self::Animations
       | Self::AnimationsCustomCurves
       | Self::AnimationsCurve(_)
@@ -423,10 +427,38 @@ impl AppearanceApp {
         .map(|curve| self.submenu(Item::AnimationsCurve(curve), curve.label_key()))
         .collect(),
       AppearancePage::AnimationsCurve { curve } => self.animation_curve_rows(curve),
-      AppearancePage::AnimationsGroup { group } => group
-        .leaves()
-        .map(|leaf| self.submenu(Item::AnimationsLeaf(leaf), leaf.label_key()))
-        .collect(),
+      AppearancePage::AnimationsGroup { group } => {
+        let mut rows: Vec<_> = group
+          .leaves()
+          .map(|leaf| self.submenu(Item::AnimationsLeaf(leaf), leaf.label_key()))
+          .collect();
+        if group == AnimationGroup::Windows {
+          rows.push(Row::section(self.label("control_center.wobble")));
+          let settings = self.animations_editor().values;
+          rows.push(self.toggle_row(
+            Item::WobbleEnabled,
+            "control_center.enable",
+            settings.wobble.enabled,
+          ));
+          rows.extend(WobbleField::ALL.map(|field| {
+            let field = AnimationField::Wobble(field);
+            self.value_row(
+              Item::AnimationField(field),
+              field.label_key(),
+              field.format(settings.get(field)),
+              Some(1),
+            )
+          }));
+          rows.push(
+            Row::action(
+              Item::WobbleDefaults,
+              self.label("control_center.wobble_restore_defaults"),
+            )
+            .icon(icons::RESTORE),
+          );
+        }
+        rows
+      }
       AppearancePage::AnimationsLeaf { leaf } => self.animation_leaf_rows(leaf),
       AppearancePage::TerminalTransparency | AppearancePage::TransparencySurface { .. } => {
         vec![self.value_row(

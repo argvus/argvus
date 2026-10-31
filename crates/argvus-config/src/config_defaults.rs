@@ -197,6 +197,18 @@ fn default_effects(document: &mut ConfigDocument) {
       }
     });
   }
+  for (key, value) in [
+    ("wobble_stiffness", 100),
+    ("wobble_damping", 10),
+    ("wobble_mass", 1),
+    ("wobble_intensity", 1),
+    ("wobble_mesh", 8),
+  ] {
+    effects.entry(key).or_insert_with(|| Value::from(value));
+  }
+  effects
+    .entry("wobble_enabled")
+    .or_insert_with(|| Value::Bool(false));
   effects
     .entry("shadow_enabled")
     .or_insert_with(|| Value::Bool(false));
