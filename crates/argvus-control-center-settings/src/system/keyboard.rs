@@ -262,7 +262,7 @@ fn parse_hypr_keyboard_config() -> (String, String, String) {
   let packaged = fs::read_to_string(hypr_config_path()).unwrap_or_default();
   let layout = extract_lua_string(&generated_contents, "kb_layout")
     .or_else(|| extract_lua_string(&packaged, "kb_layout"))
-    .unwrap_or_default();
+    .unwrap_or_else(|| "us".to_string());
   let variant = extract_lua_string(&generated_contents, "kb_variant")
     .or_else(|| extract_lua_string(&packaged, "kb_variant"))
     .unwrap_or_default();
@@ -273,12 +273,7 @@ fn parse_hypr_keyboard_config() -> (String, String, String) {
 }
 
 fn hypr_config_path() -> PathBuf {
-  let user = argvus_control_center_core::paths::config_home().join("hypr/hyprland.lua");
-  if user.exists() {
-    user
-  } else {
-    packaged_hypr_config_path()
-  }
+  argvus_control_center_core::paths::config_home().join("hypr/hyprland.lua")
 }
 
 /// The Hyprland configuration shipped by the package. It holds the ARGVUS

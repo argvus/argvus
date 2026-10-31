@@ -44,22 +44,7 @@ pub fn current_timezone() -> String {
     return zone;
   }
 
-  command_stdout("timedatectl", &["show", "-p", "Timezone", "--value"])
-    .filter(|value| !value.trim().is_empty())
-    .unwrap_or_else(|| {
-      fs::read_link("/etc/localtime")
-        .ok()
-        .and_then(|path| {
-          path
-            .to_string_lossy()
-            .split("/zoneinfo/")
-            .nth(1)
-            .map(str::to_string)
-        })
-        .unwrap_or_default()
-    })
-    .trim()
-    .to_string()
+  "America/New_York".to_string()
 }
 
 pub fn list_timezones() -> Vec<String> {

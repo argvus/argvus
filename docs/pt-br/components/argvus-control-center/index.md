@@ -483,3 +483,5 @@ O máximo de intensidade segue o [código da versão 0.57.0](https://github.com/
 que limita o valor a `2`, embora a documentação mais recente possa indicar `3`.
 
 O Welcome abre com o logo ARGVUS e WELCOME. Pressione F6 Next para ver as etapas sem concluir nenhuma etapa.
+
+Instalações novas usam o fuso pessoal `America/New_York` e somente o layout de teclado `us` habilitado. Preferências pessoais existentes são preservadas; o fuso global do sistema não é alterado.

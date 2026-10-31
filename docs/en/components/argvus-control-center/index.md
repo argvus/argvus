@@ -484,3 +484,5 @@ intensity maximum follows the [released 0.57.0 source](https://github.com/hyprwm
 which limits it to `2`, even though newer documentation may list `3`.
 
 Welcome opens with the ARGVUS logo and WELCOME. Press F6 Next to show the checklist without completing a step.
+
+Fresh installations default to the personal time zone `America/New_York` and only the `us` keyboard layout enabled. Existing personal settings are preserved; the system time zone is unchanged.

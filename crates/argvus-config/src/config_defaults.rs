@@ -22,6 +22,7 @@ pub(super) const DEFAULTED_OBJECTS: &[&[&str]] = &[
   &["default_apps"],
   &["keyboard_shortcuts"],
   &["hyprland"],
+  &["hyprland", "keyboard"],
   &["hyprland", "input"],
   &["hyprland", "input", "mouse"],
   &["hyprland", "input", "touchpad"],
@@ -360,6 +361,17 @@ fn default_hyprland_input(document: &mut ConfigDocument) {
     .entry("hyprland".into())
     .or_insert_with(|| Value::Object(Map::new()));
   let hyprland = hyprland.as_object_mut().expect("hyprland is object");
+  let keyboard = hyprland
+    .entry("keyboard")
+    .or_insert_with(|| serde_json::json!({ "layout": "us", "variant": "", "options": "" }));
+  let keyboard = keyboard
+    .as_object_mut()
+    .expect("hyprland.keyboard is object");
+  for (key, value) in [("layout", "us"), ("variant", ""), ("options", "")] {
+    keyboard
+      .entry(key)
+      .or_insert_with(|| Value::String(value.into()));
+  }
   let input = hyprland
     .entry("input")
     .or_insert_with(|| Value::Object(Map::new()));
