@@ -12,6 +12,58 @@ pub struct Snapshot {
   pub default: bool,
 }
 
+/// Origin of a retention value returned by Snapper.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum SettingOrigin {
+  Explicit,
+  SnapperDefault,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct RetentionValue {
+  pub value: String,
+  pub origin: SettingOrigin,
+}
+
+/// Known settings are typed by validation and unknown keys remain diagnostic-only.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct RetentionConfig {
+  pub values: std::collections::BTreeMap<String, RetentionValue>,
+  pub unknown: std::collections::BTreeMap<String, String>,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum CleanupAlgorithm {
+  Number,
+  Timeline,
+  EmptyPrePost,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub enum TimerState {
+  Missing,
+  Disabled,
+  EnabledInactive,
+  Active,
+  Unavailable(String),
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct SnapperTimers {
+  pub timeline: TimerState,
+  pub cleanup: TimerState,
+}
+
+impl CleanupAlgorithm {
+  pub fn as_snapper_arg(self) -> &'static str {
+    match self {
+      Self::Number => "number",
+      Self::Timeline => "timeline",
+      Self::EmptyPrePost => "empty-pre-post",
+    }
+  }
+}
+
 impl Snapshot {
   pub fn deletable(&self) -> bool {
     self.number > 0 && !self.active && !self.default

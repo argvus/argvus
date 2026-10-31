@@ -1,6 +1,6 @@
 //! Keyboard-first page; render only consumes cached state, never runs a process.
 use crate::{
-  backend::{SnapshotBackend, check_output, validate_description},
+  backend::{SnapshotBackend, build_retention_configdata, check_output, validate_description},
   model::*,
 };
 use argvus_control_center_core::{
@@ -25,6 +25,12 @@ use std::time::Duration;
 enum PendingAction {
   Create(String),
   Delete(Snapshot),
+  Retention {
+    key: String,
+    old: String,
+    new: String,
+  },
+  Cleanup(CleanupAlgorithm),
 }
 #[derive(Debug)]
 enum Reply {
@@ -33,6 +39,9 @@ enum Reply {
   Changed(Option<u32>),
   Compared(Comparison),
   Diffed(FileDiff),
+  Retention(RetentionConfig, SnapperTimers),
+  Saved(RetentionConfig),
+  Cleaned(Vec<u32>),
 }
 #[derive(Debug, Clone, Copy)]
 enum Phase {
@@ -64,6 +73,11 @@ pub struct SnapshotApp {
   diff: Option<FileDiff>,
   diff_scroll: usize,
   diff_horizontal: usize,
+  retention: Option<RetentionConfig>,
+  retention_view: bool,
+  retention_selection: Selection,
+  cleanup_selection: usize,
+  timers: Option<SnapperTimers>,
 }
 impl SnapshotApp {
   pub fn new(lang: Lang, theme: Theme) -> Self {
@@ -88,6 +102,11 @@ impl SnapshotApp {
       diff: None,
       diff_scroll: 0,
       diff_horizontal: 0,
+      retention: None,
+      retention_view: false,
+      retention_selection: Selection::default(),
+      cleanup_selection: 0,
+      timers: None,
     }
   }
   pub fn set_theme(&mut self, theme: &Theme) {
@@ -198,6 +217,30 @@ impl SnapshotApp {
         self.diff_horizontal = 0;
         self.diff = Some(diff);
       }
+      Ok(Reply::Retention(config, timers)) => {
+        self.retention = Some(config);
+        self.timers = Some(timers);
+      }
+      Ok(Reply::Saved(config)) => {
+        self.retention = Some(config);
+        self.status = Some(StatusMessage {
+          kind: StatusKind::Success,
+          text: label(self.lang, "retention_saved").into(),
+        });
+      }
+      Ok(Reply::Cleaned(removed)) => {
+        self.status = Some(StatusMessage {
+          kind: StatusKind::Success,
+          text: format!(
+            "{}: {}",
+            label(self.lang, "cleanup_observed_removed"),
+            removed.len()
+          ),
+        });
+        self.retention = None;
+        self.retention_view = false;
+        self.reload();
+      }
       Err(error) => {
         // A mutation may have completed despite a lost reply. Read back, never retry it.
         if matches!(self.phase, Phase::Changing) {
@@ -285,6 +328,71 @@ impl SnapshotApp {
       })
     }));
   }
+  fn load_retention(&mut self) {
+    let Some(config) = self.config.clone() else {
+      return;
+    };
+    self.retention_view = true;
+    self.phase = Phase::Loading;
+    let authorized = self.authorized;
+    self.job = Some(self.jobs.spawn(move |_| {
+      let retention = if authorized {
+        elevated("get-retention", &[config])
+          .and_then(|bytes| {
+            serde_json::from_slice::<SnapshotResult<RetentionConfig>>(&bytes).map_err(wire_error)?
+          })
+          .map(|config| (config, SnapshotBackend::new(SystemProcessRunner).timers()))
+      } else {
+        let backend = SnapshotBackend::new(SystemProcessRunner);
+        backend
+          .retention(&config)
+          .map(|retention| (retention, backend.timers()))
+      };
+      Ok(retention.map(|(config, timers)| Reply::Retention(config, timers)))
+    }));
+  }
+  fn edit_retention(&mut self) {
+    let Some((key, value)) = self
+      .retention
+      .as_ref()
+      .and_then(|config| config.values.iter().nth(self.retention_selection.index))
+    else {
+      return;
+    };
+    self.editor = Some(TextEditor::single_line(key, &value.value));
+  }
+  fn save_retention(&mut self, key: String, old: String, new: String) {
+    let Some(config) = self.config.clone() else {
+      return;
+    };
+    let changes = vec![(key, new)];
+    self.phase = Phase::Changing;
+    self.job = Some(self.jobs.spawn(move |_| {
+      let result = build_retention_configdata(&changes).and_then(|data| {
+        elevated("set-retention", &[config, data])
+          .and_then(|bytes| {
+            serde_json::from_slice::<SnapshotResult<RetentionConfig>>(&bytes).map_err(wire_error)?
+          })
+          .map(Reply::Saved)
+      });
+      Ok(result)
+    }));
+    let _ = old;
+  }
+  fn run_cleanup(&mut self, algorithm: CleanupAlgorithm) {
+    let Some(config) = self.config.clone() else {
+      return;
+    };
+    self.phase = Phase::Changing;
+    self.job = Some(self.jobs.spawn(move |_| {
+      let result =
+        elevated("cleanup", &[config, algorithm.as_snapper_arg().into()]).and_then(|bytes| {
+          serde_json::from_slice::<SnapshotResult<(Vec<u32>, Vec<u32>)>>(&bytes)
+            .map_err(wire_error)?
+        });
+      Ok(result.map(|(removed, _)| Reply::Cleaned(removed)))
+    }));
+  }
   fn selected(&self) -> Option<&Snapshot> {
     match &self.state {
       Some(Integration::Ready { snapshots, .. }) => snapshots.get(self.selection.index),
@@ -302,6 +410,12 @@ impl SnapshotApp {
       let (action, value) = match action {
         PendingAction::Create(description) => ("create", description),
         PendingAction::Delete(snapshot) => ("delete", snapshot.number.to_string()),
+        PendingAction::Retention { .. } | PendingAction::Cleanup(_) => {
+          return Ok(Err(SnapshotError::new(
+            ErrorKind::Invalid,
+            "invalid snapshot action state",
+          )));
+        }
       };
       Ok(
         elevated(action, &[config, value])
@@ -325,6 +439,35 @@ impl SnapshotApp {
     }
     if let Some(editor) = &mut self.editor {
       match editor.handle(key) {
+        EditorOutcome::Saved(description) if self.retention_view => {
+          let selected = self
+            .retention
+            .as_ref()
+            .and_then(|config| config.values.iter().nth(self.retention_selection.index))
+            .map(|(key, value)| (key.clone(), value.value.clone()));
+          self.editor = None;
+          if let Some((key, old)) = selected {
+            match crate::backend::validate_retention_value(&key, &description) {
+              Ok(()) if old == description => {}
+              Ok(()) => {
+                self.confirmation = Some((
+                  ConfirmState::new(),
+                  PendingAction::Retention {
+                    key,
+                    old,
+                    new: description,
+                  },
+                ))
+              }
+              Err(error) => {
+                self.status = Some(StatusMessage {
+                  kind: StatusKind::Error,
+                  text: error.detail,
+                })
+              }
+            }
+          }
+        }
         EditorOutcome::Saved(description) => {
           let description = if description.trim().is_empty() {
             label(self.lang, "default_description").into()
@@ -354,7 +497,11 @@ impl SnapshotApp {
         ConfirmOutcome::Confirmed => {
           let action = action.clone();
           self.confirmation = None;
-          self.change(action);
+          match action {
+            PendingAction::Retention { key, old, new } => self.save_retention(key, old, new),
+            PendingAction::Cleanup(algorithm) => self.run_cleanup(algorithm),
+            action => self.change(action),
+          }
         }
         ConfirmOutcome::Cancelled => self.confirmation = None,
         ConfirmOutcome::Pending => {}
@@ -371,6 +518,10 @@ impl SnapshotApp {
       if self.comparison.take().is_some() {
         return false;
       }
+      if self.retention_view {
+        self.retention_view = false;
+        return false;
+      }
       if self.details {
         self.details = false;
         return false;
@@ -379,7 +530,12 @@ impl SnapshotApp {
     }
     if key.code == KeyCode::Char('r') {
       self.status = None;
-      self.reload();
+      if self.retention_view {
+        self.retention = None;
+        self.load_retention();
+      } else {
+        self.reload();
+      }
       return false;
     }
     if self.error.is_some() {
@@ -395,9 +551,41 @@ impl SnapshotApp {
           self.compare();
         } else if matches!(self.phase, Phase::Diffing) {
           self.open_diff();
+        } else if self.retention_view {
+          self.load_retention();
         } else {
           self.inspect();
         }
+      }
+      return false;
+    }
+    if self.retention_view {
+      match key.code {
+        KeyCode::Up | KeyCode::Char('k') => {
+          self.retention_selection.index = self.retention_selection.index.saturating_sub(1)
+        }
+        KeyCode::Down | KeyCode::Char('j') => {
+          self.retention_selection.index = (self.retention_selection.index + 1).min(
+            self
+              .retention
+              .as_ref()
+              .map_or(0, |config| config.values.len().saturating_sub(1)),
+          )
+        }
+        KeyCode::Char('e') => self.edit_retention(),
+        KeyCode::Char('c') => self.cleanup_selection = (self.cleanup_selection + 1) % 3,
+        KeyCode::Enter => {
+          let algorithms = [
+            CleanupAlgorithm::Number,
+            CleanupAlgorithm::Timeline,
+            CleanupAlgorithm::EmptyPrePost,
+          ];
+          self.confirmation = Some((
+            ConfirmState::new(),
+            PendingAction::Cleanup(algorithms[self.cleanup_selection]),
+          ));
+        }
+        _ => {}
       }
       return false;
     }
@@ -441,6 +629,9 @@ impl SnapshotApp {
       _ => 0,
     };
     match key.code {
+      KeyCode::Char('p') if matches!(self.state, Some(Integration::Ready { .. })) => {
+        self.load_retention()
+      }
       KeyCode::Char('b') if self.selected().is_some() => {
         self.origin = self.selected().cloned();
       }

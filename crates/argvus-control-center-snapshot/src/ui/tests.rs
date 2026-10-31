@@ -1,4 +1,5 @@
 use super::*;
+use crate::backend::parse_retention_config;
 use crossterm::event::KeyModifiers;
 use ratatui::{Terminal, backend::TestBackend};
 fn app() -> SnapshotApp {
@@ -244,4 +245,22 @@ fn failed_read_of_replaced_configuration_can_be_discovered_again() {
   assert!(!app.busy());
   assert!(app.config.is_none());
   assert!(app.error.is_some());
+}
+
+#[test]
+fn retention_view_opens_editor_and_cleanup_cancel_has_no_job() {
+  let mut app = app();
+  app.config = Some("system".into());
+  app.retention_view = true;
+  app.retention = Some(parse_retention_config(br#"{"NUMBER_LIMIT":"50"}"#).unwrap());
+  press(&mut app, KeyCode::Char('e'));
+  assert!(app.editor.is_some());
+  press(&mut app, KeyCode::Esc);
+  assert!(app.editor.is_none());
+  press(&mut app, KeyCode::Char('c'));
+  press(&mut app, KeyCode::Enter);
+  assert!(app.confirmation.is_some());
+  press(&mut app, KeyCode::Esc);
+  assert!(app.confirmation.is_none());
+  assert!(app.job.is_none());
 }

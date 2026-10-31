@@ -413,7 +413,9 @@ ações administrativas. Consultas posteriores podem pedir nova autenticação.
 É necessário um agente gráfico Polkit disponível na sessão.
 
 Teclas: **↑/↓** selecionar, **Enter** detalhes/configuração, **c** criar, **d**
-excluir, **r** atualizar, **Esc** voltar e **?** ajuda. A descrição é opcional,
+excluir, **p** políticas de retenção, **r** atualizar, **Esc** voltar e **?** ajuda.
+Na tela de retenção, **↑/↓** selecionam uma política, **e** edita, **c** alterna
+algoritmos de limpeza e **Enter** abre a confirmação. A descrição é opcional,
 com até 256 caracteres imprimíveis; vazia, usa “Snapshot manual do ARGVUS”.
 Criação e exclusão exigem confirmação, inicialmente focada em Cancelar. A exclusão
 atinge apenas um snapshot selecionado e bloqueia o número 0, o snapshot ativo e o
@@ -425,7 +427,19 @@ Os snapshots manuais usam o tipo `single`, somente leitura pelo padrão do Snapp
 e nenhum algoritmo de limpeza é atribuído pela página. Timers e operações externas
 do Snapper continuam valendo. Um snapshot não é uma imagem completa: subvolumes
 separados, como um `/home` separado, não são incluídos. Esta versão **não oferece
-rollback, restauração, limpeza automática, instalação ou configuração do Snapper**.
+rollback, restauração, instalação ou criação de configuração Snapper**. Em uma
+configuração válida da raiz, pressione **p** para consultar as políticas conhecidas.
+Valores ausentes aparecem como padrões do Snapper; chaves desconhecidas são
+apenas diagnósticas. Pressione **e** para editar um valor suportado. A confirmação
+mostra o valor anterior e o novo; após salvar, a página consulta novamente e
+verifica a configuração. Pressione **c** para alternar algoritmos de limpeza e
+**Enter** para revisar e confirmar. A limpeza usa o algoritmo oficial do Snapper;
+não há prévia exata, e a quantidade removida é medida comparando as listas após
+a execução. O Snapper 0.13.2 do Arch fornece
+`snapper-timeline.timer` e `snapper-cleanup.timer`; a criação por timeline depende
+do primeiro, e políticas de limpeza não são executadas sem o agendamento ativo.
+A página apenas consulta o estado das unidades e não as habilita. Limites de espaço exigem qgroups Btrfs
+configurados e não são expostos nesta tela.
 
 ### Validação manual
 

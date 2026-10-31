@@ -13,6 +13,9 @@ impl SnapshotApp {
     {
       label(self.lang, "authorize_help")
     } else if self.error.is_none() && matches!(self.state, Some(Integration::Ready { .. })) {
+      if self.retention_view {
+        return label(self.lang, "retention_controls");
+      }
       if self.diff.is_some() {
         return label(self.lang, "diff_help");
       }
@@ -60,6 +63,12 @@ impl SnapshotApp {
             .index
             .saturating_add(3)
             .min(rows.len().saturating_sub(1))
+        } else if self.retention_view {
+          self
+            .retention_selection
+            .index
+            .saturating_add(1)
+            .min(rows.len().saturating_sub(1))
         } else {
           self.selection.index.min(rows.len().saturating_sub(1))
         },
@@ -103,6 +112,30 @@ impl SnapshotApp {
           ),
           true,
         ),
+        PendingAction::Retention { key, old, new } => (
+          format!(
+            "{}\n{key}: {old} → {new}",
+            label(self.lang, "confirm_retention")
+          ),
+          true,
+        ),
+        PendingAction::Cleanup(algorithm) => {
+          let count = match &self.state {
+            Some(Integration::Ready { snapshots, .. }) => snapshots.len(),
+            _ => 0,
+          };
+          (
+            format!(
+              "{}\n{} · {}: {}\n{}",
+              label(self.lang, "confirm_cleanup"),
+              label(self.lang, "cleanup_algorithm"),
+              algorithm.as_snapper_arg(),
+              count,
+              label(self.lang, "cleanup_no_preview")
+            ),
+            true,
+          )
+        }
       };
       draw_confirm(
         frame,
@@ -138,6 +171,51 @@ impl SnapshotApp {
     }
     if let Some(error) = &self.error {
       return vec![error_text(self.lang, error)];
+    }
+    if self.retention_view {
+      let Some(config) = &self.retention else {
+        return vec![label(self.lang, "loading").into()];
+      };
+      let mut rows = vec![label(self.lang, "retention_title").into()];
+      rows.extend(config.values.iter().map(|(key, value)| {
+        format!(
+          "{key}: {}{}",
+          value.value,
+          if value.origin == SettingOrigin::SnapperDefault {
+            format!(" ({})", label(self.lang, "snapper_default"))
+          } else {
+            String::new()
+          }
+        )
+      }));
+      rows.extend(
+        config
+          .unknown
+          .iter()
+          .map(|(key, value)| format!("{key}: {value} ({})", label(self.lang, "unknown_setting"))),
+      );
+      rows.push(format!(
+        "snapper-timeline.timer: {}",
+        self.timers.as_ref().map_or_else(
+          || label(self.lang, "timer_unknown").into(),
+          |timers| timer_label(self.lang, &timers.timeline)
+        )
+      ));
+      rows.push(format!(
+        "snapper-cleanup.timer: {}",
+        self.timers.as_ref().map_or_else(
+          || label(self.lang, "timer_unknown").into(),
+          |timers| timer_label(self.lang, &timers.cleanup)
+        )
+      ));
+      rows.push(label(self.lang, "retention_timer_note").into());
+      rows.push(label(self.lang, "retention_controls").into());
+      rows.push(format!(
+        "{} {}",
+        label(self.lang, "cleanup_algorithm"),
+        ["number", "timeline", "empty-pre-post"][self.cleanup_selection]
+      ));
+      return rows;
     }
     if let Some(diff) = &self.diff {
       return match diff {
@@ -280,6 +358,7 @@ impl SnapshotApp {
             )
           })
           .collect();
+        rows.push(label(self.lang, "retention_shortcut").into());
         if let Some(base) = base {
           rows.push(base);
         }
@@ -287,5 +366,15 @@ impl SnapshotApp {
       }
       None => vec![],
     }
+  }
+}
+
+fn timer_label(lang: Lang, state: &TimerState) -> String {
+  match state {
+    TimerState::Missing => label(lang, "timer_missing").into(),
+    TimerState::Disabled => label(lang, "timer_disabled").into(),
+    TimerState::EnabledInactive => label(lang, "timer_inactive").into(),
+    TimerState::Active => label(lang, "timer_active").into(),
+    TimerState::Unavailable(_) => label(lang, "timer_unavailable").into(),
   }
 }

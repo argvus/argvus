@@ -397,7 +397,9 @@ not in an elevated TUI; authentication may be requested again on later queries.
 An existing graphical Polkit agent is required for authentication.
 
 Keys: **↑/↓** select, **Enter** details/configuration, **c** create, **d** delete,
-**r** refresh, **Esc** back, **?** help. Creation opens an optional description
+**p** retention policies, **r** refresh, **Esc** back, **?** help. On the retention
+view, **↑/↓** select a policy, **e** edit, **c** cycle cleanup algorithms and
+**Enter** open confirmation. Creation opens an optional description
 (up to 256 printable characters); an empty description uses “ARGVUS manual
 snapshot”. Both creation and deletion require confirmation, initially focused on
 Cancel. Deletion applies to one selected snapshot and rejects snapshot 0, the
@@ -424,7 +426,18 @@ Manual snapshots are `single`, read-only by Snapper's default, with no cleanup
 algorithm assigned by this page. Existing Snapper timers and external operations
 continue to apply. Snapshots are not full-system images: separate subvolumes,
 including a separate `/home`, are not included. This version provides **no
-rollback, restore, automatic cleanup, installation or Snapper configuration**.
+rollback, restore, installation or creation of a Snapper configuration**. Press
+**p** on a supported root configuration to inspect the known retention settings.
+Missing values are shown as Snapper defaults, while unknown keys are diagnostic
+only. Press **e** to edit a supported value. The confirmation shows the old and
+new values; after saving, the page reads the config again and verifies it.
+Press **c** to cycle cleanup algorithms and **Enter** to review and confirm one.
+Cleanup uses Snapper's official algorithm; there is no exact preview, and the
+reported removed count is measured by comparing lists after execution. Arch Snapper 0.13.2 provides
+`snapper-timeline.timer` and `snapper-cleanup.timer`; timeline creation requires
+the timeline timer, and configured cleanup policies do not run without cleanup
+scheduling. The page reads unit state only and does not enable timers. Space limits require configured Btrfs
+qgroups and are not exposed here.
 
 ### Manual validation
 

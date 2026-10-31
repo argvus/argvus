@@ -12,6 +12,40 @@ const SNAPPER: &str = "/usr/bin/snapper";
 const LIMIT: usize = 1024 * 1024;
 const DIFF_LIMIT: usize = 256 * 1024;
 const COLUMNS: &str = "number,type,date,description,cleanup,active,default";
+const RETENTION_DEFAULTS: &[(&str, &str)] = &[
+  ("NUMBER_CLEANUP", "no"),
+  ("NUMBER_MIN_AGE", "3600"),
+  ("NUMBER_LIMIT", "50"),
+  ("NUMBER_LIMIT_IMPORTANT", "10"),
+  ("TIMELINE_CREATE", "no"),
+  ("TIMELINE_CLEANUP", "no"),
+  ("TIMELINE_MIN_AGE", "3600"),
+  ("TIMELINE_LIMIT_HOURLY", "10"),
+  ("TIMELINE_LIMIT_DAILY", "10"),
+  ("TIMELINE_LIMIT_WEEKLY", "0"),
+  ("TIMELINE_LIMIT_MONTHLY", "10"),
+  ("TIMELINE_LIMIT_QUARTERLY", "0"),
+  ("TIMELINE_LIMIT_YEARLY", "10"),
+  ("EMPTY_PRE_POST_CLEANUP", "no"),
+  ("EMPTY_PRE_POST_MIN_AGE", "3600"),
+];
+const EDITABLE_RETENTION_KEYS: &[&str] = &[
+  "NUMBER_CLEANUP",
+  "NUMBER_MIN_AGE",
+  "NUMBER_LIMIT",
+  "NUMBER_LIMIT_IMPORTANT",
+  "TIMELINE_CREATE",
+  "TIMELINE_CLEANUP",
+  "TIMELINE_MIN_AGE",
+  "TIMELINE_LIMIT_HOURLY",
+  "TIMELINE_LIMIT_DAILY",
+  "TIMELINE_LIMIT_WEEKLY",
+  "TIMELINE_LIMIT_MONTHLY",
+  "TIMELINE_LIMIT_QUARTERLY",
+  "TIMELINE_LIMIT_YEARLY",
+  "EMPTY_PRE_POST_CLEANUP",
+  "EMPTY_PRE_POST_MIN_AGE",
+];
 
 fn invalid(detail: impl Into<String>) -> SnapshotError {
   SnapshotError::new(ErrorKind::Invalid, detail)
@@ -113,6 +147,112 @@ pub fn parse_snapshots(output: &[u8], config: &str) -> SnapshotResult<Vec<Snapsh
       })
     })
     .collect()
+}
+
+/// Parse the JSON object produced by `snapper --jsonout get-config`.
+pub fn parse_retention_config(output: &[u8]) -> SnapshotResult<RetentionConfig> {
+  let object = json(output)?;
+  let object = object
+    .as_object()
+    .ok_or_else(|| invalid("get-config must return an object"))?;
+  let mut values = std::collections::BTreeMap::new();
+  let mut unknown = std::collections::BTreeMap::new();
+  for (key, raw) in object {
+    let value = raw
+      .as_str()
+      .or_else(|| raw.get("value").and_then(Value::as_str));
+    let Some(value) = value else {
+      return Err(invalid(format!("invalid get-config value for {key}")));
+    };
+    if EDITABLE_RETENTION_KEYS.contains(&key.as_str()) {
+      validate_retention_value(key, value)?;
+      values.insert(
+        key.clone(),
+        RetentionValue {
+          value: value.to_owned(),
+          origin: SettingOrigin::Explicit,
+        },
+      );
+    } else {
+      unknown.insert(key.clone(), value.to_owned());
+    }
+  }
+  for (key, default) in RETENTION_DEFAULTS {
+    if !values.contains_key(*key) {
+      if unknown.contains_key(*key) {
+        return Err(invalid(format!("unsupported Snapper setting {key}")));
+      }
+      values.insert(
+        (*key).into(),
+        RetentionValue {
+          value: (*default).into(),
+          origin: SettingOrigin::SnapperDefault,
+        },
+      );
+    }
+  }
+  Ok(RetentionConfig { values, unknown })
+}
+
+pub fn validate_retention_value(key: &str, value: &str) -> SnapshotResult<()> {
+  if !EDITABLE_RETENTION_KEYS.contains(&key) {
+    return Err(invalid("retention key is not editable"));
+  }
+  if matches!(
+    key,
+    "NUMBER_CLEANUP" | "TIMELINE_CREATE" | "TIMELINE_CLEANUP" | "EMPTY_PRE_POST_CLEANUP"
+  ) {
+    return if matches!(value, "yes" | "no") {
+      Ok(())
+    } else {
+      Err(invalid("boolean setting must be yes or no"))
+    };
+  }
+  if value.contains('-')
+    && matches!(
+      key,
+      "NUMBER_LIMIT"
+        | "NUMBER_LIMIT_IMPORTANT"
+        | "TIMELINE_LIMIT_HOURLY"
+        | "TIMELINE_LIMIT_DAILY"
+        | "TIMELINE_LIMIT_WEEKLY"
+        | "TIMELINE_LIMIT_MONTHLY"
+        | "TIMELINE_LIMIT_QUARTERLY"
+        | "TIMELINE_LIMIT_YEARLY"
+    )
+  {
+    let mut parts = value.split('-');
+    let min = parts.next().and_then(|part| part.parse::<u32>().ok());
+    let max = parts.next().and_then(|part| part.parse::<u32>().ok());
+    return match (min, max, parts.next()) {
+      (Some(min), Some(max), None) if max >= min => Ok(()),
+      _ => Err(invalid("invalid retention range")),
+    };
+  }
+  value
+    .parse::<u32>()
+    .map(|_| ())
+    .map_err(|_| invalid("setting must be a non-negative integer or supported range"))
+}
+
+pub fn build_retention_configdata(changes: &[(String, String)]) -> SnapshotResult<String> {
+  if changes.is_empty() {
+    return Err(invalid("no retention changes"));
+  }
+  let mut seen = BTreeSet::new();
+  for (key, value) in changes {
+    validate_retention_value(key, value)?;
+    if !seen.insert(key) {
+      return Err(invalid("duplicate retention key"));
+    }
+  }
+  Ok(
+    changes
+      .iter()
+      .map(|(key, value)| format!("{key}={value}"))
+      .collect::<Vec<_>>()
+      .join(" "),
+  )
 }
 
 pub struct SnapshotBackend<R> {
@@ -334,6 +474,112 @@ impl<R: ProcessRunner> SnapshotBackend<R> {
     )
   }
 
+  pub fn retention(&self, config: &str) -> SnapshotResult<RetentionConfig> {
+    self.comparison_snapshots_config(config)?;
+    parse_retention_config(&self.snapper(&["--jsonout", "-c", config, "get-config"], false)?)
+  }
+
+  pub fn timers(&self) -> SnapperTimers {
+    SnapperTimers {
+      timeline: self.timer_state("snapper-timeline.timer"),
+      cleanup: self.timer_state("snapper-cleanup.timer"),
+    }
+  }
+
+  fn timer_state(&self, unit: &str) -> TimerState {
+    let request = ProcessRequest::new("/usr/bin/systemctl")
+      .arg("show")
+      .arg(unit)
+      .arg("--property=LoadState,UnitFileState,ActiveState")
+      .arg("--no-pager")
+      .env("LC_ALL", "C.UTF-8")
+      .timeout(Duration::from_secs(10))
+      .output_limit(16 * 1024);
+    let output = match self.runner.run(&request) {
+      Ok(output) => match check_output(output) {
+        Ok(bytes) => bytes,
+        Err(error) => return TimerState::Unavailable(error.detail),
+      },
+      Err(error) => return TimerState::Unavailable(error.to_string()),
+    };
+    let Ok(text) = std::str::from_utf8(&output) else {
+      return TimerState::Unavailable("invalid systemd response".into());
+    };
+    let properties = text
+      .lines()
+      .filter_map(|line| line.split_once('='))
+      .collect::<std::collections::BTreeMap<_, _>>();
+    if properties.get("LoadState") == Some(&"not-found") {
+      return TimerState::Missing;
+    }
+    if !matches!(properties.get("LoadState"), Some(&"loaded")) {
+      return TimerState::Unavailable("systemd did not report a loaded unit".into());
+    }
+    if properties.get("ActiveState") == Some(&"active") {
+      return TimerState::Active;
+    }
+    if matches!(
+      properties.get("UnitFileState"),
+      Some(&"enabled" | &"enabled-runtime")
+    ) {
+      TimerState::EnabledInactive
+    } else {
+      TimerState::Disabled
+    }
+  }
+
+  fn comparison_snapshots_config(&self, config: &str) -> SnapshotResult<()> {
+    validate_config(config)?;
+    match self.inspect(Some(config))? {
+      Integration::Ready { .. } => Ok(()),
+      _ => Err(invalid("root snapshot integration is unavailable")),
+    }
+  }
+
+  pub fn set_retention(
+    &self,
+    config: &str,
+    changes: &[(String, String)],
+  ) -> SnapshotResult<RetentionConfig> {
+    self.comparison_snapshots_config(config)?;
+    let configdata = build_retention_configdata(changes)?;
+    self.snapper(&["-c", config, "set-config", &configdata], true)?;
+    let saved = self.retention(config)?;
+    for (key, expected) in changes {
+      if saved.values.get(key).map(|value| value.value.as_str()) != Some(expected.as_str()) {
+        return Err(invalid(format!("Snapper did not persist {key}")));
+      }
+    }
+    Ok(saved)
+  }
+
+  pub fn cleanup(
+    &self,
+    config: &str,
+    algorithms: &[CleanupAlgorithm],
+  ) -> SnapshotResult<(Vec<u32>, Vec<u32>)> {
+    self.comparison_snapshots_config(config)?;
+    if algorithms.is_empty() {
+      return Err(invalid("select at least one cleanup algorithm"));
+    }
+    let before = self
+      .list(config)?
+      .into_iter()
+      .map(|snapshot| snapshot.number)
+      .collect::<BTreeSet<_>>();
+    for algorithm in algorithms {
+      self.snapper(&["-c", config, "cleanup", algorithm.as_snapper_arg()], true)?;
+    }
+    let after = self
+      .list(config)?
+      .into_iter()
+      .map(|snapshot| snapshot.number)
+      .collect::<BTreeSet<_>>();
+    let removed = before.difference(&after).copied().collect();
+    let remaining = after.iter().copied().collect();
+    Ok((removed, remaining))
+  }
+
   /// Repeat all root/config/protection checks in the elevated process, immediately before mutation.
   pub fn change(&self, action: &str, config: &str, value: &str) -> SnapshotResult<Option<u32>> {
     validate_config(config)?;
@@ -449,8 +695,42 @@ pub fn validate_helper(action: &str, values: &[String]) -> SnapshotResult<()> {
       }
       validate_change_path(path)
     }
+    ("get-retention", [config]) => validate_config(config),
+    ("set-retention", [config, configdata]) => {
+      validate_config(config)?;
+      let changes = parse_configdata(configdata)?;
+      build_retention_configdata(&changes).map(|_| ())
+    }
+    ("cleanup", [config, algorithms @ ..]) if !algorithms.is_empty() => {
+      validate_config(config)?;
+      for algorithm in algorithms {
+        parse_cleanup_algorithm(algorithm)?;
+      }
+      Ok(())
+    }
     _ => Err(invalid("unsupported snapshot request")),
   }
+}
+
+pub fn parse_cleanup_algorithm(value: &str) -> SnapshotResult<CleanupAlgorithm> {
+  match value {
+    "number" => Ok(CleanupAlgorithm::Number),
+    "timeline" => Ok(CleanupAlgorithm::Timeline),
+    "empty-pre-post" => Ok(CleanupAlgorithm::EmptyPrePost),
+    _ => Err(invalid("unsupported cleanup algorithm")),
+  }
+}
+
+fn parse_configdata(configdata: &str) -> SnapshotResult<Vec<(String, String)>> {
+  configdata
+    .split(' ')
+    .map(|pair| {
+      let (key, value) = pair
+        .split_once('=')
+        .ok_or_else(|| invalid("invalid configdata"))?;
+      Ok((key.to_owned(), value.to_owned()))
+    })
+    .collect()
 }
 
 /// Snapper's six fixed status positions precede one separating space and the path.

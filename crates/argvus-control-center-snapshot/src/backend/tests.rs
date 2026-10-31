@@ -81,6 +81,156 @@ fn parses_status_indicators_and_paths_without_losing_spaces() {
 }
 
 #[test]
+fn parses_retention_config_with_explicit_defaults_and_unknown_keys() {
+  let config = parse_retention_config(
+    br#"{"NUMBER_CLEANUP":"yes","NUMBER_LIMIT":"4-8","VENDOR_OPTION":"kept"}"#,
+  )
+  .unwrap();
+  assert_eq!(config.values["NUMBER_CLEANUP"].value, "yes");
+  assert_eq!(
+    config.values["NUMBER_CLEANUP"].origin,
+    SettingOrigin::Explicit
+  );
+  assert_eq!(config.values["NUMBER_LIMIT"].value, "4-8");
+  assert_eq!(config.values["TIMELINE_MIN_AGE"].value, "3600");
+  assert_eq!(
+    config.values["TIMELINE_MIN_AGE"].origin,
+    SettingOrigin::SnapperDefault
+  );
+  assert_eq!(config.unknown["VENDOR_OPTION"], "kept");
+  for invalid in [
+    br#""#.as_slice(),
+    br#"[]"#,
+    br#"{"NUMBER_CLEANUP":"maybe"}"#,
+    br#"{"NUMBER_LIMIT":"8-4"}"#,
+    br#"{"NUMBER_MIN_AGE":"-1"}"#,
+  ] {
+    assert!(parse_retention_config(invalid).is_err());
+  }
+}
+
+#[test]
+fn retention_configdata_and_helper_accept_only_validated_keys() {
+  assert_eq!(
+    build_retention_configdata(&[
+      ("NUMBER_LIMIT".into(), "5-12".into()),
+      ("NUMBER_CLEANUP".into(), "yes".into())
+    ])
+    .unwrap(),
+    "NUMBER_LIMIT=5-12 NUMBER_CLEANUP=yes"
+  );
+  for pair in [
+    ("SUBVOLUME", "/"),
+    ("FSTYPE", "btrfs"),
+    ("QGROUP", "1/0"),
+    ("UNKNOWN", "yes"),
+    ("TIMELINE_CREATE", "true"),
+  ] {
+    assert!(build_retention_configdata(&[(pair.0.into(), pair.1.into())]).is_err());
+  }
+  assert!(validate_helper("cleanup", &["system".into(), "oops".into()]).is_err());
+  assert!(validate_helper("set-retention", &["system".into(), "SUBVOLUME=/".into()]).is_err());
+}
+
+#[test]
+fn reads_systemd_timer_states_without_mutating_units() {
+  let backend = backend(vec![
+    output("LoadState=loaded\nUnitFileState=enabled\nActiveState=active\n"),
+    output("LoadState=loaded\nUnitFileState=enabled\nActiveState=inactive\n"),
+  ]);
+  assert_eq!(
+    backend.timers(),
+    SnapperTimers {
+      timeline: TimerState::Active,
+      cleanup: TimerState::EnabledInactive
+    }
+  );
+  let requests = backend.runner.requests.lock().unwrap();
+  assert_eq!(requests.len(), 2);
+  assert!(
+    requests
+      .iter()
+      .all(|request| request.program == "/usr/bin/systemctl" && request.args[0] == "show")
+  );
+}
+
+#[test]
+fn reports_missing_and_unavailable_timer_states() {
+  let backend = backend(vec![
+    output("LoadState=not-found\n"),
+    Err(ProcessError::OutputLimit),
+  ]);
+  let timers = backend.timers();
+  assert_eq!(timers.timeline, TimerState::Missing);
+  assert!(matches!(timers.cleanup, TimerState::Unavailable(_)));
+}
+
+#[test]
+fn cleanup_runs_official_algorithm_and_reports_observed_removed_ids() {
+  let mut replies = ready(vec![row(1, false, false), row(2, false, false)]);
+  replies.push(output(
+    &json!({"system":[row(1, false, false),row(2, false, false)]}).to_string(),
+  ));
+  replies.push(output(""));
+  replies.push(output(
+    &json!({"system":[row(2, false, false)]}).to_string(),
+  ));
+  let backend = backend(replies);
+  let (removed, remaining) = backend
+    .cleanup("system", &[CleanupAlgorithm::Number])
+    .unwrap();
+  assert_eq!(removed, [1]);
+  assert_eq!(remaining, [2]);
+  let requests = backend.runner.requests.lock().unwrap();
+  assert_eq!(requests[6].args, ["-c", "system", "cleanup", "number"]);
+  assert!(requests.len() > 7);
+}
+
+#[test]
+fn cleanup_failure_is_not_reported_as_success() {
+  let mut replies = ready(vec![row(4, false, false)]);
+  replies.push(output(
+    &json!({"system":[row(4, false, false)]}).to_string(),
+  ));
+  replies.push(Ok(ProcessOutput {
+    stdout: vec![],
+    stderr: b"cleanup failed".to_vec(),
+    status: Some(1),
+    timed_out: false,
+  }));
+  let backend = backend(replies);
+  assert!(
+    backend
+      .cleanup("system", &[CleanupAlgorithm::Timeline])
+      .is_err()
+  );
+}
+
+#[test]
+fn retention_save_uses_one_configdata_argument_and_verifies_readback() {
+  let mut replies = ready(vec![]);
+  replies.push(output(""));
+  replies.extend(ready(vec![]));
+  replies.push(output("{\"NUMBER_LIMIT\":\"20\"}"));
+  let backend = backend(replies);
+  let saved = backend
+    .set_retention("system", &[("NUMBER_LIMIT".into(), "20".into())])
+    .unwrap();
+  assert_eq!(saved.values["NUMBER_LIMIT"].value, "20");
+  let requests = backend.runner.requests.lock().unwrap();
+  let set = requests
+    .iter()
+    .find(|request| {
+      request
+        .args
+        .get(2)
+        .is_some_and(|argument| argument == "set-config")
+    })
+    .unwrap();
+  assert_eq!(set.args, ["-c", "system", "set-config", "NUMBER_LIMIT=20"]);
+}
+
+#[test]
 fn comparison_rechecks_root_and_uses_structured_arguments() {
   let mut replies = ready(vec![row(1, false, false), row(2, false, false)]);
   replies.push(output("c..... /etc/a file\n"));

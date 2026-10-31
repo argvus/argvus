@@ -22,9 +22,33 @@ pub(super) fn run(action: &str, values: &[String]) -> Result<(), String> {
       values[2].parse().map_err(|error| format!("{error}"))?,
       &values[3],
     )),
+    "get-retention" => serde_json::to_string(&backend.retention(&values[0])),
+    "set-retention" => {
+      serde_json::to_string(&backend.set_retention(&values[0], &parse_changes(&values[1])?))
+    }
+    "cleanup" => {
+      let algorithms = values[1..]
+        .iter()
+        .map(|value| argvus_control_center_snapshot::backend::parse_cleanup_algorithm(value))
+        .collect::<Result<Vec<_>, _>>()
+        .map_err(|error| error.to_string())?;
+      serde_json::to_string(&backend.cleanup(&values[0], &algorithms))
+    }
     _ => serde_json::to_string(&backend.change(action, &values[0], &values[1])),
   }
   .map_err(|error| error.to_string())?;
   println!("{reply}");
   Ok(())
+}
+
+fn parse_changes(configdata: &str) -> Result<Vec<(String, String)>, String> {
+  configdata
+    .split(' ')
+    .map(|pair| {
+      let (key, value) = pair
+        .split_once('=')
+        .ok_or_else(|| "invalid configdata".to_owned())?;
+      Ok((key.to_owned(), value.to_owned()))
+    })
+    .collect()
 }
