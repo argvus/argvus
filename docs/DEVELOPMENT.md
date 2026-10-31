@@ -92,6 +92,7 @@ dependencies. `validate.sh` fails when they differ.
 
 Only the source input differs: the remote PKGBUILD downloads the GitHub tag archive,
 and the local PKGBUILD uses the archive generated from the working tree.
+The `argvus.install` hook gets the installed package version from pacman and displays its `pkgver`; keep the local and remote hook copies synchronized.
 
 The `depends` array is the list of ARGVUS components and third-party packages
 that define the desktop. Optional themes and applications belong in
