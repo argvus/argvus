@@ -76,7 +76,7 @@ pub fn draw(app: &mut App, frame: &mut Frame) {
   if app.welcome.active && app.route != Route::Welcome {
     let hint = tr(app.lang, "control_center.welcome_active_hint")
       .replace("{step}", &(app.welcome.selected + 1).to_string())
-      .replace("{total}", &crate::welcome::steps().len().to_string());
+      .replace("{total}", &app.welcome.steps.len().to_string());
     frame.render_widget(
       Paragraph::new(hint).style(
         Style::default()
@@ -90,10 +90,10 @@ pub fn draw(app: &mut App, frame: &mut Frame) {
     frame.render_widget(
       Paragraph::new(tr(
         app.lang,
-        if app.welcome.done_blocked {
-          "control_center.welcome_done_blocked"
+        if app.welcome.next_blocked {
+          "control_center.welcome_next_blocked"
         } else {
-          "control_center.welcome_done"
+          "control_center.welcome_next"
         },
       ))
       .style(
@@ -694,5 +694,96 @@ mod tests {
     // GPG key pages are the ones that were missing theirs.
     assert!(!HomeDestination::SshKeys.glyph().is_empty(), "SSH keys");
     assert!(!HomeDestination::GpgKeys.glyph().is_empty(), "GPG keys");
+  }
+  #[test]
+  fn warnings_follow_administrative_routes_and_survive_welcome() {
+    use argvus_control_center_settings::Page;
+    let cases = [
+      (InitialRoute::Settings(Page::SystemLocales), true),
+      (InitialRoute::Settings(Page::RegionalLocale), false),
+      (InitialRoute::Settings(Page::User), true),
+      (InitialRoute::Config, true),
+      #[cfg(feature = "services")]
+      (
+        InitialRoute::Services(argvus_control_center_services::ServicePage::System),
+        true,
+      ),
+      #[cfg(feature = "services")]
+      (
+        InitialRoute::Services(argvus_control_center_services::ServicePage::User),
+        false,
+      ),
+      #[cfg(feature = "hardware")]
+      (
+        InitialRoute::Hardware(argvus_control_center_hardware::HardwarePage::Cpu),
+        true,
+      ),
+      #[cfg(feature = "hardware")]
+      (
+        InitialRoute::Hardware(argvus_control_center_hardware::HardwarePage::Summary),
+        false,
+      ),
+      #[cfg(feature = "network")]
+      (
+        InitialRoute::Network(argvus_control_center_network::NetworkPage::Dns),
+        true,
+      ),
+      #[cfg(feature = "network")]
+      (
+        InitialRoute::Network(argvus_control_center_network::NetworkPage::Proxy),
+        false,
+      ),
+      #[cfg(feature = "boot")]
+      (
+        InitialRoute::Boot(argvus_control_center_boot::BootPage::Bootloader),
+        true,
+      ),
+      #[cfg(feature = "boot")]
+      (
+        InitialRoute::Boot(argvus_control_center_boot::BootPage::Summary),
+        false,
+      ),
+      #[cfg(feature = "packages")]
+      (
+        InitialRoute::Packages(argvus_control_center_packages::PackagesPage::Cache),
+        true,
+      ),
+      #[cfg(feature = "packages")]
+      (
+        InitialRoute::Packages(argvus_control_center_packages::PackagesPage::History),
+        false,
+      ),
+      #[cfg(feature = "snapshot")]
+      (InitialRoute::Snapshot, true),
+      #[cfg(feature = "power")]
+      (InitialRoute::Power, true),
+    ];
+    for (width, height) in [(60, 18), (100, 30)] {
+      for (route, required) in cases {
+        let mut app = App::new(route);
+        app.settings.error_modal = None;
+        app.welcome.active = true;
+        let mut terminal = Terminal::new(TestBackend::new(width, height)).unwrap();
+        terminal.draw(|frame| draw(&mut app, frame)).unwrap();
+        let lines: Vec<String> = terminal
+          .backend()
+          .buffer()
+          .content
+          .chunks(width as usize)
+          .map(|row| row.iter().map(|cell| cell.symbol()).collect())
+          .collect();
+        let warning = lines.iter().position(|row| row.contains("[WARN]"));
+        assert_eq!(
+          warning.is_some(),
+          required,
+          "{route:?} {width}x{height}: {lines:?}"
+        );
+        if let Some(warning) = warning {
+          assert!(warning < height as usize - 2);
+        }
+        assert!(!lines.join("").contains("control_center."), "{route:?}");
+        assert!(lines[height as usize - 1].contains("F6"));
+      }
+    }
   }
 }

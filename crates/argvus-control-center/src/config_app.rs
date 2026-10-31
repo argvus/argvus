@@ -332,6 +332,7 @@ impl ConfigApp {
       &self.breadcrumb(),
       self.footer_hints(),
     );
+    let body = argvus_tui::page::admin_warning(frame, body, &self.theme, self.lang, true);
     let split = Layout::vertical([Constraint::Length(1), Constraint::Min(1)]).split(body);
     readonly(
       frame,

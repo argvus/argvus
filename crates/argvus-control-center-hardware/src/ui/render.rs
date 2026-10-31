@@ -57,6 +57,13 @@ impl HardwareApp {
       &self.breadcrumb(),
       hints,
     );
+    let body = argvus_tui::page::admin_warning(
+      frame,
+      body,
+      &self.theme,
+      self.lang,
+      matches!(self.page, HardwarePage::Cpu | HardwarePage::Power),
+    );
     let buttons = self.buttons();
 
     let (content_area, button_area) = if buttons.is_empty() {

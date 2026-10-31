@@ -295,3 +295,19 @@ fn migration_keeps_terminal_components_nested_and_unstranded() {
   assert_eq!(remaining, vec!["config", "data"]);
   let _ = fs::remove_dir_all(directory);
 }
+
+#[test]
+fn legacy_language_is_not_imported() {
+  let directory = env::temp_dir().join(format!("argvus-language-migration-{}", std::process::id()));
+  fs::create_dir_all(directory.join("data/internal")).unwrap();
+  fs::write(directory.join("data/language"), "pt-BR").unwrap();
+  fs::write(directory.join("data/internal/language"), "pt_BR").unwrap();
+  let mut document = ConfigDocument::default();
+  import_legacy_values(&mut document, &directory).unwrap();
+  assert!(document.get("/session/language").is_none());
+  assert_eq!(
+    fs::read_to_string(directory.join("data/language")).unwrap(),
+    "pt-BR"
+  );
+  fs::remove_dir_all(directory).unwrap();
+}

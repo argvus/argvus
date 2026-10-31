@@ -241,3 +241,18 @@ fn snapshot_dispatch_accepts_only_the_closed_root_management_grammar() {
     assert!(validate_args(&arguments.into_iter().map(String::from).collect::<Vec<_>>()).is_err());
   }
 }
+
+#[test]
+fn global_language_command_is_rejected_before_elevation() {
+  let args = ["locale".into(), "set-lang".into(), "en_US.UTF-8".into()];
+  let validation = validate_args(&args).unwrap_err();
+  assert_eq!(run(&args).unwrap_err(), validation);
+  assert!(
+    validate_args(&[
+      "locale".into(),
+      "set-generated".into(),
+      "en_US.UTF-8 UTF-8".into()
+    ])
+    .is_ok()
+  );
+}

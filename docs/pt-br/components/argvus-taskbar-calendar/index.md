@@ -73,3 +73,5 @@ informa os calendários remotos configurados; a sincronização CalDAV ainda nã
 
 A cor de destaque é lida de `~/.config/argvus/data/.accent-color` e aplicada em tempo de execução,
 por cima das cores do tema.
+
+A seleção automática de idioma segue o `locale.conf` do usuário, com inglês como padrão. Preferências explícitas de idioma do calendário continuam substituindo a seleção automática.

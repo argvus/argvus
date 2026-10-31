@@ -264,3 +264,77 @@ fn task_window_renders_while_open() {
     "process window title must render"
   );
 }
+
+#[test]
+fn administrative_pages_show_warning_without_hiding_actions_or_footer() {
+  for locale in ["en-US", "pt-BR"] {
+    for (width, height) in [(60, 18), (100, 30)] {
+      for page in [
+        Page::SystemLocales,
+        Page::TimeZone,
+        Page::DateTime,
+        Page::Hostname,
+        Page::ConsoleKeymap,
+        Page::Firewall,
+        Page::User,
+        Page::CreateUser,
+        Page::Group,
+      ] {
+        let mut app = App::with_context(
+          page,
+          crate::i18n::Lang::for_locale(locale),
+          crate::theme::Theme::load(),
+        );
+        app.error_modal = None;
+        let mut terminal = Terminal::new(TestBackend::new(width, height)).unwrap();
+        terminal.draw(|frame| draw(&mut app, frame)).unwrap();
+        let lines: Vec<String> = terminal
+          .backend()
+          .buffer()
+          .content
+          .chunks(width as usize)
+          .map(|row| row.iter().map(|cell| cell.symbol()).collect())
+          .collect();
+        let warning = lines
+          .iter()
+          .position(|row| row.contains("[WARN]"))
+          .unwrap_or_else(|| panic!("missing warning: {page:?} {locale}"));
+        assert!(warning < height as usize - 2);
+        assert!(
+          lines[height as usize - 2].contains("Esc"),
+          "footer lost: {page:?} {lines:?}"
+        );
+        assert!(!lines.join("").contains("control_center."));
+      }
+    }
+  }
+}
+
+#[test]
+fn personal_language_and_keyboard_pages_do_not_require_root() {
+  for page in [
+    Page::RegionalLocale,
+    Page::Language,
+    Page::KeyboardLayout,
+    Page::Fonts,
+    Page::Notifications,
+  ] {
+    assert!(!page.requires_admin());
+    let mut app = App::with_context(
+      page,
+      crate::i18n::Lang::for_locale("en-US"),
+      crate::theme::Theme::load(),
+    );
+    app.error_modal = None;
+    let mut terminal = Terminal::new(TestBackend::new(60, 18)).unwrap();
+    terminal.draw(|frame| draw(&mut app, frame)).unwrap();
+    let rendered: String = terminal
+      .backend()
+      .buffer()
+      .content
+      .iter()
+      .map(|cell| cell.symbol())
+      .collect();
+    assert!(!rendered.contains("[WARN]"), "{page:?}");
+  }
+}

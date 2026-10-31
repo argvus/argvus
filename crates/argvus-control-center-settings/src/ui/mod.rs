@@ -47,7 +47,14 @@ pub fn draw(app: &mut App, frame: &mut Frame) {
     return;
   }
 
-  let areas = layout::areas(area);
+  let mut areas = layout::areas(area);
+  areas.body = argvus_tui::page::admin_warning(
+    frame,
+    areas.body,
+    &app.theme,
+    app.lang,
+    app.page().requires_admin(),
+  );
   let rows = app.rows();
   let actions = app.action_rows();
   // Pages with a top search reserve a box above the list; the bottom line
@@ -221,16 +228,21 @@ fn draw_user_page(app: &mut App, frame: &mut Frame, area: Rect) {
     vertical: 1,
   });
 
-  let chunks = Layout::default()
-    .direction(Direction::Vertical)
-    .constraints([
-      Constraint::Length(3),
-      Constraint::Min(8),
-      Constraint::Length(4),
-      Constraint::Length(1),
-      Constraint::Length(1),
-    ])
-    .split(inner);
+  let sections = Layout::vertical([Constraint::Min(0), Constraint::Length(2)]).split(inner);
+  let body = argvus_tui::page::admin_warning(
+    frame,
+    sections[0],
+    &app.theme,
+    app.lang,
+    app.page().requires_admin(),
+  );
+  let chunks = Layout::vertical([
+    Constraint::Length(3),
+    Constraint::Min(0),
+    Constraint::Length(4),
+  ])
+  .split(body);
+  let footer = Layout::vertical([Constraint::Length(1), Constraint::Length(1)]).split(sections[1]);
 
   // Title
   let title_text = app.breadcrumb();
@@ -341,13 +353,13 @@ fn draw_user_page(app: &mut App, frame: &mut Frame, area: Rect) {
   } else {
     Paragraph::new(tr(app.lang, "control_center.ready")).style(Style::default().fg(app.theme.muted))
   };
-  frame.render_widget(status, chunks[3]);
+  frame.render_widget(status, footer[0]);
 
   // Navigation footer, always the last line of the screen.
   let nav = Paragraph::new(tr(app.lang, "control_center.user_page_keys"))
     .alignment(Alignment::Right)
     .style(Style::default().fg(app.theme.muted));
-  frame.render_widget(nav, chunks[4]);
+  frame.render_widget(nav, footer[1]);
 
   // Popups/Dialogs
   if app.hostname_editing {

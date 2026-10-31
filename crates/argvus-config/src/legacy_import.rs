@@ -217,30 +217,6 @@ pub(super) fn manifest_shortcut_defaults() -> BTreeMap<String, Value> {
   defaults
 }
 
-pub(super) fn import_language(
-  document: &mut ConfigDocument,
-  path: Option<PathBuf>,
-) -> ConfigResult<bool> {
-  if document.get(json_pointers::SESSION_LANGUAGE).is_some() {
-    return Ok(false);
-  }
-  let Some(path) = path else {
-    return Ok(false);
-  };
-  let Ok(value) = fs::read_to_string(&path) else {
-    return Ok(false);
-  };
-  let language = value.trim();
-  if language.is_empty() {
-    return Ok(false);
-  }
-  document.set(
-    json_pointers::SESSION_LANGUAGE,
-    Value::String(language.replace('_', "-")),
-  )?;
-  Ok(true)
-}
-
 pub(super) fn import_power(document: &mut ConfigDocument, root: &Path) -> ConfigResult<bool> {
   let mut changed = false;
   if document.get(json_pointers::POWER_KEEP_AWAKE).is_none()

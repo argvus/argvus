@@ -42,49 +42,7 @@ pub fn parse_os_release(contents: &str) -> Distro {
 }
 
 pub fn current_lang() -> String {
-  if let Some(path) = user_locale_path()
-    && let Ok(contents) = fs::read_to_string(path)
-    && let Some(value) = contents
-      .lines()
-      .find_map(|line| line.trim().strip_prefix("LANG="))
-  {
-    let value = value.trim_matches(['\"', '\'']);
-    if is_locale_name(value) {
-      return value.to_owned();
-    }
-  }
-  if let Ok(value) = std::env::var("LANG")
-    && is_locale_name(&value)
-  {
-    return value;
-  }
-  command_stdout("localectl", &["status"])
-    .and_then(|output| {
-      output.lines().find_map(|line| {
-        line
-          .trim()
-          .strip_prefix("System Locale:")
-          .and_then(|rest| {
-            rest
-              .split_whitespace()
-              .find_map(|part| part.strip_prefix("LANG="))
-          })
-          .map(str::to_string)
-      })
-    })
-    .or_else(|| {
-      fs::read_to_string("/etc/locale.conf")
-        .ok()
-        .and_then(|contents| {
-          contents.lines().find_map(|line| {
-            line
-              .trim()
-              .strip_prefix("LANG=")
-              .map(|value| value.trim_matches('"').to_string())
-          })
-        })
-    })
-    .unwrap_or_default()
+  argvus_i18n::user_locale()
 }
 
 pub fn generated_locales() -> Vec<String> {
@@ -164,33 +122,31 @@ pub fn apply_locale_gen(contents: &str, selected: &BTreeSet<String>) -> String {
   output
 }
 
-pub fn set_lang(locale: &str, generated: &[String]) -> Result<(), SettingsError> {
-  if !generated.iter().any(|candidate| candidate == locale) {
-    return Err(SettingsError::System(format!(
-      "locale is not generated: {locale}"
-    )));
-  }
-  let path = user_locale_path()
-    .ok_or_else(|| SettingsError::System("Cannot locate user locale configuration".into()))?;
-  write_user_locale(&path, locale).map_err(|error| SettingsError::System(error.to_string()))?;
-  let language = argvus_i18n::normalize_locale(locale);
-  let patch = serde_json::json!({"/session/language": language}).to_string();
-  let status = argvus_control_center_core::process::command("argvus")
-    .args(["config", "patch", &patch])
-    .status()
-    .map_err(|error| SettingsError::System(error.to_string()))?;
-  if status.success() {
-    Ok(())
-  } else {
-    Err(SettingsError::System("Could not save user locale".into()))
-  }
+#[derive(Debug, thiserror::Error)]
+pub enum UserLocaleError {
+  #[error("locale is invalid or not generated: {0}")]
+  NotGenerated(String),
+  #[error("cannot locate user locale configuration")]
+  MissingConfigPath,
+  #[error("could not save user locale: {0}")]
+  Write(#[from] std::io::Error),
 }
 
-fn user_locale_path() -> Option<std::path::PathBuf> {
-  std::env::var_os("XDG_CONFIG_HOME")
-    .map(std::path::PathBuf::from)
-    .or_else(|| std::env::var_os("HOME").map(|home| std::path::PathBuf::from(home).join(".config")))
-    .map(|root| root.join("locale.conf"))
+pub fn set_lang(locale: &str, generated: &[String]) -> Result<(), UserLocaleError> {
+  let path = argvus_i18n::config_path().ok_or(UserLocaleError::MissingConfigPath)?;
+  save_user_language(&path, locale, generated)
+}
+
+fn save_user_language(
+  path: &Path,
+  locale: &str,
+  generated: &[String],
+) -> Result<(), UserLocaleError> {
+  if !is_locale_name(locale) || !generated.iter().any(|candidate| candidate == locale) {
+    return Err(UserLocaleError::NotGenerated(locale.to_owned()));
+  }
+  write_user_locale(path, locale)?;
+  Ok(())
 }
 
 fn write_user_locale(path: &Path, locale: &str) -> std::io::Result<()> {
@@ -342,5 +298,48 @@ mod user_locale_tests {
     assert!(value.contains("LC_TIME=en_GB.UTF-8"));
     assert!(value.contains("# user preference"));
     assert_eq!(fs::read_to_string(second).unwrap(), "LANG=en_US.UTF-8\n");
+  }
+
+  #[test]
+  fn language_selection_writes_exact_lang() {
+    let directory = tempfile::tempdir().unwrap();
+    let path = directory.path().join("config/locale.conf");
+    let generated = vec!["en_US.UTF-8".into(), "pt_BR.UTF-8".into()];
+    for locale in ["en_US.UTF-8", "pt_BR.UTF-8"] {
+      save_user_language(&path, locale, &generated).unwrap();
+      assert_eq!(
+        fs::read_to_string(&path).unwrap(),
+        format!("LANG={locale}\n")
+      );
+    }
+  }
+
+  #[test]
+  fn invalid_or_unavailable_locale_does_not_write() {
+    let directory = tempfile::tempdir().unwrap();
+    let path = directory.path().join("locale.conf");
+    for locale in ["xx_XX.UTF-8", "en_US.UTF-8\nLC_ALL=C"] {
+      assert!(matches!(
+        save_user_language(&path, locale, &["en_US.UTF-8".into()]),
+        Err(UserLocaleError::NotGenerated(_))
+      ));
+      assert!(!path.exists());
+    }
+  }
+
+  #[test]
+  fn write_failure_preserves_other_files() {
+    let directory = tempfile::tempdir().unwrap();
+    let parent = directory.path().join("not-a-directory");
+    fs::write(&parent, "keep me").unwrap();
+    assert!(matches!(
+      save_user_language(
+        &parent.join("locale.conf"),
+        "en_US.UTF-8",
+        &["en_US.UTF-8".into()]
+      ),
+      Err(UserLocaleError::Write(_))
+    ));
+    assert_eq!(fs::read_to_string(parent).unwrap(), "keep me");
   }
 }

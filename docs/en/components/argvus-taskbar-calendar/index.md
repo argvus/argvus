@@ -77,3 +77,5 @@ implemented yet.
 
 The highlight color is read from `~/.config/argvus/data/.accent-color` and applied at runtime
 on top of the theme's colours.
+
+Automatic language selection follows the user `locale.conf`, with English as the default. Explicit calendar language preferences still override automatic selection.

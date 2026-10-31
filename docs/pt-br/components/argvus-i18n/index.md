@@ -14,12 +14,9 @@ Os idiomas atualmente suportados incluem:
 - Portuguese - Brasil (pt-BR)
 - Idiomas adicionais em breve
 
-## Seleção de Idioma
+## Seleção de idioma
 
-Defina seu idioma preferido através de:
-- ARGVUS Control Center → Localization → Language
-- Configurações de idioma do sistema
-- Variável de ambiente `LANG`
+Escolha o idioma do usuário em Control Center > Preferências > Idioma e região > Idioma ou Configurações > Idioma. As duas telas salvam `LANG` em `$XDG_CONFIG_HOME/locale.conf` (padrão `~/.config/locale.conf`). Sem preferência válida, o ARGVUS usa inglês. Variáveis globais de locale e arquivos legados de idioma do ARGVUS não substituem esse arquivo. Saia e entre novamente após trocar o idioma.
 
 ## Para Colaboradores
 

@@ -53,9 +53,6 @@ pub fn run(args: &[String]) -> Result<(), String> {
     [area, action, value] if area == "datetime" && action == "set" => {
       run_command("timedatectl", &["set-time", value])
     }
-    [area, action, value] if area == "locale" && action == "set-lang" => {
-      run_command("localectl", &["set-locale", &format!("LANG={value}")])
-    }
     [area, action, values @ ..] if area == "locale" && action == "set-generated" => {
       set_generated_locales(values)
     }
@@ -117,13 +114,6 @@ fn validate_args(args: &[String]) -> Result<(), String> {
       time::is_valid_datetime(value)
         .then_some(())
         .ok_or_else(|| "invalid date/time (expected YYYY-MM-DD HH:MM:SS)".to_string())
-    }
-    [area, action, value] if area == "locale" && action == "set-lang" => {
-      if locale::is_locale_name(value) {
-        Ok(())
-      } else {
-        Err(format!("invalid locale: {value}"))
-      }
     }
     [area, action, values @ ..] if area == "locale" && action == "set-generated" => {
       for value in values {

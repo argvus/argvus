@@ -454,7 +454,7 @@ impl App {
       about: AboutState::with_context(tab, lang, theme),
       help: false,
       quit: false,
-      welcome: crate::welcome::Welcome::default(),
+      welcome: crate::welcome::Welcome::with_bluetooth(capabilities.has_bluetooth),
       width: 80,
       height: 24,
       #[cfg(feature = "hardware")]

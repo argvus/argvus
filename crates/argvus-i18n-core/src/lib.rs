@@ -15,12 +15,7 @@ pub struct Lang(&'static I18n);
 
 impl Lang {
   pub fn detect() -> Self {
-    static DETECTED: OnceLock<Lang> = OnceLock::new();
-    *DETECTED.get_or_init(|| {
-      Self(leak(
-        I18n::new("control-center").expect("control-center i18n catalog is required"),
-      ))
-    })
+    Self::for_locale(&detect_locale_from(&catalog_root()))
   }
 
   pub fn for_locale(locale: &str) -> Self {
@@ -217,35 +212,53 @@ pub fn normalize_locale(value: &str) -> String {
   region.map_or_else(|| language.clone(), |region| format!("{language}-{region}"))
 }
 
+/// The only persistent language preference of the logged-in user.
 pub fn config_path() -> Option<PathBuf> {
   let root = env::var_os("XDG_CONFIG_HOME")
     .map(PathBuf::from)
+    .filter(|path| path.is_absolute())
     .or_else(|| env::var_os("HOME").map(|home| PathBuf::from(home).join(".config")))?;
-  Some(root.join("argvus/data/language"))
+  Some(root.join("locale.conf"))
+}
+
+/// Reads LANG without evaluating shell expressions or consulting global state.
+pub fn parse_user_locale(contents: &str) -> Option<String> {
+  contents
+    .lines()
+    .filter_map(|line| {
+      let (key, value) = line.trim().split_once('=')?;
+      if key != "LANG" {
+        return None;
+      }
+      let value = value.trim().trim_matches(['\"', '\'']);
+      (!value.is_empty()
+        && value != "null"
+        && value
+          .bytes()
+          .all(|byte| byte.is_ascii_alphanumeric() || matches!(byte, b'_' | b'.' | b'@' | b'-')))
+      .then(|| value.to_owned())
+    })
+    .next_back()
+}
+
+/// An unconfigured user gets English even on a Portuguese host.
+pub fn user_locale() -> String {
+  config_path()
+    .and_then(|path| fs::read_to_string(path).ok())
+    .and_then(|contents| parse_user_locale(&contents))
+    .unwrap_or_else(|| "en_US.UTF-8".into())
 }
 
 pub fn detect_locale_from(root: &Path) -> String {
-  let explicit = config_path()
-    .and_then(|path| fs::read_to_string(path).ok())
-    .map(|value| value.trim().to_owned())
-    .filter(|value| !value.is_empty());
-  let requested = explicit
-    .into_iter()
-    .chain(
-      ["LC_ALL", "LC_MESSAGES", "LANG"]
-        .into_iter()
-        .filter_map(|name| env::var(name).ok())
-        .filter(|value| !value.is_empty()),
-    )
-    .map(|value| normalize_locale(&value));
-  let installed: BTreeSet<String> = discover_locales(root)
-    .into_iter()
-    .map(|info| info.locale)
-    .collect();
-  requested
-    .into_iter()
-    .find(|locale| installed.contains(locale))
-    .unwrap_or_else(|| FALLBACK_LOCALE.to_owned())
+  let requested = normalize_locale(&user_locale());
+  if discover_locales(root)
+    .iter()
+    .any(|locale| locale.locale == requested)
+  {
+    requested
+  } else {
+    FALLBACK_LOCALE.to_owned()
+  }
 }
 
 pub fn discover_locales(root: &Path) -> Vec<LocaleInfo> {

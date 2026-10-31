@@ -656,6 +656,7 @@ version = "0.1.0"
 name = "argvus-removable-devices"
 version = "0.1.0"
 dependencies = [
+ "argvus-i18n-core",
  "futures-lite",
  "gtk4",
  "gtk4-layer-shell",
@@ -716,6 +717,7 @@ version = "0.1.0"
 name = "argvus-taskbar-calendar"
 version = "0.1.0"
 dependencies = [
+ "argvus-i18n-core",
  "argvus-taskbar-popup",
  "chrono",
  "clap",

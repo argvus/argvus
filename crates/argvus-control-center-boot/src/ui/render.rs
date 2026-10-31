@@ -35,6 +35,16 @@ impl BootApp {
       &self.breadcrumb(),
       &self.footer_hints(&rows),
     );
+    let body = argvus_tui::page::admin_warning(
+      frame,
+      body,
+      &self.theme,
+      self.lang,
+      !matches!(
+        self.page,
+        BootPage::Home | BootPage::Summary | BootPage::Kernel
+      ),
+    );
     self.list_height = body.height;
     draw_menu(
       frame,

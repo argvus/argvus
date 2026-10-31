@@ -90,6 +90,20 @@ impl NetworkApp {
       &self.breadcrumb(),
       &self.footer_hints(&rows),
     );
+    let body = argvus_tui::page::admin_warning(
+      f,
+      body,
+      &self.theme,
+      self.lang,
+      !matches!(
+        self.page,
+        NetworkPage::Home
+          | NetworkPage::Interfaces
+          | NetworkPage::Ethernet
+          | NetworkPage::Proxy
+          | NetworkPage::AddConnection
+      ),
+    );
     self.list_height = body.height;
     draw_menu(
       f,

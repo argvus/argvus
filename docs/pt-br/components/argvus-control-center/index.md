@@ -25,12 +25,12 @@ A tela inicial é um catálogo de destinos agrupados em seis cartões. Cada dest
 * **Preferências** — configurações pessoais e regionais: Idioma e região (o hub de idioma, fuso horário, formatos e layout do teclado), Data e hora, Aplicativos padrão, Energia e Sessão.
 * **Hardware e conectividade** — dispositivos e conexões: Visão geral do hardware, Rede e Wi-Fi, Bluetooth, Áudio e Armazenamento.
 * **Administração do sistema** — gerencie o sistema operacional: Pacotes, Serviços, Boot, Nome do host, Usuários e grupos, Firewall e Notificações (Não perturbe).
-* **Configurações** — o próprio Control Center, listado depois dos cartões: Idioma (idioma da interface) e Estilo (ícones decorativos e transparência). Pressione `s` para abri-la.
+* **Configurações** — o próprio Control Center, listado depois dos cartões: Idioma (idioma do usuário) e Estilo (ícones decorativos e transparência). Pressione `s` para abri-la.
 * **Ferramentas e diagnóstico** — ferramentas de desenvolvimento e manutenção: Boas-vindas ao ARGVUS, Projetos, Snippets (textos salvos para o `argvus snippets`, digitados com `SUPER + ALT + N`), Chaves SSH (pares de chaves em `~/.ssh` gerenciados pelo `argvus keys`), Chaves GPG (o keyring gerenciado pelo `argvus gpg`; o gpg-agent usa o pinentry-gtk), Serviços de desenvolvimento, System Doctor e Sobre o ARGVUS.
 
 ## Boas-vindas ao ARGVUS
 
-Abra **Boas-vindas ao ARGVUS** em **Tools & Diagnostics**, busque `welcome` ou execute `argvus welcome`. O Welcome é uma página integrada à Central de Controle e usa sua única janela. Enter abre a configuração selecionada; ao terminar, volte com Esc ao guia. Enter confirma a revisão, marca a etapa com `[x]` e abre a próxima configuração na mesma janela. O revisa a etapa novamente, S pula sem marcar como concluída e F finaliza o guia, inclusive com itens opcionais pendentes. Cancelar ou voltar não marca a configuração como concluída. O progresso anterior é preservado.
+Abra **Boas-vindas ao ARGVUS** em **Tools & Diagnostics**, busque `welcome` ou execute `argvus welcome`. O Welcome é uma página integrada à Central de Controle e usa sua única janela. Enter abre a configuração selecionada; ao terminar, volte com Esc ao guia. F6 Próximo marca a etapa com `[x]` e abre a próxima configuração na mesma janela. Esc apenas volta e Enter na lista sempre abre a página selecionada. O revisa a etapa novamente, S pula sem marcar como concluída e F finaliza o guia, inclusive com itens opcionais pendentes. Cancelar ou voltar não marca a configuração como concluída. O progresso anterior é preservado.
 
 O assistente cobre idioma e região, monitores, hardware e drivers, rede, áudio, Bluetooth, aparência, energia, aplicativos padrão e inicialização da sessão. Ele não instala drivers ou pacotes e não aplica alterações do sistema por conta própria. O progresso fica em `$XDG_STATE_HOME/argvus/welcome/progress.json` (ou `~/.local/state/argvus/welcome/progress.json`).
 
@@ -55,7 +55,7 @@ A árvore atual de configurações inclui:
 | Preferências | Idioma e região (idioma, fuso horário, formatos, locales do sistema e layout do teclado), Data e hora, Aplicativos padrão, Energia, Sessão |
 | Hardware e conectividade | Visão geral do hardware (resumo, CPU, GPU, memória, dispositivos), Rede e Wi-Fi, Bluetooth, Áudio, Armazenamento |
 | Administração do sistema | Pacotes, Serviços, Boot, Nome do host, Usuários e grupos, Firewall, Notificações |
-| Configurações | Idioma (idioma da interface), Estilo (ícones e transparência) |
+| Configurações | Idioma (idioma do usuário), Estilo (ícones e transparência) |
 | Ferramentas e diagnóstico | Projetos, Snippets, Chaves SSH, Chaves GPG, Serviços de desenvolvimento, System Doctor, Sobre o ARGVUS |
 
 Alguns itens são páginas completas e outros são subpáginas alcançadas pela busca ou por um resumo de domínio. A lista exata depende dos providers ARGVUS instalados.
@@ -212,6 +212,10 @@ Ainda não está na página: buscar uma chave no servidor por nome ou e-mail. Us
 
 Este cartão lista Idioma (a localidade regional), Fuso horário, Data e hora, Locales do sistema e Layout do teclado, e cada um abre diretamente pela tela inicial. As páginas de teclado também concentram a variante e o mapa de teclado do console. A busca inicial também expõe atalhos de teclado e mouse/touchpad como rotas diretas de configuração.
 
+Tanto **Preferências > Idioma e região > Idioma** quanto **Configurações > Idioma** salvam a mesma preferência do usuário: `LANG` em `$XDG_CONFIG_HOME/locale.conf` (padrão `~/.config/locale.conf`), por exemplo `LANG=en_US.UTF-8`. Comentários e variáveis regionais são preservados. Nenhum arquivo global ou preferência paralela de idioma do ARGVUS é gravado. Um usuário sem configuração recebe inglês; `session.language` e arquivos `data/language` legados são ignorados. Saia e entre novamente para aplicar o idioma à sessão completa e aos aplicativos.
+
+**Locales do sistema** altera `/etc/locale.gen` e executa `locale-gen`, portanto a aplicação exige autorização de administrador. Um aviso permanente **[WARN]** acima do rodapé identifica as telas com configurações administrativas. O mesmo aviso abrange fuso horário, data/hora, hostname, mapa de teclado do console, edição de contas e grupos, firewall, serviços do sistema, governador da CPU, perfis e políticas de energia, configuração de boot, operações de pacotes, snapshots e alterações protegidas de rede. Preferências pessoais, serviços do usuário e páginas somente de leitura não recebem esse aviso. O aviso é informativo; a autorização só é solicitada quando uma ação precisa dela.
+
 ### Hardware e displays
 
 Quando os recursos correspondentes estão instalados, o Control Center pode mostrar informações de CPU, GPU, memória, energia e dispositivos. A página de entrada configura o comportamento do mouse e touchpad; a área de displays lida com resolução, taxa de atualização, escala, posição, orientação, display principal, VRR e HDR quando suportados pela sessão ativa. As mudanças de display valem na hora. Depois de uma mudança que pode deixar a tela inutilizável (resolução ou taxa, posição, espelhamento, desativar um monitor, profundidade de cor) ou depois de **Aplicar**, o Control Center pergunta se deve mantê-la, com o foco em **Reverter**: pressione `y` para manter; `n`, `Esc` ou `Enter` revertem, e sem resposta em 15 segundos a configuração anterior volta automaticamente. Remover a configuração salva de um monitor desconectado e excluir um perfil pedem confirmação; os perfis abrem uma página própria com **Aplicar perfil**, **Renomear** e **Excluir perfil**. O layout é salvo por meio de `argvus config monitor-set`, `monitor-primary`, `monitor-workspaces` e `monitor-remove`; por isso a seção canônica `/displays` do `config.json` é a única fonte do layout dos monitores. Só o catálogo de perfis continua em `display/config.toml`.
@@ -262,7 +266,7 @@ Os grupos possuem suas próprias páginas de lista e edição, incluindo gerenci
 
 ### Configurações do Control Center
 
-**Configurações** é o último item da tela inicial. A página **Idioma** define o idioma da interface, e a página **Estilo** controla os ícones decorativos e a transparência do Control Center. O blur não fica em Estilo: ele é uma configuração global do Hyprland, em Hyprland > Blur. A página Estilo altera a apresentação do aplicativo de configurações; ela não desativa serviços ARGVUS nem remove providers. Salvar os ícones pode exigir autorização, enquanto a alteração visual é aplicada ao aplicativo atual. `Esc` em Estilo volta à página Configurações, e `Esc` nela volta à tela inicial.
+**Configurações** é o último item da tela inicial. A página **Idioma** define o idioma do usuário por locale.conf, e a página **Estilo** controla os ícones decorativos e a transparência do Control Center. O blur não fica em Estilo: ele é uma configuração global do Hyprland, em Hyprland > Blur. A página Estilo altera a apresentação do aplicativo de configurações; ela não desativa serviços ARGVUS nem remove providers. Salvar os ícones pode exigir autorização, enquanto a alteração visual é aplicada ao aplicativo atual. `Esc` em Estilo volta à página Configurações, e `Esc` nela volta à tela inicial.
 
 ### Sobre o ARGVUS
 
@@ -421,4 +425,6 @@ rollback, restauração, limpeza automática, instalação ou configuração do 
 Somente o pacote `argvus` muda. Execute `make build` em `de/argvus` para gerar o
 `.pkg.tar.zst`; a instalação é uma ação separada do operador.
 
-A página Language em Language & Region salva o locale no perfil do usuário (`~/.config/locale.conf`), sem alterar `/etc/locale.conf`. A sessão usa a preferência após novo login. Durante o Welcome, F6 ou o botão Concluir no rodapé registra a revisão e avança; Shift+Tab focaliza o botão e Enter o ativa, inclusive em páginas informativas.
+A página Language em Language & Region salva o locale no perfil do usuário (`~/.config/locale.conf`), sem alterar `/etc/locale.conf`. A sessão usa a preferência após novo login. Durante o Welcome, F6 Próximo ou o botão Próximo no rodapé registra a revisão e avança; Shift+Tab focaliza o botão e Enter o ativa, inclusive em páginas informativas.
+
+Bluetooth só aparece no Welcome quando o Control Center detecta um adaptador. O progresso anterior dessa etapa é preservado quando ela fica oculta.

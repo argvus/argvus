@@ -75,12 +75,23 @@ impl App {
     let Some(value) = self.generated_locales.get(index).cloned() else {
       return;
     };
-    match locale::set_lang(&value, &self.generated_locales) {
+    self.apply_user_language(&value);
+  }
+
+  fn apply_user_language(&mut self, value: &str) {
+    match locale::set_lang(value, &self.generated_locales) {
       Ok(()) => {
-        self.lang = Lang::for_locale(&value);
+        self.lang = Lang::for_locale(value);
         self.success(tr(self.lang, "control_center.user_locale_applied").to_owned());
       }
-      Err(error) => self.fail(error),
+      Err(error) => {
+        eprintln!("{error}");
+        let key = match error {
+          locale::UserLocaleError::NotGenerated(_) => "control_center.user_locale_not_generated",
+          _ => "control_center.user_locale_save_failed",
+        };
+        self.fail(tr(self.lang, key));
+      }
     }
   }
 
@@ -173,20 +184,11 @@ impl App {
     let Some((locale, _, _)) = LANGUAGES.get(index) else {
       return;
     };
-    self.lang = Lang::for_locale(locale);
-    let value = serde_json::to_string(&self.lang.locale()).unwrap_or_else(|_| "\"en-US\"".into());
-    let persisted = argvus_control_center_core::process::command("argvus")
-      .arg("config")
-      .args(["set", "/session/language", &value])
-      .status()
-      .is_ok_and(|status| status.success());
-    let projected =
-      persisted && argvus_control_center_core::config::reload_argvus_config_service().is_ok();
-    if projected {
-      self.success(tr(self.lang, "control_center.interface_language_applied").to_string());
-    } else {
-      self.fail("argvus config could not persist the interface language");
-    }
+    let locale = match *locale {
+      "pt-BR" => "pt_BR.UTF-8",
+      _ => "en_US.UTF-8",
+    };
+    self.apply_user_language(locale);
   }
 
   /// Enter/Space on a Mouse & Touchpad row: toggles flip, values step up.

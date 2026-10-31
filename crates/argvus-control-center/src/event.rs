@@ -11,18 +11,18 @@ pub fn handle(app: &mut App, event: Event) {
     && let Event::Key(key) = &event
   {
     if key.code == KeyCode::BackTab && !app.captures_text() {
-      app.welcome.done_focus = !app.welcome.done_focus;
+      app.welcome.next_focus = !app.welcome.next_focus;
       return;
     }
-    if app.welcome.done_focus && matches!(key.code, KeyCode::Tab | KeyCode::Esc) {
-      app.welcome.done_focus = false;
+    if app.welcome.next_focus && matches!(key.code, KeyCode::Tab | KeyCode::Esc) {
+      app.welcome.next_focus = false;
       return;
     }
   }
   let done = match &event {
     Event::Key(key) => {
       key.kind == KeyEventKind::Press
-        && (key.code == KeyCode::F(6) || (app.welcome.done_focus && key.code == KeyCode::Enter))
+        && (key.code == KeyCode::F(6) || (app.welcome.next_focus && key.code == KeyCode::Enter))
     }
     Event::Mouse(mouse) => {
       matches!(mouse.kind, MouseEventKind::Down(MouseButton::Left))
@@ -70,7 +70,7 @@ pub fn handle(app: &mut App, event: Event) {
       ready = app.session.onboarding_ready();
     }
     if !ready {
-      app.welcome.done_blocked = true;
+      app.welcome.next_blocked = true;
       return;
     }
     app.finish_welcome_step(argvus_welcome::state::StepStatus::Reviewed);
@@ -79,7 +79,6 @@ pub fn handle(app: &mut App, event: Event) {
   handle_inner(app, event);
   if app.welcome.active && app.route == Route::Home {
     app.route = Route::Welcome;
-    app.welcome.reviewing = true;
   }
 }
 

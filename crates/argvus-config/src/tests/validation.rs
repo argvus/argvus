@@ -242,3 +242,23 @@ fn validates_structured_font_ranges() {
       .is_err()
   );
 }
+
+#[test]
+fn language_is_no_longer_a_writable_config_setting() {
+  let mut document = ConfigDocument::default();
+  for (pointer, value) in [
+    ("/session/language", serde_json::json!("pt-BR")),
+    ("/session", serde_json::json!({"language": "pt-BR"})),
+  ] {
+    let error = document.set(pointer, value).unwrap_err().to_string();
+    assert!(error.contains("locale.conf"));
+    assert!(document.get("/session/language").is_none());
+  }
+  document
+    .sections
+    .insert("session".into(), serde_json::json!({"language": "pt-BR"}));
+  assert!(document.validate().is_ok(), "old documents remain loadable");
+  document
+    .set("/appearance/theme", serde_json::json!("argvus-dark"))
+    .unwrap();
+}

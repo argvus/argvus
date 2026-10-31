@@ -25,7 +25,6 @@ pub(crate) const KEYBOARD_SHORTCUTS: &str = "/keyboard_shortcuts";
 pub(crate) const REMOVABLE_DEVICES: &str = "/removable_devices";
 pub(crate) const FONTS_LEGACY: &str = "/fonts/legacy";
 pub(crate) const POWER_KEEP_AWAKE: &str = "/power/keep_awake";
-pub(crate) const SESSION_LANGUAGE: &str = "/session/language";
 
 pub(crate) const HYPRLAND_INPUT: &str = "/hyprland/input";
 pub(crate) const HYPRLAND_KEYBOARD: &str = "/hyprland/keyboard";

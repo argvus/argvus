@@ -120,13 +120,28 @@ impl PackagesApp {
       &self.breadcrumb(),
       &self.footer_hints(&rows),
     );
+    let body = argvus_tui::page::admin_warning(
+      f,
+      body,
+      &self.theme,
+      self.lang,
+      !matches!(
+        self.page,
+        PackagesPage::Home
+          | PackagesPage::Source(_)
+          | PackagesPage::CacheFiles
+          | PackagesPage::History
+          | PackagesPage::HistoryDetails(_)
+          | PackagesPage::Repositories
+      ),
+    );
     if filters_while_typing(self.page) {
       self.draw_filtered_list(f, body, &rows);
     } else {
       self.list_height = body.height;
       self.draw_list(f, body, &rows);
     }
-    self.overlays(f);
+    self.overlays(f, body);
   }
 
   /// Draws `rows` as the page list, with the menu style of the Packages pages.
@@ -243,7 +258,7 @@ impl PackagesApp {
 
   /// Draws the input field, the confirmation, the status and the live
   /// transaction output over the page.
-  pub(super) fn overlays(&self, f: &mut Frame) {
+  pub(super) fn overlays(&self, f: &mut Frame, body: Rect) {
     if let Some(input) = &self.input {
       let mode = self.input_mode.unwrap_or(InputMode::Search);
       let (title, prompt) = match mode {
@@ -344,7 +359,7 @@ impl PackagesApp {
       editor.draw(f, f.area(), &self.theme, hint);
     }
     if let Some(s) = &self.status {
-      status(f, f.area(), &self.theme, s)
+      status(f, body, &self.theme, s)
     }
     if self.transaction_open
       && let Some(output) = self.transaction_live.as_ref().map(|live| live.output())

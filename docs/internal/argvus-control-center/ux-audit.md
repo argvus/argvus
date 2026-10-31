@@ -1794,4 +1794,19 @@ Implementation and privilege contract: [Snapshot](snapshot.md).
 
 ## Welcome integrado
 
-`Tools & Diagnostics > ARGVUS Welcome` é uma rota interna (`argvus control-center welcome`). `argvus welcome` reutiliza a janela do Control Center. As etapas abrem os destinos existentes, preservando os breadcrumbs canônicos. Ao voltar ao guia, Enter confirma a revisão, marca o item e abre a próxima etapa; Esc não conclui operações. O estado anterior em `argvus/welcome/progress.json` permanece compatível.
+`Tools & Diagnostics > ARGVUS Welcome` é uma rota interna (`argvus control-center welcome`). `argvus welcome` reutiliza a janela do Control Center. As etapas abrem os destinos existentes, preservando os breadcrumbs canônicos. F6 Próximo registra a revisão e abre a próxima etapa. Esc apenas volta; Enter na lista apenas abre a configuração. Bluetooth segue a mesma disponibilidade detectada pela Home. O estado anterior em `argvus/welcome/progress.json` permanece compatível.
+
+## Locale por usuário e aviso administrativo
+
+`Preferences > Language & Region > Language` corresponde a `Page::RegionalLocale`.
+O arquivo `$XDG_CONFIG_HOME/locale.conf` persiste `LANG` e é a única fonte de
+idioma, inclusive em `Settings > Language`. Sem preferência válida, o padrão é
+inglês. Não há gravação de `/session/language` nem projeção paralela. O helper rejeita o antigo
+`locale set-lang` antes da elevação; somente `locale set-generated` é administrativo.
+
+`argvus_tui::page::admin_warning` reserva linhas no fim do corpo, com quebra e
+`[WARN]` do componente de status, antes do conteúdo e dos overlays. Cada domínio
+classifica suas páginas conforme as operações disponíveis; Settings centraliza a
+classificação em `Page::requires_admin`. Rodapé, botões, mensagens e navegação
+Welcome preservam suas áreas. Novas páginas com operações administrativas devem
+usar esse componente, incluindo operações autorizadas por polkit sem `sudo` direto.

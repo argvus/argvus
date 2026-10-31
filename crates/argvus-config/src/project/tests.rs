@@ -422,3 +422,35 @@ fn lua_projection_replaces_file_when_candidate_is_valid() {
   );
   let _ = fs::remove_dir_all(root);
 }
+
+#[test]
+fn projection_does_not_recreate_or_overwrite_language_preferences() {
+  let directory =
+    env::temp_dir().join(format!("argvus-language-projection-{}", std::process::id()));
+  let root = directory.join("argvus");
+  fs::create_dir_all(&root).unwrap();
+  let paths = ArgvusPaths {
+    data: root.join("data"),
+    generated: root.join("data/generated"),
+    internal: root.join("data/internal"),
+    backups: root.join("data/backups"),
+    projection_manifest: root.join("state/config-projection.json"),
+    root: root.clone(),
+  };
+  let mut document = ConfigDocument::default();
+  document
+    .sections
+    .insert("session".into(), serde_json::json!({"language": "pt-BR"}));
+  write_projections(&document, &paths, &["session"], false).unwrap();
+  assert!(!paths.internal.join("language").exists());
+  assert!(!paths.data.join("language").exists());
+  assert!(!root.join("locale.conf").exists());
+  fs::create_dir_all(&paths.internal).unwrap();
+  fs::write(paths.internal.join("language"), "legacy-en_US").unwrap();
+  write_projections(&document, &paths, &["session"], false).unwrap();
+  assert_eq!(
+    fs::read_to_string(paths.internal.join("language")).unwrap(),
+    "legacy-en_US"
+  );
+  fs::remove_dir_all(directory).unwrap();
+}

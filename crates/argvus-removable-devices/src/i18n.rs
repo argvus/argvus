@@ -1,12 +1,5 @@
-// Minimal i18n: picks the UI language from the process environment.
-//
-// Precedence follows the usual locale order (LC_ALL, LC_MESSAGES, LANG,
-// LANGUAGE). A value starting with "pt" selects Portuguese; every other
-// locale — including C/POSIX or an unset variable — falls back to English.
-//
-// Detection happens once at startup (i18n::init) and is then shared with
-// every thread through a static, so translations are stable for the whole
-// process lifetime.
+// UI language follows the user locale.conf through the shared ARGVUS resolver.
+// Detection is cached at application startup; missing configuration means English.
 
 use std::sync::OnceLock;
 
@@ -37,21 +30,14 @@ pub fn tr<'a>(en: &'a str, pt: &'a str) -> &'a str {
 }
 
 fn detect() -> Lang {
-  for key in ["LC_ALL", "LC_MESSAGES", "LANG", "LANGUAGE"] {
-    if let Ok(value) = std::env::var(key) {
-      // LANGUAGE may list several entries separated by ":"; only the
-      // first one matters here since anything non-pt maps to English.
-      let first = value.split(':').next().unwrap_or("");
-      let code = first.split('.').next().unwrap_or("").to_lowercase();
-      if code.starts_with("pt") {
-        return Lang::Pt;
-      }
-      if !code.is_empty() && code != "c" && code != "posix" {
-        return Lang::En;
-      }
-    }
+  language_for_locale(&argvus_i18n::user_locale())
+}
+
+fn language_for_locale(locale: &str) -> Lang {
+  match argvus_i18n::normalize_locale(locale).as_str() {
+    "pt" | "pt-BR" => Lang::Pt,
+    _ => Lang::En,
   }
-  Lang::En
 }
 
 #[cfg(test)]
@@ -64,27 +50,12 @@ mod tests {
   }
 
   #[test]
-  fn detect_reads_language_list_and_encoding_suffix() {
-    // detect() is pure given env vars; exercise the parsing helpers via
-    // the same rules used inside it.
-    fn rule(value: &str) -> Option<Lang> {
-      let first = value.split(':').next().unwrap_or("");
-      let code = first.split('.').next().unwrap_or("").to_lowercase();
-      if code.starts_with("pt") {
-        return Some(Lang::Pt);
-      }
-      if !code.is_empty() && code != "c" && code != "posix" {
-        return Some(Lang::En);
-      }
-      None
+  fn personal_locale_maps_to_supported_languages() {
+    for locale in ["pt_BR.UTF-8", "pt-BR"] {
+      assert_eq!(language_for_locale(locale), Lang::Pt);
     }
-
-    assert_eq!(rule("pt_BR.UTF-8"), Some(Lang::Pt));
-    assert_eq!(rule("pt_PT"), Some(Lang::Pt));
-    assert_eq!(rule("en_US.UTF-8"), Some(Lang::En));
-    assert_eq!(rule("es_ES.UTF-8"), Some(Lang::En));
-    assert_eq!(rule("C.UTF-8"), None);
-    assert_eq!(rule("POSIX"), None);
-    assert_eq!(rule("pt_BR:C"), Some(Lang::Pt));
+    for locale in ["en_US.UTF-8", "C.UTF-8", "", "xx_XX"] {
+      assert_eq!(language_for_locale(locale), Lang::En);
+    }
   }
 }

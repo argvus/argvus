@@ -2,7 +2,7 @@
 
 use super::legacy_import::{
   import_defaults, import_displays, import_fonts, import_hyprland, import_keyboard_shortcuts,
-  import_language, import_power, import_removable_devices, legacy_keybindings_to_shortcuts,
+  import_power, import_removable_devices, legacy_keybindings_to_shortcuts,
 };
 use super::*;
 
@@ -47,7 +47,6 @@ pub(super) fn import_legacy_values(
   changed |= import_displays(document, root)?;
   changed |= import_defaults(document, resolved(root, "defaults.json"))?;
   changed |= import_keyboard_shortcuts(document, root)?;
-  changed |= import_language(document, resolved(root, "language"))?;
   changed |= import_power(document, root)?;
   changed |= import_removable_devices(document, root)?;
   Ok(changed)

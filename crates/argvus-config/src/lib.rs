@@ -322,6 +322,16 @@ impl ConfigDocument {
 
   pub fn set(&mut self, pointer: &str, value: Value) -> ConfigResult<()> {
     let components = pointer_components(pointer)?;
+    if components
+      .first()
+      .is_some_and(|section| section == "session")
+      && (components.get(1).is_some_and(|key| key == "language")
+        || (components.len() == 1 && value.get("language").is_some()))
+    {
+      return Err(ConfigError::Invalid(
+        "session.language is retired; set LANG in $XDG_CONFIG_HOME/locale.conf instead".into(),
+      ));
+    }
     if components.len() == 1 {
       if !KNOWN_SECTIONS.contains(&components[0].as_str()) && components[0] != "extensions" {
         return Err(ConfigError::Invalid(format!(

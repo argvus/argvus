@@ -75,9 +75,9 @@ pub struct Welcome {
   pub progress: Progress,
   pub selected: usize,
   pub active: bool,
-  pub reviewing: bool,
-  pub done_focus: bool,
-  pub done_blocked: bool,
+  pub steps: Vec<Step>,
+  pub next_focus: bool,
+  pub next_blocked: bool,
   pub error: bool,
   store: Option<StateStore>,
 }
@@ -94,9 +94,9 @@ impl Default for Welcome {
       progress,
       selected,
       active: false,
-      reviewing: false,
-      done_focus: false,
-      done_blocked: false,
+      steps: steps(),
+      next_focus: false,
+      next_blocked: false,
       error: warning.is_some() || store.is_none(),
       store,
     }
@@ -104,20 +104,37 @@ impl Default for Welcome {
 }
 
 impl Welcome {
+  pub fn with_bluetooth(available: bool) -> Self {
+    let mut guide = Self::default();
+    guide
+      .steps
+      .retain(|step| step.id != "bluetooth" || available);
+    guide.selected = guide
+      .steps
+      .iter()
+      .position(|step| step.id == guide.progress.current_category)
+      .or_else(|| {
+        guide
+          .steps
+          .iter()
+          .position(|step| guide.progress.status(step.id) == StepStatus::Pending)
+      })
+      .unwrap_or(0);
+    guide
+  }
+
   fn finish_current(&mut self, status: StepStatus) -> Option<bool> {
-    let steps = steps();
-    let step = steps.get(self.selected)?;
+    let step = self.steps.get(self.selected)?;
     let previous = self.progress.clone();
     self.progress.set_status(step.id, status);
-    let next = steps.get(self.selected + 1);
+    let next = self.steps.get(self.selected + 1).map(|step| step.id);
     if let Some(next) = next {
-      self.progress.current_category = next.id.to_owned();
+      self.progress.current_category = next.to_owned();
     }
     if !self.save() {
       self.progress = previous;
       return None;
     }
-    self.reviewing = false;
     if next.is_some() {
       self.selected += 1;
     }
@@ -158,13 +175,14 @@ impl App {
 
   pub fn open_welcome(&mut self) {
     self.welcome.active = false;
-    self.welcome.reviewing = false;
     self.route = Route::Welcome;
     self.clear_global_search();
   }
 
   fn open_welcome_step(&mut self) {
-    let Some(step) = steps()
+    let Some(step) = self
+      .welcome
+      .steps
       .get(self.welcome.selected)
       .map(|step| (step.id, step.destination))
     else {
@@ -176,10 +194,9 @@ impl App {
       return;
     }
     self.open_destination(step.1);
-    self.welcome.done_blocked = false;
-    self.welcome.done_focus = false;
+    self.welcome.next_blocked = false;
+    self.welcome.next_focus = false;
     self.welcome.active = true;
-    self.welcome.reviewing = false;
     // Settings and appearance use this when returning from their root page.
     self.return_route = Route::Home;
   }
@@ -199,13 +216,11 @@ impl App {
     match key {
       KeyCode::Up => {
         self.welcome.selected = self.welcome.selected.saturating_sub(1);
-        self.welcome.reviewing = false;
       }
       KeyCode::Down => {
-        self.welcome.selected = (self.welcome.selected + 1).min(steps().len().saturating_sub(1));
-        self.welcome.reviewing = false;
+        self.welcome.selected =
+          (self.welcome.selected + 1).min(self.welcome.steps.len().saturating_sub(1));
       }
-      KeyCode::Enter if self.welcome.reviewing => self.finish_welcome_step(StepStatus::Reviewed),
       KeyCode::Enter | KeyCode::Char('o') => self.open_welcome_step(),
       KeyCode::Char('s') => self.finish_welcome_step(StepStatus::Skipped),
       KeyCode::Char('u') => self.finish_welcome_step(StepStatus::NotApplicable),
@@ -214,7 +229,6 @@ impl App {
         self.welcome.progress.completed = true;
         if self.welcome.save() {
           self.welcome.active = false;
-          self.welcome.reviewing = false;
           self.route = Route::Home;
         } else {
           self.welcome.progress.completed = completed;
@@ -222,7 +236,6 @@ impl App {
       }
       KeyCode::Esc => {
         self.welcome.active = false;
-        self.welcome.reviewing = false;
         self.route = Route::Home;
       }
       _ => {}
@@ -261,7 +274,9 @@ pub fn draw(app: &mut App, frame: &mut Frame) {
     Paragraph::new(tr(app.lang, "control_center.welcome_intro")).wrap(Wrap { trim: true }),
     rows[1],
   );
-  let items: Vec<ListItem<'static>> = steps()
+  let items: Vec<ListItem<'static>> = app
+    .welcome
+    .steps
     .iter()
     .map(|step| {
       let (mark, status) = match app.welcome.progress.status(step.id) {
@@ -290,8 +305,6 @@ pub fn draw(app: &mut App, frame: &mut Frame) {
   );
   let message = if app.welcome.error {
     "control_center.welcome_save_error"
-  } else if app.welcome.reviewing {
-    "control_center.welcome_confirm"
   } else if app.welcome.progress.completed {
     "control_center.welcome_finished"
   } else {
@@ -322,9 +335,9 @@ mod tests {
       progress: Progress::default(),
       selected: 0,
       active: false,
-      reviewing: false,
-      done_focus: false,
-      done_blocked: false,
+      steps: steps(),
+      next_focus: false,
+      next_blocked: false,
       error: false,
       store: Some(StateStore::at(directory.to_path_buf())),
     }
@@ -376,7 +389,7 @@ mod tests {
       crossterm::event::Event::Key(crossterm::event::KeyEvent::from(KeyCode::Esc)),
     );
     assert_eq!(app.route, Route::Welcome);
-    assert!(app.welcome.reviewing);
+    assert_eq!(app.welcome.progress.status("language"), StepStatus::Pending);
     assert_eq!(app.welcome.progress.status("language"), StepStatus::Pending);
     app.handle_welcome(KeyCode::Esc);
     assert_eq!(app.route, Route::Home);
@@ -434,6 +447,44 @@ mod tests {
         .take_open_request()
         .unwrap()
     );
+  }
+
+  #[cfg(feature = "bluetooth")]
+  #[test]
+  fn bluetooth_visibility_matches_the_home_capability() {
+    assert!(
+      !Welcome::with_bluetooth(false)
+        .steps
+        .iter()
+        .any(|step| step.id == "bluetooth")
+    );
+    assert!(
+      Welcome::with_bluetooth(true)
+        .steps
+        .iter()
+        .any(|step| step.id == "bluetooth")
+    );
+  }
+
+  #[cfg(feature = "locale")]
+  #[test]
+  fn escape_then_enter_does_not_complete_the_step() {
+    let directory = tempfile::tempdir().unwrap();
+    let mut app = App::new(crate::app::InitialRoute::Welcome);
+    app.welcome = welcome(directory.path());
+    app.welcome.active = true;
+    app.route = Route::Settings;
+    app.settings.navigation = argvus_control_center_settings::navigation::Navigation::new(
+      argvus_control_center_settings::Page::Main,
+    );
+    crate::event::handle(
+      &mut app,
+      crossterm::event::Event::Key(crossterm::event::KeyEvent::from(KeyCode::Esc)),
+    );
+    assert_eq!(app.route, Route::Welcome);
+    app.handle_welcome(KeyCode::Enter);
+    assert_eq!(app.welcome.progress.status("language"), StepStatus::Pending);
+    assert_eq!(app.welcome.selected, 0);
   }
 
   #[test]

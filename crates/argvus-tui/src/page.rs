@@ -56,6 +56,40 @@ pub fn shell(
   rows[1]
 }
 
+/// Reserves the bottom of a page's body for a persistent administration notice.
+/// Call before drawing content or overlays; the returned body excludes the notice
+/// and leaves the shell's status and keyboard footer intact.
+pub fn admin_warning(
+  frame: &mut Frame,
+  body: Rect,
+  theme: &Theme,
+  lang: Lang,
+  required: bool,
+) -> Rect {
+  if !required || body.is_empty() {
+    return body;
+  }
+  let message = StatusMessage {
+    kind: crate::components::StatusKind::Warning,
+    text: tr(lang, "control_center.admin_privileges_required").to_owned(),
+  };
+  let height =
+    crate::components::status_line_count(&message, body.width).min(usize::from(body.height)) as u16;
+  let content = Rect::new(
+    body.x,
+    body.y,
+    body.width,
+    body.height.saturating_sub(height),
+  );
+  crate::components::draw_status(
+    frame,
+    Rect::new(body.x, content.bottom(), body.width, height),
+    theme,
+    &message,
+  );
+  content
+}
+
 pub fn list(frame: &mut Frame, area: Rect, theme: &Theme, rows: &[String], selected: usize) {
   let no_selection = selected == usize::MAX;
   let len = rows.len();
@@ -237,5 +271,84 @@ mod tests {
     assert!(text.contains("row0"));
     assert!(text.contains("row1"));
     assert!(!text.contains("row5"));
+  }
+  #[test]
+  fn admin_warning_reserves_wrapped_lines_above_footer() {
+    for locale in ["en-US", "pt-BR"] {
+      for (width, height) in [(60, 18), (100, 24)] {
+        let mut terminal = Terminal::new(TestBackend::new(width, height)).unwrap();
+        let theme = Theme::load();
+        let lang = Lang::for_locale(locale);
+        terminal
+          .draw(|frame| {
+            let body = shell(frame, frame.area(), &theme, lang, "Test", "Escape Back");
+            let content = admin_warning(frame, body, &theme, lang, true);
+            assert!(content.bottom() < body.bottom());
+            assert_eq!(content.y, body.y);
+            frame.render_widget(Paragraph::new("content"), content);
+          })
+          .unwrap();
+        let lines: Vec<String> = terminal
+          .backend()
+          .buffer()
+          .content
+          .chunks(width as usize)
+          .map(|row| row.iter().map(|cell| cell.symbol()).collect())
+          .collect();
+        let warning = lines.iter().position(|row| row.contains("[WARN]")).unwrap();
+        let footer = lines
+          .iter()
+          .position(|row| row.contains("Escape Back"))
+          .unwrap();
+        assert!(warning < footer);
+        let rendered = lines[warning..footer].join("");
+        assert!(rendered.contains("root"));
+        assert!(!rendered.contains("control_center."));
+        assert_eq!(
+          terminal.backend().buffer()[(1, warning as u16)].fg,
+          theme.warning
+        );
+      }
+    }
+  }
+
+  #[test]
+  fn personal_pages_keep_their_full_body() {
+    let mut terminal = Terminal::new(TestBackend::new(60, 18)).unwrap();
+    terminal
+      .draw(|frame| {
+        let body = frame.area();
+        assert_eq!(
+          admin_warning(
+            frame,
+            body,
+            &Theme::load(),
+            Lang::for_locale("en-US"),
+            false
+          ),
+          body
+        );
+        assert_eq!(
+          admin_warning(
+            frame,
+            Rect::default(),
+            &Theme::load(),
+            Lang::for_locale("en-US"),
+            true
+          ),
+          Rect::default()
+        );
+      })
+      .unwrap();
+    assert!(
+      !terminal
+        .backend()
+        .buffer()
+        .content
+        .iter()
+        .map(|cell| cell.symbol())
+        .collect::<String>()
+        .contains("[WARN]")
+    );
   }
 }

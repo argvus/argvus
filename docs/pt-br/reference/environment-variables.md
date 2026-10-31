@@ -15,29 +15,10 @@ Nenhum dos dois é uma fonte de verdade.
 
 ## Ambiente de idioma
 
-A implementação compartilhada do `argvus-i18n` seleciona o locale nesta ordem:
+A única preferência geral de idioma é `LANG` em `$XDG_CONFIG_HOME/locale.conf` (padrão `~/.config/locale.conf`). Sem valor válido, o ARGVUS usa inglês (`en-US`), mesmo quando `/etc/locale.conf`, PAM ou o gerenciador de login fornecem português. Valores como `pt_BR.UTF-8` são normalizados para `pt-BR` nos catálogos.
 
-1. `$XDG_CONFIG_HOME/argvus/data/internal/language` (normalmente `~/.config/argvus/data/internal/language`);
-2. `LC_ALL`;
-3. `LC_MESSAGES`;
-4. `LANG`;
-5. fallback `en-US`.
+A sessão aplica essa preferência antes de iniciar os componentes e importar os ambientes do systemd de usuário e da ativação D-Bus. Substitui `LANG`, `LC_MESSAGES` e `LANGUAGE` herdados e limpa `LC_ALL`; configurações regionais `LC_*` do mesmo arquivo são preservadas. O inglês usa `en_US.UTF-8` quando gerado, ou `C.UTF-8` caso contrário. Nenhum arquivo de preferência é criado automaticamente. Saia e entre novamente após trocar o idioma.
 
-Valores como `pt_BR.UTF-8` são normalizados para `pt-BR`. `LANG`, `LC_ALL` e `LC_MESSAGES` são importados para os ambientes do systemd de usuário e do D-Bus pelo controlador da sessão. Um ambiente antigo do user manager pode afetar aplicativos iniciados depois que o Control Center troca o idioma.
+`session.language`, `argvus/data/language` e `argvus/data/internal/language` são dados legados ignorados. Não são importados nem regenerados; os arquivos existentes são preservados. `argvus config set` e `patch` recusam novas gravações de `session.language` e orientam o uso de `locale.conf`.
 
-Para diagnosticar, compare a localidade do processo com o ambiente do user manager e a configuração de localidade do sistema:
-
-```sh
-systemctl --user show-environment | rg '^(LANG|LC_|ARGVUS)='
-locale
-echo $LANG
-localectl status
-```
-
-Se `~/.config/locale.conf` estiver presente e contiver definições de locale conflitantes, preserve um backup e renomeie o arquivo; depois aplique o idioma novamente no Control Center e inicie uma nova sessão gráfica:
-
-```sh
-mv ~/.config/locale.conf ~/.config/locale.conf.backup
-```
-
-`ARGVUS_CONFIG_HOME` e `ARGVUS_SYSTEM_CONFIG` controlam raízes de configuração e são separados do arquivo de seleção de idioma. `ARGVUS_I18N_DIR` pode selecionar uma raiz alternativa de catálogos para desenvolvimento ou testes e normalmente não deve ser definido como personalização do usuário. Na árvore de código de `de/argvus`, o `.cargo/config.toml` o aponta para `resources/locales` nos processos que o cargo inicia (`cargo test`, `cargo run` e, portanto, `make validate` e o `check()` do pacote), para que chaves novas funcionem antes de o pacote ser instalado; um valor já definido no ambiente tem prioridade.
+Para diagnóstico, compare `argvus i18n locale`, `cat "${XDG_CONFIG_HOME:-$HOME/.config}/locale.conf"` e `systemctl --user show-environment`. `localectl status` descreve o sistema, não o idioma do ARGVUS do usuário. `ARGVUS_I18N_DIR` seleciona o diretório de catálogos para desenvolvimento, não o idioma.

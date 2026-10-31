@@ -287,7 +287,7 @@
     },
     "session": {
       "type": "object",
-      "properties": { "language": { "type": "string" } }
+      "properties": { "language": { "type": "string", "deprecated": true, "description": "Ignored legacy value. Set LANG in the user locale.conf instead." } }
     },
     "calendar": { "type": "object" },
     "removable_devices": { "type": "object" },

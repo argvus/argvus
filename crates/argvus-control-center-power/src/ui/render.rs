@@ -26,6 +26,8 @@ impl PowerApp {
         "control_center.navigate_tab_actions_enter_list_r_refresh_esc_back_help",
       ),
     );
+    let shell_body =
+      argvus_tui::page::admin_warning(frame, shell_body, &self.theme, self.lang, true);
     let buttons: Vec<ActionButton> = self
       .buttons()
       .into_iter()
@@ -60,7 +62,7 @@ impl PowerApp {
       draw_aligned_transparent(frame, inner, &buttons, focus, &self.theme, Alignment::Left);
     }
     if let Some(s) = &self.status {
-      status(frame, area, &self.theme, s);
+      status(frame, body, &self.theme, s);
     }
     if let Some(pending) = &self.pending {
       let action = match pending {

@@ -29,6 +29,7 @@ impl SnapshotApp {
       &self.breadcrumb(),
       hint,
     );
+    let body = argvus_tui::page::admin_warning(frame, body, &self.theme, self.lang, true);
     let content = Rect::new(body.x, body.y, body.width, body.height.saturating_sub(2));
     let rows = self.rows();
     if !self.busy()

@@ -82,6 +82,14 @@ impl ServicesApp {
       &self.breadcrumb(),
       &self.footer_hints(),
     );
+    let body = argvus_tui::page::admin_warning(
+      frame,
+      body,
+      &self.theme,
+      self.lang,
+      matches!(self.page, ServicePage::System | ServicePage::Failed)
+        || (self.page == ServicePage::Detail && self.detail_parent != ServicePage::User),
+    );
     if self.is_list_page() {
       self.draw_list(frame, area, body);
       return;
@@ -111,7 +119,7 @@ impl ServicesApp {
       self.selected.min(lines.len().saturating_sub(1))
     };
     list(frame, body, &self.theme, &lines, list_selection);
-    self.draw_overlays(frame, area);
+    self.draw_overlays(frame, area, body);
   }
 
   /// Renders a unit list in the shared layout: the filter line, the search
@@ -156,7 +164,7 @@ impl ServicesApp {
         icons: AppConfig::icons_enabled(),
       },
     );
-    self.draw_overlays(frame, area);
+    self.draw_overlays(frame, area, body);
   }
 
   /// Renders the journal in the same layout as the unit lists: the boot,
@@ -201,7 +209,7 @@ impl ServicesApp {
       self.selected.min(lines.len().saturating_sub(1))
     };
     list(frame, list_area, &self.theme, &lines, list_selection);
-    self.draw_overlays(frame, area);
+    self.draw_overlays(frame, area, body);
   }
 
   /// Renders the details page: the service information and its actions.
@@ -218,19 +226,19 @@ impl ServicesApp {
         icons: AppConfig::icons_enabled(),
       },
     );
-    self.draw_overlays(frame, area);
+    self.draw_overlays(frame, area, body);
   }
 
   /// Status line, loading indicator and the confirmation, shared by the
   /// menu pages.
-  pub(super) fn draw_overlays(&self, frame: &mut Frame, area: Rect) {
+  pub(super) fn draw_overlays(&self, frame: &mut Frame, area: Rect, body: Rect) {
     if let Some(s) = &self.status {
-      status(frame, area, &self.theme, s)
+      status(frame, body, &self.theme, s)
     }
     if self.job.is_some() {
       status(
         frame,
-        area,
+        body,
         &self.theme,
         &StatusMessage {
           kind: StatusKind::Info,

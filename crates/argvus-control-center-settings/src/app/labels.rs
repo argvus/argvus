@@ -112,19 +112,3 @@ pub(super) fn non_empty(value: &str) -> String {
     value.to_string()
   }
 }
-
-pub(super) fn canonical_language() -> Option<Lang> {
-  let output = argvus_control_center_core::process::command("argvus")
-    .arg("config")
-    .args(["get", "/session/language", "--effective", "--raw"])
-    .output()
-    .ok()?;
-  if !output.status.success() {
-    return None;
-  }
-  match String::from_utf8_lossy(&output.stdout).trim() {
-    "pt-BR" | "pt_BR" => Some(Lang::for_locale("pt-BR")),
-    "en-US" | "en_US" => Some(Lang::for_locale("en-US")),
-    _ => None,
-  }
-}

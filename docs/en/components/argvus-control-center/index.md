@@ -25,12 +25,12 @@ The home is a catalog of destinations grouped in six cards. Each destination ope
 - **Preferences** — personal and regional settings: Language & Region (the language, time zone, formats and keyboard layout hub), Date & Time, Default Applications, Power and Session.
 - **Hardware & Connectivity** — devices and connections: Hardware Overview, Network & Wi-Fi, Bluetooth, Audio and Storage.
 - **System Administration** — manage the operating system: Packages, Services, Boot, Hostname, Users & Groups, Firewall and Notifications (Do Not Disturb).
-- **Settings** — the Control Center itself, listed after the cards: Language (the interface language) and Style (decorative icons and transparency). Press `s` to open it.
+- **Settings** — the Control Center itself, listed after the cards: Language (the user language) and Style (decorative icons and transparency). Press `s` to open it.
 - **Tools & Diagnostics** — developer and maintenance tools: ARGVUS Welcome, Projects, Snippets (text saved for `argvus snippets`, typed with `SUPER + ALT + N`), SSH keys (key pairs in `~/.ssh` managed by `argvus keys`), GPG keys (the keyring managed by `argvus gpg`; gpg-agent uses pinentry-gtk), Dev Services, System Doctor and About ARGVUS.
 
 ## ARGVUS Welcome
 
-Choose **Open ARGVUS Welcome** under **Tools & Diagnostics**, search for `welcome`, or run `argvus welcome`. Welcome is integrated into the Control Center and uses its single window. Enter opens the selected settings page; when finished, return to the guide with Esc. Enter then confirms review, checks off the step with `[x]`, and opens the next settings page in the same window. O reviews the step again, S skips without checking it off, and F finishes the guide even with optional steps pending. Cancelling or returning does not complete a step. Existing progress is preserved.
+Choose **Open ARGVUS Welcome** under **Tools & Diagnostics**, search for `welcome`, or run `argvus welcome`. Welcome is integrated into the Control Center and uses its single window. Enter opens the selected settings page; when finished, return to the guide with Esc. F6 Next checks off the current step and opens the next one in the same window. Esc only goes back, and Enter on the checklist always opens the selected page. O reviews the step again, S skips without checking it off, and F finishes the guide even with optional steps pending. Cancelling or returning does not complete a step. Existing progress is preserved.
 
 The guide covers language and region, displays, hardware and drivers, network, audio, Bluetooth, appearance, power, default applications, and session startup. It never installs drivers or packages and does not apply system changes by itself. Progress is stored in `$XDG_STATE_HOME/argvus/welcome/progress.json` (or `~/.local/state/argvus/welcome/progress.json`).
 
@@ -55,7 +55,7 @@ The main settings tree currently includes:
 | Preferences | Language & Region (language, time zone, formats, system locales and keyboard layout), Date & Time, Default Applications, Power, Session |
 | Hardware & Connectivity | Hardware Overview (summary, CPU, GPU, memory, devices), Network & Wi-Fi, Bluetooth, Audio, Storage |
 | System Administration | Packages, Services, Boot, Hostname, Users & Groups, Firewall, Notifications |
-| Settings | Language (interface language), Style (icons and transparency) |
+| Settings | Language (user language), Style (icons and transparency) |
 | Tools & Diagnostics | Projects, Snippets, SSH keys, GPG keys, Dev Services, System Doctor, About ARGVUS |
 
 Some of these are full pages and some are subpages reached through search or a domain summary. The exact list is determined by the installed ARGVUS providers.
@@ -212,6 +212,10 @@ Not in the page yet: searching the keyserver for a key by name or e-mail. Use **
 
 This card lists Language (the regional locale), Time Zone, Date & Time, System Locales and Keyboard Layout, and each one opens directly from the home. The keyboard pages also hold the variant and console keymap. The home search also exposes keyboard shortcuts and mouse/touchpad settings as direct settings routes.
 
+Both **Preferences > Language & Region > Language** and **Settings > Language** save the same user preference: `LANG` in `$XDG_CONFIG_HOME/locale.conf` (default `~/.config/locale.conf`), for example `LANG=en_US.UTF-8`. Comments and regional variables are preserved. No global file or parallel ARGVUS language setting is written. An unconfigured user gets English; legacy `session.language` and `data/language` files are ignored. Log out and back in to apply the language to the full session and applications.
+
+**System Locales** changes `/etc/locale.gen` and runs `locale-gen`, so applying it requires administrator authorization. A persistent **[WARN]** notice above the footer identifies pages with administrative settings. The same notice covers time zone, date/time, hostname, console keymap, account and group editing, firewall, system services, CPU governor, power profiles and policies, boot configuration, package operations, snapshots and protected network changes. Personal preferences, user services and read-only pages do not receive this notice. The notice is informational; authorization is requested only when an action needs it.
+
 ### Hardware and displays
 
 When the corresponding capabilities are installed, the Control Center can show hardware information such as CPU, GPU, memory, power and devices. The input page configures mouse and touchpad behavior; the display area handles monitor resolution, refresh rate, scale, position, orientation, primary display, VRR and HDR where supported by the running session. Display changes apply immediately. After a change that can leave the screen unusable (resolution or refresh rate, position, mirroring, disabling a monitor, color depth) or after **Apply**, Control Center asks whether to keep it, with the focus on **Revert**: press `y` to keep it; `n`, `Esc` or `Enter` revert it, and without an answer within 15 seconds the previous configuration comes back automatically. Removing the saved configuration of a disconnected monitor and deleting a profile ask for confirmation; profiles open their own page with **Apply profile**, **Rename** and **Delete profile**. The layout is saved through `argvus config monitor-set`, `monitor-primary`, `monitor-workspaces` and `monitor-remove`, so the canonical `/displays` section of `config.json` is the only source of the monitor layout. Only the profile catalog stays in `display/config.toml`.
@@ -262,7 +266,7 @@ Groups have their own list and edit pages, including member management and group
 
 ### Control Center settings
 
-**Settings** is the last entry of the home. Its **Language** page sets the interface language, and its **Style** page controls the decorative icons and the Control Center transparency. Style does not hold blur: blur is a global Hyprland setting, under Hyprland > Blur. The Style page changes the settings application's presentation; it is not a switch that disables ARGVUS services or removes settings providers. Saving the icons can require authorization, while the visual change is applied to the current application. Esc on Style returns to the Settings page, and Esc there returns to the home.
+**Settings** is the last entry of the home. Its **Language** page sets the user language through locale.conf, and its **Style** page controls the decorative icons and the Control Center transparency. Style does not hold blur: blur is a global Hyprland setting, under Hyprland > Blur. The Style page changes the settings application's presentation; it is not a switch that disables ARGVUS services or removes settings providers. Saving the icons can require authorization, while the visual change is applied to the current application. Esc on Style returns to the Settings page, and Esc there returns to the home.
 
 ### About ARGVUS
 
@@ -424,4 +428,6 @@ rollback, restore, automatic cleanup, installation or Snapper configuration**.
 Only the `argvus` package changes. Rebuild from `de/argvus` with `make build` to
 produce the `.pkg.tar.zst` package; installing it is a separate operator action.
 
-Language under Language & Region saves the locale in the user profile (`~/.config/locale.conf`) without changing `/etc/locale.conf`. The session uses this preference after login again. During Welcome, F6 or the footer Done button records review and advances; Shift+Tab focuses the button and Enter activates it, including on information pages.
+Language under Language & Region saves the locale in the user profile (`~/.config/locale.conf`) without changing `/etc/locale.conf`. The session uses this preference after login again. During Welcome, F6 Next or the footer Next button records review and advances; Shift+Tab focuses the button and Enter activates it, including on information pages.
+
+Bluetooth appears in Welcome only when Control Center detects an adapter. Existing progress for a hidden Bluetooth step is preserved.

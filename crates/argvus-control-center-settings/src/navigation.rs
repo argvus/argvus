@@ -73,6 +73,34 @@ pub enum Page {
   CreateGroup,
 }
 
+impl Page {
+  /// Pages whose configuration includes a system-wide, elevated operation.
+  pub fn requires_admin(self) -> bool {
+    matches!(
+      self,
+      Self::TimeZone
+        | Self::DateTime
+        | Self::SystemLocales
+        | Self::ConsoleKeymap
+        | Self::Hostname
+        | Self::Firewall
+        | Self::User
+        | Self::CreateUser
+        | Self::UserGroups
+        | Self::UserPassword
+        | Self::UserShell
+        | Self::UserPrimaryGroup
+        | Self::UserAvatar
+        | Self::UserUsername
+        | Self::UserFullName
+        | Self::UserDelete
+        | Self::Group
+        | Self::GroupMembers
+        | Self::CreateGroup
+    )
+  }
+}
+
 #[derive(Debug, Clone, Copy)]
 pub struct Location {
   pub page: Page,

@@ -40,7 +40,6 @@ mod navigation;
 mod system_settings;
 
 pub use confirmations::pending_action_text;
-use labels::canonical_language;
 pub use labels::{
   category_icon, category_label, font_target_icon, font_target_label, search_matches, setting_icon,
   setting_label,
@@ -228,7 +227,7 @@ pub struct App {
 
 impl App {
   pub fn new(initial: Page) -> Self {
-    let lang = canonical_language().unwrap_or_else(Lang::detect);
+    let lang = Lang::detect();
     Self::with_context(initial, lang, Theme::load())
   }
 

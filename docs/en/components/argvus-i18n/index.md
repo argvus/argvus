@@ -16,10 +16,7 @@ Currently supported languages include:
 
 ## Language Selection
 
-Set your preferred language through:
-- ARGVUS Control Center → Localization → Language
-- System language settings
-- Environment variable `LANG`
+Choose the user language in Control Center > Preferences > Language & Region > Language, or Settings > Language. Both save `LANG` in `$XDG_CONFIG_HOME/locale.conf` (default `~/.config/locale.conf`). Without a valid preference ARGVUS uses English. System locale variables and legacy ARGVUS language files do not override this file. Log out and back in after changing the language.
 
 ## For Contributors
 

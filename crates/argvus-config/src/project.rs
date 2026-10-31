@@ -308,7 +308,6 @@ fn write_projections(
     json_pointers::REMOVABLE_DEVICES,
     &paths.data.join("removable-devices/config.json"),
   )?;
-  project_language(document, paths)?;
   project_control_panel(document, paths)?;
   project_hypr_state(document, paths)?;
   project_scalar(
@@ -401,23 +400,6 @@ fn project_bool_marker(document: &ConfigDocument, pointer: &str, path: &Path) ->
       }
       Ok(())
     }
-  }
-}
-
-fn project_language(document: &ConfigDocument, paths: &ArgvusPaths) -> ConfigResult<()> {
-  if let Some(language) = document
-    .get(json_pointers::SESSION_LANGUAGE)
-    .and_then(Value::as_str)
-  {
-    atomic_write(
-      &paths.internal.join("language"),
-      &format!("{}\n", language.replace('-', "_")),
-    )
-  } else if paths.internal.join("language").exists() {
-    fs::remove_file(paths.internal.join("language"))?;
-    Ok(())
-  } else {
-    Ok(())
   }
 }
 

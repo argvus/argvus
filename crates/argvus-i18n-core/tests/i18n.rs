@@ -64,7 +64,7 @@ fn explicit_config_beats_locale_environment() {
   let root = root();
   let config = root.join("config");
   fs::create_dir_all(config.join("argvus/data")).unwrap();
-  fs::write(config.join("argvus/data/language"), "pt-BR").unwrap();
+  fs::write(config.join("locale.conf"), "LANG=pt_BR.UTF-8\n").unwrap();
   let old_config = std::env::var_os("XDG_CONFIG_HOME");
   let old_lang = std::env::var_os("LANG");
   unsafe {
@@ -154,7 +154,7 @@ fn control_center_input_catalogs_resolve_page_keys() {
 }
 
 #[test]
-fn lc_all_has_priority_over_other_locale_variables() {
+fn inherited_lc_all_does_not_configure_a_new_user() {
   let _guard = env_lock().lock().unwrap();
   let root = root();
   let config = root.join("empty-config");
@@ -169,7 +169,7 @@ fn lc_all_has_priority_over_other_locale_variables() {
     std::env::set_var("LC_MESSAGES", "en_US.UTF-8");
     std::env::set_var("LANG", "en_US.UTF-8");
   }
-  assert_eq!(detect_locale_from(&root), "pt-BR");
+  assert_eq!(detect_locale_from(&root), "en-US");
   unsafe {
     for (name, value) in [
       ("XDG_CONFIG_HOME", old_config),
@@ -196,7 +196,7 @@ fn invalid_catalog_and_missing_fallback_are_reported() {
 }
 
 #[test]
-fn lc_messages_beats_lang() {
+fn inherited_lc_messages_does_not_configure_a_new_user() {
   let _guard = env_lock().lock().unwrap();
   let root = root();
   let config = root.join("empty-config");
@@ -210,7 +210,7 @@ fn lc_messages_beats_lang() {
     std::env::set_var("LC_MESSAGES", "pt_BR.UTF-8");
     std::env::set_var("LANG", "en_US.UTF-8");
   }
-  assert_eq!(detect_locale_from(&root), "pt-BR");
+  assert_eq!(detect_locale_from(&root), "en-US");
   unsafe {
     if let Some(value) = old_config {
       std::env::set_var("XDG_CONFIG_HOME", value);
@@ -231,7 +231,7 @@ fn lc_messages_beats_lang() {
 }
 
 #[test]
-fn lang_is_used_when_higher_priority_values_are_empty() {
+fn inherited_lang_does_not_configure_a_new_user() {
   let _guard = env_lock().lock().unwrap();
   let root = root();
   let config = root.join("empty-config");
@@ -245,7 +245,7 @@ fn lang_is_used_when_higher_priority_values_are_empty() {
     std::env::remove_var("LC_MESSAGES");
     std::env::set_var("LANG", "pt_BR.UTF-8");
   }
-  assert_eq!(detect_locale_from(&root), "pt-BR");
+  assert_eq!(detect_locale_from(&root), "en-US");
   unsafe {
     if let Some(value) = old_config {
       std::env::set_var("XDG_CONFIG_HOME", value);
@@ -338,7 +338,7 @@ fn explicit_xdg_config_path_is_used() {
   let root = root();
   let config = root.join("custom-xdg");
   fs::create_dir_all(config.join("argvus/data")).unwrap();
-  fs::write(config.join("argvus/data/language"), "pt-BR").unwrap();
+  fs::write(config.join("locale.conf"), "LANG=pt_BR.UTF-8\n").unwrap();
   let old_config = std::env::var_os("XDG_CONFIG_HOME");
   let old_all = std::env::var_os("LC_ALL");
   unsafe {
@@ -391,5 +391,74 @@ fn borrowed_tr_matches_owned_translation_and_reuses_catalogs() {
       Some(value) => std::env::set_var("ARGVUS_I18N_DIR", value),
       None => std::env::remove_var("ARGVUS_I18N_DIR"),
     }
+  }
+}
+
+#[test]
+fn only_user_locale_conf_controls_detection() {
+  let _guard = env_lock().lock().unwrap();
+  let root = root();
+  let config = root.join("isolated");
+  fs::create_dir_all(config.join("argvus/data/internal")).unwrap();
+  fs::create_dir_all(config.join("argvus/config")).unwrap();
+  fs::write(config.join("argvus/data/language"), "pt-BR").unwrap();
+  fs::write(config.join("argvus/data/internal/language"), "pt_BR").unwrap();
+  fs::write(
+    config.join("argvus/config/session.json"),
+    r#"{"language":"pt-BR"}"#,
+  )
+  .unwrap();
+  let names = [
+    "XDG_CONFIG_HOME",
+    "LANG",
+    "LC_ALL",
+    "LC_MESSAGES",
+    "LANGUAGE",
+  ];
+  let previous: Vec<_> = names.iter().map(std::env::var_os).collect();
+  unsafe {
+    std::env::set_var("XDG_CONFIG_HOME", &config);
+    for name in &names[1..] {
+      std::env::set_var(name, "pt_BR.UTF-8");
+    }
+  }
+  assert_eq!(detect_locale_from(&root), "en-US");
+  assert!(!config.join("locale.conf").exists());
+  for (contents, expected) in [
+    ("", "en-US"),
+    ("#LANG=pt_BR.UTF-8\n", "en-US"),
+    ("LANG=\"pt_BR.UTF-8\"\nLC_TIME=en_US.UTF-8\n", "pt-BR"),
+    ("LANG=en_US.UTF-8\n", "en-US"),
+    ("LANG=$(id)\n", "en-US"),
+    ("LANG=xx_XX.UTF-8\n", "en-US"),
+  ] {
+    fs::write(config.join("locale.conf"), contents).unwrap();
+    assert_eq!(detect_locale_from(&root), expected, "{contents}");
+  }
+  unsafe {
+    for (name, value) in names.iter().zip(previous) {
+      match value {
+        Some(value) => std::env::set_var(name, value),
+        None => std::env::remove_var(name),
+      }
+    }
+  }
+  fs::remove_dir_all(root).unwrap();
+}
+
+#[test]
+fn user_locale_parser_ignores_invalid_values_and_handles_quotes() {
+  for (contents, expected) in [
+    ("# comment\n LANG='pt_BR.UTF-8'\n", Some("pt_BR.UTF-8")),
+    ("LANG=en_US.UTF-8\nLANG=pt_BR.UTF-8\n", Some("pt_BR.UTF-8")),
+    ("LC_MESSAGES=pt_BR.UTF-8\n", None),
+    ("LANG=\n", None),
+    ("LANG=null\n", None),
+    ("LANG=$(touch x)\n", None),
+  ] {
+    assert_eq!(
+      argvus_i18n::parse_user_locale(contents).as_deref(),
+      expected
+    );
   }
 }
