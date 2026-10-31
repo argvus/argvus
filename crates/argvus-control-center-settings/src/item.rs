@@ -59,7 +59,7 @@ pub enum Item {
   Keyboard,
   /// Index into the time zone list. Enter only changes the draft.
   Zone(usize),
-  /// Writes the Time Zone draft to the system with `timedatectl`.
+  /// Writes the Time Zone draft to the user environment configuration.
   ApplyTimezone,
   LocalDateTime,
   Ntp,

@@ -78,8 +78,7 @@ impl Page {
   pub fn requires_admin(self) -> bool {
     matches!(
       self,
-      Self::TimeZone
-        | Self::DateTime
+      Self::DateTime
         | Self::SystemLocales
         | Self::ConsoleKeymap
         | Self::Hostname

@@ -753,6 +753,7 @@ dependencies = [
 name = "argvus-terminal"
 version = "0.1.0"
 dependencies = [
+ "argvus-i18n-core",
  "argvus-terminal-core",
  "argvus-theme-core",
  "libc",

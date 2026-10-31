@@ -271,7 +271,6 @@ fn administrative_pages_show_warning_without_hiding_actions_or_footer() {
     for (width, height) in [(60, 18), (100, 30)] {
       for page in [
         Page::SystemLocales,
-        Page::TimeZone,
         Page::DateTime,
         Page::Hostname,
         Page::ConsoleKeymap,
@@ -313,6 +312,7 @@ fn administrative_pages_show_warning_without_hiding_actions_or_footer() {
 #[test]
 fn personal_language_and_keyboard_pages_do_not_require_root() {
   for page in [
+    Page::TimeZone,
     Page::RegionalLocale,
     Page::Language,
     Page::KeyboardLayout,

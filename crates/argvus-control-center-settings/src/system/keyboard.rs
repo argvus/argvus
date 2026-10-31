@@ -133,7 +133,7 @@ pub fn set_x11_layouts(
   // The canonical write also reloads argvus-config, which projects the layout
   // and reloads Hyprland. `hyprctl keyword` is rejected by Hyprland 0.56.
   write_generated_hypr_input(Some(&layouts), Some(&variant))?;
-  switch_active_layout(default_layout, &layouts);
+  switch_active_layout(default_layout, &layouts)?;
   Ok(())
 }
 
@@ -149,7 +149,9 @@ pub fn set_x11_variant(
   }
   // Preserve the complete cycle list while changing only the variant of the
   // currently selected layout.
+  let layouts = parse_hypr_keyboard_config().0;
   write_generated_hypr_input(None, Some(&resolved_variant(layout, variant)))?;
+  switch_active_layout(layout, &layouts)?;
   Ok(())
 }
 
@@ -215,6 +217,15 @@ pub fn parse_xkb_variants(contents: &str, layout: &str) -> Vec<Variant> {
     layout: layout.to_string(),
     description: "Default".to_string(),
   }];
+  // XKB omits the default symbols section from the variants list. Expose
+  // Brazil's ABNT2 explicitly so selecting it targets the session keyboard.
+  if layout == "br" {
+    out.push(Variant {
+      code: "abnt2".to_string(),
+      layout: layout.to_string(),
+      description: "ABNT2".to_string(),
+    });
+  }
   for line in contents.lines() {
     let trimmed = line.trim();
     if trimmed.starts_with('!') {
@@ -508,22 +519,48 @@ fn merged_layout_list(current: &str, layout: &str) -> String {
   merged.join(",")
 }
 
-fn switch_active_layout(layout: &str, layouts: &str) {
+fn switch_active_layout(layout: &str, layouts: &str) -> Result<(), SettingsError> {
   let index = layouts
     .split(',')
     .position(|part| part == layout)
     .unwrap_or(0);
-  let _ = argvus_control_center_core::process::command("hyprctl")
+  let status = argvus_control_center_core::process::command("hyprctl")
     .args(["switchxkblayout", "all", &index.to_string()])
     .stdin(Stdio::null())
     .stdout(Stdio::null())
-    .stderr(Stdio::null())
-    .status();
+    .status()
+    .map_err(|error| {
+      SettingsError::System(format!("could not activate keyboard layout: {error}"))
+    })?;
+  if !status.success() {
+    return Err(SettingsError::System(
+      "could not activate keyboard layout".into(),
+    ));
+  }
+  Ok(())
 }
 
 #[cfg(test)]
 mod tests {
   use super::*;
+
+  #[test]
+  fn brazilian_default_variant_is_explicitly_selectable() {
+    let variants = parse_xkb_variants(
+      "! variant\n nodeadkeys br: Portuguese (Brazil, no dead keys)\n",
+      "br",
+    );
+    assert!(
+      variants
+        .iter()
+        .any(|variant| variant.code == "abnt2" && variant.layout == "br")
+    );
+    assert!(
+      !parse_xkb_variants("! variant\n", "us")
+        .iter()
+        .any(|variant| variant.code == "abnt2")
+    );
+  }
 
   #[test]
   fn variant_survives_reordering_and_added_layouts() {

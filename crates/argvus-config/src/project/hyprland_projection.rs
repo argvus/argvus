@@ -209,14 +209,19 @@ pub(super) fn object_value<'a>(
 }
 
 pub(super) fn project_keyboard(document: &ConfigDocument, paths: &ArgvusPaths) -> ConfigResult<()> {
-  let Some(keyboard) = document
+  let empty = serde_json::Map::new();
+  let keyboard = document
     .get(json_pointers::HYPRLAND_KEYBOARD)
     .and_then(Value::as_object)
-  else {
-    return Ok(());
+    .unwrap_or(&empty);
+  let quote = |key: &str| {
+    serde_json::to_string(
+      keyboard
+        .get(key)
+        .and_then(Value::as_str)
+        .unwrap_or(if key == "layout" { "us" } else { "" }),
+    )
   };
-  let quote =
-    |key: &str| serde_json::to_string(keyboard.get(key).and_then(Value::as_str).unwrap_or(""));
   atomic_write_lua(
     &paths.generated.join("hypr/input.lua"),
     &format!(

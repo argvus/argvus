@@ -15,6 +15,7 @@ name = "argvus-terminal"
 path = "src/main.rs"
 
 [dependencies]
+argvus-i18n-core.workspace = true
 argvus-terminal-core.workspace = true
 argvus-theme-core.workspace = true
 libc.workspace = true

@@ -1085,7 +1085,7 @@
   "control_center.this_will_restore_the_font_settings_defined_by_argvus": "Isso restaurará as configurações de fonte definidas pelo ARGVUS.",
   "control_center.this_will_update_etc_locale_gen_and_run_locale_gen": "Isso atualizará /etc/locale.gen e executará locale-gen.",
   "control_center.time_zone": "Fuso horário",
-  "control_center.time_zone_changed": "Fuso horário alterado",
+  "control_center.time_zone_changed": "Fuso horário do usuário salvo. Saia e entre novamente para aplicá-lo aos aplicativos.",
   "control_center.timeout": "Timeout",
   "control_center.timeout_default": "Timeout: Padrão",
   "control_center.timeout_must_be_between_0_and_60_seconds": "O timeout deve estar entre 0 e 60 segundos.",

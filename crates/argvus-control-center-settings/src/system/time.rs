@@ -8,12 +8,42 @@ use crate::error::SettingsError;
 #[derive(Debug, Clone, Default)]
 pub struct DateTimeInfo {
   pub local_time: String,
+  pub system_time_zone: String,
   pub time_zone: String,
   pub ntp: Option<bool>,
   pub rtc_local: Option<bool>,
 }
 
+fn timezone_path() -> Option<std::path::PathBuf> {
+  argvus_i18n::config_path().and_then(|path| {
+    path
+      .parent()
+      .map(|parent| parent.join("environment.d/20-timezone.conf"))
+  })
+}
+
+fn parse_timezone(contents: &str) -> Option<String> {
+  contents
+    .lines()
+    .filter_map(|line| line.trim().strip_prefix("TZ="))
+    .next_back()
+    .map(|value| value.trim_matches(['\"', '\'']).to_string())
+    .filter(|value| is_valid_timezone_name(value))
+}
+
 pub fn current_timezone() -> String {
+  if let Some(zone) = timezone_path()
+    .and_then(|path| fs::read_to_string(path).ok())
+    .and_then(|contents| parse_timezone(&contents))
+  {
+    return zone;
+  }
+  if let Ok(zone) = std::env::var("TZ")
+    && is_valid_timezone_name(&zone)
+  {
+    return zone;
+  }
+
   command_stdout("timedatectl", &["show", "-p", "Timezone", "--value"])
     .filter(|value| !value.trim().is_empty())
     .unwrap_or_else(|| {
@@ -55,14 +85,20 @@ pub fn datetime_info() -> DateTimeInfo {
         continue;
       };
       match key {
-        "Timezone" => info.time_zone = value.to_string(),
+        "Timezone" => info.system_time_zone = value.to_string(),
         "LocalRTC" => info.rtc_local = Some(value == "yes"),
         "NTP" => info.ntp = Some(value == "yes"),
         _ => {}
       }
     }
   }
-  info.local_time = command_stdout("date", &["+%F %T"])
+  info.local_time = argvus_control_center_core::process::command("date")
+    .arg("+%F %T")
+    .env_remove("TZ")
+    .output()
+    .ok()
+    .filter(|output| output.status.success())
+    .map(|output| String::from_utf8_lossy(&output.stdout).into_owned())
     .unwrap_or_default()
     .trim()
     .to_string();
@@ -70,10 +106,47 @@ pub fn datetime_info() -> DateTimeInfo {
 }
 
 pub fn set_timezone(zone: &str, valid: &[String]) -> Result<(), SettingsError> {
-  if !valid.iter().any(|candidate| candidate == zone) {
+  if !is_valid_timezone_name(zone) || !valid.iter().any(|candidate| candidate == zone) {
     return Err(SettingsError::System(format!("invalid time zone: {zone}")));
   }
-  super::privileged::run(&["timezone", "set", zone]).map(|_| ())
+  let path = timezone_path()
+    .ok_or_else(|| SettingsError::System("cannot locate user timezone configuration".into()))?;
+  save_timezone(&path, zone).map_err(|error| SettingsError::System(error.to_string()))
+}
+
+fn save_timezone(path: &std::path::Path, zone: &str) -> std::io::Result<()> {
+  use std::io::Write as _;
+  use std::os::unix::fs::OpenOptionsExt as _;
+  let previous = match fs::read_to_string(path) {
+    Ok(contents) => contents,
+    Err(error) if error.kind() == std::io::ErrorKind::NotFound => String::new(),
+    Err(error) => return Err(error),
+  };
+  let parent = path
+    .parent()
+    .ok_or_else(|| std::io::Error::other("missing timezone parent"))?;
+  fs::create_dir_all(parent)?;
+  let temporary = parent.join(format!(".timezone.{}.tmp", std::process::id()));
+  let mut file = fs::OpenOptions::new()
+    .write(true)
+    .create_new(true)
+    .mode(0o600)
+    .open(&temporary)?;
+  let result = (|| {
+    for line in previous
+      .lines()
+      .filter(|line| !line.trim_start().starts_with("TZ="))
+    {
+      writeln!(file, "{line}")?;
+    }
+    writeln!(file, "TZ={zone}")?;
+    file.sync_all()?;
+    fs::rename(&temporary, path)
+  })();
+  if result.is_err() {
+    let _ = fs::remove_file(&temporary);
+  }
+  result
 }
 
 pub fn set_ntp(enabled: bool) -> Result<(), SettingsError> {
@@ -124,6 +197,25 @@ fn command_stdout(command: &str, args: &[&str]) -> Option<String> {
 #[cfg(test)]
 mod tests {
   use super::*;
+
+  #[test]
+  fn personal_timezone_preserves_other_entries_and_profiles() {
+    let directory = tempfile::tempdir().unwrap();
+    let first = directory.path().join("first/20-timezone.conf");
+    let second = directory.path().join("second/20-timezone.conf");
+    save_timezone(&first, "UTC").unwrap();
+    save_timezone(&second, "UTC").unwrap();
+    fs::write(&first, "# personal\nTZ=UTC\nOTHER=keep\n").unwrap();
+    save_timezone(&first, "America/Sao_Paulo").unwrap();
+    let contents = fs::read_to_string(&first).unwrap();
+    assert_eq!(
+      parse_timezone(&contents).as_deref(),
+      Some("America/Sao_Paulo")
+    );
+    assert!(contents.contains("OTHER=keep"));
+    assert_eq!(fs::read_to_string(second).unwrap(), "TZ=UTC\n");
+    assert!(parse_timezone("TZ=../etc/passwd").is_none());
+  }
 
   #[test]
   fn validates_timezone_names() {

@@ -336,7 +336,7 @@ impl App {
       .enabled(!ntp),
       Row::info(
         self.label("control_center.time_zone"),
-        self.datetime.time_zone.clone(),
+        self.datetime.system_time_zone.clone(),
       ),
       Row::toggle(
         Item::Ntp,

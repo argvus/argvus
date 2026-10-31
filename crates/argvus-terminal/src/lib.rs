@@ -434,10 +434,55 @@ fn launch_kitty(launch: Launch) -> Result<ExitCode, String> {
       base_config(&paths, &theme, &launch.font_profile)?
     }
   };
-  let error = Process::new("kitty")
+  let mut terminal = Process::new("kitty");
+  sanitize_compose_environment(
+    &mut terminal,
+    env::var_os("LC_ALL"),
+    env::var_os("LC_CTYPE"),
+  );
+  // Kitty initializes XKB compose before starting the shell. A shell's later
+  // LANG export cannot repair a compose table initialized in the C locale.
+  if env::var_os("LANG").is_none_or(|value| value.is_empty()) {
+    terminal.env("LANG", argvus_i18n::user_locale());
+  }
+  let error = terminal
     .args(["--class", &launch.class, "--config"])
     .arg(&config)
     .args(&launch.kitty_arguments)
     .exec();
   Err(format!("cannot run kitty: {error}"))
+}
+
+// Kitty checks presence rather than emptiness before falling back to LANG.
+fn sanitize_compose_environment(
+  terminal: &mut Process,
+  lc_all: Option<std::ffi::OsString>,
+  lc_ctype: Option<std::ffi::OsString>,
+) {
+  for (name, value) in [("LC_ALL", lc_all), ("LC_CTYPE", lc_ctype)] {
+    if value.is_some_and(|value| value.is_empty()) {
+      terminal.env_remove(name);
+    }
+  }
+}
+
+#[cfg(test)]
+mod compose_environment_tests {
+  use super::*;
+
+  #[test]
+  fn new_session_empty_overrides_do_not_mask_lang() {
+    let mut terminal = Process::new("kitty");
+    sanitize_compose_environment(&mut terminal, Some("".into()), Some("".into()));
+    let changes: Vec<_> = terminal.get_envs().collect();
+    assert_eq!(changes.len(), 2);
+    assert!(changes.iter().all(|(_, value)| value.is_none()));
+  }
+
+  #[test]
+  fn explicit_and_absent_overrides_are_preserved() {
+    let mut terminal = Process::new("kitty");
+    sanitize_compose_environment(&mut terminal, Some("pt_BR.UTF-8".into()), None);
+    assert_eq!(terminal.get_envs().count(), 0);
+  }
 }

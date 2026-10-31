@@ -1085,7 +1085,7 @@
   "control_center.this_will_restore_the_font_settings_defined_by_argvus": "This will restore the font settings defined by ARGVUS.",
   "control_center.this_will_update_etc_locale_gen_and_run_locale_gen": "This will update /etc/locale.gen and run locale-gen.",
   "control_center.time_zone": "Time Zone",
-  "control_center.time_zone_changed": "Time zone changed",
+  "control_center.time_zone_changed": "User time zone saved. Log out and back in to apply it to applications.",
   "control_center.timeout": "Timeout",
   "control_center.timeout_default": "Timeout: Default",
   "control_center.timeout_must_be_between_0_and_60_seconds": "Timeout must be between 0 and 60 seconds.",

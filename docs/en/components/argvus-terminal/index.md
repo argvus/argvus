@@ -55,3 +55,7 @@ values; taskbar monitor and temperature popups use a bottom tab bar for their
 localized `Press q to close` title. The launcher accepts `--title TITLE` to set
 a fixed Kitty window and tab title. The normal terminal keeps its tabs and
 settings.
+
+When LANG is absent from the launcher environment, `argvus terminal` supplies the personal locale from `$XDG_CONFIG_HOME/locale.conf` (English by default) before Kitty initializes keyboard composition. Existing locale environment overrides are preserved. Restart Kitty after updating: exporting LANG inside an existing shell does not reinitialize Kitty’s compose table.
+
+Empty LC_ALL and LC_CTYPE inherited from session initialization are removed from the Kitty child environment. Otherwise Kitty treats an empty locale as explicit and cannot load its compose table, even with a valid LANG. Nonempty overrides are preserved. This also applies to new profiles and requires reopening Kitty after updating the launcher.

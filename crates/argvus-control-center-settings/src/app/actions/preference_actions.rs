@@ -54,8 +54,8 @@ impl App {
     }
   }
 
-  /// `Apply` of Time Zone: writes the draft with `timedatectl`, then reloads
-  /// the system zone so the draft matches what was written.
+  /// `Apply` of Time Zone: writes the user TZ environment file, then reloads
+  /// the saved zone so the draft matches what was written.
   pub(super) fn apply_timezone(&mut self) {
     let zone = self.timezone_draft.clone();
     match time::set_timezone(&zone, &self.timezones) {

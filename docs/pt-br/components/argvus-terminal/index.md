@@ -52,3 +52,7 @@ e Blur; os popups de monitoramento e temperatura da taskbar usam uma barra
 inferior com o título localizado `Pressione q para fechar`. O launcher aceita
 `--title TÍTULO` para definir um título fixo para a janela e a aba do Kitty. O
 terminal normal mantém suas abas e configurações.
+
+Quando LANG está ausente no ambiente do launcher, `argvus terminal` fornece o locale pessoal de `$XDG_CONFIG_HOME/locale.conf` (inglês por padrão) antes de o Kitty inicializar a composição do teclado. Variáveis de locale existentes são preservadas. Reinicie o Kitty após atualizar: exportar LANG no shell existente não reinicializa a tabela de composição do Kitty.
+
+LC_ALL e LC_CTYPE vazios, herdados da inicialização da sessão, são removidos do ambiente do processo Kitty. Caso contrário, o Kitty trata o locale vazio como explícito e não carrega sua tabela de composição, mesmo com LANG válido. Valores não vazios são preservados. Isso também atende perfis novos e exige reabrir o Kitty após atualizar o launcher.
