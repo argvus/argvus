@@ -75,3 +75,5 @@ A cor de destaque é lida de `~/.config/argvus/data/.accent-color` e aplicada em
 por cima das cores do tema.
 
 A seleção automática de idioma segue o `locale.conf` do usuário, com inglês como padrão. Preferências explícitas de idioma do calendário continuam substituindo a seleção automática.
+
+O calendário da taskbar, ARGVUS Focus, ARGVUS Clock e Control Panel são exclusivos entre si: abrir um fecha os demais.

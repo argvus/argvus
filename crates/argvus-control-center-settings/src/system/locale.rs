@@ -137,6 +137,23 @@ pub fn set_lang(locale: &str, generated: &[String]) -> Result<(), UserLocaleErro
   save_user_language(&path, locale, generated)
 }
 
+pub fn restart_control_panel() -> std::io::Result<()> {
+  let output = argvus_control_center_core::process::command("systemctl")
+    .args(["--user", "restart", "argvus-control-panel.service"])
+    .stdin(Stdio::null())
+    .output()?;
+  if output.status.success() {
+    return Ok(());
+  }
+
+  let message = String::from_utf8_lossy(&output.stderr).trim().to_owned();
+  Err(std::io::Error::other(if message.is_empty() {
+    format!("systemctl exited with {}", output.status)
+  } else {
+    message
+  }))
+}
+
 fn save_user_language(
   path: &Path,
   locale: &str,

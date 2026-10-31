@@ -15,6 +15,8 @@ argvus clock --background        # run without a window, to keep alarms active
 
 ARGVUS Clock opens as a popup aligned with the taskbar, with a 4-pixel gap. The taskbar passes the root click coordinates so the popup uses the clicked monitor; launching it without coordinates uses the pointer position. If the pointer stays outside the popup for 5 seconds, it closes automatically; moving the pointer into the popup cancels the countdown. **Esc** on a main tab still hides it immediately, and **Esc** on a full page returns to the previous tab. `argvus --clock` is an alias. Clicking the date in the taskbar still opens the calendar; ARGVUS Clock does not show events.
 
+ARGVUS Focus, ARGVUS Clock and the Control Panel share the same screen edge. Opening Clock closes Focus and the Control Panel first; opening either of those surfaces closes Clock.
+
 ## Pages
 
 - **Clock**: the time in large digits (24-hour by default, 12-hour in the settings, seconds optional), the localized date, the local time zone and its UTC offset, and the next alarm.
@@ -62,3 +64,5 @@ Alarms ring only while ARGVUS Clock runs in your session:
 | `/usr/share/argvus/sounds/` | Packaged sounds |
 
 Files are written atomically; a file that cannot be read is renamed to `<name>.corrupt-<time>` and defaults are used. The colours follow the active ARGVUS theme and highlight colour (theme consumer `time`). Strings come from the `clock` and `time` translation domains.
+
+The taskbar calendar, ARGVUS Focus, ARGVUS Clock and Control Panel are mutually exclusive: opening one closes the others.

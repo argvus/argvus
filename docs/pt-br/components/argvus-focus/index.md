@@ -17,6 +17,8 @@ argvus focus status --waybar --follow  # transmite as mudanças de status para W
 
 A taskbar passa as coordenadas raiz do clique para que o popup use o monitor clicado e se alinhe à barra; ao iniciar sem coordenadas, usa a posição do ponteiro. Se o ponteiro permanecer fora do popup por 5 segundos, ele fecha automaticamente; mover o ponteiro para dentro cancela a contagem. **Esc** na página principal ainda o oculta imediatamente, e **Esc** numa subpágina volta à página anterior. O indicador da taskbar mostra só o ícone quando ocioso e o tempo restante `MM:SS` durante uma fase, com a cor da fase; uma fase pausada mantém o tempo restante e sinaliza a pausa. O comando `status` roda dentro do `argvus`, sem iniciar GTK. `argvus --focus` é um alias. Só uma instância do Focus roda por sessão: uma segunda execução repassa as opções para a que já está aberta.
 
+ARGVUS Focus, ARGVUS Clock e o Control Panel compartilham a mesma lateral da tela. Ao abrir o Focus, o Clock e o Control Panel são fechados primeiro; ao abrir qualquer uma dessas outras superfícies, o Focus é fechado.
+
 ## Sessões
 
 - O modo **Pomodoro** alterna foco e pausas curtas e fecha cada ciclo com uma pausa longa. As durações padrão são 25, 5 e 15 minutos, com pausa longa após 4 sessões de foco.
@@ -54,3 +56,5 @@ Cada sessão de foco concluída é registrada com início, fim e tempo usado; pa
 Os arquivos são gravados de forma atômica. Um arquivo que não pode ser lido é renomeado para `<nome>.corrupt-<hora>` e os padrões são usados; uma mensagem diz para onde ele foi.
 
 As cores seguem o tema e a cor de destaque ativos do ARGVUS (consumidor de tema `time`). Os textos vêm dos domínios de tradução `focus` e `time`.
+
+O calendário da taskbar, ARGVUS Focus, ARGVUS Clock e Control Panel são exclusivos entre si: abrir um fecha os demais.

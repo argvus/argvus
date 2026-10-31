@@ -20,7 +20,17 @@ pub(super) fn present_popup(
   controller: &Rc<PopupController>,
   fixed_position: Option<PopupAnchor>,
 ) {
-  controller.present(window, popup, fixed_position, POPUP_SIZE);
+  let window = window.clone();
+  let popup = popup.clone();
+  let controller = Rc::clone(controller);
+  let hold = relm4::main_application().hold();
+  argvus_taskbar_popup::close_competing_surfaces(
+    argvus_taskbar_popup::PopupApp::Calendar,
+    move || {
+      let _hold = hold;
+      controller.present(&window, &popup, fixed_position, POPUP_SIZE);
+    },
+  );
 }
 
 pub(super) fn apply_layer_shell(window: &gtk::Window) {

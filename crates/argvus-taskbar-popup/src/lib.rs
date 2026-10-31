@@ -13,7 +13,9 @@
 //!   closes the popup from reopening it.
 
 pub mod controller;
+pub mod exclusive;
 pub mod geometry;
 
 pub use controller::PopupController;
+pub use exclusive::{PopupApp, close_competing_surfaces};
 pub use geometry::{PopupAnchor, PopupBounds, PopupSize};

@@ -79,3 +79,5 @@ The highlight color is read from `~/.config/argvus/data/.accent-color` and appli
 on top of the theme's colours.
 
 Automatic language selection follows the user `locale.conf`, with English as the default. Explicit calendar language preferences still override automatic selection.
+
+The taskbar calendar, ARGVUS Focus, ARGVUS Clock and Control Panel are mutually exclusive: opening one closes the others.

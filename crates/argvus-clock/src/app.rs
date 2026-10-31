@@ -20,7 +20,7 @@ use std::path::PathBuf;
 use std::rc::Rc;
 use std::time::Duration;
 
-use argvus_taskbar_popup::PopupAnchor;
+use argvus_taskbar_popup::{PopupAnchor, PopupApp, close_competing_surfaces};
 use argvus_time_core::alarm::{AlarmBook, AlarmDraft, AlarmId, Due, DueKind, SoundChoice};
 use argvus_time_core::elapsed::Stopwatch;
 use argvus_time_core::store::{AppDirs, Loaded, StoreError};
@@ -100,6 +100,7 @@ pub struct ClockApp {
   launched: Cell<bool>,
   autostart: Cell<Option<bool>>,
   theme: OnceCell<Rc<ThemeStyle>>,
+  pending_presentations: Cell<usize>,
   window: OnceCell<ClockWindow>,
   ring_window: OnceCell<RingWindow>,
 }
@@ -198,6 +199,7 @@ impl ClockApp {
       launched: Cell::new(false),
       autostart: Cell::new(None),
       theme: OnceCell::new(),
+      pending_presentations: Cell::new(0),
       window: OnceCell::new(),
       ring_window: OnceCell::new(),
     })
@@ -741,9 +743,10 @@ impl ClockApp {
 
   pub fn edit_alarm(self: &Rc<Self>, id: Option<AlarmId>) {
     if let Some(window) = self.window.get() {
+      let visible = window.window.is_visible();
       window.edit_alarm(self, id);
-      if !window.window.is_visible() {
-        window.present(None);
+      if !visible {
+        self.present(None, None);
       }
     }
   }
@@ -899,14 +902,25 @@ impl ClockApp {
   /// Shows the popup next to the taskbar; `anchor` is the click position the
   /// taskbar passed, if any.
   pub fn present(self: &Rc<Self>, anchor: Option<PopupAnchor>, page: Option<Page>) {
-    if let Some(window) = self.window.get() {
-      if let Some(page) = page {
-        window.show_page(page);
+    self
+      .pending_presentations
+      .set(self.pending_presentations.get() + 1);
+    let hold = self.application.hold();
+    let app = Rc::clone(self);
+    close_competing_surfaces(PopupApp::Clock, move || {
+      let _hold = hold;
+      app
+        .pending_presentations
+        .set(app.pending_presentations.get() - 1);
+      if let Some(window) = app.window.get() {
+        if let Some(page) = page {
+          window.show_page(page);
+        }
+        window.present(anchor);
       }
-      window.present(anchor);
-    }
-    self.refresh();
-    self.schedule_heartbeat();
+      app.refresh();
+      app.schedule_heartbeat();
+    });
   }
 
   fn toggle_window(self: &Rc<Self>, anchor: Option<PopupAnchor>, page: Option<Page>) {
@@ -931,6 +945,9 @@ impl ClockApp {
   }
 
   fn quit_if_idle(self: &Rc<Self>) {
+    if self.pending_presentations.get() != 0 {
+      return;
+    }
     if !self.launched.get() {
       return;
     }

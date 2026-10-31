@@ -16,7 +16,7 @@ use std::path::PathBuf;
 use std::rc::Rc;
 use std::time::Duration;
 
-use argvus_taskbar_popup::PopupAnchor;
+use argvus_taskbar_popup::{PopupAnchor, PopupApp, close_competing_surfaces};
 use argvus_time_core::duration::rounded_minutes;
 use argvus_time_core::focus_status::{self, FocusStatus};
 use argvus_time_core::pomodoro::{Mode, Phase};
@@ -82,6 +82,7 @@ pub struct FocusApp {
   sound: SoundPlayer,
   notice: RefCell<Option<Notice>>,
   theme: OnceCell<Rc<ThemeStyle>>,
+  pending_presentations: Cell<usize>,
   window: OnceCell<FocusWindow>,
 }
 
@@ -182,6 +183,7 @@ impl FocusApp {
       sound: SoundPlayer::new(),
       notice: RefCell::new(notice),
       theme: OnceCell::new(),
+      pending_presentations: Cell::new(0),
       window: OnceCell::new(),
     })
   }
@@ -591,10 +593,21 @@ impl FocusApp {
   /// Shows the popup next to the taskbar; `anchor` is the click position the
   /// taskbar passed, if any.
   pub fn present(self: &Rc<Self>, anchor: Option<PopupAnchor>) {
-    if let Some(window) = self.window.get() {
-      window.present(anchor);
-    }
-    self.refresh();
+    self
+      .pending_presentations
+      .set(self.pending_presentations.get() + 1);
+    let hold = self.application.hold();
+    let app = Rc::clone(self);
+    close_competing_surfaces(PopupApp::Focus, move || {
+      let _hold = hold;
+      app
+        .pending_presentations
+        .set(app.pending_presentations.get() - 1);
+      if let Some(window) = app.window.get() {
+        window.present(anchor);
+      }
+      app.refresh();
+    });
   }
 
   fn toggle_window(self: &Rc<Self>, anchor: Option<PopupAnchor>) {
@@ -620,6 +633,9 @@ impl FocusApp {
   }
 
   fn quit_if_idle(self: &Rc<Self>) {
+    if self.pending_presentations.get() != 0 {
+      return;
+    }
     let hidden = self
       .window
       .get()
@@ -630,13 +646,18 @@ impl FocusApp {
   }
 
   pub fn show_page(self: &Rc<Self>, page: Page) {
+    let visible = self
+      .window
+      .get()
+      .is_some_and(|window| window.window.is_visible());
     if let Some(window) = self.window.get() {
       window.show_page(page);
-      if !window.window.is_visible() {
-        window.present(None);
-      }
     }
-    self.refresh();
+    if visible {
+      self.refresh();
+    } else {
+      self.present(None);
+    }
   }
 
   pub fn refresh(self: &Rc<Self>) {

@@ -82,7 +82,13 @@ impl App {
     match locale::set_lang(value, &self.generated_locales) {
       Ok(()) => {
         self.lang = Lang::for_locale(value);
-        self.success(tr(self.lang, "control_center.user_locale_applied").to_owned());
+        match locale::restart_control_panel() {
+          Ok(()) => self.success(tr(self.lang, "control_center.user_locale_applied").to_owned()),
+          Err(error) => {
+            eprintln!("could not restart argvus-control-panel.service: {error}");
+            self.fail(tr(self.lang, "control_center.control_panel_restart_failed"));
+          }
+        }
       }
       Err(error) => {
         eprintln!("{error}");
