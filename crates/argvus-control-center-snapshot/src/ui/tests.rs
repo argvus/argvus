@@ -18,6 +18,45 @@ fn snapshot(number: u32, active: bool) -> Snapshot {
 fn press(app: &mut SnapshotApp, key: KeyCode) {
   app.handle_key(KeyEvent::new(key, KeyModifiers::NONE));
 }
+
+#[test]
+fn comparison_selection_rejects_same_snapshot_and_returns_from_diff() {
+  let mut app = app();
+  app.config = Some("system".into());
+  app.state = Some(Integration::Ready {
+    config: "system".into(),
+    snapshots: vec![snapshot(1, false), snapshot(2, false)],
+  });
+  press(&mut app, KeyCode::Char('b'));
+  assert_eq!(app.origin.as_ref().unwrap().number, 1);
+  press(&mut app, KeyCode::Char('v'));
+  assert!(app.job.is_none());
+  assert!(app.status.is_some());
+  press(&mut app, KeyCode::Down);
+  app.comparison = Some(Comparison {
+    origin: 1,
+    destination: 2,
+    changes: vec![ChangedPath {
+      path: "/etc/a".into(),
+      indicators: "c.....".into(),
+      kind: ChangeKind::Modified,
+      content: true,
+      file_type: false,
+      permissions: false,
+      owner: false,
+      group: false,
+      xattrs: false,
+      acl: false,
+    }],
+  });
+  app.diff = Some(FileDiff::Text("line 1\nline 2".into()));
+  press(&mut app, KeyCode::Down);
+  assert_eq!(app.diff_scroll, 1);
+  press(&mut app, KeyCode::Esc);
+  assert!(app.diff.is_none() && app.comparison.is_some());
+  press(&mut app, KeyCode::Esc);
+  assert!(app.comparison.is_none() && app.origin.is_some());
+}
 #[test]
 fn unsupported_state_never_offers_a_mutation() {
   let mut app = app();

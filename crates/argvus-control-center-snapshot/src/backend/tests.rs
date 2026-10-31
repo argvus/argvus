@@ -50,6 +50,104 @@ fn ready(rows: Vec<Value>) -> Vec<Result<ProcessOutput, ProcessError>> {
 }
 
 #[test]
+fn parses_status_indicators_and_paths_without_losing_spaces() {
+  let changes = parse_status(b"+..... /new file\n-..... /gone\ncpu gxa /broken\n").unwrap_err();
+  assert_eq!(changes.kind, ErrorKind::Invalid);
+  let changes =
+    parse_status("+..... /new file\n-..... /gone\ncpugxa /módulo\nt..... /type\n".as_bytes())
+      .unwrap();
+  assert_eq!(changes.len(), 4);
+  assert_eq!(changes[0].kind, ChangeKind::Created);
+  assert_eq!(changes[1].kind, ChangeKind::Removed);
+  assert_eq!(changes[2].path, "/módulo");
+  assert!(
+    changes[2].content
+      && changes[2].permissions
+      && changes[2].owner
+      && changes[2].group
+      && changes[2].xattrs
+      && changes[2].acl
+  );
+  assert!(changes[3].file_type);
+  for bad in [
+    "...... /same",
+    "z..... /bad",
+    "c..... relative",
+    "c..... /a/../b",
+    "c..... /a\u{1b}",
+  ] {
+    assert!(parse_status(bad.as_bytes()).is_err(), "{bad}");
+  }
+}
+
+#[test]
+fn comparison_rechecks_root_and_uses_structured_arguments() {
+  let mut replies = ready(vec![row(1, false, false), row(2, false, false)]);
+  replies.push(output("c..... /etc/a file\n"));
+  let backend = backend(replies);
+  let comparison = backend.compare("system", 1, 2).unwrap();
+  assert_eq!(comparison.changes[0].path, "/etc/a file");
+  let requests = backend.runner.requests.lock().unwrap();
+  let status = requests.last().unwrap();
+  assert_eq!(status.program, "/usr/bin/snapper");
+  assert_eq!(status.args, ["-c", "system", "status", "1..2"]);
+}
+
+#[test]
+fn diff_rechecks_status_and_limits_output() {
+  let mut replies = ready(vec![row(1, false, false), row(2, false, false)]);
+  replies.push(output("c..... /etc/a file\n"));
+  replies.push(Err(ProcessError::OutputLimit));
+  let backend = backend(replies);
+  assert_eq!(
+    backend.diff("system", 1, 2, "/etc/a file").unwrap(),
+    FileDiff::Truncated
+  );
+  let requests = backend.runner.requests.lock().unwrap();
+  let diff = requests.last().unwrap();
+  assert_eq!(diff.args, ["-c", "system", "diff", "1..2", "/etc/a file"]);
+  assert_eq!(diff.output_limit, Some(DIFF_LIMIT));
+}
+
+#[test]
+fn diff_reports_non_utf8_and_rejects_unlisted_paths() {
+  let mut replies = ready(vec![row(1, false, false), row(2, false, false)]);
+  replies.push(output("c..... /etc/a\n"));
+  let comparison_backend = backend(replies);
+  assert_eq!(
+    comparison_backend
+      .diff("system", 1, 2, "/etc/b")
+      .unwrap_err()
+      .kind,
+    ErrorKind::Invalid
+  );
+  assert_eq!(comparison_backend.runner.requests.lock().unwrap().len(), 6);
+
+  let mut replies = ready(vec![row(1, false, false), row(2, false, false)]);
+  replies.push(output("c..... /etc/a\n"));
+  replies.push(Ok(ProcessOutput {
+    stdout: vec![0xff],
+    stderr: vec![],
+    status: Some(0),
+    timed_out: false,
+  }));
+  assert_eq!(
+    backend(replies).diff("system", 1, 2, "/etc/a").unwrap(),
+    FileDiff::Binary
+  );
+}
+
+#[test]
+fn comparison_rejects_equal_ids_before_invoking_processes() {
+  let backend = backend(vec![]);
+  assert_eq!(
+    backend.compare("system", 1, 1).unwrap_err().kind,
+    ErrorKind::Invalid
+  );
+  assert!(backend.runner.requests.lock().unwrap().is_empty());
+}
+
+#[test]
 fn identifies_only_the_root_mount() {
   for filesystem in ["btrfs", "ext4", "xfs", "overlay", "tmpfs"] {
     assert_eq!(parse_root(root(filesystem).as_bytes()).unwrap(), filesystem);

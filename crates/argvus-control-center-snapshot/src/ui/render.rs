@@ -13,6 +13,12 @@ impl SnapshotApp {
     {
       label(self.lang, "authorize_help")
     } else if self.error.is_none() && matches!(self.state, Some(Integration::Ready { .. })) {
+      if self.diff.is_some() {
+        return label(self.lang, "diff_help");
+      }
+      if self.comparison.is_some() {
+        return label(self.lang, "comparison_help");
+      }
       label(self.lang, "help")
     } else {
       label(self.lang, "refresh_help")
@@ -35,6 +41,7 @@ impl SnapshotApp {
     if !self.busy()
       && self.error.is_none()
       && !self.details
+      && self.diff.is_none()
       && matches!(
         self.state,
         Some(Integration::Ready { .. } | Integration::ChooseConfig(_))
@@ -47,7 +54,15 @@ impl SnapshotApp {
         content,
         &self.theme,
         &rows,
-        self.selection.index.min(rows.len().saturating_sub(1)),
+        if self.comparison.is_some() {
+          self
+            .change_selection
+            .index
+            .saturating_add(3)
+            .min(rows.len().saturating_sub(1))
+        } else {
+          self.selection.index.min(rows.len().saturating_sub(1))
+        },
       );
     } else {
       readonly(
@@ -114,6 +129,8 @@ impl SnapshotApp {
             Phase::Detecting => "detecting",
             Phase::Loading => "loading",
             Phase::Changing => "changing",
+            Phase::Comparing => "comparing",
+            Phase::Diffing => "diffing",
           },
         )
         .into(),
@@ -121,6 +138,71 @@ impl SnapshotApp {
     }
     if let Some(error) = &self.error {
       return vec![error_text(self.lang, error)];
+    }
+    if let Some(diff) = &self.diff {
+      return match diff {
+        FileDiff::Text(text) => text
+          .lines()
+          .skip(self.diff_scroll)
+          .map(|line| line.chars().skip(self.diff_horizontal).collect())
+          .collect(),
+        FileDiff::Binary => vec![label(self.lang, "binary").into()],
+        FileDiff::Truncated => vec![label(self.lang, "truncated").into()],
+      };
+    }
+    if let Some(comparison) = &self.comparison {
+      let snapshots = match &self.state {
+        Some(Integration::Ready { snapshots, .. }) => snapshots.as_slice(),
+        _ => &[],
+      };
+      let describe = |number| {
+        snapshots
+          .iter()
+          .find(|snapshot| snapshot.number == number)
+          .map(|snapshot| format!("#{number} · {} · {}", snapshot.date, snapshot.description))
+          .unwrap_or_else(|| format!("#{number}"))
+      };
+      let mut rows = vec![
+        format!(
+          "{} {} → {} {}",
+          label(self.lang, "origin"),
+          describe(comparison.origin),
+          label(self.lang, "destination"),
+          describe(comparison.destination)
+        ),
+        format!(
+          "{} {} · {} {} · {} {}",
+          comparison
+            .changes
+            .iter()
+            .filter(|change| change.kind == ChangeKind::Created)
+            .count(),
+          label(self.lang, "created_kind"),
+          comparison
+            .changes
+            .iter()
+            .filter(|change| change.kind == ChangeKind::Removed)
+            .count(),
+          label(self.lang, "removed_kind"),
+          comparison
+            .changes
+            .iter()
+            .filter(|change| change.kind == ChangeKind::Modified)
+            .count(),
+          label(self.lang, "modified_kind")
+        ),
+        String::new(),
+      ];
+      if comparison.changes.is_empty() {
+        rows.push(label(self.lang, "no_changes").into());
+      }
+      rows.extend(
+        comparison
+          .changes
+          .iter()
+          .map(|change| format!("{} {}", change.indicators, change.path)),
+      );
+      return rows;
     }
     match &self.state {
       Some(Integration::NonBtrfs(filesystem)) => vec![
@@ -134,6 +216,15 @@ impl SnapshotApp {
         .map(|config| format!("{}: {config}", label(self.lang, "choose_config")))
         .collect(),
       Some(Integration::Ready { snapshots, config }) => {
+        let base = self.origin.as_ref().map(|snapshot| {
+          format!(
+            "{} #{} · {} · {}",
+            label(self.lang, "origin"),
+            snapshot.number,
+            snapshot.date,
+            snapshot.description
+          )
+        });
         if self.details
           && let Some(snapshot) = self.selected()
         {
@@ -171,7 +262,7 @@ impl SnapshotApp {
         if snapshots.is_empty() {
           return vec![label(self.lang, "empty").into()];
         }
-        snapshots
+        let mut rows: Vec<String> = snapshots
           .iter()
           .map(|snapshot| {
             format!(
@@ -188,7 +279,11 @@ impl SnapshotApp {
               }
             )
           })
-          .collect()
+          .collect();
+        if let Some(base) = base {
+          rows.push(base);
+        }
+        rows
       }
       None => vec![],
     }

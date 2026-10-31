@@ -43,6 +43,12 @@ both successful and failed mutation results.
 
 ## Restricted privilege interface
 
+Comparison adds restricted `status <config> <origin> <destination>` and
+`diff <config> <origin> <destination> <path>` operations. The privileged backend
+rechecks the root configuration and snapshot IDs, and the diff path must appear
+in a freshly parsed status result. Status is limited to 1 MiB; diff is limited
+to 256 KiB. The fake ProcessRunner tests exercise argument boundaries.
+
 The existing `SystemSettingsOperation` builds the helper chain. Ordinary queries
 run without elevation. On denied access, `a — Authorize` explicitly enables
 queries through Polkit; opening the page never triggers authentication by itself.

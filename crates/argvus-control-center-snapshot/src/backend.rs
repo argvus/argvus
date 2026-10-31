@@ -10,6 +10,7 @@ use std::{collections::BTreeSet, io::ErrorKind as IoErrorKind, time::Duration};
 const FINDMNT: &str = "/usr/bin/findmnt";
 const SNAPPER: &str = "/usr/bin/snapper";
 const LIMIT: usize = 1024 * 1024;
+const DIFF_LIMIT: usize = 256 * 1024;
 const COLUMNS: &str = "number,type,date,description,cleanup,active,default";
 
 fn invalid(detail: impl Into<String>) -> SnapshotError {
@@ -166,6 +167,90 @@ impl<R: ProcessRunner> SnapshotBackend<R> {
 
   fn snapper(&self, args: &[&str], mutation: bool) -> SnapshotResult<Vec<u8>> {
     self.checked(SNAPPER, args, mutation)
+  }
+
+  fn comparison_snapshots(
+    &self,
+    config: &str,
+    origin: u32,
+    destination: u32,
+  ) -> SnapshotResult<()> {
+    validate_config(config)?;
+    if origin == 0 || destination == 0 || origin == destination {
+      return Err(invalid(
+        "comparison requires two distinct positive snapshot IDs",
+      ));
+    }
+    let Integration::Ready { snapshots, .. } = self.inspect(Some(config))? else {
+      return Err(invalid("root snapshot integration is unavailable"));
+    };
+    if ![origin, destination]
+      .iter()
+      .all(|number| snapshots.iter().any(|snapshot| snapshot.number == *number))
+    {
+      return Err(invalid("snapshot no longer exists"));
+    }
+    Ok(())
+  }
+
+  pub fn compare(&self, config: &str, origin: u32, destination: u32) -> SnapshotResult<Comparison> {
+    self.comparison_snapshots(config, origin, destination)?;
+    let range = format!("{origin}..{destination}");
+    let request = ProcessRequest::new(SNAPPER)
+      .arg("-c")
+      .arg(config)
+      .arg("status")
+      .arg(&range)
+      .env("LC_ALL", "C.UTF-8")
+      .timeout(Duration::from_secs(120))
+      .output_limit(LIMIT);
+    let output = self
+      .runner
+      .run(&request)
+      .map_err(|error| SnapshotError::new(ErrorKind::Snapper, error.to_string()))
+      .and_then(check_output)?;
+    Ok(Comparison {
+      origin,
+      destination,
+      changes: parse_status(&output)?,
+    })
+  }
+
+  pub fn diff(
+    &self,
+    config: &str,
+    origin: u32,
+    destination: u32,
+    path: &str,
+  ) -> SnapshotResult<FileDiff> {
+    validate_change_path(path)?;
+    let comparison = self.compare(config, origin, destination)?;
+    if !comparison.changes.iter().any(|change| change.path == path) {
+      return Err(invalid("path is not in the current comparison"));
+    }
+    let range = format!("{origin}..{destination}");
+    let request = ProcessRequest::new(SNAPPER)
+      .arg("-c")
+      .arg(config)
+      .arg("diff")
+      .arg(&range)
+      .arg(path)
+      .env("LC_ALL", "C.UTF-8")
+      .timeout(Duration::from_secs(120))
+      .output_limit(DIFF_LIMIT);
+    let output = match self.runner.run(&request) {
+      Err(ProcessError::OutputLimit) => return Ok(FileDiff::Truncated),
+      Err(error) => return Err(SnapshotError::new(ErrorKind::Snapper, error.to_string())),
+      Ok(output) => check_output(output)?,
+    };
+    let text = match String::from_utf8(output) {
+      Ok(text) => text,
+      Err(_) => return Ok(FileDiff::Binary),
+    };
+    if text.contains('\0') || text.contains("Binary files") || text.contains("Binary file") {
+      return Ok(FileDiff::Binary);
+    }
+    Ok(FileDiff::Text(terminal_text(&text)))
   }
 
   /// Query config values through Snapper rather than sourcing `/etc` files.
@@ -348,8 +433,91 @@ pub fn validate_helper(action: &str, values: &[String]) -> SnapshotResult<()> {
       validate_config(config)?;
       parse_number(number).map(|_| ())
     }
+    ("status", [config, origin, destination]) => {
+      validate_config(config)?;
+      let (origin, destination) = (parse_number(origin)?, parse_number(destination)?);
+      if origin == destination {
+        return Err(invalid("snapshots must differ"));
+      }
+      Ok(())
+    }
+    ("diff", [config, origin, destination, path]) => {
+      validate_config(config)?;
+      let (origin, destination) = (parse_number(origin)?, parse_number(destination)?);
+      if origin == destination {
+        return Err(invalid("snapshots must differ"));
+      }
+      validate_change_path(path)
+    }
     _ => Err(invalid("unsupported snapshot request")),
   }
+}
+
+/// Snapper's six fixed status positions precede one separating space and the path.
+pub fn parse_status(output: &[u8]) -> SnapshotResult<Vec<ChangedPath>> {
+  let text = std::str::from_utf8(output).map_err(|_| invalid("status is not UTF-8"))?;
+  let mut changes = Vec::new();
+  let mut seen = BTreeSet::new();
+  for (index, line) in text.lines().enumerate() {
+    if line.is_empty() {
+      continue;
+    }
+    let bytes = line.as_bytes();
+    if bytes.len() < 9 || bytes[6] != b' ' {
+      return Err(invalid(format!("invalid status line {}", index + 1)));
+    }
+    let indicators = &line[..6];
+    let valid = [b".+-ct".as_slice(), b".p", b".u", b".g", b".x", b".a"];
+    if !bytes[..6]
+      .iter()
+      .enumerate()
+      .all(|(position, byte)| valid[position].contains(byte))
+    {
+      return Err(invalid(format!(
+        "invalid status indicators on line {}",
+        index + 1
+      )));
+    }
+    let path = &line[7..];
+    validate_change_path(path)
+      .map_err(|_| invalid(format!("invalid status path on line {}", index + 1)))?;
+    if !seen.insert(path) || indicators == "......" {
+      return Err(invalid(format!("ambiguous status line {}", index + 1)));
+    }
+    let kind = match bytes[0] {
+      b'+' => ChangeKind::Created,
+      b'-' => ChangeKind::Removed,
+      _ => ChangeKind::Modified,
+    };
+    changes.push(ChangedPath {
+      path: path.into(),
+      indicators: indicators.into(),
+      kind,
+      content: bytes[0] == b'c',
+      file_type: bytes[0] == b't',
+      permissions: bytes[1] == b'p',
+      owner: bytes[2] == b'u',
+      group: bytes[3] == b'g',
+      xattrs: bytes[4] == b'x',
+      acl: bytes[5] == b'a',
+    });
+  }
+  Ok(changes)
+}
+
+pub fn validate_change_path(path: &str) -> SnapshotResult<()> {
+  if !path.starts_with('/')
+    || path == "/"
+    || path.len() > 4096
+    || path.chars().any(char::is_control)
+    || path
+      .split('/')
+      .skip(1)
+      .any(|part| part.is_empty() || matches!(part, "." | ".."))
+  {
+    return Err(invalid("invalid comparison path"));
+  }
+  Ok(())
 }
 
 #[cfg(test)]

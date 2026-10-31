@@ -63,3 +63,38 @@ impl std::fmt::Display for SnapshotError {
 impl std::error::Error for SnapshotError {}
 
 pub type SnapshotResult<T> = Result<T, SnapshotError>;
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct Comparison {
+  pub origin: u32,
+  pub destination: u32,
+  pub changes: Vec<ChangedPath>,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum ChangeKind {
+  Created,
+  Removed,
+  Modified,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ChangedPath {
+  pub path: String,
+  pub indicators: String,
+  pub kind: ChangeKind,
+  pub content: bool,
+  pub file_type: bool,
+  pub permissions: bool,
+  pub owner: bool,
+  pub group: bool,
+  pub xattrs: bool,
+  pub acl: bool,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub enum FileDiff {
+  Text(String),
+  Binary,
+  Truncated,
+}

@@ -31,12 +31,16 @@ enum Reply {
   Root(String),
   Inspected(Integration),
   Changed(Option<u32>),
+  Compared(Comparison),
+  Diffed(FileDiff),
 }
 #[derive(Debug, Clone, Copy)]
 enum Phase {
   Detecting,
   Loading,
   Changing,
+  Comparing,
+  Diffing,
 }
 
 pub struct SnapshotApp {
@@ -54,6 +58,12 @@ pub struct SnapshotApp {
   confirmation: Option<(ConfirmState, PendingAction)>,
   details: bool,
   status: Option<StatusMessage>,
+  origin: Option<Snapshot>,
+  comparison: Option<Comparison>,
+  change_selection: Selection,
+  diff: Option<FileDiff>,
+  diff_scroll: usize,
+  diff_horizontal: usize,
 }
 impl SnapshotApp {
   pub fn new(lang: Lang, theme: Theme) -> Self {
@@ -72,6 +82,12 @@ impl SnapshotApp {
       confirmation: None,
       details: false,
       status: None,
+      origin: None,
+      comparison: None,
+      change_selection: Selection::default(),
+      diff: None,
+      diff_scroll: 0,
+      diff_horizontal: 0,
     }
   }
   pub fn set_theme(&mut self, theme: &Theme) {
@@ -103,6 +119,8 @@ impl SnapshotApp {
     self.editor = None;
     self.confirmation = None;
     self.error = None;
+    self.comparison = None;
+    self.diff = None;
     self.phase = Phase::Detecting;
     self.job = Some(self.jobs.spawn(|_| {
       Ok(
@@ -146,6 +164,9 @@ impl SnapshotApp {
       Ok(Reply::Inspected(state)) => {
         let selected = self.selected().map(|snapshot| snapshot.number);
         if let Integration::Ready { config, snapshots } = &state {
+          if self.config.as_deref().is_some_and(|old| old != config) {
+            self.origin = None;
+          }
           self.config = Some(config.clone());
           self.selection.index = selected
             .and_then(|number| {
@@ -167,6 +188,16 @@ impl SnapshotApp {
         });
         self.reload();
       }
+      Ok(Reply::Compared(comparison)) => {
+        self.change_selection.index = 0;
+        self.comparison = Some(comparison);
+        self.diff = None;
+      }
+      Ok(Reply::Diffed(diff)) => {
+        self.diff_scroll = 0;
+        self.diff_horizontal = 0;
+        self.diff = Some(diff);
+      }
       Err(error) => {
         // A mutation may have completed despite a lost reply. Read back, never retry it.
         if matches!(self.phase, Phase::Changing) {
@@ -186,6 +217,73 @@ impl SnapshotApp {
       }
     }
     true
+  }
+  fn compare(&mut self) {
+    let (Some(config), Some(origin), Some(destination)) = (
+      self.config.clone(),
+      self.origin.as_ref().map(|snapshot| snapshot.number),
+      self.selected().map(|snapshot| snapshot.number),
+    ) else {
+      return;
+    };
+    if origin == destination {
+      self.status = Some(StatusMessage {
+        kind: StatusKind::Error,
+        text: label(self.lang, "same_snapshot").into(),
+      });
+      return;
+    }
+    self.phase = Phase::Comparing;
+    self.error = None;
+    let authorized = self.authorized;
+    self.job = Some(self.jobs.spawn(move |_| {
+      Ok(if authorized {
+        elevated(
+          "status",
+          &[config, origin.to_string(), destination.to_string()],
+        )
+        .and_then(|output| {
+          serde_json::from_slice::<SnapshotResult<Comparison>>(&output).map_err(wire_error)?
+        })
+        .map(Reply::Compared)
+      } else {
+        SnapshotBackend::new(SystemProcessRunner)
+          .compare(&config, origin, destination)
+          .map(Reply::Compared)
+      })
+    }));
+  }
+  fn open_diff(&mut self) {
+    let (Some(config), Some(comparison)) = (self.config.clone(), self.comparison.as_ref()) else {
+      return;
+    };
+    let (Some(change), origin, destination) = (
+      comparison.changes.get(self.change_selection.index),
+      comparison.origin,
+      comparison.destination,
+    ) else {
+      return;
+    };
+    let path = change.path.clone();
+    self.phase = Phase::Diffing;
+    self.error = None;
+    let authorized = self.authorized;
+    self.job = Some(self.jobs.spawn(move |_| {
+      Ok(if authorized {
+        elevated(
+          "diff",
+          &[config, origin.to_string(), destination.to_string(), path],
+        )
+        .and_then(|output| {
+          serde_json::from_slice::<SnapshotResult<FileDiff>>(&output).map_err(wire_error)?
+        })
+        .map(Reply::Diffed)
+      } else {
+        SnapshotBackend::new(SystemProcessRunner)
+          .diff(&config, origin, destination, &path)
+          .map(Reply::Diffed)
+      })
+    }));
   }
   fn selected(&self) -> Option<&Snapshot> {
     match &self.state {
@@ -217,6 +315,12 @@ impl SnapshotApp {
 
   pub fn handle_key(&mut self, key: KeyEvent) -> bool {
     if self.busy() {
+      if key.code == KeyCode::Esc && matches!(self.phase, Phase::Comparing | Phase::Diffing) {
+        if let Some(job) = &self.job {
+          job.cancel();
+        }
+        self.job = None;
+      }
       return false;
     }
     if let Some(editor) = &mut self.editor {
@@ -258,6 +362,15 @@ impl SnapshotApp {
       return false;
     }
     if key.code == KeyCode::Esc {
+      if self.error.take().is_some() {
+        return false;
+      }
+      if self.diff.take().is_some() {
+        return false;
+      }
+      if self.comparison.take().is_some() {
+        return false;
+      }
       if self.details {
         self.details = false;
         return false;
@@ -278,7 +391,47 @@ impl SnapshotApp {
       {
         self.authorized = true;
         self.error = None;
-        self.inspect();
+        if matches!(self.phase, Phase::Comparing) {
+          self.compare();
+        } else if matches!(self.phase, Phase::Diffing) {
+          self.open_diff();
+        } else {
+          self.inspect();
+        }
+      }
+      return false;
+    }
+    if let Some(diff) = &self.diff {
+      if matches!(diff, FileDiff::Text(_)) {
+        match key.code {
+          KeyCode::Down | KeyCode::Char('j') => {
+            self.diff_scroll = self.diff_scroll.saturating_add(1)
+          }
+          KeyCode::Up | KeyCode::Char('k') => self.diff_scroll = self.diff_scroll.saturating_sub(1),
+          KeyCode::PageDown => self.diff_scroll = self.diff_scroll.saturating_add(10),
+          KeyCode::PageUp => self.diff_scroll = self.diff_scroll.saturating_sub(10),
+          KeyCode::Right | KeyCode::Char('l') => {
+            self.diff_horizontal = self.diff_horizontal.saturating_add(4)
+          }
+          KeyCode::Left | KeyCode::Char('h') => {
+            self.diff_horizontal = self.diff_horizontal.saturating_sub(4)
+          }
+          _ => {}
+        }
+      }
+      return false;
+    }
+    if let Some(comparison) = &self.comparison {
+      match key.code {
+        KeyCode::Down | KeyCode::Char('j') => {
+          self.change_selection.index =
+            (self.change_selection.index + 1).min(comparison.changes.len().saturating_sub(1))
+        }
+        KeyCode::Up | KeyCode::Char('k') => {
+          self.change_selection.index = self.change_selection.index.saturating_sub(1)
+        }
+        KeyCode::Enter => self.open_diff(),
+        _ => {}
       }
       return false;
     }
@@ -288,6 +441,10 @@ impl SnapshotApp {
       _ => 0,
     };
     match key.code {
+      KeyCode::Char('b') if self.selected().is_some() => {
+        self.origin = self.selected().cloned();
+      }
+      KeyCode::Char('v') if self.origin.is_some() => self.compare(),
       KeyCode::Up | KeyCode::Char('k') => {
         self.selection.index = self.selection.index.saturating_sub(1)
       }
@@ -296,6 +453,7 @@ impl SnapshotApp {
       }
       KeyCode::Enter => {
         if let Some(Integration::ChooseConfig(configs)) = &self.state {
+          self.origin = None;
           self.config = configs.get(self.selection.index).cloned();
           self.reload();
         } else {

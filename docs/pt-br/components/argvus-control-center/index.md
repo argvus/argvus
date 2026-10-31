@@ -377,6 +377,22 @@ Abra **Área de trabalho e entrada > Monitores > Luz noturna** ou execute `argvu
 
 ## Snapshot
 
+Para comparar snapshots, selecione a base e pressione **b**; selecione outro
+snapshot como destino e pressione **v**. A página mostra os IDs ordenados, as
+quantidades de caminhos criados, removidos e modificados e os seis indicadores
+do `snapper status`. Selecione um caminho e pressione **Enter** para consultar
+o diff textual; **Esc** volta aos caminhos e depois à lista de snapshots.
+O primeiro indicador representa criação, remoção ou alteração de conteúdo/tipo;
+os seguintes representam permissões, proprietário, grupo, atributos estendidos
+e ACL. Um ponto indica ausência de alteração nessa posição. `status` lista
+caminhos e `diff` mostra conteúdo. Conteúdo binário ou não UTF-8 não é exibido;
+diff maior que 256 KiB é informado como truncado. Linhas de status malformadas
+são rejeitadas. O formato do Snapper não representa sem ambiguidade caminhos com
+quebra de linha; esses nomes não são suportados. Em caso de
+permissão negada, use **a — Autorizar**. Se um snapshot desaparecer ou a
+configuração da raiz mudar, atualize a lista. Os testes do backend usam um
+`ProcessRunner` falso, sem exigir Btrfs, Snapper ou root.
+
 Abra **Central de Controle > Administração do sistema > Snapshot**, pesquise
 `Snapper` ou execute `argvus control-center snapshot`. A feature Cargo `snapshot`
 está em `full` (padrão) e independe de `storage`.

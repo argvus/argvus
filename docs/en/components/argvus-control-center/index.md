@@ -405,6 +405,21 @@ currently active snapshot and the default snapshot. The helper rechecks these
 conditions before invoking Snapper. Lists refresh after operations; an interrupted
 operation is never retried automatically. Inspect the refreshed list first.
 
+To compare snapshots, select the base and press **b**, then select a different
+destination and press **v**. The page shows the ordered IDs, counts of created,
+removed and modified paths, and Snapper's six status indicators. Select a path
+and press **Enter** to request its content diff; **Esc** returns to changed paths
+and then the snapshot list. The indicators encode creation/removal or content/type
+in position 1, permissions in 2, owner in 3, group in 4, extended attributes in
+5, and ACL in 6. A dot means no change in that position. Status lists paths;
+diff shows textual content. Binary/non-UTF-8 diff output is not rendered. Diff
+output above 256 KiB is reported as truncated and not displayed. Ambiguous or
+malformed status lines are rejected. Snapper's line format cannot represent paths
+with line breaks unambiguously; such names are unsupported. Permission
+errors can be retried through **a — Authorize**; a removed snapshot or changed
+root configuration requires refreshing the list. Backend tests use a fake
+`ProcessRunner` and do not require Snapper, Btrfs or root.
+
 Manual snapshots are `single`, read-only by Snapper's default, with no cleanup
 algorithm assigned by this page. Existing Snapper timers and external operations
 continue to apply. Snapshots are not full-system images: separate subvolumes,
