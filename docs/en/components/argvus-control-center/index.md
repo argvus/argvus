@@ -482,3 +482,5 @@ This requires Hyprland **0.57.0 or newer**, enforced by `argvus-hyprland`'s
 package dependency. Version 0.56 is unsupported for this configuration. The
 intensity maximum follows the [released 0.57.0 source](https://github.com/hyprwm/Hyprland/blob/v0.57.0/src/config/values/ConfigValues.cpp),
 which limits it to `2`, even though newer documentation may list `3`.
+
+Welcome opens with the ARGVUS logo and WELCOME. Press F6 Next to show the checklist without completing a step.

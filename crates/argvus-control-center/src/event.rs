@@ -76,6 +76,15 @@ pub fn handle(app: &mut App, event: Event) {
     app.finish_welcome_step(argvus_welcome::state::StepStatus::Reviewed);
     return;
   }
+  if app.route == Route::Welcome
+    && app.welcome.intro
+    && let Event::Mouse(mouse) = &event
+    && matches!(mouse.kind, MouseEventKind::Down(MouseButton::Left))
+    && mouse.row == app.height.saturating_sub(2)
+  {
+    app.handle_welcome(KeyCode::F(6));
+    return;
+  }
   handle_inner(app, event);
   if app.welcome.active && app.route == Route::Home {
     app.route = Route::Welcome;

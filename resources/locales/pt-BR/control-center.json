@@ -1,4 +1,5 @@
 {
+  "control_center.welcome_heading": "WELCOME",
   "control_center.wobble": "Wobble",
   "control_center.wobble_stiffness": "Rigidez",
   "control_center.wobble_damping": "Amortecimento",

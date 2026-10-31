@@ -481,3 +481,5 @@ O recurso exige Hyprland **0.57.0 ou superior**, garantido pela dependência do
 pacote `argvus-hyprland`. A versão 0.56 não é compatível com esta configuração.
 O máximo de intensidade segue o [código da versão 0.57.0](https://github.com/hyprwm/Hyprland/blob/v0.57.0/src/config/values/ConfigValues.cpp),
 que limita o valor a `2`, embora a documentação mais recente possa indicar `3`.
+
+O Welcome abre com o logo ARGVUS e WELCOME. Pressione F6 Next para ver as etapas sem concluir nenhuma etapa.

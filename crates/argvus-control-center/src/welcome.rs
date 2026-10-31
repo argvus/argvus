@@ -72,6 +72,9 @@ pub fn steps() -> Vec<Step> {
 }
 
 pub struct Welcome {
+  pub intro: bool,
+  #[cfg(feature = "about")]
+  logo: Option<argvus_control_center_about::image::Logo>,
   pub progress: Progress,
   pub selected: usize,
   pub active: bool,
@@ -91,6 +94,9 @@ impl Default for Welcome {
       .position(|step| step.id == progress.current_category)
       .unwrap_or(0);
     Self {
+      intro: true,
+      #[cfg(feature = "about")]
+      logo: None,
       progress,
       selected,
       active: false,
@@ -175,6 +181,7 @@ impl App {
 
   pub fn open_welcome(&mut self) {
     self.welcome.active = false;
+    self.welcome.intro = true;
     self.route = Route::Welcome;
     self.clear_global_search();
   }
@@ -213,6 +220,19 @@ impl App {
   }
 
   pub fn handle_welcome(&mut self, key: KeyCode) {
+    if self.welcome.intro {
+      match key {
+        KeyCode::F(6) => self.welcome.intro = false,
+        KeyCode::BackTab => self.welcome.next_focus = !self.welcome.next_focus,
+        KeyCode::Enter if self.welcome.next_focus => self.welcome.intro = false,
+        KeyCode::Esc => {
+          self.welcome.active = false;
+          self.route = Route::Home;
+        }
+        _ => {}
+      }
+      return;
+    }
     match key {
       KeyCode::Up => {
         self.welcome.selected = self.welcome.selected.saturating_sub(1);
@@ -261,6 +281,63 @@ pub fn draw(app: &mut App, frame: &mut Frame) {
     );
   let inner = block.inner(area);
   frame.render_widget(block, area);
+  if app.welcome.intro {
+    frame.render_widget(Paragraph::new(title).wrap(Wrap { trim: true }), inner);
+    let height = inner.height.saturating_sub(5).min(10);
+    let width = inner.width.min(height.saturating_mul(2));
+    let logo_area = ratatui::layout::Rect::new(
+      inner.x + inner.width.saturating_sub(width) / 2,
+      inner.y + 2 + inner.height.saturating_sub(height + 5) / 2,
+      width,
+      height,
+    );
+    #[cfg(not(feature = "about"))]
+    let visible = false;
+    #[cfg(feature = "about")]
+    let visible;
+    #[cfg(feature = "about")]
+    {
+      let logo = app
+        .welcome
+        .logo
+        .get_or_insert_with(argvus_control_center_about::image::Logo::new);
+      visible = logo.is_visible();
+      logo.sync_target(ratatui::layout::Size::new(width, height));
+      if logo.is_graphics() {
+        logo.render_graphics(frame, logo_area, &app.theme);
+      } else {
+        frame.render_widget(
+          Paragraph::new(logo.lines(width.into(), height.into(), &app.theme)),
+          logo_area,
+        );
+      }
+    }
+    if !visible {
+      frame.render_widget(Paragraph::new("ARGVUS").centered(), logo_area);
+    }
+    frame.render_widget(
+      Paragraph::new(tr(app.lang, "control_center.welcome_heading"))
+        .centered()
+        .style(Style::default().fg(app.theme.accent)),
+      ratatui::layout::Rect::new(
+        inner.x,
+        logo_area.bottom().min(inner.bottom().saturating_sub(2)),
+        inner.width,
+        1,
+      ),
+    );
+    frame.render_widget(
+      Paragraph::new(tr(app.lang, "control_center.welcome_next")),
+      ratatui::layout::Rect::new(inner.x, inner.bottom().saturating_sub(1), inner.width, 1),
+    );
+    if !app.welcome.progress.opened {
+      app.welcome.progress.opened = true;
+      if !app.welcome.save() {
+        app.welcome.progress.opened = false;
+      }
+    }
+    return;
+  }
   let rows = Layout::vertical([
     Constraint::Length(2),
     Constraint::Length(3),
@@ -332,6 +409,9 @@ mod tests {
 
   fn welcome(directory: &std::path::Path) -> Welcome {
     Welcome {
+      intro: false,
+      #[cfg(feature = "about")]
+      logo: None,
       progress: Progress::default(),
       selected: 0,
       active: false,
@@ -484,6 +564,48 @@ mod tests {
     assert_eq!(app.route, Route::Welcome);
     app.handle_welcome(KeyCode::Enter);
     assert_eq!(app.welcome.progress.status("language"), StepStatus::Pending);
+    assert_eq!(app.welcome.selected, 0);
+  }
+
+  #[test]
+  fn intro_renders_welcome_in_both_languages() {
+    for locale in ["en-US", "pt-BR"] {
+      let directory = tempfile::tempdir().unwrap();
+      let mut app = App::new(crate::app::InitialRoute::Welcome);
+      app.welcome = welcome(directory.path());
+      app.welcome.intro = true;
+      app.lang = argvus_i18n::Lang::for_locale(locale);
+      #[cfg(feature = "about")]
+      {
+        app.welcome.logo = Some(argvus_control_center_about::image::Logo::new());
+      }
+      let mut terminal =
+        ratatui::Terminal::new(ratatui::backend::TestBackend::new(100, 24)).unwrap();
+      terminal.draw(|frame| draw(&mut app, frame)).unwrap();
+      let contents: String = terminal
+        .backend()
+        .buffer()
+        .content
+        .iter()
+        .map(|cell| cell.symbol())
+        .collect();
+      assert!(contents.contains("WELCOME"));
+      assert!(!contents.contains("control_center.welcome_heading"));
+    }
+  }
+
+  #[test]
+  fn intro_advances_without_changing_progress() {
+    let directory = tempfile::tempdir().unwrap();
+    let mut app = App::new(crate::app::InitialRoute::Welcome);
+    app.welcome = welcome(directory.path());
+    app.welcome.intro = true;
+    app.handle_welcome(KeyCode::Char('s'));
+    assert!(app.welcome.intro);
+    assert!(!app.welcome.progress.started);
+    app.handle_welcome(KeyCode::F(6));
+    assert!(!app.welcome.intro);
+    assert!(!app.welcome.progress.started);
     assert_eq!(app.welcome.selected, 0);
   }
 
