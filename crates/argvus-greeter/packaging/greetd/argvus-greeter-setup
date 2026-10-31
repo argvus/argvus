@@ -279,6 +279,22 @@ install -Dm644 "$SOURCE_CONFIG" "$TARGET_CONFIG"
 printf 'Installed Argvus greetd config: %s\n' "$TARGET_CONFIG"
 
 if [ "$ENABLE" = true ]; then
+  # systemd creates display-manager.service as an alias when enabling a
+  # display manager. Disable the currently selected manager first so greetd
+  # can claim that alias. Resolve the alias to its unit instead of assuming
+  # a particular desktop environment or display-manager implementation.
+  if [ -L /etc/systemd/system/display-manager.service ]; then
+    display_manager_unit="$(readlink /etc/systemd/system/display-manager.service)"
+    display_manager_unit="${display_manager_unit##*/}"
+    case "$display_manager_unit" in
+      ''|greetd.service) ;;
+      *.service)
+        printf 'Disabling current display manager: %s\n' "$display_manager_unit"
+        systemctl disable "$display_manager_unit"
+        ;;
+      *) die "unsupported display-manager alias target: $display_manager_unit" ;;
+    esac
+  fi
   systemctl enable greetd.service
 fi
 
