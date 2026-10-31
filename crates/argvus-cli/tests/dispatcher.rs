@@ -155,6 +155,57 @@ fn unknown_command_fails_with_a_hint() {
 }
 
 #[test]
+fn welcome_if_needed_attempts_first_open_without_a_skeleton_marker() {
+  let sandbox = Sandbox::new("welcome-no-marker");
+  let output = sandbox.run(&sandbox.tools_path(), &["welcome", "--if-needed"], "");
+  assert!(!output.status.success());
+  assert!(text(&output.stderr).contains("active Hyprland graphical session"));
+}
+
+#[test]
+fn welcome_if_needed_requires_a_graphical_session_when_marker_exists() {
+  let sandbox = Sandbox::new("welcome-marker");
+  let state_dir = sandbox.root.join(".local/state/argvus/welcome");
+  fs::create_dir_all(&state_dir).expect("create onboarding state directory");
+  fs::write(state_dir.join("auto-start-pending"), b"").expect("create explicit marker");
+  let output = sandbox.run(&sandbox.tools_path(), &["welcome", "--if-needed"], "");
+  assert!(!output.status.success());
+  assert!(text(&output.stderr).contains("active Hyprland graphical session"));
+}
+
+#[test]
+fn welcome_if_needed_does_not_reopen_after_the_tui_was_displayed() {
+  let sandbox = Sandbox::new("welcome-already-opened");
+  let state_dir = sandbox.root.join(".local/state/argvus/welcome");
+  fs::create_dir_all(&state_dir).expect("create onboarding state directory");
+  fs::write(state_dir.join("auto-start-pending"), b"").expect("create explicit marker");
+  fs::write(
+    state_dir.join("progress.json"),
+    br#"{"schema_version":2,"opened":true}"#,
+  )
+  .expect("write opened state");
+  let output = sandbox.run(&sandbox.tools_path(), &["welcome", "--if-needed"], "");
+  assert!(output.status.success(), "{}", text(&output.stderr));
+  assert!(text(&output.stdout).is_empty());
+  assert!(!state_dir.join("auto-start-pending").exists());
+}
+
+#[test]
+fn manual_welcome_is_not_suppressed_by_completed_or_dismissed_progress() {
+  let sandbox = Sandbox::new("welcome-manual");
+  let state_dir = sandbox.root.join(".local/state/argvus/welcome");
+  fs::create_dir_all(&state_dir).expect("create onboarding state directory");
+  fs::write(
+    state_dir.join("progress.json"),
+    br#"{"schema_version":1,"started":true,"completed":true,"auto_dismissed":true}"#,
+  )
+  .expect("write completed state");
+  let output = sandbox.run(&sandbox.tools_path(), &["welcome"], "");
+  assert!(!output.status.success());
+  assert!(text(&output.stderr).contains("active Hyprland graphical session"));
+}
+
+#[test]
 fn arguments_are_forwarded_exactly_and_stdin_is_inherited() {
   let sandbox = Sandbox::new("forward");
   sandbox.fake(&sandbox.commands(), "sessionctl");

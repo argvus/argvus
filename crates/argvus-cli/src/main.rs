@@ -14,6 +14,7 @@ mod paths;
 mod script;
 mod setup;
 mod usage;
+mod welcome;
 
 use std::ffi::OsString;
 use std::process::ExitCode;

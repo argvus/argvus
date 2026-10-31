@@ -42,6 +42,22 @@ pub fn parse_os_release(contents: &str) -> Distro {
 }
 
 pub fn current_lang() -> String {
+  if let Some(path) = user_locale_path()
+    && let Ok(contents) = fs::read_to_string(path)
+    && let Some(value) = contents
+      .lines()
+      .find_map(|line| line.trim().strip_prefix("LANG="))
+  {
+    let value = value.trim_matches(['\"', '\'']);
+    if is_locale_name(value) {
+      return value.to_owned();
+    }
+  }
+  if let Ok(value) = std::env::var("LANG")
+    && is_locale_name(&value)
+  {
+    return value;
+  }
   command_stdout("localectl", &["status"])
     .and_then(|output| {
       output.lines().find_map(|line| {
@@ -154,7 +170,62 @@ pub fn set_lang(locale: &str, generated: &[String]) -> Result<(), SettingsError>
       "locale is not generated: {locale}"
     )));
   }
-  super::privileged::run(&["locale", "set-lang", locale]).map(|_| ())
+  let path = user_locale_path()
+    .ok_or_else(|| SettingsError::System("Cannot locate user locale configuration".into()))?;
+  write_user_locale(&path, locale).map_err(|error| SettingsError::System(error.to_string()))?;
+  let language = argvus_i18n::normalize_locale(locale);
+  let patch = serde_json::json!({"/session/language": language}).to_string();
+  let status = argvus_control_center_core::process::command("argvus")
+    .args(["config", "patch", &patch])
+    .status()
+    .map_err(|error| SettingsError::System(error.to_string()))?;
+  if status.success() {
+    Ok(())
+  } else {
+    Err(SettingsError::System("Could not save user locale".into()))
+  }
+}
+
+fn user_locale_path() -> Option<std::path::PathBuf> {
+  std::env::var_os("XDG_CONFIG_HOME")
+    .map(std::path::PathBuf::from)
+    .or_else(|| std::env::var_os("HOME").map(|home| std::path::PathBuf::from(home).join(".config")))
+    .map(|root| root.join("locale.conf"))
+}
+
+fn write_user_locale(path: &Path, locale: &str) -> std::io::Result<()> {
+  use std::io::Write;
+  use std::os::unix::fs::OpenOptionsExt;
+  let previous = match fs::read_to_string(path) {
+    Ok(value) => value,
+    Err(error) if error.kind() == std::io::ErrorKind::NotFound => String::new(),
+    Err(error) => return Err(error),
+  };
+  let mut lines: Vec<&str> = previous
+    .lines()
+    .filter(|line| !line.trim_start().starts_with("LANG="))
+    .collect();
+  let setting = format!("LANG={locale}");
+  lines.push(&setting);
+  let parent = path
+    .parent()
+    .ok_or_else(|| std::io::Error::other("missing parent"))?;
+  fs::create_dir_all(parent)?;
+  let temporary = path.with_file_name(format!(".locale.conf.{}.tmp", std::process::id()));
+  let result = (|| {
+    let mut file = fs::OpenOptions::new()
+      .write(true)
+      .create_new(true)
+      .mode(0o600)
+      .open(&temporary)?;
+    file.write_all((lines.join("\n") + "\n").as_bytes())?;
+    file.sync_all()?;
+    fs::rename(&temporary, path)
+  })();
+  if result.is_err() {
+    let _ = fs::remove_file(temporary);
+  }
+  result
 }
 
 pub fn set_system_locales(
@@ -247,5 +318,29 @@ mod tests {
     assert!(output.contains("# Header"));
     assert!(output.contains("en_US.UTF-8 UTF-8"));
     assert!(output.contains("#de_DE.UTF-8 UTF-8"));
+  }
+}
+
+#[cfg(test)]
+mod user_locale_tests {
+  use super::*;
+  #[test]
+  fn changing_one_profile_preserves_other_profiles_and_regional_settings() {
+    let directory = tempfile::tempdir().unwrap();
+    let first = directory.path().join("first/locale.conf");
+    let second = directory.path().join("second/locale.conf");
+    write_user_locale(&first, "en_US.UTF-8").unwrap();
+    write_user_locale(&second, "en_US.UTF-8").unwrap();
+    fs::write(
+      &first,
+      "# user preference\nLANG=en_US.UTF-8\nLC_TIME=en_GB.UTF-8\n",
+    )
+    .unwrap();
+    write_user_locale(&first, "pt_BR.UTF-8").unwrap();
+    let value = fs::read_to_string(first).unwrap();
+    assert!(value.contains("LANG=pt_BR.UTF-8"));
+    assert!(value.contains("LC_TIME=en_GB.UTF-8"));
+    assert!(value.contains("# user preference"));
+    assert_eq!(fs::read_to_string(second).unwrap(), "LANG=en_US.UTF-8\n");
   }
 }

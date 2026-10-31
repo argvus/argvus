@@ -73,6 +73,7 @@ impl App {
       return;
     };
     match (domain, page) {
+      (_, "welcome") => self.open_destination(crate::home::HomeDestination::Welcome),
       #[cfg(feature = "apps")]
       (_, "default-apps") => self.open_settings(Page::DefaultApps),
       #[cfg(feature = "apps")]

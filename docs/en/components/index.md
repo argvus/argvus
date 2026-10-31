@@ -9,6 +9,7 @@ These components were consolidated into the `argvus` workspace. Their user pages
 | --- | --- | --- |
 | Accounts | `argvus accounts` | [Accounts](/docs/components/argvus-accounts/) |
 | Control Center | `argvus control-center` | [Control Center](/docs/components/argvus-control-center/) |
+| ARGVUS Welcome | `argvus welcome` | [ARGVUS Welcome](/docs/components/argvus-control-center/#argvus-welcome) |
 | Internationalization | `argvus i18n` | [Internationalization](/docs/components/argvus-i18n/) |
 | Terminal | `argvus terminal` | [Terminal](/docs/components/argvus-terminal/) |
 | System monitor | `argvus system-monitor` | [System monitor](/docs/components/argvus-system-monitor/) |

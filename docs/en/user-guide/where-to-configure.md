@@ -5,6 +5,8 @@ description: A quick index for finding common ARGVUS settings.
 
 Use this table when you know what you want to change but not which ARGVUS surface owns it.
 
+For a guided review of the main desktop areas, open **ARGVUS Welcome** with `argvus welcome` or from **Control Center → Tools & Diagnostics**.
+
 | I want to… | Go to… |
 | --- | --- |
 | Choose a theme or mode | **Control Center → Appearance → Themes** |

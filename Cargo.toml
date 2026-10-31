@@ -59,6 +59,7 @@ members = [
   "crates/argvus-widget-telemetry-blocks",
   "crates/argvus-widget-telemetry-core",
   "crates/argvus-widget-telemetry-toggle",
+  "crates/argvus-welcome",
 ]
 
 [workspace.package]
@@ -128,6 +129,7 @@ argvus-sensors = { version = "0.1.0", path = "crates/argvus-sensors" }
 argvus-widget-telemetry-blocks = { version = "0.1.0", path = "crates/argvus-widget-telemetry-blocks" }
 argvus-widget-telemetry-core = { version = "0.1.0", path = "crates/argvus-widget-telemetry-core" }
 argvus-widget-telemetry-toggle = { version = "0.1.0", path = "crates/argvus-widget-telemetry-toggle" }
+argvus-welcome = { version = "0.1.0", path = "crates/argvus-welcome" }
 clap = { version = "4.5", features = ["derive"] }
 crossterm = "0.29"
 portable-pty = "0.9"

@@ -85,6 +85,7 @@ pub fn parse(args: &[String]) -> Result<Option<InitialRoute>, String> {
     }
     #[cfg(feature = "language")]
     "language" if args.len() == 1 => Ok(settings_route(Page::Language)),
+    "welcome" if args.len() == 1 => Ok(Some(InitialRoute::Welcome)),
     "config" if args.len() == 1 => Ok(Some(InitialRoute::Config)),
     #[cfg(feature = "system")]
     "system" => parse_system(&args[1..]).map(settings_route),

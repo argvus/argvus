@@ -205,5 +205,14 @@ impl DisplaysApp {
   }
 }
 
+impl DisplaysApp {
+  pub fn onboarding_ready(&self) -> bool {
+    self.action.is_none()
+      && self.confirm.is_none()
+      && self.revert.is_none()
+      && self.prompt_back.is_none()
+  }
+}
+
 #[cfg(test)]
 mod tests;

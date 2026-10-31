@@ -26,7 +26,15 @@ The home is a catalog of destinations grouped in six cards. Each destination ope
 - **Hardware & Connectivity** — devices and connections: Hardware Overview, Network & Wi-Fi, Bluetooth, Audio and Storage.
 - **System Administration** — manage the operating system: Packages, Services, Boot, Hostname, Users & Groups, Firewall and Notifications (Do Not Disturb).
 - **Settings** — the Control Center itself, listed after the cards: Language (the interface language) and Style (decorative icons and transparency). Press `s` to open it.
-- **Tools & Diagnostics** — developer and maintenance tools: Projects, Snippets (text saved for `argvus snippets`, typed with `SUPER + ALT + N`), SSH keys (key pairs in `~/.ssh` managed by `argvus keys`), GPG keys (the keyring managed by `argvus gpg`; gpg-agent uses pinentry-gtk), Dev Services, System Doctor and About ARGVUS.
+- **Tools & Diagnostics** — developer and maintenance tools: ARGVUS Welcome, Projects, Snippets (text saved for `argvus snippets`, typed with `SUPER + ALT + N`), SSH keys (key pairs in `~/.ssh` managed by `argvus keys`), GPG keys (the keyring managed by `argvus gpg`; gpg-agent uses pinentry-gtk), Dev Services, System Doctor and About ARGVUS.
+
+## ARGVUS Welcome
+
+Choose **Open ARGVUS Welcome** under **Tools & Diagnostics**, search for `welcome`, or run `argvus welcome`. Welcome is integrated into the Control Center and uses its single window. Enter opens the selected settings page; when finished, return to the guide with Esc. Enter then confirms review, checks off the step with `[x]`, and opens the next settings page in the same window. O reviews the step again, S skips without checking it off, and F finishes the guide even with optional steps pending. Cancelling or returning does not complete a step. Existing progress is preserved.
+
+The guide covers language and region, displays, hardware and drivers, network, audio, Bluetooth, appearance, power, default applications, and session startup. It never installs drivers or packages and does not apply system changes by itself. Progress is stored in `$XDG_STATE_HOME/argvus/welcome/progress.json` (or `~/.local/state/argvus/welcome/progress.json`).
+
+After the desktop is ready, the session runs `argvus welcome --if-needed` for TTY, ARGVUS Greeter and other login managers. It opens Welcome unless per-user progress records `opened`, completion or dismissal. The first successful render saves `opened` in `${XDG_STATE_HOME:-$HOME/.local/state}/argvus/welcome/progress.json`, preventing reopening on later logins. It does not depend on `/etc/skel`. Existing accounts without that record also receive one automatic opening. Failures before rendering allow another attempt at the next login. Manual `argvus welcome` remains available.
 
 The exact provider pages can depend on installed packages and permissions. Do not assume that a missing optional domain is a broken Control Center.
 
@@ -415,3 +423,5 @@ rollback, restore, automatic cleanup, installation or Snapper configuration**.
 
 Only the `argvus` package changes. Rebuild from `de/argvus` with `make build` to
 produce the `.pkg.tar.zst` package; installing it is a separate operator action.
+
+Language under Language & Region saves the locale in the user profile (`~/.config/locale.conf`) without changing `/etc/locale.conf`. The session uses this preference after login again. During Welcome, F6 or the footer Done button records review and advances; Shift+Tab focuses the button and Enter activates it, including on information pages.

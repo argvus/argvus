@@ -10,3 +10,4 @@ pub mod home;
 pub mod hyprland;
 pub mod settings_hub;
 pub mod ui;
+mod welcome;

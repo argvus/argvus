@@ -8,6 +8,7 @@ pub const TEXT: &str = r#"Usage:
   argvus --system-monitor [btop options]
   argvus sensors
   argvus --control-center [page]
+  argvus welcome [--if-needed]
   argvus --terminal [terminal options]
   argvus --spf [superfile options]
   argvus --yazi [yazi options]

@@ -10,7 +10,7 @@ Run `argvus --help` for the list installed with your version. The subcommands ar
 ## Where each command runs
 
 - **In-process:** the command is a library of the workspace and runs inside `argvus`. No separate executable exists. These are `config`, `theme`, `i18n`, `keys`, `gpg`, `projects`, `terminal`, `system-monitor`, `network`, `bluetooth`, `focus status`, `widget-telemetry`, `tui-terminal`, `sensors` and `setup`.
-- **Helper:** a separate executable in `/usr/lib/argvus/commands/`, installed by the `argvus` package. These are `control-center` (a terminal application) and the GTK 4 applications `taskbar-calendar`, `removable-devices`, `focus` and `clock`.
+- **Helper:** a separate executable in `/usr/lib/argvus/commands/`, installed by the `argvus` package. These are `control-center` (terminal application) and the GTK 4 applications `taskbar-calendar`, `removable-devices`, `focus` and `clock`.
 - **Private executable:** an executable that another package installs in `/usr/lib/argvus/commands/`. `argvus` only starts it. These include `session`, `start`, `tty`, `sessionctl`, `launcher`, `snippets`, `ssh`, `git`, `app-profiles-yazi-keymap`, `notifications`, `displayctl`, `firewall`, `accounts`, `taskbar-actions` and the `greeter-*` entry points.
 - **Script:** a packaged shell script run with `/bin/sh`. These are the Hyprland script commands listed below.
 
@@ -34,6 +34,7 @@ Run `argvus --help` for the list installed with your version. The subcommands ar
 | `argvus widget-telemetry toggle ...` | In-process | Switches the telemetry blocks on and off, and their order. |
 | `argvus game-snake` | Private executable | The terminal Snake game, from the independent `argvus-game-snake` project, an optional package. Outside a terminal it opens one. |
 | `argvus control-center [page]` | Helper (terminal application) | Opens the Control Center, or focuses the window that is already open. |
+| `argvus welcome [--if-needed]` | Dispatcher → Control Center | Opens the integrated Welcome page in the Control Center. `--if-needed` opens once unless per-user progress records that Welcome was already displayed, completed or dismissed. |
 | `argvus taskbar-calendar [args]` | GTK 4 application | Defaults to `toggle`. |
 | `argvus removable-devices [args]` | GTK 4 application | Defaults to `menu`. |
 | `argvus focus [--toggle] [--start\|--pause] [--x X --y Y] [--bar-bottom PX --bar-right PX]` | GTK 4 application | ARGVUS Focus popup. One instance per session. |

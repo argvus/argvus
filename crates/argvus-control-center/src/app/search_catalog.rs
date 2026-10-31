@@ -10,6 +10,13 @@ use super::*;
 pub(super) fn build_search_registry(lang: Lang) -> SearchRegistry {
   let mut search_registry = SearchRegistry::default();
   let entries: [(&str, &str, &str, &str, &str); _] = [
+    (
+      "welcome",
+      "card_tools",
+      "control_center.open_welcome",
+      "welcome onboarding first run setup boas-vindas configuração inicial",
+      "tools/welcome",
+    ),
     #[cfg(feature = "fonts")]
     (
       "settings.fonts",

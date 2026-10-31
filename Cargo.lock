@@ -183,6 +183,7 @@ dependencies = [
  "argvus-theme-core",
  "argvus-time-core",
  "argvus-tui-terminal",
+ "argvus-welcome",
  "argvus-widget-telemetry-blocks",
  "argvus-widget-telemetry-toggle",
  "chrono",
@@ -250,8 +251,10 @@ dependencies = [
  "argvus-i18n-core",
  "argvus-theme",
  "argvus-tui",
+ "argvus-welcome",
  "crossterm",
  "ratatui",
+ "tempfile",
 ]
 
 [[package]]
@@ -492,6 +495,7 @@ dependencies = [
  "ratatui",
  "serde",
  "serde_json",
+ "tempfile",
  "thiserror 2.0.21",
  "toml 0.8.23",
  "zbus",
@@ -832,6 +836,15 @@ dependencies = [
 [[package]]
 name = "argvus-tui-terminal-core"
 version = "0.1.0"
+
+[[package]]
+name = "argvus-welcome"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tempfile",
+]
 
 [[package]]
 name = "argvus-widget-telemetry-blocks"

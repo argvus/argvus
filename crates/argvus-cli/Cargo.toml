@@ -27,6 +27,7 @@ argvus-i18n.workspace = true
 argvus-i18n-cli.workspace = true
 argvus-time-core.workspace = true
 argvus-tui-terminal.workspace = true
+argvus-welcome.workspace = true
 argvus-sensors.workspace = true
 chrono.workspace = true
 libc.workspace = true

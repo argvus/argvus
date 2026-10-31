@@ -80,6 +80,7 @@ pub enum HomeDestination {
   #[cfg(feature = "about")]
   About,
   Settings,
+  Welcome,
 }
 
 impl HomeDestination {
@@ -154,6 +155,7 @@ impl HomeDestination {
       #[cfg(feature = "about")]
       Self::About => icons::INFO,
       Self::Settings => icons::SETTINGS,
+      Self::Welcome => icons::APPLY,
     }
   }
 }
@@ -506,6 +508,11 @@ fn tools_card_items(
   // Every push may be compiled out, which leaves `items` unmodified.
   #[allow(unused_mut)]
   let mut items = Vec::new();
+  items.push(item(
+    lang,
+    "control_center.open_welcome",
+    HomeDestination::Welcome,
+  ));
   #[cfg(feature = "apps")]
   items.push(item(
     lang,
@@ -629,6 +636,32 @@ mod tests {
     for destination in destinations(&home_rows(english(), everything())) {
       assert!(!destination.glyph().is_empty(), "{destination:?}");
     }
+  }
+
+  #[test]
+  fn welcome_action_is_listed_under_tools_and_diagnostics() {
+    let rows = home_rows(english(), everything());
+    let row = rows
+      .iter()
+      .position(|row| {
+        matches!(
+          row,
+          HomeRow::Item {
+            destination: HomeDestination::Welcome,
+            ..
+          }
+        )
+      })
+      .expect("Welcome action is listed");
+    let heading = rows[..row]
+      .iter()
+      .rev()
+      .find_map(|row| match row {
+        HomeRow::Header(category) => Some(category.title),
+        HomeRow::Item { .. } | HomeRow::Standalone { .. } => None,
+      })
+      .expect("Tools & Diagnostics heading");
+    assert_eq!(heading, HomeCardId::Tools.label(english()));
   }
 
   #[test]

@@ -6,6 +6,84 @@ use crossterm::event::{
 use crate::app::{App, Route};
 
 pub fn handle(app: &mut App, event: Event) {
+  if app.welcome.active
+    && app.route != Route::Welcome
+    && let Event::Key(key) = &event
+  {
+    if key.code == KeyCode::BackTab && !app.captures_text() {
+      app.welcome.done_focus = !app.welcome.done_focus;
+      return;
+    }
+    if app.welcome.done_focus && matches!(key.code, KeyCode::Tab | KeyCode::Esc) {
+      app.welcome.done_focus = false;
+      return;
+    }
+  }
+  let done = match &event {
+    Event::Key(key) => {
+      key.kind == KeyEventKind::Press
+        && (key.code == KeyCode::F(6) || (app.welcome.done_focus && key.code == KeyCode::Enter))
+    }
+    Event::Mouse(mouse) => {
+      matches!(mouse.kind, MouseEventKind::Down(MouseButton::Left))
+        && mouse.row == app.height.saturating_sub(1)
+    }
+    _ => false,
+  };
+  if done && app.welcome.active && app.route != Route::Welcome && !app.help && !app.captures_text()
+  {
+    if app.route == Route::Settings
+      && (app.settings.confirm.is_some()
+        || app.settings.error_modal.is_some()
+        || app.settings.admin.busy()
+        || app.settings.admin.editor.is_some())
+    {
+      return;
+    }
+    let mut ready = app.route != Route::Settings || app.settings.onboarding_ready();
+    #[cfg(feature = "displays")]
+    if app.route == Route::Displays {
+      ready = app.displays.onboarding_ready();
+    }
+    #[cfg(feature = "appearance")]
+    if app.route == Route::Appearance {
+      ready = app.appearance.onboarding_ready();
+    }
+    #[cfg(feature = "network")]
+    if app.route == Route::Network {
+      ready = app.network.onboarding_ready();
+    }
+    #[cfg(feature = "audio")]
+    if app.route == Route::Audio {
+      ready = app.audio.onboarding_ready();
+    }
+    #[cfg(feature = "bluetooth")]
+    if app.route == Route::Bluetooth {
+      ready = app.bluetooth.onboarding_ready();
+    }
+    #[cfg(feature = "power")]
+    if app.route == Route::Power {
+      ready = app.power.onboarding_ready();
+    }
+    #[cfg(feature = "session")]
+    if app.route == Route::Session {
+      ready = app.session.onboarding_ready();
+    }
+    if !ready {
+      app.welcome.done_blocked = true;
+      return;
+    }
+    app.finish_welcome_step(argvus_welcome::state::StepStatus::Reviewed);
+    return;
+  }
+  handle_inner(app, event);
+  if app.welcome.active && app.route == Route::Home {
+    app.route = Route::Welcome;
+    app.welcome.reviewing = true;
+  }
+}
+
+fn handle_inner(app: &mut App, event: Event) {
   if let Event::Paste(text) = event {
     #[cfg(feature = "snapshot")]
     if app.route == Route::Snapshot {
@@ -88,6 +166,7 @@ pub fn handle(app: &mut App, event: Event) {
   }
 
   match app.route {
+    Route::Welcome => app.handle_welcome(key.code),
     Route::Home => handle_home(app, key),
     Route::AppSettings => match app.settings_hub.handle(key.code) {
       crate::settings_hub::HubAction::Back => app.route = Route::Home,

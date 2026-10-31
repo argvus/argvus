@@ -411,5 +411,20 @@ pub(crate) fn task_bottom_offset(output: &str) -> u16 {
   task_wrapped_lines(output).saturating_sub(TASK_CONTENT_HEIGHT) as u16
 }
 
+impl App {
+  pub fn onboarding_ready(&self) -> bool {
+    self.confirm.is_none()
+      && self.error_modal.is_none()
+      && !self.admin.busy()
+      && self.admin.editor.is_none()
+      && !self.task_open
+      && self.input_pending.is_none()
+      && self.input_toggle_pending.is_none()
+      && (self.page() != Page::TimeZone || !self.timezone_changed())
+      && (self.page() != Page::KeyboardLayout || !self.keyboard_layout_changed())
+      && (self.page() != Page::SystemLocales || !self.locales_changed())
+  }
+}
+
 #[cfg(test)]
 mod tests;

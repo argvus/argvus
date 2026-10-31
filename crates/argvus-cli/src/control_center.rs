@@ -34,6 +34,14 @@ pub fn run(arguments: Vec<OsString>) -> Outcome {
   let argvus = std::env::current_exe()
     .map_err(|error| Failure::new(format!("cannot locate argvus: {error}")))?;
   let arguments = map_page_alias(arguments);
+  if arguments
+    .first()
+    .is_some_and(|argument| argument == "welcome")
+  {
+    argvus_welcome::state::StateStore::new()
+      .and_then(|store| store.request_open())
+      .map_err(|error| Failure::new(format!("cannot request Welcome navigation: {error}")))?;
+  }
 
   if let Some(address) = find_window_address() {
     focus_window(&address);

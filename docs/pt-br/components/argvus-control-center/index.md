@@ -26,7 +26,15 @@ A tela inicial é um catálogo de destinos agrupados em seis cartões. Cada dest
 * **Hardware e conectividade** — dispositivos e conexões: Visão geral do hardware, Rede e Wi-Fi, Bluetooth, Áudio e Armazenamento.
 * **Administração do sistema** — gerencie o sistema operacional: Pacotes, Serviços, Boot, Nome do host, Usuários e grupos, Firewall e Notificações (Não perturbe).
 * **Configurações** — o próprio Control Center, listado depois dos cartões: Idioma (idioma da interface) e Estilo (ícones decorativos e transparência). Pressione `s` para abri-la.
-* **Ferramentas e diagnóstico** — ferramentas de desenvolvimento e manutenção: Projetos, Snippets (textos salvos para o `argvus snippets`, digitados com `SUPER + ALT + N`), Chaves SSH (pares de chaves em `~/.ssh` gerenciados pelo `argvus keys`), Chaves GPG (o keyring gerenciado pelo `argvus gpg`; o gpg-agent usa o pinentry-gtk), Serviços de desenvolvimento, System Doctor e Sobre o ARGVUS.
+* **Ferramentas e diagnóstico** — ferramentas de desenvolvimento e manutenção: Boas-vindas ao ARGVUS, Projetos, Snippets (textos salvos para o `argvus snippets`, digitados com `SUPER + ALT + N`), Chaves SSH (pares de chaves em `~/.ssh` gerenciados pelo `argvus keys`), Chaves GPG (o keyring gerenciado pelo `argvus gpg`; o gpg-agent usa o pinentry-gtk), Serviços de desenvolvimento, System Doctor e Sobre o ARGVUS.
+
+## Boas-vindas ao ARGVUS
+
+Abra **Boas-vindas ao ARGVUS** em **Tools & Diagnostics**, busque `welcome` ou execute `argvus welcome`. O Welcome é uma página integrada à Central de Controle e usa sua única janela. Enter abre a configuração selecionada; ao terminar, volte com Esc ao guia. Enter confirma a revisão, marca a etapa com `[x]` e abre a próxima configuração na mesma janela. O revisa a etapa novamente, S pula sem marcar como concluída e F finaliza o guia, inclusive com itens opcionais pendentes. Cancelar ou voltar não marca a configuração como concluída. O progresso anterior é preservado.
+
+O assistente cobre idioma e região, monitores, hardware e drivers, rede, áudio, Bluetooth, aparência, energia, aplicativos padrão e inicialização da sessão. Ele não instala drivers ou pacotes e não aplica alterações do sistema por conta própria. O progresso fica em `$XDG_STATE_HOME/argvus/welcome/progress.json` (ou `~/.local/state/argvus/welcome/progress.json`).
+
+Depois que o desktop está pronto, a sessão executa `argvus welcome --if-needed`, seja o login por TTY, ARGVUS Greeter ou outro gerenciador. O comando abre o Welcome quando o estado por usuário ainda não registra `opened`, conclusão ou dispensa. A primeira renderização bem-sucedida grava `opened` em `${XDG_STATE_HOME:-$HOME/.local/state}/argvus/welcome/progress.json`; os próximos logins não reabrem a tela. Não depende de `/etc/skel`. Contas existentes sem esse registro também recebem uma abertura automática. Falhas anteriores à renderização permitem tentar novamente no próximo login. A abertura manual com `argvus welcome` continua disponível.
 
 As páginas exatas dos providers podem depender dos pacotes instalados e das permissões. A ausência de um domínio opcional não significa necessariamente que o Control Center esteja quebrado.
 
@@ -412,3 +420,5 @@ rollback, restauração, limpeza automática, instalação ou configuração do 
 
 Somente o pacote `argvus` muda. Execute `make build` em `de/argvus` para gerar o
 `.pkg.tar.zst`; a instalação é uma ação separada do operador.
+
+A página Language em Language & Region salva o locale no perfil do usuário (`~/.config/locale.conf`), sem alterar `/etc/locale.conf`. A sessão usa a preferência após novo login. Durante o Welcome, F6 ou o botão Concluir no rodapé registra a revisão e avança; Shift+Tab focaliza o botão e Enter o ativa, inclusive em páginas informativas.

@@ -5,6 +5,8 @@ description: Um índice rápido para encontrar configurações comuns do ARGVUS.
 
 Use esta tabela quando souber o que quer alterar, mas não qual superfície do ARGVUS é responsável por isso.
 
+Para revisar as principais áreas do desktop com orientação, abra as **Boas-vindas ao ARGVUS** com `argvus welcome` ou pela **Central de Controle → Ferramentas e diagnóstico**.
+
 | Quero… | Vá para… |
 | --- | --- |
 | Escolher tema ou modo | **Control Center → Aparência → Temas** |

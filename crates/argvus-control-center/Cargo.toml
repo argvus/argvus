@@ -72,6 +72,7 @@ language = []
 system = []
 
 [dependencies]
+argvus-welcome.workspace = true
 anyhow.workspace = true
 argvus-control-center-about = { workspace = true, optional = true }
 argvus-control-center-settings = { workspace = true }
@@ -98,5 +99,6 @@ crossterm.workspace = true
 ratatui.workspace = true
 
 [dev-dependencies]
+tempfile.workspace = true
 # Test builds never start external programs (see the core `testing` feature).
 argvus-control-center-core = { workspace = true, features = ["testing"] }

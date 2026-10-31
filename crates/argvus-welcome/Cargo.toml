@@ -1,0 +1,15 @@
+[package]
+name = "argvus-welcome"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+description = "Onboarding progress and first-run policy shared by the ARGVUS CLI and Control Center"
+repository.workspace = true
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true

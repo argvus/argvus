@@ -4,6 +4,16 @@ mod jobs;
 mod render;
 mod rows;
 
+impl NetworkApp {
+  pub fn onboarding_ready(&self) -> bool {
+    self.action.is_none()
+      && self.editor.is_none()
+      && self.editor_job.is_none()
+      && self.editor_confirm.is_none()
+      && !self.confirm_forget
+  }
+}
+
 #[cfg(test)]
 mod connection_tests;
 mod connections;

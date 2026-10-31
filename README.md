@@ -38,6 +38,7 @@ power, display, network, notifications and themes — all packaged for Arch Linu
 - **Taskbar** — Waybar-based taskbar with the ARGVUS patched Waybar binary
 - **Control panel** — Quickshell panel for quick system controls and widgets
 - **Control Center** — Terminal settings application for appearance, apps, displays, locale, users and more
+- **ARGVUS Welcome** — Resumable setup flow integrated into the Control Center, with a checklist and sequential settings pages
 - **Launcher** — Application launcher with ARGVUS themes
 - **Lock screen** — Hyprlock-based lock screen synchronized with the active theme
 - **Notifications, power, display, network** — Desktop providers with their own packaged configuration
@@ -52,8 +53,8 @@ power, display, network, notifications and themes — all packaged for Arch Linu
 ## Modular Ecosystem
 
 `argvus` is the master package and the only package built from this repository. It installs the
-command, its in-process subcommands and the shared runtime, the Control Center (a terminal
-application), the GTK 4 helpers for the taskbar calendar, removable devices and the loading
+command, its in-process subcommands and the shared runtime, the Control Center with integrated ARGVUS Welcome (terminal
+applications), the GTK 4 helpers for the taskbar calendar, removable devices and the loading
 overlay, the ARGVUS Focus and ARGVUS Clock applications, and the login greeter (built from `crates/argvus-greeter`). Every component package
 depends on it, so no install order is required.
 
@@ -64,6 +65,7 @@ depends on it, so no install order is required.
 | Quickshell control panel | `argvus-control-panel` |
 | Taskbar, Waybar and widgets | `argvus-taskbar`, `argvus-waybar`, `argvus widget-telemetry` |
 | Settings application | `argvus control-center` (in `argvus`) |
+| First-setup guide | `argvus welcome` (in `argvus`; first automatic opening is tracked in per-user progress) |
 | Launcher and lock screen | `argvus-launcher`, `argvus-lock` |
 | Appearance, wallpapers, fonts and icons | `argvus-appearance`, `argvus-wallpapers`, `argvus-fonts`, `argvus-icons`, `argvus-branding` |
 | Themes | `argvus-theme-*` (one package per official theme) |
@@ -88,6 +90,7 @@ testing. Runtime files are installed by the packages above.
 ```sh
 argvus --help                 # full list of routes
 argvus --control-center       # settings application
+argvus welcome                # first-setup guide; can be reopened at any time
 argvus --system-monitor       # btop-based system monitor
 argvus --spf                  # superfile, with ARGVUS config
 argvus --yazi                 # yazi, with ARGVUS config

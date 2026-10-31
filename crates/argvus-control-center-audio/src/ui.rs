@@ -290,5 +290,17 @@ impl AudioApp {
   }
 }
 
+impl AudioApp {
+  pub fn onboarding_ready(&self) -> bool {
+    self.action.is_none()
+      && !self.saving
+      && self.draft.default_output.is_none()
+      && self.draft.default_input.is_none()
+      && self.draft.volumes.is_empty()
+      && self.draft.mutes.is_empty()
+      && !self.confirm_discard
+  }
+}
+
 #[cfg(test)]
 mod tests;

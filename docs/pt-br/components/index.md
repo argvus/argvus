@@ -9,6 +9,7 @@ Estes componentes foram consolidados no workspace `argvus`. As páginas de usuá
 | --- | --- | --- |
 | Contas | `argvus accounts` | [Contas](/pt/docs/components/argvus-accounts/) |
 | Centro de Controle | `argvus control-center` | [Centro de Controle](/pt/docs/components/argvus-control-center/) |
+| Boas-vindas ao ARGVUS | `argvus welcome` | [Boas-vindas ao ARGVUS](/pt/docs/components/argvus-control-center/#boas-vindas-ao-argvus) |
 | Internacionalização | `argvus i18n` | [Internacionalização](/pt/docs/components/argvus-i18n/) |
 | Terminal | `argvus terminal` | [Terminal](/pt/docs/components/argvus-terminal/) |
 | Monitor do sistema | `argvus system-monitor` | [Monitor do sistema](/pt/docs/components/argvus-system-monitor/) |

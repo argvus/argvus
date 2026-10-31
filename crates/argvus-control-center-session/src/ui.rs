@@ -277,6 +277,12 @@ fn log_line(entry: &JournalEntry) -> String {
   )
 }
 
+impl SessionApp {
+  pub fn onboarding_ready(&self) -> bool {
+    self.action.is_none() && self.pending.is_none()
+  }
+}
+
 #[cfg(test)]
 mod tests {
   use super::rows::{autostart_row, component_row};

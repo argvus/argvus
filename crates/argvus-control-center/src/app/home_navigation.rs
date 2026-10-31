@@ -111,7 +111,7 @@ impl App {
 
   /// Routes to the page of one Home destination. Each arm keeps the route and
   /// the reload that the destination used before the catalog existed.
-  pub(super) fn open_destination(&mut self, destination: HomeDestination) {
+  pub(crate) fn open_destination(&mut self, destination: HomeDestination) {
     match destination {
       #[cfg(feature = "appearance")]
       HomeDestination::DesktopStyle => self.open_appearance_page(AppearancePage::Desktop),
@@ -153,6 +153,7 @@ impl App {
         self.session.reload();
       }
       HomeDestination::Settings => self.route = Route::AppSettings,
+      HomeDestination::Welcome => self.open_welcome(),
       #[cfg(feature = "hardware")]
       HomeDestination::HardwareOverview => self.route = Route::Hardware,
       #[cfg(feature = "network")]

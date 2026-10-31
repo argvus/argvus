@@ -34,6 +34,7 @@ Execute `argvus --help` para ver a lista da sua versão instalada. Os subcomando
 | `argvus widget-telemetry toggle ...` | Em processo | Liga e desliga os blocos de telemetria, e a ordem deles. |
 | `argvus game-snake` | Executável privado | O jogo Snake no terminal, do projeto independente `argvus-game-snake`, um pacote opcional. Fora de um terminal, abre um. |
 | `argvus control-center [página]` | Auxiliar (aplicativo de terminal) | Abre o Centro de Controle, ou foca a janela que já está aberta. |
+| `argvus welcome [--if-needed]` | Dispatcher → Central de Controle | Abre a página integrada de Boas-vindas na Central de Controle. `--if-needed` abre uma vez, salvo quando o progresso do usuário registra abertura anterior, conclusão ou dispensa. |
 | `argvus taskbar-calendar [args]` | Auxiliar GTK 4 | O padrão é `toggle`. |
 | `argvus removable-devices [args]` | Auxiliar GTK 4 | O padrão é `menu`. |
 | `argvus focus [--toggle] [--start\|--pause] [--x X --y Y] [--bar-bottom PX --bar-right PX]` | Aplicativo GTK 4 | Popup do ARGVUS Focus. Uma instância por sessão. |

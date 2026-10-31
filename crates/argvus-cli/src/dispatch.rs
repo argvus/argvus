@@ -6,7 +6,7 @@ use crate::commands::{
   TASKBAR_CALENDAR, required_executable,
 };
 use crate::exec::{Failure, Outcome, is_executable, replace_process};
-use crate::{apps, control_center, focus_status, script, setup, usage};
+use crate::{apps, control_center, focus_status, script, setup, usage, welcome};
 use std::ffi::OsString;
 use std::io::{self, IsTerminal};
 use std::path::Path;
@@ -43,6 +43,7 @@ pub fn run(arguments: &[OsString]) -> Outcome {
       Ok(argvus_system_monitor::run_command(owned_arguments(rest)?))
     }
     "--control-center" | "control-center" => control_center::run(rest.to_vec()),
+    "welcome" => welcome::run(rest.to_vec()),
     // The taskbar indicator of ARGVUS Focus runs in this process, so the bar
     // never loads the GTK application for it.
     "focus" if rest.first().is_some_and(|argument| argument == "status") => {

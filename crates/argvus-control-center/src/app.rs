@@ -62,6 +62,7 @@ mod page_openers;
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Route {
   Home,
+  Welcome,
   /// Settings of the Control Center itself: Language and Style.
   AppSettings,
   Settings,
@@ -107,6 +108,7 @@ pub enum Route {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum InitialRoute {
   Home,
+  Welcome,
   Config,
   Settings(Page),
   #[cfg(feature = "apps")]
@@ -158,6 +160,7 @@ impl InitialRoute {
   fn route(self) -> Route {
     match self {
       InitialRoute::Home => Route::Home,
+      InitialRoute::Welcome => Route::Welcome,
       InitialRoute::Config => Route::Config,
       InitialRoute::Settings(_) => Route::Settings,
       #[cfg(feature = "apps")]
@@ -226,6 +229,7 @@ impl InitialRoute {
 }
 
 pub struct App {
+  pub welcome: crate::welcome::Welcome,
   /// Language detected by the shared i18n infrastructure.
   pub lang: Lang,
   /// Semantic theme used by every page during this TUI cycle.
@@ -450,6 +454,7 @@ impl App {
       about: AboutState::with_context(tab, lang, theme),
       help: false,
       quit: false,
+      welcome: crate::welcome::Welcome::default(),
       width: 80,
       height: 24,
       #[cfg(feature = "hardware")]
@@ -591,6 +596,7 @@ impl App {
 
   pub fn back(&mut self) {
     match self.route {
+      Route::Welcome => self.route = Route::Home,
       Route::Home => {}
       Route::AppSettings => self.route = Route::Home,
       Route::Config => self.route = Route::AppSettings,
@@ -856,6 +862,19 @@ mod tests {
     assert_eq!(app.route, Route::AppSettings);
     app.back();
     assert_eq!(app.route, Route::Home);
+  }
+
+  #[test]
+  fn welcome_is_available_from_search_under_tools() {
+    let app = App::new(InitialRoute::Home);
+    let entry = app
+      .search_registry
+      .entries()
+      .iter()
+      .find(|entry| entry.id == "welcome")
+      .expect("Welcome search entry");
+    assert_eq!(entry.category, "card_tools");
+    assert_eq!(entry.route, "tools/welcome");
   }
 
   #[test]

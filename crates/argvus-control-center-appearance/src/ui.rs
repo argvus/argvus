@@ -258,5 +258,18 @@ impl AppearanceApp {
   }
 }
 
+impl AppearanceApp {
+  pub fn onboarding_ready(&self) -> bool {
+    self.action.is_none()
+      && self.confirm.is_none()
+      && self.prompt_back.is_none()
+      && !self.surface_draft_has_changes()
+      && !self.effect_draft_has_changes()
+      && !self.blur_draft_has_changes()
+      && !self.shadow_draft_has_changes()
+      && !self.animations_draft_has_changes()
+  }
+}
+
 #[cfg(test)]
 mod tests;

@@ -76,10 +76,10 @@ impl App {
       return;
     };
     match locale::set_lang(&value, &self.generated_locales) {
-      Ok(()) => self.success(format!(
-        "{}: {value}",
-        tr(self.lang, "control_center.regional_locale_changed")
-      )),
+      Ok(()) => {
+        self.lang = Lang::for_locale(&value);
+        self.success(tr(self.lang, "control_center.user_locale_applied").to_owned());
+      }
       Err(error) => self.fail(error),
     }
   }

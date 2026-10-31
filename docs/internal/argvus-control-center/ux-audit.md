@@ -1537,7 +1537,7 @@ Keyboard & Shortcuts, Mouse & Touchpad, Window Rules), **Preferences**
 Interface Language, Configuration), **Hardware & Connectivity** (Hardware
 Overview, Network & Wi-Fi, Bluetooth, Audio, Storage), **System
 Administration** (Packages, Services, Boot, Users & Groups, Firewall,
-General) e **Tools & Diagnostics** (Projects, Snippets, SSH keys, GPG keys,
+General) e **Tools & Diagnostics** (ARGVUS Welcome, Projects, Snippets, SSH keys, GPG keys,
 Dev Services, Diagnostics, About ARGVUS). Cada cartão tem título, descrição
 e ícone no próprio catálogo; um cartão sem destino disponível não aparece.
 
@@ -1548,7 +1548,7 @@ ação nem comparação de texto traduzido para ícone e descrição, e o cartã
 de descrição do cartão tem divisória, e a Home ganhou um subtítulo.
 
 Busca e breadcrumbs seguem o cartão onde o destino aparece: Default Apps em
-Preferences; Projects, Snippets, SSH keys e GPG keys em Tools & Diagnostics;
+Preferences; ARGVUS Welcome, Projects, Snippets, SSH keys e GPG keys em Tools & Diagnostics;
 Firewall em System Administration; Keyboard Shortcuts e Window Rules em
 Desktop & Input; Taskbar, Control Center e Widget Telemetry em Appearance.
 O ícone `WRENCH` (`nf-md-wrench`, `U+F05B7`, conferido na Nerd Font instalada)
@@ -1791,3 +1791,7 @@ The restricted helper repeats root/configuration/membership/protection checks.
 Snapshot 0, active and default cannot be deleted. No rollback or setup workflow.
 
 Implementation and privilege contract: [Snapshot](snapshot.md).
+
+## Welcome integrado
+
+`Tools & Diagnostics > ARGVUS Welcome` é uma rota interna (`argvus control-center welcome`). `argvus welcome` reutiliza a janela do Control Center. As etapas abrem os destinos existentes, preservando os breadcrumbs canônicos. Ao voltar ao guia, Enter confirma a revisão, marca o item e abre a próxima etapa; Esc não conclui operações. O estado anterior em `argvus/welcome/progress.json` permanece compatível.

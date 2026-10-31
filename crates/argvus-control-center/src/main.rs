@@ -38,6 +38,7 @@ fn main() -> Result<()> {
   let mut terminal = TerminalGuard::new()?;
   let mut dirty = true;
   while !app.quit {
+    dirty |= app.poll_welcome_request();
     if dirty {
       terminal
         .terminal_mut()

@@ -24,5 +24,6 @@ toml.workspace = true
 zbus.workspace = true
 
 [dev-dependencies]
+tempfile.workspace = true
 # Test builds never start external programs (see the core `testing` feature).
 argvus-control-center-core = { workspace = true, features = ["testing"] }

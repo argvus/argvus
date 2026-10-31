@@ -281,3 +281,9 @@ impl BluetoothApp {
     }
   }
 }
+
+impl BluetoothApp {
+  pub fn onboarding_ready(&self) -> bool {
+    self.action.is_none() && !self.confirm_remove
+  }
+}

@@ -34,6 +34,7 @@ pub fn draw(app: &mut App, frame: &mut Frame) {
   }
 
   match app.route {
+    Route::Welcome => crate::welcome::draw(app, frame),
     Route::Home => draw_home(app, frame),
     Route::AppSettings => app.settings_hub.draw(frame, app.lang, &app.theme),
     Route::Config => app.config.draw(frame),
@@ -71,6 +72,37 @@ pub fn draw(app: &mut App, frame: &mut Frame) {
     #[cfg(feature = "appearance")]
     Route::Appearance => app.appearance.draw(frame),
     Route::Hyprland => crate::hyprland::draw(app, frame),
+  }
+  if app.welcome.active && app.route != Route::Welcome {
+    let hint = tr(app.lang, "control_center.welcome_active_hint")
+      .replace("{step}", &(app.welcome.selected + 1).to_string())
+      .replace("{total}", &crate::welcome::steps().len().to_string());
+    frame.render_widget(
+      Paragraph::new(hint).style(
+        Style::default()
+          .fg(app.theme.accent)
+          .bg(app.theme.background),
+      ),
+      Rect::new(area.x + 1, area.y, area.width.saturating_sub(2), 1),
+    );
+  }
+  if app.welcome.active && app.route != Route::Welcome {
+    frame.render_widget(
+      Paragraph::new(tr(
+        app.lang,
+        if app.welcome.done_blocked {
+          "control_center.welcome_done_blocked"
+        } else {
+          "control_center.welcome_done"
+        },
+      ))
+      .style(
+        Style::default()
+          .fg(app.theme.accent)
+          .bg(app.theme.background),
+      ),
+      Rect::new(area.x, area.bottom().saturating_sub(1), area.width, 1),
+    );
   }
   if app.help {
     draw_help(

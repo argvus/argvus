@@ -456,5 +456,11 @@ fn picker_title(lang: Lang, target: PickerTarget) -> String {
   }
 }
 
+impl PowerApp {
+  pub fn onboarding_ready(&self) -> bool {
+    self.action.is_none() && self.pending.is_none()
+  }
+}
+
 #[cfg(test)]
 mod tests;
