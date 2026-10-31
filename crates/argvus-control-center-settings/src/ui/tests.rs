@@ -183,7 +183,9 @@ fn hostname_editing_renders_popup_with_typed_value() {
     "popup hint must render"
   );
   assert!(
-    rendered.contains("Current hostname") || rendered.contains("Hostname atual"),
+    rendered.contains("Current hostname")
+      || rendered.contains("Hostname atual")
+      || rendered.contains("Nome do host atual"),
     "list row must still show the current hostname"
   );
 }

@@ -367,7 +367,7 @@ fn breadcrumbs_are_translated_in_pt_br() {
   let cases = [
     (
       Page::Hostname,
-      "Central de Controle > Administração do sistema > Hostname",
+      "Central de Controle > Administração do sistema > Nome do host",
     ),
     (
       Page::UsersGroups,

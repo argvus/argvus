@@ -92,7 +92,15 @@ fn renders_all_integration_and_error_states_in_both_languages() {
         .map(|cell| cell.symbol())
         .collect::<String>();
       assert!(!text.contains("control_center.snapshot."));
-      assert!(text.contains("Snapshot"));
+      let expected_title = if locale == "pt-BR" {
+        "Instantâneo"
+      } else {
+        "Snapshot"
+      };
+      assert!(
+        text.contains(expected_title),
+        "missing {expected_title} for {locale}"
+      );
       assert!(!text.contains("ARGVUS Snapshot"));
       assert!(
         app

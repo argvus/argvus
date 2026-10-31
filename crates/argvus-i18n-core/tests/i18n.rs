@@ -154,6 +154,44 @@ fn control_center_input_catalogs_resolve_page_keys() {
 }
 
 #[test]
+fn control_center_common_labels_are_translated_to_brazilian_portuguese() {
+  let catalogs = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../resources/locales");
+  let portuguese = I18n::from_locale(&catalogs, "pt-BR", "control-center").unwrap();
+  let translations = [
+    ("control_center.welcome_title", "Boas-vindas ao ARGVUS"),
+    ("control_center.config", "Configuração:"),
+    ("control_center.autostart", "Inicialização automática"),
+    ("control_center.donate", "Doar"),
+    ("control_center.blur", "Desfoque"),
+    ("control_center.download", "Baixar:"),
+    ("control_center.section_presets", "Predefinições"),
+    ("control_center.home_directory", "Pasta pessoal"),
+    ("control_center.logs", "Registros"),
+    ("control_center.search_domains", "Domínios de pesquisa:"),
+    ("control_center.snippets", "Trechos"),
+    ("control_center.hostname", "Nome do host"),
+    ("control_center.logs_details", "Registros > Detalhes"),
+    ("control_center.taskbar_focus_icon", "Foco"),
+    ("control_center.timeout", "Tempo limite"),
+    ("control_center.timeout_default", "Tempo limite: padrão"),
+    (
+      "control_center.timeout_must_be_between_0_and_60_seconds",
+      "O tempo limite deve estar entre 0 e 60 segundos.",
+    ),
+    ("control_center.snapshot.title", "Instantâneo"),
+    ("control_center.workspaces", "Espaços de trabalho"),
+  ];
+
+  for (key, expected) in translations {
+    assert_eq!(
+      portuguese.tr(key),
+      expected,
+      "incorrect translation for {key}"
+    );
+  }
+}
+
+#[test]
 fn inherited_lc_all_does_not_configure_a_new_user() {
   let _guard = env_lock().lock().unwrap();
   let root = root();

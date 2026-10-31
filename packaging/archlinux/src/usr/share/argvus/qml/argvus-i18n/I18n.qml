@@ -7,7 +7,7 @@ QtObject {
     property var catalogs: ({})
 
     function tr(domain, key, args) {
-        var values = catalogs[domain] || {}
+        var values = catalogs[locale + "/" + domain] || {}
         var fallback = catalogs["en-US/" + domain] || {}
         var value = values[key] !== undefined ? values[key] : (fallback[key] !== undefined ? fallback[key] : key)
         if (args) {
