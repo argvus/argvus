@@ -34,9 +34,9 @@ post_install() {
 
                    __    ____   ______     ___   _ ____
                   /  \  |  _ \ / ___\ \   / / | | / ___|
-                 / /\ \ | |_) | |  _ \ \ / /| | | \___ \
+                 / /\ \ | |_) | |  _ \ \ / /| | | \___ \\
                 / /  \ \|  _ <| |_| | \ V / | |_| |___) |
-               /_/    \_\_| \_\\____|  \_/   \___/|____/  v${package_version}
+               /_/    \_\_| \_\\\____|  \_/   \___/|____/  v${package_version}
 
 A modular desktop environment for Wayland and Arch Linux, built on Hyprland.
 
