@@ -52,6 +52,8 @@
   "weather.wind": "Wind",
   "weather.configure": "Configure",
   "weather.refresh": "Refresh",
+  "weather.forecast": "7-DAY FORECAST",
+  "weather.current": "Current",
   "volume.muted": "Muted",
   "appearance.wallpaper": "Wallpaper",
   "appearance.theme": "Theme",

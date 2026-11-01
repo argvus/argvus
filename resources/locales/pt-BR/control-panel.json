@@ -52,6 +52,8 @@
   "weather.wind": "Vento",
   "weather.configure": "Configurar",
   "weather.refresh": "Atualizar",
+  "weather.forecast": "PREVISÃO DA SEMANA",
+  "weather.current": "Agora",
   "volume.muted": "Mudo",
   "appearance.wallpaper": "Papel de parede",
   "appearance.theme": "Tema",
