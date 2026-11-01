@@ -19,6 +19,9 @@ impl SnapshotApp {
       if self.diff.is_some() {
         return label(self.lang, "diff_help");
       }
+      if self.restore_review.is_some() {
+        return label(self.lang, "restore_review_help");
+      }
       if self.comparison.is_some() {
         return label(self.lang, "comparison_help");
       }
@@ -136,6 +139,18 @@ impl SnapshotApp {
             true,
           )
         }
+        PendingAction::Restore(review) => (
+          format!(
+            "{}\n{} #{} · {}\n{}\n{}",
+            label(self.lang, "restore_confirm"),
+            label(self.lang, "restore_source"),
+            review.source_snapshot,
+            review.path,
+            label(self.lang, "restore_replacement_warning"),
+            label(self.lang, "restore_safety_note")
+          ),
+          true,
+        ),
       };
       draw_confirm(
         frame,
@@ -164,6 +179,8 @@ impl SnapshotApp {
             Phase::Changing => "changing",
             Phase::Comparing => "comparing",
             Phase::Diffing => "diffing",
+            Phase::PreviewRestore => "restore_loading",
+            Phase::Restoring => "restore_running",
           },
         )
         .into(),
@@ -215,6 +232,51 @@ impl SnapshotApp {
         label(self.lang, "cleanup_algorithm"),
         ["number", "timeline", "empty-pre-post"][self.cleanup_selection]
       ));
+      return rows;
+    }
+    if let Some(review) = &self.restore_review {
+      let source_details = match &self.state {
+        Some(Integration::Ready { snapshots, .. }) => snapshots
+          .iter()
+          .find(|snapshot| snapshot.number == review.source_snapshot)
+          .map(|snapshot| {
+            format!(
+              "#{} · {} · {}",
+              snapshot.number, snapshot.date, snapshot.description
+            )
+          })
+          .unwrap_or_else(|| format!("#{}", review.source_snapshot)),
+        _ => format!("#{}", review.source_snapshot),
+      };
+      let mut rows = vec![
+        label(self.lang, "restore_review_title").into(),
+        format!("{}: {source_details}", label(self.lang, "restore_source")),
+        format!("{}: {}", label(self.lang, "restore_path"), review.path),
+        label(
+          self.lang,
+          if review.destination.is_some() {
+            "restore_destination_exists"
+          } else {
+            "restore_destination_missing"
+          },
+        )
+        .into(),
+        label(self.lang, "restore_regular_file_only").into(),
+        label(self.lang, "restore_metadata_note").into(),
+        label(self.lang, "restore_safety_note").into(),
+        String::new(),
+      ];
+      match &review.diff {
+        FileDiff::Text(text) => rows.extend(
+          text
+            .lines()
+            .skip(self.diff_scroll)
+            .take(512)
+            .map(|line| line.chars().skip(self.diff_horizontal).collect()),
+        ),
+        FileDiff::Binary => rows.push(label(self.lang, "binary").into()),
+        FileDiff::Truncated => rows.push(label(self.lang, "truncated").into()),
+      }
       return rows;
     }
     if let Some(diff) = &self.diff {

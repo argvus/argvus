@@ -150,3 +150,34 @@ pub enum FileDiff {
   Binary,
   Truncated,
 }
+
+/// Metadata used to detect a destination change between review and confirmation.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct RestoreFileIdentity {
+  pub device: u64,
+  pub inode: u64,
+  pub size: u64,
+  pub modified_seconds: i64,
+  pub modified_nanoseconds: i64,
+  pub changed_seconds: i64,
+  pub changed_nanoseconds: i64,
+  pub owner: u32,
+  pub group: u32,
+  pub mode: u32,
+  pub links: u64,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct RestoreReview {
+  pub source_snapshot: u32,
+  pub path: String,
+  pub destination: Option<RestoreFileIdentity>,
+  pub diff: FileDiff,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct RestoreResult {
+  pub source_snapshot: u32,
+  pub safety_snapshot: u32,
+  pub path: String,
+}

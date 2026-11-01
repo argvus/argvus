@@ -22,6 +22,23 @@ pub(super) fn run(action: &str, values: &[String]) -> Result<(), String> {
       values[2].parse().map_err(|error| format!("{error}"))?,
       &values[3],
     )),
+    "restore-preview" => serde_json::to_string(&backend.restore_preview(
+      &values[0],
+      values[1].parse().map_err(|error| format!("{error}"))?,
+      values[2].parse().map_err(|error| format!("{error}"))?,
+      &values[3],
+    )),
+    "restore-file" => {
+      let expected: Option<argvus_control_center_snapshot::model::RestoreFileIdentity> =
+        serde_json::from_str(&values[4]).map_err(|error| format!("{error}"))?;
+      serde_json::to_string(&backend.restore_file(
+        &values[0],
+        values[1].parse().map_err(|error| format!("{error}"))?,
+        values[2].parse().map_err(|error| format!("{error}"))?,
+        &values[3],
+        expected.as_ref(),
+      ))
+    }
     "get-retention" => serde_json::to_string(&backend.retention(&values[0])),
     "set-retention" => {
       serde_json::to_string(&backend.set_retention(&values[0], &parse_changes(&values[1])?))

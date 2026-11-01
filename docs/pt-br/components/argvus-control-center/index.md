@@ -393,6 +393,30 @@ permissão negada, use **a — Autorizar**. Se um snapshot desaparecer ou a
 configuração da raiz mudar, atualize a lista. Os testes do backend usam um
 `ProcessRunner` falso, sem exigir Btrfs, Snapper ou root.
 
+Na comparação, selecione um caminho e pressione **r** para revisar a restauração
+do arquivo a partir do snapshot de destino. O helper confirma que os snapshots
+continuam na configuração da raiz, que o caminho ainda pertence à comparação e
+que a origem é um arquivo regular na visualização padrão do Snapper em
+`/.snapshots/<id>/snapshot`. O diff limitado do Snapper aparece quando é textual;
+diff binário ou grande é identificado sem carregar todo o conteúdo na interface.
+**Enter** abre uma confirmação separada com origem e destino; **Esc** cancela sem
+alterar o arquivo. Ao confirmar, é criado primeiro um snapshot `single` de
+segurança; depois o Snapper executa `undochange` somente para esse caminho e a
+página verifica que ele corresponde ao snapshot escolhido. O ID de segurança é
+informado e o snapshot permanece disponível.
+A restauração compartilha o lock das atualizações de pacotes do ARGVUS e não
+ocorre ao mesmo tempo que uma transação pacman oficial do Control Center.
+
+A primeira versão aceita somente arquivos regulares de root, em diretórios de
+root sem escrita para grupo ou outros. Diretórios, links simbólicos, hard links,
+arquivos especiais, pontos de montagem/subvolumes, o diretório interno do Snapper
+e locais graváveis por usuários são recusados. Arquivos ausentes no snapshot
+selecionado nunca são excluídos. O `undochange` na raiz não garante consistência
+de aplicações ou bancos de dados e não é atômico; o snapshot de segurança é um
+ponto de recuperação, não uma garantia. O Snapper preserva somente os metadados
+suportados pela versão instalada. Subvolumes separados e arquivos fora da raiz
+configurada permanecem fora da operação.
+
 Abra **Central de Controle > Administração do sistema > Snapshot**, pesquise
 `Snapper` ou execute `argvus control-center snapshot`. A feature Cargo `snapshot`
 está em `full` (padrão) e independe de `storage`.
@@ -427,7 +451,7 @@ Os snapshots manuais usam o tipo `single`, somente leitura pelo padrão do Snapp
 e nenhum algoritmo de limpeza é atribuído pela página. Timers e operações externas
 do Snapper continuam valendo. Um snapshot não é uma imagem completa: subvolumes
 separados, como um `/home` separado, não são incluídos. Esta versão **não oferece
-rollback, restauração, instalação ou criação de configuração Snapper**. Em uma
+rollback completo, instalação ou criação de configuração Snapper**. Em uma
 configuração válida da raiz, pressione **p** para consultar as políticas conhecidas.
 Valores ausentes aparecem como padrões do Snapper; chaves desconhecidas são
 apenas diagnósticas. Pressione **e** para editar um valor suportado. A confirmação

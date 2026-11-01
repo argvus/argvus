@@ -718,3 +718,230 @@ fn sanitizes_failure_output_and_distinguishes_bad_versions() {
     ErrorKind::Detection
   );
 }
+
+fn restore_fixture(
+  replies: Vec<Result<ProcessOutput, ProcessError>>,
+) -> (SnapshotBackend<Fake>, tempfile::TempDir) {
+  use std::os::unix::fs::PermissionsExt;
+
+  let directory = tempfile::tempdir().unwrap();
+  let root_path = directory.path().join("root");
+  let snapshots_path = root_path.join(".snapshots");
+  std::fs::create_dir_all(root_path.join("etc")).unwrap();
+  let source_path = snapshots_path.join("2/snapshot/etc/app.conf");
+  std::fs::create_dir_all(source_path.parent().unwrap()).unwrap();
+  std::fs::write(&source_path, "snapshot version\n").unwrap();
+  std::fs::set_permissions(&source_path, std::fs::Permissions::from_mode(0o644)).unwrap();
+  let mountinfo = directory.path().join("mountinfo");
+  std::fs::write(&mountinfo, "1 0 0:1 / / rw - btrfs /dev/test rw\n").unwrap();
+  let mut backend = backend(replies);
+  let lock_path = root_path.join("restore.lock");
+  let package_lock = root_path.join("package.lock");
+  backend.restore_paths = RestorePaths {
+    root: root_path,
+    snapshots: snapshots_path,
+    lock: lock_path,
+    package_lock,
+    mountinfo,
+  };
+  (backend, directory)
+}
+
+fn restore_preview_replies() -> Vec<Result<ProcessOutput, ProcessError>> {
+  let mut replies = ready(vec![row(1, false, false), row(2, false, false)]);
+  replies.push(output("c..... /etc/app.conf\n"));
+  replies.push(output("--- old\n+++ snapshot\n@@ -1 +1 @@\n-old\n+new\n"));
+  replies
+}
+
+fn restore_success_replies() -> Vec<Result<ProcessOutput, ProcessError>> {
+  let mut replies = restore_preview_replies();
+  replies.extend(restore_preview_replies());
+  replies.extend(ready(vec![row(1, false, false), row(2, false, false)]));
+  replies.push(output("9\n"));
+  replies.extend(ready(vec![
+    row(1, false, false),
+    row(2, false, false),
+    row(9, false, false),
+  ]));
+  replies.push(output(""));
+  replies.push(output(""));
+  replies
+}
+
+#[test]
+fn selective_restore_reviews_then_uses_safety_snapshot_and_official_undochange() {
+  let (backend, _directory) = restore_fixture(restore_success_replies());
+  std::fs::write(
+    backend.restore_paths.root.join("etc/app.conf"),
+    "current version\n",
+  )
+  .unwrap();
+  let review = backend
+    .restore_preview("system", 1, 2, "/etc/app.conf")
+    .unwrap();
+  assert_eq!(review.source_snapshot, 2);
+  assert!(review.destination.is_some());
+  assert!(matches!(review.diff, FileDiff::Text(_)));
+  let result = backend
+    .restore_file("system", 1, 2, "/etc/app.conf", review.destination.as_ref())
+    .unwrap();
+  assert_eq!(result.safety_snapshot, 9);
+  assert_eq!(result.source_snapshot, 2);
+  let requests = backend.runner.requests.lock().unwrap();
+  let undo = requests
+    .iter()
+    .find(|request| {
+      request
+        .args
+        .get(2)
+        .is_some_and(|argument| argument == "undochange")
+    })
+    .unwrap();
+  assert_eq!(
+    undo.args,
+    ["-c", "system", "undochange", "2..9", "/etc/app.conf"]
+  );
+  assert!(
+    requests
+      .iter()
+      .any(|request| request.args.contains(&"--print-number".into()))
+  );
+}
+
+#[test]
+fn selective_restore_can_create_a_missing_regular_file_from_the_snapshot() {
+  let (backend, _directory) = restore_fixture(restore_preview_replies());
+  let review = backend
+    .restore_preview("system", 1, 2, "/etc/app.conf")
+    .unwrap();
+  assert!(review.destination.is_none());
+}
+
+#[test]
+fn selective_restore_rejects_unlisted_paths_and_internal_snapshot_paths() {
+  assert!(validate_restore_path("").is_err());
+  assert!(validate_restore_path("relative/file").is_err());
+  assert!(validate_restore_path("/etc/../passwd").is_err());
+  assert!(validate_restore_path("/etc/bad\0name").is_err());
+  assert!(validate_restore_path("/.snapshots/2/snapshot/etc/passwd").is_err());
+  assert!(
+    validate_helper(
+      "restore-file",
+      &[
+        "system".into(),
+        "1".into(),
+        "2".into(),
+        "/etc/passwd".into(),
+        "{}".into()
+      ]
+    )
+    .is_err()
+  );
+  assert!(validate_helper("undochange", &["system".into(), "1".into()]).is_err());
+}
+
+#[test]
+fn selective_restore_rejects_symlinks_hardlinks_and_mount_boundaries() {
+  let (backend, directory) = restore_fixture(restore_preview_replies());
+  let source_parent = backend.restore_paths.snapshots.join("2/snapshot/etc");
+  std::fs::remove_file(source_parent.join("app.conf")).unwrap();
+  std::os::unix::fs::symlink("/etc/passwd", source_parent.join("app.conf")).unwrap();
+  assert!(
+    backend
+      .restore_preview("system", 1, 2, "/etc/app.conf")
+      .is_err()
+  );
+
+  let target = backend.restore_paths.root.join("etc/app.conf");
+  std::fs::write(&target, "target\n").unwrap();
+  let alias = directory.path().join("hardlink");
+  std::fs::hard_link(&target, alias).unwrap();
+  assert!(
+    secure_destination(
+      &target,
+      &backend.restore_paths.root,
+      std::fs::metadata(&backend.restore_paths.root)
+        .unwrap()
+        .uid()
+    )
+    .is_err()
+  );
+
+  let mountinfo = directory.path().join("mountinfo");
+  let mountpoint = backend.restore_paths.root.join("etc");
+  std::fs::write(
+    &mountinfo,
+    format!(
+      "1 0 0:1 / / rw - btrfs /dev/test rw\n2 1 0:2 / {} rw - ext4 /dev/other rw\n",
+      mountpoint.display()
+    ),
+  )
+  .unwrap();
+  assert!(ensure_not_mountpoint(&target, &mountinfo).is_err());
+}
+
+#[test]
+fn restore_confirmation_token_detects_destination_changes_before_snapshot_creation() {
+  let mut replies = restore_preview_replies();
+  replies.extend(restore_preview_replies());
+  let (backend, _directory) = restore_fixture(replies);
+  let target = backend.restore_paths.root.join("etc/app.conf");
+  std::fs::write(&target, "current version\n").unwrap();
+  let review = backend
+    .restore_preview("system", 1, 2, "/etc/app.conf")
+    .unwrap();
+  std::fs::write(&target, "changed after review\n").unwrap();
+  let error = backend
+    .restore_file("system", 1, 2, "/etc/app.conf", review.destination.as_ref())
+    .unwrap_err();
+  assert!(error.detail.contains("changed since review"));
+  assert!(
+    !backend
+      .runner
+      .requests
+      .lock()
+      .unwrap()
+      .iter()
+      .any(|request| request.args.contains(&"create".into()))
+  );
+}
+
+#[test]
+fn restore_failure_reports_the_safety_snapshot_id() {
+  let mut replies = restore_success_replies();
+  let undo_result = replies.len() - 2;
+  replies[undo_result] = Ok(ProcessOutput {
+    stdout: vec![],
+    stderr: b"undochange failed".to_vec(),
+    status: Some(1),
+    timed_out: false,
+  });
+  let (backend, _directory) = restore_fixture(replies);
+  std::fs::write(
+    backend.restore_paths.root.join("etc/app.conf"),
+    "current version\n",
+  )
+  .unwrap();
+  let review = backend
+    .restore_preview("system", 1, 2, "/etc/app.conf")
+    .unwrap();
+  let error = backend
+    .restore_file("system", 1, 2, "/etc/app.conf", review.destination.as_ref())
+    .unwrap_err();
+  assert!(error.detail.contains("safety snapshot #9 remains"));
+}
+
+#[test]
+fn selective_restore_lock_prevents_concurrent_mutations_and_releases_on_drop() {
+  let directory = tempfile::tempdir().unwrap();
+  let root = directory.path().join("root");
+  std::fs::create_dir_all(&root).unwrap();
+  let lock_path = root.join("restore.lock");
+  let owner = std::fs::metadata(&root).unwrap().uid();
+
+  let first = RestoreLock::acquire(&lock_path, &root, owner).unwrap();
+  assert!(RestoreLock::acquire(&lock_path, &root, owner).is_err());
+  drop(first);
+  assert!(RestoreLock::acquire(&lock_path, &root, owner).is_ok());
+}

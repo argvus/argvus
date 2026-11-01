@@ -228,6 +228,23 @@ fn snapshot_dispatch_accepts_only_the_closed_root_management_grammar() {
     vec!["snapshot", "inspect", "system"],
     vec!["snapshot", "create", "system", "spaces $HOME; `id`"],
     vec!["snapshot", "delete", "system", "12"],
+    vec![
+      "snapshot",
+      "restore-preview",
+      "system",
+      "1",
+      "2",
+      "/etc/hosts",
+    ],
+    vec![
+      "snapshot",
+      "restore-file",
+      "system",
+      "1",
+      "2",
+      "/etc/hosts",
+      "null",
+    ],
   ] {
     assert!(validate_args(&arguments.into_iter().map(String::from).collect::<Vec<_>>()).is_ok());
   }
@@ -237,6 +254,32 @@ fn snapshot_dispatch_accepts_only_the_closed_root_management_grammar() {
     vec!["snapshot", "delete", "system", "1-12"],
     vec!["snapshot", "inspect", "../etc"],
     vec!["snapshot", "create-config", "/"],
+    vec![
+      "snapshot",
+      "restore-file",
+      "system",
+      "1",
+      "1",
+      "/etc/hosts",
+      "null",
+    ],
+    vec![
+      "snapshot",
+      "restore-preview",
+      "system",
+      "1",
+      "2",
+      "/.snapshots/2/snapshot/etc/hosts",
+    ],
+    vec![
+      "snapshot",
+      "restore-file",
+      "system",
+      "1",
+      "2",
+      "/etc/hosts",
+      "{}",
+    ],
   ] {
     assert!(validate_args(&arguments.into_iter().map(String::from).collect::<Vec<_>>()).is_err());
   }

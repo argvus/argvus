@@ -5,13 +5,24 @@ use argvus_control_center_core::{
   sanitize::terminal_text,
 };
 use serde_json::Value;
-use std::{collections::BTreeSet, io::ErrorKind as IoErrorKind, time::Duration};
+use std::{
+  collections::BTreeSet,
+  fs,
+  io::ErrorKind as IoErrorKind,
+  os::unix::fs::MetadataExt,
+  path::{Path, PathBuf},
+  time::Duration,
+};
 
 const FINDMNT: &str = "/usr/bin/findmnt";
 const SNAPPER: &str = "/usr/bin/snapper";
 const LIMIT: usize = 1024 * 1024;
 const DIFF_LIMIT: usize = 256 * 1024;
 const COLUMNS: &str = "number,type,date,description,cleanup,active,default";
+const SNAPSHOT_ROOT: &str = "/.snapshots";
+const RESTORE_LOCK: &str = "/run/lock/argvus-selective-snapshot-restore.lock";
+const PACKAGE_UPDATE_LOCK: &str = "/run/lock/argvus-package-update-snapshot.lock";
+const RESTORE_DESCRIPTION: &str = "ARGVUS before selective file restore";
 const RETENTION_DEFAULTS: &[(&str, &str)] = &[
   ("NUMBER_CLEANUP", "no"),
   ("NUMBER_MIN_AGE", "3600"),
@@ -257,10 +268,29 @@ pub fn build_retention_configdata(changes: &[(String, String)]) -> SnapshotResul
 
 pub struct SnapshotBackend<R> {
   runner: R,
+  restore_paths: RestorePaths,
+}
+
+#[derive(Debug, Clone)]
+struct RestorePaths {
+  root: PathBuf,
+  snapshots: PathBuf,
+  lock: PathBuf,
+  package_lock: PathBuf,
+  mountinfo: PathBuf,
 }
 impl<R: ProcessRunner> SnapshotBackend<R> {
   pub fn new(runner: R) -> Self {
-    Self { runner }
+    Self {
+      runner,
+      restore_paths: RestorePaths {
+        root: PathBuf::from("/"),
+        snapshots: PathBuf::from(SNAPSHOT_ROOT),
+        lock: PathBuf::from(RESTORE_LOCK),
+        package_lock: PathBuf::from(PACKAGE_UPDATE_LOCK),
+        mountinfo: PathBuf::from("/proc/self/mountinfo"),
+      },
+    }
   }
 
   fn request(&self, program: &str, args: &[&str], mutation: bool) -> SnapshotResult<ProcessOutput> {
@@ -307,6 +337,256 @@ impl<R: ProcessRunner> SnapshotBackend<R> {
 
   fn snapper(&self, args: &[&str], mutation: bool) -> SnapshotResult<Vec<u8>> {
     self.checked(SNAPPER, args, mutation)
+  }
+
+  /// Recheck the comparison and return a bounded review of the destination file.
+  pub fn restore_preview(
+    &self,
+    config: &str,
+    origin: u32,
+    destination: u32,
+    path: &str,
+  ) -> SnapshotResult<RestoreReview> {
+    validate_restore_path(path)?;
+    let snapshots = self.root_snapshot_ids(config)?;
+    if origin == destination || !snapshots.contains(&origin) || !snapshots.contains(&destination) {
+      return Err(invalid(
+        "comparison snapshots are invalid or no longer available",
+      ));
+    }
+
+    let pair_changes = self.status(config, origin, destination)?;
+    let Some(change) = pair_changes.iter().find(|change| change.path == path) else {
+      return Err(invalid(
+        "file is no longer present in the selected comparison",
+      ));
+    };
+    if change.kind == ChangeKind::Removed {
+      return Err(invalid(
+        "the selected destination snapshot does not contain this file",
+      ));
+    }
+    if change.file_type {
+      return Err(invalid(
+        "file type changes are not supported for selective restore",
+      ));
+    }
+
+    let root_owner = fs::symlink_metadata(&self.restore_paths.root)
+      .map_err(|error| invalid(format!("cannot inspect root directory: {error}")))?
+      .uid();
+    let source_path = self.snapshot_file_path(destination, path);
+    let source = secure_regular_file(&source_path, &self.restore_paths.root, root_owner)
+      .map_err(|error| invalid(format!("snapshot source is unsafe or unavailable: {error}")))?;
+    if source.device
+      != fs::metadata(&self.restore_paths.root)
+        .map_err(|error| invalid(format!("cannot inspect root filesystem: {error}")))?
+        .dev()
+    {
+      return Err(invalid(
+        "snapshot source is outside the root Btrfs filesystem",
+      ));
+    }
+
+    let host_path = self.host_path(path);
+    ensure_not_mountpoint(&host_path, &self.restore_paths.mountinfo)?;
+    let destination_identity =
+      match secure_destination(&host_path, &self.restore_paths.root, root_owner) {
+        Ok(identity) => identity,
+        Err(error) => return Err(invalid(format!("destination is unsafe: {error}"))),
+      };
+    let diff = self.file_diff(config, destination, 0, path)?;
+    Ok(RestoreReview {
+      source_snapshot: destination,
+      path: path.into(),
+      destination: destination_identity,
+      diff,
+    })
+  }
+
+  /// Restore one regular file through Snapper after recording a root safety snapshot.
+  pub fn restore_file(
+    &self,
+    config: &str,
+    origin: u32,
+    destination: u32,
+    path: &str,
+    expected_destination: Option<&RestoreFileIdentity>,
+  ) -> SnapshotResult<RestoreResult> {
+    let lock_owner = fs::symlink_metadata(&self.restore_paths.root)
+      .map_err(|error| SnapshotError::new(ErrorKind::Detection, error.to_string()))?
+      .uid();
+    let _package_lock = RestoreLock::acquire(
+      &self.restore_paths.package_lock,
+      &self.restore_paths.root,
+      lock_owner,
+    )?;
+    let _lock = RestoreLock::acquire(
+      &self.restore_paths.lock,
+      &self.restore_paths.root,
+      lock_owner,
+    )?;
+    let review = self.restore_preview(config, origin, destination, path)?;
+    if review.destination.as_ref() != expected_destination {
+      return Err(invalid(
+        "destination changed since review; review and confirm again",
+      ));
+    }
+
+    let safety_snapshot = self
+      .change("create", config, RESTORE_DESCRIPTION)?
+      .ok_or_else(|| invalid("Snapper did not return the safety snapshot number"))?;
+    let snapshots = self.root_snapshot_ids(config).map_err(|error| {
+      restore_after_safety_error(safety_snapshot, "could not verify snapshots", error)
+    })?;
+    if !snapshots.contains(&destination) || !snapshots.contains(&safety_snapshot) {
+      return Err(SnapshotError::new(
+        ErrorKind::Invalid,
+        format!("safety snapshot #{safety_snapshot} remains; selected snapshot changed"),
+      ));
+    }
+
+    let root_owner = fs::symlink_metadata(&self.restore_paths.root)
+      .map_err(|error| {
+        restore_after_safety_error(
+          safety_snapshot,
+          "cannot inspect root",
+          SnapshotError::new(ErrorKind::Detection, error.to_string()),
+        )
+      })?
+      .uid();
+    let host_path = self.host_path(path);
+    ensure_not_mountpoint(&host_path, &self.restore_paths.mountinfo).map_err(|error| {
+      restore_after_safety_error(safety_snapshot, "destination became a mountpoint", error)
+    })?;
+    let current_destination = secure_destination(&host_path, &self.restore_paths.root, root_owner)
+      .map_err(|error| {
+        restore_after_safety_error(safety_snapshot, "destination became unsafe", invalid(error))
+      })?;
+    if current_destination.as_ref() != expected_destination {
+      return Err(SnapshotError::new(
+        ErrorKind::Invalid,
+        format!("destination changed after review; safety snapshot #{safety_snapshot} remains"),
+      ));
+    }
+
+    // Snapper undoes changes from the selected snapshot forward to the safety
+    // snapshot, bringing the current path back to the selected snapshot state.
+    let range = format!("{destination}..{safety_snapshot}");
+    self
+      .snapper(&["-c", config, "undochange", &range, path], true)
+      .map_err(|error| {
+        restore_after_safety_error(safety_snapshot, "Snapper undochange failed", error)
+      })?;
+
+    if self
+      .status(config, destination, 0)
+      .map_err(|error| {
+        restore_after_safety_error(safety_snapshot, "could not verify restored file", error)
+      })?
+      .iter()
+      .any(|change| change.path == path)
+    {
+      return Err(SnapshotError::new(
+        ErrorKind::Snapper,
+        format!(
+          "Snapper returned success, but the file still differs from snapshot #{destination}; safety snapshot #{safety_snapshot} remains"
+        ),
+      ));
+    }
+
+    Ok(RestoreResult {
+      source_snapshot: destination,
+      safety_snapshot,
+      path: path.into(),
+    })
+  }
+
+  fn root_snapshot_ids(&self, config: &str) -> SnapshotResult<BTreeSet<u32>> {
+    let Integration::Ready {
+      config: validated_config,
+      snapshots,
+    } = self.inspect(Some(config))?
+    else {
+      return Err(invalid("root snapshot integration is unavailable"));
+    };
+    if validated_config != config {
+      return Err(invalid("Snapper configuration changed"));
+    }
+    Ok(
+      snapshots
+        .into_iter()
+        .map(|snapshot| snapshot.number)
+        .collect(),
+    )
+  }
+
+  fn status(&self, config: &str, first: u32, second: u32) -> SnapshotResult<Vec<ChangedPath>> {
+    validate_config(config)?;
+    let range = format!("{first}..{second}");
+    let request = ProcessRequest::new(SNAPPER)
+      .arg("-c")
+      .arg(config)
+      .arg("status")
+      .arg(&range)
+      .env("LC_ALL", "C.UTF-8")
+      .timeout(Duration::from_secs(120))
+      .output_limit(LIMIT);
+    let output = self
+      .runner
+      .run(&request)
+      .map_err(|error| SnapshotError::new(ErrorKind::Snapper, error.to_string()))
+      .and_then(check_output)?;
+    parse_status(&output)
+  }
+
+  fn file_diff(
+    &self,
+    config: &str,
+    first: u32,
+    second: u32,
+    path: &str,
+  ) -> SnapshotResult<FileDiff> {
+    let range = format!("{first}..{second}");
+    let request = ProcessRequest::new(SNAPPER)
+      .arg("-c")
+      .arg(config)
+      .arg("diff")
+      .arg(&range)
+      .arg(path)
+      .env("LC_ALL", "C.UTF-8")
+      .timeout(Duration::from_secs(120))
+      .output_limit(DIFF_LIMIT);
+    let output = match self.runner.run(&request) {
+      Err(ProcessError::OutputLimit) => return Ok(FileDiff::Truncated),
+      Err(error) => return Err(SnapshotError::new(ErrorKind::Snapper, error.to_string())),
+      Ok(output) => check_output(output)?,
+    };
+    let text = match String::from_utf8(output) {
+      Ok(text) => text,
+      Err(_) => return Ok(FileDiff::Binary),
+    };
+    if text.contains('\0') || text.contains("Binary files") || text.contains("Binary file") {
+      return Ok(FileDiff::Binary);
+    }
+    Ok(FileDiff::Text(terminal_text(&text)))
+  }
+
+  fn host_path(&self, path: &str) -> PathBuf {
+    if self.restore_paths.root == Path::new("/") {
+      PathBuf::from(path)
+    } else {
+      self.restore_paths.root.join(path.trim_start_matches('/'))
+    }
+  }
+
+  fn snapshot_file_path(&self, number: u32, path: &str) -> PathBuf {
+    self
+      .restore_paths
+      .snapshots
+      .join(number.to_string())
+      .join("snapshot")
+      .join(path.trim_start_matches('/'))
   }
 
   fn comparison_snapshots(
@@ -664,6 +944,177 @@ impl<R: ProcessRunner> SnapshotBackend<R> {
   }
 }
 
+fn restore_after_safety_error(
+  safety_snapshot: u32,
+  context: &str,
+  error: SnapshotError,
+) -> SnapshotError {
+  SnapshotError::new(
+    error.kind,
+    format!(
+      "{context}; safety snapshot #{safety_snapshot} remains: {}",
+      error.detail
+    ),
+  )
+}
+
+fn validate_restore_path(path: &str) -> SnapshotResult<()> {
+  validate_change_path(path)?;
+  if path
+    .split('/')
+    .any(|component| component.eq_ignore_ascii_case(".snapshots"))
+  {
+    return Err(invalid(
+      "Snapper internal snapshot paths cannot be restored",
+    ));
+  }
+  Ok(())
+}
+
+fn secure_parent_directories(path: &Path, scope_root: &Path, owner: u32) -> Result<(), String> {
+  let parent = path
+    .parent()
+    .ok_or_else(|| "destination has no parent directory".to_owned())?;
+  let relative = parent
+    .strip_prefix(scope_root)
+    .map_err(|_| "path escapes its filesystem scope".to_owned())?;
+  let mut current = scope_root.to_path_buf();
+  for component in relative.components() {
+    current.push(component.as_os_str());
+    let metadata = fs::symlink_metadata(&current)
+      .map_err(|error| format!("cannot inspect parent {}: {error}", current.display()))?;
+    if !metadata.file_type().is_dir() || metadata.uid() != owner || metadata.mode() & 0o022 != 0 {
+      return Err(format!(
+        "parent directory {} is not a trusted root-owned directory",
+        current.display()
+      ));
+    }
+  }
+  Ok(())
+}
+
+fn regular_identity(path: &Path, owner: u32) -> Result<RestoreFileIdentity, String> {
+  let metadata = fs::symlink_metadata(path)
+    .map_err(|error| format!("cannot inspect {}: {error}", path.display()))?;
+  if !metadata.file_type().is_file() {
+    return Err("only regular files are supported".into());
+  }
+  if metadata.uid() != owner || metadata.mode() & 0o022 != 0 {
+    return Err("file is not root-owned or is writable by a non-owner".into());
+  }
+  if metadata.nlink() != 1 {
+    return Err("hard-linked files are not supported".into());
+  }
+  Ok(RestoreFileIdentity {
+    device: metadata.dev(),
+    inode: metadata.ino(),
+    size: metadata.size(),
+    modified_seconds: metadata.mtime(),
+    modified_nanoseconds: metadata.mtime_nsec(),
+    changed_seconds: metadata.ctime(),
+    changed_nanoseconds: metadata.ctime_nsec(),
+    owner: metadata.uid(),
+    group: metadata.gid(),
+    mode: metadata.mode(),
+    links: metadata.nlink(),
+  })
+}
+
+fn secure_regular_file(
+  path: &Path,
+  scope_root: &Path,
+  owner: u32,
+) -> Result<RestoreFileIdentity, String> {
+  secure_parent_directories(path, scope_root, owner)?;
+  regular_identity(path, owner)
+}
+
+fn secure_destination(
+  path: &Path,
+  scope_root: &Path,
+  owner: u32,
+) -> Result<Option<RestoreFileIdentity>, String> {
+  secure_parent_directories(path, scope_root, owner)?;
+  match regular_identity(path, owner) {
+    Ok(identity) => Ok(Some(identity)),
+    Err(_error)
+      if fs::symlink_metadata(path).is_err_and(|cause| cause.kind() == IoErrorKind::NotFound) =>
+    {
+      Ok(None)
+    }
+    Err(error) => Err(error),
+  }
+}
+
+fn decode_mount_path(path: &str) -> Option<PathBuf> {
+  let mut decoded = String::with_capacity(path.len());
+  let mut characters = path.chars();
+  while let Some(character) = characters.next() {
+    if character != '\\' {
+      decoded.push(character);
+      continue;
+    }
+    let octal = [characters.next()?, characters.next()?, characters.next()?];
+    if !octal.iter().all(|digit| matches!(digit, '0'..='7')) {
+      return None;
+    }
+    let value = u8::from_str_radix(&octal.iter().collect::<String>(), 8).ok()?;
+    decoded.push(char::from(value));
+  }
+  Some(PathBuf::from(decoded))
+}
+
+fn ensure_not_mountpoint(path: &Path, mountinfo: &Path) -> SnapshotResult<()> {
+  let text = fs::read_to_string(mountinfo)
+    .map_err(|error| invalid(format!("cannot validate filesystem boundaries: {error}")))?;
+  for line in text.lines() {
+    let Some(mount_path) = line.split_whitespace().nth(4).and_then(decode_mount_path) else {
+      continue;
+    };
+    if mount_path != Path::new("/") && path.starts_with(&mount_path) {
+      return Err(invalid(
+        "restoration across a mountpoint or subvolume is not supported",
+      ));
+    }
+  }
+  Ok(())
+}
+
+struct RestoreLock {
+  _file: fs::File,
+}
+
+impl RestoreLock {
+  fn acquire(path: &Path, scope_root: &Path, owner: u32) -> SnapshotResult<Self> {
+    use std::os::{fd::AsRawFd, unix::fs::OpenOptionsExt};
+    secure_parent_directories(path, scope_root, owner)
+      .map_err(|error| invalid(format!("restore lock directory is unsafe: {error}")))?;
+    let file = fs::OpenOptions::new()
+      .read(true)
+      .write(true)
+      .create(true)
+      .mode(0o600)
+      .custom_flags(libc::O_CLOEXEC | libc::O_NOFOLLOW)
+      .open(path)
+      .map_err(|error| SnapshotError::new(ErrorKind::Permission, error.to_string()))?;
+    let metadata = file
+      .metadata()
+      .map_err(|error| SnapshotError::new(ErrorKind::Permission, error.to_string()))?;
+    if !metadata.file_type().is_file() || metadata.uid() != owner || metadata.mode() & 0o077 != 0 {
+      return Err(invalid("restore lock file is not secure"));
+    }
+    // SAFETY: the file owns a valid descriptor and remains alive for the guard.
+    let result = unsafe { libc::flock(file.as_raw_fd(), libc::LOCK_EX | libc::LOCK_NB) };
+    if result != 0 {
+      return Err(SnapshotError::new(
+        ErrorKind::Invalid,
+        "another selective restore is in progress",
+      ));
+    }
+    Ok(Self { _file: file })
+  }
+}
+
 /// Run the package transaction only after Snapper returned a validated snapshot ID.
 pub fn run_pre_upgrade_transaction<R, F>(
   backend: &SnapshotBackend<R>,
@@ -749,6 +1200,20 @@ pub fn validate_helper(action: &str, values: &[String]) -> SnapshotResult<()> {
       }
       validate_change_path(path)
     }
+    ("restore-preview", [config, origin, destination, path]) => {
+      validate_restore_request(config, origin, destination, path)
+    }
+    ("restore-file", [config, origin, destination, path, expected]) => {
+      validate_restore_request(config, origin, destination, path)?;
+      let identity = serde_json::from_str::<Option<RestoreFileIdentity>>(expected)
+        .map_err(|_| invalid("invalid destination review token"))?;
+      if let Some(identity) = identity
+        && (identity.links != 1 || identity.owner != 0 || identity.mode & 0o022 != 0)
+      {
+        return Err(invalid("unsafe destination review token"));
+      }
+      Ok(())
+    }
     ("get-retention", [config]) => validate_config(config),
     ("set-retention", [config, configdata]) => {
       validate_config(config)?;
@@ -764,6 +1229,21 @@ pub fn validate_helper(action: &str, values: &[String]) -> SnapshotResult<()> {
     }
     _ => Err(invalid("unsupported snapshot request")),
   }
+}
+
+fn validate_restore_request(
+  config: &str,
+  origin: &str,
+  destination: &str,
+  path: &str,
+) -> SnapshotResult<()> {
+  validate_config(config)?;
+  let origin = parse_number(origin)?;
+  let destination = parse_number(destination)?;
+  if origin == destination {
+    return Err(invalid("restoration requires two different snapshots"));
+  }
+  validate_restore_path(path)
 }
 
 pub fn parse_cleanup_algorithm(value: &str) -> SnapshotResult<CleanupAlgorithm> {

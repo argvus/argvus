@@ -14,6 +14,8 @@ serde = { workspace = true, features = ["derive"] }
 serde_json.workspace = true
 crossterm.workspace = true
 ratatui.workspace = true
+libc.workspace = true
 
 [dev-dependencies]
 argvus-control-center-core = { workspace = true, features = ["testing"] }
+tempfile.workspace = true

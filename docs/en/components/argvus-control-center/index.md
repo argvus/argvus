@@ -422,11 +422,33 @@ errors can be retried through **a — Authorize**; a removed snapshot or changed
 root configuration requires refreshing the list. Backend tests use a fake
 `ProcessRunner` and do not require Snapper, Btrfs or root.
 
+From the comparison, select a path and press **r** to review restoring the file
+from the destination snapshot. The helper verifies that both snapshots still
+belong to the root configuration, the path is still in the comparison, and the
+source is a regular file in Snapper's standard `/.snapshots/<id>/snapshot` view.
+The bounded Snapper diff is shown when textual; binary or oversized diffs are
+identified without loading their full contents into the UI. **Enter** opens a
+separate confirmation naming the source and destination; **Esc** cancels without
+changing the file. Confirmation creates a `single` safety snapshot first, then
+uses Snapper `undochange` for only that path and checks that it matches the
+selected snapshot. The safety snapshot ID is reported and the snapshot is kept.
+Restoration shares the lock used by ARGVUS package upgrades, so it cannot overlap
+an official Control Center pacman transaction.
+
+The first version accepts only root-owned regular files under root-owned parent
+directories that are not writable by group or others. It refuses directories,
+symlinks, hard links, special files, mountpoints/subvolumes, Snapper's internal
+directory and user-writable locations. Files missing from the selected snapshot
+are never deleted. Snapper's root `undochange` does not guarantee application or
+database consistency and is not atomic; the safety snapshot is a recovery point,
+not a guarantee. Snapper preserves only metadata supported by its build. Separate
+subvolumes and files outside the configured root remain outside the operation.
+
 Manual snapshots are `single`, read-only by Snapper's default, with no cleanup
 algorithm assigned by this page. Existing Snapper timers and external operations
 continue to apply. Snapshots are not full-system images: separate subvolumes,
 including a separate `/home`, are not included. This version provides **no
-rollback, restore, installation or creation of a Snapper configuration**. Press
+full-system rollback, installation or creation of a Snapper configuration**. Press
 **p** on a supported root configuration to inspect the known retention settings.
 Missing values are shown as Snapper defaults, while unknown keys are diagnostic
 only. Press **e** to edit a supported value. The confirmation shows the old and

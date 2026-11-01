@@ -31,6 +31,7 @@ enum PendingAction {
     new: String,
   },
   Cleanup(CleanupAlgorithm),
+  Restore(RestoreReview),
 }
 #[derive(Debug)]
 enum Reply {
@@ -42,6 +43,8 @@ enum Reply {
   Retention(RetentionConfig, SnapperTimers),
   Saved(RetentionConfig),
   Cleaned(Vec<u32>),
+  RestoreReviewed(RestoreReview),
+  Restored(RestoreResult),
 }
 #[derive(Debug, Clone, Copy)]
 enum Phase {
@@ -50,6 +53,8 @@ enum Phase {
   Changing,
   Comparing,
   Diffing,
+  PreviewRestore,
+  Restoring,
 }
 
 pub struct SnapshotApp {
@@ -73,6 +78,7 @@ pub struct SnapshotApp {
   diff: Option<FileDiff>,
   diff_scroll: usize,
   diff_horizontal: usize,
+  restore_review: Option<RestoreReview>,
   retention: Option<RetentionConfig>,
   retention_view: bool,
   retention_selection: Selection,
@@ -102,6 +108,7 @@ impl SnapshotApp {
       diff: None,
       diff_scroll: 0,
       diff_horizontal: 0,
+      restore_review: None,
       retention: None,
       retention_view: false,
       retention_selection: Selection::default(),
@@ -140,6 +147,7 @@ impl SnapshotApp {
     self.error = None;
     self.comparison = None;
     self.diff = None;
+    self.restore_review = None;
     self.phase = Phase::Detecting;
     self.job = Some(self.jobs.spawn(|_| {
       Ok(
@@ -217,6 +225,22 @@ impl SnapshotApp {
         self.diff_horizontal = 0;
         self.diff = Some(diff);
       }
+      Ok(Reply::RestoreReviewed(review)) => {
+        self.diff_scroll = 0;
+        self.diff_horizontal = 0;
+        self.restore_review = Some(review);
+      }
+      Ok(Reply::Restored(result)) => {
+        self.status = Some(StatusMessage {
+          kind: StatusKind::Success,
+          text: label(self.lang, "restore_success")
+            .replace("{source}", &result.source_snapshot.to_string())
+            .replace("{safety}", &result.safety_snapshot.to_string()),
+        });
+        self.restore_review = None;
+        self.comparison = None;
+        self.reload();
+      }
       Ok(Reply::Retention(config, timers)) => {
         self.retention = Some(config);
         self.timers = Some(timers);
@@ -243,7 +267,7 @@ impl SnapshotApp {
       }
       Err(error) => {
         // A mutation may have completed despite a lost reply. Read back, never retry it.
-        if matches!(self.phase, Phase::Changing) {
+        if matches!(self.phase, Phase::Changing | Phase::Restoring) {
           self.status = Some(StatusMessage {
             kind: StatusKind::Error,
             text: error_text(self.lang, &error),
@@ -328,6 +352,89 @@ impl SnapshotApp {
       })
     }));
   }
+
+  fn preview_restore(&mut self) {
+    let (Some(config), Some(comparison)) = (self.config.clone(), self.comparison.as_ref()) else {
+      return;
+    };
+    let Some(change) = comparison.changes.get(self.change_selection.index) else {
+      return;
+    };
+    if change.kind == ChangeKind::Removed || change.file_type {
+      self.status = Some(StatusMessage {
+        kind: StatusKind::Error,
+        text: label(self.lang, "restore_unsupported_change").into(),
+      });
+      return;
+    }
+    let (origin, destination, path) = (
+      comparison.origin,
+      comparison.destination,
+      change.path.clone(),
+    );
+    self.phase = Phase::PreviewRestore;
+    self.error = None;
+    self.restore_review = None;
+    self.job = Some(self.jobs.spawn(move |_| {
+      Ok(
+        elevated(
+          "restore-preview",
+          &[config, origin.to_string(), destination.to_string(), path],
+        )
+        .and_then(|bytes| {
+          serde_json::from_slice::<SnapshotResult<RestoreReview>>(&bytes).map_err(wire_error)?
+        })
+        .map(Reply::RestoreReviewed),
+      )
+    }));
+  }
+
+  fn run_restore(&mut self, review: RestoreReview) {
+    let Some(config) = self.config.clone() else {
+      return;
+    };
+    let Some(comparison) = self.comparison.as_ref() else {
+      return;
+    };
+    let (origin, destination) = (comparison.origin, comparison.destination);
+    let expected = match serde_json::to_string(&review.destination) {
+      Ok(expected) => expected,
+      Err(error) => {
+        self.error = Some(SnapshotError::new(ErrorKind::Invalid, error.to_string()));
+        return;
+      }
+    };
+    self.phase = Phase::Restoring;
+    self.error = None;
+    self.status = None;
+    let source = review.source_snapshot;
+    let path = review.path.clone();
+    self.restore_review = Some(review);
+    self.job = Some(self.jobs.spawn(move |_| {
+      if source != destination {
+        return Ok(Err(SnapshotError::new(
+          ErrorKind::Invalid,
+          "the reviewed source snapshot no longer matches the comparison",
+        )));
+      }
+      Ok(
+        elevated(
+          "restore-file",
+          &[
+            config,
+            origin.to_string(),
+            destination.to_string(),
+            path,
+            expected,
+          ],
+        )
+        .and_then(|bytes| {
+          serde_json::from_slice::<SnapshotResult<RestoreResult>>(&bytes).map_err(wire_error)?
+        })
+        .map(Reply::Restored),
+      )
+    }));
+  }
   fn load_retention(&mut self) {
     let Some(config) = self.config.clone() else {
       return;
@@ -410,7 +517,7 @@ impl SnapshotApp {
       let (action, value) = match action {
         PendingAction::Create(description) => ("create", description),
         PendingAction::Delete(snapshot) => ("delete", snapshot.number.to_string()),
-        PendingAction::Retention { .. } | PendingAction::Cleanup(_) => {
+        PendingAction::Retention { .. } | PendingAction::Cleanup(_) | PendingAction::Restore(_) => {
           return Ok(Err(SnapshotError::new(
             ErrorKind::Invalid,
             "invalid snapshot action state",
@@ -500,6 +607,7 @@ impl SnapshotApp {
           match action {
             PendingAction::Retention { key, old, new } => self.save_retention(key, old, new),
             PendingAction::Cleanup(algorithm) => self.run_cleanup(algorithm),
+            PendingAction::Restore(review) => self.run_restore(review),
             action => self.change(action),
           }
         }
@@ -515,6 +623,9 @@ impl SnapshotApp {
       if self.diff.take().is_some() {
         return false;
       }
+      if self.restore_review.take().is_some() {
+        return false;
+      }
       if self.comparison.take().is_some() {
         return false;
       }
@@ -528,7 +639,7 @@ impl SnapshotApp {
       }
       return true;
     }
-    if key.code == KeyCode::Char('r') {
+    if key.code == KeyCode::Char('r') && self.comparison.is_none() {
       self.status = None;
       if self.retention_view {
         self.retention = None;
@@ -551,6 +662,12 @@ impl SnapshotApp {
           self.compare();
         } else if matches!(self.phase, Phase::Diffing) {
           self.open_diff();
+        } else if matches!(self.phase, Phase::PreviewRestore) {
+          self.preview_restore();
+        } else if matches!(self.phase, Phase::Restoring) {
+          if let Some(review) = self.restore_review.clone() {
+            self.run_restore(review);
+          }
         } else if self.retention_view {
           self.load_retention();
         } else {
@@ -589,6 +706,25 @@ impl SnapshotApp {
       }
       return false;
     }
+    if let Some(review) = &self.restore_review {
+      match key.code {
+        KeyCode::Enter => {
+          self.confirmation = Some((ConfirmState::new(), PendingAction::Restore(review.clone())));
+        }
+        KeyCode::Down | KeyCode::Char('j') => self.diff_scroll = self.diff_scroll.saturating_add(1),
+        KeyCode::Up | KeyCode::Char('k') => self.diff_scroll = self.diff_scroll.saturating_sub(1),
+        KeyCode::PageDown => self.diff_scroll = self.diff_scroll.saturating_add(10),
+        KeyCode::PageUp => self.diff_scroll = self.diff_scroll.saturating_sub(10),
+        KeyCode::Right | KeyCode::Char('l') => {
+          self.diff_horizontal = self.diff_horizontal.saturating_add(4)
+        }
+        KeyCode::Left | KeyCode::Char('h') => {
+          self.diff_horizontal = self.diff_horizontal.saturating_sub(4)
+        }
+        _ => {}
+      }
+      return false;
+    }
     if let Some(diff) = &self.diff {
       if matches!(diff, FileDiff::Text(_)) {
         match key.code {
@@ -619,6 +755,7 @@ impl SnapshotApp {
           self.change_selection.index = self.change_selection.index.saturating_sub(1)
         }
         KeyCode::Enter => self.open_diff(),
+        KeyCode::Char('r') => self.preview_restore(),
         _ => {}
       }
       return false;

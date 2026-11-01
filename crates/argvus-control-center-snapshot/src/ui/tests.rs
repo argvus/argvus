@@ -248,6 +248,52 @@ fn failed_read_of_replaced_configuration_can_be_discovered_again() {
 }
 
 #[test]
+fn selective_restore_review_requires_a_separate_confirmation_and_cancel_is_read_only() {
+  let mut app = app();
+  app.config = Some("system".into());
+  app.comparison = Some(Comparison {
+    origin: 1,
+    destination: 2,
+    changes: vec![],
+  });
+  app.restore_review = Some(RestoreReview {
+    source_snapshot: 2,
+    path: "/etc/app.conf".into(),
+    destination: None,
+    diff: FileDiff::Text("+snapshot contents".into()),
+  });
+  press(&mut app, KeyCode::Enter);
+  assert!(app.confirmation.is_some());
+  assert!(app.job.is_none());
+  press(&mut app, KeyCode::Esc);
+  assert!(app.confirmation.is_none());
+  assert!(app.job.is_none());
+  assert!(app.restore_review.is_some());
+}
+
+#[test]
+fn selective_restore_review_renders_path_diff_and_limits_in_both_languages() {
+  for locale in ["en-US", "pt-BR"] {
+    let mut app = app();
+    app.lang = Lang::for_locale(locale);
+    app.state = Some(Integration::Ready {
+      config: "system".into(),
+      snapshots: vec![snapshot(2, false)],
+    });
+    app.restore_review = Some(RestoreReview {
+      source_snapshot: 2,
+      path: "/etc/app.conf".into(),
+      destination: None,
+      diff: FileDiff::Text("+snapshot contents".into()),
+    });
+    let text = app.rows().join("\n");
+    assert!(text.contains("/etc/app.conf"));
+    assert!(text.contains("snapshot contents"));
+    assert!(!text.contains("control_center.snapshot."));
+  }
+}
+
+#[test]
 fn retention_view_opens_editor_and_cleanup_cancel_has_no_job() {
   let mut app = app();
   app.config = Some("system".into());
