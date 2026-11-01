@@ -18,6 +18,7 @@ pub(super) const DEFAULTED_OBJECTS: &[&[&str]] = &[
   &["taskbar", "icons", "utilities"],
   &["taskbar", "date"],
   &["taskbar", "time"],
+  &["taskbar", "workspaces"],
   &["taskbar", "shape"],
   &["default_apps"],
   &["keyboard_shortcuts"],
@@ -272,6 +273,17 @@ fn default_taskbar(document: &mut ConfigDocument) {
     "cpu",
     "cpu_temperature",
     "gpu_temperature",
+    "date",
+    "clock",
+    "battery",
+    "tray",
+    "notifications",
+    "removable_devices",
+    "recording",
+    "bluetooth",
+    "audio_input",
+    "audio_output",
+    "keep_awake",
   ] {
     icons
       .entry(format!("{widget}_enabled"))
@@ -286,6 +298,14 @@ fn default_taskbar(document: &mut ConfigDocument) {
   utilities
     .entry("expanded")
     .or_insert_with(|| Value::Bool(true));
+  let workspaces = taskbar
+    .entry("workspaces")
+    .or_insert_with(|| Value::Object(Map::new()));
+  workspaces
+    .as_object_mut()
+    .expect("taskbar.workspaces is object")
+    .entry("presentation")
+    .or_insert_with(|| Value::String("labels".into()));
   let date = taskbar
     .entry("date")
     .or_insert_with(|| Value::Object(Map::new()));

@@ -18,6 +18,24 @@ impl Fixture {
     fs::create_dir_all(root.join("argvus/data")).expect("create the data directory");
     fs::create_dir_all(root.join("cache")).expect("create the cache directory");
     let fixture = Self { root };
+    let config = fixture.root.join("terminal/config");
+    fs::create_dir_all(config.join("kitty-tui")).expect("create the system configuration");
+    for (path, content) in [
+      (
+        "kitty.conf",
+        include_str!(
+          "../../../packaging/archlinux/src/usr/share/argvus/terminal/config/kitty.conf"
+        ),
+      ),
+      (
+        "kitty-tui/kitty.conf",
+        include_str!(
+          "../../../packaging/archlinux/src/usr/share/argvus/terminal/config/kitty-tui/kitty.conf"
+        ),
+      ),
+    ] {
+      fs::write(config.join(path), content).expect("install the packaged configuration");
+    }
     for theme in ["argvus-dark", "dracula"] {
       fixture.install_theme(theme);
     }
@@ -77,7 +95,7 @@ impl Fixture {
     command
       .env("ARGVUS_CONFIG_HOME", &self.root)
       .env("ARGVUS_CACHE_HOME", self.root.join("cache"))
-      .env("ARGVUS_TERMINAL_SYSTEM_CONFIG", system_root())
+      .env("ARGVUS_TERMINAL_SYSTEM_CONFIG", self.root.join("terminal"))
       .env("ARGVUS_SYSTEM_CONFIG", &self.root)
       .env("XDG_DATA_HOME", self.root.join("xdg"))
       .env("ARGVUS_COMMANDS_DIR", "/nonexistent")
@@ -90,12 +108,6 @@ impl Drop for Fixture {
   fn drop(&mut self) {
     let _ = fs::remove_dir_all(&self.root);
   }
-}
-
-/// The terminal package's own files, as the repository ships them.
-fn system_root() -> PathBuf {
-  Path::new(env!("CARGO_MANIFEST_DIR"))
-    .join("../../packaging/archlinux/src/usr/share/argvus/terminal")
 }
 
 #[test]

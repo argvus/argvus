@@ -8,9 +8,9 @@ use crate::{
   blur::{BlurField, BlurSettings},
   model::{
     AppearancePage, AppearanceState, ControlPanelCard, ControlPanelCards, CustomTheme,
-    EffectSurface, HexColor, PromptGoal, SurfaceSection, TaskbarDateFormat, TaskbarTimeFormat,
-    TaskbarUtilityGroupMode, TaskbarUtilityWidgets, WidgetTelemetryBlock, normalize_hex_color,
-    theme_family_label,
+    EffectSurface, HexColor, PromptGoal, SurfaceSection, TaskbarDateFormat, TaskbarModules,
+    TaskbarTimeFormat, TaskbarUtilityGroupMode, TaskbarWorkspacePresentation, WidgetTelemetryBlock,
+    normalize_hex_color, theme_family_label,
   },
   shadow::{ShadowColor, ShadowField, ShadowSettings},
 };
@@ -73,10 +73,8 @@ enum JobData {
 struct SurfaceDraft {
   surface: EffectSurface,
   utility_group: TaskbarUtilityGroupMode,
-  audio_player_enabled: bool,
-  focus_enabled: bool,
-  launcher_enabled: bool,
-  utility_widgets: TaskbarUtilityWidgets,
+  modules: TaskbarModules,
+  workspace_presentation: TaskbarWorkspacePresentation,
   date_format: TaskbarDateFormat,
   time_seconds_enabled: bool,
   time_format: TaskbarTimeFormat,

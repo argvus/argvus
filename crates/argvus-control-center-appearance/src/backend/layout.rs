@@ -142,6 +142,15 @@ pub(super) fn apply_canonical_taskbar(state: &mut AppearanceState) {
   let Some(taskbar) = canonical_taskbar() else {
     return;
   };
+  state.taskbar_modules.battery_available =
+    std::fs::read_dir("/sys/class/power_supply").is_ok_and(|entries| {
+      entries.flatten().any(|entry| {
+        std::fs::read_to_string(entry.path().join("type"))
+          .is_ok_and(|kind| kind.trim() == "Battery")
+      })
+    });
+  state.taskbar_modules.bluetooth_available = std::fs::read_dir("/sys/class/bluetooth")
+    .is_ok_and(|mut entries| entries.any(|entry| entry.is_ok()));
   let icons = taskbar.get("icons").and_then(Value::as_object);
   let date = taskbar.get("date").and_then(Value::as_object);
   let time = taskbar.get("time").and_then(Value::as_object);
@@ -150,23 +159,22 @@ pub(super) fn apply_canonical_taskbar(state: &mut AppearanceState) {
       .and_then(|values| values.get(key))
       .and_then(Value::as_bool)
   };
-  if let Some(value) = boolean(icons, "audio_player_enabled") {
-    state.taskbar_audio_player_enabled = value;
-  }
-  if let Some(value) = boolean(icons, "focus_enabled") {
-    state.taskbar_focus_enabled = value;
-  }
-  if let Some(value) = boolean(icons, "launcher_enabled") {
-    state.taskbar_launcher_enabled = value;
-  }
   state.taskbar_launcher_custom_icon_path = icons
     .and_then(|values| values.get("launcher_custom_icon_path"))
     .and_then(Value::as_str)
     .map(str::to_owned);
-  for widget in TaskbarUtilityWidget::ALL {
-    if let Some(value) = boolean(icons, &format!("{}_enabled", widget.key())) {
-      state.taskbar_utility_widgets.set(widget, value);
+  for module in TaskbarModule::ALL {
+    let key = format!("{}_enabled", module.key());
+    if let Some(value) = boolean(icons, &key) {
+      state.taskbar_modules.set(module, value);
     }
+  }
+  if let Some(value) = taskbar
+    .get("workspaces")
+    .and_then(|values| values.get("presentation"))
+    .and_then(Value::as_str)
+  {
+    state.taskbar_workspace_presentation = TaskbarWorkspacePresentation::from_value(value);
   }
   if let Some(value) = date
     .and_then(|values| values.get("format"))

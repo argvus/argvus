@@ -300,6 +300,20 @@ fn runtime_kitty_config(options: &Options, selection: Selection) -> Result<PathB
   Ok(destination)
 }
 
+/// Writes a file, creating its directory first.
+fn write_file(path: &Path, content: &str) -> Result<(), ExitCode> {
+  if let Some(parent) = path.parent() {
+    fs::create_dir_all(parent).map_err(|_| ExitCode::from(1))?;
+  }
+  fs::write(path, content).map_err(|error| {
+    eprintln!(
+      "argvus-tui-terminal: cannot write {}: {error}",
+      path.display()
+    );
+    ExitCode::from(1)
+  })
+}
+
 #[cfg(test)]
 mod tests {
   use super::parse;
@@ -338,18 +352,4 @@ mod tests {
     assert_eq!(options.title.as_deref(), Some("Press q to close"));
     assert_eq!(options.command, arguments(&["btop"]));
   }
-}
-
-/// Writes a file, creating its directory first.
-fn write_file(path: &Path, content: &str) -> Result<(), ExitCode> {
-  if let Some(parent) = path.parent() {
-    fs::create_dir_all(parent).map_err(|_| ExitCode::from(1))?;
-  }
-  fs::write(path, content).map_err(|error| {
-    eprintln!(
-      "argvus-tui-terminal: cannot write {}: {error}",
-      path.display()
-    );
-    ExitCode::from(1)
-  })
 }

@@ -65,7 +65,11 @@ fn only_structural_surface_changes_recreate_the_surface() {
   };
   assert!(recreates_surface(&no_seconds, &taskbar));
   let focus_icon = SurfaceDraft {
-    focus_enabled: !taskbar.focus_enabled,
+    modules: {
+      let mut modules = taskbar.modules.clone();
+      modules.focus = !taskbar.modules.focus;
+      modules
+    },
     ..taskbar.clone()
   };
   assert!(recreates_surface(&focus_icon, &taskbar));

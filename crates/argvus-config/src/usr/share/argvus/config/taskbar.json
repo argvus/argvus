@@ -10,6 +10,17 @@
     "cpu_enabled": true,
     "cpu_temperature_enabled": true,
     "gpu_temperature_enabled": true,
+    "date_enabled": true,
+    "clock_enabled": true,
+    "battery_enabled": true,
+    "tray_enabled": true,
+    "notifications_enabled": true,
+    "removable_devices_enabled": true,
+    "recording_enabled": true,
+    "bluetooth_enabled": true,
+    "audio_input_enabled": true,
+    "audio_output_enabled": true,
+    "keep_awake_enabled": true,
     "keyboard_layout_enabled": true,
     "memory_enabled": true,
     "network_enabled": true,
@@ -25,5 +36,8 @@
   "time": {
     "format": "24h",
     "seconds_enabled": false
+  },
+  "workspaces": {
+    "presentation": "labels"
   }
 }

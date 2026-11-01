@@ -5,12 +5,17 @@ use super::themes::active_theme_file;
 use super::*;
 
 /// Persists the taskbar utility-group mode (the `group/right-2` drawer's
-/// expanded/collapsed presentation) and regenerates its managed Waybar
-/// configuration. Reload is left to the caller, which also applies the rest
+/// expanded/collapsed presentation). Configuration generation follows when
+/// the complete taskbar draft is applied. Reload is left to the caller, which also applies the rest
 /// of the taskbar icon/date/time preferences in the same action and restarts
 /// the taskbar exactly once.
 pub fn set_taskbar_utility_group(mode: TaskbarUtilityGroupMode) -> Result<(), String> {
-  run_script(&script("taskbar-right-2-mode.sh"), &["set", mode.value()])
+  let mut patch = serde_json::Map::new();
+  patch.insert(
+    "/taskbar/icons/utilities/expanded".into(),
+    Value::Bool(mode == TaskbarUtilityGroupMode::AlwaysExpanded),
+  );
+  persist_taskbar_patch(patch)
 }
 
 /// The loading splash shown while an `Apply` recreates a surface (a Waybar bar
@@ -102,33 +107,23 @@ pub(super) fn run_taskbar_config(arguments: &[&str]) -> Result<(), String> {
 /// `argvus-config.service` nor restart the taskbar: the `Apply` of the taskbar
 /// surface restarts it once, under the splash, when any of them changed.
 pub fn apply_taskbar_icons_and_format(
-  audio_player_enabled: bool,
-  focus_enabled: bool,
-  launcher_enabled: bool,
-  utility_widgets: &TaskbarUtilityWidgets,
+  modules: &TaskbarModules,
+  workspace_presentation: TaskbarWorkspacePresentation,
   date_format: TaskbarDateFormat,
   time_seconds_enabled: bool,
   time_format: TaskbarTimeFormat,
 ) -> Result<(), String> {
   let mut patch = serde_json::Map::new();
-  patch.insert(
-    "/taskbar/icons/audio_player_enabled".into(),
-    Value::Bool(audio_player_enabled),
-  );
-  patch.insert(
-    "/taskbar/icons/focus_enabled".into(),
-    Value::Bool(focus_enabled),
-  );
-  patch.insert(
-    "/taskbar/icons/launcher_enabled".into(),
-    Value::Bool(launcher_enabled),
-  );
-  for widget in TaskbarUtilityWidget::ALL {
+  for module in TaskbarModule::ALL {
     patch.insert(
-      format!("/taskbar/icons/{}_enabled", widget.key()),
-      Value::Bool(utility_widgets.enabled(widget)),
+      format!("/taskbar/icons/{}_enabled", module.key()),
+      Value::Bool(modules.enabled(module)),
     );
   }
+  patch.insert(
+    "/taskbar/workspaces/presentation".into(),
+    Value::String(workspace_presentation.value().into()),
+  );
   patch.insert(
     "/taskbar/date/format".into(),
     Value::String(date_format.value().into()),

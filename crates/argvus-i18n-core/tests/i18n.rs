@@ -27,6 +27,21 @@ fn root() -> PathBuf {
   root
 }
 
+fn control_center_catalogs() -> PathBuf {
+  let catalogs = root();
+  fs::write(
+    catalogs.join("en-US/control-center.json"),
+    include_str!("../../../resources/locales/en-US/control-center.json"),
+  )
+  .unwrap();
+  fs::write(
+    catalogs.join("pt-BR/control-center.json"),
+    include_str!("../../../resources/locales/pt-BR/control-center.json"),
+  )
+  .unwrap();
+  catalogs
+}
+
 fn env_lock() -> &'static Mutex<()> {
   static LOCK: OnceLock<Mutex<()>> = OnceLock::new();
   LOCK.get_or_init(|| Mutex::new(()))
@@ -112,7 +127,7 @@ fn discovers_installed_languages() {
 
 #[test]
 fn control_center_input_catalogs_resolve_page_keys() {
-  let catalogs = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../resources/locales");
+  let catalogs = control_center_catalogs();
   let keys = [
     "control_center.mouse_touchpad",
     "control_center.input_mouse",
@@ -155,7 +170,7 @@ fn control_center_input_catalogs_resolve_page_keys() {
 
 #[test]
 fn control_center_common_labels_are_translated_to_brazilian_portuguese() {
-  let catalogs = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../resources/locales");
+  let catalogs = control_center_catalogs();
   let portuguese = I18n::from_locale(&catalogs, "pt-BR", "control-center").unwrap();
   let translations = [
     ("control_center.welcome_title", "Boas-vindas ao ARGVUS"),

@@ -6,6 +6,8 @@ use std::rc::Rc;
 
 use gtk::gio;
 
+type OnClosedCallback = Box<dyn FnOnce()>;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum PopupApp {
   Focus,
@@ -37,7 +39,7 @@ pub fn close_competing_surfaces(active: PopupApp, on_closed: impl FnOnce() + 'st
     "close",
   ]);
   let remaining = Rc::new(Cell::new(0));
-  let callback: Rc<RefCell<Option<Box<dyn FnOnce()>>>> =
+  let callback: Rc<RefCell<Option<OnClosedCallback>>> =
     Rc::new(RefCell::new(Some(Box::new(on_closed))));
 
   for command in commands {
@@ -56,17 +58,17 @@ pub fn close_competing_surfaces(active: PopupApp, on_closed: impl FnOnce() + 'st
     process.wait_async(None::<&gio::Cancellable>, move |result| {
       let _ = result;
       remaining.set(remaining.get() - 1);
-      if remaining.get() == 0 {
-        if let Some(callback) = callback.borrow_mut().take() {
-          callback();
-        }
+      if remaining.get() == 0
+        && let Some(callback) = callback.borrow_mut().take()
+      {
+        callback();
       }
     });
   }
 
-  if remaining.get() == 0 {
-    if let Some(callback) = callback.borrow_mut().take() {
-      callback();
-    }
+  if remaining.get() == 0
+    && let Some(callback) = callback.borrow_mut().take()
+  {
+    callback();
   }
 }

@@ -140,6 +140,8 @@ impl AppearanceApp {
         section: SurfaceSection::Transparency,
       }),
       Item::TaskbarIcons => self.go(AppearancePage::TaskbarIcons),
+      Item::TaskbarModules => self.go(AppearancePage::TaskbarModules),
+      Item::TaskbarWorkspaces => self.go(AppearancePage::TaskbarWorkspaces),
       Item::TaskbarDate => self.go(AppearancePage::TaskbarDate),
       Item::TaskbarTime => self.go(AppearancePage::TaskbarTime),
       Item::TaskbarHeight => self.go(AppearancePage::TaskbarHeight),
@@ -161,30 +163,20 @@ impl AppearanceApp {
       Item::BorderThicknessOption(thickness) => {
         self.edit_draft(|draft| draft.border_thickness = thickness);
       }
-      Item::AudioPlayer => self.edit_draft(|draft| {
-        draft.audio_player_enabled = !draft.audio_player_enabled;
-      }),
-      Item::FocusIcon => self.go(AppearancePage::SurfaceSection {
-        surface: EffectSurface::Taskbar,
-        section: SurfaceSection::Focus,
-      }),
-      Item::FocusEnabled => self.edit_draft(|draft| {
-        draft.focus_enabled = !draft.focus_enabled;
-      }),
       Item::LauncherIcon => self.go(AppearancePage::SurfaceSection {
         surface: EffectSurface::Taskbar,
         section: SurfaceSection::Launcher,
-      }),
-      Item::LauncherEnabled => self.edit_draft(|draft| {
-        draft.launcher_enabled = !draft.launcher_enabled;
       }),
       Item::ChooseLauncherIcon => self.apply(
         tr(self.lang, "control_center.taskbar_launcher_icon_chosen").into(),
         backend::choose_launcher_icon,
       ),
-      Item::UtilityWidget(widget) => self.edit_draft(|draft| {
-        let enabled = !draft.utility_widgets.enabled(widget);
-        draft.utility_widgets.set(widget, enabled);
+      Item::TaskbarModule(module) => self.edit_draft(|draft| {
+        let enabled = !draft.modules.enabled(module);
+        draft.modules.set(module, enabled);
+      }),
+      Item::WorkspacePresentation(presentation) => self.edit_draft(|draft| {
+        draft.workspace_presentation = presentation;
       }),
       Item::Utilities => self.go(AppearancePage::SurfaceSection {
         surface: EffectSurface::Taskbar,

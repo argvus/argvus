@@ -3,9 +3,10 @@ use crate::animations::AnimationValues;
 use crate::blur::BlurValues;
 use crate::model::{
   AppearanceState, ControlPanelCard, ControlPanelCards, EffectSurface, TASKBAR_BORDER_THICKNESSES,
-  TASKBAR_HEIGHTS, TaskbarDateFormat, TaskbarPosition, TaskbarTimeFormat, TaskbarUtilityGroupMode,
-  TaskbarUtilityWidget, TaskbarUtilityWidgets, WallpaperCollection, WallpaperEntry, WallpaperMode,
-  WidgetTelemetryBlock, WidgetTelemetryBlocks, canonical_theme_id, normalize_hex_color,
+  TASKBAR_HEIGHTS, TaskbarDateFormat, TaskbarModule, TaskbarModules, TaskbarPosition,
+  TaskbarTimeFormat, TaskbarUtilityGroupMode, TaskbarWorkspacePresentation, WallpaperCollection,
+  WallpaperEntry, WallpaperMode, WidgetTelemetryBlock, WidgetTelemetryBlocks, canonical_theme_id,
+  normalize_hex_color,
 };
 use argvus_control_center_core::{
   config::reload_argvus_config_service,
@@ -258,6 +259,8 @@ pub fn load_page(
     page,
     AppearancePage::Taskbar
       | AppearancePage::TaskbarIcons
+      | AppearancePage::TaskbarModules
+      | AppearancePage::TaskbarWorkspaces
       | AppearancePage::TaskbarDate
       | AppearancePage::TaskbarDateFormat
       | AppearancePage::TaskbarTime

@@ -10,8 +10,8 @@ use crate::animations::{
 use crate::blur::BlurField;
 use crate::model::{
   AppearancePage, ControlPanelCard, EffectSurface, IconThemeSource, PromptGoal, SurfaceSection,
-  TASKBAR_BORDER_THICKNESSES, TASKBAR_HEIGHTS, TaskbarDateFormat, TaskbarPosition,
-  TaskbarTimeFormat, TaskbarUtilityGroupMode, TaskbarUtilityWidget, WallpaperCollection,
+  TASKBAR_BORDER_THICKNESSES, TASKBAR_HEIGHTS, TaskbarDateFormat, TaskbarModule, TaskbarPosition,
+  TaskbarTimeFormat, TaskbarUtilityGroupMode, TaskbarWorkspacePresentation, WallpaperCollection,
   WallpaperMode, WidgetTelemetryBlock, accent_label,
 };
 use crate::shadow::ShadowField;
@@ -132,15 +132,14 @@ pub(super) enum Item {
   // Draft pages
   TaskbarTransparency,
   TaskbarIcons,
+  TaskbarModules,
+  TaskbarWorkspaces,
   TaskbarDate,
   TaskbarTime,
-  AudioPlayer,
-  FocusIcon,
-  FocusEnabled,
+  TaskbarModule(TaskbarModule),
+  WorkspacePresentation(TaskbarWorkspacePresentation),
   LauncherIcon,
-  LauncherEnabled,
   ChooseLauncherIcon,
-  UtilityWidget(TaskbarUtilityWidget),
   Utilities,
   DateFormats,
   DateFormat(TaskbarDateFormat),
@@ -231,13 +230,14 @@ impl Item {
       Self::Spacing(goal) => return spacing_icon(goal),
       Self::Rounded | Self::Rounding => icons::ROUNDED,
       Self::TaskbarIcons => icons::APPS,
+      Self::TaskbarModules => icons::WIDGET,
+      Self::TaskbarWorkspaces => icons::GAP,
       Self::TaskbarDate | Self::DateFormats => icons::CALENDAR,
       Self::TaskbarTime | Self::TimeFormats => icons::CLOCK,
-      Self::AudioPlayer => icons::MUSIC,
-      Self::FocusIcon | Self::FocusEnabled => icons::TIMER,
-      Self::LauncherIcon | Self::LauncherEnabled => icons::LAUNCHER,
+      Self::TaskbarModule(module) => taskbar_module_icon(module),
+      Self::WorkspacePresentation(_) => icons::GAP,
+      Self::LauncherIcon => icons::LAUNCHER,
       Self::ChooseLauncherIcon => icons::FOLDER,
-      Self::UtilityWidget(widget) => utility_widget_icon(widget),
       Self::Utilities => icons::WIDGET,
       Self::Seconds => icons::TIMER,
       Self::Sessions => icons::LAYOUT,
@@ -263,15 +263,27 @@ impl Item {
 }
 
 /// Each Taskbar utility widget shows the glyph of the stat it displays.
-fn utility_widget_icon(widget: TaskbarUtilityWidget) -> &'static str {
-  match widget {
-    TaskbarUtilityWidget::Network => icons::NETWORK,
-    TaskbarUtilityWidget::PowerProfile => icons::POWER,
-    TaskbarUtilityWidget::KeyboardLayout => icons::KEYBOARD,
-    TaskbarUtilityWidget::Memory => icons::MEMORY,
-    TaskbarUtilityWidget::Cpu => icons::CPU,
-    TaskbarUtilityWidget::CpuTemperature => icons::THERMOMETER,
-    TaskbarUtilityWidget::GpuTemperature => icons::GPU,
+fn taskbar_module_icon(module: TaskbarModule) -> &'static str {
+  match module {
+    TaskbarModule::AudioPlayer => icons::MUSIC,
+    TaskbarModule::Focus => icons::TIMER,
+    TaskbarModule::Launcher => icons::LAUNCHER,
+    TaskbarModule::Network => icons::NETWORK,
+    TaskbarModule::PowerProfile => icons::POWER,
+    TaskbarModule::KeyboardLayout => icons::KEYBOARD,
+    TaskbarModule::Memory => icons::MEMORY,
+    TaskbarModule::Cpu => icons::CPU,
+    TaskbarModule::CpuTemperature => icons::THERMOMETER,
+    TaskbarModule::GpuTemperature => icons::GPU,
+    TaskbarModule::Date => icons::CALENDAR,
+    TaskbarModule::Clock => icons::CLOCK,
+    TaskbarModule::Battery => icons::BATTERY,
+    TaskbarModule::Tray | TaskbarModule::Notifications => icons::WIDGET,
+    TaskbarModule::RemovableDevices => icons::STORAGE,
+    TaskbarModule::Recording | TaskbarModule::AudioInput => icons::MICROPHONE,
+    TaskbarModule::Bluetooth => icons::BLUETOOTH,
+    TaskbarModule::AudioOutput => icons::AUDIO,
+    TaskbarModule::KeepAwake => icons::POWER,
   }
 }
 
@@ -492,6 +504,8 @@ impl AppearanceApp {
       AppearancePage::Taskbar => self.taskbar_page_rows(),
       // Checks come first; the submenus follow in the last rows.
       AppearancePage::TaskbarIcons => self.taskbar_icons_page_rows(),
+      AppearancePage::TaskbarModules => self.taskbar_modules_page_rows(),
+      AppearancePage::TaskbarWorkspaces => self.taskbar_workspaces_page_rows(),
       AppearancePage::TaskbarHeight => self.taskbar_height_page_rows(),
       // The border is off when Enable is unchecked, so Thickness is disabled
       // and skipped, as Rounding is on the General borders page.
@@ -833,25 +847,47 @@ impl AppearanceApp {
   }
 
   fn taskbar_icons_page_rows(&self) -> Vec<Row<Item>> {
-    {
-      let draft = self.surface_draft();
-      let mut rows = vec![self.toggle_row(
-        Item::AudioPlayer,
-        "control_center.taskbar_audio_player_view",
-        draft.is_some_and(|draft| draft.audio_player_enabled),
-      )];
-      rows.extend(TaskbarUtilityWidget::ALL.into_iter().map(|widget| {
+    vec![
+      self.submenu(Item::TaskbarModules, "control_center.taskbar_modules"),
+      self.submenu(Item::TaskbarWorkspaces, "control_center.taskbar_workspaces"),
+      self.submenu(Item::LauncherIcon, "control_center.launcher"),
+      self.submenu(Item::Utilities, "control_center.utilities"),
+    ]
+  }
+
+  fn taskbar_modules_page_rows(&self) -> Vec<Row<Item>> {
+    let draft = self.surface_draft();
+    TaskbarModule::ALL
+      .into_iter()
+      .filter(|module| match module {
+        TaskbarModule::Battery => self.state.taskbar_modules.battery_available,
+        TaskbarModule::Bluetooth => self.state.taskbar_modules.bluetooth_available,
+        _ => true,
+      })
+      .map(|module| {
         self.toggle_row(
-          Item::UtilityWidget(widget),
-          widget.label_key(),
-          draft.is_some_and(|draft| draft.utility_widgets.enabled(widget)),
+          Item::TaskbarModule(module),
+          module.label_key(),
+          draft.is_some_and(|draft| draft.modules.enabled(module)),
         )
-      }));
-      rows.push(self.submenu(Item::LauncherIcon, "control_center.launcher"));
-      rows.push(self.submenu(Item::Utilities, "control_center.utilities"));
-      rows.push(self.submenu(Item::FocusIcon, "control_center.taskbar_focus_icon"));
-      rows
-    }
+      })
+      .collect()
+  }
+
+  fn taskbar_workspaces_page_rows(&self) -> Vec<Row<Item>> {
+    let selected = self
+      .surface_draft()
+      .map(|draft| draft.workspace_presentation);
+    TaskbarWorkspacePresentation::ALL
+      .into_iter()
+      .map(|presentation| {
+        self.choice_row(
+          Item::WorkspacePresentation(presentation),
+          self.label(presentation.label_key()),
+          selected == Some(presentation),
+        )
+      })
+      .collect()
   }
 
   fn taskbar_height_page_rows(&self) -> Vec<Row<Item>> {
@@ -1091,17 +1127,7 @@ impl AppearanceApp {
   fn section_rows(&self, surface: EffectSurface, section: SurfaceSection) -> Vec<Row<Item>> {
     let draft = self.surface_draft();
     match section {
-      SurfaceSection::Focus => vec![self.toggle_row(
-        Item::FocusEnabled,
-        "control_center.enable",
-        draft.is_some_and(|draft| draft.focus_enabled),
-      )],
       SurfaceSection::Launcher => vec![
-        self.toggle_row(
-          Item::LauncherEnabled,
-          "control_center.enable",
-          draft.is_some_and(|draft| draft.launcher_enabled),
-        ),
         with_icon(
           Row::action(
             Item::ChooseLauncherIcon,

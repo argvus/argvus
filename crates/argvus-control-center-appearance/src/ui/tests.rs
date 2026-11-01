@@ -4,8 +4,9 @@ use crate::animations::{
   AnimationCurve, AnimationField, AnimationGroup, AnimationLeaf, AnimationStyle,
 };
 use crate::model::{
-  ControlPanelCard, IconThemeEntry, IconThemeSource, IconThemeVariant, TaskbarPosition,
-  TaskbarUtilityWidget, WallpaperCollection, WallpaperMode, WidgetTelemetryBlock,
+  ControlPanelCard, IconThemeEntry, IconThemeSource, IconThemeVariant, TaskbarModule,
+  TaskbarPosition, TaskbarWorkspacePresentation, WallpaperCollection, WallpaperMode,
+  WidgetTelemetryBlock,
 };
 use argvus_tui::{
   components::{StatusKind, StatusMessage},
@@ -97,10 +98,12 @@ fn home_has_categories_and_spacing_is_nested() {
   // "Borders" is entered directly from the Hyprland category (crate
   // principal) and just groups the two pre-existing border screens.
   assert_eq!(app(AppearancePage::Borders).page_rows().len(), 3);
+  assert_eq!(app(AppearancePage::TaskbarIcons).page_rows().len(), 4);
   assert_eq!(
-    app(AppearancePage::TaskbarIcons).page_rows().len(),
-    3 + TaskbarUtilityWidget::ALL.len() + 1
+    app(AppearancePage::TaskbarModules).page_rows().len(),
+    TaskbarModule::ALL.len() - 2
   );
+  assert_eq!(app(AppearancePage::TaskbarWorkspaces).page_rows().len(), 2);
   assert_eq!(app(AppearancePage::TaskbarDate).page_rows().len(), 1);
   assert_eq!(app(AppearancePage::TaskbarDateFormat).page_rows().len(), 4);
   assert_eq!(app(AppearancePage::TaskbarTime).page_rows().len(), 2);
@@ -488,5 +491,20 @@ fn poll_until(application: &mut AppearanceApp, done: impl Fn(&AppearanceApp) -> 
     assert!(std::time::Instant::now() < deadline, "job did not finish");
     application.poll();
     std::thread::sleep(std::time::Duration::from_millis(5));
+  }
+}
+
+#[test]
+fn taskbar_hardware_options_follow_detected_devices() {
+  for battery in [false, true] {
+    for bluetooth in [false, true] {
+      let mut app = app(AppearancePage::TaskbarModules);
+      app.state.taskbar_modules.battery_available = battery;
+      app.state.taskbar_modules.bluetooth_available = bluetooth;
+      assert_eq!(
+        app.page_rows().len(),
+        TaskbarModule::ALL.len() - 2 + usize::from(battery) + usize::from(bluetooth)
+      );
+    }
   }
 }

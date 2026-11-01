@@ -63,6 +63,15 @@ pub(super) fn validate_appearance(document: &ConfigDocument) -> ConfigResult<()>
 
 pub(super) fn validate_layout(document: &ConfigDocument) -> ConfigResult<()> {
   validate_numeric_section(document, "layout", 0, 100)?;
+  if let Some(position) = document.get("/layout/taskbar/position")
+    && !position
+      .as_str()
+      .is_some_and(|value| matches!(value, "top" | "bottom"))
+  {
+    return Err(ConfigError::Invalid(
+      "layout.taskbar.position must be top or bottom".into(),
+    ));
+  }
   if let Some(variant) = document
     .get(json_pointers::LAYOUT_VARIANT)
     .and_then(Value::as_str)
@@ -323,6 +332,46 @@ pub(super) fn validate_blur_setting(
 }
 
 pub(super) fn validate_taskbar(document: &ConfigDocument) -> ConfigResult<()> {
+  if let Some(presentation) = document.get("/taskbar/workspaces/presentation")
+    && !presentation
+      .as_str()
+      .is_some_and(|value| matches!(value, "labels" | "app-icons"))
+  {
+    return Err(ConfigError::Invalid(
+      "taskbar.workspaces.presentation must be labels or app-icons".into(),
+    ));
+  }
+  for module in [
+    "audio_player",
+    "focus",
+    "launcher",
+    "network",
+    "power_profile",
+    "keyboard_layout",
+    "memory",
+    "cpu",
+    "cpu_temperature",
+    "gpu_temperature",
+    "date",
+    "clock",
+    "battery",
+    "tray",
+    "notifications",
+    "removable_devices",
+    "recording",
+    "bluetooth",
+    "audio_input",
+    "audio_output",
+    "keep_awake",
+  ] {
+    if let Some(enabled) = document.get(&format!("/taskbar/icons/{module}_enabled"))
+      && !enabled.is_boolean()
+    {
+      return Err(ConfigError::Invalid(format!(
+        "taskbar.icons.{module}_enabled must be a boolean"
+      )));
+    }
+  }
   if let Some(format) = document.get("/taskbar/date/format").and_then(Value::as_str)
     && !matches!(
       format,

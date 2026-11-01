@@ -12,10 +12,8 @@ pub(super) fn recreates_surface(draft: &SurfaceDraft, current: &SurfaceDraft) ->
     EffectSurface::Taskbar => {
       draft.height != current.height
         || draft.utility_group != current.utility_group
-        || draft.audio_player_enabled != current.audio_player_enabled
-        || draft.focus_enabled != current.focus_enabled
-        || draft.launcher_enabled != current.launcher_enabled
-        || draft.utility_widgets != current.utility_widgets
+        || draft.modules != current.modules
+        || draft.workspace_presentation != current.workspace_presentation
         || draft.date_format != current.date_format
         || draft.time_seconds_enabled != current.time_seconds_enabled
         || draft.time_format != current.time_format
@@ -55,10 +53,8 @@ pub(super) fn apply_taskbar_draft(draft: &SurfaceDraft, recreate: bool) -> Resul
   }
   backend::set_taskbar_utility_group(draft.utility_group)?;
   backend::apply_taskbar_icons_and_format(
-    draft.audio_player_enabled,
-    draft.focus_enabled,
-    draft.launcher_enabled,
-    &draft.utility_widgets,
+    &draft.modules,
+    draft.workspace_presentation,
     draft.date_format,
     draft.time_seconds_enabled,
     draft.time_format,
@@ -192,6 +188,8 @@ impl AppearanceApp {
     match page {
       AppearancePage::Taskbar
       | AppearancePage::TaskbarIcons
+      | AppearancePage::TaskbarModules
+      | AppearancePage::TaskbarWorkspaces
       | AppearancePage::TaskbarDate
       | AppearancePage::TaskbarDateFormat
       | AppearancePage::TaskbarTime
@@ -242,10 +240,8 @@ impl AppearanceApp {
     SurfaceDraft {
       surface,
       utility_group: self.state.taskbar_utility_group,
-      audio_player_enabled: self.state.taskbar_audio_player_enabled,
-      focus_enabled: self.state.taskbar_focus_enabled,
-      launcher_enabled: self.state.taskbar_launcher_enabled,
-      utility_widgets: self.state.taskbar_utility_widgets.clone(),
+      modules: self.state.taskbar_modules.clone(),
+      workspace_presentation: self.state.taskbar_workspace_presentation,
       date_format: self.state.taskbar_date_format,
       time_seconds_enabled: self.state.taskbar_time_seconds_enabled,
       time_format: self.state.taskbar_time_format,

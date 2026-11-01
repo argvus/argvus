@@ -48,7 +48,7 @@
         "taskbar": {
           "type": "object",
           "properties": {
-            "position": { "enum": ["top", "bottom", "left", "right"] },
+            "position": { "enum": ["top", "bottom"] },
             "margin_top": { "type": "integer", "minimum": 0, "maximum": 100 },
             "margin_bottom": { "type": "integer", "minimum": 0, "maximum": 100 },
             "margin_left": { "type": "integer", "minimum": 0, "maximum": 100 },
@@ -170,6 +170,17 @@
             "cpu_enabled": { "type": "boolean" },
             "cpu_temperature_enabled": { "type": "boolean" },
             "gpu_temperature_enabled": { "type": "boolean" },
+            "date_enabled": { "type": "boolean" },
+            "clock_enabled": { "type": "boolean" },
+            "battery_enabled": { "type": "boolean" },
+            "tray_enabled": { "type": "boolean" },
+            "notifications_enabled": { "type": "boolean" },
+            "removable_devices_enabled": { "type": "boolean" },
+            "recording_enabled": { "type": "boolean" },
+            "bluetooth_enabled": { "type": "boolean" },
+            "audio_input_enabled": { "type": "boolean" },
+            "audio_output_enabled": { "type": "boolean" },
+            "keep_awake_enabled": { "type": "boolean" },
             "utilities": {
               "type": "object",
               "properties": {
@@ -196,6 +207,12 @@
           "properties": {
             "seconds_enabled": { "type": "boolean" },
             "format": { "enum": ["24h", "12h"] }
+          }
+        },
+        "workspaces": {
+          "type": "object",
+          "properties": {
+            "presentation": { "enum": ["labels", "app-icons"] }
           }
         },
         "shape": {

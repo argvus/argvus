@@ -46,9 +46,12 @@ impl TaskbarUtilityGroupMode {
   }
 }
 
-/// Identifies a separately toggleable Taskbar utility widget.
+/// Identifies an optional taskbar module with a persisted visibility setting.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum TaskbarUtilityWidget {
+pub enum TaskbarModule {
+  AudioPlayer,
+  Focus,
+  Launcher,
   Network,
   PowerProfile,
   KeyboardLayout,
@@ -56,10 +59,24 @@ pub enum TaskbarUtilityWidget {
   Cpu,
   CpuTemperature,
   GpuTemperature,
+  Date,
+  Clock,
+  Battery,
+  Tray,
+  Notifications,
+  RemovableDevices,
+  Recording,
+  Bluetooth,
+  AudioInput,
+  AudioOutput,
+  KeepAwake,
 }
 
-impl TaskbarUtilityWidget {
-  pub const ALL: [Self; 7] = [
+impl TaskbarModule {
+  pub const ALL: [Self; 21] = [
+    Self::AudioPlayer,
+    Self::Focus,
+    Self::Launcher,
     Self::Network,
     Self::PowerProfile,
     Self::KeyboardLayout,
@@ -67,11 +84,25 @@ impl TaskbarUtilityWidget {
     Self::Cpu,
     Self::CpuTemperature,
     Self::GpuTemperature,
+    Self::Date,
+    Self::Clock,
+    Self::Battery,
+    Self::Tray,
+    Self::Notifications,
+    Self::RemovableDevices,
+    Self::Recording,
+    Self::Bluetooth,
+    Self::AudioInput,
+    Self::AudioOutput,
+    Self::KeepAwake,
   ];
 
-  /// Returns the stable config-pointer identifier (`taskbar.icons.<key>_enabled`).
+  /// Returns the stable config-pointer identifier under `taskbar.icons`.
   pub fn key(self) -> &'static str {
     match self {
+      Self::AudioPlayer => "audio_player",
+      Self::Focus => "focus",
+      Self::Launcher => "launcher",
       Self::Network => "network",
       Self::PowerProfile => "power_profile",
       Self::KeyboardLayout => "keyboard_layout",
@@ -79,12 +110,26 @@ impl TaskbarUtilityWidget {
       Self::Cpu => "cpu",
       Self::CpuTemperature => "cpu_temperature",
       Self::GpuTemperature => "gpu_temperature",
+      Self::Date => "date",
+      Self::Clock => "clock",
+      Self::Battery => "battery",
+      Self::Tray => "tray",
+      Self::Notifications => "notifications",
+      Self::RemovableDevices => "removable_devices",
+      Self::Recording => "recording",
+      Self::Bluetooth => "bluetooth",
+      Self::AudioInput => "audio_input",
+      Self::AudioOutput => "audio_output",
+      Self::KeepAwake => "keep_awake",
     }
   }
 
   /// Returns the localization key for the Control Center row.
   pub fn label_key(self) -> &'static str {
     match self {
+      Self::AudioPlayer => "control_center.taskbar_audio_player_view",
+      Self::Focus => "control_center.taskbar_focus_icon",
+      Self::Launcher => "control_center.launcher",
       Self::Network => "control_center.network",
       Self::PowerProfile => "control_center.taskbar_power_profile",
       Self::KeyboardLayout => "control_center.keyboard_layout",
@@ -92,13 +137,29 @@ impl TaskbarUtilityWidget {
       Self::Cpu => "control_center.taskbar_cpu_usage",
       Self::CpuTemperature => "control_center.taskbar_cpu_temperature",
       Self::GpuTemperature => "control_center.taskbar_gpu_temperature",
+      Self::Date => "control_center.date",
+      Self::Clock => "control_center.time",
+      Self::Battery => "control_center.taskbar_battery",
+      Self::Tray => "control_center.taskbar_tray",
+      Self::Notifications => "control_center.notifications",
+      Self::RemovableDevices => "control_center.taskbar_removable_devices",
+      Self::Recording => "control_center.taskbar_recording",
+      Self::Bluetooth => "control_center.bluetooth",
+      Self::AudioInput => "control_center.taskbar_audio_input",
+      Self::AudioOutput => "control_center.taskbar_audio_output",
+      Self::KeepAwake => "control_center.keep_awake",
     }
   }
 }
 
-/// Stores the sparse Taskbar Utilities preferences represented by the UI.
+/// Stores visibility preferences for every optional taskbar module.
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct TaskbarUtilityWidgets {
+pub struct TaskbarModules {
+  pub battery_available: bool,
+  pub bluetooth_available: bool,
+  pub audio_player: bool,
+  pub focus: bool,
+  pub launcher: bool,
   pub network: bool,
   pub power_profile: bool,
   pub keyboard_layout: bool,
@@ -106,11 +167,27 @@ pub struct TaskbarUtilityWidgets {
   pub cpu: bool,
   pub cpu_temperature: bool,
   pub gpu_temperature: bool,
+  pub date: bool,
+  pub clock: bool,
+  pub battery: bool,
+  pub tray: bool,
+  pub notifications: bool,
+  pub removable_devices: bool,
+  pub recording: bool,
+  pub bluetooth: bool,
+  pub audio_input: bool,
+  pub audio_output: bool,
+  pub keep_awake: bool,
 }
 
-impl Default for TaskbarUtilityWidgets {
+impl Default for TaskbarModules {
   fn default() -> Self {
     Self {
+      battery_available: false,
+      bluetooth_available: false,
+      audio_player: true,
+      focus: true,
+      launcher: false,
       network: true,
       power_profile: true,
       keyboard_layout: true,
@@ -118,32 +195,101 @@ impl Default for TaskbarUtilityWidgets {
       cpu: true,
       cpu_temperature: true,
       gpu_temperature: true,
+      date: true,
+      clock: true,
+      battery: true,
+      tray: true,
+      notifications: true,
+      removable_devices: true,
+      recording: true,
+      bluetooth: true,
+      audio_input: true,
+      audio_output: true,
+      keep_awake: true,
     }
   }
 }
 
-impl TaskbarUtilityWidgets {
-  pub fn enabled(&self, widget: TaskbarUtilityWidget) -> bool {
-    match widget {
-      TaskbarUtilityWidget::Network => self.network,
-      TaskbarUtilityWidget::PowerProfile => self.power_profile,
-      TaskbarUtilityWidget::KeyboardLayout => self.keyboard_layout,
-      TaskbarUtilityWidget::Memory => self.memory,
-      TaskbarUtilityWidget::Cpu => self.cpu,
-      TaskbarUtilityWidget::CpuTemperature => self.cpu_temperature,
-      TaskbarUtilityWidget::GpuTemperature => self.gpu_temperature,
+impl TaskbarModules {
+  pub fn enabled(&self, module: TaskbarModule) -> bool {
+    match module {
+      TaskbarModule::AudioPlayer => self.audio_player,
+      TaskbarModule::Focus => self.focus,
+      TaskbarModule::Launcher => self.launcher,
+      TaskbarModule::Network => self.network,
+      TaskbarModule::PowerProfile => self.power_profile,
+      TaskbarModule::KeyboardLayout => self.keyboard_layout,
+      TaskbarModule::Memory => self.memory,
+      TaskbarModule::Cpu => self.cpu,
+      TaskbarModule::CpuTemperature => self.cpu_temperature,
+      TaskbarModule::GpuTemperature => self.gpu_temperature,
+      TaskbarModule::Date => self.date,
+      TaskbarModule::Clock => self.clock,
+      TaskbarModule::Battery => self.battery,
+      TaskbarModule::Tray => self.tray,
+      TaskbarModule::Notifications => self.notifications,
+      TaskbarModule::RemovableDevices => self.removable_devices,
+      TaskbarModule::Recording => self.recording,
+      TaskbarModule::Bluetooth => self.bluetooth,
+      TaskbarModule::AudioInput => self.audio_input,
+      TaskbarModule::AudioOutput => self.audio_output,
+      TaskbarModule::KeepAwake => self.keep_awake,
     }
   }
 
-  pub fn set(&mut self, widget: TaskbarUtilityWidget, enabled: bool) {
-    match widget {
-      TaskbarUtilityWidget::Network => self.network = enabled,
-      TaskbarUtilityWidget::PowerProfile => self.power_profile = enabled,
-      TaskbarUtilityWidget::KeyboardLayout => self.keyboard_layout = enabled,
-      TaskbarUtilityWidget::Memory => self.memory = enabled,
-      TaskbarUtilityWidget::Cpu => self.cpu = enabled,
-      TaskbarUtilityWidget::CpuTemperature => self.cpu_temperature = enabled,
-      TaskbarUtilityWidget::GpuTemperature => self.gpu_temperature = enabled,
+  pub fn set(&mut self, module: TaskbarModule, enabled: bool) {
+    match module {
+      TaskbarModule::AudioPlayer => self.audio_player = enabled,
+      TaskbarModule::Focus => self.focus = enabled,
+      TaskbarModule::Launcher => self.launcher = enabled,
+      TaskbarModule::Network => self.network = enabled,
+      TaskbarModule::PowerProfile => self.power_profile = enabled,
+      TaskbarModule::KeyboardLayout => self.keyboard_layout = enabled,
+      TaskbarModule::Memory => self.memory = enabled,
+      TaskbarModule::Cpu => self.cpu = enabled,
+      TaskbarModule::CpuTemperature => self.cpu_temperature = enabled,
+      TaskbarModule::GpuTemperature => self.gpu_temperature = enabled,
+      TaskbarModule::Date => self.date = enabled,
+      TaskbarModule::Clock => self.clock = enabled,
+      TaskbarModule::Battery => self.battery = enabled,
+      TaskbarModule::Tray => self.tray = enabled,
+      TaskbarModule::Notifications => self.notifications = enabled,
+      TaskbarModule::RemovableDevices => self.removable_devices = enabled,
+      TaskbarModule::Recording => self.recording = enabled,
+      TaskbarModule::Bluetooth => self.bluetooth = enabled,
+      TaskbarModule::AudioInput => self.audio_input = enabled,
+      TaskbarModule::AudioOutput => self.audio_output = enabled,
+      TaskbarModule::KeepAwake => self.keep_awake = enabled,
+    }
+  }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum TaskbarWorkspacePresentation {
+  Labels,
+  AppIcons,
+}
+
+impl TaskbarWorkspacePresentation {
+  pub const ALL: [Self; 2] = [Self::Labels, Self::AppIcons];
+  pub fn value(self) -> &'static str {
+    match self {
+      Self::Labels => "labels",
+      Self::AppIcons => "app-icons",
+    }
+  }
+
+  pub fn from_value(value: &str) -> Self {
+    match value.trim() {
+      "app-icons" => Self::AppIcons,
+      _ => Self::Labels,
+    }
+  }
+
+  pub fn label_key(self) -> &'static str {
+    match self {
+      Self::Labels => "control_center.taskbar_workspace_labels",
+      Self::AppIcons => "control_center.taskbar_workspace_app_icons",
     }
   }
 }

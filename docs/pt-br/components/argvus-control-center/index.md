@@ -74,7 +74,7 @@ A Taskbar configura a posição do painel, o espaçamento ao redor dele e das ja
 
 **Altura** escolhe 24, 28 (padrão), 32 ou 36 pixels. **Borda** tem um interruptor **Ligar** e a **Espessura** de 1 a 3 pixels, com 1 como padrão. Com a borda desligada, a janela da barra, o grupo da direita e o player MPRIS ficam sem borda. Essas alterações são rascunho até **Aplicar**. A altura e a borda aplicadas se mantêm quando o tema muda; até serem aplicadas, o tema decide os valores.
 
-A página **Ícones** lista a **Visualização do Player de Áudio** e cada widget utilitário (Rede, Perfil de energia, Layout do teclado, Uso de memória, Uso de CPU, Temperatura da CPU e Temperatura da GPU) como checks com seus próprios ícones. Os submenus **Lançador**, **Utilitários** e **Focus** vêm depois. **Focus > Ligar** controla o grupo Focus da taskbar e vem habilitado por padrão. A alteração é aplicada ao selecionar **Aplicar**, que reinicia a taskbar.
+A página **Ícones** abre **Módulos opcionais**, **Apresentação dos workspaces**, **Lançador** e **Utilitários**. Em Módulos opcionais, cada item pode ser mostrado ou ocultado individualmente: player de áudio, Focus, lançador, rede, perfil de energia, layout do teclado, uso de memória e CPU, temperaturas, data, relógio, bateria, bandeja do sistema, notificações, dispositivos removíveis, gravação, Bluetooth, entrada e saída de áudio e manter acordado. Os workspaces permanecem disponíveis e podem mostrar seus nomes (padrão) ou os ícones dos aplicativos. O título da janela em foco e as ações Configurações e Energia permanecem disponíveis. A visibilidade do lançador é controlada em Módulos opcionais; o submenu Lançador escolhe o ícone personalizado. As alterações são aplicadas ao selecionar **Aplicar**, que reinicia a taskbar.
 
 ### Control Panel
 
@@ -541,3 +541,5 @@ que limita o valor a `2`, embora a documentação mais recente possa indicar `3`
 O Welcome abre com o logo ARGVUS e WELCOME. Pressione F6 Next para ver as etapas sem concluir nenhuma etapa.
 
 Instalações novas usam o fuso pessoal `America/New_York` e somente o layout de teclado `us` habilitado. Preferências pessoais existentes são preservadas; o fuso global do sistema não é alterado.
+
+As opções de bateria e Bluetooth da taskbar aparecem somente quando o hardware correspondente é detectado. Ocultar Keep awake remove seu indicador sem alterar o bloqueio de suspensão. Utilities oferece um grupo recolhido que expande com o mouse. A apresentação de workspaces por ícones mostra as janelas abertas; a bandeja controla os ícones de aplicativos em segundo plano.

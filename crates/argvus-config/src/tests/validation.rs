@@ -96,6 +96,14 @@ fn defaults_report_nested_values_that_are_not_objects() {
     document.get("/taskbar/icons/focus_enabled"),
     Some(&Value::Bool(true))
   );
+  assert_eq!(
+    document.get("/taskbar/workspaces/presentation"),
+    Some(&Value::String("labels".into()))
+  );
+  assert_eq!(
+    document.get("/taskbar/icons/tray_enabled"),
+    Some(&Value::Bool(true))
+  );
   let mut disabled = ConfigDocument::default();
   disabled
     .set("/taskbar/icons/focus_enabled", Value::Bool(false))
@@ -135,6 +143,57 @@ fn defaults_report_nested_values_that_are_not_objects() {
     Some(&Value::from(0)),
     "defaults must preserve explicit user margins"
   );
+}
+
+#[test]
+fn taskbar_workspace_presentation_and_module_visibility_are_validated() {
+  for presentation in ["labels", "app-icons"] {
+    let mut document = ConfigDocument::default();
+    document
+      .set(
+        "/taskbar/workspaces/presentation",
+        Value::String(presentation.into()),
+      )
+      .unwrap();
+    document.validate().unwrap();
+  }
+  for value in [Value::String("unknown".into()), Value::Bool(true)] {
+    let mut document = ConfigDocument::default();
+    let error = document
+      .set("/taskbar/workspaces/presentation", value)
+      .and_then(|()| document.validate())
+      .unwrap_err();
+    assert!(
+      error
+        .to_string()
+        .contains("taskbar.workspaces.presentation")
+    );
+  }
+  let mut invalid_module = ConfigDocument::default();
+  let error = invalid_module
+    .set("/taskbar/icons/tray_enabled", Value::String("yes".into()))
+    .and_then(|()| invalid_module.validate())
+    .unwrap_err();
+  assert!(error.to_string().contains("tray_enabled"));
+}
+
+#[test]
+fn taskbar_position_accepts_only_horizontal_edges() {
+  for position in ["top", "bottom"] {
+    let mut document = ConfigDocument::default();
+    document
+      .set("/layout/taskbar/position", Value::String(position.into()))
+      .unwrap();
+    document.validate().unwrap();
+  }
+  for position in ["left", "right"] {
+    let mut document = ConfigDocument::default();
+    let error = document
+      .set("/layout/taskbar/position", Value::String(position.into()))
+      .and_then(|()| document.validate())
+      .unwrap_err();
+    assert!(error.to_string().contains("layout.taskbar.position"));
+  }
 }
 
 #[test]

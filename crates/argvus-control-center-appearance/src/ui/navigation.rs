@@ -187,6 +187,9 @@ impl AppearanceApp {
       AppearancePage::TaskbarIcons | AppearancePage::TaskbarDate | AppearancePage::TaskbarTime => {
         self.go(AppearancePage::Taskbar);
       }
+      AppearancePage::TaskbarModules | AppearancePage::TaskbarWorkspaces => {
+        self.go(AppearancePage::TaskbarIcons);
+      }
       AppearancePage::TaskbarDateFormat => self.go(AppearancePage::TaskbarDate),
       AppearancePage::TaskbarTimeFormat => self.go(AppearancePage::TaskbarTime),
       AppearancePage::TaskbarBorderThickness => self.go(AppearancePage::TaskbarBorder),
@@ -216,10 +219,9 @@ impl AppearanceApp {
       }
       AppearancePage::SurfaceSection { surface, section } => {
         self.go(match (surface, section) {
-          (
-            EffectSurface::Taskbar,
-            SurfaceSection::Focus | SurfaceSection::UtilityIcons | SurfaceSection::Launcher,
-          ) => AppearancePage::TaskbarIcons,
+          (EffectSurface::Taskbar, SurfaceSection::UtilityIcons | SurfaceSection::Launcher) => {
+            AppearancePage::TaskbarIcons
+          }
           (EffectSurface::Taskbar, _) => AppearancePage::Taskbar,
           (EffectSurface::WidgetTelemetry, _) => AppearancePage::WidgetTelemetry,
           (EffectSurface::ControlPanel, _) => AppearancePage::ControlPanel,
@@ -376,6 +378,16 @@ impl AppearanceApp {
       AppearancePage::TaskbarIcons => {
         format!("{taskbar_root} > {}", tr(self.lang, "control_center.icons"))
       }
+      AppearancePage::TaskbarModules => format!(
+        "{taskbar_root} > {} > {}",
+        tr(self.lang, "control_center.icons"),
+        tr(self.lang, "control_center.taskbar_modules")
+      ),
+      AppearancePage::TaskbarWorkspaces => format!(
+        "{taskbar_root} > {} > {}",
+        tr(self.lang, "control_center.icons"),
+        tr(self.lang, "control_center.taskbar_workspaces")
+      ),
       AppearancePage::TaskbarDate => {
         format!("{taskbar_root} > {}", tr(self.lang, "control_center.date"))
       }
@@ -394,14 +406,6 @@ impl AppearanceApp {
       ),
       AppearancePage::WidgetTelemetry => widget_telemetry_root.clone(),
       AppearancePage::ControlPanel => control_panel_root.clone(),
-      AppearancePage::SurfaceSection {
-        surface: EffectSurface::Taskbar,
-        section: SurfaceSection::Focus,
-      } => format!(
-        "{taskbar_root} > {} > {}",
-        tr(self.lang, "control_center.icons"),
-        tr(self.lang, "control_center.taskbar_focus_icon")
-      ),
       AppearancePage::SurfaceSection {
         surface: EffectSurface::Taskbar,
         section: SurfaceSection::UtilityIcons,
@@ -435,7 +439,6 @@ impl AppearanceApp {
           tr(
             self.lang,
             match section {
-              SurfaceSection::Focus => "control_center.taskbar_focus_icon",
               SurfaceSection::Launcher => "control_center.launcher",
               SurfaceSection::UtilityIcons => "control_center.taskbar_utility_group",
               SurfaceSection::Sessions => "control_center.sessions",

@@ -74,7 +74,7 @@ Taskbar configures the panel's position, the spacing around it and its windows, 
 
 **Height** chooses 24, 28 (the default), 32 or 36 pixels. **Border** has an **Enable** switch and a **Thickness** of 1 to 3 pixels, with 1 as the default. With the border off, the taskbar window, the right group and the MPRIS player have no border. These changes are a draft until **Apply** is selected. The applied height and border are kept when the theme changes; until they are applied, the theme decides them.
 
-The **Icons** page lists the Audio Player view and each utility widget (Network, Power profile, Keyboard layout, Memory usage, CPU usage, CPU Temperature and GPU Temperature) as checks with their own icon. The **Launcher**, **Utilities** and **Focus** submenus follow. **Focus > Enable** controls the Focus taskbar group and is enabled by default. Changing it takes effect after **Apply**, which restarts the taskbar.
+The **Icons** page opens **Optional modules**, **Workspace presentation**, **Launcher** and **Utilities**. Optional modules can be shown or hidden individually: audio player, Focus, launcher, network, power profile, keyboard layout, memory, CPU and temperature readings, date, clock, battery, system tray, notifications, removable devices, recording, Bluetooth, audio input/output and keep-awake. Workspaces remain available and can show their names (the default) or application icons. The focused-window title, Settings and Power actions are always available. Launcher visibility is controlled in Optional modules; its submenu changes the custom icon. Changes take effect after **Apply**, which restarts the taskbar.
 
 ### Control Panel
 
@@ -538,3 +538,5 @@ which limits it to `2`, even though newer documentation may list `3`.
 Welcome opens with the ARGVUS logo and WELCOME. Press F6 Next to show the checklist without completing a step.
 
 Fresh installations default to the personal time zone `America/New_York` and only the `us` keyboard layout enabled. Existing personal settings are preserved; the system time zone is unchanged.
+
+Taskbar module options for Battery and Bluetooth appear only when the corresponding hardware is detected. Hiding Keep awake hides its indicator without changing the suspension inhibitor. Utilities supports a collapsed hover drawer. Workspace icon presentation displays icons for open windows; the system tray controls background application icons.

@@ -19,8 +19,8 @@ pub use media_model::{
   WallpaperMode,
 };
 pub use taskbar_model::{
-  TaskbarDateFormat, TaskbarPosition, TaskbarTimeFormat, TaskbarUtilityGroupMode,
-  TaskbarUtilityWidget, TaskbarUtilityWidgets,
+  TaskbarDateFormat, TaskbarModule, TaskbarModules, TaskbarPosition, TaskbarTimeFormat,
+  TaskbarUtilityGroupMode, TaskbarWorkspacePresentation,
 };
 pub use telemetry_model::{WidgetTelemetryBlock, WidgetTelemetryBlocks};
 
@@ -178,6 +178,8 @@ pub enum AppearancePage {
   TaskbarSpaces,
   Taskbar,
   TaskbarIcons,
+  TaskbarModules,
+  TaskbarWorkspaces,
   TaskbarDate,
   TaskbarDateFormat,
   TaskbarTime,
@@ -232,7 +234,6 @@ pub enum EffectSurface {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SurfaceSection {
-  Focus,
   Launcher,
   UtilityIcons,
   Sessions,
@@ -484,11 +485,9 @@ pub struct AppearanceState {
   /// Taskbar border thickness in pixels, from 1 to 3.
   pub taskbar_border_thickness: u32,
   pub taskbar_utility_group: TaskbarUtilityGroupMode,
-  pub taskbar_audio_player_enabled: bool,
-  pub taskbar_focus_enabled: bool,
-  pub taskbar_launcher_enabled: bool,
   pub taskbar_launcher_custom_icon_path: Option<String>,
-  pub taskbar_utility_widgets: TaskbarUtilityWidgets,
+  pub taskbar_modules: TaskbarModules,
+  pub taskbar_workspace_presentation: TaskbarWorkspacePresentation,
   pub taskbar_date_format: TaskbarDateFormat,
   pub taskbar_time_seconds_enabled: bool,
   pub taskbar_time_format: TaskbarTimeFormat,
@@ -564,11 +563,9 @@ impl Default for AppearanceState {
       taskbar_border_enabled: true,
       taskbar_border_thickness: 1,
       taskbar_utility_group: TaskbarUtilityGroupMode::AlwaysExpanded,
-      taskbar_audio_player_enabled: true,
-      taskbar_focus_enabled: true,
-      taskbar_launcher_enabled: true,
       taskbar_launcher_custom_icon_path: None,
-      taskbar_utility_widgets: TaskbarUtilityWidgets::default(),
+      taskbar_modules: TaskbarModules::default(),
+      taskbar_workspace_presentation: TaskbarWorkspacePresentation::Labels,
       taskbar_date_format: TaskbarDateFormat::WeekdayDayMonth,
       taskbar_time_seconds_enabled: false,
       taskbar_time_format: TaskbarTimeFormat::TwentyFourHour,
