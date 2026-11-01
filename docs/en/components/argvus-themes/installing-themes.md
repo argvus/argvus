@@ -15,6 +15,15 @@ Theme packages depend on `argvus-appearance`. Install ARGVUS first, as described
 
 ## Install a single theme
 
+To install every official theme at once, install the `argvus-themes` metapackage:
+
+```bash
+sudo pacman -S argvus-themes
+```
+
+It depends on all published `argvus-theme-*` packages. ARGVUS Dark and ARGVUS
+Light are already shipped by `argvus-appearance`.
+
 Install one theme with its package name:
 
 ```bash

@@ -32,7 +32,16 @@ O pacote instala o manifesto do tema, `/usr/share/argvus/themes/<id-do-tema>/the
 
 ## Instalar vários temas
 
-Não há um metapacote que instale todos os temas. Instale os temas que quiser em um único comando:
+Para instalar todos os temas oficiais de uma vez, instale o metapacote `argvus-themes`:
+
+```bash
+sudo pacman -S argvus-themes
+```
+
+Ele depende de todos os pacotes publicados `argvus-theme-*`. ARGVUS Dark e ARGVUS
+Light já vêm em `argvus-appearance`.
+
+Para instalar somente alguns temas, use os pacotes individuais:
 
 ```bash
 sudo pacman -S argvus-theme-dracula argvus-theme-sunset

@@ -151,6 +151,8 @@ install=argvus.install
 
 # Optional runtime integrations and companion tools.
 optdepends=(
+  'argvus-themes: install all official ARGVUS themes'
+  'argvus-boot-splash: display the boot splash during system startup'
   'snapper: root Btrfs snapshot management in the Control Center'
   'fastfetch: system summary in the terminal'
   'wev: inspect Wayland input events when writing keybindings'
