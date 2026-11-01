@@ -4,7 +4,7 @@
 # installs all of them.
 pkgbase=argvus
 pkgname=argvus
-pkgver=0.1.0
+pkgver=0.0.0
 pkgrel=1
 pkgdesc="ARGVUS desktop: command, data, settings helpers and the login greeter."
 arch=('x86_64')
