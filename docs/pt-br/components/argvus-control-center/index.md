@@ -546,3 +546,6 @@ As opções de bateria e Bluetooth da taskbar aparecem somente quando o hardware
 
 
 A página de atalhos inclui **Seletor de agentes de IA (pacote opcional argvus-ai)** com padrão SUPER + A. O identificador app.ai permite remapear e desabilitar pelo mesmo modelo canônico keyboard_shortcuts dos demais atalhos. O bind Lua executável é fornecido pelo argvus-ai; a entrada do catálogo, sozinha, não ativa o atalho sem o pacote opcional.
+
+
+Control Center > Appearance > Taskbar > Icons > Optional modules inclui **Agentes de IA**. A opção vem habilitada e é persistida em /taskbar/icons/ai_agents_enabled. Altere o rascunho da taskbar e aplique para salvar e regenerar o grupo de utilitários; desabilitá-la não altera SUPER + A nem as entradas do lançador de aplicativos.

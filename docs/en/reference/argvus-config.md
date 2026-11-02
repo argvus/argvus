@@ -345,5 +345,5 @@ argvus effects-toggle animations-settings set enabled=enabled wobble_enabled=tru
 The global `enabled` controls animations; `wobble_enabled` is its independent
 preference. Disabling global animations suppresses wobble in Lua without erasing
 that preference. Invalid values reject the entire patch. Missing keys receive
-the ARGVUS defaults without replacing existing choices. See [Appearance](../user-guide/appearance.md#window-wobble)
+the ARGVUS defaults without replacing existing choices. See [Appearance](/docs/user-guide/appearance/#window-wobble)
 for bounds and defaults.

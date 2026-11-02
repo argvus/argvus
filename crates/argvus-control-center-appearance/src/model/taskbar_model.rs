@@ -63,6 +63,7 @@ pub enum TaskbarModule {
   Clock,
   Battery,
   Tray,
+  AiAgents,
   Notifications,
   RemovableDevices,
   Recording,
@@ -73,7 +74,7 @@ pub enum TaskbarModule {
 }
 
 impl TaskbarModule {
-  pub const ALL: [Self; 21] = [
+  pub const ALL: [Self; 22] = [
     Self::AudioPlayer,
     Self::Focus,
     Self::Launcher,
@@ -88,6 +89,7 @@ impl TaskbarModule {
     Self::Clock,
     Self::Battery,
     Self::Tray,
+    Self::AiAgents,
     Self::Notifications,
     Self::RemovableDevices,
     Self::Recording,
@@ -114,6 +116,7 @@ impl TaskbarModule {
       Self::Clock => "clock",
       Self::Battery => "battery",
       Self::Tray => "tray",
+      Self::AiAgents => "ai_agents",
       Self::Notifications => "notifications",
       Self::RemovableDevices => "removable_devices",
       Self::Recording => "recording",
@@ -141,6 +144,7 @@ impl TaskbarModule {
       Self::Clock => "control_center.time",
       Self::Battery => "control_center.taskbar_battery",
       Self::Tray => "control_center.taskbar_tray",
+      Self::AiAgents => "control_center.taskbar_ai_agents",
       Self::Notifications => "control_center.notifications",
       Self::RemovableDevices => "control_center.taskbar_removable_devices",
       Self::Recording => "control_center.taskbar_recording",
@@ -171,6 +175,7 @@ pub struct TaskbarModules {
   pub clock: bool,
   pub battery: bool,
   pub tray: bool,
+  pub ai_agents: bool,
   pub notifications: bool,
   pub removable_devices: bool,
   pub recording: bool,
@@ -199,6 +204,7 @@ impl Default for TaskbarModules {
       clock: true,
       battery: true,
       tray: true,
+      ai_agents: true,
       notifications: true,
       removable_devices: true,
       recording: true,
@@ -227,6 +233,7 @@ impl TaskbarModules {
       TaskbarModule::Clock => self.clock,
       TaskbarModule::Battery => self.battery,
       TaskbarModule::Tray => self.tray,
+      TaskbarModule::AiAgents => self.ai_agents,
       TaskbarModule::Notifications => self.notifications,
       TaskbarModule::RemovableDevices => self.removable_devices,
       TaskbarModule::Recording => self.recording,
@@ -253,6 +260,7 @@ impl TaskbarModules {
       TaskbarModule::Clock => self.clock = enabled,
       TaskbarModule::Battery => self.battery = enabled,
       TaskbarModule::Tray => self.tray = enabled,
+      TaskbarModule::AiAgents => self.ai_agents = enabled,
       TaskbarModule::Notifications => self.notifications = enabled,
       TaskbarModule::RemovableDevices => self.removable_devices = enabled,
       TaskbarModule::Recording => self.recording = enabled,

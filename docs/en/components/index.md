@@ -25,7 +25,8 @@ These components were consolidated into the `argvus` workspace. Their user pages
 | Widget telemetry | `argvus widget-telemetry` | [Widget telemetry](/docs/components/argvus-widget-telemetry/) |
 | Loading overlay | `argvus loading-theme` | [Loading overlay](/docs/components/argvus-loading-theme/) |
 | Snake | `argvus game-snake` | [Snake](/docs/argvus-games/snake/) |
+| AI Agents | `argvus-ai menu` | [AI Agents](/docs/argvus-ai/) |
 
 The command reference is in [Command line](/docs/reference/command-line/).
 
-See [Snapshot](argvus-control-center/index.md#snapshot) for root Btrfs snapshots.
+See [Snapshot](/docs/components/argvus-control-center/#snapshot) for root Btrfs snapshots.

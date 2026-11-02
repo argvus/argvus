@@ -14,6 +14,7 @@
     "clock_enabled": true,
     "battery_enabled": true,
     "tray_enabled": true,
+    "ai_agents_enabled": true,
     "notifications_enabled": true,
     "removable_devices_enabled": true,
     "recording_enabled": true,

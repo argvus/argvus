@@ -543,3 +543,6 @@ Taskbar module options for Battery and Bluetooth appear only when the correspond
 
 
 The keyboard shortcuts page includes **AI agent selector (optional argvus-ai package)** with default SUPER + A. It uses the app.ai catalog ID, so remapping and disabling follow the same canonical keyboard_shortcuts configuration as other entries. Its executable Lua bind is supplied by argvus-ai; the catalog entry alone does not activate it without that optional package.
+
+
+Control Center > Appearance > Taskbar > Icons > Optional modules now includes **AI Agents**. It defaults to enabled and is stored in /taskbar/icons/ai_agents_enabled. Toggle it in the taskbar draft and Apply to persist and regenerate the utility group; disabling it does not change the SUPER + A shortcut or application launcher entries.

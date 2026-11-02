@@ -2153,5 +2153,6 @@
   "control_center.snapshot.incompatible": "This Snapper version does not support the required JSON interface.",
   "control_center.snapshot.invalid": "Snapshot data or request could not be validated safely.",
   "control_center.snapshot.failed": "Snapper could not complete the operation.",
-  "control_center.keybindings.action.ai": "AI agent selector (optional argvus-ai package)"
+  "control_center.keybindings.action.ai": "AI agent selector (optional argvus-ai package)",
+  "control_center.taskbar_ai_agents": "AI Agents"
 }

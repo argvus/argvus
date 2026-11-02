@@ -246,3 +246,23 @@ fn launcher_custom_row_shows_the_current_icon_path_as_its_detail() {
     .expect("Custom row must be present");
   assert_eq!(custom_row.detail_text(), Some("/home/user/icon.svg"));
 }
+
+#[test]
+fn ai_agents_module_is_localized_and_edits_only_the_taskbar_draft() {
+  let mut application = draft_app(AppearancePage::TaskbarModules);
+  assert!(
+    labels(&application)
+      .iter()
+      .any(|label| label == "AI Agents")
+  );
+  assert!(application.surface_draft().unwrap().modules.ai_agents);
+  assert!(application.state.taskbar_modules.ai_agents);
+  application.activate(Item::TaskbarModule(TaskbarModule::AiAgents));
+  assert!(!application.surface_draft().unwrap().modules.ai_agents);
+  assert!(application.state.taskbar_modules.ai_agents);
+  assert!(application.has_pending_changes());
+  assert_eq!(TaskbarModule::AiAgents.key(), "ai_agents");
+  application.activate(Item::TaskbarModule(TaskbarModule::AiAgents));
+  assert!(application.surface_draft().unwrap().modules.ai_agents);
+  assert!(!application.has_pending_changes());
+}

@@ -25,7 +25,8 @@ Estes componentes foram consolidados no workspace `argvus`. As páginas de usuá
 | Telemetria do widget | `argvus widget-telemetry` | [Telemetria do widget](/docs/components/argvus-widget-telemetry/) |
 | Overlay de carregamento | `argvus loading-theme` | [Overlay de carregamento](/docs/components/argvus-loading-theme/) |
 | Snake | `argvus game-snake` | [Snake](/pt/docs/argvus-games/snake/) |
+| Agentes de IA | `argvus-ai menu` | [Agentes de IA](/pt/docs/argvus-ai/) |
 
 A referência de comandos está em [Linha de comando](/pt/docs/reference/command-line/).
 
-Consulte [Snapshot](argvus-control-center/index.md#snapshot) para snapshots Btrfs da raiz.
+Consulte [Snapshot](/pt/docs/components/argvus-control-center/#snapshot) para snapshots Btrfs da raiz.

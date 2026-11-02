@@ -16,6 +16,8 @@ pub fn icon_label(icon: &str, label: impl AsRef<str>) -> String {
   }
 }
 
+/// Nerd Fonts: nf-md-robot
+pub const ROBOT: &str = "\u{f06a9}";
 /// Nerd Fonts: nf-md-network
 pub const NETWORK: &str = "\u{f06f3}";
 /// Nerd Fonts: nf-md-wifi-strength-4

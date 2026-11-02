@@ -284,6 +284,7 @@ fn taskbar_module_icon(module: TaskbarModule) -> &'static str {
     TaskbarModule::Bluetooth => icons::BLUETOOTH,
     TaskbarModule::AudioOutput => icons::AUDIO,
     TaskbarModule::KeepAwake => icons::POWER,
+    TaskbarModule::AiAgents => icons::ROBOT,
   }
 }
 

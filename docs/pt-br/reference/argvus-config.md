@@ -351,5 +351,5 @@ argvus effects-toggle animations-settings set enabled=enabled wobble_enabled=tru
 O `enabled` global controla animações; `wobble_enabled` é sua preferência
 independente. Desativar animações desativa o efeito em Lua sem apagar essa
 preferência. Valores inválidos recusam o patch inteiro. Chaves ausentes recebem
-os padrões ARGVUS sem substituir escolhas existentes. Consulte [Aparência](../user-guide/appearance.md#wobble-das-janelas)
+os padrões ARGVUS sem substituir escolhas existentes. Consulte [Aparência](/pt/docs/user-guide/appearance/#wobble-das-janelas)
 para os limites e padrões.
