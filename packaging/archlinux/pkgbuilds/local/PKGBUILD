@@ -14,155 +14,98 @@ makedepends=('cargo' 'pkgconf' 'gtk4' 'gtk4-layer-shell')
 options=('!debug' '!lto')
 
 depends=(
-  'argvus-app-profiles'
-  'argvus-firewall'
-  'argvus-appearance'
-  'argvus-branding'
-  'argvus-control-panel'
-  'argvus-display'
-  'argvus-icons'
-  'argvus-lock'
-  'argvus-notifications'
-  'argvus-portal'
-  'argvus-power'
-  'argvus-session'
-  'argvus-hyprland'
-  'argvus-launcher'
-  'argvus-taskbar'
-  'argvus-waybar'
-  'greetd'
-  'kitty'
-  'systemd-libs'
-  'libdrm'
-  'hyprland'
-  'hyprland-guiutils'
-  'hyprland-qt-support'
-  'hyprpolkitagent'
-  'hyprshot'
-  'wayland'
-  'firefox'
-  'code'
-  'mesa'
-  'mesa-utils'
-  'qt5-quickcontrols2'
-  'qt5ct'
-  'qt6-tools'
-  'virtualbox-guest-utils'
-  'adwaita-icon-theme'
-  'cliphist'
-  'gcc-libs'
-  'pam'
-  'polkit'
-  'shadow'
-  'util-linux'
-  'okular'
-  'feh'
-  'glib2'
-  'grim'
-  'gsimplecal'
-  'gtk4'
-  'gtk-layer-shell'
-  'gtk4-layer-shell'
-  'gst-plugins-base'
-  'gst-plugins-good'
-  'imv'
-  'audacious'
-  'udisks2'
-  'udiskie'
-  'jq'
-  'mpv'
-  'nautilus'
-  'noto-fonts'
-  'noto-fonts-emoji'
-  'satty'
-  'slurp'
-  'gpu-screen-recorder'
-  'swaybg'
-  'ttf-jetbrains-mono-nerd'
-  'ttf-nerd-fonts-symbols-mono'
-  'vivid'
-  'mousepad'
-  'wf-recorder'
-  'wireplumber'
-  'wl-clipboard'
-  'wtype'
-  'xdg-utils'
-  'xarchiver'
-  'neovim'
-  'zathura'
-  'zip'
-  'zsh'
-  'wireguard-tools'
+	'base-devel'
+	'systemd-libs'
+	'argvus-fonts'
+	'argvus-icons'
+	'argvus-desktop'
+	'argvus-devtools'
+	'argvus-app-profiles'
+	'argvus-firewall'
+	'argvus-appearance'
+	'argvus-branding'
+	'argvus-control-panel'
+	'argvus-display'
+	'argvus-lock'
+	'argvus-notifications'
+	'argvus-portal'
+	'argvus-power'
+	'argvus-session'
+	'argvus-hyprland'
+	'argvus-launcher'
+	'argvus-taskbar'
+	'argvus-waybar'
 )
 
 # Packages that this one replaces. The split packages argvus-gtk and argvus-greeter
 # are included: an upgrade removes them and their files are installed by argvus.
 replaces=(
-  'argvus-config'
-  'argvus-i18n'
-  'argvus-language-en-us'
-  'argvus-language-pt-br'
-  'argvus-keys'
-  'argvus-projects'
-  'argvus-terminal'
-  'argvus-system-monitor'
-  'argvus-network'
-  'argvus-widget-telemetry'
-  'argvus-control-center'
-  'argvus-taskbar-calendar'
-  'argvus-loading-theme'
-  'argvus-removable-devices'
-  'argvus-gtk'
-  'argvus-greeter'
-  'argvus-accounts'
+	'argvus-config'
+	'argvus-i18n'
+	'argvus-language-en-us'
+	'argvus-language-pt-br'
+	'argvus-keys'
+	'argvus-projects'
+	'argvus-terminal'
+	'argvus-system-monitor'
+	'argvus-network'
+	'argvus-widget-telemetry'
+	'argvus-control-center'
+	'argvus-taskbar-calendar'
+	'argvus-loading-theme'
+	'argvus-removable-devices'
+	'argvus-gtk'
+	'argvus-greeter'
+	'argvus-accounts'
 )
 conflicts=("${replaces[@]}")
 
 # argvus-gtk and argvus-greeter stay provided: packages that depend on them, such
 # as argvus-taskbar and argvus-control-panel, are satisfied by this package.
 provides=(
-  'argvus-config'
-  'argvus-i18n'
-  'argvus-language-en-us'
-  'argvus-language-pt-br'
-  'argvus-keys'
-  'argvus-projects'
-  'argvus-terminal'
-  'argvus-system-monitor'
-  'argvus-network'
-  'argvus-widget-telemetry'
-  'argvus-control-center'
-  'argvus-taskbar-calendar'
-  'argvus-loading-theme'
-  'argvus-removable-devices'
-  'argvus-gtk'
-  'argvus-greeter'
-  'argvus-accounts'
+	'argvus-config'
+	'argvus-i18n'
+	'argvus-language-en-us'
+	'argvus-language-pt-br'
+	'argvus-keys'
+	'argvus-projects'
+	'argvus-terminal'
+	'argvus-system-monitor'
+	'argvus-network'
+	'argvus-widget-telemetry'
+	'argvus-control-center'
+	'argvus-taskbar-calendar'
+	'argvus-loading-theme'
+	'argvus-removable-devices'
+	'argvus-gtk'
+	'argvus-greeter'
+	'argvus-accounts'
 )
 
 # The greetd configuration files are kept on upgrade, as they were in the greeter
 # split package.
 backup=(
-  'etc/argvus/greeter.toml'
-  'etc/argvus/hyprland-argvus-greeter.conf'
-  'etc/argvus/hyprland-argvus-greeter.lua'
+	'etc/argvus/greeter.toml'
+	'etc/argvus/hyprland-argvus-greeter.conf'
+	'etc/argvus/hyprland-argvus-greeter.lua'
 )
 install=argvus.install
 
 # Optional runtime integrations and companion tools.
 optdepends=(
-  'argvus-themes: install all official ARGVUS themes'
-  'argvus-boot-splash: display the boot splash during system startup'
-  'snapper: root Btrfs snapshot management in the Control Center'
-  'fastfetch: system summary in the terminal'
-  'wev: inspect Wayland input events when writing keybindings'
-  'networkmanager: Network & Wi-Fi pages and connection editor of the Control Center'
-  'ppp: DSL (PPPoE) connections'
-  'libteam: Team connections'
-  'networkmanager-openvpn: OpenVPN connections and .ovpn import'
+	'argvus-pentest: authorized security auditing and penetration testing tools'
+	'argvus-themes: install all official ARGVUS themes'
+	'argvus-boot-splash: display the boot splash during system startup'
+	'snapper: root Btrfs snapshot management in the Control Center'
+	'fastfetch: system summary in the terminal'
+	'wev: inspect Wayland input events when writing keybindings'
+	'networkmanager: Network & Wi-Fi pages and connection editor of the Control Center'
+	'ppp: DSL (PPPoE) connections'
+	'libteam: Team connections'
+	'networkmanager-openvpn: OpenVPN connections and .ovpn import'
 )
 source=(
-  "${pkgbase}-${pkgver}.tar.gz"
+	"${pkgbase}-${pkgver}.tar.gz"
 )
 sha256sums=('SKIP')
 
@@ -171,19 +114,19 @@ _functions_file="${startdir:-$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 . "$_functions_file"
 
 prepare() {
-  arch_normalize_source_tree
+	arch_normalize_source_tree
 }
 
 build() {
-  arch_build_argvus_workspace
+	arch_build_argvus_workspace
 }
 
 check() {
-  arch_check_argvus_workspace
+	arch_check_argvus_workspace
 }
 
 package() {
-  arch_package_argvus
-  arch_package_argvus_gtk
-  arch_package_argvus_greeter
+	arch_package_argvus
+	arch_package_argvus_gtk
+	arch_package_argvus_greeter
 }

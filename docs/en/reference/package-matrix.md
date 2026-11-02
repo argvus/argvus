@@ -8,6 +8,8 @@ description: ARGVUS package responsibilities.
 | `argvus` | Master package: dispatcher, in-process commands (configuration, translations, keys, projects, terminal, system monitor, network, Bluetooth, telemetry, TUI terminal, setup), the shared data and the i18n catalogs. Every component package depends on it. |
 | `argvus` (helpers) | Helpers in the same package: the Control Center (a terminal application), and the GTK 4 applications for the taskbar calendar, removable devices, the loading overlay, ARGVUS Focus and ARGVUS Clock. |
 | `argvus` (greeter) | Login greeter for greetd, shipped in the same package and built from `crates/argvus-greeter`. |
+| `argvus-desktop` | Desktop and everyday application profile required by the `argvus` master package. It does not depend on `argvus`, so the dependency remains one-way. |
+| `argvus-devtools`, `argvus-pentest` | Optional independent metapackages for development tools and authorized security auditing. The master package does not install these profiles. |
 | `argvus-session` | Session entry points and user lifecycle. |
 | `argvus-hyprland` | Hyprland configuration. |
 | `argvus-control-panel` | Quickshell control panel. |
@@ -33,4 +35,4 @@ description: ARGVUS package responsibilities.
 
 The removed packages `argvus-pwvucontrol` and `argvus-snappy-switcher` are not provided by any package.
 
-No install order is required: `argvus` is the master package, and every other package depends on it. A package's presence in this table does not mean it owns the whole feature: for example, the taskbar combines `argvus-waybar`, `argvus-taskbar`, `argvus-session` and domain providers.
+No install order is required among the ARGVUS component packages: `argvus` is their master package, and each component depends on it. Installing `argvus` also installs the `argvus-desktop` profile; `argvus-devtools` and `argvus-pentest` remain opt-in. A package's presence in this table does not mean it owns the whole feature: for example, the taskbar combines `argvus-waybar`, `argvus-taskbar`, `argvus-session` and domain providers.

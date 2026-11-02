@@ -126,6 +126,10 @@ ARGVUS Dark and ARGVUS Light ship in `argvus-appearance`; every other family com
 own `argvus-theme-*` package. These packages are optional and can be installed individually,
 for example `pacman -S argvus-theme-sunset` or `pacman -S argvus-theme-watercolor`.
 
+The `argvus-desktop` metapackage groups the desktop and everyday applications required by the
+master package. `argvus-devtools` and `argvus-pentest` are separate opt-in profiles and are not
+installed with `argvus`.
+
 ## Install
 
 ```sh

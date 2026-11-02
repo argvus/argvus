@@ -8,6 +8,8 @@ description: Responsabilidades dos pacotes do ARGVUS.
 | `argvus` | Pacote mestre: dispatcher, comandos em processo (configuração, traduções, chaves, projetos, terminal, monitor do sistema, rede, Bluetooth, telemetria, terminal TUI, setup), os dados compartilhados e os catálogos de i18n. Todo pacote de componente depende dele. |
 | `argvus` (auxiliares) | Auxiliares no mesmo pacote: o Centro de Controle (aplicativo de terminal) e os aplicativos GTK 4 do calendário da barra, dispositivos removíveis, overlay de carregamento, ARGVUS Focus e ARGVUS Clock. |
 | `argvus` (greeter) | Greeter de login para o greetd, no mesmo pacote, gerado a partir de `crates/argvus-greeter`. |
+| `argvus-desktop` | Perfil do ambiente gráfico e dos aplicativos de uso diário, exigido pelo pacote mestre `argvus`. Não depende de `argvus`, mantendo a dependência em uma única direção. |
+| `argvus-devtools`, `argvus-pentest` | Metapacotes independentes e opcionais para ferramentas de desenvolvimento e auditoria de segurança autorizada. O pacote mestre não instala esses perfis. |
 | `argvus-session` | Pontos de entrada da sessão e ciclo de vida do usuário. |
 | `argvus-hyprland` | Configuração do Hyprland. |
 | `argvus-control-panel` | Painel de controle em Quickshell. |
@@ -33,4 +35,4 @@ O `argvus` declara `replaces`, `conflicts` e `provides` dos pacotes que absorveu
 
 Os pacotes removidos `argvus-pwvucontrol` e `argvus-snappy-switcher` não são fornecidos por nenhum pacote.
 
-Não há ordem de instalação: `argvus` é o pacote mestre, e todos os outros dependem dele. Estar nesta tabela não significa que um pacote é dono de toda a funcionalidade: por exemplo, a barra combina `argvus-waybar`, `argvus-taskbar`, `argvus-session` e os provedores de domínio.
+Não há ordem de instalação entre os pacotes de componentes ARGVUS: `argvus` é o pacote mestre deles, e cada componente depende dele. Instalar `argvus` também instala o perfil `argvus-desktop`; `argvus-devtools` e `argvus-pentest` continuam opcionais. Estar nesta tabela não significa que um pacote é dono de toda a funcionalidade: por exemplo, a barra combina `argvus-waybar`, `argvus-taskbar`, `argvus-session` e os provedores de domínio.
