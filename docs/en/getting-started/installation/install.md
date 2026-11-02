@@ -5,6 +5,23 @@ description: Install, update, remove, and configure ARGVUS.
 
 ARGVUS is distributed as an Arch Linux package through the official ARGVUS package repository.
 
+## Before installing
+
+Enable the official Arch Linux `multilib` repository before installing ARGVUS. Edit `/etc/pacman.conf` and uncomment both the `[multilib]` section and its `Include` line:
+
+```ini
+[multilib]
+Include = /etc/pacman.d/mirrorlist
+```
+
+Then synchronize the package databases and perform a full system upgrade:
+
+```sh
+sudo pacman -Syu
+```
+
+The quick installer configures the ARGVUS repository, but does not enable `multilib` for you.
+
 ## Quick install
 
 On a fresh Arch Linux installation, you can install ARGVUS directly from a TTY without installing another desktop environment first.

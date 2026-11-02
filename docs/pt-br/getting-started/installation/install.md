@@ -5,6 +5,23 @@ description: Instale, atualize, remova e configure o ARGVUS.
 
 O ARGVUS é distribuído como um pacote Arch Linux pelo repositório oficial de pacotes do ARGVUS.
 
+## Antes de instalar
+
+Ative o repositório oficial `multilib` do Arch Linux antes de instalar o ARGVUS. Edite `/etc/pacman.conf` e descomente tanto a seção `[multilib]` quanto a linha `Include` correspondente:
+
+```ini
+[multilib]
+Include = /etc/pacman.d/mirrorlist
+```
+
+Em seguida, sincronize os bancos de pacotes e faça uma atualização completa do sistema:
+
+```sh
+sudo pacman -Syu
+```
+
+O instalador rápido configura o repositório ARGVUS, mas não ativa o `multilib` automaticamente.
+
 ## Instalação rápida
 
 Em uma instalação nova do Arch Linux, você pode instalar o ARGVUS diretamente de um TTY, sem instalar outro ambiente desktop antes.
