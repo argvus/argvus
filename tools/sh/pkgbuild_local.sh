@@ -43,8 +43,6 @@ fi
 if [[ -n "${MAKEPKG_FLAGS:-}" ]]; then
   # shellcheck disable=SC2206
   flags=(${MAKEPKG_FLAGS})
-elif [[ "$pkgname" == "argvus-waybar" ]]; then
-  flags=(--syncdeps --noconfirm --needed --cleanbuild --clean --force)
 else
   flags=(--nodeps --noconfirm --needed --cleanbuild --clean --force)
 fi

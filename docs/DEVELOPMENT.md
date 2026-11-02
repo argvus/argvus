@@ -55,8 +55,8 @@ changes in the owning module repository.
 
 | Target | What it does |
 |--------|--------------|
-| `make build` (`make package`) | Runs `tools/sh/pkgbuild_local.sh`, writing archives to `build/artifacts/` and the package (`argvus`) to `build/dist/`. |
-| `make install` | Installs the newest package in `build/dist/` with `sudo pacman -U <package> --overwrite="*"`. |
+| `make build` (`make package`) | Runs `tools/sh/pkgbuild_local.sh`, writing archives to `build/artifacts/` and the package (`argvus`) to `build/dist/`. The default `makepkg --nodeps` skips dependency checks; it does not install runtime dependencies. Build tools used by the package must still be present. |
+| `make install` | Installs the newest package in `build/dist/` with `sudo pacman -U <package> --overwrite="*"`; pacman resolves required runtime dependencies from configured repositories as part of installation. |
 | `make validate` | Checks the workspace version, then runs `cargo fmt --check`, `cargo clippy -D warnings` and `cargo test --locked` for the workspace (the greeter included), then `tools/sh/validate.sh`. |
 | `make set-permissions` | Makes the shell scripts executable. |
 | `make clean` | Removes `build/`. |
