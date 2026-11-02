@@ -15,6 +15,27 @@ trap cleanup EXIT
 metadata="$({ cd "$PACKAGING_DIR" && bash -c 'source "$1"; printf "%s\n%s\n" "$pkgbase" "$pkgver"' bash "$BUILD_SCRIPT"; })"
 pkgname="$(printf '%s\n' "$metadata" | sed -n '1p')"
 pkgver="$(printf '%s\n' "$metadata" | sed -n '2p')"
+
+build_dependencies="$(bash -c 'source "$1"; printf "%s\n" "${makedepends[@]}"' bash "$BUILD_SCRIPT")"
+if [[ -n "$build_dependencies" ]]; then
+  mapfile -t build_dependencies <<< "$build_dependencies"
+  command -v pacman >/dev/null 2>&1 || {
+    printf 'error: pacman is required to check build dependencies\n' >&2
+    exit 1
+  }
+  if missing_dependencies="$(pacman -T "${build_dependencies[@]}")"; then
+    :
+  else
+    pacman_status=$?
+    if (( pacman_status == 127 )); then
+      printf 'error: missing build dependencies for %s:\n%s\n' "$pkgname" "$missing_dependencies" >&2
+    else
+      printf 'error: pacman could not check build dependencies for %s (exit %s)\n' "$pkgname" "$pacman_status" >&2
+    fi
+    exit 1
+  fi
+fi
+
 archive="$ROOT_DIR/build/artifacts/${pkgname}-${pkgver}.tar.gz"
 mkdir -p "$ROOT_DIR/build/artifacts"
 
