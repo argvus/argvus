@@ -16,3 +16,10 @@ path = "src/main.rs"
 
 [dependencies]
 argvus-tui-terminal-core.workspace = true
+
+argvus-theme.workspace = true
+argvus-tui.workspace = true
+crossterm.workspace = true
+log.workspace = true
+portable-pty.workspace = true
+ratatui.workspace = true

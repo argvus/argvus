@@ -124,3 +124,7 @@ O setup valida todas as opções antes de alterar qualquer coisa. Nomes de app i
 ## Luz noturna
 
 Abra **Área de trabalho e entrada > Monitores > Luz noturna** ou execute `argvus control-center displays night-light`. Configure temperatura, ativação manual e horários locais por `argvus config display night-light`. Veja [Luz noturna](/pt/docs/user-guide/night-light/) para comandos, estado e requisitos de runtime.
+
+`argvus tui-terminal --frame TITULO RODAPE COMANDO [ARG...]` executa um comando interativo na moldura ARGVUS. Ctrl+E fecha a moldura; o chamador fornece o rodapé traduzido. Use dentro de um terminal ou como comando de `argvus tui-terminal --term kitty -- ...`.
+
+`argvus tui-terminal --term kitty --profile ai-agents` usa uma configuração Kitty dedicada com abas ocultas e somente atalhos de clipboard. O chamador fornece o comando e o título; a regra Hyprland da classe `argvus-ai` controla o posicionamento.

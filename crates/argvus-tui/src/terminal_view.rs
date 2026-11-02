@@ -65,6 +65,20 @@ impl TerminalView {
     self.parser.screen().mouse_protocol_mode() != vt100::MouseProtocolMode::None
   }
 
+  /// Whether pasted text must be delimited for the embedded application.
+  pub fn bracketed_paste(&self) -> bool {
+    self.parser.screen().bracketed_paste()
+  }
+
+  /// Places the cursor of an interactive child within its content area.
+  pub fn render_cursor(&self, frame: &mut Frame, area: Rect) {
+    let screen = self.parser.screen();
+    let (row, column) = screen.cursor_position();
+    if !screen.hide_cursor() && row < area.height && column < area.width {
+      frame.set_cursor_position((area.x + column, area.y + row));
+    }
+  }
+
   /// Draws the visible terminal cells, preserving ANSI colors and attributes.
   pub fn render(&self, frame: &mut Frame, area: Rect, theme: &Theme) {
     let screen = self.parser.screen();

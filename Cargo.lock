@@ -836,7 +836,13 @@ dependencies = [
 name = "argvus-tui-terminal"
 version = "0.1.0"
 dependencies = [
+ "argvus-theme",
+ "argvus-tui",
  "argvus-tui-terminal-core",
+ "crossterm",
+ "log",
+ "portable-pty",
+ "ratatui",
 ]
 
 [[package]]

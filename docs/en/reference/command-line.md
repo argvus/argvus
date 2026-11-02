@@ -124,3 +124,7 @@ Setup validates every option before it changes anything. Invalid app names (empt
 ## Night Light
 
 Open **Desktop & Input > Displays > Night Light** or run `argvus control-center displays night-light`. Configure temperature, manual activation and fixed local schedules through `argvus config display night-light`. See [Night Light](/docs/user-guide/night-light/) for commands, state and runtime requirements.
+
+`argvus tui-terminal --frame TITLE FOOTER COMMAND [ARG...]` runs an interactive command inside the shared ARGVUS terminal frame. Ctrl+E closes the frame; its caller supplies the localized footer. Use this inside a terminal, or as the command passed to `argvus tui-terminal --term kitty -- ...`.
+
+`argvus tui-terminal --term kitty --profile ai-agents` uses a dedicated Kitty configuration with hidden tabs and only clipboard shortcuts. The caller supplies the command and title; window placement is handled by the Hyprland rule for class `argvus-ai`.

@@ -5,6 +5,7 @@
 //! Usage: argvus-tui-terminal [--class C] [--term T] [--profile P] [--title TITLE] [--materialize-kitty] [--] COMMAND...
 
 mod messages;
+mod panel;
 
 use argvus_tui_terminal_core::font::FontState;
 use argvus_tui_terminal_core::kitty;
@@ -29,6 +30,21 @@ struct Options {
 /// Runs one command of this crate. `arguments` are the words after the command
 /// name. The `argvus` dispatcher and the binary both call this function.
 pub fn run_command(arguments: Vec<String>) -> ExitCode {
+  if arguments.first().map(String::as_str) == Some("--frame") {
+    if arguments.len() < 4 {
+      return ExitCode::from(2);
+    }
+    return panel::run(
+      &arguments[3],
+      &arguments[4..],
+      arguments[1].clone(),
+      arguments[2].clone(),
+    )
+    .unwrap_or_else(|error| {
+      eprintln!("argvus-tui-terminal: {error}");
+      ExitCode::FAILURE
+    });
+  }
   let options = match parse(&arguments) {
     Ok(options) => options,
     Err(code) => return code,
@@ -244,7 +260,7 @@ fn runtime_kitty_config(options: &Options, selection: Selection) -> Result<PathB
   let cache = cache_home();
 
   let source = match options.profile.as_str() {
-    "greeter" | "control-center" if argvus_on_path() => {
+    "greeter" | "control-center" | "ai-agents" if argvus_on_path() => {
       let output = Command::new("argvus")
         .args(["terminal", "--print-tui-config"])
         .stderr(Stdio::inherit())
@@ -270,6 +286,7 @@ fn runtime_kitty_config(options: &Options, selection: Selection) -> Result<PathB
   };
 
   let destination = match options.profile.as_str() {
+    "ai-agents" => cache.join("kitty-tui/kitty-ai-agents.conf"),
     "greeter" => cache.join("kitty-tui/kitty-greeter.conf"),
     "control-center" => cache.join("kitty-tui/kitty-control-center.conf"),
     "taskbar-monitor" => cache.join("kitty-tui/kitty-taskbar-monitor.conf"),
@@ -289,6 +306,7 @@ fn runtime_kitty_config(options: &Options, selection: Selection) -> Result<PathB
   };
   let mut output = kitty::rewrite_fonts(&text, &family, &size);
   match options.profile.as_str() {
+    "ai-agents" => output.push_str(kitty::ai_agents_policy()),
     "greeter" => output.push_str(kitty::greeter_policy()),
     "control-center" => output.push_str(&kitty::control_center_policy(&control_center_opacity())),
     "taskbar-monitor" => output.push_str(&kitty::taskbar_monitor_policy(

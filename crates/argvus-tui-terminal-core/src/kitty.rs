@@ -41,6 +41,12 @@ pub fn control_center_policy(opacity: &str) -> String {
   )
 }
 
+/// A single agent window: discard inherited shortcuts that could create tabs
+/// or split the terminal, and retain clipboard operations for agent prompts.
+pub fn ai_agents_policy() -> &'static str {
+  "\n# ARGVUS AI Agents: one terminal window with the frame providing its chrome.\ntab_bar_style hidden\nallow_remote_control no\nlisten_on none\nstartup_session none\nclear_all_shortcuts yes\nmap ctrl+shift+c copy_to_clipboard\nmap ctrl+shift+v paste_from_clipboard\nmap shift+insert paste_from_clipboard\n"
+}
+
 /// The Kitty policy for the taskbar system-monitor popup: keep one bottom tab
 /// visible so its fixed window title can show the available close key.
 pub fn taskbar_monitor_policy(title: &str) -> String {
