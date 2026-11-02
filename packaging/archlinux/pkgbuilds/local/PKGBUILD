@@ -93,12 +93,12 @@ install=argvus.install
 
 # Optional runtime integrations and companion tools.
 optdepends=(
+    'argvus-ai: AI agent desktop integration'
 	'argvus-pentest: authorized security auditing and penetration testing tools'
 	'argvus-themes: install all official ARGVUS themes'
 	'argvus-boot-splash: display the boot splash during system startup'
 	'snapper: root Btrfs snapshot management in the Control Center'
-	'fastfetch: system summary in the terminal'
-	'wev: inspect Wayland input events when writing keybindings'
+    'wev: inspect Wayland input events when writing keybindings'
 	'networkmanager: Network & Wi-Fi pages and connection editor of the Control Center'
 	'ppp: DSL (PPPoE) connections'
 	'libteam: Team connections'

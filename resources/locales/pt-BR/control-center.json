@@ -2152,5 +2152,6 @@
   "control_center.snapshot.timeout": "A operação excedeu o tempo limite ou foi interrompida. Confira a lista atualizada antes de tentar novamente.",
   "control_center.snapshot.incompatible": "Esta versão do Snapper não oferece a interface JSON necessária.",
   "control_center.snapshot.invalid": "Não foi possível validar os dados ou a solicitação de snapshot com segurança.",
-  "control_center.snapshot.failed": "O Snapper não conseguiu concluir a operação."
+  "control_center.snapshot.failed": "O Snapper não conseguiu concluir a operação.",
+  "control_center.keybindings.action.ai": "Seletor de agentes de IA (pacote opcional argvus-ai)"
 }

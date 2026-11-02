@@ -543,3 +543,6 @@ O Welcome abre com o logo ARGVUS e WELCOME. Pressione F6 Next para ver as etapas
 Instalações novas usam o fuso pessoal `America/New_York` e somente o layout de teclado `us` habilitado. Preferências pessoais existentes são preservadas; o fuso global do sistema não é alterado.
 
 As opções de bateria e Bluetooth da taskbar aparecem somente quando o hardware correspondente é detectado. Ocultar Keep awake remove seu indicador sem alterar o bloqueio de suspensão. Utilities oferece um grupo recolhido que expande com o mouse. A apresentação de workspaces por ícones mostra as janelas abertas; a bandeja controla os ícones de aplicativos em segundo plano.
+
+
+A página de atalhos inclui **Seletor de agentes de IA (pacote opcional argvus-ai)** com padrão SUPER + A. O identificador app.ai permite remapear e desabilitar pelo mesmo modelo canônico keyboard_shortcuts dos demais atalhos. O bind Lua executável é fornecido pelo argvus-ai; a entrada do catálogo, sozinha, não ativa o atalho sem o pacote opcional.

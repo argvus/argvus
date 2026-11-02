@@ -540,3 +540,6 @@ Welcome opens with the ARGVUS logo and WELCOME. Press F6 Next to show the checkl
 Fresh installations default to the personal time zone `America/New_York` and only the `us` keyboard layout enabled. Existing personal settings are preserved; the system time zone is unchanged.
 
 Taskbar module options for Battery and Bluetooth appear only when the corresponding hardware is detected. Hiding Keep awake hides its indicator without changing the suspension inhibitor. Utilities supports a collapsed hover drawer. Workspace icon presentation displays icons for open windows; the system tray controls background application icons.
+
+
+The keyboard shortcuts page includes **AI agent selector (optional argvus-ai package)** with default SUPER + A. It uses the app.ai catalog ID, so remapping and disabling follow the same canonical keyboard_shortcuts configuration as other entries. Its executable Lua bind is supplied by argvus-ai; the catalog entry alone does not activate it without that optional package.
