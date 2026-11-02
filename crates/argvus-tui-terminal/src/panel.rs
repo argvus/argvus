@@ -275,6 +275,9 @@ fn closes_panel(key: KeyEvent) -> bool {
 
 fn encode_key(key: KeyEvent) -> Option<Vec<u8>> {
   let mut bytes = match key.code {
+    // Escape is a single byte in the child PTY. Keep it distinct from the
+    // frame's Ctrl+E close shortcut so agent prompts can be cancelled.
+    KeyCode::Esc => b"\x1b".to_vec(),
     KeyCode::Char(character) => {
       if key.modifiers.contains(KeyModifiers::CONTROL) {
         let control = (character as u32 & 0x1f) as u8;
@@ -360,6 +363,19 @@ fn encode_mouse(event: MouseEvent, area: Rect, enabled: bool) -> Option<Vec<u8>>
 #[cfg(test)]
 mod tests {
   use super::*;
+
+  #[test]
+  fn escape_is_forwarded_to_the_child_while_control_e_closes_the_frame() {
+    assert_eq!(
+      encode_key(KeyEvent::new(KeyCode::Esc, KeyModifiers::NONE)),
+      Some(vec![0x1b])
+    );
+    assert!(closes_panel(KeyEvent::new(
+      KeyCode::Char('e'),
+      KeyModifiers::CONTROL
+    )));
+  }
+
   #[test]
   fn only_control_e_closes_the_agent() {
     assert!(closes_panel(KeyEvent::new(
