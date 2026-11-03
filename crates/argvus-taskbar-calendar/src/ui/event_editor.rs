@@ -38,6 +38,26 @@ pub struct EditorDraft {
   pub repeat_minutes: u32,
 }
 
+/// Values read directly from the widgets when Save is clicked. Input signals
+/// are queued, so the model may otherwise still hold the previous keystroke.
+#[derive(Debug, Clone)]
+pub struct EditorFormValues {
+  pub title: String,
+  pub location: String,
+  pub description: String,
+  pub start_hour: u32,
+  pub start_minute: u32,
+  pub end_hour: u32,
+  pub end_minute: u32,
+  pub all_day: bool,
+  pub reminder_enabled: bool,
+  pub reminder_hours: u32,
+  pub reminder_minutes: u32,
+  pub repeat_all_day: bool,
+  pub repeat_hours: u32,
+  pub repeat_minutes: u32,
+}
+
 pub struct EditorWidgets {
   pub header: gtk::Label,
   pub title_label: gtk::Label,
@@ -91,6 +111,23 @@ pub struct EditorChangedHandlers {
 }
 
 impl EditorDraft {
+  pub fn apply_form_values(&mut self, values: EditorFormValues) {
+    self.title = values.title;
+    self.location = values.location;
+    self.description = values.description;
+    self.start_hour = values.start_hour;
+    self.start_minute = values.start_minute;
+    self.end_hour = values.end_hour;
+    self.end_minute = values.end_minute;
+    self.all_day = values.all_day;
+    self.reminder_enabled = values.reminder_enabled;
+    self.reminder_hours = values.reminder_hours;
+    self.reminder_minutes = values.reminder_minutes;
+    self.repeat_all_day = values.repeat_all_day;
+    self.repeat_hours = values.repeat_hours;
+    self.repeat_minutes = values.repeat_minutes;
+  }
+
   /// A draft for a new event on `date`: it starts at 09:00, lasts the
   /// configured default length (kept within the day) and carries the default
   /// reminder.
@@ -592,6 +629,45 @@ mod tests {
       .all_events()
       .unwrap();
     assert_eq!(events[0].title, english().text(Text::UntitledEvent));
+    std::fs::remove_dir_all(database_path.parent().unwrap()).unwrap();
+  }
+
+  #[test]
+  fn saving_uses_the_values_present_in_the_form_at_click_time() {
+    let database_path = temp_database("save-form-snapshot");
+    let mut draft = EditorDraft::new(tomorrow(), &defaults(10));
+    draft.title = "stale queued value".to_string();
+    draft.apply_form_values(EditorFormValues {
+      title: "Latest title".to_string(),
+      location: "Room 4".to_string(),
+      description: "Final keystroke".to_string(),
+      start_hour: 11,
+      start_minute: 15,
+      end_hour: 12,
+      end_minute: 45,
+      all_day: false,
+      reminder_enabled: false,
+      reminder_hours: 0,
+      reminder_minutes: 10,
+      repeat_all_day: false,
+      repeat_hours: 2,
+      repeat_minutes: 0,
+    });
+
+    save_editor(&database_path, &Settings::default(), draft, english()).unwrap();
+
+    let events = Database::open(&database_path)
+      .unwrap()
+      .all_events()
+      .unwrap();
+    assert_eq!(events.len(), 1);
+    assert_eq!(events[0].title, "Latest title");
+    assert_eq!(events[0].location.as_deref(), Some("Room 4"));
+    assert_eq!(events[0].description.as_deref(), Some("Final keystroke"));
+    let start = events[0].start.with_timezone(&Local);
+    let end = events[0].end.with_timezone(&Local);
+    assert_eq!((start.hour(), start.minute()), (11, 15));
+    assert_eq!((end.hour(), end.minute()), (12, 45));
     std::fs::remove_dir_all(database_path.parent().unwrap()).unwrap();
   }
 

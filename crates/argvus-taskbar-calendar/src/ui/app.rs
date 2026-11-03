@@ -25,7 +25,8 @@ use crate::storage::Database;
 use super::agenda::rebuild_agenda;
 use super::calendar::{day_cells, weekday_labels};
 use super::event_editor::{
-  EditorChangedHandlers, EditorDraft, EditorWidgets, build_editor, populate_editor, save_editor,
+  EditorChangedHandlers, EditorDraft, EditorFormValues, EditorWidgets, build_editor,
+  populate_editor, save_editor,
 };
 use super::settings::{
   SettingsChangedHandlers, SettingsDraft, SettingsWidgets, build_settings, dropdown_value,
@@ -115,7 +116,7 @@ pub enum AppMsg {
   EditorRepeatAllDay(bool),
   EditorRepeatHours(u32),
   EditorRepeatMinutes(u32),
-  SaveEditor,
+  SaveEditor(EditorFormValues),
   DeleteEvent,
   CancelEditor,
   OpenConfig,
@@ -437,7 +438,7 @@ impl SimpleComponent for AppModel {
       | AppMsg::EditorRepeatAllDay(_)
       | AppMsg::EditorRepeatHours(_)
       | AppMsg::EditorRepeatMinutes(_)) => apply_editor_field(&mut self.view, field),
-      AppMsg::SaveEditor => self.save_editor(),
+      AppMsg::SaveEditor(values) => self.save_editor(values),
       AppMsg::DeleteEvent => self.delete_edited_event(),
       AppMsg::CancelEditor => {
         self.view = ViewState::Calendar;
@@ -501,9 +502,10 @@ impl SimpleComponent for AppModel {
 impl AppModel {
   /// Saves the editor draft and returns to the calendar. On failure the
   /// editor stays open, so the typed values are not lost.
-  fn save_editor(&mut self) {
+  fn save_editor(&mut self, values: EditorFormValues) {
     if let ViewState::Editor(draft) = &self.view {
-      let draft = *draft.clone();
+      let mut draft = *draft.clone();
+      draft.apply_form_values(values);
       match save_editor(&self.paths.database, &self.settings, draft, self.i18n) {
         Ok(()) => self.view = ViewState::Calendar,
         Err(err) => log::warn!("could not save the event: {err}"),
@@ -673,7 +675,25 @@ mod tests {
       assert!(!message.applies_to(&editor));
       assert!(!message.applies_to(&settings));
     }
-    assert!(AppMsg::SaveEditor.applies_to(&editor));
+    assert!(
+      AppMsg::SaveEditor(EditorFormValues {
+        title: String::new(),
+        location: String::new(),
+        description: String::new(),
+        start_hour: 9,
+        start_minute: 0,
+        end_hour: 10,
+        end_minute: 0,
+        all_day: false,
+        reminder_enabled: true,
+        reminder_hours: 0,
+        reminder_minutes: 10,
+        repeat_all_day: false,
+        repeat_hours: 2,
+        repeat_minutes: 0,
+      })
+      .applies_to(&editor)
+    );
     assert!(AppMsg::Hide.applies_to(&settings));
   }
 

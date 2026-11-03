@@ -323,7 +323,39 @@ pub(super) fn build_editor_view(
 
   connect_click(&back, sender, || AppMsg::CancelEditor);
   connect_click(&cancel, sender, || AppMsg::CancelEditor);
-  connect_click(&save, sender, || AppMsg::SaveEditor);
+  let save_sender = sender.clone();
+  let save_title = title_entry.clone();
+  let save_location = location_entry.clone();
+  let save_description = description_entry.clone();
+  let save_start_hour = start_hour.clone();
+  let save_start_minute = start_minute.clone();
+  let save_end_hour = end_hour.clone();
+  let save_end_minute = end_minute.clone();
+  let save_all_day = all_day.clone();
+  let save_reminder_enabled = reminder_enabled.clone();
+  let save_reminder_hours = reminder_hours.clone();
+  let save_reminder_minutes = reminder_minutes.clone();
+  let save_repeat_all_day = repeat_all_day.clone();
+  let save_repeat_hours = repeat_hours.clone();
+  let save_repeat_minutes = repeat_minutes.clone();
+  save.connect_clicked(move |_| {
+    save_sender.input(AppMsg::SaveEditor(EditorFormValues {
+      title: save_title.text().to_string(),
+      location: save_location.text().to_string(),
+      description: save_description.text().to_string(),
+      start_hour: save_start_hour.value_as_int() as u32,
+      start_minute: save_start_minute.value_as_int() as u32,
+      end_hour: save_end_hour.value_as_int() as u32,
+      end_minute: save_end_minute.value_as_int() as u32,
+      all_day: save_all_day.is_active(),
+      reminder_enabled: save_reminder_enabled.is_active(),
+      reminder_hours: save_reminder_hours.value_as_int() as u32,
+      reminder_minutes: save_reminder_minutes.value_as_int() as u32,
+      repeat_all_day: save_repeat_all_day.is_active(),
+      repeat_hours: save_repeat_hours.value_as_int() as u32,
+      repeat_minutes: save_repeat_minutes.value_as_int() as u32,
+    }));
+  });
   connect_click(&delete, sender, || AppMsg::DeleteEvent);
 
   // The handler ids are kept so `populate_editor` can block them while it
