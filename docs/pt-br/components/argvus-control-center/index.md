@@ -28,6 +28,8 @@ A tela inicial é um catálogo de destinos agrupados em seis cartões. Cada dest
 * **Configurações** — o próprio Control Center, listado depois dos cartões: Idioma (idioma do usuário) e Estilo (ícones decorativos e transparência). Pressione `s` para abri-la.
 * **Ferramentas e diagnóstico** — ferramentas de desenvolvimento e manutenção: Boas-vindas ao ARGVUS, Projetos, Snippets (textos salvos para o `argvus snippets`, digitados com `SUPER + ALT + N`), Chaves SSH (pares de chaves em `~/.ssh` gerenciados pelo `argvus keys`), Chaves GPG (o keyring gerenciado pelo `argvus gpg`; o gpg-agent usa o pinentry-gtk), Serviços de desenvolvimento, System Doctor e Sobre o ARGVUS.
 
+Quando o Não Perturbe é ativado, os pop-ups de notificação são fechados e as novas notificações ficam guardadas para depois. O Control Panel oculta o histórico até o Não Perturbe ser desativado.
+
 ## Boas-vindas ao ARGVUS
 
 Abra **Boas-vindas ao ARGVUS** em **Tools & Diagnostics**, busque `welcome` ou execute `argvus welcome`. O Welcome é uma página integrada à Central de Controle e usa sua única janela. Enter abre a configuração selecionada; ao terminar, volte com Esc ao guia. F6 Próximo marca a etapa com `[x]` e abre a próxima configuração na mesma janela. Esc apenas volta e Enter na lista sempre abre a página selecionada. O revisa a etapa novamente, S pula sem marcar como concluída e F finaliza o guia, inclusive com itens opcionais pendentes. Cancelar ou voltar não marca a configuração como concluída. O progresso anterior é preservado.

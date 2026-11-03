@@ -28,6 +28,8 @@ The home is a catalog of destinations grouped in six cards. Each destination ope
 - **Settings** — the Control Center itself, listed after the cards: Language (the user language) and Style (decorative icons and transparency). Press `s` to open it.
 - **Tools & Diagnostics** — developer and maintenance tools: ARGVUS Welcome, Projects, Snippets (text saved for `argvus snippets`, typed with `SUPER + ALT + N`), SSH keys (key pairs in `~/.ssh` managed by `argvus keys`), GPG keys (the keyring managed by `argvus gpg`; gpg-agent uses pinentry-gtk), Dev Services, System Doctor and About ARGVUS.
 
+When Do Not Disturb is enabled, notification pop-ups are closed and new notifications are kept for later. The Control Panel hides its notification history until Do Not Disturb is disabled.
+
 ## ARGVUS Welcome
 
 Choose **Open ARGVUS Welcome** under **Tools & Diagnostics**, search for `welcome`, or run `argvus welcome`. Welcome is integrated into the Control Center and uses its single window. Enter opens the selected settings page; when finished, return to the guide with Esc. F6 Next checks off the current step and opens the next one in the same window. Esc only goes back, and Enter on the checklist always opens the selected page. O reviews the step again, S skips without checking it off, and F finishes the guide even with optional steps pending. Cancelling or returning does not complete a step. Existing progress is preserved.
