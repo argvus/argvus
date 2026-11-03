@@ -20,6 +20,7 @@ depends=(
 	'argvus-icons'
 	'argvus-desktop'
 	'argvus-devtools'
+    'argvus-du'
 	'argvus-app-profiles'
 	'argvus-firewall'
 	'argvus-appearance'
