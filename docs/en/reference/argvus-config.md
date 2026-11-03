@@ -119,9 +119,10 @@ reloads in place.
 | `power` | `hypridle` | no |
 
 `consumers` runs `argvus config theme-runtime consumers` (the bar stylesheets,
-the Control Panel over IPC, Hyprland colours, `dunstctl reload`, btop and
-kitty), and `wallpaper` runs `argvus config theme-runtime wallpaper`, which
-shows the effective `/appearance/wallpaper`. The `layout.taskbar` hash is kept
+the Control Panel over IPC, Hyprland colours, Dunst's theme reload, btop and
+kitty). Dunst defers its theme reload while Do Not Disturb is active.
+`wallpaper` runs `argvus config theme-runtime wallpaper`, which shows the
+effective `/appearance/wallpaper`. The `layout.taskbar` hash is kept
 apart from the window layout in the projection manifest, so a gap change does
 not restart the bars. The fallback `full` plan, used when no committed plan
 exists, restarts every surface under the splash.

@@ -22,7 +22,7 @@ are orchestrators: they validate, lock, show the splash, commit through
 not write the GTK, storage or `mode.css` files through separate scripts.
 Use `argvus config accent --apply` to re-run only the accent reconciliation.
 
-A theme change shows no overlay and restarts no service: the running bars, Control Panel, Dunst and wallpaper take the new colours in place. If a surface keeps the old colours, check that the theme build is active and that it is the theme you chose, then run the reloads again:
+A theme change shows no overlay and restarts no service: the running bars, Control Panel, Dunst and wallpaper take the new colours in place. Dunst's notification colours are the exception while Do Not Disturb is active: their reload is deferred until DND is turned off. If another surface keeps the old colours, check that the theme build is active and that it is the theme you chose, then run the reloads again:
 
 ```sh
 cat "${XDG_CONFIG_HOME:-$HOME/.config}/argvus/data/generated/theme/current/build.toml"

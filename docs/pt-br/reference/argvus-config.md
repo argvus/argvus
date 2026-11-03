@@ -116,10 +116,11 @@ Panel voltando à tela desloca todas as janelas. Todo o resto recarrega no lugar
 | `power` | `hypridle` | não |
 
 `consumers` executa `argvus config theme-runtime consumers` (as folhas de
-estilo das barras, o Control Panel por IPC, as cores do Hyprland,
-`dunstctl reload`, btop e kitty), e `wallpaper` executa
-`argvus config theme-runtime wallpaper`, que mostra o `/appearance/wallpaper`
-efetivo. O hash de `layout.taskbar` fica separado do layout das janelas no
+estilo das barras, o Control Panel por IPC, as cores do Hyprland, a recarga
+do tema do Dunst, btop e kitty). O Dunst adia a recarga do tema enquanto o
+Não Perturbe estiver ativo. `wallpaper` executa `argvus config theme-runtime
+wallpaper`, que mostra o `/appearance/wallpaper` efetivo. O hash de
+`layout.taskbar` fica separado do layout das janelas no
 manifesto de projeção, então mudar um gap não reinicia as barras. O plano
 `full`, usado quando não existe plano commitado, reinicia todas as superfícies
 sob o splash.
