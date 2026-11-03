@@ -30,7 +30,7 @@ Commands:
   argvus sessionctl | session | start | tty
   argvus greeter | greeter-session | greeter-tui | greeter-setup
   argvus config | theme | i18n | accounts | firewall
-  argvus taskbar-calendar | removable-devices | notifications | focus | clock
+  argvus taskbar-calendar | removable-devices | notifications | focus | clock | du
   argvus networkctl | bluetoothctl | displayctl | widget-telemetry-toggle
   argvus launcher | projects | snippets | ssh | keys | gpg | git
   argvus tui-terminal | sensors | app-profiles-yazi-keymap | game-snake | terminal

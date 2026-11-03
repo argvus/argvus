@@ -20,7 +20,6 @@ depends=(
 	'argvus-icons'
 	'argvus-desktop'
 	'argvus-devtools'
-    'argvus-du'
 	'argvus-app-profiles'
 	'argvus-firewall'
 	'argvus-appearance'
@@ -58,6 +57,7 @@ replaces=(
 	'argvus-gtk'
 	'argvus-greeter'
 	'argvus-accounts'
+	'argvus-du'
 )
 conflicts=("${replaces[@]}")
 
@@ -81,6 +81,7 @@ provides=(
 	'argvus-gtk'
 	'argvus-greeter'
 	'argvus-accounts'
+	'argvus-du'
 )
 
 # The greetd configuration files are kept on upgrade, as they were in the greeter

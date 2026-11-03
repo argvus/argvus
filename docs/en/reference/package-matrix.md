@@ -6,7 +6,7 @@ description: ARGVUS package responsibilities.
 | Package | Responsibility |
 | --- | --- |
 | `argvus` | Master package: dispatcher, in-process commands (configuration, translations, keys, projects, terminal, system monitor, network, Bluetooth, telemetry, TUI terminal, setup), the shared data and the i18n catalogs. Every component package depends on it. |
-| `argvus` (helpers) | Helpers in the same package: the Control Center (a terminal application), and the GTK 4 applications for the taskbar calendar, removable devices, the loading overlay, ARGVUS Focus and ARGVUS Clock. |
+| `argvus` (helpers) | Helpers in the same package: the Control Center and Disk Usage Analyzer (terminal applications), plus the GTK 4 applications for the taskbar calendar, removable devices, the loading overlay, ARGVUS Focus and ARGVUS Clock. |
 | `argvus` (greeter) | Login greeter for greetd, shipped in the same package and built from `crates/argvus-greeter`. |
 | `argvus-desktop` | Desktop and everyday application profile required by the `argvus` master package. It does not depend on `argvus`, so the dependency remains one-way. |
 | `argvus-devtools`, `argvus-pentest` | Optional independent metapackages for development tools and authorized security auditing. The master package does not install these profiles. |
@@ -29,7 +29,7 @@ description: ARGVUS package responsibilities.
 
 `argvus` declares `replaces`, `conflicts` and `provides` for the packages it absorbed, so an upgrade removes them and their files do not remain as orphans:
 
-`argvus-config`, `argvus-i18n` (with `argvus-language-en-us` and `argvus-language-pt-br`), `argvus-keys`, `argvus-projects`, `argvus-terminal`, `argvus-system-monitor`, `argvus-network`, `argvus-widget-telemetry`. `argvus` also replaces `argvus-control-center`, `argvus-taskbar-calendar`, `argvus-loading-theme`, `argvus-removable-devices`, and the former split packages `argvus-gtk` and `argvus-greeter`, which it still provides so that packages depending on them keep resolving. The account manager (`argvus accounts`) is built from `crates/argvus-accounts` and installed as `/usr/lib/argvus/commands/accounts`, with its polkit rule.
+`argvus-config`, `argvus-i18n` (with `argvus-language-en-us` and `argvus-language-pt-br`), `argvus-keys`, `argvus-projects`, `argvus-terminal`, `argvus-system-monitor`, `argvus-network`, `argvus-widget-telemetry` and `argvus-du`. `argvus` also replaces `argvus-control-center`, `argvus-taskbar-calendar`, `argvus-loading-theme`, `argvus-removable-devices`, and the former split packages `argvus-gtk` and `argvus-greeter`, which it still provides so that packages depending on them keep resolving. The account manager (`argvus accounts`) is built from `crates/argvus-accounts` and installed as `/usr/lib/argvus/commands/accounts`, with its polkit rule. The Disk Usage Analyzer is built from `crates/argvus-du` and installed as `/usr/lib/argvus/commands/argvus-du`.
 
 `/usr/bin/argvus-terminal` stays installed as a compatibility launcher for `argvus terminal`. Hyprland's default terminal, the Control Center catalog and saved default applications still name that command.
 

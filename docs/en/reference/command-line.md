@@ -10,7 +10,7 @@ Run `argvus --help` for the list installed with your version. The subcommands ar
 ## Where each command runs
 
 - **In-process:** the command is a library of the workspace and runs inside `argvus`. No separate executable exists. These are `config`, `theme`, `i18n`, `keys`, `gpg`, `projects`, `terminal`, `system-monitor`, `network`, `bluetooth`, `focus status`, `widget-telemetry`, `tui-terminal`, `sensors` and `setup`.
-- **Helper:** a separate executable in `/usr/lib/argvus/commands/`, installed by the `argvus` package. These are `control-center` (terminal application) and the GTK 4 applications `taskbar-calendar`, `removable-devices`, `focus` and `clock`.
+- **Helper:** a separate executable in `/usr/lib/argvus/commands/`, installed by the `argvus` package. These are `control-center` (terminal application), `argvus-du` (launched with `argvus du`) and the GTK 4 applications `taskbar-calendar`, `removable-devices`, `focus` and `clock`.
 - **Private executable:** an executable that another package installs in `/usr/lib/argvus/commands/`. `argvus` only starts it. These include `session`, `start`, `tty`, `sessionctl`, `launcher`, `snippets`, `ssh`, `git`, `app-profiles-yazi-keymap`, `notifications`, `displayctl`, `firewall`, `accounts`, `taskbar-actions` and the `greeter-*` entry points.
 - **Script:** a packaged shell script run with `/bin/sh`. These are the Hyprland script commands listed below.
 
@@ -28,6 +28,7 @@ Run `argvus --help` for the list installed with your version. The subcommands ar
 | `argvus projects ...` | In-process | Project picker. |
 | `argvus terminal ...` | In-process | The ARGVUS terminal profile. |
 | `argvus system-monitor ...` | In-process | The btop system monitor; `--gpu` selects GPU-only boxes, and `--panel [--cpu|--mem|--gpu]` embeds it in the ARGVUS TUI shell. |
+| `argvus du` | Helper (terminal application) | Opens the ARGVUS Disk Usage Analyzer in a dedicated Kitty window and runs ncdu. |
 | `argvus network ...` | In-process | NetworkManager status and controls (`networkctl` is kept as an alias). |
 | `argvus bluetooth ...` | In-process | Bluetooth status and controls (`bluetoothctl` is kept as an alias). |
 | `argvus widget-telemetry block ...` | In-process | The Waybar telemetry block. This is the hot path of the bar. |

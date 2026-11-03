@@ -6,7 +6,7 @@ description: Responsabilidades dos pacotes do ARGVUS.
 | Pacote | Responsabilidade |
 | --- | --- |
 | `argvus` | Pacote mestre: dispatcher, comandos em processo (configuração, traduções, chaves, projetos, terminal, monitor do sistema, rede, Bluetooth, telemetria, terminal TUI, setup), os dados compartilhados e os catálogos de i18n. Todo pacote de componente depende dele. |
-| `argvus` (auxiliares) | Auxiliares no mesmo pacote: o Centro de Controle (aplicativo de terminal) e os aplicativos GTK 4 do calendário da barra, dispositivos removíveis, overlay de carregamento, ARGVUS Focus e ARGVUS Clock. |
+| `argvus` (auxiliares) | Auxiliares no mesmo pacote: o Centro de Controle e o Analisador de Uso de Disco (aplicativos de terminal), além dos aplicativos GTK 4 do calendário da barra, dispositivos removíveis, overlay de carregamento, ARGVUS Focus e ARGVUS Clock. |
 | `argvus` (greeter) | Greeter de login para o greetd, no mesmo pacote, gerado a partir de `crates/argvus-greeter`. |
 | `argvus-desktop` | Perfil do ambiente gráfico e dos aplicativos de uso diário, exigido pelo pacote mestre `argvus`. Não depende de `argvus`, mantendo a dependência em uma única direção. |
 | `argvus-devtools`, `argvus-pentest` | Metapacotes independentes e opcionais para ferramentas de desenvolvimento e auditoria de segurança autorizada. O pacote mestre não instala esses perfis. |
@@ -29,7 +29,7 @@ description: Responsabilidades dos pacotes do ARGVUS.
 
 O `argvus` declara `replaces`, `conflicts` e `provides` dos pacotes que absorveu, para que uma atualização os remova e seus arquivos não fiquem órfãos:
 
-`argvus-config`, `argvus-i18n` (com `argvus-language-en-us` e `argvus-language-pt-br`), `argvus-keys`, `argvus-projects`, `argvus-terminal`, `argvus-system-monitor`, `argvus-network`, `argvus-widget-telemetry`. O `argvus` também substitui `argvus-control-center`, `argvus-taskbar-calendar`, `argvus-loading-theme`, `argvus-removable-devices` e os antigos pacotes separados `argvus-gtk` e `argvus-greeter`, que ele ainda fornece para que os pacotes que dependem deles continuem resolvidos. O gerenciador de contas (`argvus accounts`) é compilado a partir de `crates/argvus-accounts` e instalado em `/usr/lib/argvus/commands/accounts`, com a sua regra polkit.
+`argvus-config`, `argvus-i18n` (com `argvus-language-en-us` e `argvus-language-pt-br`), `argvus-keys`, `argvus-projects`, `argvus-terminal`, `argvus-system-monitor`, `argvus-network`, `argvus-widget-telemetry` e `argvus-du`. O `argvus` também substitui `argvus-control-center`, `argvus-taskbar-calendar`, `argvus-loading-theme`, `argvus-removable-devices` e os antigos pacotes separados `argvus-gtk` e `argvus-greeter`, que ele ainda fornece para que os pacotes que dependem deles continuem resolvidos. O gerenciador de contas (`argvus accounts`) é compilado a partir de `crates/argvus-accounts` e instalado em `/usr/lib/argvus/commands/accounts`, com a sua regra polkit. O Analisador de Uso de Disco é compilado a partir de `crates/argvus-du` e instalado em `/usr/lib/argvus/commands/argvus-du`.
 
 `/usr/bin/argvus-terminal` continua instalado como launcher de compatibilidade para `argvus terminal`. O terminal padrão do Hyprland, o catálogo do Control Center e os aplicativos padrão salvos ainda usam esse comando.
 

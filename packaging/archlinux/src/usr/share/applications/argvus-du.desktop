@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=ARGVUS Disk Usage Analyzer
+Name[pt_BR]=ARGVUS Analisador de Uso de Disco
+Comment=Analyze disk usage interactively
+Comment[pt_BR]=Analise o uso de disco interativamente
+Exec=argvus du
+Icon=drive-harddisk
+Terminal=false
+Categories=System;Filesystem;

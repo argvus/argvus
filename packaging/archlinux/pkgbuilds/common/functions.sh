@@ -62,6 +62,7 @@ arch_build_argvus_workspace() {
 		-p argvus-removable-devices \
 		-p argvus-taskbar-calendar \
 		-p argvus-accounts \
+		-p argvus-du \
 		-p argvus-focus \
 		-p argvus-clock
 
@@ -128,6 +129,8 @@ arch_package_argvus() {
 	# private command and keeps the path that the polkit rule and the callers use.
 	install -Dm755 "$(arch_cargo_target_dir)/release/argvus-accounts" \
 		"${pkgdir}/usr/lib/argvus/commands/accounts"
+	install -Dm755 "$(arch_cargo_target_dir)/release/argvus-du" \
+		"${pkgdir}/usr/lib/argvus/commands/argvus-du"
 
 	install -Dm644 "${source_root}/LICENSE" "${pkgdir}/usr/share/licenses/argvus/LICENSE"
 }

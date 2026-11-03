@@ -70,6 +70,11 @@ impl TerminalView {
     self.parser.screen().bracketed_paste()
   }
 
+  /// Whether the child expects application-mode cursor sequences.
+  pub fn application_cursor(&self) -> bool {
+    self.parser.screen().application_cursor()
+  }
+
   /// Places the cursor of an interactive child within its content area.
   pub fn render_cursor(&self, frame: &mut Frame, area: Rect) {
     let screen = self.parser.screen();
@@ -151,7 +156,8 @@ mod tests {
   fn parses_ansi_output_and_keeps_content_after_resize() {
     let theme = argvus_theme::Theme::load();
     let mut view = TerminalView::new(4, 20);
-    view.process(b"\x1b[31mCPU 42%\x1b[0m");
+    view.process(b"\x1b[?1h\x1b[31mCPU 42%\x1b[0m");
+    assert!(view.application_cursor());
     view.resize(6, 24);
     let mut terminal = Terminal::new(TestBackend::new(24, 6)).unwrap();
     terminal

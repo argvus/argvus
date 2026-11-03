@@ -65,6 +65,7 @@ private_commands! {
   Launcher => "launcher" => "launcher",
   Snippets => "snippets" => "snippets",
   GameSnake => "game-snake" => "game-snake",
+  DiskUsageAnalyzer => "du" => "argvus-du",
   TaskbarActions => "taskbar-actions" => "taskbar-actions",
   Ssh => "ssh" => "ssh",
   Git => "git" => "git",

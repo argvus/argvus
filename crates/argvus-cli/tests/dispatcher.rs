@@ -320,6 +320,22 @@ fn git_maps_to_argvus_git_and_forwards_its_arguments() {
 }
 
 #[test]
+fn du_runs_the_private_argvus_du_executable_and_forwards_arguments() {
+  let sandbox = Sandbox::new("disk-usage-analyzer");
+  sandbox.fake(&sandbox.commands(), "argvus-du");
+  let output = sandbox.run(
+    &sandbox.tools_path(),
+    &["du", "--directory", "/path with spaces"],
+    "",
+  );
+  assert!(output.status.success());
+  assert_eq!(
+    text(&output.stdout),
+    expected(&["[--directory]", "[/path with spaces]", "stdin="])
+  );
+}
+
+#[test]
 fn focus_and_clock_run_their_private_executables() {
   let sandbox = Sandbox::new("time-apps");
   for name in ["focus", "clock"] {

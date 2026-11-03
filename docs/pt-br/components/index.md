@@ -13,6 +13,7 @@ Estes componentes foram consolidados no workspace `argvus`. As páginas de usuá
 | Internacionalização | `argvus i18n` | [Internacionalização](/pt/docs/components/argvus-i18n/) |
 | Terminal | `argvus terminal` | [Terminal](/pt/docs/components/argvus-terminal/) |
 | Monitor do sistema | `argvus system-monitor` | [Monitor do sistema](/pt/docs/components/argvus-system-monitor/) |
+| Analisador de uso de disco | `argvus du` | [ARGVUS Disk Usage Analyzer](/pt/docs/components/argvus-du/) |
 | Rede e Bluetooth | `argvus network`, `argvus bluetooth` | [Rede e Bluetooth](/pt/docs/components/argvus-network/) |
 | Login (greetd) | `argvus greeter` | [Greeter](/pt/docs/components/argvus-greeter/) |
 | Calendário | `argvus taskbar-calendar` | [Calendário](/pt/docs/components/argvus-taskbar-calendar/) |

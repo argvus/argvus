@@ -10,7 +10,7 @@ Execute `argvus --help` para ver a lista da sua versão instalada. Os subcomando
 ## Onde cada comando roda
 
 - **Em processo:** o comando é uma biblioteca do workspace e roda dentro do `argvus`. Não existe executável separado. São `config`, `theme`, `i18n`, `keys`, `gpg`, `projects`, `terminal`, `system-monitor`, `network`, `bluetooth`, `focus status`, `widget-telemetry`, `tui-terminal`, `sensors` e `setup`.
-- **Auxiliar:** um executável separado em `/usr/lib/argvus/commands/`, instalado pelo pacote `argvus`. São `control-center` (aplicativo de terminal) e os aplicativos GTK 4 `taskbar-calendar`, `removable-devices`, `focus` e `clock`.
+- **Auxiliar:** um executável separado em `/usr/lib/argvus/commands/`, instalado pelo pacote `argvus`. São `control-center` (aplicativo de terminal), `argvus-du` (iniciado com `argvus du`) e os aplicativos GTK 4 `taskbar-calendar`, `removable-devices`, `focus` e `clock`.
 - **Executável privado:** um executável que outro pacote instala em `/usr/lib/argvus/commands/`. O `argvus` apenas o inicia. Incluem `session`, `start`, `tty`, `sessionctl`, `launcher`, `snippets`, `ssh`, `git`, `app-profiles-yazi-keymap`, `notifications`, `displayctl`, `firewall`, `accounts`, `taskbar-actions` e os pontos de entrada `greeter-*`.
 - **Script:** um script de shell empacotado, executado com `/bin/sh`. São os comandos de script do Hyprland listados abaixo.
 
@@ -28,6 +28,7 @@ Execute `argvus --help` para ver a lista da sua versão instalada. Os subcomando
 | `argvus projects ...` | Em processo | Seletor de projetos. |
 | `argvus terminal ...` | Em processo | O perfil de terminal do ARGVUS. |
 | `argvus system-monitor ...` | Em processo | O monitor btop; `--gpu` seleciona apenas as caixas de GPU, e `--panel [--cpu|--mem|--gpu]` o embute na moldura TUI ARGVUS. |
+| `argvus du` | Auxiliar (aplicativo de terminal) | Abre o ARGVUS Disk Usage Analyzer em uma janela Kitty dedicada e executa o ncdu. |
 | `argvus network ...` | Em processo | Estado e controles do NetworkManager (`networkctl` continua como alias). |
 | `argvus bluetooth ...` | Em processo | Estado e controles do Bluetooth (`bluetoothctl` continua como alias). |
 | `argvus widget-telemetry block ...` | Em processo | O bloco de telemetria da Waybar. É o caminho quente da barra. |

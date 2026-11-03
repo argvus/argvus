@@ -54,8 +54,9 @@ power, display, network, notifications and themes — all packaged for Arch Linu
 
 `argvus` is the master package and the only package built from this repository. It installs the
 command, its in-process subcommands and the shared runtime, the Control Center with integrated ARGVUS Welcome (terminal
-applications), the GTK 4 helpers for the taskbar calendar, removable devices and the loading
-overlay, the ARGVUS Focus and ARGVUS Clock applications, and the login greeter (built from `crates/argvus-greeter`). Every component package
+applications), the GTK 4 helpers for the taskbar calendar and removable devices, the loading
+overlay, the ARGVUS Focus and ARGVUS Clock applications, the Disk Usage Analyzer helper, and
+the login greeter (built from `crates/argvus-greeter`). Every component package
 depends on it, so no install order is required.
 
 | Area | Packages and commands |
@@ -69,7 +70,7 @@ depends on it, so no install order is required.
 | Launcher and lock screen | `argvus-launcher`, `argvus-lock` |
 | Appearance, wallpapers, fonts and icons | `argvus-appearance`, `argvus-wallpapers`, `argvus-fonts`, `argvus-icons`, `argvus-branding` |
 | Themes | `argvus-theme-*` (one package per official theme) |
-| Terminal, TUI apps and system monitor | `argvus terminal`, `argvus tui-terminal`, `argvus system-monitor`, `argvus-app-profiles` (data) |
+| Terminal, TUI apps and system monitor | `argvus terminal`, `argvus tui-terminal`, `argvus system-monitor`, `argvus du`, `argvus-app-profiles` (data) |
 | Display, power, network and notifications | `argvus-display`, `argvus-power`, `argvus network`, `argvus-notifications` |
 | Desktop portals and Wayland/DBus defaults | `argvus-portal` |
 | Removable storage | `argvus removable-devices` (in `argvus`) |
@@ -92,6 +93,7 @@ argvus --help                 # full list of routes
 argvus --control-center       # settings application
 argvus welcome                # first-setup guide; can be reopened at any time
 argvus --system-monitor       # btop-based system monitor
+argvus du                     # interactive disk usage analyzer (ncdu)
 argvus --spf                  # superfile, with ARGVUS config
 argvus --yazi                 # yazi, with ARGVUS config
 argvus --setup --copy <app>   # copy packaged defaults for explicit customization
@@ -126,9 +128,8 @@ ARGVUS Dark and ARGVUS Light ship in `argvus-appearance`; every other family com
 own `argvus-theme-*` package. These packages are optional and can be installed individually,
 for example `pacman -S argvus-theme-sunset` or `pacman -S argvus-theme-watercolor`.
 
-The `argvus-desktop` metapackage groups the desktop and everyday applications required by the
-master package. `argvus-devtools` and `argvus-pentest` are separate opt-in profiles and are not
-installed with `argvus`.
+The master package depends on `argvus-desktop` for desktop applications such as Kitty and on
+`argvus-devtools` for bundled TUI tools such as ncdu. `argvus-pentest` remains an opt-in profile.
 
 ## Install
 
