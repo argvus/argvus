@@ -58,7 +58,8 @@ service.
 - Notifications follow the calendar language (Settings > Language).
 - A day shows a dot (`•`) when an event takes place on it, including every day of an
   overnight or multi-day event. Days follow the local time zone.
-- Local events are removed automatically 10 minutes after they end.
+- Local events are removed automatically 10 minutes after they end. If an event has already
+  ended when it is saved, it remains available for at least 10 minutes after saving.
 
 Imported `.ics` files keep their dates, time zones (`TZID`) and alarms (`VALARM`).
 Imported events also notify at their start, besides their own alarms. Recurring events (`RRULE`)

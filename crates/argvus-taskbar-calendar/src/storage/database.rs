@@ -228,8 +228,8 @@ impl Database {
 
   /// Removes local events that are no longer needed: the ones deleted in the
   /// popup (local events are never synchronised, so the soft-deleted row has
-  /// no further use) and the non-recurring ones that ended more than the grace
-  /// period ago.
+  /// no further use) and non-recurring events that ended more than the grace
+  /// period ago and were saved more than that long ago.
   pub fn purge_expired_local_single_events(&self, now: DateTime<Utc>) -> Result<usize> {
     let deleted = self.conn.execute(
       "DELETE FROM events WHERE source = 'local' AND deleted = 1",
@@ -247,6 +247,7 @@ impl Database {
             WHERE deleted = 0
               AND source = 'local'
               AND datetime(end_utc) <= datetime(?1)
+              AND datetime(created_at) <= datetime(?1)
             "#,
     )?;
     let rows = stmt.query_map(params![cutoff.to_rfc3339()], |row| {
@@ -564,19 +565,23 @@ mod tests {
 
     let mut expired = CalendarEvent::new_local(1, "Expired local", now - Duration::hours(1));
     expired.end = now - Duration::minutes(EXPIRED_LOCAL_EVENT_GRACE_MINUTES + 1);
+    expired.created_at = now - Duration::hours(1);
     db.upsert_event(&mut expired).unwrap();
 
     let mut recent = CalendarEvent::new_local(1, "Recent local", now - Duration::hours(1));
     recent.end = now - Duration::minutes(EXPIRED_LOCAL_EVENT_GRACE_MINUTES - 1);
+    recent.created_at = now - Duration::hours(1);
     db.upsert_event(&mut recent).unwrap();
 
     let mut recurring = CalendarEvent::new_local(1, "Recurring local", now - Duration::hours(1));
     recurring.end = now - Duration::minutes(EXPIRED_LOCAL_EVENT_GRACE_MINUTES + 1);
+    recurring.created_at = now - Duration::hours(1);
     recurring.recurrence.rrule = Some("FREQ=DAILY".to_string());
     db.upsert_event(&mut recurring).unwrap();
 
     let mut remote = CalendarEvent::new_local(1, "Remote", now - Duration::hours(1));
     remote.end = now - Duration::minutes(EXPIRED_LOCAL_EVENT_GRACE_MINUTES + 1);
+    remote.created_at = now - Duration::hours(1);
     remote.source = CalendarSource::CalDav;
     db.upsert_event(&mut remote).unwrap();
 
@@ -610,10 +615,33 @@ mod tests {
     let mut event = CalendarEvent::new_local(1, "All day", start);
     event.end = end;
     event.all_day = true;
+    event.created_at = start;
     db.upsert_event(&mut event).unwrap();
 
     assert_eq!(db.purge_expired_local_single_events(now).unwrap(), 1);
     assert!(db.all_events().unwrap().is_empty());
+
+    drop(db);
+    std::fs::remove_dir_all(test_dir).unwrap();
+  }
+
+  #[test]
+  fn purge_keeps_a_recently_saved_event_that_already_ended() {
+    let test_dir = std::env::temp_dir().join(format!(
+      "argvus-calendar-expire-recent-save-{}",
+      uuid::Uuid::new_v4()
+    ));
+    std::fs::create_dir_all(&test_dir).unwrap();
+    let database_path = test_dir.join("calendar.db");
+    let mut db = Database::open(&database_path).unwrap();
+    let now = Utc.with_ymd_and_hms(2026, 8, 12, 18, 20, 0).unwrap();
+    let mut event = CalendarEvent::new_local(1, "Saved late", now - Duration::hours(1));
+    event.end = now - Duration::minutes(EXPIRED_LOCAL_EVENT_GRACE_MINUTES + 1);
+    event.created_at = now - Duration::minutes(2);
+    db.upsert_event(&mut event).unwrap();
+
+    assert_eq!(db.purge_expired_local_single_events(now).unwrap(), 0);
+    assert_eq!(db.all_events().unwrap()[0].title, "Saved late");
 
     drop(db);
     std::fs::remove_dir_all(test_dir).unwrap();

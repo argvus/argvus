@@ -55,7 +55,8 @@ escolha fica no diretório de estado e também ativa e inicia o
 - As notificações seguem o idioma do calendário (Configurações > Idioma).
 - Um dia mostra um ponto (`•`) quando há evento nele, incluindo todos os dias de um evento
   que atravessa a noite ou dura vários dias. Os dias seguem o fuso horário local.
-- Eventos locais são removidos automaticamente 10 minutos depois de terminarem.
+- Eventos locais são removidos automaticamente 10 minutos depois de terminarem. Se um evento
+  já terminou quando é salvo, ele permanece disponível por pelo menos 10 minutos após o salvamento.
 
 Arquivos `.ics` importados mantêm datas, fusos horários (`TZID`) e alarmes (`VALARM`).
 Eventos importados também avisam no início, além dos próprios alarmes. Eventos recorrentes (`RRULE`) são
