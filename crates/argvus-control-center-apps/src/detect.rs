@@ -272,9 +272,13 @@ pub fn installed_apps(category: Category, desktops: &[DesktopFile]) -> Vec<Insta
         None
       }
     });
-    let display = found
-      .map(|d| d.name.clone())
-      .unwrap_or_else(|| known.display.to_string());
+    let display = if category == Category::TextEditor {
+      known.display.to_string()
+    } else {
+      found
+        .map(|desktop| desktop.name.clone())
+        .unwrap_or_else(|| known.display.to_string())
+    };
     apps.push(InstalledApp {
       binary: known.binary.to_string(),
       display,
@@ -389,6 +393,54 @@ mod tests {
     assert_eq!(id.as_deref(), Some("org.kitt.humans.kitty.desktop"));
     let none = desktop_id_for_binary("does-not-exist-app", &[]);
     assert_eq!(none, None);
+  }
+
+  #[test]
+  fn text_editor_labels_use_catalog_names_and_mousepad_uses_its_editor_desktop() {
+    let desktops = vec![
+      DesktopFile {
+        id: "org.xfce.mousepad-settings.desktop".into(),
+        name: "Text Editor Settings".into(),
+        exec_binary: Some("mousepad".into()),
+      },
+      DesktopFile {
+        id: "org.xfce.mousepad.desktop".into(),
+        name: "Mousepad".into(),
+        exec_binary: Some("mousepad".into()),
+      },
+      DesktopFile {
+        id: "org.gnome.gedit.desktop".into(),
+        name: "Text Editor".into(),
+        exec_binary: Some("gedit".into()),
+      },
+      DesktopFile {
+        id: "org.gnome.TextEditor.desktop".into(),
+        name: "Text Editor".into(),
+        exec_binary: Some("gnome-text-editor".into()),
+      },
+    ];
+
+    let apps = installed_apps(Category::TextEditor, &desktops);
+    for (binary, expected_display, expected_desktop_id) in [
+      ("gedit", "GEdit", "org.gnome.gedit.desktop"),
+      (
+        "gnome-text-editor",
+        "GNOME Editor",
+        "org.gnome.TextEditor.desktop",
+      ),
+      ("mousepad", "Mousepad", "org.xfce.mousepad.desktop"),
+    ] {
+      let app = apps
+        .iter()
+        .find(|app| app.binary == binary)
+        .expect("editor detected from desktop entry");
+      assert_eq!(app.display, expected_display);
+      assert_eq!(app.desktop_id.as_deref(), Some(expected_desktop_id));
+    }
+    assert_eq!(
+      desktop_id_for_binary("mousepad", &desktops).as_deref(),
+      Some("org.xfce.mousepad.desktop")
+    );
   }
 
   #[test]

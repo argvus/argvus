@@ -94,7 +94,7 @@ Fontes fica em **Aparência > Estilo do desktop > Fontes**. A página permite se
 
 ### Aplicativos padrão
 
-Aplicativos padrão seleciona programas instalados para funções como terminal, gerenciador de arquivos, editor de texto, editor do terminal, navegador, visualizador de imagens, visualizador de PDF, reprodutor de vídeo, reprodutor de áudio, ferramenta de arquivos compactados e launcher. A seleção é salva pelo ARGVUS e pode atualizar associações XDG padrão.
+Aplicativos padrão seleciona programas instalados para funções como terminal, gerenciador de arquivos, editor de texto, editor do terminal, navegador, visualizador de imagens, visualizador de PDF, reprodutor de vídeo, reprodutor de áudio, ferramenta de arquivos compactados e launcher. A seleção é salva pelo ARGVUS e pode atualizar associações XDG padrão. Gerenciadores de arquivos TUI usam o editor do terminal selecionado ao abrir arquivos de texto; as associações de arquivos da área de trabalho continuam usando o editor gráfico.
 
 ### Snippets
 

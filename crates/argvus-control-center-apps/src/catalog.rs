@@ -372,10 +372,14 @@ pub const CATALOG: &[CategorySpec] = &[
       ),
       known("codium", "VSCodium", "codium.desktop"),
       known("sublime_text", "Sublime Text", "sublime_text.desktop"),
-      known("gedit", "GNOME Text Editor", "org.gnome.TextEditor.desktop"),
-      known("gnome-text-editor", "GNOME Text Editor (legacy)", ""),
+      known("gedit", "GEdit", "org.gnome.gedit.desktop"),
+      known(
+        "gnome-text-editor",
+        "GNOME Editor",
+        "org.gnome.TextEditor.desktop",
+      ),
       known("kate", "Kate", "org.kde.kate.desktop"),
-      known("mousepad", "Mousepad", "mousepad.desktop"),
+      known("mousepad", "Mousepad", "org.xfce.mousepad.desktop"),
       known("geany", "Geany", "geany.desktop"),
       known("leafpad", "Leafpad", "leafpad.desktop"),
       known("pluma", "Pluma", "pluma.desktop"),
@@ -653,5 +657,22 @@ mod tests {
     assert!(Category::VideoPlayer.mimes().contains(&"video/mp4"));
     assert!(Category::PdfViewer.mimes().contains(&"application/pdf"));
     assert!(Category::Archive.mimes().contains(&"application/zip"));
+  }
+
+  #[test]
+  fn text_editor_catalog_uses_the_matching_desktop_ids_and_names() {
+    for (binary, display, desktop_id) in [
+      ("gedit", "GEdit", "org.gnome.gedit.desktop"),
+      (
+        "gnome-text-editor",
+        "GNOME Editor",
+        "org.gnome.TextEditor.desktop",
+      ),
+      ("mousepad", "Mousepad", "org.xfce.mousepad.desktop"),
+    ] {
+      let app = find_app(Category::TextEditor, binary).expect("text editor in catalog");
+      assert_eq!(app.display, display);
+      assert_eq!(app.desktop_id, desktop_id);
+    }
   }
 }

@@ -94,7 +94,7 @@ Fonts is reached from **Appearance > Desktop Style > Fonts**. It lets you select
 
 ### Default applications
 
-Default applications selects installed programs for roles such as terminal, file manager, text editor, terminal editor, browser, image viewer, PDF viewer, video player, audio player, archive tool and launcher. The selection is saved by ARGVUS and may update standard XDG associations.
+Default applications selects installed programs for roles such as terminal, file manager, text editor, terminal editor, browser, image viewer, PDF viewer, video player, audio player, archive tool and launcher. The selection is saved by ARGVUS and may update standard XDG associations. TUI file managers use the selected terminal editor when opening text files; graphical text editors remain the default for desktop file associations.
 
 ### Snippets
 
