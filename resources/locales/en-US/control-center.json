@@ -2074,6 +2074,7 @@
   "control_center.night_light.invalid": "Use 1000–20000 K or different valid times in HH:MM",
   "control_center.night_light.loading": "Reading Night Light…",
   "control_center.snapshot.title": "Snapshot",
+  "control_center.snapshot.experimental_notice": "Experimental — this feature is still under development and may be incomplete.",
   "control_center.snapshot.non_btrfs": "This filesystem is not Btrfs",
   "control_center.snapshot.detecting": "Detecting the filesystem containing /…",
   "control_center.snapshot.loading": "Loading Snapper integration and snapshots…",

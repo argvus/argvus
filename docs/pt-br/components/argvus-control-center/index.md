@@ -422,6 +422,8 @@ configurada permanecem fora da operação.
 Abra **Central de Controle > Administração do sistema > Snapshot**, pesquise
 `Snapper` ou execute `argvus control-center snapshot`. A feature Cargo `snapshot`
 está em `full` (padrão) e independe de `storage`.
+O aviso **Experimental** informa que o recurso ainda está em desenvolvimento e
+pode estar incompleto.
 
 A página gerencia somente uma configuração Snapper existente com `SUBVOLUME=/`
 e `FSTYPE=btrfs`. A raiz é detectada com `findmnt`; o nome `root` sozinho não

@@ -382,6 +382,8 @@ Open **Desktop & Input > Displays > Night Light** or run `argvus control-center 
 Open **Control Center > System Administration > Snapshot**, search for
 `Snapper`, or run `argvus control-center snapshot`. The `snapshot` Cargo feature
 is included in `full` (the default), and is independent of `storage`.
+The page is marked **Experimental** because the feature is still under development
+and may be incomplete.
 
 This page manages only an existing Snapper configuration whose `SUBVOLUME` is
 `/` and whose `FSTYPE` is `btrfs`. It checks the mount containing `/` with

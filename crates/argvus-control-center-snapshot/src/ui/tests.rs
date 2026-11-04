@@ -141,6 +141,10 @@ fn renders_all_integration_and_error_states_in_both_languages() {
         text.contains(expected_title),
         "missing {expected_title} for {locale}"
       );
+      assert!(
+        text.contains("Experimental"),
+        "missing experimental notice for {locale}"
+      );
       assert!(!text.contains("ARGVUS Snapshot"));
       assert!(
         app

@@ -42,7 +42,25 @@ impl SnapshotApp {
       hint,
     );
     let body = argvus_tui::page::admin_warning(frame, body, &self.theme, self.lang, true);
-    let content = Rect::new(body.x, body.y, body.width, body.height.saturating_sub(2));
+    let experimental_notice = StatusMessage {
+      kind: StatusKind::Info,
+      text: label(self.lang, "experimental_notice").into(),
+    };
+    let notice_height = argvus_tui::components::status_line_count(&experimental_notice, body.width)
+      .min(usize::from(body.height)) as u16;
+    draw_status(
+      frame,
+      Rect::new(body.x, body.y, body.width, notice_height),
+      &self.theme,
+      &experimental_notice,
+    );
+    let body = Rect::new(
+      body.x,
+      body.y.saturating_add(notice_height),
+      body.width,
+      body.height.saturating_sub(notice_height),
+    );
+    let content = Rect::new(body.x, body.y, body.width, body.height.saturating_sub(1));
     let rows = self.rows();
     if !self.busy()
       && self.error.is_none()
