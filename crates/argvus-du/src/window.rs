@@ -211,6 +211,16 @@ mod tests {
       target_size(clients, large_monitor, "0x123", Some(MEMORY_POPUP_SIZE)),
       Some((1399, 920))
     );
+    let already_sized = br#"[{"address":"0x123","monitor":3,"size":[1399,920]}]"#;
+    assert_eq!(
+      target_size(
+        already_sized,
+        large_monitor,
+        "0x123",
+        Some(MEMORY_POPUP_SIZE)
+      ),
+      None
+    );
     let small_monitor =
       br#"[{"id":3,"width":1920,"height":1080,"scale":2,"transform":0,"reserved":[20,10,30,10]}]"#;
     assert_eq!(

@@ -5,7 +5,10 @@ route is `argvus du`; the dispatcher forwards arguments to
 `/usr/lib/argvus/commands/argvus-du`. The desktop entry uses that public route.
 
 The helper opens its dedicated Kitty window with the packaged ARGVUS Kitty
-policy, then starts its own TUI. The TUI embeds the real ncdu process through a
+policy. Kitty requests the popup's pixel size immediately, and the ARGVUS
+Hyprland class rule applies the same floating size and centering at window
+creation; the runtime placement helper remains a fallback for other compositors
+and smaller monitors. The TUI embeds the real ncdu process through a
 PTY, uses `argvus-tui::TerminalView` to parse and render its VT screen, and uses
 `argvus-tui::TerminalGuard` to restore terminal state. Shared `argvus-theme` and
 `argvus-i18n` provide the active palette and locale catalogs. Superfile selection
