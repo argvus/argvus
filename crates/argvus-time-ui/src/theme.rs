@@ -44,6 +44,8 @@ const SHARED_CSS: &str = include_str!("shared.css");
 #[derive(Debug, Deserialize, Default)]
 struct BuildDescription {
   #[serde(default)]
+  variant: Option<String>,
+  #[serde(default)]
   category: String,
   #[serde(default)]
   accent: String,
@@ -51,10 +53,17 @@ struct BuildDescription {
   background: String,
 }
 
+impl BuildDescription {
+  fn is_sticky(&self) -> bool {
+    self.variant.as_deref() == Some("sticky")
+  }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct Fingerprint {
   build: Option<PathBuf>,
   consumer_modified: Option<SystemTime>,
+  is_sticky: bool,
 }
 
 /// The theme and application stylesheets of one display.
@@ -103,6 +112,8 @@ impl ThemeStyle {
   /// Polls for theme switches while `window` is visible, until it is
   /// destroyed.
   pub fn watch(self: &Rc<Self>, window: &impl IsA<gtk::Widget>) {
+    self.reload_if_changed();
+    self.apply_layout_class(window);
     let style = Rc::downgrade(self);
     let window = window.downgrade();
     glib::timeout_add_local(POLL_INTERVAL, move || {
@@ -111,6 +122,7 @@ impl ThemeStyle {
       };
       if window.is_visible() {
         style.reload_if_changed();
+        style.apply_layout_class(&window);
       }
       glib::ControlFlow::Continue
     });
@@ -137,6 +149,24 @@ impl ThemeStyle {
     Fingerprint {
       build,
       consumer_modified,
+      is_sticky: self
+        .current
+        .as_deref()
+        .map(read_build_description)
+        .is_some_and(|description| description.is_sticky()),
+    }
+  }
+
+  fn apply_layout_class(&self, widget: &impl IsA<gtk::Widget>) {
+    let is_sticky = self
+      .fingerprint
+      .borrow()
+      .as_ref()
+      .is_some_and(|fingerprint| fingerprint.is_sticky);
+    if is_sticky {
+      widget.add_css_class("sticky");
+    } else {
+      widget.remove_css_class("sticky");
     }
   }
 
@@ -224,6 +254,7 @@ mod tests {
   #[test]
   fn fallback_uses_build_colors_and_category() {
     let description = BuildDescription {
+      variant: None,
       category: "light".to_owned(),
       accent: "#3590BD".to_owned(),
       background: "#FAFAFA".to_owned(),
@@ -256,12 +287,23 @@ mod tests {
     let directory = tempfile::tempdir().unwrap();
     fs::write(
       directory.path().join(BUILD_MANIFEST),
-      "theme = \"argvus-light\"\ncategory = \"light\"\naccent = \"#123456\"\nbackground = \"#FFFFFF\"\n",
+      "theme = \"argvus-light\"\nvariant = \"sticky\"\ncategory = \"light\"\naccent = \"#123456\"\nbackground = \"#FFFFFF\"\n",
     )
     .unwrap();
     let description = read_build_description(directory.path());
+    assert_eq!(description.variant.as_deref(), Some("sticky"));
+    assert!(description.is_sticky());
     assert_eq!(description.category, "light");
     assert_eq!(description.accent, "#123456");
+  }
+
+  #[test]
+  fn float_build_does_not_enable_sticky_styles() {
+    let description = BuildDescription {
+      variant: Some("float".to_owned()),
+      ..BuildDescription::default()
+    };
+    assert!(!description.is_sticky());
   }
 
   #[test]

@@ -12,6 +12,10 @@ run as `argvus focus`). Application ID `sh.argvus.Focus`; layer-shell namespace 
   `app.start` button), the bell (`SoundPlayer`), checkpoints and the display timer.
 - `ui/`: the timer page (progress ring drawn in the widget's CSS colour), settings and history.
 
+The shared `argvus_time_ui::theme::ThemeStyle` reads the active theme build's layout variant and
+marks the popup window in Sticky mode. Shared GTK rules square the buttons and switches in that
+mode; the visible window tracks theme-build changes so a mode switch updates the open popup.
+
 ## Popup and taskbar status
 
 The undecorated 398-pixel GTK window uses `gtk4-layer-shell` with namespace `argvus-focus` and
