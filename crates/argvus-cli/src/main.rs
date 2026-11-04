@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0
+// Copyright (C) 2026 ARGVUS Contributors
 //! `argvus`: the public command dispatcher of the ARGVUS desktop. Each subcommand
 //! is served by a private executable, a packaged script or an internal route. The
 //! dispatcher replaces its own process with the target, so arguments, stdio,
