@@ -11,11 +11,15 @@ The archive, `argvus-theme-<id>.tar.gz`, holds one theme directory, laid out lik
 
 ```text
 <id>/theme.toml        the manifest (schema 2): name, category, palette, wallpaper
+<id>/appearance.json  your visual settings, including layout, effects, fonts and panel presentation
+<id>/effects.conf     per-surface effect values for the active theme, when present
 <id>/overrides/...     the overrides of the theme it was made from, if any
 <id>/wallpaper.<ext>   the wallpaper on screen when you exported
 ```
 
-The manifest is the one of the active theme, with your name, a new id, your highlight color as the palette accent and the wallpaper beside it. The theme keeps both modes, Sticky and Float, like any theme; the mode stays a separate setting. Fonts, effects, gaps and the other desktop settings are not part of a theme.
+The manifest is based on the active theme, with your name, a new id, your highlight color as the palette accent and the wallpaper beside it. The optional appearance profile preserves your current visual settings. Its window and taskbar geometry is used in both Sticky and Float; the selected mode itself remains independent. When you apply a theme or switch modes, ARGVUS reapplies that theme's profile. Themes without a profile use the ARGVUS defaults. Non-visual settings such as audio, keyboard and network preferences are not part of a theme.
+
+Settings changed after applying a theme are temporary across the next theme or mode change. Export the theme from **Control Center → Appearance → Themes → Export theme** to preserve the current visual configuration and restore it later by applying that exported theme.
 
 Your themes are installed in `~/.local/share/argvus/themes/<id>/`. Extracting an archive there installs the theme too.
 
@@ -34,7 +38,7 @@ The id is made from the name: lowercase letters, digits and hyphens. When the id
 2. Open **Control Center → Appearance → Themes → Import theme**, or press `i` on a Themes page.
 3. Select the archive and press `Enter`.
 
-ARGVUS checks the archive before installing it. It must hold a single directory with a `theme.toml`, with relative paths only (no `..`, no links), at most 128 entries and a size limit per file; the id must match the directory, the wallpaper must be in the archive and every component must render in both modes. If any check fails, nothing is installed.
+ARGVUS checks the archive before installing it. It must hold a single directory with a `theme.toml`, with relative paths only (no `..`, no links), at most 128 entries and a size limit per file; the id must match the directory, the wallpaper must be in the archive and every component must render in both modes. An included appearance profile must use supported sections and valid JSON. If any check fails, nothing is installed.
 
 The theme is added to **Custom Themes**. Importing does not apply it: you choose when.
 

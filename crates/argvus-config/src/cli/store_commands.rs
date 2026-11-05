@@ -183,14 +183,17 @@ pub(super) fn apply_theme(
   let gtk_mode = option("--gtk-mode")
     .map(String::as_str)
     .or(Some(default_mode));
-  let flag = |name: &str| arguments.iter().any(|argument| argument == name);
-  store.apply_theme(
+  let profile = option("--profile")
+    .map(fs::read_to_string)
+    .transpose()?
+    .map(|text| serde_json::from_str::<ConfigDocument>(&text))
+    .transpose()?;
+  store.apply_theme_with_profile(
     theme,
     accent,
     gtk_mode,
     option("--wallpaper").map(String::as_str),
-    flag("--reset-wallpaper"),
-    flag("--reset-accent"),
+    profile.as_ref(),
   )?;
   Ok(())
 }

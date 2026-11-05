@@ -209,7 +209,8 @@ pelo modelo de paths Rust.
 
 `patch` aplica um objeto JSON cujas chaves são JSON pointers em uma única
 operação protegida por lock. `apply-theme` executa a transação atômica do tema
-e preserva os valores `accent_custom` e `wallpaper_custom`. Os defaults de
+e substitui as seções de aparência gerenciadas pelo perfil visual opcional do
+tema ou pelos padrões empacotados. Os defaults de
 tema ficam no manifesto de cada tema (`themes/<tema>/theme.toml`): o accent padrão
 (`palette.accent`), o esquema de cores do GTK e o wallpaper. CSS, Lua, Rasi e Qt são
 renderizados a partir dele no build do tema.
@@ -246,7 +247,7 @@ argvus config import --scope appearance appearance.json
 
 Use `--scope desktop` para o modelo completo gerenciado do desktop. Campos ausentes usam os defaults do ARGVUS; arquivos gerados não devem ser editados diretamente.
 
-Exportar e importar tema no Control Center trocam temas, não configuração: o arquivo contém um diretório de tema schema 2 (`<id>/theme.toml`, `overrides/`, o wallpaper) que é instalado em `$XDG_DATA_HOME/argvus/themes/`. Use o escopo `appearance` acima para levar as configurações de aparência, e o escopo `desktop` para um backup completo da configuração.
+Exportar e importar tema no Control Center trocam o tema e seu perfil visual: o arquivo contém um diretório schema 2 (`<id>/theme.toml`, `appearance.json` e `effects.conf` opcionais, `overrides/`, wallpaper) instalado em `$XDG_DATA_HOME/argvus/themes/`. O perfil guarda aparência, geometria, efeitos visuais, fontes e apresentação dos painéis. Áudio, teclado, rede e outras preferências não visuais ficam fora dos temas. Use o escopo `appearance` acima para levar toda a configuração de aparência, e `desktop` para um backup completo.
 
 O schema atual agrupa preferências em `appearance`, `layout`, `effects`, `fonts`, `control_panel`, `default_apps`, `keyboard_shortcuts`, `hyprland`, `displays`, `power`, `session`, `calendar` e `removable_devices`. `default_apps` é a única fonte persistente das preferências de aplicativos, e `keyboard_shortcuts` usa chaves estáveis, em inglês e independentes do locale, com strings ou `null` para atalhos desativados.
 

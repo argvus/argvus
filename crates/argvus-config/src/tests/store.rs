@@ -245,7 +245,7 @@ fn ensure_does_not_replace_malformed_configuration() {
 }
 
 #[test]
-fn apply_theme_is_one_transaction_and_preserves_explicit_overrides() {
+fn apply_theme_replaces_independent_appearance_overrides() {
   let directory = env::temp_dir().join(format!("argvus-config-test-{}-theme", std::process::id()));
   let _ = fs::remove_dir_all(&directory);
   let config_directory = directory.join("argvus");
@@ -262,6 +262,16 @@ fn apply_theme_is_one_transaction_and_preserves_explicit_overrides() {
     Value::String("/tmp/custom.jxl".into()),
   );
   patch.insert("/appearance/wallpaper_custom".into(), Value::Bool(true));
+  patch.insert(
+    "/appearance/icon_theme".into(),
+    Value::String("User Icons".into()),
+  );
+  patch.insert("/effects/animations".into(), Value::Bool(false));
+  patch.insert("/fonts/legacy".into(), Value::String("User Font".into()));
+  patch.insert(
+    "/taskbar/workspaces/presentation".into(),
+    Value::String("app-icons".into()),
+  );
   store.patch(&patch).unwrap();
   store
     .apply_theme(
@@ -302,19 +312,51 @@ fn apply_theme_is_one_transaction_and_preserves_explicit_overrides() {
   );
   assert_eq!(
     document.get("/appearance/accent").and_then(Value::as_str),
-    Some("#ABCDEF")
+    Some("#EEEEEE")
+  );
+  assert_eq!(
+    document
+      .get("/appearance/accent_custom")
+      .and_then(Value::as_bool),
+    Some(false)
   );
   assert_eq!(
     document
       .get("/appearance/wallpaper")
       .and_then(Value::as_str),
-    Some("/tmp/custom.jxl")
+    Some("/usr/share/backgrounds/universe.jxl")
+  );
+  assert_eq!(
+    document
+      .get("/appearance/wallpaper_custom")
+      .and_then(Value::as_bool),
+    Some(false)
+  );
+  assert_eq!(
+    document
+      .get("/appearance/icon_theme")
+      .and_then(Value::as_str),
+    Some("")
+  );
+  assert_eq!(
+    document.get("/effects/animations").and_then(Value::as_bool),
+    Some(true)
+  );
+  assert_ne!(
+    document.get("/fonts/legacy").and_then(Value::as_str),
+    Some("User Font")
+  );
+  assert_eq!(
+    document
+      .get("/taskbar/workspaces/presentation")
+      .and_then(Value::as_str),
+    Some("labels")
   );
   fs::remove_dir_all(directory).unwrap();
 }
 
 #[test]
-fn apply_theme_resets_custom_accent_only_when_requested() {
+fn apply_theme_resets_custom_accent_even_without_legacy_reset_flags() {
   let directory = env::temp_dir().join(format!(
     "argvus-config-test-{}-accent-reset",
     std::process::id()
@@ -331,7 +373,7 @@ fn apply_theme_resets_custom_accent_only_when_requested() {
   patch.insert("/appearance/accent_custom".into(), Value::Bool(true));
   store.patch(&patch).unwrap();
 
-  // A projection that does not request the reset keeps the override.
+  // Theme selection always gives ownership back to the theme.
   store
     .apply_theme(
       "universe",
@@ -345,13 +387,13 @@ fn apply_theme_resets_custom_accent_only_when_requested() {
   let document = store.load().unwrap();
   assert_eq!(
     document.get("/appearance/accent").and_then(Value::as_str),
-    Some("#ABCDEF")
+    Some("#EEEEEE")
   );
   assert_eq!(
     document
       .get("/appearance/accent_custom")
       .and_then(Value::as_bool),
-    Some(true)
+    Some(false)
   );
 
   // Selecting an official theme clears the override so the theme wins.
@@ -368,6 +410,109 @@ fn apply_theme_resets_custom_accent_only_when_requested() {
       .get("/appearance/accent_custom")
       .and_then(Value::as_bool),
     Some(false)
+  );
+  fs::remove_dir_all(directory).unwrap();
+}
+
+#[test]
+fn apply_theme_restores_exported_profile_but_keeps_the_active_mode() {
+  let directory = env::temp_dir().join(format!(
+    "argvus-config-test-{}-theme-profile",
+    std::process::id()
+  ));
+  let _ = fs::remove_dir_all(&directory);
+  let config_directory = directory.join("argvus");
+  let store = ConfigStore {
+    path: config_directory.join("config.json"),
+    lock_path: config_directory.join(LOCK_FILE),
+  };
+  store.ensure().unwrap();
+  store.apply_layout_variant("float").unwrap();
+
+  let mut sections = BTreeMap::new();
+  sections.insert(
+    "layout".into(),
+    serde_json::json!({
+      "variant": "sticky",
+      "window": { "gaps_in": 17, "border_size": 3, "rounded": true, "rounding": 8 },
+      "taskbar": { "margin_top": 12, "margin_bottom": 12 }
+    }),
+  );
+  sections.insert("effects".into(), serde_json::json!({ "animations": false }));
+  sections.insert(
+    "appearance".into(),
+    serde_json::json!({
+      "theme": "wrong-theme",
+      "accent": "#BADBAD",
+      "wallpaper_custom": true,
+      "icon_theme": "Custom Icons"
+    }),
+  );
+  sections.insert(
+    "fonts".into(),
+    serde_json::json!({ "legacy": "Exported Font" }),
+  );
+  sections.insert(
+    "taskbar".into(),
+    serde_json::json!({ "workspaces": { "presentation": "app-icons" } }),
+  );
+  let profile = ConfigDocument {
+    schema_version: CURRENT_SCHEMA_VERSION,
+    sections,
+  };
+  store
+    .apply_theme_with_profile(
+      "my-theme",
+      Some("#AABBCC"),
+      Some("dark"),
+      Some("/theme/wallpaper.png"),
+      Some(&profile),
+    )
+    .unwrap();
+  let document = store.load().unwrap();
+  assert_eq!(
+    document.get("/layout/variant").and_then(Value::as_str),
+    Some("float")
+  );
+  assert_eq!(
+    document.get("/appearance/theme").and_then(Value::as_str),
+    Some("my-theme")
+  );
+  assert_eq!(
+    document
+      .get("/layout/window/gaps_in")
+      .and_then(Value::as_i64),
+    Some(17)
+  );
+  assert_eq!(
+    document
+      .get("/layout/window/border_size")
+      .and_then(Value::as_i64),
+    Some(3)
+  );
+  assert_eq!(
+    document.get("/effects/animations").and_then(Value::as_bool),
+    Some(false)
+  );
+  assert_eq!(
+    document
+      .get("/appearance/icon_theme")
+      .and_then(Value::as_str),
+    Some("Custom Icons")
+  );
+  assert_eq!(
+    document.get("/fonts/legacy").and_then(Value::as_str),
+    Some("Exported Font")
+  );
+  assert_eq!(
+    document
+      .get("/taskbar/workspaces/presentation")
+      .and_then(Value::as_str),
+    Some("app-icons")
+  );
+  assert_eq!(
+    document.get("/appearance/accent").and_then(Value::as_str),
+    Some("#AABBCC")
   );
   fs::remove_dir_all(directory).unwrap();
 }

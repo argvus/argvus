@@ -1,4 +1,5 @@
 use super::*;
+use std::os::unix::fs::PermissionsExt;
 
 fn write(path: &Path, bytes: &[u8]) {
   fs::create_dir_all(path.parent().unwrap()).unwrap();
@@ -133,12 +134,35 @@ fn session(root: &Path) {
       .to_string()
       .as_bytes(),
   );
+  let state_home = root.join("state/argvus");
+  write(
+    &state_home.join("effects/sunset-float.conf"),
+    b"taskbar.blur=37\n",
+  );
+  let bin = root.join("bin");
+  let argvus = bin.join("argvus");
+  write(
+    &argvus,
+    br##"#!/bin/sh
+cat <<'PROFILE'
+{"schema_version":1,"appearance":{"theme":"sunset","accent":"#112233","accent_custom":true,"gtk_mode":"dark","icon_theme":"Custom Icons","wallpaper":"/tmp/custom.png","wallpaper_custom":true},"layout":{"variant":"float","window":{"gaps_in":17,"border_size":3},"taskbar":{"margin_top":12}},"effects":{"animations":false,"widget_telemetry_enabled":false},"fonts":{"targets":{"taskbar":{"family":"Inter","size":13}}},"control_panel":{"cards":{"appearance":false}},"taskbar":{"workspaces":{"presentation":"app-icons"}}}
+PROFILE
+"##,
+  );
+  let mut permissions = fs::metadata(&argvus).unwrap().permissions();
+  permissions.set_mode(0o755);
+  fs::set_permissions(&argvus, permissions).unwrap();
   // SAFETY: the crate-wide lock serializes every test that changes the environment.
   unsafe {
     std::env::set_var("HOME", root.join("home"));
     std::env::set_var("XDG_DATA_HOME", root.join("share"));
     std::env::set_var("ARGVUS_CONFIG_HOME", root.join("config"));
     std::env::set_var("ARGVUS_SYSTEM_CONFIG", &system);
+    std::env::set_var("XDG_STATE_HOME", root.join("state"));
+    let path = std::env::var_os("PATH").unwrap_or_default();
+    let mut paths = vec![bin];
+    paths.extend(std::env::split_paths(&path));
+    std::env::set_var("PATH", std::env::join_paths(paths).unwrap());
   }
 }
 
@@ -164,6 +188,47 @@ fn export_import_convert_and_delete_user_themes() {
   assert_eq!(manifest.token("accent").unwrap().hex(), "#112233");
   assert_eq!(manifest.wallpaper, Some(installed.join("wallpaper.png")));
   assert!(installed.join("overrides/terminal.conf").is_file());
+  let appearance: Value =
+    serde_json::from_slice(&fs::read(installed.join(APPEARANCE_PROFILE_FILE)).unwrap()).unwrap();
+  assert_eq!(
+    appearance.pointer("/layout/window/gaps_in"),
+    Some(&Value::from(17))
+  );
+  assert_eq!(
+    appearance.pointer("/layout/window/border_size"),
+    Some(&Value::from(3))
+  );
+  assert_eq!(
+    appearance.pointer("/appearance/icon_theme"),
+    Some(&Value::from("Custom Icons"))
+  );
+  assert_eq!(
+    appearance.pointer("/effects/animations"),
+    Some(&Value::Bool(false))
+  );
+  assert_eq!(
+    appearance.pointer("/fonts/targets/taskbar/family"),
+    Some(&Value::from("Inter"))
+  );
+  assert_eq!(
+    appearance.pointer("/control_panel/cards/appearance"),
+    Some(&Value::Bool(false))
+  );
+  assert_eq!(
+    appearance.pointer("/taskbar/workspaces/presentation"),
+    Some(&Value::from("app-icons"))
+  );
+  assert!(appearance.pointer("/layout/variant").is_none());
+  assert!(appearance.pointer("/appearance/accent").is_none());
+  assert!(
+    appearance
+      .pointer("/effects/widget_telemetry_enabled")
+      .is_none()
+  );
+  assert_eq!(
+    fs::read(installed.join(THEME_EFFECTS_PROFILE_FILE)).unwrap(),
+    b"taskbar.blur=37\n"
+  );
   assert!(inspect_archive(&archive).unwrap().1, "now a duplicate");
   assert_eq!(custom_themes(), vec![theme.clone()]);
   assert_eq!(active_custom_theme(), None);

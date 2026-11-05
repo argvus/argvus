@@ -31,6 +31,7 @@ use std::path::{Path, PathBuf};
 
 pub const SCHEMA_VERSION: u32 = 2;
 pub const MANIFEST_FILE: &str = "theme.toml";
+pub const APPEARANCE_PROFILE_FILE: &str = "appearance.json";
 
 /// The palette entries every theme must define.
 pub const REQUIRED_TOKENS: [&str; 3] = ["bg", "fg", "accent"];

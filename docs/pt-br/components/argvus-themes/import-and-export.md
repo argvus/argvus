@@ -11,11 +11,15 @@ O arquivo, `argvus-theme-<id>.tar.gz`, guarda um diretório de tema, organizado 
 
 ```text
 <id>/theme.toml        o manifesto (schema 2): nome, categoria, paleta, wallpaper
+<id>/appearance.json  suas configurações visuais, incluindo layout, efeitos, fontes e apresentação do painel
+<id>/effects.conf     valores de efeitos por superfície do tema ativo, quando houver
 <id>/overrides/...     os overrides do tema de origem, se houver
 <id>/wallpaper.<ext>   o wallpaper que estava na tela ao exportar
 ```
 
-O manifesto é o do tema ativo, com o seu nome, um id novo, a sua cor de destaque como destaque da paleta e o wallpaper ao lado. O tema mantém os dois modos, Sticky e Float, como qualquer tema; o modo continua sendo uma configuração separada. Fontes, efeitos, espaçamentos e as demais configurações do desktop não fazem parte de um tema.
+O manifesto parte do tema ativo, com o seu nome, um id novo, a sua cor de destaque na paleta e o wallpaper ao lado. O perfil visual opcional preserva as configurações visuais atuais. A geometria das janelas e da taskbar é aplicada nos dois modos, Sticky e Float; o modo escolhido continua independente. Ao aplicar um tema ou trocar de modo, o ARGVUS reaplica o perfil daquele tema. Temas sem perfil usam os padrões do ARGVUS. Configurações não visuais, como áudio, teclado e rede, não fazem parte de um tema.
+
+As alterações feitas depois de aplicar um tema são temporárias até a próxima troca de tema ou modo. Exporte o tema em **Control Center → Aparência → Temas → Exportar tema** para preservar a configuração visual atual e restaurá-la depois aplicando o tema exportado.
 
 Os seus temas ficam instalados em `~/.local/share/argvus/themes/<id>/`. Extrair um arquivo ali também instala o tema.
 
@@ -34,7 +38,7 @@ O id vem do nome: letras minúsculas, dígitos e hífens. Quando o id já é usa
 2. Abra **Control Center → Aparência → Temas → Importar tema**, ou pressione `i` numa página de Temas.
 3. Selecione o arquivo e pressione `Enter`.
 
-O ARGVUS confere o arquivo antes de instalá-lo. Ele precisa conter um único diretório com um `theme.toml`, só com caminhos relativos (sem `..` e sem links), no máximo 128 entradas e um limite de tamanho por arquivo; o id precisa ser igual ao nome do diretório, o wallpaper precisa estar no arquivo e todos os componentes precisam ser gerados nos dois modos. Se alguma verificação falhar, nada é instalado.
+O ARGVUS confere o arquivo antes de instalá-lo. Ele precisa conter um único diretório com um `theme.toml`, só com caminhos relativos (sem `..` e sem links), no máximo 128 entradas e um limite de tamanho por arquivo; o id precisa ser igual ao nome do diretório, o wallpaper precisa estar no arquivo e todos os componentes precisam ser gerados nos dois modos. Um perfil visual incluído precisa usar seções aceitas e JSON válido. Se alguma verificação falhar, nada é instalado.
 
 O tema entra em **Temas personalizados**. Importar não aplica o tema: você escolhe quando.
 

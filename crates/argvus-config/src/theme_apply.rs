@@ -2,9 +2,9 @@
 //!
 //! The switch holds an exclusive lock while `theme_body` commits the theme,
 //! renders its build and writes the consumer files, and while the projection
-//! writes the generated configuration. The running desktop then takes the new
-//! theme in place (`theme_runtime`): no overlay covers the screen and no service
-//! stops, so the switch is seen as the colours changing.
+//! writes the generated configuration. The session controller then applies the
+//! projection's reload plan so every changed appearance setting reaches its
+//! runtime consumer without restarting the whole session.
 
 use crate::session_paths::SessionPaths;
 use crate::session_splash;
@@ -88,22 +88,47 @@ pub fn run(paths: &SessionPaths, theme_argument: &str, layout_variant: &str) -> 
   let before = theme_runtime::Before::capture(paths);
   let mut status = theme_body::run(paths, &theme, runtime, live);
   if live && status == 0 {
-    // The projection sees this switch's marker and leaves the theme to it.
+    // Project first so sessionctl can execute the changed-section reload plan.
     match run_bounded(
       Command::new("argvus")
         .args(["config", "project"])
         .stdout(Stdio::null())
-        .stderr(Stdio::null()),
+        .stderr(Stdio::inherit()),
       PROJECTION_WAIT_LIMIT,
     ) {
-      Ok(result) if result.success() => {}
+      Ok(result) if result.success() => {
+        if env::var_os("HYPRLAND_INSTANCE_SIGNATURE").is_some() {
+          let runtime_status = run_bounded(
+            Command::new("argvus")
+              .args(["sessionctl", "apply-config-runtime"])
+              .env("ARGVUS_THEME_APPLYING", "1")
+              .stdout(Stdio::null())
+              .stderr(Stdio::inherit()),
+            PROJECTION_WAIT_LIMIT,
+          );
+          match runtime_status {
+            Ok(result) if result.success() => {}
+            Ok(result) => {
+              eprintln!("argvus-config: applying projected appearance failed ({result})");
+              status = exit_code(result);
+            }
+            Err(error) => {
+              eprintln!("argvus-config: applying projected appearance: {error}");
+              status = 1;
+            }
+          }
+        } else {
+          // There is no live compositor to reload; still refresh theme-aware
+          // consumers for callers that run the transaction outside a session.
+          theme_runtime::apply(paths, &before, &theme);
+        }
+      }
       Ok(result) => status = exit_code(result),
       Err(error) => {
         eprintln!("argvus-config: projection: {error}");
         status = 1;
       }
     }
-    theme_runtime::apply(paths, &before, &theme);
   }
 
   status

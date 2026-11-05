@@ -77,6 +77,14 @@ const LOCK_FILE: &str = "data/internal/config.lock";
 const BACKUP_FILE: &str = "data/backups/config.json.bak";
 /// The previous backup, kept when a new one replaces `BACKUP_FILE`.
 const OLDER_BACKUP_NAME: &str = "config.json.bak.1";
+const THEME_PROFILE_SECTIONS: [&str; 6] = [
+  "appearance",
+  "layout",
+  "effects",
+  "fonts",
+  "control_panel",
+  "taskbar",
+];
 
 /// Replaces the backup with `contents`, keeping the previous backup as the older
 /// generation. The write is atomic (temporary file, sync, rename), and an unchanged
@@ -676,48 +684,77 @@ impl ConfigStore {
   /// Atomically apply the theme-owned appearance fields while preserving
   /// explicit user overrides recorded in the canonical document.
   ///
-  /// `reset_custom_accent` clears an explicit accent override so the theme
-  /// default wins. Selecting an official theme sets it, so a highlight color
-  /// chosen earlier never survives a theme change. Projections, session
-  /// startup and custom profile applies leave it false and keep the override.
+  /// Compatibility wrapper for callers that do not provide an exported profile.
   pub fn apply_theme(
     &self,
     theme: &str,
     accent: Option<&str>,
     gtk_mode: Option<&str>,
     wallpaper: Option<&str>,
-    reset_custom_wallpaper: bool,
-    reset_custom_accent: bool,
+    _reset_custom_wallpaper: bool,
+    _reset_custom_accent: bool,
   ) -> ConfigResult<ConfigDocument> {
+    self.apply_theme_with_profile(theme, accent, gtk_mode, wallpaper, None)
+  }
+
+  /// Apply a theme and replace user appearance settings with its exported profile,
+  /// or the packaged defaults when it has no profile.
+  pub fn apply_theme_with_profile(
+    &self,
+    theme: &str,
+    accent: Option<&str>,
+    gtk_mode: Option<&str>,
+    wallpaper: Option<&str>,
+    profile: Option<&ConfigDocument>,
+  ) -> ConfigResult<ConfigDocument> {
+    if let Some(profile) = profile {
+      validate_theme_profile(profile)?;
+    }
     self.modify(|document| {
-      document.set(
-        json_pointers::APPEARANCE_THEME,
-        Value::String(theme.to_owned()),
-      )?;
-      // Sticky/Float is an independent setting (see `apply_layout_variant`);
-      // applying a theme must not change the mode the user already chose, so
-      // only the geometry for the *current* variant is reasserted here.
       let current_variant = document
         .get(json_pointers::LAYOUT_VARIANT)
         .and_then(Value::as_str)
         .unwrap_or("sticky")
         .to_owned();
-      reset_layout_geometry(document, &current_variant)?;
-      if reset_custom_accent {
-        document.set(json_pointers::APPEARANCE_ACCENT_CUSTOM, Value::Bool(false))?;
+
+      let mut defaults = ConfigDocument::default();
+      apply_packaged_defaults(&mut defaults)?;
+      apply_defaults(&mut defaults)?;
+      reset_layout_geometry(&mut defaults, &current_variant)?;
+      for section in THEME_PROFILE_SECTIONS {
+        let value = defaults
+          .sections
+          .get(section)
+          .cloned()
+          .unwrap_or_else(|| Value::Object(Map::new()));
+        document.sections.insert(section.to_owned(), value);
       }
-      let accent_custom = document
-        .get(json_pointers::APPEARANCE_ACCENT_CUSTOM)
-        .and_then(Value::as_bool)
-        .unwrap_or(false);
-      if !accent_custom {
-        if let Some(accent) = accent {
-          document.set(
-            json_pointers::APPEARANCE_ACCENT,
-            Value::String(accent.to_owned()),
-          )?;
+
+      if let Some(profile) = profile {
+        for section in THEME_PROFILE_SECTIONS {
+          if let Some(value) = profile.sections.get(section) {
+            let mut value = value.clone();
+            sanitize_theme_profile_section(section, &mut value);
+            document.sections.insert(section.to_owned(), value);
+          }
         }
-        document.set(json_pointers::APPEARANCE_ACCENT_CUSTOM, Value::Bool(false))?;
+      }
+
+      document.set(
+        json_pointers::APPEARANCE_THEME,
+        Value::String(theme.to_owned()),
+      )?;
+      document.set(
+        json_pointers::LAYOUT_VARIANT,
+        Value::String(current_variant.clone()),
+      )?;
+      document.set(json_pointers::APPEARANCE_ACCENT_CUSTOM, Value::Bool(false))?;
+      document.set("/appearance/wallpaper_custom", Value::Bool(false))?;
+      if let Some(accent) = accent {
+        document.set(
+          json_pointers::APPEARANCE_ACCENT,
+          Value::String(accent.to_owned()),
+        )?;
       }
       if let Some(mode) = gtk_mode {
         document.set(
@@ -725,21 +762,10 @@ impl ConfigStore {
           Value::String(mode.to_owned()),
         )?;
       }
-      let wallpaper_custom = document
-        .get("/appearance/wallpaper_custom")
-        .and_then(Value::as_bool)
-        .unwrap_or(false);
-      if reset_custom_wallpaper {
-        document.set("/appearance/wallpaper_custom", Value::Bool(false))?;
-      }
-      if (reset_custom_wallpaper || !wallpaper_custom)
-        && let Some(wallpaper) = wallpaper
-      {
-        document.set(
-          json_pointers::APPEARANCE_WALLPAPER,
-          Value::String(wallpaper.to_owned()),
-        )?;
-      }
+      document.set(
+        json_pointers::APPEARANCE_WALLPAPER,
+        Value::String(wallpaper.unwrap_or_default().to_owned()),
+      )?;
       Ok(())
     })
   }
@@ -855,6 +881,50 @@ fn reset_layout_geometry(document: &mut ConfigDocument, variant: &str) -> Config
     document.set(pointer, value)?;
   }
   Ok(())
+}
+
+fn validate_theme_profile(profile: &ConfigDocument) -> ConfigResult<()> {
+  if profile.schema_version != CURRENT_SCHEMA_VERSION {
+    return Err(ConfigError::Invalid(format!(
+      "unsupported theme profile schema_version {}",
+      profile.schema_version
+    )));
+  }
+  for (section, value) in &profile.sections {
+    if !THEME_PROFILE_SECTIONS.contains(&section.as_str()) || !value.is_object() {
+      return Err(ConfigError::Invalid(format!(
+        "invalid theme profile section: {section}"
+      )));
+    }
+  }
+  Ok(())
+}
+
+fn sanitize_theme_profile_section(section: &str, value: &mut Value) {
+  let Some(object) = value.as_object_mut() else {
+    return;
+  };
+  match section {
+    "appearance" => {
+      for key in [
+        "theme",
+        "accent",
+        "accent_custom",
+        "wallpaper",
+        "wallpaper_custom",
+        "gtk_mode",
+      ] {
+        object.remove(key);
+      }
+    }
+    "layout" => {
+      object.remove("variant");
+    }
+    "effects" => {
+      object.remove("widget_telemetry_enabled");
+    }
+    _ => {}
+  }
 }
 
 fn theme_layout_variant(theme: &str) -> &'static str {

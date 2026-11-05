@@ -13,6 +13,7 @@
 use crate::model::{CustomTheme, canonical_theme_id};
 use argvus_theme_core::color::Color;
 use argvus_theme_core::discovery::{self, Source};
+use argvus_theme_core::manifest::APPEARANCE_PROFILE_FILE;
 use argvus_theme_core::package;
 use argvus_theme_core::paths::ThemePaths;
 use flate2::{Compression, read::GzDecoder, write::GzEncoder};
@@ -20,6 +21,7 @@ use serde_json::Value;
 use std::fs::{self, File};
 use std::io::{self, Read};
 use std::path::{Component, Path, PathBuf};
+use std::process::Command;
 use std::time::{SystemTime, UNIX_EPOCH};
 use tar::{Archive, Builder, EntryType, Header};
 use tempfile::{TempDir, tempdir};
@@ -30,6 +32,7 @@ const MAX_WALLPAPER: u64 = 512 * 1024 * 1024;
 const MAX_TOTAL: u64 = 520 * 1024 * 1024;
 const MAX_NAME: usize = 120;
 const WALLPAPER_EXTENSIONS: [&str; 5] = ["jxl", "png", "jpg", "jpeg", "webp"];
+const THEME_EFFECTS_PROFILE_FILE: &str = "effects.conf";
 
 /// The theme roots of the session.
 fn theme_paths() -> Result<ThemePaths, String> {
@@ -131,10 +134,23 @@ pub fn export_named(name: &str) -> Result<PathBuf, String> {
     .ok()
     .and_then(|text| Color::parse(text.trim()));
   let wallpaper = current_wallpaper().or(source.wallpaper.clone());
+  let profile = current_appearance_profile()?;
+  let effects_profile = current_theme_effects_profile(&active);
 
   let staging = tempdir().map_err(|error| error.to_string())?;
   let dir = staging.path().join(&id);
-  write_theme_dir(&dir, &source.dir, &id, &name, accent, wallpaper.as_deref())?;
+  write_theme_dir(
+    &dir,
+    &source.dir,
+    &id,
+    &name,
+    accent,
+    wallpaper.as_deref(),
+    ThemeSidecars {
+      appearance: Some(&profile),
+      effects: effects_profile.as_deref(),
+    },
+  )?;
   package::check_theme_dir(&paths, &dir)?;
   write_archive(&dir, &id, &archive)?;
   Ok(archive)
@@ -149,6 +165,7 @@ fn write_theme_dir(
   name: &str,
   accent: Option<Color>,
   wallpaper: Option<&Path>,
+  sidecars: ThemeSidecars<'_>,
 ) -> Result<(), String> {
   fs::create_dir_all(dir).map_err(|error| error.to_string())?;
   let wallpaper_name = wallpaper.and_then(|path| {
@@ -159,6 +176,13 @@ fn write_theme_dir(
   });
   let manifest = package::derive_manifest(source, id, name, accent, wallpaper_name.as_deref())?;
   fs::write(dir.join("theme.toml"), manifest).map_err(|error| error.to_string())?;
+  if let Some(profile) = sidecars.appearance {
+    fs::write(dir.join(APPEARANCE_PROFILE_FILE), profile).map_err(|error| error.to_string())?;
+  }
+  if let Some(effects_profile) = sidecars.effects {
+    fs::write(dir.join(THEME_EFFECTS_PROFILE_FILE), effects_profile)
+      .map_err(|error| error.to_string())?;
+  }
   let overrides = source.join("overrides");
   if overrides.is_dir() {
     copy_files(&overrides, &dir.join("overrides")).map_err(|error| error.to_string())?;
@@ -168,6 +192,60 @@ fn write_theme_dir(
       .map_err(|error| format!("{}: {error}", wallpaper.display()))?;
   }
   Ok(())
+}
+
+struct ThemeSidecars<'a> {
+  appearance: Option<&'a [u8]>,
+  effects: Option<&'a [u8]>,
+}
+
+/// Exports the current appearance scope, omitting values supplied by the theme
+/// manifest or by the selected Sticky/Float mode.
+fn current_appearance_profile() -> Result<Vec<u8>, String> {
+  let output = Command::new("argvus")
+    .args(["config", "export", "--scope", "appearance"])
+    .output()
+    .map_err(|error| format!("cannot export the appearance configuration: {error}"))?;
+  if !output.status.success() {
+    return Err("cannot export the appearance configuration".into());
+  }
+  let mut profile: Value =
+    serde_json::from_slice(&output.stdout).map_err(|error| error.to_string())?;
+  let sections = profile
+    .as_object_mut()
+    .ok_or("the appearance export is not an object")?;
+  if let Some(appearance) = sections
+    .get_mut("appearance")
+    .and_then(Value::as_object_mut)
+  {
+    for key in [
+      "theme",
+      "accent",
+      "accent_custom",
+      "wallpaper",
+      "wallpaper_custom",
+      "gtk_mode",
+    ] {
+      appearance.remove(key);
+    }
+  }
+  if let Some(layout) = sections.get_mut("layout").and_then(Value::as_object_mut) {
+    layout.remove("variant");
+  }
+  if let Some(effects) = sections.get_mut("effects").and_then(Value::as_object_mut) {
+    effects.remove("widget_telemetry_enabled");
+  }
+  serde_json::to_vec_pretty(&profile).map_err(|error| error.to_string())
+}
+
+fn current_theme_effects_profile(active_theme: &str) -> Option<Vec<u8>> {
+  let state_home = argvus_control_center_core::paths::legacy_argvus_state_home();
+  fs::read(
+    state_home
+      .join("effects")
+      .join(format!("{active_theme}.conf")),
+  )
+  .ok()
 }
 
 /// The wallpaper on screen: a custom choice, else the one hyprpaper shows.
@@ -478,6 +556,10 @@ fn convert_profile(paths: &ThemePaths, archive: &Path) -> Result<CustomTheme, St
     &name,
     profile.accent,
     wallpaper.as_deref(),
+    ThemeSidecars {
+      appearance: None,
+      effects: None,
+    },
   )?;
   package::install_user_theme(paths, &dir, false)?;
   Ok(CustomTheme { id, name })

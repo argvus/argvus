@@ -9,9 +9,10 @@
 use crate::build::{self, RenderRequest};
 use crate::color::Color;
 use crate::layout::{Layout, Variant};
-use crate::manifest::{MANIFEST_FILE, ThemeManifest, validate_id};
+use crate::manifest::{APPEARANCE_PROFILE_FILE, MANIFEST_FILE, ThemeManifest, validate_id};
 use crate::paths::ThemePaths;
 use crate::registry;
+use serde_json::Value;
 use std::fs;
 use std::io;
 use std::path::{Path, PathBuf};
@@ -74,6 +75,7 @@ pub fn derive_manifest(
 /// both layouts. Returns the manifest, or every problem found.
 pub fn check_theme_dir(paths: &ThemePaths, dir: &Path) -> Result<ThemeManifest, String> {
   let manifest = ThemeManifest::load(dir).map_err(|error| error.to_string())?;
+  validate_appearance_profile(&dir.join(APPEARANCE_PROFILE_FILE))?;
   let directory_name = dir.file_name().map(|name| name.to_string_lossy());
   if directory_name.as_deref() != Some(manifest.id.as_str()) {
     return Err(format!(
@@ -110,6 +112,79 @@ pub fn check_theme_dir(paths: &ThemePaths, dir: &Path) -> Result<ThemeManifest, 
   } else {
     Err(problems.join("; "))
   }
+}
+
+fn validate_appearance_profile(path: &Path) -> Result<(), String> {
+  let has_profile = match fs::read_to_string(path) {
+    Ok(text) => {
+      let profile: Value =
+        serde_json::from_str(&text).map_err(|error| format!("{}: {error}", path.display()))?;
+      let Some(object) = profile.as_object() else {
+        return Err(format!("{} must contain an object", path.display()));
+      };
+      if object.get("schema_version").and_then(Value::as_u64) != Some(1) {
+        return Err(format!(
+          "{} has an unsupported profile format",
+          path.display()
+        ));
+      }
+      const ALLOWED_SECTIONS: [&str; 6] = [
+        "appearance",
+        "layout",
+        "effects",
+        "fonts",
+        "control_panel",
+        "taskbar",
+      ];
+      if object.iter().any(|(name, value)| {
+        name != "schema_version"
+          && (!ALLOWED_SECTIONS.contains(&name.as_str()) || !value.is_object())
+      }) {
+        return Err(format!("{} contains an invalid section", path.display()));
+      }
+      true
+    }
+    Err(error) if error.kind() == io::ErrorKind::NotFound => false,
+    Err(error) => return Err(format!("{}: {error}", path.display())),
+  };
+  let effects_profile = path.with_file_name("effects.conf");
+  let metadata = match fs::metadata(&effects_profile) {
+    Ok(metadata) => Some(metadata),
+    Err(error) if error.kind() == io::ErrorKind::NotFound => None,
+    Err(error) => return Err(format!("{}: {error}", effects_profile.display())),
+  };
+  if let Some(metadata) = metadata {
+    if !has_profile {
+      return Err(format!(
+        "{} requires an appearance profile",
+        effects_profile.display()
+      ));
+    }
+    if !metadata.is_file() || metadata.len() > 8 * 1024 * 1024 {
+      return Err(format!(
+        "{} is not a valid effects profile",
+        effects_profile.display()
+      ));
+    }
+    let contents = fs::read_to_string(&effects_profile)
+      .map_err(|error| format!("{}: {error}", effects_profile.display()))?;
+    if contents.lines().any(|line| {
+      let Some((key, value)) = line.split_once('=') else {
+        return true;
+      };
+      key.is_empty()
+        || !key
+          .bytes()
+          .all(|byte| byte.is_ascii_alphanumeric() || matches!(byte, b'_' | b'-' | b'.'))
+        || value.bytes().any(|byte| byte.is_ascii_control())
+    }) {
+      return Err(format!(
+        "{} contains an invalid setting",
+        effects_profile.display()
+      ));
+    }
+  }
+  Ok(())
 }
 
 /// Whether an official theme (under the system root) has the id `id`: a user
@@ -305,6 +380,39 @@ mod tests {
         None
       )
       .is_err()
+    );
+  }
+
+  #[test]
+  fn appearance_profiles_accept_visual_sections_and_reject_other_settings() {
+    let (root, paths) = tree();
+    let dir = derived(root.path(), &paths, "my-sunset");
+    write(
+      &dir.join(APPEARANCE_PROFILE_FILE),
+      r#"{"schema_version":1,"layout":{"window":{"gaps_in":17}},"fonts":{"targets":{}}}"#,
+    );
+    write(&dir.join("effects.conf"), "taskbar.blur=37\n");
+    assert!(check_theme_dir(&paths, &dir).is_ok());
+
+    write(
+      &dir.join(APPEARANCE_PROFILE_FILE),
+      r#"{"schema_version":1,"audio":{"output_volume":25}}"#,
+    );
+    assert!(
+      check_theme_dir(&paths, &dir)
+        .unwrap_err()
+        .contains("invalid section")
+    );
+
+    write(
+      &dir.join(APPEARANCE_PROFILE_FILE),
+      r#"{"schema_version":1}"#,
+    );
+    write(&dir.join("effects.conf"), "invalid-line\n");
+    assert!(
+      check_theme_dir(&paths, &dir)
+        .unwrap_err()
+        .contains("invalid setting")
     );
   }
 

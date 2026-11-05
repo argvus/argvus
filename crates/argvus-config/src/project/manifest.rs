@@ -67,6 +67,7 @@ pub(super) fn reload_targets(
   appearance_visual_changed: bool,
   wallpaper_changed: bool,
   taskbar_layout_changed: bool,
+  layout_variant_changed: bool,
 ) -> serde_json::Map<String, Value> {
   let mut targets = serde_json::Map::new();
   let mut enable = |name: &str| {
@@ -87,7 +88,7 @@ pub(super) fn reload_targets(
   }
   if changed_sections.contains(&"layout") {
     enable("hyprland");
-    if taskbar_layout_changed {
+    if taskbar_layout_changed || layout_variant_changed {
       enable("taskbar");
       enable("widget_telemetry");
     }

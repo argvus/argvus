@@ -120,14 +120,14 @@ fn hypridle_projection_uses_the_runtime_consumer_path() {
 
 #[test]
 fn reload_targets_keep_power_changes_scoped_to_hypridle() {
-  let targets = reload_targets(&["power"], false, false, false);
+  let targets = reload_targets(&["power"], false, false, false, false);
   assert_eq!(targets.get("hypridle"), Some(&Value::Bool(true)));
   assert_eq!(targets.len(), 1);
 }
 
 #[test]
 fn reload_targets_keep_wallpaper_changes_scoped_to_wallpaper() {
-  let targets = reload_targets(&["appearance"], false, true, false);
+  let targets = reload_targets(&["appearance"], false, true, false, false);
   assert_eq!(targets.get("wallpaper"), Some(&Value::Bool(true)));
   assert_eq!(targets.len(), 1);
 }
@@ -147,25 +147,27 @@ fn restarts(targets: &serde_json::Map<String, Value>) -> Vec<&str> {
 
 #[test]
 fn theme_and_effect_changes_reload_in_place() {
-  let theme = reload_targets(&["appearance"], true, true, false);
+  let theme = reload_targets(&["appearance"], true, true, false, false);
   for target in ["hyprland", "consumers", "wallpaper", "polkit"] {
     assert_eq!(theme.get(target), Some(&Value::Bool(true)), "{target}");
   }
   assert!(restarts(&theme).is_empty());
-  let effects = reload_targets(&["effects"], false, false, false);
+  let effects = reload_targets(&["effects"], false, false, false, false);
   assert!(effects.contains_key("hyprland") && effects.contains_key("consumers"));
   assert!(restarts(&effects).is_empty());
-  let fonts = reload_targets(&["fonts"], false, false, false);
+  let fonts = reload_targets(&["fonts"], false, false, false, false);
   assert_eq!(fonts.keys().collect::<Vec<_>>(), ["consumers"]);
 }
 
 #[test]
 fn only_the_taskbar_layout_recreates_the_bars() {
-  let window = reload_targets(&["layout"], false, false, false);
+  let window = reload_targets(&["layout"], false, false, false, false);
   assert_eq!(window.keys().collect::<Vec<_>>(), ["hyprland"]);
-  let taskbar = reload_targets(&["layout"], false, false, true);
+  let taskbar = reload_targets(&["layout"], false, false, true, false);
   assert_eq!(restarts(&taskbar), ["taskbar", "widget_telemetry"]);
-  let panel = reload_targets(&["control_panel"], false, false, false);
+  let mode = reload_targets(&["layout"], false, false, false, true);
+  assert_eq!(restarts(&mode), ["taskbar", "widget_telemetry"]);
+  let panel = reload_targets(&["control_panel"], false, false, false, false);
   assert_eq!(restarts(&panel), ["control_panel"]);
 }
 

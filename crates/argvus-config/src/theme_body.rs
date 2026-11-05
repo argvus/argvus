@@ -9,6 +9,7 @@
 
 use crate::ConfigStore;
 use crate::appearance_runtime::{self, GtkFiles, GtkRuntime};
+use crate::effects::{effects_state_home, theme_effects_path};
 use crate::icons;
 use crate::session_paths::SessionPaths;
 use crate::text_edit::{self, Target};
@@ -41,32 +42,39 @@ pub fn run(paths: &SessionPaths, theme: &str, runtime: bool, live: bool) -> i32 
   // so only then are their managed files rebuilt from the packaged ones.
   let layout_changed =
     theme_build::displayed_theme(paths).ends_with("-float") != theme.ends_with("-float");
-  let icon = icons::resolve(paths, theme, Stdio::inherit());
-  let fonts = Fonts::read(paths);
   let wallpaper = find_theme_wallpaper(&theme_paths, theme).unwrap_or_default();
+  let theme_directory = theme_resolve::manifest(&theme_paths, theme).map(|manifest| manifest.dir);
+  let profile = theme_directory
+    .as_ref()
+    .map(|directory| directory.join("appearance.json"))
+    .filter(|path| path.is_file());
+  let effects_profile = theme_directory
+    .as_ref()
+    .map(|directory| directory.join("effects.conf"))
+    .filter(|path| path.is_file());
 
-  // An official selection resets the accent with the canonical commit, so the
-  // build takes the theme's own accent then.
-  let accent = if env::var("ARGVUS_ACCENT_OFFICIAL").as_deref() == Ok("1") {
-    None
-  } else {
-    crate::accent::canonical_accent(Some(&ConfigStore::at(&paths.config_home)))
-  };
   let previous_build = theme_build::active_build(paths);
-  if let Err(error) = theme_build::refresh(paths, theme, accent.as_deref()) {
+  if let Err(error) = theme_build::refresh(paths, theme, None) {
     message(
       "theme.build_failed",
       &[format!("theme={theme}"), format!("error={error}")],
     );
     return 1;
   }
-  if !apply_canonical_theme(theme, &wallpaper) {
+  if !apply_canonical_theme(theme, &wallpaper, profile.as_deref()) {
     theme_build::restore(paths, previous_build.as_deref());
     return 1;
   }
 
+  let icon = icons::resolve(paths, theme, Stdio::inherit());
+  let fonts = Fonts::read(paths);
+
   let mut status = 0;
   let _ = text_edit::replace_file(&active_file, theme);
+  if let Err(error) = apply_theme_effects_profile(paths, theme, effects_profile.as_deref()) {
+    eprintln!("argvus-config: theme effects profile: {error}");
+    status = 1;
+  }
   // Rofi takes its background from its own theme file, which the effects step
   // at the end of the switch used to write seconds after the build changed.
   // Writing it now, once the theme is committed, keeps a launcher opened during
@@ -96,9 +104,6 @@ pub fn run(paths: &SessionPaths, theme: &str, runtime: bool, live: bool) -> i32 
   if let Err(error) = theme_files::reset_mode_stylesheet(paths) {
     eprintln!("argvus-config: theme files: {error}");
   }
-  if runtime {
-    restart_polkit_agent();
-  }
   apply_gtk(
     paths,
     &theme_paths,
@@ -119,32 +124,39 @@ pub fn run(paths: &SessionPaths, theme: &str, runtime: bool, live: bool) -> i32 
   finish_transition(paths, status, runtime)
 }
 
-/// The polkit agent reads the toolkit colours at start. It shows nothing while
-/// idle, so a restart is not visible.
-fn restart_polkit_agent() {
-  let _ = Command::new("systemctl")
-    .args([
-      "--user",
-      "set-environment",
-      "QT_QPA_PLATFORM=wayland",
-      "QT_QPA_PLATFORMTHEME=qt6ct",
-      "QT_QUICK_CONTROLS_STYLE=org.hyprland.style",
-    ])
-    .stdout(Stdio::null())
-    .stderr(Stdio::null())
-    .status();
-  let _ = Command::new("systemctl")
-    .args(["--user", "restart", "hyprpolkitagent"])
-    .stdout(Stdio::null())
-    .stderr(Stdio::null())
-    .status();
+fn apply_theme_effects_profile(
+  paths: &SessionPaths,
+  theme: &str,
+  profile: Option<&Path>,
+) -> std::io::Result<()> {
+  let effects_file = theme_effects_path(&effects_state_home(&paths.data_home), theme);
+  replace_theme_effects_profile(&effects_file, profile)
 }
 
-/// The end of the switch: with the runtime, the spacing and borders get their
-/// final geometry before the status is returned. Waybar is left to the
-/// transaction, which restarts the bars only when the layout changed.
+fn replace_theme_effects_profile(
+  effects_file: &Path,
+  profile: Option<&Path>,
+) -> std::io::Result<()> {
+  let Some(profile) = profile else {
+    return match fs::remove_file(effects_file) {
+      Ok(()) => Ok(()),
+      Err(error) if error.kind() == std::io::ErrorKind::NotFound => Ok(()),
+      Err(error) => Err(error),
+    };
+  };
+  let contents = fs::read(profile)?;
+  if let Some(parent) = effects_file.parent() {
+    fs::create_dir_all(parent)?;
+  }
+  let temporary = effects_file.with_extension(format!("conf.tmp-{}", std::process::id()));
+  fs::write(&temporary, contents)?;
+  fs::rename(temporary, effects_file)
+}
+
+/// Applies spacing and borders before returning; Waybar remains owned by the
+/// session reload plan, which can restart it only when its geometry changed.
 fn finish_transition(paths: &SessionPaths, mut status: i32, runtime: bool) -> i32 {
-  if !runtime {
+  if !runtime || env::var_os("HYPRLAND_INSTANCE_SIGNATURE").is_some() {
     return status;
   }
   for helper in [
@@ -161,7 +173,7 @@ fn finish_transition(paths: &SessionPaths, mut status: i32, runtime: bool) -> i3
   status
 }
 
-/// Runs a geometry helper with `--apply`, leaving Waybar to the transaction.
+/// Runs a geometry helper with `--apply`, leaving bar restarts to sessionctl.
 fn apply_geometry_helper(script: &Path) -> bool {
   Command::new("sh")
     .arg(script)
@@ -176,11 +188,10 @@ fn apply_geometry_helper(script: &Path) -> bool {
 /// Applies the theme through the canonical configuration, unless a projection
 /// is running (that projection already did it).
 /// Returns `false` when the canonical commit failed, which the caller reports.
-fn apply_canonical_theme(theme: &str, wallpaper: &str) -> bool {
-  // A projection or a mode switch already holds the canonical choice: commit nothing,
-  // so a custom wallpaper or accent is not reset. The runtime still runs.
-  let skip_commit = env::var("ARGVUS_PROJECTING").as_deref() == Ok("1")
-    || env::var("ARGVUS_SKIP_CANONICAL").as_deref() == Ok("1");
+fn apply_canonical_theme(theme: &str, wallpaper: &str, profile: Option<&Path>) -> bool {
+  // A projection already holds the canonical choice; explicit theme and mode
+  // switches always commit the selected theme's profile or packaged defaults.
+  let skip_commit = env::var("ARGVUS_PROJECTING").as_deref() == Ok("1");
   if skip_commit || !on_path("argvus") {
     return true;
   }
@@ -197,6 +208,10 @@ fn apply_canonical_theme(theme: &str, wallpaper: &str) -> bool {
     arguments.push("--wallpaper".to_string());
     arguments.push(wallpaper.to_string());
     arguments.push("--reset-wallpaper".to_string());
+  }
+  if let Some(profile) = profile {
+    arguments.push("--profile".to_string());
+    arguments.push(profile.display().to_string());
   }
   let status = Command::new("argvus")
     .args(&arguments)
@@ -430,5 +445,34 @@ fn message(key: &str, arguments: &[String]) {
       .status();
   } else {
     eprintln!("{key}");
+  }
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  #[test]
+  fn applying_a_theme_effects_profile_replaces_or_clears_saved_values() {
+    let directory = env::temp_dir().join(format!(
+      "argvus-theme-effects-profile-{}",
+      std::process::id()
+    ));
+    let _ = fs::remove_dir_all(&directory);
+    fs::create_dir_all(&directory).unwrap();
+    let effects_file = directory.join("theme.conf");
+    let profile = directory.join("effects.conf");
+    fs::write(&effects_file, "old=1\n").unwrap();
+    fs::write(&profile, "taskbar.blur=37\n").unwrap();
+
+    replace_theme_effects_profile(&effects_file, Some(&profile)).unwrap();
+    assert_eq!(
+      fs::read_to_string(&effects_file).unwrap(),
+      "taskbar.blur=37\n"
+    );
+
+    replace_theme_effects_profile(&effects_file, None).unwrap();
+    assert!(!effects_file.exists());
+    fs::remove_dir_all(directory).unwrap();
   }
 }

@@ -210,7 +210,8 @@ data, generated data and system fallback are resolved by the Rust path model.
 
 `patch` applies a JSON object whose keys are JSON pointers in one locked
 read-modify-write operation. `apply-theme` performs the equivalent atomic
-theme transaction and preserves `accent_custom` and `wallpaper_custom` values.
+theme transaction and replaces the managed appearance sections from the
+theme's optional appearance profile or packaged defaults.
 Mutating commands build a `NextUserConfig`, resolve an `EffectiveConfig`, stage
 all projectors, and only then publish the canonical JSON. An operational
 `.config-transaction.json` marker allows `argvus config recover` to reproject
@@ -248,7 +249,7 @@ argvus config import --scope appearance appearance.json
 
 Use `--scope desktop` for the complete managed desktop model. Missing fields use ARGVUS defaults; generated output should not be edited directly.
 
-Control Center theme export and import exchange themes, not configuration: the archive holds a schema 2 theme directory (`<id>/theme.toml`, `overrides/`, the wallpaper) that installs under `$XDG_DATA_HOME/argvus/themes/`. Use the `appearance` scope above to move appearance settings, and the `desktop` scope for a complete configuration backup.
+Control Center theme export and import exchange a theme and its visual profile: the archive holds a schema 2 theme directory (`<id>/theme.toml`, optional `appearance.json` and `effects.conf`, `overrides/`, the wallpaper) that installs under `$XDG_DATA_HOME/argvus/themes/`. The profile holds appearance, layout geometry, visual effects, fonts and panel presentation. Audio, keyboard, network and other non-visual preferences remain outside themes. Use the `appearance` scope above to move the complete appearance configuration, and the `desktop` scope for a complete configuration backup.
 
 The current schema groups preferences under `appearance`, `layout`, `effects`, `fonts`, `control_panel`, `default_apps`, `keyboard_shortcuts`, `hyprland`, `displays`, `power`, `session`, `calendar`, and `removable_devices`. `default_apps` is the only persistent source for preferred applications, and `keyboard_shortcuts` stores stable English, locale-independent keys with string values or `null` for disabled bindings.
 

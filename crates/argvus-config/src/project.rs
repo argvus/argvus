@@ -138,12 +138,19 @@ pub fn project(store: &ConfigStore, force: bool) -> ConfigResult<String> {
   // The taskbar margins and position are layer-shell settings of the bars: only
   // they recreate the bars. Window gaps and borders reload in place.
   let taskbar_layout_hash = value_hash(document.get("/layout/taskbar"))?;
+  let layout_variant_hash = value_hash(document.get(json_pointers::LAYOUT_VARIANT))?;
   let taskbar_layout_changed = changed_sections.contains(&"layout")
     && previous_manifest
       .as_ref()
       .and_then(|manifest| manifest.pointer("/layout_values/taskbar"))
       .and_then(Value::as_str)
       != Some(taskbar_layout_hash.as_str());
+  let layout_variant_changed = changed_sections.contains(&"layout")
+    && previous_manifest
+      .as_ref()
+      .and_then(|manifest| manifest.pointer("/layout_values/variant"))
+      .and_then(Value::as_str)
+      != Some(layout_variant_hash.as_str());
 
   let affected_consumers = affected_consumers(&changed_sections, appearance_runtime_changed);
 
@@ -152,6 +159,7 @@ pub fn project(store: &ConfigStore, force: bool) -> ConfigResult<String> {
     appearance_visual_changed,
     wallpaper_changed,
     taskbar_layout_changed,
+    layout_variant_changed,
   );
 
   let reload_plan = reload_plan(&changed_sections);
@@ -174,7 +182,7 @@ pub fn project(store: &ConfigStore, force: bool) -> ConfigResult<String> {
           "gtk_mode": gtk_mode_hash,
           "wallpaper": wallpaper_hash,
       },
-      "layout_values": {"taskbar": taskbar_layout_hash},
+      "layout_values": {"taskbar": taskbar_layout_hash, "variant": layout_variant_hash},
       "changed_sections": changed_sections,
       "affected_consumers": affected_consumers,
       "reload_required": !affected_consumers.is_empty(),
