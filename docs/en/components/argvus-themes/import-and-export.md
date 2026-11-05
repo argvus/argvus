@@ -17,7 +17,7 @@ The archive, `argvus-theme-<id>.tar.gz`, holds one theme directory, laid out lik
 <id>/wallpaper.<ext>   the wallpaper on screen when you exported
 ```
 
-The manifest is based on the active theme, with your name, a new id, your highlight color as the palette accent and the wallpaper beside it. The optional appearance profile preserves your current visual settings. Its window and taskbar geometry is used in both Sticky and Float; the selected mode itself remains independent. When you apply a theme or switch modes, ARGVUS reapplies that theme's profile. Themes without a profile use the ARGVUS defaults. Non-visual settings such as audio, keyboard and network preferences are not part of a theme.
+The manifest is based on the active theme, with your name, a new id, your highlight color as the palette accent and the wallpaper beside it. The appearance profile preserves the visual settings currently applied in ARGVUS, including window spacing, borders, taskbar margins, panel presentation, colors, effects and fonts. Custom wallpaper and accent color are stored with the theme. Applying any theme reapplies its complete profile (or the ARGVUS defaults when no profile exists), replacing independent visual changes made since it was last applied. Switching Sticky or Float always reapplies that mode's window and taskbar geometry; save personal geometry in an exported custom theme to keep it available when that theme is applied. Non-visual settings such as audio, keyboard and network preferences are not part of a theme.
 
 Settings changed after applying a theme are temporary across the next theme or mode change. Export the theme from **Control Center → Appearance → Themes → Export theme** to preserve the current visual configuration and restore it later by applying that exported theme.
 
@@ -52,7 +52,7 @@ The theme is added to **Custom Themes**. Importing does not apply it: you choose
 1. Open **Control Center → Appearance → Themes → Custom Themes**.
 2. Select the theme and press `Enter`.
 
-The theme is applied like an official one, with its own highlight color and wallpaper, in the current mode.
+The theme's complete exported configuration is applied, including its wallpaper, spacing, borders, accent color, effects, fonts and panel presentation. Its visual values replace the current settings. ARGVUS then restarts the taskbar, Hyprland reload service, wallpaper and Control Panel so each surface uses the custom theme.
 
 ## Delete a custom theme
 

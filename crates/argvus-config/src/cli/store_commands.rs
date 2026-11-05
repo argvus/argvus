@@ -162,7 +162,7 @@ pub(super) fn apply_theme(
   store: &ConfigStore,
   arguments: &[String],
 ) -> Result<(), Box<dyn std::error::Error>> {
-  let theme = arguments.first().ok_or("usage: argvus config apply-theme THEME [--accent HEX] [--gtk-mode MODE] [--wallpaper PATH] [--reset-wallpaper] [--reset-accent]")?;
+  let theme = arguments.first().ok_or("usage: argvus config apply-theme THEME [--accent HEX] [--gtk-mode MODE] [--wallpaper PATH] [--reset-wallpaper] [--reset-accent] [--preserve-mode-geometry]")?;
   let option = |name: &str| {
     arguments
       .iter()
@@ -188,12 +188,16 @@ pub(super) fn apply_theme(
     .transpose()?
     .map(|text| serde_json::from_str::<ConfigDocument>(&text))
     .transpose()?;
-  store.apply_theme_with_profile(
+  let preserve_mode_geometry = arguments
+    .iter()
+    .any(|argument| argument == "--preserve-mode-geometry");
+  store.apply_theme_with_profile_and_mode_geometry(
     theme,
     accent,
     gtk_mode,
     option("--wallpaper").map(String::as_str),
     profile.as_ref(),
+    preserve_mode_geometry,
   )?;
   Ok(())
 }

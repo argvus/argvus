@@ -47,6 +47,8 @@ pub fn run(paths: &SessionPaths, theme_argument: &str, layout_variant: &str) -> 
   if theme.is_empty() {
     return run_menu(paths);
   }
+  let custom_theme = theme_resolve::is_user_theme(&theme_resolve::theme_paths(), &theme);
+  let mode_switch = env::var("ARGVUS_MODE_SWITCH").as_deref() == Ok("1");
   let runtime = env::var("ARGVUS_NO_RUNTIME").as_deref() != Ok("1");
   let lock_path = cache_home().join("theme-switch.lock");
   if let Some(parent) = lock_path.parent() {
@@ -98,14 +100,18 @@ pub fn run(paths: &SessionPaths, theme_argument: &str, layout_variant: &str) -> 
     ) {
       Ok(result) if result.success() => {
         if env::var_os("HYPRLAND_INSTANCE_SIGNATURE").is_some() {
-          let runtime_status = run_bounded(
-            Command::new("argvus")
-              .args(["sessionctl", "apply-config-runtime"])
-              .env("ARGVUS_THEME_APPLYING", "1")
-              .stdout(Stdio::null())
-              .stderr(Stdio::inherit()),
-            PROJECTION_WAIT_LIMIT,
-          );
+          let mut runtime_command = Command::new("argvus");
+          runtime_command
+            .args(["sessionctl", "apply-config-runtime"])
+            .env("ARGVUS_THEME_APPLYING", "1")
+            .stdout(Stdio::null())
+            .stderr(Stdio::inherit());
+          if mode_switch {
+            runtime_command.env("ARGVUS_MODE_SWITCH", "1");
+          } else if custom_theme {
+            runtime_command.env("ARGVUS_CUSTOM_THEME", "1");
+          }
+          let runtime_status = run_bounded(&mut runtime_command, PROJECTION_WAIT_LIMIT);
           match runtime_status {
             Ok(result) if result.success() => {}
             Ok(result) => {

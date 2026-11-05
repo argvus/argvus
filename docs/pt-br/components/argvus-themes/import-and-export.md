@@ -17,7 +17,7 @@ O arquivo, `argvus-theme-<id>.tar.gz`, guarda um diretório de tema, organizado 
 <id>/wallpaper.<ext>   o wallpaper que estava na tela ao exportar
 ```
 
-O manifesto parte do tema ativo, com o seu nome, um id novo, a sua cor de destaque na paleta e o wallpaper ao lado. O perfil visual opcional preserva as configurações visuais atuais. A geometria das janelas e da taskbar é aplicada nos dois modos, Sticky e Float; o modo escolhido continua independente. Ao aplicar um tema ou trocar de modo, o ARGVUS reaplica o perfil daquele tema. Temas sem perfil usam os padrões do ARGVUS. Configurações não visuais, como áudio, teclado e rede, não fazem parte de um tema.
+O manifesto parte do tema ativo, com o seu nome, um id novo, a sua cor de destaque na paleta e o wallpaper ao lado. O perfil visual preserva as configurações visuais atualmente aplicadas no ARGVUS, incluindo espaços de janelas, bordas, margens da taskbar, apresentação do painel, cores, efeitos e fontes. Wallpaper e cor de destaque personalizados são salvos com o tema. Aplicar qualquer tema reaplica todo o perfil dele (ou os padrões do ARGVUS quando não há perfil), substituindo alterações visuais independentes feitas desde a última aplicação. Trocar entre Sticky e Float sempre reaplica a geometria de janelas e taskbar daquele modo; salve a geometria pessoal em um tema personalizado exportado para mantê-la quando aplicar esse tema. Configurações não visuais, como áudio, teclado e rede, não fazem parte de um tema.
 
 As alterações feitas depois de aplicar um tema são temporárias até a próxima troca de tema ou modo. Exporte o tema em **Control Center → Aparência → Temas → Exportar tema** para preservar a configuração visual atual e restaurá-la depois aplicando o tema exportado.
 
@@ -52,7 +52,7 @@ O tema entra em **Temas personalizados**. Importar não aplica o tema: você esc
 1. Abra **Control Center → Aparência → Temas → Temas personalizados**.
 2. Selecione o tema e pressione `Enter`.
 
-O tema é aplicado como um oficial, com a cor de destaque e o wallpaper dele, no modo atual.
+Toda a configuração exportada do tema é aplicada, incluindo wallpaper, espaços, bordas, cor de destaque, efeitos, fontes e apresentação do painel. Os valores visuais substituem as configurações atuais. Em seguida, o ARGVUS reinicia a taskbar, o serviço de recarga do Hyprland, o wallpaper e o Control Panel para que cada superfície use o tema personalizado.
 
 ## Excluir um tema personalizado
 

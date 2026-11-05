@@ -204,6 +204,9 @@ fn apply_canonical_theme(theme: &str, wallpaper: &str, profile: Option<&Path>) -
   if env::var("ARGVUS_ACCENT_OFFICIAL").as_deref() == Ok("1") {
     arguments.push("--reset-accent".to_string());
   }
+  if env::var("ARGVUS_MODE_SWITCH").as_deref() == Ok("1") {
+    arguments.push("--preserve-mode-geometry".to_string());
+  }
   if !wallpaper.is_empty() {
     arguments.push("--wallpaper".to_string());
     arguments.push(wallpaper.to_string());

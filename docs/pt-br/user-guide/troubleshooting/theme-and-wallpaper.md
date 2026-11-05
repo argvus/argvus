@@ -22,7 +22,7 @@ ler o `config.json`. Eles nunca escrevem em `data/generated/`, e a transação d
 tema não grava mais os arquivos de GTK, storage ou `mode.css` por scripts separados. Use `argvus config accent --apply` para reexecutar apenas a reconciliação
 de acento.
 
-Uma troca de tema não mostra overlay nem reinicia serviços: as barras, o Control Panel, o Dunst e o wallpaper em execução recebem as novas cores no lugar. As cores de notificação do Dunst são a exceção enquanto o Não Perturbe está ativo: a recarga fica pendente até desativá-lo. Se outra superfície ficar com as cores antigas, confira se o build do tema está ativo e se é o tema escolhido, e rode as recargas de novo:
+Temas oficiais aplicam seus valores visuais salvos e atualizam os consumidores de runtime afetados. Aplicar um tema personalizado reinicia os serviços da taskbar, recarga do Hyprland, wallpaper e Control Panel. Trocar entre Sticky e Float reaplica espaços, bordas e margens da taskbar daquele modo, depois reinicia os serviços da taskbar, telemetria e recarga do Hyprland. As cores de notificação do Dunst são a exceção enquanto o Não Perturbe está ativo: a recarga fica pendente até desativá-lo. Se outra superfície ficar com as cores antigas, confira se o build do tema está ativo e se é o tema escolhido, e rode as recargas de novo:
 
 ```sh
 cat "${XDG_CONFIG_HOME:-$HOME/.config}/argvus/data/generated/theme/current/build.toml"

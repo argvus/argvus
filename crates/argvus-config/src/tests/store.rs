@@ -514,5 +514,35 @@ fn apply_theme_restores_exported_profile_but_keeps_the_active_mode() {
     document.get("/appearance/accent").and_then(Value::as_str),
     Some("#AABBCC")
   );
+  store
+    .apply_theme_with_profile_and_mode_geometry(
+      "my-theme",
+      Some("#AABBCC"),
+      Some("dark"),
+      Some("/theme/wallpaper.png"),
+      Some(&profile),
+      true,
+    )
+    .unwrap();
+  let document = store.load().unwrap();
+  assert_eq!(
+    document
+      .get("/layout/window/gaps_in")
+      .and_then(Value::as_i64),
+    Some(10),
+    "Float mode geometry overrides the theme profile"
+  );
+  assert_eq!(
+    document
+      .get("/layout/taskbar/margin_bottom")
+      .and_then(Value::as_i64),
+    Some(18),
+    "Float taskbar geometry overrides the theme profile"
+  );
+  assert_eq!(
+    document.get("/effects/animations").and_then(Value::as_bool),
+    Some(false),
+    "non-geometric profile values still apply during a mode switch"
+  );
   fs::remove_dir_all(directory).unwrap();
 }

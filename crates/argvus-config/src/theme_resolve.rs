@@ -174,6 +174,14 @@ pub fn manifest(paths: &ThemePaths, theme: &str) -> Option<ThemeManifest> {
   discovery::find(paths, theme.strip_suffix("-float").unwrap_or(theme))
 }
 
+/// Whether a theme family is installed in the user's theme directory.
+pub fn is_user_theme(paths: &ThemePaths, theme: &str) -> bool {
+  let family = theme.strip_suffix("-float").unwrap_or(theme);
+  discovery::discover(paths)
+    .find(family)
+    .is_some_and(|installed| installed.source == discovery::Source::User)
+}
+
 /// The theme roots of the environment, as `argvus theme` resolves them.
 pub fn theme_paths() -> ThemePaths {
   ThemePaths::from_environment().unwrap_or_else(|| ThemePaths {
@@ -315,6 +323,18 @@ mod tests {
     assert_eq!(gtk_mode(&paths, "mine"), "light");
     assert_eq!(theme_accent(&paths, "mine").as_deref(), Some("#12AB34"));
     assert_eq!(theme_accent(&paths, "../demo"), None);
+    let _ = std::fs::remove_dir_all(root);
+  }
+
+  #[test]
+  fn user_theme_detection_ignores_float_suffix_and_official_themes() {
+    let (root, paths) = theme_tree("user-source");
+    write_manifest(&paths.system_themes(), "official", "category = \"dark\"");
+    write_manifest(&paths.user_themes, "mine", "category = \"dark\"");
+
+    assert!(is_user_theme(&paths, "mine-float"));
+    assert!(!is_user_theme(&paths, "official"));
+    assert!(!is_user_theme(&paths, "missing"));
     let _ = std::fs::remove_dir_all(root);
   }
 

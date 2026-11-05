@@ -3,7 +3,7 @@ title: Serviços
 description: Serviços systemd do ARGVUS.
 ---
 
-O target principal é `argvus-session.target`. Serviços comuns incluem `argvus-taskbar.service`, `argvus-control-panel.service`, `argvus-widget-telemetry.service`, `argvus-dunst.service`, `argvus-wallpaper.service`, `argvus-hypridle.service` e `argvus-session-loading.service`.
+O target principal é `argvus-session.target`. Serviços comuns incluem `argvus-taskbar.service`, `argvus-control-panel.service`, `argvus-widget-telemetry.service`, `argvus-hyprland.service`, `argvus-dunst.service`, `argvus-wallpaper.service`, `argvus-hypridle.service` e `argvus-session-loading.service`.
 
 O firewall usa `argvus-firewall.service`; o calendário instala `argvus-taskbar-calendar.service` como unit de usuário, e `argvus-clock.service` (desativada por padrão) inicia o ARGVUS Clock oculto após o login quando **Iniciar com a sessão** está ligado.
 
@@ -23,6 +23,7 @@ O pacote de sessão instala estas units de usuário em `/usr/lib/systemd/user` (
 | `argvus-control-panel.service` | Control Panel Quickshell. |
 | `argvus-taskbar.service` | Taskbar principal do ARGVUS. |
 | `argvus-widget-telemetry.service` | Superfície opcional de telemetria/sysinfo. |
+| `argvus-hyprland.service` | Unit one-shot sob demanda que executa `hyprctl reload`. |
 | `argvus-config.service` | Projeta a configuração canônica (`argvus config project`); o reload executa `argvus sessionctl reload-config-transaction`. |
 | `argvus-session-reload.service` | Reload do login (`argvus sessionctl reload-desktop --login`): recarrega o Hyprland só quando a projeção o afetou. |
 | `argvus-ssh-agent.service` | Agente SSH da sessão. |

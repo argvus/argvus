@@ -7,7 +7,6 @@
 //! same resolved paths the shell used.
 
 use crate::accent::DEFAULT_THEME;
-use crate::hyprland_ipc;
 use crate::json_pointers;
 use crate::session_paths::{SessionPaths, font_default_value};
 use crate::session_timing::timed;
@@ -91,7 +90,7 @@ pub fn reload_config(context: &ReloadContext<'_>) -> i32 {
     }
   }
 
-  let compositor_reload = timed("reload.compositor", hyprland_ipc::reload);
+  let compositor_reload = timed("reload.compositor", restart_hyprland_service);
   match compositor_reload {
     Ok(Some(warning)) => eprintln!("argvus-config: {warning}"),
     Ok(None) => {}
@@ -115,7 +114,7 @@ pub fn reload_at_login() -> i32 {
   if !crate::project::last_projection_affects_compositor() {
     return 0;
   }
-  match timed("reload.compositor", hyprland_ipc::reload) {
+  match timed("reload.compositor", restart_hyprland_service) {
     Ok(Some(warning)) => {
       eprintln!("argvus-config: {warning}");
       0
@@ -125,6 +124,21 @@ pub fn reload_at_login() -> i32 {
       eprintln!("argvus-config: {error}");
       1
     }
+  }
+}
+
+/// Restarts the on-demand unit that sends `hyprctl reload` to the compositor.
+fn restart_hyprland_service() -> Result<Option<String>, String> {
+  let status = Command::new("systemctl")
+    .args(["--user", "restart", "argvus-hyprland.service"])
+    .status()
+    .map_err(|error| format!("cannot restart argvus-hyprland.service: {error}"))?;
+  if status.success() {
+    Ok(None)
+  } else {
+    Err(format!(
+      "restarting argvus-hyprland.service failed ({status})"
+    ))
   }
 }
 

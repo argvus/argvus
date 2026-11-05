@@ -46,6 +46,7 @@ pub fn units_for(
         units.push(TELEMETRY_UNIT)
       }
       "wallpaper" => units.push("argvus-wallpaper.service"),
+      "hyprland" => units.push("argvus-hyprland.service"),
       "hypridle" | "idle" => units.push("argvus-hypridle.service"),
       "dunst" | "notifications" => units.push("argvus-dunst.service"),
       "control-panel" | "shell" | "quickshell" => {
@@ -142,6 +143,14 @@ mod tests {
     let units =
       units_for(&["wallpaper"], || panic!("must not be called")).expect("known component");
     assert_eq!(units, vec!["argvus-wallpaper.service"]);
+  }
+
+  #[test]
+  fn hyprland_resolves_to_its_reload_service() {
+    assert_eq!(
+      units_for(&["hyprland"], || panic!("must not be called")).expect("known component"),
+      vec!["argvus-hyprland.service"]
+    );
   }
 
   #[test]

@@ -707,6 +707,22 @@ impl ConfigStore {
     wallpaper: Option<&str>,
     profile: Option<&ConfigDocument>,
   ) -> ConfigResult<ConfigDocument> {
+    self.apply_theme_with_profile_and_mode_geometry(
+      theme, accent, gtk_mode, wallpaper, profile, false,
+    )
+  }
+
+  /// Apply a theme profile while optionally retaining the selected mode's
+  /// window and taskbar geometry.
+  pub fn apply_theme_with_profile_and_mode_geometry(
+    &self,
+    theme: &str,
+    accent: Option<&str>,
+    gtk_mode: Option<&str>,
+    wallpaper: Option<&str>,
+    profile: Option<&ConfigDocument>,
+    preserve_mode_geometry: bool,
+  ) -> ConfigResult<ConfigDocument> {
     if let Some(profile) = profile {
       validate_theme_profile(profile)?;
     }
@@ -735,6 +751,10 @@ impl ConfigStore {
           if let Some(value) = profile.sections.get(section) {
             let mut value = value.clone();
             sanitize_theme_profile_section(section, &mut value);
+            if section == "layout" && preserve_mode_geometry {
+              merge_layout_profile_without_mode_geometry(document.sections.get_mut(section), value);
+              continue;
+            }
             document.sections.insert(section.to_owned(), value);
           }
         }
@@ -925,6 +945,23 @@ fn sanitize_theme_profile_section(section: &str, value: &mut Value) {
     }
     _ => {}
   }
+}
+
+/// Merges a profile's non-geometric layout options into mode defaults.
+fn merge_layout_profile_without_mode_geometry(
+  defaults: Option<&mut Value>,
+  mut profile_layout: Value,
+) {
+  let Some(defaults) = defaults.and_then(Value::as_object_mut) else {
+    return;
+  };
+  let Some(profile_layout) = profile_layout.as_object_mut() else {
+    return;
+  };
+
+  profile_layout.remove("window");
+  profile_layout.remove("taskbar");
+  defaults.extend(std::mem::take(profile_layout));
 }
 
 fn theme_layout_variant(theme: &str) -> &'static str {
