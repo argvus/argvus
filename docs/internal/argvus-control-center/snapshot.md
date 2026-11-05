@@ -97,3 +97,13 @@ manual steps are in the bilingual Control Center user pages.
 Syntax and JSON shape were checked against the [Arch manual](https://man.archlinux.org/man/snapper.8.en)
 and the official Snapper client sources (`cmd-list.cc`, `cmd-list-configs.cc`,
 `cmd-get-config.cc`) in the [upstream repository](https://github.com/openSUSE/snapper/tree/master/client/snapper).
+
+## Selective restore verification (S1)
+
+After undochange, verification reads only the selected regular file in 64 KiB
+chunks and compares its contents, mode, UID and GID with the destination snapshot.
+Missing files on both sides compare equal. Unsafe paths or files changed during
+verification fail closed, retaining the safety snapshot. No root-wide status is
+requested after restore. The preview still invokes a bounded Snapper diff against
+the live system; Snapper may perform filesystem work before producing that output.
+Real Btrfs restore and Polkit behavior still require a disposable system.

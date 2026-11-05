@@ -479,14 +479,19 @@ impl<R: ProcessRunner> SnapshotBackend<R> {
         restore_after_safety_error(safety_snapshot, "Snapper undochange failed", error)
       })?;
 
-    if self
-      .status(config, destination, 0)
-      .map_err(|error| {
-        restore_after_safety_error(safety_snapshot, "could not verify restored file", error)
-      })?
-      .iter()
-      .any(|change| change.path == path)
-    {
+    if !restored_files_match(
+      &self.snapshot_file_path(destination, path),
+      &host_path,
+      &self.restore_paths.root,
+      root_owner,
+    )
+    .map_err(|error| {
+      restore_after_safety_error(
+        safety_snapshot,
+        "could not verify restored file",
+        invalid(error),
+      )
+    })? {
       return Err(SnapshotError::new(
         ErrorKind::Snapper,
         format!(
@@ -1336,3 +1341,72 @@ pub fn validate_change_path(path: &str) -> SnapshotResult<()> {
 
 #[cfg(test)]
 mod tests;
+
+// Compare only the selected file; a root-wide Snapper status can exceed its output limit.
+fn restored_files_match(
+  source: &Path,
+  target: &Path,
+  root: &Path,
+  owner: u32,
+) -> Result<bool, String> {
+  use std::io::Read;
+  use std::os::unix::fs::OpenOptionsExt;
+  let source_identity = secure_destination(source, root, owner)?;
+  let target_identity = secure_destination(target, root, owner)?;
+  let (Some(source_identity), Some(target_identity)) = (&source_identity, &target_identity) else {
+    return Ok(source_identity.is_none() && target_identity.is_none());
+  };
+  if source_identity.size != target_identity.size
+    || source_identity.mode != target_identity.mode
+    || source_identity.owner != target_identity.owner
+    || source_identity.group != target_identity.group
+  {
+    return Ok(false);
+  }
+  let open = |path: &Path| {
+    fs::OpenOptions::new()
+      .read(true)
+      .custom_flags(libc::O_NOFOLLOW | libc::O_NONBLOCK)
+      .open(path)
+      .map_err(|error| error.to_string())
+  };
+  let mut source_file = open(source)?;
+  let mut target_file = open(target)?;
+  let unchanged = |file: &fs::File, expected: &RestoreFileIdentity| -> Result<bool, String> {
+    let metadata = file.metadata().map_err(|error| error.to_string())?;
+    Ok(
+      metadata.is_file()
+        && metadata.dev() == expected.device
+        && metadata.ino() == expected.inode
+        && metadata.size() == expected.size
+        && metadata.mode() == expected.mode
+        && metadata.uid() == expected.owner
+        && metadata.gid() == expected.group
+        && metadata.nlink() == expected.links
+        && metadata.mtime() == expected.modified_seconds
+        && metadata.mtime_nsec() == expected.modified_nanoseconds
+        && metadata.ctime() == expected.changed_seconds
+        && metadata.ctime_nsec() == expected.changed_nanoseconds,
+    )
+  };
+  if !unchanged(&source_file, source_identity)? || !unchanged(&target_file, target_identity)? {
+    return Ok(false);
+  }
+  let mut remaining = source_identity.size;
+  let mut source_buffer = [0u8; 65536];
+  let mut target_buffer = [0u8; 65536];
+  while remaining > 0 {
+    let count = remaining.min(source_buffer.len() as u64) as usize;
+    source_file
+      .read_exact(&mut source_buffer[..count])
+      .map_err(|error| error.to_string())?;
+    target_file
+      .read_exact(&mut target_buffer[..count])
+      .map_err(|error| error.to_string())?;
+    if source_buffer[..count] != target_buffer[..count] {
+      return Ok(false);
+    }
+    remaining -= count as u64;
+  }
+  Ok(unchanged(&source_file, source_identity)? && unchanged(&target_file, target_identity)?)
+}

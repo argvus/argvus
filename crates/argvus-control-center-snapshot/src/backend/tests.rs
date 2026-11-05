@@ -774,7 +774,7 @@ fn selective_restore_reviews_then_uses_safety_snapshot_and_official_undochange()
   let (backend, _directory) = restore_fixture(restore_success_replies());
   std::fs::write(
     backend.restore_paths.root.join("etc/app.conf"),
-    "current version\n",
+    "snapshot version\n",
   )
   .unwrap();
   let review = backend
@@ -920,7 +920,7 @@ fn restore_failure_reports_the_safety_snapshot_id() {
   let (backend, _directory) = restore_fixture(replies);
   std::fs::write(
     backend.restore_paths.root.join("etc/app.conf"),
-    "current version\n",
+    "snapshot version\n",
   )
   .unwrap();
   let review = backend
@@ -944,4 +944,65 @@ fn selective_restore_lock_prevents_concurrent_mutations_and_releases_on_drop() {
   assert!(RestoreLock::acquire(&lock_path, &root, owner).is_err());
   drop(first);
   assert!(RestoreLock::acquire(&lock_path, &root, owner).is_ok());
+}
+
+#[test]
+fn restore_rejects_content_mismatch_despite_empty_status() {
+  let (backend, _directory) = restore_fixture(restore_success_replies());
+  std::fs::write(
+    backend.restore_paths.root.join("etc/app.conf"),
+    "wrong content\n",
+  )
+  .unwrap();
+  let review = backend
+    .restore_preview("system", 1, 2, "/etc/app.conf")
+    .unwrap();
+  let error = backend
+    .restore_file("system", 1, 2, "/etc/app.conf", review.destination.as_ref())
+    .unwrap_err();
+  assert!(error.detail.contains("safety snapshot #9 remains"));
+}
+
+#[test]
+fn restore_does_not_request_root_status_even_when_its_output_would_overflow() {
+  let mut replies = restore_success_replies();
+  *replies.last_mut().unwrap() = output(&"c..... /etc/other\n".repeat(70000));
+  let (backend, _directory) = restore_fixture(replies);
+  std::fs::write(
+    backend.restore_paths.root.join("etc/app.conf"),
+    "snapshot version\n",
+  )
+  .unwrap();
+  let review = backend
+    .restore_preview("system", 1, 2, "/etc/app.conf")
+    .unwrap();
+  backend
+    .restore_file("system", 1, 2, "/etc/app.conf", review.destination.as_ref())
+    .unwrap();
+  assert!(
+    !backend
+      .runner
+      .requests
+      .lock()
+      .unwrap()
+      .iter()
+      .any(|request| request.args == ["-c", "system", "status", "2..0"])
+  );
+}
+
+#[test]
+fn restored_files_compare_absence_and_permissions() {
+  use std::os::unix::fs::PermissionsExt;
+  let (backend, _directory) = restore_fixture(vec![]);
+  let root = &backend.restore_paths.root;
+  let owner = std::fs::metadata(root).unwrap().uid();
+  let source = root.join("etc/source");
+  let target = root.join("etc/target");
+  assert!(restored_files_match(&source, &target, root, owner).unwrap());
+  std::fs::write(&source, "same").unwrap();
+  assert!(!restored_files_match(&source, &target, root, owner).unwrap());
+  std::fs::write(&target, "same").unwrap();
+  std::fs::set_permissions(&source, std::fs::Permissions::from_mode(0o600)).unwrap();
+  std::fs::set_permissions(&target, std::fs::Permissions::from_mode(0o644)).unwrap();
+  assert!(!restored_files_match(&source, &target, root, owner).unwrap());
 }
