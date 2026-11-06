@@ -1,4 +1,6 @@
 {
+  "error.project_metadata_write": "Não foi possível preparar os rótulos dos projetos: {reason}",
+  "project.workspace_label": "Projeto: {name}",
   "search.application": "Pesquisar aplicação",
   "search.cheatsheet": "Procurar",
   "search.project": "Abrir projeto",

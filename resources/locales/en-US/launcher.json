@@ -1,4 +1,6 @@
 {
+  "error.project_metadata_write": "Could not prepare project workspace labels: {reason}",
+  "project.workspace_label": "Project: {name}",
   "search.application": "Search application",
   "search.cheatsheet": "Search",
   "search.project": "Open project",

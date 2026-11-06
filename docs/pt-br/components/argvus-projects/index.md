@@ -27,3 +27,13 @@ um projeto é aberto, o ARGVUS inicia dentro dele um terminal e o editor definid
 
 A configuração é lida e gravada por `argvus config`, então o Control Center e o shell veem a mesma
 lista.
+
+## Workspaces de projetos e taskbar
+
+Projetos usam workspaces nomeados comuns do Hyprland, não workspaces especiais. `SUPER + O` mostra o número, diretório e atalho direto `SUPER + ALT + N`. As duas entradas focam o mesmo workspace. Apenas workspaces abertos aparecem na taskbar, com rótulo `Projeto: nome`, destaque do ativo e tooltip com caminho completo e atalho. Clique no botão do workspace para retornar a ele. A taskbar acompanha o monitor do workspace.
+
+O caminho canônico do diretório determina uma identidade estável: alterar a ordem da lista altera o atalho, mas não o workspace. Projetos com nomes de diretório iguais ficam separados; links simbólicos para o mesmo diretório são deduplicados. Terminal e editor recebem explicitamente o workspace de destino. Editores que reutilizam um processo/janela existente podem manter o comportamento de workspace do próprio aplicativo.
+
+Workspaces abertos antes da atualização mantêm suas janelas e nomes nativos. Abrir um projeto após a atualização usa sua nova identidade derivada do caminho; feche as janelas antigas quando for conveniente. Não há associação nem movimentação automática porque o nome antigo não identifica o diretório com segurança. Com nomes de diretório duplicados, use o seletor, um número ou o caminho canônico completo em vez de um nome ambíguo.
+
+Abrir um projeto regenera atomicamente `$XDG_RUNTIME_DIR/argvus/project-workspaces.json`, usando a lista configurada e as traduções. Esse arquivo é metadado da sessão para rótulos e tooltips; não é configuração e não deve ser editado. Reabra um projeto após alterar a lista ou o idioma para atualizar os rótulos. Atualize `argvus`, `argvus-waybar` e a configuração do `argvus-taskbar` para usar essa integração.

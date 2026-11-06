@@ -7,10 +7,11 @@
 //!   argvus-projects remove DIR         remove a project or root
 //!   argvus-projects list               print configured roots and paths
 //!   argvus-projects pick [PROMPT]      print the path picked from the list, for other tools
-//!   argvus-projects open SELECTOR      open a project by position or name
+//!   argvus-projects open SELECTOR      open a project by position, full path or unique name
 
 mod config;
 mod messages;
+mod taskbar;
 
 use argvus_projects_core::projects::{self, MAX_PROJECTS};
 use messages::{Stream, print_launcher, report_error};
@@ -60,7 +61,11 @@ fn collect_projects() -> Vec<String> {
       projects.push(path.trim_end_matches('/').to_string());
     }
   }
-  projects::unique_in_order(projects)
+  projects::unique_in_order(projects.into_iter().filter_map(|path| {
+    fs::canonicalize(path)
+      .ok()
+      .map(|path| path.to_string_lossy().into_owned())
+  }))
 }
 
 /// Prints a canonical directory, or reports why it cannot be a project.
@@ -166,7 +171,13 @@ fn pick_chosen(prompt: &str) -> Result<Option<String>, ExitCode> {
   let labels: Vec<String> = list
     .iter()
     .enumerate()
-    .map(|(index, path)| projects::picker_label(index + 1, path))
+    .map(|(index, path)| {
+      format!(
+        "{}  [SUPER + ALT + {}]",
+        projects::picker_label(index + 1, path),
+        index + 1
+      )
+    })
     .collect();
   let config = config::read_path("launcher/config/config.rasi");
   let mut child = match Command::new("rofi")
@@ -238,7 +249,15 @@ fn open(arguments: &[String]) -> ExitCode {
 /// Focuses the workspace of a project, and on its first opening starts the
 /// terminal and the editor in it. The active project is recorded for telemetry.
 fn open_path(path: &str) -> ExitCode {
+  let list = collect_projects();
   let workspace = projects::workspace_name(path);
+  if let Err(error) = taskbar::write_metadata(&list) {
+    report_error(&messages::text(
+      "error.project_metadata_write",
+      &[format!("reason={error}")],
+    ));
+    return ExitCode::from(1);
+  }
   let created = !workspace_exists(&workspace);
   if dispatch(&format!(
     "hl.dsp.focus({{ workspace = {} }})",
@@ -257,8 +276,9 @@ fn open_path(path: &str) -> ExitCode {
     projects::shell_quote(path)
   );
   if dispatch(&format!(
-    "hl.dsp.exec_cmd({})",
-    projects::lua_string(&terminal)
+    "hl.dsp.exec_cmd({}, {{ workspace = {} }})",
+    projects::lua_string(&terminal),
+    projects::lua_string(&format!("name:{workspace} silent"))
   ))
   .is_err()
   {
@@ -268,8 +288,9 @@ fn open_path(path: &str) -> ExitCode {
   if !editor.is_empty() && editor != "null" {
     let command = format!("{editor} {}", projects::shell_quote(path));
     if dispatch(&format!(
-      "hl.dsp.exec_cmd({})",
-      projects::lua_string(&command)
+      "hl.dsp.exec_cmd({}, {{ workspace = {} }})",
+      projects::lua_string(&command),
+      projects::lua_string(&format!("name:{workspace} silent"))
     ))
     .is_err()
     {
