@@ -11,6 +11,7 @@ use super::*;
 pub(super) fn run_power(action: &str, values: &[String]) -> Result<(), String> {
   match action {
     "set-lid" => {
+      validate_power(action, values)?;
       let (context, value) = split_lid(values)?;
       let key = lid_key(context)?;
       update_logind_drop_in(&[(key, value.to_string())])?;
@@ -96,6 +97,7 @@ pub(super) fn split_lid(values: &[String]) -> Result<(&str, &str), String> {
 pub(super) fn lid_key(context: &str) -> Result<&'static str, String> {
   match context {
     "default" => Ok("HandleLidSwitch"),
+    // logind has no separate battery key: HandleLidSwitch is its fallback.
     "battery" => Ok("HandleLidSwitch"),
     "ac" => Ok("HandleLidSwitchExternalPower"),
     "docked" => Ok("HandleLidSwitchDocked"),
@@ -122,12 +124,24 @@ pub(super) fn update_logind_drop_in_at(
   {
     return Err("refusing to update a symlinked logind drop-in".into());
   }
-  let existing = fs::read_to_string(path).unwrap_or_default();
+  let existing = match fs::read_to_string(path) {
+    Ok(content) => content,
+    Err(error) if error.kind() == std::io::ErrorKind::NotFound => String::new(),
+    Err(error) => return Err(error.to_string()),
+  };
   let mut updated = String::new();
   let mut found: Vec<bool> = vec![false; entries.len()];
+  let has_login = existing.lines().any(|line| line.trim() == "[Login]");
+  let mut in_login = !has_login;
+  if !has_login {
+    updated.push_str("[Login]\n");
+  }
   for line in existing.lines() {
     let trimmed = line.trim_start();
-    if !trimmed.starts_with('#') {
+    if trimmed.starts_with('[') {
+      in_login = trimmed.trim() == "[Login]";
+    }
+    if in_login && !trimmed.starts_with('#') {
       let mut replaced = false;
       for (index, (key, _)) in entries.iter().enumerate() {
         if let Some(rest) = trimmed.strip_prefix(key)
@@ -152,6 +166,9 @@ pub(super) fn update_logind_drop_in_at(
     updated.push_str(line);
     updated.push('\n');
   }
+  if found.iter().any(|found| !found) && !in_login {
+    updated.push_str("[Login]\n");
+  }
   for (index, (key, value)) in entries.iter().enumerate() {
     if !found[index] {
       if !updated.is_empty() && !updated.ends_with('\n') {
@@ -167,30 +184,25 @@ pub(super) fn update_logind_drop_in_at(
   let written = updated.trim_end();
   if original != written {
     if backup && path.exists() {
-      let _ = backup_file(path);
+      backup_file(path)?;
     }
-    let metadata = fs::metadata(path)
-      .or_else(|_| fs::metadata(Path::new("/etc/systemd/logind.conf")))
-      .map_err(|error| error.to_string())?;
-    let tmp = path.with_extension("tmp");
-    {
-      let mut file = fs::File::create(&tmp).map_err(|error| error.to_string())?;
-      file
-        .set_permissions(metadata.permissions())
-        .map_err(|error| error.to_string())?;
-      file
-        .write_all((String::from(written) + "\n").as_bytes())
-        .map_err(|error| error.to_string())?;
-      file.sync_all().map_err(|error| error.to_string())?;
+    if let Some(parent) = path.parent() {
+      fs::create_dir_all(parent).map_err(|error| error.to_string())?;
     }
-    fs::rename(&tmp, path).map_err(|error| error.to_string())?;
+    let permissions = match fs::metadata(path) {
+      Ok(metadata) => metadata.permissions(),
+      Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
+        fs::Permissions::from_mode(0o644)
+      }
+      Err(error) => return Err(error.to_string()),
+    };
+    super::replace_atomic(path, &(String::from(written) + "\n"), permissions)?;
   }
   Ok(())
 }
 
 pub(super) fn reload_logind() -> Result<(), String> {
-  let _ = run_command("systemctl", &["kill", "-s", "HUP", "systemd-logind"]);
-  Ok(())
+  run_command("systemctl", &["kill", "-s", "HUP", "systemd-logind"])
 }
 
 pub(super) fn set_governor(value: &str) -> Result<(), String> {

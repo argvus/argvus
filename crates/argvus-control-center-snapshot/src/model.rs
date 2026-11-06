@@ -16,6 +16,7 @@ pub struct Snapshot {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum SettingOrigin {
   Explicit,
+  /// Legacy wire name for the built-in fallback when get-config omits a key.
   SnapperDefault,
 }
 
@@ -89,6 +90,9 @@ pub enum ErrorKind {
   Permission,
   Authentication,
   Timeout,
+  OutputLimit,
+  PackageUpdateBusy,
+  RestoreBusy,
   Incompatible,
   Invalid,
   Snapper,
@@ -118,6 +122,9 @@ pub type SnapshotResult<T> = Result<T, SnapshotError>;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Comparison {
+  pub unsupported: usize,
+  pub truncated: bool,
+  pub total_seen: usize,
   pub origin: u32,
   pub destination: u32,
   pub changes: Vec<ChangedPath>,
@@ -131,6 +138,7 @@ pub enum ChangeKind {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(into = "WireChangedPath", try_from = "WireChangedPath")]
 pub struct ChangedPath {
   pub path: String,
   pub indicators: String,
@@ -180,4 +188,27 @@ pub struct RestoreResult {
   pub source_snapshot: u32,
   pub safety_snapshot: u32,
   pub path: String,
+}
+
+#[derive(Serialize, Deserialize)]
+struct WireChangedPath {
+  path: String,
+  indicators: String,
+}
+impl From<ChangedPath> for WireChangedPath {
+  fn from(change: ChangedPath) -> Self {
+    Self {
+      path: change.path,
+      indicators: change.indicators,
+    }
+  }
+}
+impl TryFrom<WireChangedPath> for ChangedPath {
+  type Error = String;
+  fn try_from(change: WireChangedPath) -> Result<Self, Self::Error> {
+    crate::backend::parse_status(format!("{} {}", change.indicators, change.path).as_bytes())
+      .map_err(|error| error.to_string())?
+      .pop()
+      .ok_or_else(|| "empty change".into())
+  }
 }

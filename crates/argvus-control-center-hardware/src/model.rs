@@ -22,6 +22,8 @@ pub struct HardwareSnapshot {
   pub cpu: CpuInfo,
   pub memory: MemoryInfo,
   pub gpus: Vec<GpuInfo>,
+  /// Global probe results; no physical-device association is implied.
+  pub graphics: GraphicsInfo,
   pub battery: Option<BatteryInfo>,
   pub energy: EnergyInfo,
   pub devices: Vec<DeviceInfo>,
@@ -55,6 +57,12 @@ pub struct MemoryInfo {
   pub swap_total_kib: Option<u64>,
   pub swap_free_kib: Option<u64>,
 }
+#[derive(Debug, Clone, Default)]
+pub struct GraphicsInfo {
+  pub opengl_renderer: Option<String>,
+  pub vulkan_devices: Vec<String>,
+}
+
 #[derive(Debug, Clone, Default)]
 pub struct GpuInfo {
   pub index: usize,

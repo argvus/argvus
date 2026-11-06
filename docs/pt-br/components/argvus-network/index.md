@@ -52,3 +52,17 @@ argvus bluetoothctl manager
 Quando o kernel não lista nenhum controlador em `/sys/class/bluetooth`, `status` responde `status=no-controller` na hora, sem consultar o `bluetoothctl` (que, com o serviço parado, ficaria esperando o BlueZ). O módulo da taskbar e os cards do Control Panel leem esse mesmo status.
 
 Use `--help` em qualquer comando para ver opções e subcomandos adicionais específicos da sua versão instalada.
+
+O Control Center envia senhas Wi-Fi ao nmcli pela entrada padrão com `--ask`; as senhas ficam fora dos argumentos do processo e são ocultadas nos erros retornados pelo comando.
+
+Enquanto o diálogo de senha Wi-Fi está aberto, atualizações da busca preservam o SSID e o tipo de segurança selecionados. Se a rede desaparecer ou a segurança mudar, a confirmação é interrompida com um erro e exige uma nova seleção.
+
+DNS manual envia servidores IPv4 e IPv6 às respectivas configurações do NetworkManager antes de atualizar o arquivo do resolvedor. Symlinks de resolvedores gerenciados por serviços são preservados pela recusa de substituição do arquivo. O retorno bem-sucedido ao DNS automático restaura e remove o backup, permitindo que o próximo ciclo manual salve o estado atual do resolvedor.
+
+O fechamento do editor de perfis de rede aguarda a conclusão do trabalho atual, para que salvar ou excluir um perfil não seja interrompido pelo descarte do editor. Atualizações de consulta em segundo plano continuam canceláveis.
+
+Pedidos de conexão Wi-Fi compartilham a proteção das ações de rede: uma ação ou tarefa do editor de perfis em andamento termina antes que outra alteração possa começar. Mensagens de progresso e conclusão seguem o idioma selecionado.
+
+A confirmação de remoção Bluetooth mantém o endereço original do dispositivo mesmo quando a lista é atualizada. Porcentagens de bateria do bluetoothctl são reconhecidas, e consultas de detalhes usam concorrência limitada e timeouts individuais.
+
+Os campos de senha Wi-Fi, DNS manual e busca de rede aceitam colagem pelo terminal. Controles e quebras de linha colados são omitidos. Atalhos de caracteres com apenas Ctrl ou Alt que não são suportados não inserem letras. Os editores aceitam caracteres imprimíveis de AltGr codificados como Ctrl+Alt; Ctrl+S salva apenas sem Alt. O editor compartilhado mantém a coluna visual na navegação vertical e alinha a rolagem horizontal de caracteres largos.

@@ -106,3 +106,5 @@ argvus accounts name ghost "Ghost Account"
 - Run `argvus accounts --verbose ...` to print the steps of the command to stderr.
 
 For developer notes about the privilege boundary, see `docs/internal/argvus-accounts/`.
+
+When an administrator locks or removes the account configured for automatic login, the account provider first disables its greetd automatic-login entry. If that cleanup fails, the account operation is refused. If locking or removal later fails, automatic login remains disabled. Automatic login for another account is preserved; unlocking an account does not enable automatic login. Existing sessions are not closed and greetd is not restarted.

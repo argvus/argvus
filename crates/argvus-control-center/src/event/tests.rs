@@ -466,3 +466,87 @@ fn hardware_route_initialization_is_reachable() {
     argvus_control_center_hardware::HardwarePage::Cpu
   );
 }
+
+#[cfg(feature = "bluetooth")]
+#[test]
+fn quit_waits_for_an_action_even_after_leaving_its_page() {
+  for key in [
+    KeyEvent::new(KeyCode::Char('q'), KeyModifiers::NONE),
+    KeyEvent::new(KeyCode::Char('c'), KeyModifiers::CONTROL),
+  ] {
+    let mut app = App::new(InitialRoute::Home);
+    app.bluetooth.page = argvus_control_center_bluetooth::BluetoothPage::State;
+    app.bluetooth.handle(KeyCode::Tab);
+    app.bluetooth.handle(KeyCode::Enter);
+    assert!(app.bluetooth.has_pending_action());
+    handle(&mut app, Event::Key(key));
+    assert!(
+      !app.quit,
+      "must retain the application while an action is pending"
+    );
+    assert!(app.quit_blocked);
+    let deadline = std::time::Instant::now() + std::time::Duration::from_secs(2);
+    while app.has_pending_action() {
+      app.bluetooth.poll();
+      app.settings.poll();
+      app.settings.expire_status();
+      app.config.poll();
+      assert!(std::time::Instant::now() < deadline);
+      std::thread::yield_now();
+    }
+    assert!(!app.quit, "completion must preserve the result for review");
+    handle(&mut app, Event::Key(key));
+    assert!(app.quit);
+  }
+}
+
+#[cfg(feature = "network")]
+#[test]
+fn read_only_refresh_does_not_prevent_exit() {
+  let mut app = App::new(InitialRoute::Home);
+  app.network.reload();
+  handle(&mut app, press(KeyCode::Char('q')));
+  assert!(app.quit);
+}
+
+#[cfg(feature = "bluetooth")]
+#[test]
+fn blocked_exit_renders_a_translated_notice_in_both_languages() {
+  use argvus_i18n::{Lang, tr};
+  use ratatui::{Terminal, backend::TestBackend};
+  for lang in [Lang::for_locale("en-US"), Lang::for_locale("pt-BR")] {
+    let mut app = App::new(InitialRoute::Home);
+    app.lang = lang;
+    app.bluetooth.page = argvus_control_center_bluetooth::BluetoothPage::State;
+    app.bluetooth.handle(KeyCode::Tab);
+    app.bluetooth.handle(KeyCode::Enter);
+    handle(&mut app, press(KeyCode::Char('q')));
+    let mut terminal = Terminal::new(TestBackend::new(120, 40)).unwrap();
+    terminal
+      .draw(|frame| crate::ui::draw(&mut app, frame))
+      .unwrap();
+    let text: String = terminal
+      .backend()
+      .buffer()
+      .content()
+      .iter()
+      .map(|cell| cell.symbol())
+      .collect();
+    let notice = tr(lang, "control_center.quit_operation_pending");
+    assert!(!notice.starts_with("control_center."));
+    assert!(text.contains(notice), "{text}");
+  }
+}
+
+#[test]
+fn c11_altgr_c_does_not_trigger_global_ctrl_c() {
+  let mut app = App::new(InitialRoute::Home);
+  handle(
+    &mut app,
+    Event::Key(KeyEvent::new(
+      KeyCode::Char('c'),
+      KeyModifiers::CONTROL | KeyModifiers::ALT,
+    )),
+  );
+  assert!(!app.quit);
+}

@@ -2155,5 +2155,16 @@
   "control_center.snapshot.invalid": "Não foi possível validar os dados ou a solicitação de snapshot com segurança.",
   "control_center.snapshot.failed": "O Snapper não conseguiu concluir a operação.",
   "control_center.keybindings.action.ai": "Seletor de agentes de IA (pacote opcional argvus-ai)",
-  "control_center.taskbar_ai_agents": "Agentes de IA"
+  "control_center.taskbar_ai_agents": "Agentes de IA",
+  "control_center.snapshot.output_limit": "A saída excedeu o limite suportado.",
+  "control_center.snapshot.comparison_truncated": "Mostrando os primeiros caminhos alterados:",
+  "control_center.wifi_target_unavailable": "A rede Wi-Fi selecionada não está mais disponível. Busque as redes novamente antes de conectar.",
+  "control_center.snapshot.unsupported_paths": "Caminhos não suportados (ações indisponíveis):",
+  "control_center.transaction_output_truncated": "Parte da saída do processo foi omitida porque o limite de exibição foi atingido.",
+  "control_center.snapshot.package_update_busy": "O lock de transações de pacotes está ocupado. Aguarde a operação terminar antes de restaurar.",
+  "control_center.snapshot.restore_busy": "Outra restauração seletiva está em andamento. Aguarde sua conclusão.",
+  "control_center.snapshot.retention_fallback": "Valor alternativo do ARGVUS; opção ausente",
+  "control_center.quit_operation_pending": "Uma operação ainda está em andamento. Aguarde o término antes de sair.",
+  "control_center.hardware_session_opengl": "Renderizador OpenGL (sessão)",
+  "control_center.hardware_probe_vulkan_devices": "Dispositivos Vulkan (consulta)"
 }

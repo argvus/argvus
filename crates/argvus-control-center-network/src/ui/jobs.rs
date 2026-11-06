@@ -107,23 +107,27 @@ impl NetworkApp {
     changed
   }
 
-  pub(super) fn run_wifi(&mut self, index: usize, password: Option<String>) {
-    let Some(network) = self.snapshot.wifi.get(index).cloned() else {
+  pub(super) fn run_wifi(&mut self, network: WifiNetwork, password: Option<String>) {
+    if self.action.is_some() || self.editor_job.is_some() {
       return;
-    };
-    let cap = self.capabilities.clone();
-    self.status = Some(StatusMessage {
-      kind: StatusKind::Info,
-      text: tr(self.lang, "control_center.connecting").into(),
-    });
-    self.action = Some(self.jobs.spawn(move |_| {
-      Ok(
-        NetworkBackend::new(SystemProcessRunner, cap)
-          .connect_wifi(&network.ssid, password.as_deref())
-          .map(|_| "Conectado".into())
-          .map_err(|e| e.to_string()),
-      )
-    }));
+    }
+    if !self
+      .snapshot
+      .wifi
+      .iter()
+      .any(|current| current.ssid == network.ssid && current.security == network.security)
+    {
+      self.status = Some(StatusMessage {
+        kind: StatusKind::Error,
+        text: tr(self.lang, "control_center.wifi_target_unavailable").into(),
+      });
+      return;
+    }
+    self.action_with_status(
+      "control_center.connecting",
+      "control_center.connected_8b5cb3",
+      move |backend| backend.connect_wifi(&network.ssid, password.as_deref()),
+    );
   }
 
   /// The trailing Actions group of the list pages: `Refresh` (`r`).

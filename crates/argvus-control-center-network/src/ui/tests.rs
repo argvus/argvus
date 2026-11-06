@@ -345,3 +345,207 @@ fn interfaces_page_draws_one_menu_list() {
   assert!(text.contains("eno1"));
   assert!(!text.contains("[ "));
 }
+
+#[test]
+fn missing_wifi_target_does_not_submit_secret_to_replacement_network() {
+  let mut app = app();
+  with_network(&mut app);
+  app.connect_wifi(0);
+  app.snapshot.wifi.remove(0);
+  app.password = Some("secret-for-cafe".into());
+  app.handle_key(crossterm::event::KeyEvent::new(
+    crossterm::event::KeyCode::Enter,
+    crossterm::event::KeyModifiers::NONE,
+  ));
+  assert!(app.action.is_none());
+  assert!(matches!(
+    app.status.as_ref().map(|status| status.kind),
+    Some(StatusKind::Error)
+  ));
+}
+
+#[test]
+fn wifi_password_target_survives_scan_reordering() {
+  let mut app = app();
+  with_network(&mut app);
+  app.connect_wifi(0);
+  app.snapshot.wifi.swap(0, 1);
+  app.snapshot.wifi[1].signal = Some(90);
+  let target = app.pending_wifi.as_ref().unwrap();
+  assert_eq!(target.ssid, "cafe");
+  assert_eq!(target.security, "WPA2");
+  let target = app.pending_wifi.take().unwrap();
+  app.run_wifi(target, Some("secret-for-cafe".into()));
+  assert!(app.action.is_some());
+}
+
+#[test]
+fn wifi_security_change_invalidates_password_target_in_both_languages() {
+  for locale in ["en-US", "pt-BR"] {
+    let mut app = app();
+    app.lang = Lang::for_locale(locale);
+    with_network(&mut app);
+    app.connect_wifi(0);
+    app.snapshot.wifi[0].security = "WEP".into();
+    let target = app.pending_wifi.take().unwrap();
+    app.run_wifi(target, Some("secret-for-cafe".into()));
+    assert!(app.action.is_none());
+    let text = &app.status.as_ref().unwrap().text;
+    assert_eq!(text, tr(app.lang, "control_center.wifi_target_unavailable"));
+    assert!(!text.contains("control_center."));
+  }
+}
+
+#[test]
+fn closing_editor_does_not_cancel_or_discard_inflight_work() {
+  let mut app = app();
+  app.page = NetworkPage::Editor;
+  let (release, wait) = std::sync::mpsc::channel();
+  app.editor_job = Some(app.jobs.spawn(move |_| {
+    wait.recv().unwrap();
+    Ok(Ok(EditorResult::PublicKey("completed".into())))
+  }));
+  app.close_editor();
+  release.send(()).unwrap();
+  assert!(app.editor_job.is_some());
+  assert_eq!(app.page, NetworkPage::Editor);
+  let started = std::time::Instant::now();
+  while app.editor_job.is_some() {
+    app.poll();
+    assert!(started.elapsed() < std::time::Duration::from_secs(2));
+    std::thread::yield_now();
+  }
+  assert!(app.status.is_none());
+}
+
+#[test]
+fn wifi_connection_does_not_replace_an_inflight_action() {
+  let mut app = app();
+  with_network(&mut app);
+  let (release, wait) = std::sync::mpsc::channel();
+  app.action = Some(app.jobs.spawn(move |_| {
+    wait.recv().unwrap();
+    Ok(Ok("original-result".into()))
+  }));
+  app.status = Some(StatusMessage {
+    kind: StatusKind::Info,
+    text: "original-progress".into(),
+  });
+  app.run_wifi(app.snapshot.wifi[0].clone(), Some("secret".into()));
+  release.send(()).unwrap();
+  assert_eq!(app.status.as_ref().unwrap().text, "original-progress");
+  let started = std::time::Instant::now();
+  while app.action.is_some() {
+    app.poll();
+    assert!(started.elapsed() < std::time::Duration::from_secs(2));
+    std::thread::yield_now();
+  }
+  assert_eq!(app.status.as_ref().unwrap().text, "original-result");
+}
+
+#[test]
+fn wifi_action_progress_and_success_are_translated() {
+  for locale in ["en-US", "pt-BR"] {
+    let mut app = app();
+    app.lang = Lang::for_locale(locale);
+    app.action_with_status(
+      "control_center.connecting",
+      "control_center.connected_8b5cb3",
+      |_| Ok(()),
+    );
+    assert!(
+      app
+        .status
+        .as_ref()
+        .unwrap()
+        .text
+        .starts_with(tr(app.lang, "control_center.connecting"))
+    );
+    let started = std::time::Instant::now();
+    while app.action.is_some() {
+      app.poll();
+      assert!(started.elapsed() < std::time::Duration::from_secs(2));
+      std::thread::yield_now();
+    }
+    assert_eq!(
+      app.status.as_ref().unwrap().text,
+      tr(app.lang, "control_center.connected_8b5cb3")
+    );
+    assert!(
+      !app
+        .status
+        .as_ref()
+        .unwrap()
+        .text
+        .contains("control_center.")
+    );
+  }
+}
+
+#[test]
+fn wifi_does_not_start_during_editor_work() {
+  let mut app = app();
+  with_network(&mut app);
+  let (release, wait) = std::sync::mpsc::channel();
+  app.editor_job = Some(app.jobs.spawn(move |_| {
+    wait.recv().unwrap();
+    Ok(Ok(EditorResult::PublicKey("done".into())))
+  }));
+  app.run_wifi(app.snapshot.wifi[0].clone(), None);
+  assert!(app.action.is_none());
+  assert!(app.editor_job.is_some());
+  release.send(()).unwrap();
+}
+
+#[test]
+fn pending_network_and_editor_actions_block_exit_but_refresh_does_not() {
+  let mut app = app();
+  app.reload();
+  assert!(!app.has_pending_action());
+  app.action = Some(app.jobs.spawn(|_| Ok(Ok("done".into()))));
+  assert!(app.has_pending_action());
+  let deadline = std::time::Instant::now() + std::time::Duration::from_secs(2);
+  while app.has_pending_action() {
+    app.poll();
+    assert!(std::time::Instant::now() < deadline);
+    std::thread::yield_now();
+  }
+  app.editor_job = Some(
+    app
+      .jobs
+      .spawn(|_| Ok(Ok(EditorResult::PublicKey("key".into())))),
+  );
+  assert!(app.has_pending_action());
+  while app.has_pending_action() {
+    app.poll();
+    assert!(std::time::Instant::now() < deadline);
+    std::thread::yield_now();
+  }
+}
+
+#[test]
+fn c11_simple_fields_preserve_modifiers_and_accept_paste() {
+  use crossterm::event::KeyModifiers;
+  for field in 0..3 {
+    let mut app = app();
+    match field {
+      0 => app.password = Some("start".into()),
+      1 => app.dns_input = Some("start".into()),
+      _ => app.search = Some("start".into()),
+    }
+    app.handle_key(KeyEvent::new(KeyCode::Char('w'), KeyModifiers::CONTROL));
+    let value = |app: &NetworkApp| match field {
+      0 => app.password.clone().unwrap(),
+      1 => app.dns_input.clone().unwrap(),
+      _ => app.search.clone().unwrap(),
+    };
+    assert_eq!(value(&app), "start", "field {field}");
+    app.paste("é\r\n\t\u{1b}x");
+    assert_eq!(value(&app), "startéx", "field {field}");
+    app.handle_key(KeyEvent::new(
+      KeyCode::Char('@'),
+      KeyModifiers::CONTROL | KeyModifiers::ALT,
+    ));
+    assert_eq!(value(&app), "startéx@", "field {field}");
+  }
+}

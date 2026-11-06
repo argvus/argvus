@@ -333,3 +333,98 @@ fn snapshot_avatar_is_the_deployed_face_path_or_empty() {
   std::fs::write(&face, b"png").expect("avatar file");
   assert_eq!(avatar_of(&info), face.display().to_string());
 }
+
+#[test]
+fn p9_lock_and_delete_clear_autologin_before_shadow_command() {
+  for (program, args) in [
+    ("/usr/bin/usermod", vec!["--lock", "--", "alice"]),
+    ("/usr/bin/userdel", vec!["--remove", "--", "alice"]),
+  ] {
+    let directory = tempfile::tempdir().unwrap();
+    let path = directory.path().join("config.toml");
+    std::fs::write(&path, "# preserved\n[default_session]\nuser = \"greeter\"\n[initial_session]\nuser = \"alice\"\ncommand = \"session\"\n").unwrap();
+    let mut called = false;
+    disable_account(
+      "alice",
+      program,
+      &args,
+      &|_| Ok(()),
+      &mut |user| autologin::clear_user_at(&path, user),
+      &mut |actual, actual_args| {
+        assert!(
+          !std::fs::read_to_string(&path)
+            .unwrap()
+            .contains("[initial_session]")
+        );
+        assert_eq!(actual, program);
+        assert_eq!(actual_args, args);
+        called = true;
+        Ok(())
+      },
+    )
+    .unwrap();
+    assert!(called);
+    assert!(
+      std::fs::read_to_string(&path)
+        .unwrap()
+        .starts_with("# preserved\n[default_session]")
+    );
+  }
+}
+
+#[test]
+fn p9_autologin_cleanup_failure_prevents_account_mutation() {
+  assert!(
+    disable_account(
+      "alice",
+      "/usr/bin/userdel",
+      &["--", "alice"],
+      &|_| Ok(()),
+      &mut |_| Err(invalid("cleanup failed")),
+      &mut |_, _| panic!("must not mutate the account")
+    )
+    .is_err()
+  );
+}
+
+#[test]
+fn p9_protection_failure_precedes_autologin_cleanup() {
+  assert!(
+    disable_account(
+      "root",
+      "/usr/bin/userdel",
+      &["--", "root"],
+      &|_| Err(invalid("protected account")),
+      &mut |_| panic!("must not clear autologin"),
+      &mut |_, _| panic!("must not mutate account")
+    )
+    .is_err()
+  );
+}
+
+#[test]
+fn p9_failed_shadow_operation_does_not_reenable_autologin() {
+  let directory = tempfile::tempdir().unwrap();
+  let path = directory.path().join("config.toml");
+  std::fs::write(
+    &path,
+    "[initial_session]\nuser = \"alice\"\ncommand = \"session\"\n",
+  )
+  .unwrap();
+  assert!(
+    disable_account(
+      "alice",
+      "/usr/bin/userdel",
+      &["--", "alice"],
+      &|_| Ok(()),
+      &mut |user| autologin::clear_user_at(&path, user),
+      &mut |_, _| Err(invalid("userdel failed"))
+    )
+    .is_err()
+  );
+  assert!(
+    !std::fs::read_to_string(&path)
+      .unwrap()
+      .contains("[initial_session]")
+  );
+}

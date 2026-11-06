@@ -38,7 +38,7 @@ use rows::action_label;
 
 #[derive(Debug, Clone)]
 enum Pending {
-  Action(String, String),
+  Action(String, String, bool),
 }
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 /// Identifies the rows of the unit lists (System, User, Failed) and the
@@ -51,6 +51,7 @@ pub struct ServicesApp {
   pub page: ServicePage,
   detail_parent: ServicePage,
   detail_unit: Option<String>,
+  detail_scope: Option<String>,
   selected: usize,
   units: Vec<Unit>,
   logs: Vec<JournalEntry>,
@@ -109,6 +110,11 @@ impl UnitFilter {
   }
 }
 impl ServicesApp {
+  /// Whether exiting could abandon an operation whose result is still pending.
+  pub fn has_pending_action(&self) -> bool {
+    self.action.is_some()
+  }
+
   /// Replaces the semantic theme used by this page.
   pub fn set_theme(&mut self, theme: &Theme) {
     self.theme = theme.clone();
@@ -119,6 +125,7 @@ impl ServicesApp {
       page: ServicePage::Home,
       detail_parent: ServicePage::System,
       detail_unit: None,
+      detail_scope: None,
       selected: 0,
       units: vec![],
       logs: vec![],
@@ -179,6 +186,10 @@ impl ServicesApp {
       }
       ServicePage::System | ServicePage::User | ServicePage::Failed => {
         if self.filtered().get(self.selected).is_some() {
+          self.detail_scope = self
+            .filtered()
+            .get(self.selected)
+            .map(|unit| unit.scope.clone());
           self.detail_parent = self.page;
           self.detail_unit = self
             .filtered()
@@ -208,7 +219,11 @@ impl ServicesApp {
     ) && let Some(u) = self.detail_or_selected_unit()
       && can_action(a, u)
     {
-      self.pending = Some(Pending::Action(a.into(), u.name.clone()))
+      let user = u.scope == "user"
+        || (u.scope.is_empty()
+          && (self.page == ServicePage::User
+            || (self.page == ServicePage::Detail && self.detail_parent == ServicePage::User)));
+      self.pending = Some(Pending::Action(a.into(), u.name.clone(), user))
     }
   }
   fn open_logs(&mut self) {
@@ -231,6 +246,11 @@ impl ServicesApp {
     self
       .units
       .iter()
+      .filter(|u| match self.page {
+        ServicePage::System => u.scope != "user",
+        ServicePage::User => u.scope.is_empty() || u.scope == "user",
+        _ => true,
+      })
       .filter(|u| self.page != ServicePage::Failed || u.failed())
       .filter(|u| match self.filter {
         UnitFilter::All => true,
@@ -403,11 +423,18 @@ impl ServicesApp {
     actions
   }
   fn detail_or_selected_unit(&self) -> Option<&Unit> {
-    self
-      .detail_unit
-      .as_deref()
-      .and_then(|name| self.units.iter().find(|unit| unit.name == name))
-      .or_else(|| self.filtered().get(self.selected).copied())
+    if self.page != ServicePage::Detail {
+      return self.filtered().get(self.selected).copied();
+    }
+    self.detail_unit.as_deref().and_then(|name| {
+      self.units.iter().find(|unit| {
+        unit.name == name
+          && self
+            .detail_scope
+            .as_ref()
+            .is_none_or(|scope| &unit.scope == scope)
+      })
+    })
   }
 }
 /// Width of the Active column in the unit lists; Enabled starts after it.

@@ -160,7 +160,11 @@ pub(super) fn open_observers() -> io::Result<(Vec<PathBuf>, Vec<Observer>)> {
 /// Waits until a descriptor on one of `cards` becomes DRM master and returns
 /// it. An observer that becomes master is taken out of `observers`; its
 /// descriptor is returned without being closed.
-pub(super) fn acquire_card(cards: &[PathBuf], observers: &mut Vec<Observer>) -> io::Result<RawFd> {
+pub(super) fn acquire_card(
+  cards: &[PathBuf],
+  observers: &mut Vec<Observer>,
+  preferred_fd: Option<RawFd>,
+) -> io::Result<RawFd> {
   let deadline = Instant::now() + Duration::from_secs(15);
   loop {
     for observer in observers.iter_mut() {
@@ -176,13 +180,15 @@ pub(super) fn acquire_card(cards: &[PathBuf], observers: &mut Vec<Observer>) -> 
     }
     // An observer opened while no process held DRM master became master
     // itself, and then no new descriptor can.
-    if let Some(index) = observers
-      .iter()
-      .position(|observer| unsafe { drmSetMaster(observer.file.as_raw_fd()) } == 0)
-    {
+    if let Some(index) = observers.iter().position(|observer| {
+      preferred_fd.is_none_or(|fd| fd == observer.file.as_raw_fd())
+        && unsafe { drmSetMaster(observer.file.as_raw_fd()) } == 0
+    }) {
       return Ok(observers.swap_remove(index).file.into_raw_fd());
     }
-    for card in cards {
+    // A prepared dumb buffer is local to its observer's open file description.
+    // Wait for that descriptor; another GPU or a new open cannot use it.
+    for card in cards.iter().filter(|_| preferred_fd.is_none()) {
       let Ok(file) = OpenOptions::new().read(true).write(true).open(card) else {
         continue;
       };

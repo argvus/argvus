@@ -5,6 +5,11 @@ mod render;
 mod rows;
 
 impl NetworkApp {
+  /// Includes editor tasks because saving and loading share the same job slot.
+  pub fn has_pending_action(&self) -> bool {
+    self.action.is_some() || self.editor_job.is_some()
+  }
+
   pub fn onboarding_ready(&self) -> bool {
     self.action.is_none()
       && self.editor.is_none()
@@ -21,7 +26,7 @@ mod editor;
 
 use crate::{
   backend::{NetworkBackend, VpnPlugin},
-  model::{NetworkPage, NetworkSnapshot},
+  model::{NetworkPage, NetworkSnapshot, WifiNetwork},
   profile::{ConnectionKind, PeerField, schema::SectionId},
 };
 use argvus_control_center_core::navigation::HomeCardId;
@@ -68,7 +73,7 @@ pub struct NetworkApp {
   theme: Theme,
   capabilities: Capabilities,
   password: Option<String>,
-  pending_wifi: Option<usize>,
+  pending_wifi: Option<WifiNetwork>,
   dns_input: Option<String>,
   search: Option<String>,
   status: Option<StatusMessage>,
@@ -228,15 +233,24 @@ impl NetworkApp {
       + Send
       + 'static,
   {
-    if self.action.is_some() {
+    self.action_with_status(label, label, task);
+  }
+
+  fn action_with_status<F>(&mut self, progress: &'static str, success: &'static str, task: F)
+  where
+    F: FnOnce(NetworkBackend<SystemProcessRunner>) -> Result<(), crate::backend::NetworkError>
+      + Send
+      + 'static,
+  {
+    if self.action.is_some() || self.editor_job.is_some() {
       return;
     }
     self.cancel_refresh_for_action();
     let cap = self.capabilities.clone();
-    let success = self.action_label(label);
+    let success = tr(self.lang, success).to_owned();
     self.status = Some(StatusMessage {
       kind: StatusKind::Info,
-      text: format!("{}...", self.action_label(label)),
+      text: format!("{}...", tr(self.lang, progress)),
     });
     self.action = Some(self.jobs.spawn(move |_| {
       Ok(
@@ -303,10 +317,10 @@ impl NetworkApp {
       && network.security != "--"
       && !network.security.eq_ignore_ascii_case("none")
     {
-      self.pending_wifi = Some(index);
+      self.pending_wifi = Some(network);
       self.password = Some(String::new());
     } else {
-      self.run_wifi(index, None);
+      self.run_wifi(network, None);
     }
   }
   /// Index into the snapshot of the interface, Wi-Fi network or VPN shown by
@@ -420,12 +434,16 @@ impl NetworkApp {
       NetworkPage::Detail(i) => self.disconnect_interface(i),
       NetworkPage::WifiDetail(i) => {
         if let Some(name) = self.snapshot.wifi.get(i).map(|w| w.ssid.clone()) {
-          self.action("Desconectando", move |b| b.connection_action(&name, "down"));
+          self.action("control_center.disconnecting", move |b| {
+            b.connection_action(&name, "down")
+          });
         }
       }
       NetworkPage::VpnDetail(i) => {
         if let Some(name) = self.snapshot.vpn.get(i).map(|v| v.name.clone()) {
-          self.action("Desconectando", move |b| b.connection_action(&name, "down"));
+          self.action("control_center.disconnecting", move |b| {
+            b.connection_action(&name, "down")
+          });
         }
       }
       _ => {}
@@ -439,17 +457,19 @@ impl NetworkApp {
       .get(i)
       .and_then(|v| v.connection.clone())
     {
-      self.action("Conectando", move |b| {
+      self.action("control_center.connecting", move |b| {
         b.connection_action(&connection, "up")
       });
     } else if let Some(name) = self.snapshot.interfaces.get(i).map(|v| v.name.clone()) {
-      self.action("Conectando", move |b| b.device_action(&name, "connect"));
+      self.action("control_center.connecting", move |b| {
+        b.device_action(&name, "connect")
+      });
     }
   }
   /// Takes an interface device down.
   fn disconnect_interface(&mut self, i: usize) {
     if let Some(name) = self.snapshot.interfaces.get(i).map(|v| v.name.clone()) {
-      self.action("Desconectando", move |b| {
+      self.action("control_center.disconnecting", move |b| {
         b.device_action(&name, "disconnect")
       });
     }
@@ -457,7 +477,9 @@ impl NetworkApp {
   /// Brings a VPN connection up.
   fn connect_vpn(&mut self, i: usize) {
     if let Some(name) = self.snapshot.vpn.get(i).map(|v| v.name.clone()) {
-      self.action("Conectando", move |b| b.connection_action(&name, "up"));
+      self.action("control_center.connecting", move |b| {
+        b.connection_action(&name, "up")
+      });
     }
   }
   fn forget_selected(&mut self) {
@@ -476,14 +498,16 @@ impl NetworkApp {
         .get(i)
         .map(|network| network.ssid.clone())
     {
-      self.action("Esquecendo", move |backend| {
+      self.action("control_center.forgetting", move |backend| {
         backend.connection_action(&name, "delete")
       });
     }
   }
   fn toggle_wifi(&mut self) {
     let enabled = self.snapshot.wifi_enabled != Some(true);
-    self.action("Alterando Wi-Fi", move |b| b.set_wifi_enabled(enabled));
+    self.action("control_center.changing_wifi", move |b| {
+      b.set_wifi_enabled(enabled)
+    });
   }
   fn apply_dns(&mut self, raw: &str) {
     let values: Vec<String> = raw
@@ -513,7 +537,7 @@ impl NetworkApp {
     }
   }
   fn apply_dns_privileged(&mut self, connection: String, values: Vec<String>, automatic: bool) {
-    if self.action.is_some() {
+    if self.action.is_some() || self.editor_job.is_some() {
       return;
     }
     self.cancel_refresh_for_action();
@@ -530,7 +554,7 @@ impl NetworkApp {
     let lang = self.lang;
     self.status = Some(StatusMessage {
       kind: StatusKind::Info,
-      text: self.action_label("Aplicando DNS"),
+      text: tr(self.lang, "control_center.applying_dns").into(),
     });
     self.action = Some(self.jobs.spawn(move |_| {
       Ok(apply_dns_privileged(

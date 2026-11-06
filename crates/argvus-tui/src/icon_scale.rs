@@ -46,8 +46,12 @@ fn should_scale_icons() -> bool {
 
 /// Parses numerator and denominator from ARGVUS_ICON_SCALE=<n>/<d>, with defaults.
 fn parse_scale_ratio() -> (u32, u32) {
-  match std::env::var("ARGVUS_ICON_SCALE") {
-    Ok(s) if s.contains('/') => {
+  parse_scale_ratio_value(std::env::var("ARGVUS_ICON_SCALE").ok().as_deref())
+}
+
+fn parse_scale_ratio_value(value: Option<&str>) -> (u32, u32) {
+  match value {
+    Some(s) if s.contains('/') => {
       let parts: Vec<&str> = s.split('/').collect();
       if let (Some(n_str), Some(d_str)) = (parts.first().copied(), parts.get(1).copied())
         && let (Ok(n), Ok(d)) = (n_str.parse::<u32>(), d_str.parse::<u32>())
@@ -301,17 +305,30 @@ mod tests {
 
   #[test]
   fn test_parse_scale_ratio_default() {
-    unsafe { std::env::remove_var("ARGVUS_ICON_SCALE") };
-    let (n, d) = parse_scale_ratio();
+    let (n, d) = parse_scale_ratio_value(None);
     assert_eq!((n, d), (3, 4));
   }
 
   #[test]
   fn test_parse_scale_ratio_custom() {
-    unsafe { std::env::set_var("ARGVUS_ICON_SCALE", "2/3") };
-    let (n, d) = parse_scale_ratio();
+    let (n, d) = parse_scale_ratio_value(Some("2/3"));
     assert_eq!((n, d), (2, 3));
-    unsafe { std::env::remove_var("ARGVUS_ICON_SCALE") };
+  }
+
+  #[test]
+  fn scale_ratio_fallbacks_are_independent_of_other_test_inputs() {
+    for value in [
+      None,
+      Some(""),
+      Some("off"),
+      Some("0/3"),
+      Some("3/3"),
+      Some("2/16"),
+      Some("a/b"),
+    ] {
+      assert_eq!(parse_scale_ratio_value(value), (3, 4));
+      assert_eq!(parse_scale_ratio_value(Some("2/3")), (2, 3));
+    }
   }
 
   #[test]

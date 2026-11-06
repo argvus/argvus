@@ -1,6 +1,8 @@
 //! Closed Snapper actions; this entry is reached only through validated system-settings.
 use argvus_control_center_core::process::SystemProcessRunner;
-use argvus_control_center_snapshot::backend::{SnapshotBackend, validate_helper};
+use argvus_control_center_snapshot::backend::{
+  SnapshotBackend, parse_retention_configdata, validate_helper,
+};
 
 pub(super) fn run(action: &str, values: &[String]) -> Result<(), String> {
   validate_helper(action, values).map_err(|error| error.to_string())?;
@@ -40,9 +42,10 @@ pub(super) fn run(action: &str, values: &[String]) -> Result<(), String> {
       ))
     }
     "get-retention" => serde_json::to_string(&backend.retention(&values[0])),
-    "set-retention" => {
-      serde_json::to_string(&backend.set_retention(&values[0], &parse_changes(&values[1])?))
-    }
+    "set-retention" => serde_json::to_string(&backend.set_retention(
+      &values[0],
+      &parse_retention_configdata(&values[1]).map_err(|error| error.to_string())?,
+    )),
     "cleanup" => {
       let algorithms = values[1..]
         .iter()
@@ -56,16 +59,4 @@ pub(super) fn run(action: &str, values: &[String]) -> Result<(), String> {
   .map_err(|error| error.to_string())?;
   println!("{reply}");
   Ok(())
-}
-
-fn parse_changes(configdata: &str) -> Result<Vec<(String, String)>, String> {
-  configdata
-    .split(' ')
-    .map(|pair| {
-      let (key, value) = pair
-        .split_once('=')
-        .ok_or_else(|| "invalid configdata".to_owned())?;
-      Ok((key.to_owned(), value.to_owned()))
-    })
-    .collect()
 }

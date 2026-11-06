@@ -614,3 +614,74 @@ fn history_is_read_only_and_has_no_cursor() {
   app.handle(KeyCode::Enter);
   assert_eq!(app.page, PackagesPage::History);
 }
+
+#[test]
+fn stale_package_query_does_not_stamp_the_current_page_key() {
+  let mut app = app();
+  app.page = OFFICIAL_REMOVE;
+  app.start_reload(true);
+  app.job = Some(
+    app
+      .jobs
+      .spawn(|_| Ok(Ok(Loaded::Packages(vec![package("stale-result", true)])))),
+  );
+  app.page = OFFICIAL_UPDATE;
+  let started = std::time::Instant::now();
+  while !app.poll() {
+    assert!(started.elapsed() < std::time::Duration::from_secs(2));
+    std::thread::yield_now();
+  }
+  assert!(
+    !app
+      .packages
+      .iter()
+      .any(|package| package.name == "stale-result")
+  );
+  assert!(app.last_loaded.is_none());
+}
+
+#[test]
+fn stale_package_error_is_discarded_after_search_changes() {
+  let mut app = app();
+  app.page = OFFICIAL_INSTALL;
+  app.query = "old".into();
+  app.start_reload(true);
+  app.job = Some(app.jobs.spawn(|_| Ok(Err("stale query error".into()))));
+  app.query = "new".into();
+  let started = std::time::Instant::now();
+  while !app.poll() {
+    assert!(started.elapsed() < std::time::Duration::from_secs(2));
+    std::thread::yield_now();
+  }
+  assert!(app.last_loaded.is_none());
+  assert_eq!(app.loading_key.as_deref(), Some(app.reload_key().as_str()));
+  assert!(
+    !app
+      .status
+      .as_ref()
+      .unwrap()
+      .text
+      .contains("stale query error")
+  );
+}
+
+#[test]
+fn matching_package_result_stamps_its_spawn_key() {
+  let mut app = app();
+  app.page = OFFICIAL_REMOVE;
+  app.start_reload(true);
+  let expected = app.reload_key();
+  app.job = Some(
+    app
+      .jobs
+      .spawn(|_| Ok(Ok(Loaded::Packages(vec![package("current", true)])))),
+  );
+  let started = std::time::Instant::now();
+  while !app.poll() {
+    assert!(started.elapsed() < std::time::Duration::from_secs(2));
+    std::thread::yield_now();
+  }
+  assert_eq!(app.last_loaded.as_ref().unwrap().0, expected);
+  assert_eq!(app.packages[0].name, "current");
+  assert!(app.loading_key.is_none());
+}

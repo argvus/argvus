@@ -41,7 +41,7 @@ pub fn run(args: &[String]) -> Result<(), String> {
   ensure_root(args)?;
   match args {
     [area, action, value] if area == "timezone" && action == "set" => {
-      run_command("timedatectl", &["set-timezone", value])
+      run_command("timedatectl", &["set-timezone", "--", value])
     }
     [area, action, value] if area == "hostname" && action == "set" => {
       host::validate_hostname(value)?;
@@ -57,13 +57,13 @@ pub fn run(args: &[String]) -> Result<(), String> {
       set_generated_locales(values)
     }
     [area, action, layout] if area == "keyboard" && action == "layout" => {
-      run_command("localectl", &["set-x11-keymap", layout])
+      run_command("localectl", &["set-x11-keymap", "--", layout])
     }
     [area, action, layout, variant] if area == "keyboard" && action == "variant" => {
-      run_command("localectl", &["set-x11-keymap", layout, "", variant])
+      run_command("localectl", &["set-x11-keymap", "--", layout, "", variant])
     }
     [area, action, keymap] if area == "keyboard" && action == "console-keymap" => {
-      run_command("localectl", &["set-keymap", keymap])
+      run_command("localectl", &["set-keymap", "--", keymap])
     }
     [area, action, unit] if area == "service" => {
       let args = service_args(action, unit)?;
@@ -116,6 +116,9 @@ fn validate_args(args: &[String]) -> Result<(), String> {
         .ok_or_else(|| "invalid date/time (expected YYYY-MM-DD HH:MM:SS)".to_string())
     }
     [area, action, values @ ..] if area == "locale" && action == "set-generated" => {
+      if values.is_empty() {
+        return Err("select at least one locale".into());
+      }
       for value in values {
         let Some((name, encoding)) = value.split_once(' ') else {
           return Err(format!("invalid locale.gen entry: {value}"));
@@ -175,6 +178,9 @@ fn validate_args(args: &[String]) -> Result<(), String> {
 }
 
 fn set_generated_locales(values: &[String]) -> Result<(), String> {
+  if values.is_empty() {
+    return Err("select at least one locale".into());
+  }
   let path = Path::new(LOCALE_GEN);
   let contents = fs::read_to_string(path).map_err(|error| format!("{LOCALE_GEN}: {error}"))?;
   let entries = locale::parse_locale_gen(&contents);
@@ -197,18 +203,54 @@ fn set_generated_locales(values: &[String]) -> Result<(), String> {
 
 fn write_atomic(path: &Path, contents: &str) -> Result<(), String> {
   let metadata = fs::metadata(path).map_err(|error| error.to_string())?;
+  replace_atomic(path, contents, metadata.permissions())
+}
+
+pub(super) fn replace_atomic(
+  path: &Path,
+  contents: &str,
+  permissions: fs::Permissions,
+) -> Result<(), String> {
+  use std::os::{fd::AsRawFd, unix::fs::OpenOptionsExt};
+  let reject_symlink = || match fs::symlink_metadata(path) {
+    Ok(metadata) if metadata.file_type().is_symlink() => {
+      Err("refusing to replace a symlink".to_owned())
+    }
+    Ok(_) => Ok(()),
+    Err(error) if error.kind() == std::io::ErrorKind::NotFound => Ok(()),
+    Err(error) => Err(error.to_string()),
+  };
+  reject_symlink()?;
   let tmp = path.with_extension("argvus-control-center.tmp");
-  {
-    let mut file = fs::File::create(&tmp).map_err(|error| error.to_string())?;
-    file
-      .set_permissions(fs::Permissions::from_mode(metadata.permissions().mode()))
-      .map_err(|error| error.to_string())?;
+  let mut file = fs::OpenOptions::new()
+    .write(true)
+    .create_new(true)
+    .mode(0o600)
+    .custom_flags(libc::O_NOFOLLOW)
+    .open(&tmp)
+    .map_err(|error| error.to_string())?;
+  let result = (|| {
+    if let Err(error) = file.set_permissions(permissions) {
+      let mut statistics = std::mem::MaybeUninit::<libc::statfs>::uninit();
+      // SAFETY: descriptor is live and statistics points to writable statfs storage.
+      let fat = unsafe { libc::fstatfs(file.as_raw_fd(), statistics.as_mut_ptr()) } == 0
+        // SAFETY: evaluated only after successful initialization by fstatfs.
+        && matches!(unsafe { statistics.assume_init() }.f_type, libc::MSDOS_SUPER_MAGIC | 0x2011bab0);
+      if error.raw_os_error() != Some(libc::EPERM) || !fat {
+        return Err(error.to_string());
+      }
+    }
     file
       .write_all(contents.as_bytes())
+      .and_then(|()| file.sync_all())
       .map_err(|error| error.to_string())?;
-    file.sync_all().map_err(|error| error.to_string())?;
+    reject_symlink()?;
+    fs::rename(&tmp, path).map_err(|error| error.to_string())
+  })();
+  if result.is_err() {
+    let _ = fs::remove_file(&tmp);
   }
-  fs::rename(&tmp, path).map_err(|error| error.to_string())
+  result
 }
 
 fn run_command(command: &str, args: &[&str]) -> Result<(), String> {

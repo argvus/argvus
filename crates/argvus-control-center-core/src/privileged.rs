@@ -39,15 +39,23 @@ impl PrivilegedRequest {
     {
       return Err("privileged domain and action must be non-empty and printable".into());
     }
+    if self.domain == "package" && self.action == "mirror-apply" {
+      let [content] = self.arguments.as_slice() else {
+        return Err("invalid mirrorlist".into());
+      };
+      crate::pacman_conf::validate_mirrorlist(content)?;
+    }
     // File contents written by root (a mirror list, a repository
     // configuration) are the only arguments that may span lines.
     let file_payload =
       self.domain == "package" && matches!(self.action.as_str(), "mirror-apply" | "repo-add");
     if self.arguments.iter().any(|value| {
       value.len() > 256 * 1024
-        || value
-          .chars()
-          .any(|character| character.is_control() && !(file_payload && character == '\n'))
+        || value.chars().any(|character| {
+          character.is_control()
+            && !(file_payload
+              && (character == '\n' || (self.action == "mirror-apply" && character == '\t')))
+        })
     }) {
       return Err("privileged arguments must not contain control characters".into());
     }
@@ -153,6 +161,7 @@ mod tests {
         stderr: Vec::new(),
         status: Some(0),
         timed_out: false,
+        cancelled: false,
       })
     }
   }

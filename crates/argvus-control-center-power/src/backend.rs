@@ -89,12 +89,12 @@ fn detect_is_laptop() -> bool {
 /// Reads a logind `Key = value`, honoring the ARGVUS drop-in first, then the
 /// main config file, then the documented systemd defaults.
 fn logind_value(key: &str) -> Option<String> {
-  let drop_in = fs::read_to_string(LOGIND_DROP_IN).ok()?;
-  if let Some(value) = parse_logind_key(&drop_in, key) {
-    return Some(value);
-  }
-  let main = fs::read_to_string(LOGIND_MAIN).ok()?;
-  parse_logind_key(&main, key)
+  logind_value_using(key, |path| fs::read_to_string(path).ok())
+}
+fn logind_value_using(key: &str, mut read: impl FnMut(&str) -> Option<String>) -> Option<String> {
+  read(LOGIND_DROP_IN)
+    .and_then(|content| parse_logind_key(&content, key))
+    .or_else(|| read(LOGIND_MAIN).and_then(|content| parse_logind_key(&content, key)))
 }
 
 fn parse_logind_key(content: &str, key: &str) -> Option<String> {
@@ -116,25 +116,40 @@ fn systemctl_can(command: &str) -> bool {
 }
 
 pub fn set_lid(context: LidContext, behavior: PowerBehavior) -> Result<(), String> {
+  set_lid_using(context, behavior, persist_canonical, privileged_power)
+}
+fn set_lid_using(
+  context: LidContext,
+  behavior: PowerBehavior,
+  persist: impl FnOnce(&str, &str) -> Result<(), String>,
+  apply: impl FnOnce(&str, Vec<String>, &str) -> Result<(), String>,
+) -> Result<(), String> {
   let (context, key, pointer) = match context {
     LidContext::Battery => ("battery", "HandleLidSwitch", "/power/lid_battery"),
     LidContext::Ac => ("ac", "HandleLidSwitchExternalPower", "/power/lid_ac"),
   };
-  persist_canonical(pointer, behavior.value())?;
-  privileged_power(
+  apply(
     "set-lid",
     vec![context.into(), behavior.value().into()],
     &format!("{key}={}", behavior.value()),
-  )
+  )?;
+  persist(pointer, behavior.value())
 }
 
 pub fn set_power_button(behavior: PowerButtonBehavior) -> Result<(), String> {
-  persist_canonical("/power/power_button", behavior.value())?;
-  privileged_power(
+  set_power_button_using(behavior, persist_canonical, privileged_power)
+}
+fn set_power_button_using(
+  behavior: PowerButtonBehavior,
+  persist: impl FnOnce(&str, &str) -> Result<(), String>,
+  apply: impl FnOnce(&str, Vec<String>, &str) -> Result<(), String>,
+) -> Result<(), String> {
+  apply(
     "set-power-button",
     vec![behavior.value().into()],
     &format!("HandlePowerKey={}", behavior.value()),
-  )
+  )?;
+  persist("/power/power_button", behavior.value())
 }
 
 pub fn apply_idle(minutes: u32) -> Result<(), String> {
@@ -146,14 +161,21 @@ pub fn apply_lock(minutes: u32) -> Result<(), String> {
 }
 
 pub fn set_keep_awake(enabled: bool) -> Result<(), String> {
-  persist_canonical("/power/keep_awake", if enabled { "true" } else { "false" })?;
+  set_keep_awake_using(enabled, &SystemProcessRunner, persist_canonical)
+}
+fn set_keep_awake_using(
+  enabled: bool,
+  runner: &impl ProcessRunner,
+  persist: impl FnOnce(&str, &str) -> Result<(), String>,
+) -> Result<(), String> {
   let value = if enabled { "on" } else { "off" };
-  let output = SystemProcessRunner
+  let output = runner
     .run(&ProcessRequest::new("/usr/share/argvus/power/sh/keep-awake.sh").arg(value))
     .map_err(|error| error.to_string())?;
-  (output.status == Some(0))
+  (output.status == Some(0) && !output.timed_out && !output.cancelled)
     .then_some(())
-    .ok_or_else(|| terminal_text(String::from_utf8_lossy(&output.stderr).trim()).to_string())
+    .ok_or_else(|| terminal_text(String::from_utf8_lossy(&output.stderr).trim()).to_string())?;
+  persist("/power/keep_awake", if enabled { "true" } else { "false" })
 }
 
 fn canonical_value(pointer: &str) -> Option<String> {
@@ -307,5 +329,112 @@ HandlePowerKey=poweroff
       Some("false".into())
     );
     assert_eq!(parse_modular_power_value(content, "missing"), None);
+  }
+  #[test]
+  fn missing_drop_in_reads_main_logind_configuration() {
+    assert_eq!(
+      logind_value_using("HandleLidSwitch", |path| {
+        (path == LOGIND_MAIN).then(|| "[Login]\nHandleLidSwitch=lock\n".into())
+      }),
+      Some("lock".into())
+    );
+  }
+
+  #[test]
+  fn rejected_privileged_actions_do_not_persist_requested_values() {
+    let writes = std::cell::Cell::new(0);
+    let persist = |_: &str, _: &str| {
+      writes.set(writes.get() + 1);
+      Ok(())
+    };
+    assert!(
+      set_lid_using(
+        LidContext::Battery,
+        PowerBehavior::Suspend,
+        persist,
+        |_, _, _| Err("authorization cancelled".into())
+      )
+      .is_err()
+    );
+    assert_eq!(writes.get(), 0);
+    assert!(
+      set_power_button_using(PowerButtonBehavior::Poweroff, persist, |_, _, _| Err(
+        "authorization denied".into()
+      ))
+      .is_err()
+    );
+    assert_eq!(writes.get(), 0);
+  }
+
+  #[test]
+  fn successful_power_changes_apply_before_persistence() {
+    let events = std::cell::RefCell::new(Vec::new());
+    set_lid_using(
+      LidContext::Ac,
+      PowerBehavior::Ignore,
+      |pointer, value| {
+        events
+          .borrow_mut()
+          .push(format!("persist:{pointer}:{value}"));
+        Ok(())
+      },
+      |action, args, _| {
+        events
+          .borrow_mut()
+          .push(format!("apply:{action}:{}", args.join(",")));
+        Ok(())
+      },
+    )
+    .unwrap();
+    assert_eq!(
+      *events.borrow(),
+      ["apply:set-lid:ac,ignore", "persist:/power/lid_ac:ignore"]
+    );
+    events.borrow_mut().clear();
+    set_power_button_using(
+      PowerButtonBehavior::Lock,
+      |pointer, _| {
+        events.borrow_mut().push(pointer.into());
+        Ok(())
+      },
+      |action, _, _| {
+        events.borrow_mut().push(action.into());
+        Ok(())
+      },
+    )
+    .unwrap();
+    assert_eq!(
+      *events.borrow(),
+      ["set-power-button", "/power/power_button"]
+    );
+  }
+
+  #[test]
+  fn keep_awake_persists_only_after_success() {
+    struct Runner(bool);
+    impl ProcessRunner for Runner {
+      fn run(
+        &self,
+        _: &ProcessRequest,
+      ) -> Result<ProcessOutput, argvus_control_center_core::process::ProcessError> {
+        Ok(ProcessOutput {
+          stdout: vec![],
+          stderr: b"failed".to_vec(),
+          status: Some(if self.0 { 0 } else { 1 }),
+          timed_out: false,
+          cancelled: false,
+        })
+      }
+    }
+    let writes = std::cell::Cell::new(0);
+    let persist = |pointer: &str, value: &str| {
+      assert_eq!((pointer, value), ("/power/keep_awake", "true"));
+      writes.set(writes.get() + 1);
+      Ok(())
+    };
+    assert!(set_keep_awake_using(true, &Runner(false), persist).is_err());
+    assert_eq!(writes.get(), 0);
+    set_keep_awake_using(true, &Runner(true), persist).unwrap();
+    assert_eq!(writes.get(), 1);
   }
 }

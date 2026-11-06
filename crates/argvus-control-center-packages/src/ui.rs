@@ -315,6 +315,7 @@ pub struct PackagesApp {
   details_origin: Option<Item>,
   query: String,
   job: Option<JobHandle<Result<Loaded, String>>>,
+  loading_key: Option<String>,
   last_loaded: Option<(String, std::time::Instant)>,
   plan: Option<JobHandle<Result<(Action, TransactionPlan), String>>>,
   action: Option<JobHandle<Result<String, String>>>,
@@ -337,6 +338,10 @@ pub struct PackagesApp {
   mirror_options: Option<ReflectorOptions>,
   mirror_countries: Option<Vec<String>>,
   transaction_live: Option<LiveProcess>,
+  transaction_buffer: String,
+  transaction_cursor: usize,
+  transaction_truncated: bool,
+  transaction_line_count: usize,
   transaction_open: bool,
   transaction_scroll: u16,
   transaction_follow: bool,
@@ -356,6 +361,40 @@ pub struct PackagesApp {
 }
 
 impl PackagesApp {
+  /// Whether exiting could abandon an operation whose result is still pending.
+  pub fn has_pending_action(&self) -> bool {
+    self.action.is_some()
+  }
+
+  fn sync_transaction_output(&mut self) {
+    let Some(live) = &self.transaction_live else {
+      return;
+    };
+    for line in live.lines_since(&mut self.transaction_cursor) {
+      let translated = transaction_output(self.lang, &line);
+      self.transaction_line_count += render::transaction_wrapped_lines(&translated).max(1);
+      if !self.transaction_buffer.is_empty() {
+        self.transaction_buffer.push('\n');
+      }
+      self.transaction_buffer.push_str(&translated);
+    }
+    if live.is_truncated() && !self.transaction_truncated {
+      self.transaction_truncated = true;
+      let notice = tr(self.lang, "control_center.transaction_output_truncated");
+      if !self.transaction_buffer.is_empty() {
+        self.transaction_buffer.push('\n');
+      }
+      self.transaction_buffer.push_str(notice);
+      self.transaction_line_count += render::transaction_wrapped_lines(notice).max(1);
+    }
+  }
+  fn transaction_bottom(&self) -> u16 {
+    self
+      .transaction_line_count
+      .saturating_sub(render::TRANSACTION_CONTENT_HEIGHT)
+      .min(u16::MAX as usize) as u16
+  }
+
   /// Replaces the semantic theme used by this page.
   pub fn set_theme(&mut self, theme: &Theme) {
     self.theme = theme.clone();
@@ -380,6 +419,7 @@ impl PackagesApp {
       details_origin: None,
       query: String::new(),
       job: None,
+      loading_key: None,
       last_loaded: None,
       plan: None,
       action: None,
@@ -398,6 +438,10 @@ impl PackagesApp {
       mirror_options: None,
       mirror_countries: None,
       transaction_live: None,
+      transaction_buffer: String::new(),
+      transaction_cursor: 0,
+      transaction_truncated: false,
+      transaction_line_count: 0,
       transaction_open: false,
       transaction_scroll: 0,
       transaction_follow: false,

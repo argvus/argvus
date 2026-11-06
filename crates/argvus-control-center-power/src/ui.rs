@@ -102,6 +102,11 @@ pub struct PowerApp {
 }
 
 impl PowerApp {
+  /// Whether exiting could abandon an operation whose result is still pending.
+  pub fn has_pending_action(&self) -> bool {
+    self.action.is_some()
+  }
+
   /// Replaces the semantic theme used by this page.
   pub fn set_theme(&mut self, theme: &Theme) {
     self.theme = theme.clone();

@@ -454,8 +454,8 @@ continue to apply. Snapshots are not full-system images: separate subvolumes,
 including a separate `/home`, are not included. This version provides **no
 full-system rollback, installation or creation of a Snapper configuration**. Press
 **p** on a supported root configuration to inspect the known retention settings.
-Missing values are shown as Snapper defaults, while unknown keys are diagnostic
-only. Press **e** to edit a supported value. The confirmation shows the old and
+Missing values are labeled as ARGVUS fallbacks, not values read from the installed
+Snapper creation template; unknown keys are diagnostic only. Press **e** to edit a supported value. The confirmation shows the old and
 new values; after saving, the page reads the config again and verifies it.
 Press **c** to cycle cleanup algorithms and **Enter** to review and confirm one.
 Cleanup uses Snapper's official algorithm; there is no exact preview, and the
@@ -469,6 +469,9 @@ qgroups and are not exposed here.
 
 After reviewing and confirming an official package upgrade, the helper takes one
 `single` snapshot of the configured Btrfs root immediately before pacman runs.
+If multiple configurations manage `/`, automatic pre-update snapshots prefer
+`root`, otherwise the first configuration in alphabetical order. The helper
+revalidates the selected configuration before creating the snapshot.
 This covers full upgrades, individual official package updates, and the full
 upgrade offered after adding a repository. Search, update checks, transaction
 planning, repository metadata refresh, AUR/yay operations and other package
@@ -479,8 +482,8 @@ error. If the helper is interrupted after starting pacman, the outcome is
 reported as indeterminate and package state should be checked before retrying.
 Only one ARGVUS protected upgrade can run at a time. The snapshot is a point in
 time for the configured root subvolume, not a guarantee that ESP, separate
-subvolumes, external data or application databases can be recovered. It has no
-cleanup algorithm assigned and can remain until a user runs Snapper cleanup.
+subvolumes, external data or application databases can be recovered. It uses the
+`number` cleanup algorithm and follows that configuration’s retention policy.
 
 ### Manual validation
 
@@ -550,3 +553,41 @@ The keyboard shortcuts page includes **AI agent selector (optional argvus-ai pac
 
 
 Control Center > Appearance > Taskbar > Icons > Optional modules now includes **AI Agents**. It defaults to enabled and is stored in /taskbar/icons/ai_agents_enabled. Toggle it in the taskbar draft and Apply to persist and regenerate the utility group; disabling it does not change the SUPER + A shortcut or application launcher entries.
+
+Autostart switches edit the user’s `.desktop` entry or create a user copy of a system entry. Names, commands and enable flags come from `[Desktop Entry]`; additional desktop action groups remain unchanged.
+
+Service confirmations retain the selected user/system scope together with the unit and action. A unit with the same name in another scope cannot redirect a confirmed action; detail pages also retain the original scope.
+
+Storage includes nested mountpoints such as `/home`, `/boot` and `/boot/efi` from the filesystem inventory. Diagnostics uses the same inventory for its existing root and home filesystem usage checks.
+
+New pre-upgrade and restore safety snapshots use Snapper’s `number` cleanup algorithm. Their removal follows the configured number retention policy when cleanup runs. Existing snapshots without a cleanup algorithm are not changed, and manual creation keeps its existing policy.
+
+Snapshot comparisons report unsupported path records separately. Valid files remain available for review; paths with invalid encoding, control characters or unsupported components do not offer diff or restore actions.
+
+Power settings write the ARGVUS logind drop-in under `[Login]`, creating its directory when needed. Reload failures are reported. Battery lid behavior maps to `HandleLidSwitch`; the legacy `default` context is an alias, while AC and docked behavior use their separate logind keys.
+
+Mirrorlist application accepts only comments, blank lines and HTTP/HTTPS `Server` entries. Payloads are limited to 64 KiB and checked before elevation and again by the privileged helper; pacman directives such as `SigLevel` and `XferCommand` are rejected.
+
+Cache cleanup for uninstalled packages retains no cached versions. Repository operations refuse includes shared by multiple repository sections. Hostnames with surrounding whitespace and an empty generated-locale selection are rejected. Settings file writes refuse symlinked destinations and existing temporary files.
+
+Package searches and page loads discard results from an earlier page or query. The current page is then loaded again, so an old result cannot mark a different view as recently refreshed.
+
+Transaction output is sanitized and bounded. The display retains up to 10,000 lines or 4 MiB and reports omitted output. Captured process streams honor their configured limit, defaulting to 8 MiB for live execution; excess output is drained and reported after the process finishes.
+
+Boot inventory reads the Arch kernel `pkgbase` to locate kernel images, initramfs files and mkinitcpio presets while displaying the kernel release separately. Literal mkinitcpio arrays are read without including their parentheses or executing the configuration.
+
+Power changes for lid, power button and keep-awake are saved to the canonical configuration only after the runtime action succeeds. Cancelling authorization leaves the previous saved value intact. When no ARGVUS logind drop-in supplies a value, the main logind configuration is read as a fallback.
+
+After a retention change fails, the page rereads the current settings before showing their values again. Configuration selection starts at the first entry.
+
+ARGVUS package operations share an exclusive lock with selective restore. Installation, removal, reinstallation, downgrade, metadata refresh, cache cleanup and repository or mirror changes are refused while that lock is held. This coordination covers operations started through the ARGVUS helper; external pacman and AUR tools do not use this lock.
+
+While a background operation is applying changes, `q` and `Ctrl+C` keep the Control Center open and show a notice to wait. This also applies after navigating away from the page that started the action. Wait for its result, then request exit again. Ordinary read-only refreshes do not block exit.
+
+Wi-Fi password, manual DNS and network search fields accept bracketed paste. Pasted controls and line breaks are omitted. Unsupported Ctrl-only or Alt-only character shortcuts do not insert letters. Editors accept printable AltGr events encoded as Ctrl+Alt; Ctrl+S saves only without Alt. The shared text editor keeps vertical navigation in visual columns and aligns horizontal scrolling for wide characters.
+
+Audio volume and mute changes for microphones and nondefault outputs no longer overwrite the saved default-output preferences. The backend persists those preferences only when it can identify the selected node as the current default output. The page displays amplified volumes above 100% as reported by PipeWire; explicit volume edits remain limited to 0–100%.
+
+Hardware Overview identifies GPU models separately from their PCI address and device class, preserving commercial names in brackets. Its Summary shows the OpenGL renderer queried for the session and all device names returned by the Vulkan probe, including software devices. These global results are not presented as capabilities of each physical GPU.
+
+When an administrator locks or removes the account configured for automatic login, the account provider first disables its greetd automatic-login entry. If that cleanup fails, the account operation is refused. If locking or removal later fails, automatic login remains disabled. Automatic login for another account is preserved; unlocking an account does not enable automatic login. Existing sessions are not closed and greetd is not restarted.

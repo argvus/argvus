@@ -11,7 +11,7 @@ impl NetworkApp {
       + Send
       + 'static,
   {
-    if self.editor_job.is_some() {
+    if self.editor_job.is_some() || self.action.is_some() {
       return;
     }
     self.cancel_refresh_for_action();
@@ -180,9 +180,13 @@ impl NetworkApp {
   pub(in super::super) fn toggle_profile(&mut self, profile: &ConnectionProfile) {
     let uuid = profile.uuid.clone();
     if profile.active {
-      self.action("Desconectando", move |backend| backend.deactivate(&uuid));
+      self.action("control_center.disconnecting", move |backend| {
+        backend.deactivate(&uuid)
+      });
     } else {
-      self.action("Conectando", move |backend| backend.activate(&uuid));
+      self.action("control_center.connecting", move |backend| {
+        backend.activate(&uuid)
+      });
     }
   }
 

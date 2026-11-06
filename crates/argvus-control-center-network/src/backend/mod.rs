@@ -359,16 +359,36 @@ impl<R: ProcessRunner> NetworkBackend<R> {
       .arg("connect")
       .arg(ssid);
     if let Some(password) = password {
-      request = request.arg("password").arg(password);
+      if password.is_empty() || password.contains(['\n', '\r', '\0']) {
+        return Err(NetworkError::InvalidInput);
+      }
+      request = request.arg("--ask").stdin(format!("{password}\n"));
     }
-    let output = self.runner.run(&request.timeout(Duration::from_secs(30)))?;
+    let redact = |text: &str| {
+      let redacted = match password {
+        Some(secret) => text.replace(secret, "•••"),
+        None => text.to_owned(),
+      };
+      let sanitized = terminal_text(&redacted);
+      match password
+        .map(terminal_text)
+        .filter(|secret| !secret.is_empty())
+      {
+        Some(secret) => sanitized.replace(&secret, "•••"),
+        None => sanitized,
+      }
+    };
+    let output = self
+      .runner
+      .run(&request.timeout(Duration::from_secs(30)))
+      .map_err(|error| NetworkError::Command(redact(&error.to_string())))?;
     if output.timed_out {
       return Err(NetworkError::Timeout);
     }
     if output.status != Some(0) {
-      return Err(NetworkError::Command(terminal_text(
-        &String::from_utf8_lossy(&output.stderr),
-      )));
+      return Err(NetworkError::Command(redact(&String::from_utf8_lossy(
+        &output.stderr,
+      ))));
     }
     Ok(())
   }

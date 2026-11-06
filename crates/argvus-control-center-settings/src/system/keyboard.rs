@@ -425,17 +425,20 @@ fn read_xkb_rules() -> Option<String> {
 }
 
 pub fn is_xkb_name(value: &str) -> bool {
-  !value.is_empty()
+  super::validate_plain_arg(value).is_ok()
     && value
       .bytes()
       .all(|b| b.is_ascii_alphanumeric() || matches!(b, b'_' | b'-'))
 }
 
 pub fn is_keymap_name(value: &str) -> bool {
-  is_xkb_name(value)
-    || value
-      .bytes()
-      .all(|b| matches!(b, b'/' | b'.') || b.is_ascii_alphanumeric() || b == b'-')
+  super::validate_plain_arg(value).is_ok()
+    && !value.starts_with('/')
+    && !value.contains("..")
+    && (is_xkb_name(value)
+      || value
+        .bytes()
+        .all(|byte| byte == b'/' || byte == b'.' || byte.is_ascii_alphanumeric() || byte == b'-'))
 }
 
 fn command_stdout(command: &str, args: &[&str]) -> Option<String> {

@@ -75,3 +75,15 @@ cobre esse caso; a corrida em si não é reproduzida de forma determinística.
 `cargo test -p argvus-accounts -p argvus-accounts-core --locked` cobre a biblioteca, a
 CLI e a integração de autorização. Os testes de administração registram as chamadas de sistema
 em vez de executá-las.
+
+## Autologin ao bloquear ou excluir (P9)
+
+As operações administrativas de bloqueio e exclusão validam primeiro as
+proteções da conta. Se ela estiver em `[initial_session]` do greetd, o helper
+remove essa seção por substituição atômica antes de executar `usermod --lock`
+ou `userdel`. Erros na limpeza impedem o comando de conta; falhas posteriores
+no comando não reativam o autologin. Uma configuração inexistente e o autologin
+de outra conta são preservados. Desbloqueio não configura autologin.
+A escrita mantém as permissões existentes e as demais seções, reutilizando o
+adaptador de autologin. Testes usam caminhos temporários e comandos simulados.
+O greetd não é reiniciado e sessões abertas não são encerradas.

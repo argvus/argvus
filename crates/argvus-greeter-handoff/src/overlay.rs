@@ -1,6 +1,6 @@
 //! Overlay plane that keeps the spinner on screen while the user compositor takes over the display.
 
-use super::control::{Command, parse_command, read_command};
+use super::control::{ClientPolicy, Command, parse_command, read_command};
 use super::drawing::{Palette, draw_background, draw_spinner};
 use super::drm::{DRM_FORMAT_XRGB8888, DumbBuffer};
 use super::drm::{
@@ -160,12 +160,13 @@ pub(super) fn hold_overlay(
   released: &Released,
   overlay: &mut Overlay,
   palette: &Palette,
+  policy: ClientPolicy,
 ) {
   let started = Instant::now();
   let mut replaced_at = None;
   loop {
     while let Ok((mut stream, _)) = listener.accept() {
-      let Ok(line) = read_command(&mut stream) else {
+      let Ok(line) = read_command(&mut stream, policy) else {
         continue;
       };
       let command = parse_command(&line);

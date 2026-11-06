@@ -132,7 +132,7 @@ impl BluetoothApp {
         s,
       );
     }
-    if self.confirm_remove {
+    if self.confirm_remove.is_some() {
       draw_confirmation(
         f,
         f.area(),

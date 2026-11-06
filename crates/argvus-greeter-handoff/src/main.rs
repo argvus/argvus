@@ -29,7 +29,7 @@ mod overlay;
 mod timing;
 mod wayland;
 
-use control::{handle_command, prepare_socket, send_command};
+use control::{ClientPolicy, handle_command, prepare_socket, send_command};
 use drawing::{Palette, draw_background, draw_spinner};
 use drm::{ModeInfo, drmDropMaster, drmModePageFlip, drmModeSetCrtc, drmModeSetCursor};
 use outputs::{
@@ -58,8 +58,8 @@ const RETIRE_TIMEOUT: Duration = Duration::from_secs(3);
 const MASTER_POLL: Duration = Duration::from_millis(1);
 const ACK_TIMEOUT: Duration = Duration::from_secs(20);
 /// How long the surface waits for one client to send its command line. The
-/// socket is open to every local user, so a client that connects and stays
-/// silent must not stop the surface from serving the session's `release`.
+/// client has passed peer-credential authorization; a silent authorized client
+/// must still not stop the surface from serving the session's `release`.
 const CLIENT_TIMEOUT: Duration = Duration::from_secs(1);
 
 #[derive(Debug, Parser)]
@@ -68,6 +68,9 @@ struct Cli {
   /// Unix socket used by argvus-session to update the theme and release DRM.
   #[arg(long, default_value = DEFAULT_SOCKET)]
   socket: PathBuf,
+  /// UID authenticated by the greeter; only it, the helper owner and root may control the surface.
+  #[arg(long, hide = true)]
+  session_uid: Option<u32>,
   /// Initial theme used before the authenticated session publishes its theme.
   #[arg(long, default_value = DEFAULT_THEME)]
   theme: String,
@@ -105,6 +108,7 @@ fn main() -> io::Result<()> {
     return wayland::run(palette, cli.ready_fd, cli.retire_handoff);
   }
   let listener = prepare_socket(&cli.socket)?;
+  let policy = ClientPolicy::current(cli.session_uid);
   let user_accent = cli.accent.as_deref().and_then(hex_to_rgb);
   let mut palette = Palette::new(&cli.theme, user_accent);
   mark("handoff.waiting-for-master");
@@ -113,16 +117,24 @@ fn main() -> io::Result<()> {
   // they happen before the wait and the output gets its frame as soon as the
   // greeter compositor lets go of it. The buffer belongs to the observer's
   // descriptor, which stays open until this process exits.
-  let prepared = observers
-    .iter()
-    .find_map(|observer| prepare_surface(observer.file.as_raw_fd(), &palette).ok());
-  if let Some(prepared) = &prepared {
-    mark(&format!("handoff.prepared crtc={}", prepared.crtc_id));
+  let prepared = observers.iter().find_map(|observer| {
+    let fd = observer.file.as_raw_fd();
+    prepare_surface(fd, &palette)
+      .ok()
+      .map(|surface| (fd, surface))
+  });
+  if let Some((fd, prepared)) = &prepared {
+    mark(&format!(
+      "handoff.prepared fd={fd} crtc={}",
+      prepared.crtc_id
+    ));
   }
-  let fd = acquire_card(&cards, &mut observers)?;
-  mark("handoff.master-acquired");
+  let preferred_fd = prepared.as_ref().map(|(fd, _)| *fd);
+  let fd = acquire_card(&cards, &mut observers, preferred_fd)?;
+  mark(&format!("handoff.master-acquired fd={fd}"));
 
-  let result = run_surface(fd, prepared, &listener, &mut palette);
+  let prepared = prepared_for_fd(fd, prepared);
+  let result = run_surface(fd, prepared, &listener, &mut palette, policy);
   // The overlay can only be set while this process is still DRM master.
   let overlay = result
     .as_ref()
@@ -142,7 +154,7 @@ fn main() -> io::Result<()> {
         // yet. The overlay stays above it, with the spinner still animating,
         // until the session spinner is on screen.
         Some(mut overlay) => {
-          hold_overlay(fd, &listener, &released, &mut overlay, &palette);
+          hold_overlay(fd, &listener, &released, &mut overlay, &palette, policy);
           drop(overlay);
         }
         // Destroying the framebuffer now would make the kernel turn the output
@@ -169,11 +181,18 @@ fn main() -> io::Result<()> {
   outcome
 }
 
+fn prepared_for_fd<T>(fd: RawFd, prepared: Option<(RawFd, T)>) -> Option<T> {
+  prepared
+    .filter(|(source, _)| *source == fd)
+    .map(|(_, surface)| surface)
+}
+
 fn run_surface(
   fd: RawFd,
   prepared: Option<PreparedSurface>,
   listener: &UnixListener,
   palette: &mut Palette,
+  policy: ClientPolicy,
 ) -> io::Result<Released> {
   let PreparedSurface {
     connector_id,
@@ -240,7 +259,7 @@ fn run_surface(
   loop {
     while let Ok((stream, _)) = listener.accept() {
       let previous = *palette;
-      match handle_command(stream, palette) {
+      match handle_command(stream, palette, policy) {
         Ok(Some(stream)) => {
           mark("handoff.release-received");
           return Ok(Released {

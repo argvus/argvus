@@ -171,7 +171,7 @@ pub fn autostart_entries() -> Vec<AutostartEntry> {
 
 fn file_stem(path: &Path) -> String {
   path
-    .file_name()
+    .file_stem()
     .map(|name| name.to_string_lossy().into_owned())
     .unwrap_or_default()
 }
@@ -182,8 +182,16 @@ fn parse_desktop(id: &str, path: &Path, from_system: bool) -> Option<AutostartEn
   let mut command = String::new();
   let mut hidden = false;
   let mut gtk_enabled: Option<bool> = None;
+  let mut in_entry = false;
   for line in content.lines() {
     let line = line.trim();
+    if line.starts_with('[') {
+      in_entry = line == "[Desktop Entry]";
+      continue;
+    }
+    if !in_entry {
+      continue;
+    }
     if line.starts_with('#') || line.is_empty() {
       continue;
     }
@@ -213,14 +221,27 @@ fn parse_desktop(id: &str, path: &Path, from_system: bool) -> Option<AutostartEn
 /// entries are shadowed by a user copy (the XDG shadowing rule), so disabling
 /// an entry from `/etc/xdg/autostart` never edits system files.
 pub fn set_autostart(entry_id: &str, enabled: bool) -> Result<(), String> {
+  let system_dirs: Vec<PathBuf> = AUTOSTART_SYSTEM_CANDIDATES
+    .iter()
+    .map(PathBuf::from)
+    .collect();
+  set_autostart_at(entry_id, enabled, &autostart_dir(), &system_dirs)
+}
+
+fn set_autostart_at(
+  entry_id: &str,
+  enabled: bool,
+  user_dir: &Path,
+  system_dirs: &[PathBuf],
+) -> Result<(), String> {
+  let entry_id = entry_id.strip_suffix(".desktop").unwrap_or(entry_id);
   validate_autostart_id(entry_id)?;
-  let user_dir = autostart_dir();
-  fs::create_dir_all(&user_dir).map_err(|error| error.to_string())?;
+  fs::create_dir_all(user_dir).map_err(|error| error.to_string())?;
   let user_path = user_dir.join(format!("{entry_id}.desktop"));
   let source = if user_path.exists() {
     user_path.clone()
   } else {
-    find_system_autostart(entry_id)
+    find_system_autostart(entry_id, system_dirs)
       .ok_or_else(|| format!("entrada de autostart '{entry_id}' não encontrada para editar"))?
   };
   let original = fs::read_to_string(&source).map_err(|error| error.to_string())?;
@@ -231,19 +252,18 @@ pub fn set_autostart(entry_id: &str, enabled: bool) -> Result<(), String> {
   Ok(())
 }
 
-fn find_system_autostart(entry_id: &str) -> Option<PathBuf> {
+fn find_system_autostart(entry_id: &str, system_dirs: &[PathBuf]) -> Option<PathBuf> {
   let target = format!("{entry_id}.desktop");
-  AUTOSTART_SYSTEM_CANDIDATES
-    .iter()
-    .map(PathBuf::from)
-    .find_map(|dir| {
-      let path = dir.join(&target);
-      path.exists().then_some(path)
-    })
+  system_dirs.iter().find_map(|dir| {
+    let path = dir.join(&target);
+    path.exists().then_some(path)
+  })
 }
 
 fn validate_autostart_id(entry_id: &str) -> Result<(), String> {
   if !entry_id.is_empty()
+    && !entry_id.contains(['/', '\\'])
+    && !matches!(entry_id, "." | "..")
     && entry_id.len() <= 128
     && entry_id
       .chars()
@@ -257,26 +277,33 @@ fn validate_autostart_id(entry_id: &str) -> Result<(), String> {
 
 fn rewrite_desktop_flags(content: &str, enabled: bool) -> String {
   let hidden = if enabled { "false" } else { "true" };
+  let mut in_entry = false;
   let mut has_hidden = false;
   let mut rewritten = String::new();
   for line in content.lines() {
-    if line.trim_start().starts_with("Hidden=") {
-      let indent: String = line
-        .chars()
-        .take_while(|character| character.is_whitespace())
-        .collect();
-      rewritten.push_str(&format!("{indent}Hidden={hidden}\n"));
+    let trimmed = line.trim();
+    if trimmed.starts_with('[') {
+      if in_entry && !has_hidden {
+        rewritten.push_str(&format!("Hidden={hidden}\n"));
+      }
+      in_entry = trimmed == "[Desktop Entry]";
+      has_hidden = false;
+    }
+    if in_entry && trimmed.starts_with("Hidden=") {
+      rewritten.push_str(&format!("Hidden={hidden}\n"));
       has_hidden = true;
-    } else if line.trim_start().starts_with("X-GNOME-Autostart-Enabled=") {
-      rewritten.push_str("X-GNOME-Autostart-Enabled=");
-      rewritten.push_str(if enabled { "true" } else { "false" });
-      rewritten.push('\n');
+    } else if in_entry && trimmed.starts_with("X-GNOME-Autostart-Enabled=") {
+      rewritten.push_str(if enabled {
+        "X-GNOME-Autostart-Enabled=true\n"
+      } else {
+        "X-GNOME-Autostart-Enabled=false\n"
+      });
     } else {
       rewritten.push_str(line);
       rewritten.push('\n');
     }
   }
-  if !has_hidden {
+  if in_entry && !has_hidden {
     rewritten.push_str(&format!("Hidden={hidden}\n"));
   }
   rewritten
@@ -448,7 +475,7 @@ mod tests {
 
   #[test]
   fn rewrites_desktop_hidden_flag() {
-    let content = "Name=Foo\nExec=foo --bar\nHidden=false\n";
+    let content = "[Desktop Entry]\nName=Foo\nExec=foo --bar\nHidden=false\n";
     let disabled = rewrite_desktop_flags(content, false);
     assert!(disabled.contains("Hidden=true"), "{disabled}");
     let enabled = rewrite_desktop_flags(content, true);
@@ -457,7 +484,7 @@ mod tests {
 
   #[test]
   fn appends_hidden_when_absent() {
-    let content = "Name=Foo\nExec=foo\ndefault=True\n";
+    let content = "[Desktop Entry]\nName=Foo\nExec=foo\ndefault=True\n";
     assert!(rewrite_desktop_flags(content, false).contains("Hidden=true"));
   }
 
@@ -504,5 +531,59 @@ mod tests {
     assert_eq!(entries.len(), 1);
     assert!(!entries[0].from_system);
     let _ = fs::remove_dir_all(&dir);
+  }
+  #[test]
+  fn desktop_actions_do_not_override_main_entry_or_receive_hidden() {
+    let dir = PathBuf::from("/tmp/argvus").join(format!("desktop-groups-{}", std::process::id()));
+    fs::create_dir_all(&dir).unwrap();
+    let path = dir.join("foo.desktop");
+    let content = "[Desktop Entry]\nName=Main\nExec=main\n[Desktop Action Extra]\nName=Extra\nExec=extra\nHidden=false\n";
+    fs::write(&path, content).unwrap();
+    let entry = parse_desktop("foo.desktop", &path, false).unwrap();
+    assert_eq!(entry.name, "Main");
+    assert_eq!(entry.command, "main");
+    assert_eq!(
+      rewrite_desktop_flags(content, false),
+      "[Desktop Entry]\nName=Main\nExec=main\nHidden=true\n[Desktop Action Extra]\nName=Extra\nExec=extra\nHidden=false\n"
+    );
+    fs::remove_dir_all(dir).unwrap();
+  }
+
+  #[test]
+  fn autostart_filename_produces_single_desktop_suffix() {
+    assert_eq!(file_stem(Path::new("foo.desktop")), "foo");
+  }
+  #[test]
+  fn toggles_real_desktop_ids_for_user_and_system_entries() {
+    let dir = PathBuf::from("/tmp/argvus").join(format!("desktop-toggle-{}", std::process::id()));
+    let user = dir.join("user");
+    let system = dir.join("system");
+    fs::create_dir_all(&user).unwrap();
+    fs::create_dir_all(&system).unwrap();
+    let original = "[Desktop Entry]\nName=Main\nExec=main\nX-GNOME-Autostart-Enabled=true\n[Desktop Action Extra]\nName=Extra\nExec=extra\nHidden=false\n";
+    for from_system in [false, true] {
+      let name = if from_system {
+        "system.desktop"
+      } else {
+        "user.desktop"
+      };
+      let source = if from_system { &system } else { &user }.join(name);
+      fs::write(&source, original).unwrap();
+      let id = file_stem(&source);
+      for requested in [name, id.as_str()] {
+        set_autostart_at(requested, false, &user, std::slice::from_ref(&system)).unwrap();
+        let entry = parse_desktop(&id, &user.join(name), false).unwrap();
+        assert!(!entry.enabled);
+        assert_eq!(entry.name, "Main");
+        assert_eq!(entry.command, "main");
+        set_autostart_at(requested, true, &user, std::slice::from_ref(&system)).unwrap();
+        assert!(parse_desktop(&id, &user.join(name), false).unwrap().enabled);
+        assert!(!user.join(format!("{name}.desktop")).exists());
+      }
+      if from_system {
+        assert_eq!(fs::read_to_string(source).unwrap(), original);
+      }
+    }
+    fs::remove_dir_all(dir).unwrap();
   }
 }

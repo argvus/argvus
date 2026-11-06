@@ -178,14 +178,5 @@ pub(in super::super) fn backup_file(path: &Path) -> Result<PathBuf, String> {
 
 pub(in super::super) fn boot_write_atomic(path: &Path, contents: &str) -> Result<(), String> {
   let metadata = fs::metadata(path).map_err(|error| error.to_string())?;
-  let tmp = path.with_extension(format!("argvus-control-center-{}.tmp", std::process::id()));
-  let mut file = fs::File::create(&tmp).map_err(|error| error.to_string())?;
-  file
-    .set_permissions(metadata.permissions())
-    .map_err(|error| error.to_string())?;
-  file
-    .write_all(contents.as_bytes())
-    .map_err(|error| error.to_string())?;
-  file.sync_all().map_err(|error| error.to_string())?;
-  fs::rename(&tmp, path).map_err(|error| error.to_string())
+  super::replace_atomic(path, contents, metadata.permissions())
 }

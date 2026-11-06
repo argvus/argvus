@@ -655,3 +655,43 @@ pub fn decode_key(text: &str) -> Option<Vec<u8>> {
 
 #[cfg(test)]
 mod tests;
+
+/// Keep mirror payloads comfortably below Linux's per-argument exec limit.
+pub const MAX_MIRRORLIST_BYTES: usize = 64 * 1024;
+
+/// A mirrorlist is data: comments, blank lines and HTTP(S) Server assignments only.
+pub fn validate_mirrorlist(content: &str) -> Result<(), String> {
+  if content.is_empty()
+    || content.len() > MAX_MIRRORLIST_BYTES
+    || content
+      .chars()
+      .any(|character| character.is_control() && !matches!(character, '\n' | '\t'))
+  {
+    return Err("invalid mirrorlist".into());
+  }
+  let mut has_server = false;
+  for line in content.lines().map(str::trim) {
+    if line.is_empty() || line.starts_with('#') {
+      continue;
+    }
+    let (key, value) = line.split_once('=').ok_or("invalid mirrorlist")?;
+    if key.trim() != "Server" {
+      return Err("invalid mirrorlist".into());
+    }
+    let url = value.trim();
+    let address = url
+      .strip_prefix("https://")
+      .or_else(|| url.strip_prefix("http://"))
+      .ok_or("invalid mirrorlist")?;
+    let host = address.split(['/', '?', '#']).next().unwrap_or("");
+    if host.is_empty() || url.chars().any(char::is_whitespace) || host.contains(['=', '\\', '@']) {
+      return Err("invalid mirrorlist".into());
+    }
+    has_server = true;
+  }
+  if has_server {
+    Ok(())
+  } else {
+    Err("invalid mirrorlist".into())
+  }
+}

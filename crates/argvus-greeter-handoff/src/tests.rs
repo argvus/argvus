@@ -148,7 +148,8 @@ fn serve_once(directory: &Path, palette_theme: &'static str) -> (PathBuf, thread
   let handle = thread::spawn(move || {
     let (stream, _) = listener.accept().expect("accept test client");
     let mut palette = Palette::new(palette_theme, None);
-    if let Ok(Some(mut release)) = handle_command(stream, &mut palette) {
+    if let Ok(Some(mut release)) = handle_command(stream, &mut palette, ClientPolicy::current(None))
+    {
       // Mirrors main: the acknowledgement follows the DRM release.
       release
         .write_all(b"released\n")
@@ -175,7 +176,7 @@ fn a_silent_client_cannot_stall_the_surface() {
   let (stream, _) = listener.accept().expect("accept silent client");
   let started = Instant::now();
   let mut palette = Palette::new("argvus-dark", None);
-  assert!(handle_command(stream, &mut palette).is_err());
+  assert!(handle_command(stream, &mut palette, ClientPolicy::current(None)).is_err());
   assert!(started.elapsed() < CLIENT_TIMEOUT + Duration::from_secs(1));
   let _ = fs::remove_dir_all(&directory);
 }
@@ -203,4 +204,98 @@ fn theme_update_is_acknowledged_and_keeps_the_surface_running() {
   assert!(send_command(&socket, "theme=tokyo-night").is_ok());
   server.join().expect("surface thread");
   let _ = fs::remove_dir_all(&directory);
+}
+
+#[test]
+fn p10_unrelated_peer_cannot_release_or_change_the_surface() {
+  if ClientPolicy::current(None).owner_uid == 0 {
+    return;
+  } // root is intentionally authorized.
+  for command in ["release\n", "theme=argvus-light\n", "retire\n"] {
+    let (mut client, server) = UnixStream::pair().unwrap();
+    client.write_all(command.as_bytes()).unwrap();
+    let mut palette = Palette::new("argvus-dark", None);
+    let policy = ClientPolicy {
+      owner_uid: u32::MAX,
+      session_uid: None,
+    };
+    let result = handle_command(server, &mut palette, policy);
+    assert!(matches!(result, Err(ref error) if error.kind() == io::ErrorKind::PermissionDenied));
+  }
+}
+
+#[test]
+fn p10_prepared_surface_is_never_reused_on_another_descriptor() {
+  assert_eq!(prepared_for_fd(11, Some((10, "buffer from card0"))), None);
+  assert_eq!(
+    prepared_for_fd(10, Some((10, "buffer from card0"))),
+    Some("buffer from card0")
+  );
+}
+
+#[test]
+fn p10_only_owner_root_and_authenticated_uid_are_authorized() {
+  let policy = ClientPolicy {
+    owner_uid: 900,
+    session_uid: Some(1000),
+  };
+  for uid in [0, 900, 1000] {
+    assert!(policy.allows(uid));
+  }
+  for uid in [901, 1001, 65534] {
+    assert!(!policy.allows(uid));
+  }
+  assert!(
+    !ClientPolicy {
+      owner_uid: 900,
+      session_uid: None
+    }
+    .allows(1000)
+  );
+}
+
+#[test]
+fn p10_real_peer_credentials_allow_the_selected_session_uid() {
+  let uid = ClientPolicy::current(None).owner_uid;
+  let (mut client, mut server) = UnixStream::pair().unwrap();
+  client.write_all(b"release\n").unwrap();
+  assert_eq!(
+    control::read_command(
+      &mut server,
+      ClientPolicy {
+        owner_uid: u32::MAX,
+        session_uid: Some(uid)
+      }
+    )
+    .unwrap(),
+    "release\n"
+  );
+}
+
+#[test]
+fn p10_authorized_commands_have_a_bounded_size() {
+  let (mut client, mut server) = UnixStream::pair().unwrap();
+  client
+    .write_all(format!("theme={}\n", "x".repeat(5000)).as_bytes())
+    .unwrap();
+  assert!(control::read_command(&mut server, ClientPolicy::current(None)).is_err());
+}
+
+#[test]
+fn p10_refused_acknowledgement_is_not_success() {
+  let directory = test_directory("refused");
+  let path = directory.join("handoff.sock");
+  let listener = UnixListener::bind(&path).unwrap();
+  let server = thread::spawn(move || {
+    let (mut stream, _) = listener.accept().unwrap();
+    let mut line = String::new();
+    BufReader::new(&mut stream).read_line(&mut line).unwrap();
+    stream.write_all(b"error\n").unwrap();
+  });
+  assert_eq!(
+    send_command(&path, "release").unwrap_err().kind(),
+    io::ErrorKind::PermissionDenied
+  );
+  server.join().unwrap();
+  fs::remove_dir_all(directory).unwrap();
 }

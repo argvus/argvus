@@ -19,7 +19,7 @@ use argvus_tui::{
 };
 use crossterm::event::{KeyCode, KeyEvent};
 use ratatui::{Frame, layout::Rect, text::Line};
-use std::time::Duration;
+use std::{cell::RefCell, rc::Rc, time::Duration};
 
 #[derive(Debug, Clone)]
 enum PendingAction {
@@ -57,7 +57,14 @@ enum Phase {
   Restoring,
 }
 
+struct CachedRows {
+  lang: Lang,
+  text: Rc<Vec<String>>,
+  lines: Vec<Line<'static>>,
+}
+
 pub struct SnapshotApp {
+  rows_cache: RefCell<Option<CachedRows>>,
   pub lang: Lang,
   pub theme: Theme,
   state: Option<Integration>,
@@ -88,6 +95,7 @@ pub struct SnapshotApp {
 impl SnapshotApp {
   pub fn new(lang: Lang, theme: Theme) -> Self {
     Self {
+      rows_cache: RefCell::new(None),
       lang,
       theme,
       state: None,
@@ -116,7 +124,12 @@ impl SnapshotApp {
       timers: None,
     }
   }
+  fn invalidate_rows(&mut self) {
+    self.rows_cache.get_mut().take();
+  }
+
   pub fn set_theme(&mut self, theme: &Theme) {
+    self.invalidate_rows();
     self.theme = theme.clone();
   }
   pub fn captures_text(&self) -> bool {
@@ -126,6 +139,9 @@ impl SnapshotApp {
     if let Some(editor) = &mut self.editor {
       editor.paste(text);
     }
+  }
+  pub fn has_pending_action(&self) -> bool {
+    self.job.is_some() && matches!(self.phase, Phase::Changing | Phase::Restoring)
   }
   pub fn busy(&self) -> bool {
     self.job.is_some()
@@ -139,6 +155,7 @@ impl SnapshotApp {
   }
 
   pub fn reload(&mut self) {
+    self.invalidate_rows();
     if self.busy() {
       return;
     }
@@ -182,6 +199,7 @@ impl SnapshotApp {
     let JobState::Finished(result) = job.try_state() else {
       return false;
     };
+    self.invalidate_rows();
     self.job = None;
     match result.unwrap_or_else(|detail| Err(SnapshotError::new(ErrorKind::Snapper, detail))) {
       Ok(Reply::Root(filesystem)) if filesystem == "btrfs" => self.inspect(),
@@ -202,6 +220,12 @@ impl SnapshotApp {
                 .position(|snapshot| snapshot.number == number)
             })
             .unwrap_or(0);
+        }
+        if matches!(state, Integration::ChooseConfig(_)) {
+          self.selection.index = 0;
+          self.config = None;
+          self.origin = None;
+          self.retention = None;
         }
         self.state = Some(state);
       }
@@ -272,7 +296,13 @@ impl SnapshotApp {
             kind: StatusKind::Error,
             text: error_text(self.lang, &error),
           });
-          self.reload();
+          if self.retention_view && matches!(self.phase, Phase::Changing) {
+            self.retention = None;
+            self.timers = None;
+            self.load_retention();
+          } else {
+            self.reload();
+          }
         } else {
           // A configuration can be renamed or replaced outside this page.
           // Let the next explicit refresh discover the available choices again.
@@ -436,6 +466,7 @@ impl SnapshotApp {
     }));
   }
   fn load_retention(&mut self) {
+    self.invalidate_rows();
     let Some(config) = self.config.clone() else {
       return;
     };
@@ -468,7 +499,7 @@ impl SnapshotApp {
     };
     self.editor = Some(TextEditor::single_line(key, &value.value));
   }
-  fn save_retention(&mut self, key: String, old: String, new: String) {
+  fn save_retention(&mut self, key: String, new: String) {
     let Some(config) = self.config.clone() else {
       return;
     };
@@ -484,7 +515,6 @@ impl SnapshotApp {
       });
       Ok(result)
     }));
-    let _ = old;
   }
   fn run_cleanup(&mut self, algorithm: CleanupAlgorithm) {
     let Some(config) = self.config.clone() else {
@@ -534,7 +564,24 @@ impl SnapshotApp {
     }));
   }
 
+  fn clamp_diff_scroll(&mut self) {
+    let diff = self
+      .restore_review
+      .as_ref()
+      .map(|review| &review.diff)
+      .or(self.diff.as_ref());
+    let (lines, width) = match diff {
+      Some(FileDiff::Text(text)) => text.lines().fold((0usize, 0usize), |(count, width), line| {
+        (count + 1, width.max(line.chars().count()))
+      }),
+      _ => (0, 0),
+    };
+    self.diff_scroll = self.diff_scroll.min(lines.saturating_sub(1));
+    self.diff_horizontal = self.diff_horizontal.min(width.saturating_sub(1));
+  }
+
   pub fn handle_key(&mut self, key: KeyEvent) -> bool {
+    self.invalidate_rows();
     if self.busy() {
       if key.code == KeyCode::Esc && matches!(self.phase, Phase::Comparing | Phase::Diffing) {
         if let Some(job) = &self.job {
@@ -605,7 +652,7 @@ impl SnapshotApp {
           let action = action.clone();
           self.confirmation = None;
           match action {
-            PendingAction::Retention { key, old, new } => self.save_retention(key, old, new),
+            PendingAction::Retention { key, new, .. } => self.save_retention(key, new),
             PendingAction::Cleanup(algorithm) => self.run_cleanup(algorithm),
             PendingAction::Restore(review) => self.run_restore(review),
             action => self.change(action),
@@ -723,6 +770,7 @@ impl SnapshotApp {
         }
         _ => {}
       }
+      self.clamp_diff_scroll();
       return false;
     }
     if let Some(diff) = &self.diff {
@@ -743,6 +791,7 @@ impl SnapshotApp {
           _ => {}
         }
       }
+      self.clamp_diff_scroll();
       return false;
     }
     if let Some(comparison) = &self.comparison {
@@ -815,10 +864,19 @@ fn error_text(lang: Lang, error: &SnapshotError) -> String {
     ErrorKind::Permission => "permission",
     ErrorKind::Authentication => "authentication",
     ErrorKind::Timeout => "timeout",
+    ErrorKind::OutputLimit => "output_limit",
+    ErrorKind::PackageUpdateBusy => "package_update_busy",
+    ErrorKind::RestoreBusy => "restore_busy",
     ErrorKind::Incompatible => "incompatible",
     ErrorKind::Invalid => "invalid",
     ErrorKind::Snapper => "failed",
   };
+  if matches!(
+    error.kind,
+    ErrorKind::PackageUpdateBusy | ErrorKind::RestoreBusy
+  ) {
+    return label(lang, key).into();
+  }
   format!("{}\n{}", label(lang, key), error.detail)
 }
 fn wire_error(error: serde_json::Error) -> SnapshotError {
@@ -838,10 +896,10 @@ fn elevated(action: &str, values: &[String]) -> SnapshotResult<Vec<u8>> {
     } else {
       180
     }))
-    .output_limit(1024 * 1024);
+    .output_limit(16 * 1024 * 1024);
   SystemProcessRunner
     .run(&request)
-    .map_err(|error| SnapshotError::new(ErrorKind::Snapper, error.to_string()))
+    .map_err(crate::backend::process_error)
     .and_then(check_output)
 }
 

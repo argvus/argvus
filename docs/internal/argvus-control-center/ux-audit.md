@@ -1810,3 +1810,49 @@ classifica suas páginas conforme as operações disponíveis; Settings centrali
 classificação em `Page::requires_admin`. Rodapé, botões, mensagens e navegação
 Welcome preservam suas áreas. Novas páginas com operações administrativas devem
 usar esse componente, incluindo operações autorizadas por polkit sem `sudo` direto.
+
+## Correção C11 — entrada de texto e colunas Unicode
+
+Os campos simples de senha Wi-Fi, DNS e busca preservam modificadores e aceitam
+Paste sem inserir controles ou quebras de linha. A política compartilhada
+`argvus_tui::text_editor::text_character` aceita caracteres imprimíveis com
+Shift ou Ctrl+Alt (codificação de AltGr em alguns terminais); Ctrl ou Alt
+isolados não viram texto. Ctrl+S salva somente sem Alt. O protocolo não permite
+distinguir AltGr de um acorde Ctrl+Alt idêntico.
+O editor mede navegação vertical em colunas visuais e alinha a rolagem horizontal
+aos limites dos grafemas da linha do cursor. Testes cobrem caracteres largos,
+acentos combinantes, emoji composto e tabs. O armazenamento e a edição lateral
+continuam indexados por caracteres Unicode. A verificação física de AltGr em
+um terminal com layout pt-BR permanece manual.
+
+## Correção P7 — observação e persistência do áudio
+
+A configuração canônica `/audio/output_volume` e `/audio/output_muted` descreve
+a saída padrão. O backend compara o ID selecionado com o resultado atual de
+`wpctl inspect @DEFAULT_AUDIO_SINK@` antes de persistir uma alteração aplicada.
+Microfones, saídas não padrão e identidade indeterminada não sobrescrevem essas
+preferências. PipeWire/WirePlumber continua responsável pelo estado dos demais
+dispositivos; não foram criadas chaves de entrada.
+O volume observado usa u32 e preserva amplificação acima de 100%, enquanto
+rascunhos e valores canônicos editáveis mantêm o intervalo 0–100%. Leituras
+inválidas aparecem como desconhecidas. A projeção da configuração permanece
+inalterada e continua direcionada à saída padrão.
+
+A validação do P7 revelou uma falha intermitente nos testes de escala de ícones
+do TUI: os testes de valor padrão e personalizado alteravam a mesma variável
+`ARGVUS_ICON_SCALE` sem coordenação. A leitura do ambiente continua na entrada
+de produção; os testes agora fornecem valores diretamente ao parser puro, sem
+mutar o ambiente global. O protocolo OSC 66 e as regras de escala não mudaram.
+
+## Correção P8 — identidade PCI e escopo das consultas gráficas
+
+A enumeração de GPUs usa um parser comum para separar endereço PCI, classe e
+modelo na saída de `lspci`. Nomes comerciais entre colchetes são preservados;
+apenas tags de IDs numéricos são removidas do modelo. Consultas direcionadas
+usam endereço com domínio e verificam a correspondência do resultado.
+Os resultados globais de `glxinfo -B` e `vulkaninfo --summary` pertencem ao
+resumo de hardware, não a cada GPU. A lista Vulkan inclui todos os registros
+`deviceName`, inclusive renderizadores por software. Não é feita associação
+por semelhança de nome ou por haver apenas uma GPU. Campos por dispositivo
+só são exibidos quando há dados específicos; as consultas atuais não os
+preenchem. Os probes globais têm limite de 1 MiB e prazo de 10 segundos.

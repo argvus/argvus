@@ -2,7 +2,7 @@ use super::*;
 use ratatui::{Terminal, backend::TestBackend};
 
 /// Builds an app on an output page with one device, without touching the audio server.
-fn app_with_output(volume: Option<u8>) -> AudioApp {
+fn app_with_output(volume: Option<u32>) -> AudioApp {
   let mut app = AudioApp::new(
     Lang::for_locale("en-US"),
     Theme::load(),
@@ -200,4 +200,14 @@ fn audio_uses_shared_chrome_and_contextual_footer() {
   assert!(text.contains("ARGVUS"));
   assert!(text.contains("Audio") || text.contains("Áudio"));
   assert!(text.contains("Enter") && text.contains("Back"));
+}
+
+#[test]
+fn p7_amplified_observation_is_preserved_until_an_explicit_bounded_edit() {
+  let mut app = app_with_output(Some(300));
+  let id = app.snapshot.outputs[0].id;
+  assert_eq!(app.volume_of(&app.snapshot.outputs[0]), Some(300));
+  assert!(app.pending_changes().is_empty());
+  app.adjust_volume(-5);
+  assert_eq!(app.draft.volumes.get(&id), Some(&100));
 }

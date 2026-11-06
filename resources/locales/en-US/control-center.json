@@ -2155,5 +2155,16 @@
   "control_center.snapshot.invalid": "Snapshot data or request could not be validated safely.",
   "control_center.snapshot.failed": "Snapper could not complete the operation.",
   "control_center.keybindings.action.ai": "AI agent selector (optional argvus-ai package)",
-  "control_center.taskbar_ai_agents": "AI Agents"
+  "control_center.taskbar_ai_agents": "AI Agents",
+  "control_center.snapshot.output_limit": "Output exceeded the supported limit.",
+  "control_center.snapshot.comparison_truncated": "Showing the first changed paths:",
+  "control_center.wifi_target_unavailable": "The selected Wi-Fi network is no longer available. Scan again before connecting.",
+  "control_center.snapshot.unsupported_paths": "Unsupported paths (actions unavailable):",
+  "control_center.transaction_output_truncated": "Some process output was omitted because the display limit was reached.",
+  "control_center.snapshot.package_update_busy": "The package transaction lock is busy. Wait for the operation to finish before restoring.",
+  "control_center.snapshot.restore_busy": "Another selective restore is in progress. Wait for it to finish.",
+  "control_center.snapshot.retention_fallback": "ARGVUS fallback; setting absent",
+  "control_center.quit_operation_pending": "An operation is still running. Wait for it to finish before exiting.",
+  "control_center.hardware_session_opengl": "OpenGL renderer (session)",
+  "control_center.hardware_probe_vulkan_devices": "Vulkan devices (probe)"
 }

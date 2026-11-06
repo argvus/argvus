@@ -44,6 +44,7 @@ impl ProcessRunner for FakeNmcli {
       stderr: stderr.as_bytes().to_vec(),
       status: Some(0),
       timed_out: false,
+      cancelled: false,
     })
   }
 }

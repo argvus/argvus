@@ -200,8 +200,16 @@ pub fn parse_findmnt(input: &str) -> Result<Vec<Mount>, StorageError> {
     .get("filesystems")
     .and_then(Value::as_array)
     .ok_or(StorageError::MalformedOutput)?;
+  let mut pending: Vec<&Value> = rows.iter().rev().collect();
+  let mut flattened = Vec::new();
+  while let Some(row) = pending.pop() {
+    flattened.push(row);
+    if let Some(children) = row.get("children").and_then(Value::as_array) {
+      pending.extend(children.iter().rev());
+    }
+  }
   Ok(
-    rows
+    flattened
       .iter()
       .filter_map(|row| {
         Some(Mount {
@@ -442,5 +450,43 @@ mod tests {
     assert_eq!(usage_level(100, 50), UsageLevel::Ok);
     assert_eq!(usage_level(100, 15), UsageLevel::Warning);
     assert_eq!(usage_level(100, 5), UsageLevel::Critical);
+  }
+  #[test]
+  fn nested_findmnt_includes_home_boot_and_efi() {
+    let mounts = parse_findmnt(r#"{"filesystems":[{"target":"/","source":"/dev/root","fstype":"btrfs","options":"rw,relatime","children":[{"target":"/home","source":"/dev/root[/@home]","fstype":"btrfs","options":"rw,relatime"},{"target":"/boot","source":"/dev/sda1","fstype":"ext4","options":"ro,relatime","children":[{"target":"/boot/efi","source":"/dev/sda2","fstype":"vfat","options":"rw,relatime"}]},{"target":"/proc","source":"proc","fstype":"proc","options":"rw"}]}]}"#).unwrap();
+    assert_eq!(
+      mounts
+        .iter()
+        .map(|mount| mount.target.as_str())
+        .collect::<Vec<_>>(),
+      ["/", "/home", "/boot", "/boot/efi", "/proc"]
+    );
+    assert!(mounts[2].readonly);
+    let filesystems = filesystems_from_mounts(&mounts);
+    assert_eq!(filesystems.len(), 4);
+    assert_eq!(filesystems[3].mountpoint.as_deref(), Some("/boot/efi"));
+  }
+
+  #[test]
+  #[ignore = "read-only integration check requiring host findmnt"]
+  fn real_findmnt_tree_matches_flat_mount_inventory() {
+    let query = |flat: bool| {
+      let mut command = std::process::Command::new("findmnt");
+      command.args([
+        "--json",
+        "--bytes",
+        "--output",
+        "TARGET,SOURCE,FSTYPE,OPTIONS",
+      ]);
+      if flat {
+        command.arg("--list");
+      }
+      let output = command.output().unwrap();
+      assert!(output.status.success());
+      let mut mounts = parse_findmnt(&String::from_utf8(output.stdout).unwrap()).unwrap();
+      mounts.sort_by(|left, right| left.target.cmp(&right.target));
+      mounts
+    };
+    assert_eq!(query(false), query(true));
   }
 }

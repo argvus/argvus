@@ -601,6 +601,7 @@ impl PackagesApp {
       kind: argvus_tui::components::StatusKind::Info,
       text: tr(lang, "control_center.repo_reviewing").into(),
     });
+    self.loading_key = None;
     self.job = Some(self.jobs.spawn(move |_| {
       let backend = PackageBackend::new(SystemProcessRunner, capabilities);
       Ok(

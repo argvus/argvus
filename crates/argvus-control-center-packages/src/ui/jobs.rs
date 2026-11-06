@@ -3,7 +3,6 @@
 use super::actions::{
   PRE_UPDATE_BLOCKED, PRE_UPDATE_COMPLETED, PRE_UPDATE_FAILED, PRE_UPDATE_INDETERMINATE,
 };
-use super::render::transaction_bottom_offset;
 use super::*;
 
 impl PackagesApp {
@@ -67,6 +66,7 @@ impl PackagesApp {
     let name = self.details_target();
     // With the AUR menu on the Home, its packages are removed from there.
     let hide_foreign = self.has_aur_helper();
+    self.loading_key = Some(key);
     self.job = Some(self.jobs.spawn(move |_| {
       let b = PackageBackend::new(SystemProcessRunner, caps);
       let aur_helper = || b.aur_helper().ok_or("AUR helper is unavailable");
@@ -145,15 +145,26 @@ impl PackagesApp {
           self.job = Some(job);
           return false;
         }
-        JobState::Finished(Ok(Ok(d))) => {
-          if !self.apply(d) {
-            self.success(tr(self.lang, "control_center.packages_refreshed"));
+        JobState::Finished(result) => {
+          let loaded_key = self.loading_key.take();
+          if loaded_key
+            .as_ref()
+            .is_some_and(|key| key != &self.reload_key())
+          {
+            self.start_reload(true);
+            return true;
           }
-          self.last_loaded = Some((self.reload_key(), std::time::Instant::now()));
-          return true;
-        }
-        JobState::Finished(Ok(Err(e))) | JobState::Finished(Err(e)) => {
-          self.error(e);
+          match result {
+            Ok(Ok(data)) => {
+              if !self.apply(data) {
+                self.success(tr(self.lang, "control_center.packages_refreshed"));
+              }
+              if let Some(key) = loaded_key {
+                self.last_loaded = Some((key, std::time::Instant::now()));
+              }
+            }
+            Ok(Err(error)) | Err(error) => self.error(error),
+          }
           return true;
         }
       }
@@ -169,11 +180,9 @@ impl PackagesApp {
       JobState::Running => {
         self.action = Some(job);
         if self.transaction_open {
-          if self.transaction_follow
-            && let Some(live) = &self.transaction_live
-          {
-            self.transaction_scroll =
-              transaction_bottom_offset(&transaction_output(self.lang, &live.output()));
+          self.sync_transaction_output();
+          if self.transaction_follow {
+            self.transaction_scroll = self.transaction_bottom();
           }
           true
         } else {
@@ -328,6 +337,7 @@ impl PackagesApp {
   /// Drops the list still loading for the previous page, so its result never
   /// fills the list that opens now.
   pub(super) fn cancel_load(&mut self) {
+    self.loading_key = None;
     if let Some(job) = self.job.take() {
       job.cancel();
     }

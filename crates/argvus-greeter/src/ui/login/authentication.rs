@@ -46,6 +46,7 @@ impl LoginApp {
       .commands
       .send(Command::Begin {
         username: user.username.clone(),
+        session_uid: user.uid,
         session: session.clone(),
         theme: self.theme_name.clone(),
         accent: self.theme_accent.clone(),

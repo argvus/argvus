@@ -31,6 +31,7 @@ fn output(text: &str) -> Result<ProcessOutput, ProcessError> {
     stderr: vec![],
     status: Some(0),
     timed_out: false,
+    cancelled: false,
   })
 }
 fn backend(replies: Vec<Result<ProcessOutput, ProcessError>>) -> SnapshotBackend<Fake> {
@@ -215,6 +216,7 @@ fn cleanup_failure_is_not_reported_as_success() {
     stderr: b"cleanup failed".to_vec(),
     status: Some(1),
     timed_out: false,
+    cancelled: false,
   }));
   let backend = backend(replies);
   assert!(
@@ -396,6 +398,7 @@ fn diff_reports_non_utf8_and_rejects_unlisted_paths() {
     stderr: vec![],
     status: Some(0),
     timed_out: false,
+    cancelled: false,
   }));
   assert_eq!(
     backend(replies).diff("system", 1, 2, "/etc/a").unwrap(),
@@ -628,6 +631,7 @@ fn distinguishes_permission_authentication_timeout_and_failure() {
       stderr: stderr.as_bytes().into(),
       status: Some(status),
       timed_out,
+      cancelled: false,
     })
     .unwrap_err();
     assert_eq!(error.kind, kind);
@@ -696,6 +700,7 @@ fn sanitizes_failure_output_and_distinguishes_bad_versions() {
     stderr: b"\x1b[31mpermission denied\x1b[0m\x07".to_vec(),
     status: Some(1),
     timed_out: false,
+    cancelled: false,
   })
   .unwrap_err();
   assert_eq!(error.kind, ErrorKind::Permission);
@@ -712,6 +717,7 @@ fn sanitizes_failure_output_and_distinguishes_bad_versions() {
     stderr: b"error".to_vec(),
     status: Some(1),
     timed_out: false,
+    cancelled: false,
   });
   assert_eq!(
     backend(vec![failure]).inspect(None).unwrap_err().kind,
@@ -738,6 +744,7 @@ fn restore_fixture(
   let lock_path = root_path.join("restore.lock");
   let package_lock = root_path.join("package.lock");
   backend.restore_paths = RestorePaths {
+    filesystem_uuid: |_| Ok([1; 16]),
     root: root_path,
     snapshots: snapshots_path,
     lock: lock_path,
@@ -916,6 +923,7 @@ fn restore_failure_reports_the_safety_snapshot_id() {
     stderr: b"undochange failed".to_vec(),
     status: Some(1),
     timed_out: false,
+    cancelled: false,
   });
   let (backend, _directory) = restore_fixture(replies);
   std::fs::write(
@@ -940,10 +948,11 @@ fn selective_restore_lock_prevents_concurrent_mutations_and_releases_on_drop() {
   let lock_path = root.join("restore.lock");
   let owner = std::fs::metadata(&root).unwrap().uid();
 
-  let first = RestoreLock::acquire(&lock_path, &root, owner).unwrap();
-  assert!(RestoreLock::acquire(&lock_path, &root, owner).is_err());
+  let first =
+    RestoreLock::acquire(&lock_path, &root, owner, LockPurpose::SelectiveRestore).unwrap();
+  assert!(RestoreLock::acquire(&lock_path, &root, owner, LockPurpose::SelectiveRestore).is_err());
   drop(first);
-  assert!(RestoreLock::acquire(&lock_path, &root, owner).is_ok());
+  assert!(RestoreLock::acquire(&lock_path, &root, owner, LockPurpose::SelectiveRestore).is_ok());
 }
 
 #[test]
@@ -1005,4 +1014,426 @@ fn restored_files_compare_absence_and_permissions() {
   std::fs::set_permissions(&source, std::fs::Permissions::from_mode(0o600)).unwrap();
   std::fs::set_permissions(&target, std::fs::Permissions::from_mode(0o644)).unwrap();
   assert!(!restored_files_match(&source, &target, root, owner).unwrap());
+}
+
+#[test]
+fn large_comparison_has_bounded_compact_response() {
+  let status: String = (0..50000)
+    .map(|index| format!("c..... /etc/file-{index}\n"))
+    .collect();
+  let mut replies = ready(vec![row(1, false, false), row(2, false, false)]);
+  replies.push(output(&status));
+  let comparison = backend(replies).compare("system", 1, 2).unwrap();
+  assert_eq!(comparison.changes.len(), 10000);
+  assert!(comparison.truncated);
+  assert_eq!(comparison.total_seen, 50000);
+  let encoded = serde_json::to_vec(&comparison).unwrap();
+  assert_eq!(
+    serde_json::from_slice::<Comparison>(&encoded).unwrap(),
+    comparison
+  );
+  assert!(serde_json::to_vec(&comparison).unwrap().len() < 1024 * 1024);
+}
+
+#[test]
+fn comparison_output_overflow_is_a_typed_error() {
+  let mut replies = ready(vec![row(1, false, false), row(2, false, false)]);
+  replies.push(Err(ProcessError::OutputLimit));
+  assert_eq!(
+    backend(replies).compare("system", 1, 2).unwrap_err().kind,
+    ErrorKind::OutputLimit
+  );
+}
+
+#[test]
+fn restore_preview_rejects_distinct_filesystem_uuids_even_with_same_device() {
+  let (mut backend, _directory) = restore_fixture(restore_preview_replies());
+  backend.restore_paths.filesystem_uuid = |path| {
+    Ok(
+      if path
+        .components()
+        .any(|part| part.as_os_str() == ".snapshots")
+      {
+        [2; 16]
+      } else {
+        [1; 16]
+      },
+    )
+  };
+  assert!(
+    backend
+      .restore_preview("system", 1, 2, "/etc/app.conf")
+      .is_err()
+  );
+}
+
+#[test]
+fn restore_filesystem_identity_ignores_subvolume_device_numbers() {
+  // Fake subvolumes have different device identities but the same filesystem UUID.
+  assert!(
+    verify_restore_filesystem(Path::new("/"), Path::new("/.snapshots/2/snapshot"), |_| Ok(
+      [1; 16]
+    ))
+    .is_ok()
+  );
+}
+
+#[test]
+fn restore_preview_fails_closed_when_filesystem_probe_fails() {
+  let (mut backend, _directory) = restore_fixture(restore_preview_replies());
+  backend.restore_paths.filesystem_uuid = |_| Err("not Btrfs".into());
+  assert!(
+    backend
+      .restore_preview("system", 1, 2, "/etc/app.conf")
+      .is_err()
+  );
+}
+
+#[test]
+#[ignore = "requires disposable Btrfs mounts prepared in /audit-root and /audit-other"]
+fn real_btrfs_subvolume_identity() {
+  let root = Path::new("/audit-root");
+  let source = root.join("snapshot/file");
+  assert_ne!(
+    fs::metadata(root).unwrap().dev(),
+    fs::metadata(&source).unwrap().dev()
+  );
+  verify_restore_filesystem(root, &source, btrfs_filesystem_uuid).unwrap();
+  assert!(
+    verify_restore_filesystem(root, Path::new("/audit-other/file"), btrfs_filesystem_uuid).is_err()
+  );
+  assert!(btrfs_filesystem_uuid(Path::new("/proc")).is_err());
+  let target = root.join("origin/file");
+  assert!(restored_files_match(&source, &target, root, 0).unwrap());
+  fs::write(&target, "changed\n").unwrap();
+  assert!(!restored_files_match(&source, &target, root, 0).unwrap());
+  fs::write(&target, fs::read(&source).unwrap()).unwrap();
+  assert!(restored_files_match(&source, &target, root, 0).unwrap());
+}
+
+#[test]
+fn automatic_pre_upgrade_snapshot_uses_number_cleanup() {
+  let mut replies = ready(vec![]);
+  replies.extend(ready(vec![]));
+  replies.push(output("42\n"));
+  let backend = backend(replies);
+  assert_eq!(backend.create_pre_upgrade().unwrap(), 42);
+  let requests = backend.runner.requests.lock().unwrap();
+  assert!(
+    requests
+      .last()
+      .unwrap()
+      .args
+      .windows(2)
+      .any(|pair| pair == ["--cleanup-algorithm", "number"])
+  );
+}
+
+#[test]
+fn restore_safety_snapshot_uses_number_cleanup() {
+  let (backend, _directory) = restore_fixture(restore_success_replies());
+  fs::write(
+    backend.restore_paths.root.join("etc/app.conf"),
+    "snapshot version\n",
+  )
+  .unwrap();
+  let review = backend
+    .restore_preview("system", 1, 2, "/etc/app.conf")
+    .unwrap();
+  backend
+    .restore_file("system", 1, 2, "/etc/app.conf", review.destination.as_ref())
+    .unwrap();
+  let requests = backend.runner.requests.lock().unwrap();
+  let creation = requests
+    .iter()
+    .find(|request| request.args.get(2).is_some_and(|arg| arg == "create"))
+    .unwrap();
+  assert!(
+    creation
+      .args
+      .windows(2)
+      .any(|pair| pair == ["--cleanup-algorithm", "number"])
+  );
+}
+
+#[test]
+fn comparison_keeps_valid_paths_around_unsupported_names() {
+  let mut replies = ready(vec![row(1, false, false), row(2, false, false)]);
+  let bytes = b"c..... /etc/good\nc..... /bad/../name\nc..... /bad\xffname\nc..... /bad\tname\nc..... /etc/also-good\n";
+  replies.push(Ok(ProcessOutput {
+    stdout: bytes.to_vec(),
+    stderr: vec![],
+    status: Some(0),
+    timed_out: false,
+    cancelled: false,
+  }));
+  let comparison = backend(replies).compare("system", 1, 2).unwrap();
+  assert_eq!(comparison.unsupported, 3);
+  assert_eq!(comparison.total_seen, 5);
+  assert_eq!(
+    comparison
+      .changes
+      .iter()
+      .map(|change| change.path.as_str())
+      .collect::<Vec<_>>(),
+    ["/etc/good", "/etc/also-good"]
+  );
+}
+
+#[test]
+fn newline_path_prefix_is_not_exposed_as_restorable() {
+  let (changes, unsupported) = parse_supported_status(
+    b"c..... /etc/good\nc..... /bad-prefix\ncontinuation\nc..... /etc/also-good\n",
+  )
+  .unwrap();
+  assert_eq!(unsupported, 1);
+  assert_eq!(
+    changes
+      .iter()
+      .map(|change| change.path.as_str())
+      .collect::<Vec<_>>(),
+    ["/etc/good", "/etc/also-good"]
+  );
+}
+
+#[test]
+fn diff_revalidates_path_without_building_truncated_comparison() {
+  let mut replies = ready(vec![row(1, false, false), row(2, false, false)]);
+  let status: String = (0..10001)
+    .map(|index| format!("c..... /etc/file-{index}\n"))
+    .collect();
+  replies.push(output(&status));
+  replies.push(output("+selected contents\n"));
+  let backend = backend(replies);
+  assert!(matches!(
+    backend.diff("system", 1, 2, "/etc/file-10000").unwrap(),
+    FileDiff::Text(_)
+  ));
+  let requests = backend.runner.requests.lock().unwrap();
+  assert_eq!(
+    requests
+      .iter()
+      .filter(|request| request.args.get(2).is_some_and(|arg| arg == "status"))
+      .count(),
+    1
+  );
+  let diff = requests.last().unwrap();
+  assert_eq!(
+    diff.args,
+    ["-c", "system", "diff", "1..2", "/etc/file-10000"]
+  );
+}
+
+#[test]
+fn restore_preview_inspects_and_compares_once() {
+  let (backend, _directory) = restore_fixture(restore_preview_replies());
+  backend
+    .restore_preview("system", 1, 2, "/etc/app.conf")
+    .unwrap();
+  let requests = backend.runner.requests.lock().unwrap();
+  assert_eq!(
+    requests
+      .iter()
+      .filter(|request| request.program == FINDMNT)
+      .count(),
+    1
+  );
+  for command in ["status", "diff"] {
+    assert_eq!(
+      requests
+        .iter()
+        .filter(|request| request.args.get(2).is_some_and(|arg| arg == command))
+        .count(),
+      1
+    );
+  }
+  assert_eq!(
+    requests.last().unwrap().args,
+    ["-c", "system", "diff", "2..0", "/etc/app.conf"]
+  );
+}
+
+#[test]
+fn mount_path_octal_escapes_preserve_utf8_bytes() {
+  assert_eq!(
+    decode_mount_path(br"/m\303\263dulo\040de\040dados"),
+    Some(PathBuf::from("/módulo de dados"))
+  );
+}
+
+#[test]
+fn escaped_unicode_mountpoint_blocks_restore_boundary() {
+  let (backend, _directory) = restore_fixture(vec![]);
+  let escaped = format!("{}/m\\303\\263dulo", backend.restore_paths.root.display());
+  fs::write(
+    &backend.restore_paths.mountinfo,
+    format!("1 0 0:1 / {escaped} rw - btrfs /dev/test rw\n"),
+  )
+  .unwrap();
+  assert!(
+    ensure_not_mountpoint(
+      &backend.restore_paths.root.join("módulo/file"),
+      &backend.restore_paths.mountinfo
+    )
+    .is_err()
+  );
+}
+
+#[test]
+fn mount_path_preserves_non_utf8_and_rejects_bad_escapes() {
+  use std::os::unix::ffi::OsStrExt;
+  assert_eq!(
+    decode_mount_path(br"/raw\377")
+      .unwrap()
+      .as_os_str()
+      .as_bytes(),
+    b"/raw\xff"
+  );
+  assert_eq!(
+    decode_mount_path(b"/raw\xff")
+      .unwrap()
+      .as_os_str()
+      .as_bytes(),
+    b"/raw\xff"
+  );
+  for path in [
+    br"/bad\12".as_slice(),
+    br"/bad\888",
+    br"/bad\777",
+    br"/bad\000",
+  ] {
+    assert!(decode_mount_path(path).is_none());
+  }
+}
+
+#[test]
+fn package_lock_contention_is_not_reported_as_another_restore() {
+  let (backend, _directory) = restore_fixture(vec![]);
+  let root = &backend.restore_paths.root;
+  let owner = fs::metadata(root).unwrap().uid();
+  let _held = RestoreLock::acquire(
+    &backend.restore_paths.package_lock,
+    root,
+    owner,
+    LockPurpose::PackageUpdate,
+  )
+  .unwrap();
+  let error = backend
+    .restore_file("system", 1, 2, "/etc/app.conf", None)
+    .unwrap_err();
+  assert_eq!(error.kind, ErrorKind::PackageUpdateBusy);
+  assert!(error.detail.contains("package"), "{error}");
+  assert!(backend.runner.requests.lock().unwrap().is_empty());
+}
+
+#[test]
+fn restore_lock_contention_has_its_own_error_and_releases_package_lock() {
+  let (backend, _directory) = restore_fixture(vec![]);
+  let root = &backend.restore_paths.root;
+  let owner = fs::metadata(root).unwrap().uid();
+  let _held = RestoreLock::acquire(
+    &backend.restore_paths.lock,
+    root,
+    owner,
+    LockPurpose::SelectiveRestore,
+  )
+  .unwrap();
+  let error = backend
+    .restore_file("system", 1, 2, "/etc/app.conf", None)
+    .unwrap_err();
+  assert_eq!(error.kind, ErrorKind::RestoreBusy);
+  assert!(
+    RestoreLock::acquire(
+      &backend.restore_paths.package_lock,
+      root,
+      owner,
+      LockPurpose::PackageUpdate
+    )
+    .is_ok()
+  );
+  assert!(backend.runner.requests.lock().unwrap().is_empty());
+}
+
+#[test]
+fn retention_multiple_settings_are_separate_snapper_arguments() {
+  let mut replies = ready(vec![]);
+  replies.push(output(""));
+  replies.extend(ready(vec![]));
+  replies.push(output(r#"{"NUMBER_LIMIT":"20","NUMBER_CLEANUP":"yes"}"#));
+  let backend = backend(replies);
+  backend
+    .set_retention(
+      "system",
+      &[
+        ("NUMBER_LIMIT".into(), "20".into()),
+        ("NUMBER_CLEANUP".into(), "yes".into()),
+      ],
+    )
+    .unwrap();
+  let requests = backend.runner.requests.lock().unwrap();
+  let set = requests
+    .iter()
+    .find(|request| request.args.get(2).is_some_and(|arg| arg == "set-config"))
+    .unwrap();
+  assert_eq!(
+    set.args,
+    [
+      "-c",
+      "system",
+      "set-config",
+      "NUMBER_LIMIT=20",
+      "NUMBER_CLEANUP=yes"
+    ]
+  );
+}
+
+#[test]
+fn shared_retention_parser_validates_every_pair() {
+  let changes = parse_retention_configdata("NUMBER_LIMIT=20 NUMBER_CLEANUP=yes").unwrap();
+  assert_eq!(
+    build_retention_configdata(&changes).unwrap(),
+    "NUMBER_LIMIT=20 NUMBER_CLEANUP=yes"
+  );
+  for invalid in [
+    "",
+    "NUMBER_LIMIT=20 NUMBER_LIMIT=30",
+    "NUMBER_LIMIT=20 SUBVOLUME=/",
+    "NUMBER_CLEANUP=maybe",
+    "NUMBER_LIMIT=20  NUMBER_CLEANUP=yes",
+  ] {
+    assert!(parse_retention_configdata(invalid).is_err(), "{invalid}");
+  }
+}
+
+#[test]
+fn pre_upgrade_with_multiple_root_configs_uses_a_stable_choice() {
+  for (names, expected) in [(["zeta", "root"], "root"), (["zeta", "alpha"], "alpha")] {
+    let inspection = || {
+      vec![
+        output(&root("btrfs")),
+        output("--jsonout"),
+        output(
+          &json!({"configs": names.map(|name| json!({"config":name,"subvolume":"/"}))}).to_string(),
+        ),
+        output(r#"{"SUBVOLUME":"/","FSTYPE":"btrfs"}"#),
+        output(r#"{"SUBVOLUME":"/","FSTYPE":"btrfs"}"#),
+      ]
+    };
+    let mut replies = inspection();
+    replies.extend(inspection());
+    replies.push(output(&json!({expected: []}).to_string()));
+    replies.push(output("42\n"));
+    let backend = backend(replies);
+    assert_eq!(backend.create_pre_upgrade().unwrap(), 42);
+    let requests = backend.runner.requests.lock().unwrap();
+    let create = requests.last().unwrap();
+    assert!(create.args.windows(2).any(|pair| pair == ["-c", expected]));
+    assert!(create.args.iter().any(|arg| arg == "create"));
+    assert!(
+      create
+        .args
+        .windows(2)
+        .any(|pair| pair == ["--cleanup-algorithm", "number"])
+    );
+  }
 }

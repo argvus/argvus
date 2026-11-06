@@ -246,7 +246,7 @@ impl ServicesApp {
         },
       );
     }
-    if let Some(Pending::Action(a, u)) = &self.pending {
+    if let Some(Pending::Action(a, u, _)) = &self.pending {
       self.draw_pending(frame, area, a, u)
     }
   }

@@ -1,6 +1,6 @@
 //! Keyboard and text input: list keys, the action bar, the transaction window, filters, search and number fields.
 
-use super::render::{filters_while_typing, has_action_bar, transaction_bottom_offset};
+use super::render::{filters_while_typing, has_action_bar};
 use super::*;
 
 impl PackagesApp {
@@ -240,10 +240,8 @@ impl PackagesApp {
         self.transaction_scroll = 0;
       }
       KeyCode::End => {
-        if let Some(live) = &self.transaction_live {
-          self.transaction_scroll =
-            transaction_bottom_offset(&transaction_output(self.lang, &live.output()));
-        }
+        self.sync_transaction_output();
+        self.transaction_scroll = self.transaction_bottom();
       }
       _ => {}
     }

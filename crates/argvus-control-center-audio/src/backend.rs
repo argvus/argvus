@@ -46,7 +46,13 @@ impl<R: ProcessRunner> AudioBackend<R> {
     Ok(terminal_text(&String::from_utf8_lossy(&o.stdout)))
   }
 
-  fn persist_default_output(&self, pointer: &str, value: &str) -> Result<(), AudioError> {
+  fn persist_default_output(&self, id: u32, pointer: &str, value: &str) -> Result<(), AudioError> {
+    // The canonical audio module projects onto the default sink only. Neither
+    // sources nor other sinks may overwrite its preferences. Unknown identity
+    // also leaves the store unchanged rather than guessing the device's role.
+    if self.default_id("@DEFAULT_AUDIO_SINK@") != Some(id) {
+      return Ok(());
+    }
     let request = ProcessRequest::new("argvus")
       .arg("config")
       .arg("set")
@@ -112,12 +118,16 @@ impl<R: ProcessRunner> AudioBackend<R> {
       return Err(AudioError::InvalidValue);
     }
     self.run(&["set-volume", &id.to_string(), &format!("{}%", percent)])?;
-    self.persist_default_output("/audio/output_volume", &percent.to_string())
+    self.persist_default_output(id, "/audio/output_volume", &percent.to_string())
   }
   pub fn set_mute(&self, id: u32, mute: bool) -> Result<(), AudioError> {
     validate_node_id(id)?;
     self.run(&["set-mute", &id.to_string(), if mute { "1" } else { "0" }])?;
-    self.persist_default_output("/audio/output_muted", if mute { "true" } else { "false" })
+    self.persist_default_output(
+      id,
+      "/audio/output_muted",
+      if mute { "true" } else { "false" },
+    )
   }
 }
 fn validate_node_id(id: u32) -> Result<(), AudioError> {
@@ -162,8 +172,11 @@ pub fn parse_status(input: &str) -> Vec<AudioDevice> {
       });
       let volume = vol_bracket
         .and_then(|inside| inside.split_whitespace().next())
-        .and_then(|v| v.parse::<f32>().ok())
-        .map(|value| clamp_volume((value * 100.0).round() as i16));
+        .and_then(|value| value.parse::<f64>().ok())
+        .filter(|value| value.is_finite() && *value >= 0.0)
+        .map(|value| (value * 100.0).round())
+        .filter(|value| value.is_finite() && (0.0..=f64::from(u32::MAX)).contains(value))
+        .map(|value| value as u32);
       let muted = raw.contains("[MUTED]")
         || vol_bracket.is_some_and(|inside| inside.split_whitespace().any(|t| t == "MUTED"));
       let name = raw.split(" [vol:").next().unwrap_or(raw).trim().to_string();
@@ -197,10 +210,16 @@ mod tests {
     fn run(&self, request: &ProcessRequest) -> Result<ProcessOutput, ProcessError> {
       self.0.lock().unwrap().push(request.clone());
       Ok(ProcessOutput {
-        stdout: Vec::new(),
+        stdout: if request.program == "wpctl" && request.args == ["inspect", "@DEFAULT_AUDIO_SINK@"]
+        {
+          b"id 46, type PipeWire:Interface:Node\n".to_vec()
+        } else {
+          Vec::new()
+        },
         stderr: Vec::new(),
         status: Some(0),
         timed_out: false,
+        cancelled: false,
       })
     }
   }
@@ -252,7 +271,9 @@ mod tests {
     let requests = backend.runner.0.lock().unwrap();
     let wpctl_requests: Vec<_> = requests
       .iter()
-      .filter(|request| request.program == "wpctl")
+      .filter(|request| {
+        request.program == "wpctl" && request.args.first().is_none_or(|arg| arg != "inspect")
+      })
       .collect();
     assert_eq!(wpctl_requests[0].args, ["set-default", "46"]);
     assert_eq!(wpctl_requests[1].args, ["set-volume", "46", "75%"]);
@@ -320,10 +341,85 @@ mod tests {
           stderr: Vec::new(),
           status: Some(0),
           timed_out: false,
+          cancelled: false,
         })
       }
     }
     let backend = AudioBackend::new(InspectFixture, Capabilities::default());
     assert_eq!(backend.default_id("@DEFAULT_AUDIO_SINK@"), Some(62));
+  }
+  #[test]
+  fn p7_input_changes_do_not_write_output_preferences() {
+    let backend = AudioBackend::new(RecordingRunner::default(), Capabilities::default());
+    backend.set_volume(57, 75).unwrap();
+    backend.set_mute(57, true).unwrap();
+    let requests = backend.runner.0.lock().unwrap();
+    assert!(requests.iter().all(|request| request.program == "wpctl"));
+  }
+
+  #[test]
+  fn p7_status_preserves_amplified_volume_and_rejects_invalid_numbers() {
+    for (value, expected) in [
+      ("1.50", Some(150)),
+      ("3.00", Some(300)),
+      ("NaN", None),
+      ("inf", None),
+      ("-1", None),
+      ("-0.001", None),
+      ("1e100", None),
+    ] {
+      let devices = parse_status(&format!(
+        "Audio\n ├─ Sinks:\n │  * 42. Speaker [vol: {value}]\n"
+      ));
+      assert_eq!(devices[0].volume, expected, "{value}");
+    }
+  }
+
+  #[test]
+  fn p7_only_the_default_sink_persists_volume_and_mute() {
+    let backend = AudioBackend::new(RecordingRunner::default(), Capabilities::default());
+    backend.set_volume(46, 75).unwrap();
+    backend.set_mute(46, true).unwrap();
+    backend.set_volume(58, 40).unwrap();
+    backend.set_mute(58, false).unwrap();
+    let requests = backend.runner.0.lock().unwrap();
+    let writes: Vec<_> = requests
+      .iter()
+      .filter(|request| request.program == "argvus")
+      .map(|request| request.args.clone())
+      .collect();
+    assert_eq!(
+      writes,
+      [
+        vec!["config", "set", "/audio/output_volume", "75"],
+        vec!["config", "set", "/audio/output_muted", "true"]
+      ]
+    );
+    assert_eq!(
+      requests
+        .iter()
+        .filter(|request| request.program == "systemctl")
+        .count(),
+      2
+    );
+  }
+  #[test]
+  fn p7_unknown_default_sink_leaves_preferences_unchanged() {
+    #[derive(Default)]
+    struct UnknownSink(RecordingRunner);
+    impl ProcessRunner for UnknownSink {
+      fn run(&self, request: &ProcessRequest) -> Result<ProcessOutput, ProcessError> {
+        let mut output = self.0.run(request)?;
+        if request.args.first().is_some_and(|arg| arg == "inspect") {
+          output.stdout.clear();
+        }
+        Ok(output)
+      }
+    }
+    let backend = AudioBackend::new(UnknownSink::default(), Capabilities::default());
+    backend.set_volume(46, 75).unwrap();
+    backend.set_mute(46, true).unwrap();
+    let requests = backend.runner.0.0.lock().unwrap();
+    assert!(requests.iter().all(|request| request.program == "wpctl"));
   }
 }

@@ -22,7 +22,8 @@ pub struct AudioDevice {
   pub name: String,
   pub description: String,
   pub direction: String,
-  pub volume: Option<u8>,
+  /// Observed percentage, including amplification above the editable 0–100 range.
+  pub volume: Option<u32>,
   pub muted: bool,
   pub is_default: bool,
 }

@@ -19,6 +19,7 @@ impl PrivilegedOperation for RecordingOperation {
       stderr: Vec::new(),
       status: Some(0),
       timed_out: false,
+      cancelled: false,
     })
   }
 }
@@ -43,6 +44,7 @@ impl ProcessRunner for RecordingRunner {
       stderr: Vec::new(),
       status: Some(0),
       timed_out: false,
+      cancelled: false,
     })
   }
 }

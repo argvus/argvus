@@ -3,18 +3,6 @@
 use super::*;
 
 impl NetworkApp {
-  pub(super) fn action_label(&self, label: &str) -> String {
-    let key = match label {
-      "Conectando" => "control_center.connecting",
-      "Desconectando" => "control_center.disconnecting",
-      "Esquecendo" => "control_center.forgetting",
-      "Alterando Wi-Fi" => "control_center.changing_wifi",
-      "Aplicando DNS" => "control_center.applying_dns",
-      other => return other.to_owned(),
-    };
-    tr(self.lang, key).into()
-  }
-
   /// Label of the current page, as shown in the breadcrumb.
   pub(super) fn page_label(&self) -> String {
     let label = |key| tr(self.lang, key).to_owned();

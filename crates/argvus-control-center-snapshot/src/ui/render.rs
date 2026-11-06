@@ -32,6 +32,14 @@ impl SnapshotApp {
   }
 
   pub fn draw(&mut self, frame: &mut Frame) {
+    if self
+      .rows_cache
+      .get_mut()
+      .as_ref()
+      .is_none_or(|cache| cache.lang != self.lang)
+    {
+      self.clamp_diff_scroll();
+    }
     let hint = self.help_text();
     let body = shell(
       frame,
@@ -66,6 +74,7 @@ impl SnapshotApp {
       && self.error.is_none()
       && !self.details
       && self.diff.is_none()
+      && self.restore_review.is_none()
       && matches!(
         self.state,
         Some(Integration::Ready { .. } | Integration::ChooseConfig(_))
@@ -99,7 +108,12 @@ impl SnapshotApp {
         frame,
         content,
         &self.theme,
-        &rows.into_iter().map(Line::from).collect::<Vec<_>>(),
+        self
+          .rows_cache
+          .borrow()
+          .as_ref()
+          .map(|cache| cache.lines.as_slice())
+          .unwrap_or_default(),
       );
     }
     if let Some(status) = &self.status {
@@ -186,7 +200,23 @@ impl SnapshotApp {
       );
     }
   }
-  pub(super) fn rows(&self) -> Vec<String> {
+  pub(super) fn rows(&self) -> Rc<Vec<String>> {
+    if let Some(cache) = self.rows_cache.borrow().as_ref()
+      && cache.lang == self.lang
+    {
+      return Rc::clone(&cache.text);
+    }
+    let text = Rc::new(self.build_rows());
+    let lines = text.iter().cloned().map(Line::from).collect();
+    *self.rows_cache.borrow_mut() = Some(CachedRows {
+      lang: self.lang,
+      text: Rc::clone(&text),
+      lines,
+    });
+    text
+  }
+
+  fn build_rows(&self) -> Vec<String> {
     if self.busy() || (self.state.is_none() && self.error.is_none()) {
       return vec![
         label(
@@ -217,7 +247,7 @@ impl SnapshotApp {
           "{key}: {}{}",
           value.value,
           if value.origin == SettingOrigin::SnapperDefault {
-            format!(" ({})", label(self.lang, "snapper_default"))
+            format!(" ({})", label(self.lang, "retention_fallback"))
           } else {
             String::new()
           }
@@ -351,7 +381,23 @@ impl SnapshotApp {
         ),
         String::new(),
       ];
-      if comparison.changes.is_empty() {
+      if comparison.truncated {
+        rows[2] = format!(
+          "{} {}/{}",
+          label(self.lang, "comparison_truncated"),
+          comparison.changes.len(),
+          comparison.total_seen
+        );
+      }
+      if comparison.unsupported > 0 {
+        rows[2] = format!(
+          "{} {} {}",
+          rows[2],
+          label(self.lang, "unsupported_paths"),
+          comparison.unsupported
+        );
+      }
+      if comparison.changes.is_empty() && comparison.unsupported == 0 {
         rows.push(label(self.lang, "no_changes").into());
       }
       rows.extend(

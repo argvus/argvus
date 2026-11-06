@@ -283,6 +283,21 @@ fn actor_name() -> Result<Option<String>> {
   Ok(passwd::get_user_by_uid(actor_uid()?)?.map(|user| user.username))
 }
 
+fn disable_account(
+  user: &str,
+  program: &str,
+  args: &[&str],
+  protect: &dyn Fn(&str) -> Result<()>,
+  clear_autologin: &mut impl FnMut(&str) -> Result<()>,
+  run: &mut impl FnMut(&str, &[&str]) -> Result<()>,
+) -> Result<()> {
+  protect(user)?;
+  // greetd's initial_session bypasses password authentication. Remove it
+  // first; failure must not leave a locked/deleted account configured there.
+  clear_autologin(user)?;
+  run(program, args)
+}
+
 fn apply_request(
   request: Request,
   group_info: &dyn Fn(&str) -> Result<GroupFacts>,
@@ -319,25 +334,39 @@ fn apply_request(
       change_password(&user, &old, &new, &confirm, set_password)?;
     }
     Request::Lock { user, locked } => {
-      protect_account(&user)?;
-      run(
-        "/usr/bin/usermod",
-        &[if locked { "--lock" } else { "--unlock" }, "--", &user],
-      )?;
+      if locked {
+        disable_account(
+          &user,
+          "/usr/bin/usermod",
+          &["--lock", "--", &user],
+          &protect_account,
+          &mut autologin::clear_user,
+          run,
+        )?;
+      } else {
+        protect_account(&user)?;
+        run("/usr/bin/usermod", &["--unlock", "--", &user])?;
+      }
     }
     Request::ExpirePassword { user } => {
       protect_system_account(&user)?;
       run("/usr/bin/chage", &["--lastday", "0", "--", &user])?;
     }
     Request::Delete { user, remove_home } => {
-      protect_account(&user)?;
       // Never force deletion of logged-in users; home removal is explicit in the UI.
       let args = if remove_home {
         vec!["--remove", "--", user.as_str()]
       } else {
         vec!["--", user.as_str()]
       };
-      run("/usr/bin/userdel", &args)?;
+      disable_account(
+        &user,
+        "/usr/bin/userdel",
+        &args,
+        &protect_account,
+        &mut autologin::clear_user,
+        run,
+      )?;
     }
     Request::CreateGroup { group } => {
       validation::validate_group_name(&group)?;

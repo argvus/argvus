@@ -32,13 +32,16 @@ impl<R: ProcessRunner> BluetoothBackend<R> {
     }
   }
   fn run(&self, args: &[&str]) -> Result<String, BluetoothError> {
+    self.run_with_timeout(args, Duration::from_secs(20))
+  }
+  fn run_with_timeout(&self, args: &[&str], timeout: Duration) -> Result<String, BluetoothError> {
     if !self.capabilities.has_bluetoothctl {
       return Err(BluetoothError::BackendUnavailable);
     }
     let req = args
       .iter()
       .fold(ProcessRequest::new("bluetoothctl"), |r, a| r.arg(*a))
-      .timeout(Duration::from_secs(20));
+      .timeout(timeout);
     let o = self.runner.run(&req)?;
     if o.timed_out {
       return Err(BluetoothError::Command("timeout".into()));
@@ -64,10 +67,19 @@ impl<R: ProcessRunner> BluetoothBackend<R> {
     };
     let adapter = parse_adapter(&show);
     let mut devices = parse_devices(&self.run(&["devices"]).unwrap_or_default());
-    for device in &mut devices {
-      if let Ok(info) = self.run(&["info", &device.address]) {
-        merge_device_info(device, &info);
-      }
+    // Keep bluetoothctl load bounded while avoiding one full timeout per device.
+    for batch in devices.chunks_mut(4) {
+      std::thread::scope(|scope| {
+        for device in batch {
+          scope.spawn(move || {
+            if let Ok(info) =
+              self.run_with_timeout(&["info", &device.address], Duration::from_secs(5))
+            {
+              merge_device_info(device, &info);
+            }
+          });
+        }
+      });
     }
     Ok(BluetoothSnapshot {
       available: true,
@@ -254,13 +266,41 @@ pub fn merge_device_info(device: &mut Device, input: &str) {
     } else if let Some(value) = line.strip_prefix("Connected: ") {
       device.connected = value == "yes";
     } else if let Some(value) = line.strip_prefix("Battery Percentage: ") {
-      device.battery = value
-        .trim_matches(|c| c == '[' || c == ']')
-        .parse::<u8>()
-        .ok();
+      device.battery = parse_battery_percentage(value);
     }
   }
 }
+fn parse_battery_percentage(value: &str) -> Option<u8> {
+  let value = value.trim();
+  let percentage = if let Some(hexadecimal) = value.strip_prefix("0x") {
+    let (hexadecimal, decimal) = hexadecimal
+      .split_once(' ')
+      .map_or((hexadecimal, None), |(hex, decimal)| {
+        (hex, Some(decimal.trim()))
+      });
+    let parsed = u8::from_str_radix(hexadecimal, 16).ok()?;
+    if let Some(decimal) = decimal {
+      let decimal = decimal
+        .strip_prefix('(')?
+        .strip_suffix(')')?
+        .parse::<u8>()
+        .ok()?;
+      if decimal != parsed {
+        return None;
+      }
+    }
+    parsed
+  } else {
+    value
+      .strip_prefix('[')
+      .and_then(|value| value.strip_suffix(']'))
+      .unwrap_or(value)
+      .parse::<u8>()
+      .ok()?
+  };
+  (percentage <= 100).then_some(percentage)
+}
+
 pub fn validate_address(v: &str) -> Result<(), BluetoothError> {
   if v.len() == 17
     && v.chars().enumerate().all(|(i, c)| {
@@ -332,5 +372,75 @@ mod tests {
   #[test]
   fn pair_requires_strict_address() {
     assert!(pair_device_via_dbus("bad").is_err());
+  }
+  #[test]
+  fn parses_real_bluetoothctl_battery_percentage() {
+    let mut device = Device::default();
+    merge_device_info(&mut device, "Battery Percentage: 0x55 (85)");
+    assert_eq!(device.battery, Some(85));
+  }
+
+  #[test]
+  fn device_info_queries_use_bounded_parallelism() {
+    use std::sync::atomic::{AtomicUsize, Ordering};
+    #[derive(Default)]
+    struct Runner {
+      active: AtomicUsize,
+      maximum: AtomicUsize,
+    }
+    impl ProcessRunner for Runner {
+      fn run(
+        &self,
+        request: &ProcessRequest,
+      ) -> Result<argvus_control_center_core::process::ProcessOutput, ProcessError> {
+        let text = match request.args[0].as_str() {
+          "devices" => (0..8)
+            .map(|index| format!("Device AA:BB:CC:DD:EE:{index:02X} Device {index}\n"))
+            .collect(),
+          "info" => {
+            assert_eq!(request.timeout, Some(Duration::from_secs(5)));
+            let active = self.active.fetch_add(1, Ordering::SeqCst) + 1;
+            self.maximum.fetch_max(active, Ordering::SeqCst);
+            std::thread::sleep(Duration::from_millis(30));
+            self.active.fetch_sub(1, Ordering::SeqCst);
+            "Battery Percentage: 0x55 (85)".to_owned()
+          }
+          _ => String::new(),
+        };
+        Ok(argvus_control_center_core::process::ProcessOutput {
+          stdout: text.into_bytes(),
+          stderr: vec![],
+          status: Some(0),
+          timed_out: false,
+          cancelled: false,
+        })
+      }
+    }
+    let backend = BluetoothBackend::new(
+      Runner::default(),
+      Capabilities {
+        has_bluetoothctl: true,
+        ..Default::default()
+      },
+    );
+    let snapshot = backend.snapshot().unwrap();
+    let maximum = backend.runner.maximum.load(Ordering::SeqCst);
+    assert!(maximum > 1 && maximum <= 4, "maximum={maximum}");
+    assert_eq!(snapshot.devices.len(), 8);
+    assert!(
+      snapshot
+        .devices
+        .iter()
+        .all(|device| device.battery == Some(85))
+    );
+  }
+  #[test]
+  fn battery_percentages_accept_supported_forms_and_reject_invalid_values() {
+    for value in ["0x00 (0)", "0x64 (100)", "0x55", "85", "[85]"] {
+      assert!(parse_battery_percentage(value).is_some(), "{value}");
+    }
+    for value in ["0x55 (90)", "0xff (255)", "101", "[256]", "unknown", "0xgg"] {
+      assert!(parse_battery_percentage(value).is_none(), "{value}");
+    }
   }
 }

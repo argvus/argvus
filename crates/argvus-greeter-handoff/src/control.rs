@@ -2,6 +2,7 @@
 
 use super::drawing::Palette;
 use super::*;
+use std::io::Read;
 
 /// A request a client sends to the surface, one per connection.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -28,13 +29,65 @@ pub(super) fn parse_command(line: &str) -> Command<'_> {
   }
 }
 
-/// Reads the request line of one client. The socket is open to every local
-/// user, so the read gives up after `CLIENT_TIMEOUT`.
-pub(super) fn read_command(stream: &mut UnixStream) -> io::Result<String> {
+#[derive(Clone, Copy)]
+pub(super) struct ClientPolicy {
+  pub(super) owner_uid: u32,
+  pub(super) session_uid: Option<u32>,
+}
+
+impl ClientPolicy {
+  pub(super) fn allows(self, uid: u32) -> bool {
+    uid == 0 || uid == self.owner_uid || self.session_uid == Some(uid)
+  }
+
+  fn authorize(self, stream: &UnixStream) -> io::Result<()> {
+    let mut credentials = libc::ucred {
+      pid: 0,
+      uid: 0,
+      gid: 0,
+    };
+    let mut length = std::mem::size_of::<libc::ucred>() as libc::socklen_t;
+    // SAFETY: both output pointers reference writable values of the advertised
+    // size, and the stream owns a valid Unix socket for the duration of the call.
+    let result = unsafe {
+      libc::getsockopt(
+        stream.as_raw_fd(),
+        libc::SOL_SOCKET,
+        libc::SO_PEERCRED,
+        (&mut credentials as *mut libc::ucred).cast(),
+        &mut length,
+      )
+    };
+    if result != 0 {
+      return Err(io::Error::last_os_error());
+    }
+    if length as usize != std::mem::size_of::<libc::ucred>() || !self.allows(credentials.uid) {
+      return Err(io::Error::from(io::ErrorKind::PermissionDenied));
+    }
+    Ok(())
+  }
+  pub(super) fn current(session_uid: Option<u32>) -> Self {
+    // SAFETY: geteuid has no pointer arguments or preconditions.
+    Self {
+      owner_uid: unsafe { libc::geteuid() },
+      session_uid,
+    }
+  }
+}
+
+/// Authenticate before reading any command, including in the overlay stage.
+/// Filesystem access permits the greeter and a different session UID to connect;
+/// SO_PEERCRED is the authorization boundary. Authorized reads are bounded.
+pub(super) fn read_command(stream: &mut UnixStream, policy: ClientPolicy) -> io::Result<String> {
+  policy.authorize(stream)?;
   stream.set_read_timeout(Some(CLIENT_TIMEOUT))?;
   stream.set_write_timeout(Some(CLIENT_TIMEOUT))?;
   let mut command = String::new();
-  BufReader::new(&mut *stream).read_line(&mut command)?;
+  const MAX_COMMAND_BYTES: usize = 4096;
+  BufReader::new((&mut *stream).take((MAX_COMMAND_BYTES + 1) as u64)).read_line(&mut command)?;
+  if command.len() > MAX_COMMAND_BYTES || !command.ends_with('\n') {
+    return Err(io::Error::from(io::ErrorKind::InvalidData));
+  }
   Ok(command)
 }
 
@@ -44,8 +97,9 @@ pub(super) fn read_command(stream: &mut UnixStream) -> io::Result<String> {
 pub(super) fn handle_command(
   mut stream: UnixStream,
   palette: &mut Palette,
+  policy: ClientPolicy,
 ) -> io::Result<Option<UnixStream>> {
-  let line = read_command(&mut stream)?;
+  let line = read_command(&mut stream, policy)?;
   match parse_command(&line) {
     Command::Theme(theme) => *palette = palette.with_theme(theme),
     Command::Release => return Ok(Some(stream)),
@@ -84,6 +138,9 @@ pub(super) fn send_command(socket: &Path, command: &str) -> io::Result<()> {
       io::ErrorKind::UnexpectedEof,
       "handoff surface closed without acknowledging the command",
     ));
+  }
+  if !matches!(acknowledgement.trim(), "ok" | "released") {
+    return Err(io::Error::from(io::ErrorKind::PermissionDenied));
   }
   Ok(())
 }

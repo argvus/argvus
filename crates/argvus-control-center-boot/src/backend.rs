@@ -191,14 +191,39 @@ pub fn parse_grub_defaults(path: &Path) -> Option<BootloaderInfo> {
   })
 }
 fn detect_kernels(current: &str, bootloader: &BootloaderInfo) -> Vec<KernelInfo> {
+  detect_kernels_at(
+    current,
+    bootloader,
+    Path::new("/usr/lib/modules"),
+    Path::new("/boot"),
+    Path::new("/etc/mkinitcpio.d"),
+  )
+}
+fn detect_kernels_at(
+  current: &str,
+  bootloader: &BootloaderInfo,
+  modules: &Path,
+  boot: &Path,
+  presets: &Path,
+) -> Vec<KernelInfo> {
   let mut out = Vec::new();
-  if let Ok(entries) = fs::read_dir("/usr/lib/modules") {
+  if let Ok(entries) = fs::read_dir(modules) {
     for e in entries.flatten() {
-      let package = e.file_name().to_string_lossy().into_owned();
+      let version = e.file_name().to_string_lossy().into_owned();
       let dir = e.path();
-      let image = Path::new("/boot").join(format!("vmlinuz-{package}"));
-      let init = Path::new("/boot").join(format!("initramfs-{package}.img"));
-      let fallback = Path::new("/boot").join(format!("initramfs-{package}-fallback.img"));
+      let package = fs::read_to_string(dir.join("pkgbase"))
+        .ok()
+        .map(|value| value.trim().to_owned())
+        .filter(|value| {
+          !value.is_empty()
+            && value
+              .bytes()
+              .all(|byte| byte.is_ascii_alphanumeric() || b"-_.+".contains(&byte))
+        })
+        .unwrap_or_else(|| version.clone());
+      let image = boot.join(format!("vmlinuz-{package}"));
+      let init = boot.join(format!("initramfs-{package}.img"));
+      let fallback = boot.join(format!("initramfs-{package}-fallback.img"));
       let default = bootloader.entries.iter().any(|entry| {
         entry.is_default
           && entry
@@ -212,8 +237,8 @@ fn detect_kernels(current: &str, bootloader: &BootloaderInfo) -> Vec<KernelInfo>
       });
       out.push(KernelInfo {
         package: package.clone(),
-        version: package.clone(),
-        current: package == current,
+        current: version == current,
+        version,
         headers: dir.join("build").exists(),
         image: image
           .is_file()
@@ -222,10 +247,15 @@ fn detect_kernels(current: &str, bootloader: &BootloaderInfo) -> Vec<KernelInfo>
         fallback: fallback
           .is_file()
           .then(|| fallback.to_string_lossy().into_owned()),
-        preset: Path::new("/etc/mkinitcpio.d")
+        preset: presets
           .join(format!("{package}.preset"))
           .is_file()
-          .then(|| format!("/etc/mkinitcpio.d/{package}.preset")),
+          .then(|| {
+            presets
+              .join(format!("{package}.preset"))
+              .to_string_lossy()
+              .into_owned()
+          }),
         default,
         uki,
       });
@@ -247,24 +277,13 @@ fn read_initramfs(cap: &Capabilities) -> InitramfsInfo {
     ..Default::default()
   };
   if let Ok(text) = fs::read_to_string("/etc/mkinitcpio.conf") {
-    for line in text.lines().map(str::trim) {
-      if let Some((k, v)) = line.split_once('=') {
-        let values = v
-          .trim()
-          .trim_matches('"')
-          .split_whitespace()
-          .map(str::to_owned)
-          .collect();
-        match k {
-          "MODULES" => i.modules = values,
-          "BINARIES" => i.binaries = values,
-          "FILES" => i.files = values,
-          "HOOKS" => i.hooks = values,
-          _ => {}
-        }
-      }
-    }
+    let parsed = parse_initramfs_config(&text);
+    i.modules = parsed.modules;
+    i.binaries = parsed.binaries;
+    i.files = parsed.files;
+    i.hooks = parsed.hooks;
   }
+
   if let Ok(entries) = fs::read_dir("/etc/mkinitcpio.d") {
     i.presets = entries
       .flatten()
@@ -278,6 +297,103 @@ fn read_initramfs(cap: &Capabilities) -> InitramfsInfo {
   }
   i
 }
+fn parse_initramfs_config(text: &str) -> InitramfsInfo {
+  let mut config = InitramfsInfo::default();
+  let mut lines = text.lines();
+  while let Some(line) = lines.next() {
+    let Some((key, value)) = line.trim().split_once('=') else {
+      continue;
+    };
+    if !matches!(key.trim(), "MODULES" | "BINARIES" | "FILES" | "HOOKS") {
+      continue;
+    }
+    let mut value = value.trim().to_owned();
+    let array = value.starts_with('(');
+    let tokens = loop {
+      let (tokens, closed) = initramfs_words(&value, array);
+      if !array || closed {
+        break tokens;
+      }
+      let Some(next) = lines.next() else {
+        break Vec::new();
+      };
+      value.push('\n');
+      value.push_str(next);
+    };
+    match key.trim() {
+      "MODULES" => config.modules = tokens,
+      "BINARIES" => config.binaries = tokens,
+      "FILES" => config.files = tokens,
+      "HOOKS" => config.hooks = tokens,
+      _ => {}
+    }
+  }
+  config
+}
+
+// Read shell-style literal words; never execute substitutions or source the file.
+fn initramfs_words(value: &str, array: bool) -> (Vec<String>, bool) {
+  if !array {
+    return (
+      value
+        .trim_matches(['\'', '"'])
+        .split_whitespace()
+        .map(str::to_owned)
+        .collect(),
+      true,
+    );
+  }
+  let mut words = Vec::new();
+  let mut word = String::new();
+  let mut quote = None;
+  let mut chars = value[1..].chars();
+  while let Some(character) = chars.next() {
+    if quote == Some(character) {
+      quote = None;
+      continue;
+    }
+    if quote != Some('\'') && character == '\\' {
+      if let Some(next) = chars.next()
+        && next != '\n'
+      {
+        word.push(next);
+      }
+      continue;
+    }
+    if quote.is_none() {
+      match character {
+        '\'' | '"' => {
+          quote = Some(character);
+          continue;
+        }
+        '#' if word.is_empty() => {
+          for next in chars.by_ref() {
+            if next == '\n' {
+              break;
+            }
+          }
+          continue;
+        }
+        ')' => {
+          if !word.is_empty() {
+            words.push(word);
+          }
+          return (words, true);
+        }
+        character if character.is_whitespace() => {
+          if !word.is_empty() {
+            words.push(std::mem::take(&mut word));
+          }
+          continue;
+        }
+        _ => {}
+      }
+    }
+    word.push(character);
+  }
+  (words, false)
+}
+
 fn read_plymouth<R: ProcessRunner>(cap: &Capabilities, runner: &R) -> PlymouthInfo {
   let installed = cap.has_plymouth;
   let current = runner
@@ -417,5 +533,87 @@ mod tests {
     assert_eq!(x.entries[0].id, "b.conf");
     assert!(x.entries[0].is_default);
     let _ = fs::remove_dir_all(root);
+  }
+  #[test]
+  fn mkinitcpio_arrays_do_not_include_parentheses() {
+    let config = parse_initramfs_config(
+      "MODULES=(nvidia nvidia_drm)\nHOOKS=(base systemd filesystems fsck)\n",
+    );
+    assert_eq!(config.modules, ["nvidia", "nvidia_drm"]);
+    assert_eq!(config.hooks, ["base", "systemd", "filesystems", "fsck"]);
+  }
+
+  #[test]
+  fn arch_kernel_paths_use_pkgbase_and_keep_release_version() {
+    let root = std::path::PathBuf::from("/tmp/argvus")
+      .join(format!("kernel-pkgbase-{}", std::process::id()));
+    let modules = root.join("modules");
+    let boot = root.join("boot");
+    let presets = root.join("presets");
+    let release = "6.18.57-2-lts";
+    fs::create_dir_all(modules.join(release)).unwrap();
+    fs::create_dir_all(&boot).unwrap();
+    fs::create_dir_all(&presets).unwrap();
+    fs::write(modules.join(release).join("pkgbase"), "linux-lts\n").unwrap();
+    for name in [
+      "vmlinuz-linux-lts",
+      "initramfs-linux-lts.img",
+      "initramfs-linux-lts-fallback.img",
+    ] {
+      fs::write(boot.join(name), "fixture").unwrap();
+    }
+    fs::write(presets.join("linux-lts.preset"), "fixture").unwrap();
+    let kernels = detect_kernels_at(
+      release,
+      &BootloaderInfo::default(),
+      &modules,
+      &boot,
+      &presets,
+    );
+    assert_eq!(kernels[0].package, "linux-lts");
+    assert_eq!(kernels[0].version, release);
+    assert!(kernels[0].current);
+    assert!(
+      kernels[0].image.is_some()
+        && kernels[0].initramfs.is_some()
+        && kernels[0].fallback.is_some()
+        && kernels[0].preset.is_some()
+    );
+    fs::remove_dir_all(root).unwrap();
+  }
+  #[test]
+  fn mkinitcpio_multiline_arrays_preserve_literal_words() {
+    let config = parse_initramfs_config(
+      "MODULES=()\nHOOKS=(\n base # comment\n 'systemd' filesystems\n) # end\nFILES=(\"/path with spaces\" /plain)\n",
+    );
+    assert!(config.modules.is_empty());
+    assert_eq!(config.hooks, ["base", "systemd", "filesystems"]);
+    assert_eq!(config.files, ["/path with spaces", "/plain"]);
+  }
+
+  #[test]
+  #[ignore = "read-only integration check requiring an Arch kernel installation"]
+  fn real_arch_kernel_and_mkinitcpio_inventory() {
+    let release = fs::read_to_string("/proc/sys/kernel/osrelease").unwrap();
+    let release = release.trim();
+    let pkgbase =
+      fs::read_to_string(Path::new("/usr/lib/modules").join(release).join("pkgbase")).unwrap();
+    let kernels = detect_kernels(release, &BootloaderInfo::default());
+    let kernel = kernels.iter().find(|kernel| kernel.current).unwrap();
+    assert_eq!(kernel.version, release);
+    assert_eq!(kernel.package, pkgbase.trim());
+    let image = format!("/boot/vmlinuz-{}", pkgbase.trim());
+    if Path::new(&image).is_file() {
+      assert_eq!(kernel.image.as_deref(), Some(image.as_str()));
+    }
+    let config = parse_initramfs_config(&fs::read_to_string("/etc/mkinitcpio.conf").unwrap());
+    assert!(!config.hooks.is_empty());
+    assert!(
+      config
+        .hooks
+        .iter()
+        .chain(config.modules.iter())
+        .all(|word| !word.contains(['(', ')']))
+    );
   }
 }

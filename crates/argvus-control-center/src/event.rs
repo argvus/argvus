@@ -128,6 +128,13 @@ fn handle_inner(app: &mut App, event: Event) {
   if key.kind != KeyEventKind::Press {
     return;
   }
+  if (key.code == KeyCode::Char('c')
+    && key.modifiers.difference(KeyModifiers::SHIFT) == KeyModifiers::CONTROL)
+    || (key.code == KeyCode::Char('q') && !app.help && !app.captures_text())
+  {
+    app.request_quit();
+    return;
+  }
   if app.route == Route::Settings && app.settings.admin.editor.is_some() {
     argvus_control_center_settings::event::handle(&mut app.settings, Event::Key(key));
     return;
@@ -152,10 +159,6 @@ fn handle_inner(app: &mut App, event: Event) {
     }
     return;
   }
-  if key.code == KeyCode::Char('c') && key.modifiers.contains(KeyModifiers::CONTROL) {
-    app.quit = true;
-    return;
-  }
   if app.help {
     if matches!(key.code, KeyCode::Char('?') | KeyCode::Esc | KeyCode::Enter) {
       app.help = false;
@@ -166,10 +169,6 @@ fn handle_inner(app: &mut App, event: Event) {
   let typing = app.captures_text();
   if key.code == KeyCode::Char('?') && !typing {
     app.help = true;
-    return;
-  }
-  if key.code == KeyCode::Char('q') && !typing {
-    app.quit = true;
     return;
   }
 

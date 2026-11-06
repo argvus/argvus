@@ -299,3 +299,128 @@ fn global_language_command_is_rejected_before_elevation() {
     .is_ok()
   );
 }
+
+#[test]
+fn logind_new_drop_in_has_login_section_and_creates_parent() {
+  let directory = tempfile::tempdir().unwrap();
+  let path = directory.path().join("logind.conf.d/argvus.conf");
+  update_logind_drop_in_at(&path, &[("HandleLidSwitch", "suspend".into())], false).unwrap();
+  assert_eq!(
+    std::fs::read_to_string(path).unwrap(),
+    "[Login]\nHandleLidSwitch=suspend\n"
+  );
+}
+
+#[test]
+fn logind_reload_failure_is_propagated() {
+  // The testing feature disables external commands, producing a safe spawn failure.
+  assert!(super::power::reload_logind().is_err());
+}
+
+#[test]
+fn logind_updates_only_login_section_and_preserves_other_groups() {
+  let directory = tempfile::tempdir().unwrap();
+  let path = directory.path().join("argvus.conf");
+  std::fs::write(
+    &path,
+    "[Other]\nHandleLidSwitch=ignore\n[Login]\nHandleLidSwitch=suspend\nHandlePowerKey=lock\n",
+  )
+  .unwrap();
+  update_logind_drop_in_at(&path, &[("HandleLidSwitch", "hibernate".into())], false).unwrap();
+  assert_eq!(
+    std::fs::read_to_string(&path).unwrap(),
+    "[Other]\nHandleLidSwitch=ignore\n[Login]\nHandleLidSwitch=hibernate\nHandlePowerKey=lock\n"
+  );
+}
+
+#[test]
+fn mirror_apply_rejects_pacman_directives_and_oversized_arguments() {
+  for content in [
+    "Server = https://mirror.example/$repo/os/$arch\nSigLevel = Never\n".to_owned(),
+    "Server = https://mirror.example/$repo/os/$arch\nXferCommand = /bin/evil %u\n".to_owned(),
+    "Server = file:///tmp/packages\n".to_owned(),
+    format!(
+      "#{}\nServer = https://mirror.example/$repo/os/$arch\n",
+      "x".repeat(128 * 1024)
+    ),
+  ] {
+    assert!(validate_package("mirror-apply", &[content]).is_err());
+  }
+}
+
+#[test]
+fn mirror_payload_is_validated_before_elevation_and_direct_writes() {
+  use argvus_control_center_core::{
+    pacman_conf::{MAX_MIRRORLIST_BYTES, validate_mirrorlist},
+    privileged::PrivilegedRequest,
+  };
+  let valid = "# mirrors\n\nServer = https://mirror.example/$repo/os/$arch\nServer = http://other.example/$repo/os/$arch\n";
+  assert!(validate_mirrorlist(valid).is_ok());
+  assert!(PrivilegedRequest::new("package", "mirror-apply", vec![valid.into()]).is_ok());
+  for invalid in [
+    "# comments only\n",
+    "Server = https://\n",
+    "Server = https:///path\n",
+    "Server = ftp://mirror.example/path\n",
+    "[options]\nServer = https://mirror.example/path\n",
+    "Server = https://mirror.example/a b\n",
+  ] {
+    assert!(validate_mirrorlist(invalid).is_err());
+    assert!(PrivilegedRequest::new("package", "mirror-apply", vec![invalid.into()]).is_err());
+    assert!(super::packages::update_mirrorlist(invalid).is_err());
+  }
+  let suffix = "\nServer = https://mirror.example/path\n";
+  let exact = format!(
+    "#{}{suffix}",
+    "x".repeat(MAX_MIRRORLIST_BYTES - suffix.len() - 1)
+  );
+  assert_eq!(exact.len(), MAX_MIRRORLIST_BYTES);
+  assert!(validate_mirrorlist(&exact).is_ok());
+  assert!(validate_mirrorlist(&(exact + "\n")).is_err());
+}
+
+#[test]
+fn atomic_writer_refuses_existing_temporary_symlink() {
+  let directory = tempfile::tempdir().unwrap();
+  let path = directory.path().join("config");
+  let victim = directory.path().join("victim");
+  std::fs::write(&path, "original").unwrap();
+  std::fs::write(&victim, "untouched").unwrap();
+  std::os::unix::fs::symlink(&victim, path.with_extension("argvus-control-center.tmp")).unwrap();
+  assert!(super::write_atomic(&path, "replacement").is_err());
+  assert_eq!(std::fs::read_to_string(victim).unwrap(), "untouched");
+}
+
+#[test]
+fn hostname_and_locale_validation_reject_ambiguous_or_empty_values() {
+  assert!(super::host::validate_hostname(" host ").is_err());
+  assert!(super::validate_args(&["locale".into(), "set-generated".into()]).is_err());
+}
+
+#[test]
+fn atomic_writer_removes_owned_temporary_after_rename_failure() {
+  let directory = tempfile::tempdir().unwrap();
+  let path = directory.path().join("destination");
+  std::fs::create_dir(&path).unwrap();
+  assert!(
+    super::replace_atomic(&path, "contents", std::fs::Permissions::from_mode(0o640)).is_err()
+  );
+  assert!(!path.with_extension("argvus-control-center.tmp").exists());
+}
+
+#[test]
+fn atomic_writer_preserves_mode_and_refuses_destination_symlink() {
+  let directory = tempfile::tempdir().unwrap();
+  let path = directory.path().join("config");
+  std::fs::write(&path, "old").unwrap();
+  std::fs::set_permissions(&path, std::fs::Permissions::from_mode(0o640)).unwrap();
+  super::write_atomic(&path, "new").unwrap();
+  assert_eq!(
+    std::fs::metadata(&path).unwrap().permissions().mode() & 0o777,
+    0o640
+  );
+  let link = directory.path().join("link");
+  std::os::unix::fs::symlink(&path, &link).unwrap();
+  assert!(super::boot::boot_write_atomic(&link, "unsafe").is_err());
+  assert_eq!(std::fs::read_to_string(path).unwrap(), "new");
+}

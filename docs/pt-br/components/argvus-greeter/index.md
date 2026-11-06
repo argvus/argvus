@@ -18,3 +18,5 @@ programa de terminal separado.
 Os arquivos de configuração do greeter são instalados em `/etc/argvus`. Use
 `argvus greeter-setup --help` para ver as opções de configuração que o pacote oferece.
 Para o fluxo de login, consulte [Sessões](/docs/user-guide/sessions/).
+
+O socket de handoff do login autoriza cada cliente pelas credenciais fornecidas pelo kernel. Apenas root, o dono do helper e a conta autenticada pelo greetd podem enviar comandos de controle. Outras contas locais são recusadas, embora o socket permita conexões entre usuários. Um quadro DRM preparado permanece vinculado ao descritor original; o helper aguarda esse descritor antes de assumir a tela.

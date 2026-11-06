@@ -79,6 +79,11 @@ pub struct AudioApp {
 }
 
 impl AudioApp {
+  /// Whether exiting could abandon an operation whose result is still pending.
+  pub fn has_pending_action(&self) -> bool {
+    self.action.is_some()
+  }
+
   /// Replaces the semantic theme used by this page.
   pub fn set_theme(&mut self, theme: &Theme) {
     self.theme = theme.clone();
@@ -141,12 +146,13 @@ impl AudioApp {
       .find(|device| device.id == id)
   }
   /// Volume shown and edited for a device: the draft value when one exists, otherwise the system value.
-  fn volume_of(&self, device: &AudioDevice) -> Option<u8> {
+  fn volume_of(&self, device: &AudioDevice) -> Option<u32> {
     self
       .draft
       .volumes
       .get(&device.id)
       .copied()
+      .map(u32::from)
       .or(device.volume)
   }
   /// Mute state shown for a device: the draft value when one exists, otherwise the system value.
@@ -182,7 +188,7 @@ impl AudioApp {
     for (&id, &volume) in &self.draft.volumes {
       if self
         .snapshot_device(id)
-        .is_some_and(|device| device.volume != Some(volume))
+        .is_some_and(|device| device.volume != Some(u32::from(volume)))
       {
         changes.push(Change::Volume(id, volume));
       }
@@ -241,8 +247,9 @@ impl AudioApp {
   fn adjust_volume(&mut self, delta: i16) {
     if let Some(d) = self.selected_device() {
       let id = d.id;
-      let current = self.volume_of(d).unwrap_or(0) as i16;
-      self.draft.volumes.insert(id, clamp_volume(current + delta));
+      let current = self.volume_of(d).unwrap_or(0);
+      let volume = current.saturating_add_signed(i32::from(delta)).min(100) as u8;
+      self.draft.volumes.insert(id, volume);
     } else {
       self.warn_disappeared();
     }

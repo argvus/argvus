@@ -42,13 +42,7 @@ impl ServicesApp {
       match self.confirmation.handle(key) {
         ConfirmationOutcome::Confirmed => {
           self.confirmation = ConfirmationState::default();
-          let Pending::Action(a, u) = self.pending.take().unwrap();
-          let user = self.page == ServicePage::User
-            || self.detail_parent == ServicePage::User
-            || self
-              .units
-              .iter()
-              .any(|unit| unit.name == u && unit.scope == "user");
+          let Pending::Action(a, u, user) = self.pending.take().unwrap();
           self.status = Some(StatusMessage {
             kind: StatusKind::Info,
             text: tr(self.lang, "control_center.applying_action").into(),

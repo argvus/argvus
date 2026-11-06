@@ -178,8 +178,9 @@ impl NetworkApp {
 
   /// Leaves the editor for the page that opened it.
   pub(super) fn close_editor(&mut self) {
-    if let Some(job) = self.editor_job.take() {
-      job.cancel();
+    // Keep the handle and its result: an editor task may be saving a profile.
+    if self.editor_job.is_some() || self.action.is_some() {
+      return;
     }
     self.editor = None;
     self.text_edit = None;

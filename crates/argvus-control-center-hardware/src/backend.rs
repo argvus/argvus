@@ -29,6 +29,7 @@ pub fn collect(cap: &Capabilities) -> HardwareSnapshot {
     cpu,
     memory: memory(&meminfo),
     gpus: gpus(cap),
+    graphics: graphics(cap, &SystemProcessRunner),
     battery: battery(),
     energy: energy(cap),
     devices: devices(),
@@ -68,7 +69,11 @@ fn read_dmi(name: &str) -> Option<String> {
     .filter(|v: &String| !v.is_empty())
 }
 fn run(program: &str, args: &[&str]) -> String {
-  let output = SystemProcessRunner
+  run_with(&SystemProcessRunner, program, args)
+}
+
+fn run_with(runner: &impl ProcessRunner, program: &str, args: &[&str]) -> String {
+  let output = runner
     .run(&ProcessRequest::new(program).args(args.iter().map(|v| (*v).to_string()).collect()))
     .ok();
   output
@@ -168,8 +173,12 @@ fn memory(input: &str) -> MemoryInfo {
 }
 
 fn gpus(cap: &Capabilities) -> Vec<GpuInfo> {
+  gpus_at(cap, Path::new("/sys/class/drm"), &SystemProcessRunner)
+}
+
+fn gpus_at(cap: &Capabilities, drm: &Path, runner: &impl ProcessRunner) -> Vec<GpuInfo> {
   let mut out = Vec::new();
-  if let Ok(entries) = fs::read_dir("/sys/class/drm") {
+  if let Ok(entries) = fs::read_dir(drm) {
     for entry in entries.flatten() {
       let name = entry.file_name().to_string_lossy().into_owned();
       if !name.starts_with("card") || name.contains('-') {
@@ -205,56 +214,130 @@ fn gpus(cap: &Capabilities) -> Vec<GpuInfo> {
         driver_status: Some("loaded".into()),
         ..Default::default()
       };
-      if cap.has_lspci {
-        let value = run(
-          "lspci",
-          &["-s", gpu.pci.as_deref().unwrap_or_default(), "-nn"],
-        );
+      if cap.has_lspci
+        && let Some(pci) = gpu.pci.as_deref()
+      {
+        let value = run_with(runner, "lspci", &["-D", "-s", pci, "-nn"]);
         gpu.model = value
-          .split_once(':')
-          .map(|(_, value)| value.split(" [").next().unwrap_or(value).trim().into());
+          .lines()
+          .filter_map(parse_pci_gpu)
+          .find(|(address, _)| address == pci)
+          .map(|(_, model)| model);
       }
       gpu.render = find_render(&device);
       out.push(gpu);
     }
   }
   if out.is_empty() && cap.has_lspci {
-    let text = run("lspci", &["-D", "-nnk"]);
-    for line in text.lines().filter(|v| {
-      v.contains("VGA") || v.contains("3D controller") || v.contains("Display controller")
-    }) {
+    let text = run_with(runner, "lspci", &["-D", "-nnk"]);
+    for (pci, model) in text.lines().filter_map(parse_pci_gpu) {
       out.push(GpuInfo {
         index: out.len(),
-        model: line.split_once(':').map(|(_, v)| v.trim().into()),
+        pci: Some(pci),
+        model: Some(model),
         ..Default::default()
       });
     }
   }
-  let opengl = if cap.has_glxinfo {
-    parse_value(&run("glxinfo", &["-B"]), "OpenGL renderer string")
-  } else {
-    None
-  };
-  let vulkan = if cap.has_vulkaninfo {
-    parse_value(&run("vulkaninfo", &["--summary"]), "deviceName")
-  } else {
-    None
-  };
-  for gpu in &mut out {
-    gpu.opengl = opengl.clone();
-    gpu.vulkan = vulkan.clone();
-  }
   out
 }
 
-fn parse_value(input: &str, key: &str) -> Option<String> {
-  input.lines().find_map(|line| {
-    line
-      .split_once(':')
-      .filter(|(name, _)| name.trim() == key)
-      .map(|(_, value)| value.trim().into())
-  })
+fn parse_pci_gpu(line: &str) -> Option<(String, String)> {
+  let (pci, description) = line.trim().split_once(char::is_whitespace)?;
+  let parts: Vec<_> = pci.split([':', '.']).collect();
+  let valid_pci = match parts.as_slice() {
+    [bus, slot, function] => bus.len() == 2 && slot.len() == 2 && function.len() == 1,
+    [domain, bus, slot, function] => {
+      domain.len() == 4 && bus.len() == 2 && slot.len() == 2 && function.len() == 1
+    }
+    _ => false,
+  };
+  if !valid_pci
+    || !parts
+      .iter()
+      .all(|part| part.bytes().all(|byte| byte.is_ascii_hexdigit()))
+  {
+    return None;
+  }
+  let (class, model) = description.trim().split_once(": ")?;
+  if ![
+    "VGA compatible controller",
+    "3D controller",
+    "Display controller",
+  ]
+  .iter()
+  .any(|prefix| class.starts_with(prefix))
+  {
+    return None;
+  }
+  let model = model
+    .split_whitespace()
+    .filter(|word| {
+      let Some(ids) = word
+        .strip_prefix('[')
+        .and_then(|word| word.strip_suffix(']'))
+      else {
+        return true;
+      };
+      !ids.split_once(':').is_some_and(|(vendor, device)| {
+        vendor.len() == 4
+          && device.len() == 4
+          && vendor
+            .bytes()
+            .chain(device.bytes())
+            .all(|byte| byte.is_ascii_hexdigit())
+      })
+    })
+    .collect::<Vec<_>>()
+    .join(" ");
+  let model = terminal_text(&model);
+  (!model.is_empty()).then(|| (pci.to_owned(), model))
 }
+
+fn graphics(cap: &Capabilities, runner: &impl ProcessRunner) -> GraphicsInfo {
+  let probe = |program: &str, arg: &str| {
+    runner
+      .run(
+        &ProcessRequest::new(program)
+          .arg(arg)
+          .env("LC_ALL", "C.UTF-8")
+          .timeout(std::time::Duration::from_secs(10))
+          .output_limit(1024 * 1024),
+      )
+      .ok()
+      .filter(|output| output.status == Some(0) && !output.timed_out && !output.cancelled)
+      .map(|output| terminal_text(&String::from_utf8_lossy(&output.stdout)))
+  };
+  GraphicsInfo {
+    opengl_renderer: cap
+      .has_glxinfo
+      .then(|| probe("glxinfo", "-B"))
+      .flatten()
+      .and_then(|text| {
+        parse_values(&text, "OpenGL renderer string")
+          .into_iter()
+          .next()
+      }),
+    vulkan_devices: cap
+      .has_vulkaninfo
+      .then(|| probe("vulkaninfo", "--summary"))
+      .flatten()
+      .map(|text| parse_values(&text, "deviceName"))
+      .unwrap_or_default(),
+  }
+}
+
+fn parse_values(input: &str, key: &str) -> Vec<String> {
+  input
+    .lines()
+    .filter_map(|line| {
+      let (name, value) = line.split_once([':', '='])?;
+      let value = value.trim();
+      (name.trim() == key && !value.is_empty()).then(|| value.to_owned())
+    })
+    .collect()
+}
+
 fn read_path(path: &Path, name: &str) -> Option<String> {
   fs::read_to_string(path.join(name))
     .ok()
@@ -445,5 +528,132 @@ mod tests {
   fn parses_power_profiles_with_degraded_and_space_drivers() {
     let output = "* balanced:\n    CpuDriver:\tintel_pstate\n    Degraded:\tno\n  performance:\n    CpuDriver:  intel_pstate\n";
     assert_eq!(parse_profiles(output), vec!["balanced", "performance"]);
+  }
+  struct GraphicsFixture;
+  impl ProcessRunner for GraphicsFixture {
+    fn run(
+      &self,
+      request: &ProcessRequest,
+    ) -> Result<
+      argvus_control_center_core::process::ProcessOutput,
+      argvus_control_center_core::process::ProcessError,
+    > {
+      let stdout = match request.program.as_str() {
+        "lspci" => {
+          "0000:00:02.0 VGA compatible controller [0300]: Intel Corporation Integrated Graphics [8086:1234]\n0000:01:00.0 3D controller [0302]: NVIDIA Corporation GM107M [GeForce 940MX] [10de:179c] (rev a2)\n"
+        }
+        "glxinfo" => "OpenGL renderer string: Intel Integrated Graphics\n",
+        "vulkaninfo" => {
+          "deviceName = Intel Integrated Graphics\n deviceName = llvmpipe (LLVM 20.1.8, 256 bits)\n"
+        }
+        other => panic!("unexpected probe {other}"),
+      };
+      Ok(argvus_control_center_core::process::ProcessOutput {
+        stdout: stdout.as_bytes().to_vec(),
+        stderr: vec![],
+        status: Some(0),
+        timed_out: false,
+        cancelled: false,
+      })
+    }
+  }
+
+  fn graphics_capabilities() -> Capabilities {
+    Capabilities {
+      has_lspci: true,
+      has_glxinfo: true,
+      has_vulkaninfo: true,
+      ..Capabilities::default()
+    }
+  }
+
+  #[test]
+  fn p8_pci_models_do_not_include_address_or_class() {
+    let devices = gpus_at(
+      &graphics_capabilities(),
+      Path::new("/dev/null"),
+      &GraphicsFixture,
+    );
+    assert_eq!(devices.len(), 2);
+    assert_eq!(
+      devices[0].model.as_deref(),
+      Some("Intel Corporation Integrated Graphics")
+    );
+    assert_eq!(
+      devices[1].model.as_deref(),
+      Some("NVIDIA Corporation GM107M [GeForce 940MX] (rev a2)")
+    );
+  }
+
+  #[test]
+  fn p8_session_renderers_are_not_copied_to_each_gpu() {
+    let devices = gpus_at(
+      &graphics_capabilities(),
+      Path::new("/dev/null"),
+      &GraphicsFixture,
+    );
+    assert_eq!(devices.len(), 2);
+    assert!(
+      devices
+        .iter()
+        .all(|gpu| gpu.opengl.is_none() && gpu.vulkan.is_none())
+    );
+  }
+  #[test]
+  fn p8_parses_short_pci_addresses_and_preserves_model_brackets() {
+    let (pci, model) = parse_pci_gpu("01:00.0 VGA compatible controller [0300]: NVIDIA Corporation GM107M [GeForce 940MX] [10de:179c] (rev a2)").unwrap();
+    assert_eq!(pci, "01:00.0");
+    assert_eq!(model, "NVIDIA Corporation GM107M [GeForce 940MX] (rev a2)");
+    for line in [
+      "Kernel driver in use: nvidia",
+      "0000:01:00.0 Audio device [0403]: NVIDIA Audio [10de:1234]",
+      "garbage VGA compatible controller: GPU",
+      "0000:01:00.0 3D controller [0302]: ",
+    ] {
+      assert!(parse_pci_gpu(line).is_none(), "{line}");
+    }
+  }
+
+  #[test]
+  fn p8_global_graphics_keeps_all_vulkan_names_including_software() {
+    let info = graphics(&graphics_capabilities(), &GraphicsFixture);
+    assert_eq!(
+      info.opengl_renderer.as_deref(),
+      Some("Intel Integrated Graphics")
+    );
+    assert_eq!(
+      info.vulkan_devices,
+      [
+        "Intel Integrated Graphics",
+        "llvmpipe (LLVM 20.1.8, 256 bits)"
+      ]
+    );
+  }
+
+  #[test]
+  fn p8_failed_graphics_probes_do_not_report_stdout_as_success() {
+    struct Failed;
+    impl ProcessRunner for Failed {
+      fn run(
+        &self,
+        request: &ProcessRequest,
+      ) -> Result<
+        argvus_control_center_core::process::ProcessOutput,
+        argvus_control_center_core::process::ProcessError,
+      > {
+        assert!(request.timeout.is_some());
+        assert!(request.output_limit.is_some());
+        Ok(argvus_control_center_core::process::ProcessOutput {
+          stdout: b"OpenGL renderer string: wrong\ndeviceName = wrong\n".to_vec(),
+          stderr: vec![],
+          status: Some(1),
+          timed_out: false,
+          cancelled: false,
+        })
+      }
+    }
+    let info = graphics(&graphics_capabilities(), &Failed);
+    assert!(info.opengl_renderer.is_none());
+    assert!(info.vulkan_devices.is_empty());
   }
 }

@@ -226,6 +226,19 @@ pub struct App {
 }
 
 impl App {
+  /// Retain handles until mutations and their result processing have completed.
+  pub fn has_pending_action(&self) -> bool {
+    self.admin.busy()
+      || self.task_job.is_some()
+      || self.gpg_action.is_some()
+      || self.input_job.is_some()
+      || self.input_pending.is_some()
+      || self.input_toggle_pending.is_some()
+      || self.ratbag_job.is_some()
+      || self.ratbag_pending_path.is_some()
+      || self.dnd_job.is_some()
+  }
+
   pub fn new(initial: Page) -> Self {
     let lang = Lang::detect();
     Self::with_context(initial, lang, Theme::load())

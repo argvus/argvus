@@ -29,15 +29,17 @@ impl BluetoothApp {
       }
       return false;
     }
-    if self.confirm_remove {
+    if self.confirm_remove.is_some() {
       match self.confirmation.handle(key) {
         ConfirmationOutcome::Confirmed => {
-          self.confirm_remove = false;
+          let address = self.confirm_remove.take();
           self.confirmation = ConfirmationState::default();
-          self.act_device("remove");
+          if let Some(address) = address {
+            self.act_device_at("remove", address);
+          }
         }
         ConfirmationOutcome::Cancelled => {
-          self.confirm_remove = false;
+          self.confirm_remove = None;
           self.confirmation = ConfirmationState::default();
         }
         ConfirmationOutcome::Pending => {}

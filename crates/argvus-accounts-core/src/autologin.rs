@@ -53,6 +53,27 @@ pub fn set_user(user: Option<&str>) -> Result<()> {
   write_config(&updated)
 }
 
+/// Disables auto-login only when it names the account being locked/deleted.
+pub(crate) fn clear_user(user: &str) -> Result<()> {
+  clear_user_at(std::path::Path::new(CONFIG_PATH), user)
+}
+
+pub(crate) fn clear_user_at(path: &std::path::Path, user: &str) -> Result<()> {
+  let contents = match fs::read_to_string(path) {
+    Ok(contents) => contents,
+    Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(()),
+    Err(error) => return Err(error.into()),
+  };
+  if section_body(&contents)
+    .and_then(|body| field(&body, "user"))
+    .as_deref()
+    == Some(user)
+  {
+    write_config_at(path, &remove_section(&contents))?;
+  }
+  Ok(())
+}
+
 fn read_config() -> Result<String> {
   fs::read_to_string(CONFIG_PATH).map_err(|err| {
     if err.kind() == std::io::ErrorKind::NotFound {
@@ -66,10 +87,14 @@ fn read_config() -> Result<String> {
 }
 
 fn write_config(contents: &str) -> Result<()> {
-  let dir = std::path::Path::new(CONFIG_PATH)
+  write_config_at(std::path::Path::new(CONFIG_PATH), contents)
+}
+
+fn write_config_at(path: &std::path::Path, contents: &str) -> Result<()> {
+  let dir = path
     .parent()
     .ok_or_else(|| Error::system(format!("invalid path: {CONFIG_PATH}")))?;
-  let permissions = fs::metadata(CONFIG_PATH)
+  let permissions = fs::metadata(path)
     .map_err(|err| Error::system(format!("reading {CONFIG_PATH}: {err}")))?
     .permissions();
   let mut temp = tempfile::Builder::new()
@@ -79,7 +104,7 @@ fn write_config(contents: &str) -> Result<()> {
   temp.write_all(contents.as_bytes())?;
   temp.as_file().sync_all()?;
   fs::set_permissions(temp.path(), permissions)?;
-  if let Err(err) = temp.persist(CONFIG_PATH) {
+  if let Err(err) = temp.persist(path) {
     return Err(Error::Io(err.error));
   }
   Ok(())
@@ -195,5 +220,41 @@ mod tests {
         out
       }
     }
+  }
+  #[test]
+  fn p9_cleanup_preserves_other_users_and_absent_configurations() {
+    let directory = tempfile::tempdir().unwrap();
+    let path = directory.path().join("config.toml");
+    clear_user_at(&path, "alice").unwrap();
+    assert!(!path.exists());
+    let original = set_user_in(BASE, Some("bob"));
+    fs::write(&path, &original).unwrap();
+    clear_user_at(&path, "alice").unwrap();
+    assert_eq!(fs::read_to_string(&path).unwrap(), original);
+    fs::write(&path, BASE).unwrap();
+    clear_user_at(&path, "alice").unwrap();
+    assert_eq!(fs::read_to_string(&path).unwrap(), BASE);
+  }
+
+  #[test]
+  fn p9_cleanup_preserves_mode_and_other_sections() {
+    use std::os::unix::fs::PermissionsExt;
+    let directory = tempfile::tempdir().unwrap();
+    let path = directory.path().join("config.toml");
+    fs::write(
+      &path,
+      format!("{}[other]\nvalue = 1\n", set_user_in(BASE, Some("alice"))),
+    )
+    .unwrap();
+    fs::set_permissions(&path, fs::Permissions::from_mode(0o640)).unwrap();
+    clear_user_at(&path, "alice").unwrap();
+    assert_eq!(
+      fs::read_to_string(&path).unwrap(),
+      format!("{BASE}\n[other]\nvalue = 1\n")
+    );
+    assert_eq!(
+      fs::metadata(&path).unwrap().permissions().mode() & 0o777,
+      0o640
+    );
   }
 }

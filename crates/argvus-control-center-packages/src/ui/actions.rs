@@ -118,6 +118,7 @@ impl PackagesApp {
 
   pub(super) fn spawn_country_list(&mut self) {
     let capabilities = self.capabilities.clone();
+    self.loading_key = None;
     self.job = Some(
       self
         .jobs
@@ -134,6 +135,7 @@ impl PackagesApp {
       kind: StatusKind::Info,
       text: tr(self.lang, "control_center.generating_mirror_preview").into(),
     });
+    self.loading_key = None;
     self.job = Some(
       self
         .jobs
@@ -157,6 +159,10 @@ impl PackagesApp {
       text: tr(self.lang, "control_center.running_operation").into(),
     });
     let live = LiveProcess::new();
+    self.transaction_buffer.clear();
+    self.transaction_cursor = 0;
+    self.transaction_truncated = false;
+    self.transaction_line_count = 0;
     self.transaction_live = Some(live.clone());
     self.transaction_open = true;
     self.transaction_scroll = 0;
@@ -581,6 +587,7 @@ pub(super) fn generate_mirror_preview(
   {
     return Err("reflector generated no valid mirrors".into());
   }
+  argvus_control_center_core::pacman_conf::validate_mirrorlist(&content)?;
   Ok(content)
 }
 

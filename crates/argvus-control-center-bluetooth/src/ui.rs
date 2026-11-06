@@ -50,7 +50,7 @@ pub struct BluetoothApp {
   theme: Theme,
   capabilities: Capabilities,
   status: Option<StatusMessage>,
-  confirm_remove: bool,
+  confirm_remove: Option<String>,
   confirmation: ConfirmationState,
   scanning: bool,
   agent: Option<AgentHandle>,
@@ -71,6 +71,11 @@ enum ActionButton {
 }
 
 impl BluetoothApp {
+  /// Whether exiting could abandon an operation whose result is still pending.
+  pub fn has_pending_action(&self) -> bool {
+    self.action.is_some()
+  }
+
   /// Replaces the semantic theme used by this page.
   pub fn set_theme(&mut self, theme: &Theme) {
     self.theme = theme.clone();
@@ -91,7 +96,7 @@ impl BluetoothApp {
       theme,
       capabilities,
       status: None,
-      confirm_remove: false,
+      confirm_remove: None,
       confirmation: ConfirmationState::default(),
       scanning: false,
       agent: None,
@@ -108,11 +113,13 @@ impl BluetoothApp {
     }
   }
   fn act_device(&mut self, action: &'static str) {
-    if let Some(d) = self.selected_device() {
-      let address = d.address.clone();
-      let msg = tr(self.lang, "control_center.bluetooth_operation_completed").into();
-      self.start_action(move |b| b.action(&address, action), msg);
+    if let Some(device) = self.selected_device() {
+      self.act_device_at(action, device.address.clone());
     }
+  }
+  fn act_device_at(&mut self, action: &'static str, address: String) {
+    let message = tr(self.lang, "control_center.bluetooth_operation_completed").into();
+    self.start_action(move |backend| backend.action(&address, action), message);
   }
   fn act_pair(&mut self) {
     if self.action.is_some() {
@@ -207,7 +214,9 @@ impl BluetoothApp {
         };
         self.act_device(action);
       }
-      ActionButton::Remove => self.confirm_remove = true,
+      ActionButton::Remove => {
+        self.confirm_remove = self.selected_device().map(|device| device.address.clone())
+      }
     }
   }
   fn buttons(&self) -> Vec<(ActionButton, Button)> {
@@ -284,6 +293,44 @@ impl BluetoothApp {
 
 impl BluetoothApp {
   pub fn onboarding_ready(&self) -> bool {
-    self.action.is_none() && !self.confirm_remove
+    self.action.is_none() && self.confirm_remove.is_none()
+  }
+}
+
+#[cfg(test)]
+mod audit_p6_tests {
+  use super::*;
+  #[test]
+  fn removal_confirmation_owns_original_device_address() {
+    let mut app = BluetoothApp::new(
+      Lang::for_locale("en-US"),
+      Theme::load(),
+      Capabilities::default(),
+    );
+    app.page = BluetoothPage::Devices;
+    let address = "AA:BB:CC:DD:EE:01";
+    app.snapshot.devices = vec![
+      Device {
+        address: address.into(),
+        ..Default::default()
+      },
+      Device {
+        address: "AA:BB:CC:DD:EE:02".into(),
+        ..Default::default()
+      },
+    ];
+    app.button_selected = app
+      .buttons()
+      .iter()
+      .position(|(action, _)| matches!(action, ActionButton::Remove))
+      .unwrap();
+    app.activate_button();
+    app.snapshot.devices.swap(0, 1);
+    assert_eq!(app.confirm_remove.as_deref(), Some(address));
+    app.snapshot.devices.clear();
+    app.handle(KeyCode::Tab);
+    app.handle(KeyCode::Enter);
+    assert!(app.confirm_remove.is_none());
+    assert!(app.action.is_some());
   }
 }

@@ -219,7 +219,7 @@ mod tests {
   use super::*;
   #[test]
   fn normalizes_units() {
-    let o=ProcessOutput{stdout:br#"[{"unit":"a.service","description":"A","load":"loaded","active":"failed","sub":"failed","unit_file_state":"enabled"}]"#.to_vec(),stderr:vec![],status:Some(0),timed_out:false};
+    let o=ProcessOutput{stdout:br#"[{"unit":"a.service","description":"A","load":"loaded","active":"failed","sub":"failed","unit_file_state":"enabled"}]"#.to_vec(),stderr:vec![],status:Some(0),timed_out:false,cancelled:false};
     let u = parse_units(&o).unwrap();
     assert!(u[0].failed());
     assert_eq!(u[0].file_state, "enabled");

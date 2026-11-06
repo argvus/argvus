@@ -42,13 +42,31 @@ impl NetworkApp {
       }
       return false;
     }
+    if matches!(key.code, KeyCode::Char(_))
+      && argvus_tui::text_editor::text_character(key).is_none()
+    {
+      return false;
+    }
     self.handle(key.code)
   }
 
   /// Pasted text goes to the open text field.
   pub fn paste(&mut self, text: &str) {
+    if self.editor_confirm.is_some() || self.confirm_forget {
+      return;
+    }
     if let Some((_, editor)) = &mut self.text_edit {
       editor.paste(text);
+    } else if let Some(input) = self
+      .password
+      .as_mut()
+      .or(self.dns_input.as_mut())
+      .or(self.search.as_mut())
+    {
+      input.extend(text.chars().filter(|character| !character.is_control()));
+      if self.search.is_some() {
+        self.menu = MenuState::default();
+      }
     }
   }
 
@@ -96,13 +114,13 @@ impl NetworkApp {
         KeyCode::Backspace => {
           password.pop();
         }
-        KeyCode::Char(c) => password.push(c),
+        KeyCode::Char(c) if !c.is_control() => password.push(c),
         KeyCode::Enter => {
           let secret = std::mem::take(password);
-          let index = self.pending_wifi.take();
+          let network = self.pending_wifi.take();
           self.password = None;
-          if let Some(index) = index {
-            self.run_wifi(index, Some(secret));
+          if let Some(network) = network {
+            self.run_wifi(network, Some(secret));
           }
         }
         _ => {}
@@ -131,7 +149,7 @@ impl NetworkApp {
         KeyCode::Backspace => {
           search.pop();
         }
-        KeyCode::Char(c) => search.push(c),
+        KeyCode::Char(c) if !c.is_control() => search.push(c),
         KeyCode::Enter => {}
         _ => {}
       }

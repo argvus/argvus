@@ -44,6 +44,10 @@ pub struct ConfigApp {
 }
 
 impl ConfigApp {
+  pub fn has_pending_action(&self) -> bool {
+    self.save_job.is_some() || self.effects_job.is_some()
+  }
+
   /// Replaces the semantic theme used by this page.
   pub fn set_theme(&mut self, theme: &Theme) {
     self.theme = theme.clone();

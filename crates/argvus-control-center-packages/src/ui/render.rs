@@ -18,6 +18,7 @@ pub(super) fn transaction_wrapped_lines(output: &str) -> usize {
     .sum()
 }
 
+#[cfg(test)]
 pub(super) fn transaction_bottom_offset(output: &str) -> u16 {
   transaction_wrapped_lines(output).saturating_sub(TRANSACTION_CONTENT_HEIGHT) as u16
 }
@@ -109,6 +110,7 @@ impl PackagesApp {
   }
 
   pub fn draw(&mut self, f: &mut Frame) {
+    self.sync_transaction_output();
     let area = f.area();
     let rows = self.rows();
     self.menu.normalize(&rows);
@@ -361,12 +363,10 @@ impl PackagesApp {
     if let Some(s) = &self.status {
       status(f, body, &self.theme, s)
     }
-    if self.transaction_open
-      && let Some(output) = self.transaction_live.as_ref().map(|live| live.output())
-    {
-      let output = transaction_output(self.lang, &output);
+    if self.transaction_open && self.transaction_live.is_some() {
+      let output = &self.transaction_buffer;
       let popup = chrome::centered(f.area(), TRANSACTION_POPUP_WIDTH, TRANSACTION_POPUP_HEIGHT);
-      let total = transaction_wrapped_lines(&output);
+      let total = self.transaction_line_count;
       let shown_total = total.max(1);
       let current = (self.transaction_scroll as usize + 1).min(shown_total);
       f.render_widget(Clear, popup);

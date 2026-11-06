@@ -461,7 +461,7 @@ impl DrmHandoff {
   /// Starts the helper and waits until its command socket is listening. The
   /// theme and accent are the ones given to the GTK splash, so both surfaces
   /// paint the same spinner in the same colors.
-  pub fn start(theme: &str, accent: Option<&str>) -> anyhow::Result<Self> {
+  pub fn start(theme: &str, accent: Option<&str>, session_uid: u32) -> anyhow::Result<Self> {
     if !std::path::Path::new(DRM_HANDOFF).is_file() {
       bail!("DRM handoff surface is not installed at {DRM_HANDOFF}");
     }
@@ -471,6 +471,7 @@ impl DrmHandoff {
 
     let mut command = Command::new(DRM_HANDOFF);
     command.args(["--theme", theme]);
+    command.arg("--session-uid").arg(session_uid.to_string());
     if let Some(accent) = accent {
       command.args(["--accent", accent]);
     }

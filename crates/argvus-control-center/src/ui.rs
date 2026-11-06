@@ -113,6 +113,16 @@ pub fn draw(app: &mut App, frame: &mut Frame) {
       &app.help_lines(),
     );
   }
+  if app.quit_blocked && app.has_pending_action() {
+    frame.render_widget(
+      Paragraph::new(tr(app.lang, "control_center.quit_operation_pending")).style(
+        Style::default()
+          .fg(app.theme.accent)
+          .bg(app.theme.background),
+      ),
+      Rect::new(area.x, area.bottom().saturating_sub(1), area.width, 1),
+    );
+  }
 }
 
 fn draw_home(app: &mut App, frame: &mut Frame) {

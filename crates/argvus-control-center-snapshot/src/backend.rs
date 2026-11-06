@@ -40,23 +40,6 @@ const RETENTION_DEFAULTS: &[(&str, &str)] = &[
   ("EMPTY_PRE_POST_CLEANUP", "no"),
   ("EMPTY_PRE_POST_MIN_AGE", "3600"),
 ];
-const EDITABLE_RETENTION_KEYS: &[&str] = &[
-  "NUMBER_CLEANUP",
-  "NUMBER_MIN_AGE",
-  "NUMBER_LIMIT",
-  "NUMBER_LIMIT_IMPORTANT",
-  "TIMELINE_CREATE",
-  "TIMELINE_CLEANUP",
-  "TIMELINE_MIN_AGE",
-  "TIMELINE_LIMIT_HOURLY",
-  "TIMELINE_LIMIT_DAILY",
-  "TIMELINE_LIMIT_WEEKLY",
-  "TIMELINE_LIMIT_MONTHLY",
-  "TIMELINE_LIMIT_QUARTERLY",
-  "TIMELINE_LIMIT_YEARLY",
-  "EMPTY_PRE_POST_CLEANUP",
-  "EMPTY_PRE_POST_MIN_AGE",
-];
 
 fn invalid(detail: impl Into<String>) -> SnapshotError {
   SnapshotError::new(ErrorKind::Invalid, detail)
@@ -175,7 +158,7 @@ pub fn parse_retention_config(output: &[u8]) -> SnapshotResult<RetentionConfig> 
     let Some(value) = value else {
       return Err(invalid(format!("invalid get-config value for {key}")));
     };
-    if EDITABLE_RETENTION_KEYS.contains(&key.as_str()) {
+    if RETENTION_DEFAULTS.iter().any(|(known, _)| *known == key) {
       validate_retention_value(key, value)?;
       values.insert(
         key.clone(),
@@ -190,9 +173,6 @@ pub fn parse_retention_config(output: &[u8]) -> SnapshotResult<RetentionConfig> 
   }
   for (key, default) in RETENTION_DEFAULTS {
     if !values.contains_key(*key) {
-      if unknown.contains_key(*key) {
-        return Err(invalid(format!("unsupported Snapper setting {key}")));
-      }
       values.insert(
         (*key).into(),
         RetentionValue {
@@ -206,7 +186,7 @@ pub fn parse_retention_config(output: &[u8]) -> SnapshotResult<RetentionConfig> 
 }
 
 pub fn validate_retention_value(key: &str, value: &str) -> SnapshotResult<()> {
-  if !EDITABLE_RETENTION_KEYS.contains(&key) {
+  if !RETENTION_DEFAULTS.iter().any(|(known, _)| *known == key) {
     return Err(invalid("retention key is not editable"));
   }
   if matches!(
@@ -273,6 +253,7 @@ pub struct SnapshotBackend<R> {
 
 #[derive(Debug, Clone)]
 struct RestorePaths {
+  filesystem_uuid: fn(&Path) -> Result<[u8; 16], String>,
   root: PathBuf,
   snapshots: PathBuf,
   lock: PathBuf,
@@ -284,6 +265,7 @@ impl<R: ProcessRunner> SnapshotBackend<R> {
     Self {
       runner,
       restore_paths: RestorePaths {
+        filesystem_uuid: btrfs_filesystem_uuid,
         root: PathBuf::from("/"),
         snapshots: PathBuf::from(SNAPSHOT_ROOT),
         lock: PathBuf::from(RESTORE_LOCK),
@@ -376,17 +358,13 @@ impl<R: ProcessRunner> SnapshotBackend<R> {
       .map_err(|error| invalid(format!("cannot inspect root directory: {error}")))?
       .uid();
     let source_path = self.snapshot_file_path(destination, path);
-    let source = secure_regular_file(&source_path, &self.restore_paths.root, root_owner)
+    secure_regular_file(&source_path, &self.restore_paths.root, root_owner)
       .map_err(|error| invalid(format!("snapshot source is unsafe or unavailable: {error}")))?;
-    if source.device
-      != fs::metadata(&self.restore_paths.root)
-        .map_err(|error| invalid(format!("cannot inspect root filesystem: {error}")))?
-        .dev()
-    {
-      return Err(invalid(
-        "snapshot source is outside the root Btrfs filesystem",
-      ));
-    }
+    verify_restore_filesystem(
+      &self.restore_paths.root,
+      &source_path,
+      self.restore_paths.filesystem_uuid,
+    )?;
 
     let host_path = self.host_path(path);
     ensure_not_mountpoint(&host_path, &self.restore_paths.mountinfo)?;
@@ -420,11 +398,13 @@ impl<R: ProcessRunner> SnapshotBackend<R> {
       &self.restore_paths.package_lock,
       &self.restore_paths.root,
       lock_owner,
+      LockPurpose::PackageUpdate,
     )?;
     let _lock = RestoreLock::acquire(
       &self.restore_paths.lock,
       &self.restore_paths.root,
       lock_owner,
+      LockPurpose::SelectiveRestore,
     )?;
     let review = self.restore_preview(config, origin, destination, path)?;
     if review.destination.as_ref() != expected_destination {
@@ -434,7 +414,12 @@ impl<R: ProcessRunner> SnapshotBackend<R> {
     }
 
     let safety_snapshot = self
-      .change("create", config, RESTORE_DESCRIPTION)?
+      .change_with_cleanup(
+        "create",
+        config,
+        RESTORE_DESCRIPTION,
+        Some(CleanupAlgorithm::Number),
+      )?
       .ok_or_else(|| invalid("Snapper did not return the safety snapshot number"))?;
     let snapshots = self.root_snapshot_ids(config).map_err(|error| {
       restore_after_safety_error(safety_snapshot, "could not verify snapshots", error)
@@ -527,6 +512,17 @@ impl<R: ProcessRunner> SnapshotBackend<R> {
   }
 
   fn status(&self, config: &str, first: u32, second: u32) -> SnapshotResult<Vec<ChangedPath>> {
+    self
+      .status_records(config, first, second)
+      .map(|(changes, _)| changes)
+  }
+
+  fn status_records(
+    &self,
+    config: &str,
+    first: u32,
+    second: u32,
+  ) -> SnapshotResult<(Vec<ChangedPath>, usize)> {
     validate_config(config)?;
     let range = format!("{first}..{second}");
     let request = ProcessRequest::new(SNAPPER)
@@ -536,13 +532,13 @@ impl<R: ProcessRunner> SnapshotBackend<R> {
       .arg(&range)
       .env("LC_ALL", "C.UTF-8")
       .timeout(Duration::from_secs(120))
-      .output_limit(LIMIT);
+      .output_limit(16 * 1024 * 1024);
     let output = self
       .runner
       .run(&request)
-      .map_err(|error| SnapshotError::new(ErrorKind::Snapper, error.to_string()))
+      .map_err(process_error)
       .and_then(check_output)?;
-    parse_status(&output)
+    parse_supported_status(&output)
   }
 
   fn file_diff(
@@ -620,24 +616,26 @@ impl<R: ProcessRunner> SnapshotBackend<R> {
 
   pub fn compare(&self, config: &str, origin: u32, destination: u32) -> SnapshotResult<Comparison> {
     self.comparison_snapshots(config, origin, destination)?;
-    let range = format!("{origin}..{destination}");
-    let request = ProcessRequest::new(SNAPPER)
-      .arg("-c")
-      .arg(config)
-      .arg("status")
-      .arg(&range)
-      .env("LC_ALL", "C.UTF-8")
-      .timeout(Duration::from_secs(120))
-      .output_limit(LIMIT);
-    let output = self
-      .runner
-      .run(&request)
-      .map_err(|error| SnapshotError::new(ErrorKind::Snapper, error.to_string()))
-      .and_then(check_output)?;
+    let (mut changes, unsupported) = self.status_records(config, origin, destination)?;
+    let supported = changes.len();
+    let total_seen = supported + unsupported;
+    let mut bytes = 0;
+    let keep = changes
+      .iter()
+      .take(10000)
+      .take_while(|change| {
+        bytes += change.path.len() * 6 + 100;
+        bytes <= 8 * 1024 * 1024
+      })
+      .count();
+    changes.truncate(keep);
     Ok(Comparison {
+      unsupported,
+      truncated: keep < supported,
+      total_seen,
       origin,
       destination,
-      changes: parse_status(&output)?,
+      changes,
     })
   }
 
@@ -649,33 +647,12 @@ impl<R: ProcessRunner> SnapshotBackend<R> {
     path: &str,
   ) -> SnapshotResult<FileDiff> {
     validate_change_path(path)?;
-    let comparison = self.compare(config, origin, destination)?;
-    if !comparison.changes.iter().any(|change| change.path == path) {
+    self.comparison_snapshots(config, origin, destination)?;
+    let changes = self.status(config, origin, destination)?;
+    if !changes.iter().any(|change| change.path == path) {
       return Err(invalid("path is not in the current comparison"));
     }
-    let range = format!("{origin}..{destination}");
-    let request = ProcessRequest::new(SNAPPER)
-      .arg("-c")
-      .arg(config)
-      .arg("diff")
-      .arg(&range)
-      .arg(path)
-      .env("LC_ALL", "C.UTF-8")
-      .timeout(Duration::from_secs(120))
-      .output_limit(DIFF_LIMIT);
-    let output = match self.runner.run(&request) {
-      Err(ProcessError::OutputLimit) => return Ok(FileDiff::Truncated),
-      Err(error) => return Err(SnapshotError::new(ErrorKind::Snapper, error.to_string())),
-      Ok(output) => check_output(output)?,
-    };
-    let text = match String::from_utf8(output) {
-      Ok(text) => text,
-      Err(_) => return Ok(FileDiff::Binary),
-    };
-    if text.contains('\0') || text.contains("Binary files") || text.contains("Binary file") {
-      return Ok(FileDiff::Binary);
-    }
-    Ok(FileDiff::Text(terminal_text(&text)))
+    self.file_diff(config, origin, destination, path)
   }
 
   /// Query config values through Snapper rather than sourcing `/etc` files.
@@ -764,19 +741,31 @@ impl<R: ProcessRunner> SnapshotBackend<R> {
           "no Snapper configuration manages /; package update was not started",
         ));
       }
-      Integration::ChooseConfig(_) => {
-        return Err(SnapshotError::new(
-          ErrorKind::Incompatible,
-          "multiple Snapper configurations manage /; select one before updating packages",
-        ));
+      Integration::ChooseConfig(configs) => {
+        // Package updates have no configuration picker. All candidates were
+        // verified to manage / on Btrfs; prefer the conventional root name,
+        // otherwise choose deterministically. change_with_cleanup revalidates it.
+        configs
+          .iter()
+          .find(|config| config.as_str() == "root")
+          .or_else(|| configs.iter().min())
+          .cloned()
+          .ok_or_else(|| invalid("no root configuration available for package snapshot"))?
       }
     };
-    self.change("create", &config, DESCRIPTION)?.ok_or_else(|| {
-      SnapshotError::new(
-        ErrorKind::Invalid,
-        "Snapper did not return the created snapshot number",
-      )
-    })
+    self
+      .change_with_cleanup(
+        "create",
+        &config,
+        DESCRIPTION,
+        Some(CleanupAlgorithm::Number),
+      )?
+      .ok_or_else(|| {
+        SnapshotError::new(
+          ErrorKind::Invalid,
+          "Snapper did not return the created snapshot number",
+        )
+      })
   }
 
   fn list(&self, config: &str) -> SnapshotResult<Vec<Snapshot>> {
@@ -866,7 +855,9 @@ impl<R: ProcessRunner> SnapshotBackend<R> {
   ) -> SnapshotResult<RetentionConfig> {
     self.comparison_snapshots_config(config)?;
     let configdata = build_retention_configdata(changes)?;
-    self.snapper(&["-c", config, "set-config", &configdata], true)?;
+    let mut args = vec!["-c", config, "set-config"];
+    args.extend(configdata.split(' '));
+    self.snapper(&args, true)?;
     let saved = self.retention(config)?;
     for (key, expected) in changes {
       if saved.values.get(key).map(|value| value.value.as_str()) != Some(expected.as_str()) {
@@ -905,6 +896,16 @@ impl<R: ProcessRunner> SnapshotBackend<R> {
 
   /// Repeat all root/config/protection checks in the elevated process, immediately before mutation.
   pub fn change(&self, action: &str, config: &str, value: &str) -> SnapshotResult<Option<u32>> {
+    self.change_with_cleanup(action, config, value, None)
+  }
+
+  fn change_with_cleanup(
+    &self,
+    action: &str,
+    config: &str,
+    value: &str,
+    cleanup: Option<CleanupAlgorithm>,
+  ) -> SnapshotResult<Option<u32>> {
     validate_config(config)?;
     let number = match action {
       "create" => {
@@ -929,19 +930,20 @@ impl<R: ProcessRunner> SnapshotBackend<R> {
         Ok(None)
       }
       None => {
-        let output = self.snapper(
-          &[
-            "-c",
-            config,
-            "create",
-            "--type",
-            "single",
-            "--description",
-            value,
-            "--print-number",
-          ],
-          true,
-        )?;
+        let mut args = vec![
+          "-c",
+          config,
+          "create",
+          "--type",
+          "single",
+          "--description",
+          value,
+          "--print-number",
+        ];
+        if let Some(algorithm) = cleanup {
+          args.extend(["--cleanup-algorithm", algorithm.as_snapper_arg()]);
+        }
+        let output = self.snapper(&args, true)?;
         let text = std::str::from_utf8(&output).map_err(|_| invalid("invalid created number"))?;
         Ok(Some(parse_number(text.trim())?))
       }
@@ -1051,29 +1053,44 @@ fn secure_destination(
   }
 }
 
-fn decode_mount_path(path: &str) -> Option<PathBuf> {
-  let mut decoded = String::with_capacity(path.len());
-  let mut characters = path.chars();
-  while let Some(character) = characters.next() {
-    if character != '\\' {
-      decoded.push(character);
+fn decode_mount_path(path: &[u8]) -> Option<PathBuf> {
+  use std::os::unix::ffi::OsStringExt;
+  let mut decoded = Vec::with_capacity(path.len());
+  let mut bytes = path.iter().copied();
+  while let Some(byte) = bytes.next() {
+    if byte != b'\\' {
+      if byte == 0 {
+        return None;
+      }
+      decoded.push(byte);
       continue;
     }
-    let octal = [characters.next()?, characters.next()?, characters.next()?];
-    if !octal.iter().all(|digit| matches!(digit, '0'..='7')) {
+    let octal = [bytes.next()?, bytes.next()?, bytes.next()?];
+    if !octal.iter().all(|digit| matches!(digit, b'0'..=b'7')) {
       return None;
     }
-    let value = u8::from_str_radix(&octal.iter().collect::<String>(), 8).ok()?;
-    decoded.push(char::from(value));
+    let value = (octal[0] - b'0')
+      .checked_mul(64)?
+      .checked_add((octal[1] - b'0') * 8)?
+      .checked_add(octal[2] - b'0')?;
+    if value == 0 {
+      return None;
+    }
+    decoded.push(value);
   }
-  Some(PathBuf::from(decoded))
+  Some(PathBuf::from(std::ffi::OsString::from_vec(decoded)))
 }
 
 fn ensure_not_mountpoint(path: &Path, mountinfo: &Path) -> SnapshotResult<()> {
-  let text = fs::read_to_string(mountinfo)
+  let text = fs::read(mountinfo)
     .map_err(|error| invalid(format!("cannot validate filesystem boundaries: {error}")))?;
-  for line in text.lines() {
-    let Some(mount_path) = line.split_whitespace().nth(4).and_then(decode_mount_path) else {
+  for line in text.split(|byte| *byte == b'\n') {
+    let Some(mount_path) = line
+      .split(u8::is_ascii_whitespace)
+      .filter(|field| !field.is_empty())
+      .nth(4)
+      .and_then(decode_mount_path)
+    else {
       continue;
     };
     if mount_path != Path::new("/") && path.starts_with(&mount_path) {
@@ -1085,12 +1102,22 @@ fn ensure_not_mountpoint(path: &Path, mountinfo: &Path) -> SnapshotResult<()> {
   Ok(())
 }
 
+enum LockPurpose {
+  PackageUpdate,
+  SelectiveRestore,
+}
+
 struct RestoreLock {
   _file: fs::File,
 }
 
 impl RestoreLock {
-  fn acquire(path: &Path, scope_root: &Path, owner: u32) -> SnapshotResult<Self> {
+  fn acquire(
+    path: &Path,
+    scope_root: &Path,
+    owner: u32,
+    purpose: LockPurpose,
+  ) -> SnapshotResult<Self> {
     use std::os::{fd::AsRawFd, unix::fs::OpenOptionsExt};
     secure_parent_directories(path, scope_root, owner)
       .map_err(|error| invalid(format!("restore lock directory is unsafe: {error}")))?;
@@ -1111,10 +1138,21 @@ impl RestoreLock {
     // SAFETY: the file owns a valid descriptor and remains alive for the guard.
     let result = unsafe { libc::flock(file.as_raw_fd(), libc::LOCK_EX | libc::LOCK_NB) };
     if result != 0 {
-      return Err(SnapshotError::new(
-        ErrorKind::Invalid,
-        "another selective restore is in progress",
-      ));
+      let error = std::io::Error::last_os_error();
+      if error.kind() != IoErrorKind::WouldBlock {
+        return Err(SnapshotError::new(ErrorKind::Permission, error.to_string()));
+      }
+      let (kind, detail) = match purpose {
+        LockPurpose::PackageUpdate => (
+          ErrorKind::PackageUpdateBusy,
+          "package update lock is held by another operation",
+        ),
+        LockPurpose::SelectiveRestore => (
+          ErrorKind::RestoreBusy,
+          "selective restore lock is held by another operation",
+        ),
+      };
+      return Err(SnapshotError::new(kind, detail));
     }
     Ok(Self { _file: file })
   }
@@ -1222,8 +1260,7 @@ pub fn validate_helper(action: &str, values: &[String]) -> SnapshotResult<()> {
     ("get-retention", [config]) => validate_config(config),
     ("set-retention", [config, configdata]) => {
       validate_config(config)?;
-      let changes = parse_configdata(configdata)?;
-      build_retention_configdata(&changes).map(|_| ())
+      parse_retention_configdata(configdata).map(|_| ())
     }
     ("cleanup", [config, algorithms @ ..]) if !algorithms.is_empty() => {
       validate_config(config)?;
@@ -1260,8 +1297,8 @@ pub fn parse_cleanup_algorithm(value: &str) -> SnapshotResult<CleanupAlgorithm> 
   }
 }
 
-fn parse_configdata(configdata: &str) -> SnapshotResult<Vec<(String, String)>> {
-  configdata
+pub fn parse_retention_configdata(configdata: &str) -> SnapshotResult<Vec<(String, String)>> {
+  let changes = configdata
     .split(' ')
     .map(|pair| {
       let (key, value) = pair
@@ -1269,7 +1306,9 @@ fn parse_configdata(configdata: &str) -> SnapshotResult<Vec<(String, String)>> {
         .ok_or_else(|| invalid("invalid configdata"))?;
       Ok((key.to_owned(), value.to_owned()))
     })
-    .collect()
+    .collect::<SnapshotResult<Vec<_>>>()?;
+  build_retention_configdata(&changes)?;
+  Ok(changes)
 }
 
 /// Snapper's six fixed status positions precede one separating space and the path.
@@ -1409,4 +1448,98 @@ fn restored_files_match(
     remaining -= count as u64;
   }
   Ok(unchanged(&source_file, source_identity)? && unchanged(&target_file, target_identity)?)
+}
+
+pub(crate) fn process_error(error: ProcessError) -> SnapshotError {
+  let kind = if matches!(error, ProcessError::OutputLimit) {
+    ErrorKind::OutputLimit
+  } else {
+    ErrorKind::Snapper
+  };
+  SnapshotError::new(kind, error.to_string())
+}
+
+fn verify_restore_filesystem(
+  root: &Path,
+  source: &Path,
+  probe: fn(&Path) -> Result<[u8; 16], String>,
+) -> SnapshotResult<()> {
+  let root_uuid = probe(root).map_err(invalid)?;
+  let source_uuid = probe(source).map_err(invalid)?;
+  if root_uuid != source_uuid {
+    return Err(invalid(
+      "snapshot source is outside the root Btrfs filesystem",
+    ));
+  }
+  Ok(())
+}
+
+fn btrfs_filesystem_uuid(path: &Path) -> Result<[u8; 16], String> {
+  use std::os::{fd::AsRawFd, unix::fs::OpenOptionsExt};
+  let file = fs::OpenOptions::new()
+    .read(true)
+    .custom_flags(libc::O_NOFOLLOW | libc::O_NONBLOCK)
+    .open(path)
+    .map_err(|error| format!("cannot open filesystem probe: {error}"))?;
+  let mut statistics = std::mem::MaybeUninit::<libc::statfs>::uninit();
+  // SAFETY: the live descriptor and writable statfs pointer remain valid for the call.
+  if unsafe { libc::fstatfs(file.as_raw_fd(), statistics.as_mut_ptr()) } != 0 {
+    return Err(std::io::Error::last_os_error().to_string());
+  }
+  // SAFETY: fstatfs succeeded and initialized the structure.
+  if unsafe { statistics.assume_init() }.f_type != libc::BTRFS_SUPER_MAGIC {
+    return Err("restore source and root must be on Btrfs".into());
+  }
+  // Linux UAPI btrfs_ioctl_fs_info_args is 1024 bytes, aligned to u64.
+  // max_id and num_devices occupy 16 bytes, followed by the filesystem UUID.
+  let mut info = [0u64; 128];
+  let request = libc::_IOR::<[u64; 128]>(0x94, 31);
+  // SAFETY: FS_INFO writes exactly the 1024-byte, aligned UAPI buffer provided here.
+  if unsafe { libc::ioctl(file.as_raw_fd(), request, info.as_mut_ptr()) } != 0 {
+    return Err(std::io::Error::last_os_error().to_string());
+  }
+  let mut uuid = [0; 16];
+  uuid[..8].copy_from_slice(&info[2].to_ne_bytes());
+  uuid[8..].copy_from_slice(&info[3].to_ne_bytes());
+  Ok(uuid)
+}
+
+// Snapper status is line-delimited. Never expose an undecodable path as an action.
+fn parse_supported_status(output: &[u8]) -> SnapshotResult<(Vec<ChangedPath>, usize)> {
+  let mut changes: Vec<ChangedPath> = Vec::new();
+  let mut unsupported = 0;
+  let mut seen = BTreeSet::new();
+  let mut previous_supported = false;
+  for line in output
+    .split(|byte| *byte == b'\n')
+    .filter(|line| !line.is_empty())
+  {
+    let parsed_line = if line.iter().any(u8::is_ascii_control) {
+      Err(invalid("control character in status record"))
+    } else {
+      parse_status(line)
+    };
+    match parsed_line {
+      Ok(mut parsed) if parsed.len() == 1 => {
+        let change = parsed
+          .pop()
+          .ok_or_else(|| invalid("missing parsed status change"))?;
+        if !seen.insert(change.path.clone()) {
+          return Err(invalid("ambiguous duplicate status path"));
+        }
+        changes.push(change);
+        previous_supported = true;
+      }
+      _ => {
+        // A continuation without status framing may belong to a newline-containing
+        // filename. Discard its apparent prefix too rather than offering restoration.
+        if previous_supported && !(line.len() >= 7 && line[6] == b' ') {
+          changes.pop();
+        }
+        unsupported += 1;
+        previous_supported = false;
+      }
+    }
+  }
+  Ok((changes, unsupported))
 }

@@ -457,8 +457,9 @@ do Snapper continuam valendo. Um snapshot não é uma imagem completa: subvolume
 separados, como um `/home` separado, não são incluídos. Esta versão **não oferece
 rollback completo, instalação ou criação de configuração Snapper**. Em uma
 configuração válida da raiz, pressione **p** para consultar as políticas conhecidas.
-Valores ausentes aparecem como padrões do Snapper; chaves desconhecidas são
-apenas diagnósticas. Pressione **e** para editar um valor suportado. A confirmação
+Valores ausentes são identificados como valores alternativos do ARGVUS, não como
+valores lidos do template de criação instalado; chaves desconhecidas são apenas
+diagnósticas. Pressione **e** para editar um valor suportado. A confirmação
 mostra o valor anterior e o novo; após salvar, a página consulta novamente e
 verifica a configuração. Pressione **c** para alternar algoritmos de limpeza e
 **Enter** para revisar e confirmar. A limpeza usa o algoritmo oficial do Snapper;
@@ -473,7 +474,9 @@ configurados e não são expostos nesta tela.
 
 Depois de revisar e confirmar uma atualização oficial de pacotes, o helper cria
 um snapshot `single` da raiz Btrfs configurada imediatamente antes de iniciar o
-pacman. Isso cobre atualização completa, atualização individual de pacote oficial
+pacman. Se várias configurações gerenciarem `/`, o snapshot automático prefere
+`root`; caso contrário, usa a primeira em ordem alfabética. O helper revalida a
+configuração escolhida antes de criar o snapshot. Isso cobre atualização completa, atualização individual de pacote oficial
 e a atualização completa oferecida após adicionar um repositório. Pesquisa,
 verificação de atualizações, planejamento, sincronização de metadados do
 repositório, operações AUR/yay e outras ações de pacotes não são cobertas. Se a
@@ -484,8 +487,8 @@ que o pacman iniciar, o resultado será indicado como indeterminado; confira o
 estado dos pacotes antes de tentar novamente. Somente uma atualização protegida
 do ARGVUS pode ocorrer por vez. O snapshot representa o subvolume raiz
 configurado e não garante recuperar ESP, subvolumes separados, dados externos ou
-bancos de dados de aplicações. Nenhum algoritmo de limpeza é atribuído ao
-snapshot; ele pode permanecer até uma limpeza Snapper executada pelo usuário.
+bancos de dados de aplicações. O snapshot usa o algoritmo de limpeza
+`number` e segue a política de retenção dessa configuração.
 
 ### Validação manual
 
@@ -553,3 +556,41 @@ A página de atalhos inclui **Seletor de agentes de IA (pacote opcional argvus-a
 
 
 Control Center > Appearance > Taskbar > Icons > Optional modules inclui **Agentes de IA**. A opção vem habilitada e é persistida em /taskbar/icons/ai_agents_enabled. Altere o rascunho da taskbar e aplique para salvar e regenerar o grupo de utilitários; desabilitá-la não altera SUPER + A nem as entradas do lançador de aplicativos.
+
+Os controles de inicialização automática editam o arquivo `.desktop` do usuário ou criam uma cópia de uma entrada do sistema. Nomes, comandos e opções de ativação vêm de `[Desktop Entry]`; os grupos de ações adicionais permanecem inalterados.
+
+As confirmações de serviços preservam o escopo de usuário/sistema junto da unidade e da ação. Uma unidade com o mesmo nome em outro escopo não pode redirecionar a ação confirmada; as páginas de detalhes também preservam o escopo original.
+
+Armazenamento inclui pontos de montagem aninhados, como `/home`, `/boot` e `/boot/efi`, no inventário de sistemas de arquivos. Diagnósticos usa esse mesmo inventário nas verificações de uso da raiz e de `/home`.
+
+Novos snapshots pré-atualização e de segurança da restauração usam o algoritmo de limpeza `number` do Snapper. A remoção segue a política de retenção por número quando a limpeza é executada. Snapshots existentes sem algoritmo de limpeza não são alterados, e a criação manual mantém sua política atual.
+
+Comparações de snapshots informam separadamente os registros de caminhos não suportados. Arquivos válidos continuam disponíveis para revisão; caminhos com codificação inválida, caracteres de controle ou componentes não suportados não oferecem ações de diff ou restauração.
+
+As configurações de energia gravam o drop-in do logind do ARGVUS em `[Login]`, criando o diretório quando necessário. Falhas de recarga são informadas. O comportamento da tampa na bateria usa `HandleLidSwitch`; o contexto legado `default` é um alias, enquanto alimentação externa e dock usam chaves próprias do logind.
+
+A aplicação da lista de espelhos aceita apenas comentários, linhas vazias e entradas `Server` HTTP/HTTPS. O conteúdo é limitado a 64 KiB e verificado antes da elevação e novamente pelo helper privilegiado; diretivas do pacman como `SigLevel` e `XferCommand` são rejeitadas.
+
+A limpeza de pacotes desinstalados não mantém versões no cache. Operações de repositório recusam includes compartilhados por várias seções. Hostnames com espaços nas extremidades e seleções vazias de locales para geração são rejeitados. Gravações de configurações recusam destinos symlink e arquivos temporários já existentes.
+
+Buscas e carregamentos de pacotes descartam resultados de uma página ou consulta anterior. A página atual é carregada novamente, evitando que um resultado antigo marque outra visualização como atualizada recentemente.
+
+A saída de transações é sanitizada e limitada. A exibição mantém até 10.000 linhas ou 4 MiB e informa quando omite conteúdo. Fluxos capturados respeitam o limite configurado, com padrão de 8 MiB na execução ao vivo; o excesso continua sendo drenado e é informado após o processo terminar.
+
+O inventário de boot lê o `pkgbase` do kernel Arch para localizar imagens, initramfs e presets do mkinitcpio, exibindo separadamente o release do kernel. Arrays literais do mkinitcpio são lidos sem incluir os parênteses nem executar a configuração.
+
+Alterações de tampa, botão de energia e manter acordado são salvas na configuração canônica somente após a aplicação em execução ter sucesso. Cancelar a autorização mantém o valor salvo anterior. Quando o drop-in do logind do ARGVUS não fornece um valor, a configuração principal do logind é usada como fallback.
+
+Se uma alteração de retenção falhar, a página relê as configurações atuais antes de exibir os valores novamente. A seleção de configuração começa na primeira entrada.
+
+As operações de pacotes do ARGVUS compartilham um lock exclusivo com a restauração seletiva. Instalação, remoção, reinstalação, downgrade, atualização de metadados, limpeza de cache e alterações de repositórios ou mirrors são recusadas enquanto esse lock estiver ocupado. Essa coordenação cobre operações iniciadas pelo helper do ARGVUS; pacman e ferramentas AUR externos não usam esse lock.
+
+Enquanto uma operação em segundo plano aplica alterações, `q` e `Ctrl+C` mantêm o Control Center aberto e exibem um aviso para aguardar. Isso também se aplica após sair da página que iniciou a ação. Aguarde o resultado e solicite a saída novamente. Atualizações comuns de leitura não bloqueiam a saída.
+
+Os campos de senha Wi-Fi, DNS manual e busca de rede aceitam colagem pelo terminal. Controles e quebras de linha colados são omitidos. Atalhos de caracteres com apenas Ctrl ou Alt que não são suportados não inserem letras. Os editores aceitam caracteres imprimíveis de AltGr codificados como Ctrl+Alt; Ctrl+S salva apenas sem Alt. O editor compartilhado mantém a coluna visual na navegação vertical e alinha a rolagem horizontal de caracteres largos.
+
+Alterações de volume e mute de microfones e saídas não padrão não sobrescrevem mais as preferências salvas da saída padrão. O backend persiste essas preferências apenas quando identifica o dispositivo selecionado como a saída padrão atual. A página exibe volumes amplificados acima de 100% conforme informados pelo PipeWire; ajustes explícitos de volume continuam limitados a 0–100%.
+
+A visão geral de hardware identifica os modelos das GPUs separadamente do endereço PCI e da classe do dispositivo, preservando nomes comerciais entre colchetes. O Resumo mostra o renderizador OpenGL consultado para a sessão e todos os nomes de dispositivos retornados pela consulta Vulkan, incluindo dispositivos por software. Esses resultados globais não são apresentados como capacidades de cada GPU física.
+
+Quando um administrador bloqueia ou remove a conta configurada para login automático, o provedor de contas primeiro desabilita a entrada de login automático do greetd. Se essa limpeza falhar, a operação na conta é recusada. Se o bloqueio ou a remoção falhar depois, o login automático permanece desabilitado. O login automático de outra conta é preservado; desbloquear uma conta não habilita login automático. Sessões abertas não são encerradas e o greetd não é reiniciado.

@@ -71,6 +71,11 @@ pub struct HardwareApp {
 }
 
 impl HardwareApp {
+  /// Whether exiting could abandon an operation whose result is still pending.
+  pub fn has_pending_action(&self) -> bool {
+    self.action.is_some()
+  }
+
   /// Replaces the semantic theme used by this page.
   pub fn set_theme(&mut self, theme: &Theme) {
     self.theme = theme.clone();
@@ -260,5 +265,52 @@ mod tests {
     app.page = HardwarePage::Cpu;
     app.handle(KeyCode::Enter);
     assert!(app.pending.is_none());
+  }
+  #[test]
+  fn p8_global_graphics_is_rendered_in_summary_in_both_languages() {
+    use ratatui::{Terminal, backend::TestBackend};
+    for locale in ["en-US", "pt-BR"] {
+      let lang = Lang::for_locale(locale);
+      let mut app = HardwareApp::new(lang, Theme::load(), Capabilities::default());
+      app.job = None;
+      app.snapshot.graphics.opengl_renderer = Some("Session-only renderer".into());
+      app.snapshot.graphics.vulkan_devices = vec!["Probe-only Vulkan device".into()];
+      app.snapshot.gpus = vec![crate::model::GpuInfo {
+        model: Some("Physical GPU".into()),
+        ..Default::default()
+      }];
+      app.page = HardwarePage::Summary;
+      let mut terminal = Terminal::new(TestBackend::new(140, 50)).unwrap();
+      terminal.draw(|frame| app.draw(frame)).unwrap();
+      let text: String = terminal
+        .backend()
+        .buffer()
+        .content()
+        .iter()
+        .map(|cell| cell.symbol())
+        .collect();
+      for key in [
+        "control_center.hardware_session_opengl",
+        "control_center.hardware_probe_vulkan_devices",
+      ] {
+        let label = tr(lang, key);
+        assert_ne!(label, key);
+        assert!(text.contains(label));
+      }
+      assert!(text.contains("Session-only renderer"));
+      assert!(text.contains("Probe-only Vulkan device"));
+      app.page = HardwarePage::GpuDetail(0);
+      terminal.draw(|frame| app.draw(frame)).unwrap();
+      let text: String = terminal
+        .backend()
+        .buffer()
+        .content()
+        .iter()
+        .map(|cell| cell.symbol())
+        .collect();
+      assert!(text.contains("Physical GPU"));
+      assert!(!text.contains("Session-only renderer"));
+      assert!(!text.contains("Probe-only Vulkan device"));
+    }
   }
 }

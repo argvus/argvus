@@ -203,6 +203,22 @@ pub(super) fn detail_lines(app: &HardwareApp) -> Vec<Line<'static>> {
           .unwrap_or_else(|| na(app.lang)),
       );
       add("GPU(s)", snapshot.gpus.len().to_string());
+      add(
+        tr(app.lang, "control_center.hardware_session_opengl"),
+        snapshot
+          .graphics
+          .opengl_renderer
+          .clone()
+          .unwrap_or_else(|| na(app.lang)),
+      );
+      add(
+        tr(app.lang, "control_center.hardware_probe_vulkan_devices"),
+        if snapshot.graphics.vulkan_devices.is_empty() {
+          na(app.lang)
+        } else {
+          snapshot.graphics.vulkan_devices.join(", ")
+        },
+      );
       add("RAM", format_kib(snapshot.memory.total_kib));
       add("Boot", snapshot.boot.clone());
       add(
@@ -322,8 +338,12 @@ pub(super) fn detail_lines(app: &HardwareApp) -> Vec<Line<'static>> {
         );
         add("DRM", gpu.drm.clone().unwrap_or_else(|| na(app.lang)));
         add("Render", gpu.render.clone().unwrap_or_else(|| na(app.lang)));
-        add("OpenGL", gpu.opengl.clone().unwrap_or_else(|| na(app.lang)));
-        add("Vulkan", gpu.vulkan.clone().unwrap_or_else(|| na(app.lang)));
+        if let Some(opengl) = &gpu.opengl {
+          add("OpenGL", opengl.clone());
+        }
+        if let Some(vulkan) = &gpu.vulkan {
+          add("Vulkan", vulkan.clone());
+        }
       }
       if snapshot
         .gpus

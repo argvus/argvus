@@ -13,7 +13,9 @@ pub fn current() -> String {
 }
 
 pub fn validate_hostname(name: &str) -> Result<(), String> {
-  let name = name.trim();
+  if name != name.trim() {
+    return Err("hostname must not contain surrounding whitespace".into());
+  }
   if name.is_empty() || name.len() > 63 {
     return Err("hostname must be 1-63 characters".to_string());
   }

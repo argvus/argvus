@@ -13,9 +13,25 @@ use ratatui::{
   Frame,
   layout::Rect,
   style::Style,
-  text::Line,
+  text::{Line, Span},
   widgets::{Block, Clear, Paragraph},
 };
+
+/// Printable text, including the Ctrl+Alt encoding used by some AltGr terminals.
+/// Ctrl-only and Alt-only shortcuts are not text. The terminal protocol cannot
+/// distinguish an AltGr character from the same Ctrl+Alt character chord.
+pub fn text_character(key: KeyEvent) -> Option<char> {
+  let modifiers = key.modifiers.difference(KeyModifiers::SHIFT);
+  match key.code {
+    KeyCode::Char(character)
+      if !character.is_control()
+        && (modifiers.is_empty() || modifiers == (KeyModifiers::CONTROL | KeyModifiers::ALT)) =>
+    {
+      Some(character)
+    }
+    _ => None,
+  }
+}
 
 /// Longest text accepted, in characters, as the largest privileged argument.
 const MAX_CHARS: usize = 256 * 1024;
@@ -103,7 +119,7 @@ impl TextEditor {
 
   /// Handles one key press.
   pub fn handle(&mut self, key: KeyEvent) -> EditorOutcome {
-    let control = key.modifiers.contains(KeyModifiers::CONTROL);
+    let control = key.modifiers.difference(KeyModifiers::SHIFT) == KeyModifiers::CONTROL;
     match key.code {
       KeyCode::Esc => return EditorOutcome::Cancelled,
       KeyCode::Char('s' | 'S') if control => return EditorOutcome::Saved(self.text()),
@@ -123,13 +139,7 @@ impl TextEditor {
         self.value.remove(self.cursor);
       }
       KeyCode::Tab if self.multiline => self.insert('\t'),
-      KeyCode::Char(character)
-        if !key
-          .modifiers
-          .intersects(KeyModifiers::CONTROL | KeyModifiers::ALT) =>
-      {
-        self.insert(character)
-      }
+      KeyCode::Char(character) if text_character(key).is_some() => self.insert(character),
       _ => {}
     }
     EditorOutcome::Pending
@@ -174,17 +184,40 @@ impl TextEditor {
   /// Moves to the line above or below, keeping the column when it fits.
   fn move_vertically(&mut self, down: bool) {
     let start = self.line_start(self.cursor);
-    let column = self.cursor - start;
+    let column = Line::from(self.shown(&self.value[start..self.cursor])).width();
     if down {
       let end = self.line_end(self.cursor);
       if end < self.value.len() {
         let next = end + 1;
-        self.cursor = next + column.min(self.line_end(next) - next);
+        self.cursor = self.position_at_column(next, self.line_end(next), column);
       }
     } else if start > 0 {
       let previous = self.line_start(start - 1);
-      self.cursor = previous + column.min(start - 1 - previous);
+      self.cursor = self.position_at_column(previous, start - 1, column);
     }
+  }
+
+  fn position_at_column(&self, start: usize, end: usize, column: usize) -> usize {
+    let shown = Span::raw(self.shown(&self.value[start..end]));
+    let mut position = start;
+    let mut width = 0;
+    for grapheme in shown.styled_graphemes(Style::default()) {
+      // Ratatui omits controls such as tabs from unmasked spans. They still
+      // occupy positions in the editable value, even though they use no cells.
+      while !self.masked && position < end && self.value[position].is_control() {
+        position += 1;
+      }
+      let next = width + crate::text::display_width(grapheme.symbol);
+      if next > column {
+        break;
+      }
+      width = next;
+      position += grapheme.symbol.chars().count();
+    }
+    while !self.masked && position < end && self.value[position].is_control() {
+      position += 1;
+    }
+    position
   }
 
   /// The characters as drawn: themselves, or one mask glyph each (line
@@ -225,7 +258,17 @@ impl TextEditor {
     let line = before.matches('\n').count();
     let column = Line::from(before.rsplit('\n').next().unwrap_or_default()).width();
     let vertical = line.saturating_sub(usize::from(inner.height.saturating_sub(1)));
-    let horizontal = column.saturating_sub(usize::from(inner.width.saturating_sub(1)));
+    let requested = column.saturating_sub(usize::from(inner.width.saturating_sub(1)));
+    // Paragraph scrolls in cells but keeps an entire wide grapheme when the
+    // offset lands inside it. Align to the next boundary on the cursor's line.
+    let current_line = Span::raw(before.rsplit('\n').next().unwrap_or_default());
+    let mut horizontal = 0;
+    for grapheme in current_line.styled_graphemes(Style::default()) {
+      if horizontal >= requested {
+        break;
+      }
+      horizontal += crate::text::display_width(grapheme.symbol);
+    }
     let scroll = (
       u16::try_from(vertical).unwrap_or(u16::MAX),
       u16::try_from(horizontal).unwrap_or(u16::MAX),
@@ -347,5 +390,50 @@ mod tests {
     ] {
       assert!(screen.contains(expected), "{expected}");
     }
+  }
+  #[test]
+  fn c11_altgr_inserts_printable_text_without_triggering_save() {
+    let mut editor = TextEditor::single_line("Input", "");
+    for character in ['@', 'é', 's'] {
+      assert_eq!(
+        editor.handle(KeyEvent::new(
+          KeyCode::Char(character),
+          KeyModifiers::CONTROL | KeyModifiers::ALT
+        )),
+        EditorOutcome::Pending
+      );
+    }
+    assert_eq!(editor.text(), "@és");
+    editor.handle(KeyEvent::new(KeyCode::Char('w'), KeyModifiers::CONTROL));
+    editor.handle(KeyEvent::new(KeyCode::Char('x'), KeyModifiers::ALT));
+    assert_eq!(editor.text(), "@és");
+  }
+
+  #[test]
+  fn c11_vertical_movement_keeps_display_columns() {
+    for (text, expected) in [
+      ("abcd\n界x", 3),
+      ("abcd\na\u{301}x", 2),
+      ("a\tb\nzz", 3),
+      ("abcd\n👩‍💻x", 3),
+    ] {
+      let mut editor = TextEditor::multi_line("Input", text);
+      editor.handle(key(KeyCode::Up));
+      assert_eq!(editor.cursor, expected, "{text}");
+    }
+  }
+
+  #[test]
+  fn c11_horizontal_scroll_does_not_put_cursor_on_the_last_character() {
+    let editor = TextEditor::single_line("Input", "界界界x");
+    let mut terminal = Terminal::new(TestBackend::new(15, 8)).unwrap();
+    terminal
+      .draw(|frame| editor.draw(frame, frame.area(), &Theme::load(), ""))
+      .unwrap();
+    let cursor = terminal.get_cursor_position().unwrap();
+    assert_eq!(
+      terminal.backend().buffer()[(cursor.x - 1, cursor.y)].symbol(),
+      "x"
+    );
   }
 }

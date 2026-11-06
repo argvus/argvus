@@ -558,6 +558,7 @@ mod tests {
           stderr: vec![],
           status: None,
           timed_out: true,
+          cancelled: false,
         })
       }
     }

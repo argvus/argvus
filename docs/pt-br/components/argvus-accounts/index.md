@@ -104,3 +104,5 @@ argvus accounts name ghost "Conta Ghost"
 - Use `argvus accounts --verbose ...` para imprimir no stderr as etapas do comando.
 
 Para notas de desenvolvimento sobre a fronteira de privilégio, veja `docs/internal/argvus-accounts/`.
+
+Quando um administrador bloqueia ou remove a conta configurada para login automático, o provedor de contas primeiro desabilita a entrada de login automático do greetd. Se essa limpeza falhar, a operação na conta é recusada. Se o bloqueio ou a remoção falhar depois, o login automático permanece desabilitado. O login automático de outra conta é preservado; desbloquear uma conta não habilita login automático. Sessões abertas não são encerradas e o greetd não é reiniciado.

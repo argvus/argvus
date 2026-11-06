@@ -255,6 +255,8 @@ pub struct App {
   pub help: bool,
   /// Signal consumed by the main loop to restore the terminal and exit.
   pub quit: bool,
+  /// An exit request was refused while an operation still needed its result.
+  pub quit_blocked: bool,
   /// Current dimensions used by responsive layouts.
   pub width: u16,
   /// Current height used by responsive layouts.
@@ -454,6 +456,7 @@ impl App {
       about: AboutState::with_context(tab, lang, theme),
       help: false,
       quit: false,
+      quit_blocked: false,
       welcome: crate::welcome::Welcome::with_bluetooth(capabilities.has_bluetooth),
       width: 80,
       height: 24,
@@ -561,9 +564,70 @@ impl App {
     true
   }
 
+  /// Check all pages: navigating away must not hide a running mutation.
+  pub fn has_pending_action(&self) -> bool {
+    if self.settings.has_pending_action() || self.config.has_pending_action() {
+      return true;
+    }
+    #[cfg(feature = "hardware")]
+    if self.hardware.has_pending_action() {
+      return true;
+    }
+    #[cfg(feature = "services")]
+    if self.services.has_pending_action() {
+      return true;
+    }
+    #[cfg(feature = "network")]
+    if self.network.has_pending_action() {
+      return true;
+    }
+    #[cfg(feature = "audio")]
+    if self.audio.has_pending_action() {
+      return true;
+    }
+    #[cfg(feature = "bluetooth")]
+    if self.bluetooth.has_pending_action() {
+      return true;
+    }
+    #[cfg(feature = "boot")]
+    if self.boot.has_pending_action() {
+      return true;
+    }
+    #[cfg(feature = "packages")]
+    if self.packages.has_pending_action() {
+      return true;
+    }
+    #[cfg(feature = "snapshot")]
+    if self.snapshot.has_pending_action() {
+      return true;
+    }
+    #[cfg(feature = "power")]
+    if self.power.has_pending_action() {
+      return true;
+    }
+    #[cfg(feature = "session")]
+    if self.session.has_pending_action() {
+      return true;
+    }
+    #[cfg(feature = "displays")]
+    if self.displays.has_pending_action() {
+      return true;
+    }
+    #[cfg(feature = "appearance")]
+    if self.appearance.has_pending_action() {
+      return true;
+    }
+    false
+  }
+
+  pub fn request_quit(&mut self) {
+    self.quit_blocked = self.has_pending_action();
+    self.quit = !self.quit_blocked;
+  }
+
   /// Whether the active page is typing into a text field, a search or a list
   /// filter. While it is, `q` and `?` are text and must not quit or open the
-  /// help (decision D10 of `docs/ux-audit.md`); `Ctrl+C` still quits.
+  /// help (decision D10 of `docs/ux-audit.md`); `Ctrl+C` requests exit, subject to pending operations.
   pub fn captures_text(&self) -> bool {
     match self.route {
       Route::Home => self.search_active,

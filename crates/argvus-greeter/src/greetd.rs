@@ -28,6 +28,7 @@ use tracing::{error, info, warn};
 pub enum Command {
   Begin {
     username: String,
+    session_uid: u32,
     session: Session,
     theme: String,
     accent: Option<String>,
@@ -84,6 +85,7 @@ pub fn spawn_worker(commands: Receiver<Command>, events: Sender<Event>) {
       match command {
         Command::Begin {
           username,
+          session_uid,
           session,
           theme,
           accent,
@@ -98,7 +100,7 @@ pub fn spawn_worker(commands: Receiver<Command>, events: Sender<Event>) {
           }
           // A failed begin operation must not leave a partially initialized
           // socket available for a later password submission.
-          state = match begin_session(username, session, theme, accent, &events) {
+          state = match begin_session(username, session_uid, session, theme, accent, &events) {
             Ok(state) => state,
             Err(error) => {
               warn!(%error, "could not begin greetd session");
@@ -115,6 +117,7 @@ pub fn spawn_worker(commands: Receiver<Command>, events: Sender<Event>) {
             session,
             theme,
             accent,
+            session_uid,
           } = state
           else {
             let _ = events.send(Event::AuthPromptUnavailable);
@@ -122,7 +125,15 @@ pub fn spawn_worker(commands: Receiver<Command>, events: Sender<Event>) {
             continue;
           };
 
-          state = match send_auth_response(&mut stream, response, session, theme, accent, &events) {
+          state = match send_auth_response(
+            &mut stream,
+            response,
+            session,
+            theme,
+            accent,
+            session_uid,
+            &events,
+          ) {
             Ok(next) => next,
             Err(error) => {
               warn!(%error, "authentication exchange failed");
@@ -144,12 +155,14 @@ enum WorkerState {
     session: Session,
     theme: String,
     accent: Option<String>,
+    session_uid: u32,
   },
 }
 
 /// Creates a greetd session for the selected user and session command.
 fn begin_session(
   username: String,
+  session_uid: u32,
   session: Session,
   theme: String,
   accent: Option<String>,
@@ -163,7 +176,7 @@ fn begin_session(
   info!(%username, "connected to greetd");
 
   Request::CreateSession { username }.write_to(&mut stream)?;
-  handle_response(&mut stream, session, theme, accent, events)
+  handle_response(&mut stream, session, theme, accent, session_uid, events)
 }
 
 /// Posts one authentication response and continues processing greetd output.
@@ -173,10 +186,11 @@ fn send_auth_response(
   session: Session,
   theme: String,
   accent: Option<String>,
+  session_uid: u32,
   events: &Sender<Event>,
 ) -> Result<WorkerState, GreeterError> {
   Request::PostAuthMessageResponse { response }.write_to(stream)?;
-  handle_response(stream, session, theme, accent, events)
+  handle_response(stream, session, theme, accent, session_uid, events)
 }
 
 /// Consumes greetd responses until the protocol needs UI input or terminates.
@@ -189,12 +203,20 @@ fn handle_response(
   session: Session,
   theme: String,
   accent: Option<String>,
+  session_uid: u32,
   events: &Sender<Event>,
 ) -> Result<WorkerState, GreeterError> {
   loop {
     match Response::read_from(stream)? {
       Response::Success => {
-        start_authenticated_session(stream, &session, &theme, accent.as_deref(), events)?;
+        start_authenticated_session(
+          stream,
+          &session,
+          &theme,
+          accent.as_deref(),
+          session_uid,
+          events,
+        )?;
         return Ok(WorkerState::Disconnected);
       }
       Response::Error {
@@ -220,6 +242,7 @@ fn handle_response(
             session,
             theme,
             accent,
+            session_uid,
           });
         }
         AuthMessageType::Info => {
@@ -244,6 +267,7 @@ fn start_authenticated_session(
   session: &Session,
   theme: &str,
   accent: Option<&str>,
+  session_uid: u32,
   events: &Sender<Event>,
 ) -> Result<(), GreeterError> {
   // Authentication succeeded, so the selected session is handed to
@@ -266,7 +290,7 @@ fn start_authenticated_session(
   };
   // The DRM surface must be listening before the greeter compositor exits,
   // because it waits for that compositor to release DRM master.
-  let handoff_listening = match DrmHandoff::start(theme, accent) {
+  let handoff_listening = match DrmHandoff::start(theme, accent, session_uid) {
     Ok(_) => {
       handoff::mark("greeter.handoff-listening");
       true
@@ -387,5 +411,48 @@ fn cancel_session(stream: &mut UnixStream) {
       warn!("greetd returned an authentication prompt while cancelling");
     }
     Err(error) => warn!(%error, "could not read greetd cancellation response"),
+  }
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  #[test]
+  fn p10_authenticated_account_uid_survives_prompt_continuations() {
+    let (mut worker, mut daemon) = UnixStream::pair().unwrap();
+    let (events, _) = std::sync::mpsc::channel();
+    let session = Session {
+      id: "test".into(),
+      name: "Test".into(),
+      command: vec!["/bin/true".into()],
+      is_default: false,
+      kind: crate::session::SessionKind::Wayland,
+      desktop_names: vec![],
+    };
+    for _ in 0..2 {
+      Response::AuthMessage {
+        auth_message_type: AuthMessageType::Secret,
+        auth_message: "Password".into(),
+      }
+      .write_to(&mut daemon)
+      .unwrap();
+      let state = handle_response(
+        &mut worker,
+        session.clone(),
+        "argvus-dark".into(),
+        None,
+        1234,
+        &events,
+      )
+      .unwrap();
+      assert!(matches!(
+        state,
+        WorkerState::Authenticating {
+          session_uid: 1234,
+          ..
+        }
+      ));
+    }
   }
 }

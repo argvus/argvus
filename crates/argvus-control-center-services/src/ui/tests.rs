@@ -84,6 +84,7 @@ fn polkit_exit_codes_are_not_collapsed_into_a_generic_error() {
     stderr: Vec::new(),
     status: Some(126),
     timed_out: false,
+    cancelled: false,
   };
   assert!(privileged_failure(&output).contains("cancelled"));
 }
@@ -303,4 +304,66 @@ fn arrows_are_blocked_while_services_are_loading() {
   app.handle(KeyCode::Char('f'));
   assert_eq!(app.selected, 3);
   assert_eq!(app.filter, UnitFilter::All);
+}
+
+#[test]
+fn confirmation_captures_scope_for_identical_unit_names() {
+  for (page, scope, user) in [
+    (ServicePage::System, "system", false),
+    (ServicePage::User, "user", true),
+  ] {
+    let mut app = ServicesApp::new(Lang::for_locale("en-US"), Theme::load());
+    app.page = page;
+    app.units = vec![
+      Unit {
+        name: "dbus.service".into(),
+        scope: scope.into(),
+        active: "active".into(),
+        ..Default::default()
+      },
+      Unit {
+        name: "dbus.service".into(),
+        scope: if user { "system" } else { "user" }.into(),
+        active: "active".into(),
+        ..Default::default()
+      },
+    ];
+    app.request("stop");
+    assert_eq!(
+      format!("{:?}", app.pending.as_ref().unwrap()),
+      format!("Action(\"stop\", \"dbus.service\", {user})")
+    );
+  }
+}
+
+#[test]
+fn failed_unit_details_keep_scope_across_reordered_inventory() {
+  let mut app = ServicesApp::new(Lang::for_locale("en-US"), Theme::load());
+  app.page = ServicePage::Failed;
+  app.units = vec![
+    Unit {
+      name: "dbus.service".into(),
+      scope: "system".into(),
+      active: "failed".into(),
+      ..Default::default()
+    },
+    Unit {
+      name: "dbus.service".into(),
+      scope: "user".into(),
+      active: "failed".into(),
+      ..Default::default()
+    },
+  ];
+  app.selected = 1;
+  app.open();
+  app.units.swap(0, 1);
+  app.request("start");
+  let Pending::Action(action, unit, user) = app.pending.as_ref().unwrap();
+  assert_eq!(action, "start");
+  assert_eq!(unit, "dbus.service");
+  assert!(*user);
+  app.units.clear();
+  app.detail_parent = ServicePage::System;
+  let Pending::Action(_, _, user) = app.pending.as_ref().unwrap();
+  assert!(*user);
 }

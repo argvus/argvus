@@ -353,3 +353,56 @@ fn aur_install_runs_the_helper_as_the_normal_user() {
     assert_eq!(process.args, args);
   }
 }
+
+#[test]
+fn transaction_cache_appends_only_new_sanitized_lines() {
+  let mut app = app();
+  let live = LiveProcess::new();
+  app.transaction_live = Some(live.clone());
+  live.push_line("\x1b[31mfirst\x1b[0m");
+  app.sync_transaction_output();
+  assert_eq!(app.transaction_buffer, "first");
+  let count = app.transaction_line_count;
+  app.sync_transaction_output();
+  assert_eq!(app.transaction_buffer, "first");
+  assert_eq!(app.transaction_line_count, count);
+  live.push_line("second");
+  app.sync_transaction_output();
+  assert_eq!(app.transaction_buffer, "first\nsecond");
+  assert_eq!(app.transaction_cursor, 2);
+  assert_eq!(app.transaction_line_count, 2);
+}
+
+#[test]
+fn transaction_display_limit_has_translated_notice() {
+  for locale in ["en-US", "pt-BR"] {
+    let mut app = app();
+    app.lang = Lang::for_locale(locale);
+    let live = LiveProcess::new();
+    for _ in 0..10001 {
+      live.push_line("line");
+    }
+    app.transaction_live = Some(live);
+    app.sync_transaction_output();
+    assert!(app.transaction_truncated);
+    let notice = tr(app.lang, "control_center.transaction_output_truncated");
+    assert!(app.transaction_buffer.ends_with(notice));
+    app.sync_transaction_output();
+    assert_eq!(app.transaction_buffer.matches(notice).count(), 1);
+  }
+}
+
+#[test]
+fn pending_package_transaction_blocks_exit_but_refresh_does_not() {
+  let mut app = app();
+  app.reload();
+  assert!(!app.has_pending_action());
+  app.action = Some(app.jobs.spawn(|_| Ok(Ok("done".into()))));
+  assert!(app.has_pending_action());
+  let deadline = std::time::Instant::now() + std::time::Duration::from_secs(2);
+  while app.has_pending_action() {
+    app.poll();
+    assert!(std::time::Instant::now() < deadline);
+    std::thread::yield_now();
+  }
+}

@@ -220,6 +220,7 @@ fn set_enabled(name: &str, enabled: bool) -> Result<(), String> {
   let updated = match &repository.origin {
     RepositoryOrigin::Inline => pacman_conf::set_inline_enabled(&pacman_conf_text, name, enabled)?,
     RepositoryOrigin::Include(path) => {
+      ensure_single_include(path, name)?;
       pacman_conf::set_include_enabled(&pacman_conf_text, path, enabled)?
     }
   };
@@ -236,9 +237,10 @@ fn remove(name: &str, delete_key: bool) -> Result<(), String> {
       write_pacman_conf(&pacman_conf::remove_inline(&pacman_conf_text, name)?)?;
     }
     RepositoryOrigin::Include(path) => {
+      ensure_single_include(path, name)?;
+      let backup = backup_file(path)?;
       write_pacman_conf(&pacman_conf::remove_include(&pacman_conf_text, path)?)?;
       if path.exists() {
-        let backup = backup_file(path)?;
         fs::remove_file(path).map_err(|error| format!("{}: {error}", path.display()))?;
         println!("Removed {} (backup: {})", path.display(), backup.display());
       }
@@ -247,6 +249,15 @@ fn remove(name: &str, delete_key: bool) -> Result<(), String> {
   println!("[{name}] removed");
   if delete_key && let Some(fingerprint) = &repository.key {
     stream_command("pacman-key", &["--delete", fingerprint])?;
+  }
+  Ok(())
+}
+
+fn ensure_single_include(path: &Path, name: &str) -> Result<(), String> {
+  let content = fs::read_to_string(path).map_err(|error| error.to_string())?;
+  let sections = pacman_conf::parse_repository_conf(&content).map_err(|error| error.to_string())?;
+  if sections.len() != 1 || sections[0].name != name {
+    return Err("refusing to edit an include containing multiple repositories".into());
   }
   Ok(())
 }
@@ -306,5 +317,18 @@ mod tests {
     assert!(validate("repo-disable", &strings(&["extra"])).is_err());
     assert!(validate("repo-enable", &strings(&[])).is_err());
     assert!(validate("repo-wipe", &strings(&["argvus"])).is_err());
+  }
+  #[test]
+  fn shared_include_is_rejected_before_mutation() {
+    let directory = tempfile::tempdir().unwrap();
+    let path = directory.path().join("shared.conf");
+    let content =
+      "[one]\nServer = https://one.example/$arch\n[two]\nServer = https://two.example/$arch\n";
+    fs::write(&path, content).unwrap();
+    assert!(ensure_single_include(&path, "one").is_err());
+    assert_eq!(fs::read_to_string(&path).unwrap(), content);
+    fs::write(&path, "[one]\nServer = https://one.example/$arch\n").unwrap();
+    assert!(ensure_single_include(&path, "one").is_ok());
+    assert!(ensure_single_include(&path, "two").is_err());
   }
 }

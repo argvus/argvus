@@ -126,6 +126,8 @@ pub struct ProcessOutput {
   pub status: Option<i32>,
   /// Indicates that the runner terminated the process after the configured deadline.
   pub timed_out: bool,
+  /// The job cancellation token, rather than the deadline, stopped the process.
+  pub cancelled: bool,
 }
 
 #[derive(Debug)]
@@ -155,9 +157,20 @@ pub struct LiveProcess {
 #[derive(Debug, Default)]
 struct LiveInner {
   /// Lines already received, kept in order for incremental display.
-  lines: Mutex<Vec<String>>,
+  lines: Mutex<LiveBuffer>,
   /// Atomic signal that avoids blocking readers during shutdown.
   finished: AtomicBool,
+  truncated: AtomicBool,
+}
+
+const LIVE_BYTES: usize = 4 * 1024 * 1024;
+const LIVE_LINES: usize = 10000;
+const LIVE_LINE_BYTES: usize = 64 * 1024;
+const LIVE_CAPTURE_BYTES: usize = 8 * 1024 * 1024;
+#[derive(Debug, Default)]
+struct LiveBuffer {
+  lines: Vec<String>,
+  text: String,
 }
 
 impl LiveProcess {
@@ -166,8 +179,35 @@ impl LiveProcess {
   }
 
   pub fn push_line(&self, line: &str) {
-    if let Ok(mut lines) = self.inner.lines.lock() {
-      lines.push(line.to_owned());
+    let sanitized = crate::sanitize::terminal_text(line);
+    if let Ok(mut buffer) = self.inner.lines.lock() {
+      for line in sanitized.lines() {
+        if buffer.lines.len() >= LIVE_LINES {
+          self.inner.truncated.store(true, Ordering::Release);
+          break;
+        }
+        let separator = usize::from(!buffer.lines.is_empty());
+        if buffer.text.len().saturating_add(separator) > LIVE_BYTES {
+          self.inner.truncated.store(true, Ordering::Release);
+          break;
+        }
+        let remaining = LIVE_BYTES.saturating_sub(buffer.text.len() + separator);
+        let mut end = line.len().min(remaining).min(LIVE_LINE_BYTES);
+        while !line.is_char_boundary(end) {
+          end -= 1;
+        }
+        if end < line.len() {
+          self.inner.truncated.store(true, Ordering::Release);
+        }
+        if end == 0 && !line.is_empty() {
+          break;
+        }
+        if separator > 0 {
+          buffer.text.push('\n');
+        }
+        buffer.text.push_str(&line[..end]);
+        buffer.lines.push(line[..end].to_owned());
+      }
     }
   }
 
@@ -176,8 +216,26 @@ impl LiveProcess {
       .inner
       .lines
       .lock()
-      .map(|lines| lines.join("\n"))
+      .map(|buffer| buffer.text.clone())
       .unwrap_or_default()
+  }
+
+  /// Copies only complete lines appended after the caller's cursor.
+  pub fn lines_since(&self, cursor: &mut usize) -> Vec<String> {
+    self
+      .inner
+      .lines
+      .lock()
+      .map(|buffer| {
+        let lines = buffer.lines.get(*cursor..).unwrap_or_default().to_vec();
+        *cursor = buffer.lines.len();
+        lines
+      })
+      .unwrap_or_default()
+  }
+
+  pub fn is_truncated(&self) -> bool {
+    self.inner.truncated.load(Ordering::Acquire)
   }
 
   pub fn is_finished(&self) -> bool {
@@ -248,9 +306,10 @@ impl ProcessRunner for SystemProcessRunner {
     loop {
       match child.try_wait().map_err(ProcessError::Io)? {
         Some(status) => {
-          if request.timeout.is_some() {
-            terminate_descendants(child.id());
-          }
+          // Managed commands own their process group. Once the parent exits,
+          // terminate remaining workers before joining readers of inherited pipes.
+          // Services intended to outlive the action must be started by their manager.
+          terminate_descendants(child.id());
           let (stdout, stdout_exceeded) = stdout_reader.join().unwrap_or_default();
           let (stderr, stderr_exceeded) = stderr_reader.join().unwrap_or_default();
           if stdout_exceeded || stderr_exceeded {
@@ -261,12 +320,14 @@ impl ProcessRunner for SystemProcessRunner {
             stderr,
             status: status.code(),
             timed_out: false,
+            cancelled: false,
           });
         }
         None
           if crate::jobs::current_cancelled()
             || deadline.is_some_and(|value| Instant::now() >= value) =>
         {
+          let cancelled = crate::jobs::current_cancelled();
           terminate_descendants(child.id());
           let _ = child.kill();
           let _ = child.wait();
@@ -279,7 +340,8 @@ impl ProcessRunner for SystemProcessRunner {
             stdout,
             stderr,
             status: None,
-            timed_out: true,
+            timed_out: !cancelled,
+            cancelled,
           });
         }
         None => thread::sleep(Duration::from_millis(10)),
@@ -314,42 +376,55 @@ impl ProcessRunner for SystemProcessRunner {
       .stderr
       .take()
       .ok_or_else(|| ProcessError::Io(io::Error::other("stderr was not captured")))?;
+    let limit = request.output_limit.unwrap_or(LIVE_CAPTURE_BYTES);
     let live_stdout = live.clone();
-    let stdout_reader =
-      std::thread::spawn(move || read_pipe_live(BufReader::new(stdout), &live_stdout));
+    let stdout_reader = std::thread::spawn(move || {
+      read_pipe_live_limited(BufReader::new(stdout), &live_stdout, limit)
+    });
     let live_stderr = live.clone();
-    let stderr_reader =
-      std::thread::spawn(move || read_pipe_live(BufReader::new(stderr), &live_stderr));
+    let stderr_reader = std::thread::spawn(move || {
+      read_pipe_live_limited(BufReader::new(stderr), &live_stderr, limit)
+    });
     let deadline = request.timeout.map(|timeout| Instant::now() + timeout);
     let output = loop {
       match child.try_wait().map_err(ProcessError::Io)? {
         Some(status) => {
-          if request.timeout.is_some() {
-            terminate_descendants(child.id());
+          // Managed commands own their process group. Once the parent exits,
+          // terminate remaining workers before joining readers of inherited pipes.
+          // Services intended to outlive the action must be started by their manager.
+          terminate_descendants(child.id());
+          let (stdout, stdout_exceeded) = stdout_reader.join().unwrap_or_default();
+          let (stderr, stderr_exceeded) = stderr_reader.join().unwrap_or_default();
+          if stdout_exceeded || stderr_exceeded {
+            break Err(ProcessError::OutputLimit);
           }
-          let stdout = stdout_reader.join().unwrap_or_default();
-          let stderr = stderr_reader.join().unwrap_or_default();
           break Ok(ProcessOutput {
             stdout,
             stderr,
             status: status.code(),
             timed_out: false,
+            cancelled: false,
           });
         }
         None
           if crate::jobs::current_cancelled()
             || deadline.is_some_and(|value| Instant::now() >= value) =>
         {
+          let cancelled = crate::jobs::current_cancelled();
           terminate_descendants(child.id());
           let _ = child.kill();
           let _ = child.wait();
-          let stdout = stdout_reader.join().unwrap_or_default();
-          let stderr = stderr_reader.join().unwrap_or_default();
+          let (stdout, stdout_exceeded) = stdout_reader.join().unwrap_or_default();
+          let (stderr, stderr_exceeded) = stderr_reader.join().unwrap_or_default();
+          if stdout_exceeded || stderr_exceeded {
+            break Err(ProcessError::OutputLimit);
+          }
           break Ok(ProcessOutput {
             stdout,
             stderr,
             status: None,
-            timed_out: true,
+            timed_out: !cancelled,
+            cancelled,
           });
         }
         None => thread::sleep(Duration::from_millis(10)),
@@ -452,24 +527,53 @@ fn read_pipe(mut pipe: impl std::io::Read, limit: Option<usize>) -> (Vec<u8>, bo
   (output, exceeded)
 }
 
-fn read_pipe_live(mut pipe: impl BufRead, live: &LiveProcess) -> Vec<u8> {
+#[cfg(test)]
+fn read_pipe_live(pipe: impl BufRead, live: &LiveProcess) -> Vec<u8> {
+  read_pipe_live_limited(pipe, live, LIVE_CAPTURE_BYTES).0
+}
+fn read_pipe_live_limited(
+  mut pipe: impl BufRead,
+  live: &LiveProcess,
+  limit: usize,
+) -> (Vec<u8>, bool) {
   let mut output = Vec::new();
-  let mut line = String::new();
+  let mut exceeded = false;
+  let mut line = Vec::new();
   loop {
-    line.clear();
-    match pipe.read_line(&mut line) {
-      Ok(0) => break,
-      Ok(_) => {
-        let trimmed = line.trim_end_matches(['\n', '\r']);
-        if !trimmed.is_empty() {
-          live.push_line(trimmed);
-        }
-        output.extend_from_slice(line.as_bytes());
+    let buffer = match pipe.fill_buf() {
+      Ok([]) => break,
+      Ok(buffer) => buffer,
+      Err(error) if error.kind() == io::ErrorKind::Interrupted => continue,
+      Err(error) if error.kind() == io::ErrorKind::WouldBlock => {
+        thread::sleep(Duration::from_millis(1));
+        continue;
       }
       Err(_) => break,
+    };
+    let retained = buffer.len().min(limit.saturating_sub(output.len()));
+    output.extend_from_slice(&buffer[..retained]);
+    exceeded |= retained < buffer.len();
+    for byte in buffer {
+      if matches!(byte, b'\n' | b'\r') {
+        if !line.is_empty() {
+          live.push_line(&String::from_utf8_lossy(&line));
+          line.clear();
+        }
+      } else {
+        line.push(*byte);
+        if line.len() == LIVE_LINE_BYTES {
+          live.push_line(&String::from_utf8_lossy(&line));
+          line.clear();
+        }
+      }
     }
+    let consumed = buffer.len();
+    pipe.consume(consumed);
   }
-  output
+  if !line.is_empty() {
+    live.push_line(&String::from_utf8_lossy(&line));
+  }
+  (output, exceeded)
 }
 
 #[cfg(test)]
@@ -539,6 +643,29 @@ mod tests {
   }
 
   #[test]
+  fn completed_parent_without_timeout_closes_inherited_pipes() {
+    let started = Instant::now();
+    let output = SystemProcessRunner
+      .run(&ProcessRequest::new("sh").arg("-c").arg("sleep 2 & exit 0"))
+      .unwrap();
+    assert_eq!(output.status, Some(0));
+    assert!(started.elapsed() < Duration::from_secs(1));
+  }
+
+  #[test]
+  fn live_parent_without_timeout_closes_inherited_pipes() {
+    let started = Instant::now();
+    let output = SystemProcessRunner
+      .run_live(
+        &ProcessRequest::new("sh").arg("-c").arg("sleep 2 & exit 0"),
+        &LiveProcess::new(),
+      )
+      .unwrap();
+    assert_eq!(output.status, Some(0));
+    assert!(started.elapsed() < Duration::from_secs(1));
+  }
+
+  #[test]
   fn cancelled_query_terminates_process_tree() {
     let manager = crate::jobs::JobManager::default();
     let job = manager.spawn(|_| {
@@ -556,10 +683,41 @@ mod tests {
     let start = Instant::now();
     loop {
       if let crate::jobs::JobState::Finished(result) = job.try_state() {
-        assert!(result.unwrap().timed_out);
+        let output = result.unwrap();
+        assert!(!output.timed_out);
+        assert!(output.cancelled);
         break;
       }
       assert!(start.elapsed() < Duration::from_secs(10));
+      std::thread::sleep(Duration::from_millis(5));
+    }
+  }
+
+  #[test]
+  fn cancelled_live_query_is_not_a_timeout() {
+    let manager = crate::jobs::JobManager::default();
+    let job = manager.spawn(|_| {
+      SystemProcessRunner
+        .run_live(
+          &ProcessRequest::new("sh")
+            .arg("-c")
+            .arg("sleep 30 & wait")
+            .timeout(Duration::from_secs(5)),
+          &LiveProcess::new(),
+        )
+        .map_err(|error| error.to_string())
+    });
+    std::thread::sleep(Duration::from_millis(40));
+    job.cancel();
+    let started = Instant::now();
+    loop {
+      if let crate::jobs::JobState::Finished(result) = job.try_state() {
+        let output = result.unwrap();
+        assert!(output.cancelled);
+        assert!(!output.timed_out);
+        break;
+      }
+      assert!(started.elapsed() < Duration::from_secs(2));
       std::thread::sleep(Duration::from_millis(5));
     }
   }
@@ -633,6 +791,103 @@ mod tests {
   }
 
   #[test]
+  fn live_reader_drains_non_utf8_and_progress_bytes() {
+    let mut bytes = vec![0xff, b'\n'];
+    bytes.extend(std::iter::repeat_n(b'x', 1024 * 1024));
+    bytes.extend_from_slice(b"\rnext\rfinal\n");
+    let live = LiveProcess::new();
+    let captured = read_pipe_live(std::io::Cursor::new(&bytes), &live);
+    assert_eq!(captured.len(), bytes.len());
+    assert!(captured == bytes);
+    assert!(live.output().starts_with("\u{fffd}\n"));
+    assert!(live.output().ends_with("\nnext\nfinal"));
+  }
+
+  #[test]
+  fn live_process_captures_large_non_utf8_output_without_stalling() {
+    let request = ProcessRequest::new("sh")
+      .arg("-c")
+      .arg("printf '\\377\\n'; head -c 1048576 /dev/zero")
+      .timeout(Duration::from_secs(5));
+    let output = SystemProcessRunner
+      .run_live(&request, &LiveProcess::new())
+      .unwrap();
+    assert_eq!(output.status, Some(0));
+    assert!(!output.timed_out);
+    assert_eq!(output.stdout.len(), 1048578);
+    assert_eq!(output.stdout[0], 0xff);
+  }
+
+  #[test]
+  fn live_reader_retries_interrupted_reads() {
+    struct InterruptedOnce {
+      cursor: std::io::Cursor<Vec<u8>>,
+      interrupted: bool,
+    }
+    impl std::io::Read for InterruptedOnce {
+      fn read(&mut self, buffer: &mut [u8]) -> io::Result<usize> {
+        std::io::Read::read(&mut self.cursor, buffer)
+      }
+    }
+    impl BufRead for InterruptedOnce {
+      fn fill_buf(&mut self) -> io::Result<&[u8]> {
+        if !self.interrupted {
+          self.interrupted = true;
+          return Err(io::ErrorKind::Interrupted.into());
+        }
+        self.cursor.fill_buf()
+      }
+      fn consume(&mut self, amount: usize) {
+        self.cursor.consume(amount);
+      }
+    }
+    let live = LiveProcess::new();
+    let pipe = InterruptedOnce {
+      cursor: std::io::Cursor::new(b"first\rsecond".to_vec()),
+      interrupted: false,
+    };
+    assert_eq!(read_pipe_live(pipe, &live), b"first\rsecond");
+    assert_eq!(live.output(), "first\nsecond");
+  }
+
+  #[test]
+  fn live_output_limit_is_enforced_after_draining() {
+    let live = LiveProcess::new();
+    let request = ProcessRequest::new("sh")
+      .arg("-c")
+      .arg("head -c 4096 /dev/zero")
+      .output_limit(32)
+      .timeout(Duration::from_secs(5));
+    assert!(matches!(
+      SystemProcessRunner.run_live(&request, &live),
+      Err(ProcessError::OutputLimit)
+    ));
+    assert!(live.is_finished());
+  }
+
+  #[test]
+  fn live_lines_are_sanitized_before_storage() {
+    let live = LiveProcess::new();
+    live.push_line("\x1b[31mred\x1b[0m");
+    assert_eq!(live.output(), "red");
+  }
+
+  #[test]
+  fn live_buffer_bounds_lines_and_serves_only_new_lines() {
+    let live = LiveProcess::new();
+    let mut cursor = 0;
+    live.push_line("first");
+    assert_eq!(live.lines_since(&mut cursor), ["first"]);
+    assert!(live.lines_since(&mut cursor).is_empty());
+    for _ in 0..LIVE_LINES {
+      live.push_line("next");
+    }
+    assert!(live.is_truncated());
+    assert_eq!(live.output().lines().count(), LIVE_LINES);
+    assert!(live.output().len() <= LIVE_BYTES);
+  }
+
+  #[test]
   fn run_live_default_falls_back_to_buffered_run() {
     #[derive(Debug, Default)]
     struct RecordingRunner(std::sync::Mutex<Option<ProcessRequest>>);
@@ -644,6 +899,7 @@ mod tests {
           stderr: Vec::new(),
           status: Some(0),
           timed_out: false,
+          cancelled: false,
         })
       }
     }

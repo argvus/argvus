@@ -159,7 +159,7 @@ pub fn is_valid_datetime(value: &str) -> bool {
 }
 
 pub fn is_valid_timezone_name(value: &str) -> bool {
-  !value.is_empty()
+  super::validate_plain_arg(value).is_ok()
     && !value.starts_with('/')
     && !value.contains("..")
     && value

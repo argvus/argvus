@@ -26,6 +26,7 @@ impl ProcessRunner for HostShapeRunner {
       stderr: Vec::new(),
       status: Some(0),
       timed_out: false,
+      cancelled: false,
     })
   }
 }
@@ -198,6 +199,7 @@ impl ProcessRunner for LaptopRunner {
       stderr: Vec::new(),
       status: Some(0),
       timed_out: false,
+      cancelled: false,
     })
   }
 }
@@ -288,6 +290,7 @@ impl ProcessRunner for FailingDetailRunner {
         Some(0)
       },
       timed_out: false,
+      cancelled: false,
     })
   }
 }
@@ -321,4 +324,70 @@ fn proxy_redacts_credentials() {
     redact_proxy("http://user:pass@example.test:8080"),
     "http://***@example.test:8080"
   );
+}
+
+#[test]
+fn wifi_secret_is_sent_only_through_stdin() {
+  let backend = NetworkBackend {
+    runner: HostShapeRunner::default(),
+    capabilities: Capabilities::default(),
+  };
+  backend
+    .connect_wifi("Audit WiFi", Some("audit-secret-123"))
+    .unwrap();
+  let requests = backend.runner.0.lock().unwrap();
+  let request = requests.last().unwrap();
+  assert!(
+    !request
+      .args
+      .iter()
+      .any(|arg| arg.contains("audit-secret-123"))
+  );
+  assert!(request.args.iter().any(|arg| arg == "--ask"));
+  assert_eq!(
+    request.stdin.as_ref().unwrap().as_bytes(),
+    b"audit-secret-123\n"
+  );
+  assert!(!format!("{request:?}").contains("audit-secret-123"));
+}
+
+#[test]
+fn wifi_secret_is_redacted_from_command_errors() {
+  struct SecretError;
+  impl ProcessRunner for SecretError {
+    fn run(&self, _: &ProcessRequest) -> Result<ProcessOutput, ProcessError> {
+      Ok(ProcessOutput {
+        stdout: vec![],
+        stderr: b"failed: audit-secret-123".to_vec(),
+        status: Some(1),
+        timed_out: false,
+        cancelled: false,
+      })
+    }
+  }
+  let backend = NetworkBackend {
+    runner: SecretError,
+    capabilities: Capabilities::default(),
+  };
+  let error = backend
+    .connect_wifi("Audit WiFi", Some("audit-secret-123"))
+    .unwrap_err();
+  assert!(!error.to_string().contains("audit-secret-123"));
+}
+
+#[test]
+fn wifi_rejects_multiline_secrets_before_starting_a_process() {
+  let backend = NetworkBackend {
+    runner: HostShapeRunner::default(),
+    capabilities: Capabilities::default(),
+  };
+  for secret in ["", "secret\nnext", "secret\rnext", "secret\0next"] {
+    assert!(matches!(
+      backend.connect_wifi("Audit WiFi", Some(secret)),
+      Err(NetworkError::InvalidInput)
+    ));
+  }
+  assert!(backend.runner.0.lock().unwrap().is_empty());
+  backend.connect_wifi("Open WiFi", None).unwrap();
+  assert!(backend.runner.0.lock().unwrap()[0].stdin.is_none());
 }
