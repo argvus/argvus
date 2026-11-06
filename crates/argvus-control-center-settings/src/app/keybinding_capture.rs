@@ -76,13 +76,27 @@ impl App {
   }
 
   pub fn replace_keybinding_conflict(&mut self) {
+    if self.page() == Page::CustomShortcut {
+      self.accept_custom_shortcut_conflict();
+      return;
+    }
     let Some((id, keys, conflicts)) = self.keybinding_conflict.take() else {
       return;
     };
-    for old_id in conflicts {
-      let _ = keybindings::save_override(&old_id, None, Some(false), &self.keybindings);
+    let conflicts: Vec<_> = self
+      .keybindings
+      .iter()
+      .filter(|binding| conflicts.contains(&binding.id))
+      .cloned()
+      .collect();
+    if conflicts.iter().any(|binding| !binding.configurable) {
+      self.fail(tr(self.lang, "control_center.shortcut_protected_conflict"));
+      return;
     }
-    if let Err(error) = keybindings::save_override(&id, Some(keys), Some(true), &self.keybindings) {
+    if let Err(error) =
+      keybindings::persist_binding(&id, Some(keys), true, &self.keybindings, &conflicts)
+        .and_then(|()| keybindings::apply_saved())
+    {
       self.fail(error);
       return;
     }
@@ -91,7 +105,9 @@ impl App {
     if self.page() == Page::KeybindingCapture {
       self.navigation.back();
     }
-    self.navigation.back();
+    if self.page() == Page::KeybindingEdit {
+      self.navigation.back();
+    }
   }
 
   pub fn capture_keybinding(&mut self, key: crossterm::event::KeyEvent) {
@@ -105,6 +121,20 @@ impl App {
         self.apply_keybinding_editor();
       }
       return;
+    }
+    if self.page() == Page::CustomShortcut {
+      self.keybinding_editor_modifiers = [
+        key
+          .modifiers
+          .contains(crossterm::event::KeyModifiers::CONTROL),
+        key.modifiers.contains(crossterm::event::KeyModifiers::ALT),
+        key
+          .modifiers
+          .contains(crossterm::event::KeyModifiers::SHIFT),
+        key
+          .modifiers
+          .contains(crossterm::event::KeyModifiers::SUPER),
+      ];
     }
     if key.code == crossterm::event::KeyCode::Enter && self.keybinding_editor_key.is_empty() {
       self.keybinding_editor_key = "Return".into();
@@ -205,6 +235,14 @@ impl App {
       &binding.context,
       &binding.input,
     );
+    if self
+      .keybindings
+      .iter()
+      .any(|binding| conflicts.contains(&binding.id) && !binding.configurable)
+    {
+      self.fail(tr(self.lang, "control_center.shortcut_protected_conflict"));
+      return;
+    }
     if !conflicts.is_empty() {
       self.keybinding_conflict = Some((binding.id.clone(), keys, conflicts));
       self.confirm_focus = ConfirmState::new();
@@ -251,6 +289,9 @@ pub(super) fn keybinding_is_cheatsheet_entry(binding: &keybindings::Binding) -> 
 }
 
 pub(super) fn keybinding_section(lang: Lang, binding: &keybindings::Binding) -> String {
+  if binding.custom.is_some() {
+    return tr(lang, "control_center.shortcuts_custom").to_string();
+  }
   let software = matches!(
     binding.id.as_str(),
     id if id.starts_with("app.")
@@ -288,6 +329,9 @@ pub(super) fn keybinding_section(lang: Lang, binding: &keybindings::Binding) -> 
 }
 
 pub(super) fn keybinding_section_order(binding: &keybindings::Binding) -> usize {
+  if binding.custom.is_some() {
+    return 3;
+  }
   if matches!(
     binding.id.as_str(),
     "session.volume_up"
@@ -321,6 +365,9 @@ pub(super) fn keybinding_section_order(binding: &keybindings::Binding) -> usize 
 }
 
 pub(super) fn keybinding_label(lang: Lang, binding: &keybindings::Binding) -> String {
+  if let Some(custom) = &binding.custom {
+    return custom.description.clone();
+  }
   if let Some(description) = keybindings::cheatsheet_description(lang, binding) {
     return description;
   }

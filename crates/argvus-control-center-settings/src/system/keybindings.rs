@@ -1,12 +1,17 @@
 //! Keyboard-binding defaults and overrides of the Settings pages.
+pub use argvus_config_core::custom_shortcuts::{CustomShortcut, ShortcutAction};
 use serde::{Deserialize, Serialize};
 use std::{fs, path::PathBuf};
 
+use argvus_control_center_core::process::{ProcessRequest, ProcessRunner, SystemProcessRunner};
 use argvus_i18n::Lang;
+use std::time::Duration;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct Binding {
   pub id: String,
+  #[serde(skip)]
+  pub custom: Option<CustomShortcut>,
   pub category: String,
   pub description_key: String,
   pub keys: String,
@@ -227,32 +232,174 @@ pub fn cheatsheet_description(lang: Lang, binding: &Binding) -> Option<String> {
   })
 }
 pub fn load() -> Vec<Binding> {
-  let Ok(raw) = fs::read_to_string(manifest_path()) else {
-    return Vec::new();
-  };
-  let Ok(manifest) = serde_json::from_str::<Manifest>(&raw) else {
-    return Vec::new();
-  };
-  let canonical_shortcuts = load_canonical_shortcuts();
-  manifest
-    .bindings
-    .into_iter()
-    .map(|mut b| {
-      b.keys = normalize_keys(&b.keys).unwrap_or(b.keys);
-      match canonical_shortcuts
-        .as_ref()
-        .and_then(|shortcuts| shortcuts.get(&config_key_for_binding(&b.id)))
-      {
-        Some(serde_json::Value::String(keys)) => {
-          b.keys = normalize_keys(keys).unwrap_or(b.keys);
-          b.enabled = true;
-        }
-        Some(serde_json::Value::Null) => b.enabled = false,
-        _ => b.enabled = true,
-      };
-      b
+  let canonical = load_canonical_value("/keyboard_shortcuts");
+  let mut bindings = defaults();
+  for binding in &mut bindings {
+    binding.keys = normalize_keys(&binding.keys).unwrap_or_else(|_| binding.keys.clone());
+    match canonical
+      .as_ref()
+      .and_then(|value| value.get(config_key_for_binding(&binding.id)))
+    {
+      Some(serde_json::Value::String(keys)) => {
+        binding.keys = normalize_keys(keys).unwrap_or_else(|_| binding.keys.clone());
+        binding.enabled = true;
+      }
+      Some(serde_json::Value::Null) => binding.enabled = false,
+      _ => binding.enabled = true,
+    }
+  }
+  let custom = load_canonical_value("/hyprland/custom_shortcuts");
+  if let Some(custom) = custom
+    && let Ok(shortcuts) =
+      serde_json::from_value::<std::collections::BTreeMap<String, CustomShortcut>>(custom)
+  {
+    for (id, shortcut) in shortcuts {
+      bindings.push(custom_binding(id, shortcut));
+    }
+  }
+  bindings
+}
+
+pub fn custom_binding(id: String, mut shortcut: CustomShortcut) -> Binding {
+  shortcut.keys = normalize_keys(&shortcut.keys).unwrap_or(shortcut.keys);
+  Binding {
+    id,
+    category: "custom".into(),
+    description_key: shortcut.description.clone(),
+    keys: shortcut.keys.clone(),
+    enabled: shortcut.enabled,
+    action: match &shortcut.action {
+      ShortcutAction::Command { command } => command.clone(),
+      ShortcutAction::Dispatcher {
+        dispatcher,
+        arguments,
+      } => format!(
+        "{dispatcher} {}",
+        arguments
+          .as_ref()
+          .map(ToString::to_string)
+          .unwrap_or_default()
+      ),
+    },
+    context: String::new(),
+    input: String::new(),
+    configurable: true,
+    flags: Vec::new(),
+    custom: Some(shortcut),
+  }
+}
+
+fn load_canonical_value(pointer: &str) -> Option<serde_json::Value> {
+  let request = ProcessRequest::new("argvus")
+    .arg("config")
+    .arg("get")
+    .arg(pointer)
+    .arg("--effective")
+    .timeout(Duration::from_secs(10));
+  let output = SystemProcessRunner.run(&request).ok()?;
+  if output.status != Some(0) {
+    return None;
+  }
+  serde_json::from_slice(&output.stdout).ok()
+}
+
+/// One patch saves the target and disables every conflicting shortcut under the store lock.
+pub fn persist_custom(
+  id: &str,
+  shortcut: &CustomShortcut,
+  conflicts: &[Binding],
+) -> Result<(), String> {
+  persist_custom_with(&SystemProcessRunner, id, shortcut, conflicts)
+}
+
+fn persist_custom_with(
+  runner: &impl ProcessRunner,
+  id: &str,
+  shortcut: &CustomShortcut,
+  conflicts: &[Binding],
+) -> Result<(), String> {
+  shortcut.validate().map_err(|error| error.to_string())?;
+  if conflicts.iter().any(|binding| !binding.configurable) {
+    return Err("protected keybinding".into());
+  }
+  let mut patch = serde_json::Map::new();
+  patch.insert(
+    format!("/hyprland/custom_shortcuts/{id}"),
+    serde_json::to_value(shortcut).map_err(|error| error.to_string())?,
+  );
+  for binding in conflicts {
+    let (pointer, value) = if binding.custom.is_some() {
+      (
+        format!("/hyprland/custom_shortcuts/{}/enabled", binding.id),
+        serde_json::Value::Bool(false),
+      )
+    } else {
+      (
+        format!(
+          "/keyboard_shortcuts/{}",
+          config_key_for_binding(&binding.id)
+        ),
+        serde_json::Value::Null,
+      )
+    };
+    patch.insert(pointer, value);
+  }
+  persist_patch_with(runner, patch)
+}
+
+fn persist_patch(patch: serde_json::Map<String, serde_json::Value>) -> Result<(), String> {
+  persist_patch_with(&SystemProcessRunner, patch)
+}
+
+fn persist_patch_with(
+  runner: &impl ProcessRunner,
+  patch: serde_json::Map<String, serde_json::Value>,
+) -> Result<(), String> {
+  run_config(
+    runner,
+    ProcessRequest::new("argvus")
+      .arg("config")
+      .arg("patch")
+      .arg("-")
+      .stdin(serde_json::Value::Object(patch).to_string().into_bytes()),
+  )
+}
+
+fn run_config(runner: &impl ProcessRunner, request: ProcessRequest) -> Result<(), String> {
+  let output = runner
+    .run(&request.timeout(Duration::from_secs(15)))
+    .map_err(|error| error.to_string())?;
+  if output.status == Some(0) && !output.timed_out && !output.cancelled {
+    Ok(())
+  } else {
+    Err(format!(
+      "configuration command failed: {}",
+      String::from_utf8_lossy(&output.stderr).trim()
+    ))
+  }
+}
+
+pub fn delete_custom(id: &str) -> Result<(), String> {
+  if !id.starts_with("custom_")
+    || !id.chars().all(|character| {
+      character.is_ascii_lowercase() || character.is_ascii_digit() || character == '_'
     })
-    .collect()
+  {
+    return Err("not a custom shortcut".into());
+  }
+  run_config(
+    &SystemProcessRunner,
+    ProcessRequest::new("argvus")
+      .arg("config")
+      .arg("unset")
+      .arg(format!("/hyprland/custom_shortcuts/{id}")),
+  )
+}
+
+/// A successful save remains saved when applying to the running session fails.
+pub fn apply_saved() -> Result<(), String> {
+  project_canonical_config()?;
+  generate(&load())
 }
 
 fn config_key_for_binding(id: &str) -> String {
@@ -266,38 +413,6 @@ fn config_key_for_binding(id: &str) -> String {
     _ => return id.replace(['.', '-'], "_"),
   }
   .into()
-}
-
-fn load_canonical_shortcuts() -> Option<serde_json::Map<String, serde_json::Value>> {
-  let output = argvus_control_center_core::process::command("argvus")
-    .arg("config")
-    .args(["get", "/keyboard_shortcuts", "--effective"])
-    .output()
-    .ok()?;
-  if !output.status.success() {
-    return None;
-  }
-  serde_json::from_slice::<serde_json::Value>(&output.stdout)
-    .ok()?
-    .as_object()
-    .cloned()
-}
-
-fn persist_canonical_shortcut(id: &str, shortcut: Option<&str>) -> Result<(), String> {
-  let pointer = format!("/keyboard_shortcuts/{}", config_key_for_binding(id));
-  let value = shortcut
-    .map(|keys| serde_json::to_string(keys).map_err(|error| error.to_string()))
-    .transpose()?
-    .unwrap_or_else(|| "null".into());
-  let status = argvus_control_center_core::process::command("argvus")
-    .arg("config")
-    .args(["set", &pointer, &value])
-    .status()
-    .map_err(|error| format!("failed to persist shortcut: {error}"))?;
-  if !status.success() {
-    return Err("argvus config rejected the shortcut".into());
-  }
-  Ok(())
 }
 
 fn project_canonical_config() -> Result<(), String> {
@@ -321,8 +436,8 @@ pub fn normalize_keys(value: &str) -> Result<String, String> {
       "right" | "rightarrow" => "right".into(),
       "up" | "uparrow" => "up".into(),
       "down" | "downarrow" => "down".into(),
-      "pageup" => "Page_Up".into(),
-      "pagedown" => "Page_Down".into(),
+      "pageup" | "page_up" => "Page_Up".into(),
+      "pagedown" | "page_down" => "Page_Down".into(),
       "backspace" => "BackSpace".into(),
       "delete" => "Delete".into(),
       "insert" => "Insert".into(),
@@ -339,6 +454,8 @@ pub fn normalize_keys(value: &str) -> Result<String, String> {
       "\\" | "backslash" => "backslash".into(),
       "`" | "grave" => "grave".into(),
       "=" | "equal" => "equal".into(),
+      "print" => "Print".into(),
+      "xf86audioraisevolume" => "XF86AudioRaiseVolume".into(),
       "xf86audiolowervolume" => "XF86AudioLowerVolume".into(),
       "xf86audiomute" => "XF86AudioMute".into(),
       "xf86audionext" => "XF86AudioNext".into(),
@@ -429,53 +546,127 @@ pub fn conflicts_in_context(
     .filter(|b| {
       let current = normalize_keys(&b.keys).ok();
       let requested = normalize_keys(keys).ok();
-      b.id != id
-        && b.enabled
-        && b.configurable
-        && current == requested
-        && b.context == context
-        && b.input == input
+      b.id != id && b.enabled && current == requested && b.context == context && b.input == input
     })
     .map(|b| b.id.clone())
     .collect()
 }
-pub fn save_override(
+/// Persists an official/custom edit and all conflict changes in one transaction.
+pub fn persist_binding(
   id: &str,
   keys: Option<String>,
-  enabled: Option<bool>,
-  _bindings: &[Binding],
+  enabled: bool,
+  bindings: &[Binding],
+  conflicts: &[Binding],
 ) -> Result<(), String> {
-  let default = defaults()
-    .into_iter()
-    .find(|b| b.id == id)
-    .ok_or("unknown keybinding")?;
-  let normalized_keys = keys.as_deref().map(normalize_keys).transpose()?;
-  let shortcut = if enabled == Some(false) {
-    None
-  } else {
-    Some(normalized_keys.as_deref().unwrap_or(&default.keys))
-  };
-  persist_canonical_shortcut(id, shortcut)?;
-  project_canonical_config()
-}
-pub fn restore_all(bindings: &[Binding]) -> Result<(), String> {
-  for binding in defaults()
-    .into_iter()
-    .filter(|binding| binding.configurable)
+  if bindings
+    .iter()
+    .find(|binding| binding.id == id)
+    .is_some_and(|binding| !binding.configurable)
+    || conflicts.iter().any(|binding| !binding.configurable)
   {
-    persist_canonical_shortcut(&binding.id, Some(&binding.keys))?;
+    return Err("protected keybinding".into());
   }
-  project_canonical_config()?;
-  generate(bindings)
-}
-pub fn restore(id: &str, bindings: &[Binding]) -> Result<(), String> {
+  if let Some(mut shortcut) = bindings
+    .iter()
+    .find(|binding| binding.id == id)
+    .and_then(|binding| binding.custom.clone())
+  {
+    if let Some(keys) = keys {
+      shortcut.keys = normalize_keys(&keys)?;
+    }
+    shortcut.enabled = enabled;
+    return persist_custom(id, &shortcut, conflicts);
+  }
   let default = defaults()
     .into_iter()
     .find(|binding| binding.id == id)
     .ok_or("unknown keybinding")?;
-  persist_canonical_shortcut(id, Some(&default.keys))?;
-  project_canonical_config()?;
-  generate(bindings)
+  let keys = normalize_keys(keys.as_deref().unwrap_or(&default.keys))?;
+  let mut patch = serde_json::Map::new();
+  patch.insert(
+    format!("/keyboard_shortcuts/{}", config_key_for_binding(id)),
+    if enabled {
+      keys.into()
+    } else {
+      serde_json::Value::Null
+    },
+  );
+  for binding in conflicts {
+    if binding.custom.is_some() {
+      patch.insert(
+        format!("/hyprland/custom_shortcuts/{}/enabled", binding.id),
+        false.into(),
+      );
+    } else {
+      patch.insert(
+        format!(
+          "/keyboard_shortcuts/{}",
+          config_key_for_binding(&binding.id)
+        ),
+        serde_json::Value::Null,
+      );
+    }
+  }
+  persist_patch(patch)
+}
+
+pub fn save_override(
+  id: &str,
+  keys: Option<String>,
+  enabled: Option<bool>,
+  bindings: &[Binding],
+) -> Result<(), String> {
+  persist_binding(id, keys, enabled.unwrap_or(true), bindings, &[])?;
+  apply_saved()
+}
+
+/// Restoring defaults must not silently reactivate an official binding over a custom one.
+pub fn restoration_conflicts(bindings: &[Binding], id: Option<&str>) -> bool {
+  defaults()
+    .iter()
+    .filter(|binding| binding.configurable && id.is_none_or(|id| binding.id == id))
+    .any(|default| {
+      bindings.iter().any(|binding| {
+        binding.custom.is_some()
+          && binding.enabled
+          && binding.context == default.context
+          && binding.input == default.input
+          && normalize_keys(&binding.keys).ok() == normalize_keys(&default.keys).ok()
+      })
+    })
+}
+
+pub fn restore_all(bindings: &[Binding]) -> Result<(), String> {
+  if restoration_conflicts(bindings, None) {
+    return Err("custom shortcuts conflict with official defaults".into());
+  }
+  let patch = defaults()
+    .into_iter()
+    .filter(|binding| binding.configurable)
+    .map(|binding| {
+      (
+        format!(
+          "/keyboard_shortcuts/{}",
+          config_key_for_binding(&binding.id)
+        ),
+        binding.keys.into(),
+      )
+    })
+    .collect();
+  persist_patch(patch)?;
+  apply_saved()
+}
+
+pub fn restore(id: &str, bindings: &[Binding]) -> Result<(), String> {
+  if restoration_conflicts(bindings, Some(id)) {
+    return Err("custom shortcuts conflict with official defaults".into());
+  }
+  let default = defaults()
+    .into_iter()
+    .find(|binding| binding.id == id)
+    .ok_or("unknown keybinding")?;
+  save_override(id, Some(default.keys), Some(true), bindings)
 }
 pub fn generate(bindings: &[Binding]) -> Result<(), String> {
   let mut cheatsheet =
@@ -487,9 +678,13 @@ pub fn generate(bindings: &[Binding]) -> Result<(), String> {
     } else {
       "Disabled"
     };
-    let description = cheatsheet_description(language, binding)
-      .unwrap_or_else(|| language.tr(&binding.description_key));
-    let description = if description == binding.description_key {
+    let description = if let Some(custom) = &binding.custom {
+      custom.description.clone()
+    } else {
+      cheatsheet_description(language, binding)
+        .unwrap_or_else(|| language.tr(&binding.description_key))
+    };
+    let description = if binding.custom.is_none() && description == binding.description_key {
       binding
         .id
         .rsplit('.')
@@ -502,6 +697,9 @@ pub fn generate(bindings: &[Binding]) -> Result<(), String> {
     cheatsheet.push_str(&format!("{:<34} {}\n", state, description));
   }
   let cheat_path = generated_cheatsheet_path();
+  if let Some(parent) = cheat_path.parent() {
+    fs::create_dir_all(parent).map_err(|error| error.to_string())?;
+  }
   let cheat_tmp = cheat_path.with_extension("txt.tmp");
   fs::write(&cheat_tmp, cheatsheet).map_err(|e| e.to_string())?;
   fs::rename(cheat_tmp, cheat_path).map_err(|e| e.to_string())
@@ -603,6 +801,7 @@ mod launcher_shortcut_tests {
 
   fn binding(id: &str) -> Binding {
     Binding {
+      custom: None,
       id: id.into(),
       category: "applications".into(),
       description_key: String::new(),
@@ -629,6 +828,119 @@ mod launcher_shortcut_tests {
         pt.as_deref().is_some_and(|text| text.contains("argvus")),
         "{id}"
       );
+    }
+  }
+}
+
+#[cfg(test)]
+mod custom_tests {
+  use super::*;
+  use argvus_control_center_core::process::{ProcessError, ProcessOutput};
+  use std::sync::Mutex;
+
+  struct RecordingRunner {
+    requests: Mutex<Vec<ProcessRequest>>,
+    status: i32,
+  }
+  impl ProcessRunner for RecordingRunner {
+    fn run(&self, request: &ProcessRequest) -> Result<ProcessOutput, ProcessError> {
+      self.requests.lock().unwrap().push(request.clone());
+      Ok(ProcessOutput {
+        stdout: Vec::new(),
+        stderr: b"save failed".to_vec(),
+        status: Some(self.status),
+        timed_out: false,
+        cancelled: false,
+      })
+    }
+  }
+
+  fn shortcut() -> CustomShortcut {
+    CustomShortcut {
+      description: "Example".into(),
+      keys: "SUPER + CTRL + E".into(),
+      enabled: true,
+      action: ShortcutAction::Command {
+        command: "editor 'a b'".into(),
+      },
+    }
+  }
+
+  #[test]
+  fn replacement_saves_the_custom_record_and_all_conflicts_in_one_request() {
+    let runner = RecordingRunner {
+      requests: Mutex::default(),
+      status: 0,
+    };
+    let mut official = custom_binding("window.close".into(), shortcut());
+    official.custom = None;
+    let custom = custom_binding("custom_old".into(), shortcut());
+    persist_custom_with(&runner, "custom_new", &shortcut(), &[official, custom]).unwrap();
+    let requests = runner.requests.lock().unwrap();
+    assert_eq!(requests.len(), 1);
+    assert_eq!(requests[0].args, ["config", "patch", "-"]);
+    let patch: serde_json::Value =
+      serde_json::from_slice(requests[0].stdin.as_ref().unwrap().as_bytes()).unwrap();
+    assert!(patch["/keyboard_shortcuts/close_window"].is_null());
+    assert_eq!(
+      patch["/hyprland/custom_shortcuts/custom_old/enabled"],
+      false
+    );
+    assert_eq!(
+      patch["/hyprland/custom_shortcuts/custom_new"]["description"],
+      "Example"
+    );
+    assert_eq!(
+      patch["/hyprland/custom_shortcuts/custom_new"]["action"]["command"],
+      "editor 'a b'"
+    );
+  }
+
+  #[test]
+  fn protected_conflicts_do_not_start_a_process_and_write_errors_are_returned() {
+    let runner = RecordingRunner {
+      requests: Mutex::default(),
+      status: 1,
+    };
+    let mut protected = custom_binding("custom_old".into(), shortcut());
+    protected.configurable = false;
+    assert!(persist_custom_with(&runner, "custom_new", &shortcut(), &[protected]).is_err());
+    assert!(runner.requests.lock().unwrap().is_empty());
+    assert!(persist_custom_with(&runner, "custom_new", &shortcut(), &[]).is_err());
+    assert_eq!(runner.requests.lock().unwrap().len(), 1);
+  }
+
+  #[test]
+  fn custom_conflicts_respect_context_and_ignore_disabled_bindings() {
+    let active = custom_binding("custom_active".into(), shortcut());
+    let mut disabled = custom_binding("custom_disabled".into(), shortcut());
+    disabled.enabled = false;
+    let mut submap = custom_binding("custom_submap".into(), shortcut());
+    submap.context = "resize".into();
+    assert_eq!(
+      conflicts(
+        &[active, disabled, submap],
+        "custom_new",
+        "CTRL + SUPER + E"
+      ),
+      vec!["custom_active"]
+    );
+  }
+}
+
+#[cfg(test)]
+mod custom_keys_tests {
+  use super::*;
+  #[test]
+  fn special_and_media_keys_keep_their_canonical_names() {
+    for (input, expected) in [
+      ("Print", "Print"),
+      ("CTRL + Page_Up", "CTRL + Page_Up"),
+      ("ALT + Page_Down", "ALT + Page_Down"),
+      ("XF86AudioRaiseVolume", "XF86AudioRaiseVolume"),
+    ] {
+      assert_eq!(normalize_keys(input).unwrap(), expected);
+      argvus_config_core::custom_shortcuts::validate_keys(expected).unwrap();
     }
   }
 }

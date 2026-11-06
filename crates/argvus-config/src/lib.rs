@@ -20,6 +20,7 @@ pub mod appearance_runtime;
 pub mod audio;
 pub mod cli;
 pub mod css_edit;
+pub mod custom_shortcuts;
 pub mod display;
 pub mod effects;
 pub mod hyprland_ipc;

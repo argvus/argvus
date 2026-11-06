@@ -21,6 +21,7 @@ impl App {
       return;
     };
     match action {
+      PendingAction::DeleteCustomShortcut(id) => self.delete_custom_shortcut(id),
       PendingAction::ResetApps => match self.apps.reset_all() {
         Ok(()) => {
           self.success(tr(self.lang, "control_center.default_applications_restored").to_string())
@@ -104,6 +105,11 @@ impl App {
         .start_gpg_action("control_center.gpg_keys_sent", move || {
           gpg_keys::keyserver_send(&fingerprint)
         }),
+      PendingAction::ResetKeybindings
+        if keybindings::restoration_conflicts(&self.keybindings, None) =>
+      {
+        self.fail(tr(self.lang, "control_center.shortcut_restore_conflict"));
+      }
       PendingAction::ResetKeybindings => match keybindings::restore_all(&self.keybindings) {
         Ok(()) => {
           self.keybindings = keybindings::load();
@@ -113,7 +119,7 @@ impl App {
       },
       PendingAction::RestoreKeybinding { id, leave } => {
         self.restore_keybinding(&id);
-        if leave {
+        if leave && self.error_modal.is_none() {
           self.keybinding_capturing = false;
           self.navigation.back();
         }
@@ -177,6 +183,7 @@ impl App {
       | PendingAction::ResetFont(_)
       | PendingAction::ResetFontSetting(_)
       | PendingAction::ResetKeybindings
+      | PendingAction::DeleteCustomShortcut(_)
       | PendingAction::RemoveWindowRule(_)
       | PendingAction::RemoveProject(_)
       | PendingAction::RemoveSnippet(_)
@@ -233,6 +240,10 @@ pub fn pending_action_text(lang: Lang, action: &PendingAction) -> (String, Strin
     PendingAction::ResetKeybindings => (
       tr(lang, "control_center.restore_all_shortcuts").to_string(),
       tr(lang, "control_center.restore_all_shortcuts_description").to_string(),
+    ),
+    PendingAction::DeleteCustomShortcut(id) => (
+      tr(lang, "control_center.shortcut_delete_title").into(),
+      id.clone(),
     ),
     PendingAction::RemoveWindowRule(name) => (
       tr(lang, "control_center.window_rules_remove").to_string(),

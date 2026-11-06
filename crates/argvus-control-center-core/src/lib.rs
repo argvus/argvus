@@ -5,6 +5,7 @@
 pub mod capabilities;
 pub mod clipboard;
 pub mod config;
+pub mod diagnostics;
 pub mod format;
 pub mod i18n;
 pub mod jobs;

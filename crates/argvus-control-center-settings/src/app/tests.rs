@@ -329,6 +329,18 @@ fn breadcrumbs_show_the_home_card_of_each_page() {
       "Control Center > Desktop & Input > Keyboard Shortcuts",
     ),
     (
+      Page::CustomShortcut,
+      "Control Center > Desktop & Input > Keyboard Shortcuts > Create Shortcuts",
+    ),
+    (
+      Page::KeybindingEdit,
+      "Control Center > Desktop & Input > Keyboard Shortcuts > All Shortcuts > Edit shortcut",
+    ),
+    (
+      Page::AllShortcuts,
+      "Control Center > Desktop & Input > Keyboard Shortcuts > All Shortcuts",
+    ),
+    (
       Page::WindowRules,
       "Control Center > Desktop & Input > Hyprland > Window rules",
     ),
@@ -386,8 +398,8 @@ fn breadcrumbs_are_translated_in_pt_br() {
       "Central de Controle > Aparência > Estilo do desktop > Fontes",
     ),
     (
-      Page::Keybindings,
-      "Central de Controle > Desktop e entrada > Atalhos de Teclado",
+      Page::AllShortcuts,
+      "Central de Controle > Desktop e entrada > Atalhos de Teclado > Todos os atalhos",
     ),
     (
       Page::MouseTouchpad,

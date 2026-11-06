@@ -250,6 +250,79 @@
     "hyprland": {
       "type": "object",
       "properties": {
+        "custom_shortcuts": {
+          "type": "object",
+          "patternProperties": {
+            "^custom_[a-z0-9_]+$": {
+              "type": "object",
+              "required": [
+                "description",
+                "keys",
+                "enabled",
+                "action"
+              ],
+              "properties": {
+                "description": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "keys": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "enabled": {
+                  "type": "boolean"
+                },
+                "action": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "required": [
+                        "type",
+                        "command"
+                      ],
+                      "properties": {
+                        "type": {
+                          "const": "command"
+                        },
+                        "command": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "type",
+                        "dispatcher"
+                      ],
+                      "properties": {
+                        "type": {
+                          "const": "dispatcher"
+                        },
+                        "dispatcher": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "arguments": {
+                          "type": [
+                            "object",
+                            "null"
+                          ]
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  ]
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
         "keybindings": { "type": "object" },
         "window_rules": { "type": "object" },
         "input": { "type": "object" },

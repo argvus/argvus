@@ -63,7 +63,7 @@ impl App {
   }
 
   pub fn poll(&mut self) -> bool {
-    let mut changed = false;
+    let mut changed = self.poll_shortcut_job();
     if self.keyboard_page_is_open()
       && self.keyboard_last_refresh.elapsed() >= Duration::from_secs(1)
     {

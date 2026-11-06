@@ -3,7 +3,7 @@ title: Configuração do ARGVUS
 description: O contrato JSON lógico de configuração usado pelo ARGVUS.
 ---
 
-O ARGVUS mantém as preferências de usuário gerenciadas em `$XDG_CONFIG_HOME/argvus/config.json` (normalmente `~/.config/argvus/config.json`). Esse documento é o modelo lógico canônico das preferências administradas pelo ARGVUS, e o `argvus-config` é o único componente que escreve arquivos em `data/generated/`. Arquivos nativos e gerados continuam como projeções de compatibilidade ou overrides específicos de cada aplicativo.
+O ARGVUS mantém as preferências de usuário gerenciadas em arquivos JSON modulares em `$XDG_CONFIG_HOME/argvus/config/` (normalmente `~/.config/argvus/config/`). Esses arquivos formam o modelo lógico canônico das preferências administradas pelo ARGVUS, e o `argvus-config` é o único componente que escreve arquivos em `data/generated/`. Arquivos nativos e gerados continuam como projeções de compatibilidade ou overrides específicos de cada aplicativo.
 
 ## Guia do usuário: Início rápido
 
@@ -355,3 +355,33 @@ independente. Desativar animações desativa o efeito em Lua sem apagar essa
 preferência. Valores inválidos recusam o patch inteiro. Chaves ausentes recebem
 os padrões ARGVUS sem substituir escolhas existentes. Consulte [Aparência](/pt/docs/user-guide/appearance/#wobble-das-janelas)
 para os limites e padrões.
+
+
+### Atalhos de teclado criados pelo usuário
+
+`/keyboard_shortcuts` mantém os valores string ou null das ações oficiais do manifesto. Os atalhos globais personalizados usam um objeto separado `/hyprland/custom_shortcuts`, salvo em `config/hyprland.json`. Os IDs estáveis com prefixo `custom_` independem da descrição e do idioma. Cada registro tem `description`, `keys`, `enabled` e uma `action` tipada:
+
+```json
+{
+  "custom_editor": {
+    "description": "Abrir meu editor",
+    "keys": "SUPER + CTRL + E",
+    "enabled": true,
+    "action": { "type": "command", "command": "editor --new-window" }
+  },
+  "custom_float": {
+    "description": "Alternar janela flutuante",
+    "keys": "SUPER + CTRL + F",
+    "enabled": false,
+    "action": {
+      "type": "dispatcher",
+      "dispatcher": "window.float",
+      "arguments": { "action": "toggle" }
+    }
+  }
+}
+```
+
+O exemplo é o valor de `/hyprland/custom_shortcuts`, não um documento de configuração completo. Os nomes de dispatcher vêm das factories Lua suportadas; os argumentos são um objeto JSON opcional ou `null`, nunca código avaliado. Os personalizados não têm submap, binding do mouse nem flags avançadas. A projeção grava `data/generated/hypr/custom-shortcuts.lua` como tabela de dados com escape, incluindo uma tabela vazia quando o último registro é removido. A projeção completa e `project --only keyboard_shortcuts` geram esse arquivo. O Hyprland registra entradas ativas com `hl.bind`; falhas no arquivo opcional ou no registro de um atalho são contidas e registradas no log.
+
+O Control Center cria/edita registros e desativa conflitos confirmados em uma transação `argvus config patch`. A gravação precede a aplicação pelo serviço de configuração existente. Uma falha de aplicação não desfaz a gravação bem-sucedida. Restaurar os padrões oficiais preserva os registros personalizados e é recusado se houver colisão com um personalizado ativo. Descrições do usuário permanecem texto literal em todos os idiomas e no cheatsheet efetivo gerado.

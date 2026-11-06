@@ -9,6 +9,7 @@ rust-version.workspace = true
 snapshot = ["dep:argvus-control-center-snapshot"]
 
 [dependencies]
+argvus-config.workspace = true
 argvus-control-center-snapshot = { workspace = true, optional = true }
 argvus-i18n.workspace = true
 argvus-theme.workspace = true
@@ -16,7 +17,7 @@ argvus-tui.workspace = true
 argvus-control-center-apps = { workspace = true }
 argvus-control-center-core = { workspace = true }
 crossterm.workspace = true
-ratatui.workspace = true
+ratatui = { workspace = true, features = ["unstable-rendered-line-info"] }
 thiserror.workspace = true
 serde_json = { workspace = true, features = ["preserve_order"] }
 serde.workspace = true

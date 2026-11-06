@@ -88,6 +88,29 @@ impl App {
         "{desktop_input_root} > {}",
         tr(self.lang, "control_center.keyboard_shortcuts")
       ),
+      Page::CustomShortcut => {
+        let shortcut_root = format!(
+          "{desktop_input_root} > {}",
+          tr(self.lang, "control_center.keyboard_shortcuts")
+        );
+        if self.custom_shortcut.existing {
+          format!(
+            "{shortcut_root} > {} > {}",
+            tr(self.lang, "control_center.shortcuts_all"),
+            tr(self.lang, "control_center.edit_shortcut")
+          )
+        } else {
+          format!(
+            "{shortcut_root} > {}",
+            tr(self.lang, "control_center.shortcuts_create")
+          )
+        }
+      }
+      Page::AllShortcuts => format!(
+        "{desktop_input_root} > {} > {}",
+        tr(self.lang, "control_center.keyboard_shortcuts"),
+        tr(self.lang, "control_center.shortcuts_all")
+      ),
       // Window rules is listed only under the Hyprland category.
       Page::WindowRules => format!(
         "{desktop_input_root} > {} > {}",
@@ -146,13 +169,15 @@ impl App {
         tr(self.lang, "control_center.gpg_keys_list"),
       ),
       Page::KeybindingEdit => format!(
-        "{desktop_input_root} > {} > {}",
+        "{desktop_input_root} > {} > {} > {}",
         tr(self.lang, "control_center.keyboard_shortcuts"),
+        tr(self.lang, "control_center.shortcuts_all"),
         tr(self.lang, "control_center.edit_shortcut")
       ),
       Page::KeybindingCapture => format!(
-        "{desktop_input_root} > {} > {}",
+        "{desktop_input_root} > {} > {} > {}",
         tr(self.lang, "control_center.keyboard_shortcuts"),
+        tr(self.lang, "control_center.shortcuts_all"),
         tr(self.lang, "control_center.change_shortcut")
       ),
       Page::KeyboardLayout => format!(
@@ -244,7 +269,7 @@ impl App {
         | Page::AppSelector(_)
         | Page::FontSelector(_)
         | Page::SettingSelector(_)
-        | Page::Keybindings
+        | Page::AllShortcuts
     )
   }
 
@@ -255,6 +280,7 @@ impl App {
       Page::UsersGroups if !self.admin.busy() && !self.admin.is_loaded() => {
         self.admin.load(false);
       }
+      Page::CustomShortcut => self.open_custom_shortcut(None),
       Page::Notifications => self.refresh_dnd(),
       _ => {}
     }

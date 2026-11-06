@@ -90,7 +90,14 @@ pub fn draw(app: &mut App, frame: &mut Frame) {
         .borders(Borders::ALL)
         .border_type(ratatui::widgets::BorderType::Plain)
         .border_style(Style::new().fg(app.theme.border_active))
-        .title(tr(app.lang, list_title_key(app.page())));
+        .title(tr(
+          app.lang,
+          if app.page() == Page::CustomShortcut && app.custom_shortcut_is_existing() {
+            "control_center.edit_shortcut"
+          } else {
+            list_title_key(app.page())
+          },
+        ));
       let inner = list_block.inner(list_area);
       frame.render_widget(list_block, list_area);
       inner
@@ -160,6 +167,7 @@ pub fn draw(app: &mut App, frame: &mut Frame) {
 /// have an action bar: the list is named after what it chooses.
 fn list_title_key(page: Page) -> &'static str {
   match page {
+    Page::CustomShortcut => "control_center.shortcut_create_title",
     Page::DefaultApps => "control_center.default_apps",
     Page::TimeZone => "control_center.time_zone",
     Page::SystemLocales => "control_center.system_locales",

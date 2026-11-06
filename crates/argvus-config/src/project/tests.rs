@@ -468,3 +468,63 @@ fn projection_does_not_recreate_or_overwrite_language_preferences() {
   );
   fs::remove_dir_all(directory).unwrap();
 }
+
+#[test]
+fn custom_shortcuts_project_as_data_and_removed_entries_leave_no_stale_bindings() {
+  if !luac_available() {
+    return;
+  }
+  let root = env::temp_dir().join("argvus").join(format!(
+    "custom-shortcuts-projection-{}",
+    std::process::id()
+  ));
+  let paths = ArgvusPaths {
+    data: root.join("data"),
+    generated: root.join("generated"),
+    internal: root.join("internal"),
+    backups: root.join("backups"),
+    projection_manifest: root.join("manifest.json"),
+    root: root.clone(),
+  };
+  let mut document = ConfigDocument::default();
+  document.set("/hyprland/custom_shortcuts", serde_json::json!({
+    "custom_command": {"description":"Literal control_center.create é", "keys":"SUPER + CTRL + E", "enabled":true,
+      "action":{"type":"command", "command":"editor \"a b\" 'c\\d' ; printf 'é'"}},
+    "custom_dispatcher": {"description":"Float", "keys":"SUPER + CTRL + F", "enabled":false,
+      "action":{"type":"dispatcher", "dispatcher":"window.float", "arguments":{"action":"toggle"}}}
+  })).unwrap();
+  super::hyprland_projection::project_shortcuts(&document, &paths).unwrap();
+  let target = paths.generated.join("hypr/custom-shortcuts.lua");
+  let output = fs::read_to_string(&target).unwrap();
+  assert!(output.contains("custom_command"));
+  assert!(output.contains("Literal control_center.create é"));
+  assert!(output.contains("[\"enabled\"] = false"));
+  assert!(
+    !output.contains("hl."),
+    "projection only returns data; it cannot run the command"
+  );
+  assert!(
+    Command::new("luac")
+      .arg("-p")
+      .arg(&target)
+      .status()
+      .unwrap()
+      .success()
+  );
+  let previous = output;
+  assert!(
+    document
+      .set(
+        "/hyprland/custom_shortcuts/custom_command/action/command",
+        Value::String("bad\ncommand".into()),
+      )
+      .is_err()
+  );
+  assert_eq!(fs::read_to_string(&target).unwrap(), previous);
+  document.unset("/hyprland/custom_shortcuts").unwrap();
+  super::hyprland_projection::project_shortcuts(&document, &paths).unwrap();
+  let output = fs::read_to_string(&target).unwrap();
+  assert!(!output.contains("custom_command"));
+  assert!(!output.contains("custom_dispatcher"));
+  std::fs::remove_dir_all(root).unwrap();
+}

@@ -5,6 +5,7 @@ use super::*;
 #[derive(Debug, PartialEq, Clone)]
 pub(crate) enum EditTarget {
   Config(String),
+  CustomShortcutField(crate::item::Item),
   User(String),
   Password(usize),
   Rules,

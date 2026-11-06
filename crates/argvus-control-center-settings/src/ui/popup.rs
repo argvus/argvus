@@ -1,45 +1,55 @@
 //! Popup and editor rendering of the Settings pages.
 use argvus_tui::confirm::{ConfirmDialog, draw_confirm};
 use ratatui::Frame;
-use ratatui::layout::{Alignment, Rect};
+use ratatui::layout::{Alignment, Constraint, Layout, Rect};
 use ratatui::style::{Modifier, Style};
-use ratatui::text::{Line, Span};
+use ratatui::text::Line;
 use ratatui::widgets::{Block, Clear, Paragraph};
 
 use crate::app::App;
 use crate::i18n::tr;
 
 pub fn draw_error(frame: &mut Frame, area: Rect, app: &App, message: &str) {
-  let width = area.width.saturating_sub(8).clamp(30, 64);
-  let height = 7.min(area.height);
+  let width = area.width.saturating_sub(8).clamp(30, 72).min(area.width);
+  let message = argvus_control_center_core::sanitize::terminal_text(message);
+  let paragraph = Paragraph::new(message)
+    .alignment(Alignment::Center)
+    .wrap(ratatui::widgets::Wrap { trim: true });
+  let rows = paragraph.line_count(width.saturating_sub(2));
+  // Borders and spacing add five rows. Keep the acknowledgement separate so
+  // wrapping or a small terminal can never clip the key used to dismiss the error.
+  let height = u16::try_from(rows.saturating_add(5))
+    .unwrap_or(u16::MAX)
+    .min(area.height);
   let popup = super::layout::centered(area, width, height);
-  frame.render_widget(Clear, popup);
-  let title = tr(app.lang, "control_center.error_32d0ef");
-  let content = vec![
-    Line::from(""),
-    Line::from(Span::styled(
-      message.to_string(),
-      Style::new().fg(app.theme.foreground),
-    )),
-    Line::from(""),
-    Line::from(Span::styled(
-      tr(app.lang, "control_center.enter_ok"),
+  let block = Block::bordered()
+    .title(tr(app.lang, "control_center.error_32d0ef"))
+    .border_style(Style::new().fg(app.theme.error))
+    .style(
       Style::new()
-        .fg(app.theme.accent)
-        .add_modifier(Modifier::BOLD),
-    )),
-  ];
+        .bg(app.theme.background)
+        .fg(app.theme.foreground),
+    );
+  let inner = block.inner(popup);
+  frame.render_widget(Clear, popup);
+  frame.render_widget(block, popup);
+  let areas = Layout::vertical([
+    Constraint::Length(1),
+    Constraint::Min(1),
+    Constraint::Length(1),
+    Constraint::Length(1),
+  ])
+  .split(inner);
+  frame.render_widget(paragraph, areas[1]);
   frame.render_widget(
-    Paragraph::new(content)
+    Paragraph::new(tr(app.lang, "control_center.enter_ok"))
       .alignment(Alignment::Center)
-      .wrap(ratatui::widgets::Wrap { trim: true })
-      .block(
-        Block::bordered()
-          .title(title)
-          .border_style(Style::new().fg(app.theme.error))
-          .style(Style::new().bg(app.theme.background)),
+      .style(
+        Style::new()
+          .fg(app.theme.accent)
+          .add_modifier(Modifier::BOLD),
       ),
-    popup,
+    areas[3],
   );
 }
 

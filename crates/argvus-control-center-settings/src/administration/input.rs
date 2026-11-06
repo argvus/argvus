@@ -171,6 +171,7 @@ impl App {
             draft.classes = classes;
           }
         }
+        EditTarget::CustomShortcutField(field) => self.set_custom_shortcut_field(field, value),
         EditTarget::NewWindowRuleName => self.new_window_rule_name = value,
         EditTarget::ProjectPath(root) => match crate::system::projects::add(&value, root) {
           Ok(()) => {

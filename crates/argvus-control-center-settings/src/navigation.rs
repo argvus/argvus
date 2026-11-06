@@ -20,6 +20,8 @@ pub enum Page {
   SystemLocales,
   Keyboard,
   Keybindings,
+  AllShortcuts,
+  CustomShortcut,
   KeybindingEdit,
   KeybindingCapture,
   WindowRules,
@@ -129,10 +131,12 @@ impl Navigation {
   pub fn new(page: Page) -> Self {
     Self {
       current: Location::new(page),
-      stack: if page == Page::Main {
-        Vec::new()
-      } else {
-        vec![Location::new(Page::Main)]
+      stack: match page {
+        Page::Main => Vec::new(),
+        Page::AllShortcuts | Page::CustomShortcut => {
+          vec![Location::new(Page::Main), Location::new(Page::Keybindings)]
+        }
+        _ => vec![Location::new(Page::Main)],
       },
     }
   }

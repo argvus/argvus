@@ -100,6 +100,8 @@ impl App {
       #[cfg(feature = "fonts")]
       (_, "fonts") => self.open_settings(Page::Fonts),
       (_, "keybindings") => self.open_settings(Page::Keybindings),
+      (_, "shortcuts-create") => self.open_settings(Page::CustomShortcut),
+      (_, "shortcuts-list") => self.open_settings(Page::AllShortcuts),
       #[cfg(feature = "about")]
       ("about", "system") => {
         self.about.active_tab = Tab::System;

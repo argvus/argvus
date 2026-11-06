@@ -3,7 +3,7 @@ title: ARGVUS Configuration
 description: The logical JSON configuration contract used by ARGVUS.
 ---
 
-ARGVUS keeps managed user preferences in `$XDG_CONFIG_HOME/argvus/config.json` (normally `~/.config/argvus/config.json`). This document is the canonical logical model for preferences managed by ARGVUS, and `argvus-config` is the only component that writes files below `data/generated/`. Native files and generated files remain compatibility projections or application-specific overrides.
+ARGVUS keeps managed user preferences in modular JSON files under `$XDG_CONFIG_HOME/argvus/config/` (normally `~/.config/argvus/config/`). They form the canonical logical model for preferences managed by ARGVUS, and `argvus-config` is the only component that writes files below `data/generated/`. Native files and generated files remain compatibility projections or application-specific overrides.
 
 ## User guide: Quick start
 
@@ -349,3 +349,33 @@ preference. Disabling global animations suppresses wobble in Lua without erasing
 that preference. Invalid values reject the entire patch. Missing keys receive
 the ARGVUS defaults without replacing existing choices. See [Appearance](/docs/user-guide/appearance/#window-wobble)
 for bounds and defaults.
+
+
+### User-created keyboard shortcuts
+
+`/keyboard_shortcuts` retains its existing string-or-null values for official manifest actions. Custom global keyboard shortcuts use a separate `/hyprland/custom_shortcuts` object, stored in `config/hyprland.json`. Its stable `custom_` IDs are independent of descriptions and locales. Each record has `description`, `keys`, `enabled` and a typed `action`:
+
+```json
+{
+  "custom_editor": {
+    "description": "Open my editor",
+    "keys": "SUPER + CTRL + E",
+    "enabled": true,
+    "action": { "type": "command", "command": "editor --new-window" }
+  },
+  "custom_float": {
+    "description": "Toggle floating",
+    "keys": "SUPER + CTRL + F",
+    "enabled": false,
+    "action": {
+      "type": "dispatcher",
+      "dispatcher": "window.float",
+      "arguments": { "action": "toggle" }
+    }
+  }
+}
+```
+
+The example is the value of `/hyprland/custom_shortcuts`, not a complete configuration document. Dispatcher names come from the supported Lua dispatcher factories; arguments are an optional JSON object or `null`, never evaluated code. Custom shortcuts have no submap, mouse binding or advanced flags. The projection writes `data/generated/hypr/custom-shortcuts.lua` as an escaped data table, including an empty table when the last record is removed. Both full projection and `project --only keyboard_shortcuts` generate it. Hyprland registers enabled entries with `hl.bind`; optional file and individual registration failures are contained and logged.
+
+The Control Center creates/edits records and disables confirmed conflicts using one `argvus config patch` transaction. It saves before applying through the existing config service. A failed apply does not undo a successful save. Restoring official defaults preserves custom records and is refused if it would collide with an active custom shortcut. User descriptions remain literal text in all locales and the effective generated cheatsheet.

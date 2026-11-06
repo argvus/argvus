@@ -33,6 +33,7 @@ use argvus_control_center_core::{
 };
 
 mod confirmations;
+mod custom_shortcut;
 mod jobs;
 mod keybinding_capture;
 mod labels;
@@ -89,6 +90,7 @@ pub enum PendingAction {
   ResetFont(FontTarget),
   ResetFontSetting(SettingKind),
   ResetKeybindings,
+  DeleteCustomShortcut(String),
   RemoveWindowRule(String),
   RemoveProject(String),
   RemoveSnippet(String),
@@ -196,6 +198,8 @@ pub struct App {
   keybinding_super_required: bool,
   keybinding_conflict: Option<(String, String, Vec<String>)>,
   keybinding_edit_id: Option<String>,
+  custom_shortcut: custom_shortcut::ShortcutDraft,
+  shortcut_job: Option<custom_shortcut::ShortcutJob>,
   apps_loading: bool,
   apps_job: Option<JobHandle<AppsBackend>>,
   fonts_job: Option<JobHandle<Vec<FontEntry>>>,
@@ -228,7 +232,8 @@ pub struct App {
 impl App {
   /// Retain handles until mutations and their result processing have completed.
   pub fn has_pending_action(&self) -> bool {
-    self.admin.busy()
+    self.shortcut_job.is_some()
+      || self.admin.busy()
       || self.task_job.is_some()
       || self.gpg_action.is_some()
       || self.input_job.is_some()
@@ -327,6 +332,8 @@ impl App {
       keybinding_super_required: false,
       keybinding_conflict: None,
       keybinding_edit_id: None,
+      custom_shortcut: custom_shortcut::ShortcutDraft::default(),
+      shortcut_job: None,
       apps_loading: true,
       apps_job: None,
       fonts_job: None,
@@ -361,6 +368,9 @@ impl App {
         .jobs
         .spawn(|_| fonts::list().map_err(|error| error.to_string())),
     );
+    if initial == Page::CustomShortcut {
+      app.open_custom_shortcut(None);
+    }
     if initial != Page::Main {
       app.select_current();
     }
@@ -394,7 +404,9 @@ impl App {
       && !self.has_keybinding_conflict()
       && matches!(
         self.page(),
-        crate::navigation::Page::KeybindingEdit | crate::navigation::Page::KeybindingCapture
+        crate::navigation::Page::KeybindingEdit
+          | crate::navigation::Page::KeybindingCapture
+          | crate::navigation::Page::CustomShortcut
       );
     self.hostname_editing || self.admin.editor.is_some() || capturing_shortcut || self.searching
   }

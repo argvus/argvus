@@ -29,6 +29,7 @@ pub enum GpgSection {
 /// Identity of one Settings menu row.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Item {
+  Page(crate::navigation::Page),
   // Settings home.
   DefaultApps,
   Fonts,
@@ -220,6 +221,16 @@ pub enum Item {
   RefreshGpgKeys,
   /// Index into the loaded keybindings.
   Keybinding(usize),
+  CustomDescription,
+  CustomKeys,
+  CaptureCustomShortcut,
+  CustomActionType,
+  CustomCommand,
+  CustomDispatcher,
+  CustomArguments,
+  SaveCustomShortcut,
+  CancelCustomShortcut,
+  DeleteCustomShortcut,
   RestoreAllShortcuts,
   ChangeShortcut,
   DisableShortcut,

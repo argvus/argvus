@@ -348,3 +348,25 @@ fn hyprland_windows_route_opens_the_wobble_controls() {
   );
   assert!(parse(&args(&["hyprland", "animations", "windows", "extra"])).is_err());
 }
+
+#[test]
+fn shortcut_routes_preserve_the_hub_and_add_create_and_list() {
+  for alias in ["shortcuts", "keybindings", "keyboard"] {
+    for (suffix, page) in [
+      (None, Page::Keybindings),
+      (Some("create"), Page::CustomShortcut),
+      (Some("list"), Page::AllShortcuts),
+    ] {
+      let mut arguments = vec![alias.to_owned()];
+      if let Some(suffix) = suffix {
+        arguments.push(suffix.into());
+      }
+      assert_eq!(
+        parse(&arguments).unwrap(),
+        Some(InitialRoute::Settings(page))
+      );
+    }
+    assert!(parse(&args(&[alias, "invalid"])).is_err());
+    assert!(parse(&args(&[alias, "create", "extra"])).is_err());
+  }
+}

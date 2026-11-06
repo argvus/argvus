@@ -1856,3 +1856,21 @@ resumo de hardware, não a cada GPU. A lista Vulkan inclui todos os registros
 por semelhança de nome ou por haver apenas uma GPU. Campos por dispositivo
 só são exibidos quando há dados específicos; as consultas atuais não os
 preenchem. Os probes globais têm limite de 1 MiB e prazo de 10 segundos.
+
+
+## Keyboard Shortcuts: criação e listagem
+
+A rota `keybindings`/`shortcuts`/`keyboard` abre o hub Desktop & Input > Keyboard Shortcuts. As subtelas são Create Shortcuts e All Shortcuts, também acessíveis por busca global e pelos sufixos CLI `create`/`list`. A listagem anterior permanece em All Shortcuts; os oficiais mantêm edição de combinação, captura, ativação e restauração. Os personalizados têm formulário próprio com descrição, teclas e ação tipada, barra Actions com Create/Save e Cancel e exclusão confirmada na zona de perigo.
+
+O formulário usa rascunho; capturar não persiste. Cancel/Esc descarta. A persistência roda em JobManager e envia um único patch, incluindo a desativação dos conflitos confirmados. Erros de gravação preservam o rascunho; erros posteriores de aplicação preservam o ID salvo para retry. Atalhos protegidos não são substituídos. Restaurar padrões não apaga personalizados e bloqueia colisões com personalizados ativos.
+
+Fonte de verdade: `/hyprland/custom_shortcuts` no argvus-config, com tipos e validação compartilhados com o settings crate. O formato oficial `/keyboard_shortcuts` permanece string/null. A projeção adicional `hypr/custom-shortcuts.lua` contém apenas dados; o consumidor Hyprland registra cada item ativo sob proteção de pcall. Nomes de dispatcher vêm da API Lua; argumentos são objetos JSON convertidos em tabelas Lua sem eval. Submaps, mouse e flags avançadas continuam fora da criação nesta versão.
+
+
+### Correções da captura, exclusão e apresentação de erros
+
+A captura de personalizados agora verifica conflitos imediatamente, preservando a combinação anterior enquanto o usuário decide. Confirmar a substituição registra apenas a combinação e os IDs aceitos no rascunho; Create/Save revalida os conflitos e persiste a substituição. Alterar a combinação limpa a autorização anterior. Cancelar nunca grava.
+
+Delete é uma linha Destructive e deve ser tratada por `confirm_item` (MenuEvent::Confirm), não por `activate`. O teste de regressão seleciona a linha e envia Enter para cobrir o caminho real da UI. Erros de exclusão preservam o registro; sucesso remove somente o item escolhido e atualiza a listagem.
+
+Os erros técnicos de atalhos usam `argvus-control-center-core::diagnostics`, com envio não bloqueante ao socket syslog local e sem fallback no terminal. O logger fica desativado nos testes de páginas; seu teste próprio usa socket temporário. O popup de erro calcula as linhas com o mesmo Paragraph/Wrap usado no desenho, reservando uma região separada para Enter OK. Testes em en-US/pt-BR e 60x15, 80x24 e 140x40 verificam mensagem, confirmação e restauração do fundo após fechar o popup.

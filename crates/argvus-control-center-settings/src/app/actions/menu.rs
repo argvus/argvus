@@ -37,7 +37,7 @@ pub(super) fn is_searchable(page: Page) -> bool {
       | Page::KeyboardLayout
       | Page::KeyboardVariant
       | Page::ConsoleKeymap
-      | Page::Keybindings
+      | Page::AllShortcuts
       | Page::SystemUsers
       | Page::GroupList
       | Page::SystemGroups
@@ -108,6 +108,23 @@ impl App {
       return;
     }
     match item {
+      Item::Page(page) => {
+        if page == Page::CustomShortcut {
+          self.open_custom_shortcut(None);
+        }
+        self.search.clear();
+        self.navigation.push(page);
+      }
+      Item::CustomDescription
+      | Item::CustomCommand
+      | Item::CustomDispatcher
+      | Item::CustomArguments => self.edit_custom_shortcut_field(item),
+      Item::CustomKeys | Item::CaptureCustomShortcut => self.begin_custom_shortcut_capture(),
+      Item::CustomActionType => {
+        self.custom_shortcut.dispatcher_action = !self.custom_shortcut.dispatcher_action
+      }
+      Item::SaveCustomShortcut => self.save_custom_shortcut(),
+      Item::CancelCustomShortcut => self.cancel_custom_shortcut(),
       Item::DefaultApps => self.navigation.push(Page::DefaultApps),
       Item::Fonts => self.navigation.push(Page::Fonts),
       Item::LocaleRegion => self.navigation.push(Page::LocaleRegion),
@@ -317,7 +334,9 @@ impl App {
       Item::RestoreShortcut => {
         self.keybinding_capturing = false;
         self.restore_edited_keybinding();
-        self.navigation.back();
+        if self.error_modal.is_none() {
+          self.navigation.back();
+        }
       }
       Item::ApplyCapture => {
         if self.keybinding_detected {
@@ -392,6 +411,9 @@ impl App {
     match item {
       Item::ResetDefaults => self.reset_current(),
       Item::RestoreAllShortcuts => self.open_confirm(PendingAction::ResetKeybindings),
+      Item::DeleteCustomShortcut => self.open_confirm(PendingAction::DeleteCustomShortcut(
+        self.custom_shortcut.id.clone(),
+      )),
       Item::RemoveWindowRule(index) => {
         if let Some(rule) = self.window_rules.get(index) {
           let name = rule.name.clone();
@@ -439,8 +461,11 @@ impl App {
       Page::SettingSelector(setting) => {
         self.open_confirm(PendingAction::ResetFontSetting(setting));
       }
-      Page::Keybindings => {
-        if let Some(binding) = self.selected_keybinding() {
+      Page::AllShortcuts => {
+        if let Some(binding) = self
+          .selected_keybinding()
+          .filter(|binding| binding.custom.is_none())
+        {
           let id = binding.id.clone();
           self.open_confirm(PendingAction::RestoreKeybinding { id, leave: false });
         }
@@ -464,6 +489,7 @@ impl App {
         | Page::TimeZone
         | Page::SystemLocales
         | Page::SshKeys
+        | Page::CustomShortcut
     )
   }
 
@@ -472,12 +498,14 @@ impl App {
   pub(crate) fn search_on_top(&self) -> bool {
     // The GPG key list and the shortcuts list have no action bar, but their
     // search still sits on top, like the pages that have one.
-    self.has_action_bar() || matches!(self.page(), Page::GpgKeyList | Page::Keybindings)
+    (self.has_action_bar() && self.page() != Page::CustomShortcut)
+      || matches!(self.page(), Page::GpgKeyList | Page::AllShortcuts)
   }
 
   /// The action bar of the current page; empty for pages without one.
   pub(crate) fn action_rows(&self) -> Vec<Row<Item>> {
     match self.page() {
+      Page::CustomShortcut => self.custom_shortcut_action_rows(),
       Page::DefaultApps => self.default_apps_action_rows(),
       Page::KeyboardLayout => self.keyboard_action_rows(),
       Page::TimeZone => self.timezone_action_rows(),
@@ -545,6 +573,10 @@ impl App {
 
   /// Leaves the search, or goes back one page.
   pub fn back(&mut self) {
+    if self.page() == Page::CustomShortcut {
+      self.cancel_custom_shortcut();
+      return;
+    }
     if self.searching || !self.search.is_empty() {
       self.searching = false;
       self.search.clear();
@@ -686,9 +718,14 @@ impl App {
       | Page::Fonts
       | Page::FontSelector(_)
       | Page::SettingSelector(_) => extra.push(("r", label("control_center.reset_defaults"))),
-      Page::Keybindings => {
+      Page::AllShortcuts => {
         extra.push(("Space", label("control_center.hint.toggle")));
-        extra.push(("r", label("control_center.restore_default")));
+        if self
+          .selected_keybinding()
+          .is_some_and(|binding| binding.custom.is_none())
+        {
+          extra.push(("r", label("control_center.restore_default")));
+        }
       }
       Page::WindowRules if matches!(self.selected_item(), Some(Item::WindowRuleWorkspace(_))) => {
         // `←/→` steps the workspace both ways, so the footer names it.

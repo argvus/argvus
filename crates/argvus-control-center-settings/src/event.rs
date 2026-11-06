@@ -65,6 +65,14 @@ fn handle_key(app: &mut App, key: KeyEvent) {
     return;
   }
 
+  if matches!(
+    app.page(),
+    Page::CustomShortcut | Page::AllShortcuts | Page::KeybindingEdit | Page::KeybindingCapture
+  ) && app.shortcut_mutation_pending()
+  {
+    return;
+  }
+
   if app.hostname_editing {
     app.hostname_input(key.code);
     return;
@@ -77,7 +85,7 @@ fn handle_key(app: &mut App, key: KeyEvent) {
 
   if matches!(
     app.page(),
-    Page::Keybindings | Page::KeybindingEdit | Page::KeybindingCapture
+    Page::AllShortcuts | Page::KeybindingEdit | Page::KeybindingCapture | Page::CustomShortcut
   ) && app.has_keybinding_conflict()
   {
     // The conflict uses the single confirmation; `r` keeps replacing.
@@ -90,6 +98,11 @@ fn handle_key(app: &mut App, key: KeyEvent) {
       ConfirmOutcome::Cancelled => app.cancel_keybinding_conflict(),
       ConfirmOutcome::Pending => {}
     }
+    return;
+  }
+
+  if app.page() == Page::CustomShortcut && app.is_keybinding_capturing() {
+    app.capture_custom_shortcut(key);
     return;
   }
 
@@ -206,7 +219,7 @@ fn handle_regular_key(app: &mut App, key: KeyEvent) {
       return;
     }
     // Space flips the shortcut under the cursor.
-    KeyCode::Char(' ') if page == Page::Keybindings => return app.toggle_selected_keybinding(),
+    KeyCode::Char(' ') if page == Page::AllShortcuts => return app.toggle_selected_keybinding(),
     _ => {}
   }
   // User page, cfdisk style: Up/Down move the info list, Left/Right move

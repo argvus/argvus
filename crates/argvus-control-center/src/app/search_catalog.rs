@@ -160,6 +160,20 @@ pub(super) fn build_search_registry(lang: Lang) -> SearchRegistry {
       "keyboard shortcuts keybindings hotkeys bindings atalhos teclado",
       "settings/keybindings",
     ),
+    (
+      "settings.shortcuts.create",
+      "card_desktop_input",
+      "control_center.shortcuts_create",
+      "create shortcut command dispatcher criar atalho comando",
+      "settings/shortcuts-create",
+    ),
+    (
+      "settings.shortcuts.list",
+      "card_desktop_input",
+      "control_center.shortcuts_all",
+      "all shortcuts custom todos atalhos personalizados",
+      "settings/shortcuts-list",
+    ),
     #[cfg(feature = "services")]
     (
       "services",

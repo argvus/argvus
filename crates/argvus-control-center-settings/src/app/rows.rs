@@ -36,7 +36,7 @@ impl App {
   }
 
   /// The trailing Danger zone of a page: its title and the given rows.
-  fn danger_zone(&self, rows: &mut Vec<Row<Item>>, danger: Vec<Row<Item>>) {
+  pub(super) fn danger_zone(&self, rows: &mut Vec<Row<Item>>, danger: Vec<Row<Item>>) {
     rows.push(Row::section(self.label("control_center.danger_zone")));
     rows.extend(danger);
   }
@@ -95,7 +95,18 @@ impl App {
       Page::Notifications => self.notification_rows(),
       Page::Hostname => self.hostname_rows(),
       Page::MouseTouchpad => self.input_rows(),
-      Page::Keybindings => self.keybinding_rows(),
+      Page::Keybindings => vec![
+        Row::submenu(
+          Item::Page(Page::CustomShortcut),
+          self.label("control_center.shortcuts_create"),
+        ),
+        Row::submenu(
+          Item::Page(Page::AllShortcuts),
+          self.label("control_center.shortcuts_all"),
+        ),
+      ],
+      Page::AllShortcuts => self.keybinding_rows(),
+      Page::CustomShortcut => self.custom_shortcut_rows(),
       Page::WindowRules => self.window_rules_rows(),
       Page::Projects => self.projects_rows(),
       Page::Snippets => self.snippets_rows(),

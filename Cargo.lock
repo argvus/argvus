@@ -485,6 +485,7 @@ dependencies = [
 name = "argvus-control-center-settings"
 version = "0.1.0"
 dependencies = [
+ "argvus-config",
  "argvus-control-center-apps",
  "argvus-control-center-core",
  "argvus-control-center-snapshot",

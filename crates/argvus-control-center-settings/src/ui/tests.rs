@@ -340,3 +340,89 @@ fn personal_language_and_keyboard_pages_do_not_require_root() {
     assert!(!rendered.contains("[WARN]"), "{page:?}");
   }
 }
+
+#[test]
+fn custom_shortcut_form_renders_fields_and_actions_in_both_languages() {
+  for locale in ["en-US", "pt-BR"] {
+    for (width, height) in [(80, 24), (60, 15), (120, 40)] {
+      let mut app = App::with_context(
+        Page::CustomShortcut,
+        crate::i18n::Lang::for_locale(locale),
+        crate::theme::Theme::load(),
+      );
+      app.resize(width, height);
+      let mut terminal = Terminal::new(TestBackend::new(width, height)).unwrap();
+      terminal.draw(|frame| draw(&mut app, frame)).unwrap();
+      let rendered: String = terminal
+        .backend()
+        .buffer()
+        .content
+        .iter()
+        .map(|cell| cell.symbol())
+        .collect();
+      assert!(
+        rendered.contains(tr(app.lang, "control_center.create")),
+        "{locale} {width}x{height}"
+      );
+      assert!(rendered.contains(tr(app.lang, "control_center.cancel")));
+      assert!(!rendered.contains("control_center."));
+    }
+  }
+}
+
+#[test]
+fn long_errors_keep_acknowledgement_visible_and_dismiss_without_damaging_the_page() {
+  for locale in ["en-US", "pt-BR"] {
+    for (width, height) in [(60, 15), (80, 24), (140, 40)] {
+      let mut app = App::with_context(
+        Page::CustomShortcut,
+        crate::i18n::Lang::for_locale(locale),
+        crate::theme::Theme::load(),
+      );
+      let message = tr(app.lang, "control_center.shortcut_invalid").to_owned();
+      app.fail(&message);
+      app.error_modal = None;
+      let mut terminal = Terminal::new(TestBackend::new(width, height)).unwrap();
+      terminal.draw(|frame| draw(&mut app, frame)).unwrap();
+      let baseline = terminal.backend().buffer().clone();
+      app.error_modal = Some(message.clone());
+      terminal.draw(|frame| draw(&mut app, frame)).unwrap();
+      let rendered: String = terminal
+        .backend()
+        .buffer()
+        .content
+        .iter()
+        .map(|cell| cell.symbol())
+        .collect();
+      assert!(
+        rendered.contains(tr(app.lang, "control_center.enter_ok")),
+        "{locale} {width}x{height}: acknowledgement clipped"
+      );
+      assert!(
+        rendered.contains(if locale == "en-US" {
+          "object."
+        } else {
+          "JSON."
+        }),
+        "{locale} {width}x{height}: last part of the error clipped"
+      );
+      for column in 0..width {
+        assert_eq!(
+          terminal.backend().buffer()[(column, 0)],
+          baseline[(column, 0)],
+          "the popup must not corrupt the outer page border"
+        );
+      }
+      for _ in 0..3 {
+        terminal.draw(|frame| draw(&mut app, frame)).unwrap();
+      }
+      crate::event::handle(&mut app, Event::Key(KeyEvent::from(KeyCode::Enter)));
+      terminal.draw(|frame| draw(&mut app, frame)).unwrap();
+      assert_eq!(
+        terminal.backend().buffer(),
+        &baseline,
+        "{locale} {width}x{height}: dismiss must restore the exact background"
+      );
+    }
+  }
+}
