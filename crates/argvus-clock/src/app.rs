@@ -974,21 +974,6 @@ impl ClockApp {
     }
   }
 
-  /// Runs `with_dialog` while the popup is hidden, then shows the popup
-  /// again. A dialog is a normal window, which a layer-shell overlay would
-  /// cover, and opening it would also move the focus away from the popup.
-  pub fn while_popup_hidden(self: &Rc<Self>, with_dialog: impl FnOnce(Box<dyn FnOnce()>)) {
-    if let Some(window) = self.window.get() {
-      window.hide();
-    }
-    let app = Rc::downgrade(self);
-    with_dialog(Box::new(move || {
-      if let Some(app) = app.upgrade() {
-        app.present(None, None);
-      }
-    }));
-  }
-
   pub fn refresh(self: &Rc<Self>) {
     if let Some(window) = self.window.get() {
       window.update(self);

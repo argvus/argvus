@@ -31,7 +31,7 @@ Keyboard: **Ctrl+1** to **Ctrl+5** switch pages, **Ctrl+N** creates an alarm, **
 
 Alarms play a real sound until you answer them:
 
-- Sounds: **Chime** (default) and **Beacon**, shipped in `/usr/share/argvus/sounds/`, an audio file of your own, or **No sound**, which must be chosen explicitly. If your file disappears, Chime plays and a message says so.
+- Sounds: **Chime** (default) and **Beacon**, shipped in `/usr/share/argvus/sounds/`.
 - **Alarm volume** (10 to 100, default 80) and **Listen to the alarm sound** are in the settings; the editor has a test button for the chosen sound.
 - A ringing alarm shows a card at the top of the screen, above other windows, and a notification, both with **Snooze** and **Dismiss**. With the card focused, **Enter** dismisses and **S** snoozes.
 - Snooze rings again after the alarm's snooze length (1 to 60 minutes, default 10).

@@ -44,10 +44,8 @@ popup is dismissed; entering it cancels that countdown, and leaving it starts an
 controller also handles keyboard focus and the same-click reopen guard shared with Focus and the
 calendar. The calendar retains its existing 800 ms focus-dismiss behavior.
 
-The alarm/timer ringing card remains a separate layer-shell surface (`argvus-clock-alarm`). The
-alarm editor hides the popup while opening GTK's `FileDialog`, then presents it again at its
-previous anchor when the dialog finishes. Scheduler, alarms and background policy do not depend
-on the popup being visible.
+The alarm/timer ringing card remains a separate layer-shell surface (`argvus-clock-alarm`).
+Scheduler, alarms and background policy do not depend on the popup being visible.
 
 ## Single instance
 

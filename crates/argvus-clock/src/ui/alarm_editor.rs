@@ -1,7 +1,6 @@
 //! Alarm editor page: time, name, repeat days, sound and snooze length.
 
-use std::cell::{Cell, RefCell};
-use std::path::PathBuf;
+use std::cell::Cell;
 use std::rc::Rc;
 
 use argvus_time_core::alarm::{
@@ -9,8 +8,8 @@ use argvus_time_core::alarm::{
   MAX_SNOOZE_MINUTES, MIN_SNOOZE_MINUTES, SoundChoice, WeekdaySet,
 };
 use chrono::{Local, NaiveTime, Utc};
+use gtk::glib;
 use gtk::prelude::*;
-use gtk::{gio, glib};
 
 use super::{card, labeled_row, page_box, relative_text};
 use crate::app::ClockApp;
@@ -18,8 +17,6 @@ use crate::app::ClockApp;
 /// Entries of the sound list, in order.
 const SOUND_CHIME: u32 = 0;
 const SOUND_BEACON: u32 = 1;
-const SOUND_FILE: u32 = 2;
-const SOUND_SILENT: u32 = 3;
 
 pub struct AlarmEditor {
   pub root: gtk::ScrolledWindow,
@@ -30,12 +27,9 @@ pub struct AlarmEditor {
   days: Vec<gtk::ToggleButton>,
   repeat_hint: gtk::Label,
   sound: gtk::DropDown,
-  file_row: gtk::Box,
-  file_name: gtk::Label,
   snooze: gtk::SpinButton,
   delete: gtk::Button,
   editing: Rc<Cell<Option<AlarmId>>>,
-  custom_file: Rc<RefCell<Option<PathBuf>>>,
 }
 
 fn time_spin(max: f64) -> gtk::SpinButton {
@@ -107,28 +101,9 @@ impl AlarmEditor {
       .wrap(true)
       .build();
 
-    let sound_names = [
-      texts.tr("sound.chime"),
-      texts.tr("sound.beacon"),
-      texts.tr("sound.file"),
-      texts.tr("sound.silent"),
-    ];
+    let sound_names = [texts.tr("sound.chime"), texts.tr("sound.beacon")];
     let sound_refs: Vec<&str> = sound_names.iter().map(String::as_str).collect();
     let sound = gtk::DropDown::from_strings(&sound_refs);
-    let file_name = gtk::Label::builder()
-      .xalign(0.0)
-      .hexpand(true)
-      .ellipsize(gtk::pango::EllipsizeMode::Middle)
-      .css_classes(["caption"])
-      .build();
-    let choose_file = gtk::Button::with_label(&texts.tr("editor.choose_file"));
-    let file_row = gtk::Box::builder()
-      .orientation(gtk::Orientation::Horizontal)
-      .spacing(8)
-      .visible(false)
-      .build();
-    file_row.append(&file_name);
-    file_row.append(&choose_file);
     let test_sound = gtk::Button::with_label(&texts.tr("action.test_sound"));
 
     let snooze = gtk::SpinButton::with_range(
@@ -150,7 +125,6 @@ impl AlarmEditor {
     details.append(&repeat_hint);
     let alerts = card();
     alerts.append(&labeled_row(&texts.tr("editor.sound"), &sound));
-    alerts.append(&file_row);
     alerts.append(&labeled_row(&texts.tr("editor.sound_test"), &test_sound));
     alerts.append(&labeled_row(&texts.tr("editor.snooze"), &snooze));
 
@@ -193,21 +167,17 @@ impl AlarmEditor {
       days,
       repeat_hint,
       sound,
-      file_row,
-      file_name,
       snooze,
       delete,
       editing: Rc::new(Cell::new(None)),
-      custom_file: Rc::default(),
     };
-    editor.connect(app, &choose_file, &test_sound, &cancel, &save);
+    editor.connect(app, &test_sound, &cancel, &save);
     editor
   }
 
   fn connect(
     &self,
     app: &Rc<ClockApp>,
-    choose_file: &gtk::Button,
     test_sound: &gtk::Button,
     cancel: &gtk::Button,
     save: &gtk::Button,
@@ -229,55 +199,11 @@ impl AlarmEditor {
         }
       });
     }
-    let file_row = self.file_row.clone();
-    self.sound.connect_selected_notify(move |dropdown| {
-      file_row.set_visible(dropdown.selected() == SOUND_FILE);
-    });
-
-    let custom_file = Rc::clone(&self.custom_file);
-    let file_name = self.file_name.clone();
-    let weak = Rc::downgrade(app);
-    choose_file.connect_clicked(move |_| {
-      let Some(app) = weak.upgrade() else {
-        return;
-      };
-      let filter = gtk::FileFilter::new();
-      filter.set_name(Some(&app.texts.tr("editor.audio_files")));
-      filter.add_mime_type("audio/*");
-      let filters = gio::ListStore::new::<gtk::FileFilter>();
-      filters.append(&filter);
-      let dialog = gtk::FileDialog::builder()
-        .title(app.texts.tr("editor.choose_file"))
-        .filters(&filters)
-        .default_filter(&filter)
-        .modal(true)
-        .build();
-      let custom_file = Rc::clone(&custom_file);
-      let file_name = file_name.clone();
-      app.while_popup_hidden(move |reshow| {
-        dialog.open(
-          None::<&gtk::Window>,
-          None::<&gio::Cancellable>,
-          move |result| {
-            if let Some(path) = result.ok().and_then(|file| file.path()) {
-              file_name.set_label(&path.display().to_string());
-              *custom_file.borrow_mut() = Some(path);
-            }
-            reshow();
-          },
-        );
-      });
-    });
-
     let weak = Rc::downgrade(app);
     let editor_sound = self.sound.clone();
-    let custom_file = Rc::clone(&self.custom_file);
     test_sound.connect_clicked(move |_| {
       if let Some(app) = weak.upgrade() {
-        app.test_sound(&sound_choice(
-          editor_sound.selected(),
-          custom_file.borrow().clone(),
-        ));
+        app.test_sound(&sound_choice(editor_sound.selected()));
       }
     });
 
@@ -315,7 +241,6 @@ impl AlarmEditor {
       days: self.days.clone(),
       sound: self.sound.clone(),
       snooze: self.snooze.clone(),
-      custom_file: Rc::clone(&self.custom_file),
       editing: Rc::clone(&self.editing),
     }
   }
@@ -340,23 +265,13 @@ impl AlarmEditor {
     for (button, day) in self.days.iter().zip(WeekdaySet::ORDER) {
       button.set_active(draft.repeat.contains(day));
     }
-    let (selected, file) = match draft.sound {
-      SoundChoice::Bundled {
-        sound: BundledSound::Chime,
-      } => (SOUND_CHIME, None),
+    let selected = match draft.sound {
       SoundChoice::Bundled {
         sound: BundledSound::Beacon,
-      } => (SOUND_BEACON, None),
-      SoundChoice::File { path } => (SOUND_FILE, Some(path)),
-      SoundChoice::Silent => (SOUND_SILENT, None),
+      } => SOUND_BEACON,
+      _ => SOUND_CHIME,
     };
     self.sound.set_selected(selected);
-    self.file_row.set_visible(selected == SOUND_FILE);
-    self.file_name.set_label(&file.as_ref().map_or_else(
-      || app.texts.tr("editor.no_file"),
-      |path| path.display().to_string(),
-    ));
-    *self.custom_file.borrow_mut() = file;
     self.snooze.set_value(f64::from(draft.snooze_minutes));
     self.delete.set_visible(id.is_some());
     self.hour.grab_focus();
@@ -401,7 +316,6 @@ struct Fields {
   days: Vec<gtk::ToggleButton>,
   sound: gtk::DropDown,
   snooze: gtk::SpinButton,
-  custom_file: Rc<RefCell<Option<PathBuf>>>,
   editing: Rc<Cell<Option<AlarmId>>>,
 }
 
@@ -419,22 +333,19 @@ impl Fields {
       label: self.label.text().to_string(),
       time: AlarmTime::new(field(&self.hour), field(&self.minute)).unwrap_or(AlarmTime::MIDNIGHT),
       repeat,
-      sound: sound_choice(self.sound.selected(), self.custom_file.borrow().clone()),
+      sound: sound_choice(self.sound.selected()),
       snooze_minutes: u32::try_from(self.snooze.value_as_int()).unwrap_or(DEFAULT_SNOOZE_MINUTES),
     };
     (self.editing.get(), draft)
   }
 }
 
-/// The choice for the selected list entry. "Custom file" without a file
-/// falls back to the chime rather than to silence.
-fn sound_choice(selected: u32, file: Option<PathBuf>) -> SoundChoice {
-  match (selected, file) {
-    (SOUND_BEACON, _) => SoundChoice::Bundled {
+/// Maps the alarm editor selection to its bundled sound.
+fn sound_choice(selected: u32) -> SoundChoice {
+  match selected {
+    SOUND_BEACON => SoundChoice::Bundled {
       sound: BundledSound::Beacon,
     },
-    (SOUND_FILE, Some(path)) => SoundChoice::File { path },
-    (SOUND_SILENT, _) => SoundChoice::Silent,
     _ => SoundChoice::default(),
   }
 }
@@ -444,13 +355,12 @@ mod tests {
   use super::*;
 
   #[test]
-  fn custom_file_without_a_file_is_not_silent() {
-    assert_eq!(sound_choice(SOUND_FILE, None), SoundChoice::default());
-    assert_eq!(sound_choice(SOUND_SILENT, None), SoundChoice::Silent);
+  fn alarm_sound_choices_are_bundled() {
+    assert_eq!(sound_choice(SOUND_CHIME), SoundChoice::default());
     assert_eq!(
-      sound_choice(SOUND_FILE, Some(PathBuf::from("/a.ogg"))),
-      SoundChoice::File {
-        path: PathBuf::from("/a.ogg")
+      sound_choice(SOUND_BEACON),
+      SoundChoice::Bundled {
+        sound: BundledSound::Beacon
       }
     );
   }

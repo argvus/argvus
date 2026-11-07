@@ -31,7 +31,7 @@ Teclado: **Ctrl+1** a **Ctrl+5** trocam de página, **Ctrl+N** cria um alarme, *
 
 Os alarmes tocam um som de verdade até você responder:
 
-- Sons: **Carrilhão** (padrão) e **Sinal**, instalados em `/usr/share/argvus/sounds/`, um arquivo de áudio seu, ou **Sem som**, que precisa ser escolhido explicitamente. Se o seu arquivo sumir, o Carrilhão toca e uma mensagem avisa.
+- Sons: **Carrilhão** (padrão) e **Sinal**, instalados em `/usr/share/argvus/sounds/`.
 - **Volume do alarme** (10 a 100, padrão 80) e **Ouvir o som do alarme** ficam nas configurações; o editor tem um botão de teste para o som escolhido.
 - Um alarme tocando mostra um cartão no topo da tela, acima das outras janelas, e uma notificação, ambos com **Soneca** e **Dispensar**. Com o cartão em foco, **Enter** dispensa e **S** ativa a soneca.
 - A soneca toca de novo após a duração de soneca do alarme (1 a 60 minutos, padrão 10).
