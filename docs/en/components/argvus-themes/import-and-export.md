@@ -19,6 +19,8 @@ The archive, `argvus-theme-<id>.tar.gz`, holds one theme directory, laid out lik
 
 The manifest is based on the active theme, with your name, a new id, your highlight color as the palette accent and the wallpaper beside it. The appearance profile preserves the visual settings currently applied in ARGVUS, including window spacing, borders, taskbar margins, panel presentation, colors, effects and fonts. Custom wallpaper and accent color are stored with the theme. Applying any theme reapplies its complete profile (or the ARGVUS defaults when no profile exists), replacing independent visual changes made since it was last applied. Switching Sticky or Float always reapplies that mode's window and taskbar geometry; save personal geometry in an exported custom theme to keep it available when that theme is applied. Non-visual settings such as audio, keyboard and network preferences are not part of a theme.
 
+The applied appearance persists across session restarts and reloads. Session preparation rebuilds the necessary files from the current configuration without restoring the original theme's geometry.
+
 Settings changed after applying a theme are temporary across the next theme or mode change. Export the theme from **Control Center → Appearance → Themes → Export theme** to preserve the current visual configuration and restore it later by applying that exported theme.
 
 Your themes are installed in `~/.local/share/argvus/themes/<id>/`. Extracting an archive there installs the theme too.

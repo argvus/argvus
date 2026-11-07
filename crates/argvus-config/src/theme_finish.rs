@@ -26,8 +26,11 @@ pub struct Finish<'a> {
 /// switch shows, without its `theme.` prefix.
 pub fn run(paths: &SessionPaths, finish: &Finish) -> Result<(), &'static str> {
   restore_accent()?;
-  run_hypr_geometry(paths)?;
-  clear_custom_wallpaper(paths);
+  let projecting = env::var("ARGVUS_PROJECTING").as_deref() == Ok("1");
+  run_hypr_geometry(paths, projecting)?;
+  if !projecting {
+    clear_custom_wallpaper(paths);
+  }
   if let Some(file) = user_copy::config_path(paths, "appearance/config/hypr/hyprpaper.conf") {
     appearance_runtime::apply_wallpaper(&file, finish.wallpaper, finish.runtime);
   }
@@ -67,18 +70,25 @@ fn restore_accent() -> Result<(), &'static str> {
   }
 }
 
-/// The Hyprland spacing and borders of the selected mode: reset, then apply the
-/// borders with the user's layout.
-fn run_hypr_geometry(paths: &SessionPaths) -> Result<(), &'static str> {
+/// Materialization preserves projected geometry; an explicit switch resets it
+/// before the canonical profile is projected again.
+fn run_hypr_geometry(paths: &SessionPaths, projecting: bool) -> Result<(), &'static str> {
   if let Some(spaces) =
     user_copy::config_path(paths, "hyprland/sh/spaces-switch.sh").filter(|path| path.is_file())
   {
-    run_script(&spaces, "--reset").map_err(|()| "spaces_failed")?;
+    let argument = if projecting {
+      "--apply-static"
+    } else {
+      "--reset"
+    };
+    run_script(&spaces, argument).map_err(|()| "spaces_failed")?;
   }
   if let Some(borders) =
     user_copy::config_path(paths, "hyprland/sh/borders-switch.sh").filter(|path| path.is_file())
   {
-    run_script(&borders, "--reset").map_err(|()| "borders_failed")?;
+    if !projecting {
+      run_script(&borders, "--reset").map_err(|()| "borders_failed")?;
+    }
     run_script(&borders, "--apply-static").map_err(|()| "borders_failed")?;
   }
   Ok(())
@@ -105,4 +115,35 @@ fn run_script(script: &Path, argument: &str) -> Result<(), ()> {
 fn clear_custom_wallpaper(paths: &SessionPaths) {
   let _ = fs::remove_file(paths.config_home.join("argvus/data/.wallpaper-custom"));
   let _ = fs::remove_file(paths.config_home.join("argvus/.wallpaper-custom"));
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  #[test]
+  fn materializing_theme_preserves_projected_geometry() {
+    let root = env::temp_dir().join(format!("argvus-theme-geometry-{}", std::process::id()));
+    let scripts = root.join("system/hyprland/sh");
+    fs::create_dir_all(&scripts).unwrap();
+    let log = root.join("calls");
+    for name in ["spaces-switch.sh", "borders-switch.sh"] {
+      fs::write(
+        scripts.join(name),
+        format!("printf '%s %s\\n' '{name}' \"$1\" >> '{}'\n", log.display()),
+      )
+      .unwrap();
+    }
+    let paths = SessionPaths {
+      config_home: root.join("config"),
+      data_home: root.join("data"),
+      system_config: root.join("system"),
+    };
+    run_hypr_geometry(&paths, true).unwrap();
+    assert_eq!(
+      fs::read_to_string(&log).unwrap(),
+      "spaces-switch.sh --apply-static\nborders-switch.sh --apply-static\n"
+    );
+    fs::remove_dir_all(root).unwrap();
+  }
 }
