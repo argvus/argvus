@@ -8,6 +8,7 @@ mod home_and_navigation;
 mod mirror_pages;
 mod package_lists;
 mod repository_pages;
+mod search;
 mod transactions;
 
 fn app() -> PackagesApp {

@@ -27,6 +27,17 @@ impl PackagesApp {
         confirm_hints(self.lang)
       };
     }
+    if self.search_focused && filters_while_typing(self.page) {
+      return tr(
+        self.lang,
+        if self.is_install_search() {
+          "control_center.package_search_edit_help"
+        } else {
+          "control_center.package_filter_edit_help"
+        },
+      )
+      .into();
+    }
     if let PackagesPage::Task(_, task) = self.page {
       return self.task_footer_hints(rows, task);
     }
@@ -170,22 +181,42 @@ impl PackagesApp {
   }
 
   /// The filter of a list: a bordered `Search:` line that shows the typed
-  /// text, highlighted while the letters go to it (the list has the focus).
+  /// text and cursor, highlighted only while Search owns the input.
   pub(super) fn draw_search_box(&self, f: &mut Frame, area: Rect) {
-    let (border, cursor) = if self.actions.cursor().is_none() && self.captures_text() {
+    let (border, cursor) = if self.search_focused && self.captures_text() {
       (self.theme.border_active, "▌")
     } else {
       (self.theme.border, "")
     };
+    let (mut before, after) = if self.search_focused {
+      self
+        .query
+        .split_at_checked(self.query_cursor)
+        .unwrap_or((&self.query, ""))
+    } else {
+      (&self.query[..], "")
+    };
+    let label = format!("{}: ", tr(self.lang, "control_center.search_2c43ee"));
+    let available = usize::from(area.width.saturating_sub(2))
+      .saturating_sub(argvus_tui::text::display_width(&label));
+    if self.search_focused {
+      // Scroll only the query, keeping both the Search label and editing cursor visible.
+      while argvus_tui::text::display_width(before) + 1 > available {
+        let Some(character) = before.chars().next() else {
+          break;
+        };
+        before = &before[character.len_utf8()..];
+      }
+    }
     let line = Line::from(vec![
       Span::styled(
-        format!("{}: ", tr(self.lang, "control_center.search_2c43ee")),
+        label,
         Style::new()
           .fg(self.theme.accent)
           .add_modifier(Modifier::BOLD),
       ),
       Span::styled(
-        format!("{}{cursor}", self.query),
+        format!("{before}{cursor}{after}"),
         Style::new().fg(self.theme.foreground),
       ),
     ]);
@@ -238,13 +269,8 @@ impl PackagesApp {
   /// Draws the input field, the confirmation, the status and the live
   /// transaction output over the page.
   pub(super) fn overlays(&self, f: &mut Frame) {
-    if let Some(input) = &self.input {
-      let mode = self.input_mode.unwrap_or(InputMode::Search);
+    if let (Some(input), Some(mode)) = (&self.input, self.input_mode) {
       let (title, prompt) = match mode {
-        InputMode::Search => (
-          tr(self.lang, "control_center.search_2c43ee"),
-          tr(self.lang, "control_center.search_packages"),
-        ),
         InputMode::MirrorAge => (
           tr(self.lang, "control_center.maximum_age"),
           tr(self.lang, "control_center.input_5ca63b"),

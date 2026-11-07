@@ -53,6 +53,7 @@ mod jobs;
 mod navigation;
 mod render;
 mod rows;
+mod search;
 
 enum Loaded {
   Packages(Vec<Package>),
@@ -155,8 +156,6 @@ impl Action {
 /// What the open text field edits.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum InputMode {
-  /// The package search query (`/`).
-  Search,
   /// Reflector maximum age, in hours.
   MirrorAge,
   /// Reflector mirror count.
@@ -288,6 +287,8 @@ pub struct PackagesApp {
   details_parent: PackagesPage,
   details_origin: Option<Item>,
   query: String,
+  search_focused: bool,
+  query_cursor: usize,
   job: Option<JobHandle<Result<Loaded, String>>>,
   loading_key: Option<String>,
   last_loaded: Option<(String, std::time::Instant)>,
@@ -398,6 +399,8 @@ impl PackagesApp {
       details_parent: PackagesPage::Task(PackageSource::Official, PackageTask::Install),
       details_origin: None,
       query: String::new(),
+      search_focused: false,
+      query_cursor: 0,
       job: None,
       loading_key: None,
       last_loaded: None,

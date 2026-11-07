@@ -39,6 +39,9 @@ fn interrupted_and_failed_transactions_show_localized_errors() {
     ] {
       let mut app = app();
       app.lang = Lang::for_locale(locale);
+      let (session, io) = PackageTerminal::new(10, 80);
+      drop(io);
+      app.terminal = Some(session);
       app.running = Some(Action::Upgrade);
       app.action = Some(app.jobs.spawn(move |_| Ok(Err(key.into()))));
       let deadline = std::time::Instant::now() + std::time::Duration::from_secs(2);
@@ -51,6 +54,8 @@ fn interrupted_and_failed_transactions_show_localized_errors() {
       assert!(matches!(status.kind, StatusKind::Error));
       assert_eq!(status.text, tr(app.lang, key));
       assert!(!status.text.contains("control_center."));
+      app.sync_transaction_output();
+      assert!(!app.terminal.as_ref().unwrap().view.contains_text("Done!"));
       assert!(app.running.is_none());
       assert!(app.job.is_none());
     }
@@ -412,6 +417,7 @@ fn hiding_and_reopening_retains_the_running_session_and_its_input() {
     KeyCode::Enter,
     KeyCode::Char('q'),
     KeyCode::Char('?'),
+    KeyCode::Char('/'),
   ] {
     app.handle_key(code.into());
   }
@@ -423,6 +429,8 @@ fn hiding_and_reopening_retains_the_running_session_and_its_input() {
   assert_eq!(io.next_input(), Some(b"\r".to_vec()));
   assert_eq!(io.next_input(), Some(b"q".to_vec()));
   assert_eq!(io.next_input(), Some(b"?".to_vec()));
+  assert_eq!(io.next_input(), Some(b"/".to_vec()));
+  assert!(app.input.is_none() && !app.search_focused);
   assert_eq!(io.next_input(), Some(vec![3]));
   app.paste("answer");
   assert_eq!(io.next_input(), Some(b"answer".to_vec()));
@@ -515,4 +523,38 @@ fn the_retained_terminal_does_not_replace_empty_install_search() {
   app.handle_key(KeyCode::Enter.into());
   assert!(app.job.is_some(), "Enter must still search the typed query");
   assert!(!app.transaction_open);
+}
+
+#[test]
+fn successful_package_operations_show_done_in_both_languages_when_reopened() {
+  for locale in ["en-US", "pt-BR"] {
+    for action in [
+      Action::RefreshDatabase,
+      Action::CleanCache("keep-three"),
+      Action::Install(vec!["example".into()]),
+      Action::Remove(vec!["example".into()]),
+      Action::Upgrade,
+      Action::AurUpgrade,
+    ] {
+      let mut app = app();
+      app.lang = Lang::for_locale(locale);
+      let (session, io) = PackageTerminal::new(10, 80);
+      io.emit(b"last output\r\n");
+      drop(io);
+      app.terminal = Some(session);
+      app.running = Some(action);
+      app.action = Some(app.jobs.spawn(|_| Ok(Ok(String::new()))));
+      let deadline = std::time::Instant::now() + std::time::Duration::from_secs(2);
+      while app.has_pending_action() {
+        app.poll_action();
+        assert!(std::time::Instant::now() < deadline);
+        std::thread::yield_now();
+      }
+      app.handle_key(KeyCode::F(8).into());
+      let text = screen(&mut app, 100, 30);
+      assert!(text.contains("last output"), "{text}");
+      assert_eq!(text.matches("Done!").count(), 1, "{text}");
+      assert!(!text.contains("control_center."), "{text}");
+    }
+  }
 }

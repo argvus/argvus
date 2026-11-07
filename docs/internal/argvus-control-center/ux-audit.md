@@ -1905,3 +1905,27 @@ A cobertura usa comandos de teste inofensivos em PTY real para prompts sem
 quebra de linha, respostas, edição, ANSI, redimensionamento, interrupção e falha
 de inicialização; testes da UI cobrem ocultar/reabrir, colagem e foco, e a validação
 do helper rejeita ações e argumentos fora do contrato antes da elevação.
+
+
+## Barra Search como fonte da pesquisa de Packages
+
+A consulta editável fica exclusivamente em `query`, renderizada na barra superior.
+`/` transfere o foco para essa barra, preservando a consulta; a entrada de Search
+não usa mais o editor suspenso nem `InputMode::Search`. Os campos numéricos de
+mirrors preservam seus diálogos. O foco inicia na lista; digitar passa à barra.
+Setas horizontais, Home/End, Backspace/Delete e colagem editam a consulta em UTF-8
+com o limite existente. O texto da barra rola horizontalmente para manter o cursor
+visível sem ocultar seu rótulo.
+
+Enter na barra de Instalar confirma a consulta, cancela a requisição anterior,
+limpa resultados antigos e transfere o foco à lista. Editar cancela a consulta
+remota pendente e limpa resultados; só Enter inicia outra. Resultados obsoletos
+são descartados sem novo envio automático. Listas locais mantêm o carregamento
+independente do texto do filtro, evitando consultas adicionais a cada edição.
+As validações de consulta oficial não vazia e AUR com pelo menos dois caracteres
+permanecem. Enter na barra das listas locais apenas passa aos resultados.
+
+Seta para baixo sai da barra; seta para cima no primeiro resultado volta à barra.
+Esc na barra preserva texto e página e devolve o foco à lista. Na lista, Enter
+executa a ação do pacote; a barra de ações de Atualizar segue acessível por Tab.
+O terminal interativo, confirmações e editores mantêm prioridade de entrada.

@@ -38,7 +38,8 @@ fn filtered_lists_show_the_search_box_on_top_and_the_results_block() {
       version: "1.0".into(),
       ..Default::default()
     }];
-    app.handle(KeyCode::Char('l'));
+    app.query = "l".into();
+    app.handle(KeyCode::Char('/'));
     let text = screen(&mut app, 90, 25);
     assert!(text.contains("Search: l▌"), "{page:?}\n{text}");
     assert!(text.contains("┌Results"), "{page:?}\n{text}");
@@ -59,7 +60,7 @@ fn empty_filtered_lists_say_why() {
   app.page = OFFICIAL_INSTALL;
   app.packages.clear();
   app.query.clear();
-  assert!(screen(&mut app, 90, 25).contains("Press / to search packages"));
+  assert!(screen(&mut app, 90, 25).contains("press Enter to search packages"));
 }
 
 #[test]
@@ -319,19 +320,21 @@ fn search_pages_do_not_spawn_until_a_valid_query_is_confirmed() {
   assert!(app.status.as_ref().unwrap().text.contains("at least 2"));
   app.handle(KeyCode::Char('a'));
   app.handle(KeyCode::Enter);
-  assert!(app.job.is_none());
-  assert!(app.status.as_ref().unwrap().text.contains("at least 2"));
+  assert!(app.job.is_some());
+  assert!(!app.search_focused);
 }
 
 #[test]
-fn cancelling_package_search_clears_the_query() {
+fn escape_leaves_search_without_clearing_the_query_or_leaving_the_page() {
   let mut app = app();
   app.page = OFFICIAL_INSTALL;
   app.query = "firefox".into();
-  app.input = Some(app.query.clone());
-  app.input_mode = Some(InputMode::Search);
+  app.handle(KeyCode::Char('/'));
+  assert!(app.search_focused);
   app.handle(KeyCode::Esc);
-  assert!(app.query.is_empty());
+  assert_eq!(app.query, "firefox");
+  assert_eq!(app.page, OFFICIAL_INSTALL);
+  assert!(!app.search_focused);
   assert!(app.input.is_none());
 }
 
@@ -448,9 +451,9 @@ fn aur_rows_open_and_install_the_filtered_package() {
       ..Default::default()
     },
   ];
-  for key in "paru".chars() {
-    app.handle(KeyCode::Char(key));
-  }
+  app.query = "paru".into();
+  app.handle(KeyCode::Char('/'));
+  app.handle(KeyCode::Down);
   app.handle(KeyCode::Right);
   assert_eq!(app.page, PackagesPage::Details);
   assert_eq!(app.details_target().as_deref(), Some("paru-bin"));
@@ -474,6 +477,7 @@ fn space_marks_orphans_and_the_marks_follow_the_filter() {
   for key in "lib".chars() {
     app.handle(KeyCode::Char(key));
   }
+  app.handle(KeyCode::Down); // Leave Search for the first matching orphan.
   app.handle(KeyCode::Down);
   app.handle(KeyCode::Char(' '));
   assert_eq!(app.marked, ["libbaz"]);
@@ -654,7 +658,11 @@ fn stale_package_error_is_discarded_after_search_changes() {
     std::thread::yield_now();
   }
   assert!(app.last_loaded.is_none());
-  assert_eq!(app.loading_key.as_deref(), Some(app.reload_key().as_str()));
+  assert!(app.loading_key.is_none());
+  assert!(
+    app.job.is_none(),
+    "editing must not automatically submit another query"
+  );
   assert!(
     !app
       .status

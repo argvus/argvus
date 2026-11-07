@@ -7,7 +7,7 @@ use std::{
   io::{Read, Write},
   sync::{
     Arc, Mutex,
-    mpsc::{self, Receiver, SyncSender},
+    mpsc::{self, Receiver, SyncSender, TryRecvError},
   },
   thread,
 };
@@ -37,6 +37,8 @@ pub(super) struct PackageTerminal {
   control: Arc<Mutex<Control>>,
   pub result: Option<bool>,
   pub notice: Option<String>,
+  output_closed: bool,
+  completion_message: Option<String>,
 }
 
 /// Sent to the existing background job that starts and waits for the command.
@@ -65,6 +67,8 @@ impl PackageTerminal {
         control: control.clone(),
         result: None,
         notice: None,
+        output_closed: false,
+        completion_message: None,
       },
       TerminalIo {
         output: output_sender,
@@ -79,13 +83,37 @@ impl PackageTerminal {
   pub fn poll(&mut self) -> bool {
     let mut changed = false;
     for _ in 0..16 {
-      let Ok(bytes) = self.output.try_recv() else {
-        break;
+      let bytes = match self.output.try_recv() {
+        Ok(bytes) => bytes,
+        Err(TryRecvError::Empty) => break,
+        Err(TryRecvError::Disconnected) => {
+          self.output_closed = true;
+          break;
+        }
       };
       self.view.process(&bytes);
       changed = true;
     }
+    // The process may exit before the PTY reader drains its final bytes. Only
+    // append the success marker once every producer has closed the output queue.
+    if self.output_closed
+      && let Some(message) = self.completion_message.take()
+    {
+      self
+        .view
+        .process(format!("\r\n\x1b[0m{message}\r\n").as_bytes());
+      changed = true;
+    }
     changed
+  }
+
+  pub fn finish_success(&mut self, message: &str) {
+    if self.result == Some(true) {
+      return;
+    }
+    self.result = Some(true);
+    self.completion_message = Some(message.to_owned());
+    self.poll();
   }
 
   pub fn resize(&mut self, rows: u16, columns: u16) -> Result<(), String> {

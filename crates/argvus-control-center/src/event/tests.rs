@@ -586,3 +586,31 @@ fn package_terminal_receives_global_quit_help_and_interrupt_keys() {
   assert!(app.packages.terminal_focused());
   assert!(!app.help);
 }
+
+#[cfg(feature = "packages")]
+#[test]
+fn package_search_shortcut_and_paste_edit_the_top_bar() {
+  use argvus_control_center_packages::{PackageSource, PackageTask, PackagesPage};
+  let mut app = App::new(InitialRoute::Packages(PackagesPage::Task(
+    PackageSource::Official,
+    PackageTask::Install,
+  )));
+  handle(&mut app, press(KeyCode::Char('/')));
+  handle(&mut app, Event::Paste("firefox".into()));
+  handle(&mut app, press(KeyCode::Esc));
+  assert_eq!(app.route, Route::Packages);
+  let mut terminal = ratatui::Terminal::new(ratatui::backend::TestBackend::new(100, 30)).unwrap();
+  terminal.draw(|frame| app.packages.draw(frame)).unwrap();
+  let text = terminal
+    .backend()
+    .buffer()
+    .content
+    .iter()
+    .map(|cell| cell.symbol())
+    .collect::<String>();
+  assert!(
+    text.contains("firefox"),
+    "Esc must preserve the query in Search: {text}"
+  );
+  assert!(!app.help);
+}

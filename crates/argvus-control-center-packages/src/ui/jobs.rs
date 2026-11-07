@@ -23,7 +23,11 @@ impl PackagesApp {
     format!(
       "{:?}|{}|{}",
       self.page,
-      self.query,
+      if self.is_install_search() {
+        &self.query
+      } else {
+        ""
+      },
       self.details_target().unwrap_or_default()
     )
   }
@@ -152,7 +156,10 @@ impl PackagesApp {
             .as_ref()
             .is_some_and(|key| key != &self.reload_key())
           {
-            self.start_reload(true);
+            // A changed Install query must wait for Enter, never auto-submit.
+            if !self.is_install_search() {
+              self.start_reload(true);
+            }
             return true;
           }
           match result {
@@ -185,7 +192,7 @@ impl PackagesApp {
       JobState::Finished(Ok(Ok(_output))) => {
         self.action = None;
         if let Some(terminal) = &mut self.terminal {
-          terminal.result = Some(true);
+          terminal.finish_success(tr(self.lang, "control_center.package_terminal_done"));
         }
         self.success(tr(
           self.lang,

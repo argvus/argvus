@@ -177,3 +177,36 @@ fn denied_or_cancelled_authentication_exit_codes_are_failures() {
     assert!(terminal.view.contains_text("authorization unavailable"));
   }
 }
+
+#[test]
+fn success_message_follows_all_pending_output_and_is_appended_once() {
+  let (mut terminal, io) = PackageTerminal::new(8, 60);
+  for _ in 0..32 {
+    io.emit(b"progress\r\n");
+  }
+  terminal.finish_success("Done!");
+  assert!(!terminal.view.contains_text("Done!"));
+  // Even after process completion, the reader may still have a final chunk.
+  io.emit(b"last output\r\n");
+  drop(io);
+  terminal.poll();
+  assert!(!terminal.view.contains_text("Done!"));
+  assert!(terminal.poll());
+  assert!(terminal.view.contains_text("last output"));
+  assert!(terminal.view.contains_text("Done!"));
+  assert!(!terminal.poll());
+  terminal.finish_success("Done!");
+  assert!(!terminal.poll());
+}
+
+#[test]
+fn real_pty_success_appends_done_after_the_reader_finishes() {
+  let (mut terminal, worker) = start("printf 'final command output'");
+  wait_for(&mut terminal, |_| worker.is_finished());
+  assert!(worker.join().unwrap().is_ok());
+  terminal.finish_success("Done!");
+  wait_for(&mut terminal, |terminal| {
+    terminal.view.contains_text("Done!")
+  });
+  assert!(terminal.view.contains_text("final command output"));
+}

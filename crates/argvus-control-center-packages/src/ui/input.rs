@@ -79,6 +79,9 @@ impl PackagesApp {
       self.handle_transaction(key);
       return false;
     }
+    if filters_while_typing(self.page) && self.handle_filter_key(key) {
+      return false;
+    }
     if has_action_bar(self.page) && self.handle_action_bar(key) {
       return false;
     }
@@ -89,11 +92,10 @@ impl PackagesApp {
     if matches!(key, KeyCode::Tab | KeyCode::BackTab) {
       return false;
     }
-    if filters_while_typing(self.page) {
-      if self.handle_filter_key(key) {
-        return false;
-      }
-    } else if key == KeyCode::Char('r') && self.page != PackagesPage::MirrorEditor {
+    if !filters_while_typing(self.page)
+      && key == KeyCode::Char('r')
+      && self.page != PackagesPage::MirrorEditor
+    {
       if !self.destructive() {
         self.reload_force();
       }
@@ -132,6 +134,15 @@ impl PackagesApp {
       return false;
     }
     let Some((field, editor)) = self.editor.as_mut() else {
+      if self.search_focused
+        && self.pending.is_none()
+        && key
+          .modifiers
+          .intersects(KeyModifiers::CONTROL | KeyModifiers::ALT)
+        && matches!(key.code, KeyCode::Char(_))
+      {
+        return false;
+      }
       return self.handle(key.code);
     };
     match editor.handle(key) {
@@ -158,6 +169,12 @@ impl PackagesApp {
     }
     if let Some((_, editor)) = self.editor.as_mut() {
       editor.paste(text);
+    } else if self.search_focused
+      && self.pending.is_none()
+      && !self.destructive()
+      && filters_while_typing(self.page)
+    {
+      self.insert_search_text(text);
     }
   }
 
@@ -272,85 +289,6 @@ impl PackagesApp {
     }
   }
 
-  /// Keys of the lists that filter while typing (D8). Returns whether the
-  /// key was used; arrows, PgUp/PgDn, Home/End, Enter and Esc go on to the
-  /// menu.
-  pub(super) fn handle_filter_key(&mut self, key: KeyCode) -> bool {
-    match key {
-      KeyCode::Char(' ') if self.page == PackagesPage::Orphans => {
-        if !self.destructive() {
-          self.toggle_mark();
-        }
-      }
-      KeyCode::Char('/') => {
-        if !self.destructive() {
-          self.input = Some(self.query.clone());
-          self.input_mode = Some(InputMode::Search);
-        }
-      }
-      KeyCode::Char(c) if !c.is_control() => {
-        if !self.destructive() && self.query.len() < QUERY_MAX {
-          self.query.push(c);
-          self.cursor_to_first_entry();
-        }
-      }
-      KeyCode::Backspace => {
-        if !self.destructive() {
-          self.query.pop();
-          self.cursor_to_first_entry();
-        }
-      }
-      // With nothing to install, Enter on the Install lists searches for
-      // the typed text, as before.
-      KeyCode::Enter
-        if matches!(self.page, PackagesPage::Task(_, PackageTask::Install))
-          && !self.rows().iter().any(Row::is_selectable) =>
-      {
-        if !self.destructive() {
-          self.search_typed_query();
-        }
-      }
-      _ => return false,
-    }
-    true
-  }
-
-  /// Runs the remote search for the typed filter on Search and AUR.
-  pub(super) fn search_typed_query(&mut self) {
-    let minimum = if self.on_aur_search() { 2 } else { 1 };
-    if self.query.trim().chars().count() < minimum {
-      self.error(tr(
-        self.lang,
-        if self.on_aur_search() {
-          "control_center.aur_search_requires_at_least_2_characters"
-        } else {
-          "control_center.enter_a_non_empty_search_query"
-        },
-      ));
-    } else {
-      self.reload();
-    }
-  }
-
-  /// The AUR Install list, whose remote search needs two characters.
-  pub(super) fn on_aur_search(&self) -> bool {
-    self.page == PackagesPage::Task(PackageSource::Aur, PackageTask::Install)
-  }
-
-  /// After the filter changed, puts the cursor on the first package, as the
-  /// lists did before (or on the first selectable row without matches).
-  pub(super) fn cursor_to_first_entry(&mut self) {
-    self.menu = MenuState::default();
-    let rows = self.rows();
-    if let Some(first) = rows
-      .iter()
-      .filter(|row| row.is_selectable())
-      .find_map(|row| row.id().copied().filter(|item| item.is_list_entry()))
-    {
-      self.menu.select(&rows, &first);
-    }
-  }
-
   /// Space on an orphan marks or unmarks it for `Remove marked`.
   pub(super) fn toggle_mark(&mut self) {
     let rows = self.rows();
@@ -368,7 +306,9 @@ impl PackagesApp {
   }
 
   pub(super) fn handle_input(&mut self, key: KeyCode) -> bool {
-    let mode = self.input_mode.unwrap_or(InputMode::Search);
+    let Some(mode) = self.input_mode else {
+      return false;
+    };
     let Some(input) = self.input.as_mut() else {
       return false;
     };
@@ -380,45 +320,15 @@ impl PackagesApp {
       KeyCode::Esc => {
         self.input = None;
         self.input_mode = None;
-        if mode == InputMode::Search {
-          self.query.clear();
-          self.packages.clear();
-          self.aur.clear();
-          self.menu = MenuState::default();
-        }
       }
       KeyCode::Enter => {
         let candidate = self.input.take().unwrap_or_default();
         self.input_mode = None;
-        match mode {
-          InputMode::Search => self.apply_search_input(candidate),
-          InputMode::MirrorAge | InputMode::MirrorCount => {
-            self.apply_number_input(mode, &candidate)
-          }
-        }
+        self.apply_number_input(mode, &candidate);
       }
       _ => {}
     }
     false
-  }
-
-  /// Confirms the `/` search field.
-  pub(super) fn apply_search_input(&mut self, candidate: String) {
-    let minimum = if self.on_aur_search() { 2 } else { 1 };
-    if candidate.trim().chars().count() < minimum {
-      self.error(if self.on_aur_search() {
-        tr(
-          self.lang,
-          "control_center.aur_search_requires_at_least_2_characters",
-        )
-      } else {
-        tr(self.lang, "control_center.enter_a_non_empty_search_query")
-      });
-      return;
-    }
-    self.query = candidate;
-    self.menu = MenuState::default();
-    self.reload()
   }
 
   /// Confirms the numeric field of a reflector option, within its bounds.
@@ -447,11 +357,9 @@ impl PackagesApp {
   }
 }
 
-/// Whether the open field takes `character`: the search takes any text up
-/// to its limit; the reflector numbers take digits only.
+/// Reflector numeric fields accept only digits within their length limit.
 pub(super) fn accepts_input_char(mode: InputMode, input: &str, character: char) -> bool {
   match mode {
-    InputMode::Search => !character.is_control() && input.len() < QUERY_MAX,
     InputMode::MirrorAge => character.is_ascii_digit() && input.len() < 4,
     InputMode::MirrorCount => character.is_ascii_digit() && input.len() < 3,
   }

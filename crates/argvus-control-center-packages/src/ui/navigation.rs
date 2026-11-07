@@ -21,6 +21,8 @@ impl PackagesApp {
   /// Opens `page` with the cursor on its first selectable row.
   pub(super) fn go(&mut self, page: PackagesPage) {
     self.page = page;
+    self.search_focused = false;
+    self.query_cursor = 0;
     self.menu = MenuState::default();
     self.actions = ActionFocus::default();
   }
