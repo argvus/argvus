@@ -718,56 +718,6 @@ impl<R: ProcessRunner> SnapshotBackend<R> {
     Ok(Integration::Ready { config, snapshots })
   }
 
-  /// Create one verified root snapshot before an ARGVUS package update.
-  pub fn create_pre_upgrade(&self) -> SnapshotResult<u32> {
-    const DESCRIPTION: &str = "ARGVUS pre-upgrade package snapshot";
-    let config = match self.inspect(None)? {
-      Integration::Ready { config, .. } => config,
-      Integration::NonBtrfs(filesystem) => {
-        return Err(SnapshotError::new(
-          ErrorKind::Incompatible,
-          format!("root filesystem {filesystem} is not supported for pre-update snapshots"),
-        ));
-      }
-      Integration::MissingSnapper => {
-        return Err(SnapshotError::new(
-          ErrorKind::Incompatible,
-          "Snapper is not installed; package update was not started",
-        ));
-      }
-      Integration::NoConfig => {
-        return Err(SnapshotError::new(
-          ErrorKind::Incompatible,
-          "no Snapper configuration manages /; package update was not started",
-        ));
-      }
-      Integration::ChooseConfig(configs) => {
-        // Package updates have no configuration picker. All candidates were
-        // verified to manage / on Btrfs; prefer the conventional root name,
-        // otherwise choose deterministically. change_with_cleanup revalidates it.
-        configs
-          .iter()
-          .find(|config| config.as_str() == "root")
-          .or_else(|| configs.iter().min())
-          .cloned()
-          .ok_or_else(|| invalid("no root configuration available for package snapshot"))?
-      }
-    };
-    self
-      .change_with_cleanup(
-        "create",
-        &config,
-        DESCRIPTION,
-        Some(CleanupAlgorithm::Number),
-      )?
-      .ok_or_else(|| {
-        SnapshotError::new(
-          ErrorKind::Invalid,
-          "Snapper did not return the created snapshot number",
-        )
-      })
-  }
-
   fn list(&self, config: &str) -> SnapshotResult<Vec<Snapshot>> {
     parse_snapshots(
       &self.snapper(
@@ -1156,22 +1106,6 @@ impl RestoreLock {
     }
     Ok(Self { _file: file })
   }
-}
-
-/// Run the package transaction only after Snapper returned a validated snapshot ID.
-pub fn run_pre_upgrade_transaction<R, F>(
-  backend: &SnapshotBackend<R>,
-  transaction: F,
-) -> Result<u32, String>
-where
-  R: ProcessRunner,
-  F: FnOnce(u32) -> Result<(), String>,
-{
-  let number = backend
-    .create_pre_upgrade()
-    .map_err(|error| format!("ARGVUS_PRE_UPDATE_BLOCKED: {error}"))?;
-  transaction(number).map_err(|error| format!("ARGVUS_PRE_UPDATE_FAILED:{number}:{error}"))?;
-  Ok(number)
 }
 
 pub fn parse_number(value: &str) -> SnapshotResult<u32> {

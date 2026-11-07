@@ -20,7 +20,7 @@ use argvus_control_center_core::pacman_conf::{
   self, KEY_MARKER, PACMAN_CONF, Repository, RepositoryOrigin,
 };
 
-use super::command::{backup_file, boot_write_atomic, stream_command};
+use super::command::{CommandIo, backup_file, boot_write_atomic};
 
 /// pacman's keyring, used read-only to read the fingerprint of a key file.
 const PACMAN_GNUPG: &str = "/etc/pacman.d/gnupg";
@@ -70,14 +70,14 @@ fn validate_name(name: &str) -> Result<(), String> {
 }
 
 /// Runs a `repo-*` action already checked by [`validate`].
-pub(super) fn run(action: &str, values: &[String]) -> Result<(), String> {
+pub(super) fn run(action: &str, values: &[String], io: CommandIo) -> Result<(), String> {
   match (action, values) {
-    ("repo-add", [name, conf]) => add(name, conf, None),
-    ("repo-add", [name, conf, fingerprint, key]) => add(name, conf, Some((fingerprint, key))),
+    ("repo-add", [name, conf]) => add(name, conf, None, io),
+    ("repo-add", [name, conf, fingerprint, key]) => add(name, conf, Some((fingerprint, key)), io),
     ("repo-enable", [name]) => set_enabled(name, true),
     ("repo-disable", [name]) => set_enabled(name, false),
-    ("repo-remove", [name]) => remove(name, false),
-    ("repo-remove", [name, _]) => remove(name, true),
+    ("repo-remove", [name]) => remove(name, false, io),
+    ("repo-remove", [name, _]) => remove(name, true, io),
     _ => Err("unsupported repository operation".into()),
   }
 }
@@ -105,7 +105,12 @@ fn write_pacman_conf(updated: &str) -> Result<(), String> {
   boot_write_atomic(path, updated)
 }
 
-fn add(name: &str, conf: &str, key: Option<(&String, &String)>) -> Result<(), String> {
+fn add(
+  name: &str,
+  conf: &str,
+  key: Option<(&String, &String)>,
+  io: CommandIo,
+) -> Result<(), String> {
   let pacman_conf_text = read_pacman_conf()?;
   let sections = pacman_conf::parse_repository_conf(conf).map_err(|error| error.to_string())?;
   let configured = repositories(&pacman_conf_text);
@@ -125,7 +130,7 @@ fn add(name: &str, conf: &str, key: Option<(&String, &String)>) -> Result<(), St
   // would make every later upgrade fail.
   let contents = match key {
     Some((fingerprint, key_hex)) => {
-      import_key(fingerprint, key_hex)?;
+      import_key(fingerprint, key_hex, io)?;
       pacman_conf::with_key_marker(conf, &fingerprint.to_ascii_uppercase())
     }
     None => conf.to_owned(),
@@ -145,7 +150,7 @@ fn add(name: &str, conf: &str, key: Option<(&String, &String)>) -> Result<(), St
 
 /// Imports `key_hex` into pacman's keyring and signs it locally, after
 /// checking that it is the key whose `fingerprint` the user confirmed.
-fn import_key(fingerprint: &str, key_hex: &str) -> Result<(), String> {
+fn import_key(fingerprint: &str, key_hex: &str, io: CommandIo) -> Result<(), String> {
   let key = pacman_conf::decode_key(key_hex).ok_or("invalid key")?;
   let directory = private_directory()?;
   let result = (|| {
@@ -159,8 +164,8 @@ fn import_key(fingerprint: &str, key_hex: &str) -> Result<(), String> {
       ));
     }
     let key_path = key_file.to_string_lossy();
-    stream_command("pacman-key", &["--add", &key_path])?;
-    stream_command("pacman-key", &["--lsign-key", fingerprint])
+    io.run("pacman-key", &["--add", &key_path])?;
+    io.run("pacman-key", &["--lsign-key", fingerprint])
   })();
   let _ = fs::remove_dir_all(&directory);
   result
@@ -229,7 +234,7 @@ fn set_enabled(name: &str, enabled: bool) -> Result<(), String> {
   Ok(())
 }
 
-fn remove(name: &str, delete_key: bool) -> Result<(), String> {
+fn remove(name: &str, delete_key: bool, io: CommandIo) -> Result<(), String> {
   let pacman_conf_text = read_pacman_conf()?;
   let repository = find_repository(&pacman_conf_text, name)?;
   match &repository.origin {
@@ -248,7 +253,7 @@ fn remove(name: &str, delete_key: bool) -> Result<(), String> {
   }
   println!("[{name}] removed");
   if delete_key && let Some(fingerprint) = &repository.key {
-    stream_command("pacman-key", &["--delete", fingerprint])?;
+    io.run("pacman-key", &["--delete", fingerprint])?;
   }
   Ok(())
 }

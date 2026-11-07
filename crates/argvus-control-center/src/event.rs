@@ -6,6 +6,18 @@ use crossterm::event::{
 use crate::app::{App, Route};
 
 pub fn handle(app: &mut App, event: Event) {
+  // Terminal input takes precedence over global quit/help and onboarding keys.
+  #[cfg(feature = "packages")]
+  if app.route == Route::Packages
+    && let Event::Key(key) = &event
+    && (app.packages.terminal_focused() || key.code == KeyCode::F(8))
+  {
+    app.packages.handle_key(*key);
+    if app.packages.terminal_focused() {
+      app.help = false;
+    }
+    return;
+  }
   if app.welcome.active
     && app.route != Route::Welcome
     && let Event::Key(key) = &event

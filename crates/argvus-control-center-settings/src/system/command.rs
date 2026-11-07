@@ -28,7 +28,7 @@ use dns::{run_network, validate_network};
 use packages::{run_package, service_args, validate_package};
 use power::{run_power, set_governor, validate_power};
 use privileges::ensure_root;
-pub(super) use streaming::stream_command;
+pub(super) use streaming::{CommandIo, stream_command};
 
 const ELEVATED_ENV: &str = "ARGVUS_SYSTEM_SETTINGS_ELEVATED";
 const LOCALE_GEN: &str = "/etc/locale.gen";
@@ -78,6 +78,9 @@ pub fn run(args: &[String]) -> Result<(), String> {
     [area, action, values @ ..] if area == "snapshot" => snapshot::run(action, values),
     [area, action, values @ ..] if area == "boot" => run_boot(action, values),
     [area, action, values @ ..] if area == "package" => run_package(action, values),
+    [area, action, values @ ..] if area == "package-interactive" => {
+      packages::run_package_interactive(action, values)
+    }
     [area, action, values @ ..] if area == "network" => run_network(action, values),
     [area, action, value] if area == "config" && action == "icons" => set_appearance_icons(value),
     _ => Err("unsupported system-settings command".to_string()),
@@ -165,7 +168,9 @@ fn validate_args(args: &[String]) -> Result<(), String> {
         .map_err(|error| error.to_string())
     }
     [area, action, values @ ..] if area == "boot" => validate_boot(action, values),
-    [area, action, values @ ..] if area == "package" => validate_package(action, values),
+    [area, action, values @ ..] if matches!(area.as_str(), "package" | "package-interactive") => {
+      validate_package(action, values)
+    }
     [area, action, values @ ..] if area == "network" => validate_network(action, values),
     [area, action, value] if area == "config" && action == "icons" => match value.as_str() {
       "true" | "false" => Ok(()),

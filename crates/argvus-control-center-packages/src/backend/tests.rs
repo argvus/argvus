@@ -219,6 +219,26 @@ fn removal_plans_report_the_dependents_and_plan_the_cascade() {
 }
 
 #[test]
+fn upgrade_preview_reads_existing_databases_without_requiring_root() {
+  let backend = PackageBackend::new(
+    ScriptedRunner::new("linux\t6.2-1\t1024\n", 0),
+    pacman_capabilities(),
+  );
+  let plan = backend.plan_upgrade().unwrap();
+  assert_eq!(plan.install.len(), 1);
+  assert_eq!(plan.install[0].name, "linux");
+  assert_eq!(plan.download_bytes, 1024);
+  assert!(plan.requires_full_upgrade);
+  let requests = backend.runner.requests.lock().unwrap();
+  assert_eq!(requests.len(), 1);
+  assert_eq!(
+    requests[0].args,
+    ["-Su", "--print", "--print-format", PLAN_FORMAT]
+  );
+  assert!(requests[0].env.contains(&("LC_ALL".into(), "C".into())));
+}
+
+#[test]
 fn official_updates_use_bounded_read_only_query() {
   let backend = PackageBackend::new(
     ScriptedRunner::new("example 1-1 -> 2-1\n", 0),

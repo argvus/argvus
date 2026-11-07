@@ -550,3 +550,39 @@ fn c11_altgr_c_does_not_trigger_global_ctrl_c() {
   );
   assert!(!app.quit);
 }
+
+#[cfg(feature = "packages")]
+#[test]
+fn package_terminal_receives_global_quit_help_and_interrupt_keys() {
+  use argvus_control_center_packages::{PackageSource, PackageTask, PackagesPage};
+  let mut app = App::new(InitialRoute::Packages(PackagesPage::Task(
+    PackageSource::Official,
+    PackageTask::Update,
+  )));
+  // Finish the initial read-only load; the core testing feature prevents tools.
+  let deadline = std::time::Instant::now() + std::time::Duration::from_secs(2);
+  while !app.packages.poll() {
+    assert!(std::time::Instant::now() < deadline);
+    std::thread::yield_now();
+  }
+  handle(&mut app, press(KeyCode::Tab));
+  handle(&mut app, press(KeyCode::Enter));
+  handle(&mut app, press(KeyCode::Char('y')));
+  assert!(app.packages.terminal_focused());
+  for key in [
+    KeyEvent::new(KeyCode::Char('q'), KeyModifiers::NONE),
+    KeyEvent::new(KeyCode::Char('?'), KeyModifiers::NONE),
+    KeyEvent::new(KeyCode::Char('c'), KeyModifiers::CONTROL),
+  ] {
+    handle(&mut app, Event::Key(key));
+    assert!(!app.quit);
+    assert!(!app.help);
+    assert_eq!(app.route, Route::Packages);
+  }
+  handle(&mut app, press(KeyCode::Esc));
+  assert!(!app.packages.terminal_focused());
+  app.help = true;
+  handle(&mut app, press(KeyCode::F(8)));
+  assert!(app.packages.terminal_focused());
+  assert!(!app.help);
+}

@@ -366,7 +366,7 @@ não tem mais `Button`, `ActionButton`, `on_buttons` nem linhas `[ ... ]`.
 | Histórico | Entrada | **Sem efeito no código antigo** (Enter não era tratado; `HistoryDetails` inalcançável) | Info; página só de rolagem, sem página de detalhes (D33) | `↑↓` | migrado |
 | Busca | `/` | Campo de busca (em qualquer página) | Mantido só nas 5 listas com filtro | `/` | migrado |
 | Confirmação | Popup Apply/Cancel | — | `ConfirmDialog` (foco em Cancelar, `y`/`n`); perigo em Remove, limpezas e Downgrade; contagens do plano com download legível; AUR só com o aviso do PKGBUILD (D35) | `y`, `n`, `Esc` | migrado |
-| Log da transação | Visualizador ao vivo | Rolagem e follow | Mantido sem mudança | `↑↓ jk PgUp/PgDn Home/End`, `Esc` | migrado |
+| Terminal da transação | PTY interativa | Entrada e saída do processo | Sessão retida ao ocultar, reaberta por F8 | `Esc`, `F8`, `Shift+PgUp/PgDn`, `Shift+End`, `Ctrl+C` | atualizado |
 | Global | Recarregar | `reload_force` | Atalho mantido (nas listas com filtro `r` é texto, como antes) | `r` | migrado |
 
 **2026-10-24: caminhos e Atualizações no padrão Fuso horário.** O breadcrumb
@@ -1874,3 +1874,34 @@ A captura de personalizados agora verifica conflitos imediatamente, preservando 
 Delete é uma linha Destructive e deve ser tratada por `confirm_item` (MenuEvent::Confirm), não por `activate`. O teste de regressão seleciona a linha e envia Enter para cobrir o caminho real da UI. Erros de exclusão preservam o registro; sucesso remove somente o item escolhido e atualiza a listagem.
 
 Os erros técnicos de atalhos usam `argvus-control-center-core::diagnostics`, com envio não bloqueante ao socket syslog local e sem fallback no terminal. O logger fica desativado nos testes de páginas; seu teste próprio usa socket temporário. O popup de erro calcula as linhas com o mesmo Paragraph/Wrap usado no desenho, reservando uma região separada para Enter OK. Testes em en-US/pt-BR e 60x15, 80x24 e 140x40 verificam mensagem, confirmação e restauração do fundo após fechar o popup.
+
+
+## Terminal interativo de Packages
+
+Packages mantém uma única sessão PTY por transação, independente da visibilidade.
+O worker usa `portable-pty` para executar argumentos estruturados, sem shell livre;
+o componente `TerminalView` compartilhado interpreta ANSI, cursor e histórico de
+até 10.000 linhas. A saída usa uma fila limitada a 64 blocos de 4 KiB, consumida
+continuamente mesmo com a janela oculta. A entrada tem fila limitada, gravação em
+thread própria e limite de 64 KiB por envio. Teclas digitadas não são registradas
+separadamente; senhas seguem o controle de eco do programa no terminal.
+
+A rota interna `system-settings package-interactive <ação> <argumentos>` reutiliza
+a validação e o `pkexec` da rota `package`. Só o modo interativo herda stdin,
+stdout e stderr e retira `--noconfirm` do pacman. O modo capturado e as operações
+de outras páginas preservam seu comportamento. Repositórios/chaves propagam o
+mesmo modo aos subprocessos; AUR executa como usuário. Packages continua sem
+exigência de Snapper ou tipo de sistema de arquivos.
+
+`Esc` oculta sem fechar a PTY; `F8` e a ação Mostrar terminal reabrem a sessão.
+A barra de ações/rodapé informa execução ou resultado, inclusive com a janela
+oculta. `Shift+PgUp/PgDn` percorre o histórico e `Shift+End` retorna ao vivo.
+O dispatcher encaminha as teclas antes de quit/help/onboarding quando o terminal
+está em foco: `q`, `?` e `Ctrl+C` chegam ao filho. Tamanho da PTY acompanha o
+aplicativo mesmo em outra rota. Uma operação pendente bloqueia encerramento e
+início de outra; conclusão preserva saída e executa os follow-ups já existentes.
+
+A cobertura usa comandos de teste inofensivos em PTY real para prompts sem
+quebra de linha, respostas, edição, ANSI, redimensionamento, interrupção e falha
+de inicialização; testes da UI cobrem ocultar/reabrir, colagem e foco, e a validação
+do helper rejeita ações e argumentos fora do contrato antes da elevação.

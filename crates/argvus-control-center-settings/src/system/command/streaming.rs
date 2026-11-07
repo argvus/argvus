@@ -2,6 +2,36 @@
 
 use super::*;
 
+/// Package subprocesses either preserve the legacy captured output or inherit
+/// the controlling PTY, including input and prompts without a trailing newline.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(in super::super) enum CommandIo {
+  Captured,
+  Terminal,
+}
+
+impl CommandIo {
+  pub(in super::super) fn run(self, program: &str, args: &[&str]) -> Result<(), String> {
+    match self {
+      Self::Captured => stream_command(program, args),
+      Self::Terminal => {
+        let status = argvus_control_center_core::process::command(program)
+          .args(args)
+          .stdin(Stdio::inherit())
+          .stdout(Stdio::inherit())
+          .stderr(Stdio::inherit())
+          .status()
+          .map_err(|error| format!("{program}: {error}"))?;
+        if status.success() {
+          Ok(())
+        } else {
+          Err(format!("{program} exited with {status}"))
+        }
+      }
+    }
+  }
+}
+
 pub(super) fn locate_command(names: &[&str]) -> Option<PathBuf> {
   std::env::var_os("PATH").and_then(|path| {
     std::env::split_paths(&path)

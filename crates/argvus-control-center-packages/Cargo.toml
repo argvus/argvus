@@ -12,6 +12,8 @@ argvus-tui.workspace = true
 crossterm.workspace = true
 ratatui.workspace = true
 thiserror.workspace = true
+portable-pty.workspace = true
+libc.workspace = true
 
 [dev-dependencies]
 # Test builds never start external programs (see the core `testing` feature).

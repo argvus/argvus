@@ -3,21 +3,17 @@
 use super::input::step_within;
 use super::*;
 
-pub(super) const PRE_UPDATE_BLOCKED: &str = "ARGVUS_PRE_UPDATE_BLOCKED:";
-pub(super) const PRE_UPDATE_FAILED: &str = "ARGVUS_PRE_UPDATE_FAILED:";
-pub(super) const PRE_UPDATE_INDETERMINATE: &str = "ARGVUS_PRE_UPDATE_INDETERMINATE:";
-pub(super) const PRE_UPDATE_COMPLETED: &str = "ARGVUS_PRE_UPDATE_COMPLETED:";
-
 impl PackagesApp {
   /// Runs the row `item`.
   pub(super) fn activate(&mut self, item: Item) {
     if item.waits_for_jobs() && self.busy() {
       return;
     }
-    if !item.is_mirror_option() && self.destructive() {
+    if item != Item::ShowTerminal && !item.is_mirror_option() && self.destructive() {
       return;
     }
     match item {
+      Item::ShowTerminal => self.reopen_terminal(),
       Item::Open(page) => self.open_page(page),
       Item::Package(_) | Item::Aur(_) | Item::Update(_) => self.run_task(item),
       Item::Orphan(_) => self.open_details(item),
@@ -83,6 +79,9 @@ impl PackagesApp {
 
   /// Asks for confirmation before running `action`.
   pub(super) fn request(&mut self, action: Action) {
+    if self.destructive() {
+      return;
+    }
     self.confirmation = ConfirmState::new();
     self.choice = ChoiceState::new();
     self.preview = None;
@@ -150,6 +149,9 @@ impl PackagesApp {
   }
 
   pub(super) fn start_pending(&mut self) {
+    if self.action.is_some() {
+      return;
+    }
     let Some(a) = self.pending.take() else { return };
     self.running = Some(a.clone());
     let caps = self.capabilities.clone();
@@ -158,16 +160,10 @@ impl PackagesApp {
       kind: StatusKind::Info,
       text: tr(self.lang, "control_center.running_operation").into(),
     });
-    let live = LiveProcess::new();
-    self.transaction_buffer.clear();
-    self.transaction_cursor = 0;
-    self.transaction_truncated = false;
-    self.transaction_line_count = 0;
-    self.transaction_live = Some(live.clone());
+    let (terminal, io) = PackageTerminal::new(self.terminal_size.0, self.terminal_size.1);
+    self.terminal = Some(terminal);
     self.transaction_open = true;
-    self.transaction_scroll = 0;
-    self.transaction_follow = true;
-    self.action = Some(self.jobs.spawn(move |_| Ok(run_action(a, caps, live))));
+    self.action = Some(self.jobs.spawn(move |_| Ok(run_action(a, caps, io))));
   }
 
   pub(super) fn begin_plan(&mut self, action: Action) {
@@ -410,7 +406,7 @@ pub(super) fn action_command(a: Action, caps: &Capabilities) -> Result<ActionCom
   let privileged = |echo: String, name: &str, args: Vec<String>| {
     Ok(ActionCommand::Privileged {
       echo,
-      request: PrivilegedRequest::new("package", name, args)?,
+      request: PrivilegedRequest::new("package-interactive", name, args)?,
     })
   };
   match a {
@@ -427,7 +423,7 @@ pub(super) fn action_command(a: Action, caps: &Capabilities) -> Result<ActionCom
       packages,
     ),
     Action::Reinstall(v) => privileged(format!("$ pacman -S {v}"), "reinstall", vec![v]),
-    Action::Upgrade => privileged("$ pacman -Syu".into(), "upgrade", vec![]),
+    Action::Upgrade => privileged("$ pacman -Syyu".into(), "upgrade", vec![]),
     Action::UpgradePackage(v) => privileged(format!("$ pacman -S {v}"), "upgrade-package", vec![v]),
     Action::RefreshDatabase => privileged("$ pacman -Syy".into(), "refresh-db", vec![]),
     Action::CleanCache(v) => privileged("$ paccache -r".into(), "clean-cache", vec![v.into()]),
@@ -449,7 +445,7 @@ pub(super) fn action_command(a: Action, caps: &Capabilities) -> Result<ActionCom
       }
       privileged(echo, "repo-add", arguments)
     }
-    Action::UpgradeAfterRepoAdd => privileged("$ pacman -Syu".into(), "upgrade", vec![]),
+    Action::UpgradeAfterRepoAdd => privileged("$ pacman -Syyu".into(), "upgrade", vec![]),
     Action::RepoEnable(name) => privileged(
       format!("$ enable [{name}] in /etc/pacman.conf"),
       "repo-enable",
@@ -500,65 +496,20 @@ pub(super) fn aur_command(caps: &Capabilities, args: &[&str]) -> Result<ActionCo
   })
 }
 
-/// Runs the command of `a`, streaming its output into `live`.
-pub(super) fn run_action(
-  a: Action,
-  caps: Capabilities,
-  live: LiveProcess,
-) -> Result<String, String> {
-  let protected_upgrade = matches!(
-    &a,
-    Action::Upgrade | Action::UpgradePackage(_) | Action::UpgradeAfterRepoAdd
-  );
-  match action_command(a, &caps)? {
+/// Runs the validated package command on its retained PTY.
+pub(super) fn run_action(a: Action, caps: Capabilities, io: TerminalIo) -> Result<String, String> {
+  let (echo, process) = match action_command(a, &caps)? {
     ActionCommand::Privileged { echo, request } => {
-      live.push_line(&echo);
-      let executable = std::env::current_exe()
-        .map_err(|error| error.to_string())?
-        .to_string_lossy()
-        .into_owned();
-      let o = SystemSettingsOperation::new(SystemProcessRunner, executable)
-        .execute_live(&request, &live)?;
-      if o.timed_out && protected_upgrade {
-        if let Some(number) = snapshot_number_in_log(&live.output()) {
-          return Err(format!("{PRE_UPDATE_INDETERMINATE}{number}"));
-        }
-        return Err("ARGVUS_PRE_UPDATE_RESULT_UNKNOWN".into());
-      }
-      if o.status == Some(0) {
-        let stdout = terminal_text(&String::from_utf8_lossy(&o.stdout))
-          .trim()
-          .to_owned();
-        Ok(if stdout.is_empty() {
-          "Operation completed.".into()
-        } else {
-          stdout
-        })
-      } else {
-        Err(terminal_text(&String::from_utf8_lossy(&o.stderr)))
-      }
+      let executable = std::env::current_exe().map_err(|error| error.to_string())?;
+      (
+        echo,
+        SystemSettingsOperation::new(SystemProcessRunner, executable.to_string_lossy())
+          .process_for(&request)?,
+      )
     }
-    ActionCommand::User { echo, process } => {
-      live.push_line(&echo);
-      let o = SystemProcessRunner
-        .run_live(&process, &live)
-        .map_err(|e| e.to_string())?;
-      if o.status == Some(0) {
-        Ok(terminal_text(&String::from_utf8_lossy(&o.stdout)))
-      } else {
-        Err(terminal_text(&String::from_utf8_lossy(&o.stderr)))
-      }
-    }
-  }
-}
-
-fn snapshot_number_in_log(output: &str) -> Option<u32> {
-  output.lines().find_map(|line| {
-    line
-      .strip_prefix("ARGVUS_PRE_UPDATE_SNAPSHOT_CREATED:")
-      .and_then(|number| number.parse::<u32>().ok())
-      .filter(|number| *number > 0)
-  })
+    ActionCommand::User { echo, process } => (echo, process),
+  };
+  io.run(&process, &echo)
 }
 
 pub(super) fn generate_mirror_preview(

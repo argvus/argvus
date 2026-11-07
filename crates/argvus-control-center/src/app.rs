@@ -627,7 +627,8 @@ impl App {
 
   /// Whether the active page is typing into a text field, a search or a list
   /// filter. While it is, `q` and `?` are text and must not quit or open the
-  /// help (decision D10 of `docs/ux-audit.md`); `Ctrl+C` requests exit, subject to pending operations.
+  /// help (decision D10 of `docs/ux-audit.md`). `Ctrl+C` requests exit unless
+  /// the Packages terminal owns the input; pending operations block exit.
   pub fn captures_text(&self) -> bool {
     match self.route {
       Route::Home => self.search_active,
@@ -776,6 +777,8 @@ impl App {
     self.width = width;
     self.height = height;
     self.settings.resize(width, height);
+    #[cfg(feature = "packages")]
+    self.packages.resize(width, height);
     #[cfg(feature = "about")]
     self.about.resize(width, height);
   }

@@ -71,7 +71,7 @@ impl PackagesApp {
 
   /// Rows of the current page.
   pub(super) fn rows(&self) -> Vec<Row<Item>> {
-    match self.page {
+    let mut rows = match self.page {
       PackagesPage::Home => self.home_rows(),
       PackagesPage::Source(source) => self.source_rows(source),
       PackagesPage::Task(_, PackageTask::Install | PackageTask::Remove) => self.package_rows(),
@@ -88,7 +88,14 @@ impl PackagesApp {
       PackagesPage::RepositoryAdd => self.repository_add_rows(),
       PackagesPage::RepositoryList => self.repository_list_rows(),
       PackagesPage::RepositoryDetails(index) => self.repository_details_rows(index),
+    };
+    if self.terminal.is_some() && !render::filters_while_typing(self.page) {
+      rows.push(Row::action(
+        Item::ShowTerminal,
+        tr(self.lang, "control_center.package_terminal_show"),
+      ));
     }
+    rows
   }
 
   /// The row of an empty filtered list, saying why it is empty. `None` while

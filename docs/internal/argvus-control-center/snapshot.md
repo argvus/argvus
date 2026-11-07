@@ -231,25 +231,27 @@ Text and styled rows are cached between state changes, keyed by language; idle
 polls reuse them. Input, completed replies, reloads and theme changes invalidate
 the cache. Scroll offsets remain bounded by the rendered content.
 
-## Automatic configuration choice (S12)
+## Package independence
 
-Manual inspection still returns ChooseConfig for multiple root configurations.
-Pre-upgrade creation instead prefers the verified `root` configuration or the
-lexicographically first verified name. It does not persist a user's UI selection.
-The mutation re-inspects the chosen configuration and refuses it if it no longer
-manages `/` on Btrfs. Snapshot failure still prevents the package transaction;
-automatic snapshots retain the `number` cleanup policy.
+Package operations do not inspect the filesystem or Snapper configuration and
+never create pre-update snapshots. Full upgrades execute `pacman -Syyu` and
+individual upgrades execute `pacman -S <package>` through the privileged helper.
+Snapshot inspection and configuration selection belong only to the Snapshots page.
 
 ## Package mutation exclusion (H6)
 
 The settings package dispatcher holds the shared package-update snapshot lock
 for every package operation, including install/remove/reinstall/downgrade,
 metadata refresh, cache cleanup, mirror and repository edits. Selective restore
-uses the same file and nonblocking exclusive flock. The guard spans snapshot
-creation and the package command for upgrades; the inner upgrade routine does
-not reacquire it. Errors release the guard. This does not add pre-update
-snapshots to install, remove or downgrade, and external pacman/AUR processes
-do not participate in this ARGVUS lock.
+uses the same file and nonblocking exclusive flock. The guard spans the package command and is released on errors. This lock only
+prevents concurrent ARGVUS mutations; it imposes no filesystem or snapshot
+requirements. External pacman/AUR processes do not participate in this ARGVUS lock.
+
+The package guard explicitly issues `LOCK_UN` before closing its descriptor.
+Closing alone can retain the lock through a duplicate inherited by a concurrent
+fork, because `O_CLOEXEC` takes effect only at exec. A regression test retains a
+duplicated descriptor while dropping the guard and reacquiring the lock, then
+checks that closing the old duplicate cannot release the next transaction's lock.
 
 ## Application lifetime during mutations (C10)
 

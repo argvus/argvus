@@ -424,3 +424,24 @@ fn atomic_writer_preserves_mode_and_refuses_destination_symlink() {
   assert!(super::boot::boot_write_atomic(&link, "unsafe").is_err());
   assert_eq!(std::fs::read_to_string(path).unwrap(), "new");
 }
+
+#[test]
+fn interactive_packages_use_the_same_closed_action_validation() {
+  for domain in ["package", "package-interactive"] {
+    for (action, values) in [
+      ("upgrade", vec![]),
+      ("install", vec!["firefox"]),
+      ("remove", vec!["firefox"]),
+      (
+        "mirror-apply",
+        vec!["Server = https://mirror.example/$repo/os/$arch\n"],
+      ),
+    ] {
+      let mut args = vec![domain.to_owned(), action.to_owned()];
+      args.extend(values.into_iter().map(str::to_owned));
+      assert!(validate_args(&args).is_ok());
+    }
+    assert!(validate_args(&[domain.into(), "install".into(), "--root=/tmp".into()]).is_err());
+    assert!(validate_args(&[domain.into(), "shell".into(), "sh".into()]).is_err());
+  }
+}

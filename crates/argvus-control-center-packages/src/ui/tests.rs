@@ -1,9 +1,6 @@
 use super::actions::{
   ActionCommand, action_command, action_message, cycle_country, preview_message,
 };
-use super::render::{
-  TRANSACTION_CONTENT_HEIGHT, transaction_bottom_offset, transaction_wrapped_lines,
-};
 use super::*;
 use ratatui::{Terminal, backend::TestBackend};
 

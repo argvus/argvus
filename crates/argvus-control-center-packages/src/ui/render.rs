@@ -3,26 +3,6 @@
 use super::actions::{action_message, choice_label, preview_message};
 use super::*;
 
-pub(super) const TRANSACTION_POPUP_WIDTH: u16 = 100;
-
-pub(super) const TRANSACTION_POPUP_HEIGHT: u16 = 20;
-
-pub(super) const TRANSACTION_CONTENT_WIDTH: usize = TRANSACTION_POPUP_WIDTH as usize - 2;
-
-pub(super) const TRANSACTION_CONTENT_HEIGHT: usize = TRANSACTION_POPUP_HEIGHT as usize - 2;
-
-pub(super) fn transaction_wrapped_lines(output: &str) -> usize {
-  output
-    .lines()
-    .map(|line| (argvus_tui::text::display_width(line).div_ceil(TRANSACTION_CONTENT_WIDTH)).max(1))
-    .sum()
-}
-
-#[cfg(test)]
-pub(super) fn transaction_bottom_offset(output: &str) -> u16 {
-  transaction_wrapped_lines(output).saturating_sub(TRANSACTION_CONTENT_HEIGHT) as u16
-}
-
 /// Whether typed characters filter the list on `page` (D8): letters,
 /// including `j`, `k`, `r`, `q` and `?`, become text of the filter.
 pub(super) fn filters_while_typing(page: PackagesPage) -> bool {
@@ -112,6 +92,7 @@ impl PackagesApp {
   pub fn draw(&mut self, f: &mut Frame) {
     self.sync_transaction_output();
     let area = f.area();
+    self.resize(area.width, area.height);
     let rows = self.rows();
     self.menu.normalize(&rows);
     let admin_required = !matches!(
@@ -129,7 +110,7 @@ impl PackagesApp {
       &self.theme,
       self.lang,
       &self.breadcrumb(),
-      &self.footer_hints(&rows),
+      &self.terminal_footer(&rows),
       self.status.as_ref(),
       admin_required,
     );
@@ -356,40 +337,52 @@ impl PackagesApp {
       );
       editor.draw(f, f.area(), &self.theme, hint);
     }
-    if self.transaction_open && self.transaction_live.is_some() {
-      let output = &self.transaction_buffer;
-      let popup = chrome::centered(f.area(), TRANSACTION_POPUP_WIDTH, TRANSACTION_POPUP_HEIGHT);
-      let total = self.transaction_line_count;
-      let shown_total = total.max(1);
-      let current = (self.transaction_scroll as usize + 1).min(shown_total);
-      f.render_widget(Clear, popup);
-      f.render_widget(
-        Paragraph::new(output.as_str())
-          .block(
-            Block::new()
-              .borders(Borders::ALL)
-              .title(Line::styled(
-                format!(
-                  " {} · {} {} {} {} ",
-                  tr(self.lang, "control_center.transaction_output"),
-                  tr(self.lang, "control_center.line"),
-                  current,
-                  tr(self.lang, "control_center.of"),
-                  shown_total,
-                ),
-                Style::new().fg(self.theme.accent),
-              ))
-              .border_style(Style::new().fg(self.theme.border_active))
-              .style(Style::new().bg(self.theme.background))
-              .title_bottom(Line::from(tr(
-                self.lang,
-                "control_center.scroll_pgup_pgdn_home_end_esc_close",
-              ))),
-          )
-          .scroll((self.transaction_scroll, 0))
-          .wrap(Wrap { trim: false }),
-        popup,
-      );
+    if self.transaction_open {
+      let popup = f.area().inner(ratatui::layout::Margin::new(2, 2));
+      let content = popup.inner(ratatui::layout::Margin::new(1, 1));
+      if let Some(terminal) = &self.terminal {
+        let state = match terminal.result {
+          None => "control_center.package_terminal_running",
+          Some(true) => "control_center.package_terminal_success",
+          Some(false) => "control_center.package_terminal_failed",
+        };
+        f.render_widget(Clear, popup);
+        let block = Block::new()
+          .borders(Borders::ALL)
+          .title(format!(
+            " {} · {} ",
+            tr(self.lang, "control_center.transaction_output"),
+            tr(self.lang, state)
+          ))
+          .title_bottom(Line::from(terminal.notice.as_deref().unwrap_or_else(
+            || tr(self.lang, "control_center.package_terminal_keys"),
+          )))
+          .border_style(Style::new().fg(self.theme.border_active))
+          .style(Style::new().bg(self.theme.background));
+        f.render_widget(block, popup);
+        terminal.view.render(f, content, &self.theme);
+        if terminal.result.is_none() {
+          terminal.view.render_cursor(f, content);
+        }
+      }
+    }
+  }
+
+  fn terminal_footer(&self, rows: &[Row<Item>]) -> String {
+    let footer = self.footer_hints(rows);
+    if let Some(terminal) = &self.terminal {
+      let state = match terminal.result {
+        None => "control_center.package_terminal_running",
+        Some(true) => "control_center.package_terminal_success",
+        Some(false) => "control_center.package_terminal_failed",
+      };
+      format!(
+        "F8 {} · {} · {footer}",
+        tr(self.lang, "control_center.package_terminal_show"),
+        tr(self.lang, state)
+      )
+    } else {
+      footer
     }
   }
 

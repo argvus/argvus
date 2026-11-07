@@ -195,10 +195,13 @@ impl<R: ProcessRunner> PackageBackend<R> {
     args.extend(packages.iter().cloned());
     Ok(parse_transaction_plan(&self.run_plan(&args)?, false))
   }
+  /// Previews upgrades using the existing sync databases. Adding `-y` would
+  /// refresh system databases and require root even with `--print`; only
+  /// the confirmed upgrade synchronizes them through the privileged helper.
   pub fn plan_upgrade(&self) -> Result<TransactionPlan, PackageError> {
     Ok(parse_transaction_plan(
       &self.run_plan(&[
-        "-Syu".into(),
+        "-Su".into(),
         "--print".into(),
         "--print-format".into(),
         PLAN_FORMAT.into(),

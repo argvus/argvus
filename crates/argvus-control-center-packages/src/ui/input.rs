@@ -2,15 +2,15 @@
 
 use super::render::{filters_while_typing, has_action_bar};
 use super::*;
+use crossterm::event::KeyModifiers;
 
 impl PackagesApp {
   /// Whether typed characters currently go to text (the input prompt, or the
   /// filter of a package list), so `q`/`?` must not act as the global
   /// quit/help keys. Mirrors the precedence of [`Self::handle`]:
-  /// confirmations, the transaction log and running operations sit above
-  /// the list filter and do not take text.
+  /// the terminal takes input before list filters and global shortcuts.
   pub fn captures_text(&self) -> bool {
-    if self.input.is_some() || self.editor.is_some() {
+    if self.terminal_focused() || self.input.is_some() || self.editor.is_some() {
       return true;
     }
     self.pending.is_none()
@@ -20,7 +20,11 @@ impl PackagesApp {
   }
 
   pub fn handle(&mut self, key: KeyCode) -> bool {
-    if self.editor.is_some() {
+    if key == KeyCode::F(8) && self.terminal.is_some() {
+      self.reopen_terminal();
+      return false;
+    }
+    if self.terminal_focused() || self.editor.is_some() {
       return self.handle_key(KeyEvent::from(key));
     }
     if self.input.is_some() {
@@ -119,6 +123,14 @@ impl PackagesApp {
   /// repository Add page needs `Ctrl+S`; every other key goes to
   /// [`Self::handle`].
   pub fn handle_key(&mut self, key: KeyEvent) -> bool {
+    if key.code == KeyCode::F(8) && self.terminal.is_some() && !self.terminal_focused() {
+      self.reopen_terminal();
+      return false;
+    }
+    if self.terminal_focused() {
+      self.handle_terminal_key(key);
+      return false;
+    }
     let Some((field, editor)) = self.editor.as_mut() else {
       return self.handle(key.code);
     };
@@ -134,8 +146,16 @@ impl PackagesApp {
     false
   }
 
-  /// Pasted text (bracketed paste) goes to the open text editor.
+  /// Paste belongs to the focused terminal, otherwise to the open editor.
   pub fn paste(&mut self, text: &str) {
+    if self.terminal_focused() {
+      if let Some(terminal) = &mut self.terminal
+        && let Err(error) = terminal.paste(text)
+      {
+        self.terminal_error(error);
+      }
+      return;
+    }
     if let Some((_, editor)) = self.editor.as_mut() {
       editor.paste(text);
     }
@@ -207,43 +227,48 @@ impl PackagesApp {
     }
   }
 
-  /// Scrolls the live transaction output; Esc closes it.
+  /// Esc hides the session; all other input belongs to the terminal child.
   pub(super) fn handle_transaction(&mut self, key: KeyCode) {
-    match key {
-      KeyCode::Esc => {
-        self.transaction_open = false;
-        self.transaction_live = None;
-        self.transaction_scroll = 0;
-        self.transaction_follow = false;
-        if self.action.is_none() {
-          self.ask_follow_up();
+    self.handle_terminal_key(KeyEvent::from(key));
+  }
+
+  fn handle_terminal_key(&mut self, key: KeyEvent) {
+    if key.kind == crossterm::event::KeyEventKind::Release {
+      return;
+    }
+    if key.code == KeyCode::Esc {
+      self.transaction_open = false;
+      if self.action.is_none() {
+        self.ask_follow_up();
+      }
+      return;
+    }
+    let Some(terminal) = &mut self.terminal else {
+      return;
+    };
+    if key.modifiers.contains(KeyModifiers::SHIFT) {
+      let offset = terminal.view.scrollback();
+      match key.code {
+        KeyCode::PageUp => terminal.view.set_scrollback(offset.saturating_add(10)),
+        KeyCode::PageDown => terminal.view.set_scrollback(offset.saturating_sub(10)),
+        KeyCode::End => terminal.view.set_scrollback(0),
+        _ => {
+          if let Some(bytes) = crate::terminal::encode_key(key, terminal.view.application_cursor())
+          {
+            terminal.view.set_scrollback(0);
+            if let Err(error) = terminal.write(bytes) {
+              self.terminal_error(error);
+            }
+          }
         }
       }
-      KeyCode::Up | KeyCode::Char('k') => {
-        self.transaction_follow = false;
-        self.transaction_scroll = self.transaction_scroll.saturating_sub(1);
+      return;
+    }
+    if let Some(bytes) = crate::terminal::encode_key(key, terminal.view.application_cursor()) {
+      terminal.view.set_scrollback(0);
+      if let Err(error) = terminal.write(bytes) {
+        self.terminal_error(error);
       }
-      KeyCode::Down | KeyCode::Char('j') => {
-        self.transaction_follow = false;
-        self.transaction_scroll = self.transaction_scroll.saturating_add(1);
-      }
-      KeyCode::PageUp => {
-        self.transaction_follow = false;
-        self.transaction_scroll = self.transaction_scroll.saturating_sub(10);
-      }
-      KeyCode::PageDown => {
-        self.transaction_follow = false;
-        self.transaction_scroll = self.transaction_scroll.saturating_add(10);
-      }
-      KeyCode::Home => {
-        self.transaction_follow = false;
-        self.transaction_scroll = 0;
-      }
-      KeyCode::End => {
-        self.sync_transaction_output();
-        self.transaction_scroll = self.transaction_bottom();
-      }
-      _ => {}
     }
   }
 

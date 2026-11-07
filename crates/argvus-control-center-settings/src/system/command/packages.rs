@@ -1,14 +1,13 @@
 //! Package operations: validated pacman requests, the mirror list and service arguments.
 
 use super::boot::{backup_file, boot_write_atomic};
-use super::streaming::stream_command;
 use super::*;
 use std::fs::{File, OpenOptions};
 use std::os::fd::AsRawFd;
 use std::os::unix::fs::OpenOptionsExt;
 
 struct PackageUpdateLock {
-  _file: File,
+  file: File,
 }
 
 impl PackageUpdateLock {
@@ -26,7 +25,25 @@ impl PackageUpdateLock {
     if result != 0 {
       return Err("another ARGVUS package update is in progress".into());
     }
-    Ok(Self { _file: file })
+    Ok(Self { file })
+  }
+}
+
+impl Drop for PackageUpdateLock {
+  fn drop(&mut self) {
+    // Closing alone leaves flock held if a concurrent fork inherited the open
+    // file description. CLOEXEC only closes that duplicate when the child execs.
+    loop {
+      // SAFETY: this guard still owns the descriptor until Drop finishes.
+      if unsafe { libc::flock(self.file.as_raw_fd(), libc::LOCK_UN) } == 0 {
+        break;
+      }
+      let error = std::io::Error::last_os_error();
+      if error.kind() != std::io::ErrorKind::Interrupted {
+        eprintln!("package update lock release: {error}");
+        break;
+      }
+    }
   }
 }
 
@@ -93,25 +110,38 @@ pub(super) fn run_package(action: &str, values: &[String]) -> Result<(), String>
   )
 }
 
+pub(super) fn run_package_interactive(action: &str, values: &[String]) -> Result<(), String> {
+  use std::io::IsTerminal;
+  if !std::io::stdin().is_terminal() || !std::io::stdout().is_terminal() {
+    return Err("interactive package operations require a terminal".into());
+  }
+  run_package_mode(
+    action,
+    values,
+    Path::new("/run/lock/argvus-package-update-snapshot.lock"),
+    CommandIo::Terminal,
+  )
+}
+
 fn run_package_at(action: &str, values: &[String], lock_path: &Path) -> Result<(), String> {
+  run_package_mode(action, values, lock_path, CommandIo::Captured)
+}
+
+fn run_package_mode(
+  action: &str,
+  values: &[String],
+  lock_path: &Path,
+  io: CommandIo,
+) -> Result<(), String> {
   // Serialize every package mutation with selective restore. Keep the guard
-  // through snapshot creation and pacman, without reacquiring it in upgrades.
+  // through the package command; no filesystem or snapshot checks are needed.
   let _lock = PackageUpdateLock::acquire(lock_path)?;
+  if let Some(prefix) = pacman_prefix(action) {
+    return io.run("pacman", &pacman_args(prefix, values, io));
+  }
   match action {
-    repository if repository.starts_with("repo-") => pacman_repositories::run(action, values),
-    "install" => stream_pacman(&["-S", "--needed"], values),
-    "remove" => stream_pacman(&["-Rns"], values),
-    // The two ways the Control Center offers when other installed packages
-    // depend on `values`, after it listed them: only `values`, skipping the
-    // dependency checks, or `values` together with those packages.
-    "remove-only" => stream_pacman(&["-Rdd"], values),
-    "remove-cascade" => stream_pacman(&["-Rcns"], values),
-    "reinstall" => stream_pacman(&["-S"], values),
-    "upgrade" => run_pre_snapshot_upgrade(&[], true),
-    "upgrade-package" => run_pre_snapshot_upgrade(values, false),
-    "refresh-db" => stream_pacman(&["-Syy"], &[]),
-    "downgrade" => stream_pacman(&["-U"], values),
-    "clean-cache" => stream_command("paccache", &cache_cleanup_args(&values[0])?),
+    repository if repository.starts_with("repo-") => pacman_repositories::run(action, values, io),
+    "clean-cache" => io.run("paccache", &cache_cleanup_args(&values[0])?),
     "mirror-apply" => {
       update_mirrorlist(&values[0])?;
       println!("ok");
@@ -121,37 +151,65 @@ fn run_package_at(action: &str, values: &[String], lock_path: &Path) -> Result<(
   }
 }
 
-fn run_pre_snapshot_upgrade(packages: &[String], full_upgrade: bool) -> Result<(), String> {
-  #[cfg(feature = "snapshot")]
-  {
-    use argvus_control_center_core::process::SystemProcessRunner;
-    use argvus_control_center_snapshot::backend::{SnapshotBackend, run_pre_upgrade_transaction};
-
-    println!("ARGVUS_PRE_UPDATE_SNAPSHOT_CREATING");
-    let backend = SnapshotBackend::new(SystemProcessRunner);
-    let snapshot_number = run_pre_upgrade_transaction(&backend, |snapshot_number| {
-      println!("ARGVUS_PRE_UPDATE_SNAPSHOT_CREATED:{snapshot_number}");
-      if full_upgrade {
-        stream_pacman(&["-Syu"], &[])
-      } else {
-        stream_pacman(&["-S"], packages)
-      }
-    })?;
-    println!("ARGVUS_PRE_UPDATE_COMPLETED:{snapshot_number}");
-    Ok(())
-  }
-  #[cfg(not(feature = "snapshot"))]
-  {
-    let _ = (packages, full_upgrade);
-    Err("ARGVUS_PRE_UPDATE_BLOCKED: snapshot integration is not compiled in".into())
+/// Pacman operations are independent of Snapper and the underlying filesystem.
+fn pacman_prefix(action: &str) -> Option<&'static [&'static str]> {
+  match action {
+    "install" => Some(&["-S", "--needed"]),
+    "remove" => Some(&["-Rns"]),
+    "remove-only" => Some(&["-Rdd"]),
+    "remove-cascade" => Some(&["-Rcns"]),
+    "reinstall" | "upgrade-package" => Some(&["-S"]),
+    "upgrade" => Some(&["-Syyu"]),
+    "refresh-db" => Some(&["-Syy"]),
+    "downgrade" => Some(&["-U"]),
+    _ => None,
   }
 }
 
-pub(super) fn stream_pacman(prefix: &[&str], values: &[String]) -> Result<(), String> {
-  let mut args: Vec<&str> = prefix.to_vec();
-  args.push("--noconfirm");
+#[cfg(test)]
+mod package_transaction_tests {
+  use super::*;
+
+  #[test]
+  fn interactive_pacman_preserves_prompts_and_package_argument_boundaries() {
+    let packages = ["firefox".to_owned(), "jq".to_owned()];
+    assert_eq!(
+      pacman_args(&["-S", "--needed"], &packages, CommandIo::Terminal),
+      ["-S", "--needed", "firefox", "jq"]
+    );
+    assert_eq!(
+      pacman_args(&["-S"], &packages, CommandIo::Captured),
+      ["-S", "--noconfirm", "firefox", "jq"]
+    );
+    assert_eq!(pacman_args(&["-Syyu"], &[], CommandIo::Terminal), ["-Syyu"]);
+  }
+
+  #[test]
+  fn package_commands_do_not_require_snapshot_integration() {
+    for (action, expected) in [
+      ("upgrade", vec!["-Syyu"]),
+      ("upgrade-package", vec!["-S"]),
+      ("install", vec!["-S", "--needed"]),
+      ("reinstall", vec!["-S"]),
+      ("remove", vec!["-Rns"]),
+      ("remove-only", vec!["-Rdd"]),
+      ("remove-cascade", vec!["-Rcns"]),
+      ("downgrade", vec!["-U"]),
+      ("refresh-db", vec!["-Syy"]),
+    ] {
+      assert_eq!(pacman_prefix(action), Some(expected.as_slice()), "{action}");
+    }
+    assert_eq!(pacman_prefix("unsupported"), None);
+  }
+}
+
+fn pacman_args<'a>(prefix: &[&'a str], values: &'a [String], io: CommandIo) -> Vec<&'a str> {
+  let mut args = prefix.to_vec();
+  if io == CommandIo::Captured {
+    args.push("--noconfirm");
+  }
   args.extend(values.iter().map(String::as_str));
-  stream_command("pacman", &args)
+  args
 }
 
 pub(super) fn update_mirrorlist(content: &str) -> Result<(), String> {
@@ -189,6 +247,27 @@ pub(super) fn service_args(action: &str, unit: &str) -> Result<Vec<String>, Stri
 #[cfg(test)]
 mod update_lock_tests {
   use super::*;
+
+  #[test]
+  fn dropping_update_guard_unlocks_while_an_inherited_descriptor_remains_open() {
+    let directory = tempfile::tempdir().unwrap();
+    let path = directory.path().join("inherited.lock");
+    let guard = PackageUpdateLock::acquire(&path).unwrap();
+    // A fork in another test thread duplicates the same open file description
+    // until exec closes its CLOEXEC descriptor. Cloning models that deterministically.
+    let inherited = guard.file.try_clone().unwrap();
+    assert!(PackageUpdateLock::acquire(&path).is_err());
+    drop(guard);
+    let next = PackageUpdateLock::acquire(&path)
+      .expect("dropping the guard must unlock even before inherited descriptors close");
+    drop(inherited);
+    assert!(
+      PackageUpdateLock::acquire(&path).is_err(),
+      "closing an old duplicate must not unlock the next transaction"
+    );
+    drop(next);
+    assert!(PackageUpdateLock::acquire(&path).is_ok());
+  }
 
   #[test]
   fn update_lock_prevents_concurrent_transactions_and_releases_on_drop() {

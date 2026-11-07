@@ -128,6 +128,10 @@ impl App {
         ]);
       }
     }
+    #[cfg(feature = "packages")]
+    if self.route == Route::Packages {
+      lines.push(tr(self.lang, "control_center.package_terminal_help"));
+    }
     lines.into_iter().map(str::to_string).collect()
   }
 }

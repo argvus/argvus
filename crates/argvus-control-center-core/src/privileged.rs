@@ -39,7 +39,9 @@ impl PrivilegedRequest {
     {
       return Err("privileged domain and action must be non-empty and printable".into());
     }
-    if self.domain == "package" && self.action == "mirror-apply" {
+    if matches!(self.domain.as_str(), "package" | "package-interactive")
+      && self.action == "mirror-apply"
+    {
       let [content] = self.arguments.as_slice() else {
         return Err("invalid mirrorlist".into());
       };
@@ -47,8 +49,8 @@ impl PrivilegedRequest {
     }
     // File contents written by root (a mirror list, a repository
     // configuration) are the only arguments that may span lines.
-    let file_payload =
-      self.domain == "package" && matches!(self.action.as_str(), "mirror-apply" | "repo-add");
+    let file_payload = matches!(self.domain.as_str(), "package" | "package-interactive")
+      && matches!(self.action.as_str(), "mirror-apply" | "repo-add");
     if self.arguments.iter().any(|value| {
       value.len() > 256 * 1024
         || value.chars().any(|character| {
@@ -192,6 +194,36 @@ mod tests {
       .is_ok()
     );
     assert!(PrivilegedRequest::new("package", "remove", vec!["a\nb".into()]).is_err());
+  }
+
+  #[test]
+  fn interactive_package_payloads_keep_the_same_validation_and_helper_chain() {
+    let request = PrivilegedRequest::new(
+      "package-interactive",
+      "mirror-apply",
+      vec!["Server = https://mirror.example/$repo/os/$arch\n".into()],
+    )
+    .unwrap();
+    let operation = SystemSettingsOperation::new(
+      RecordingRunner::default(),
+      "/usr/lib/argvus/commands/control-center",
+    );
+    let process = operation.process_for(&request).unwrap();
+    assert_eq!(
+      process.args[0..3],
+      ["system-settings", "package-interactive", "mirror-apply"]
+    );
+    assert!(
+      PrivilegedRequest::new("package-interactive", "install", vec!["foo\nbar".into()]).is_err()
+    );
+    assert!(
+      PrivilegedRequest::new(
+        "package-interactive",
+        "mirror-apply",
+        vec!["bad mirror".into()]
+      )
+      .is_err()
+    );
   }
 
   #[test]

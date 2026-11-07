@@ -213,7 +213,7 @@ fn repository_operations_build_the_privileged_commands() {
     &process.args[..5],
     [
       "system-settings",
-      "package",
+      "package-interactive",
       "repo-add",
       "argvus",
       review(true).conf.as_str()

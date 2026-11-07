@@ -1,4 +1,5 @@
 //! Terminal UI rendering and interaction of the Packages page.
+use crate::terminal::{PackageTerminal, TerminalIo};
 use crate::{
   backend::{PackageBackend, PackageError, parse_reflector_countries, reflector_args},
   model::{
@@ -13,7 +14,7 @@ use argvus_control_center_core::{
   config::AppConfig,
   jobs::{JobHandle, JobManager, JobState},
   privileged::{PrivilegedRequest, SystemSettingsOperation},
-  process::{LiveProcess, ProcessRequest, ProcessRunner, SystemProcessRunner},
+  process::{ProcessRequest, ProcessRunner, SystemProcessRunner},
   sanitize::terminal_text,
 };
 use argvus_i18n::{Lang, tr};
@@ -38,7 +39,7 @@ use ratatui::{
   layout::{Alignment, Constraint, Layout, Rect},
   style::{Modifier, Style},
   text::{Line, Span},
-  widgets::{Block, Borders, Clear, Paragraph, Wrap},
+  widgets::{Block, Borders, Clear, Paragraph},
 };
 
 mod repositories;
@@ -109,34 +110,6 @@ enum Action {
     key: Option<String>,
     delete_key: bool,
   },
-}
-
-fn transaction_output(lang: Lang, output: &str) -> String {
-  output
-    .lines()
-    .map(|line| {
-      if line == "ARGVUS_PRE_UPDATE_SNAPSHOT_CREATING" {
-        tr(lang, "control_center.package_update_snapshot_checking").into()
-      } else if let Some(number) = line
-        .strip_prefix("ARGVUS_PRE_UPDATE_SNAPSHOT_CREATED:")
-        .and_then(|value| value.parse::<u32>().ok())
-        .filter(|number| *number > 0)
-      {
-        tr(lang, "control_center.package_update_snapshot_created")
-          .replace("{number}", &number.to_string())
-      } else if let Some(number) = line
-        .strip_prefix("ARGVUS_PRE_UPDATE_COMPLETED:")
-        .and_then(|value| value.parse::<u32>().ok())
-        .filter(|number| *number > 0)
-      {
-        tr(lang, "control_center.package_update_snapshot_success")
-          .replace("{number}", &number.to_string())
-      } else {
-        line.to_owned()
-      }
-    })
-    .collect::<Vec<_>>()
-    .join("\n")
 }
 
 impl Action {
@@ -246,6 +219,7 @@ enum Item {
   RepoToggle,
   /// Remove, in the Danger zone of the open repository.
   RepoRemove,
+  ShowTerminal,
 }
 
 impl Item {
@@ -337,14 +311,9 @@ pub struct PackagesApp {
   /// Reflector options while the mirror editor page is open.
   mirror_options: Option<ReflectorOptions>,
   mirror_countries: Option<Vec<String>>,
-  transaction_live: Option<LiveProcess>,
-  transaction_buffer: String,
-  transaction_cursor: usize,
-  transaction_truncated: bool,
-  transaction_line_count: usize,
+  terminal: Option<PackageTerminal>,
   transaction_open: bool,
-  transaction_scroll: u16,
-  transaction_follow: bool,
+  terminal_size: (u16, u16),
   /// The unofficial repositories of `pacman.conf`.
   repositories: Vec<Repository>,
   /// The repository being added on the Add page.
@@ -366,33 +335,44 @@ impl PackagesApp {
     self.action.is_some()
   }
 
-  fn sync_transaction_output(&mut self) {
-    let Some(live) = &self.transaction_live else {
-      return;
-    };
-    for line in live.lines_since(&mut self.transaction_cursor) {
-      let translated = transaction_output(self.lang, &line);
-      self.transaction_line_count += render::transaction_wrapped_lines(&translated).max(1);
-      if !self.transaction_buffer.is_empty() {
-        self.transaction_buffer.push('\n');
-      }
-      self.transaction_buffer.push_str(&translated);
-    }
-    if live.is_truncated() && !self.transaction_truncated {
-      self.transaction_truncated = true;
-      let notice = tr(self.lang, "control_center.transaction_output_truncated");
-      if !self.transaction_buffer.is_empty() {
-        self.transaction_buffer.push('\n');
-      }
-      self.transaction_buffer.push_str(notice);
-      self.transaction_line_count += render::transaction_wrapped_lines(notice).max(1);
+  /// Keep the PTY size current even while its view is hidden or on another route.
+  pub fn resize(&mut self, width: u16, height: u16) {
+    self.terminal_size = (
+      height.saturating_sub(6).max(1),
+      width.saturating_sub(6).max(1),
+    );
+    if let Some(terminal) = &mut self.terminal
+      && let Err(error) = terminal.resize(self.terminal_size.0, self.terminal_size.1)
+    {
+      self.terminal_error(error);
     }
   }
-  fn transaction_bottom(&self) -> u16 {
-    self
-      .transaction_line_count
-      .saturating_sub(render::TRANSACTION_CONTENT_HEIGHT)
-      .min(u16::MAX as usize) as u16
+
+  /// Whether keyboard shortcuts belong to the foreground terminal.
+  pub fn terminal_focused(&self) -> bool {
+    self.transaction_open && self.terminal.is_some()
+  }
+
+  fn sync_transaction_output(&mut self) -> bool {
+    self.terminal.as_mut().is_some_and(PackageTerminal::poll)
+  }
+
+  fn terminal_error(&mut self, error: String) {
+    let message = if error == "control_center.package_terminal_input_full" {
+      tr(self.lang, &error).to_owned()
+    } else {
+      error
+    };
+    if let Some(terminal) = &mut self.terminal {
+      terminal.notice = Some(message.clone());
+    }
+    self.error(message);
+  }
+
+  fn reopen_terminal(&mut self) {
+    if self.terminal.is_some() {
+      self.transaction_open = true;
+    }
   }
 
   /// Replaces the semantic theme used by this page.
@@ -437,14 +417,9 @@ impl PackagesApp {
       marked: vec![],
       mirror_options: None,
       mirror_countries: None,
-      transaction_live: None,
-      transaction_buffer: String::new(),
-      transaction_cursor: 0,
-      transaction_truncated: false,
-      transaction_line_count: 0,
+      terminal: None,
       transaction_open: false,
-      transaction_scroll: 0,
-      transaction_follow: false,
+      terminal_size: (20, 80),
       repositories: vec![],
       repo_draft: RepositoryDraft::default(),
       editor: None,

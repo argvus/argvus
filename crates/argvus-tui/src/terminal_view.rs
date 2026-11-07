@@ -20,8 +20,13 @@ pub struct TerminalView {
 impl TerminalView {
   /// Creates an empty screen, clamping each dimension to a valid PTY size.
   pub fn new(rows: u16, columns: u16) -> Self {
+    Self::with_scrollback(rows, columns, 0)
+  }
+
+  /// Creates a screen with a bounded history of completed lines.
+  pub fn with_scrollback(rows: u16, columns: u16, history: usize) -> Self {
     Self {
-      parser: vt100::Parser::new(nonzero(rows), nonzero(columns), 0),
+      parser: vt100::Parser::new(nonzero(rows), nonzero(columns), history),
       rows: rows.max(1),
       columns: columns.max(1),
     }
@@ -30,6 +35,16 @@ impl TerminalView {
   /// Feeds terminal output into the screen model.
   pub fn process(&mut self, output: &[u8]) {
     self.parser.process(output);
+  }
+
+  /// Selects the number of history lines above the live screen.
+  pub fn set_scrollback(&mut self, lines: usize) {
+    self.parser.screen_mut().set_scrollback(lines);
+  }
+
+  /// Current history offset, clamped to the available history.
+  pub fn scrollback(&self) -> usize {
+    self.parser.screen().scrollback()
   }
 
   /// Resizes the emulated screen after the containing TUI changes size.
@@ -79,7 +94,8 @@ impl TerminalView {
   pub fn render_cursor(&self, frame: &mut Frame, area: Rect) {
     let screen = self.parser.screen();
     let (row, column) = screen.cursor_position();
-    if !screen.hide_cursor() && row < area.height && column < area.width {
+    if screen.scrollback() == 0 && !screen.hide_cursor() && row < area.height && column < area.width
+    {
       frame.set_cursor_position((area.x + column, area.y + row));
     }
   }

@@ -3,6 +3,61 @@
 use super::*;
 
 #[test]
+fn upgrades_complete_without_snapshot_output() {
+  for action in [
+    Action::Upgrade,
+    Action::UpgradePackage("linux".into()),
+    Action::UpgradeAfterRepoAdd,
+  ] {
+    let mut app = app();
+    app.running = Some(action);
+    app.action = Some(app.jobs.spawn(|_| Ok(Ok("upgraded linux".into()))));
+    let deadline = std::time::Instant::now() + std::time::Duration::from_secs(2);
+    while app.has_pending_action() {
+      app.poll_action();
+      assert!(std::time::Instant::now() < deadline);
+      std::thread::yield_now();
+    }
+    assert!(!matches!(
+      app.status.as_ref().unwrap().kind,
+      StatusKind::Error
+    ));
+    assert!(
+      app.job.is_some(),
+      "successful upgrades refresh the package list"
+    );
+    assert!(app.running.is_none());
+  }
+}
+
+#[test]
+fn interrupted_and_failed_transactions_show_localized_errors() {
+  for locale in ["en-US", "pt-BR"] {
+    for key in [
+      "control_center.package_transaction_failed",
+      "control_center.package_transaction_interrupted",
+    ] {
+      let mut app = app();
+      app.lang = Lang::for_locale(locale);
+      app.running = Some(Action::Upgrade);
+      app.action = Some(app.jobs.spawn(move |_| Ok(Err(key.into()))));
+      let deadline = std::time::Instant::now() + std::time::Duration::from_secs(2);
+      while app.has_pending_action() {
+        app.poll_action();
+        assert!(std::time::Instant::now() < deadline);
+        std::thread::yield_now();
+      }
+      let status = app.status.as_ref().unwrap();
+      assert!(matches!(status.kind, StatusKind::Error));
+      assert_eq!(status.text, tr(app.lang, key));
+      assert!(!status.text.contains("control_center."));
+      assert!(app.running.is_none());
+      assert!(app.job.is_none());
+    }
+  }
+}
+
+#[test]
 fn package_confirmation_cancel_does_not_start_an_operation() {
   let mut app = app();
   app.pending = Some(Action::Upgrade);
@@ -12,77 +67,25 @@ fn package_confirmation_cancel_does_not_start_an_operation() {
 }
 
 #[test]
-fn pre_update_progress_markers_render_as_localized_status_lines() {
-  for locale in ["en-US", "pt-BR"] {
-    let lang = Lang::for_locale(locale);
-    let output = transaction_output(
-      lang,
-      "ARGVUS_PRE_UPDATE_SNAPSHOT_CREATING\nARGVUS_PRE_UPDATE_SNAPSHOT_CREATED:17\nARGVUS_PRE_UPDATE_COMPLETED:17",
-    );
-    assert!(!output.contains("ARGVUS_PRE_UPDATE_"));
-    assert!(output.contains("17"));
-  }
-}
-
-#[test]
-fn transaction_window_scrolls_closes_and_generates_action_plans() {
-  let mut app = app();
-  let live = LiveProcess::new();
-  for _ in 0..40 {
-    live.push_line("line");
-  }
-  app.transaction_live = Some(live.clone());
-  app.transaction_open = true;
-  let total = transaction_wrapped_lines(&live.output());
-  assert_eq!(total, 40);
-  app.handle(KeyCode::Down);
-  assert_eq!(app.transaction_scroll, 1);
-  app.handle(KeyCode::Up);
-  assert_eq!(app.transaction_scroll, 0);
-  app.handle(KeyCode::PageDown);
-  assert_eq!(app.transaction_scroll, 10);
-  app.handle(KeyCode::Home);
-  assert_eq!(app.transaction_scroll, 0);
-  app.handle(KeyCode::End);
-  assert_eq!(
-    app.transaction_scroll as usize,
-    40usize.saturating_sub(TRANSACTION_CONTENT_HEIGHT)
-  );
-  app.handle(KeyCode::Esc);
-  assert!(!app.transaction_open);
-  assert_eq!(app.transaction_scroll, 0);
-}
-
-#[test]
 fn start_pending_opens_the_process_window_immediately() {
   let mut app = app();
   // The operation is only checked as built; test builds start no process
   // (the core `testing` feature), so the job below runs nothing.
   let (_, process) = privileged_process(Action::RefreshDatabase);
-  assert_eq!(process.args, ["system-settings", "package", "refresh-db"]);
+  assert_eq!(
+    process.args,
+    ["system-settings", "package-interactive", "refresh-db"]
+  );
   app.pending = Some(Action::RefreshDatabase);
   app.start_pending();
   assert!(
     app.transaction_open,
     "window must appear when the process starts"
   );
-  assert!(app.transaction_live.is_some());
-  assert!(app.transaction_follow);
+  assert!(app.terminal.is_some());
   assert!(app.action.is_some());
   app.handle(KeyCode::Esc);
   assert!(!app.transaction_open);
-}
-
-#[test]
-fn transaction_bottom_offset_is_zero_for_short_output() {
-  let mut app = app();
-  let live = LiveProcess::new();
-  live.push_line("done.");
-  app.transaction_live = Some(live);
-  app.transaction_open = true;
-  app.handle(KeyCode::End);
-  assert_eq!(app.transaction_scroll, 0);
-  assert_eq!(transaction_bottom_offset("done."), 0);
 }
 
 #[test]
@@ -93,9 +96,9 @@ fn transaction_window_uses_theme_background_and_border() {
     theme.clone(),
     Capabilities::default(),
   );
-  let live = LiveProcess::new();
-  live.push_line("ok");
-  app.transaction_live = Some(live);
+  let (mut session, _io) = PackageTerminal::new(20, 80);
+  session.view.process(b"ok");
+  app.terminal = Some(session);
   app.transaction_open = true;
   let mut terminal = Terminal::new(TestBackend::new(120, 25)).unwrap();
   terminal.draw(|frame| app.draw(frame)).unwrap();
@@ -283,7 +286,12 @@ fn package_operations_build_the_privileged_system_settings_command() {
       "$ pacman -S zsh",
       vec!["reinstall", "zsh"],
     ),
-    (Action::Upgrade, "$ pacman -Syu", vec!["upgrade"]),
+    (Action::Upgrade, "$ pacman -Syyu", vec!["upgrade"]),
+    (
+      Action::UpgradeAfterRepoAdd,
+      "$ pacman -Syyu",
+      vec!["upgrade"],
+    ),
     (
       Action::UpgradePackage("linux".into()),
       "$ pacman -S linux",
@@ -313,7 +321,7 @@ fn package_operations_build_the_privileged_system_settings_command() {
     let (echo, process) = privileged_process(action);
     assert_eq!(echo, expected_echo);
     assert_eq!(process.program, "/usr/lib/argvus/commands/control-center");
-    let mut args = vec!["system-settings", "package"];
+    let mut args = vec!["system-settings", "package-interactive"];
     args.extend(expected_args);
     assert_eq!(process.args, args);
   }
@@ -355,44 +363,6 @@ fn aur_install_runs_the_helper_as_the_normal_user() {
 }
 
 #[test]
-fn transaction_cache_appends_only_new_sanitized_lines() {
-  let mut app = app();
-  let live = LiveProcess::new();
-  app.transaction_live = Some(live.clone());
-  live.push_line("\x1b[31mfirst\x1b[0m");
-  app.sync_transaction_output();
-  assert_eq!(app.transaction_buffer, "first");
-  let count = app.transaction_line_count;
-  app.sync_transaction_output();
-  assert_eq!(app.transaction_buffer, "first");
-  assert_eq!(app.transaction_line_count, count);
-  live.push_line("second");
-  app.sync_transaction_output();
-  assert_eq!(app.transaction_buffer, "first\nsecond");
-  assert_eq!(app.transaction_cursor, 2);
-  assert_eq!(app.transaction_line_count, 2);
-}
-
-#[test]
-fn transaction_display_limit_has_translated_notice() {
-  for locale in ["en-US", "pt-BR"] {
-    let mut app = app();
-    app.lang = Lang::for_locale(locale);
-    let live = LiveProcess::new();
-    for _ in 0..10001 {
-      live.push_line("line");
-    }
-    app.transaction_live = Some(live);
-    app.sync_transaction_output();
-    assert!(app.transaction_truncated);
-    let notice = tr(app.lang, "control_center.transaction_output_truncated");
-    assert!(app.transaction_buffer.ends_with(notice));
-    app.sync_transaction_output();
-    assert_eq!(app.transaction_buffer.matches(notice).count(), 1);
-  }
-}
-
-#[test]
 fn pending_package_transaction_blocks_exit_but_refresh_does_not() {
   let mut app = app();
   app.reload();
@@ -405,4 +375,144 @@ fn pending_package_transaction_blocks_exit_but_refresh_does_not() {
     assert!(std::time::Instant::now() < deadline);
     std::thread::yield_now();
   }
+}
+
+#[test]
+fn hiding_and_reopening_retains_the_running_session_and_its_input() {
+  let mut app = app();
+  let (session, io) = PackageTerminal::new(12, 80);
+  app.terminal = Some(session);
+  app.transaction_open = true;
+  let (complete, wait) = std::sync::mpsc::channel();
+  app.action = Some(app.jobs.spawn(move |_| {
+    wait.recv().unwrap();
+    Ok(Ok(String::new()))
+  }));
+  io.emit(b"Proceed? [Y/n] ");
+  app.poll();
+  assert!(app.captures_text());
+  app.handle_key(KeyCode::Esc.into());
+  assert!(!app.terminal_focused());
+  assert!(app.has_pending_action());
+  io.emit(b"still running");
+  app.poll();
+  app.page = PackagesPage::Cache;
+  app.handle_key(KeyCode::F(8).into());
+  assert!(app.terminal_focused());
+  assert!(
+    app
+      .terminal
+      .as_ref()
+      .unwrap()
+      .view
+      .contains_text("still running")
+  );
+  for code in [
+    KeyCode::Char('y'),
+    KeyCode::Enter,
+    KeyCode::Char('q'),
+    KeyCode::Char('?'),
+  ] {
+    app.handle_key(code.into());
+  }
+  app.handle_key(KeyEvent::new(
+    KeyCode::Char('c'),
+    crossterm::event::KeyModifiers::CONTROL,
+  ));
+  assert_eq!(io.next_input(), Some(b"y".to_vec()));
+  assert_eq!(io.next_input(), Some(b"\r".to_vec()));
+  assert_eq!(io.next_input(), Some(b"q".to_vec()));
+  assert_eq!(io.next_input(), Some(b"?".to_vec()));
+  assert_eq!(io.next_input(), Some(vec![3]));
+  app.paste("answer");
+  assert_eq!(io.next_input(), Some(b"answer".to_vec()));
+  app.handle_key(KeyCode::Esc.into());
+  app.activate(Item::ShowTerminal);
+  assert!(
+    app.terminal_focused(),
+    "the action must work during a transaction"
+  );
+  app.request(Action::Upgrade);
+  assert!(
+    app.pending.is_none(),
+    "a second operation cannot replace the session"
+  );
+  complete.send(()).unwrap();
+  let deadline = std::time::Instant::now() + std::time::Duration::from_secs(2);
+  while app.has_pending_action() {
+    app.poll();
+    assert!(std::time::Instant::now() < deadline);
+    std::thread::yield_now();
+  }
+  assert_eq!(app.terminal.as_ref().unwrap().result, Some(true));
+  app.handle_key(KeyCode::Esc.into());
+  app.handle_key(KeyCode::F(8).into());
+  assert!(
+    app
+      .terminal
+      .as_ref()
+      .unwrap()
+      .view
+      .contains_text("Proceed?")
+  );
+  assert!(
+    app
+      .rows()
+      .iter()
+      .any(|row| row.id() == Some(&Item::ShowTerminal))
+  );
+}
+
+#[test]
+fn terminal_history_uses_shift_keys_and_preserves_arrow_input() {
+  let mut app = app();
+  let (mut session, io) = PackageTerminal::new(5, 40);
+  for _ in 0..40 {
+    session.view.process(b"history\r\n");
+  }
+  app.terminal = Some(session);
+  app.transaction_open = true;
+  app.handle_key(KeyEvent::new(
+    KeyCode::PageUp,
+    crossterm::event::KeyModifiers::SHIFT,
+  ));
+  assert_eq!(app.terminal.as_ref().unwrap().view.scrollback(), 10);
+  assert!(io.next_input().is_none());
+  app.handle_key(KeyCode::Up.into());
+  assert_eq!(io.next_input(), Some(b"\x1b[A".to_vec()));
+  assert_eq!(app.terminal.as_ref().unwrap().view.scrollback(), 0);
+}
+
+#[test]
+fn retained_terminal_renders_in_both_languages_and_small_sizes() {
+  for locale in ["en-US", "pt-BR"] {
+    for (width, height) in [(60, 18), (120, 35)] {
+      let mut app = app();
+      app.lang = Lang::for_locale(locale);
+      let (mut session, _io) = PackageTerminal::new(10, 80);
+      session.view.process(b"\x1b[32mProceed? [Y/n]\x1b[0m");
+      app.terminal = Some(session);
+      app.transaction_open = true;
+      let text = screen(&mut app, width, height);
+      assert!(text.contains("Proceed? [Y/n]"), "{text}");
+      assert!(text.contains("Esc"), "{text}");
+      assert!(!text.contains("control_center."), "{text}");
+      app.handle_key(KeyCode::Esc.into());
+      let text = screen(&mut app, width, height);
+      assert!(text.contains("F8"), "{text}");
+    }
+  }
+}
+
+#[test]
+fn the_retained_terminal_does_not_replace_empty_install_search() {
+  let mut app = app();
+  let (mut session, _io) = PackageTerminal::new(10, 80);
+  session.result = Some(true);
+  app.terminal = Some(session);
+  app.page = OFFICIAL_INSTALL;
+  app.query = "firefox".into();
+  app.handle_key(KeyCode::Enter.into());
+  assert!(app.job.is_some(), "Enter must still search the typed query");
+  assert!(!app.transaction_open);
 }
