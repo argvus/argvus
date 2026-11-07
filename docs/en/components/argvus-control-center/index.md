@@ -606,3 +606,5 @@ Enabled shortcuts in the same context cannot reuse a combination silently: confi
 Save and apply run in the background. If saving fails, the draft stays available. If application to the session fails after saving, the page says it was saved and retains the same ID for retry. Custom records live in `/hyprland/custom_shortcuts` in the canonical configuration, projected to `data/generated/hypr/custom-shortcuts.lua`; do not edit generated files.
 
 Shortcut errors stay inside the TUI: the popup sizes itself to the wrapped message and keeps **Enter OK** visible. Technical shortcut diagnostics go to the local journal (`journalctl -t argvus-control-center`) instead of stdout/stderr. A deletion that is saved but cannot be applied reports that distinction; reload the session configuration to remove the previously active binding.
+
+**Update Status** in **Taskbar → Icons → Optional modules** displays the available update count and is enabled by default. **Check AUR** is disabled by default and requires `paru` or `yay`; apply the taskbar draft to save either setting. Checks run at startup and hourly; clicking the indicator opens the official Packages updates page.

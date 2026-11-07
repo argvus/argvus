@@ -56,9 +56,10 @@ pub const TASKBAR_BORDER_WIDTHS: [u32; 4] = [0, 1, 2, 3];
 
 /// The blocks whose borders follow the taskbar border width: the taskbar window,
 /// the right group with the MPRIS player, and the MPRIS player's hover edge.
-const TASKBAR_BORDER_BLOCKS: [&str; 4] = [
+const TASKBAR_BORDER_BLOCKS: [&str; 5] = [
   "window#waybar {",
   "#right-0, #right-1, #right-2, #focus, #mpris, #custom-spotify-mpris {",
+  "#right-0, #right-1, #right-2, #focus, #update-status, #mpris, #custom-spotify-mpris {",
   "#mpris,",
   "#mpris:hover,",
 ];
@@ -224,6 +225,10 @@ pub fn apply_layout(paths: &SessionPaths, theme: &str) -> io::Result<()> {
       ("#workspaces button", layout.taskbar_radii[0]),
       ("#workspaces button.active,", layout.taskbar_radii[1]),
       ("tooltip {", layout.taskbar_radii[2]),
+      (
+        "#right-0, #right-1, #right-2, #focus, #update-status, #mpris",
+        layout.taskbar_radii[3],
+      ),
       (
         "#right-0, #right-1, #right-2, #focus, #right-search, #mpris",
         layout.taskbar_radii[3],
@@ -410,6 +415,13 @@ mod tests {
       css_edit::border_width_in_block(&thick, "window#waybar {"),
       Some(3)
     );
+  }
+
+  #[test]
+  fn taskbar_border_width_includes_the_update_status_group() {
+    let css = "#right-0, #right-1, #right-2, #focus, #update-status, #mpris, #custom-spotify-mpris {\n  border: 1px solid @th-border-rights;\n}\n";
+    let updated = set_taskbar_border_width(css, 0);
+    assert!(updated.contains("border: 0px solid @th-border-rights;"));
   }
 
   #[test]

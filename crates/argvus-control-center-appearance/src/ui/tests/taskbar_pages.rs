@@ -266,3 +266,16 @@ fn ai_agents_module_is_localized_and_edits_only_the_taskbar_draft() {
   assert!(application.surface_draft().unwrap().modules.ai_agents);
   assert!(!application.has_pending_changes());
 }
+
+#[test]
+fn update_status_options_follow_the_taskbar_draft() {
+  let mut application = draft_app(AppearancePage::TaskbarModules);
+  assert!(application.surface_draft().unwrap().modules.update_status);
+  assert!(!application.surface_draft().unwrap().modules.update_aur);
+  application.activate(Item::TaskbarModule(TaskbarModule::UpdateStatus));
+  let rows = application.rows();
+  let mut menu = application.menu;
+  assert!(!menu.select(&rows, &Item::TaskbarModule(TaskbarModule::UpdateAur)));
+  assert!(application.state.taskbar_modules.update_status);
+  assert!(application.has_pending_changes());
+}

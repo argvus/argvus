@@ -269,6 +269,7 @@ fn taskbar_module_icon(module: TaskbarModule) -> &'static str {
     TaskbarModule::Focus => icons::TIMER,
     TaskbarModule::Launcher => icons::LAUNCHER,
     TaskbarModule::Network => icons::NETWORK,
+    TaskbarModule::UpdateStatus | TaskbarModule::UpdateAur => icons::WIDGET,
     TaskbarModule::PowerProfile => icons::POWER,
     TaskbarModule::KeyboardLayout => icons::KEYBOARD,
     TaskbarModule::Memory => icons::MEMORY,
@@ -866,11 +867,16 @@ impl AppearanceApp {
         _ => true,
       })
       .map(|module| {
-        self.toggle_row(
-          Item::TaskbarModule(module),
-          module.label_key(),
-          draft.is_some_and(|draft| draft.modules.enabled(module)),
-        )
+        self
+          .toggle_row(
+            Item::TaskbarModule(module),
+            module.label_key(),
+            draft.is_some_and(|draft| draft.modules.enabled(module)),
+          )
+          .enabled(
+            module != TaskbarModule::UpdateAur
+              || draft.is_some_and(|draft| draft.modules.update_status),
+          )
       })
       .collect()
   }

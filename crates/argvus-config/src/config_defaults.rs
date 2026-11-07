@@ -265,8 +265,12 @@ fn default_taskbar(document: &mut ConfigDocument) {
   icons
     .entry("launcher_custom_icon_path")
     .or_insert(Value::Null);
+  icons
+    .entry("update_aur_enabled")
+    .or_insert(Value::Bool(false));
   for widget in [
     "network",
+    "update_status",
     "power_profile",
     "keyboard_layout",
     "memory",

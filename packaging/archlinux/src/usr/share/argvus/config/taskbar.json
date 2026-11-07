@@ -14,6 +14,8 @@
     "keyboard_layout_enabled": true,
     "memory_enabled": true,
     "network_enabled": true,
+    "update_status_enabled": true,
+    "update_aur_enabled": false,
     "power_profile_enabled": true,
     "utilities": {
       "expanded": true

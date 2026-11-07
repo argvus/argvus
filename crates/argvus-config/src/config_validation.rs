@@ -346,6 +346,8 @@ pub(super) fn validate_taskbar(document: &ConfigDocument) -> ConfigResult<()> {
     "focus",
     "launcher",
     "network",
+    "update_status",
+    "update_aur",
     "power_profile",
     "keyboard_layout",
     "memory",
