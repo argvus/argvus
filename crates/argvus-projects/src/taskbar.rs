@@ -19,7 +19,7 @@ pub(super) fn write_metadata(paths: &[String]) -> io::Result<()> {
       .to_string_lossy()
       .into_owned();
     let label = messages::text("project.workspace_label", &[format!("name={name}")]);
-    let shortcut = format!("SUPER + ALT + {}", index + 1);
+    let shortcut = format!("SUPER + CTRL + {}", index + 1);
     let metadata = json!({ "label": label, "tooltip": format!("{label}\n{path}\n{shortcut}") });
     entries.insert(projects::workspace_name(path), metadata);
   }

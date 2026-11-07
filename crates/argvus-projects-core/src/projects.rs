@@ -5,7 +5,7 @@
 use std::fs;
 use std::path::{Path, PathBuf};
 
-/// SUPER + ALT + 1..9 only cover nine slots, so the list is capped at this size.
+/// SUPER + CTRL + 1..9 only cover nine slots, so the list is capped at this size.
 pub const MAX_PROJECTS: usize = 9;
 
 /// Expands a leading `~` to the home directory.

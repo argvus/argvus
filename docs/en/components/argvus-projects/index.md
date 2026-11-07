@@ -21,7 +21,7 @@ argvus projects pick [PROMPT]      print the path picked from the list, for othe
 
 A project is a directory listed in the configuration (`/projects/paths`), or a subdirectory of
 a root listed in `/projects/roots`. At most nine projects are listed: the numbers of the
-`SUPER + ALT + N` shortcuts. Opening a project focuses its Hyprland workspace. The first time a
+`SUPER + CTRL + N` shortcuts. Opening a project focuses its Hyprland workspace. The first time a
 project opens, ARGVUS starts a terminal and the editor set in `/projects/editor` inside it.
 
 The configuration is read and written through `argvus config`, so the Control Center and the
@@ -29,7 +29,7 @@ shell see the same list.
 
 ## Project workspaces and the taskbar
 
-Projects use ordinary named Hyprland workspaces, not special workspaces. `SUPER + O` shows the project number, directory and direct `SUPER + ALT + N` shortcut. Both entry points focus the same workspace. Only open workspaces appear in the taskbar, with a `Project: name` label, active state, and a tooltip containing the full path and shortcut. Click the workspace button to return to it. The taskbar follows the workspace's monitor.
+Projects use ordinary named Hyprland workspaces, not special workspaces. `SUPER + O` shows the project number, directory and direct `SUPER + CTRL + N` shortcut. Both entry points focus the same workspace. Only open workspaces appear in the taskbar, with a `Project: name` label, active state, and a tooltip containing the full path and shortcut. Click the workspace button to return to it. The taskbar follows the workspace's monitor.
 
 The canonical directory path determines a stable workspace identity; changing the list order changes the shortcut, not the workspace. Projects with the same directory name remain separate, and symbolic links to the same directory are deduplicated. Terminal and editor launches explicitly target the project's workspace. Editors that reuse an existing process/window may retain that application's own workspace behavior.
 

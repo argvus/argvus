@@ -21,7 +21,7 @@ argvus projects pick [PROMPT]      mostra o caminho escolhido na lista, para out
 
 Um projeto é um diretório listado na configuração (`/projects/paths`), ou um subdiretório de
 uma raiz listada em `/projects/roots`. No máximo nove projetos aparecem na lista: os números dos
-atalhos `SUPER + ALT + N`. Abrir um projeto foca o seu workspace do Hyprland. Na primeira vez que
+atalhos `SUPER + CTRL + N`. Abrir um projeto foca o seu workspace do Hyprland. Na primeira vez que
 um projeto é aberto, o ARGVUS inicia dentro dele um terminal e o editor definido em
 `/projects/editor`.
 
@@ -30,7 +30,7 @@ lista.
 
 ## Workspaces de projetos e taskbar
 
-Projetos usam workspaces nomeados comuns do Hyprland, não workspaces especiais. `SUPER + O` mostra o número, diretório e atalho direto `SUPER + ALT + N`. As duas entradas focam o mesmo workspace. Apenas workspaces abertos aparecem na taskbar, com rótulo `Projeto: nome`, destaque do ativo e tooltip com caminho completo e atalho. Clique no botão do workspace para retornar a ele. A taskbar acompanha o monitor do workspace.
+Projetos usam workspaces nomeados comuns do Hyprland, não workspaces especiais. `SUPER + O` mostra o número, diretório e atalho direto `SUPER + CTRL + N`. As duas entradas focam o mesmo workspace. Apenas workspaces abertos aparecem na taskbar, com rótulo `Projeto: nome`, destaque do ativo e tooltip com caminho completo e atalho. Clique no botão do workspace para retornar a ele. A taskbar acompanha o monitor do workspace.
 
 O caminho canônico do diretório determina uma identidade estável: alterar a ordem da lista altera o atalho, mas não o workspace. Projetos com nomes de diretório iguais ficam separados; links simbólicos para o mesmo diretório são deduplicados. Terminal e editor recebem explicitamente o workspace de destino. Editores que reutilizam um processo/janela existente podem manter o comportamento de workspace do próprio aplicativo.
 

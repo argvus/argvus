@@ -173,7 +173,7 @@ fn pick_chosen(prompt: &str) -> Result<Option<String>, ExitCode> {
     .enumerate()
     .map(|(index, path)| {
       format!(
-        "{}  [SUPER + ALT + {}]",
+        "{}  [SUPER + CTRL + {}]",
         projects::picker_label(index + 1, path),
         index + 1
       )
