@@ -19,4 +19,27 @@ This separation matters when diagnosing a visual problem: a missing boot splash 
 
 A theme switch shows no overlay: the running desktop changes in place. A direct session reload passes the selected theme explicitly to `/usr/lib/argvus/loading-theme/splash`. A direct reload (`argvus sessionctl reload`, `SUPER + Shift + R`) shows the session splash only when it recreates a surface: a restart of a Waybar bar or of the Control Panel, or the fallback `full` plan. The projection runs without it, and changes that reload in place (Hyprland, theme consumers, wallpaper, Dunst, polkit, hypridle) never show it; see the reload targets in [argvus-config](/docs/reference/argvus-config/). The Control Center holds the same splash itself (`argvus config transition-overlay hold`) for an **Apply** that restarts a bar or the panel, so the reload it triggers starts no second one. It uses the spinner-only mode, so its first mapped frame is opaque, and it is started with `--detached`: the splash outlives the short-lived `argvus config session-splash start` helper that spawns it, because a parent-death signal would stop it as soon as that helper exits. The reload stops the splash after the runtime half finishes, on every exit path. The splash palette is only a fallback. Verify the installed binary and package payload when source changes are not visible in the running session.
 
-The login handoff socket authorizes each client with kernel peer credentials. Only root, the helper owner and the account authenticated by greetd may send control commands. Other local accounts are refused even though the socket permits connections across users. A prepared DRM frame stays tied to its original descriptor; the helper waits for that descriptor before taking over the display.
+The login handoff socket authorizes each client with kernel peer credentials. Only root, the helper owner and the account authenticated by greetd may send control commands. Other local accounts are refused even though the socket permits connections across users. A prepared DRM frame stays tied to its original descriptor. If that unprivileged descriptor cannot acquire master, the helper reopens the same GPU while keeping the observer open, then prepares a new frame on the acquired descriptor. It never reuses a framebuffer across descriptors.
+
+## Handoff failure and cancellation
+
+The greeter owns the DRM helper until takeover succeeds. Failed startup,
+session IPC errors and a failed takeover stop and reap that child and remove its
+socket (`greeter.handoff-cancelled`). Only a confirmed first frame detaches the
+helper for the user session. The takeover timeout remains two seconds; cancelling
+the failed helper prevents an additional wait in `argvus-start`.
+
+The helper serves authenticated commands while acquiring DRM master as well as
+after drawing. An early `release` cancels acquisition, closes its prepared buffer
+and observer descriptors, then replies `released` (`handoff.release-before-master`).
+A pending `ping` is acknowledged only after the first frame; a failed presentation
+closes it without success. One pending ping is retained at a time. Theme updates
+are applied to the prepared background before presentation. Peer credentials and
+bounded command reads apply during acquisition too.
+
+Acquisition errors are recorded as `handoff.master-unavailable card=<name>
+errno=<n>` when the errno changes. `handoff.acquisition-failed` records a final
+failure; normal error exits remove the socket. These marks distinguish a helper
+waiting for DRM from one that has actually presented a frame.
+
+This acquisition follows the [Linux DRM master permission rules](https://github.com/torvalds/linux/blob/v6.18/drivers/gpu/drm/drm_auth.c): an unprivileged descriptor that has never been master cannot promote itself with `SET_MASTER`, while opening the primary node with no current master acquires it implicitly. Reopening avoids adding privileges to the greeter.

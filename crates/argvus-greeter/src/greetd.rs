@@ -290,14 +290,14 @@ fn start_authenticated_session(
   };
   // The DRM surface must be listening before the greeter compositor exits,
   // because it waits for that compositor to release DRM master.
-  let handoff_listening = match DrmHandoff::start(theme, accent, session_uid) {
-    Ok(_) => {
+  let drm_handoff = match DrmHandoff::start(theme, accent, session_uid) {
+    Ok(handoff) => {
       handoff::mark("greeter.handoff-listening");
-      true
+      Some(handoff)
     }
     Err(error) => {
       error!(%error, "could not start the DRM handoff surface; continuing without it");
-      false
+      None
     }
   };
   let _ = events.send(Event::SessionStarting);
@@ -322,7 +322,7 @@ fn start_authenticated_session(
       // compositor is still alive but inactive, so the output keeps its
       // signal. Without that, the compositor exits as before and turns
       // the outputs off.
-      let handoff_took_display = handoff_listening
+      let handoff_took_display = drm_handoff.is_some()
         && match handoff::leave_vt().and_then(|()| handoff::wait_for_handoff_frame()) {
           Ok(()) => true,
           Err(error) => {
@@ -339,8 +339,14 @@ fn start_authenticated_session(
       // the frame, the session ends without waiting for the compositor's
       // exit; otherwise the greeter waits for it as before.
       if handoff_took_display {
+        if let Some(handoff) = drm_handoff {
+          handoff.detach();
+        }
         handoff::end_greeter_compositor();
       } else {
+        if let Some(handoff) = drm_handoff {
+          handoff.cancel();
+        }
         handoff::exit_greeter_compositor();
       }
     }
@@ -349,6 +355,9 @@ fn start_authenticated_session(
       description,
     } => {
       error!(session = %session.id, "session start failed");
+      if let Some(handoff) = drm_handoff {
+        handoff.cancel();
+      }
       // A failed StartSession still owns greetd's configuring slot on
       // some PAM/session-manager paths. Explicitly cancel it before
       // notifying the UI so the next login can create a fresh session.
@@ -356,6 +365,9 @@ fn start_authenticated_session(
       let _ = events.send(Event::Error(description));
     }
     Response::AuthMessage { .. } => {
+      if let Some(handoff) = drm_handoff {
+        handoff.cancel();
+      }
       // Authentication after StartSession is a protocol violation. The
       // best-effort cancellation keeps a malformed backend response
       // from poisoning the next login attempt.

@@ -17,4 +17,29 @@ Essa separação ajuda a diagnosticar problemas visuais: um splash de boot ausen
 
 Uma troca de tema não mostra overlay: o desktop em execução muda no lugar. Um reload direto da sessão passa explicitamente o tema selecionado para `/usr/lib/argvus/loading-theme/splash`. Um reload direto (`argvus sessionctl reload`, `SUPER + Shift + R`) só mostra o splash da sessão quando recria uma superfície: um reinício de uma barra da Waybar ou do Control Panel, ou o plano `full` de fallback. A projeção roda sem ele, e mudanças que recarregam no lugar (Hyprland, consumidores do tema, wallpaper, Dunst, polkit, hypridle) nunca o mostram; veja os alvos de reload em [argvus-config](/pt/docs/reference/argvus-config/). O Control Center mantém o mesmo splash por conta própria (`argvus config transition-overlay hold`) num **Aplicar** que reinicia uma barra ou o painel, então o reload que ele dispara não inicia um segundo. Ele usa o modo somente indicador, para que o primeiro frame mapeado seja opaco, e é iniciado com `--detached`: o splash sobrevive ao helper de vida curta `argvus config session-splash start` que o cria, porque um sinal de morte do pai o pararia assim que esse helper saísse. O reload para o splash depois que a metade de runtime termina, em todos os caminhos de saída. A paleta do splash é apenas um fallback. Confira o binário instalado e o payload do pacote quando alterações da fonte não aparecerem na sessão em execução.
 
-O socket de handoff do login autoriza cada cliente pelas credenciais fornecidas pelo kernel. Apenas root, o dono do helper e a conta autenticada pelo greetd podem enviar comandos de controle. Outras contas locais são recusadas, embora o socket permita conexões entre usuários. Um quadro DRM preparado permanece vinculado ao descritor original; o helper aguarda esse descritor antes de assumir a tela.
+O socket de handoff do login autoriza cada cliente pelas credenciais fornecidas pelo kernel. Apenas root, o dono do helper e a conta autenticada pelo greetd podem enviar comandos de controle. Outras contas locais são recusadas, embora o socket permita conexões entre usuários. Um quadro DRM preparado permanece vinculado ao descritor original. Se esse descritor sem privilégios não puder adquirir o master, o helper reabre a mesma GPU mantendo o observador aberto e prepara um novo quadro no descritor adquirido. Ele nunca reutiliza um framebuffer entre descritores.
+
+## Falha e cancelamento do handoff
+
+O greeter mantém a posse do helper DRM até confirmar o primeiro quadro. Uma
+falha ao iniciar, um erro no IPC da sessão ou uma falha de takeover encerra e
+recolhe esse processo e remove seu socket (`greeter.handoff-cancelled`). Só o
+primeiro quadro confirmado libera o helper para continuar com a sessão do usuário.
+O timeout de takeover continua em dois segundos; o cancelamento evita uma segunda
+espera no `argvus-start` depois da falha.
+
+O helper atende comandos autenticados também enquanto adquire o DRM master.
+Um `release` antecipado cancela a aquisição, fecha o buffer preparado e os
+descritores observadores e só então responde `released`
+(`handoff.release-before-master`). Um `ping` pendente só recebe confirmação
+depois do primeiro quadro; uma falha de apresentação fecha a conexão sem sucesso.
+Apenas um ping fica retido por vez. Uma mudança de tema atualiza o fundo preparado
+antes da apresentação. Credenciais dos clientes e leitura limitada dos comandos
+também se aplicam durante a aquisição.
+
+O diagnóstico `handoff.master-unavailable card=<nome> errno=<n>` registra mudanças
+do erro de aquisição. `handoff.acquisition-failed` registra a falha final; saídas
+normais por erro removem o socket. Esses marcos distinguem a espera pelo DRM da
+apresentação efetiva do primeiro quadro.
+
+Essa aquisição segue as [regras de permissão do DRM no Linux](https://github.com/torvalds/linux/blob/v6.18/drivers/gpu/drm/drm_auth.c): um descritor sem privilégios que nunca foi master não pode se promover com `SET_MASTER`, enquanto abrir o nó primário sem master atual o adquire implicitamente. A reabertura evita adicionar privilégios ao greeter.

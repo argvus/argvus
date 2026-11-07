@@ -164,9 +164,61 @@ pub(super) fn acquire_card(
   cards: &[PathBuf],
   observers: &mut Vec<Observer>,
   preferred_fd: Option<RawFd>,
-) -> io::Result<RawFd> {
+  listener: &UnixListener,
+  palette: &mut Palette,
+  policy: ClientPolicy,
+) -> io::Result<Acquisition> {
+  acquire_card_with(
+    cards,
+    observers,
+    preferred_fd,
+    listener,
+    palette,
+    policy,
+    |fd| {
+      // SAFETY: the acquisition loop owns each descriptor until this call returns.
+      if unsafe { drmSetMaster(fd) } == 0 {
+        Ok(())
+      } else {
+        Err(io::Error::last_os_error())
+      }
+    },
+  )
+}
+
+/// Keep the ioctl boundary injectable so tests can reproduce an unprivileged
+/// descriptor that can never become master without switching a real VT.
+pub(super) fn acquire_card_with(
+  cards: &[PathBuf],
+  observers: &mut Vec<Observer>,
+  preferred_fd: Option<RawFd>,
+  listener: &UnixListener,
+  palette: &mut Palette,
+  policy: ClientPolicy,
+  mut set_master: impl FnMut(RawFd) -> io::Result<()>,
+) -> io::Result<Acquisition> {
   let deadline = Instant::now() + Duration::from_secs(15);
+  let mut requests = control::AcquisitionRequests::default();
+  let mut last_errors = std::collections::BTreeMap::new();
+  let preferred_card = preferred_fd.and_then(|fd| {
+    observers
+      .iter()
+      .find(|observer| observer.file.as_raw_fd() == fd)
+      .map(|observer| observer.name.clone())
+  });
+  let reopen_cards: Vec<_> = cards
+    .iter()
+    .filter(|card| {
+      preferred_card
+        .as_deref()
+        .is_none_or(|name| card.file_name() == Some(std::ffi::OsStr::new(name)))
+    })
+    .collect();
   loop {
+    if let Some(stream) = requests.poll(listener, palette, policy)? {
+      mark("handoff.release-before-master");
+      return Ok(Acquisition::Released(stream));
+    }
     for observer in observers.iter_mut() {
       for sample in observer
         .watch
@@ -181,21 +233,47 @@ pub(super) fn acquire_card(
     // An observer opened while no process held DRM master became master
     // itself, and then no new descriptor can.
     if let Some(index) = observers.iter().position(|observer| {
-      preferred_fd.is_none_or(|fd| fd == observer.file.as_raw_fd())
-        && unsafe { drmSetMaster(observer.file.as_raw_fd()) } == 0
+      if preferred_fd.is_some_and(|fd| fd != observer.file.as_raw_fd()) {
+        return false;
+      }
+      let Err(error) = set_master(observer.file.as_raw_fd()) else {
+        return true;
+      };
+      let errno = error.raw_os_error().unwrap_or_default();
+      if last_errors.get(&observer.name) != Some(&errno) {
+        last_errors.insert(observer.name.clone(), errno);
+        mark(&format!(
+          "handoff.master-unavailable card={} errno={errno}",
+          observer.name
+        ));
+      }
+      false
     }) {
-      return Ok(observers.swap_remove(index).file.into_raw_fd());
+      return Ok(Acquisition::Acquired {
+        fd: observers.swap_remove(index).file.into_raw_fd(),
+        requests,
+      });
     }
-    // A prepared dumb buffer is local to its observer's open file description.
-    // Wait for that descriptor; another GPU or a new open cannot use it.
-    for card in cards.iter().filter(|_| preferred_fd.is_none()) {
+    // An unprivileged observer opened while the compositor was master has
+    // never been master itself: SET_MASTER returns EACCES even after a VT
+    // switch. A fresh open becomes master implicitly once the compositor lets
+    // go. Keep the observers open to preserve scanout, and reopen only the
+    // prepared output's GPU. Its old dumb buffer cannot cross descriptors;
+    // prepared_for_fd discards it and the surface paints a new one.
+    for card in &reopen_cards {
       let Ok(file) = OpenOptions::new().read(true).write(true).open(card) else {
         continue;
       };
       let fd = file.as_raw_fd();
-      let result = unsafe { drmSetMaster(fd) };
-      if result == 0 {
-        return Ok(file.into_raw_fd());
+      if set_master(fd).is_ok() {
+        mark(&format!(
+          "handoff.master-reopened card={} fd={fd}",
+          card.display()
+        ));
+        return Ok(Acquisition::Acquired {
+          fd: file.into_raw_fd(),
+          requests,
+        });
       }
     }
     if Instant::now() >= deadline {
@@ -206,6 +284,15 @@ pub(super) fn acquire_card(
     }
     thread::sleep(MASTER_POLL);
   }
+}
+
+pub(super) enum Acquisition {
+  Acquired {
+    fd: RawFd,
+    requests: control::AcquisitionRequests,
+  },
+  /// No descriptor was promoted to master; close observers before replying.
+  Released(UnixStream),
 }
 
 /// The output the surface drives and its first frame, already painted.

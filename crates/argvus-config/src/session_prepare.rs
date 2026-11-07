@@ -14,6 +14,7 @@ use crate::session_reload::{ReloadContext, active_theme, run_script, sync_user_f
 use crate::session_timing::timed;
 use std::env;
 use std::fs;
+use std::hash::{Hash, Hasher};
 use std::os::unix::fs::PermissionsExt;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
@@ -233,24 +234,23 @@ fn accent_color_file(paths: &SessionPaths) -> PathBuf {
   paths.config_home.join("argvus/data/.accent-color")
 }
 
-/// The text that identifies the theme files. It is stored in the stamp, so it
-/// keeps the shell's order and `path:mtime:size` format.
+/// Identifies theme inputs by content, so reinstalling identical templates
+/// does not put a full theme switch back on the login path. This is a local
+/// cache: a Rust upgrade changing DefaultHasher may safely invalidate it once.
 pub fn theme_fingerprint(paths: &SessionPaths, theme: &str) -> String {
   let mut lines = vec![format!("theme={theme}")];
   for root in fingerprint_roots(paths, theme) {
     if root.is_dir() {
       let mut files = Vec::new();
       collect_files(&root, &mut files);
-      // The shell sorted the stat lines, not the paths: the sort key is
-      // the whole `path:mtime:size` text.
       let mut stats: Vec<String> = files
         .iter()
-        .map(|file| stat_line(Path::new(file)))
+        .map(|file| fingerprint_file(Path::new(file)))
         .collect();
       stats.sort();
       lines.extend(stats);
     } else if root.is_file() {
-      lines.push(stat_line(&root));
+      lines.push(fingerprint_file(&root));
     } else {
       lines.push(format!("{}:missing", root.display()));
     }
@@ -306,18 +306,14 @@ fn collect_files(directory: &Path, files: &mut Vec<String>) {
   }
 }
 
-fn stat_line(path: &Path) -> String {
-  match fs::metadata(path) {
-    Ok(metadata) => {
-      let mtime = metadata
-        .modified()
-        .ok()
-        .and_then(|time| time.duration_since(std::time::UNIX_EPOCH).ok())
-        .map(|duration| duration.as_secs())
-        .unwrap_or(0);
-      format!("{}:{}:{}", path.display(), mtime, metadata.len())
+fn fingerprint_file(path: &Path) -> String {
+  match fs::read(path) {
+    Ok(contents) => {
+      let mut hasher = std::collections::hash_map::DefaultHasher::new();
+      contents.hash(&mut hasher);
+      format!("{}:content-v1:{:016x}", path.display(), hasher.finish())
     }
-    Err(_) => format!("{}:missing", path.display()),
+    Err(error) => format!("{}:unreadable:{:?}", path.display(), error.kind()),
   }
 }
 
@@ -614,6 +610,49 @@ mod tests {
       "jsonc is listed before css, as in the shell"
     );
     let _ = fs::remove_dir_all(root);
+  }
+
+  #[test]
+  fn reinstalling_identical_theme_inputs_does_not_invalidate_startup() {
+    let root = Path::new("/tmp/argvus").join(format!("theme-reinstall-{}", std::process::id()));
+    let paths = paths_under(&root);
+    let css = paths
+      .system_config
+      .join("taskbar/config/argvus-taskbar.css");
+    fs::create_dir_all(css.parent().unwrap()).unwrap();
+    fs::write(&css, "original theme").unwrap();
+    let original = theme_fingerprint(&paths, "argvus-dark");
+    let modified = std::time::SystemTime::UNIX_EPOCH + std::time::Duration::from_secs(123);
+    fs::File::options()
+      .write(true)
+      .open(&css)
+      .unwrap()
+      .set_times(fs::FileTimes::new().set_modified(modified))
+      .unwrap();
+    assert_eq!(theme_fingerprint(&paths, "argvus-dark"), original);
+    fs::remove_dir_all(root).unwrap();
+  }
+
+  #[test]
+  fn changed_theme_contents_invalidate_startup_even_with_the_same_size_and_time() {
+    let root = Path::new("/tmp/argvus").join(format!("theme-change-{}", std::process::id()));
+    let paths = paths_under(&root);
+    let css = paths
+      .system_config
+      .join("taskbar/config/argvus-taskbar.css");
+    fs::create_dir_all(css.parent().unwrap()).unwrap();
+    fs::write(&css, "color: #112233").unwrap();
+    let modified = fs::metadata(&css).unwrap().modified().unwrap();
+    let original = theme_fingerprint(&paths, "argvus-dark");
+    fs::write(&css, "color: #445566").unwrap();
+    fs::File::options()
+      .write(true)
+      .open(&css)
+      .unwrap()
+      .set_times(fs::FileTimes::new().set_modified(modified))
+      .unwrap();
+    assert_ne!(theme_fingerprint(&paths, "argvus-dark"), original);
+    fs::remove_dir_all(root).unwrap();
   }
 
   /// Lays out a materialized theme: the canonical layout variant, the active

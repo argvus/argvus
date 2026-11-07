@@ -161,10 +161,218 @@ fn serve_once(directory: &Path, palette_theme: &'static str) -> (PathBuf, thread
 
 fn test_directory(name: &str) -> PathBuf {
   let directory =
-    std::env::temp_dir().join(format!("argvus-handoff-test-{name}-{}", std::process::id()));
+    Path::new("/tmp/argvus").join(format!("handoff-test-{name}-{}", std::process::id()));
   let _ = fs::remove_dir_all(&directory);
   fs::create_dir_all(&directory).expect("create test directory");
   directory
+}
+
+#[test]
+fn release_cancels_acquisition_without_an_available_drm_card() {
+  let directory = test_directory("acquiring-release");
+  let socket = directory.join("handoff.sock");
+  let listener = prepare_socket(&socket).unwrap();
+  let mut ping = UnixStream::connect(&socket).unwrap();
+  ping.write_all(b"ping\n").unwrap();
+  let mut release = UnixStream::connect(&socket).unwrap();
+  release.write_all(b"release\n").unwrap();
+  release
+    .set_read_timeout(Some(Duration::from_secs(2)))
+    .unwrap();
+
+  let started = Instant::now();
+  let result = acquire_card(
+    &[],
+    &mut Vec::new(),
+    None,
+    &listener,
+    &mut Palette::new("argvus-dark", None),
+    ClientPolicy::current(None),
+  )
+  .unwrap();
+  let outputs::Acquisition::Released(mut stream) = result else {
+    panic!("no DRM card can have been acquired");
+  };
+  assert!(started.elapsed() < Duration::from_secs(2));
+  stream.write_all(b"released\n").unwrap();
+  let mut answer = String::new();
+  BufReader::new(&mut release).read_line(&mut answer).unwrap();
+  assert_eq!(answer, "released\n");
+  fs::remove_dir_all(directory).unwrap();
+}
+
+#[test]
+fn an_unprivileged_prepared_observer_reopens_the_same_gpu_to_acquire_master() {
+  use std::os::fd::FromRawFd;
+  use std::os::unix::fs::MetadataExt;
+
+  let directory = test_directory("unprivileged-master");
+  // Both files stand in for cards. The ioctl seam reproduces the kernel's
+  // EACCES for an old non-master descriptor, without touching /dev/dri.
+  let cards = [directory.join("card0"), directory.join("card1")];
+  for card in &cards {
+    fs::write(card, b"").unwrap();
+  }
+  let observer = OpenOptions::new()
+    .read(true)
+    .write(true)
+    .open(&cards[1])
+    .unwrap();
+  let original_fd = observer.as_raw_fd();
+  let mut observers = vec![outputs::Observer {
+    name: "card1".into(),
+    file: observer,
+    watch: CrtcWatch::default(),
+  }];
+  let listener = prepare_socket(&directory.join("handoff.sock")).unwrap();
+  let mut attempts = 0;
+  let started = Instant::now();
+  let acquired = outputs::acquire_card_with(
+    &cards,
+    &mut observers,
+    Some(original_fd),
+    &listener,
+    &mut Palette::new("argvus-dark", None),
+    ClientPolicy::current(None),
+    |fd| {
+      attempts += 1;
+      if fd == original_fd {
+        Err(io::Error::from_raw_os_error(libc::EACCES))
+      } else {
+        Ok(())
+      }
+    },
+  )
+  .unwrap();
+  let outputs::Acquisition::Acquired { fd, .. } = acquired else {
+    panic!("expected a reopened master");
+  };
+  // SAFETY: acquisition transfers ownership of this new descriptor to us.
+  let master = unsafe { fs::File::from_raw_fd(fd) };
+  assert_ne!(fd, original_fd);
+  assert_eq!(
+    master.metadata().unwrap().ino(),
+    fs::metadata(&cards[1]).unwrap().ino()
+  );
+  assert_ne!(
+    master.metadata().unwrap().ino(),
+    fs::metadata(&cards[0]).unwrap().ino()
+  );
+  assert!(
+    observers[0].file.metadata().is_ok(),
+    "keep the old scanout descriptor alive"
+  );
+  assert_eq!(attempts, 2);
+  assert!(started.elapsed() < Duration::from_secs(1));
+  assert!(prepared_for_fd(fd, Some((original_fd, "old framebuffer"))).is_none());
+  drop(master);
+  fs::remove_dir_all(directory).unwrap();
+}
+
+#[test]
+fn acquisition_ping_is_acknowledged_only_after_the_first_frame() {
+  let directory = test_directory("acquiring-ping");
+  let socket = directory.join("handoff.sock");
+  let listener = prepare_socket(&socket).unwrap();
+  let mut client = UnixStream::connect(&socket).unwrap();
+  client.write_all(b"ping\n").unwrap();
+  let mut requests = control::AcquisitionRequests::default();
+  assert!(
+    requests
+      .poll(
+        &listener,
+        &mut Palette::new("argvus-dark", None),
+        ClientPolicy::current(None)
+      )
+      .unwrap()
+      .is_none()
+  );
+  client.set_nonblocking(true).unwrap();
+  let mut answer = [0; 3];
+  assert_eq!(
+    std::io::Read::read(&mut client, &mut answer)
+      .unwrap_err()
+      .kind(),
+    io::ErrorKind::WouldBlock
+  );
+  requests.first_frame();
+  client.set_nonblocking(false).unwrap();
+  client
+    .set_read_timeout(Some(Duration::from_secs(1)))
+    .unwrap();
+  std::io::Read::read_exact(&mut client, &mut answer).unwrap();
+  assert_eq!(&answer, b"ok\n");
+  fs::remove_dir_all(directory).unwrap();
+}
+
+#[test]
+fn an_acquisition_client_that_disconnects_does_not_prevent_release() {
+  let directory = test_directory("acquiring-disconnect");
+  let socket = directory.join("handoff.sock");
+  let listener = prepare_socket(&socket).unwrap();
+  let mut requests = control::AcquisitionRequests::default();
+  let mut palette = Palette::new("argvus-dark", None);
+  let policy = ClientPolicy::current(None);
+  let client = UnixStream::connect(&socket).unwrap();
+  drop(client);
+  assert!(
+    requests
+      .poll(&listener, &mut palette, policy)
+      .unwrap()
+      .is_none()
+  );
+  let mut client = UnixStream::connect(&socket).unwrap();
+  client.write_all(b"release\n").unwrap();
+  assert!(
+    requests
+      .poll(&listener, &mut palette, policy)
+      .unwrap()
+      .is_some()
+  );
+  fs::remove_dir_all(directory).unwrap();
+}
+
+#[test]
+fn acquisition_theme_update_preserves_the_user_accent() {
+  let directory = test_directory("acquiring-theme");
+  let socket = directory.join("handoff.sock");
+  let listener = prepare_socket(&socket).unwrap();
+  let mut client = UnixStream::connect(&socket).unwrap();
+  client.write_all(b"theme=tokyo-night\n").unwrap();
+  let mut palette = Palette::new("argvus-dark", Some(0x12_3456));
+  assert!(
+    control::AcquisitionRequests::default()
+      .poll(&listener, &mut palette, ClientPolicy::current(None))
+      .unwrap()
+      .is_none()
+  );
+  assert_eq!(palette.background, 0x1a1b26);
+  assert_eq!(palette.accent, 0x12_3456);
+  fs::remove_dir_all(directory).unwrap();
+}
+
+#[test]
+fn failed_presentation_closes_the_ping_without_acknowledging_a_frame() {
+  let directory = test_directory("acquiring-no-frame");
+  let socket = directory.join("handoff.sock");
+  let listener = prepare_socket(&socket).unwrap();
+  let mut client = UnixStream::connect(&socket).unwrap();
+  client.write_all(b"ping\n").unwrap();
+  client
+    .set_read_timeout(Some(Duration::from_secs(1)))
+    .unwrap();
+  let mut requests = control::AcquisitionRequests::default();
+  requests
+    .poll(
+      &listener,
+      &mut Palette::new("argvus-dark", None),
+      ClientPolicy::current(None),
+    )
+    .unwrap();
+  drop(requests);
+  let mut answer = String::new();
+  assert_eq!(BufReader::new(client).read_line(&mut answer).unwrap(), 0);
+  fs::remove_dir_all(directory).unwrap();
 }
 
 #[test]

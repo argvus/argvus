@@ -99,7 +99,10 @@ available as `argvus config session-prepare`. The steps, in order:
    is the one in `.active-theme`, or the packaged default `argvus-dark` when none
    was chosen. The step runs only when the materialization stamp
    (`~/.cache/argvus/session/theme-startup.stamp`) is missing, does not match the
-   theme's fingerprint, or the theme files are not materialized. It does not
+   theme's content fingerprint, or the theme files are not materialized.
+   Reinstalling identical inputs preserves the stamp; changed contents invalidate
+   it even when size and modification time are unchanged. Older timestamp-based
+   stamps rebuild once when migrating. It does not
    commit the theme again, so a custom wallpaper is not reset on every login.
    If an accent is set, `argvus config accent --startup` runs afterwards, so the
    user's accent wins over the theme's own accent. If the theme was reapplied,

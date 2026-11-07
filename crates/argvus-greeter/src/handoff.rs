@@ -317,7 +317,19 @@ pub fn leave_vt() -> anyhow::Result<()> {
   seat
     .call::<_, _, ()>("SwitchTo", &(HANDOFF_VT))
     .with_context(|| format!("switching to VT {HANDOFF_VT}"))?;
+  // SwitchTo returning is not proof that DRM master has been relinquished.
+  // Keep a snapshot without adding another readiness wait to the login path.
+  mark(&format!(
+    "greeter.vt-switch-returned active={}",
+    active_vt()
+  ));
   Ok(())
+}
+
+fn active_vt() -> String {
+  std::fs::read_to_string("/sys/class/tty/tty0/active")
+    .map(|value| value.trim().to_owned())
+    .unwrap_or_else(|_| "unavailable".to_owned())
 }
 
 /// The logind object of `seat`, from the session's `XDG_SEAT`, or of `seat0`
@@ -346,7 +358,12 @@ pub fn wait_for_handoff_frame() -> anyhow::Result<()> {
   let mut answer = String::new();
   BufReader::new(&mut stream)
     .read_line(&mut answer)
-    .context("waiting for the DRM handoff surface to draw")?;
+    .with_context(|| {
+      format!(
+        "waiting for the DRM handoff surface to draw (active-vt={})",
+        active_vt()
+      )
+    })?;
   if answer.trim() != "ok" {
     bail!("the DRM handoff surface answered {:?}", answer.trim());
   }
@@ -452,10 +469,14 @@ impl Drop for WaylandSplash {
 ///
 /// The helper waits for DRM master, which the greeter compositor holds until
 /// the greeter leaves the VT (`leave_vt`) or the compositor exits, and then
-/// draws. It is deliberately not owned by this process: it keeps
-/// running after the greeter ends and stops only when the user session sends
-/// `release` (see `argvus-start`). Nothing here blocks the login on failure.
-pub struct DrmHandoff;
+/// draws. The greeter owns it until takeover succeeds, then detaches it for
+/// the user session to `release` (see `argvus-start`). A failed takeover or
+/// greetd request stops and reaps it before the session continues.
+pub struct DrmHandoff {
+  child: Child,
+  detached: bool,
+  socket: std::path::PathBuf,
+}
 
 impl DrmHandoff {
   /// Starts the helper and waits until its command socket is listening. The
@@ -484,20 +505,58 @@ impl DrmHandoff {
     let child = command
       .spawn()
       .context("starting the DRM handoff surface")?;
+    let mut handoff = Self {
+      child,
+      detached: false,
+      socket: DRM_HANDOFF_SOCKET.into(),
+    };
 
     let deadline = Instant::now() + DRM_HANDOFF_SOCKET_TIMEOUT;
-    while !std::path::Path::new(DRM_HANDOFF_SOCKET).exists() {
+    while !handoff.socket.exists() {
+      if handoff.child.try_wait()?.is_some() {
+        bail!("DRM handoff surface exited before opening its socket");
+      }
       if Instant::now() >= deadline {
         bail!(
           "DRM handoff surface did not open its socket (pid {})",
-          child.id()
+          handoff.child.id()
         );
       }
-      std::thread::sleep(Duration::from_millis(20));
+      std::thread::sleep(Duration::from_millis(1));
     }
-    tracing::info!(pid = child.id(), "DRM handoff surface is listening");
-    // Dropping the Child does not stop the process; it is intentionally left running.
-    Ok(Self)
+    tracing::info!(pid = handoff.child.id(), "DRM handoff surface is listening");
+    Ok(handoff)
+  }
+
+  /// Keep the successfully presented surface alive for the user session.
+  pub fn detach(mut self) {
+    self.detached = true;
+  }
+
+  pub fn cancel(self) {
+    drop(self);
+  }
+}
+
+impl Drop for DrmHandoff {
+  fn drop(&mut self) {
+    if self.detached {
+      return;
+    }
+    // A failed takeover or greetd request must not leave an acquiring helper
+    // on the login path. This Child always identifies the process we started.
+    if let Err(error) = self.child.kill() {
+      tracing::warn!(%error, "could not cancel the failed DRM handoff");
+    }
+    if let Err(error) = self.child.wait() {
+      tracing::warn!(%error, "could not reap the failed DRM handoff");
+    }
+    match std::fs::remove_file(&self.socket) {
+      Ok(()) => {}
+      Err(error) if error.kind() == io::ErrorKind::NotFound => {}
+      Err(error) => tracing::warn!(%error, "could not remove the failed DRM handoff socket"),
+    }
+    mark("greeter.handoff-cancelled");
   }
 }
 
@@ -545,6 +604,34 @@ use std::os::fd::FromRawFd;
 #[cfg(test)]
 mod tests {
   use super::*;
+
+  #[test]
+  fn a_failed_handoff_is_stopped_reaped_and_its_socket_removed() {
+    let directory =
+      std::path::Path::new("/tmp/argvus").join(format!("greeter-cancel-{}", std::process::id()));
+    std::fs::create_dir_all(&directory).unwrap();
+    let socket = directory.join("handoff.sock");
+    let _listener = std::os::unix::net::UnixListener::bind(&socket).unwrap();
+    let child = Command::new("/usr/bin/sleep").arg("60").spawn().unwrap();
+    let pid = child.id() as libc::pid_t;
+    drop(DrmHandoff {
+      child,
+      detached: false,
+      socket: socket.clone(),
+    });
+    assert!(!socket.exists());
+    // SAFETY: waitpid with WNOHANG only observes our own child. Drop has
+    // already waited for it, so there must be no child left to reap.
+    assert_eq!(
+      unsafe { libc::waitpid(pid, std::ptr::null_mut(), libc::WNOHANG) },
+      -1
+    );
+    assert_eq!(
+      io::Error::last_os_error().raw_os_error(),
+      Some(libc::ECHILD)
+    );
+    std::fs::remove_dir_all(directory).unwrap();
+  }
 
   #[test]
   fn the_seat_object_comes_from_xdg_seat() {

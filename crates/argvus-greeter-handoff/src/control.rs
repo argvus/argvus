@@ -91,6 +91,55 @@ pub(super) fn read_command(stream: &mut UnixStream, policy: ClientPolicy) -> io:
   Ok(command)
 }
 
+/// Commands remain available while DRM master belongs to the greeter. A ping
+/// must not acknowledge a frame that has not been drawn yet.
+#[derive(Default)]
+pub(super) struct AcquisitionRequests {
+  ping: Option<UnixStream>,
+}
+
+impl AcquisitionRequests {
+  pub(super) fn poll(
+    &mut self,
+    listener: &UnixListener,
+    palette: &mut Palette,
+    policy: ClientPolicy,
+  ) -> io::Result<Option<UnixStream>> {
+    let (mut stream, _) = match listener.accept() {
+      Ok(client) => client,
+      Err(error) if error.kind() == io::ErrorKind::WouldBlock => return Ok(None),
+      Err(error) => return Err(error),
+    };
+    let line = match read_command(&mut stream, policy) {
+      Ok(line) => line,
+      // A malformed, silent or unauthorized client must not end the helper.
+      Err(_) => return Ok(None),
+    };
+    match parse_command(&line) {
+      Command::Release => return Ok(Some(stream)),
+      Command::Ping => {
+        // Bound retained connections even when a client repeatedly pings.
+        self.ping = Some(stream);
+        return Ok(None);
+      }
+      Command::Theme(theme) => *palette = palette.with_theme(theme),
+      Command::Retire => {}
+      Command::Unknown => {
+        let _ = stream.write_all(b"error\n");
+        return Ok(None);
+      }
+    }
+    let _ = stream.write_all(b"ok\n");
+    Ok(None)
+  }
+
+  pub(super) fn first_frame(&mut self) {
+    if let Some(mut ping) = self.ping.take() {
+      let _ = ping.write_all(b"ok\n");
+    }
+  }
+}
+
 /// Handles one client request while the surface owns the output. A release
 /// returns its stream still open, so the acknowledgement can be written after
 /// DRM master has been dropped.

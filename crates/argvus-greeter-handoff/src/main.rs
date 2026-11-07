@@ -108,9 +108,16 @@ fn main() -> io::Result<()> {
     return wayland::run(palette, cli.ready_fd, cli.retire_handoff);
   }
   let listener = prepare_socket(&cli.socket)?;
+  let outcome = run_drm(&cli, &listener);
+  let _ = fs::remove_file(&cli.socket);
+  outcome
+}
+
+fn run_drm(cli: &Cli, listener: &UnixListener) -> io::Result<()> {
   let policy = ClientPolicy::current(cli.session_uid);
   let user_accent = cli.accent.as_deref().and_then(hex_to_rgb);
   let mut palette = Palette::new(&cli.theme, user_accent);
+  let prepared_palette = palette;
   mark("handoff.waiting-for-master");
   let (cards, mut observers) = open_observers()?;
   // Finding the output and painting the first frame need no DRM master, so
@@ -130,11 +137,39 @@ fn main() -> io::Result<()> {
     ));
   }
   let preferred_fd = prepared.as_ref().map(|(fd, _)| *fd);
-  let fd = acquire_card(&cards, &mut observers, preferred_fd)?;
+  let acquisition = acquire_card(
+    &cards,
+    &mut observers,
+    preferred_fd,
+    listener,
+    &mut palette,
+    policy,
+  );
+  let (fd, mut requests) = match acquisition {
+    Ok(outputs::Acquisition::Acquired { fd, requests }) => (fd, requests),
+    Ok(outputs::Acquisition::Released(mut stream)) => {
+      // Closing every descriptor also relinquishes master if a card became
+      // master implicitly when opened. Never acknowledge before that cleanup.
+      drop(prepared);
+      drop(observers);
+      return stream.write_all(b"released\n");
+    }
+    Err(error) => {
+      mark(&format!("handoff.acquisition-failed error={error}"));
+      return Err(error);
+    }
+  };
   mark(&format!("handoff.master-acquired fd={fd}"));
 
-  let prepared = prepared_for_fd(fd, prepared);
-  let result = run_surface(fd, prepared, &listener, &mut palette, policy);
+  let mut prepared = prepared_for_fd(fd, prepared);
+  // Theme commands can arrive during acquisition. Avoid repainting the whole
+  // background on the normal path, where it was already prepared off-screen.
+  if palette != prepared_palette
+    && let Some(surface) = prepared.as_mut()
+  {
+    draw_background(&mut surface.buffer, &palette);
+  }
+  let result = run_surface(fd, prepared, listener, &mut palette, policy, &mut requests);
   // The overlay can only be set while this process is still DRM master.
   let overlay = result
     .as_ref()
@@ -154,7 +189,7 @@ fn main() -> io::Result<()> {
         // yet. The overlay stays above it, with the spinner still animating,
         // until the session spinner is on screen.
         Some(mut overlay) => {
-          hold_overlay(fd, &listener, &released, &mut overlay, &palette, policy);
+          hold_overlay(fd, listener, &released, &mut overlay, &palette, policy);
           drop(overlay);
         }
         // Destroying the framebuffer now would make the kernel turn the output
@@ -174,7 +209,6 @@ fn main() -> io::Result<()> {
     }
     Err(error) => Err(error),
   };
-  let _ = fs::remove_file(&cli.socket);
   unsafe {
     libc::close(fd);
   }
@@ -193,6 +227,7 @@ fn run_surface(
   listener: &UnixListener,
   palette: &mut Palette,
   policy: ClientPolicy,
+  requests: &mut control::AcquisitionRequests,
 ) -> io::Result<Released> {
   let PreparedSurface {
     connector_id,
@@ -253,6 +288,7 @@ fn run_surface(
   }
 
   mark("handoff.first-frame");
+  requests.first_frame();
   // The greeter compositor's cursor stays on its plane until that compositor
   // exits; the surface shows no cursor.
   unsafe { drmModeSetCursor(fd, crtc_id, 0, 0, 0) };
