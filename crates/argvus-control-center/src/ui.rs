@@ -789,7 +789,12 @@ mod tests {
           "{route:?} {width}x{height}: {lines:?}"
         );
         if let Some(warning) = warning {
-          assert!(warning < height as usize - 2);
+          #[cfg(feature = "packages")]
+          let packages_footer = matches!(route, InitialRoute::Packages(_));
+          #[cfg(not(feature = "packages"))]
+          let packages_footer = false;
+          let bottom_limit = height as usize - if packages_footer { 1 } else { 2 };
+          assert!(warning < bottom_limit, "{route:?}: {lines:?}");
         }
         assert!(!lines.join("").contains("control_center."), "{route:?}");
         assert!(lines[height as usize - 1].contains("F6"));

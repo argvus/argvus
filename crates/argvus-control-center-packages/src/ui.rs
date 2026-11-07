@@ -29,7 +29,7 @@ use argvus_tui::{
   hints::{HintContext, choice_hints, confirm_hints, hints},
   icons,
   menu::{MenuEvent, MenuState, MenuStyle, Row, RowKind, draw_menu},
-  page::{shell, status},
+  page::shell_with_status,
   text_editor::{EditorOutcome, TextEditor},
 };
 use crossterm::event::{KeyCode, KeyEvent};

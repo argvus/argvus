@@ -114,28 +114,24 @@ impl PackagesApp {
     let area = f.area();
     let rows = self.rows();
     self.menu.normalize(&rows);
-    let body = shell(
+    let admin_required = !matches!(
+      self.page,
+      PackagesPage::Home
+        | PackagesPage::Source(_)
+        | PackagesPage::CacheFiles
+        | PackagesPage::History
+        | PackagesPage::HistoryDetails(_)
+        | PackagesPage::Repositories
+    );
+    let body = shell_with_status(
       f,
       area,
       &self.theme,
       self.lang,
       &self.breadcrumb(),
       &self.footer_hints(&rows),
-    );
-    let body = argvus_tui::page::admin_warning(
-      f,
-      body,
-      &self.theme,
-      self.lang,
-      !matches!(
-        self.page,
-        PackagesPage::Home
-          | PackagesPage::Source(_)
-          | PackagesPage::CacheFiles
-          | PackagesPage::History
-          | PackagesPage::HistoryDetails(_)
-          | PackagesPage::Repositories
-      ),
+      self.status.as_ref(),
+      admin_required,
     );
     if filters_while_typing(self.page) {
       self.draw_filtered_list(f, body, &rows);
@@ -143,7 +139,7 @@ impl PackagesApp {
       self.list_height = body.height;
       self.draw_list(f, body, &rows);
     }
-    self.overlays(f, body);
+    self.overlays(f);
   }
 
   /// Draws `rows` as the page list, with the menu style of the Packages pages.
@@ -260,7 +256,7 @@ impl PackagesApp {
 
   /// Draws the input field, the confirmation, the status and the live
   /// transaction output over the page.
-  pub(super) fn overlays(&self, f: &mut Frame, body: Rect) {
+  pub(super) fn overlays(&self, f: &mut Frame) {
     if let Some(input) = &self.input {
       let mode = self.input_mode.unwrap_or(InputMode::Search);
       let (title, prompt) = match mode {
@@ -359,9 +355,6 @@ impl PackagesApp {
         },
       );
       editor.draw(f, f.area(), &self.theme, hint);
-    }
-    if let Some(s) = &self.status {
-      status(f, body, &self.theme, s)
     }
     if self.transaction_open && self.transaction_live.is_some() {
       let output = &self.transaction_buffer;

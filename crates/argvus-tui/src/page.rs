@@ -26,16 +26,42 @@ pub fn shell(
   breadcrumb: &str,
   hints: &str,
 ) -> Rect {
+  shell_with_status(frame, area, theme, lang, breadcrumb, hints, None, false)
+}
+
+/// Draws the shell with an optional status below the navigation hints.
+pub fn shell_with_status(
+  frame: &mut Frame,
+  area: Rect,
+  theme: &Theme,
+  lang: Lang,
+  breadcrumb: &str,
+  hints: &str,
+  message: Option<&StatusMessage>,
+  admin_required: bool,
+) -> Rect {
   Block::new()
     .borders(Borders::ALL)
     .border_style(Style::new().fg(theme.border_active))
     .style(Style::new().bg(theme.background).fg(theme.foreground))
     .render(area, frame.buffer_mut());
   let inner = area.inner(Margin::new(1, 1));
+  let status_height = message.map_or(0, |message| {
+    crate::components::status_line_count(message, inner.width).min(usize::from(inner.height)) as u16
+  });
+  let warning = admin_required.then(|| StatusMessage {
+    kind: crate::components::StatusKind::Warning,
+    text: tr(lang, "control_center.admin_privileges_required").to_owned(),
+  });
+  let warning_height = warning.as_ref().map_or(0, |warning| {
+    crate::components::status_line_count(warning, inner.width).min(usize::from(inner.height)) as u16
+  });
   let rows = Layout::vertical([
     Constraint::Length(1),
     Constraint::Min(1),
     Constraint::Length(2),
+    Constraint::Length(status_height),
+    Constraint::Length(warning_height),
   ])
   .split(inner);
   let title = format!(
@@ -53,6 +79,12 @@ pub fn shell(
     },
   );
   draw_footer(frame, rows[2], theme, None, hints);
+  if let Some(message) = message {
+    crate::components::draw_status(frame, rows[3], theme, message);
+  }
+  if let Some(warning) = &warning {
+    crate::components::draw_status(frame, rows[4], theme, warning);
+  }
   rows[1]
 }
 
