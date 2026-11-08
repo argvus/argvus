@@ -40,8 +40,9 @@ pub fn run(paths: &SessionPaths, theme: &str, runtime: bool, live: bool) -> i32 
   }
   // The layout of the theme being replaced: a layout change restarts the bars,
   // so only then are their managed files rebuilt from the packaged ones.
-  let layout_changed =
-    theme_build::displayed_theme(paths).ends_with("-float") != theme.ends_with("-float");
+  let previous_theme = theme_build::displayed_theme(paths);
+  let layout_changed = (previous_theme.ends_with("-spaced") || previous_theme.ends_with("-float"))
+    != (theme.ends_with("-spaced") || theme.ends_with("-float"));
   let wallpaper = find_theme_wallpaper(&theme_paths, theme).unwrap_or_default();
   let theme_directory = theme_resolve::manifest(&theme_paths, theme).map(|manifest| manifest.dir);
   let profile = theme_directory
@@ -195,7 +196,10 @@ fn apply_canonical_theme(theme: &str, wallpaper: &str, profile: Option<&Path>) -
   if skip_commit || !on_path("argvus") {
     return true;
   }
-  let family = theme.strip_suffix("-float").unwrap_or(theme);
+  let family = theme
+    .strip_suffix("-spaced")
+    .or_else(|| theme.strip_suffix("-float"))
+    .unwrap_or(theme);
   let mut arguments = vec![
     "config".to_string(),
     "apply-theme".to_string(),

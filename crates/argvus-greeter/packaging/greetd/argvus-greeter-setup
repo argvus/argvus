@@ -70,10 +70,11 @@ done
 need_root
 
 is_supported_theme() {
+  case "$1" in *-float) set -- "${1%-float}-spaced" ;; esac
   case "$1" in
-    one-dark|one-dark-float|dracula|dracula-float|argvus-dark|argvus-dark-float|silver-dark|silver-dark-float|\
-    slate-dark|slate-dark-float|universe|universe-float|\
-    argvus-light|argvus-light-float|github-light|github-light-float|solarized-light|solarized-light-float|one-light|one-light-float|everforest-light|everforest-light-float|catppuccin-latte|catppuccin-latte-float|gruvbox-light|gruvbox-light-float|rose-pine|rose-pine-float|tokyo-night|tokyo-night-float|solitude|solitude-float|sunset|sunset-float|matrix|matrix-float|monokai-dark|monokai-dark-float)
+    one-dark|one-dark-spaced|dracula|dracula-spaced|argvus-dark|argvus-dark-spaced|silver-dark|silver-dark-spaced|\
+    slate-dark|slate-dark-spaced|universe|universe-spaced|\
+    argvus-light|argvus-light-spaced|github-light|github-light-spaced|solarized-light|solarized-light-spaced|one-light|one-light-spaced|everforest-light|everforest-light-spaced|catppuccin-latte|catppuccin-latte-spaced|gruvbox-light|gruvbox-light-spaced|rose-pine|rose-pine-spaced|tokyo-night|tokyo-night-spaced|solitude|solitude-spaced|sunset|sunset-spaced|matrix|matrix-spaced|monokai-dark|monokai-dark-spaced)
       return 0
       ;;
     *)
@@ -84,35 +85,36 @@ is_supported_theme() {
         ''|-*|*-|*[!a-z0-9-]*) return 1 ;;
       esac
       # Drop-in themes are supported when their installed manifest exists. The
-      # manifest belongs to the family, so a Float variant uses the same one.
-      [ -r "${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/appearance/themes.d/${1%-float}/theme.toml" ] && return 0
+      # manifest belongs to the family, so a Spaced variant uses the same one.
+      [ -r "${ARGVUS_SYSTEM_CONFIG:-/usr/share/argvus}/appearance/themes.d/${1%-spaced}/theme.toml" ] && return 0
       return 1
       ;;
   esac
 }
 
 canonical_theme_id() {
+  case "$1" in *-float) set -- "${1%-float}-spaced" ;; esac
   case "$1" in
-    argvus-dark-aether) printf '%s\n' "argvus-dark" ;; argvus-dark-aether-float) printf '%s\n' "argvus-dark-float" ;;
-    argvus-light-veil) printf '%s\n' "argvus-light" ;; argvus-light-veil-float) printf '%s\n' "argvus-light-float" ;;
-    argvus-onedark) printf '%s\n' "one-dark" ;; argvus-onedark-float) printf '%s\n' "one-dark-float" ;;
-    argvus-dark-dracula) printf '%s\n' "dracula" ;; argvus-dark-dracula-float) printf '%s\n' "dracula-float" ;;
-    argvus-dark-silver) printf '%s\n' "silver-dark" ;; argvus-dark-silver-float) printf '%s\n' "silver-dark-float" ;;
-    argvus-dark-slate) printf '%s\n' "slate-dark" ;; argvus-dark-slate-float) printf '%s\n' "slate-dark-float" ;;
-    argvus-dark-universe) printf '%s\n' "universe" ;; argvus-dark-universe-float) printf '%s\n' "universe-float" ;;
-    argvus-dark-gruvbox-high) printf '%s\n' "gruvbox-high-dark" ;; argvus-dark-gruvbox-high-float) printf '%s\n' "gruvbox-high-dark-float" ;;
-    argvus-dark-gruvbox) printf '%s\n' "gruvbox-dark" ;; argvus-dark-gruvbox-float) printf '%s\n' "gruvbox-dark-float" ;;
-    argvus-github-light) printf '%s\n' "github-light" ;; argvus-github-light-float) printf '%s\n' "github-light-float" ;;
-    argvus-light-solarized) printf '%s\n' "solarized-light" ;; argvus-light-solarized-float) printf '%s\n' "solarized-light-float" ;;
-    argvus-light-gruvbox) printf '%s\n' "gruvbox-light" ;; argvus-light-gruvbox-float) printf '%s\n' "gruvbox-light-float" ;;
-    argvus-dark-rose-pine) printf '%s\n' "rose-pine" ;; argvus-dark-rose-pine-float) printf '%s\n' "rose-pine-float" ;;
-    argvus-dark-tokio-night) printf '%s\n' "tokyo-night" ;; argvus-dark-tokio-night-float) printf '%s\n' "tokyo-night-float" ;;
-    argvus-dark-solitude) printf '%s\n' "solitude" ;; argvus-dark-solitude-float) printf '%s\n' "solitude-float" ;;
-    argvus-dark-sunset) printf '%s\n' "sunset" ;; argvus-dark-sunset-float) printf '%s\n' "sunset-float" ;;
-    argvus-dark-matrix) printf '%s\n' "matrix" ;; argvus-dark-matrix-float) printf '%s\n' "matrix-float" ;;
-    argvus-dark-monokai) printf '%s\n' "monokai-dark" ;; argvus-dark-monokai-float) printf '%s\n' "monokai-dark-float" ;;
+    argvus-dark-aether) printf '%s\n' "argvus-dark" ;; argvus-dark-aether-spaced) printf '%s\n' "argvus-dark-spaced" ;;
+    argvus-light-veil) printf '%s\n' "argvus-light" ;; argvus-light-veil-spaced) printf '%s\n' "argvus-light-spaced" ;;
+    argvus-onedark) printf '%s\n' "one-dark" ;; argvus-onedark-spaced) printf '%s\n' "one-dark-spaced" ;;
+    argvus-dark-dracula) printf '%s\n' "dracula" ;; argvus-dark-dracula-spaced) printf '%s\n' "dracula-spaced" ;;
+    argvus-dark-silver) printf '%s\n' "silver-dark" ;; argvus-dark-silver-spaced) printf '%s\n' "silver-dark-spaced" ;;
+    argvus-dark-slate) printf '%s\n' "slate-dark" ;; argvus-dark-slate-spaced) printf '%s\n' "slate-dark-spaced" ;;
+    argvus-dark-universe) printf '%s\n' "universe" ;; argvus-dark-universe-spaced) printf '%s\n' "universe-spaced" ;;
+    argvus-dark-gruvbox-high) printf '%s\n' "gruvbox-high-dark" ;; argvus-dark-gruvbox-high-spaced) printf '%s\n' "gruvbox-high-dark-spaced" ;;
+    argvus-dark-gruvbox) printf '%s\n' "gruvbox-dark" ;; argvus-dark-gruvbox-spaced) printf '%s\n' "gruvbox-dark-spaced" ;;
+    argvus-github-light) printf '%s\n' "github-light" ;; argvus-github-light-spaced) printf '%s\n' "github-light-spaced" ;;
+    argvus-light-solarized) printf '%s\n' "solarized-light" ;; argvus-light-solarized-spaced) printf '%s\n' "solarized-light-spaced" ;;
+    argvus-light-gruvbox) printf '%s\n' "gruvbox-light" ;; argvus-light-gruvbox-spaced) printf '%s\n' "gruvbox-light-spaced" ;;
+    argvus-dark-rose-pine) printf '%s\n' "rose-pine" ;; argvus-dark-rose-pine-spaced) printf '%s\n' "rose-pine-spaced" ;;
+    argvus-dark-tokio-night) printf '%s\n' "tokyo-night" ;; argvus-dark-tokio-night-spaced) printf '%s\n' "tokyo-night-spaced" ;;
+    argvus-dark-solitude) printf '%s\n' "solitude" ;; argvus-dark-solitude-spaced) printf '%s\n' "solitude-spaced" ;;
+    argvus-dark-sunset) printf '%s\n' "sunset" ;; argvus-dark-sunset-spaced) printf '%s\n' "sunset-spaced" ;;
+    argvus-dark-matrix) printf '%s\n' "matrix" ;; argvus-dark-matrix-spaced) printf '%s\n' "matrix-spaced" ;;
+    argvus-dark-monokai) printf '%s\n' "monokai-dark" ;; argvus-dark-monokai-spaced) printf '%s\n' "monokai-dark-spaced" ;;
     argvus-catppuccin-latte|argvus-light-catppuccin-latte) printf '%s\n' "catppuccin-latte" ;;
-    argvus-catppuccin-latte-float|argvus-light-catppuccin-latte-float) printf '%s\n' "catppuccin-latte-float" ;;
+    argvus-catppuccin-latte-spaced|argvus-light-catppuccin-latte-spaced) printf '%s\n' "catppuccin-latte-spaced" ;;
     *) printf '%s\n' "$1" ;;
   esac
 }

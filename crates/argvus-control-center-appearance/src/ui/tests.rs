@@ -184,7 +184,7 @@ fn every_navigable_row_owns_a_semantic_icon() {
 
   let mode = app(AppearancePage::Mode).rows();
   assert_eq!(mode[0].icon_glyph(), Some(icons::WINDOW_STICKY));
-  assert_eq!(mode[1].icon_glyph(), Some(icons::WINDOW_FLOAT));
+  assert_eq!(mode[1].icon_glyph(), Some(icons::WINDOW_SPACED));
 
   let position = app(AppearancePage::TaskbarPosition).rows();
   assert_eq!(position[0].icon_glyph(), Some(icons::ARROW_UP));

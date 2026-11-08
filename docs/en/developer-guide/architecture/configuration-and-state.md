@@ -115,5 +115,5 @@ compares the published generation/hash with the current resolved config.
 Development and installed-package tests are separate modes; neither may fall
 back silently to an unrelated executable or the developer's home. `apply` is
 also the reconciliation boundary for legacy combined theme identifiers: a
-value such as `argvus-dark-float` becomes `theme=argvus-dark` and
-`variant=float` before resolution. Packaged asset identity is not recorded in a manifest in this release, so no diagnostic file describes it.
+value such as `argvus-dark-spaced` becomes `theme=argvus-dark` and
+`variant=spaced` before resolution. Packaged asset identity is not recorded in a manifest in this release, so no diagnostic file describes it.

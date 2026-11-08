@@ -143,8 +143,8 @@ pub fn cheatsheet_description(lang: Lang, binding: &Binding) -> Option<String> {
     ),
     "appearance.theme" => ("Open theme selector", "Abre o seletor de temas"),
     "appearance.layout_mode" => (
-      "Open Sticky/Float mode picker",
-      "Abre o seletor de modo Sticky/Float",
+      "Open Sticky/Spaced mode picker",
+      "Abre o seletor de modo Sticky/Spaced",
     ),
     "session.idle_timeout" => (
       "Choose inactivity lock timeout",

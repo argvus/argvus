@@ -3,10 +3,31 @@
 use super::*;
 
 #[test]
+fn legacy_float_layout_is_normalized_without_changing_geometry() {
+  let mut document: ConfigDocument = serde_json::from_value(serde_json::json!({
+    "schema_version": CURRENT_SCHEMA_VERSION,
+    "layout": {"variant": "float", "window": {"gaps_in": 17}}
+  }))
+  .unwrap();
+  document.migrate_layout_variant();
+  document.validate().unwrap();
+  assert_eq!(
+    document.get("/layout/variant").and_then(Value::as_str),
+    Some("spaced")
+  );
+  assert_eq!(
+    document
+      .get("/layout/window/gaps_in")
+      .and_then(Value::as_i64),
+    Some(17)
+  );
+}
+
+#[test]
 fn float_variant_resets_geometry_to_the_documented_float_values() {
   let mut document = ConfigDocument::default();
 
-  reset_layout_geometry(&mut document, "float").unwrap();
+  reset_layout_geometry(&mut document, "spaced").unwrap();
 
   assert_eq!(
     document
@@ -101,7 +122,7 @@ fn canonical_update_preserves_unrelated_sections() {
   store
     .update(
       "/appearance/theme",
-      Value::String("argvus-dark-float".into()),
+      Value::String("argvus-dark-spaced".into()),
     )
     .unwrap();
 
@@ -112,7 +133,7 @@ fn canonical_update_preserves_unrelated_sections() {
   );
   assert_eq!(
     document.get("/appearance/theme").and_then(Value::as_str),
-    Some("argvus-dark-float")
+    Some("argvus-dark-spaced")
   );
   fs::remove_dir_all(directory).unwrap();
 }
@@ -427,7 +448,7 @@ fn apply_theme_restores_exported_profile_but_keeps_the_active_mode() {
     lock_path: config_directory.join(LOCK_FILE),
   };
   store.ensure().unwrap();
-  store.apply_layout_variant("float").unwrap();
+  store.apply_layout_variant("spaced").unwrap();
 
   let mut sections = BTreeMap::new();
   sections.insert(
@@ -472,7 +493,7 @@ fn apply_theme_restores_exported_profile_but_keeps_the_active_mode() {
   let document = store.load().unwrap();
   assert_eq!(
     document.get("/layout/variant").and_then(Value::as_str),
-    Some("float")
+    Some("spaced")
   );
   assert_eq!(
     document.get("/appearance/theme").and_then(Value::as_str),
@@ -530,14 +551,14 @@ fn apply_theme_restores_exported_profile_but_keeps_the_active_mode() {
       .get("/layout/window/gaps_in")
       .and_then(Value::as_i64),
     Some(10),
-    "Float mode geometry overrides the theme profile"
+    "Spaced mode geometry overrides the theme profile"
   );
   assert_eq!(
     document
       .get("/layout/taskbar/margin_bottom")
       .and_then(Value::as_i64),
     Some(18),
-    "Float taskbar geometry overrides the theme profile"
+    "Spaced taskbar geometry overrides the theme profile"
   );
   assert_eq!(
     document.get("/effects/animations").and_then(Value::as_bool),

@@ -54,7 +54,7 @@ pub(super) enum Item {
   /// Index into `AppearanceApp::import_archives`.
   ImportArchive(usize),
   ModeSticky,
-  ModeFloat,
+  ModeSpaced,
   // Icons
   /// Index into `AppearanceState::icon_themes`.
   IconTheme(usize),
@@ -183,7 +183,7 @@ impl Item {
       Self::ImportTheme => icons::IMPORT,
       Self::ThemeCategory(_) => icons::THEME_MODE,
       Self::ModeSticky => icons::WINDOW_STICKY,
-      Self::ModeFloat => icons::WINDOW_FLOAT,
+      Self::ModeSpaced => icons::WINDOW_SPACED,
       Self::ChooseWallpaper => icons::FOLDER,
       Self::Collection(_) | Self::WallpaperMode(_) => icons::IMAGE,
       Self::EditAccent => icons::EDIT,
@@ -376,7 +376,8 @@ impl AppearanceApp {
         let current = self
           .state
           .theme
-          .strip_suffix("-float")
+          .strip_suffix("-spaced")
+          .or_else(|| self.state.theme.strip_suffix("-float"))
           .unwrap_or(&self.state.theme);
         let locale = self.lang.locale();
         family_indices(category, &self.state.official_themes)
@@ -582,17 +583,17 @@ impl AppearanceApp {
 
   fn mode_page_rows(&self) -> Vec<Row<Item>> {
     {
-      let float = self.state.is_float_theme();
+      let spaced = self.state.is_spaced_theme();
       vec![
         self.choice_row(
           Item::ModeSticky,
           self.label("control_center.theme_mode_sticky"),
-          !float,
+          !spaced,
         ),
         self.choice_row(
-          Item::ModeFloat,
-          self.label("control_center.theme_mode_float"),
-          float,
+          Item::ModeSpaced,
+          self.label("control_center.theme_mode_spaced"),
+          spaced,
         ),
       ]
     }
@@ -1031,8 +1032,8 @@ impl AppearanceApp {
 
   /// Appearance > Desktop: theme, appearance mode, accent color and wallpaper.
   fn desktop_rows(&self) -> Vec<Row<Item>> {
-    let mode = self.label(if self.state.is_float_theme() {
-      "control_center.theme_mode_float"
+    let mode = self.label(if self.state.is_spaced_theme() {
+      "control_center.theme_mode_spaced"
     } else {
       "control_center.theme_mode_sticky"
     });

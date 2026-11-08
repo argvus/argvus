@@ -100,7 +100,7 @@ pub(super) fn theme_outputs_present(paths: &ArgvusPaths, theme: &str) -> bool {
 }
 
 /// Whether the effects file of the theme is in place. The file is named by the
-/// theme the switch renders (`<id>-float` on Float), so the same identity as
+/// theme the switch renders (`<id>-spaced` on Spaced), so the same identity as
 /// the theme check is used; a bare id would never match and the adapter would
 /// repeat on every login.
 pub(super) fn effects_outputs_present(paths: &ArgvusPaths, theme: &str) -> bool {

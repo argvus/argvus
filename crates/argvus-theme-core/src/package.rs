@@ -91,7 +91,7 @@ pub fn check_theme_dir(paths: &ThemePaths, dir: &Path) -> Result<ThemeManifest, 
   let consumers =
     registry::load(&paths.system_root, &paths.registry()).map_err(|error| error.to_string())?;
   let mut problems = Vec::new();
-  for variant in [Variant::Sticky, Variant::Float] {
+  for variant in [Variant::Sticky, Variant::Spaced] {
     let layout = Layout::load(&paths.layouts(), variant).map_err(|error| error.to_string())?;
     if let Err(errors) = build::render(&RenderRequest {
       manifest: &manifest,
@@ -260,7 +260,7 @@ pub fn remove_user_theme(paths: &ThemePaths, id: &str) -> Result<(), String> {
 }
 
 /// The id of a theme named `name`: lowercase letters and digits, the rest
-/// joined by single hyphens, never ending in `-float`. `None` when nothing is
+/// joined by single hyphens, never ending in `-spaced`. `None` when nothing is
 /// left.
 pub fn id_from_name(name: &str) -> Option<String> {
   let mut id = String::new();
@@ -272,7 +272,10 @@ pub fn id_from_name(name: &str) -> Option<String> {
     }
   }
   let mut id = id.trim_end_matches('-').to_owned();
-  while let Some(family) = id.strip_suffix("-float") {
+  while let Some(family) = id
+    .strip_suffix("-spaced")
+    .or_else(|| id.strip_suffix("-float"))
+  {
     id = family.to_owned();
   }
   validate_id(&id).ok().map(|()| id)
@@ -327,7 +330,7 @@ mod tests {
       "fg {{ @fg }}\n",
     );
     write(&paths.layouts().join("sticky.toml"), "gap = 1\n");
-    write(&paths.layouts().join("float.toml"), "gap = 8\n");
+    write(&paths.layouts().join("spaced.toml"), "gap = 8\n");
     write(
       &paths.system_root.join("t/a.txt"),
       "{{ @line }} {{ layout.gap }}\n",
@@ -374,7 +377,7 @@ mod tests {
     assert!(
       derive_manifest(
         &paths.system_themes().join("sunset"),
-        "x-float",
+        "x-spaced",
         "x",
         None,
         None

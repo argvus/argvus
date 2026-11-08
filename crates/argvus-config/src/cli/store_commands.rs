@@ -208,7 +208,7 @@ pub(super) fn apply_mode(
 ) -> Result<(), Box<dyn std::error::Error>> {
   let variant = arguments
     .first()
-    .ok_or("usage: argvus config apply-mode <sticky|float>")?;
+    .ok_or("usage: argvus config apply-mode <sticky|spaced>")?;
   store.apply_layout_variant(variant)?;
   Ok(())
 }
@@ -339,7 +339,7 @@ pub(super) fn print_help() {
   );
   println!("  apply-theme THEME [theme options]     atomically apply theme-owned fields");
   println!(
-    "  apply-mode <sticky|float>             switch Sticky/Float without changing the theme"
+    "  apply-mode <sticky|spaced>             switch Sticky/Spaced without changing the theme"
   );
   println!("  export --scope appearance|desktop [--output FILE]");
   println!("  import --scope appearance|desktop FILE");

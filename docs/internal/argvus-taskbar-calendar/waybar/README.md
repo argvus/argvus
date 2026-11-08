@@ -9,7 +9,7 @@ Use this as the clock/date click handler:
 The ARGVUS Waybar patch provides `{x}`/`{y}` from the original button event as
 immutable root-window coordinates. The launcher passes those desktop
 coordinates through `--x`/`--y`; the calendar then resolves the active Waybar
-edge and opens immediately below it in both Sticky and Float modes. Waybar
+edge and opens immediately below it in both Sticky and Spaced modes. Waybar
 builds without these placeholders retain the live-pointer compatibility
 fallback.
 

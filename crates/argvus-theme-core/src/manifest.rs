@@ -247,7 +247,7 @@ impl ThemeManifest {
 }
 
 /// Checks a theme id: lowercase letters, digits and inner hyphens, without the
-/// `-float` suffix, which is a layout and not a theme.
+/// `-spaced` suffix, which is a layout and not a theme.
 pub fn validate_id(id: &str) -> Result<(), String> {
   if id.is_empty() {
     return Err("id must not be empty".into());
@@ -261,8 +261,8 @@ pub fn validate_id(id: &str) -> Result<(), String> {
   if id.starts_with('-') || id.ends_with('-') || id.contains("--") {
     return Err(format!("id `{id}` has a misplaced `-`"));
   }
-  if id.ends_with("-float") {
-    return Err(format!("id `{id}` must not end in -float"));
+  if id.ends_with("-spaced") || id.ends_with("-float") {
+    return Err(format!("id `{id}` must not end in -spaced"));
   }
   Ok(())
 }
@@ -467,7 +467,10 @@ color4 = "@accent"
   fn rejects_invalid_manifests() {
     for (text, reason) in [
       (MINIMAL.replace("schema = 2", "schema = 1"), "schema 1"),
-      (MINIMAL.replace("\"sunset\"", "\"sunset-float\""), "-float"),
+      (
+        MINIMAL.replace("\"sunset\"", "\"sunset-spaced\""),
+        "-spaced",
+      ),
       (MINIMAL.replace("\"sunset\"", "\"Sunset\""), "a-z"),
       (
         MINIMAL.replace("fg = \"#EADCCC\"\n", ""),

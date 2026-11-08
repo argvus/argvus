@@ -10,47 +10,47 @@ pub const DEFAULT_THEME: &str = "argvus-dark";
 /// surfaces and shared theme consumers.
 pub const OFFICIAL_THEMES: &[&str] = &[
   "argvus-dark",
-  "argvus-dark-float",
+  "argvus-dark-spaced",
   "dracula",
-  "dracula-float",
+  "dracula-spaced",
   "gruvbox-dark",
-  "gruvbox-dark-float",
+  "gruvbox-dark-spaced",
   "gruvbox-high-dark",
-  "gruvbox-high-dark-float",
+  "gruvbox-high-dark-spaced",
   "monokai-dark",
-  "monokai-dark-float",
+  "monokai-dark-spaced",
   "one-dark",
-  "one-dark-float",
+  "one-dark-spaced",
   "rose-pine",
-  "rose-pine-float",
+  "rose-pine-spaced",
   "silver-dark",
-  "silver-dark-float",
+  "silver-dark-spaced",
   "slate-dark",
-  "slate-dark-float",
+  "slate-dark-spaced",
   "sunset",
-  "sunset-float",
+  "sunset-spaced",
   "tokyo-night",
-  "tokyo-night-float",
+  "tokyo-night-spaced",
   "matrix",
-  "matrix-float",
+  "matrix-spaced",
   "solitude",
-  "solitude-float",
+  "solitude-spaced",
   "universe",
-  "universe-float",
+  "universe-spaced",
   "argvus-light",
-  "argvus-light-float",
+  "argvus-light-spaced",
   "catppuccin-latte",
-  "catppuccin-latte-float",
+  "catppuccin-latte-spaced",
   "github-light",
-  "github-light-float",
+  "github-light-spaced",
   "gruvbox-light",
-  "gruvbox-light-float",
+  "gruvbox-light-spaced",
   "solarized-light",
-  "solarized-light-float",
+  "solarized-light-spaced",
   "one-light",
-  "one-light-float",
+  "one-light-spaced",
   "everforest-light",
-  "everforest-light-float",
+  "everforest-light-spaced",
 ];
 
 /// One stylesheet the palette is read from.
@@ -216,8 +216,11 @@ fn system_config() -> PathBuf {
 /// untrusted (it can come from the greeter or a saved profile), so it is
 /// validated as a theme ID before it is used as a path component.
 fn manifest_installed_in(system_config: &Path, name: &str) -> bool {
-  // Float is a layout mode of the same family; the manifest is keyed by family.
-  let family = name.strip_suffix("-float").unwrap_or(name);
+  // Spaced is a layout mode of the same family; the manifest is keyed by family.
+  let family = name
+    .strip_suffix("-spaced")
+    .or_else(|| name.strip_suffix("-float"))
+    .unwrap_or(name);
   argvus_theme_core::manifest::validate_id(family).is_ok()
     && system_config
       .join("themes")
@@ -229,49 +232,91 @@ fn manifest_installed_in(system_config: &Path, name: &str) -> bool {
 /// Normalizes untrusted or missing theme state to the safe ARGVUS default.
 pub fn normalize_theme_name(name: &str) -> &str {
   let name = name.trim();
+  let name = match name {
+    "argvus-dark-aether-float" => "argvus-dark-spaced",
+    "argvus-dark-dracula-float" => "dracula-spaced",
+    "argvus-dark-float" => "argvus-dark-spaced",
+    "argvus-dark-gruvbox-float" => "gruvbox-dark-spaced",
+    "argvus-dark-gruvbox-high-float" => "gruvbox-high-dark-spaced",
+    "argvus-dark-matrix-float" => "matrix-spaced",
+    "argvus-dark-monokai-float" => "monokai-dark-spaced",
+    "argvus-dark-rose-pine-float" => "rose-pine-spaced",
+    "argvus-dark-silver-float" => "silver-dark-spaced",
+    "argvus-dark-slate-float" => "slate-dark-spaced",
+    "argvus-dark-solitude-float" => "solitude-spaced",
+    "argvus-dark-sunset-float" => "sunset-spaced",
+    "argvus-dark-tokio-night-float" => "tokyo-night-spaced",
+    "argvus-dark-universe-float" => "universe-spaced",
+    "argvus-github-light-float" => "github-light-spaced",
+    "argvus-light-float" => "argvus-light-spaced",
+    "argvus-light-gruvbox-float" => "gruvbox-light-spaced",
+    "argvus-light-solarized-float" => "solarized-light-spaced",
+    "argvus-light-veil-float" => "argvus-light-spaced",
+    "argvus-onedark-float" => "one-dark-spaced",
+    "catppuccin-latte-float" => "catppuccin-latte-spaced",
+    "dracula-float" => "dracula-spaced",
+    "everforest-light-float" => "everforest-light-spaced",
+    "github-light-float" => "github-light-spaced",
+    "gruvbox-dark-float" => "gruvbox-dark-spaced",
+    "gruvbox-high-dark-float" => "gruvbox-high-dark-spaced",
+    "gruvbox-light-float" => "gruvbox-light-spaced",
+    "matrix-float" => "matrix-spaced",
+    "monokai-dark-float" => "monokai-dark-spaced",
+    "one-dark-float" => "one-dark-spaced",
+    "one-light-float" => "one-light-spaced",
+    "rose-pine-float" => "rose-pine-spaced",
+    "silver-dark-float" => "silver-dark-spaced",
+    "slate-dark-float" => "slate-dark-spaced",
+    "solarized-light-float" => "solarized-light-spaced",
+    "solitude-float" => "solitude-spaced",
+    "sunset-float" => "sunset-spaced",
+    "tokyo-night-float" => "tokyo-night-spaced",
+    "universe-float" => "universe-spaced",
+    _ => name,
+  };
   if is_official_theme(name) {
     return name;
   }
   match name {
     "argvus-dark-aether" => "argvus-dark",
-    "argvus-dark-aether-float" => "argvus-dark-float",
+    "argvus-dark-aether-spaced" => "argvus-dark-spaced",
     "argvus-light-veil" => "argvus-light",
-    "argvus-light-veil-float" => "argvus-light-float",
+    "argvus-light-veil-spaced" => "argvus-light-spaced",
     "argvus-onedark" => "one-dark",
-    "argvus-onedark-float" => "one-dark-float",
+    "argvus-onedark-spaced" => "one-dark-spaced",
     "argvus-dark-dracula" => "dracula",
-    "argvus-dark-dracula-float" => "dracula-float",
+    "argvus-dark-dracula-spaced" => "dracula-spaced",
     "argvus-dark-silver" => "silver-dark",
-    "argvus-dark-silver-float" => "silver-dark-float",
+    "argvus-dark-silver-spaced" => "silver-dark-spaced",
     "argvus-dark-slate" => "slate-dark",
-    "argvus-dark-slate-float" => "slate-dark-float",
+    "argvus-dark-slate-spaced" => "slate-dark-spaced",
     "argvus-dark-universe" => "universe",
-    "argvus-dark-universe-float" => "universe-float",
+    "argvus-dark-universe-spaced" => "universe-spaced",
     "argvus-dark-gruvbox-high" => "gruvbox-high-dark",
-    "argvus-dark-gruvbox-high-float" => "gruvbox-high-dark-float",
+    "argvus-dark-gruvbox-high-spaced" => "gruvbox-high-dark-spaced",
     "argvus-dark-gruvbox" => "gruvbox-dark",
-    "argvus-dark-gruvbox-float" => "gruvbox-dark-float",
+    "argvus-dark-gruvbox-spaced" => "gruvbox-dark-spaced",
     "argvus-github-light" => "github-light",
-    "argvus-github-light-float" => "github-light-float",
+    "argvus-github-light-spaced" => "github-light-spaced",
     "argvus-light-solarized" => "solarized-light",
-    "argvus-light-solarized-float" => "solarized-light-float",
+    "argvus-light-solarized-spaced" => "solarized-light-spaced",
     "argvus-light-gruvbox" => "gruvbox-light",
-    "argvus-light-gruvbox-float" => "gruvbox-light-float",
+    "argvus-light-gruvbox-spaced" => "gruvbox-light-spaced",
     "argvus-dark-rose-pine" => "rose-pine",
-    "argvus-dark-rose-pine-float" => "rose-pine-float",
+    "argvus-dark-rose-pine-spaced" => "rose-pine-spaced",
     "argvus-dark-tokio-night" => "tokyo-night",
-    "argvus-dark-tokio-night-float" => "tokyo-night-float",
+    "argvus-dark-tokio-night-spaced" => "tokyo-night-spaced",
     "argvus-dark-solitude" => "solitude",
-    "argvus-dark-solitude-float" => "solitude-float",
+    "argvus-dark-solitude-spaced" => "solitude-spaced",
     "argvus-dark-sunset" => "sunset",
-    "argvus-dark-sunset-float" => "sunset-float",
+    "argvus-dark-sunset-spaced" => "sunset-spaced",
     "argvus-dark-matrix" => "matrix",
-    "argvus-dark-matrix-float" => "matrix-float",
+    "argvus-dark-matrix-spaced" => "matrix-spaced",
     "argvus-dark-monokai" => "monokai-dark",
-    "argvus-dark-monokai-float" => "monokai-dark-float",
+    "argvus-dark-monokai-spaced" => "monokai-dark-spaced",
     "argvus-dark-catppuccin-latte" | "argvus-light-catppuccin-latte" => "catppuccin-latte",
-    "argvus-dark-catppuccin-latte-float" | "argvus-light-catppuccin-latte-float" => {
-      "catppuccin-latte-float"
+    "argvus-dark-catppuccin-latte-spaced" | "argvus-light-catppuccin-latte-spaced" => {
+      "catppuccin-latte-spaced"
     }
     _ => DEFAULT_THEME,
   }
@@ -382,7 +427,7 @@ mod tests {
     std::fs::write(family_dir.join("theme.toml"), "id = \"nord-light\"\n").unwrap();
 
     assert!(manifest_installed_in(&system_config, "nord-light"));
-    assert!(manifest_installed_in(&system_config, "nord-light-float"));
+    assert!(manifest_installed_in(&system_config, "nord-light-spaced"));
     assert!(!manifest_installed_in(&system_config, "not-installed"));
     // Untrusted names must never escape the themes directory.
     assert!(!manifest_installed_in(&system_config, "../nord-light"));

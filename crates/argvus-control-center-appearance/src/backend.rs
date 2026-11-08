@@ -341,7 +341,7 @@ mod tests {
       Some("#5E81AC")
     );
     assert_eq!(
-      discovered_default_accent_in(system_config.path(), "nord-light-float").as_deref(),
+      discovered_default_accent_in(system_config.path(), "nord-light-spaced").as_deref(),
       Some("#5E81AC")
     );
     assert_eq!(

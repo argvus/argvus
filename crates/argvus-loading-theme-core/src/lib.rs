@@ -8,7 +8,10 @@ pub const DEFAULT_ACCENT: &str = "#7aa2f7";
 pub fn theme_colors(theme: &str) -> Option<(&'static str, &'static str, &'static str)> {
   let normalized = theme.trim().to_ascii_lowercase().replace(['_', ' '], "-");
   let normalized = normalized.strip_prefix("argvus-").unwrap_or(&normalized);
-  let normalized = normalized.strip_suffix("-float").unwrap_or(normalized);
+  let normalized = normalized
+    .strip_suffix("-spaced")
+    .or_else(|| normalized.strip_suffix("-float"))
+    .unwrap_or(normalized);
   match normalized {
     "onedark" | "one-dark" => Some(("#282C34", "#ABB2BF", "#61AFEF")),
     "dracula" => Some(("#282A36", "#F8F8F2", "#BD93F9")),
@@ -277,7 +280,7 @@ mod tests {
       Some(("#191b27", "#3590bd", DEFAULT_ACCENT))
     );
     assert_eq!(
-      theme_colors("silver-dark-float"),
+      theme_colors("silver-dark-spaced"),
       Some(("#595959", "#121518", "#121518"))
     );
     assert_eq!(
@@ -321,11 +324,11 @@ mod tests {
       Some(("#EFF1F5", "#4C4F69", "#1E66F5"))
     );
     assert_eq!(
-      theme_colors("catppuccin-latte-float"),
+      theme_colors("catppuccin-latte-spaced"),
       Some(("#EFF1F5", "#4C4F69", "#1E66F5"))
     );
     assert_eq!(
-      theme_colors("argvus-light-catppuccin-latte-float"),
+      theme_colors("argvus-light-catppuccin-latte-spaced"),
       Some(("#EFF1F5", "#4C4F69", "#1E66F5"))
     );
     assert_eq!(
@@ -341,7 +344,7 @@ mod tests {
       Some(("#1A1B26", "#C0CAF5", "#7AA2F7"))
     );
     assert_eq!(
-      theme_colors("tokyo-night-float"),
+      theme_colors("tokyo-night-spaced"),
       Some(("#1A1B26", "#C0CAF5", "#7AA2F7"))
     );
   }

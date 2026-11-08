@@ -46,7 +46,7 @@ power, display, network, notifications and themes — all packaged for Arch Linu
 - **ARGVUS Focus** — Pomodoro and focus sessions with breaks, notifications and a local history
 - **ARGVUS Clock** — Clock, world clocks, stopwatch, timer and alarms with sound, snooze and missed-alarm reports
 - **Terminal and TUI apps** — Terminal profiles, system monitor and app profiles for bundled TUI tools
-- **Themes** — 23 official theme families, each in the Sticky and Float layouts
+- **Themes** — 23 official theme families, each in the Sticky and Spaced layouts
 - **Games** — Optional. Snake for the terminal (`argvus-game-snake`, an independent project), with a local high score list
 - **Languages** — English (en-US, canonical) and Portuguese (pt-BR), managed by `argvus i18n`
 
@@ -101,7 +101,7 @@ argvus --setup --copy <app>   # copy packaged defaults for explicit customizatio
 
 ## Themes
 
-Twenty-three theme families, each available in the Sticky and Float layouts,
+Twenty-three theme families, each available in the Sticky and Spaced layouts,
 with a shared accent-color system that unifies GTK, terminals, rofi, Waybar and
 Hyprland. Change the accent color from the Highlight color control in the Control Panel or Control Center.
 
@@ -123,7 +123,7 @@ Hyprland. Change the accent color from the Highlight color control in the Contro
 | Tokyo Night           |                    |
 | Universe              |                    |
 
-Float is a layout applied to any family, not a separate copy of the theme.
+Spaced is a layout applied to any family, not a separate copy of the theme.
 ARGVUS Dark and ARGVUS Light ship in `argvus-appearance`; every other family comes from its
 own `argvus-theme-*` package. These packages are optional and can be installed individually,
 for example `pacman -S argvus-theme-sunset` or `pacman -S argvus-theme-watercolor`.

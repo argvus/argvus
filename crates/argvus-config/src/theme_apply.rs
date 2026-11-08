@@ -36,7 +36,7 @@ const PROJECTION_WAIT_LIMIT: Duration = Duration::from_secs(60);
 const POLL_INTERVAL: Duration = Duration::from_millis(50);
 
 /// Runs the transaction for `theme_argument` and returns the exit status.
-/// `layout_variant` is the Sticky/Float variant the theme id resolves with.
+/// `layout_variant` is the Sticky/Spaced variant the theme id resolves with.
 pub fn run(paths: &SessionPaths, theme_argument: &str, layout_variant: &str) -> i32 {
   // Refuse an unsafe id before any service stops or any file is written.
   if !theme_argument.is_empty() && !theme_resolve::is_valid_theme_id(theme_argument) {

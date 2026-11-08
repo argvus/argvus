@@ -125,7 +125,7 @@ fn defaults_report_nested_values_that_are_not_objects() {
 
   let mut float = ConfigDocument::default();
   float
-    .set("/layout/variant", Value::String("float".into()))
+    .set("/layout/variant", Value::String("spaced".into()))
     .unwrap();
   apply_defaults(&mut float).unwrap();
   assert_eq!(

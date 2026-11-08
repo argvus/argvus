@@ -11,32 +11,34 @@ As vinte e três famílias abaixo são definidas pelo payload atual de temas. A 
 
 | Família | Cor de destaque restaurada | Fundo base | Modos |
 | --- | --- | --- | --- |
-| One Dark | `#61AFEF` | `#282C34` | Sticky, Float |
-| Dracula | `#BD93F9` | `#282A36` | Sticky, Float |
-| ARGVUS Dark | `#3590bd` | `#111316` | Sticky, Float |
-| Dark Silver | `#595959` | `#111316` | Sticky, Float |
-| Dark Slate | `#7391a5` | `#2f3541` | Sticky, Float |
-| Dark Universe | `#eeeeee` | `#000000` | Sticky, Float |
-| ARGVUS Dark Gruvbox High | `#D79921` | `#282828` | Sticky, Float |
-| ARGVUS Dark Gruvbox | `#D4BE98` | `#282828` | Sticky, Float |
-| ARGVUS Light | `#181818` | `#f7f7f7` | Sticky, Float |
-| GitHub Light | `#0969DA` | `#FFFFFF` | Sticky, Float |
-| Catppuccin Latte | `#1E66F5` | `#EFF1F5` | Sticky, Float |
-| ARGVUS Light Gruvbox | `#458588` | `#FBF1C7` | Sticky, Float |
-| Rosé Pine | `#C4A7E7` | `#191724` | Sticky, Float |
-| Tokyo-Night | `#7AA2F7` | `#1A1B26` | Sticky, Float |
-| Solitude | `#798186` | `#101315` | Sticky, Float |
-| Sunset | `#E2BE8A` | `#0F0F0F` | Sticky, Float |
-| Matrix | `#82FB9C` | `#0B0C16` | Sticky, Float |
-| Monokai Dark | `#78DCE8` | `#2D2A2E` | Sticky, Float |
-| Lady Mist | `#354B78` | `#131313` | Sticky, Float |
-| One Light | `#4078F2` | `#FAFAFA` | Sticky, Float |
-| Everforest Light | `#3A94C5` | `#FDF6E3` | Sticky, Float |
-| Solarized Light | `#268BD2` | `#FDF6E3` | Sticky, Float |
-| Nord Light | `#5E81AC` | `#ECEFF4` | Sticky, Float |
-| Watercolor | `#1A639C` | `#E9E3D3` | Sticky, Float |
+| One Dark | `#61AFEF` | `#282C34` | Sticky, Spaced |
+| Dracula | `#BD93F9` | `#282A36` | Sticky, Spaced |
+| ARGVUS Dark | `#3590bd` | `#111316` | Sticky, Spaced |
+| Dark Silver | `#595959` | `#111316` | Sticky, Spaced |
+| Dark Slate | `#7391a5` | `#2f3541` | Sticky, Spaced |
+| Dark Universe | `#eeeeee` | `#000000` | Sticky, Spaced |
+| ARGVUS Dark Gruvbox High | `#D79921` | `#282828` | Sticky, Spaced |
+| ARGVUS Dark Gruvbox | `#D4BE98` | `#282828` | Sticky, Spaced |
+| ARGVUS Light | `#181818` | `#f7f7f7` | Sticky, Spaced |
+| GitHub Light | `#0969DA` | `#FFFFFF` | Sticky, Spaced |
+| Catppuccin Latte | `#1E66F5` | `#EFF1F5` | Sticky, Spaced |
+| ARGVUS Light Gruvbox | `#458588` | `#FBF1C7` | Sticky, Spaced |
+| Rosé Pine | `#C4A7E7` | `#191724` | Sticky, Spaced |
+| Tokyo-Night | `#7AA2F7` | `#1A1B26` | Sticky, Spaced |
+| Solitude | `#798186` | `#101315` | Sticky, Spaced |
+| Sunset | `#E2BE8A` | `#0F0F0F` | Sticky, Spaced |
+| Matrix | `#82FB9C` | `#0B0C16` | Sticky, Spaced |
+| Monokai Dark | `#78DCE8` | `#2D2A2E` | Sticky, Spaced |
+| Lady Mist | `#354B78` | `#131313` | Sticky, Spaced |
+| One Light | `#4078F2` | `#FAFAFA` | Sticky, Spaced |
+| Everforest Light | `#3A94C5` | `#FDF6E3` | Sticky, Spaced |
+| Solarized Light | `#268BD2` | `#FDF6E3` | Sticky, Spaced |
+| Nord Light | `#5E81AC` | `#ECEFF4` | Sticky, Spaced |
+| Watercolor | `#1A639C` | `#E9E3D3` | Sticky, Spaced |
 
-**Sticky** é o layout compacto: janelas lado a lado usam gaps internos pequenos, os gaps externos são zero e a taskbar fica próxima da borda. **Float** adiciona gaps maiores, cantos arredondados, sombras e margens às superfícies do shell.
+**Sticky** é o layout compacto: janelas lado a lado usam gaps internos pequenos, os gaps externos são zero e a taskbar fica próxima da borda. **Spaced** adiciona gaps maiores, cantos arredondados, sombras e margens às superfícies do shell.
+
+Valores de layout `float` e IDs de tema terminados em `-float` são reconhecidos como nomes legados de Spaced. Novos valores e IDs resolvidos usam `spaced` e `-spaced`.
 
 O valor mostrado na tabela é o accent gravado no `config.json` quando a família é selecionada ou quando **Restaurar padrão do tema** é usado. Um accent RGB escolhido manualmente vale até a próxima troca de tema, que o substitui pelo padrão do tema selecionado.
 

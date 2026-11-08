@@ -222,10 +222,22 @@ impl ConfigDocument {
     let text = fs::read_to_string(path)?;
     let mut document: Self = serde_json::from_str(&text)?;
     migrate_legacy_sections(&mut document)?;
+    document.migrate_layout_variant();
     document.migrate_animation_settings();
     document.migrate_shadow_settings();
     document.validate()?;
     Ok(document)
+  }
+
+  fn migrate_layout_variant(&mut self) {
+    if let Some(layout) = self
+      .sections
+      .get_mut("layout")
+      .and_then(Value::as_object_mut)
+      && layout.get("variant").and_then(Value::as_str) == Some("float")
+    {
+      layout.insert("variant".into(), Value::String("spaced".into()));
+    }
   }
 
   // Older releases accepted powers up to 10; Hyprland 0.57 caps them at 4.
@@ -582,6 +594,7 @@ impl ConfigStore {
         document.sections.insert(section.to_owned(), value);
       }
     }
+    document.migrate_layout_variant();
     document.migrate_animation_settings();
     document.migrate_shadow_settings();
     if apply_default_values {
@@ -791,7 +804,7 @@ impl ConfigStore {
     })
   }
 
-  /// Set the Sticky/Float layout mode independently of the active theme.
+  /// Set the Sticky/Spaced layout mode independently of the active theme.
   ///
   /// Unlike `apply_theme`, this is the only place that writes
   /// `/layout/variant`, keeping it decoupled from theme selection: picking
@@ -802,12 +815,17 @@ impl ConfigStore {
   ///
   /// # Errors
   ///
-  /// Returns an error when `variant` is not `"sticky"` or `"float"`, or
+  /// Returns an error when `variant` is not `"sticky"` or `"spaced"`, or
   /// when the canonical document cannot be read, validated or saved.
   pub fn apply_layout_variant(&self, variant: &str) -> ConfigResult<ConfigDocument> {
-    if variant != "sticky" && variant != "float" {
+    let variant = if variant == "float" {
+      "spaced"
+    } else {
+      variant
+    };
+    if variant != "sticky" && variant != "spaced" {
       return Err(ConfigError::Invalid(
-        "layout.variant must be sticky or float".into(),
+        "layout.variant must be sticky or spaced".into(),
       ));
     }
     self.modify(|document| {
@@ -876,9 +894,9 @@ impl ConfigStore {
 /// those canonical values synchronized with the variant so the next
 /// projection cannot restore the previous mode's derived `.spaces`/`.borders`.
 fn reset_layout_geometry(document: &mut ConfigDocument, variant: &str) -> ConfigResult<()> {
-  // Float values match the documented Float mode: internal gap 10, outer gap
+  // Spaced values match the documented Spaced mode: internal gap 10, outer gap
   // 18, and the same 18 px taskbar margin.
-  let (gaps_in, gaps_out, rounded, rounding, border_size, margins) = if variant == "float" {
+  let (gaps_in, gaps_out, rounded, rounding, border_size, margins) = if variant == "spaced" {
     (10, 18, true, 4, 1, [18, 18, 18, 18])
   } else {
     (2, 0, false, 0, 1, [0, 0, 0, 2])
@@ -966,8 +984,8 @@ fn merge_layout_profile_without_mode_geometry(
 }
 
 fn theme_layout_variant(theme: &str) -> &'static str {
-  if theme.ends_with("-float") {
-    "float"
+  if theme.ends_with("-spaced") || theme.ends_with("-float") {
+    "spaced"
   } else {
     "sticky"
   }

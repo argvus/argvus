@@ -57,7 +57,7 @@ fn legacy_profiles_give_their_name_theme_accent_and_wallpaper() {
     &[
       (
         "argvus-theme-profile/manifest.json",
-        br#"{"name":"dove","argvus":{"theme":"argvus-dark-float"}}"#,
+        br#"{"name":"dove","argvus":{"theme":"argvus-dark-spaced"}}"#,
       ),
       (
         "argvus-theme-profile/payload/config/argvus/config.json",
@@ -68,7 +68,7 @@ fn legacy_profiles_give_their_name_theme_accent_and_wallpaper() {
   );
   let profile = LegacyProfile::read(&v4).unwrap();
   assert_eq!(profile.name, "dove");
-  assert_eq!(profile.theme, "argvus-dark-float");
+  assert_eq!(profile.theme, "argvus-dark-spaced");
   assert_eq!(
     profile.accent.map(|color| color.hex()).as_deref(),
     Some("#B5655A")
@@ -84,7 +84,7 @@ fn legacy_profiles_give_their_name_theme_accent_and_wallpaper() {
     &[
       (
         "argvus-theme-profile/manifest.json",
-        br#"{"name":"mint","argvus":{"theme":"argvus-dark-universe-float"}}"#,
+        br#"{"name":"mint","argvus":{"theme":"argvus-dark-universe-spaced"}}"#,
       ),
       (
         "argvus-theme-profile/payload/config/argvus/.accent-color",
@@ -93,7 +93,7 @@ fn legacy_profiles_give_their_name_theme_accent_and_wallpaper() {
     ],
   );
   let profile = LegacyProfile::read(&v1).unwrap();
-  assert_eq!(canonical_theme_id(&profile.theme), "universe-float");
+  assert_eq!(canonical_theme_id(&profile.theme), "universe-spaced");
   assert_eq!(
     profile.accent.map(|color| color.hex()).as_deref(),
     Some("#17D174")
@@ -116,14 +116,14 @@ fn session(root: &Path) {
     b"fg {{ @accent }}\n",
   );
   write(&system.join("theme/layouts/sticky.toml"), b"gap = 1\n");
-  write(&system.join("theme/layouts/float.toml"), b"gap = 8\n");
+  write(&system.join("theme/layouts/spaced.toml"), b"gap = 8\n");
   write(&system.join("t/a.txt"), b"{{ @fg }} {{ layout.gap }}\n");
   write(
     &system.join("theme/consumers.d/terminal.toml"),
     b"id = \"terminal\"\ntemplate = \"t/a.txt\"\noutput = \"a.txt\"\n",
   );
   let data = root.join("config/argvus/data");
-  write(&data.join(".active-theme"), b"sunset-float\n");
+  write(&data.join(".active-theme"), b"sunset-spaced\n");
   write(&data.join(".accent-color"), b"#112233\n");
   write(&root.join("home/Pictures/mine.png"), b"png");
   write(
@@ -136,7 +136,7 @@ fn session(root: &Path) {
   );
   let state_home = root.join("state/argvus");
   write(
-    &state_home.join("effects/sunset-float.conf"),
+    &state_home.join("effects/sunset-spaced.conf"),
     b"taskbar.blur=37\n",
   );
   let bin = root.join("bin");
@@ -259,7 +259,7 @@ fn export_import_convert_and_delete_user_themes() {
     &[
       (
         "argvus-theme-profile/manifest.json",
-        br#"{"name":"dove","argvus":{"theme":"sunset-float"}}"#,
+        br#"{"name":"dove","argvus":{"theme":"sunset-spaced"}}"#,
       ),
       (
         "argvus-theme-profile/payload/config/argvus/.accent-color",

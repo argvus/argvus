@@ -1,6 +1,6 @@
 ---
 title: Temas oficiais
-description: O catálogo de temas oficiais do ARGVUS, as cores de destaque padrão e como selecionar um tema e o seu modo Sticky ou Float.
+description: O catálogo de temas oficiais do ARGVUS, as cores de destaque padrão e como selecionar um tema e o seu modo Sticky ou Spaced.
 ---
 
 Esta página lista os temas oficiais disponíveis pelos pacotes de tema oficiais e explica como selecionar um deles. Para instalá-los, veja [Instalando temas](/pt/docs/components/argvus-themes/installing-themes/).
@@ -16,16 +16,16 @@ O tema selecionado é aplicado a todo o desktop de uma vez: a taskbar, os painé
 
 Você também pode pressionar `SUPER + SHIFT + T` para abrir o seletor de temas pelo teclado. Use as setas para percorrer as categorias, `Enter` para escolher e `Esc` para fechar.
 
-## Sticky e Float
+## Sticky e Spaced
 
 Cada tema funciona em dois modos. O modo é independente do tema: trocar de tema mantém o modo atual, e trocar de modo mantém o tema atual.
 
 | Modo | Espaçamento entre janelas | Margem externa | Arredondamento das janelas | Margem da taskbar e do shell |
 | --- | ---: | ---: | ---: | ---: |
 | Sticky | `2` | `0` | `0` | próxima à borda |
-| Float | `10` | `18` | `4` | `18` |
+| Spaced | `10` | `18` | `4` | `18` |
 
-Para trocar o modo, abra **Control Center → Aparência → Modo** e escolha **Fixo** (Sticky) ou **Flutuante** (Float). Os ajustes manuais desses valores de layout continuam valendo até a próxima seleção explícita de tema.
+Para trocar o modo, abra **Control Center → Aparência → Modo** e escolha **Fixo** (Sticky) ou **Flutuante** (Spaced). Os ajustes manuais desses valores de layout continuam valendo até a próxima seleção explícita de tema.
 
 ## Temas escuros
 

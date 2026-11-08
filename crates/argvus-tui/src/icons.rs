@@ -146,7 +146,7 @@ pub const LAYOUT: &str = "\u{f056e}";
 /// Nerd Fonts: nf-md-theme-light-dark
 pub const THEME_MODE: &str = "\u{f050e}";
 /// Nerd Fonts: nf-md-window-restore
-pub const WINDOW_FLOAT: &str = "\u{f05b2}";
+pub const WINDOW_SPACED: &str = "\u{f05b2}";
 /// Nerd Fonts: nf-md-view-split-vertical
 pub const WINDOW_STICKY: &str = "\u{f0bcc}";
 /// Nerd Fonts: nf-md-window-open
@@ -416,7 +416,7 @@ mod tests {
     CONTROL_PANEL,
     LAYOUT,
     THEME_MODE,
-    WINDOW_FLOAT,
+    WINDOW_SPACED,
     WINDOW_STICKY,
     WINDOW_RULES,
     WRENCH,

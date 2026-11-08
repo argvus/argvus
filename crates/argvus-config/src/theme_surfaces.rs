@@ -42,7 +42,10 @@ pub fn publish_greeter_theme(
   theme: &str,
   user_id: u32,
 ) -> io::Result<bool> {
-  let family = theme.strip_suffix("-float").unwrap_or(theme);
+  let family = theme
+    .strip_suffix("-spaced")
+    .or_else(|| theme.strip_suffix("-float"))
+    .unwrap_or(theme);
   if argvus_theme_core::manifest::validate_id(family).is_err()
     || !system_themes.join(family).join("theme.toml").is_file()
     || !state_dir.is_dir()
@@ -91,11 +94,11 @@ mod tests {
     fs::write(themes.join("sunset/theme.toml"), "").expect("manifest");
 
     assert!(
-      publish_greeter_theme(&themes, &root.join("state"), "sunset-float", 1000).expect("publish")
+      publish_greeter_theme(&themes, &root.join("state"), "sunset-spaced", 1000).expect("publish")
     );
     assert_eq!(
       fs::read_to_string(root.join("state/1000")).expect("published"),
-      "sunset-float\n"
+      "sunset-spaced\n"
     );
     for refused in ["mine", "../sunset", "Sunset"] {
       assert!(

@@ -279,13 +279,16 @@ pub fn validate_icon_theme_name(name: &str) -> Result<(), String> {
   Ok(())
 }
 
-/// The ARGVUS default icon theme of a theme, by its mode. A `-float` variant
+/// The ARGVUS default icon theme of a theme, by its mode. A `-spaced` variant
 /// uses the mode of its family.
 pub fn default_icon_theme_for(
   theme_id: &str,
   official_themes: &[argvus_theme::discovery::ThemeEntry],
 ) -> &'static str {
-  let family = theme_id.strip_suffix("-float").unwrap_or(theme_id);
+  let family = theme_id
+    .strip_suffix("-spaced")
+    .or_else(|| theme_id.strip_suffix("-float"))
+    .unwrap_or(theme_id);
   let is_light = match official_themes.iter().find(|entry| entry.id == family) {
     Some(entry) => entry.category == argvus_theme::discovery::ThemeCategory::Light,
     None => BUILT_IN_LIGHT_THEMES.contains(&family),

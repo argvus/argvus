@@ -10,7 +10,7 @@ A theme in ARGVUS sets the colors, surfaces, wallpaper defaults and layout geome
 Each official theme is a complete visual identity with two modes:
 
 - **Sticky** — a compact layout with small window gaps, no outer gaps and a taskbar close to the screen edge.
-- **Float** — a spacious layout with larger gaps, rounded corners and margins around the taskbar and shell surfaces.
+- **Spaced** — a spacious layout with larger gaps, rounded corners and margins around the taskbar and shell surfaces.
 
 Selecting a theme does not change its identity: the palette, the default highlight color and the wallpaper association stay the same between modes. The mode is a separate setting, see [Official themes](/docs/components/argvus-themes/official-themes/).
 
@@ -26,7 +26,7 @@ Selecting a theme does not change its identity: the palette, the default highlig
 | Task | Where |
 | --- | --- |
 | Pick a theme | **Control Center → Appearance → Themes → Official Themes** |
-| Switch Sticky and Float | **Control Center → Appearance → Mode** |
+| Switch Sticky and Spaced | **Control Center → Appearance → Mode** |
 | Change the highlight color | **Control Center → Appearance → Highlight color** |
 | Export the active theme | **Control Center → Appearance → Themes → Export theme** |
 | Import a theme | **Control Center → Appearance → Themes → Import theme** |

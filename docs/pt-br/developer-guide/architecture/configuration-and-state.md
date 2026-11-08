@@ -115,5 +115,5 @@ conjunto e compara generation/hash publicados com o config resolvido atual.
 Testes do checkout e do pacote instalado são modos separados e não podem cair
 silenciosamente em outro executável ou no home do desenvolvedor. `apply` é
 também a fronteira de reconciliação para identificadores legados combinados:
-`argvus-dark-float` torna-se `theme=argvus-dark` e `variant=float` antes da
+`argvus-dark-spaced` torna-se `theme=argvus-dark` e `variant=spaced` antes da
 resolução. A identidade dos assets empacotados não é registrada em manifesto nesta versão, então nenhum arquivo de diagnóstico a descreve.

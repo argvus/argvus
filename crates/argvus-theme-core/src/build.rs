@@ -295,12 +295,12 @@ struct BuildIdentity {
   variant: String,
 }
 
-/// The theme id (`<id>` or `<id>-float`) of the build behind `current`.
+/// The theme id (`<id>` or `<id>-spaced`) of the build behind `current`.
 pub fn current_theme(current: &Path) -> Option<String> {
   let text = fs::read_to_string(current.join(BUILD_MANIFEST)).ok()?;
   let identity: BuildIdentity = toml::from_str(&text).ok()?;
   Some(match identity.variant.as_str() {
-    "float" => format!("{}-float", identity.theme),
+    "spaced" | "float" => format!("{}-spaced", identity.theme),
     _ => identity.theme,
   })
 }
@@ -308,7 +308,10 @@ pub fn current_theme(current: &Path) -> Option<String> {
 /// A file of the build behind `current`, only when that build was rendered
 /// for `theme`: a consumer asked for another theme reads its own files.
 pub fn current_file_for(current: &Path, theme: &str, relative: &str) -> Option<PathBuf> {
-  if current_theme(current)? != theme {
+  let normalized = theme
+    .strip_suffix("-float")
+    .map(|family| format!("{family}-spaced"));
+  if current_theme(current)? != normalized.as_deref().unwrap_or(theme) {
     return None;
   }
   Some(current.join(relative)).filter(|path| path.is_file())

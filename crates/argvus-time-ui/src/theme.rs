@@ -298,9 +298,9 @@ mod tests {
   }
 
   #[test]
-  fn float_build_does_not_enable_sticky_styles() {
+  fn spaced_build_does_not_enable_sticky_styles() {
     let description = BuildDescription {
-      variant: Some("float".to_owned()),
+      variant: Some("spaced".to_owned()),
       ..BuildDescription::default()
     };
     assert!(!description.is_sticky());

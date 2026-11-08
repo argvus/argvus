@@ -10,7 +10,7 @@ Um tema no ARGVUS define as cores, as superfícies, o wallpaper padrão e a geom
 Cada tema oficial é uma identidade visual completa com dois modos:
 
 - **Sticky** — layout compacto, com pequenos espaçamentos entre janelas, sem margem externa e com a taskbar próxima à borda da tela.
-- **Float** — layout espaçoso, com espaçamentos maiores, cantos arredondados e margens ao redor da taskbar e das superfícies do shell.
+- **Spaced** — layout espaçoso, com espaçamentos maiores, cantos arredondados e margens ao redor da taskbar e das superfícies do shell.
 
 Selecionar um tema não altera a identidade dele: a paleta, a cor de destaque padrão e a associação com o wallpaper permanecem as mesmas entre os modos. O modo é uma configuração separada, veja [Temas oficiais](/pt/docs/components/argvus-themes/official-themes/).
 
@@ -26,7 +26,7 @@ Selecionar um tema não altera a identidade dele: a paleta, a cor de destaque pa
 | Tarefa | Onde |
 | --- | --- |
 | Escolher um tema | **Control Center → Aparência → Temas → Temas oficiais** |
-| Alternar entre Sticky e Float | **Control Center → Aparência → Modo** |
+| Alternar entre Sticky e Spaced | **Control Center → Aparência → Modo** |
 | Alterar a cor de destaque | **Control Center → Aparência → Cor de destaque** |
 | Exportar o tema ativo | **Control Center → Aparência → Temas → Exportar tema** |
 | Importar um tema | **Control Center → Aparência → Temas → Importar tema** |

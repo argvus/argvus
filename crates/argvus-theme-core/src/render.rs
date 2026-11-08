@@ -9,15 +9,18 @@ use crate::layout::{Layout, Variant};
 use crate::paths::ThemePaths;
 use crate::registry;
 
-/// The family and the layout of `<id>` or `<id>-float`.
+/// The family and the layout of `<id>` or `<id>-spaced`.
 pub fn split_variant(theme: &str) -> (&str, Variant) {
-  match theme.strip_suffix("-float") {
-    Some(family) => (family, Variant::Float),
+  match theme
+    .strip_suffix("-spaced")
+    .or_else(|| theme.strip_suffix("-float"))
+  {
+    Some(family) => (family, Variant::Spaced),
     None => (theme, Variant::Sticky),
   }
 }
 
-/// Renders `theme` (`<id>` or `<id>-float`) with `accent` (the theme's own when
+/// Renders `theme` (`<id>` or `<id>-spaced`) with `accent` (the theme's own when
 /// `None`). `only` limits the render to one consumer of the registry. The error
 /// is a readable description of everything that went wrong.
 pub fn render_installed(
@@ -82,6 +85,12 @@ mod tests {
   use std::fs;
   use std::path::Path;
 
+  #[test]
+  fn legacy_suffix_resolves_to_spaced() {
+    assert_eq!(split_variant("demo-float"), ("demo", Variant::Spaced));
+    assert_eq!(split_variant("demo-spaced"), ("demo", Variant::Spaced));
+  }
+
   fn write(path: &Path, text: &str) {
     fs::create_dir_all(path.parent().unwrap()).unwrap();
     fs::write(path, text).unwrap();
@@ -99,7 +108,7 @@ mod tests {
       "schema = 2\nid = \"demo\"\nname = \"Demo\"\ncategory = \"dark\"\n\
        [palette]\nbg = \"#000000\"\nfg = \"#FFFFFF\"\naccent = \"#3590BD\"\n",
     );
-    write(&paths.layouts().join("float.toml"), "rounding = 8\n");
+    write(&paths.layouts().join("spaced.toml"), "rounding = 8\n");
     write(
       &paths.system_root.join("tui/t.css"),
       "{{ @card | hex }} {{ layout.rounding }}\n",
@@ -120,7 +129,7 @@ mod tests {
   #[test]
   fn one_consumer_renders_with_its_palette_defaults_and_the_layout() {
     let (_root, paths) = tree();
-    let text = render_file(&paths, "demo-float", None, "tui").unwrap();
+    let text = render_file(&paths, "demo-spaced", None, "tui").unwrap();
     assert_eq!(text, "#808080 8\n");
     // The broken consumer is not rendered when another one is asked for.
     assert!(render_installed(&paths, "demo", None, None).is_err());
@@ -150,7 +159,7 @@ mod tests {
        [palette]\nbg = \"#000000\"\nfg = \"#FFFFFF\"\naccent = \"#3590BD\"\ncard = \"#123456\"\n",
     );
     assert_eq!(
-      render_file(&paths, "demo-float", None, "tui").unwrap(),
+      render_file(&paths, "demo-spaced", None, "tui").unwrap(),
       "#123456 8\n"
     );
   }

@@ -1,5 +1,5 @@
 //! Theme identity and the facts that depend only on it: the canonical id, the
-//! Sticky/Float variant, the GTK mode and the wallpaper.
+//! Sticky/Spaced variant, the GTK mode and the wallpaper.
 //!
 //! A theme is described by its manifest (`themes/<id>/theme.toml`, schema 2),
 //! official under the system root or the user's own under
@@ -13,76 +13,79 @@ use argvus_theme_core::manifest::{Category, ThemeManifest};
 use argvus_theme_core::paths::ThemePaths;
 use std::path::{Path, PathBuf};
 
-/// Light themes, by the id they are known under (family and Float).
+/// Light themes, by the id they are known under (family and Spaced).
 const LIGHT_THEMES: &[&str] = &[
   "argvus-light",
-  "argvus-light-float",
+  "argvus-light-spaced",
   "github-light",
-  "github-light-float",
+  "github-light-spaced",
   "solarized-light",
-  "solarized-light-float",
+  "solarized-light-spaced",
   "one-light",
-  "one-light-float",
+  "one-light-spaced",
   "everforest-light",
-  "everforest-light-float",
+  "everforest-light-spaced",
   "catppuccin-latte",
-  "catppuccin-latte-float",
+  "catppuccin-latte-spaced",
   "gruvbox-light",
-  "gruvbox-light-float",
+  "gruvbox-light-spaced",
   "nord-light",
-  "nord-light-float",
+  "nord-light-spaced",
 ];
 
 /// Legacy and alternate ids that map to a canonical theme.
 const CANONICAL_IDS: &[(&str, &str)] = &[
   ("argvus-dark-aether", "argvus-dark"),
-  ("argvus-dark-aether-float", "argvus-dark-float"),
+  ("argvus-dark-aether-spaced", "argvus-dark-spaced"),
   ("argvus-light-veil", "argvus-light"),
-  ("argvus-light-veil-float", "argvus-light-float"),
+  ("argvus-light-veil-spaced", "argvus-light-spaced"),
   ("argvus-onedark", "one-dark"),
-  ("argvus-onedark-float", "one-dark-float"),
+  ("argvus-onedark-spaced", "one-dark-spaced"),
   ("argvus-dark-dracula", "dracula"),
-  ("argvus-dark-dracula-float", "dracula-float"),
+  ("argvus-dark-dracula-spaced", "dracula-spaced"),
   ("argvus-dark-silver", "silver-dark"),
-  ("argvus-dark-silver-float", "silver-dark-float"),
+  ("argvus-dark-silver-spaced", "silver-dark-spaced"),
   ("argvus-dark-slate", "slate-dark"),
-  ("argvus-dark-slate-float", "slate-dark-float"),
+  ("argvus-dark-slate-spaced", "slate-dark-spaced"),
   ("argvus-dark-universe", "universe"),
-  ("argvus-dark-universe-float", "universe-float"),
+  ("argvus-dark-universe-spaced", "universe-spaced"),
   ("argvus-dark-gruvbox-high", "gruvbox-high-dark"),
-  ("argvus-dark-gruvbox-high-float", "gruvbox-high-dark-float"),
+  (
+    "argvus-dark-gruvbox-high-spaced",
+    "gruvbox-high-dark-spaced",
+  ),
   ("argvus-dark-gruvbox", "gruvbox-dark"),
-  ("argvus-dark-gruvbox-float", "gruvbox-dark-float"),
+  ("argvus-dark-gruvbox-spaced", "gruvbox-dark-spaced"),
   ("argvus-github-light", "github-light"),
-  ("argvus-github-light-float", "github-light-float"),
+  ("argvus-github-light-spaced", "github-light-spaced"),
   ("argvus-light-solarized", "solarized-light"),
-  ("argvus-light-solarized-float", "solarized-light-float"),
+  ("argvus-light-solarized-spaced", "solarized-light-spaced"),
   ("argvus-light-gruvbox", "gruvbox-light"),
-  ("argvus-light-gruvbox-float", "gruvbox-light-float"),
+  ("argvus-light-gruvbox-spaced", "gruvbox-light-spaced"),
   ("argvus-dark-rose-pine", "rose-pine"),
   ("argvus-dark-rosepine", "rose-pine"),
-  ("argvus-dark-rose-pine-float", "rose-pine-float"),
-  ("argvus-dark-rosepine-float", "rose-pine-float"),
+  ("argvus-dark-rose-pine-spaced", "rose-pine-spaced"),
+  ("argvus-dark-rosepine-spaced", "rose-pine-spaced"),
   ("argvus-dark-tokio-night", "tokyo-night"),
   ("argvus-dark-tokyo-night", "tokyo-night"),
-  ("argvus-dark-tokio-night-float", "tokyo-night-float"),
-  ("argvus-dark-tokyo-night-float", "tokyo-night-float"),
+  ("argvus-dark-tokio-night-spaced", "tokyo-night-spaced"),
+  ("argvus-dark-tokyo-night-spaced", "tokyo-night-spaced"),
   ("argvus-dark-solitude", "solitude"),
-  ("argvus-dark-solitude-float", "solitude-float"),
+  ("argvus-dark-solitude-spaced", "solitude-spaced"),
   ("argvus-dark-sunset", "sunset"),
   ("dark-sunset", "sunset"),
-  ("dark-sunset-float", "sunset-float"),
-  ("argvus-dark-sunset-float", "sunset-float"),
+  ("dark-sunset-spaced", "sunset-spaced"),
+  ("argvus-dark-sunset-spaced", "sunset-spaced"),
   ("argvus-dark-matrix", "matrix"),
-  ("argvus-dark-matrix-float", "matrix-float"),
+  ("argvus-dark-matrix-spaced", "matrix-spaced"),
   ("argvus-dark-monokai", "monokai-dark"),
-  ("argvus-dark-monokai-float", "monokai-dark-float"),
+  ("argvus-dark-monokai-spaced", "monokai-dark-spaced"),
   ("argvus-catppuccin-latte", "catppuccin-latte"),
-  ("argvus-catppuccin-latte-float", "catppuccin-latte-float"),
+  ("argvus-catppuccin-latte-spaced", "catppuccin-latte-spaced"),
   ("argvus-light-catppuccin-latte", "catppuccin-latte"),
   (
-    "argvus-light-catppuccin-latte-float",
-    "catppuccin-latte-float",
+    "argvus-light-catppuccin-latte-spaced",
+    "catppuccin-latte-spaced",
   ),
 ];
 
@@ -152,7 +155,7 @@ pub fn is_valid_theme_id(id: &str) -> bool {
       .all(|c| c.is_ascii_lowercase() || c.is_ascii_digit() || matches!(c, '.' | '_' | '-'))
 }
 
-/// Resolves the theme to apply. An empty id stays empty. The Sticky/Float mode
+/// Resolves the theme to apply. An empty id stays empty. The Sticky/Spaced mode
 /// is an independent setting, so the id is reduced to its family and the
 /// variant is taken from the layout mode, never from the caller.
 pub fn resolve_theme(id: &str, variant: &str) -> String {
@@ -160,23 +163,36 @@ pub fn resolve_theme(id: &str, variant: &str) -> String {
   if canonical.is_empty() {
     return String::new();
   }
-  let family = canonical.strip_suffix("-float").unwrap_or(canonical);
-  if variant == "float" {
-    format!("{family}-float")
+  let family = canonical
+    .strip_suffix("-spaced")
+    .or_else(|| canonical.strip_suffix("-float"))
+    .unwrap_or(canonical);
+  let family = canonical_theme_id(family);
+  if variant == "spaced" || variant == "float" {
+    format!("{family}-spaced")
   } else {
     family.to_string()
   }
 }
 
-/// The installed manifest of a theme (`<id>` or `<id>-float`): the official
+/// The installed manifest of a theme (`<id>` or `<id>-spaced`): the official
 /// one, or else the user's. An invalid id or manifest is `None`.
 pub fn manifest(paths: &ThemePaths, theme: &str) -> Option<ThemeManifest> {
-  discovery::find(paths, theme.strip_suffix("-float").unwrap_or(theme))
+  discovery::find(
+    paths,
+    theme
+      .strip_suffix("-spaced")
+      .or_else(|| theme.strip_suffix("-float"))
+      .unwrap_or(theme),
+  )
 }
 
 /// Whether a theme family is installed in the user's theme directory.
 pub fn is_user_theme(paths: &ThemePaths, theme: &str) -> bool {
-  let family = theme.strip_suffix("-float").unwrap_or(theme);
+  let family = theme
+    .strip_suffix("-spaced")
+    .or_else(|| theme.strip_suffix("-float"))
+    .unwrap_or(theme);
   discovery::discover(paths)
     .find(family)
     .is_some_and(|installed| installed.source == discovery::Source::User)
@@ -225,7 +241,10 @@ const PACKAGED_WALLPAPERS: &str = "/usr/share/backgrounds/argvus";
 /// packaged wallpaper directory is taken from `wallpaper_root`, which is that
 /// directory unless the environment moves it.
 pub fn theme_wallpaper(paths: &ThemePaths, wallpaper_root: &Path, theme: &str) -> Option<PathBuf> {
-  let family = theme.strip_suffix("-float").unwrap_or(theme);
+  let family = theme
+    .strip_suffix("-spaced")
+    .or_else(|| theme.strip_suffix("-float"))
+    .unwrap_or(theme);
   let from_manifest = manifest(paths, theme)
     .and_then(|manifest| manifest.wallpaper)
     .map(
@@ -258,8 +277,8 @@ mod tests {
   fn aliases_resolve_to_their_canonical_id() {
     assert_eq!(canonical_theme_id("argvus-dark-tokyo-night"), "tokyo-night");
     assert_eq!(
-      canonical_theme_id("argvus-light-catppuccin-latte-float"),
-      "catppuccin-latte-float"
+      canonical_theme_id("argvus-light-catppuccin-latte-spaced"),
+      "catppuccin-latte-spaced"
     );
     assert_eq!(
       canonical_theme_id("dracula"),
@@ -270,10 +289,18 @@ mod tests {
 
   #[test]
   fn variant_decides_the_float_suffix_not_the_caller() {
-    assert_eq!(resolve_theme("dracula-float", "sticky"), "dracula");
-    assert_eq!(resolve_theme("dracula", "float"), "dracula-float");
-    assert_eq!(resolve_theme("argvus-dark-matrix", "float"), "matrix-float");
-    assert_eq!(resolve_theme("", "float"), "");
+    assert_eq!(resolve_theme("dracula-spaced", "sticky"), "dracula");
+    assert_eq!(resolve_theme("dracula-float", "spaced"), "dracula-spaced");
+    assert_eq!(
+      resolve_theme("argvus-dark-matrix-float", "spaced"),
+      "matrix-spaced"
+    );
+    assert_eq!(resolve_theme("dracula", "spaced"), "dracula-spaced");
+    assert_eq!(
+      resolve_theme("argvus-dark-matrix", "spaced"),
+      "matrix-spaced"
+    );
+    assert_eq!(resolve_theme("", "spaced"), "");
   }
 
   fn theme_tree(name: &str) -> (PathBuf, ThemePaths) {
@@ -305,7 +332,7 @@ mod tests {
   #[test]
   fn gtk_mode_follows_the_builtin_light_list_without_a_manifest() {
     let (root, paths) = theme_tree("builtin");
-    assert_eq!(gtk_mode(&paths, "github-light-float"), "light");
+    assert_eq!(gtk_mode(&paths, "github-light-spaced"), "light");
     assert_eq!(gtk_mode(&paths, "argvus-dark"), "dark");
     let _ = std::fs::remove_dir_all(root);
   }
@@ -319,7 +346,7 @@ mod tests {
       "mine",
       "category = \"dark\"\n[gtk]\nscheme = \"prefer-light\"",
     );
-    assert_eq!(gtk_mode(&paths, "demo-float"), "light");
+    assert_eq!(gtk_mode(&paths, "demo-spaced"), "light");
     assert_eq!(gtk_mode(&paths, "mine"), "light");
     assert_eq!(theme_accent(&paths, "mine").as_deref(), Some("#12AB34"));
     assert_eq!(theme_accent(&paths, "../demo"), None);
@@ -332,7 +359,7 @@ mod tests {
     write_manifest(&paths.system_themes(), "official", "category = \"dark\"");
     write_manifest(&paths.user_themes, "mine", "category = \"dark\"");
 
-    assert!(is_user_theme(&paths, "mine-float"));
+    assert!(is_user_theme(&paths, "mine-spaced"));
     assert!(!is_user_theme(&paths, "official"));
     assert!(!is_user_theme(&paths, "missing"));
     let _ = std::fs::remove_dir_all(root);
@@ -359,7 +386,7 @@ mod tests {
     .expect("builtin");
 
     assert_eq!(
-      theme_wallpaper(&paths, &wallpapers, "demo-float"),
+      theme_wallpaper(&paths, &wallpapers, "demo-spaced"),
       Some(wallpapers.join("demo.png"))
     );
     assert_eq!(
@@ -379,7 +406,7 @@ mod id_tests {
   fn accepts_real_theme_ids() {
     for id in [
       "argvus-dark",
-      "catppuccin-latte-float",
+      "catppuccin-latte-spaced",
       "gruvbox-high-dark",
       "sunset",
       "v2.1",

@@ -3,11 +3,11 @@
 use super::*;
 
 #[test]
-fn mode_page_lists_sticky_and_float_independent_of_theme() {
+fn mode_page_lists_sticky_and_spaced_independent_of_theme() {
   let rows = labels(&app(AppearancePage::Mode));
   assert_eq!(rows.len(), 2);
   assert!(rows[0].contains("Sticky"));
-  assert!(rows[1].contains("Float"));
+  assert!(rows[1].contains("Spaced"));
 
   let mut ui = app(AppearancePage::Desktop);
   assert_eq!(selected(&ui), Some(Item::Themes));

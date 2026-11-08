@@ -113,7 +113,11 @@ fn theme_category_label_key(category: ThemeCategory) -> &'static str {
 /// Name of the active theme family as declared by its manifest, localized for
 /// the current language. Falls back to the built-in label table.
 fn current_family_label(state: &AppearanceState, lang: &Lang) -> String {
-  let family = state.theme.strip_suffix("-float").unwrap_or(&state.theme);
+  let family = state
+    .theme
+    .strip_suffix("-spaced")
+    .or_else(|| state.theme.strip_suffix("-float"))
+    .unwrap_or(&state.theme);
   state
     .official_themes
     .iter()

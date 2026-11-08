@@ -746,10 +746,10 @@ mod tests {
     let paths = test_theme_paths(&root);
     std::fs::create_dir_all(paths.active_argvus_theme_file.parent().unwrap()).unwrap();
     std::fs::create_dir_all(paths.cache_theme_file.parent().unwrap()).unwrap();
-    std::fs::write(&paths.active_argvus_theme_file, "gruvbox-dark-float\n").unwrap();
+    std::fs::write(&paths.active_argvus_theme_file, "gruvbox-dark-spaced\n").unwrap();
     std::fs::write(
       &paths.cache_theme_file,
-      "/* argvus-theme: gruvbox-dark-float */\n",
+      "/* argvus-theme: gruvbox-dark-spaced */\n",
     )
     .unwrap();
 

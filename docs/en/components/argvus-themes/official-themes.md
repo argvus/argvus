@@ -1,6 +1,6 @@
 ---
 title: Official themes
-description: The official ARGVUS theme catalog, default highlight colors, and how to select a theme and its Sticky or Float mode.
+description: The official ARGVUS theme catalog, default highlight colors, and how to select a theme and its Sticky or Spaced mode.
 ---
 
 This page lists the official themes available as theme packages and explains how to select one. For installing them, see [Installing themes](/docs/components/argvus-themes/installing-themes/).
@@ -16,16 +16,16 @@ The selected theme is applied to the whole desktop at once: the running taskbar,
 
 You can also press `SUPER + SHIFT + T` to open the theme selector from the keyboard. Use the arrow keys to move through the categories, `Enter` to choose, and `Esc` to close.
 
-## Sticky and Float
+## Sticky and Spaced
 
 Each theme works in two modes. The mode is independent of the theme: changing the theme keeps the current mode, and changing the mode keeps the current theme.
 
 | Mode | Window gaps | Outer gap | Window rounding | Taskbar and shell margin |
 | --- | ---: | ---: | ---: | ---: |
 | Sticky | `2` | `0` | `0` | near the edge |
-| Float | `10` | `18` | `4` | `18` |
+| Spaced | `10` | `18` | `4` | `18` |
 
-To switch the mode, open **Control Center → Appearance → Mode** and choose **Sticky** or **Float**. Your manual adjustments to these layout values remain in effect until the next explicit theme selection.
+To switch the mode, open **Control Center → Appearance → Mode** and choose **Sticky** or **Spaced**. Your manual adjustments to these layout values remain in effect until the next explicit theme selection.
 
 ## Dark themes
 

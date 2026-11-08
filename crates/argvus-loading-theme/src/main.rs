@@ -463,7 +463,7 @@ mod tests {
     let cases = [
       ("ARGVUS Dark", "#191b27", "#3590bd", DEFAULT_ACCENT),
       ("ARGVUS Dracula", "#282A36", "#F8F8F2", "#BD93F9"),
-      ("silver-dark-float", "#595959", "#121518", "#121518"),
+      ("silver-dark-spaced", "#595959", "#121518", "#121518"),
       ("rose-pine", "#191724", "#E0DEF4", "#C4A7E7"),
       ("ARGVUS Dark Slate", "#3b4352", "#7391a5", DEFAULT_ACCENT),
       ("universe", "#000000", "#ffffff", DEFAULT_ACCENT),

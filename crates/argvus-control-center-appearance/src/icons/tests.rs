@@ -276,15 +276,15 @@ fn default_follows_the_mode_of_the_theme() {
     DEFAULT_LIGHT_ICON_THEME
   );
   assert_eq!(
-    default_icon_theme_for("argvus-light-float", &[]),
+    default_icon_theme_for("argvus-light-spaced", &[]),
     DEFAULT_LIGHT_ICON_THEME
   );
   assert_eq!(
-    default_icon_theme_for("nord-light-float", &official),
+    default_icon_theme_for("nord-light-spaced", &official),
     DEFAULT_LIGHT_ICON_THEME
   );
   assert_eq!(
-    default_icon_theme_for("monokai-dark-float", &official),
+    default_icon_theme_for("monokai-dark-spaced", &official),
     DEFAULT_ICON_THEME
   );
 }

@@ -239,7 +239,14 @@ fn active_theme(paths: &Paths) -> String {
   let installed = ThemePaths::from_environment();
   let selection = theme::select_theme(canonical.as_deref(), fallback.as_deref(), |name| {
     installed.as_ref().is_some_and(|installed| {
-      discovery::find(installed, name.strip_suffix("-float").unwrap_or(name)).is_some()
+      discovery::find(
+        installed,
+        name
+          .strip_suffix("-spaced")
+          .or_else(|| name.strip_suffix("-float"))
+          .unwrap_or(name),
+      )
+      .is_some()
     })
   });
   match selection {

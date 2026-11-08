@@ -4,7 +4,7 @@
 //! up a new build: a rewrite of the stylesheet Waybar watches, a signal, or a
 //! command. Hyprland's colours are evaluated in place, and the wallpaper goes
 //! through hyprpaper's IPC. The compositor reloads its configuration only when
-//! the switch changed something else it reads: the Sticky/Float layout, the
+//! the switch changed something else it reads: the Sticky/Spaced layout, the
 //! per-theme effects or the projected state. A layout change also restarts the
 //! two Waybar bars, whose margins are layer-shell settings. A surface whose
 //! consumer is not registered is restarted, and Hyprland reloads when its own
@@ -71,12 +71,13 @@ impl Before {
   }
 }
 
-/// Applies the switch to `theme` (`<id>` or `<id>-float`) on the running
+/// Applies the switch to `theme` (`<id>` or `<id>-spaced`) on the running
 /// desktop. Failures are reported and do not stop the other consumers.
 pub fn apply(paths: &SessionPaths, before: &Before, theme: &str) {
   let consumers = registered_consumers(paths);
   let registered = |id: &str| consumers.iter().any(|consumer| consumer.id == id);
-  let layout_changed = before.theme.ends_with("-float") != theme.ends_with("-float");
+  let layout_changed = (before.theme.ends_with("-spaced") || before.theme.ends_with("-float"))
+    != (theme.ends_with("-spaced") || theme.ends_with("-float"));
   let mut restart: Vec<&str> = SURFACE_UNITS
     .iter()
     .filter(|(id, _)| !registered(id))

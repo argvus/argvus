@@ -354,7 +354,7 @@ fn hypr_state_projection_writes_values_the_lua_config_reads() {
   };
   let mut document = ConfigDocument::default();
   document
-    .set("/layout/variant", Value::from("float"))
+    .set("/layout/variant", Value::from("spaced"))
     .expect("valid layout variant");
   document
     .set("/appearance/accent_custom", Value::Bool(true))
@@ -375,7 +375,7 @@ fn hypr_state_projection_writes_values_the_lua_config_reads() {
   project_hypr_state(&document, &paths).expect("state projection succeeds");
   let state =
     fs::read_to_string(root.join("data/generated/hypr/state.lua")).expect("state file exists");
-  assert!(state.contains("layout_variant = \"float\""));
+  assert!(state.contains("layout_variant = \"spaced\""));
   assert!(state.contains("accent_custom = true"));
   assert!(state.contains("[\"wobble_enabled\"] = true"));
   assert!(state.contains("[\"wobble_mass\"] = 0.0001"));

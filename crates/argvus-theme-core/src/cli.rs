@@ -16,8 +16,8 @@ use std::process::ExitCode;
 const USAGE: &str = "\
 usage: argvus theme apply ID
        argvus theme list
-       argvus theme check DIRECTORY [--variant sticky|float]
-       argvus theme render ID [--variant sticky|float] [--accent #RRGGBB] [--output DIRECTORY]";
+       argvus theme check DIRECTORY [--variant sticky|spaced]
+       argvus theme render ID [--variant sticky|spaced] [--accent #RRGGBB] [--output DIRECTORY]";
 
 const USAGE_ERROR: u8 = 64;
 
@@ -123,7 +123,7 @@ fn check(paths: &ThemePaths, theme_dir: &Path, options: &Options) -> ExitCode {
     Err(error) => return failure(&[error]),
   };
   let variants = options.variant.map_or_else(
-    || vec![Variant::Sticky, Variant::Float],
+    || vec![Variant::Sticky, Variant::Spaced],
     |variant| vec![variant],
   );
   let mut failed = false;
@@ -220,11 +220,11 @@ mod tests {
   #[test]
   fn parses_flags_in_any_order() {
     let options = Options::parse(&words(
-      "sunset --accent #3590BD --variant float --output /tmp/x",
+      "sunset --accent #3590BD --variant spaced --output /tmp/x",
     ))
     .unwrap();
     assert_eq!(options.positional, ["sunset"]);
-    assert_eq!(options.variant, Some(Variant::Float));
+    assert_eq!(options.variant, Some(Variant::Spaced));
     assert_eq!(options.accent, Color::parse("#3590BD"));
     assert_eq!(options.output.as_deref(), Some(Path::new("/tmp/x")));
   }

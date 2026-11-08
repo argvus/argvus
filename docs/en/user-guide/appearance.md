@@ -11,34 +11,36 @@ The twenty-three families below are defined by the current theme payload. The co
 
 | Family | Reset highlight color | Base background | Modes |
 | --- | --- | --- | --- |
-| One Dark | `#61AFEF` | `#282C34` | Sticky, Float |
-| Dracula | `#BD93F9` | `#282A36` | Sticky, Float |
-| ARGVUS Dark | `#3590bd` | `#111316` | Sticky, Float |
-| Dark Silver | `#595959` | `#111316` | Sticky, Float |
-| Dark Slate | `#7391a5` | `#2f3541` | Sticky, Float |
-| Dark Universe | `#eeeeee` | `#000000` | Sticky, Float |
-| ARGVUS Dark Gruvbox High | `#D79921` | `#282828` | Sticky, Float |
-| ARGVUS Dark Gruvbox | `#D4BE98` | `#282828` | Sticky, Float |
-| ARGVUS Light | `#181818` | `#f7f7f7` | Sticky, Float |
-| GitHub Light | `#0969DA` | `#FFFFFF` | Sticky, Float |
-| Catppuccin Latte | `#1E66F5` | `#EFF1F5` | Sticky, Float |
-| ARGVUS Light Gruvbox | `#458588` | `#FBF1C7` | Sticky, Float |
-| Rosé Pine | `#C4A7E7` | `#191724` | Sticky, Float |
-| Tokyo-Night | `#7AA2F7` | `#1A1B26` | Sticky, Float |
-| Solitude | `#798186` | `#101315` | Sticky, Float |
-| Sunset | `#E2BE8A` | `#0F0F0F` | Sticky, Float |
-| Matrix | `#82FB9C` | `#0B0C16` | Sticky, Float |
-| Monokai Dark | `#78DCE8` | `#2D2A2E` | Sticky, Float |
-| Lady Mist | `#354B78` | `#131313` | Sticky, Float |
-| One Light | `#4078F2` | `#FAFAFA` | Sticky, Float |
-| Everforest Light | `#3A94C5` | `#FDF6E3` | Sticky, Float |
-| Solarized Light | `#268BD2` | `#FDF6E3` | Sticky, Float |
-| Nord Light | `#5E81AC` | `#ECEFF4` | Sticky, Float |
-| Watercolor | `#1A639C` | `#E9E3D3` | Sticky, Float |
+| One Dark | `#61AFEF` | `#282C34` | Sticky, Spaced |
+| Dracula | `#BD93F9` | `#282A36` | Sticky, Spaced |
+| ARGVUS Dark | `#3590bd` | `#111316` | Sticky, Spaced |
+| Dark Silver | `#595959` | `#111316` | Sticky, Spaced |
+| Dark Slate | `#7391a5` | `#2f3541` | Sticky, Spaced |
+| Dark Universe | `#eeeeee` | `#000000` | Sticky, Spaced |
+| ARGVUS Dark Gruvbox High | `#D79921` | `#282828` | Sticky, Spaced |
+| ARGVUS Dark Gruvbox | `#D4BE98` | `#282828` | Sticky, Spaced |
+| ARGVUS Light | `#181818` | `#f7f7f7` | Sticky, Spaced |
+| GitHub Light | `#0969DA` | `#FFFFFF` | Sticky, Spaced |
+| Catppuccin Latte | `#1E66F5` | `#EFF1F5` | Sticky, Spaced |
+| ARGVUS Light Gruvbox | `#458588` | `#FBF1C7` | Sticky, Spaced |
+| Rosé Pine | `#C4A7E7` | `#191724` | Sticky, Spaced |
+| Tokyo-Night | `#7AA2F7` | `#1A1B26` | Sticky, Spaced |
+| Solitude | `#798186` | `#101315` | Sticky, Spaced |
+| Sunset | `#E2BE8A` | `#0F0F0F` | Sticky, Spaced |
+| Matrix | `#82FB9C` | `#0B0C16` | Sticky, Spaced |
+| Monokai Dark | `#78DCE8` | `#2D2A2E` | Sticky, Spaced |
+| Lady Mist | `#354B78` | `#131313` | Sticky, Spaced |
+| One Light | `#4078F2` | `#FAFAFA` | Sticky, Spaced |
+| Everforest Light | `#3A94C5` | `#FDF6E3` | Sticky, Spaced |
+| Solarized Light | `#268BD2` | `#FDF6E3` | Sticky, Spaced |
+| Nord Light | `#5E81AC` | `#ECEFF4` | Sticky, Spaced |
+| Watercolor | `#1A639C` | `#E9E3D3` | Sticky, Spaced |
 
 The color shown in the table is the value written to `config.json` when that family is selected or when **Reset to theme default** is used. A manually chosen six-digit RGB accent applies until the next theme switch, which replaces it with the selected theme's default.
 
-**Sticky** is the compact layout: tiled windows use small internal gaps, the outer gaps are zero and the taskbar sits close to the screen edge. **Float** adds larger gaps, rounded corners, shadows and margins around the taskbar and shell surfaces.
+**Sticky** is the compact layout: tiled windows use small internal gaps, the outer gaps are zero and the taskbar sits close to the screen edge. **Spaced** adds larger gaps, rounded corners, shadows and margins around the taskbar and shell surfaces.
+
+Existing `float` layout values and `-float` theme identifiers are recognized as legacy names for Spaced. New layout values and resolved theme identifiers use `spaced` and `-spaced`.
 
 The mode changes geometry and surface treatment; it does not create a sixth color family. See [Themes](/docs/user-guide/appearance/) for selection and [Desktop](/docs/user-guide/desktop/) for taskbar and window placement.
 

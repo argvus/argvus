@@ -22,7 +22,7 @@ const LEGACY_FONTS_START: &str = "/* argvus-settings-fonts:start */";
 const LEGACY_FONTS_END: &str = "/* argvus-settings-fonts:end */";
 
 /// The themes that get the compact layout. Matched by the exact theme id, as
-/// the shell's case statement did, so a Float id uses the default layout.
+/// the shell's case statement did, so a Spaced id uses the default layout.
 const COMPACT_THEMES: [&str; 21] = [
   "one-dark",
   "dracula",

@@ -16,8 +16,8 @@ pub(super) fn import_legacy_values(
     json_pointers::APPEARANCE_THEME,
     resolved(root, ".active-theme"),
   )?;
-  // Legacy installs encoded Sticky/Float as a `-float` suffix on the theme
-  // name itself (e.g. `.active-theme` containing `argvus-dark-float`).
+  // Legacy installs encoded Sticky/Spaced as a `-spaced` suffix on the theme
+  // name itself (e.g. `.active-theme` containing `argvus-dark-spaced`).
   // Strip it into the now-independent `/layout/variant` so the user's
   // existing mode survives the migration instead of being silently lost.
   changed |= migrate_theme_suffix_to_variant(document)?;
@@ -59,7 +59,10 @@ pub(super) fn migrate_theme_suffix_to_variant(document: &mut ConfigDocument) -> 
   else {
     return Ok(false);
   };
-  let Some(family) = theme.strip_suffix("-float") else {
+  let Some(family) = theme
+    .strip_suffix("-spaced")
+    .or_else(|| theme.strip_suffix("-float"))
+  else {
     return Ok(false);
   };
   document.set(
@@ -67,7 +70,10 @@ pub(super) fn migrate_theme_suffix_to_variant(document: &mut ConfigDocument) -> 
     Value::String(family.to_owned()),
   )?;
   if document.get(json_pointers::LAYOUT_VARIANT).is_none() {
-    document.set(json_pointers::LAYOUT_VARIANT, Value::String("float".into()))?;
+    document.set(
+      json_pointers::LAYOUT_VARIANT,
+      Value::String("spaced".into()),
+    )?;
   }
   Ok(true)
 }

@@ -86,7 +86,7 @@ fn scan(directory: &Path, source: Source, discovery: &mut Discovery) {
   }
 }
 
-/// The manifest of one installed theme, by its id (without `-float`): the
+/// The manifest of one installed theme, by its id (without `-spaced`): the
 /// official one, else the user's. An invalid id or a broken manifest is `None`.
 pub fn find(paths: &ThemePaths, id: &str) -> Option<ThemeManifest> {
   crate::manifest::validate_id(id).ok()?;

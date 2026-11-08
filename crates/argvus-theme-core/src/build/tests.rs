@@ -54,7 +54,8 @@ impl Fixture {
     .unwrap();
     let consumers = registry::load(&system, &registry_dir).unwrap();
     let manifest = ThemeManifest::load(&theme_dir).unwrap();
-    let layout = Layout::parse(Path::new("float.toml"), Variant::Float, "rounding = 8\n").unwrap();
+    let layout =
+      Layout::parse(Path::new("spaced.toml"), Variant::Spaced, "rounding = 8\n").unwrap();
     Self {
       root,
       manifest,
@@ -66,7 +67,7 @@ impl Fixture {
   fn render(&self, accent: Option<Color>) -> Result<Rendered, Vec<ThemeError>> {
     render(&RenderRequest {
       manifest: &self.manifest,
-      variant: Variant::Float,
+      variant: Variant::Spaced,
       accent,
       layout: Some(&self.layout),
       consumers: &self.consumers,
@@ -97,7 +98,7 @@ fn renders_every_consumer_with_palette_layout_and_metadata() {
   );
   assert_eq!(
     file("hyprland"),
-    "return { border = \"rgba(e2be8aff)\", rounding = 8, variant = \"float\" }\n"
+    "return { border = \"rgba(e2be8aff)\", rounding = 8, variant = \"spaced\" }\n"
   );
 }
 
@@ -115,7 +116,7 @@ fn build_names_follow_the_content() {
   let fixture = Fixture::new();
   let first = fixture.render(None).unwrap().build_name();
   assert_eq!(first, fixture.render(None).unwrap().build_name());
-  assert!(first.starts_with("sunset-float-"));
+  assert!(first.starts_with("sunset-spaced-"));
   let other = fixture
     .render(Color::parse("#3590BD"))
     .unwrap()
@@ -142,10 +143,11 @@ fn writes_reuses_commits_and_collects_builds() {
 
   commit(&current, &first).unwrap();
   assert_eq!(active_build(&current).as_deref(), Some(first.as_path()));
-  assert_eq!(current_theme(&current).as_deref(), Some("sunset-float"));
+  assert_eq!(current_theme(&current).as_deref(), Some("sunset-spaced"));
+  assert!(current_file_for(&current, "sunset-spaced", "taskbar/theme.css").is_some());
   assert!(current_file_for(&current, "sunset-float", "taskbar/theme.css").is_some());
   assert!(current_file_for(&current, "sunset", "taskbar/theme.css").is_none());
-  assert!(current_file_for(&current, "sunset-float", "missing.css").is_none());
+  assert!(current_file_for(&current, "sunset-spaced", "missing.css").is_none());
   assert_eq!(
     fs::read_link(&current).unwrap(),
     Path::new("builds").join(first.file_name().unwrap())

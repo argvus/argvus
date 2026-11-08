@@ -35,7 +35,7 @@ impl AppearanceApp {
       Item::ImportTheme => self.go(AppearancePage::ThemeImport),
       Item::ThemeCategory(category) => self.go(AppearancePage::ThemeFamilies { category }),
       Item::Family(index) => {
-        // Sticky/Float is an independent mode (Appearance > Mode), no longer
+        // Sticky/Spaced is an independent mode (Appearance > Mode), no longer
         // part of theme selection: picking a family applies it directly,
         // under whichever mode is already active.
         let Some(entry) = self.state.official_themes.get(index) else {
@@ -50,7 +50,7 @@ impl AppearanceApp {
       Item::CustomTheme(index) => self.apply_custom_theme(index),
       Item::ImportArchive(index) => self.inspect_import(index),
       Item::ModeSticky => self.apply_layout_mode("sticky"),
-      Item::ModeFloat => self.apply_layout_mode("float"),
+      Item::ModeSpaced => self.apply_layout_mode("spaced"),
       Item::ChooseWallpaper => self.apply(
         tr(self.lang, "control_center.wallpaper_chooser_opened").into(),
         backend::choose_wallpaper,

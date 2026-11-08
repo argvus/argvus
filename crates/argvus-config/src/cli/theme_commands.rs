@@ -305,8 +305,8 @@ pub(super) fn theme_command(command: &str, arguments: &[String]) -> ExitCode {
   }
 }
 
-/// The Sticky/Float variant from the canonical layout, or `sticky` when unknown.
-/// The Sticky/Float variant of the canonical layout. An unset value is Sticky (an
+/// The Sticky/Spaced variant from the canonical layout, or `sticky` when unknown.
+/// The Sticky/Spaced variant of the canonical layout. An unset value is Sticky (an
 /// empty string). A configuration that cannot be read is an error: falling back to
 /// Sticky would silently change the mode the user chose.
 pub(super) fn layout_variant() -> Result<String, Box<dyn std::error::Error>> {

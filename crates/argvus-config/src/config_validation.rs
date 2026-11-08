@@ -75,10 +75,10 @@ pub(super) fn validate_layout(document: &ConfigDocument) -> ConfigResult<()> {
   if let Some(variant) = document
     .get(json_pointers::LAYOUT_VARIANT)
     .and_then(Value::as_str)
-    && !matches!(variant, "sticky" | "float")
+    && !matches!(variant, "sticky" | "spaced")
   {
     return Err(ConfigError::Invalid(
-      "layout.variant must be sticky or float".into(),
+      "layout.variant must be sticky or spaced".into(),
     ));
   }
   Ok(())

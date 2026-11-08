@@ -61,9 +61,9 @@ impl ThemeEntry {
     if self.id.starts_with('-') || self.id.ends_with('-') {
       return Err("Theme ID cannot start or end with hyphen".to_string());
     }
-    // No -float suffix (that's a mode, not part of the ID)
-    if self.id.ends_with("-float") {
-      return Err("Theme ID should not include -float suffix".to_string());
+    // No -spaced suffix (that's a mode, not part of the ID)
+    if self.id.ends_with("-spaced") || self.id.ends_with("-float") {
+      return Err("Theme ID should not include -spaced suffix".to_string());
     }
     Ok(())
   }
@@ -220,8 +220,8 @@ mod tests {
     entry.id = "-valid-theme".to_string();
     assert!(entry.validate_id().is_err());
 
-    // -float suffix not allowed
-    entry.id = "valid-theme-float".to_string();
+    // -spaced suffix not allowed
+    entry.id = "valid-theme-spaced".to_string();
     assert!(entry.validate_id().is_err());
   }
 

@@ -61,7 +61,11 @@ pub fn custom_themes() -> Vec<CustomTheme> {
 pub fn active_custom_theme() -> Option<String> {
   let active = fs::read_to_string(argvus_data_home().join(".active-theme")).ok()?;
   let active = canonical_theme_id(active.trim());
-  let family = active.strip_suffix("-float").unwrap_or(&active).to_owned();
+  let family = active
+    .strip_suffix("-spaced")
+    .or_else(|| active.strip_suffix("-float"))
+    .unwrap_or(&active)
+    .to_owned();
   custom_themes()
     .iter()
     .any(|theme| theme.id == family)
@@ -127,7 +131,10 @@ pub fn export_named(name: &str) -> Result<PathBuf, String> {
   let active = fs::read_to_string(argvus_data_home().join(".active-theme"))
     .map(|text| canonical_theme_id(text.trim()))
     .unwrap_or_else(|_| "argvus-dark".into());
-  let family = active.strip_suffix("-float").unwrap_or(&active);
+  let family = active
+    .strip_suffix("-spaced")
+    .or_else(|| active.strip_suffix("-float"))
+    .unwrap_or(&active);
   let source = discovery::find(&paths, family)
     .ok_or_else(|| format!("the active theme `{family}` is not installed"))?;
   let accent = fs::read_to_string(argvus_data_home().join(".accent-color"))
@@ -200,7 +207,7 @@ struct ThemeSidecars<'a> {
 }
 
 /// Exports the current appearance scope, omitting values supplied by the theme
-/// manifest or by the selected Sticky/Float mode.
+/// manifest or by the selected Sticky/Spaced mode.
 fn current_appearance_profile() -> Result<Vec<u8>, String> {
   let output = Command::new("argvus")
     .args(["config", "export", "--scope", "appearance"])
@@ -535,7 +542,10 @@ pub fn convert_legacy_profiles() -> Vec<String> {
 fn convert_profile(paths: &ThemePaths, archive: &Path) -> Result<CustomTheme, String> {
   let profile = LegacyProfile::read(archive)?;
   let base = canonical_theme_id(&profile.theme);
-  let base = base.strip_suffix("-float").unwrap_or(&base);
+  let base = base
+    .strip_suffix("-spaced")
+    .or_else(|| base.strip_suffix("-float"))
+    .unwrap_or(&base);
   let source = discovery::find(paths, base)
     .ok_or_else(|| format!("its base theme `{base}` is not installed; kept in the backup"))?;
   let name = clean_name(&profile.name)?;

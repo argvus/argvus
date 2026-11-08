@@ -21,7 +21,7 @@ Run `argvus --help` for the list installed with your version. The subcommands ar
 | Command | Runs | Notes |
 | --- | --- | --- |
 | `argvus config ...` | In-process | Configuration model and tools. Also reached by `theme-switch` and `effects-toggle`. |
-| `argvus theme ...` | In-process | `apply ID` is the theme switch (the same as `theme-switch`). Theme builds: `list` the installed themes, `check DIRECTORY` a theme against the installed templates, `render ID [--variant sticky\|float] [--accent #RRGGBB] [--output DIRECTORY]`. See [Appearance and themes](/docs/developer-guide/subsystems/appearance-and-themes/). |
+| `argvus theme ...` | In-process | `apply ID` is the theme switch (the same as `theme-switch`). Theme builds: `list` the installed themes, `check DIRECTORY` a theme against the installed templates, `render ID [--variant sticky\|spaced] [--accent #RRGGBB] [--output DIRECTORY]`. See [Appearance and themes](/docs/developer-guide/subsystems/appearance-and-themes/). |
 | `argvus i18n ...` | In-process | Translations: `get DOMAIN KEY [name=value...]`, `locale`, `list`, `validate [LOCALE]`. |
 | `argvus keys ...` | In-process | SSH key manager. `gpg` is an alias for the GPG subcommands. |
 | `argvus gpg ...` | In-process | GPG keys: `list`, `status`, `generate`, `export-public`, `export-private`, `import`, `import-private`, `delete`, `edit`, `keyserver`. |

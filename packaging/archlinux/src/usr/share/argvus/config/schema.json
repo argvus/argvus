@@ -30,7 +30,7 @@
     "layout": {
       "type": "object",
       "properties": {
-        "variant": { "enum": ["sticky", "float"] },
+        "variant": { "enum": ["sticky", "spaced"] },
         "window": {
           "type": "object",
           "properties": {

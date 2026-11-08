@@ -59,7 +59,7 @@ Preferências de tema, acento, wallpaper, fontes e efeitos ficam como estado ló
 
 O diretório gerado não é a fonte de verdade. Veja [Aparência](/pt/docs/user-guide/appearance/) e [configuração e estado](/pt/docs/developer-guide/architecture/configuration-and-state/).
 
-O sistema visual também controla o layout. Sticky é compacto e quadrado; Float usa gaps maiores, cantos arredondados e margens maiores ao redor da taskbar e do shell. A taskbar usa a borda superior por padrão, mas permite posicionamento no topo ou embaixo pelo estado compartilhado. Os efeitos controlam transparência, blur, sombras e animações do compositor e das superfícies do desktop.
+O sistema visual também controla o layout. Sticky é compacto e quadrado; Spaced usa gaps maiores, cantos arredondados e margens maiores ao redor da taskbar e do shell. A taskbar usa a borda superior por padrão, mas permite posicionamento no topo ou embaixo pelo estado compartilhado. Os efeitos controlam transparência, blur, sombras e animações do compositor e das superfícies do desktop.
 
 Veja a [tabela de temas](/pt/docs/user-guide/appearance/) para famílias e cores, [efeitos](/pt/docs/argvus-appearance/effects/) para o contrato compartilhado e [taskbar](/pt/docs/argvus-taskbar/taskbar/) para o posicionamento da barra e das janelas.
 

@@ -72,49 +72,55 @@ pub fn normalize_hex_color(value: &str) -> Option<String> {
 /// Canonicalizes identifiers from profiles and persisted state after the
 /// official theme identifiers were simplified.
 pub fn canonical_theme_id(theme_id: &str) -> String {
+  let normalized = theme_id
+    .strip_suffix("-float")
+    .map(|family| format!("{family}-spaced"));
+  let theme_id = normalized.as_deref().unwrap_or(theme_id);
   match theme_id {
     "argvus-dark-aether" => "argvus-dark".into(),
-    "argvus-dark-aether-float" => "argvus-dark-float".into(),
+    "argvus-dark-aether-spaced" => "argvus-dark-spaced".into(),
     "argvus-light-veil" => "argvus-light".into(),
-    "argvus-light-veil-float" => "argvus-light-float".into(),
+    "argvus-light-veil-spaced" => "argvus-light-spaced".into(),
     "argvus-onedark" => "one-dark".into(),
-    "argvus-onedark-float" => "one-dark-float".into(),
+    "argvus-onedark-spaced" => "one-dark-spaced".into(),
     "argvus-dark-dracula" => "dracula".into(),
-    "argvus-dark-dracula-float" => "dracula-float".into(),
+    "argvus-dark-dracula-spaced" => "dracula-spaced".into(),
     "argvus-dark-silver" => "silver-dark".into(),
-    "argvus-dark-silver-float" => "silver-dark-float".into(),
+    "argvus-dark-silver-spaced" => "silver-dark-spaced".into(),
     "argvus-dark-slate" => "slate-dark".into(),
-    "argvus-dark-slate-float" => "slate-dark-float".into(),
+    "argvus-dark-slate-spaced" => "slate-dark-spaced".into(),
     "argvus-dark-universe" => "universe".into(),
-    "argvus-dark-universe-float" => "universe-float".into(),
+    "argvus-dark-universe-spaced" => "universe-spaced".into(),
     "argvus-dark-gruvbox-high" => "gruvbox-high-dark".into(),
-    "argvus-dark-gruvbox-high-float" => "gruvbox-high-dark-float".into(),
+    "argvus-dark-gruvbox-high-spaced" => "gruvbox-high-dark-spaced".into(),
     "argvus-dark-gruvbox" => "gruvbox-dark".into(),
-    "argvus-dark-gruvbox-float" => "gruvbox-dark-float".into(),
+    "argvus-dark-gruvbox-spaced" => "gruvbox-dark-spaced".into(),
     "argvus-light-gruvbox" => "gruvbox-light".into(),
-    "argvus-light-gruvbox-float" => "gruvbox-light-float".into(),
+    "argvus-light-gruvbox-spaced" => "gruvbox-light-spaced".into(),
     "argvus-dark-rose-pine" | "argvus-dark-rosepine" => "rose-pine".into(),
-    "argvus-dark-rose-pine-float" | "argvus-dark-rosepine-float" => "rose-pine-float".into(),
+    "argvus-dark-rose-pine-spaced" | "argvus-dark-rosepine-spaced" => "rose-pine-spaced".into(),
     "argvus-dark-tokio-night" | "argvus-dark-tokyo-night" => "tokyo-night".into(),
-    "argvus-dark-tokio-night-float" | "argvus-dark-tokyo-night-float" => "tokyo-night-float".into(),
+    "argvus-dark-tokio-night-spaced" | "argvus-dark-tokyo-night-spaced" => {
+      "tokyo-night-spaced".into()
+    }
     "argvus-dark-solitude" => "solitude".into(),
-    "argvus-dark-solitude-float" => "solitude-float".into(),
+    "argvus-dark-solitude-spaced" => "solitude-spaced".into(),
     "argvus-dark-sunset" => "sunset".into(),
-    "argvus-dark-sunset-float" => "sunset-float".into(),
+    "argvus-dark-sunset-spaced" => "sunset-spaced".into(),
     "argvus-dark-matrix" => "matrix".into(),
-    "argvus-dark-matrix-float" => "matrix-float".into(),
+    "argvus-dark-matrix-spaced" => "matrix-spaced".into(),
     "argvus-dark-monokai" => "monokai-dark".into(),
-    "argvus-dark-monokai-float" => "monokai-dark-float".into(),
+    "argvus-dark-monokai-spaced" => "monokai-dark-spaced".into(),
     "argvus-github-light" => "github-light".into(),
-    "argvus-github-light-float" => "github-light-float".into(),
+    "argvus-github-light-spaced" => "github-light-spaced".into(),
     "argvus-light-solarized" => "solarized-light".into(),
-    "argvus-light-solarized-float" => "solarized-light-float".into(),
+    "argvus-light-solarized-spaced" => "solarized-light-spaced".into(),
     "argvus-dark-catppuccin-latte"
     | "argvus-light-catppuccin-latte"
     | "argvus-catppuccin-latte" => "catppuccin-latte".into(),
-    "argvus-dark-catppuccin-latte-float"
-    | "argvus-light-catppuccin-latte-float"
-    | "argvus-catppuccin-latte-float" => "catppuccin-latte-float".into(),
+    "argvus-dark-catppuccin-latte-spaced"
+    | "argvus-light-catppuccin-latte-spaced"
+    | "argvus-catppuccin-latte-spaced" => "catppuccin-latte-spaced".into(),
     _ => theme_id.to_owned(),
   }
 }
@@ -133,7 +139,7 @@ pub enum AppearancePage {
   },
   CustomThemes,
   ThemeImport,
-  /// Sticky/Float, independent of theme selection (Appearance > Mode).
+  /// Sticky/Spaced, independent of theme selection (Appearance > Mode).
   Mode,
   /// Appearance > Desktop > Icons: the installed icon themes. Selecting one
   /// applies it at once, like a wallpaper.
@@ -328,49 +334,49 @@ impl PromptGoal {
 
 pub const THEMES: &[(&str, &str)] = &[
   ("argvus-dark", "ARGVUS Dark"),
-  ("argvus-dark-float", "ARGVUS Dark Float"),
+  ("argvus-dark-spaced", "ARGVUS Dark Spaced"),
   ("dracula", "Dracula"),
-  ("dracula-float", "Dracula Float"),
+  ("dracula-spaced", "Dracula Spaced"),
   ("gruvbox-dark", "Gruvbox Dark"),
-  ("gruvbox-dark-float", "Gruvbox Dark Float"),
+  ("gruvbox-dark-spaced", "Gruvbox Dark Spaced"),
   ("gruvbox-high-dark", "Gruvbox High Dark"),
-  ("gruvbox-high-dark-float", "Gruvbox High Dark Float"),
+  ("gruvbox-high-dark-spaced", "Gruvbox High Dark Spaced"),
   ("monokai-dark", "Monokai Dark"),
-  ("monokai-dark-float", "Monokai Dark Float"),
+  ("monokai-dark-spaced", "Monokai Dark Spaced"),
   ("one-dark", "One Dark"),
-  ("one-dark-float", "One Dark Float"),
+  ("one-dark-spaced", "One Dark Spaced"),
   ("rose-pine", "Rosé Pine"),
-  ("rose-pine-float", "Rosé Pine Float"),
+  ("rose-pine-spaced", "Rosé Pine Spaced"),
   ("silver-dark", "Silver Dark"),
-  ("silver-dark-float", "Silver Dark Float"),
+  ("silver-dark-spaced", "Silver Dark Spaced"),
   ("slate-dark", "Slate Dark"),
-  ("slate-dark-float", "Slate Dark Float"),
+  ("slate-dark-spaced", "Slate Dark Spaced"),
   ("sunset", "Sunset"),
-  ("sunset-float", "Sunset Float"),
+  ("sunset-spaced", "Sunset Spaced"),
   ("tokyo-night", "Tokyo-Night"),
-  ("tokyo-night-float", "Tokyo-Night Float"),
+  ("tokyo-night-spaced", "Tokyo-Night Spaced"),
   ("matrix", "Matrix"),
-  ("matrix-float", "Matrix Float"),
+  ("matrix-spaced", "Matrix Spaced"),
   ("solitude", "Solitude"),
-  ("solitude-float", "Solitude Float"),
+  ("solitude-spaced", "Solitude Spaced"),
   ("universe", "Universe"),
-  ("universe-float", "Universe Float"),
+  ("universe-spaced", "Universe Spaced"),
   ("argvus-light", "ARGVUS Light"),
-  ("argvus-light-float", "ARGVUS Light Float"),
+  ("argvus-light-spaced", "ARGVUS Light Spaced"),
   ("catppuccin-latte", "Catppuccin Latte"),
-  ("catppuccin-latte-float", "Catppuccin Latte Float"),
+  ("catppuccin-latte-spaced", "Catppuccin Latte Spaced"),
   ("github-light", "GitHub Light"),
-  ("github-light-float", "GitHub Light Float"),
+  ("github-light-spaced", "GitHub Light Spaced"),
   ("gruvbox-light", "Gruvbox Light"),
-  ("gruvbox-light-float", "Gruvbox Light Float"),
+  ("gruvbox-light-spaced", "Gruvbox Light Spaced"),
   ("solarized-light", "Solarized Light"),
-  ("solarized-light-float", "Solarized Light Float"),
+  ("solarized-light-spaced", "Solarized Light Spaced"),
   ("one-light", "One Light"),
-  ("one-light-float", "One Light Float"),
+  ("one-light-spaced", "One Light Spaced"),
   ("everforest-light", "Everforest Light"),
-  ("everforest-light-float", "Everforest Light Float"),
+  ("everforest-light-spaced", "Everforest Light Spaced"),
   ("nord-light", "Nord Light"),
-  ("nord-light-float", "Nord Light Float"),
+  ("nord-light-spaced", "Nord Light Spaced"),
 ];
 pub const THEME_FAMILIES: &[(&str, &str)] = &[
   ("argvus-dark", "ARGVUS Dark"),
@@ -404,7 +410,10 @@ pub fn theme_label(name: &str) -> String {
     .unwrap_or_else(|| name.to_string())
 }
 pub fn theme_family_label(name: &str) -> String {
-  let family = name.strip_suffix("-float").unwrap_or(name);
+  let family = name
+    .strip_suffix("-spaced")
+    .or_else(|| name.strip_suffix("-float"))
+    .unwrap_or(name);
   THEME_FAMILIES
     .iter()
     .find(|(code, _)| *code == family)
@@ -609,8 +618,8 @@ impl Default for AppearanceState {
   }
 }
 impl AppearanceState {
-  pub fn is_float_theme(&self) -> bool {
-    self.theme.ends_with("-float")
+  pub fn is_spaced_theme(&self) -> bool {
+    self.theme.ends_with("-spaced") || self.theme.ends_with("-float")
   }
 }
 
@@ -619,12 +628,12 @@ mod tests {
   use super::*;
 
   #[test]
-  /// Every selectable family has its base and `-float` entries in `THEMES`, and
+  /// Every selectable family has its base and `-spaced` entries in `THEMES`, and
   /// `THEMES` lists nothing that is not a family, so the selector cannot offer a theme
   /// whose variant is missing.
   fn every_family_has_its_base_and_float_entries() {
     for (family, _) in THEME_FAMILIES {
-      for id in [family.to_string(), format!("{family}-float")] {
+      for id in [family.to_string(), format!("{family}-spaced")] {
         assert!(
           THEMES.iter().any(|(code, _)| *code == id),
           "{id} is a family without a THEMES entry"
@@ -632,7 +641,10 @@ mod tests {
       }
     }
     for (code, _) in THEMES {
-      let family = code.strip_suffix("-float").unwrap_or(code);
+      let family = code
+        .strip_suffix("-spaced")
+        .or_else(|| code.strip_suffix("-float"))
+        .unwrap_or(code);
       assert!(
         THEME_FAMILIES.iter().any(|(id, _)| *id == family),
         "{code} is in THEMES but not in THEME_FAMILIES"
@@ -685,10 +697,10 @@ mod tests {
   fn float_theme_detection() {
     assert!(
       AppearanceState {
-        theme: "argvus-dark-silver-float".into(),
+        theme: "argvus-dark-silver-spaced".into(),
         ..Default::default()
       }
-      .is_float_theme()
+      .is_spaced_theme()
     );
   }
 

@@ -5,7 +5,7 @@
 //! | `<system>/themes/<id>/theme.toml` | official theme packages |
 //! | `<user data>/argvus/themes/<id>/theme.toml` | themes the user installed |
 //! | `<system>/theme/consumers.d/*.toml` | the consumer registry of each component |
-//! | `<system>/theme/layouts/{sticky,float}.toml` | layout geometry |
+//! | `<system>/theme/layouts/{sticky,spaced}.toml` | layout geometry |
 //! | `<argvus data>/generated/theme/{builds,current}` | rendered builds, derived state |
 
 use std::env;

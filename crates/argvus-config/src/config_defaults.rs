@@ -107,14 +107,14 @@ fn default_layout(document: &mut ConfigDocument, theme: &str) {
     .entry("layout".into())
     .or_insert_with(|| Value::Object(Map::new()));
   let layout = layout.as_object_mut().expect("layout is object");
-  // Sticky/Float is independent of the theme (see `apply_layout_variant`);
-  // `theme` here only matters for the legacy `-float`-suffixed installs
+  // Sticky/Spaced is independent of the theme (see `apply_layout_variant`);
+  // `theme` here only matters for the legacy `-spaced`-suffixed installs
   // that `migrate_theme_suffix_to_variant` has not rewritten yet.
   layout
     .entry("variant")
     .or_insert_with(|| Value::String(theme_layout_variant(theme).into()));
   let taskbar_bottom_default = match layout.get("variant").and_then(Value::as_str) {
-    Some("float") => 18,
+    Some("spaced") => 18,
     _ => 2,
   };
   {

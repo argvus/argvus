@@ -143,10 +143,10 @@ pub fn applied_theme(paths: &ThemePaths, active_theme: &str) -> String {
   if crate::theme_resolve::manifest(paths, &theme).is_some() {
     return theme;
   }
-  if theme.ends_with("-dark-float") {
-    "argvus-dark-float".to_string()
-  } else if theme.ends_with("-light-float") {
-    "argvus-light-float".to_string()
+  if theme.ends_with("-dark-spaced") {
+    "argvus-dark-spaced".to_string()
+  } else if theme.ends_with("-light-spaced") {
+    "argvus-light-spaced".to_string()
   } else if theme.ends_with("-light") {
     "argvus-light".to_string()
   } else {
@@ -384,8 +384,8 @@ mod tests {
     };
     let themes = &themes;
     assert_eq!(
-      applied_theme(themes, "custom-dark-float"),
-      "argvus-dark-float"
+      applied_theme(themes, "custom-dark-spaced"),
+      "argvus-dark-spaced"
     );
     assert_eq!(applied_theme(themes, "custom-light"), "argvus-light");
     assert_eq!(applied_theme(themes, "unknown"), DEFAULT_THEME);

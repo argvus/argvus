@@ -31,7 +31,7 @@ pub fn theme_paths(paths: &SessionPaths) -> ThemePaths {
   }
 }
 
-/// Renders `theme` (`<id>` or `<id>-float`) with `accent` (`#RRGGBB`, or the
+/// Renders `theme` (`<id>` or `<id>-spaced`) with `accent` (`#RRGGBB`, or the
 /// theme's own when `None`) and makes it the current build. A failed render
 /// changes nothing: the previous build stays current.
 pub fn refresh(paths: &SessionPaths, theme: &str, accent: Option<&str>) -> Result<PathBuf, String> {
@@ -90,7 +90,7 @@ pub fn displayed_theme(paths: &SessionPaths) -> String {
 }
 
 /// A file of the current build, only when the build was rendered for `theme`
-/// (`<id>` or `<id>-float`).
+/// (`<id>` or `<id>-spaced`).
 pub fn current_file_for(paths: &SessionPaths, theme: &str, relative: &str) -> Option<PathBuf> {
   build::current_file_for(&theme_paths(paths).current(), theme, relative)
 }
@@ -143,7 +143,7 @@ mod tests {
     .unwrap();
     fs::create_dir_all(system.join("theme/layouts")).unwrap();
     fs::write(system.join("theme/layouts/sticky.toml"), "rounded = 0\n").unwrap();
-    fs::write(system.join("theme/layouts/float.toml"), "rounded = 1\n").unwrap();
+    fs::write(system.join("theme/layouts/spaced.toml"), "rounded = 1\n").unwrap();
   }
 
   #[test]
@@ -152,7 +152,7 @@ mod tests {
     let paths = session(&root);
     install_theme(&paths.system_config);
 
-    refresh(&paths, "sunset-float", Some("#3590BD")).unwrap();
+    refresh(&paths, "sunset-spaced", Some("#3590BD")).unwrap();
     let file = current_file(&paths, "taskbar/theme.css").unwrap();
     assert_eq!(
       fs::read_to_string(file).unwrap(),
@@ -189,7 +189,7 @@ mod tests {
     install_theme(&paths.system_config);
     refresh(&paths, "sunset", None).unwrap();
     let previous = active_build(&paths);
-    refresh(&paths, "sunset-float", None).unwrap();
+    refresh(&paths, "sunset-spaced", None).unwrap();
     assert_ne!(active_build(&paths), previous);
 
     restore(&paths, previous.as_deref());

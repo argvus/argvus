@@ -11,7 +11,7 @@ run as `argvus clock`). Application ID `sh.argvus.Clock`; popup namespace `argvu
   `Catalog`/`Calendar` wrappers over `argvus-i18n` (`time` domain for weekday and month names).
 - `ThemeStyle` also reads the active build's `variant` and marks the popup window in Sticky mode;
   the shared stylesheet then gives buttons and switches square corners. The visible popup polls
-  the active build, so switching between Sticky and Float updates its controls without reopening.
+  the active build, so switching between Sticky and Spaced updates its controls without reopening.
 - `argvus-clock`: `app.rs` (lifecycle, heartbeat, ringing, persistence, notifications),
   `ringing.rs` (queue of ringing entries), `timers.rs`, `settings.rs`, `alarms.rs`, `autostart.rs`,
   `cli.rs` and `ui/` (one module per page, plus `ring_window.rs`).

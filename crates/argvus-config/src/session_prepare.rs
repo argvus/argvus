@@ -263,7 +263,10 @@ pub fn theme_fingerprint(paths: &SessionPaths, theme: &str) -> String {
 fn fingerprint_roots(paths: &SessionPaths, theme: &str) -> Vec<PathBuf> {
   let theme_paths = crate::theme_build::theme_paths(paths);
   let system = |relative: &str| paths.system_config(relative);
-  let family = theme.strip_suffix("-float").unwrap_or(theme);
+  let family = theme
+    .strip_suffix("-spaced")
+    .or_else(|| theme.strip_suffix("-float"))
+    .unwrap_or(theme);
   let mut roots = vec![
     paths.read_config("hyprland/sh/spaces-switch.sh"),
     system("session/sh/paths.sh"),
@@ -321,9 +324,9 @@ fn fingerprint_file(path: &Path) -> String {
 /// current and the user copies of the bars and the launcher exist, so a
 /// matching stamp means the startup has nothing left to write.
 ///
-/// The switch renders the theme with the canonical Sticky/Float variant, so the
-/// build expected here is the id that variant resolves to (`argvus-dark-float`
-/// on Float). Comparing the bare id never matches a Float build, and the switch
+/// The switch renders the theme with the canonical Sticky/Spaced variant, so the
+/// build expected here is the id that variant resolves to (`argvus-dark-spaced`
+/// on Spaced). Comparing the bare id never matches a Spaced build, and the switch
 /// would then repeat on every login.
 pub(crate) fn theme_materialized(paths: &SessionPaths, theme: &str) -> bool {
   let Some(built_theme) = built_theme(paths, theme) else {
@@ -352,7 +355,7 @@ pub(crate) fn theme_materialized(paths: &SessionPaths, theme: &str) -> bool {
 }
 
 /// The theme id that `theme-switch` renders for `theme` under the canonical
-/// Sticky/Float variant: `<id>-float` on Float, `<id>` on Sticky. The build and
+/// Sticky/Spaced variant: `<id>-spaced` on Spaced, `<id>` on Sticky. The build and
 /// the effects file are named by this id. `None` when the configuration cannot
 /// be read, so the caller treats the outputs as missing.
 pub(crate) fn built_theme(paths: &SessionPaths, theme: &str) -> Option<String> {
@@ -426,8 +429,8 @@ pub fn active_theme_name(paths: &SessionPaths) -> String {
     .unwrap_or_default();
   match first.as_str() {
     "argvus-catppuccin-latte" | "argvus-light-catppuccin-latte" => "catppuccin-latte".into(),
-    "argvus-catppuccin-latte-float" | "argvus-light-catppuccin-latte-float" => {
-      "catppuccin-latte-float".into()
+    "argvus-catppuccin-latte-spaced" | "argvus-light-catppuccin-latte-spaced" => {
+      "catppuccin-latte-spaced".into()
     }
     other => other.to_string(),
   }
@@ -666,7 +669,11 @@ mod tests {
     )
     .expect("layout");
     fs::create_dir_all(&paths.data_home).expect("data dir");
-    fs::write(paths.data_home.join(".active-theme"), "argvus-dark-float\n").expect("active");
+    fs::write(
+      paths.data_home.join(".active-theme"),
+      "argvus-dark-spaced\n",
+    )
+    .expect("active");
     let current = paths.data_home.join("generated/theme/current");
     fs::create_dir_all(&current).expect("build dir");
     fs::write(
@@ -684,7 +691,7 @@ mod tests {
     let root = std::env::temp_dir().join(format!("argvus-materialized-{}", std::process::id()));
     let _ = fs::remove_dir_all(&root);
     let paths = paths_under(&root);
-    materialize_theme(&paths, "float", "float");
+    materialize_theme(&paths, "spaced", "float");
     assert!(theme_materialized(&paths, "argvus-dark"));
     let _ = fs::remove_dir_all(root);
   }
@@ -694,10 +701,10 @@ mod tests {
     let root = std::env::temp_dir().join(format!("argvus-built-theme-{}", std::process::id()));
     let _ = fs::remove_dir_all(&root);
     let paths = paths_under(&root);
-    materialize_theme(&paths, "float", "float");
+    materialize_theme(&paths, "spaced", "float");
     assert_eq!(
       built_theme(&paths, "argvus-dark").as_deref(),
-      Some("argvus-dark-float")
+      Some("argvus-dark-spaced")
     );
     materialize_theme(&paths, "sticky", "sticky");
     assert_eq!(

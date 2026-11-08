@@ -1,8 +1,8 @@
-//! Layout geometry: the Sticky and Float values (rounding, gaps, margins) that
+//! Layout geometry: the Sticky and Spaced values (rounding, gaps, margins) that
 //! templates read as `layout.<name>`. Geometry is independent of the theme, so
-//! a theme no longer ships a `-float` copy of each file.
+//! a theme no longer ships a `-spaced` copy of each file.
 //!
-//! `<system>/theme/layouts/float.toml`:
+//! `<system>/theme/layouts/spaced.toml`:
 //!
 //! ```toml
 //! rounding = 8
@@ -18,21 +18,21 @@ use std::path::Path;
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Variant {
   Sticky,
-  Float,
+  Spaced,
 }
 
 impl Variant {
   pub fn as_str(self) -> &'static str {
     match self {
       Self::Sticky => "sticky",
-      Self::Float => "float",
+      Self::Spaced => "spaced",
     }
   }
 
   pub fn parse(text: &str) -> Option<Self> {
     match text {
       "sticky" => Some(Self::Sticky),
-      "float" => Some(Self::Float),
+      "spaced" | "float" => Some(Self::Spaced),
       _ => None,
     }
   }
@@ -48,7 +48,10 @@ impl Layout {
   /// Loads `<layouts>/<variant>.toml`. A missing file is `None`: templates
   /// that read `layout.*` then fail with an unknown name.
   pub fn load(layouts: &Path, variant: Variant) -> Result<Option<Self>, ThemeError> {
-    let path = layouts.join(format!("{}.toml", variant.as_str()));
+    let mut path = layouts.join(format!("{}.toml", variant.as_str()));
+    if !path.is_file() && variant == Variant::Spaced {
+      path = layouts.join("float.toml");
+    }
     if !path.is_file() {
       return Ok(None);
     }
@@ -90,8 +93,8 @@ mod tests {
   #[test]
   fn parses_numbers_colours_and_text() {
     let layout = Layout::parse(
-      Path::new("float.toml"),
-      Variant::Float,
+      Path::new("spaced.toml"),
+      Variant::Spaced,
       "rounding = 8\nopacity = 0.9\nshade = \"#000000\"\nstyle = \"round\"\n",
     )
     .unwrap();
@@ -113,9 +116,10 @@ mod tests {
 
   #[test]
   fn variants_round_trip() {
-    for variant in [Variant::Sticky, Variant::Float] {
+    for variant in [Variant::Sticky, Variant::Spaced] {
       assert_eq!(Variant::parse(variant.as_str()), Some(variant));
     }
+    assert_eq!(Variant::parse("float"), Some(Variant::Spaced));
     assert_eq!(Variant::parse("Float"), None);
   }
 }

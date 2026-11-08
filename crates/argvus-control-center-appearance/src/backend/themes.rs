@@ -18,7 +18,10 @@ pub(super) fn discovered_default_accent(theme: &str) -> Option<String> {
 }
 
 pub(super) fn discovered_default_accent_in(system_config: &Path, theme: &str) -> Option<String> {
-  let family = theme.strip_suffix("-float").unwrap_or(theme);
+  let family = theme
+    .strip_suffix("-spaced")
+    .or_else(|| theme.strip_suffix("-float"))
+    .unwrap_or(theme);
   argvus_theme::discovery::discover_themes(system_config)
     .themes
     .into_iter()

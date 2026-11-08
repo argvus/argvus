@@ -3,10 +3,13 @@
 /// The accent of a theme that declares none.
 pub const FALLBACK_ACCENT: &str = "#3590bd";
 
-/// The theme identifier of a theme name: the `-float` variant shares the accent
+/// The theme identifier of a theme name: the `-spaced` variant shares the accent
 /// of its base theme.
 pub fn theme_id(theme: &str) -> &str {
-  theme.strip_suffix("-float").unwrap_or(theme)
+  theme
+    .strip_suffix("-spaced")
+    .or_else(|| theme.strip_suffix("-float"))
+    .unwrap_or(theme)
 }
 
 #[cfg(test)]
@@ -15,7 +18,7 @@ mod tests {
 
   #[test]
   fn float_variant_shares_the_base_theme() {
-    assert_eq!(theme_id("dracula-float"), "dracula");
+    assert_eq!(theme_id("dracula-spaced"), "dracula");
     assert_eq!(theme_id("dracula"), "dracula");
   }
 }

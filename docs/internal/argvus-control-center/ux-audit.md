@@ -123,7 +123,7 @@ perguntar**.
 | Importar | Arquivo `.zip` | Importa (imediato, ou pede substituição) | Action por arquivo | `Enter` | migrado |
 | ThemeImportConfirm | `Replace` / `Cancel` (linhas) | Substitui / volta | **Substituído** pelo componente de confirmação | `Enter`/`Esc` | migrado |
 | Prompts (exportar/importar, espaços, bordas) | Campo numérico/texto | Enter confirma (imediato), Esc volta | Value (edição inline/popup) | `0-9`, `Enter`, `Esc` | migrado |
-| Modo | Sticky / Float (· atual) | Troca modo (imediato) | Choice | `Enter` | migrado |
+| Modo | Sticky / Spaced (· atual) | Troca modo (imediato) | Choice | `Enter` | migrado |
 | Wallpapers | Escolher imagem da home | Abre seletor de arquivo | Action | `Enter` | migrado |
 | Wallpapers | Coleções › | Abre modos | Submenu | `Enter` | migrado |
 | Modos de wallpaper | Modo › | Abre itens | Submenu | `Enter` | migrado |
@@ -534,7 +534,7 @@ Codepoint correto = glyph com o nome do comentário.
 | `BELL_OFF` | `f009e` | bell_ring | nf-md-bell-off | `f009b` |
 | `PDF` | `f0e2d` | file_png_box | nf-md-file-pdf-box | `f0226` |
 
-As outras 39 constantes conferem. Além disso, `Appearance > Modo > Float` usa o
+As outras 39 constantes conferem. Além disso, `Appearance > Modo > Spaced` usa o
 emoji literal `"🪟"` (largura 2, fora do catálogo).
 
 ### 1.2 Novos glyphs propostos para o catálogo (todos conferidos na fonte)
@@ -549,7 +549,7 @@ emoji literal `"🪟"` (largura 2, fora do catálogo).
 | `CONTROL_PANEL` | nf-md-tune_variant | `f1542` | Control Panel |
 | `LAYOUT` | nf-md-view_dashboard | `f056e` | Espaços/Bordas/Posição |
 | `THEME_MODE` | nf-md-theme_light_dark | `f050e` | Modo de aparência |
-| `WINDOW_FLOAT` | nf-md-window_restore | `f05b2` | Modo Float |
+| `WINDOW_SPACED` | nf-md-window_restore | `f05b2` | Modo Spaced |
 | `WINDOW_STICKY` | nf-md-view_split_vertical | `f0bcc` | Modo Sticky |
 | `ACCENT` | nf-md-format_color_fill | `f0266` | Cor de destaque |
 | `ARROW_UP` / `ARROW_DOWN` / `ARROW_LEFT` / `ARROW_RIGHT` | nf-md-arrow_*_bold | `f0737` / `f072e` / `f0731` / `f0734` | Posição e espaços por lado |
@@ -666,7 +666,7 @@ Sessões › = `LAYOUT`; editores de valor = `BLUR` / `OPACITY`; `Apply` =
 | Home | Modo de aparência | `STORAGE` (HDD) | `THEME_MODE` |
 | Temas | Oficiais ›, Personalizados › | sem ícone | `PALETTE`, `EDIT` |
 | Temas | Exportar / Importar | `STORAGE` / `STORAGE` | `EXPORT` / `IMPORT` |
-| Modo | Sticky / Float | `FOLDER` / emoji `🪟` | `WINDOW_STICKY` / `WINDOW_FLOAT` |
+| Modo | Sticky / Spaced | `FOLDER` / emoji `🪟` | `WINDOW_STICKY` / `WINDOW_SPACED` |
 | Wallpapers | Escolher da home | `FOLDER` | `FOLDER` |
 | Wallpapers | Coleções / Modos | `IMAGE` (todos iguais) | `IMAGE` (mesmo sentido: aceito) |
 | Destaques | Editar / Restaurar | sem ícone | `EDIT` / `RESTORE` |

@@ -1101,7 +1101,7 @@
   "control_center.theme": "Theme",
   "control_center.theme_applied": "Theme applied",
   "control_center.theme_mode_sticky": "Sticky",
-  "control_center.theme_mode_float": "Float",
+  "control_center.theme_mode_spaced": "Spaced",
   "control_center.appearance_mode": "Appearance Mode",
   "control_center.layout_mode_applied": "Mode applied",
   "control_center.theme_category_dark": "Dark",

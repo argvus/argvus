@@ -21,7 +21,7 @@ Execute `argvus --help` para ver a lista da sua versão instalada. Os subcomando
 | Comando | Roda | Observações |
 | --- | --- | --- |
 | `argvus config ...` | Em processo | Modelo de configuração e ferramentas. Também usado por `theme-switch` e `effects-toggle`. |
-| `argvus theme ...` | Em processo | `apply ID` é a troca de tema (o mesmo que `theme-switch`). Builds de tema: `list` lista os temas instalados, `check DIRETÓRIO` confere um tema contra os templates instalados, `render ID [--variant sticky\|float] [--accent #RRGGBB] [--output DIRETÓRIO]`. Veja [Aparência e temas](/pt/docs/developer-guide/subsystems/appearance-and-themes/). |
+| `argvus theme ...` | Em processo | `apply ID` é a troca de tema (o mesmo que `theme-switch`). Builds de tema: `list` lista os temas instalados, `check DIRETÓRIO` confere um tema contra os templates instalados, `render ID [--variant sticky\|spaced] [--accent #RRGGBB] [--output DIRETÓRIO]`. Veja [Aparência e temas](/pt/docs/developer-guide/subsystems/appearance-and-themes/). |
 | `argvus i18n ...` | Em processo | Traduções: `get DOMAIN KEY [nome=valor...]`, `locale`, `list`, `validate [LOCALE]`. |
 | `argvus keys ...` | Em processo | Gerenciador de chaves SSH. `gpg` é um atalho para os subcomandos GPG. |
 | `argvus gpg ...` | Em processo | Chaves GPG: `list`, `status`, `generate`, `export-public`, `export-private`, `import`, `import-private`, `delete`, `edit`, `keyserver`. |
