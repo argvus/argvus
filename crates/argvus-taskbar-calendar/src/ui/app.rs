@@ -229,6 +229,9 @@ pub struct AppModel {
   selected: NaiveDate,
   events: Vec<CalendarEvent>,
   event_days: HashSet<NaiveDate>,
+  read_errors: Vec<Text>,
+  loaded_day: NaiveDate,
+  loaded_month: NaiveDate,
   events_enabled: bool,
   fixed_position: Option<PopupAnchor>,
   view: ViewState,
@@ -287,7 +290,15 @@ impl SimpleComponent for AppModel {
 
     let selected = today();
     let month = first_of_month(selected);
-    let (events, event_days) = load_day_and_month(&init.paths, selected, month);
+    let mut events = Vec::new();
+    let mut event_days = HashSet::new();
+    let read_errors = render::apply_read(
+      load_day_and_month(&init.paths, selected, month),
+      &mut events,
+      &mut event_days,
+      false,
+      false,
+    );
     let i18n = I18n::new(Language::resolve(&init.settings.locale.language));
     let events_enabled = load_events_enabled(&init.paths, &init.settings);
     let popup = gtk::Box::new(gtk::Orientation::Vertical, 0);
@@ -308,6 +319,9 @@ impl SimpleComponent for AppModel {
       events,
       event_days,
       events_enabled,
+      read_errors,
+      loaded_day: selected,
+      loaded_month: month,
       view: ViewState::Calendar,
       i18n,
       popup_state: popup_state.clone(),
@@ -489,8 +503,15 @@ impl SimpleComponent for AppModel {
     }
     if should_reload {
       let loaded = load_day_and_month(&self.paths, self.selected, self.month);
-      self.events = loaded.0;
-      self.event_days = loaded.1;
+      self.read_errors = render::apply_read(
+        loaded,
+        &mut self.events,
+        &mut self.event_days,
+        self.loaded_day == self.selected,
+        self.loaded_month == self.month,
+      );
+      self.loaded_day = self.selected;
+      self.loaded_month = self.month;
     }
   }
 

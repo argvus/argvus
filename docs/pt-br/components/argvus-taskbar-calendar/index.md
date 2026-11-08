@@ -78,3 +78,5 @@ por cima das cores do tema.
 A seleção automática de idioma segue o `locale.conf` do usuário, com inglês como padrão. Preferências explícitas de idioma do calendário continuam substituindo a seleção automática.
 
 O calendário da taskbar, ARGVUS Focus, ARGVUS Clock e Control Panel são exclusivos entre si: abrir um fecha os demais.
+
+Falhas de leitura do calendário são exibidas separadamente de uma agenda vazia. A abertura do banco, a consulta dos eventos do dia e a consulta dos indicadores mensais têm mensagens distintas. Selecione um dia novamente para tentar outra vez. Uma atualização com falha preserva dados já carregados apenas para o mesmo dia ou mês; resultados válidos da outra consulta continuam disponíveis.

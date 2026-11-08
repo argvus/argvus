@@ -20,3 +20,7 @@ The greeter configuration files are installed under `/etc/argvus`. Use
 For the login flow, see [Sessions](/docs/user-guide/sessions/).
 
 The login handoff socket authorizes each client with kernel peer credentials. Only root, the helper owner and the account authenticated by greetd may send control commands. Other local accounts are refused even though the socket permits connections across users. A prepared DRM frame stays tied to its original descriptor; the helper waits for that descriptor before taking over the display.
+
+When the authentication field is focused, printable characters (including `j` and `k`) enter the response. Tab and Shift-Tab move focus; Backspace removes the last character. This applies to secret and non-secret prompts.
+
+The account list scrolls to keep the selected account visible as you navigate or resize the terminal.

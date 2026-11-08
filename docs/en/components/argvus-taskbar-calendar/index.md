@@ -82,3 +82,5 @@ on top of the theme's colours.
 Automatic language selection follows the user `locale.conf`, with English as the default. Explicit calendar language preferences still override automatic selection.
 
 The taskbar calendar, ARGVUS Focus, ARGVUS Clock and Control Panel are mutually exclusive: opening one closes the others.
+
+Calendar read failures are displayed separately from an empty agenda. Opening the database, loading daily events and loading monthly indicators have distinct messages. Select a day again to retry. A failed refresh retains previously loaded data only for the same day or month; valid results from the other query remain available.

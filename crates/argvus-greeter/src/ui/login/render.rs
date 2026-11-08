@@ -142,19 +142,19 @@ impl LoginApp {
     } else {
       self.theme.border
     };
-    frame.render_widget(
-      List::new(items)
-        .block(
-          Block::bordered()
-            .title(title)
-            .border_style(Style::new().fg(border)),
-        )
-        .highlight_style(
-          Style::new()
-            .fg(self.theme.selected_foreground)
-            .bg(self.theme.selected_background),
-        ),
+    // Ratatui keeps the selected row inside the current viewport, including
+    // after resize. Styling remains focus-dependent above; selection also
+    // follows the account while another control owns keyboard focus.
+    let mut state = ratatui::widgets::ListState::default()
+      .with_selected((!self.users.is_empty()).then_some(self.selected_user));
+    frame.render_stateful_widget(
+      List::new(items).block(
+        Block::bordered()
+          .title(title)
+          .border_style(Style::new().fg(border)),
+      ),
       area,
+      &mut state,
     );
   }
 

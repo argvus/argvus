@@ -41,7 +41,7 @@ impl Language {
   }
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Text {
   Today,
   AddEvent,
@@ -62,6 +62,9 @@ pub enum Text {
   MinuteShort,
   AllDay,
   NoEvents,
+  DatabaseReadFailed,
+  DailyReadFailed,
+  MonthlyReadFailed,
   Events,
   UntitledEvent,
   NotifyAt,
@@ -123,6 +126,9 @@ impl I18n {
         Text::MinuteShort => "M",
         Text::AllDay => "ALL DAY",
         Text::NoEvents => "NO EVENTS",
+        Text::DatabaseReadFailed => "Cannot open the calendar. Select a day to try again.",
+        Text::DailyReadFailed => "Cannot load this day's events. Select a day to try again.",
+        Text::MonthlyReadFailed => "Cannot load month indicators. Select a day to try again.",
         Text::Events => "Events",
         Text::UntitledEvent => "New event",
         Text::NotifyAt => "NOTIFY AT",
@@ -171,6 +177,15 @@ impl I18n {
         Text::MinuteShort => "M",
         Text::AllDay => "DIA INTEIRO",
         Text::NoEvents => "NENHUM EVENTO",
+        Text::DatabaseReadFailed => {
+          "Não foi possível abrir o calendário. Selecione um dia para tentar novamente."
+        }
+        Text::DailyReadFailed => {
+          "Não foi possível carregar os eventos do dia. Selecione um dia para tentar novamente."
+        }
+        Text::MonthlyReadFailed => {
+          "Não foi possível carregar os indicadores do mês. Selecione um dia para tentar novamente."
+        }
         Text::Events => "Eventos",
         Text::UntitledEvent => "Novo evento",
         Text::NotifyAt => "AVISAR ÀS",

@@ -293,6 +293,128 @@ mod tests {
     fs::remove_dir_all(directory).unwrap();
   }
 
+  fn input_test_app() -> LoginApp {
+    let (commands, _) = std::sync::mpsc::channel();
+    let (_, events) = std::sync::mpsc::channel();
+    let catalog = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../resources/locales");
+    LoginApp::new(
+      Config::default(),
+      Vec::new(),
+      Vec::new(),
+      Arc::new(I18n::from_locale(&catalog, "en-US", "greeter").unwrap()),
+      commands,
+      events,
+    )
+  }
+
+  #[test]
+  fn authentication_input_preserves_navigation_letters_and_backspace() {
+    for secret in [true, false] {
+      let mut app = input_test_app();
+      app.focus = Focus::Password;
+      app.prompt.secret = secret;
+      for character in ['j', 'k', 'a', 'é'] {
+        app.handle_key(KeyEvent::new(KeyCode::Char(character), KeyModifiers::NONE));
+        assert!(app.password.ends_with(character));
+      }
+      assert_eq!(app.password.chars().count(), 4);
+      app.handle_key(KeyEvent::new(KeyCode::Backspace, KeyModifiers::NONE));
+      assert_eq!(app.password.chars().count(), 3);
+      app.handle_key(KeyEvent::new(KeyCode::Tab, KeyModifiers::NONE));
+      assert_eq!(app.focus, Focus::Session);
+      app.handle_key(KeyEvent::new(KeyCode::BackTab, KeyModifiers::SHIFT));
+      assert_eq!(app.focus, Focus::Password);
+    }
+  }
+
+  #[test]
+  fn navigation_letters_still_move_power_selection_outside_text_input() {
+    let mut app = input_test_app();
+    app.focus = Focus::Power;
+    app.handle_key(KeyEvent::new(KeyCode::Char('j'), KeyModifiers::NONE));
+    assert_eq!(app.power_selected, 1);
+    app.handle_key(KeyEvent::new(KeyCode::Char('k'), KeyModifiers::NONE));
+    assert_eq!(app.power_selected, 0);
+    assert!(app.password.is_empty());
+  }
+
+  fn account_list_text(app: &LoginApp, width: u16, height: u16) -> String {
+    let mut terminal =
+      ratatui::Terminal::new(ratatui::backend::TestBackend::new(width, height)).unwrap();
+    terminal
+      .draw(|frame| app.draw_users(frame, frame.area()))
+      .unwrap();
+    terminal
+      .backend()
+      .buffer()
+      .content()
+      .iter()
+      .map(|cell| cell.symbol())
+      .collect()
+  }
+
+  #[test]
+  fn account_list_tracks_navigation_and_resize_without_reordering_accounts() {
+    let mut app = input_test_app();
+    app.users = (0..12)
+      .map(|index| User {
+        username: format!("account-{index:02}"),
+        uid: 1000 + index,
+        display_name: format!("Account{index:02}"),
+        avatar: None,
+      })
+      .collect();
+    let identities = app
+      .users
+      .iter()
+      .map(|user| user.username.clone())
+      .collect::<Vec<_>>();
+    assert!(account_list_text(&app, 24, 5).contains("Account00"));
+    for _ in 0..11 {
+      app.move_vertical(1);
+      let selected = format!("Account{:02}", app.selected_user);
+      assert!(account_list_text(&app, 24, 5).contains(&selected));
+    }
+    assert_eq!(app.selected_user, 11);
+    for height in [3, 8, 4, 16] {
+      assert!(account_list_text(&app, 24, height).contains("Account11"));
+    }
+    app.focus = Focus::Password;
+    assert!(account_list_text(&app, 24, 3).contains("Account11"));
+    app.focus = Focus::User;
+    app.move_vertical(1);
+    assert_eq!(app.selected_user, 0);
+    assert!(account_list_text(&app, 24, 3).contains("Account00"));
+    assert_eq!(
+      app
+        .users
+        .iter()
+        .map(|user| user.username.clone())
+        .collect::<Vec<_>>(),
+      identities
+    );
+  }
+
+  #[test]
+  fn account_list_handles_empty_single_and_tiny_viewports() {
+    let mut app = input_test_app();
+    assert!(account_list_text(&app, 40, 4).contains(&app.i18n.tr("no_local_login_users")));
+    app.users.push(User {
+      username: "single".to_owned(),
+      uid: 1000,
+      display_name: "SingleAccount".to_owned(),
+      avatar: None,
+    });
+    for delta in [1, -1] {
+      app.move_vertical(delta);
+      assert_eq!(app.selected_user, 0);
+      assert!(account_list_text(&app, 24, 3).contains("SingleAccount"));
+    }
+    for height in [1, 2] {
+      account_list_text(&app, 2, height);
+    }
+  }
+
   fn current_uid() -> u32 {
     std::os::unix::fs::MetadataExt::uid(&fs::metadata(".").unwrap())
   }

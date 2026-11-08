@@ -26,13 +26,15 @@ impl LoginApp {
       return;
     }
     match key.code {
+      // Authentication responses own printable input, including navigation letters.
+      KeyCode::Char(character) if self.focus == Focus::Password => self.password.push(character),
+
       KeyCode::Tab => self.focus = self.focus.next(),
       KeyCode::BackTab => self.focus = self.focus.previous(),
       KeyCode::Up | KeyCode::Char('k') => self.move_vertical(-1),
       KeyCode::Down | KeyCode::Char('j') => self.move_vertical(1),
       KeyCode::Left | KeyCode::Char('h') if self.focus == Focus::Session => self.move_session(-1),
       KeyCode::Right | KeyCode::Char('l') if self.focus == Focus::Session => self.move_session(1),
-      KeyCode::Char(character) if self.focus == Focus::Password => self.password.push(character),
       KeyCode::Backspace if self.focus == Focus::Password => {
         self.password.pop();
       }
