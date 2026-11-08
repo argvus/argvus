@@ -1932,10 +1932,32 @@ O terminal interativo, confirmações e editores mantêm prioridade de entrada.
 
 ## Global window mode
 
-The existing Window Rules page now starts with the shared Tile/Floating selector.
+The dedicated Hyprland > Windows > Mode page contains the shared Tile/Floating selector.
 Its Home category, breadcrumb and CLI route remain unchanged. The Taskbar popup
 uses the same preference and reports pending application separately. See the
 [implementation and validation checkpoint](window-mode.md).
 
 The Floating controls and opposite recovery bar are documented in
 [Window management](window-management.md).
+
+
+### Hyprland > Windows navigation and dedicated-window closing
+
+Windows is the parent of Rules, Spaces and Mode. The mode selector has been
+removed from Rules; opening Mode loads and refreshes the shared backend status.
+The hub retains its cursor on return from child pages. Search and direct routes
+share the same parents; legacy window-rules and appearance window-spaces routes
+remain compatible. English and Portuguese labels/breadcrumbs are synchronized.
+
+The terminal launcher passes `--override confirm_os_window_close=0` only for the
+`argvus-control-center` class. This is a per-launch option instead of a shared
+profile-file change, since System Monitor also uses the control-center profile.
+
+Validation: 551 scoped Rust tests passed across Control Center, Settings,
+Appearance and the terminal launcher/core. Strict scoped Clippy, formatting,
+source catalogs and package metadata checks passed. The minimal-feature Control
+Center also compiles, with its existing unused_mut warning in event.rs.
+An isolated Hyprland session displayed the Windows hub in English and Mode in
+Portuguese with backend state loaded. WM close dismissed the dedicated window
+in about 0.1 s in both languages; another TUI sharing the same terminal profile
+retained Kitty's close confirmation. No active-session installation was made.

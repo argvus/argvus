@@ -398,7 +398,7 @@ impl App {
 
   fn poll_window_mode(&mut self) -> bool {
     if self.window_mode_job.is_none()
-      && self.page() == Page::WindowRules
+      && self.page() == Page::WindowMode
       && self.window_mode_last_refresh.elapsed() >= Duration::from_secs(2)
     {
       self.window_mode_request(None);

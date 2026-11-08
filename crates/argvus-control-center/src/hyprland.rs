@@ -28,6 +28,8 @@ use ratatui::Frame;
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Item {
   Shortcuts,
+  Windows,
+  WindowMode,
   #[cfg(feature = "apps")]
   WindowRules,
   #[cfg(feature = "appearance")]
@@ -47,6 +49,7 @@ pub enum Item {
 enum View {
   #[default]
   List,
+  Windows,
   Info,
 }
 
@@ -54,6 +57,7 @@ enum View {
 #[derive(Debug, Default)]
 pub struct HyprlandState {
   menu: MenuState,
+  windows_menu: MenuState,
   list_height: u16,
   view: View,
   /// `hyprctl version`'s first field, read once at startup.
@@ -97,16 +101,11 @@ fn rows(app: &App) -> Vec<Row<Item>> {
   let mut rows = vec![
     Row::submenu(Item::Shortcuts, label("control_center.keyboard_shortcuts")).icon(icons::KEYBOARD),
   ];
-  #[cfg(feature = "apps")]
   rows.push(
-    Row::submenu(Item::WindowRules, label("control_center.window_rules")).icon(icons::WINDOW_RULES),
+    Row::submenu(Item::Windows, label("control_center.hyprland_windows")).icon(icons::WINDOW_RULES),
   );
   #[cfg(feature = "appearance")]
   {
-    rows.push(
-      Row::submenu(Item::WindowSpaces, label("control_center.window_spaces"))
-        .icon(icons::WINDOW_STICKY),
-    );
     rows.push(
       Row::submenu(Item::Animations, label("control_center.animations")).icon(icons::ANIMATION),
     );
@@ -115,6 +114,47 @@ fn rows(app: &App) -> Vec<Row<Item>> {
   }
   rows.push(Row::submenu(Item::Info, label("control_center.info")).icon(icons::INFO));
   rows
+}
+
+fn windows_rows(app: &App) -> Vec<Row<Item>> {
+  vec![
+    #[cfg(feature = "apps")]
+    Row::submenu(
+      Item::WindowRules,
+      tr(app.lang, "control_center.hyprland_windows_rules"),
+    )
+    .icon(icons::WINDOW_RULES),
+    #[cfg(feature = "appearance")]
+    Row::submenu(
+      Item::WindowSpaces,
+      tr(app.lang, "control_center.hyprland_windows_spaces"),
+    )
+    .icon(icons::WINDOW_STICKY),
+    Row::submenu(
+      Item::WindowMode,
+      tr(app.lang, "control_center.hyprland_windows_mode"),
+    )
+    .icon(icons::LAYOUT),
+  ]
+}
+
+/// Shared entry preparation for the menu, global search and direct CLI routes.
+/// Separate menu states preserve selection when a child returns to Windows.
+pub(crate) fn prepare_windows(app: &mut App, item: Option<Item>) {
+  app.hyprland.view = View::Windows;
+  let root = rows(app);
+  app.hyprland.menu.select(&root, &Item::Windows);
+  if let Some(item) = item {
+    let children = windows_rows(app);
+    app.hyprland.windows_menu.select(&children, &item);
+  }
+  app.return_route = Route::Hyprland;
+}
+
+pub(crate) fn open_windows(app: &mut App) {
+  prepare_windows(app, None);
+  app.return_route = Route::Home;
+  app.route = Route::Hyprland;
 }
 
 /// The single readonly row of the "Info" sub-page.
@@ -138,6 +178,10 @@ pub fn breadcrumb(app: &App) -> String {
   );
   match app.hyprland.view {
     View::List => root,
+    View::Windows => format!(
+      "{root} > {}",
+      tr(app.lang, "control_center.hyprland_windows")
+    ),
     View::Info => format!("{root} > {}", tr(app.lang, "control_center.info")),
   }
 }
@@ -151,10 +195,14 @@ fn footer(app: &App, rows: &[Row<Item>]) -> String {
         ..HintContext::default()
       },
     ),
-    View::List => hints(
+    View::List | View::Windows => hints(
       app.lang,
       &HintContext {
-        row: app.hyprland.menu.selected_kind(rows),
+        row: if app.hyprland.view == View::Windows {
+          app.hyprland.windows_menu.selected_kind(rows)
+        } else {
+          app.hyprland.menu.selected_kind(rows)
+        },
         can_go_back: true,
         ..HintContext::default()
       },
@@ -171,13 +219,31 @@ pub fn handle(app: &mut App, key: KeyCode) -> bool {
     }
     return false;
   }
-  let rows = rows(app);
-  let mut menu = app.hyprland.menu;
+  let rows = if app.hyprland.view == View::Windows {
+    windows_rows(app)
+  } else {
+    rows(app)
+  };
+  let mut menu = if app.hyprland.view == View::Windows {
+    app.hyprland.windows_menu
+  } else {
+    app.hyprland.menu
+  };
   menu.normalize(&rows);
   let event = menu.handle(key, &rows, usize::from(app.hyprland.list_height));
-  app.hyprland.menu = menu;
+  if app.hyprland.view == View::Windows {
+    app.hyprland.windows_menu = menu;
+  } else {
+    app.hyprland.menu = menu;
+  }
   match event {
-    MenuEvent::Back => return true,
+    MenuEvent::Back => {
+      if app.hyprland.view == View::Windows {
+        app.hyprland.view = View::List;
+      } else {
+        return true;
+      }
+    }
     MenuEvent::Activate(item) | MenuEvent::Toggle(item) | MenuEvent::Confirm(item) => {
       activate(app, item);
     }
@@ -192,6 +258,8 @@ fn activate(app: &mut App, item: Item) {
       app.return_route = Route::Hyprland;
       app.open_settings(Page::Keybindings);
     }
+    Item::Windows => open_windows(app),
+    Item::WindowMode => app.open_settings(Page::WindowMode),
     #[cfg(feature = "apps")]
     Item::WindowRules => {
       app.return_route = Route::Hyprland;
@@ -211,6 +279,14 @@ fn activate(app: &mut App, item: Item) {
 
 #[cfg(feature = "appearance")]
 pub(crate) fn open_appearance_page(app: &mut App, page: AppearancePage) {
+  if matches!(
+    page,
+    AppearancePage::WindowSpaces
+      | AppearancePage::WindowSpacesInner
+      | AppearancePage::WindowSpacesOuter
+  ) {
+    prepare_windows(app, Some(Item::WindowSpaces));
+  }
   app.return_route = Route::Hyprland;
   app.appearance.open(page);
   app.route = Route::Appearance;
@@ -220,6 +296,7 @@ pub(crate) fn open_appearance_page(app: &mut App, page: AppearancePage) {
 pub fn draw(app: &mut App, frame: &mut Frame) {
   let rows = match app.hyprland.view {
     View::List => rows(app),
+    View::Windows => windows_rows(app),
     View::Info => info_rows(app),
   };
   let footer_text = footer(app, &rows);
@@ -232,7 +309,11 @@ pub fn draw(app: &mut App, frame: &mut Frame) {
     &footer_text,
   );
   app.hyprland.list_height = area.height;
-  let mut menu = app.hyprland.menu;
+  let mut menu = if app.hyprland.view == View::Windows {
+    app.hyprland.windows_menu
+  } else {
+    app.hyprland.menu
+  };
   menu.normalize(&rows);
   draw_menu(
     frame,
@@ -244,7 +325,106 @@ pub fn draw(app: &mut App, frame: &mut Frame) {
       icons: argvus_control_center_core::config::AppConfig::icons_enabled(),
     },
   );
-  if app.hyprland.view == View::List {
-    app.hyprland.menu = menu;
+  match app.hyprland.view {
+    View::List => app.hyprland.menu = menu,
+    View::Windows => app.hyprland.windows_menu = menu,
+    View::Info => {}
+  }
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+  use crate::app::InitialRoute;
+
+  #[test]
+  fn windows_hub_and_mode_restore_both_menu_selections_on_back() {
+    let mut app = App::new(InitialRoute::Hyprland);
+    let root = rows(&app);
+    assert!(root.iter().any(|row| row.id() == Some(&Item::Windows)));
+    assert!(!root.iter().any(|row| row.id() == Some(&Item::WindowMode)));
+    activate(&mut app, Item::Windows);
+    assert!(breadcrumb(&app).ends_with("Hyprland > Windows"));
+    activate(&mut app, Item::WindowMode);
+    assert_eq!(app.settings.page(), Page::WindowMode);
+    app.back();
+    assert_eq!(app.route, Route::Hyprland);
+    assert_eq!(app.hyprland.view, View::Windows);
+    assert_eq!(
+      app.hyprland.windows_menu.selected_id(&windows_rows(&app)),
+      Some(Item::WindowMode)
+    );
+    app.back();
+    assert_eq!(app.hyprland.view, View::List);
+    assert_eq!(
+      app.hyprland.menu.selected_id(&rows(&app)),
+      Some(Item::Windows)
+    );
+    app.back();
+    assert_eq!(app.route, Route::Home);
+  }
+
+  #[cfg(all(feature = "apps", feature = "appearance"))]
+  #[test]
+  fn windows_hub_orders_rules_spaces_and_mode() {
+    let app = App::new(InitialRoute::HyprlandWindows);
+    assert_eq!(
+      windows_rows(&app)
+        .iter()
+        .filter_map(Row::id)
+        .copied()
+        .collect::<Vec<_>>(),
+      vec![Item::WindowRules, Item::WindowSpaces, Item::WindowMode]
+    );
+    assert!(
+      !rows(&app)
+        .iter()
+        .any(|row| matches!(row.id(), Some(Item::WindowRules | Item::WindowSpaces)))
+    );
+  }
+
+  #[test]
+  fn mode_search_and_cli_open_the_same_page_and_parent() {
+    let mut app = App::new(InitialRoute::Home);
+    app.open_search_route("hyprland/windows-mode");
+    assert_eq!(app.settings.page(), Page::WindowMode);
+    let direct = App::new(InitialRoute::Settings(Page::WindowMode));
+    assert_eq!(app.settings.breadcrumb(), direct.settings.breadcrumb());
+    assert_eq!(app.return_route, Route::Hyprland);
+    assert_eq!(direct.return_route, Route::Hyprland);
+    assert_eq!(direct.hyprland.view, View::Windows);
+    assert!(
+      app
+        .search_registry
+        .entries()
+        .iter()
+        .any(|entry| entry.id == "hyprland.window_mode")
+    );
+  }
+
+  #[test]
+  fn leaving_the_hub_does_not_change_unrelated_page_parents() {
+    let mut app = App::new(InitialRoute::HyprlandWindows);
+    app.back();
+    app.back();
+    assert_eq!(app.route, Route::Home);
+    app.open_settings(Page::MouseTouchpad);
+    app.back();
+    assert_eq!(app.route, Route::Home);
+  }
+
+  #[cfg(feature = "appearance")]
+  #[test]
+  fn spaces_returns_to_windows_from_search_and_cli() {
+    let mut app = App::new(InitialRoute::Home);
+    app.open_search_route("hyprland/windows-spaces");
+    assert_eq!(app.appearance.page, AppearancePage::WindowSpaces);
+    app.back();
+    assert_eq!(app.route, Route::Hyprland);
+    assert_eq!(app.hyprland.view, View::Windows);
+    let mut direct = App::new(InitialRoute::Appearance(AppearancePage::WindowSpaces));
+    direct.back();
+    assert_eq!(direct.route, Route::Hyprland);
+    assert_eq!(direct.hyprland.view, View::Windows);
   }
 }

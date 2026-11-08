@@ -120,3 +120,7 @@ gap, just as the existing primary-bar adapter does. Otherwise an 18 px bar
 margin plus an 18 px gap produces a 36 px space on that edge. The regression
 checks the visible window-to-bar distance on both edges, with the primary bar
 at either the top or bottom.
+
+The Control Center entry point is now Desktop & Input > Hyprland > Windows >
+Mode. Rules and Spaces are sibling pages; all use the same shared mode backend
+and preserve the Windows parent when entered through search or CLI aliases.

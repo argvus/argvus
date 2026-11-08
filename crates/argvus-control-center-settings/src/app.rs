@@ -380,6 +380,9 @@ impl App {
     if initial != Page::Main {
       app.select_current();
     }
+    if initial == Page::WindowMode {
+      app.window_mode_request(None);
+    }
     app
   }
 

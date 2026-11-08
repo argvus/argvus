@@ -342,7 +342,7 @@ fn breadcrumbs_show_the_home_card_of_each_page() {
     ),
     (
       Page::WindowRules,
-      "Control Center > Desktop & Input > Hyprland > Window rules",
+      "Control Center > Desktop & Input > Hyprland > Windows > Rules",
     ),
     (
       Page::MouseTouchpad,
@@ -433,7 +433,7 @@ fn breadcrumbs_are_translated_in_pt_br() {
 fn window_mode_choices_follow_shared_preference_and_pending_state() {
   use argvus_config_core::window_mode::{Status, WindowMode};
   for locale in ["en-US", "pt-BR"] {
-    let mut app = App::with_context(Page::WindowRules, Lang::for_locale(locale), Theme::load());
+    let mut app = App::with_context(Page::WindowMode, Lang::for_locale(locale), Theme::load());
     app.window_mode = Some(Status {
       preferred: WindowMode::Floating,
       applied: Some(WindowMode::Tile),
@@ -442,6 +442,16 @@ fn window_mode_choices_follow_shared_preference_and_pending_state() {
       error: None,
     });
     let rows = app.rows();
+    assert!(app.breadcrumb().ends_with(if locale == "en-US" {
+      "Windows > Mode"
+    } else {
+      "Janelas > Modo"
+    }));
+    assert!(
+      !rows
+        .iter()
+        .any(|row| row.id() == Some(&Item::AddWindowRule))
+    );
     assert!(
       rows
         .iter()
@@ -455,4 +465,19 @@ fn window_mode_choices_follow_shared_preference_and_pending_state() {
     let label = format!("{:?}", rows);
     assert!(!label.contains("control_center.window_mode"));
   }
+}
+
+#[test]
+fn window_rules_does_not_offer_global_window_mode_choices() {
+  let app = App::with_context(Page::WindowRules, Lang::for_locale("en-US"), Theme::load());
+  let rows = app.rows();
+  assert!(
+    rows
+      .iter()
+      .any(|row| row.id() == Some(&Item::AddWindowRule))
+  );
+  assert!(!rows.iter().any(|row| matches!(
+    row.id(),
+    Some(Item::WindowModeTile | Item::WindowModeFloating)
+  )));
 }

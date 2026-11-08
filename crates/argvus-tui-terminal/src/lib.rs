@@ -83,6 +83,11 @@ pub fn run_command(arguments: Vec<String>) -> ExitCode {
       if let Some(title) = &options.title {
         command.args(["--title", title]);
       }
+      // A per-launch override avoids changing the shared profile file when
+      // another TUI (for example System Monitor) uses the same font profile.
+      if let Some(value) = kitty::close_override(&options.class) {
+        command.args(["--override", value]);
+      }
       command.arg("-e");
       command
     }

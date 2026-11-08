@@ -71,6 +71,7 @@ pub fn parse(args: &[String]) -> Result<Option<InitialRoute>, String> {
     "input" | "mouse" | "touchpad" if args.len() == 1 => Ok(settings_route(Page::MouseTouchpad)),
     #[cfg(feature = "apps")]
     "window-rules" | "window_rules" if args.len() == 1 => Ok(settings_route(Page::WindowRules)),
+    "window-mode" if args.len() == 1 => Ok(settings_route(Page::WindowMode)),
     #[cfg(feature = "apps")]
     "projects" if args.len() == 1 => Ok(settings_route(Page::Projects)),
     #[cfg(feature = "apps")]
@@ -147,11 +148,30 @@ pub fn parse(args: &[String]) -> Result<Option<InitialRoute>, String> {
         _ => Err("expected hyprland animations [windows]".into()),
       }
     }
+    "hyprland" => parse_hyprland(&args[1..]).map(Some),
     #[cfg(feature = "appearance")]
     "appearance" => Ok(Some(InitialRoute::Appearance(parse_appearance(
       &args[1..],
     )?))),
     value => Err(format!("unknown argument '{value}'")),
+  }
+}
+
+fn parse_hyprland(args: &[String]) -> Result<InitialRoute, String> {
+  match args
+    .iter()
+    .map(String::as_str)
+    .collect::<Vec<_>>()
+    .as_slice()
+  {
+    [] => Ok(InitialRoute::Hyprland),
+    ["windows"] => Ok(InitialRoute::HyprlandWindows),
+    #[cfg(feature = "apps")]
+    ["windows", "rules"] => Ok(InitialRoute::Settings(Page::WindowRules)),
+    ["windows", "mode"] => Ok(InitialRoute::Settings(Page::WindowMode)),
+    #[cfg(feature = "appearance")]
+    ["windows", "spaces"] => Ok(InitialRoute::Appearance(AppearancePage::WindowSpaces)),
+    _ => Err("usage: argvus control-center hyprland windows [rules|spaces|mode]".into()),
   }
 }
 
@@ -524,7 +544,7 @@ pub fn print_help() {
   println!(
     "argvus-control-center - keyboard-first ARGVUS control center\n\n\
      Usage:\n  argvus-control-center [apps|fonts|locale|language|config|hardware|services|system|power|session|displays|appearance|system-doctor|about [TAB]]\n  argvus-control-center system-settings <domain> <action> [value...]\n\n\
-     Page selectors:\n  snapshot\n  shortcuts [create|list] (aliases: keybindings, keyboard)\n  apps [terminal|file-manager|text-editor|terminal-editor|browser|image-viewer|pdf-viewer|video-player|audio-player|archive|launcher]\n  fonts [taskbar|widget-telemetry|control-panel|system|apps|terminal|browser|antialiasing|hinting|subpixel|dpi]\n  locale [timezone|date-time|regional-locale|system-locales|keyboard|keyboard-layout|keyboard-variant|console-keymap]\n  system [hostname|users|groups]\n  network [status|connections|activate|add|interfaces|wifi|ethernet|vpn|dns|proxy]\n  session [summary|components|autostart|diagnostics|logs]\n  system-doctor [summary|services|boot|graphics|network|audio|bluetooth|storage|packages|argvus]\n  displays [summary|night-light|res|refresh|scale|position|orientation|primary|vrr|hdr]\n  hyprland animations [windows]\n  appearance [summary|themes|wallpapers|icons|accents|taskbar]\n\n\
+     Page selectors:\n  snapshot\n  shortcuts [create|list] (aliases: keybindings, keyboard)\n  apps [terminal|file-manager|text-editor|terminal-editor|browser|image-viewer|pdf-viewer|video-player|audio-player|archive|launcher]\n  fonts [taskbar|widget-telemetry|control-panel|system|apps|terminal|browser|antialiasing|hinting|subpixel|dpi]\n  locale [timezone|date-time|regional-locale|system-locales|keyboard|keyboard-layout|keyboard-variant|console-keymap]\n  system [hostname|users|groups]\n  network [status|connections|activate|add|interfaces|wifi|ethernet|vpn|dns|proxy]\n  session [summary|components|autostart|diagnostics|logs]\n  system-doctor [summary|services|boot|graphics|network|audio|bluetooth|storage|packages|argvus]\n  displays [summary|night-light|res|refresh|scale|position|orientation|primary|vrr|hdr]\n  hyprland windows [rules|spaces|mode]\n  hyprland animations [windows]\n  appearance [summary|themes|wallpapers|icons|accents|taskbar]\n\n\
      About tabs:\n  system, about, donate, credits, copyright\n\n\
      Options:\n  -h, --help       Print help\n  -V, --version    Print version\n\n\
      Global keys:\n  q                Quit\n  Esc              Back\n  ?                Contextual help"

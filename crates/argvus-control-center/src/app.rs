@@ -108,6 +108,8 @@ pub enum Route {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum InitialRoute {
   Home,
+  Hyprland,
+  HyprlandWindows,
   Welcome,
   Config,
   Settings(Page),
@@ -160,6 +162,7 @@ impl InitialRoute {
   fn route(self) -> Route {
     match self {
       InitialRoute::Home => Route::Home,
+      InitialRoute::Hyprland | InitialRoute::HyprlandWindows => Route::Hyprland,
       InitialRoute::Welcome => Route::Welcome,
       InitialRoute::Config => Route::Config,
       InitialRoute::Settings(_) => Route::Settings,
@@ -441,7 +444,7 @@ impl App {
       appearance.open(page);
     }
     let search_registry = build_search_registry(lang);
-    Self {
+    let mut app = Self {
       lang,
       theme: theme.clone(),
       route,
@@ -501,7 +504,25 @@ impl App {
       theme_stamp: Theme::active_stamp(),
       theme_checked: Instant::now(),
       jobs: JobManager::default(),
+    };
+    match initial {
+      InitialRoute::HyprlandWindows => crate::hyprland::open_windows(&mut app),
+      #[cfg(feature = "apps")]
+      InitialRoute::Settings(Page::WindowRules) => {
+        crate::hyprland::prepare_windows(&mut app, Some(crate::hyprland::Item::WindowRules))
+      }
+      InitialRoute::Settings(Page::WindowMode) => {
+        crate::hyprland::prepare_windows(&mut app, Some(crate::hyprland::Item::WindowMode))
+      }
+      #[cfg(feature = "appearance")]
+      InitialRoute::Appearance(
+        AppearancePage::WindowSpaces
+        | AppearancePage::WindowSpacesInner
+        | AppearancePage::WindowSpacesOuter,
+      ) => crate::hyprland::prepare_windows(&mut app, Some(crate::hyprland::Item::WindowSpaces)),
+      _ => {}
     }
+    app
   }
 
   /// Reloads the semantic theme and propagates it to every page.

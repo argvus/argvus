@@ -15,7 +15,7 @@ Para revisar as principais áreas do desktop com orientação, abra as **Boas-vi
 | Ativar ou desativar efeitos visuais | **Control Center → Aparência → Efeitos**, **Control Center → Aparência → Inicializadores**, **Control Center → Configuração**, **Taskbar**, **Widget Telemetry** ou **Control Panel** |
 | Alterar posição, altura, borda ou agrupamento de utilitários da taskbar | **Control Center → Aparência → Barra de tarefas → Posição**, **Altura**, **Borda** e **Ícones** |
 | Personalizar JSONC ou CSS da taskbar | [Overrides da Waybar e da taskbar](/pt/docs/argvus-waybar/) |
-| Alterar gaps ou bordas das janelas | **Control Center → Desktop e entrada → Hyprland → Espaços das janelas** e **Bordas** |
+| Alterar gaps ou bordas das janelas | **Control Center → Desktop e entrada → Hyprland → Janelas → Espaços** e **Bordas** |
 | Alterar a sombra das janelas | **Control Center → Desktop e entrada → Hyprland → Bordas → Sombra** |
 | Escolher cards visíveis do Control Panel | **Control Center → Aparência → Control Panel** |
 | Alterar atalhos de teclado | **Control Center → Localidade e região → Atalhos de teclado** |

@@ -108,6 +108,7 @@ impl App {
       Page::AllShortcuts => self.keybinding_rows(),
       Page::CustomShortcut => self.custom_shortcut_rows(),
       Page::WindowRules => self.window_rules_rows(),
+      Page::WindowMode => self.window_mode_rows(),
       Page::Projects => self.projects_rows(),
       Page::Snippets => self.snippets_rows(),
       Page::SshKeys => self.ssh_keys_rows(),
@@ -1695,9 +1696,8 @@ impl App {
     rows
   }
 
-  /// The window rules page: the form that adds a rule, then one block per
-  /// saved rule. Each block edits a draft that its Apply row saves.
-  fn window_rules_rows(&self) -> Vec<Row<Item>> {
+  /// Global mode choices have their own page, separate from application rules.
+  fn window_mode_rows(&self) -> Vec<Row<Item>> {
     use argvus_config_core::window_mode::WindowMode;
     let preferred = self.window_mode.as_ref().map(|status| status.preferred);
     let status_key = if self.window_mode_job.is_some() {
@@ -1717,7 +1717,7 @@ impl App {
     } else {
       "control_center.window_mode_hint"
     };
-    let mut rows = vec![
+    vec![
       Row::section(self.label("control_center.window_mode")),
       Row::choice(
         Item::WindowModeTile,
@@ -1730,6 +1730,12 @@ impl App {
         preferred == Some(WindowMode::Floating),
       ),
       Row::info(self.label(status_key), String::new()),
+    ]
+  }
+
+  /// Application rules keep their existing drafts and Apply behavior.
+  fn window_rules_rows(&self) -> Vec<Row<Item>> {
+    let mut rows = vec![
       Row::info(
         self.label("control_center.window_rules_hint"),
         String::new(),

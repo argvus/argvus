@@ -83,8 +83,14 @@ impl App {
       (_, "welcome") => self.open_destination(crate::home::HomeDestination::Welcome),
       #[cfg(feature = "apps")]
       (_, "default-apps") => self.open_settings(Page::DefaultApps),
+      ("hyprland", "windows") => crate::hyprland::open_windows(self),
       #[cfg(feature = "apps")]
-      (_, "window-rules") => self.open_settings(Page::WindowRules),
+      (_, "window-rules" | "windows-rules") => self.open_settings(Page::WindowRules),
+      (_, "window-mode" | "windows-mode") => self.open_settings(Page::WindowMode),
+      #[cfg(feature = "appearance")]
+      (_, "window-spaces" | "windows-spaces") => {
+        crate::hyprland::open_appearance_page(self, AppearancePage::WindowSpaces)
+      }
       #[cfg(feature = "apps")]
       (_, "projects") => self.open_settings(Page::Projects),
       (_, "snippets") => self.open_settings(Page::Snippets),

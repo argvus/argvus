@@ -111,11 +111,18 @@ impl App {
         tr(self.lang, "control_center.keyboard_shortcuts"),
         tr(self.lang, "control_center.shortcuts_all")
       ),
-      // Window rules is listed only under the Hyprland category.
-      Page::WindowRules => format!(
-        "{desktop_input_root} > {} > {}",
+      Page::WindowRules | Page::WindowMode => format!(
+        "{desktop_input_root} > {} > {} > {}",
         tr(self.lang, "control_center.hyprland"),
-        tr(self.lang, "control_center.window_rules")
+        tr(self.lang, "control_center.hyprland_windows"),
+        tr(
+          self.lang,
+          if self.page() == Page::WindowRules {
+            "control_center.hyprland_windows_rules"
+          } else {
+            "control_center.hyprland_windows_mode"
+          }
+        )
       ),
       Page::Projects => format!(
         "{tools_root} > {}",
@@ -282,7 +289,7 @@ impl App {
       }
       Page::CustomShortcut => self.open_custom_shortcut(None),
       Page::Notifications => self.refresh_dnd(),
-      Page::WindowRules => self.window_mode_request(None),
+      Page::WindowMode => self.window_mode_request(None),
       _ => {}
     }
   }

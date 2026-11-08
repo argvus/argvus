@@ -56,3 +56,5 @@ terminal normal mantém suas abas e configurações.
 Quando LANG está ausente no ambiente do launcher, `argvus terminal` fornece o locale pessoal de `$XDG_CONFIG_HOME/locale.conf` (inglês por padrão) antes de o Kitty inicializar a composição do teclado. Variáveis de locale existentes são preservadas. Reinicie o Kitty após atualizar: exportar LANG no shell existente não reinicializa a tabela de composição do Kitty.
 
 LC_ALL e LC_CTYPE vazios, herdados da inicialização da sessão, são removidos do ambiente do processo Kitty. Caso contrário, o Kitty trata o locale vazio como explícito e não carrega sua tabela de composição, mesmo com LANG válido. Valores não vazios são preservados. Isso também atende perfis novos e exige reabrir o Kitty após atualizar o launcher.
+
+A janela dedicada do Control Center (`argvus-control-center`) recebe a opção Kitty `confirm_os_window_close=0` apenas na inicialização, para que fechar pelo compositor não peça confirmação. A opção não é gravada no perfil compartilhado; outros TUIs e terminais comuns mantêm sua política existente.

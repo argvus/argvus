@@ -341,7 +341,7 @@ O suporte à restauração é específico de cada domínio:
 * **Fontes** pode restaurar todas as fontes, um alvo ou uma configuração individual.
 * **Aplicativos padrão** pode restaurar todos os padrões, uma categoria ou um seletor individual.
 * **Atalhos de teclado** pode restaurar um atalho ou todos e então recarregar os atalhos gerados da sessão.
-* **Regras de janela** ficam em **Desktop e entrada → Hyprland → Regras de janela** (busque por `regras de janela` ou execute `argvus control-center window-rules`). Cada regra tem a linha **Workspace** (`Enter` ou `←/→` percorrem de 1 a 10) e a linha **Classes de janela**, que abre um campo de texto com expressões regulares separadas por vírgula. **Adicionar regra** cria `rule-N` no workspace 1, sem classes. **Remover regra** de cada regra fica na **Zona de perigo** e pede confirmação. Cada alteração é gravada em `hyprland.window_rules` no `argvus-config` e recarrega a configuração na hora; padrões de classe inválidos são recusados e mostrados como erro.
+* **Regras de janela** ficam em **Desktop e entrada → Hyprland → Janelas → Regras** (busque por `regras de janela` ou execute `argvus control-center window-rules`). Cada regra tem a linha **Workspace** (`Enter` ou `←/→` percorrem de 1 a 10) e a linha **Classes de janela**, que abre um campo de texto com expressões regulares separadas por vírgula. **Adicionar regra** cria `rule-N` no workspace 1, sem classes. **Remover regra** de cada regra fica na **Zona de perigo** e pede confirmação. Cada alteração é gravada em `hyprland.window_rules` no `argvus-config` e recarrega a configuração na hora; padrões de classe inválidos são recusados e mostrados como erro.
 
 * **Projetos** ficam em **Ferramentas e diagnóstico → Projetos** (busque por `projetos` ou execute `argvus control-center projects`). **Adicionar pasta de projeto** e **Adicionar pasta raiz** ficam no topo da página e abrem um campo de texto com o caminho; o launcher confere se é um diretório e mostra o erro caso não seja, inclusive quando a pasta levaria o total efetivo de projetos além de 9 (o `SUPER + CTRL + 1..9` não consegue endereçar mais que isso). Cada pasta configurada, marcada como raiz (seus subdiretórios são projetos) ou projeto único, ganha seu próprio bloco abaixo do formulário com uma linha **Remover** que pede confirmação. A página chama o `argvus-projects`, então as alterações são gravadas pelo launcher e valem na próxima vez que `SUPER + O` ou `SUPER + CTRL + 1..9` forem usados. Se o `argvus-projects` não estiver instalado, a página informa isso.
 * **Outras páginas do sistema** exibem ações de restauração, aplicação, exclusão ou recuperação somente quando o provider responsável oferece esse recurso.
@@ -610,7 +610,7 @@ Os erros de atalhos ficam dentro da TUI: o popup se ajusta à mensagem com quebr
 
 ## Modo global de janelas
 
-Abra **Control Center → Desktop e entrada → Hyprland → Regras de janelas** e escolha **Janelas em mosaico (padrão)** ou **Janelas flutuantes**. O mesmo seletor está disponível pelo ícone de modo de janelas no grupo de utilitários da taskbar.
+Abra **Control Center → Desktop e entrada → Hyprland → Janelas → Modo** e escolha **Janelas em mosaico (padrão)** ou **Janelas flutuantes**. O mesmo seletor está disponível pelo ícone de modo de janelas no grupo de utilitários da taskbar.
 
 A preferência vale para todos os monitores e workspaces e permanece após encerrar a sessão. O modo flutuante converte janelas existentes de aplicativos e novas janelas. O modo mosaico restaura apenas as janelas convertidas pela política; diálogos e outras janelas que já eram flutuantes permanecem assim. Uma janela explicitamente fixada durante o modo flutuante também permanece flutuante para preservar sua fixação. O layout em mosaico é recalculado; a árvore exata de divisões anterior não é restaurada.
 
@@ -633,3 +633,19 @@ A minimização usa o workspace reservado `special:argvus-minimized`. Não use e
 A sessão gerencia `argvus-windows.service` e `argvus-window-bar.service`. O segundo mantém sua Waybar inativa em mosaico. O plugin hyprbars é distribuído por `argvus-hyprland`, compilado para a ABI do Hyprland 0.57.0 em x86_64; não é compilado no diretório pessoal do usuário. Recompile o plugin ao atualizar a ABI do compositor.
 
 Comandos: `argvus windows list --json`, `watch --json`, `position top|bottom`, `restore-all` e `minimize|restore|activate|maximize|close ADDRESS`. Os endereços das janelas vêm da listagem. `position top --persist` salva/projeta a preferência sem reiniciar a barra principal. Detalhes de erros vão para o journal; falhas de ações visíveis também exibem uma notificação traduzida.
+
+## Submenu Janelas e fechamento do aplicativo
+
+**Desktop e entrada → Hyprland → Janelas** agrupa **Regras**, **Espaços** e **Modo**.
+Regras edita o posicionamento por aplicativo; Espaços edita os gaps internos e
+externos; Modo contém o seletor imediato Tile/Floating, separado do formulário
+de regras. A busca abre as mesmas páginas, e Voltar passa por Janelas e Hyprland.
+
+As rotas diretas são `argvus control-center hyprland windows`, opcionalmente
+seguidas de `rules`, `spaces` ou `mode`. As rotas existentes `window-rules` e
+`appearance window-spaces` continuam como aliases, com os novos breadcrumbs.
+
+`SUPER + Q` fecha a janela dedicada do Control Center imediatamente, sem a
+confirmação de janela do Kitty. Rascunhos não aplicados são descartados ao fechar
+dessa forma. A opção vale apenas para a classe `argvus-control-center`;
+terminais comuns e outros TUIs mantêm sua política de confirmação.

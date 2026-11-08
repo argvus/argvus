@@ -15,7 +15,7 @@ For a guided review of the main desktop areas, open **ARGVUS Welcome** with `arg
 | Enable or disable visual effects | **Control Center → Appearance → Effects**, **Control Center → Appearance → Launchers**, **Control Center → Configuration**, **Taskbar**, **Widget Telemetry** or **Control Panel** |
 | Change taskbar position, height, border or utility grouping | **Control Center → Appearance → Taskbar → Position**, **Height**, **Border** and **Icons** |
 | Customize taskbar JSONC or CSS | [Waybar and taskbar overrides](/docs/argvus-waybar/) |
-| Change window gaps or borders | **Control Center → Desktop & Input → Hyprland → Window spaces** and **Borders** |
+| Change window gaps or borders | **Control Center → Desktop & Input → Hyprland → Windows → Spaces** and **Borders** |
 | Change the window shadow | **Control Center → Desktop & Input → Hyprland → Borders → Shadow** |
 | Choose visible Control Panel cards | **Control Center → Appearance → Control Panel** |
 | Change keyboard shortcuts | **Control Center → Locale & Region → Keyboard shortcuts** |

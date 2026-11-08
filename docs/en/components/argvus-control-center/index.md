@@ -21,7 +21,7 @@ The current Control Center home provides these areas:
 The home is a catalog of destinations grouped in six cards. Each destination opens its page directly, and the search finds it under any card.
 
 - **Appearance** — customize the desktop: Desktop Style (theme, appearance mode, accent color, wallpapers, icons and fonts), Application Style (terminal and launcher transparency), Taskbar, Control Panel and Widget Telemetry.
-- **Desktop & Input** — configure the workspace: Hyprland (window rules, window spaces, animations, blur, borders, shadow and the installed version), Displays, Keyboard & Shortcuts and Mouse & Touchpad.
+- **Desktop & Input** — configure the workspace: Hyprland (Windows: Rules, Spaces and Mode, animations, blur, borders, shadow and the installed version), Displays, Keyboard & Shortcuts and Mouse & Touchpad.
 - **Preferences** — personal and regional settings: Language & Region (the language, time zone, formats and keyboard layout hub), Date & Time, Default Applications, Power and Session.
 - **Hardware & Connectivity** — devices and connections: Hardware Overview, Network & Wi-Fi, Bluetooth, Audio and Storage.
 - **System Administration** — manage the operating system: Packages, Services, Boot, Hostname, Users & Groups, Firewall and Notifications (Do Not Disturb).
@@ -53,7 +53,7 @@ The main settings tree currently includes:
 | Area | Current destinations |
 | --- | --- |
 | Appearance | Desktop Style: theme, appearance mode, accent color, wallpapers, icons and fonts; Application Style: terminal and launcher transparency; Taskbar; Control Panel; Widget Telemetry |
-| Desktop & Input | Hyprland (window rules, window spaces, animations, blur, borders and shadow), Displays, Keyboard & Shortcuts, Mouse & Touchpad |
+| Desktop & Input | Hyprland (Windows: Rules, Spaces and Mode, animations, blur, borders and shadow), Displays, Keyboard & Shortcuts, Mouse & Touchpad |
 | Preferences | Language & Region (language, time zone, formats, system locales and keyboard layout), Date & Time, Default Applications, Power, Session |
 | Hardware & Connectivity | Hardware Overview (summary, CPU, GPU, memory, devices), Network & Wi-Fi, Bluetooth, Audio, Storage |
 | System Administration | Packages, Services, Boot, Hostname, Users & Groups, Firewall, Notifications |
@@ -341,7 +341,7 @@ Reset support is deliberately per domain:
 - **Fonts** can restore all font settings, a target, or an individual setting.
 - **Default applications** can restore all defaults, a category, or an individual selector.
 - **Keyboard shortcuts** can restore one binding or all bindings and then reload the generated session bindings.
-- **Window rules** is in **Desktop & Input → Hyprland → Window Rules** (search `window rules` or run `argvus control-center window-rules`). Each rule has a **Workspace** row (`Enter` or `←/→` steps through 1 to 10) and a **Window classes** row that opens a text field with comma-separated regular expressions. **Add rule** creates `rule-N` with workspace 1 and no classes. Each rule's **Remove rule** sits in the **Danger zone** and asks for confirmation. Every change is written to `hyprland.window_rules` in `argvus config` and reloads the configuration immediately; invalid class patterns are rejected and shown as an error.
+- **Window rules** is in **Desktop & Input → Hyprland → Windows → Rules** (search `window rules` or run `argvus control-center window-rules`). Each rule has a **Workspace** row (`Enter` or `←/→` steps through 1 to 10) and a **Window classes** row that opens a text field with comma-separated regular expressions. **Add rule** creates `rule-N` with workspace 1 and no classes. Each rule's **Remove rule** sits in the **Danger zone** and asks for confirmation. Every change is written to `hyprland.window_rules` in `argvus config` and reloads the configuration immediately; invalid class patterns are rejected and shown as an error.
 
 - **Projects** is in **Tools & Diagnostics → Projects** (search `projects` or run `argvus control-center projects`). **Add project folder** and **Add root folder** sit at the top of the page and open a text field with the path; the launcher checks that it is a directory and shows the error otherwise, including when the folder would push the effective project count past 9 (`SUPER + CTRL + 1..9` cannot address more). Each configured folder, marked as a root (its subfolders are projects) or a single project, gets its own block below the form with a **Remove** row that asks for confirmation. The page calls `argvus-projects`, so changes are written by the launcher and apply the next time `SUPER + O` or `SUPER + CTRL + 1..9` runs. If `argvus-projects` is not installed, the page says so.
 - **Other system pages** expose reset, apply, delete or restore actions only when the underlying provider supports them.
@@ -606,7 +606,7 @@ Shortcut errors stay inside the TUI: the popup sizes itself to the wrapped messa
 
 ## Global window mode
 
-Open **Control Center → Desktop & Input → Hyprland → Window Rules** and select **Tile Windows (Default)** or **Floating Windows**. The same selector is available from the window-mode icon in the taskbar utility group.
+Open **Control Center → Desktop & Input → Hyprland → Windows → Mode** and select **Tile Windows (Default)** or **Floating Windows**. The same selector is available from the window-mode icon in the taskbar utility group.
 
 The preference applies to every monitor and workspace and is remembered after logout. Floating converts existing application windows and newly opened windows. Tile restores only windows that this policy converted; dialogs and other windows that were already floating remain floating. A window explicitly pinned while Floating is active also remains floating to preserve its pin. The tiled layout is recalculated; its exact previous split tree is not restored.
 
@@ -629,3 +629,19 @@ Minimization uses the reserved `special:argvus-minimized` workspace. Do not use 
 The session owns `argvus-windows.service` and `argvus-window-bar.service`. The latter keeps its Waybar child dormant in Tile. The hyprbars plugin is bundled by `argvus-hyprland`, built for the Hyprland 0.57.0 ABI on x86_64; it is not compiled in the user's home directory. Rebuild the plugin with a compositor ABI update.
 
 Commands: `argvus windows list --json`, `watch --json`, `position top|bottom`, `restore-all`, and `minimize|restore|activate|maximize|close ADDRESS`. The window addresses come from the list. `position top --persist` stores/projects the preference without restarting the main bar. Configuration and runtime error details are written to the journal; visible action failures also show a translated notification.
+
+## Windows submenu and closing the application
+
+**Desktop & Input → Hyprland → Windows** groups **Rules**, **Spaces** and **Mode**.
+Rules edits per-application placement; Spaces edits inner and outer gaps; Mode
+contains the immediate Tile/Floating selector, separate from the rules form.
+Search opens the same pages, and Back returns to Windows before Hyprland.
+
+Direct routes are `argvus control-center hyprland windows`, followed optionally
+by `rules`, `spaces` or `mode`. The existing `window-rules` and
+`appearance window-spaces` routes remain aliases and show the new breadcrumbs.
+
+`SUPER + Q` closes the dedicated Control Center window immediately, without
+Kitty's OS-window confirmation. Unapplied drafts are discarded when the window
+is closed this way. The override is scoped to the `argvus-control-center` window
+class; regular terminals and other TUIs retain their close-confirmation policy.

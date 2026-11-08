@@ -252,6 +252,14 @@ impl AppearanceApp {
       "{desktop_input_root} > {}",
       tr(self.lang, "control_center.hyprland")
     );
+    let windows_root = format!(
+      "{hyprland_root} > {}",
+      tr(self.lang, "control_center.hyprland_windows")
+    );
+    let window_spaces_root = format!(
+      "{windows_root} > {}",
+      tr(self.lang, "control_center.hyprland_windows_spaces")
+    );
     let taskbar_root = format!("{root} > {}", tr(self.lang, "control_center.taskbar"));
     let control_panel_root = format!("{root} > {}", tr(self.lang, "control_center.control_panel"));
     let widget_telemetry_root = format!(
@@ -448,20 +456,13 @@ impl AppearanceApp {
         )
       }
       // Entry points reached from the Hyprland category (crate principal).
-      AppearancePage::WindowSpaces => {
-        format!(
-          "{hyprland_root} > {}",
-          tr(self.lang, "control_center.window_spaces")
-        )
-      }
+      AppearancePage::WindowSpaces => window_spaces_root,
       AppearancePage::WindowSpacesInner => format!(
-        "{hyprland_root} > {} > {}",
-        tr(self.lang, "control_center.window_spaces"),
+        "{window_spaces_root} > {}",
         tr(self.lang, "control_center.inner")
       ),
       AppearancePage::WindowSpacesOuter => format!(
-        "{hyprland_root} > {} > {}",
-        tr(self.lang, "control_center.window_spaces"),
+        "{window_spaces_root} > {}",
         tr(self.lang, "control_center.outer")
       ),
       AppearancePage::Animations => {

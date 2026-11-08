@@ -370,3 +370,38 @@ fn shortcut_routes_preserve_the_hub_and_add_create_and_list() {
     assert!(parse(&args(&[alias, "create", "extra"])).is_err());
   }
 }
+
+#[test]
+fn parses_windows_hub_and_dedicated_mode() {
+  assert_eq!(
+    parse(&args(&["hyprland"])).unwrap(),
+    Some(InitialRoute::Hyprland)
+  );
+  assert_eq!(
+    parse(&args(&["hyprland", "windows"])).unwrap(),
+    Some(InitialRoute::HyprlandWindows)
+  );
+  assert_eq!(
+    parse(&args(&["hyprland", "windows", "mode"])).unwrap(),
+    Some(InitialRoute::Settings(Page::WindowMode))
+  );
+  assert_eq!(
+    parse(&args(&["window-mode"])).unwrap(),
+    Some(InitialRoute::Settings(Page::WindowMode))
+  );
+  assert!(parse(&args(&["hyprland", "windows", "unknown"])).is_err());
+  assert!(parse(&args(&["hyprland", "windows", "mode", "extra"])).is_err());
+}
+
+#[cfg(all(feature = "apps", feature = "appearance"))]
+#[test]
+fn windows_routes_preserve_legacy_aliases() {
+  assert_eq!(
+    parse(&args(&["hyprland", "windows", "rules"])).unwrap(),
+    parse(&args(&["window-rules"])).unwrap()
+  );
+  assert_eq!(
+    parse(&args(&["hyprland", "windows", "spaces"])).unwrap(),
+    parse(&args(&["appearance", "window-spaces"])).unwrap()
+  );
+}

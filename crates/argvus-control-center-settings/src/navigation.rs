@@ -25,6 +25,7 @@ pub enum Page {
   KeybindingEdit,
   KeybindingCapture,
   WindowRules,
+  WindowMode,
   Projects,
   Snippets,
   SshKeys,

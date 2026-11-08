@@ -232,6 +232,16 @@ impl App {
   }
 
   pub fn open_settings(&mut self, page: Page) {
+    match page {
+      #[cfg(feature = "apps")]
+      Page::WindowRules => {
+        crate::hyprland::prepare_windows(self, Some(crate::hyprland::Item::WindowRules))
+      }
+      Page::WindowMode => {
+        crate::hyprland::prepare_windows(self, Some(crate::hyprland::Item::WindowMode))
+      }
+      _ => {}
+    }
     self.settings.navigation = argvus_control_center_settings::navigation::Navigation::new(page);
     self.settings.select_current();
     self.settings.enter_page(page);

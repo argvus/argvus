@@ -388,7 +388,7 @@ O Control Center cria/edita registros e desativa conflitos confirmados em uma tr
 
 ## Modo global de janelas
 
-Abra **Control Center → Desktop e entrada → Hyprland → Regras de janelas** e escolha **Janelas em mosaico (padrão)** ou **Janelas flutuantes**. O mesmo seletor está disponível pelo ícone de modo de janelas no grupo de utilitários da taskbar.
+Abra **Control Center → Desktop e entrada → Hyprland → Janelas → Modo** e escolha **Janelas em mosaico (padrão)** ou **Janelas flutuantes**. O mesmo seletor está disponível pelo ícone de modo de janelas no grupo de utilitários da taskbar.
 
 A preferência vale para todos os monitores e workspaces e permanece após encerrar a sessão. O modo flutuante converte janelas existentes de aplicativos e novas janelas. O modo mosaico restaura apenas as janelas convertidas pela política; diálogos e outras janelas que já eram flutuantes permanecem assim. Uma janela explicitamente fixada durante o modo flutuante também permanece flutuante para preservar sua fixação. O layout em mosaico é recalculado; a árvore exata de divisões anterior não é restaurada.
 

@@ -382,7 +382,7 @@ The Control Center creates/edits records and disables confirmed conflicts using 
 
 ## Global window mode
 
-Open **Control Center → Desktop & Input → Hyprland → Window Rules** and select **Tile Windows (Default)** or **Floating Windows**. The same selector is available from the window-mode icon in the taskbar utility group.
+Open **Control Center → Desktop & Input → Hyprland → Windows → Mode** and select **Tile Windows (Default)** or **Floating Windows**. The same selector is available from the window-mode icon in the taskbar utility group.
 
 The preference applies to every monitor and workspace and is remembered after logout. Floating converts existing application windows and newly opened windows. Tile restores only windows that this policy converted; dialogs and other windows that were already floating remain floating. A window explicitly pinned while Floating is active also remains floating to preserve its pin. The tiled layout is recalculated; its exact previous split tree is not restored.
 

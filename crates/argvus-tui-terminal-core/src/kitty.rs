@@ -41,6 +41,12 @@ pub fn control_center_policy(opacity: &str) -> String {
   )
 }
 
+/// Only the dedicated Control Center window bypasses Kitty's process-close
+/// confirmation. Other applications may reuse its font/opacity profile.
+pub fn close_override(class: &str) -> Option<&'static str> {
+  (class == "argvus-control-center").then_some("confirm_os_window_close=0")
+}
+
 /// A single agent window: discard inherited shortcuts that could create tabs
 /// or split the terminal, and retain clipboard operations for agent prompts.
 pub fn ai_agents_policy() -> &'static str {
@@ -74,7 +80,9 @@ fn escape_config_value(value: &str) -> String {
 
 #[cfg(test)]
 mod tests {
-  use super::{control_center_policy, greeter_policy, rewrite_fonts, taskbar_monitor_policy};
+  use super::{
+    close_override, control_center_policy, greeter_policy, rewrite_fonts, taskbar_monitor_policy,
+  };
 
   #[test]
   fn only_the_font_lines_are_replaced() {
@@ -89,6 +97,21 @@ mod tests {
   fn policies_end_with_the_tab_key_bindings() {
     assert!(greeter_policy().contains("tab_bar_style hidden\n"));
     assert!(control_center_policy("0.50").contains("background_opacity 0.50\n"));
+  }
+
+  #[test]
+  fn only_control_center_overrides_inherited_close_confirmation() {
+    assert_eq!(
+      close_override("argvus-control-center"),
+      Some("confirm_os_window_close=0")
+    );
+    for class in [
+      "kitty",
+      "argvus-system-monitor",
+      "argvus-control-center-extra",
+    ] {
+      assert_eq!(close_override(class), None);
+    }
   }
 
   #[test]

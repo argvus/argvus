@@ -6,9 +6,11 @@ serializes save, Lua projection and compositor IPC under an advisory lock;
 ordinary config-store mutations retain their existing lock. Generated state is
 `data/generated/hypr/window-mode.lua`; the Lua module owns runtime transitions.
 
-The existing `settings/window-rules` route, Home category and breadcrumb remain
-unchanged. Global search also matches tile, floating and their Portuguese terms.
-No screen migration is required. Floating window decorations additionally use the packaged hyprbars plugin.
+The selector lives at Desktop & Input > Hyprland > Windows > Mode, alongside
+Rules and Spaces. The legacy `settings/window-rules` search route and
+`window-rules` CLI alias still open application Rules, with the new breadcrumb.
+Global mode search opens its dedicated page and matches tile, floating and their
+Portuguese terms. Floating decorations use the packaged hyprbars plugin.
 
 The Lua module captures tiled origins after normal application rules. Runtime
 records are scoped by compositor signature, window address, PID and initial

@@ -508,3 +508,25 @@ fn taskbar_hardware_options_follow_detected_devices() {
     }
   }
 }
+
+#[test]
+fn window_spaces_breadcrumbs_include_windows_parent() {
+  for (locale, expected) in [
+    ("en-US", "Desktop & Input > Hyprland > Windows > Spaces"),
+    ("pt-BR", "Desktop e entrada > Hyprland > Janelas > Espaços"),
+  ] {
+    let mut application = app(AppearancePage::WindowSpaces);
+    application.lang = Lang::for_locale(locale);
+    assert_eq!(application.breadcrumb(), expected);
+    assert!(
+      application
+        .breadcrumb_of(AppearancePage::WindowSpacesInner)
+        .starts_with(&format!("{expected} > "))
+    );
+    assert!(
+      application
+        .breadcrumb_of(AppearancePage::WindowSpacesOuter)
+        .starts_with(&format!("{expected} > "))
+    );
+  }
+}
