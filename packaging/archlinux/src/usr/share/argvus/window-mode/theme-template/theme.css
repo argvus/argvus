@@ -1,0 +1,8 @@
+.argvus-window-mode {
+  background-color: {{ @bg | hex }};
+  color: {{ @fg | hex }};
+  border: 1px solid {{ @accent | hex }};
+}
+.argvus-window-mode button:focus-visible {
+  outline: 2px solid {{ @accent | hex }};
+}

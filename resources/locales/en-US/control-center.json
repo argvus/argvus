@@ -2201,5 +2201,12 @@
   "control_center.shortcut_conflict_selected": "Combination selected. Conflicting shortcuts will be disabled only when you save.",
   "control_center.shortcut_deleted": "Custom shortcut deleted.",
   "control_center.shortcut_delete_failed": "Could not delete the shortcut. It remains in your configuration; try again.",
-  "control_center.shortcut_delete_apply_failed": "Shortcut deleted from configuration, but the current session could not be updated. Reload the session configuration to remove the active binding."
+  "control_center.shortcut_delete_apply_failed": "Shortcut deleted from configuration, but the current session could not be updated. Reload the session configuration to remove the active binding.",
+  "control_center.window_mode": "Window mode",
+  "control_center.window_mode_tile": "Tile Windows (Default)",
+  "control_center.window_mode_floating": "Floating Windows",
+  "control_center.window_mode_hint": "Floating shows window buttons and an opposite application bar. Tile restores minimized windows and only retiles windows converted by Floating. Originally floating windows stay floating.",
+  "control_center.window_mode_working": "Applying window mode…",
+  "control_center.window_mode_pending": "Preference saved. Application is pending for the Hyprland session.",
+  "control_center.window_mode_failed": "Could not apply the window mode. Select an option to retry."
 }

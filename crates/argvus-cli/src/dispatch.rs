@@ -89,6 +89,7 @@ pub fn run(arguments: &[OsString]) -> Outcome {
     "theme-switch" => run_config(&with_leading("theme-apply", rest)),
     "effects-toggle" => run_config(&with_leading("effects", rest)),
     "config" => run_config(rest),
+    "windows" => Ok(argvus_config_core::windows::run(&owned_arguments(rest)?)),
     // Theme builds (palette, templates, render); the switch stays `theme-switch`.
     // `theme apply` is the theme switch; the other theme commands are builds.
     "theme" if rest.first().is_some_and(|word| word == "apply") => {

@@ -1,0 +1,13 @@
+[package]
+name = "argvus-window-mode-menu"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+argvus-config.workspace = true
+argvus-i18n.workspace = true
+argvus-taskbar-popup.workspace = true
+gtk.workspace = true
+serde_json.workspace = true

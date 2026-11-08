@@ -77,7 +77,7 @@ pub fn socket_path(runtime_dir: &Path, signature: &str) -> ConfigResult<PathBuf>
 ///
 /// Returns an error when Hyprland is not running for this session or the
 /// socket does not answer within [`IO_TIMEOUT`].
-fn send(payload: &str) -> ConfigResult<String> {
+pub(crate) fn send(payload: &str) -> ConfigResult<String> {
   let runtime_dir = env::var_os("XDG_RUNTIME_DIR")
     .map(PathBuf::from)
     .ok_or_else(|| ConfigError::Invalid("XDG_RUNTIME_DIR is not set".into()))?;

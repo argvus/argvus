@@ -46,7 +46,7 @@ pub(super) fn build_search_registry(lang: Lang) -> SearchRegistry {
       "settings.window_rules",
       "hyprland",
       "control_center.window_rules",
-      "window rules workspace class app placement regras janela area de trabalho",
+      "window rules workspace class app placement tile tiling floating window mode regras janela area de trabalho flutuante modo",
       "settings/window-rules",
     ),
     #[cfg(feature = "apps")]

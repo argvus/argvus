@@ -1,0 +1,3 @@
+id = "window-mode"
+template = "window-mode/theme-template/theme.css"
+output = "window-mode/theme.css"

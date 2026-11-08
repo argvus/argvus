@@ -105,6 +105,8 @@ pub enum Item {
   /// The name typed for the next rule, used by `AddWindowRule`.
   NewWindowRuleName,
   AddWindowRule,
+  WindowModeTile,
+  WindowModeFloating,
   /// Opens the editor for a new project path, or a new root when true.
   AddProjectPath,
   AddProjectRoot,

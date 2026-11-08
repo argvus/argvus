@@ -282,6 +282,7 @@ impl App {
       }
       Page::CustomShortcut => self.open_custom_shortcut(None),
       Page::Notifications => self.refresh_dnd(),
+      Page::WindowRules => self.window_mode_request(None),
       _ => {}
     }
   }

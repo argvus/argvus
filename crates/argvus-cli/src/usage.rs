@@ -30,13 +30,15 @@ Commands:
   argvus sessionctl | session | start | tty
   argvus greeter | greeter-session | greeter-tui | greeter-setup
   argvus config | theme | i18n | accounts | firewall
-  argvus taskbar-calendar | removable-devices | notifications | focus | clock | du
+  argvus taskbar-calendar | removable-devices | notifications | focus | clock | du | window-mode-menu
   argvus networkctl | bluetoothctl | displayctl | widget-telemetry-toggle
   argvus launcher | projects | snippets | ssh | keys | gpg | git
   argvus tui-terminal | sensors | app-profiles-yazi-keymap | game-snake | terminal
 
 Hyprland script commands (used by the Hyprland configuration):
   argvus cheatsheets-hypr | cheatsheets-launcher | scratchpad | hypr-screenshot
+  argvus windows service | bar | list --json | position top|bottom
+  argvus windows minimize | restore | activate | maximize | close ADDRESS
   argvus spaces-switch | emoji-picker | toggle-sidebar | weather-location
   argvus theme-switch | layout-mode-menu | brightness-switch | toggle-mode
   argvus idle-timeout | keep-awake | hypr-power-menu | effects-toggle

@@ -1929,3 +1929,13 @@ Seta para baixo sai da barra; seta para cima no primeiro resultado volta à barr
 Esc na barra preserva texto e página e devolve o foco à lista. Na lista, Enter
 executa a ação do pacote; a barra de ações de Atualizar segue acessível por Tab.
 O terminal interativo, confirmações e editores mantêm prioridade de entrada.
+
+## Global window mode
+
+The existing Window Rules page now starts with the shared Tile/Floating selector.
+Its Home category, breadcrumb and CLI route remain unchanged. The Taskbar popup
+uses the same preference and reports pending application separately. See the
+[implementation and validation checkpoint](window-mode.md).
+
+The Floating controls and opposite recovery bar are documented in
+[Window management](window-management.md).

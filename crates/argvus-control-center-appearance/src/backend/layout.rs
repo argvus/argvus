@@ -232,6 +232,9 @@ pub fn set_layout_mode(variant: &str) -> Result<(), String> {
 }
 
 pub fn set_spacing(key: &str, value: &str) -> Result<(), String> {
+  if key == "waybar_pos" {
+    return super::commands::run_argvus_route("windows", &["position", value], &[]);
+  }
   if key.is_empty() || value.is_empty() {
     return Err("invalid spaces key/value".into());
   }
@@ -265,16 +268,6 @@ pub fn set_spacing(key: &str, value: &str) -> Result<(), String> {
           Value::from(number),
         );
       }
-      ""
-    }
-    "waybar_pos" => {
-      if value != "top" && value != "bottom" {
-        return Err("invalid waybar position".into());
-      }
-      patch.insert(
-        "/layout/taskbar/position".into(),
-        Value::String(value.to_owned()),
-      );
       ""
     }
     _ => return Err("invalid spaces key".into()),

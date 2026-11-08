@@ -428,3 +428,31 @@ fn breadcrumbs_are_translated_in_pt_br() {
     assert!(!breadcrumb.contains("Control Center"), "{breadcrumb}");
   }
 }
+
+#[test]
+fn window_mode_choices_follow_shared_preference_and_pending_state() {
+  use argvus_config_core::window_mode::{Status, WindowMode};
+  for locale in ["en-US", "pt-BR"] {
+    let mut app = App::with_context(Page::WindowRules, Lang::for_locale(locale), Theme::load());
+    app.window_mode = Some(Status {
+      preferred: WindowMode::Floating,
+      applied: Some(WindowMode::Tile),
+      available: true,
+      pending: true,
+      error: None,
+    });
+    let rows = app.rows();
+    assert!(
+      rows
+        .iter()
+        .any(|row| row.id() == Some(&Item::WindowModeTile))
+    );
+    assert!(
+      rows
+        .iter()
+        .any(|row| row.id() == Some(&Item::WindowModeFloating))
+    );
+    let label = format!("{:?}", rows);
+    assert!(!label.contains("control_center.window_mode"));
+  }
+}

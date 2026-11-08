@@ -19,7 +19,7 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 
 mod component_adapters;
-mod file_writes;
+pub(crate) mod file_writes;
 mod hyprland_projection;
 mod manifest;
 
@@ -318,6 +318,7 @@ fn write_projections(
   )?;
   project_control_panel(document, paths)?;
   project_hypr_state(document, paths)?;
+  crate::window_mode::project(document, &paths.generated)?;
   project_scalar(
     document,
     json_pointers::FONTS_LEGACY,
@@ -561,3 +562,8 @@ fn report_audio_projection(action: &str, result: std::io::Result<std::process::E
 
 #[cfg(test)]
 mod tests;
+
+/// Projects canonical geometry without running unrelated theme adapters.
+pub fn project_layout_only(store: &ConfigStore, document: &ConfigDocument) -> ConfigResult<()> {
+  project_layout(document, &ArgvusPaths::from_store(store)?)
+}

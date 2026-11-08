@@ -36,5 +36,18 @@
   "date.month.11": "November",
   "date.month.12": "December",
   "monitor.cpu.title": "CPU · Esc to close",
-  "monitor.memory.title": "Memory · Esc to close"
+  "monitor.memory.title": "Memory · Esc to close",
+  "window_mode.title": "Window mode",
+  "window_mode.tile": "Tile Windows (Default)",
+  "window_mode.floating": "Floating Windows",
+  "window_mode.hint": "Floating shows window buttons and an opposite application bar. Tile restores minimized windows and only retiles windows converted by Floating. Originally floating windows stay floating.",
+  "window_mode.working": "Applying window mode…",
+  "window_mode.pending": "Preference saved. Application is pending for the Hyprland session.",
+  "window_mode.failed": "Could not apply the window mode. Select an option to retry.",
+  "windows.restore": "Restore",
+  "windows.minimize": "Minimize",
+  "windows.maximize": "Maximize / Restore",
+  "windows.close": "Close",
+  "windows.workspace": "Workspace",
+  "windows.failed": "Could not change the window. Its recovery information has been kept; try again."
 }

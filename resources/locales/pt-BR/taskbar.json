@@ -36,5 +36,18 @@
   "date.month.11": "novembro",
   "date.month.12": "dezembro",
   "monitor.cpu.title": "CPU · Esc para fechar",
-  "monitor.memory.title": "Memória · Esc para fechar"
+  "monitor.memory.title": "Memória · Esc para fechar",
+  "window_mode.title": "Modo de janelas",
+  "window_mode.tile": "Janelas em mosaico (padrão)",
+  "window_mode.floating": "Janelas flutuantes",
+  "window_mode.hint": "O modo flutuante mostra botões nas janelas e uma barra de aplicativos oposta. Mosaico restaura as minimizadas e recoloca em mosaico apenas as janelas convertidas. As originalmente flutuantes permanecem assim.",
+  "window_mode.working": "Aplicando modo de janelas…",
+  "window_mode.pending": "Preferência salva. A aplicação está pendente para a sessão Hyprland.",
+  "window_mode.failed": "Não foi possível aplicar o modo de janelas. Selecione uma opção para tentar novamente.",
+  "windows.restore": "Restaurar",
+  "windows.minimize": "Minimizar",
+  "windows.maximize": "Maximizar / Restaurar",
+  "windows.close": "Fechar",
+  "windows.workspace": "Área de trabalho",
+  "windows.failed": "Não foi possível alterar a janela. As informações de recuperação foram preservadas; tente novamente."
 }

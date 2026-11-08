@@ -506,6 +506,7 @@ pub(super) fn validate_hyprland(document: &ConfigDocument) -> ConfigResult<()> {
   let Some(value) = document.sections.get("hyprland") else {
     return Ok(());
   };
+  crate::window_mode::from_document(document)?;
   crate::custom_shortcuts::from_document(document)?;
   for key in ["keybindings", "input", "keyboard"] {
     if value.get(key).is_some_and(|value| !value.is_object()) {

@@ -214,6 +214,7 @@ dependencies = [
 name = "argvus-config"
 version = "0.1.0"
 dependencies = [
+ "argvus-i18n-core",
  "argvus-loading-theme-core",
  "argvus-theme-core",
  "chrono",
@@ -901,6 +902,17 @@ version = "0.1.0"
 dependencies = [
  "argvus-runtime",
  "argvus-widget-telemetry-core",
+ "serde_json",
+]
+
+[[package]]
+name = "argvus-window-mode-menu"
+version = "0.1.0"
+dependencies = [
+ "argvus-config",
+ "argvus-i18n-core",
+ "argvus-taskbar-popup",
+ "gtk4",
  "serde_json",
 ]
 

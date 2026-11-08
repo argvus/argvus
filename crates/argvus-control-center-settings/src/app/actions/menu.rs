@@ -180,6 +180,8 @@ impl App {
       Item::ApplyWindowRule(index) => self.apply_window_rule(index),
       Item::NewWindowRuleName => self.open_new_window_rule_name(),
       Item::AddWindowRule => self.add_window_rule(),
+      Item::WindowModeTile => self.window_mode_request(Some("tile")),
+      Item::WindowModeFloating => self.window_mode_request(Some("floating")),
       Item::AddProjectPath => self.open_project_editor(false),
       Item::AddProjectRoot => self.open_project_editor(true),
       Item::NewSnippetName => self.open_new_snippet_name(),

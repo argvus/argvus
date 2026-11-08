@@ -1698,7 +1698,38 @@ impl App {
   /// The window rules page: the form that adds a rule, then one block per
   /// saved rule. Each block edits a draft that its Apply row saves.
   fn window_rules_rows(&self) -> Vec<Row<Item>> {
+    use argvus_config_core::window_mode::WindowMode;
+    let preferred = self.window_mode.as_ref().map(|status| status.preferred);
+    let status_key = if self.window_mode_job.is_some() {
+      "control_center.window_mode_working"
+    } else if self
+      .window_mode
+      .as_ref()
+      .is_some_and(|status| status.error.is_some())
+    {
+      "control_center.window_mode_failed"
+    } else if self
+      .window_mode
+      .as_ref()
+      .is_some_and(|status| status.pending)
+    {
+      "control_center.window_mode_pending"
+    } else {
+      "control_center.window_mode_hint"
+    };
     let mut rows = vec![
+      Row::section(self.label("control_center.window_mode")),
+      Row::choice(
+        Item::WindowModeTile,
+        self.label("control_center.window_mode_tile"),
+        preferred == Some(WindowMode::Tile),
+      ),
+      Row::choice(
+        Item::WindowModeFloating,
+        self.label("control_center.window_mode_floating"),
+        preferred == Some(WindowMode::Floating),
+      ),
+      Row::info(self.label(status_key), String::new()),
       Row::info(
         self.label("control_center.window_rules_hint"),
         String::new(),

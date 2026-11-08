@@ -51,6 +51,8 @@ pub mod theme_surfaces;
 pub mod theme_transition;
 pub mod user_copy;
 pub mod waybar;
+pub mod window_mode;
+pub mod windows;
 
 mod config_defaults;
 mod config_lock;

@@ -607,3 +607,29 @@ Gravação e aplicação executam em segundo plano. Se a gravação falhar, o ra
 Os erros de atalhos ficam dentro da TUI: o popup se ajusta à mensagem com quebra de linhas e mantém **Enter OK** visível. Os diagnósticos técnicos de atalhos vão para o journal local (`journalctl -t argvus-control-center`) em vez de stdout/stderr. Uma exclusão salva que não pôde ser aplicada informa essa diferença; recarregue a configuração da sessão para remover o binding que estava ativo.
 
 **Estado das atualizações** em **Barra de tarefas → Ícones → Módulos opcionais** mostra a quantidade de atualizações e vem habilitado. **Verificar AUR** vem desativado e requer `paru` ou `yay`; aplique o rascunho da taskbar para salvar as opções. As consultas ocorrem ao iniciar e a cada hora; clicar no indicador abre a página de atualizações oficiais em Pacotes.
+
+## Modo global de janelas
+
+Abra **Control Center → Desktop e entrada → Hyprland → Regras de janelas** e escolha **Janelas em mosaico (padrão)** ou **Janelas flutuantes**. O mesmo seletor está disponível pelo ícone de modo de janelas no grupo de utilitários da taskbar.
+
+A preferência vale para todos os monitores e workspaces e permanece após encerrar a sessão. O modo flutuante converte janelas existentes de aplicativos e novas janelas. O modo mosaico restaura apenas as janelas convertidas pela política; diálogos e outras janelas que já eram flutuantes permanecem assim. Uma janela explicitamente fixada durante o modo flutuante também permanece flutuante para preservar sua fixação. O layout em mosaico é recalculado; a árvore exata de divisões anterior não é restaurada.
+
+`SUPER + SHIFT + Space` mantém o comportamento individual no modo mosaico. No modo flutuante, não coloca uma janela em mosaico. Painéis, taskbar e notificações são superfícies layer-shell e não são afetados. Tela cheia e maximização continuam seguindo o comportamento do Hyprland.
+
+A preferência canônica é `/hyprland/window_mode`, em `$XDG_CONFIG_HOME/argvus/config/hyprland.json`. A projeção gerada é `data/generated/hypr/window-mode.lua`; não edite esse arquivo. O registro de restauração por janela fica em `$XDG_RUNTIME_DIR/argvus`, separado por instância do compositor, e sobrevive ao reload da configuração. Ele não é reutilizado em uma nova sessão.
+
+Se a aplicação estiver pendente ou falhar, a interface distingue esse estado da preferência salva. Selecione novamente a opção para tentar outra vez. Sem compositor, a preferência fica salva para o próximo login.
+
+## Botões de janela e barra de aplicativos
+
+O modo flutuante adiciona uma barra de título ARGVUS com **Minimizar**, **Maximizar / Restaurar** e **Fechar** às janelas normais de aplicativos. O clique duplo na barra alterna a maximização. A decoração adicional fica oculta em mosaico e tela cheia. Aplicativos que desenham seus próprios controles podem exibir as duas barras; os controles ARGVUS uniformes são intencionais.
+
+Uma segunda Waybar aparece em cada monitor, na borda oposta à taskbar principal. Ela lista apenas as janelas do workspace atual daquele monitor, incluindo as minimizadas desse workspace. Abas ocultas de grupos não geram entradas extras. As minimizadas mantêm a associação ao monitor e workspace originais. Clique em uma entrada para restaurar/ativar; o menu de contexto oferece restaurar, minimizar, maximizar/restaurar e fechar. Ícones de aplicativos desconhecidos usam um símbolo de janela.
+
+`SUPER + Alt + seta para cima` coloca a barra principal no topo e a barra de janelas no rodapé. `SUPER + Alt + seta para baixo` faz o inverso. Repetir a direção mantém as posições. Em mosaico existe apenas a barra principal. Voltar ao mosaico restaura todas as minimizadas antes de remover a barra de janelas e então preserva a política original de janelas tiled/flutuantes.
+
+A minimização usa o workspace reservado `special:argvus-minimized`. Não use esse workspace manualmente. O processo `argvus windows service` registra identidade, workspace/monitor de origem, geometria, tela cheia/maximização e fixação em um registro de runtime separado por instância do compositor, em `$XDG_RUNTIME_DIR/argvus`. Os registros sobrevivem ao reinício do serviço ou reload da configuração, mas não atravessam sessões do compositor. Fechar uma janela remove seu registro. Se um monitor desaparecer, a restauração usa uma saída disponível. Uma barra de recuperação ausente ou com falha impede novas minimizações; falhas de restauração preservam o registro e a barra de recuperação.
+
+A sessão gerencia `argvus-windows.service` e `argvus-window-bar.service`. O segundo mantém sua Waybar inativa em mosaico. O plugin hyprbars é distribuído por `argvus-hyprland`, compilado para a ABI do Hyprland 0.57.0 em x86_64; não é compilado no diretório pessoal do usuário. Recompile o plugin ao atualizar a ABI do compositor.
+
+Comandos: `argvus windows list --json`, `watch --json`, `position top|bottom`, `restore-all` e `minimize|restore|activate|maximize|close ADDRESS`. Os endereços das janelas vêm da listagem. `position top --persist` salva/projeta a preferência sem reiniciar a barra principal. Detalhes de erros vão para o journal; falhas de ações visíveis também exibem uma notificação traduzida.

@@ -64,6 +64,7 @@ impl App {
 
   pub fn poll(&mut self) -> bool {
     let mut changed = self.poll_shortcut_job();
+    changed |= self.poll_window_mode();
     if self.keyboard_page_is_open()
       && self.keyboard_last_refresh.elapsed() >= Duration::from_secs(1)
     {
@@ -365,5 +366,60 @@ impl App {
       created: Instant::now(),
     });
     self.error_modal = Some(error);
+  }
+}
+
+impl App {
+  pub(super) fn window_mode_request(&mut self, mode: Option<&'static str>) {
+    if self.window_mode_job.is_some() {
+      return;
+    }
+    self.window_mode_last_refresh = Instant::now();
+    self.window_mode_job = Some(self.jobs.spawn(move |_| {
+      let mut request = ProcessRequest::new("argvus")
+        .arg("config")
+        .arg("window-mode");
+      request = match mode {
+        Some(mode) => request.arg("set").arg(mode),
+        None => request.arg("status").arg("--json"),
+      };
+      let output = SystemProcessRunner
+        .run(&request.timeout(Duration::from_secs(12)))
+        .map_err(|error| error.to_string())?;
+      // A partial application still reports a structured status on stdout.
+      serde_json::from_slice(&output.stdout).map_err(|error| {
+        format!(
+          "window mode backend: {error}: {}",
+          String::from_utf8_lossy(&output.stderr)
+        )
+      })
+    }));
+  }
+
+  fn poll_window_mode(&mut self) -> bool {
+    if self.window_mode_job.is_none()
+      && self.page() == Page::WindowRules
+      && self.window_mode_last_refresh.elapsed() >= Duration::from_secs(2)
+    {
+      self.window_mode_request(None);
+    }
+    let Some(job) = self.window_mode_job.take() else {
+      return false;
+    };
+    match job.try_state() {
+      JobState::Running => {
+        self.window_mode_job = Some(job);
+        false
+      }
+      JobState::Finished(Ok(status)) => {
+        self.window_mode = Some(status);
+        true
+      }
+      JobState::Finished(Err(error)) => {
+        eprintln!("argvus-control-center: {error}");
+        self.fail(tr(self.lang, "control_center.window_mode_failed"));
+        true
+      }
+    }
   }
 }

@@ -50,6 +50,7 @@ pub fn run_command(arguments: Vec<String>) -> ExitCode {
     "session-restart" => session_restart(args),
     "session-reload-config" => session_reload_config(args),
     "session-sync-config" => session_sync_config(),
+    "window-mode" => crate::window_mode::run(args),
     "effects" => ExitCode::from(effects::run(args) as u8),
     "gtk-theme-name" => gtk_theme_name(args),
     "waybar-refresh" => waybar_refresh(args),

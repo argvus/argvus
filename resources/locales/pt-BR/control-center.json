@@ -2201,5 +2201,12 @@
   "control_center.shortcut_conflict_selected": "Combinação selecionada. Os atalhos em conflito serão desativados somente ao salvar.",
   "control_center.shortcut_deleted": "Atalho personalizado excluído.",
   "control_center.shortcut_delete_failed": "Não foi possível excluir o atalho. Ele permanece na configuração; tente novamente.",
-  "control_center.shortcut_delete_apply_failed": "Atalho excluído da configuração, mas não foi possível atualizar a sessão atual. Recarregue a configuração da sessão para remover o binding ativo."
+  "control_center.shortcut_delete_apply_failed": "Atalho excluído da configuração, mas não foi possível atualizar a sessão atual. Recarregue a configuração da sessão para remover o binding ativo.",
+  "control_center.window_mode": "Modo de janelas",
+  "control_center.window_mode_tile": "Janelas em mosaico (padrão)",
+  "control_center.window_mode_floating": "Janelas flutuantes",
+  "control_center.window_mode_hint": "O modo flutuante mostra botões nas janelas e uma barra de aplicativos oposta. Mosaico restaura as minimizadas e recoloca em mosaico apenas as janelas convertidas. As originalmente flutuantes permanecem assim.",
+  "control_center.window_mode_working": "Aplicando modo de janelas…",
+  "control_center.window_mode_pending": "Preferência salva. A aplicação está pendente para a sessão Hyprland.",
+  "control_center.window_mode_failed": "Não foi possível aplicar o modo de janelas. Selecione uma opção para tentar novamente."
 }

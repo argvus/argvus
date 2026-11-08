@@ -57,6 +57,7 @@ private_commands! {
   Accounts => "accounts" => "accounts",
   Firewall => "firewall" => "firewall",
   TaskbarCalendar => "taskbar-calendar" => "taskbar-calendar",
+  WindowModeMenu => "window-mode-menu" => "window-mode-menu",
   RemovableDevices => "removable-devices" => "removable-devices",
   Focus => "focus" => "focus",
   Clock => "clock" => "clock",

@@ -49,6 +49,7 @@ members = [
   "crates/argvus-system-monitor-core",
   "crates/argvus-taskbar-calendar",
   "crates/argvus-taskbar-popup",
+  "crates/argvus-window-mode-menu",
   "crates/argvus-terminal",
   "crates/argvus-terminal-core",
   "crates/argvus-theme",

@@ -20,7 +20,7 @@ pub(super) fn atomic_write(path: &Path, contents: &str) -> ConfigResult<()> {
 /// break the whole configuration. A rejected candidate is removed and the
 /// previous file is left in place. Unchanged contents were checked when they
 /// were written, so they are not checked again.
-pub(super) fn atomic_write_lua(path: &Path, contents: &str) -> ConfigResult<()> {
+pub(crate) fn atomic_write_lua(path: &Path, contents: &str) -> ConfigResult<()> {
   if holds_contents(path, contents) {
     return Ok(());
   }

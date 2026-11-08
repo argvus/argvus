@@ -16,6 +16,7 @@ ARGVUS_GTK_COMMANDS=(
 	focus
 	removable-devices
 	taskbar-calendar
+	window-mode-menu
 )
 
 arch_source_root() {
@@ -61,6 +62,7 @@ arch_build_argvus_workspace() {
 		-p argvus-loading-theme \
 		-p argvus-removable-devices \
 		-p argvus-taskbar-calendar \
+		-p argvus-window-mode-menu \
 		-p argvus-accounts \
 		-p argvus-du \
 		-p argvus-focus \

@@ -18,6 +18,7 @@ name = "argvus-config"
 path = "src/main.rs"
 
 [dependencies]
+argvus-i18n.workspace = true
 argvus-loading-theme-core.workspace = true
 argvus-theme-core.workspace = true
 serde = { version = "1", features = ["derive"] }

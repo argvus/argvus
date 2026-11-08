@@ -379,3 +379,40 @@ for bounds and defaults.
 The example is the value of `/hyprland/custom_shortcuts`, not a complete configuration document. Dispatcher names come from the supported Lua dispatcher factories; arguments are an optional JSON object or `null`, never evaluated code. Custom shortcuts have no submap, mouse binding or advanced flags. The projection writes `data/generated/hypr/custom-shortcuts.lua` as an escaped data table, including an empty table when the last record is removed. Both full projection and `project --only keyboard_shortcuts` generate it. Hyprland registers enabled entries with `hl.bind`; optional file and individual registration failures are contained and logged.
 
 The Control Center creates/edits records and disables confirmed conflicts using one `argvus config patch` transaction. It saves before applying through the existing config service. A failed apply does not undo a successful save. Restoring official defaults preserves custom records and is refused if it would collide with an active custom shortcut. User descriptions remain literal text in all locales and the effective generated cheatsheet.
+
+## Global window mode
+
+Open **Control Center → Desktop & Input → Hyprland → Window Rules** and select **Tile Windows (Default)** or **Floating Windows**. The same selector is available from the window-mode icon in the taskbar utility group.
+
+The preference applies to every monitor and workspace and is remembered after logout. Floating converts existing application windows and newly opened windows. Tile restores only windows that this policy converted; dialogs and other windows that were already floating remain floating. A window explicitly pinned while Floating is active also remains floating to preserve its pin. The tiled layout is recalculated; its exact previous split tree is not restored.
+
+`SUPER + SHIFT + Space` keeps its normal per-window behavior in Tile. In Floating it does not switch a window back to tiling. Panels, the taskbar and notifications are layer-shell surfaces and are not affected. Fullscreen and maximization continue to use Hyprland's normal behavior.
+
+The canonical preference is `/hyprland/window_mode` in `$XDG_CONFIG_HOME/argvus/config/hyprland.json`. Its generated projection is `data/generated/hypr/window-mode.lua`; do not edit it. The per-window restoration registry lives under `$XDG_RUNTIME_DIR/argvus`, scoped to the compositor instance, and survives configuration reloads. It is not reused in a new session.
+
+If application is pending or fails, the interface distinguishes this from the saved preference. Select the option again to retry. Without a compositor, the preference is saved for the next login.
+
+```sh
+argvus config window-mode get
+argvus config window-mode status --json
+argvus config window-mode set floating
+argvus config window-mode set tile
+```
+
+## Window buttons and application bar
+
+Floating mode adds an ARGVUS title bar with **Minimize**, **Maximize / Restore**, and **Close** to normal application windows. Double-clicking the title bar toggles maximization. The additional decoration is hidden in Tile and fullscreen. Applications that draw their own controls may display both bars; uniform ARGVUS controls are intentional.
+
+A second Waybar appears on every monitor, on the edge opposite the main taskbar. It lists only the windows belonging to that monitor's current workspace, including minimized windows from that workspace. An open special workspace takes precedence. Pinned windows remain visible; hidden group tabs do not create extra entries, and a minimized group has one recovery entry. Tabs inside an application are not enumerated separately. Minimized entries retain their original monitor/workspace association. Click an entry to restore/activate it; its context menu offers restore, minimize, maximize/restore and close. Unknown application icons fall back to a window symbol. Activating or restoring an entry preserves the pointer position. The secondary bar uses the effective primary CSS (colors, fonts, border and rounding), with its height and mirrored margins on the opposite edge.
+
+`SUPER + Alt + Up` places the main bar at the top and the window bar at the bottom. `SUPER + Alt + Down` does the reverse. Repeating a direction leaves the positions unchanged. Tile has only the main bar. Returning to Tile restores all minimized windows before removing the window bar, and then preserves the original tiled/floating policy.
+
+Minimization uses the reserved `special:argvus-minimized` workspace. Do not use that workspace manually. The `argvus windows service` process records identity, original workspace/monitor, geometry, fullscreen/maximization and pin state in a compositor-instance-specific runtime registry under `$XDG_RUNTIME_DIR/argvus`. Records survive a service restart or config reload, but do not cross compositor sessions. Closing a window removes its record. If a monitor disappears, restoration uses an available output. A missing or failed recovery bar prevents new minimizations; failed restoration retains the record and recovery bar.
+
+The session owns `argvus-windows.service` and `argvus-window-bar.service`. The latter keeps its Waybar child dormant in Tile. The hyprbars plugin is bundled by `argvus-hyprland`, built for the Hyprland 0.57.0 ABI on x86_64; it is not compiled in the user's home directory. Rebuild the plugin with a compositor ABI update.
+
+Commands: `argvus windows list --json`, `watch --json`, `position top|bottom`, `restore-all`, and `minimize|restore|activate|maximize|close ADDRESS`. The window addresses come from the list. `position top --persist` stores/projects the preference without restarting the main bar. Configuration and runtime error details are written to the journal; visible action failures also show a translated notification.
+
+In **Spaced + Floating**, windows respect outer gaps and the areas reserved by both bars. The bounds include the border and title, which sits inside the same window border. Maximizing through ARGVUS controls fills this area with margins; restoring recovers the previous geometry, including after a service restart. Fullscreen still uses the whole output. Floating windows may overlap; tiling inner gaps do not separate them.
+
+Inner margins reserved by the bars are not counted twice in window outer gaps. With symmetric spacing, the visible window-to-bar distance is equal above and below, including after swapping the bars.

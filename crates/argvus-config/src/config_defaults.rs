@@ -58,6 +58,9 @@ pub(super) fn apply_defaults(document: &mut ConfigDocument) -> ConfigResult<()> 
   default_applications(document);
   default_keyboard_shortcuts(document);
   default_hyprland_input(document);
+  if document.get("/hyprland/window_mode").is_none() {
+    document.set("/hyprland/window_mode", Value::String("tile".into()))?;
+  }
   default_power(document);
   default_audio(document);
   Ok(())
