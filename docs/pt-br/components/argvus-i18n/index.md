@@ -1,44 +1,76 @@
 ---
 title: Internacionalização ARGVUS
-description: Sistema de suporte multilíngue para ARGVUS
+description: Catálogos, seleção de idioma e suporte Unicode.
 ---
 
-# Internacionalização ARGVUS (i18n)
+# Internacionalização ARGVUS
 
-O módulo de Internacionalização do ARGVUS fornece suporte de idioma em todos os componentes e aplicativos ARGVUS, habilitando uma experiência verdadeiramente multilíngue na área de trabalho.
+O ARGVUS inclui inglês (`en-US`), português brasileiro (`pt-BR`), espanhol (`es-ES`),
+francês (`fr-FR`), italiano (`it-IT`), alemão (`de-DE`), russo (`ru-RU`), chinês
+simplificado (`zh-CN`), japonês (`ja-JP`) e coreano (`ko-KR`). O inglês é o catálogo
+canônico e o fallback. As oito traduções adicionais foram produzidas com auxílio
+de tradução automática e correções técnicas; não há certificação de revisão
+independente por falantes nativos.
 
-## Idiomas Suportados
+## Seleção do idioma
 
-Os idiomas atualmente suportados incluem:
-- English (en)
-- Portuguese - Brasil (pt-BR)
-- Idiomas adicionais em breve
+Abra Control Center > Preferências > Idioma e região > Idioma ou Configurações >
+Idioma. A página descobre os catálogos instalados e mostra seus nomes nativos.
+A escolha grava `LANG` em `$XDG_CONFIG_HOME/locale.conf` (padrão
+`~/.config/locale.conf`). Habilite antes o locale UTF-8 correspondente em System
+Locales. Exemplos: `es_ES.UTF-8`, `zh_CN.UTF-8`, `ja_JP.UTF-8` e `ko_KR.UTF-8`.
 
-## Seleção de idioma
+A seleção preserva comentários e categorias regionais e não altera
+`/etc/locale.conf`. O Control Panel é reiniciado após salvar; saia e entre de novo
+para aplicar o idioma à sessão inteira. Usuários sem preferência usam inglês.
+Variáveis herdadas e arquivos legados de idioma não substituem essa preferência.
+O greeter executa antes de conhecer a preferência do usuário e usa o idioma da
+sua própria conta de serviço, inglês por padrão.
 
-Escolha o idioma do usuário em Control Center > Preferências > Idioma e região > Idioma ou Configurações > Idioma. As duas telas salvam `LANG` em `$XDG_CONFIG_HOME/locale.conf` (padrão `~/.config/locale.conf`). Sem preferência válida, o ARGVUS usa inglês. Variáveis globais de locale e arquivos legados de idioma do ARGVUS não substituem esse arquivo. Saia e entre novamente após trocar o idioma.
+Variantes regionais usam o catálogo instalado do idioma quando não existe um
+catálogo exato: `es_MX.UTF-8`, por exemplo, usa `es-ES`. `zh-Hans` usa chinês
+simplificado. Chinês tradicional (`zh-Hant`, `zh-TW`, `zh-HK`, `zh-MO`) não é
+convertido silenciosamente para simplificado e usa o fallback inglês.
 
-## Para Colaboradores
+## Catálogos e contribuições
 
-Para contribuir com traduções ou adicionar suporte para novos idiomas:
+A fonte fica em `resources/locales/<locale>/<domínio>.json` no repositório
+`argvus`. Os catálogos instalados ficam em `/usr/share/argvus/i18n/` e são
+entregues pelo pacote principal `argvus`. `locale.json` informa o identificador
+e os nomes nativo e de apresentação. Não há catálogo PO separado nem plataforma
+online obrigatória para contribuir.
 
-1. Visite a plataforma de tradução
-2. Junte-se como tradutor
-3. Envie traduções para revisão
-4. As traduções são mescladas em cada lançamento
+Use chaves semânticas e preserve placeholders, comandos, opções, caminhos e
+atalhos. Traduza mensagens completas, evitando montar frases com fragmentos.
+Novas chaves canônicas precisam de tradução nos dez idiomas. Revise a terminologia
+no contexto, sobretudo em autenticação, permissões e ações destrutivas.
 
-## Arquivos de Tradução
+```sh
+argvus i18n list
+argvus i18n locale
+argvus i18n get common welcome name=Alice
+argvus i18n validate
+```
 
-Os arquivos de tradução usam o formato padrão `.po` (Portable Object) e são gerenciados através de:
-- Diretório `po/` nos repositórios ARGVUS
-- Sistema de memória de tradução para consistência
+`ARGVUS_I18N_DIR` permite selecionar outro diretório para desenvolvimento e testes
+do conteúdo empacotado. A validação verifica domínios, chaves, tipos, placeholders,
+traduções vazias e formas plurais para contagens inteiras. Ela comprova integridade
+estrutural, não a qualidade linguística.
 
-## Localização
+## Unicode e fontes
 
-Além do idioma, a localização inclui:
-- Formatos de data e hora
-- Formatação de números
-- Exibição de moeda
-- Layouts de teclado
+`argvus-fonts` depende das fontes Noto CJK além das famílias latinas, de símbolos e
+emoji. O Fontconfig fornece fallback para chinês, japonês e Hangul preservando a
+família principal escolhida pelo usuário. Aplicações e terminais precisam permitir
+fallback de fontes.
 
-Para personalização, verifique as configurações de localização do sistema ARGVUS.
+Os utilitários compartilhados do Ratatui medem células do terminal e preservam
+grafemas ao truncar e quebrar textos. Os editores movem e apagam grafemas inteiros.
+Uma área de uma célula não comporta um glifo de duas células; nesse caso, o helper
+de quebra rígida usa o caractere de substituição. Emoji e caracteres de largura
+ambígua ainda podem variar conforme terminal e fonte; a política do terminal deve
+concordar com a largura Unicode normal usada pelo Ratatui.
+
+A escolha do idioma não instala método de entrada nem muda o layout do teclado.
+Para digitar chinês, japonês e coreano, use um método de entrada compatível com
+Wayland.

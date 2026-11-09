@@ -152,7 +152,7 @@ fn load_json(path: &str) -> Option<serde_json::Value> {
     Err(e) => {
       eprintln!(
         "argvus-removable-devices: {} {}: {}",
-        crate::i18n::tr("ignoring invalid config", "ignorando configuração inválida"),
+        crate::i18n::tr("device.ignoring_invalid_config"),
         path,
         e
       );

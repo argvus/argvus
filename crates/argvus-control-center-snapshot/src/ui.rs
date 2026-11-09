@@ -572,7 +572,7 @@ impl SnapshotApp {
       .or(self.diff.as_ref());
     let (lines, width) = match diff {
       Some(FileDiff::Text(text)) => text.lines().fold((0usize, 0usize), |(count, width), line| {
-        (count + 1, width.max(line.chars().count()))
+        (count + 1, width.max(argvus_tui::text::display_width(line)))
       }),
       _ => (0, 0),
     };

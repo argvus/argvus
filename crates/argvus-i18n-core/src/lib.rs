@@ -1,5 +1,7 @@
 //! Shared locale detection, catalog loading, and translation APIs for ARGVUS.
 
+mod plural;
+
 use std::{
   collections::{BTreeSet, HashMap},
   env, fs,
@@ -19,17 +21,23 @@ impl Lang {
   }
 
   pub fn for_locale(locale: &str) -> Self {
-    static LOADED: OnceLock<Mutex<HashMap<(PathBuf, String), Lang>>> = OnceLock::new();
+    Self::for_domain(locale, "control-center")
+  }
+
+  /// Shared cached catalog handle for any application domain.
+  pub fn for_domain(locale: &str, domain: &str) -> Self {
+    type CatalogKey = (PathBuf, String, String);
+    static LOADED: OnceLock<Mutex<HashMap<CatalogKey, Lang>>> = OnceLock::new();
     let root = catalog_root();
-    let key = (root.clone(), normalize_locale(locale));
+    let key = (root.clone(), normalize_locale(locale), domain.to_owned());
     let loaded = LOADED.get_or_init(Default::default);
     if let Some(lang) = lock(loaded).get(&key) {
       return *lang;
     }
     // Load outside the lock so concurrent callers never wait on file I/O.
     let lang = Self(leak(
-      I18n::from_locale(&root, locale, "control-center")
-        .expect("control-center i18n catalog is required"),
+      I18n::from_locale(&root, locale, domain)
+        .expect("application i18n fallback catalog is required"),
     ));
     *lock(loaded).entry(key).or_insert(lang)
   }
@@ -47,6 +55,11 @@ impl Lang {
 
   pub fn tr(self, key: &str) -> String {
     self.0.tr(key)
+  }
+
+  /// Translates an integer count using the selected catalog's cardinal rules.
+  pub fn tr_plural(self, key: &str, count: i64) -> String {
+    self.0.tr_plural(key, count)
   }
 
   pub fn tr_args<I, K, V>(self, key: &str, args: I) -> String
@@ -157,7 +170,8 @@ impl I18n {
   }
 
   pub fn from_locale(root: &Path, locale: &str, domain: &str) -> Result<Self, I18nError> {
-    let locale = normalize_locale(locale);
+    let normalized = normalize_locale(locale);
+    let locale = resolve_locale(root, &normalized).unwrap_or(normalized);
     let fallback = load_catalog(root, FALLBACK_LOCALE, domain)?;
     let translations = load_catalog(root, &locale, domain).unwrap_or_default();
     Ok(Self {
@@ -197,9 +211,18 @@ impl I18n {
   }
 
   pub fn tr_plural(&self, key: &str, count: i64) -> String {
-    let suffix = if count == 1 { "one" } else { "other" };
-    let value = self.tr(&format!("{key}.{suffix}"));
-    interpolate(&value, [("count", count.to_string())])
+    let selected = format!("{key}.{}", plural::category(&self.locale, count));
+    let other = format!("{key}.other");
+    // Choose the fallback's own grammar when the translated form is absent.
+    let fallback = format!("{key}.{}", plural::category(FALLBACK_LOCALE, count));
+    let value = self
+      .translations
+      .get(&selected)
+      .or_else(|| self.translations.get(&other))
+      .or_else(|| self.fallback.get(&fallback))
+      .map(String::as_str)
+      .unwrap_or(&fallback);
+    interpolate(value, [("count", count.to_string())])
   }
 }
 
@@ -208,8 +231,53 @@ pub fn normalize_locale(value: &str) -> String {
   let value = value.split(['.', '@']).next().unwrap_or(value);
   let mut parts = value.split(['_', '-']).filter(|part| !part.is_empty());
   let language = parts.next().unwrap_or("en").to_ascii_lowercase();
-  let region = parts.next().map(str::to_ascii_uppercase);
-  region.map_or_else(|| language.clone(), |region| format!("{language}-{region}"))
+  let mut normalized = language;
+  for part in parts {
+    normalized.push('-');
+    if part.len() == 4 && part.bytes().all(|byte| byte.is_ascii_alphabetic()) {
+      normalized.push_str(&part[..1].to_ascii_uppercase());
+      normalized.push_str(&part[1..].to_ascii_lowercase());
+    } else {
+      normalized.push_str(&part.to_ascii_uppercase());
+    }
+  }
+  normalized
+}
+
+/// Resolves regional variants only to an installed catalog. Traditional Chinese
+/// never silently selects the Simplified Chinese translation.
+pub fn resolve_locale(root: &Path, requested: &str) -> Option<String> {
+  let requested = normalize_locale(requested);
+  let installed = discover_locales(root);
+  if installed.iter().any(|info| info.locale == requested) {
+    return Some(requested);
+  }
+  let language = requested.split('-').next().unwrap_or("en");
+  let default = match language {
+    "en" => "en-US",
+    "pt" => "pt-BR",
+    "es" => "es-ES",
+    "fr" => "fr-FR",
+    "it" => "it-IT",
+    "de" => "de-DE",
+    "ru" => "ru-RU",
+    "ja" => "ja-JP",
+    "ko" => "ko-KR",
+    "zh"
+      if !requested.split('-').any(|part| part == "Hant")
+        && (requested.split('-').any(|part| part == "Hans")
+          || !requested
+            .split('-')
+            .any(|part| matches!(part, "TW" | "HK" | "MO"))) =>
+    {
+      "zh-CN"
+    }
+    _ => return None,
+  };
+  installed
+    .iter()
+    .any(|info| info.locale == default)
+    .then(|| default.to_owned())
 }
 
 /// The only persistent language preference of the logged-in user.
@@ -250,15 +318,17 @@ pub fn user_locale() -> String {
 }
 
 pub fn detect_locale_from(root: &Path) -> String {
-  let requested = normalize_locale(&user_locale());
-  if discover_locales(root)
-    .iter()
-    .any(|locale| locale.locale == requested)
-  {
-    requested
-  } else {
-    FALLBACK_LOCALE.to_owned()
-  }
+  resolve_locale(root, &user_locale()).unwrap_or_else(|| FALLBACK_LOCALE.to_owned())
+}
+
+/// Installed catalogs from the configured runtime root.
+pub fn installed_locales() -> Vec<LocaleInfo> {
+  discover_locales(&catalog_root())
+}
+
+/// Resolves a requested language against the configured catalog installation.
+pub fn resolve_installed_locale(requested: &str) -> Option<String> {
+  resolve_locale(&catalog_root(), requested)
 }
 
 pub fn discover_locales(root: &Path) -> Vec<LocaleInfo> {
@@ -294,6 +364,13 @@ pub fn discover_locales(root: &Path) -> Vec<LocaleInfo> {
 
 pub fn validate_catalogs(root: &Path, requested: Option<&str>) -> Result<(), Vec<String>> {
   let mut errors = Vec::new();
+  if let Some(requested) = requested
+    && !discover_locales(root)
+      .iter()
+      .any(|info| info.locale == normalize_locale(requested))
+  {
+    return Err(vec![format!("unknown locale: {requested}")]);
+  }
   let fallback_domains = match load_all_catalogs(root, FALLBACK_LOCALE) {
     Ok(value) => value,
     Err(error) => {
@@ -310,6 +387,25 @@ pub fn validate_catalogs(root: &Path, requested: Option<&str>) -> Result<(), Vec
         .unwrap_or(true)
     })
   {
+    match read_json(&root.join(&locale).join("locale.json")) {
+      Ok(metadata) => {
+        for field in ["locale", "name", "native_name"] {
+          if metadata
+            .get(field)
+            .and_then(serde_json::Value::as_str)
+            .is_none_or(|value| value.trim().is_empty())
+          {
+            errors.push(format!("{locale}/locale.json: missing or empty {field}"));
+          }
+        }
+        if metadata.get("locale").and_then(serde_json::Value::as_str) != Some(locale.as_str()) {
+          errors.push(format!(
+            "{locale}/locale.json: locale does not match directory"
+          ));
+        }
+      }
+      Err(error) => errors.push(format!("{locale}/locale.json: {error}")),
+    }
     let catalogs = match load_all_catalogs(root, &locale) {
       Ok(value) => value,
       Err(error) => {
@@ -323,9 +419,38 @@ pub fn validate_catalogs(root: &Path, requested: Option<&str>) -> Result<(), Vec
         errors.push(format!("{locale}/{domain}: missing key {key}"));
       }
       for key in actual.keys().filter(|key| !expected.contains_key(*key)) {
-        errors.push(format!("{locale}/{domain}: extra key {key}"));
+        let plural_base = key
+          .rsplit_once('.')
+          .filter(|(_, suffix)| plural::extra_categories(&locale).contains(suffix));
+        if let Some((base, _)) = plural_base
+          && let Some(source) = expected.get(&format!("{base}.other"))
+        {
+          if actual[key].trim().is_empty() {
+            errors.push(format!("{locale}/{domain}: empty translation for {key}"));
+          }
+          if placeholders(source) != placeholders(&actual[key]) {
+            errors.push(format!("{locale}/{domain}: placeholder mismatch for {key}"));
+          }
+        } else {
+          errors.push(format!("{locale}/{domain}: extra key {key}"));
+        }
       }
       for (key, value) in expected {
+        if let Some(base) = key.strip_suffix(".one")
+          && expected.contains_key(&format!("{base}.other"))
+        {
+          for category in plural::extra_categories(&locale) {
+            if !actual.contains_key(&format!("{base}.{category}")) {
+              errors.push(format!(
+                "{locale}/{domain}: missing plural form {base}.{category}"
+              ));
+            }
+          }
+        }
+        if actual.get(key).is_some_and(|value| value.trim().is_empty()) && !value.trim().is_empty()
+        {
+          errors.push(format!("{locale}/{domain}: empty translation for {key}"));
+        }
         if let Some(translated) = actual.get(key)
           && placeholders(value) != placeholders(translated)
         {
@@ -423,9 +548,28 @@ where
   K: AsRef<str>,
   V: AsRef<str>,
 {
-  args
+  let args: HashMap<String, String> = args
     .into_iter()
-    .fold(value.to_owned(), |result, (key, replacement)| {
-      result.replace(&format!("{{{}}}", key.as_ref()), replacement.as_ref())
-    })
+    .map(|(key, value)| (key.as_ref().to_owned(), value.as_ref().to_owned()))
+    .collect();
+  let mut output = String::new();
+  let mut remaining = value;
+  while let Some(start) = remaining.find('{') {
+    output.push_str(&remaining[..start]);
+    let Some(end) = remaining[start..].find('}') else {
+      output.push_str(&remaining[start..]);
+      return output;
+    };
+    let end = start + end;
+    let name = &remaining[start + 1..end];
+    output.push_str(
+      args
+        .get(name)
+        .map(String::as_str)
+        .unwrap_or(&remaining[start..=end]),
+    );
+    remaining = &remaining[end + 1..];
+  }
+  output.push_str(remaining);
+  output
 }

@@ -41,10 +41,7 @@ impl<'a> Monitor<'a> {
     if !self.client.connect().await {
       return Err(format!(
         "{}: {}",
-        crate::i18n::tr(
-          "cannot connect to system bus",
-          "não foi possível conectar ao barramento de sistema"
-        ),
+        crate::i18n::tr("device.cannot_connect_to_system_bus"),
         self.client.last_error()
       ));
     }
@@ -127,22 +124,14 @@ impl<'a> Monitor<'a> {
         .filter(|(path, _)| !previous.contains_key(*path))
         .map(|(_, name)| name)
       {
-        crate::process::notify(
-          crate::i18n::tr("Device connected", "Dispositivo conectado"),
-          name,
-          false,
-        );
+        crate::process::notify(crate::i18n::tr("device.device_connected"), name, false);
       }
       for name in previous
         .iter()
         .filter(|(path, _)| !current.contains_key(*path))
         .map(|(_, name)| name)
       {
-        crate::process::notify(
-          crate::i18n::tr("Device disconnected", "Dispositivo desconectado"),
-          name,
-          false,
-        );
+        crate::process::notify(crate::i18n::tr("device.device_disconnected"), name, false);
       }
     }
     self.known_devices = Some(current);

@@ -1,0 +1,11 @@
+{
+  "system-monitor.title.cpu": "CPU监视器",
+  "system-monitor.title.memory": "内存监视器",
+  "system-monitor.title.gpu": "GPU监视器",
+  "system-monitor.help.gpu": "仅显示 GPU 面板（最多 6 个 GPU）",
+  "system-monitor.title.overview": "系统监控",
+  "system-monitor.live": "居住",
+  "system-monitor.footer.close": "Esc 关闭",
+  "system-monitor.unavailable": "btop 无法启动。按 Esc 关闭。",
+  "system-monitor.gpu.unavailable": "没有可用的 GPU 指标。检查 btop GPU 支持、提供程序库和设备访问。"
+}

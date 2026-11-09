@@ -615,7 +615,7 @@ mod tests {
 
   #[test]
   fn home_renders_existing_and_phase_two_destinations() {
-    let mut app = App::new(InitialRoute::Home);
+    let mut app = App::with_lang(InitialRoute::Home, argvus_i18n::Lang::for_locale("en-US"));
     let mut terminal = Terminal::new(TestBackend::new(90, 32)).unwrap();
     terminal.draw(|frame| draw(&mut app, frame)).unwrap();
     let text = terminal
@@ -626,22 +626,23 @@ mod tests {
       .map(|cell| cell.symbol())
       .collect::<String>();
     assert!(text.contains("ARGVUS"));
-    assert!(text.contains("Control Center") || text.contains("Central de Controle"));
-    assert!(text.contains("/ Search") || text.contains("/ Pesquisar") || text.contains("Search"));
+    assert!(text.contains("Control Center"));
+    assert!(text.contains("Search"));
   }
 
   #[test]
   fn domain_pages_use_the_shared_chrome() {
-    let cases: [(Route, [&str; 2]); _] = [
+    // Rendering fixtures use a fixed language, independent of the user preference.
+    let cases: [(Route, &str); _] = [
       #[cfg(feature = "network")]
-      (Route::Network, ["Network", "Rede"]),
+      (Route::Network, "Network"),
       #[cfg(feature = "boot")]
-      (Route::Boot, ["Boot", "Boot"]),
+      (Route::Boot, "Boot"),
       #[cfg(feature = "packages")]
-      (Route::Packages, ["Packages", "Pacotes"]),
+      (Route::Packages, "Packages"),
     ];
     for (route, marker) in cases {
-      let mut app = App::new(InitialRoute::Home);
+      let mut app = App::with_lang(InitialRoute::Home, argvus_i18n::Lang::for_locale("en-US"));
       app.route = route;
       let mut terminal = Terminal::new(TestBackend::new(90, 25)).unwrap();
       terminal.draw(|frame| draw(&mut app, frame)).unwrap();
@@ -653,8 +654,8 @@ mod tests {
         .map(|cell| cell.symbol())
         .collect::<String>();
       assert!(text.contains("ARGVUS"));
-      assert!(text.contains(marker[0]) || text.contains(marker[1]));
-      assert!(text.contains("Enter") || text.contains("Abrir"));
+      assert!(text.contains(marker));
+      assert!(text.contains("Enter"));
       assert!(!text.contains("┌ Network") && !text.contains("┌ Boot"));
     }
   }
@@ -680,7 +681,7 @@ mod tests {
 
   #[test]
   fn config_screen_renders_with_chrome_and_checkbox() {
-    let mut app = App::new(InitialRoute::Home);
+    let mut app = App::with_lang(InitialRoute::Home, argvus_i18n::Lang::for_locale("en-US"));
     app.route = Route::Config;
     let mut terminal = Terminal::new(TestBackend::new(90, 24)).unwrap();
     terminal.draw(|frame| draw(&mut app, frame)).unwrap();
@@ -692,9 +693,9 @@ mod tests {
       .map(|cell| cell.symbol())
       .collect::<String>();
     assert!(text.contains("ARGVUS"));
-    assert!(text.contains("Estilo") || text.contains("Style"));
+    assert!(text.contains("Style"));
     assert!(text.contains("[x]") || text.contains("[ ]"));
-    assert!(text.contains("Ícones") || text.contains("Icons"));
+    assert!(text.contains("Icons"));
   }
 
   #[cfg(feature = "apps")]

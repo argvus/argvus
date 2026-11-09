@@ -125,18 +125,22 @@ impl TextEditor {
       KeyCode::Char('s' | 'S') if control => return EditorOutcome::Saved(self.text()),
       KeyCode::Enter if !self.multiline => return EditorOutcome::Saved(self.text()),
       KeyCode::Enter => self.insert('\n'),
-      KeyCode::Left => self.cursor = self.cursor.saturating_sub(1),
-      KeyCode::Right => self.cursor = (self.cursor + 1).min(self.value.len()),
+      KeyCode::Left => {
+        self.cursor = crate::text::previous_grapheme_boundary(&self.value, self.cursor)
+      }
+      KeyCode::Right => self.cursor = crate::text::next_grapheme_boundary(&self.value, self.cursor),
       KeyCode::Home => self.cursor = self.line_start(self.cursor),
       KeyCode::End => self.cursor = self.line_end(self.cursor),
       KeyCode::Up => self.move_vertically(false),
       KeyCode::Down => self.move_vertically(true),
       KeyCode::Backspace if self.cursor > 0 => {
-        self.cursor -= 1;
-        self.value.remove(self.cursor);
+        let previous = crate::text::previous_grapheme_boundary(&self.value, self.cursor);
+        self.value.drain(previous..self.cursor);
+        self.cursor = previous;
       }
       KeyCode::Delete if self.cursor < self.value.len() => {
-        self.value.remove(self.cursor);
+        let next = crate::text::next_grapheme_boundary(&self.value, self.cursor);
+        self.value.drain(self.cursor..next);
       }
       KeyCode::Tab if self.multiline => self.insert('\t'),
       KeyCode::Char(character) if text_character(key).is_some() => self.insert(character),
@@ -162,7 +166,7 @@ impl TextEditor {
     let allowed = !character.is_control() || (self.multiline && matches!(character, '\n' | '\t'));
     if allowed && self.value.len() < MAX_CHARS {
       self.value.insert(self.cursor, character);
-      self.cursor += 1;
+      self.cursor = crate::text::next_grapheme_boundary(&self.value, self.cursor);
     }
   }
 
@@ -289,6 +293,19 @@ impl TextEditor {
 #[cfg(test)]
 mod tests {
   use super::*;
+
+  #[test]
+  fn editing_moves_and_deletes_complete_graphemes() {
+    let mut editor = TextEditor::single_line("Unicode", "日e\u{301}👩‍💻한");
+    editor.handle(key(KeyCode::Left));
+    editor.handle(key(KeyCode::Backspace));
+    assert_eq!(editor.text(), "日e\u{301}한");
+    editor.handle(key(KeyCode::Left));
+    editor.handle(key(KeyCode::Delete));
+    assert_eq!(editor.text(), "日한");
+    editor.handle(key(KeyCode::Backspace));
+    assert_eq!(editor.text(), "한");
+  }
   use ratatui::{Terminal, backend::TestBackend};
 
   fn key(code: KeyCode) -> KeyEvent {

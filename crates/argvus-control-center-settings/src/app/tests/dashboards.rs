@@ -6,7 +6,7 @@ use super::*;
 fn language_page_shows_status_lines_and_selectable_choices() {
   let app = app(Page::Language);
   let rows = app.rows();
-  assert_eq!(rows.len(), 6);
+  assert_eq!(rows.len(), 4 + app.languages.len());
   assert_eq!(rows[0].label(), "Current language");
   assert_eq!(rows[0].kind(), RowKind::Info);
   assert_eq!(rows[1].label(), "Regional locale");

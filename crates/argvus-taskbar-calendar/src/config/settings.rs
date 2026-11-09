@@ -153,7 +153,9 @@ impl AppConfig {
 
   fn validate(mut config: Self) -> Self {
     config.appearance.font_size = config.appearance.font_size.clamp(8, 32);
-    if !matches!(config.locale.language.as_str(), "auto" | "en-US" | "pt-BR") {
+    if config.locale.language != "auto"
+      && argvus_i18n::resolve_installed_locale(&config.locale.language).is_none()
+    {
       // Unknown languages follow the system locale, which itself falls
       // back to English.
       config.locale.language = "auto".to_string();

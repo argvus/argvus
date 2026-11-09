@@ -1,0 +1,20 @@
+{
+  "menu.lock": "ロック",
+  "menu.suspend": "つるす",
+  "menu.logout": "ログアウト",
+  "menu.reboot": "リブート",
+  "menu.shutdown": "シャットダウン",
+  "menu.launcher_missing": "Rofi メニュー ランチャーが見つかりません。",
+  "menu.unsupported_launcher": "サポートされていないメニュー ランチャー: {launcher}",
+  "idle.timeout.title": "ロックタイムアウト",
+  "idle.timeout.one_minute": "1分",
+  "idle.timeout.minutes": "{count}分",
+  "idle.timeout.never": "一度もない",
+  "idle.timeout.config_missing": "hypridle 構成が見つかりません: {path}",
+  "idle.timeout.invalid": "無効なロック タイムアウト: {timeout}",
+  "idle.timeout.notification": "非アクティブなロック: {timeout}",
+  "keep_awake.title": "起きていてください",
+  "keep_awake.enabled": "常時覚醒を有効にする",
+  "keep_awake.disabled": "常時アウェイクを無効にする",
+  "dpms.usage": "使用法: {command} {arguments}"
+}

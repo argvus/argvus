@@ -1,0 +1,13 @@
+{
+  "launcher.class_requires_value": "argvus-tui-terminal: --class에는 값이 필요합니다.",
+  "launcher.option_requires_value": "argvus-tui-terminal: {option}에는 값이 필요합니다.",
+  "yazi.rename": "이름 바꾸기",
+  "yazi.open_terminal": "터미널에서 열기",
+  "yazi.move_to_trash": "휴지통으로 이동",
+  "yazi.secure_destroy": "안전하게 파괴(스모그)",
+  "yazi.empty_trash": "휴지통 비우기(스모그)",
+  "yazi.open_file_smart": "지능적으로 파일 열기",
+  "yazi.open_vscode": "VSCode로 열기",
+  "yazi.create_zip": "ZIP 아카이브 생성(zip)",
+  "yazi.open_file_roller": "파일 롤러로 열기"
+}

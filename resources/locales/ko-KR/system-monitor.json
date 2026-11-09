@@ -1,0 +1,11 @@
+{
+  "system-monitor.title.cpu": "CPU 모니터",
+  "system-monitor.title.memory": "메모리 모니터",
+  "system-monitor.title.gpu": "GPU 모니터",
+  "system-monitor.help.gpu": "GPU 패널만 표시(최대 6개의 GPU)",
+  "system-monitor.title.overview": "시스템 모니터",
+  "system-monitor.live": "살다",
+  "system-monitor.footer.close": "Esc 닫기",
+  "system-monitor.unavailable": "btop을 시작할 수 없습니다. 닫으려면 Esc를 누르세요.",
+  "system-monitor.gpu.unavailable": "GPU 측정항목을 사용할 수 없습니다. btop GPU 지원, 공급자 라이브러리 및 장치 액세스를 확인하세요."
+}

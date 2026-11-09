@@ -1,0 +1,8 @@
+{
+  "save": "保存",
+  "cancel": "取消",
+  "close": "关闭",
+  "welcome": "欢迎，{name}！",
+  "updates.available.one": "有 {count} 个更新可用",
+  "updates.available.other": "有 {count} 个更新可用"
+}

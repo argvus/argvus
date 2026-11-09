@@ -15,7 +15,6 @@ use super::keybinding_capture::{
 };
 use super::keyboard_draft;
 use super::labels::search_matches;
-use super::rows::LANGUAGES;
 use super::{App, PendingAction, Status, StatusKind};
 use crate::administration::{EditTarget, Editor};
 use crate::config::fonts::SettingKind;

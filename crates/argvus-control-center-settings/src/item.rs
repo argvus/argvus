@@ -80,7 +80,7 @@ pub enum Item {
   Variant(usize),
   /// Index into the console keymaps.
   Keymap(usize),
-  /// 0 = English (US), 1 = Portuguese (Brazil).
+  /// Index into the installed language list cached by the page.
   Language(usize),
 
   // System.

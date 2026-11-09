@@ -1,0 +1,9 @@
+{
+  "save": "Enregistrer",
+  "cancel": "Annuler",
+  "close": "Fermer",
+  "welcome": "Bienvenue, {name} !",
+  "updates.available.one": "{count} mise à jour disponible",
+  "updates.available.other": "{count} mises à jour disponibles",
+  "updates.available.many": "{count} mises à jour disponibles"
+}

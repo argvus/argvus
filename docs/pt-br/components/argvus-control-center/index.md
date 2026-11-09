@@ -651,3 +651,7 @@ dessa forma. A opção vale apenas para a classe `argvus-control-center`;
 terminais comuns e outros TUIs mantêm sua política de confirmação.
 
 `SUPER + Alt + Espaço` alterna o modo global entre mosaico e flutuante, usando a mesma preferência da taskbar e do Control Center. O comando equivalente é `argvus config window-mode toggle`. Acionamentos simultâneos são serializados; a alternância considera a preferência salva, mesmo quando sua aplicação está pendente. O atalho pode ser alterado ou desabilitado em Atalhos de teclado; `SUPER + Shift + Espaço` mantém a ação individual.
+
+## Idiomas e Unicode
+
+A página Idioma descobre os catálogos instalados e mostra os nomes nativos dos dez idiomas. Habilite o locale UTF-8 em System Locales antes de selecionar a língua. A seleção continua gravada em `~/.config/locale.conf`; saia e entre novamente para aplicar à sessão inteira. Datas das chaves GPG usam dia/mês/ano nos idiomas europeus e ano/mês/dia em inglês e nos idiomas CJK.

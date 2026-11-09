@@ -122,8 +122,10 @@ impl PackagesApp {
       self.lang,
       &self.breadcrumb(),
       &self.terminal_footer(&rows),
-      self.status.as_ref(),
-      admin_required,
+      argvus_tui::page::PageStatus {
+        message: self.status.as_ref(),
+        admin_required,
+      },
     );
     if filters_while_typing(self.page) {
       self.draw_filtered_list(f, body, &rows);

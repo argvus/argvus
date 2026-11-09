@@ -32,16 +32,13 @@ impl<'a> Menu<'a> {
     if valid.is_empty() {
       process::notify(
         "argvus-removable-devices",
-        i18n::tr(
-          "No removable storage devices",
-          "Nenhum dispositivo de armazenamento removível",
-        ),
+        i18n::tr("device.no_removable_storage_devices"),
         false,
       );
       return 1;
     }
 
-    let devices_prompt = i18n::tr("Removable devices", "Dispositivos removíveis");
+    let devices_prompt = i18n::tr("device.removable_devices");
 
     loop {
       let rows: Vec<String> = valid
@@ -86,17 +83,14 @@ impl<'a> Menu<'a> {
     if devices.is_empty() {
       process::notify(
         "argvus-removable-devices",
-        i18n::tr(
-          "No removable storage devices",
-          "Nenhum dispositivo de armazenamento removível",
-        ),
+        i18n::tr("device.no_removable_storage_devices"),
         false,
       );
       return 1;
     }
 
     let entries: Vec<String> = devices.iter().map(device_label).collect();
-    let prompt = i18n::tr("Removable devices", "Dispositivos removíveis");
+    let prompt = i18n::tr("device.removable_devices");
     let cmd = self.menu_cmd(prompt);
     let Some((output, _error)) = process::run_capture(&cmd, &entries) else {
       return 1;
@@ -151,56 +145,56 @@ fn device_entries(devices: &[Device], index: usize) -> Vec<MenuEntry> {
     entries.push(MenuEntry {
       kind: ActionKind::Open,
       device_index: index,
-      label: i18n::tr("Open", "Abrir").to_string(),
+      label: i18n::tr("device.open").to_string(),
     });
   }
   if can_mount {
     entries.push(MenuEntry {
       kind: ActionKind::Mount,
       device_index: index,
-      label: i18n::tr("Mount", "Montar").to_string(),
+      label: i18n::tr("device.mount").to_string(),
     });
   }
   if device.mounted {
     entries.push(MenuEntry {
       kind: ActionKind::Unmount,
       device_index: index,
-      label: i18n::tr("Unmount", "Desmontar").to_string(),
+      label: i18n::tr("device.unmount").to_string(),
     });
   }
   if device.encrypted && device.locked {
     entries.push(MenuEntry {
       kind: ActionKind::Unlock,
       device_index: index,
-      label: i18n::tr("Unlock", "Desbloquear").to_string(),
+      label: i18n::tr("device.unlock").to_string(),
     });
   }
   if device.encrypted && !device.locked {
     entries.push(MenuEntry {
       kind: ActionKind::Lock,
       device_index: index,
-      label: i18n::tr("Lock", "Bloquear").to_string(),
+      label: i18n::tr("device.lock").to_string(),
     });
   }
   if device.ejectable {
     entries.push(MenuEntry {
       kind: ActionKind::Eject,
       device_index: index,
-      label: i18n::tr("Eject", "Ejetar").to_string(),
+      label: i18n::tr("device.eject").to_string(),
     });
   }
   if device.can_power_off {
     entries.push(MenuEntry {
       kind: ActionKind::PowerOff,
       device_index: index,
-      label: i18n::tr("Power Off", "Desligar").to_string(),
+      label: i18n::tr("device.power_off").to_string(),
     });
   }
   if device.mounted {
     entries.push(MenuEntry {
       kind: ActionKind::Copy,
       device_index: index,
-      label: i18n::tr("Copy path", "Copiar caminho").to_string(),
+      label: i18n::tr("device.copy_path").to_string(),
     });
   }
   entries
@@ -224,22 +218,13 @@ fn device_short_name(d: &Device) -> String {
 }
 
 fn device_label(d: &Device) -> String {
-  let state = i18n::tr(
-    if d.encrypted && d.locked {
-      "locked"
-    } else if d.mounted {
-      "mounted"
-    } else {
-      "available"
-    },
-    if d.encrypted && d.locked {
-      "bloqueado"
-    } else if d.mounted {
-      "montado"
-    } else {
-      "disponível"
-    },
-  );
+  let state = i18n::tr(if d.encrypted && d.locked {
+    "device.locked"
+  } else if d.mounted {
+    "device.mounted"
+  } else {
+    "device.available"
+  });
 
   let mut details: Vec<String> = Vec::new();
   if !d.filesystem.is_empty() {

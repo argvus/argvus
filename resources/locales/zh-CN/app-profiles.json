@@ -1,0 +1,13 @@
+{
+  "launcher.class_requires_value": "argvus-tui-terminal：--class 需要一个值",
+  "launcher.option_requires_value": "argvus-tui-terminal：{option} 需要一个值",
+  "yazi.rename": "重命名",
+  "yazi.open_terminal": "在终端中打开",
+  "yazi.move_to_trash": "移至垃圾箱",
+  "yazi.secure_destroy": "安全销毁（烟雾）",
+  "yazi.empty_trash": "清空垃圾（烟雾）",
+  "yazi.open_file_smart": "智能打开文件",
+  "yazi.open_vscode": "使用 VSCode 打开",
+  "yazi.create_zip": "创建 ZIP 存档 (zip)",
+  "yazi.open_file_roller": "使用文件滚轮打开"
+}

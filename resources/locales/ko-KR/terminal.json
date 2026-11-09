@@ -1,0 +1,12 @@
+{
+  "usage": "용법:\n  argvus-terminal [kitty options]\n  argvus-terminal --apply [theme]\n  argvus-terminal --print-config [theme]\n  argvus-terminal --print-tui-config [theme]\n\n옵션:\n--class <class> Kitty 창 클래스를 설정합니다.\n--font-profile <profile> 터미널 또는 앱.\n--tui ARGVUS TUI Kitty 프로필을 사용합니다.\n-e <command> [args...] Kitty에서 명령을 실행합니다.",
+  "class_requires_value": "--class에는 값이 필요합니다",
+  "font_profile_requires_value": "--font-profile에는 값이 필요합니다",
+  "unsupported_font_profile": "지원되지 않는 글꼴 프로필: {profile}",
+  "kitty_not_installed": "Kitty가 설치되지 않았습니다",
+  "config_not_found": "{path}에서 Kitty 구성을 찾을 수 없습니다.",
+  "tui_config_not_found": "Kitty {path}에서 TUI 구성을 찾을 수 없습니다.",
+  "cache_create_failed": "{path}에서 Kitty 런타임 캐시를 생성할 수 없습니다.",
+  "cache_write_failed": "{path}에서 Kitty 런타임 캐시를 쓸 수 없습니다.",
+  "cache_lock_failed": "{path}에서 Kitty 런타임 캐시를 잠글 수 없습니다."
+}

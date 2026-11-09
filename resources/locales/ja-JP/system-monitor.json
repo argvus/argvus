@@ -1,0 +1,11 @@
+{
+  "system-monitor.title.cpu": "CPUモニター",
+  "system-monitor.title.memory": "メモリモニター",
+  "system-monitor.title.gpu": "GPUモニター",
+  "system-monitor.help.gpu": "GPU パネルのみを表示 (最大 6 つの GPU)",
+  "system-monitor.title.overview": "システムモニター",
+  "system-monitor.live": "ライブ",
+  "system-monitor.footer.close": "Esc近い",
+  "system-monitor.unavailable": "btopを起動できませんでした。 Esc を押して閉じます。",
+  "system-monitor.gpu.unavailable": "GPU メトリクスは使用できません。 btop GPU サポート、プロバイダー ライブラリ、およびデバイス アクセスを確認してください。"
+}

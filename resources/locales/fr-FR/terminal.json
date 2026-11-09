@@ -1,0 +1,12 @@
+{
+  "usage": "Usage:\n  argvus-terminal [kitty options]\n  argvus-terminal --apply [theme]\n  argvus-terminal --print-config [theme]\n  argvus-terminal --print-tui-config [theme]\n\nPossibilités :\n--class <class> Définit la classe de fenêtre Kitty.\nTerminal ou applications --font-profile <profil>.\n--tui Utilisez le profil ARGVUS TUI Kitty.\n-e <command> [args...] Exécute une commande dans Kitty.",
+  "class_requires_value": "--class nécessite une valeur",
+  "font_profile_requires_value": "--font-profile nécessite une valeur",
+  "unsupported_font_profile": "Profil de police non pris en charge : {profile}",
+  "kitty_not_installed": "Kitty n'est pas installé",
+  "config_not_found": "La configuration Kitty n'a pas été trouvée sous {path}",
+  "tui_config_not_found": "La configuration TUI Kitty est introuvable sous {path}",
+  "cache_create_failed": "Impossible de créer le cache d'exécution Kitty sur {path}",
+  "cache_write_failed": "Impossible d'écrire le cache d'exécution Kitty sur {path}",
+  "cache_lock_failed": "Impossible de verrouiller le cache d'exécution Kitty sur {path}"
+}

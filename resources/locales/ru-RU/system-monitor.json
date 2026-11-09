@@ -1,0 +1,11 @@
+{
+  "system-monitor.title.cpu": "CPU монитор",
+  "system-monitor.title.memory": "Монитор памяти",
+  "system-monitor.title.gpu": "GPU монитор",
+  "system-monitor.help.gpu": "Показывать только панели GPU (до шести графических процессоров)",
+  "system-monitor.title.overview": "Системный монитор",
+  "system-monitor.live": "ЖИТЬ",
+  "system-monitor.footer.close": "Esc Закрыть",
+  "system-monitor.unavailable": "btop не удалось запустить. Нажмите Esc, чтобы закрыть.",
+  "system-monitor.gpu.unavailable": "Метрики GPU недоступны. Проверьте поддержку btop GPU, библиотеки поставщиков и доступ к устройствам."
+}

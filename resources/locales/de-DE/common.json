@@ -1,0 +1,8 @@
+{
+  "save": "Speichern",
+  "cancel": "Abbrechen",
+  "close": "Schließen",
+  "welcome": "Willkommen, {name}!",
+  "updates.available.one": "{count} Aktualisierung verfügbar",
+  "updates.available.other": "{count} Aktualisierungen verfügbar"
+}

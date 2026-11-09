@@ -1,0 +1,7 @@
+{
+  "usage": "用法：hyprlock-theme.sh [--invalidate]",
+  "invalid_active_theme": "Hyprlock 的活动主题无效：{theme}",
+  "theme_not_found": "未找到 Hyprlock 主题：{theme}",
+  "password_placeholder": "密码",
+  "theme_applied": "Hyprlock 主题 {theme} 应用重音 #{accent}。"
+}

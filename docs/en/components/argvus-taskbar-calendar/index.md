@@ -84,3 +84,7 @@ Automatic language selection follows the user `locale.conf`, with English as the
 The taskbar calendar, ARGVUS Focus, ARGVUS Clock and Control Panel are mutually exclusive: opening one closes the others.
 
 Calendar read failures are displayed separately from an empty agenda. Opening the database, loading daily events and loading monthly indicators have distinct messages. Select a day again to retry. A failed refresh retains previously loaded data only for the same day or month; valid results from the other query remain available.
+
+## Shared language catalogs
+
+The interface uses the shared `argvus-i18n` catalogs for all ten languages. Texts are stored in `resources/locales/<locale>/taskbar-calendar.json` in the master workspace and installed by `argvus`. English is the fallback; new languages no longer require a local bilingual dictionary.

@@ -1,6 +1,6 @@
 //! Calendar dates typed on the GPG keys page.
 //!
-//! The date field follows the language: pt-BR reads the day first (`DD/MM/YYYY`),
+//! The date field follows the language: European languages read the day first (`DD/MM/YYYY`),
 //! every other language reads the year first (`YYYY/MM/DD`). The launcher and gpg
 //! always receive the ISO form (`YYYY-MM-DD`), so the conversion happens here, once.
 //! There is no date crate in this workspace, so the calendar rules are kept small
@@ -10,7 +10,7 @@ use std::time::{SystemTime, UNIX_EPOCH};
 /// The order of the fields in a date typed by the user.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum DateOrder {
-  /// `DD/MM/YYYY`, used by pt-BR.
+  /// `DD/MM/YYYY`, used by the supported European languages.
   DayFirst,
   /// `YYYY/MM/DD`, used by every other language.
   YearFirst,
@@ -19,7 +19,10 @@ pub enum DateOrder {
 impl DateOrder {
   /// The order for an ARGVUS locale such as `pt-BR` or `en-US`.
   pub fn for_locale(locale: &str) -> Self {
-    if locale.starts_with("pt") {
+    if matches!(
+      locale.split('-').next(),
+      Some("pt" | "es" | "fr" | "it" | "de" | "ru")
+    ) {
       Self::DayFirst
     } else {
       Self::YearFirst

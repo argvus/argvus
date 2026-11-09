@@ -5,6 +5,42 @@ use ratatui::{Terminal, backend::TestBackend};
 use serde_json::json;
 
 #[test]
+fn all_installed_languages_render_settings_at_multiple_terminal_sizes() {
+  for info in argvus_i18n::installed_locales() {
+    for page in [
+      Page::Language,
+      Page::LocaleRegion,
+      Page::Fonts,
+      Page::GpgKeys,
+      Page::SystemLocales,
+    ] {
+      let mut app = App::with_context(
+        page,
+        crate::i18n::Lang::for_locale(&info.locale),
+        crate::theme::Theme::load(),
+      );
+      app.error_modal = None;
+      for (width, height) in [(40, 12), (60, 18), (80, 24), (140, 40)] {
+        let mut terminal = Terminal::new(TestBackend::new(width, height)).unwrap();
+        terminal.draw(|frame| draw(&mut app, frame)).unwrap();
+        let screen: String = terminal
+          .backend()
+          .buffer()
+          .content
+          .iter()
+          .map(|cell| cell.symbol())
+          .collect();
+        assert!(
+          !screen.contains("control_center."),
+          "{} {page:?} {width}x{height}",
+          info.locale
+        );
+      }
+    }
+  }
+}
+
+#[test]
 fn ssh_keys_search_opens_on_slash_and_filters_rows() {
   let mut app = App::with_context(
     Page::SshKeys,
@@ -93,7 +129,11 @@ fn actions_are_rows_and_only_the_cursor_row_is_highlighted() {
 #[test]
 fn main_page_renders_brand_menu_and_footer() {
   let mut terminal = Terminal::new(TestBackend::new(80, 24)).unwrap();
-  let mut app = App::new(Page::Main);
+  let mut app = App::with_context(
+    Page::Main,
+    crate::i18n::Lang::for_locale("en-US"),
+    crate::theme::Theme::load(),
+  );
   app.error_modal = None;
   terminal.draw(|frame| draw(&mut app, frame)).unwrap();
   let rendered = terminal
@@ -165,7 +205,11 @@ fn reset_pages_render_a_restore_defaults_row_without_brackets() {
 #[test]
 fn hostname_editing_renders_popup_with_typed_value() {
   let mut terminal = Terminal::new(TestBackend::new(80, 24)).unwrap();
-  let mut app = App::new(Page::Hostname);
+  let mut app = App::with_context(
+    Page::Hostname,
+    crate::i18n::Lang::for_locale("en-US"),
+    crate::theme::Theme::load(),
+  );
   app.error_modal = None;
   app.hostname_editing = true;
   app.hostname_input = "mybox".into();

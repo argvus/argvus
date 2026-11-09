@@ -1,0 +1,12 @@
+{
+  "usage": "使用法：\n  argvus-terminal [kitty options]\n  argvus-terminal --apply [theme]\n  argvus-terminal --print-config [theme]\n  argvus-terminal --print-tui-config [theme]\n\nオプション:\n--class <class> Kitty ウィンドウ クラスを設定します。\n--font-profile <profile> 端末またはアプリ。\n--tui ARGVUS TUI Kitty プロファイルを使用します。\n-e <command> [args...] Kitty でコマンドを実行します。",
+  "class_requires_value": "--class には値が必要です",
+  "font_profile_requires_value": "--font-profile には値が必要です",
+  "unsupported_font_profile": "サポートされていないフォント プロファイル: {profile}",
+  "kitty_not_installed": "Kittyはインストールされていません",
+  "config_not_found": "Kitty 構成が {path} で見つかりませんでした",
+  "tui_config_not_found": "Kitty TUI 構成が {path} で見つかりませんでした",
+  "cache_create_failed": "{path} で Kitty ランタイム キャッシュを作成できませんでした",
+  "cache_write_failed": "{path} で Kitty ランタイム キャッシュを書き込めませんでした",
+  "cache_lock_failed": "{path} で Kitty ランタイム キャッシュをロックできませんでした"
+}

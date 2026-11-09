@@ -63,51 +63,36 @@ pub(super) fn device_entries(d: &Device) -> Vec<DeviceEntry> {
 }
 
 pub(super) fn action_label(kind: ActionKind) -> &'static str {
-  let (en, pt) = match kind {
-    ActionKind::Open => ("Open", "Abrir"),
-    ActionKind::Mount => ("Mount", "Montar"),
-    ActionKind::Unmount => ("Unmount", "Desmontar"),
-    ActionKind::Eject => ("Eject", "Ejetar"),
-    ActionKind::PowerOff => ("Power Off", "Desligar"),
-    ActionKind::Lock => ("Lock", "Bloquear"),
-    ActionKind::Unlock => ("Unlock", "Desbloquear"),
-    ActionKind::Copy => ("Copy path", "Copiar caminho"),
+  let key = match kind {
+    ActionKind::Open => "device.open",
+    ActionKind::Mount => "device.mount",
+    ActionKind::Unmount => "device.unmount",
+    ActionKind::Eject => "device.eject",
+    ActionKind::PowerOff => "device.power_off",
+    ActionKind::Lock => "device.lock",
+    ActionKind::Unlock => "device.unlock",
+    ActionKind::Copy => "device.copy_path",
   };
-  i18n::tr(en, pt)
+  i18n::tr(key)
 }
 
 pub(super) fn action_tooltip(kind: ActionKind) -> &'static str {
-  let (en, pt) = match kind {
-    ActionKind::Open => (
-      "Open in the configured file manager",
-      "Abrir no gerenciador de arquivos configurado",
-    ),
-    ActionKind::Mount => ("Mount this device", "Montar este dispositivo"),
-    ActionKind::Unmount => ("Unmount this device", "Desmontar este dispositivo"),
-    ActionKind::Eject => (
-      "Unmount and eject this device",
-      "Desmontar e ejetar este dispositivo",
-    ),
-    ActionKind::PowerOff => (
-      "Safely power off this drive",
-      "Desligar esta unidade com segurança",
-    ),
-    ActionKind::Lock => (
-      "Lock this encrypted volume",
-      "Bloquear este volume criptografado",
-    ),
-    ActionKind::Unlock => (
-      "Unlock this encrypted volume",
-      "Desbloquear este volume criptografado",
-    ),
-    ActionKind::Copy => ("Copy the mount path", "Copiar o ponto de montagem"),
+  let key = match kind {
+    ActionKind::Open => "device.open_in_the_configured_file_manager",
+    ActionKind::Mount => "device.mount_this_device",
+    ActionKind::Unmount => "device.unmount_this_device",
+    ActionKind::Eject => "device.unmount_and_eject_this_device",
+    ActionKind::PowerOff => "device.safely_power_off_this_drive",
+    ActionKind::Lock => "device.lock_this_encrypted_volume",
+    ActionKind::Unlock => "device.unlock_this_encrypted_volume",
+    ActionKind::Copy => "device.copy_the_mount_path",
   };
-  i18n::tr(en, pt)
+  i18n::tr(key)
 }
 
 pub(super) fn device_title(d: &Device) -> String {
-  let (en, pt) = state_words(d.encrypted && d.locked, d.mounted);
-  let state = i18n::tr(en, pt);
+  let key = state_words(d.encrypted && d.locked, d.mounted);
+  let state = i18n::tr(key);
   if d.capacity > 0 {
     format!("{} · {} · {}", d.name, text::human_bytes(d.capacity), state)
   } else {
@@ -115,12 +100,12 @@ pub(super) fn device_title(d: &Device) -> String {
   }
 }
 
-pub(super) fn state_words(locked: bool, mounted: bool) -> (&'static str, &'static str) {
+pub(super) fn state_words(locked: bool, mounted: bool) -> &'static str {
   if locked {
-    ("locked", "bloqueado")
+    "device.locked"
   } else if mounted {
-    ("mounted", "montado")
+    "device.mounted"
   } else {
-    ("available", "disponível")
+    "device.available"
   }
 }

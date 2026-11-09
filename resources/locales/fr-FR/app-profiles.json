@@ -1,0 +1,13 @@
+{
+  "launcher.class_requires_value": "argvus-tui-terminal : --class nécessite une valeur",
+  "launcher.option_requires_value": "argvus-tui-terminal : {option} nécessite une valeur",
+  "yazi.rename": "Rebaptiser",
+  "yazi.open_terminal": "Ouvrir dans le terminal",
+  "yazi.move_to_trash": "Déplacer vers la corbeille",
+  "yazi.secure_destroy": "Détruire en toute sécurité (Smog)",
+  "yazi.empty_trash": "Vider les poubelles (Smog)",
+  "yazi.open_file_smart": "Ouvrir le fichier intelligemment",
+  "yazi.open_vscode": "Ouvrir avec VSCode",
+  "yazi.create_zip": "Créer une archive ZIP (zip)",
+  "yazi.open_file_roller": "Ouvrir avec File Roller"
+}

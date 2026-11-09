@@ -1,0 +1,7 @@
+{
+  "usage": "Использование: hyprlock-theme.sh [--invalidate]",
+  "invalid_active_theme": "Недопустимая активная тема для Hyprlock: {theme}.",
+  "theme_not_found": "Тема Hyprlock не найдена: {theme}",
+  "password_placeholder": "Пароль",
+  "theme_applied": "Тема Hyprlock {theme} применена с акцентом #{accent}."
+}

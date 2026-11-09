@@ -1,0 +1,11 @@
+{
+  "system-monitor.title.cpu": "Monitor CPU",
+  "system-monitor.title.memory": "Monitoraggio della memoria",
+  "system-monitor.title.gpu": "Monitor GPU",
+  "system-monitor.help.gpu": "Mostra solo i pannelli GPU (fino a sei GPU)",
+  "system-monitor.title.overview": "Monitoraggio del sistema",
+  "system-monitor.live": "VIVERE",
+  "system-monitor.footer.close": "Esc Chiudi",
+  "system-monitor.unavailable": "Impossibile avviare btop. Premere Esc per chiudere.",
+  "system-monitor.gpu.unavailable": "Non sono disponibili metriche GPU. Controlla il supporto di btop GPU, le librerie del provider e l'accesso al dispositivo."
+}

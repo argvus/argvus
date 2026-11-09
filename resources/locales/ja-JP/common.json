@@ -1,0 +1,8 @@
+{
+  "save": "保存",
+  "cancel": "キャンセル",
+  "close": "閉じる",
+  "welcome": "ようこそ、{name}さん！",
+  "updates.available.one": "{count} 件の更新があります",
+  "updates.available.other": "{count} 件の更新があります"
+}

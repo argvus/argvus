@@ -114,10 +114,7 @@ pub fn run(
     eprintln!("argvus-removable-devices: gtk init failed: {e}");
     process::notify(
       "argvus-removable-devices",
-      i18n::tr(
-        "cannot open the storage menu",
-        "não foi possível abrir o menu de armazenamento",
-      ),
+      i18n::tr("device.cannot_open_the_storage_menu"),
       true,
     );
     return 1;
@@ -197,10 +194,7 @@ pub fn run(
 /// The full-monitor layer surface that hosts both menus.
 fn build_overlay(monitor: Option<&gdk::Monitor>, area: MonitorArea) -> gtk::Window {
   let overlay = gtk::Window::new();
-  overlay.set_title(Some(i18n::tr(
-    "Removable devices",
-    "Dispositivos removíveis",
-  )));
+  overlay.set_title(Some(i18n::tr("device.removable_devices")));
   overlay.set_widget_name("storage-menu-overlay");
   overlay.set_decorated(false);
   overlay.set_resizable(false);
@@ -363,8 +357,11 @@ mod tests {
       capacity: 43_700_000_000,
       ..Device::default()
     };
-    let (en, _) = state_words(false, false);
+    let state = crate::i18n::tr(state_words(false, false));
 
-    assert_eq!(device_title(&device), format!("Ventoy · 43.7 GB · {}", en));
+    assert_eq!(
+      device_title(&device),
+      format!("Ventoy · 43.7 GB · {}", state)
+    );
   }
 }

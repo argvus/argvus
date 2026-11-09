@@ -48,7 +48,7 @@ power, display, network, notifications and themes — all packaged for Arch Linu
 - **Terminal and TUI apps** — Terminal profiles, system monitor and app profiles for bundled TUI tools
 - **Themes** — 23 official theme families, each in the Sticky and Spaced layouts
 - **Games** — Optional. Snake for the terminal (`argvus-game-snake`, an independent project), with a local high score list
-- **Languages** — English (en-US, canonical) and Portuguese (pt-BR), managed by `argvus i18n`
+- **Languages** — English (en-US, canonical), Brazilian Portuguese, Spanish, French, Italian, German, Russian, Simplified Chinese, Japanese and Korean, managed by `argvus i18n`
 
 ## Modular Ecosystem
 

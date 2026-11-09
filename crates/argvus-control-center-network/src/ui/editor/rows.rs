@@ -45,11 +45,7 @@ pub(super) fn list_example(rule: ListRule) -> &'static str {
 
 /// The start of a WireGuard key, enough to tell peers apart.
 pub(super) fn short_key(key: &str) -> String {
-  if key.chars().count() > 12 {
-    format!("{}…", key.chars().take(12).collect::<String>())
-  } else {
-    key.to_owned()
-  }
+  argvus_tui::text::ellipsize(key, 13)
 }
 
 impl NetworkApp {

@@ -1,0 +1,10 @@
+{
+  "sensors.command_failed": "无法运行传感器 -j",
+  "sensors.invalid_data": "无法读取传感器 JSON",
+  "sensors.no_sensors": "未发现温度传感器。",
+  "sensors.title": "温度传感器",
+  "sensors.live": "直播 · 2 秒",
+  "sensors.loading": "读取传感器...",
+  "sensors.unavailable": "温度读数不可用。自动重试。",
+  "sensors.shortcuts": "Esc 关闭·每2秒更新一次"
+}

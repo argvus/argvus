@@ -68,7 +68,7 @@ pub fn doc(app: &App, width: usize, selected: usize) -> Doc<'static> {
 
 fn kv_row(lang: crate::i18n::Lang, key: &str, value: String) -> Row {
   Row::KeyValue {
-    key: format!("{:<8}", tr(lang, key)),
+    key: argvus_tui::text::pad_to_width(tr(lang, key), 8),
     value,
   }
 }

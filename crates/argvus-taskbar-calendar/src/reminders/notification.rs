@@ -83,8 +83,8 @@ mod tests {
 
   #[test]
   fn reminder_body_follows_the_language() {
-    let english = I18n::new(Language::EnUs);
-    let portuguese = I18n::new(Language::PtBr);
+    let english = I18n::new(Language::from_locale_tag("en-US"));
+    let portuguese = I18n::new(Language::from_locale_tag("pt-BR"));
     assert_eq!(
       reminder_body(english, false, 10, "09:00"),
       "Starts in 10 minutes\n09:00"

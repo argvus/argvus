@@ -1,0 +1,10 @@
+{
+  "sensors.command_failed": "センサー -j を実行できませんでした",
+  "sensors.invalid_data": "センサーのJSONを読み取れませんでした",
+  "sensors.no_sensors": "温度センサーが見つかりませんでした。",
+  "sensors.title": "温度センサー",
+  "sensors.live": "LIVE・2秒",
+  "sensors.loading": "センサーを読み取り中…",
+  "sensors.unavailable": "温度測定値は利用できません。自動的に再試行します。",
+  "sensors.shortcuts": "Esc 閉じる · 2 秒ごとに更新"
+}

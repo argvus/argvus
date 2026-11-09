@@ -851,6 +851,7 @@ dependencies = [
  "ratatui-image",
  "resvg",
  "serde_json",
+ "unicode-segmentation",
  "unicode-width",
  "vt100",
 ]

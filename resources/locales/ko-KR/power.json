@@ -1,0 +1,20 @@
+{
+  "menu.lock": "잠그다",
+  "menu.suspend": "유예하다",
+  "menu.logout": "로그아웃",
+  "menu.reboot": "재부팅",
+  "menu.shutdown": "종료",
+  "menu.launcher_missing": "Rofi 메뉴 실행 프로그램을 찾을 수 없습니다.",
+  "menu.unsupported_launcher": "지원되지 않는 메뉴 런처: {launcher}",
+  "idle.timeout.title": "잠금 시간 초과",
+  "idle.timeout.one_minute": "1분",
+  "idle.timeout.minutes": "{count}분",
+  "idle.timeout.never": "절대",
+  "idle.timeout.config_missing": "하이프리들 구성을 찾을 수 없습니다: {path}",
+  "idle.timeout.invalid": "잘못된 잠금 시간 초과: {timeout}",
+  "idle.timeout.notification": "비활성 잠금: {timeout}",
+  "keep_awake.title": "깨어 있으라",
+  "keep_awake.enabled": "깨어있게 유지 활성화됨",
+  "keep_awake.disabled": "깨어있게 유지 비활성화됨",
+  "dpms.usage": "용법: {command} {arguments}"
+}

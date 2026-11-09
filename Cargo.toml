@@ -161,6 +161,7 @@ thiserror = "2"
 toml = "0.8"
 vt100 = "0.18"
 unicode-width = "0.2"
+unicode-segmentation = "1.13.3"
 zbus = "5"
 
 [profile.release]

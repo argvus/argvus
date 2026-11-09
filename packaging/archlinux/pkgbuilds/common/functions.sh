@@ -115,6 +115,18 @@ arch_install_payload() {
 		"${pkgdir}/usr/share/argvus-system-monitor/btop/btop.conf"
 }
 
+# Catalog discovery and packaging share the same directory layout. Keeping the
+# install loop here avoids an English/Portuguese-only payload after adding locales.
+arch_install_catalogs() {
+  local source_root locale_dir
+  source_root="$(arch_source_root)"
+  for locale_dir in "${source_root}/resources/locales/"*; do
+    [[ -d "$locale_dir" && -f "$locale_dir/locale.json" ]] || continue
+    install -dm755 "${pkgdir}/usr/share/argvus/i18n/${locale_dir##*/}"
+    install -m644 "$locale_dir/"*.json "${pkgdir}/usr/share/argvus/i18n/${locale_dir##*/}/" || return 1
+  done
+}
+
 arch_package_argvus() {
 	local source_root
 	source_root="$(arch_source_root)"
@@ -122,10 +134,7 @@ arch_package_argvus() {
 	install -Dm755 "$(arch_cargo_target_dir)/release/argvus" "${pkgdir}/usr/bin/argvus"
 	arch_install_payload
 
-	# The i18n catalogs of the two supported locales.
-	install -dm755 "${pkgdir}/usr/share/argvus/i18n/en-US" "${pkgdir}/usr/share/argvus/i18n/pt-BR"
-	install -m644 "${source_root}/resources/locales/en-US/"*.json "${pkgdir}/usr/share/argvus/i18n/en-US/"
-	install -m644 "${source_root}/resources/locales/pt-BR/"*.json "${pkgdir}/usr/share/argvus/i18n/pt-BR/"
+  arch_install_catalogs || return 1
 
 	# Account administration runs as root only through polkit (pkexec). It is a
 	# private command and keeps the path that the polkit rule and the callers use.

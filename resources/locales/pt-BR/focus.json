@@ -77,5 +77,7 @@
   "taskbar.short_break": "Pausa curta",
   "taskbar.long_break": "Pausa longa",
   "taskbar.paused": "pausado",
-  "taskbar.awaiting": "ARGVUS Focus: a próxima fase está esperando"
+  "taskbar.awaiting": "ARGVUS Focus: a próxima fase está esperando",
+  "today.sessions.many": "{count} sessões",
+  "history.sessions.many": "{count} sessões"
 }

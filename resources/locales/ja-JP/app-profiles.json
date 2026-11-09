@@ -1,0 +1,13 @@
+{
+  "launcher.class_requires_value": "argvus-tui-terminal: --class には値が必要です",
+  "launcher.option_requires_value": "argvus-tui-terminal: {option} には値が必要です",
+  "yazi.rename": "名前の変更",
+  "yazi.open_terminal": "ターミナルで開く",
+  "yazi.move_to_trash": "ゴミ箱に移動",
+  "yazi.secure_destroy": "確実に破壊（スモッグ）",
+  "yazi.empty_trash": "ゴミ箱を空にする（スモッグ）",
+  "yazi.open_file_smart": "ファイルをインテリジェントに開く",
+  "yazi.open_vscode": "VSCodeで開く",
+  "yazi.create_zip": "ZIP アーカイブ (zip) を作成する",
+  "yazi.open_file_roller": "ファイルローラーで開く"
+}

@@ -28,5 +28,17 @@
   "date.long": "{weekday}, {month} {day}, {year}",
   "date.short": "{weekday}, {month} {day}",
   "time.am": "AM",
-  "time.pm": "PM"
+  "time.pm": "PM",
+  "month.format.1": "January",
+  "month.format.2": "February",
+  "month.format.3": "March",
+  "month.format.4": "April",
+  "month.format.5": "May",
+  "month.format.6": "June",
+  "month.format.7": "July",
+  "month.format.8": "August",
+  "month.format.9": "September",
+  "month.format.10": "October",
+  "month.format.11": "November",
+  "month.format.12": "December"
 }

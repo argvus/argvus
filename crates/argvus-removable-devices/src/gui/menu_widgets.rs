@@ -16,10 +16,7 @@ impl Menu {
 
     let mut rows = Vec::new();
     if devices.is_empty() {
-      let empty = menu_row(
-        i18n::tr("No removable devices", "Nenhum dispositivo removível"),
-        false,
-      );
+      let empty = menu_row(i18n::tr("device.no_removable_devices"), false);
       empty.set_sensitive(false);
       self.main_menu.append(&empty);
     }
@@ -35,8 +32,8 @@ impl Menu {
     self.main_menu.append(&separator);
 
     for (kind, label) in [
-      (MainRowKind::Refresh, i18n::tr("Refresh", "Atualizar")),
-      (MainRowKind::Quit, i18n::tr("Quit", "Sair")),
+      (MainRowKind::Refresh, i18n::tr("device.refresh")),
+      (MainRowKind::Quit, i18n::tr("device.quit")),
     ] {
       let row = menu_row(label, false);
       self.main_menu.append(&row);

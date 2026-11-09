@@ -1,0 +1,20 @@
+{
+  "menu.lock": "Verrouillage",
+  "menu.suspend": "Suspendre",
+  "menu.logout": "Se déconnecter",
+  "menu.reboot": "Redémarrer",
+  "menu.shutdown": "Fermer",
+  "menu.launcher_missing": "Le lanceur de menu Rofi est introuvable.",
+  "menu.unsupported_launcher": "Lanceur de menu non pris en charge : {launcher}",
+  "idle.timeout.title": "Délai de verrouillage",
+  "idle.timeout.one_minute": "1 minute",
+  "idle.timeout.minutes": "Minutes {count}",
+  "idle.timeout.never": "Jamais",
+  "idle.timeout.config_missing": "configuration Hypridle introuvable : {path}",
+  "idle.timeout.invalid": "Délai d'expiration de verrouillage non valide : {timeout}",
+  "idle.timeout.notification": "Verrouillage d'inactivité : {timeout}",
+  "keep_awake.title": "Rester éveillé",
+  "keep_awake.enabled": "Rester éveillé activé",
+  "keep_awake.disabled": "Rester éveillé désactivé",
+  "dpms.usage": "Utilisation : {command} {arguments}"
+}

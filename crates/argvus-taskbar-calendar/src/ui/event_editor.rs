@@ -571,7 +571,7 @@ mod tests {
   }
 
   fn english() -> I18n {
-    I18n::new(Language::EnUs)
+    I18n::new(Language::from_locale_tag("en-US"))
   }
 
   fn temp_database(name: &str) -> std::path::PathBuf {

@@ -1,0 +1,12 @@
+{
+  "usage": "用法：\n  argvus-terminal [kitty options]\n  argvus-terminal --apply [theme]\n  argvus-terminal --print-config [theme]\n  argvus-terminal --print-tui-config [theme]\n\n选项：\n--class <class> 设置 Kitty 窗口类。\n--font-profile <配置文件> 终端或应用程序。\n--tui 使用 ARGVUS TUI Kitty 配置文件。\n-e <command> [args...] 在 Kitty 中执行命令。",
+  "class_requires_value": "--class 需要一个值",
+  "font_profile_requires_value": "--font-profile 需要一个值",
+  "unsupported_font_profile": "不支持的字体配置文件：{profile}",
+  "kitty_not_installed": "Kitty 未安装",
+  "config_not_found": "{path}下找不到Kitty配置",
+  "tui_config_not_found": "Kitty 在 {path} 下找不到 TUI 配置",
+  "cache_create_failed": "无法在 {path} 处创建 Kitty 运行时缓存",
+  "cache_write_failed": "无法在 {path} 处写入 Kitty 运行时缓存",
+  "cache_lock_failed": "无法将 Kitty 运行时缓存锁定在 {path}"
+}

@@ -1,0 +1,20 @@
+{
+  "menu.lock": "Serratura",
+  "menu.suspend": "Sospendere",
+  "menu.logout": "Esci",
+  "menu.reboot": "Riavviare",
+  "menu.shutdown": "Fermare",
+  "menu.launcher_missing": "Avvio menu Rofi non trovato.",
+  "menu.unsupported_launcher": "Avvio menu non supportato: {launcher}",
+  "idle.timeout.title": "Blocca il timeout",
+  "idle.timeout.one_minute": "1 minuto",
+  "idle.timeout.minutes": "{count} minuti",
+  "idle.timeout.never": "Mai",
+  "idle.timeout.config_missing": "Configurazione hypridle non trovata: {path}",
+  "idle.timeout.invalid": "Timeout di blocco non valido: {timeout}",
+  "idle.timeout.notification": "Blocco inattività: {timeout}",
+  "keep_awake.title": "Tieniti sveglio",
+  "keep_awake.enabled": "Mantieni sveglio abilitato",
+  "keep_awake.disabled": "Mantieni sveglio disabilitato",
+  "dpms.usage": "Utilizzo: {command} {arguments}"
+}

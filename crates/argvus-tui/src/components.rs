@@ -142,19 +142,7 @@ fn status_color(kind: StatusKind, theme: &Theme) -> ratatui::style::Color {
 }
 
 fn wrap_text(value: &str, width: usize) -> Vec<String> {
-  let width = width.max(1);
-  let mut lines = Vec::new();
-  let mut current = String::new();
-  for character in value.chars() {
-    if display_width(&current) >= width {
-      lines.push(std::mem::take(&mut current));
-    }
-    current.push(character);
-  }
-  if !current.is_empty() || lines.is_empty() {
-    lines.push(current);
-  }
-  lines
+  crate::text::wrap_to_width(value, width)
 }
 
 pub struct ConfirmationDialog<'a> {

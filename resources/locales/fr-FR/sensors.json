@@ -1,0 +1,10 @@
+{
+  "sensors.command_failed": "Impossible d'exécuter les capteurs -j",
+  "sensors.invalid_data": "Impossible de lire les capteurs JSON",
+  "sensors.no_sensors": "Aucun capteur de température n'a été trouvé.",
+  "sensors.title": "Capteurs de température",
+  "sensors.live": "EN DIRECT · 2 s",
+  "sensors.loading": "Lecture des capteurs…",
+  "sensors.unavailable": "Les relevés de température ne sont pas disponibles. Réessayer automatiquement.",
+  "sensors.shortcuts": "Esc Fermer · Mises à jour toutes les 2 secondes"
+}

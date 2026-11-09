@@ -16,7 +16,7 @@ session when possible, not only syntax.
 ```text
 Cargo.toml               workspace root; [workspace.dependencies] for every crate
 crates/                  one crate per command or library (`argvus-cli` is the dispatcher; `argvus-greeter` keeps its README and greetd files in `crates/argvus-greeter/` (`packaging/greetd/`))
-resources/locales/       shared translation catalogs (en-US, pt-BR)
+resources/locales/       shared JSON translation catalogs (ten languages; en-US is canonical)
 packaging/archlinux/src/ data payload installed by the package (usr/, etc/)
 packaging/archlinux/pkgbuilds/remote/ PKGBUILD for tagged releases (pkgbase and package `argvus`)
 packaging/archlinux/pkgbuilds/local/  PKGBUILD for working-tree builds (same package)

@@ -1,0 +1,7 @@
+{
+  "usage": "使用法: hyprlock-theme.sh [--invalidate]",
+  "invalid_active_theme": "Hyprlock の無効なアクティブなテーマ: {theme}",
+  "theme_not_found": "Hyprlock テーマが見つかりません: {theme}",
+  "password_placeholder": "パスワード",
+  "theme_applied": "Hyprlock テーマ {theme} にアクセント #{accent} を適用。"
+}

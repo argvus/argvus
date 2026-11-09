@@ -23,3 +23,7 @@ A configuração do sistema é `/etc/argvus/removable-devices/config.json`. A pr
 Configurações úteis incluem ocultar o módulo quando não há dispositivos (`hide_when_empty`), mostrar nomes e capacidades, ordenar dispositivos, controlar notificações, escolher o backend do menu e definir ícones de estado. A folha de estilos dele é renderizada a partir do tema ativo do ARGVUS (`removable-devices/theme.css` do build do tema) e copiada para o `theme.css` do painel a cada troca de tema ou de destaque.
 
 A interface usa o idioma do usuário definido por `LANG` em `$XDG_CONFIG_HOME/locale.conf`, com inglês como padrão para usuários sem configuração. Variáveis de locale herdadas não selecionam o idioma da interface.
+
+## Catálogos compartilhados
+
+A interface usa os catálogos de `argvus-i18n` nos dez idiomas. Os textos ficam em `resources/locales/<locale>/removable-devices.json` no workspace principal e são instalados por `argvus`. O inglês é o fallback; novos idiomas não exigem dicionário bilíngue local.

@@ -317,7 +317,11 @@ pub struct App {
 
 impl App {
   pub fn new(initial: InitialRoute) -> Self {
-    let lang = Lang::detect();
+    Self::with_lang(initial, Lang::detect())
+  }
+
+  // Pass one language to every page; tests can avoid the real user preference.
+  pub(crate) fn with_lang(initial: InitialRoute, lang: Lang) -> Self {
     let theme = Theme::load();
     let route = initial.route();
     let page = initial.settings_page();

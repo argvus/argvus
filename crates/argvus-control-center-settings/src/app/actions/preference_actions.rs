@@ -187,14 +187,11 @@ impl App {
   }
 
   pub(super) fn apply_language(&mut self, index: usize) {
-    let Some((locale, _, _)) = LANGUAGES.get(index) else {
+    let Some(info) = self.languages.get(index) else {
       return;
     };
-    let locale = match *locale {
-      "pt-BR" => "pt_BR.UTF-8",
-      _ => "en_US.UTF-8",
-    };
-    self.apply_user_language(locale);
+    let locale = format!("{}.UTF-8", info.locale.replace('-', "_"));
+    self.apply_user_language(&locale);
   }
 
   /// Enter/Space on a Mouse & Touchpad row: toggles flip, values step up.

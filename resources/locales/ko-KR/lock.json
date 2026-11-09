@@ -1,0 +1,7 @@
+{
+  "usage": "사용법: hyperlock-theme.sh [--invalidate]",
+  "invalid_active_theme": "Hyprlock에 대한 유효하지 않은 활성 테마: {theme}",
+  "theme_not_found": "Hyprlock 테마를 찾을 수 없습니다: {theme}",
+  "password_placeholder": "비밀번호",
+  "theme_applied": "Hyprlock 테마 {theme}에 액센트 #{accent}가 적용되었습니다."
+}

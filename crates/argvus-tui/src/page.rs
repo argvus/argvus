@@ -26,7 +26,22 @@ pub fn shell(
   breadcrumb: &str,
   hints: &str,
 ) -> Rect {
-  shell_with_status(frame, area, theme, lang, breadcrumb, hints, None, false)
+  shell_with_status(
+    frame,
+    area,
+    theme,
+    lang,
+    breadcrumb,
+    hints,
+    PageStatus::default(),
+  )
+}
+
+/// Status content shared by the page footer and administrator warning.
+#[derive(Default)]
+pub struct PageStatus<'a> {
+  pub message: Option<&'a StatusMessage>,
+  pub admin_required: bool,
 }
 
 /// Draws the shell with an optional status below the navigation hints.
@@ -37,9 +52,12 @@ pub fn shell_with_status(
   lang: Lang,
   breadcrumb: &str,
   hints: &str,
-  message: Option<&StatusMessage>,
-  admin_required: bool,
+  status: PageStatus<'_>,
 ) -> Rect {
+  let PageStatus {
+    message,
+    admin_required,
+  } = status;
   Block::new()
     .borders(Borders::ALL)
     .border_style(Style::new().fg(theme.border_active))
@@ -314,11 +332,12 @@ mod tests {
   }
   #[test]
   fn admin_warning_reserves_wrapped_lines_above_footer() {
-    for locale in ["en-US", "pt-BR"] {
+    for locale in argvus_i18n::installed_locales() {
+      let locale = locale.locale;
       for (width, height) in [(60, 18), (100, 24)] {
         let mut terminal = Terminal::new(TestBackend::new(width, height)).unwrap();
         let theme = Theme::load();
-        let lang = Lang::for_locale(locale);
+        let lang = Lang::for_locale(&locale);
         terminal
           .draw(|frame| {
             let body = shell(frame, frame.area(), &theme, lang, "Test", "Escape Back");

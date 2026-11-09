@@ -1,0 +1,10 @@
+{
+  "save": "Сохранить",
+  "cancel": "Отмена",
+  "close": "Закрыть",
+  "welcome": "Добро пожаловать, {name}!",
+  "updates.available.one": "Доступно {count} обновление",
+  "updates.available.other": "Доступно {count} обновления",
+  "updates.available.many": "Доступно {count} обновлений",
+  "updates.available.few": "Доступно {count} обновления"
+}

@@ -1,6 +1,9 @@
 //! Inline text editor used for names, passwords, firewall values and rules.
 
 use super::*;
+use argvus_tui::text::{
+  character_index_at_width, display_width, next_grapheme_boundary, previous_grapheme_boundary,
+};
 
 #[derive(Debug, PartialEq, Clone)]
 pub(crate) enum EditTarget {
@@ -77,8 +80,8 @@ impl Editor {
 
   pub(super) fn input(&mut self, key: KeyEvent) {
     match key.code {
-      KeyCode::Left => self.cursor = self.cursor.saturating_sub(1),
-      KeyCode::Right => self.cursor = (self.cursor + 1).min(self.value.len()),
+      KeyCode::Left => self.cursor = previous_grapheme_boundary(&self.value, self.cursor),
+      KeyCode::Right => self.cursor = next_grapheme_boundary(&self.value, self.cursor),
       KeyCode::Home => {
         self.cursor = self.value[..self.cursor]
           .iter()
@@ -98,14 +101,15 @@ impl Editor {
           .rposition(|c| *c == '\n')
           .map(|i| i + 1)
           .unwrap_or(0);
-        let column = self.cursor - start;
+        let column = display_width(&self.value[start..self.cursor].iter().collect::<String>());
         if key.code == KeyCode::Up && start > 0 {
           let previous = self.value[..start - 1]
             .iter()
             .rposition(|c| *c == '\n')
             .map(|i| i + 1)
             .unwrap_or(0);
-          self.cursor = (previous + column).min(start - 1);
+          self.cursor =
+            previous + character_index_at_width(&self.value[previous..start - 1], column);
         } else if key.code == KeyCode::Down
           && let Some(end) = self.value[self.cursor..].iter().position(|c| *c == '\n')
         {
@@ -114,19 +118,21 @@ impl Editor {
             .iter()
             .position(|c| *c == '\n')
             .unwrap_or(self.value.len() - next);
-          self.cursor = next + column.min(length);
+          self.cursor = next + character_index_at_width(&self.value[next..next + length], column);
         }
       }
       KeyCode::Backspace if self.cursor > 0 => {
-        self.cursor -= 1;
-        self.value.remove(self.cursor);
+        let previous = previous_grapheme_boundary(&self.value, self.cursor);
+        self.value.drain(previous..self.cursor);
+        self.cursor = previous;
       }
       KeyCode::Delete if self.cursor < self.value.len() => {
-        self.value.remove(self.cursor);
+        let next = next_grapheme_boundary(&self.value, self.cursor);
+        self.value.drain(self.cursor..next);
       }
       KeyCode::Enter if self.multiline => {
         self.value.insert(self.cursor, '\n');
-        self.cursor += 1;
+        self.cursor = next_grapheme_boundary(&self.value, self.cursor);
       }
       KeyCode::Char(character)
         if !key
@@ -136,7 +142,7 @@ impl Editor {
           && self.value.len() < 262144 =>
       {
         self.value.insert(self.cursor, character);
-        self.cursor += 1;
+        self.cursor = next_grapheme_boundary(&self.value, self.cursor);
       }
       _ => {}
     }

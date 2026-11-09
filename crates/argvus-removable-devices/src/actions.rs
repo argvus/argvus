@@ -32,13 +32,7 @@ impl<'a> Actions<'a> {
 
   async fn mount(&self, d: &Device) -> Result<(), String> {
     if d.encrypted && d.locked {
-      return Err(
-        i18n::tr(
-          "device is locked; unlock it first",
-          "o dispositivo está bloqueado; desbloqueie primeiro",
-        )
-        .to_string(),
-      );
+      return Err(i18n::tr("device.device_is_locked_unlock_it_first").to_string());
     }
     let mut client = UdisksClient::new();
     if !client.connect().await {
@@ -49,7 +43,7 @@ impl<'a> Actions<'a> {
 
   async fn unmount(&self, d: &Device) -> Result<(), String> {
     if !d.mounted {
-      return Err(i18n::tr("device is not mounted", "o dispositivo não está montado").to_string());
+      return Err(i18n::tr("device.device_is_not_mounted").to_string());
     }
     let mut client = UdisksClient::new();
     if !client.connect().await {
@@ -60,13 +54,7 @@ impl<'a> Actions<'a> {
 
   async fn eject(&self, d: &Device) -> Result<(), String> {
     if !d.ejectable {
-      return Err(
-        i18n::tr(
-          "device is not ejectable",
-          "o dispositivo não pode ser ejetado",
-        )
-        .to_string(),
-      );
+      return Err(i18n::tr("device.device_is_not_ejectable").to_string());
     }
     let mut client = UdisksClient::new();
     if !client.connect().await {
@@ -80,13 +68,7 @@ impl<'a> Actions<'a> {
 
   async fn power_off(&self, d: &Device) -> Result<(), String> {
     if !d.can_power_off {
-      return Err(
-        i18n::tr(
-          "device cannot be powered off",
-          "o dispositivo não pode ser desligado",
-        )
-        .to_string(),
-      );
+      return Err(i18n::tr("device.device_cannot_be_powered_off").to_string());
     }
     let mut client = UdisksClient::new();
     if !client.connect().await {
@@ -97,13 +79,7 @@ impl<'a> Actions<'a> {
 
   async fn lock(&self, d: &Device) -> Result<(), String> {
     if !d.encrypted || d.locked {
-      return Err(
-        i18n::tr(
-          "device is not an unlocked encrypted volume",
-          "o dispositivo não é um volume criptografado desbloqueado",
-        )
-        .to_string(),
-      );
+      return Err(i18n::tr("device.device_is_not_an_unlocked_encrypted_volume").to_string());
     }
     let mut client = UdisksClient::new();
     if !client.connect().await {
@@ -118,13 +94,7 @@ impl<'a> Actions<'a> {
 
   async fn unlock(&self, d: &Device) -> Result<(), String> {
     if !d.encrypted || !d.locked {
-      return Err(
-        i18n::tr(
-          "device is not a locked encrypted volume",
-          "o dispositivo não é um volume criptografado bloqueado",
-        )
-        .to_string(),
-      );
+      return Err(i18n::tr("device.device_is_not_a_locked_encrypted_volume").to_string());
     }
     // The passphrase goes through an interactive terminal, then udisksctl
     // does the actual unlock.
@@ -134,13 +104,7 @@ impl<'a> Actions<'a> {
       process::shell_quote(&d.block)
     );
     if process::fork_exec(&cmd) < 0 {
-      return Err(
-        i18n::tr(
-          "failed to launch unlock terminal",
-          "falha ao abrir o terminal de desbloqueio",
-        )
-        .to_string(),
-      );
+      return Err(i18n::tr("device.failed_to_launch_unlock_terminal").to_string());
     }
     Ok(())
   }
@@ -161,13 +125,7 @@ impl<'a> Actions<'a> {
     };
     let cmd = format!("{} {}", command, process::shell_quote(&target));
     if process::fork_exec(&cmd) < 0 {
-      return Err(
-        i18n::tr(
-          "failed to launch the file manager",
-          "falha ao abrir o gerenciador de arquivos",
-        )
-        .to_string(),
-      );
+      return Err(i18n::tr("device.failed_to_launch_the_file_manager").to_string());
     }
     Ok(())
   }
@@ -184,14 +142,11 @@ impl<'a> Actions<'a> {
     process::run_with_input(command, &target).map_err(|error| {
       format!(
         "{} ({command}): {error}",
-        i18n::tr(
-          "failed to copy the mount path",
-          "falha ao copiar o ponto de montagem"
-        )
+        i18n::tr("device.failed_to_copy_the_mount_path")
       )
     })?;
     if self.config.show_notification {
-      process::notify(i18n::tr("Path copied", "Caminho copiado"), &target, false);
+      process::notify(i18n::tr("device.path_copied"), &target, false);
     }
     Ok(())
   }
@@ -207,13 +162,7 @@ impl<'a> Actions<'a> {
     {
       return Ok(fresh.mount_point);
     }
-    Err(
-      i18n::tr(
-        "device mounted but mount point could not be resolved",
-        "dispositivo montado, mas o ponto de montagem não pôde ser resolvido",
-      )
-      .to_string(),
-    )
+    Err(i18n::tr("device.device_mounted_but_mount_point_could_not_be").to_string())
   }
 
   pub async fn perform(&self, kind: ActionKind, d: &Device) -> i32 {

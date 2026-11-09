@@ -321,8 +321,23 @@ mod user_locale_tests {
   fn language_selection_writes_exact_lang() {
     let directory = tempfile::tempdir().unwrap();
     let path = directory.path().join("config/locale.conf");
-    let generated = vec!["en_US.UTF-8".into(), "pt_BR.UTF-8".into()];
-    for locale in ["en_US.UTF-8", "pt_BR.UTF-8"] {
+    let locales = [
+      "en_US.UTF-8",
+      "pt_BR.UTF-8",
+      "es_ES.UTF-8",
+      "fr_FR.UTF-8",
+      "it_IT.UTF-8",
+      "de_DE.UTF-8",
+      "ru_RU.UTF-8",
+      "zh_CN.UTF-8",
+      "ja_JP.UTF-8",
+      "ko_KR.UTF-8",
+    ];
+    let generated = locales
+      .iter()
+      .map(|locale| (*locale).to_owned())
+      .collect::<Vec<_>>();
+    for locale in locales {
       save_user_language(&path, locale, &generated).unwrap();
       assert_eq!(
         fs::read_to_string(&path).unwrap(),

@@ -1,0 +1,20 @@
+{
+  "menu.lock": "Замок",
+  "menu.suspend": "Приостановить",
+  "menu.logout": "Выйти",
+  "menu.reboot": "Перезагрузить",
+  "menu.shutdown": "Неисправность",
+  "menu.launcher_missing": "Панель запуска меню Rofi не найдена.",
+  "menu.unsupported_launcher": "Неподдерживаемый модуль запуска меню: {launcher}.",
+  "idle.timeout.title": "Тайм-аут блокировки",
+  "idle.timeout.one_minute": "1 минута",
+  "idle.timeout.minutes": "{count} минут",
+  "idle.timeout.never": "Никогда",
+  "idle.timeout.config_missing": "Конфигурация hypridle не найдена: {path}",
+  "idle.timeout.invalid": "Неверный тайм-аут блокировки: {timeout}.",
+  "idle.timeout.notification": "Блокировка бездействия: {timeout}",
+  "keep_awake.title": "Бодрствуйте",
+  "keep_awake.enabled": "Функция «Пробуждение» включена",
+  "keep_awake.disabled": "Функция «Пробуждение» отключена",
+  "dpms.usage": "Использование: {command} {arguments}"
+}

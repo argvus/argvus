@@ -16,20 +16,6 @@ use crate::navigation::Page;
 use crate::system::gpg_keys::{RevokeReason, TrustLevel};
 use crate::system::{keybindings, locale};
 
-/// Languages offered by the Language page, in display order.
-pub(super) const LANGUAGES: [(&str, &str, &str); 2] = [
-  (
-    "en-US",
-    "control_center.language_english",
-    "control_center.language_english_us",
-  ),
-  (
-    "pt-BR",
-    "control_center.language_portuguese",
-    "control_center.language_portuguese_brazil",
-  ),
-];
-
 impl App {
   fn label(&self, key: &str) -> &'static str {
     tr(self.lang, key)
@@ -647,11 +633,13 @@ impl App {
 
   fn language_rows(&self) -> Vec<Row<Item>> {
     let current_lang = locale::current_lang();
-    let current_language = if self.lang.locale() == "pt-BR" {
-      self.label("control_center.language_portuguese_brazil")
-    } else {
-      self.label("control_center.language_english_us")
-    };
+    let selected_locale = self.lang.locale();
+    let current_language = self
+      .languages
+      .iter()
+      .find(|info| info.locale == selected_locale)
+      .map(|info| info.native_name.as_str())
+      .unwrap_or(&selected_locale);
     let mut rows = vec![
       Row::info(
         self.label("control_center.current_language"),
@@ -667,19 +655,14 @@ impl App {
       ),
       Row::separator(),
     ];
-    rows.extend(
-      LANGUAGES
-        .iter()
-        .enumerate()
-        .map(|(index, (locale, name, detail))| {
-          Row::choice(
-            Item::Language(index),
-            self.label(name),
-            self.lang == Lang::for_locale(locale),
-          )
-          .detail(self.label(detail))
-        }),
-    );
+    rows.extend(self.languages.iter().enumerate().map(|(index, info)| {
+      Row::choice(
+        Item::Language(index),
+        info.native_name.clone(),
+        selected_locale == info.locale,
+      )
+      .detail(info.name.clone())
+    }));
     rows
   }
 

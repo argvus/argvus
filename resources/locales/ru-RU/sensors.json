@@ -1,0 +1,10 @@
+{
+  "sensors.command_failed": "Не удалось запустить датчики -j",
+  "sensors.invalid_data": "Не удалось прочитать датчики JSON.",
+  "sensors.no_sensors": "Датчиков температуры не обнаружено.",
+  "sensors.title": "Датчики температуры",
+  "sensors.live": "В прямом эфире · 2 с",
+  "sensors.loading": "Чтение датчиков…",
+  "sensors.unavailable": "Показания температуры недоступны. Повторная попытка автоматически.",
+  "sensors.shortcuts": "Esc Закрыть · Обновления каждые 2 секунды"
+}

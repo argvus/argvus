@@ -126,7 +126,10 @@ impl Calendar {
       [
         ("weekday", self.weekday(date.weekday())),
         ("day", date.day().to_string()),
-        ("month", self.month(date.month())),
+        (
+          "month",
+          self.catalog.tr(&format!("month.format.{}", date.month())),
+        ),
         ("year", date.year().to_string()),
       ],
     )
@@ -139,7 +142,10 @@ impl Calendar {
       [
         ("weekday", self.weekday_short(date.weekday())),
         ("day", date.day().to_string()),
-        ("month", self.month(date.month())),
+        (
+          "month",
+          self.catalog.tr(&format!("month.format.{}", date.month())),
+        ),
       ],
     )
   }

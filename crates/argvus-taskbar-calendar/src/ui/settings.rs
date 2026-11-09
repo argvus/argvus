@@ -48,13 +48,13 @@ impl SettingsDraft {
       self.font_family
     };
     settings.appearance.font_size = self.font_size.clamp(8, 32) as u8;
-    settings.locale.language = match self.language.as_str() {
-      "pt-BR" => "pt-BR",
-      "en-US" => "en-US",
-      // Unknown values follow the system locale.
-      _ => "auto",
-    }
-    .to_string();
+    settings.locale.language = if self.language == "auto"
+      || argvus_i18n::resolve_installed_locale(&self.language).is_some()
+    {
+      self.language
+    } else {
+      "auto".to_owned()
+    };
     settings.calendar.week_start = if self.week_start == "sunday" {
       "sunday"
     } else {
@@ -229,11 +229,15 @@ fn fill_settings(widgets: &SettingsWidgets, draft: &SettingsDraft, i18n: I18n) {
   widgets
     .week_start_label
     .set_label(i18n.text(Text::WeekStart));
-  set_dropdown(
-    &widgets.week_start,
-    &widgets.week_start_model,
-    &draft.week_start,
+  let headers = i18n.weekday_headers();
+  widgets.week_start_model.splice(
+    0,
+    widgets.week_start_model.n_items(),
+    &[headers[0], headers[6]],
   );
+  widgets
+    .week_start
+    .set_selected(u32::from(draft.week_start == "sunday"));
   widgets.show_events_label.set_label(i18n.text(Text::Events));
   widgets.show_events.set_active(draft.show_events);
   widgets

@@ -26,9 +26,9 @@ impl StorageApp {
         .iter()
         .map(|m| {
           format!(
-            "{:<18} {:<9}  {}{}",
-            m.target,
-            m.fstype,
+            "{} {}  {}{}",
+            argvus_tui::text::fit_to_width(&m.target, 18),
+            argvus_tui::text::fit_to_width(&m.fstype, 9),
             m.source,
             if m.readonly {
               format!("  [{}]", tr(self.lang, "control_center.ro"))
@@ -149,34 +149,38 @@ impl StorageApp {
         tr(self.lang, "control_center.storage_summary")
       ),
       format!(
-        "   {:<16} {}",
-        tr(self.lang, "control_center.disks_0a36a0"),
+        "   {} {}",
+        argvus_tui::text::fit_to_width(tr(self.lang, "control_center.disks_0a36a0"), 16),
         disks.len()
       ),
       format!(
-        "   {:<16} {}",
-        tr(self.lang, "control_center.total_size"),
+        "   {} {}",
+        argvus_tui::text::fit_to_width(tr(self.lang, "control_center.total_size"), 16),
         human_bytes(total)
       ),
       format!(
-        "   {:<16} {}",
-        tr(self.lang, "control_center.partitions_2d5f30"),
+        "   {} {}",
+        argvus_tui::text::fit_to_width(tr(self.lang, "control_center.partitions_2d5f30"), 16),
         self.partitions().len()
       ),
       format!(
-        "   {:<16} {}",
-        tr(self.lang, "control_center.filesystems_602f7b"),
+        "   {} {}",
+        argvus_tui::text::fit_to_width(tr(self.lang, "control_center.filesystems_602f7b"), 16),
         self.snapshot.filesystems.len()
       ),
       format!(
-        "   {:<16} {}",
-        tr(self.lang, "control_center.mount_points_78b940"),
+        "   {} {}",
+        argvus_tui::text::fit_to_width(tr(self.lang, "control_center.mount_points_78b940"), 16),
         self.snapshot.mounts.len()
       ),
-      format!("   {:<16} {}", tr(self.lang, "control_center.swap"), swap),
       format!(
-        "   {:<16} {}",
-        tr(self.lang, "control_center.smart"),
+        "   {} {}",
+        argvus_tui::text::fit_to_width(tr(self.lang, "control_center.swap"), 16),
+        swap
+      ),
+      format!(
+        "   {} {}",
+        argvus_tui::text::fit_to_width(tr(self.lang, "control_center.smart"), 16),
         smart_available
       ),
       "".into(),
@@ -299,7 +303,11 @@ pub(super) fn filesystem_row(filesystem: &Filesystem) -> String {
     .as_deref()
     .unwrap_or(filesystem.source.as_str());
   if filesystem.used_bytes.is_none() || filesystem.total_bytes.is_none() {
-    return format!("{:<18} {:<9}", mountpoint, filesystem.fstype);
+    return format!(
+      "{} {}",
+      argvus_tui::text::fit_to_width(mountpoint, 18),
+      argvus_tui::text::fit_to_width(&filesystem.fstype, 9)
+    );
   }
   let total = filesystem.total_bytes.unwrap_or(0);
   let used = filesystem.used_bytes.unwrap_or(0);
@@ -308,9 +316,9 @@ pub(super) fn filesystem_row(filesystem: &Filesystem) -> String {
     .unwrap_or(total.saturating_sub(used));
   let pct = percentage(total, available);
   format!(
-    "{:<18} {:<9} {:>9} / {:<9} {:>3}%",
-    mountpoint,
-    filesystem.fstype,
+    "{} {} {:>9} / {:<9} {:>3}%",
+    argvus_tui::text::fit_to_width(mountpoint, 18),
+    argvus_tui::text::fit_to_width(&filesystem.fstype, 9),
     human_bytes(used),
     human_bytes(total),
     pct
@@ -327,9 +335,9 @@ pub(super) fn usage_row(lang: Lang, filesystem: &Filesystem) -> String {
   {
     let pct = percentage(total, available);
     return format!(
-      "{:<18} {:<9} {:>3}%  {}{}",
-      mountpoint,
-      filesystem.fstype,
+      "{} {} {:>3}%  {}{}",
+      argvus_tui::text::fit_to_width(mountpoint, 18),
+      argvus_tui::text::fit_to_width(&filesystem.fstype, 9),
       pct,
       usage_bar(pct, 10),
       if pct >= 80 {
@@ -339,7 +347,11 @@ pub(super) fn usage_row(lang: Lang, filesystem: &Filesystem) -> String {
       }
     );
   }
-  format!("{:<18} {:<9}", mountpoint, filesystem.fstype)
+  format!(
+    "{} {}",
+    argvus_tui::text::fit_to_width(mountpoint, 18),
+    argvus_tui::text::fit_to_width(&filesystem.fstype, 9)
+  )
 }
 
 pub(super) fn usage_label(lang: Lang, level: UsageLevel) -> String {

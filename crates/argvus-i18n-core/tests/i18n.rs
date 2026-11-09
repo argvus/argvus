@@ -2,6 +2,7 @@ use argvus_i18n::{
   I18n, Lang, detect_locale_from, discover_locales, normalize_locale, tr, validate_catalogs,
 };
 use std::{
+  collections::HashMap,
   fs,
   path::PathBuf,
   sync::{Mutex, OnceLock},
@@ -17,7 +18,7 @@ fn root() -> PathBuf {
   fs::create_dir_all(root.join("en-US")).unwrap();
   fs::create_dir_all(root.join("pt-BR")).unwrap();
   fs::write(root.join("en-US/common.json"), r#"{"save":"Save","welcome":"Welcome, {name}!","items.one":"{count} item","items.other":"{count} items"}"#).unwrap();
-  fs::write(root.join("pt-BR/common.json"), r#"{"save":"Salvar","welcome":"Bem-vindo, {name}!","items.one":"{count} item","items.other":"{count} itens"}"#).unwrap();
+  fs::write(root.join("pt-BR/common.json"), r#"{"save":"Salvar","welcome":"Bem-vindo, {name}!","items.one":"{count} item","items.other":"{count} itens","items.many":"{count} itens"}"#).unwrap();
   fs::write(root.join("en-US/locale.json"), r#"{"locale":"en-US","name":"English (United States)","native_name":"English (United States)"}"#).unwrap();
   fs::write(
     root.join("pt-BR/locale.json"),
@@ -51,6 +52,127 @@ fn env_lock() -> &'static Mutex<()> {
 fn normalizes_linux_locales() {
   assert_eq!(normalize_locale("pt_BR.UTF-8"), "pt-BR");
   assert_eq!(normalize_locale("en_US@variant"), "en-US");
+  assert_eq!(normalize_locale("zh_hans_cn.UTF-8"), "zh-Hans-CN");
+}
+
+#[test]
+fn resolves_installed_regional_variants_without_changing_chinese_script() {
+  let root = root();
+  for locale in ["es-ES", "zh-CN", "ja-JP"] {
+    fs::create_dir_all(root.join(locale)).unwrap();
+  }
+  for (requested, expected) in [
+    ("es_MX.UTF-8", Some("es-ES")),
+    ("ja", Some("ja-JP")),
+    ("zh-Hans-SG", Some("zh-CN")),
+    ("zh-Hans-TW", Some("zh-CN")),
+    ("zh-Hant-CN", None),
+    ("zh_TW.UTF-8", None),
+    ("zh-Hant", None),
+  ] {
+    assert_eq!(
+      argvus_i18n::resolve_locale(&root, requested).as_deref(),
+      expected
+    );
+  }
+}
+
+#[test]
+fn plural_fallback_uses_english_grammar_and_interpolation_is_single_pass() {
+  let root = root();
+  fs::create_dir_all(root.join("ru-RU")).unwrap();
+  fs::write(root.join("ru-RU/common.json"), "{}").unwrap();
+  let russian = I18n::from_locale(&root, "ru-RU", "common").unwrap();
+  assert_eq!(russian.tr_plural("items", 21), "21 items");
+  let english = I18n::from_locale(&root, "en-US", "common").unwrap();
+  assert_eq!(
+    english.tr_args("welcome", [("name", "{count}"), ("count", "42")]),
+    "Welcome, {count}!"
+  );
+  assert!(validate_catalogs(&root, Some("unknown")).is_err());
+}
+
+#[test]
+fn shipped_catalogs_cover_all_ten_languages_and_plural_forms() {
+  let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../resources/locales");
+  validate_catalogs(&root, None).unwrap_or_else(|errors| panic!("{}", errors.join("\n")));
+  let locales = discover_locales(&root);
+  for locale in [
+    "en-US", "pt-BR", "es-ES", "fr-FR", "it-IT", "de-DE", "ru-RU", "zh-CN", "ja-JP", "ko-KR",
+  ] {
+    assert!(locales.iter().any(|info| info.locale == locale));
+    let i18n = I18n::from_locale(&root, locale, "common").unwrap();
+    for count in [0, 1, 2, 5, 11, 21, 22, 1_000_000] {
+      assert!(
+        !i18n
+          .tr_plural("updates.available", count)
+          .contains("updates.available")
+      );
+    }
+  }
+  let russian = I18n::from_locale(&root, "ru-RU", "common").unwrap();
+  assert!(
+    russian
+      .tr_plural("updates.available", 21)
+      .contains("обновление")
+  );
+  assert!(
+    russian
+      .tr_plural("updates.available", 22)
+      .contains("обновления")
+  );
+  assert!(
+    russian
+      .tr_plural("updates.available", 25)
+      .contains("обновлений")
+  );
+}
+
+#[test]
+fn shipped_translations_preserve_command_options_and_code_examples() {
+  let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../resources/locales");
+  for entry in fs::read_dir(root.join("en-US")).unwrap() {
+    let path = entry.unwrap().path();
+    if path.extension().and_then(|value| value.to_str()) != Some("json")
+      || path.file_name().unwrap() == "locale.json"
+    {
+      continue;
+    }
+    let source: HashMap<String, String> =
+      serde_json::from_str(&fs::read_to_string(&path).unwrap()).unwrap();
+    for locale in discover_locales(&root) {
+      let translated: HashMap<String, String> = serde_json::from_str(
+        &fs::read_to_string(root.join(&locale.locale).join(path.file_name().unwrap())).unwrap(),
+      )
+      .unwrap();
+      for (key, text) in &source {
+        let actual = &translated[key];
+        for code in text.split('`').skip(1).step_by(2) {
+          assert!(
+            actual.contains(code),
+            "{} {key}: changed code {code}",
+            locale.locale
+          );
+        }
+        for word in text.split_whitespace() {
+          let word = word.trim_start_matches(['(', '[', '\'', '"', '`']);
+          if word.starts_with("--") {
+            let option: String = word
+              .chars()
+              .take_while(|character| {
+                character.is_ascii_alphanumeric() || matches!(character, '-' | '_')
+              })
+              .collect();
+            assert!(
+              actual.contains(&option),
+              "{} {key}: changed option {option}",
+              locale.locale
+            );
+          }
+        }
+      }
+    }
+  }
 }
 
 #[test]
@@ -104,7 +226,7 @@ fn explicit_config_beats_locale_environment() {
 #[test]
 fn validates_placeholder_mismatch() {
   let root = root();
-  fs::write(root.join("pt-BR/common.json"), r#"{"save":"Salvar","welcome":"Bem-vindo!","items.one":"{count} item","items.other":"{count} itens"}"#).unwrap();
+  fs::write(root.join("pt-BR/common.json"), r#"{"save":"Salvar","welcome":"Bem-vindo!","items.one":"{count} item","items.other":"{count} itens","items.many":"{count} itens"}"#).unwrap();
   let errors = validate_catalogs(&root, Some("pt-BR")).unwrap_err();
   assert!(
     errors

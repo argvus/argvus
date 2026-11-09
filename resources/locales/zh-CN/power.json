@@ -1,0 +1,20 @@
+{
+  "menu.lock": "锁",
+  "menu.suspend": "暂停",
+  "menu.logout": "退出",
+  "menu.reboot": "重新启动",
+  "menu.shutdown": "关闭",
+  "menu.launcher_missing": "未找到 Rofi 菜单启动器。",
+  "menu.unsupported_launcher": "不支持的菜单启动器：{launcher}",
+  "idle.timeout.title": "锁定超时",
+  "idle.timeout.one_minute": "1分钟",
+  "idle.timeout.minutes": "{count} 分钟",
+  "idle.timeout.never": "绝不",
+  "idle.timeout.config_missing": "未找到 hypridle 配置：{path}",
+  "idle.timeout.invalid": "无效锁定超时：{timeout}",
+  "idle.timeout.notification": "不活动锁：{timeout}",
+  "keep_awake.title": "保持清醒",
+  "keep_awake.enabled": "启用保持清醒",
+  "keep_awake.disabled": "保持清醒已禁用",
+  "dpms.usage": "用法：{command} {arguments}"
+}

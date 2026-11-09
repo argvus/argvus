@@ -339,7 +339,10 @@ mod tests {
 
   #[test]
   fn windows_hub_and_mode_restore_both_menu_selections_on_back() {
-    let mut app = App::new(InitialRoute::Hyprland);
+    let mut app = App::with_lang(
+      InitialRoute::Hyprland,
+      argvus_i18n::Lang::for_locale("en-US"),
+    );
     let root = rows(&app);
     assert!(root.iter().any(|row| row.id() == Some(&Item::Windows)));
     assert!(!root.iter().any(|row| row.id() == Some(&Item::WindowMode)));

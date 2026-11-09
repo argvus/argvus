@@ -149,6 +149,7 @@ pub struct App {
   timezone_draft: String,
   datetime: time::DateTimeInfo,
   generated_locales: Vec<String>,
+  languages: Vec<argvus_i18n::LocaleInfo>,
   locale_gen_entries: Vec<locale::LocaleEntry>,
   selected_locales: BTreeSet<String>,
   keyboard_info: keyboard::KeyboardInfo,
@@ -268,6 +269,13 @@ impl App {
     let datetime = time::datetime_info();
     let keyboard_info = keyboard::info();
     let hostname = host::current();
+    let mut languages = argvus_i18n::installed_locales();
+    // Preserve the original English/Portuguese positions while discovering additions.
+    languages.sort_by_key(|info| match info.locale.as_str() {
+      "en-US" => (0, info.locale.clone()),
+      "pt-BR" => (1, info.locale.clone()),
+      _ => (2, info.locale.clone()),
+    });
     let mut app = Self {
       admin: crate::administration::Administration::new(initial),
       lang,
@@ -293,6 +301,7 @@ impl App {
       timezone_draft: datetime.time_zone.clone(),
       datetime,
       generated_locales: locale::generated_locales(),
+      languages,
       locale_gen_entries,
       selected_locales,
       keyboard_variants: keyboard::variants(&keyboard_info.default_layout),

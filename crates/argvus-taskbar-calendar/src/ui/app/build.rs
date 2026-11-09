@@ -461,14 +461,18 @@ pub(super) fn build_settings_view(
   settings_root.append(&font_size);
 
   let language_label = settings_label();
-  let language_model = gtk::StringList::new(&["auto", "en-US", "pt-BR"]);
+  let language_model = gtk::StringList::new(&["auto"]);
+  for locale in argvus_i18n::installed_locales() {
+    language_model.append(&locale.locale);
+  }
   let language = gtk::DropDown::new(Some(language_model.clone()), None::<gtk::Expression>);
   language.add_css_class("editor-dropdown");
   settings_root.append(&language_label);
   settings_root.append(&language);
 
   let week_start_label = settings_label();
-  let week_start_model = gtk::StringList::new(&["monday", "sunday"]);
+  let weekday_headers = i18n.weekday_headers();
+  let week_start_model = gtk::StringList::new(&[weekday_headers[0], weekday_headers[6]]);
   let week_start = gtk::DropDown::new(Some(week_start_model.clone()), None::<gtk::Expression>);
   week_start.add_css_class("editor-dropdown");
   settings_root.append(&week_start_label);
@@ -567,7 +571,18 @@ pub(super) fn build_settings_view(
       AppMsg::SettingsFontSize(value as u32)
     }),
     language: connect_dropdown(&language, sender, AppMsg::SettingsLanguage),
-    week_start: connect_dropdown(&week_start, sender, AppMsg::SettingsWeekStart),
+    week_start: week_start.connect_selected_notify(clone!(
+      #[strong]
+      sender,
+      move |dropdown: &gtk::DropDown| {
+        let value = if dropdown.selected() == 1 {
+          "sunday"
+        } else {
+          "monday"
+        };
+        sender.input(AppMsg::SettingsWeekStart(value.to_owned()));
+      }
+    )),
     show_events: show_events.connect_active_notify(clone!(
       #[strong]
       sender,

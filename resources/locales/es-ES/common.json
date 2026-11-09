@@ -1,0 +1,9 @@
+{
+  "save": "Guardar",
+  "cancel": "Cancelar",
+  "close": "Cerrar",
+  "welcome": "¡Bienvenido, {name}!",
+  "updates.available.one": "{count} actualización disponible",
+  "updates.available.other": "{count} actualizaciones disponibles",
+  "updates.available.many": "{count} actualizaciones disponibles"
+}

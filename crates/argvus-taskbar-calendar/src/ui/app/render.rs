@@ -303,7 +303,10 @@ mod tests {
 
   #[test]
   fn read_errors_are_translated_and_distinct_from_empty() {
-    for language in [crate::i18n::Language::EnUs, crate::i18n::Language::PtBr] {
+    for language in [
+      crate::i18n::Language::from_locale_tag("en-US"),
+      crate::i18n::Language::from_locale_tag("pt-BR"),
+    ] {
       let i18n = I18n::new(language);
       let messages = [
         Text::DatabaseReadFailed,

@@ -115,7 +115,7 @@ impl<'a> Renderer<'a> {
 
       result
         .tooltip
-        .push_str(i18n::tr("Removable devices", "Dispositivos removíveis"));
+        .push_str(i18n::tr("device.removable_devices"));
       for d in &visible {
         result.tooltip.push('\n');
         result.tooltip.push_str("• ");
@@ -127,7 +127,7 @@ impl<'a> Renderer<'a> {
         result.tooltip.push('\n');
         result.tooltip.push('+');
         result.tooltip.push_str(&overflow.to_string());
-        result.tooltip.push_str(i18n::tr(" more", " mais"));
+        result.tooltip.push_str(i18n::tr("device.more"));
       }
       let any_mounted = visible.iter().any(|d| d.mounted);
       result.alt = if any_mounted {
@@ -190,15 +190,15 @@ fn expand_tokens(out: &mut String, d: &Device) {
 
   let mut state = String::new();
   if d.encrypted && d.locked {
-    state.push_str(i18n::tr("Encrypted · Locked", "Criptografado · Bloqueado"));
+    state.push_str(i18n::tr("device.encrypted_locked"));
   } else if d.encrypted {
-    state.push_str(i18n::tr("Encrypted", "Criptografado"));
+    state.push_str(i18n::tr("device.encrypted"));
   }
   if d.read_only {
     if !state.is_empty() {
       state.push_str(" · ");
     }
-    state.push_str(i18n::tr("Read-only", "Somente leitura"));
+    state.push_str(i18n::tr("device.read_only"));
   }
 
   let tokens: [(&str, &str); 10] = [

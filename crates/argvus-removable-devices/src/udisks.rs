@@ -253,13 +253,7 @@ impl UdisksClient {
 
   pub async fn eject(&self, device: &Device) -> Result<(), String> {
     if device.drive_path.is_empty() {
-      return Err(
-        crate::i18n::tr(
-          "device has no drive to eject",
-          "o dispositivo não tem unidade para ejetar",
-        )
-        .to_string(),
-      );
+      return Err(crate::i18n::tr("device.device_has_no_drive_to_eject").to_string());
     }
     self
       .call_method(
@@ -273,13 +267,7 @@ impl UdisksClient {
 
   pub async fn power_off(&self, device: &Device) -> Result<(), String> {
     if device.drive_path.is_empty() {
-      return Err(
-        crate::i18n::tr(
-          "device has no drive to power off",
-          "o dispositivo não tem unidade para desligar",
-        )
-        .to_string(),
-      );
+      return Err(crate::i18n::tr("device.device_has_no_drive_to_power_off").to_string());
     }
     self
       .call_method(

@@ -1,0 +1,20 @@
+{
+  "menu.lock": "Sperren",
+  "menu.suspend": "Aussetzen",
+  "menu.logout": "Abmelden",
+  "menu.reboot": "Neustart",
+  "menu.shutdown": "Abschalten",
+  "menu.launcher_missing": "Rofi-Menüstarter nicht gefunden.",
+  "menu.unsupported_launcher": "Nicht unterstützter Menüstarter: {launcher}",
+  "idle.timeout.title": "Sperrzeitüberschreitung",
+  "idle.timeout.one_minute": "1 Minute",
+  "idle.timeout.minutes": "{count} Minuten",
+  "idle.timeout.never": "Niemals",
+  "idle.timeout.config_missing": "Hypridle-Konfiguration nicht gefunden: {path}",
+  "idle.timeout.invalid": "Ungültiges Sperrzeitlimit: {timeout}",
+  "idle.timeout.notification": "Inaktivitätssperre: {timeout}",
+  "keep_awake.title": "Bleiben Sie wach",
+  "keep_awake.enabled": "Keep Awake aktiviert",
+  "keep_awake.disabled": "„Wach bleiben“ deaktiviert",
+  "dpms.usage": "Verwendung: {command} {arguments}"
+}

@@ -167,7 +167,7 @@ Keys ›           the keyring, on its own page, with the search at the top
 3. **Create a key:** in **Generate key ▾**, type **Full name** and **E-mail**. Both are required, and **Generate key** stays disabled until both have text. **Comment** is optional. The user ID becomes `Name (comment) <e-mail>`.
    - **Algorithm** switches between **RSA** and **DSA ElGamal**. A DSA key gets an ElGamal encryption subkey; an RSA key gets an RSA one.
    - **Key strength** cycles through the sizes of the algorithm: RSA 1024, 2048 and 4096; DSA 1024, 2048 and 3072. gpg does not create DSA keys above 3072 bits, so 4096 is not offered for DSA.
-   - **Expiration date** opens its own page. Type the date in the layout of your language: `DD/MM/YYYY` in pt-BR, `YYYY/MM/DD` in English. The date must be after today. Turn on **Never expires** to make the key permanent; the date field is then disabled and not used.
+   - **Expiration date** opens its own page. Type the date in the layout of your language: `DD/MM/YYYY` in Portuguese, Spanish, French, Italian, German and Russian; `YYYY/MM/DD` in English, Chinese, Japanese and Korean. The date must be after today. Turn on **Never expires** to make the key permanent; the date field is then disabled and not used.
    - **Passphrase** opens its own page. **Protect with a passphrase** is on by default; type the **Passphrase** and then **Confirm passphrase**. The two must match. Turning protection off clears both fields, and the page asks for confirmation before it generates an unprotected key.
 4. Select **Generate key** and press `Enter`. The key gets a signing key and an encryption subkey. The passphrase is sent to the launcher on its standard input, never as a command argument. If generation fails, the other fields stay, but the passphrases are cleared and must be typed again.
 5. **Cancel** clears every field of the form and returns the dates and sizes to their defaults.
@@ -213,6 +213,8 @@ Not in the page yet: searching the keyserver for a key by name or e-mail. Use **
 ### Language & Region
 
 This card lists Language (the regional locale), Time Zone, Date & Time, System Locales and Keyboard Layout, and each one opens directly from the home. The keyboard pages also hold the variant and console keymap. The home search also exposes keyboard shortcuts and mouse/touchpad settings as direct settings routes.
+
+The language list discovers installed catalogs and shows native names for all ten languages. Enable the corresponding UTF-8 system locale before selecting it.
 
 Both **Preferences > Language & Region > Language** and **Settings > Language** save the same user preference: `LANG` in `$XDG_CONFIG_HOME/locale.conf` (default `~/.config/locale.conf`), for example `LANG=en_US.UTF-8`. Comments and regional variables are preserved. No global file or parallel ARGVUS language setting is written. An unconfigured user gets English; legacy `session.language` and `data/language` files are ignored. Log out and back in to apply the language to the full session and applications.
 

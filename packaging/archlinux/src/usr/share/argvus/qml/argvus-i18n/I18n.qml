@@ -11,8 +11,8 @@ QtObject {
         var fallback = catalogs["en-US/" + domain] || {}
         var value = values[key] !== undefined ? values[key] : (fallback[key] !== undefined ? fallback[key] : key)
         if (args) {
-            Object.keys(args).forEach(function (name) {
-                value = value.split("{" + name + "}").join(String(args[name]))
+            value = value.replace(/\{([^{}]+)\}/g, function (token, name) {
+                return Object.prototype.hasOwnProperty.call(args, name) ? String(args[name]) : token
             })
         }
         return value

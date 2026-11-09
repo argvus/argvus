@@ -1,0 +1,10 @@
+{
+  "sensors.command_failed": "Sensoren -j konnten nicht ausgeführt werden",
+  "sensors.invalid_data": "Der JSON-Code des Sensors konnte nicht gelesen werden",
+  "sensors.no_sensors": "Es wurden keine Temperatursensoren gefunden.",
+  "sensors.title": "Temperatursensoren",
+  "sensors.live": "LIVE · 2 s",
+  "sensors.loading": "Sensoren auslesen…",
+  "sensors.unavailable": "Temperaturmesswerte sind nicht verfügbar. Automatischer Wiederholungsversuch.",
+  "sensors.shortcuts": "Esc Schließen · Aktualisierungen alle 2 Sekunden"
+}

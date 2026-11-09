@@ -1,1 +1,9 @@
-{"save":"Salvar","cancel":"Cancelar","close":"Fechar","welcome":"Bem-vindo, {name}!","updates.available.one":"{count} atualização disponível","updates.available.other":"{count} atualizações disponíveis"}
+{
+  "save": "Salvar",
+  "cancel": "Cancelar",
+  "close": "Fechar",
+  "welcome": "Bem-vindo, {name}!",
+  "updates.available.one": "{count} atualização disponível",
+  "updates.available.other": "{count} atualizações disponíveis",
+  "updates.available.many": "{count} atualizações disponíveis"
+}
