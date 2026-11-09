@@ -7,7 +7,7 @@ use argvus_widget_telemetry_core::machine::{
   cpu_model, diagonal_inches, first_monitor, gpu_name, is_external, pretty_name, session_type,
   window_manager,
 };
-use std::env;
+use std::{env, time::Duration};
 
 /// The rows of the block, in the order the widget shows them.
 pub fn text() -> String {
@@ -23,10 +23,21 @@ pub fn text() -> String {
     .trim()
     .to_string();
   let locale = env::var("LANG").unwrap_or_default();
-  let uptime = output_any("uptime", &["-p"])
-    .trim_end()
-    .trim_start_matches("up ")
-    .to_string();
+  // Read the kernel counter so neither the command locale nor verbose unit
+  // names can expand the sidebar. Catalogs only format the compact units.
+  let uptime = read_text("/proc/uptime".as_ref())
+    .and_then(|contents| uptime_parts(&contents))
+    .map(|(days, hours, minutes)| {
+      messages::text(
+        "uptime.format",
+        &[
+          format!("days={days}"),
+          format!("hours={hours}"),
+          format!("minutes={minutes}"),
+        ],
+      )
+    })
+    .unwrap_or_else(|| unknown.clone());
   let session = session_label(&unknown);
   let rows = [
     row("machine.os", &os),
@@ -134,4 +145,39 @@ fn row(key: &str, value: &str) -> String {
     _ => "       ",
   };
   format!("<span>{label}:</span>{spacing}{value}")
+}
+
+/// Split the kernel uptime into whole days, hours and minutes.
+fn uptime_parts(contents: &str) -> Option<(u64, u64, u64)> {
+  let seconds = contents.split_whitespace().next()?.parse::<f64>().ok()?;
+  let seconds = Duration::try_from_secs_f64(seconds).ok()?.as_secs();
+  Some((seconds / 86_400, seconds / 3_600 % 24, seconds / 60 % 60))
+}
+
+#[cfg(test)]
+mod tests {
+  use super::uptime_parts;
+
+  #[test]
+  fn uptime_uses_compact_units_at_minute_hour_and_day_boundaries() {
+    for (contents, expected) in [
+      ("0.00 0.00", (0, 0, 0)),
+      ("59.99 120.00", (0, 0, 0)),
+      ("60.00 120.00", (0, 0, 1)),
+      ("3599.99 0.00", (0, 0, 59)),
+      ("3600.00 0.00", (0, 1, 0)),
+      ("86399.99 0.00", (0, 23, 59)),
+      ("86400.00 0.00", (1, 0, 0)),
+      ("132540.25 0.00", (1, 12, 49)),
+    ] {
+      assert_eq!(uptime_parts(contents), Some(expected), "{contents}");
+    }
+  }
+
+  #[test]
+  fn unavailable_or_invalid_uptime_stays_unknown() {
+    for contents in ["", "invalid", "-1.0 0.0", "NaN", "inf", "1e100"] {
+      assert_eq!(uptime_parts(contents), None, "{contents}");
+    }
+  }
 }
