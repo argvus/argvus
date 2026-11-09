@@ -122,8 +122,22 @@ pub fn status() -> ConfigResult<Status> {
   Ok(status)
 }
 
-/// Serializes persistence, projection and IPC together across both interfaces.
+enum Change {
+  Set(WindowMode),
+  Toggle,
+}
+
+/// Serializes persistence, projection and IPC across every entry point.
 pub fn set(mode: WindowMode) -> ConfigResult<Status> {
+  change(Change::Set(mode))
+}
+
+/// Inverts the persisted preference, including when its application is pending.
+pub fn toggle() -> ConfigResult<Status> {
+  change(Change::Toggle)
+}
+
+fn change(change: Change) -> ConfigResult<Status> {
   let store = ConfigStore::from_environment()?;
   let root = store
     .path
@@ -139,6 +153,15 @@ pub fn set(mode: WindowMode) -> ConfigResult<Status> {
     .open(root.join("data/internal/window-mode.lock"))?;
   crate::config_lock::lock_file(&lock)?;
   let _guard = crate::config_lock::LockGuard(&lock);
+  // Resolve Toggle after taking the same lock as Set: concurrent key presses
+  // must observe the previous completed preference instead of losing a toggle.
+  let mode = match change {
+    Change::Set(mode) => mode,
+    Change::Toggle => match from_document(&store.load_effective()?)? {
+      WindowMode::Tile => WindowMode::Floating,
+      WindowMode::Floating => WindowMode::Tile,
+    },
+  };
   // Restore before changing generated mode: its write may trigger a compositor reload.
   if mode == WindowMode::Tile {
     crate::windows::prepare_tile()?;
@@ -182,8 +205,11 @@ pub fn run(args: &[String]) -> ExitCode {
         from_document(&ConfigStore::from_environment()?.load_effective()?)?.as_str()
       ),
       ["status", "--json"] => println!("{}", serde_json::to_string(&status()?)?),
-      ["set", mode] => {
-        let status = set(WindowMode::parse(mode)?)?;
+      ["toggle"] | ["set", _] => {
+        let status = match args.get(1) {
+          Some(mode) => set(WindowMode::parse(mode)?)?,
+          None => toggle()?,
+        };
         println!("{}", serde_json::to_string(&status)?);
         if status.error.is_some() {
           return Err(ConfigError::Invalid(
@@ -193,7 +219,7 @@ pub fn run(args: &[String]) -> ExitCode {
       }
       _ => {
         return Err(ConfigError::Invalid(
-          "usage: argvus config window-mode get|status --json|set tile|floating".into(),
+          "usage: argvus config window-mode get|status --json|set tile|floating|toggle".into(),
         ));
       }
     }

@@ -624,7 +624,7 @@ Se a aplicação estiver pendente ou falhar, a interface distingue esse estado d
 
 O modo flutuante adiciona uma barra de título ARGVUS com **Minimizar**, **Maximizar / Restaurar** e **Fechar** às janelas normais de aplicativos. O clique duplo na barra alterna a maximização. A decoração adicional fica oculta em mosaico e tela cheia. Aplicativos que desenham seus próprios controles podem exibir as duas barras; os controles ARGVUS uniformes são intencionais.
 
-Uma segunda Waybar aparece em cada monitor, na borda oposta à taskbar principal. Ela lista apenas as janelas do workspace atual daquele monitor, incluindo as minimizadas desse workspace. Abas ocultas de grupos não geram entradas extras. As minimizadas mantêm a associação ao monitor e workspace originais. Clique em uma entrada para restaurar/ativar; o menu de contexto oferece restaurar, minimizar, maximizar/restaurar e fechar. Ícones de aplicativos desconhecidos usam um símbolo de janela.
+Uma segunda Waybar aparece em cada monitor, na borda oposta à taskbar principal. Ela lista apenas as janelas do workspace atual daquele monitor, incluindo as minimizadas desse workspace. Abas ocultas de grupos não geram entradas extras. As minimizadas mantêm a associação ao monitor e workspace originais. Clique em uma janela sem foco para ativá-la, na janela ativa para minimizá-la ou em uma minimizada para restaurá-la; o menu de contexto oferece restaurar, minimizar, maximizar/restaurar e fechar. Ícones de aplicativos desconhecidos usam um símbolo de janela.
 
 `SUPER + Alt + seta para cima` coloca a barra principal no topo e a barra de janelas no rodapé. `SUPER + Alt + seta para baixo` faz o inverso. Repetir a direção mantém as posições. Em mosaico existe apenas a barra principal. Voltar ao mosaico restaura todas as minimizadas antes de remover a barra de janelas e então preserva a política original de janelas tiled/flutuantes.
 
@@ -649,3 +649,5 @@ seguidas de `rules`, `spaces` ou `mode`. As rotas existentes `window-rules` e
 confirmação de janela do Kitty. Rascunhos não aplicados são descartados ao fechar
 dessa forma. A opção vale apenas para a classe `argvus-control-center`;
 terminais comuns e outros TUIs mantêm sua política de confirmação.
+
+`SUPER + Alt + Espaço` alterna o modo global entre mosaico e flutuante, usando a mesma preferência da taskbar e do Control Center. O comando equivalente é `argvus config window-mode toggle`. Acionamentos simultâneos são serializados; a alternância considera a preferência salva, mesmo quando sua aplicação está pendente. O atalho pode ser alterado ou desabilitado em Atalhos de teclado; `SUPER + Shift + Espaço` mantém a ação individual.

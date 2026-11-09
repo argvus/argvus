@@ -403,13 +403,14 @@ argvus config window-mode get
 argvus config window-mode status --json
 argvus config window-mode set floating
 argvus config window-mode set tile
+argvus config window-mode toggle
 ```
 
 ## Botões de janela e barra de aplicativos
 
 O modo flutuante adiciona uma barra de título ARGVUS com **Minimizar**, **Maximizar / Restaurar** e **Fechar** às janelas normais de aplicativos. O clique duplo na barra alterna a maximização. A decoração adicional fica oculta em mosaico e tela cheia. Aplicativos que desenham seus próprios controles podem exibir as duas barras; os controles ARGVUS uniformes são intencionais.
 
-Uma segunda Waybar aparece em cada monitor, na borda oposta à taskbar principal. Ela lista apenas as janelas do workspace atual daquele monitor, incluindo as minimizadas desse workspace. Um workspace especial aberto tem prioridade. Janelas fixadas permanecem visíveis; abas ocultas de grupos não criam entradas extras, e um grupo minimizado tem uma entrada de recuperação. Abas internas dos aplicativos não são enumeradas separadamente. As minimizadas mantêm a associação ao monitor e workspace originais. Clique em uma entrada para restaurar/ativar; o menu de contexto oferece restaurar, minimizar, maximizar/restaurar e fechar. Ícones de aplicativos desconhecidos usam um símbolo de janela. A ativação e a restauração pela lista preservam a posição do ponteiro. A barra secundária usa o CSS efetivo da principal (cores, fontes, borda e arredondamento), com altura e margens espelhadas na borda oposta.
+Uma segunda Waybar aparece em cada monitor, na borda oposta à taskbar principal. Ela lista apenas as janelas do workspace atual daquele monitor, incluindo as minimizadas desse workspace. Um workspace especial aberto tem prioridade. Janelas fixadas permanecem visíveis; abas ocultas de grupos não criam entradas extras, e um grupo minimizado tem uma entrada de recuperação. Abas internas dos aplicativos não são enumeradas separadamente. As minimizadas mantêm a associação ao monitor e workspace originais. Clique em uma janela sem foco para ativá-la, na janela ativa para minimizá-la ou em uma minimizada para restaurá-la; o menu de contexto oferece restaurar, minimizar, maximizar/restaurar e fechar. Ícones de aplicativos desconhecidos usam um símbolo de janela. A ativação e a restauração pela lista preservam a posição do ponteiro. A barra secundária usa o CSS efetivo da principal (cores, fontes, borda e arredondamento), com altura e margens espelhadas na borda oposta.
 
 `SUPER + Alt + seta para cima` coloca a barra principal no topo e a barra de janelas no rodapé. `SUPER + Alt + seta para baixo` faz o inverso. Repetir a direção mantém as posições. Em mosaico existe apenas a barra principal. Voltar ao mosaico restaura todas as minimizadas antes de remover a barra de janelas e então preserva a política original de janelas tiled/flutuantes.
 
@@ -422,3 +423,5 @@ Comandos: `argvus windows list --json`, `watch --json`, `position top|bottom`, `
 No modo **Spaced + Floating**, as janelas respeitam os espaços externos e as áreas reservadas pelas duas barras. O cálculo inclui a borda e o título, que fica dentro da mesma borda da janela. Maximizar pelos controles ARGVUS ocupa essa área com margens; restaurar recupera a geometria anterior, inclusive após reiniciar o serviço. Tela cheia continua usando o monitor inteiro. Janelas flutuantes podem se sobrepor; os espaços internos do mosaico não separam essas janelas.
 
 As margens internas reservadas pelas barras não são somadas duas vezes aos espaços externos das janelas. Com espaçamento simétrico, a distância visível entre a janela e as barras superior e inferior é igual, inclusive após inverter a posição das barras.
+
+`SUPER + Alt + Espaço` alterna o modo global entre mosaico e flutuante, usando a mesma preferência da taskbar e do Control Center. O comando equivalente é `argvus config window-mode toggle`. Acionamentos simultâneos são serializados; a alternância considera a preferência salva, mesmo quando sua aplicação está pendente. O atalho pode ser alterado ou desabilitado em Atalhos de teclado; `SUPER + Shift + Espaço` mantém a ação individual.

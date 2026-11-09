@@ -391,6 +391,23 @@ impl Service {
   }
 
   fn action(&mut self, action: &str, target: Option<&str>) -> ConfigResult<Value> {
+    // Resolve a taskbar click against live compositor state, not the snapshot
+    // displayed by the frontend, which may predate a focus or minimize change.
+    let action = if action == "toggle" {
+      let target = address(target.ok_or_else(|| invalid("missing address"))?)?;
+      self.reconcile()?;
+      if !self.suspended
+        && mode_applied()
+        && !self.registry.contains_key(target)
+        && query("activewindow")?["address"] == target
+      {
+        "minimize"
+      } else {
+        "activate"
+      }
+    } else {
+      action
+    };
     match action {
       "list" => return self.snapshot(),
       "ready" => {

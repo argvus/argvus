@@ -433,3 +433,60 @@ fn start_desktop_starts_tty_without_forwarding_arguments() {
   assert!(output.status.success());
   assert_eq!(text(&output.stdout), "stdin=");
 }
+
+#[test]
+fn window_mode_toggle_persists_pending_preferences_and_serializes_concurrent_calls() {
+  let sandbox = Sandbox::new("window-mode-toggle");
+  let command = |action: &str| {
+    let mut command = sandbox.command("/usr/bin", &["config", "window-mode", action]);
+    command.env("ARGVUS_CONFIG_HOME", sandbox.root.join("config"));
+    command
+  };
+  for expected in ["floating", "tile"] {
+    let output = command("toggle").output().expect("toggle command");
+    assert!(
+      output.status.success(),
+      "{}",
+      String::from_utf8_lossy(&output.stderr)
+    );
+    let status: serde_json::Value =
+      serde_json::from_slice(&output.stdout).expect("structured status");
+    assert_eq!(status["preferred"], expected);
+    assert_eq!(status["pending"], true);
+    assert_eq!(status["available"], false);
+    assert!(status["error"].is_null());
+  }
+  let children: Vec<_> = (0..8)
+    .map(|_| {
+      command("toggle")
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
+        .expect("concurrent toggle")
+    })
+    .collect();
+  let mut floating = 0;
+  for child in children {
+    let output = child.wait_with_output().expect("completed toggle");
+    assert!(
+      output.status.success(),
+      "{}",
+      String::from_utf8_lossy(&output.stderr)
+    );
+    let status: serde_json::Value =
+      serde_json::from_slice(&output.stdout).expect("structured status");
+    floating += usize::from(status["preferred"] == "floating");
+  }
+  assert_eq!(
+    floating, 4,
+    "each toggle observes the preceding saved preference"
+  );
+  let output = command("get").output().expect("read persisted mode");
+  assert!(output.status.success());
+  assert_eq!(String::from_utf8_lossy(&output.stdout).trim(), "tile");
+  let output = command("toggle")
+    .arg("extra")
+    .output()
+    .expect("invalid toggle");
+  assert!(!output.status.success());
+}

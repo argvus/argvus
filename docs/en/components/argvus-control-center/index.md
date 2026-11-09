@@ -620,7 +620,7 @@ If application is pending or fails, the interface distinguishes this from the sa
 
 Floating mode adds an ARGVUS title bar with **Minimize**, **Maximize / Restore**, and **Close** to normal application windows. Double-clicking the title bar toggles maximization. The additional decoration is hidden in Tile and fullscreen. Applications that draw their own controls may display both bars; uniform ARGVUS controls are intentional.
 
-A second Waybar appears on every monitor, on the edge opposite the main taskbar. It lists only the windows of that monitor's current workspace, including its minimized windows. Hidden group tabs do not create extra entries. Minimized entries retain their original monitor/workspace association. Click an entry to restore/activate it; its context menu offers restore, minimize, maximize/restore and close. Unknown application icons fall back to a window symbol.
+A second Waybar appears on every monitor, on the edge opposite the main taskbar. It lists only the windows of that monitor's current workspace, including its minimized windows. Hidden group tabs do not create extra entries. Minimized entries retain their original monitor/workspace association. Click an inactive window to activate it, an active window to minimize it, or a minimized window to restore it; its context menu offers restore, minimize, maximize/restore and close. Unknown application icons fall back to a window symbol.
 
 `SUPER + Alt + Up` places the main bar at the top and the window bar at the bottom. `SUPER + Alt + Down` does the reverse. Repeating a direction leaves the positions unchanged. Tile has only the main bar. Returning to Tile restores all minimized windows before removing the window bar, and then preserves the original tiled/floating policy.
 
@@ -645,3 +645,5 @@ by `rules`, `spaces` or `mode`. The existing `window-rules` and
 Kitty's OS-window confirmation. Unapplied drafts are discarded when the window
 is closed this way. The override is scoped to the `argvus-control-center` window
 class; regular terminals and other TUIs retain their close-confirmation policy.
+
+`SUPER + Alt + Space` toggles the global Tile/Floating mode, using the same preference as the taskbar and Control Center. The equivalent command is `argvus config window-mode toggle`. Concurrent invocations are serialized; toggling uses the saved preference even when application is pending. The shortcut can be changed or disabled in Keyboard Shortcuts; `SUPER + Shift + Space` keeps its individual-window action.

@@ -397,13 +397,14 @@ argvus config window-mode get
 argvus config window-mode status --json
 argvus config window-mode set floating
 argvus config window-mode set tile
+argvus config window-mode toggle
 ```
 
 ## Window buttons and application bar
 
 Floating mode adds an ARGVUS title bar with **Minimize**, **Maximize / Restore**, and **Close** to normal application windows. Double-clicking the title bar toggles maximization. The additional decoration is hidden in Tile and fullscreen. Applications that draw their own controls may display both bars; uniform ARGVUS controls are intentional.
 
-A second Waybar appears on every monitor, on the edge opposite the main taskbar. It lists only the windows belonging to that monitor's current workspace, including minimized windows from that workspace. An open special workspace takes precedence. Pinned windows remain visible; hidden group tabs do not create extra entries, and a minimized group has one recovery entry. Tabs inside an application are not enumerated separately. Minimized entries retain their original monitor/workspace association. Click an entry to restore/activate it; its context menu offers restore, minimize, maximize/restore and close. Unknown application icons fall back to a window symbol. Activating or restoring an entry preserves the pointer position. The secondary bar uses the effective primary CSS (colors, fonts, border and rounding), with its height and mirrored margins on the opposite edge.
+A second Waybar appears on every monitor, on the edge opposite the main taskbar. It lists only the windows belonging to that monitor's current workspace, including minimized windows from that workspace. An open special workspace takes precedence. Pinned windows remain visible; hidden group tabs do not create extra entries, and a minimized group has one recovery entry. Tabs inside an application are not enumerated separately. Minimized entries retain their original monitor/workspace association. Click an inactive window to activate it, an active window to minimize it, or a minimized window to restore it; its context menu offers restore, minimize, maximize/restore and close. Unknown application icons fall back to a window symbol. Activating or restoring an entry preserves the pointer position. The secondary bar uses the effective primary CSS (colors, fonts, border and rounding), with its height and mirrored margins on the opposite edge.
 
 `SUPER + Alt + Up` places the main bar at the top and the window bar at the bottom. `SUPER + Alt + Down` does the reverse. Repeating a direction leaves the positions unchanged. Tile has only the main bar. Returning to Tile restores all minimized windows before removing the window bar, and then preserves the original tiled/floating policy.
 
@@ -416,3 +417,5 @@ Commands: `argvus windows list --json`, `watch --json`, `position top|bottom`, `
 In **Spaced + Floating**, windows respect outer gaps and the areas reserved by both bars. The bounds include the border and title, which sits inside the same window border. Maximizing through ARGVUS controls fills this area with margins; restoring recovers the previous geometry, including after a service restart. Fullscreen still uses the whole output. Floating windows may overlap; tiling inner gaps do not separate them.
 
 Inner margins reserved by the bars are not counted twice in window outer gaps. With symmetric spacing, the visible window-to-bar distance is equal above and below, including after swapping the bars.
+
+`SUPER + Alt + Space` toggles the global Tile/Floating mode, using the same preference as the taskbar and Control Center. The equivalent command is `argvus config window-mode toggle`. Concurrent invocations are serialized; toggling uses the saved preference even when application is pending. The shortcut can be changed or disabled in Keyboard Shortcuts; `SUPER + Shift + Space` keeps its individual-window action.

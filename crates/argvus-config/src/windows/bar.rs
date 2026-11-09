@@ -110,37 +110,6 @@ fn inherit_geometry(config: &mut Value, primary: &Value) {
   }
 }
 
-#[cfg(test)]
-mod tests {
-  use super::*;
-
-  #[test]
-  fn window_buttons_share_primary_group_border_and_rounding() {
-    let css = "#right-0, #right-1, #right-2, #focus { border: 3px solid @th-border-rights; border-radius: 5px; padding: 0 10px; }";
-    let group = primary_group_style(css).unwrap();
-    assert!(group.contains("border: 3px"));
-    assert!(group.contains("border-radius: 5px"));
-    assert!(group.contains("padding: 0 10px"));
-    assert!(primary_group_style("window#waybar { border: none; }").is_none());
-  }
-
-  #[test]
-  fn secondary_bar_mirrors_effective_spaced_geometry() {
-    let mut secondary = json!({"name":"argvus-window-bar", "position":"bottom"});
-    inherit_geometry(
-      &mut secondary,
-      &json!({"height":32,"margin-top":16,"margin-bottom":3,"margin-left":18,"margin-right":20}),
-    );
-    assert_eq!(secondary["height"], 32);
-    assert_eq!(secondary["margin-top"], 3);
-    assert_eq!(secondary["margin-bottom"], 16);
-    assert_eq!(secondary["margin-left"], 18);
-    assert_eq!(secondary["margin-right"], 20);
-    assert_eq!(secondary["name"], "argvus-window-bar");
-    assert_eq!(secondary["position"], "bottom");
-  }
-}
-
 /// A separate, supervised Waybar process. Mode and position are derived; this
 /// runner owns no independent preferences and never kills the primary bar.
 pub(super) fn run() -> ConfigResult<()> {
@@ -186,5 +155,36 @@ pub(super) fn run() -> ConfigResult<()> {
       }
     }
     std::thread::sleep(Duration::from_secs(1));
+  }
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  #[test]
+  fn window_buttons_share_primary_group_border_and_rounding() {
+    let css = "#right-0, #right-1, #right-2, #focus { border: 3px solid @th-border-rights; border-radius: 5px; padding: 0 10px; }";
+    let group = primary_group_style(css).unwrap();
+    assert!(group.contains("border: 3px"));
+    assert!(group.contains("border-radius: 5px"));
+    assert!(group.contains("padding: 0 10px"));
+    assert!(primary_group_style("window#waybar { border: none; }").is_none());
+  }
+
+  #[test]
+  fn secondary_bar_mirrors_effective_spaced_geometry() {
+    let mut secondary = json!({"name":"argvus-window-bar", "position":"bottom"});
+    inherit_geometry(
+      &mut secondary,
+      &json!({"height":32,"margin-top":16,"margin-bottom":3,"margin-left":18,"margin-right":20}),
+    );
+    assert_eq!(secondary["height"], 32);
+    assert_eq!(secondary["margin-top"], 3);
+    assert_eq!(secondary["margin-bottom"], 16);
+    assert_eq!(secondary["margin-left"], 18);
+    assert_eq!(secondary["margin-right"], 20);
+    assert_eq!(secondary["name"], "argvus-window-bar");
+    assert_eq!(secondary["position"], "bottom");
   }
 }

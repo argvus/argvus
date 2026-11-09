@@ -45,3 +45,19 @@ The taskbar's `--status` adapter emits Waybar text, tooltip and CSS class.
   desktop's windows and persistent configuration were not used as test fixtures.
 - Physical multi-monitor changes and logout/login have not been exercised.
   Exact tiling split-tree restoration remains outside this feature. The additional window controls and recovery bar are described in [Window management](window-management.md).
+
+`window-mode toggle` acquires the same session-policy lock as `set` before
+reading the saved mode. It then shares persistence, projection, minimized-window
+recovery and IPC application with `set`. The official `window.toggle_mode`
+shortcut defaults to SUPER + ALT + Space and supports the ordinary user override
+and disable mechanisms. The per-window floating shortcut remains separate.
+
+Validation of the toggle shortcut: 304 scoped Rust tests passed (configuration,
+CLI and dispatcher integration), including concurrent toggles and pending-mode
+persistence. Strict scoped Clippy across all targets, Rust formatting, source
+and staged locale catalogs, and package metadata checks passed. The window-bar
+test module was moved after its implementation to satisfy the all-target lint.
+The nested Hyprland regression exercised the official binding with virtual
+SUPER/ALT/Space key events, restoration before Tile, both directions after
+reload, and user remapping/disable through the official override adapter. Its
+optional ARGVUS_TEST_KEYBOARD driver receives only the isolated Wayland session.

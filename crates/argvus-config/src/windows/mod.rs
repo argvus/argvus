@@ -117,7 +117,7 @@ pub fn run(args: &[String]) -> ExitCode {
       }
       ["list", "--json"] => println!("{}", request("list", None)?),
       [
-        action @ ("minimize" | "restore" | "activate" | "maximize" | "close"),
+        action @ ("toggle" | "minimize" | "restore" | "activate" | "maximize" | "close"),
         target,
       ] => {
         request(action, Some(target))?;
@@ -127,7 +127,7 @@ pub fn run(args: &[String]) -> ExitCode {
       }
       _ => {
         return Err(invalid(
-          "usage: argvus windows service|bar|position top|bottom|list --json|watch --json|restore-all|minimize|restore|activate|maximize|close ADDRESS",
+          "usage: argvus windows service|bar|position top|bottom|list --json|watch --json|restore-all|toggle|minimize|restore|activate|maximize|close ADDRESS",
         ));
       }
     }
@@ -140,7 +140,7 @@ pub fn run(args: &[String]) -> ExitCode {
       if args.first().is_some_and(|action| {
         matches!(
           action.as_str(),
-          "minimize" | "restore" | "activate" | "maximize" | "close"
+          "toggle" | "minimize" | "restore" | "activate" | "maximize" | "close"
         )
       }) && let Ok(i18n) = argvus_i18n::I18n::new("taskbar")
       {

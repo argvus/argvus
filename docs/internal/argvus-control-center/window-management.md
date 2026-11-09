@@ -124,3 +124,12 @@ at either the top or bottom.
 The Control Center entry point is now Desktop & Input > Hyprland > Windows >
 Mode. Rules and Spaces are sibling pages; all use the same shared mode backend
 and preserve the Windows parent when entered through search or CLI aliases.
+
+`argvus windows toggle ADDRESS` is the taskbar click action. The service reads
+live focus and recovery state: a visible active window minimizes in Floating;
+an inactive window activates, and a minimized window restores and activates.
+Explicit `activate` and `restore` keep their existing non-toggling semantics.
+The frontend sends only the address, avoiding decisions from stale snapshots.
+The nested Hyprland regression exercises native Waybar pointer clicks through
+activate, minimize and restore, including cursor preservation. Its parent
+pointer is disabled to isolate synthetic input from the running desktop.
