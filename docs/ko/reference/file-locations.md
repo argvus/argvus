@@ -1,0 +1,42 @@
+---
+title: 파일 위치
+description: 중요한 설치된 ARGVUS 파일 및 디렉터리.
+---
+- `/usr/bin/argvus*` — 공용 명령어.  
+- `/usr/share/argvus/hyprland/` — Hyprland 설정 및 도움 도구.  
+- `/usr/share/argvus/control-panel/` — 제어판 QML 및 스크립트.  
+- `/usr/share/argvus/taskbar/` — 작업 표시줄 설정 및 스크립트.  
+- `/usr/share/argvus/lock/` — Hyprlock 설정.  
+- `/usr/share/argvus/portal/` — 포털 통합 파일.  
+- `/usr/share/backgrounds/argvus/` — 배경화면 자산.  
+- `/etc/argvus/` — 시스템 공급자 설정.  
+- `/etc/argvus/greeter.toml` — 인사말 설정.  
+- `/etc/argvus/removable-devices/config.json` — 이동식 저장 장치의 시스템 기본값.  
+- `$XDG_CONFIG_HOME/argvus/config.json` — 정식 휴대용 환경설정.  
+- `$XDG_CONFIG_HOME/argvus/data/` — 관리되는 구성 요소 데이터, 백업, 잠금 및 생성된 출력.  
+- `$XDG_CONFIG_HOME/waybar/argvus-taskbar.{jsonc,css}` — 선택적 전체 네이티브 Waybar 작업 표시줄 덮어쓰기.
+- `$XDG_CONFIG_HOME/argvus/data/taskbar/argvus-taskbar.{jsonc,css}` — ARGVUS 작업 표시줄 복사본을 관리했습니다.  
+- `$XDG_CONFIG_HOME/argvus/data/generated/waybar/` — `argvus-taskbar.css` 및 `argvus-widget-telemetry.{jsonc,css}`를 포함한 Waybar 프로파일을 생성했습니다; 이것들이 위의 복사본보다 우선합니다.  
+- `$XDG_CONFIG_HOME/argvus/data/generated/waybar/argvus-widget-telemetry.{jsonc,css}` — `data/waybar/` 아래에도 복제되었으며, 외형 변경 시 패키지 기본값에서 교체되고 이후 `ARGVUS_TELEMETRY_*` 및 폰트 블록이 다시 작성됩니다.  
+- `$XDG_CONFIG_HOME/argvus/data/generated/yazi/` — Yazi 구성 트리를 예측했으며, Yazi 플레버를 제공하지 않는 테마에 대한 변형 인식 폴백을 포함합니다.  
+- `$XDG_CONFIG_HOME/argvus/data/generated/superfile/` — Superfile 테마 세트를 예측했습니다.  
+- `$XDG_CONFIG_HOME/argvus/data/generated/terminal/` — 터미널 프로파일을 예측했습니다.
+- `$XDG_CONFIG_HOME/argvus/data/generated/qt6ct/` — 예상 Qt6ct 팔레트. 
+- `$XDG_CONFIG_HOME/argvus/data/generated/gtk/` — 예상 GTK 테마 파일. 
+- `$XDG_CONFIG_HOME/argvus/data/rofi/` — Rofi 설정, 테마 및 모드의 사용자 복사본. ARGVUS는 파일을 처음 변경할 때 각 복사본을 생성하며, 변경되지 않은 파일은 `/usr/share/argvus/launcher/config/`에서 읽음. 
+- `$XDG_CONFIG_HOME/argvus/data/generated/removable-devices/theme.css` — 예상 이동식 장치 스타일시트. 
+- `$XDG_CONFIG_HOME/argvus/data/focus/settings.json`, `$XDG_DATA_HOME/argvus/focus/history.json`, `$XDG_STATE_HOME/argvus/focus/session.json` — ARGVUS Focus 설정, 세션 기록 및 현재 세션 체크포인트. 
+- `$XDG_RUNTIME_DIR/argvus/focus/status.json` — 작업 표시줄에서 사용되는 일시적 ARGVUS Focus 상태; Focus 종료 시 제거됨.
+- `$XDG_CONFIG_HOME/argvus/data/clock/settings.json`, `$XDG_DATA_HOME/argvus/clock/alarms.json`, `$XDG_STATE_HOME/argvus/clock/timers.json` — ARGVUS 시계 설정 및 세계 시계, 알람, 타이머/스톱워치 체크포인트.
+- `$XDG_CONFIG_HOME/argvus/data/generated/theme/current/time/theme.css` — ARGVUS Focus 및 ARGVUS Clock의 색상 (테마 소비자 `time`).
+- `/usr/share/argvus/sounds/` — ARGVUS Focus 및 ARGVUS Clock의 소리 (`argvus-chime.oga`, `argvus-beacon.oga`, `argvus-bell.oga`).
+- `$XDG_CONFIG_HOME/argvus/data/generated/theme/` — 테마 빌드 (`builds/<id>-<variant>-<hash>/`), `argvus theme render`이 작성하고 모든 테마 전환 및 강조 색상 변경 시 적용되며, 활성 테마 빌드로의 `current` 심볼릭 링크.
+- `$XDG_CONFIG_HOME/argvus/data/hypr/` — 사용자 Hyprland Lua 오버라이드 및 네이티브 Hyprland 프로젝션.
+- `$XDG_CONFIG_HOME/hypr/hyprland.lua` — 선택적 완전 네이티브 Hyprland 구성으로 `argvus start`에 의해 선택됨; 점진적 오버레이가 아님.  
+- `$XDG_STATE_HOME/argvus/config-projection.json` — 프로젝션 매니페스트: 생성, 유효 구성 해시, 변경된 섹션 및 보류 중인 런타임 작업. `argvus sessionctl reload`에서 읽음; 진실의 출처는 아님.  
+- `$XDG_STATE_HOME/argvus/widget-telemetry-blocks` — 기존 텔레메트리 블록 설정. 마이그레이션 입력용만; 정식 값은 `config.json`에 존재하며, 이 파일은 더 이상 작성되지 않음.  
+- `$XDG_STATE_HOME/argvus/session.log` — 그래픽 세션 로그 (보통 `~/.local/state/argvus/session.log`).  
+- `/usr/share/wayland-sessions/argvus.desktop` — 그래픽 세션 항목.  
+- `/usr/share/plymouth/themes/argvus/` — 패키지된 부트 스플래시 자산.  
+
+정확한 페이로드는 패키지별로 다름; 개발자 구성 요소 참조 및 관련 패키지 매니페스트를 확인할 것.
