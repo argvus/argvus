@@ -15,11 +15,10 @@
     ]
   },
   "custom/network": {
-    "exec": "/usr/share/argvus/network/sh/waybar-network.sh",
+    "exec": "argvus networkctl waybar --follow",
     "return-type": "json",
     "format": "{}",
     "tooltip": true,
-    "interval": 10,
     "nospacing": 1,
     "on-click": "argvus networkctl manager",
     "on-click-right": "argvus networkctl toggle"

@@ -68,3 +68,5 @@ Wi-Fi connection requests share the network action guard: a running action or pr
 Bluetooth removal confirmation keeps the original device address even when the device list refreshes. Battery percentages from bluetoothctl are recognized, and device detail queries run with bounded concurrency and individual timeouts.
 
 Wi-Fi password, manual DNS and network search fields accept bracketed paste. Pasted controls and line breaks are omitted. Unsupported Ctrl-only or Alt-only character shortcuts do not insert letters. Editors accept printable AltGr events encoded as Ctrl+Alt; Ctrl+S saves only without Alt. The shared text editor keeps vertical navigation in visual columns and aligns horizontal scrolling for wide characters.
+
+The taskbar network indicator follows NetworkManager events using `argvus networkctl waybar --follow`, with an initial snapshot and automatic monitor reconnection. It no longer waits for a 10-second polling interval. Connected, limited Internet access and disconnected remain distinct states. Wi-Fi status reads cached access points without requesting a scan. `argvus networkctl waybar` emits a single Waybar JSON snapshot.

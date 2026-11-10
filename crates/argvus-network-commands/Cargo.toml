@@ -21,3 +21,4 @@ path = "src/bin/argvus-bluetoothctl.rs"
 [dependencies]
 argvus-network-core.workspace = true
 argvus-runtime.workspace = true
+serde_json.workspace = true

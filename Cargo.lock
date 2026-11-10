@@ -659,6 +659,7 @@ version = "0.1.0"
 dependencies = [
  "argvus-network-core",
  "argvus-runtime",
+ "serde_json",
 ]
 
 [[package]]
