@@ -1,0 +1,8 @@
+---
+title: Development environment
+description: قم بإعداد عملية الدفع لتطوير ARGVUS.
+---
+
+تحتوي مساحة العمل على مستودعات مستقلة ضمن `de/`. افحص مساعدي `Cargo.toml` و`PKGBUILD` وMakefile والتعبئة للمستودع المستهدف قبل البناء. حافظ على تمييز تكوين المصدر وحمولة الحزمة والتكوين النشط المثبت.
+
+موقع التوثيق موجود تحت `web/site-src` ويستخدم Astro وStarlight و`starlight-versions`.

@@ -1,0 +1,33 @@
+---
+title: Localization
+description: استخدم ARGVUS باللغة الإنجليزية أو البرتغالية.
+---
+
+يوفر `argvus-i18n` الكتالوجات المشتركة والأمر `argvus i18n validate` ووحدة QML `org.argvus.i18n`. تقوم ARGVUS حاليًا بشحن الكتالوجات الإنجليزية والبرتغالية.
+
+تستهلك التطبيقات الأصلية ومكونات الصدفة الكتالوجات المشتركة. ولذلك يمكن استخدام السلسلة المترجمة من قبل أكثر من مستودع واحد.
+
+استخدم **مركز التحكم → اللغة والمنطقة** لتكوين اللغة واللغة الإقليمية ولغات النظام التي تم إنشاؤها والمنطقة الزمنية والتاريخ/الوقت ولوحة المفاتيح. توفر كتالوجات ARGVUS الحالية اللغتين الإنجليزية والبرتغالية؛ وهذا منفصل عن قائمة لغات النظام التي أنشأها نظام التشغيل.
+
+يؤدي تغيير لغة العرض إلى حفظ تفضيل ARGVUS وإعادة تشغيل `argvus-control-panel.service` تلقائيًا، وبالتالي تعكس لوحة التحكم التغيير على الفور. قد تتطلب التطبيقات وأسطح الصدفة الأخرى إعادة تحميل الجلسة أو جلسة جديدة. يتطلب إنشاء إدخالات `/etc/locale.gen` أو تغييرها ترخيصًا وتشغيل `locale-gen`؛ تم رفض تحديد لغة لم يتم إنشاؤها. يُعد تخطيط لوحة المفاتيح والمتغير وخريطة مفاتيح وحدة التحكم إعدادات منفصلة ويجب عدم الخلط بينها وبين لغة الواجهة.
+
+## عندما تتجاوز متغيرات البيئة التغيير
+
+تكتشف تطبيقات ARGVUS اللغة من ملف لغة ARGVUS المستمر أولاً، ثم `LC_ALL`، و`LC_MESSAGES`، و`LANG`. وبالتالي يمكن لمتغيرات البيئة المحلية أن تجعل مركز التحكم يبدو وكأنه يتجاهل تغيير اللغة، خاصة عندما تحتفظ خدمة المستخدم أو الجلسة الرسومية ببيئة أقدم.
+
+فحص القيم الفعالة مع:
+
+```sh
+systemctl --user show-environment | rg '^(LANG|LC_|ARGVUS)='
+locale
+echo $LANG
+localectl status
+```
+
+إذا كان `~/.config/locale.conf` موجودًا وقام بتعريف `LANG` أو `LC_ALL` أو `LC_MESSAGES`، فأعد تسميته مؤقتًا حتى لا يقوم بإعادة تقديم تلك القيم. احتفظ بنسخة احتياطية بدلاً من حذفها:
+
+```sh
+mv ~/.config/locale.conf ~/.config/locale.conf.backup
+```
+
+Apply the language again in **Control Center → Locale & Region**. The Control Panel is restarted automatically; if other components still show the previous language, log out and in so the graphical session and `systemd --user` receive the new environment. Repeat the diagnostic commands afterwards. See [Environment variables](/docs/reference/environment-variables/) for the technical contracts and precedence.
