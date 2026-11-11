@@ -1,0 +1,84 @@
+---
+title: Introdução
+description: O que é o ARGVUS, como o desktop funciona e onde ficam seus componentes.
+---
+
+ARGVUS é um desktop modular baseado em Hyprland e Wayland para Arch Linux. Ele é um conjunto integrado de pacotes, não uma aplicação monolítica: sessão, compositor, superfícies do shell, definições, provedores e assets visuais trabalham juntos por meio de estado compartilhado e contratos de runtime.
+
+Esta página é o mapa da documentação. Ela explica o desktop em alto nível; as páginas relacionadas contêm os detalhes de uso e implementação.
+
+## Como o ARGVUS funciona
+
+A sessão normal segue este fluxo:
+
+```text
+login gráfico ou TTY
+        ↓
+argvus-session → argvus start
+        ↓
+Hyprland + argvus-hyprland
+        ↓
+argvus-session.target (systemd --user)
+        ↓
+taskbar · control panel · notificações · wallpaper · idle · clipboard
+```
+
+`argvus-session` possui o ciclo de vida e a configuração do ambiente. Ele não implementa todas as funcionalidades: cada componente possui seus comandos, definições e payloads de serviço.
+
+Para instalação e arranque, veja [Instalação](/pt/docs/getting-started/installation/) e [Sessões](/pt/docs/user-guide/sessions/). Para ownership dos serviços, veja o [ciclo de vida](/pt/docs/developer-guide/architecture/runtime-lifecycle/) do desenvolvedor.
+
+## Camadas principais
+
+### Entrypoints e infraestrutura
+
+O pacote `argvus` fornece o dispatcher `/usr/bin/argvus` e o ponto de entrada principal. `argvus-session` fornece entradas gráfica e TTY, o target de utilizador e `argvus sessionctl`. TUI e localização compartilhadas vêm do workspace `argvus` (crates `argvus-tui` e `argvus-i18n`) e do comando `argvus i18n`.
+
+### Compositor e shell do desktop
+
+`argvus-hyprland` fornece configuração e keybindings Hyprland. `argvus-waybar` fornece o binário Waybar corrigido, enquanto `argvus-taskbar` possui configuração e ações da taskbar. `argvus-control-panel` fornece o painel Quickshell, e `argvus widget-telemetry` fornece widgets opcionais, em processo no `argvus`.
+
+Veja [Desktop](/pt/docs/user-guide/desktop/) para uso e [superfícies do shell](/pt/docs/developer-guide/subsystems/shell-surfaces/) para ownership de implementação.
+
+### Definições e aplicações
+
+`argvus control-center` é a aplicação de definições orientado ao teclado, distribuído como auxiliar no `argvus`. O calendário e os dispositivos removíveis também são auxiliares GTK 4 do `argvus`; monitor do sistema e terminal são subcomandos do `argvus`; o launcher é o `argvus-launcher`. Todos estão integrados ao shell e ao dispatcher.
+
+Veja [Aplicações](/pt/docs/user-guide/applications/) e a [referência de comandos](/pt/docs/reference/command-line/).
+
+### Provedores e integrações
+
+Display, rede, Bluetooth, energia, notificações, firewall e armazenamento removível são fornecidos por projetos específicos. Control Center e Control Panel consomem esses provedores; eles não os substituem.
+
+Login, lock e visuais de arranque também são separados: `argvus-greeter` trata greetd, `argvus-lock` trata Hyprlock, o helper do handoff do pacote `argvus` desenha o indicador do login, o overlay de carregamento cobre as trocas de tema e `argvus-boot-splash` trata o splash de boot.
+
+Veja [Hardware](/pt/docs/user-guide/hardware/), [Privacidade e segurança](/pt/docs/user-guide/privacy-and-security/) e a [referência de componentes](/pt/docs/developer-guide/).
+
+## Estado compartilhado de aparência
+
+Preferências de tema, acento, wallpaper, fontes e efeitos ficam como estado lógico em `$XDG_CONFIG_HOME/argvus` (normalmente `~/.config/argvus`). O `argvus-config` é o único componente que escreve `data/generated/`, onde projeta ficheiros consumidor para Hyprland, GTK, Qt6ct, Waybar, Quickshell, Dunst, notificações, lock screen, Yazi, Superfile e terminais. O Rofi é a exceção: o `argvus launcher` empacota a configuração e os temas como ficheiros comuns, e as cópias editadas pelo utilizador ficam em `data/rofi/`. Os helpers de aparência confirmam a mudança de estado e então reconciliam aplicações externos; eles nunca escrevem a árvore generated.
+
+O diretório gerado não é a fonte de verdade. Veja [Aparência](/pt/docs/user-guide/appearance/) e [configuração e estado](/pt/docs/developer-guide/architecture/configuration-and-state/).
+
+O sistema visual também controla o layout. Sticky é compacto e quadrado; Spaced usa gaps maiores, cantos arredondados e margens maiores ao redor da taskbar e do shell. A taskbar usa a borda superior por padrão, mas permite posicionamento no topo ou embaixo pelo estado compartilhado. Os efeitos controlam transparência, blur, sombras e animações do compositor e das superfícies do desktop.
+
+Veja a [tabela de temas](/pt/docs/user-guide/appearance/) para famílias e cores, [efeitos](/pt/docs/argvus-appearance/effects/) para o contrato compartilhado e [taskbar](/pt/docs/argvus-taskbar/taskbar/) para o posicionamento da barra e das janelas.
+
+## O que é — e o que não é — o ARGVUS
+
+O ARGVUS é a camada de ambiente desktop sobre o Arch Linux. O Arch Linux fornece o sistema operacional e os pacotes; o Hyprland fornece a composição Wayland; o ARGVUS coordena a sessão gráfica, as superfícies do shell, as definições, a aparência, os serviços do desktop e as aplicações integradas.
+
+Por isso, ele é mais do que uma configuração do Hyprland ou uma coleção de dotfiles pessoais. O ARGVUS define um entrypoint de sessão suportado, gerencia o ciclo de vida dos serviços do desktop, fornece um modelo comum de definições e aparência e conecta componentes especializados de rede, displays, energia, notificações, contas e armazenamento removível.
+
+O ARGVUS não precisa substituir todas as aplicações. Ele integra aplicações upstream selecionadas quando essa é a opção mais confiável, mantendo coerentes o comportamento e a configuração do desktop.
+
+Para conhecer as fronteiras de implementação e a responsabilidade dos pacotes, consulte a [visão geral da arquitetura](/pt/docs/developer-guide/architecture/overview/) e os [papéis dos repositórios](/pt/docs/developer-guide/architecture/repository-roles/) para desenvolvedores.
+
+## Continue por objetivo
+
+* [Ler as perguntas frequentes](/pt/docs/user-guide/faq/).
+* [Instalar o ARGVUS](/pt/docs/getting-started/installation/).
+* [Iniciar uma sessão gráfica ou TTY](/pt/docs/user-guide/sessions/).
+* [Configurar temas e wallpapers](/pt/docs/user-guide/appearance/).
+* [Usar taskbar e Control Panel](/pt/docs/user-guide/desktop/).
+* [Entender comandos, caminhos e serviços](/pt/docs/reference/).
+* [Estudar a arquitetura](/pt/docs/developer-guide/architecture/overview/).

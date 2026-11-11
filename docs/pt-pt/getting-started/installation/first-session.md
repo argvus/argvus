@@ -1,0 +1,14 @@
+---
+title: Primeira sessão
+description: Inicie o ARGVUS após a instalação.
+---
+
+Para login gráfico, consulte o fluxo greetd em [Sessões](/pt/docs/user-guide/sessions/) e inspecione as opções com `argvus greeter-setup --help`.
+
+Para uma sessão TTY, faça login e execute:
+
+```sh
+argvus --start-desktop
+```
+
+Depois, use `argvus sessionctl status`. Se a sessão não iniciar, consulte [solução de problemas da sessão](/pt/docs/user-guide/troubleshooting/session-startup/).
