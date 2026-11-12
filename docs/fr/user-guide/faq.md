@@ -30,13 +30,13 @@ Ce modèle maintient également le projet modulaire : la gestion de session, la 
 
 ## Quels systèmes sont supportés ?
 
-La base actuellement supportée est Arch Linux. ARGVUS est empaqueté pour Arch Linux et dépend de Wayland, Hyprland et des composants système décrits dans les [installation requirements](/docs/getting-started/installation/requirements/)].
+La base actuellement supportée est Arch Linux. ARGVUS est empaqueté pour Arch Linux et dépend de Wayland, Hyprland et des composants système décrits dans les [installation requirements](/docs/getting-started/installation/requirements/).
 
 D'autres distributions peuvent fournir certains des mêmes composants en amont, mais cela ne signifie pas que l'ensemble complet de packages ARGVUS ou l'intégration de session y soient pris en charge.
 
 ## Comment installer ARGVUS ?
 
-Suivez le [guide d'installation](/docs/getting-started/installation/)]. Il explique les exigences, comment configurer le dépôt de packages ARGVUS signé, comment installer l'ensemble de packages et comment démarrer la première session.
+Suivez le [guide d'installation](/docs/getting-started/installation/). Il explique les exigences, comment configurer le dépôt de packages ARGVUS signé, comment installer l'ensemble de packages et comment démarrer la première session.
 
 ARGVUS est livré comme un ensemble coordonné de packages Arch. Le package `argvus` est la cible principale de l'installation et inclut les composants de bureau qu'il coordonne.
 
@@ -51,7 +51,7 @@ argvus --control-center
 ```
 Vous pouvez également ouvrir une zone spécifique avec `argvus control-center`, par exemple `argvus control-center appearance themes`. Exécutez `argvus control-center --help` pour voir les routes disponibles dans la version installée.
 
-Utilisez **Panneau de configuration** pour l’état actuel et les actions fréquentes telles que le volume, la luminosité, le réseau, les notifications, le contrôle de l’alimentation et de la session. Ce n’est pas une seconde base de données de configuration. Voir [Où configurer les choses](/docs/user-guide/where-to-configure/)] et [Centre de contrôle](/docs/components/argvus-control-center/)] pour la distinction.
+Utilisez **Panneau de configuration** pour l’état actuel et les actions fréquentes telles que le volume, la luminosité, le réseau, les notifications, le contrôle de l’alimentation et de la session. Ce n’est pas une seconde base de données de configuration. Voir [Où configurer les choses](/docs/user-guide/where-to-configure/) et [Centre de contrôle](/docs/components/argvus-control-center/) pour la distinction.
 
 ## Où sont stockées les paramètres ARGVUS ?
 

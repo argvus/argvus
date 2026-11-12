@@ -1,5 +1,5 @@
 ---
-title: Installation
+title: Cài đặt
 description: Cài đặt gói ARGVUS trên Arch Linux.
 ---
 

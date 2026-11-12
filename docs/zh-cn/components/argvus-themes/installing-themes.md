@@ -49,32 +49,32 @@ sudo pacman -S argvus-theme-dracula argvus-theme-sunset
 
 | 软件包 | 主题 |
 | --- | --- |
-| `argvus-theme-one-dark` | One Dark |
-| `argvus-theme-dracula` | Dracula |
-| `argvus-theme-silver-dark` | Silver Dark |
-| `argvus-theme-slate-dark` | Slate Dark |
-| `argvus-theme-universe` | Universe |
-| `argvus-theme-gruvbox-high-dark` | Gruvbox High Dark |
-| `argvus-theme-gruvbox-dark` | Gruvbox Dark |
-| `argvus-theme-rose-pine` | Rosé Pine |
-| `argvus-theme-tokyo-night` | Tokyo Night |
-| `argvus-theme-solitude` | Solitude |
-| `argvus-theme-sunset` | Sunset |
-| `argvus-theme-matrix` | Matrix |
-| `argvus-theme-monokai-dark` | Monokai Dark |
+| `argvus-theme-one-dark` |一暗 |
+| `argvus-theme-dracula` |德古拉 |
+| `argvus-theme-silver-dark` |银色深色|
+| `argvus-theme-slate-dark` |板岩色 |
+| `argvus-theme-universe` |宇宙|
+| `argvus-theme-gruvbox-high-dark` | Gruvbox 高暗 |
+| `argvus-theme-gruvbox-dark` | Gruvbox 深色 |
+| `argvus-theme-rose-pine` |玫瑰松 |
+| `argvus-theme-tokyo-night` |东京之夜 |
+| `argvus-theme-solitude` |孤独|
+| `argvus-theme-sunset` |日落|
+| `argvus-theme-matrix` |矩阵|
+| `argvus-theme-monokai-dark` |莫诺凯黑暗|
 
 **浅色主题**
 
 | 软件包 | 主题 |
 | --- | --- |
-| `argvus-theme-github-light` | GitHub Light |
-| `argvus-theme-solarized-light` | Solarized Light |
-| `argvus-theme-nord-light` | Nord Light |
-| `argvus-theme-one-light` | One Light |
-| `argvus-theme-everforest-light` | Everforest Light |
-| `argvus-theme-catppuccin-latte` | Catppuccin Latte |
-| `argvus-theme-gruvbox-light` | Gruvbox Light |
-| `argvus-theme-watercolor` | Watercolor |
+| `argvus-theme-github-light` | GitHub 灯 |
+| `argvus-theme-solarized-light` |日光灯|
+| `argvus-theme-nord-light` |北欧之光 |
+| `argvus-theme-one-light` |一盏灯|
+| `argvus-theme-everforest-light` |永林之光 |
+| `argvus-theme-catppuccin-latte` |卡布奇诺拿铁|
+| `argvus-theme-gruvbox-light` | Gruvbox 灯 |
+| `argvus-theme-watercolor` |水彩|
 
 内置的 **ARGVUS Dark** 和 **ARGVUS Light** 主题不需要单独的软件包；它们随 `argvus-appearance` 一起提供。
 

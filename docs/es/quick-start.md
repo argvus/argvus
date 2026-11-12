@@ -13,6 +13,6 @@ Cierra sesión, selecciona **ARGVUS** en tu gestor de ventanas (o inicia una ses
 
 ## Próximos pasos
 
-- ¿Necesitas requisitos, configuración manual del repositorio o detalles sobre lo que hace el instalador? Consulta la guía completa [Getting Started](/docs/getting-started/)].
-- ¿Quieres personalizar tu escritorio después del primer inicio de sesión? Consulta [First configuration](/docs/user-guide/getting-started/)] en la Guía del Usuario.
-- ¿Algo no funciona? Revisa [Troubleshooting](/docs/user-guide/troubleshooting/)].
+- ¿Necesitas requisitos, configuración manual del repositorio o detalles sobre lo que hace el instalador? Consulta la guía completa [Getting Started](/docs/getting-started/).
+- ¿Quieres personalizar tu escritorio después del primer inicio de sesión? Consulta [First configuration](/docs/user-guide/getting-started/) en la Guía del Usuario.
+- ¿Algo no funciona? Revisa [Troubleshooting](/docs/user-guide/troubleshooting/).

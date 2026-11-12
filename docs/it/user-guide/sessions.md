@@ -6,7 +6,7 @@ description: Avvia e gestisci una sessione grafica ARGVUS.
 
 - [Sessione grafica](/docs/argvus-session/graphical-session/)
 - [Sessione TTY](/docs/argvus-session/tty-session/)
-- [Greeter](/docs/components/argvus-greeter/)
+- [Saluto](/docs/components/argvus-greeter/)
 
 Diagnostica utile:
 

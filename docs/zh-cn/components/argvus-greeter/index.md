@@ -9,7 +9,7 @@ description: 在 argvus 包中提供的登录问候程序 greetd 启动。
 问候界面本身不进行用户认证。greetd 通过 PAM 处理认证。启动器使用 `argvus tui-terminal` 打开问候界面，因此问候界面不需要单独的终端程序。
 
 问候界面配置文件安装在 `/etc/argvus` 下。使用 `argvus greeter-setup --help` 查看软件包提供的设置选项。
-有关登录流程，请参阅 [Sessions](/docs/user-guide/sessions/)]。
+有关登录流程，请参阅 [Sessions](/docs/user-guide/sessions/)。
 
 登录交接套接字使用内核对等凭据授权每个客户端。只有 root、辅助程序所有者以及通过 greetd 认证的账户可以发送控制命令。即使套接字允许跨用户连接，其他本地账户也会被拒绝。准备好的 DRM 帧会保持绑定到其原始描述符；辅助程序会在获取到该描述符后才接管显示屏。
 

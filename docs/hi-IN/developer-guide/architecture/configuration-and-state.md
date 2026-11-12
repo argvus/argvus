@@ -94,8 +94,8 @@ upstream default
 | `config.json` | विहित प्रबंधित तार्किक प्राथमिकताएँ; `generated/` के नीचे हर चीज़ के लिए एकल स्रोत। |
 | `.active-theme`, `.accent-color`, `.accent-custom` | विरासत प्रवासन इनपुट; रनटाइम स्रोत नहीं और पुनर्जीवित नहीं। |
 | `.wallpaper-custom` | `appearance.wallpaper` के लिए लीगेसी माइग्रेशन इनपुट; रनटाइम स्रोत नहीं. || `.spaces`, `.borders` | लेगेसी लेआउट माइग्रेशन इनपुट; मानक मूल्य इसके अंतर्गत संग्रहीत हैं `layout` in `config.json`. |
-| `fonts.conf` | Compatibility projection of canonical font selections. |
-| `generated/effects` | Compatibility projection of canonical effects; disposable. |
+| `fonts.conf` | विहित फ़ॉन्ट चयनों की अनुकूलता प्रक्षेपण। |
+| `generated/effects` | विहित प्रभावों की अनुकूलता प्रक्षेपण; डिस्पोजेबल. |
 | `$XDG_STATE_HOME/argvus/config-projection.json` | प्रोजेक्शन मेनिफेस्ट: परिवर्तित अनुभाग, प्रभावित उपभोक्ता और क्या पुनः लोड की आवश्यकता है। `reload` द्वारा पढ़ें; सत्य का स्रोत कभी नहीं। |
 | `$XDG_STATE_HOME/argvus/widget-telemetry-blocks` | लीगेसी टेलीमेट्री ब्लॉक प्राथमिकताएँ। केवल माइग्रेशन फ़ॉलबैक के रूप में पढ़ें; विहित मान `/control_panel/widget_telemetry_blocks` पर रहते हैं और फ़ाइल अब लिखी नहीं जाती है। |
 

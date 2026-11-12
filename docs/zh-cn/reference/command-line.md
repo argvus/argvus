@@ -20,7 +20,7 @@ description: argvus 命令、它的子命令、为键绑定保留的标志，以
 |命令|运行|笔记|
 | --- | --- | --- |
 | `argvus config ...` | 处理中 | 配置模型和工具。也可通过 `theme-switch` 和 `effects-toggle` 访问。 |
-| `argvus theme ...` | 处理中 | `apply ID` 是主题切换（与 `theme-switch` 相同）。主题构建：`list` 已安装的主题，`check DIRECTORY` 针对已安装模板的主题，`render ID [--variant sticky\|spaced] [--accent #RRGGBB] [--output DIRECTORY]`。请参见 [外观和主题](/docs/developer-guide/subsystems/appearance-and-themes/)]。 |
+| `argvus theme ...` | 处理中 | `apply ID` 是主题切换（与 `theme-switch` 相同）。主题构建：`list` 已安装的主题，`check DIRECTORY` 针对已安装模板的主题，`render ID [--variant sticky\|spaced] [--accent #RRGGBB] [--output DIRECTORY]`。请参见 [外观和主题](/docs/developer-guide/subsystems/appearance-and-themes/)。 |
 | `argvus i18n ...` | 处理中 | 翻译：`get DOMAIN KEY [name=value...]`、`locale`、`list`、`validate [LOCALE]`。 |
 | `argvus keys ...` | 处理中 | SSH 密钥管理器。`gpg` 是 GPG 子命令的别名。 |
 | `argvus gpg ...` | 处理中 | GPG 密钥：`list`、`status`、`generate`、`export-public`、`export-private`、`import`、`import-private`、`delete`、`edit`、`keyserver`。 |
@@ -121,7 +121,7 @@ argvus setup --copy <app> --dry-run
 
 ## 夜灯
 
-打开 **桌面与输入 > 显示 > 夜间模式** 或运行 `argvus control-center displays night-light`。通过 `argvus config display night-light` 配置色温、手动激活和固定本地计划。有关命令、状态和运行时要求，请参见 [夜间模式](/docs/user-guide/night-light/)]。
+打开 **桌面与输入 > 显示 > 夜间模式** 或运行 `argvus control-center displays night-light`。通过 `argvus config display night-light` 配置色温、手动激活和固定本地计划。有关命令、状态和运行时要求，请参见 [夜间模式](/docs/user-guide/night-light/)。
 
 `argvus tui-terminal --frame TITLE FOOTER COMMAND [ARG...]` 在共享的 ARGVUS 终端框架中运行交互式命令。Ctrl+E 关闭该框架；调用者提供本地化页脚。在终端中使用此命令，或将其作为传递给 `argvus tui-terminal --term kitty -- ...` 的命令。
 

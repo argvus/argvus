@@ -1,6 +1,6 @@
 ---
 title: ইন্টিগ্রেশন মানচিত্র
-description: Cross-project relationships in the ARGVUS runtime.
+description: ARGVUS রানটাইমে ক্রস-প্রকল্প সম্পর্ক।
 ---
 
 ```text

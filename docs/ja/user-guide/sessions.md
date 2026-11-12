@@ -15,4 +15,4 @@ argvus sessionctl status
 argvus sessionctl logs
 argvus sessionctl restart waybar
 ```
-サービスの所有権については、開発者 [runtime lifecycle](/docs/developer-guide/architecture/runtime-lifecycle/)] を参照してください。
+サービスの所有権については、開発者 [runtime lifecycle](/docs/developer-guide/architecture/runtime-lifecycle/) を参照してください。

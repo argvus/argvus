@@ -113,8 +113,8 @@ argvus sessionctl apply-config
 | 通知 | `generated/notifications/` 和 `dunstrc` |
 | 锁屏 | `generated/hypr/hyprlock.conf` 以及 Hyprtoolkit 主题配置文件 |
 | GTK | `generated/gtk/` |
-| Yazi | `generated/yazi/` |
-| Superfile | `generated/superfile/` |
+|睚眦| `generated/yazi/` |
+|超级文件 | `generated/superfile/` |
 | 终端和 Qt 配置文件 | `generated/terminal/`, `generated/qt6ct/` |
 | 字体 | `generated/fonts.conf` 以及在 Waybar 样式表中管理的字体块 |
 | 可移动设备 | `generated/removable-devices/theme.css` |
@@ -184,7 +184,7 @@ Hyprland 首选项使用 `keyboard_shortcuts` 进行快捷键设置，`hyprland.
 通知外观由规范主题、强调色和特效派生到 `data/notifications/dunstrc`。历史通知 `theme.sh` 文件仅公开调用 `argvus config notifications` 的兼容性函数；它不解析或更改 Dunst 配置。
 
 面向硬件的适配器，如显示器检测和蓝牙控制，现在由 Rust 显示领域导入：`nwg-displays` 是外部导入器，而 `/displays` 和 `data/generated/hypr/monitors.lua` 分别保持为规范状态和派生状态。显示工具通过 `argvus config monitor-set`、`monitor-primary`、`monitor-workspaces` 和 `monitor-remove` 更改布局；显示命令是 `argvus config display status|list-modes|set|apply|apply-nwg|migrate-nwg|nwg-import|nwg-apply`。Hyprland 文件从 `/displays` 投影；不再由任何 shell 脚本编写。壁纸选择、任务栏实用程序组模式和默认应用程序查找也使用 `argvus-config` API；它们的历史 Shell 入口点是 UI 或兼容性包装器。保持唤醒是持续的 `/power/keep_awake` 偏好，投影到 `data/power/keep-awake` 标记，而锁定 DPMS 是会话运行时状态。
-`$XDG_CACHE_HOME/argvus/lock-dpms`。键盘布局现在由 Rust 拥有  
+`$XDG_CACHE_HOME/argvus/lock-dpms`。键盘布局现在由 Rust 拥有
 `argvus-keyboard-layout` 助手：配置的顺序来自生成的 Hyprland 输入投影或本地回退，而活动布局保持从 Hyprland 发现的会话运行时状态。循环入口点和键盘布局守护进程只是兼容性包装器；用户服务直接运行 Rust 守护进程，`argvus sessionctl keyboard-layout cycle` 是调用方的稳定命令。
 
 蓝牙运行时状态遵循外部适配器边界，但不属于 `argvus-config`：`argvus bluetooth` 拥有围绕 `bluetoothctl` 的类型化解析和验证、有限重试、系统服务检查以及 RFKill 状态。`argvus bluetoothctl` 是入口点。适配器电源、配对设备和已连接设备仍然是 BlueZ 运行时状态，而不是规范的 JSON 状态；硬件实时蓝牙验证依赖于环境。
@@ -196,7 +196,7 @@ Hyprland 首选项使用 `keyboard_shortcuts` 进行快捷键设置，`hyprland.
 
 ## 夜间模式
 
-打开 **桌面与输入 > 显示 > 夜间模式** 或运行 `argvus control-center displays night-light`。通过 `argvus config display night-light` 配置色温、手动激活和固定的本地计划。有关命令、状态和运行时要求，请参见 [Night Light](/docs/user-guide/night-light/)]。
+打开 **桌面与输入 > 显示 > 夜间模式** 或运行 `argvus control-center displays night-light`。通过 `argvus config display night-light` 配置色温、手动激活和固定的本地计划。有关命令、状态和运行时要求，请参见 [Night Light](/docs/user-guide/night-light/)。
 
 ### 摇摆设置（Hyprland 0.57+）
 
@@ -207,7 +207,7 @@ Hyprland 首选项使用 `keyboard_shortcuts` 进行快捷键设置，`hyprland.
 ```sh
 argvus effects-toggle animations-settings set enabled=enabled wobble_enabled=true wobble_intensity=0 wobble_mesh=8
 ```
-全球 `enabled` 控制动画；`wobble_enabled` 是其独立的偏好设置。禁用全局动画会在 Lua 中抑制晃动，但不会删除该偏好设置。无效值会拒绝整个补丁。缺失的键会采用 ARGVUS 默认值，但不会替换现有选择。请参阅 [Appearance](/docs/user-guide/appearance/#window-wobble)] 获取范围和默认值。
+全球 `enabled` 控制动画；`wobble_enabled` 是其独立的偏好设置。禁用全局动画会在 Lua 中抑制晃动，但不会删除该偏好设置。无效值会拒绝整个补丁。缺失的键会采用 ARGVUS 默认值，但不会替换现有选择。请参阅 [Appearance](/docs/user-guide/appearance/#window-wobble) 获取范围和默认值。
 
 ### 用户创建的键盘快捷键
 

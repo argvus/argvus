@@ -1,5 +1,5 @@
 ---
-title: Applications
+title: Ứng dụng
 description: Sử dụng các ứng dụng được tích hợp trong ARGVUS.
 ---
 

@@ -2,7 +2,7 @@
 title: 공식 테마
 description: 공식 ARGVUS 테마 카탈로그, 기본 하이라이트 색상, 테마와 그 스티키 또는 스페이스드 모드를 선택하는 방법.
 ---
-이 페이지에는 테마 패키지로 제공되는 공식 테마가 나열되어 있으며, 테마를 선택하는 방법을 설명합니다. 설치 방법은 [테마 설치 Installing themes](/docs/components/argvus-themes/installing-themes/)]를 참조하세요.
+이 페이지에는 테마 패키지로 제공되는 공식 테마가 나열되어 있으며, 테마를 선택하는 방법을 설명합니다. 설치 방법은 [테마 설치 Installing themes](/docs/components/argvus-themes/installing-themes/)를 참조하세요.
 
 ## 테마 선택
 
@@ -49,15 +49,15 @@ description: 공식 ARGVUS 테마 카탈로그, 기본 하이라이트 색상, �
 
 | 테마 | 패키지 | 기본 하이라이트 |
 | --- | --- | --- |
-| GitHub Light | `argvus-theme-github-light` | `#0969DA` |
-| Solarized Light | `argvus-theme-solarized-light` | `#268BD2` |
-| Nord Light | `argvus-theme-nord-light` | `#5E81AC` |
-| One Light | `argvus-theme-one-light` | `#4078F2` |
-| Everforest Light | `argvus-theme-everforest-light` | `#3A94C5` |
-| Catppuccin Latte | `argvus-theme-catppuccin-latte` | `#1E66F5` |
-| Gruvbox Light | `argvus-theme-gruvbox-light` | `#458588` |
-| Watercolor | `argvus-theme-watercolor` | `#1A639C` |
-| Obsidian Light | `argvus-theme-obsidian-light` | `#334A78` |
+| GitHub 라이트 | `argvus-theme-github-light` | `#0969DA` |
+| 솔라라이즈 라이트 | `argvus-theme-solarized-light` | `#268BD2` |
+| 노드 라이트 | `argvus-theme-nord-light` | `#5E81AC` |
+| 하나의 빛 | `argvus-theme-one-light` | `#4078F2` |
+| 에버포레스트 라이트 | `argvus-theme-everforest-light` | `#3A94C5` |
+| 캣푸친 라떼 | `argvus-theme-catppuccin-latte` | `#1E66F5` |
+| Gruvbox 라이트 | `argvus-theme-gruvbox-light` | `#458588` |
+| 수채화 | `argvus-theme-watercolor` | `#1A639C` |
+| 흑요석 빛 | `argvus-theme-obsidian-light` | `#334A78` |
 
 ## 내장 테마
 
@@ -67,4 +67,4 @@ description: 공식 ARGVUS 테마 카탈로그, 기본 하이라이트 색상, �
 
 테마는 데스크톱 구성 요소에서 사용하는 팔레트와 표면 처리, 기본 강조 색상, 기본 배경화면 연관, 투명도 및 흐림 기본값을 정의합니다. 데스크톱 구성 요소는 자체 복사본을 저장하지 않고 이 상태를 읽기 때문에, 테마 변경은 합성기, 작업 표시줄, 제어판, 잠금 화면, 알림 및 애플리케이션에 동시에 적용됩니다.
 
-기본 강조 색상은 시작점일 뿐입니다. 원하는 6자리 색상으로 바꿀 수 있으며, [강조 색상 사용자 지정](/docs/components/argvus-themes/highlight-color/)]를 참조하십시오.
+기본 강조 색상은 시작점일 뿐입니다. 원하는 6자리 색상으로 바꿀 수 있으며, [강조 색상 사용자 지정](/docs/components/argvus-themes/highlight-color/)를 참조하십시오.

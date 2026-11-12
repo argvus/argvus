@@ -10,7 +10,6 @@ Kullanılabilir eylemler şunlardır: `open`, `mount`, `unmount`, `eject`, `powe
 ## Görev çubuğu menüsü
 
 `"mode": "gui"` (sistem varsayılanı) ile görev çubuğu depolama simgesine tıklandığında, takvim açılır penceresi gibi ARGVUS Görev Çubuğuna eklenen bir GTK menüsü açılır: görev çubuğu ekranın üst kısmındayken çubuğun altında ve görev çubuğu altta olduğunda çubuğun üstünde. Her aygıt satırında yalnızca durumunun izin verdiği eylemleri içeren bir eylem alt menüsü bulunur.
-
 - **İşaretçi:** Bir aygıt satırının üzerine gelindiğinde veya tıklandığında alt menüsü açılır. İşaretçi menünün kenarlarını geçerken veya menülerden ayrılırken alt menü açık kalır ve yalnızca işaretçi orada kısa bir süre durduktan sonra başka bir satırı takip eder, dolayısıyla alt menüye giden çapraz yol onu kapatmaz. Her iki menünün dışına yapılan bir tıklama açılır pencereyi kapatır.
 - **Klavye:** `Up`/`Down` bir satır seçin, `Right`, `Enter` veya `Space` alt menüyü açın (veya **Yenile**/**Çık** komutunu çalıştırın), `Enter` veya `Space` seçilen eylemi çalıştırır, `Left` veya `Escape` cihaz listesine geri döner ve `Escape` orada açılır pencereyi kapatır.
 

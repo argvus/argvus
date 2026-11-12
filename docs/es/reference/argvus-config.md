@@ -109,7 +109,7 @@ La proyección de temas y efectos se implementa en `argvus-config` por sí misma
 | Pantalla de bloqueo | `generated/hypr/hyprlock.conf` y los perfiles de tema de Hyprtoolkit |
 | GTK | `generated/gtk/` |
 | Yazi | `generated/yazi/` |
-| Superfile | `generated/superfile/` |
+| Superarchivo | `generated/superfile/` |
 | Terminal y perfiles Qt | `generated/terminal/`, `generated/qt6ct/` |
 | Fuentes | `generated/fonts.conf` más los bloques de fuentes gestionados en las hojas de estilo de Waybar |
 | Dispositivos extraíbles | `generated/removable-devices/theme.css` |
@@ -186,8 +186,8 @@ La apariencia de las notificaciones se deriva del tema canónico, el acento y lo
 Adaptadores orientados al hardware, como el descubrimiento de pantalla y el control de Bluetooth, ahora son importados por el dominio de pantalla de Rust: `nwg-displays` es un importador externo, mientras que `/displays` y `data/generated/hypr/monitors.lua` permanecen como estado canónico y derivado, respectivamente. Las herramientas de pantalla cambian el diseño con `argvus config monitor-set`, `monitor-primary`, `monitor-workspaces` y `monitor-remove`; los comandos de pantalla son `argvus config display status|list-modes|set|apply|apply-nwg|migrate-nwg|nwg-import|nwg-apply`. El archivo de Hyprland se proyecta desde `/displays`; ningún script de shell lo escribe más. La selección de fondo de pantalla, el modo de grupo de utilidades de la barra de tareas y la búsqueda de aplicaciones predeterminadas también usan las APIs `argvus-config`; sus puntos de entrada históricos de Shell son envoltorios de UI o de compatibilidad. Mantener activo es una preferencia persistente `/power/keep_awake` proyectada al marcador `data/power/keep-awake`, mientras que bloquear-DPMS es un estado de tiempo de ejecución de sesión bajo
 `$XDG_CACHE_HOME/argvus/lock-dpms`. El diseño del teclado ahora es propiedad del asistente Rust `argvus-keyboard-layout`: el orden configurado proviene de la proyección de entrada generada por Hyprland o del recurso de localización, mientras que el diseño activo permanece en el estado de ejecución de la sesión descubierto por Hyprland. El punto de entrada del ciclo y el demonio del diseño del teclado son solo envoltorios de compatibilidad; el servicio de usuario ejecuta el demonio Rust directamente y `argvus sessionctl keyboard-layout cycle` es el comando estable para los llamadores.
 
-El estado de ejecución de Bluetooth sigue el límite del adaptador externo pero no forma parte de `argvus-config`: `argvus bluetooth` posee el análisis tipado y la validación en torno a `bluetoothctl`, los reintentos limitados, las comprobaciones de servicios del sistema y el estado de RFKill. `argvus bluetoothctl` es el punto de entrada. La energía del adaptador, los dispositivos emparejados y los dispositivos conectados permanecen como estado de ejecución de BlueZ en lugar de estado JSON canónico; la validación de Bluetooth en hardware real depende del entorno.  
-## Identidad de ejecución y reconciliación  
+El estado de ejecución de Bluetooth sigue el límite del adaptador externo pero no forma parte de `argvus-config`: `argvus bluetooth` posee el análisis tipado y la validación en torno a `bluetoothctl`, los reintentos limitados, las comprobaciones de servicios del sistema y el estado de RFKill. `argvus bluetoothctl` es el punto de entrada. La energía del adaptador, los dispositivos emparejados y los dispositivos conectados permanecen como estado de ejecución de BlueZ en lugar de estado JSON canónico; la validación de Bluetooth en hardware real depende del entorno.
+## Identidad de ejecución y reconciliación
 
 Use `argvus config status --verbose` para inspeccionar el binario exacto, la identidad de compilación, la raíz de configuración, la raíz generada, la raíz de activos, la fuente del manifiesto y la generación activa. Informa los estados de proyección `synchronized`, `stale`, `incomplete`, `legacy` y `pending-transaction`.
 
@@ -195,7 +195,7 @@ Use `argvus config status --verbose` para inspeccionar el binario exacto, la ide
 
 ## Luz nocturna
 
-Abra **Escritorio e entrada > Pantallas > Luz nocturna** o ejecute `argvus control-center displays night-light`. Configure la temperatura, la activación manual y los horarios locales fijos a través de `argvus config display night-light`. Vea [Luz nocturna](/docs/user-guide/night-light/)] para comandos, estado y requisitos de tiempo de ejecución.
+Abra **Escritorio e entrada > Pantallas > Luz nocturna** o ejecute `argvus control-center displays night-light`. Configure la temperatura, la activación manual y los horarios locales fijos a través de `argvus config display night-light`. Vea [Luz nocturna](/docs/user-guide/night-light/) para comandos, estado y requisitos de tiempo de ejecución.
 
 ### Configuración de balanceo (Hyprland 0.57+)
 

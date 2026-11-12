@@ -1,5 +1,5 @@
 ---
-title: Sessions
+title: Sesi
 description: Memulai dan mengelola sesi grafis ARGVUS.
 ---
 

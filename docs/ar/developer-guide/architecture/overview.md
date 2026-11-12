@@ -1,5 +1,5 @@
 ---
-title: Architecture overview
+title: نظرة عامة على الهندسة المعمارية
 description: كيف يشكل ARGVUS بيئة سطح مكتب متكاملة.
 ---
 

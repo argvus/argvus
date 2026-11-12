@@ -1,5 +1,5 @@
 ---
-title: User Guide
+title: Panduan Pengguna
 description: Instal, konfigurasikan, dan gunakan lingkungan desktop ARGVUS.
 ---
 

@@ -1,5 +1,5 @@
 ---
-title: Installation
+title: Instalasi
 description: Instal paket ARGVUS di Arch Linux.
 ---
 

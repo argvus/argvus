@@ -12,7 +12,7 @@ description: Configurazione ARGVUS dell'utente, del sistema, predefinita del pac
 | Generato | `$XDG_CONFIG_HOME/argvus/data/generated/` | Proiezioni di `config.json`, scritte solo da `argvus-config`. Non modificare mai, non copiare mai altrove come configurazione e non leggere mai come fonte. |
 | Runtime | `$XDG_RUNTIME_DIR/` e `$XDG_CACHE_HOME/` | Socket, lock e stato transitorio. |
 
-Il tema attivo, l'accento, lo sfondo personalizzato e lo stato degli effetti sono stati logici dell'utente. Il modello logico gestito è documentato in [Canonical configuration](/docs/reference/argvus-config/)]. I file generati di Hyprland, GTK, Qt6ct, Waybar, Quickshell, Dunst, Hyprlock, Yazi, Superfile, terminale, font e dispositivi rimovibili non devono essere trattati come fonti di verità indipendenti.
+Il tema attivo, l'accento, lo sfondo personalizzato e lo stato degli effetti sono stati logici dell'utente. Il modello logico gestito è documentato in [Canonical configuration](/docs/reference/argvus-config/). I file generati di Hyprland, GTK, Qt6ct, Waybar, Quickshell, Dunst, Hyprlock, Yazi, Superfile, terminale, font e dispositivi rimovibili non devono essere trattati come fonti di verità indipendenti.
 
 `argvus-config` riflette anche il livello del tema in `data/waybar/argvus-taskbar.{jsonc,css}` e `data/waybar/argvus-widget-telemetry.{jsonc,css}`. Queste copie vengono sostituite dai valori predefiniti pacchettizzati in caso di modifica dell'aspetto, quindi i loro blocchi gestiti delimitati vengono riscritti, quindi trattali come derivati piuttosto che come file mantenuti manualmente. La configurazione delle applicazioni native sotto `$XDG_CONFIG_HOME/<app>` è diversa: è un obiettivo adattatore scritto dagli orchestratori dell'aspetto, mai dal proiettore.
 

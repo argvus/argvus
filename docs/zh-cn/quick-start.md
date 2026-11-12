@@ -14,5 +14,5 @@ curl -fsSL https://argvus.github.io/install.sh | sh
 ## 下一步
 
 - 需要查看要求、手动设置仓库或了解安装程序的详细操作？请参阅完整的 [Getting Started](/docs/getting-started/) 指南]。
-- 想在首次登录后个性化你的桌面？请参阅用户指南中的 [首次配置](/docs/user-guide/getting-started/)]。
-- 某些功能无法正常工作？请查看 [故障排除](/docs/user-guide/troubleshooting/)]。
+- 想在首次登录后个性化你的桌面？请参阅用户指南中的 [首次配置](/docs/user-guide/getting-started/)。
+- 某些功能无法正常工作？请查看 [故障排除](/docs/user-guide/troubleshooting/)。

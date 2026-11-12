@@ -20,7 +20,7 @@ description: argvusコマンド、そのサブコマンド、キー割り当て�
 |コマンド |走る |メモ |
 | --- | --- | --- |
 | `argvus config ...` | 処理中 | 構成モデルとツール。`theme-switch`および`effects-toggle`からもアクセスされます。 |
-| `argvus theme ...` | 処理中 | `apply ID`はテーマスイッチです（`theme-switch`と同じ）。テーマのビルド: `list` はインストール済みテーマ、`check DIRECTORY` はインストール済みテンプレートに対するテーマ、`render ID [--variant sticky\|spaced] [--accent #RRGGBB] [--output DIRECTORY]`。詳細は [外観とテーマ](/docs/developer-guide/subsystems/appearance-and-themes/)] を参照してください。 |
+| `argvus theme ...` | 処理中 | `apply ID`はテーマスイッチです（`theme-switch`と同じ）。テーマのビルド: `list` はインストール済みテーマ、`check DIRECTORY` はインストール済みテンプレートに対するテーマ、`render ID [--variant sticky\|spaced] [--accent #RRGGBB] [--output DIRECTORY]`。詳細は [外観とテーマ](/docs/developer-guide/subsystems/appearance-and-themes/) を参照してください。 |
 | `argvus i18n ...` | 処理中 | 翻訳: `get DOMAIN KEY [name=value...]`、`locale`、`list`、`validate [LOCALE]`。 |
 | `argvus keys ...` | 処理中 | SSHキー管理。`gpg` はGPGサブコマンドのエイリアスです。 |
 | `argvus gpg ...` | 処理中 | GPGキー: `list`、`status`、`generate`、`export-public`、`export-private`、`import`、`import-private`、`delete`、`edit`、`keyserver`。 |
@@ -121,7 +121,7 @@ argvus setup --copy <app> --dry-run
 
 ## ナイトライト
 
-「デスクトップと入力 > ディスプレイ > ナイトライト」を開くか、`argvus control-center displays night-light`を実行してください。温度、手動起動、および固定ローカルスケジュールは`argvus config display night-light`で設定できます。[Night Light](/docs/user-guide/night-light/)]でコマンド、状態、および実行時要件を参照してください。
+「デスクトップと入力 > ディスプレイ > ナイトライト」を開くか、`argvus control-center displays night-light`を実行してください。温度、手動起動、および固定ローカルスケジュールは`argvus config display night-light`で設定できます。[Night Light](/docs/user-guide/night-light/)でコマンド、状態、および実行時要件を参照してください。
 
 `argvus tui-terminal --frame TITLE FOOTER COMMAND [ARG...]`は、共有されたARGVUSターミナルフレーム内でインタラクティブなコマンドを実行します。Ctrl+Eでフレームを閉じます。呼び出し元がローカライズされたフッターを提供します。これはターミナル内で使用するか、`argvus tui-terminal --term kitty -- ...`に渡されるコマンドとして使用します。
 

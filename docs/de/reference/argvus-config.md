@@ -93,7 +93,7 @@ Jede effektive Konfiguration hat eine operationale Generation. Sie wird in `data
 
 `explain /path` liest den Resolver direkt aus und gibt den effektiven Wert, die Quelle, das Thema und die Variante aus. Es werden keine generierten Dateien geparst oder eine zweite Präzedenzregel erstellt.
 
-Themen- und Effekprojectierung werden direkt in `argvus-config` implementiert. Die Thementransaktion (`argvus theme-switch`, die `theme-apply` ausführt), `argvus config accent` und `argvus effects-toggle` projizieren nicht: sie validieren, sperren, committen über diese CLI und gleichen dann externe Verbraucher ab, die `config.json` nicht lesen können. `argvus effects-toggle` ist ein dünner Delegat ohne eigene Ausgabe. Die Appearance-Helper werden vom Projector nie aufgerufen und dürfen niemals unter `data/generated/` schreiben.  
+Themen- und Effekprojectierung werden direkt in `argvus-config` implementiert. Die Thementransaktion (`argvus theme-switch`, die `theme-apply` ausführt), `argvus config accent` und `argvus effects-toggle` projizieren nicht: sie validieren, sperren, committen über diese CLI und gleichen dann externe Verbraucher ab, die `config.json` nicht lesen können. `argvus effects-toggle` ist ein dünner Delegat ohne eigene Ausgabe. Die Appearance-Helper werden vom Projector nie aufgerufen und dürfen niemals unter `data/generated/` schreiben.
 
 ### Projektionsoberflächen
 
@@ -110,7 +110,7 @@ Themen- und Effekprojectierung werden direkt in `argvus-config` implementiert. D
 | Sperrbildschirm | `generated/hypr/hyprlock.conf` und die Hyprtoolkit-Themenprofile |
 | GTK | `generated/gtk/` |
 | Yazi | `generated/yazi/` |
-| Superfile | `generated/superfile/` |
+| Superdatei | `generated/superfile/` |
 | Terminal- und Qt-Profile | `generated/terminal/`, `generated/qt6ct/` |
 | Schriftarten | `generated/fonts.conf` plus verwaltete Schriftblocks in den Waybar-Stylesheets |
 | Wechselbare Geräte | `generated/removable-devices/theme.css` |

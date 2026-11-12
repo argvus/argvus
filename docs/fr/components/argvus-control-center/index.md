@@ -18,7 +18,6 @@ Le Panneau de Configuration peut exposer des contrôles rapides pour un paramèt
 Le centre de contrôle actuel propose ces zones :
 
 Le centre est un catalogue de destinations regroupées en six cartes. Chaque destination ouvre directement sa page, et la recherche la trouve sous n'importe quelle carte.
-
 - **Apparence** — personnaliser le bureau : Style du bureau (thème, mode d'apparence, couleur d'accent, fonds d'écran, icônes et polices), Style de l'application (transparence du terminal et du lanceur), Barre des tâches, Panneau de contrôle et Télémétrie des widgets.
 - **Bureau & Saisie** — configurer l'espace de travail : Hyprland (Windows : Règles, Espaces et Mode, animations, flou, bordures, ombre et version installée), Écrans, Clavier & Raccourcis et Souris & Pavé tactile.
 - **Préférences** — paramètres personnels et régionaux : Langue & Région (la langue, le fuseau horaire, les formats et le hub de disposition du clavier), Date & Heure, Applications par défaut, Alimentation et Session.
@@ -98,7 +97,6 @@ Les applications par défaut sélectionnent les programmes installés pour des r
 ### Extraits
 
 Extraits est la page pour le texte que `argvus snippets` tape avec `SUPER + ALT + N`. Elle se trouve dans **Outils & Diagnostics → Extraits** (recherchez `snippets` ou exécutez `argvus control-center snippets`).
-
 - **Nouvel extrait** — saisissez un **Nom** et un **Contenu**, puis **Enregistrer l'extrait**. Un nom déjà utilisé remplace le contenu de cet extrait.
 - **Extraits enregistrés** — listés avec leur position (`1  email`) et le contenu sur une seule ligne. Appuyez sur Entrée sur le contenu pour le modifier. **Type** indique le type de l'extrait, et **Supprimer** demande confirmation.
 - **Ouvrir le sélecteur** — ouvre le même sélecteur que `SUPER + ALT + N`.
@@ -109,7 +107,7 @@ La page lit les entrées depuis `argvus-config` et les écrit via `argvus snippe
 
 ### Clés SSH
 
-Les clés SSH sont la page pour les paires de clés que `argvus keys` gère. Elle se trouve dans **Outils et Diagnostics → Clés SSH** (recherchez `ssh keys` ou exécutez `argvus control-center ssh-keys`). 
+Les clés SSH sont la page pour les paires de clés que `argvus keys` gère. Elle se trouve dans **Outils et Diagnostics → Clés SSH** (recherchez `ssh keys` ou exécutez `argvus control-center ssh-keys`).
 
 La page comporte quatre parties, de haut en bas :
 
@@ -162,10 +160,10 @@ Keys ›           the keyring, on its own page, with the search at the top
 1. Ouvrez **Centre de contrôle → Outils & Diagnostics → Clés GPG**. Depuis l'accueil, vous pouvez également rechercher `gpg keys`.
 2. **Pinentry** est fixé à `pinentry-gtk`. La page ne l'affiche que. La première fois qu'une clé est générée, ARGVUS écrit ce pinentry dans `gpg-agent.conf`, entre ses propres lignes de marqueur, et conserve vos autres lignes. Si vous avez déjà écrit une ligne `pinentry-program` en dehors de ces marqueurs, la génération s'arrête avec une erreur afin que vous puissiez supprimer cette ligne.
 3. **Créer une clé :** dans **Générer la clé ▾**, saisissez **Nom complet** et **E-mail**. Les deux sont obligatoires, et **Générer la clé** reste désactivé jusqu'à ce que les deux champs contiennent du texte. **Commentaire** est facultatif. L'identifiant utilisateur devient `Name (comment) <e-mail>`.
-   - **Algorithme** bascule entre **RSA** et **DSA ElGamal**. Une clé DSA obtient une sous-clé de chiffrement ElGamal ; une clé RSA obtient une sous-clé RSA.
-   - **Force de la clé** cyclique entre les tailles de l'algorithme : RSA 1024, 2048 et 4096 ; DSA 1024, 2048 et 3072. gpg ne crée pas de clés DSA supérieures à 3072 bits, donc 4096 n'est pas proposé pour DSA.
-   - **Date d'expiration** ouvre sa propre page. Tapez la date dans la disposition de votre langue : `DD/MM/YYYY` en portugais, espagnol, français, italien, allemand et russe ; `YYYY/MM/DD` en anglais, chinois, japonais et coréen. La date doit être postérieure à aujourd'hui. Activez **N'expire jamais** pour rendre la clé permanente ; le champ de date est alors désactivé et non utilisé.
-   - **Phrase de passe** ouvre sa propre page. **Protéger avec une phrase de passe** est activé par défaut ; tapez la **Phrase de passe** puis **Confirmer la phrase de passe**. Les deux doivent correspondre. Désactiver la protection efface les deux champs et la page demande une confirmation avant de générer une clé non protégée.
+- **Algorithme** bascule entre **RSA** et **DSA ElGamal**. Une clé DSA obtient une sous-clé de chiffrement ElGamal ; une clé RSA obtient une sous-clé RSA.
+- **Force de la clé** cyclique entre les tailles de l'algorithme : RSA 1024, 2048 et 4096 ; DSA 1024, 2048 et 3072. gpg ne crée pas de clés DSA supérieures à 3072 bits, donc 4096 n'est pas proposé pour DSA.
+- **Date d'expiration** ouvre sa propre page. Tapez la date dans la disposition de votre langue : `DD/MM/YYYY` en portugais, espagnol, français, italien, allemand et russe ; `YYYY/MM/DD` en anglais, chinois, japonais et coréen. La date doit être postérieure à aujourd'hui. Activez **N'expire jamais** pour rendre la clé permanente ; le champ de date est alors désactivé et non utilisé.
+- **Phrase de passe** ouvre sa propre page. **Protéger avec une phrase de passe** est activé par défaut ; tapez la **Phrase de passe** puis **Confirmer la phrase de passe**. Les deux doivent correspondre. Désactiver la protection efface les deux champs et la page demande une confirmation avant de générer une clé non protégée.
 4. Sélectionnez **Générer la clé** et appuyez sur `Enter`. La clé obtient une clé de signature et une sous-clé de chiffrement. La phrase de passe est envoyée au lanceur sur son entrée standard, jamais comme argument de commande. Si la génération échoue, les autres champs restent, mais les phrases de passe sont effacées et doivent être saisies à nouveau.
 5. **Annuler** efface tous les champs du formulaire et ramène les dates et les tailles à leurs valeurs par défaut.
 6. **Importer :** dans **Importer ▾**, choisissez **Importer une clé publique…** ou **Importer une clé privée…**. Le gestionnaire de fichiers s'ouvre pour que vous puissiez choisir le fichier. Une clé privée demande d'abord une confirmation, et sa phrase de passe est demandée par gpg lorsque la clé est utilisée. Si le gestionnaire de fichiers est graphique, il ne peut pas signaler le fichier à la page ; la page ouvre alors un champ où vous tapez le chemin.
@@ -273,7 +271,7 @@ Les groupes ont leur propre liste et pages d'édition, y compris la gestion des 
 
 ### Paramètres du Centre de Contrôle
 
-**Paramètres** est la dernière entrée de l'accueil. Sa page **Langue** définit la langue de l'utilisateur via locale.conf, et sa page **Style** contrôle les icônes décoratives et la transparence du Centre de Contrôle. Le style ne gère pas le flou : le flou est un paramètre global de Hyprland, sous Hyprland > Flou. La page Style modifie la présentation de l'application de paramètres ; ce n'est pas un bouton qui désactive les services ARGVUS ou supprime les fournisseurs de paramètres. L'enregistrement des icônes peut nécessiter une autorisation, tandis que le changement visuel est appliqué à l'application en cours. Échap sur Style retourne à la page Paramètres, et Échap là-bas retourne à l'accueil.  
+**Paramètres** est la dernière entrée de l'accueil. Sa page **Langue** définit la langue de l'utilisateur via locale.conf, et sa page **Style** contrôle les icônes décoratives et la transparence du Centre de Contrôle. Le style ne gère pas le flou : le flou est un paramètre global de Hyprland, sous Hyprland > Flou. La page Style modifie la présentation de l'application de paramètres ; ce n'est pas un bouton qui désactive les services ARGVUS ou supprime les fournisseurs de paramètres. L'enregistrement des icônes peut nécessiter une autorisation, tandis que le changement visuel est appliqué à l'application en cours. Échap sur Style retourne à la page Paramètres, et Échap là-bas retourne à l'accueil.
 
 ### À propos d'ARGVUS
 
@@ -289,8 +287,8 @@ Les groupes ont leur propre liste et pages d'édition, y compris la gestion des 
 
 Chaque valeur est lue à partir du système en cours d'exécution, sans privilèges, et la page fonctionne de la même manière sur n'importe quelle machine. Une valeur qui ne peut pas être lue est affichée comme `N/A`, et une ligne qui ne s'applique pas est laissée de côté :
 
-- **Firmware**, **Modèle** et **Carte mère** proviennent du DMI (`/sys/class/dmi/id`) ; les valeurs fictives telles que `To be filled by O.E.M.` sont ignorées. **Type** et **Démarrage sécurisé** proviennent de `/sys/firmware/efi`, et **Virtualisation** de `systemd-detect-virt`.  
-- **Chargeur d’amorçage** est lu à partir de la variable EFI `LoaderInfo`, que systemd-boot, Limine et d’autres chargeurs d’amorçage suivant l’Interface du chargeur d’amorçage publient. GRUB ne le publie pas, donc il est reconnu par `/boot/grub` (ou `/efi/grub`) et affiché avec la version du paquet `grub`.  
+- **Firmware**, **Modèle** et **Carte mère** proviennent du DMI (`/sys/class/dmi/id`) ; les valeurs fictives telles que `To be filled by O.E.M.` sont ignorées. **Type** et **Démarrage sécurisé** proviennent de `/sys/firmware/efi`, et **Virtualisation** de `systemd-detect-virt`.
+- **Chargeur d’amorçage** est lu à partir de la variable EFI `LoaderInfo`, que systemd-boot, Limine et d’autres chargeurs d’amorçage suivant l’Interface du chargeur d’amorçage publient. GRUB ne le publie pas, donc il est reconnu par `/boot/grub` (ou `/efi/grub`) et affiché avec la version du paquet `grub`.
 - Les versions d’ARGVUS, Wayland, Mesa, PipeWire, Quickshell, greetd, systemd et GRUB proviennent d’une requête `pacman -Q` et sont affichées sans l’époque et la version du paquet (`1:25.2.3-1` devient `25.2.3`). La version de Hyprland provient de `hyprctl version`, ou du paquet lorsque aucune session ne répond.
 - **Pilote GPU** indique le pilote associé à chaque carte DRM dans `/sys/class/drm`. Un pilote propriétaire montre sa version de module (par exemple `nvidia 580.82.07`) ; un pilote intégré au noyau montre la version de Mesa (par exemple `amdgpu (Mesa 25.2.3)`).
 - **Écrans** liste les moniteurs actifs de `hyprctl monitors -j` : connecteur, résolution, taux de rafraîchissement et échelle (l'échelle est omise si elle est à 1).
@@ -313,7 +311,7 @@ Lorsque la recherche sur l'accueil est active, les touches imprimables sont sais
 
 Ouvrez **Apparence** pour voir les contrôles visuels intégrés. Ses groupes sont :
 
-- **Bureau** — **Thème** (choisissez une famille incluse et son mode Sticky ou Spaced, ou exportez, importez, appliquez et supprimez vos propres thèmes, voir [Importation et exportation de thèmes](/docs/components/argvus-themes/import-and-export/)), **Mode d'apparence** (Sticky ou Spaced, indépendant du thème), **Couleur d'accent** (un accent fourni ou une couleur RVB valide à six chiffres), **Fond d'écran** (un fond d'écran fourni ou un fichier personnalisé) **Icônes** (un thème d'icônes installé : recherchez dans la liste avec `/`, choisissez-en un avec Espace ou Entrée, puis sélectionnez **Appliquer** ; rien ne change avant l'Application) et **Polices** (les cibles de police et les paramètres de rendu des polices, ouverts sur la page Polices). 
+- **Bureau** — **Thème** (choisissez une famille incluse et son mode Sticky ou Spaced, ou exportez, importez, appliquez et supprimez vos propres thèmes, voir [Importation et exportation de thèmes](/docs/components/argvus-themes/import-and-export/)), **Mode d'apparence** (Sticky ou Spaced, indépendant du thème), **Couleur d'accent** (un accent fourni ou une couleur RVB valide à six chiffres), **Fond d'écran** (un fond d'écran fourni ou un fichier personnalisé) **Icônes** (un thème d'icônes installé : recherchez dans la liste avec `/`, choisissez-en un avec Espace ou Entrée, puis sélectionnez **Appliquer** ; rien ne change avant l'Application) et **Polices** (les cibles de police et les paramètres de rendu des polices, ouverts sur la page Polices).
 - **Style de l'application** — la transparence du **Terminal** et du **Lanceur**.
 
 La carte Apparence contient les surfaces qui utilisent ces paramètres : **Widget Telemetry** (activer la surface de télémétrie, sélectionner ses blocs disponibles et les réorganiser avec `Shift+Up`/`Shift+Down` sur un bloc sélectionné) et **Panneau de contrôle** (activer, désactiver et réorganiser les cartes du panneau avec `Shift+Up`/`Shift+Down` sur une carte sélectionnée, appliqué immédiatement via le même primitif que celui utilisé par le glisser-déposer du panneau réel).
@@ -341,7 +339,6 @@ Le support de réinitialisation est délibérément par domaine :
 - **Applications par défaut** peut restaurer toutes les valeurs par défaut, une catégorie, ou un sélecteur individuel.
 - **Raccourcis clavier** peut restaurer une liaison ou toutes les liaisons, puis recharger les liaisons de session générées.
 - **Règles de fenêtre** se trouve dans **Bureau & Entrée → Hyprland → Fenêtres → Règles** (recherchez `window rules` ou exécutez `argvus control-center window-rules`). Chaque règle a une ligne **Espace de travail** (les étapes `Enter` ou `←/→` passent de 1 à 10) et une ligne **Classes de fenêtres** qui ouvre un champ de texte avec des expressions régulières séparées par des virgules. **Ajouter une règle** crée `rule-N` avec l’espace de travail 1 et aucune classe. Le **Supprimer la règle** de chaque règle se trouve dans la **Zone de danger** et demande une confirmation. Chaque modification est écrite dans `hyprland.window_rules` dans `argvus config` et recharge la configuration immédiatement ; les motifs de classe invalides sont rejetés et affichés comme une erreur.
-
 - **Projets** se trouvent dans **Outils & Diagnostics → Projets** (recherchez `projects` ou exécutez `argvus control-center projects`). **Ajouter un dossier de projet** et **Ajouter un dossier racine** se trouvent en haut de la page et ouvrent un champ de texte avec le chemin ; le lanceur vérifie qu'il s'agit d'un répertoire et affiche l'erreur sinon, y compris lorsque le dossier ferait dépasser le nombre effectif de projets au-delà de 9 (`SUPER + CTRL + 1..9` ne peut pas en gérer plus). Chaque dossier configuré, marqué comme racine (ses sous-dossiers sont des projets) ou projet unique, obtient son propre bloc sous le formulaire avec une ligne **Supprimer** qui demande confirmation. La page appelle `argvus-projects`, donc les modifications sont écrites par le lanceur et s'appliquent la prochaine fois que `SUPER + O` ou `SUPER + CTRL + 1..9` s'exécute. Si `argvus-projects` n'est pas installé, la page l'indique.
 - **Les autres pages du système** exposent des actions de réinitialisation, d'application, de suppression ou de restauration uniquement lorsque le fournisseur sous-jacent les prend en charge.
 
@@ -408,10 +405,10 @@ L'installation, la mise à jour et la suppression de paquets ne nécessitent pas
 
 ### Validation manuelle
 
-- Sur une racine ext4/xfs, ouvrez la page en anglais et en portugais. En portugais, vérifiez le message exact **Este sistema de arquivos não é Btrfs** et vérifiez que c/d n'ouvre pas une opération.  
-- Dans une VM Btrfs jetable, testez Snapper absent, Snapper sans configuration racine, et une configuration nommée `root` pointant vers un autre sous-volume.  
-- Avec une configuration racine existante, listez les snapshots, ouvrez les détails, créez un snapshot avec des espaces/caractères spéciaux, annulez une suppression, puis supprimez seulement le snapshot nouvellement créé après avoir confirmé son numéro et sa description.  
-- Vérifiez l'authentification refusée/annulée, les snapshots actifs/défaut protégés, actualiser, navigation au clavier, redimensionner et les deux langues. Ne testez pas la suppression sur les snapshots nécessaires à la récupération.  
+- Sur une racine ext4/xfs, ouvrez la page en anglais et en portugais. En portugais, vérifiez le message exact **Este sistema de arquivos não é Btrfs** et vérifiez que c/d n'ouvre pas une opération.
+- Dans une VM Btrfs jetable, testez Snapper absent, Snapper sans configuration racine, et une configuration nommée `root` pointant vers un autre sous-volume.
+- Avec une configuration racine existante, listez les snapshots, ouvrez les détails, créez un snapshot avec des espaces/caractères spéciaux, annulez une suppression, puis supprimez seulement le snapshot nouvellement créé après avoir confirmé son numéro et sa description.
+- Vérifiez l'authentification refusée/annulée, les snapshots actifs/défaut protégés, actualiser, navigation au clavier, redimensionner et les deux langues. Ne testez pas la suppression sur les snapshots nécessaires à la récupération.
 
 Seul le paquet `argvus` change. Reconstruisez à partir de `de/argvus` avec `make build` pour produire le paquet `.pkg.tar.zst` ; son installation est une action opérateur séparée.
 
@@ -537,8 +534,8 @@ Commandes : `argvus windows list --json`, `watch --json`, `position top|bottom`,
 
 ## Sous-menu Fenêtres et fermeture de l'application
 
-**Bureau & Entrée → Hyprland → Fenêtres** regroupe **Règles**, **Espaces** et **Mode**. 
-Règles modifie le placement par application ; Espaces modifie les marges intérieures et extérieures ; Mode contient le sélecteur immédiat Carrelage/Flottant, séparé du formulaire de règles. 
+**Bureau & Entrée → Hyprland → Fenêtres** regroupe **Règles**, **Espaces** et **Mode**.
+Règles modifie le placement par application ; Espaces modifie les marges intérieures et extérieures ; Mode contient le sélecteur immédiat Carrelage/Flottant, séparé du formulaire de règles.
 Recherche ouvre les mêmes pages, et Retour revient à Fenêtres avant Hyprland.
 
 Les itinéraires directs sont `argvus control-center hyprland windows`, suivis éventuellement de `rules`, `spaces` ou `mode`. Les itinéraires existants `window-rules` et `appearance window-spaces` restent des alias et affichent les nouvelles fil d'Ariane.

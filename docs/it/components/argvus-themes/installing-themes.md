@@ -49,19 +49,19 @@ I pacchetti sottostanti sono i pacchetti di temi ufficiali pubblicati oggi.
 
 | Pacchetto | Tema |
 | --- | --- |
-| `argvus-theme-one-dark` | One Dark |
+| `argvus-theme-one-dark` | Uno scuro |
 | `argvus-theme-dracula` | Dracula |
-| `argvus-theme-silver-dark` | Silver Dark |
-| `argvus-theme-slate-dark` | Slate Dark |
-| `argvus-theme-universe` | Universe |
-| `argvus-theme-gruvbox-high-dark` | Gruvbox High Dark |
-| `argvus-theme-gruvbox-dark` | Gruvbox Dark |
-| `argvus-theme-rose-pine` | Rosé Pine |
-| `argvus-theme-tokyo-night` | Tokyo Night |
-| `argvus-theme-solitude` | Solitude |
-| `argvus-theme-sunset` | Sunset |
-| `argvus-theme-matrix` | Matrix |
-| `argvus-theme-monokai-dark` | Monokai Dark |
+| `argvus-theme-silver-dark` | Argento Scuro |
+| `argvus-theme-slate-dark` | Ardesia scura |
+| `argvus-theme-universe` | Universo |
+| `argvus-theme-gruvbox-high-dark` | Gruvbox Alto Scuro |
+| `argvus-theme-gruvbox-dark` | Gruvbox Scuro |
+| `argvus-theme-rose-pine` | Pino Rosato |
+| `argvus-theme-tokyo-night` | Notte di Tokio |
+| `argvus-theme-solitude` | Solitudine |
+| `argvus-theme-sunset` | Tramonto |
+| `argvus-theme-matrix` | Matrice |
+| `argvus-theme-monokai-dark` | Monokai scuro |
 
 **Temi chiari**
 

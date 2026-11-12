@@ -8,11 +8,11 @@ description: ARGVUS、そのアーキテクチャおよび日常的な使用に�
 
 ARGVUSは、Hyprlandを中心に構築されたWaylandおよびArch Linux用のモジュラー型デスクトップ環境です。Hyprlandとは独立したデスクトップ環境ではなく、Hyprlandの上に組み立てられ、Arch Linux向けに調整されたデスクトップ体験です。ARGVUSは、一連のパッケージを通じて、グラフィカルセッション、シェルサーフェス、設定アプリケーション、外観、デスクトップサービス、および統合ツールを調整します。
 
-これは単なるHyprlandの設定や個人的なドットファイルのコレクション以上のものであり、サポートされるセッションエントリーポイント、共有設定および外観状態、タスクバー、コントロールセンター、通知、ネットワーキング、ディスプレイなどのコンポーネントに対する定義済みの所有権を提供します。各パーツがどのように連携しているかの概要については、[introduction](/docs/introduction/)]をご覧ください。
+これは単なるHyprlandの設定や個人的なドットファイルのコレクション以上のものであり、サポートされるセッションエントリーポイント、共有設定および外観状態、タスクバー、コントロールセンター、通知、ネットワーキング、ディスプレイなどのコンポーネントに対する定義済みの所有権を提供します。各パーツがどのように連携しているかの概要については、[introduction](/docs/introduction/)をご覧ください。
 
 ## ARGVUSは無料ですか？
 
-はい。ARGVUSは無料でダウンロードして使用できます。また、そのコアプロジェクトパッケージは[GNU General Public License version 3](https://www.gnu.org/licenses/gpl-3.0.html)]の下でフリーソフトウェアとして配布されています。これにより、ユーザーはライセンス条項の下で、対象ソフトウェアを実行、学習、改変、および再配布する自由を得ることができます。
+はい。ARGVUSは無料でダウンロードして使用できます。また、そのコアプロジェクトパッケージは[GNU General Public License version 3](https://www.gnu.org/licenses/gpl-3.0.html)の下でフリーソフトウェアとして配布されています。これにより、ユーザーはライセンス条項の下で、対象ソフトウェアを実行、学習、改変、および再配布する自由を得ることができます。
 
 ARGVUSは署名付きのArch Linuxパッケージとして配布されています。ソフトウェア自体に購入価格はありませんが、パッケージのダウンロードには通常のインターネットやホスティング費用がかかる場合があります。サードパーティによって提供されるコンポーネントやアプリケーションは、それぞれ独自のライセンスを持つことがあります。
 
@@ -20,7 +20,7 @@ ARGVUSは署名付きのArch Linuxパッケージとして配布されていま�
 
 いいえ。ARGVUSはArch Linuxの上にインストールされるデスクトップ環境レイヤーです。Arch Linuxはオペレーティングシステム、カーネル、パッケージマネージャー、および基本パッケージを提供し、HyprlandはWaylandのコンポジションを提供します。ARGVUSはデスクトップセッションとその統合コンポーネントを調整します。
 
-サポートされているインストールモデルについては[installation](/docs/getting-started/installation/)]を参照し、アーキテクチャ上の違いについては[What ARGVUS is—and is not](/docs/introduction/#what-argvus-isand-is-not)]を参照してください。
+サポートされているインストールモデルについては[installation](/docs/getting-started/installation/)を参照し、アーキテクチャ上の違いについては[What ARGVUS is—and is not](/docs/introduction/#what-argvus-isand-is-not)を参照してください。
 
 ## なぜディストリビューションではなくデスクトップ環境なのか？
 
@@ -30,13 +30,13 @@ ARGVUSをデスクトップ環境として使用することで、ユーザー�
 
 ## どのシステムがサポートされていますか？
 
-現在サポートされているベースはArch Linuxです。ARGVUSはArch Linux向けにパッケージ化されており、[installation requirements](/docs/getting-started/installation/requirements/)]で説明されているWayland、Hyprland、システムコンポーネントに依存しています。
+現在サポートされているベースはArch Linuxです。ARGVUSはArch Linux向けにパッケージ化されており、[installation requirements](/docs/getting-started/installation/requirements/)で説明されているWayland、Hyprland、システムコンポーネントに依存しています。
 
 他のディストリビューションも同じいくつかの上流コンポーネントを提供する場合がありますが、それにより完全なARGVUSパッケージセットやセッション統合がサポートされるわけではありません。
 
 ## ARGVUSをインストールするにはどうすればよいですか？
 
-[インストールガイド](/docs/getting-started/installation/)]に従ってください。必要条件、署名済みARGVUSパッケージリポジトリの設定方法、パッケージセットのインストール方法、および最初のセッションの開始方法が説明されています。
+[インストールガイド](/docs/getting-started/installation/)に従ってください。必要条件、署名済みARGVUSパッケージリポジトリの設定方法、パッケージセットのインストール方法、および最初のセッションの開始方法が説明されています。
 
 ARGVUSは調整されたArchパッケージのセットとして提供されます。`argvus`パッケージが主なインストール対象であり、それが調整されたデスクトップコンポーネントを引き込みます。
 
@@ -51,23 +51,23 @@ argvus --control-center
 ```
 `argvus control-center`、例えば`argvus control-center appearance themes`でフォーカスされた領域を開くこともできます。インストールされているバージョンで利用可能なルートを確認するには`argvus control-center --help`を実行してください。
 
-現在の状態や音量、明るさ、ネットワーク、通知、電源、セッション制御などの頻繁に行う操作には**コントロールパネル**を使用してください。これは第二の設定データベースではありません。区別については[Where to configure things](/docs/user-guide/where-to-configure/)]および[Control Center](/docs/components/argvus-control-center/)]を参照してください。
+現在の状態や音量、明るさ、ネットワーク、通知、電源、セッション制御などの頻繁に行う操作には**コントロールパネル**を使用してください。これは第二の設定データベースではありません。区別については[Where to configure things](/docs/user-guide/where-to-configure/)および[Control Center](/docs/components/argvus-control-center/)を参照してください。
 
 ## ARGVUSの設定はどこに保存されていますか？
 
 ユーザー所有の設定は`$XDG_CONFIG_HOME/argvus`（通常は`~/.config/argvus`）の下に保存されます。標準的な論理設定はそこに保持され、一方でHyprland、Waybar、テレメトリウィジェット、GTK、Qt6ct、Quickshell、Dunst、Hyprlock、Yazi、Superfile、端末、フォント、エフェクト、カレンダー、入力、キーボード、電源およびリムーバブルデバイス用の派生消費者ファイルは`~/.config/argvus/data/generated/`の下に存在します。そのツリーは`argvus-config`によってのみ書き込まれ、標準設定から再構築されます；`argvus-appearance`は外観の変更をコミットしてから、標準設定を自分で読み取れない外部消費者のみを調整します。例外はRofiです：`argvus launcher`がその設定とテーマをパッケージ化し、ユーザーが編集したコピーは`~/.config/argvus/data/rofi/`の下に存在します。
 
-生成されたファイルを恒久的な設定方法として編集しないでください。カスタマイズしたいコンポーネントについては、コントロールセンターまたは文書化されたネイティブオーバーライドパスを使用してください。[configuration files](/docs/reference/configuration-files/)]および[configuration and state](/docs/developer-guide/architecture/configuration-and-state/)]を参照してください。
+生成されたファイルを恒久的な設定方法として編集しないでください。カスタマイズしたいコンポーネントについては、コントロールセンターまたは文書化されたネイティブオーバーライドパスを使用してください。[configuration files](/docs/reference/configuration-files/)および[configuration and state](/docs/developer-guide/architecture/configuration-and-state/)を参照してください。
 
 ## 変更が適用されない場合はどうすればよいですか？
 
 まず、変更が所有ページに保存または適用されていることを確認してください。次に、影響を受けたコンポーネントがセッションまたはサービスのリロードを必要とするかどうかを確認してください。コミットされた変更は`argvus-config`によってコンシュマーファイルに反映されますが、反映されたとしても、すべての実行中のコンシュマーがそれをリロードしたとは限りません。`argvus sessionctl reload`は、再度投影する代わりに投影マニフェストからすでにコミットされた世代を適用し、正規状態が変更されていない場合はグラフィカルリロードをスキップします。
 
-インストール、セッションの起動、グラフィックス、ディスプレイ、Hyprland、テーマや壁紙に関しては、関連する[トラブルシューティングガイド](/docs/user-guide/troubleshooting/)]を使用してください。問題を報告する際は、コンポーネント、変更した設定、使用したコマンドやページ、および関連するステータスや診断コマンドの出力を含めてください。
+インストール、セッションの起動、グラフィックス、ディスプレイ、Hyprland、テーマや壁紙に関しては、関連する[トラブルシューティングガイド](/docs/user-guide/troubleshooting/)を使用してください。問題を報告する際は、コンポーネント、変更した設定、使用したコマンドやページ、および関連するステータスや診断コマンドの出力を含めてください。
 
 ## さらに詳しく知るには？
 
-- 推奨される初回セッションフローについては、[最初の設定](/docs/user-guide/getting-started/)]を参照してください。
-- 機能別の手順については、[ユーザーガイド](/docs/user-guide/)]を参照してください。
-- コマンド、パス、サービス、構成契約については、[リファレンス](/docs/reference/)]を参照してください。
-- アーキテクチャ、パッケージの所有権、貢献のワークフローについては、[開発者ガイド](/docs/developer-guide/)]を参照してください。
+- 推奨される初回セッションフローについては、[最初の設定](/docs/user-guide/getting-started/)を参照してください。
+- 機能別の手順については、[ユーザーガイド](/docs/user-guide/)を参照してください。
+- コマンド、パス、サービス、構成契約については、[リファレンス](/docs/reference/)を参照してください。
+- アーキテクチャ、パッケージの所有権、貢献のワークフローについては、[開発者ガイド](/docs/developer-guide/)を参照してください。

@@ -1,5 +1,5 @@
 ---
-title: Contributing
+title: Đóng góp
 description: Ranh giới đóng góp cho các dự án và tài liệu ARGVUS.
 ---
 

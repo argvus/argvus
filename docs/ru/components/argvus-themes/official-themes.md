@@ -22,7 +22,7 @@ description: Официальный каталог тем ARGVUS, цвета в�
 | Режим | Промежутки между окнами | Внешний промежуток | Скругление окон | Отступ панели задач и оболочки |
 | --- | ---: | ---: | ---: | ---: |
 | Sticky | `2` | `0` | `0` | у края |
-| Spaced | `10` | `18` | `4` | `18` |
+| Разнесенные | `10` | `18` | `4` | `18` |
 
 Чтобы переключить режим, откройте **Центр управления → Внешний вид → Режим** и выберите **Sticky** или **Spaced**. Ваши ручные настройки этих значений макета останутся в силе до следующего явного выбора темы.
 
@@ -30,34 +30,34 @@ description: Официальный каталог тем ARGVUS, цвета в�
 
 | Тема | Пакет | Подсветка по умолчанию |
 | --- | --- | --- |
-| One Dark | `argvus-theme-one-dark` | `#61AFEF` |
-| Dracula | `argvus-theme-dracula` | `#BD93F9` |
-| Silver Dark | `argvus-theme-silver-dark` | `#595959` |
-| Slate Dark | `argvus-theme-slate-dark` | `#7391A5` |
-| Universe | `argvus-theme-universe` | `#EEEEEE` |
-| Gruvbox High Dark | `argvus-theme-gruvbox-high-dark` | `#D79921` |
-| Gruvbox Dark | `argvus-theme-gruvbox-dark` | `#D4BE98` |
-| Rosé Pine | `argvus-theme-rose-pine` | `#C4A7E7` |
-| Tokyo Night | `argvus-theme-tokyo-night` | `#7AA2F7` |
-| Solitude | `argvus-theme-solitude` | `#798186` |
-| Sunset | `argvus-theme-sunset` | `#E2BE8A` |
-| Matrix | `argvus-theme-matrix` | `#82FB9C` |
-| Monokai Dark | `argvus-theme-monokai-dark` | `#78DCE8` |
-| Lady Mist | `argvus-theme-lady-mist` | `#354B78` |
+| Одна тьма | `argvus-theme-one-dark` | `#61AFEF` |
+| Дракула | `argvus-theme-dracula` | `#BD93F9` |
+| Серебряный Темный | `argvus-theme-silver-dark` | `#595959` |
+| Сланцевый темный | `argvus-theme-slate-dark` | `#7391A5` |
+| Вселенная | `argvus-theme-universe` | `#EEEEEE` |
+| Грувбокс Хай Темный | `argvus-theme-gruvbox-high-dark` | `#D79921` |
+| Грувбокс Темный | `argvus-theme-gruvbox-dark` | `#D4BE98` |
+| Розэ Пайн | `argvus-theme-rose-pine` | `#C4A7E7` |
+| Токио Ночь | `argvus-theme-tokyo-night` | `#7AA2F7` |
+| Одиночество | `argvus-theme-solitude` | `#798186` |
+| Закат | `argvus-theme-sunset` | `#E2BE8A` |
+| Матрица | `argvus-theme-matrix` | `#82FB9C` |
+| Монокай Темный | `argvus-theme-monokai-dark` | `#78DCE8` |
+| Леди Мист | `argvus-theme-lady-mist` | `#354B78` |
 
 ## Светлые темы
 
 | Тема | Пакет | Стандартное выделение |
 | --- | --- | --- |
-| GitHub Light | `argvus-theme-github-light` | `#0969DA` |
-| Solarized Light | `argvus-theme-solarized-light` | `#268BD2` |
-| Nord Light | `argvus-theme-nord-light` | `#5E81AC` |
-| One Light | `argvus-theme-one-light` | `#4078F2` |
-| Everforest Light | `argvus-theme-everforest-light` | `#3A94C5` |
-| Catppuccin Latte | `argvus-theme-catppuccin-latte` | `#1E66F5` |
-| Gruvbox Light | `argvus-theme-gruvbox-light` | `#458588` |
-| Watercolor | `argvus-theme-watercolor` | `#1A639C` |
-| Obsidian Light | `argvus-theme-obsidian-light` | `#334A78` |
+| GitHub Свет | `argvus-theme-github-light` | `#0969DA` |
+| Соляризованный свет | `argvus-theme-solarized-light` | `#268BD2` |
+| Норд Лайт | `argvus-theme-nord-light` | `#5E81AC` |
+| Один свет | `argvus-theme-one-light` | `#4078F2` |
+| Эверфорест Лайт | `argvus-theme-everforest-light` | `#3A94C5` |
+| Катпучин Латте | `argvus-theme-catppuccin-latte` | `#1E66F5` |
+| Грувбокс Лайт | `argvus-theme-gruvbox-light` | `#458588` |
+| Акварель | `argvus-theme-watercolor` | `#1A639C` |
+| Обсидиановый свет | `argvus-theme-obsidian-light` | `#334A78` |
 
 ## Встроенные темы
 
@@ -67,4 +67,4 @@ description: Официальный каталог тем ARGVUS, цвета в�
 
 Тема определяет палитру и обработку поверхности, используемые компонентами рабочего стола, цвет выделения по умолчанию, стандартное назначение обоев, а также настройки прозрачности и размытия. Компоненты рабочего стола считывают это состояние, а не сохраняют собственную копию, поэтому изменение темы затрагивает композитор, панель задач, Панель управления, экран блокировки, уведомления и приложения одновременно.
 
-Цвет выделения по умолчанию является только исходной точкой. Вы можете заменить его любым шестизначным цветом, см. [Настройка цвета выделения](/docs/components/argvus-themes/highlight-color/)].
+Цвет выделения по умолчанию является только исходной точкой. Вы можете заменить его любым шестизначным цветом, см. [Настройка цвета выделения](/docs/components/argvus-themes/highlight-color/).

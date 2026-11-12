@@ -1,5 +1,5 @@
 ---
-title: Accounts
+title: Akun
 description: Profil pengguna lokal, nama tampilan, avatar dan keanggotaan grup, melalui akun argvus.
 ---
 

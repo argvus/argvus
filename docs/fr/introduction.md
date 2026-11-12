@@ -1,5 +1,5 @@
 ---
-title: Introduction
+title: Introduction
 description: Ce qu'est ARGVUS, comment fonctionne son bureau et où ses composants s’intègrent.
 ---
 ARGVUS est un environnement de bureau modulaire Hyprland et Wayland pour Arch Linux. Il s'agit d'une collection intégrée de paquets plutôt qu'une application monolithique : la session, le compositeur, les surfaces du shell, les applications de paramètres, les fournisseurs et les éléments visuels fonctionnent ensemble grâce à un état partagé et des contrats d'exécution explicites.
@@ -23,7 +23,7 @@ taskbar · control panel · notifications · wallpaper · idle · clipboard
 ```
 `argvus-session` gère le cycle de vie des sessions et la configuration de l'environnement. Il n'implémente pas toutes les fonctionnalités du bureau : chaque composant conserve la propriété de ses propres commandes, configurations et charges de service.
 
-Pour l'installation et le démarrage, voir [Installation](/docs/getting-started/installation/)] et [Sessions](/docs/user-guide/sessions/)]. Pour la propriété des services, voir le [cycle de vie runtime](/docs/developer-guide/architecture/runtime-lifecycle/)] pour les développeurs.
+Pour l'installation et le démarrage, voir [Installation](/docs/getting-started/installation/) et [Sessions](/docs/user-guide/sessions/). Pour la propriété des services, voir le [cycle de vie runtime](/docs/developer-guide/architecture/runtime-lifecycle/) pour les développeurs.
 
 ## Couches principales
 
@@ -55,7 +55,7 @@ Voir [Matériel](/docs/user-guide/hardware/), [Confidentialité et sécurité](/
 
 Les préférences de thème, d'accent, de fond d'écran, de police et d'effets sont stockées sous forme d'état logique dans `$XDG_CONFIG_HOME/argvus` (normalement `~/.config/argvus`). `argvus-config` est le seul composant qui écrit dans `data/generated/`, où il projette les fichiers consommateurs pour Hyprland, GTK, Qt6ct, Waybar, Quickshell, Dunst, les notifications, l'écran de verrouillage, Yazi, Superfile et les terminaux. Rofi fait exception : `argvus launcher` emballe sa configuration et ses thèmes en fichiers simples, et les copies modifiées par l'utilisateur vivent sous `data/rofi/`. Les assistants d'apparence enregistrent le changement d'état puis réconcilient les applications externes ; ils n'écrivent jamais l'arborescence générée.
 
-Le répertoire généré n'est pas la source de vérité. Voir [Appearance](/docs/user-guide/appearance/)] et [configuration and state](/docs/developer-guide/architecture/configuration-and-state/)].
+Le répertoire généré n'est pas la source de vérité. Voir [Appearance](/docs/user-guide/appearance/) et [configuration and state](/docs/developer-guide/architecture/configuration-and-state/).
 
 Le système visuel contrôle également la disposition. Le mode Sticky est compact et carré ; le mode Spaced utilise des espaces de fenêtres plus larges, des coins arrondis et des marges plus larges autour de la barre des tâches et du shell. La barre des tâches est par défaut placée en haut mais supporte une position en haut/en bas grâce à l'état de disposition partagé. Les effets contrôlent la transparence, le flou, les ombres et les animations sur le compositeur et les surfaces du bureau.
 

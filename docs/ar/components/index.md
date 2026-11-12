@@ -1,5 +1,5 @@
 ---
-title: Components
+title: المكونات
 description: مكونات ARGVUS الموثقة في هذا الموقع، وحيث توجد ملاحظات المطور الخاصة بها.
 ---
 
@@ -30,4 +30,4 @@ description: مكونات ARGVUS الموثقة في هذا الموقع، وح�
 
                                                           ﻲﻓ ﺩﻮﺟﻮﻣ ﺮﻣﺍﻭﻷ﻿ﺍ ﻊﺟﺮﻣ[                                                                    ﺮﻣﺍﻭﻷ﻿ﺍ ﺮﻄﺳ](/docs/reference/command-line/).
 
-See [Snapshot](/docs/components/argvus-control-center/#snapshot) for root Btrfs snapshots.
+راجع [Snapshot](/docs/components/argvus-control-center/#snapshot) للحصول على لقطات Btrfs الجذرية.

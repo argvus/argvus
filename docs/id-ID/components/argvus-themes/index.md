@@ -1,5 +1,5 @@
 ---
-title: Themes
+title: Tema
 description: Instal, pilih, sesuaikan, impor dan ekspor tema ARGVUS.
 ---
 

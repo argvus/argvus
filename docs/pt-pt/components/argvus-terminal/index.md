@@ -1,5 +1,5 @@
 ---
-title: Terminal
+title:
 description: Abra o terminal e os perfis de aplicações TUI.
 ---
 

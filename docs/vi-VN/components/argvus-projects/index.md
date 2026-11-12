@@ -1,5 +1,5 @@
 ---
-title: Projects
+title: Dự án
 description: Bộ chọn dự án và cấu hình dự án thông qua các dự án argvus.
 ---
 

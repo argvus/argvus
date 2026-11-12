@@ -20,7 +20,7 @@ Führen Sie `argvus --help` aus, um die mit Ihrer Version installierten Unterbef
 | Befehl | Läuft | Notizen |
 | --- | --- | --- |
 | `argvus config ...` | In Bearbeitung | Konfigurationsmodell und Werkzeuge. Ebenfalls erreichbar über `theme-switch` und `effects-toggle`. |
-| `argvus theme ...` | In Bearbeitung | `apply ID` ist der Themenumschalter (derselbe wie `theme-switch`). Themen-Erstellungen: `list` die installierten Themen, `check DIRECTORY` ein Thema gegen die installierten Vorlagen, `render ID [--variant sticky\|spaced] [--accent #RRGGBB] [--output DIRECTORY]`. Siehe [Aussehen und Themen](/docs/developer-guide/subsystems/appearance-and-themes/)]. |
+| `argvus theme ...` | In Bearbeitung | `apply ID` ist der Themenumschalter (derselbe wie `theme-switch`). Themen-Erstellungen: `list` die installierten Themen, `check DIRECTORY` ein Thema gegen die installierten Vorlagen, `render ID [--variant sticky\|spaced] [--accent #RRGGBB] [--output DIRECTORY]`. Siehe [Aussehen und Themen](/docs/developer-guide/subsystems/appearance-and-themes/). |
 | `argvus i18n ...` | In Bearbeitung | Übersetzungen: `get DOMAIN KEY [name=value...]`, `locale`, `list`, `validate [LOCALE]`. |
 | `argvus keys ...` | In Bearbeitung | SSH-Schlüsselmanager. `gpg` ist ein Alias für die GPG-Unterbefehle. |
 | `argvus gpg ...` | In Bearbeitung | GPG-Schlüssel: `list`, `status`, `generate`, `export-public`, `export-private`, `import`, `import-private`, `delete`, `edit`, `keyserver`. |

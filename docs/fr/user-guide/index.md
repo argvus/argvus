@@ -17,7 +17,7 @@ Le bureau combine une session Hyprland, une barre des tâches Waybar, un panneau
 
 - [Questions fréquemment posées](/docs/user-guide/faq/)
 - [Installation](/docs/getting-started/installation/)
-- [Sessions](/docs/user-guide/sessions/)
+- [Séances](/docs/user-guide/sessions/)
 - [Apparence](/docs/user-guide/appearance/)
 - [Surfaces du bureau](/docs/user-guide/desktop/)
 - [Applications](/docs/user-guide/applications/)

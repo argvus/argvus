@@ -66,4 +66,4 @@ description: आधिकारिक ARGVUS थीम कैटलॉग, ड�
 
 ## कोई विषय क्या नियंत्रित करता है
 
-The default highlight color is only the starting point. You can replace it with any six-digit color, see [Customizing the highlight color](/docs/components/argvus-themes/highlight-color/).
+डिफ़ॉल्ट हाइलाइट रंग केवल प्रारंभिक बिंदु है। आप इसे किसी भी छह-अंकीय रंग से बदल सकते हैं, देखें [हाइलाइट रंग को अनुकूलित करना](/docs/components/argvus-themes/highlight-color/)।

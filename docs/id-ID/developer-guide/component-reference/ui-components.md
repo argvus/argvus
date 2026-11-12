@@ -1,6 +1,6 @@
 ---
-title: UI components
-description: ARGVUS user-interface packages.
+title: komponen UI
+description: paket antarmuka pengguna ARGVUS.
 ---
 
 Paket UI mencakup `argvus-control-panel`, `argvus-taskbar` dan `argvus-launcher`, dan subperintah `argvus` `argvus control-center` (pembantu di `argvus`), `argvus taskbar-calendar`, `argvus widget-telemetry`, `argvus terminal`, `argvus system-monitor`, `argvus removable-devices`, `argvus focus` dan `argvus clock`. Kalender, Fokus, dan Jam menggunakan peti `argvus-taskbar-popup` bersama untuk pemosisian dan pemberhentian lapisan-shell; Focus juga memaparkan pembaca status Waybar melalui rute `argvus focus status` yang sedang dalam proses.

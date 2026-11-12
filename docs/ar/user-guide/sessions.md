@@ -1,5 +1,5 @@
 ---
-title: Sessions
+title: الجلسات
 description: بدء وإدارة جلسة ARGVUS الرسومية.
 ---
 
@@ -17,4 +17,4 @@ argvus sessionctl logs
 argvus sessionctl restart waybar
 ```
 
-See the developer [runtime lifecycle](/docs/developer-guide/architecture/runtime-lifecycle/) for service ownership.
+راجع المطور [دورة حياة وقت التشغيل](/docs/developer-guide/architecture/runtime-lifecycle/) لمعرفة ملكية الخدمة.

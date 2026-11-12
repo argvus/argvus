@@ -1,6 +1,6 @@
 ---
-title: Services
-description: ARGVUS systemd and user services.
+title: Layanan
+description: ARGVUS systemd dan layanan pengguna.
 ---
 
 Target pengguna utama adalah `argvus-session.target`. Layanan pengguna umum termasuk `argvus-taskbar.service`, `argvus-control-panel.service`, `argvus-widget-telemetry.service`, `argvus-hyprland.service`, `argvus-dunst.service`, `argvus-wallpaper.service`, `argvus-hypridle.service`, layanan papan klip dan `argvus-session-loading.service`.

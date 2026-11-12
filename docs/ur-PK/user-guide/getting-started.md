@@ -8,7 +8,7 @@ description: ARGVUS کو ترتیب دینے کے لیے ایک عملی پہل�
 ## ایک مفید آرڈر
 
 1. ونڈوز، ورک اسپیس، ٹاسک بار، کنٹرول پینل اور لانچر کی شناخت کے لیے [ڈیسک ٹاپ کا جائزہ](/docs/user-guide/desktop/) پڑھیں۔
-See [Control Center vs Control Panel](/docs/components/argvus-control-center/) for the full distinction and [Where to configure things](/docs/argvus-hyprland/windows-and-layout/) for a quick index.
+مکمل فرق کے لیے [کنٹرول سینٹر بمقابلہ کنٹرول پینل](/docs/components/argvus-control-center/) اور فوری فہرست کے لیے [چیزیں کہاں ترتیب دیں](/docs/argvus-hyprland/windows-and-layout/) دیکھیں۔
 3. اگر پہلے سے طے شدہ خلا، بارڈرز یا ٹاسک بار کی جگہ آپ کی سکرین کے مطابق نہیں ہے تو [windows and layout](/docs/argvus-taskbar/taskbar/) کو ایڈجسٹ کریں۔
 4. [ٹاسک بار](/docs/argvus-hyprland/keyboard-shortcuts/) کو کنفیگر کریں اور فیصلہ کریں کہ آپ کون سے کنٹرول پینل کارڈز دیکھنا چاہتے ہیں۔
 5. [کی بورڈ شارٹ کٹس](/docs/argvus-hyprland/input/) کا جائزہ لیں اور صرف ان بائنڈنگز کو تبدیل کریں جو آپ اصل میں استعمال کرتے ہیں۔
@@ -20,7 +20,7 @@ See [Control Center vs Control Panel](/docs/components/argvus-control-center/) f
 
 ان ترتیبات کے لیے **کنٹرول سینٹر** کا استعمال کریں جو یہ بیان کرتی ہیں کہ ARGVUS کو کس طرح ترتیب دیا جانا چاہیے: ظاہری شکل، ترتیب، فونٹس، ان پٹ، شارٹ کٹس، زبان، علاقہ اور ڈیفالٹ ایپلیکیشنز۔ **کنٹرول پینل** کا استعمال اسٹیٹس اور بار بار سیشن کی کارروائیوں جیسے حجم، چمک، نیٹ ورک کی حالت، اطلاعات، پاور اور سیشن کنٹرولز کے لیے کریں۔
 
-مکمل تفریق کے لیے [کنٹرول سینٹر بمقابلہ کنٹرول پینل](/docs/user-guide/where-to-configure/) اور فوری انڈیکس کے لیے [چیزوں کو کہاں ترتیب دینا ہے] (/docs/user-guide/where-to-configure/) دیکھیں۔
+مکمل تفریق کے لیے [کنٹرول سینٹر بمقابلہ کنٹرول پینل](/docs/user-guide/where-to-configure/) اور فوری انڈیکس کے لیے [چیزوں کو کہاں ترتیب دینا ہے](/docs/user-guide/where-to-configure/) دیکھیں۔
 
 ## تبدیلیاں، استقامت اور بحالی
 

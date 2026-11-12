@@ -49,8 +49,8 @@ ARGVUS `argvus-appearance` पैकेज के साथ दो अंतर�
 - **एक थीम संग्रह आयात के लिए सूचीबद्ध नहीं है।** यह सीधे आपकी होम निर्देशिका में होना चाहिए और `<id>/theme.toml` को दबाए रखना चाहिए। [थीम आयात और निर्यात करना] (/docs/components/argvus-themes/import-and-export/) देखें।
 
 किसी थीम का चयन करने से इसकी पहचान नहीं बदलती है: रंग पट्टी, डिफ़ॉल्ट हाइलाइट रंग और वॉलपेपर का संबंध मोड्स के बीच वही रहता है। मोड एक अलग सेटिंग है, देखें [आधिकारिक विषय](/docs/components/argvus-themes/official-themes/).
-- [Installing themes](/docs/components/argvus-themes/installing-themes/) — where the official themes come from and how to install one or all of them with pacman.
+- [थीम्स इंस्टॉल करना](/docs/components/argvus-themes/installing-themes/) - आधिकारिक थीम कहां से आती हैं और उनमें से एक या सभी को pacman के साथ कैसे इंस्टॉल करें।
 - [आधिकारिक विषय](/docs/components/argvus-themes/official-themes/)— सूची, प्रत्येक विषय का डिफ़ॉल्ट हाइलाइट रंग, और कैसे किसी विषय और उसके मोड को चुनें।
 - [हाइलाइट रंग को अनुकूलित करना](/docs/components/argvus-themes/highlight-color/)— थीम से स्वतंत्र रूप से ऐकसेंट रंग बदलें।
 - [थीम्स को आयात और निर्यात करना](/docs/components/argvus-themes/import-and-export/)— सक्रिय थीम को, आपके हाइलाइट रंग और वॉलपेपर के साथ, अपनी खुद की थीम के रूप में निर्यात करें और इसे किसी अन्य मशीन पर आयात करें।
-- **A theme archive is not listed for import.** It must be directly in your home directory and hold <id>/theme.toml. See [Importing and exporting themes](/docs/components/argvus-themes/import-and-export/).
+- **एक थीम संग्रह आयात के लिए सूचीबद्ध नहीं है।** यह सीधे आपकी होम निर्देशिका में होना चाहिए और <id>/theme.toml को दबाए रखना चाहिए। [थीम आयात और निर्यात करना](/docs/components/argvus-themes/import-and-export/) देखें।

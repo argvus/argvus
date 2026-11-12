@@ -1,5 +1,5 @@
 ---
-title: Widget telemetry
+title: Telemetri widget
 description: Blok telemetri Waybar dan peralihannya, melalui telemetri widget argvus.
 ---
 

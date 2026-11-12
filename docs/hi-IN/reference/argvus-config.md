@@ -35,7 +35,7 @@ argvus config apply
 └── data/
 ```
 
-The file is written atomically, kept private to the user, and protected by 
+फ़ाइल को परमाणु रूप से लिखा जाता है, उपयोगकर्ता के लिए निजी रखा जाता है, और द्वारा संरक्षित किया जाता है
 
 ```sh
 argvus config path
@@ -59,27 +59,27 @@ argvus config project
 argvus config project --force
 ```
 
-, outside the 
+, outside the
 
 ```sh
 argvus sessionctl apply-config
 ```
 
- tree that can be swapped during projection. A previous version is stored at 
+ वह पेड़ जिसे प्रक्षेपण के दौरान बदला जा सकता है। पिछला संस्करण यहां संग्रहीत है
 
 .
 
 ## कमान्ड लाइन
 
-The 
+The
 
- subcommand is provided in-process by the 
+ subcommand is provided in-process by the
 
  package:
 
- materializes a new 
+ materializes a new
 
- with the schema defaults, or fills
+ स्कीमा डिफ़ॉल्ट के साथ, या भरता है
 स्पष्ट मानों को बदले बिना गायब फ़ील्ड। यह विकृत JSON पर विफल रहता है।
  config.json  ensure  argvus  argvus config  data/backups/config.json.bak  data/  `.config.lock`  `data/`  `data/backups/config.json.bak`  `argvus config`  `argvus`  `ensure`  `config.json` `migrate` मानों को प्रतिस्थापित किए बिना मौजूदा विरासत उपस्थिति स्थिति को आयात करता है
 `config.json` में पहले से मौजूद है। `argvus sessionctl` चलाता है `recover`, `ensure`,
@@ -181,7 +181,7 @@ CLI प्रतिबद्धता के बाद एक केंद्र
 
 ,
 
-, 
+,
 
 ,
  data/foot/  data/waybar/argvus-widget-telemetry.{jsonc,css}  `data/waybar/argvus-taskbar.{jsonc,css}`  `data/waybar/argvus-widget-telemetry.{jsonc,css}`  `data/foot/` `data/qt6ct/`, `data/hypr/hyprtoolkit.conf` और
@@ -204,7 +204,7 @@ set` and `सभी को ब्लॉक करता है' एक एकल
 argvus कॉन्फिग स्पेस और argvus कॉन्फिग बॉर्डर कमांड (और उनका ऐतिहासिक
 संगतता रैपर) अद्यतन /लेआउट; जंग उत्पन्न करता है
 डेटा/जेनरेटेड/स्पेस-प्रभावी.conf और डेटा/जेनरेटेड/बॉर्डर्स-प्रभावी.conf
-और सत्यापन और लाइव हाईप्रैक्टल एप्लिकेशन का मालिक है। .रिक्त स्थान और .सीमाएँ हैं
+और सत्यापन और लाइव हाईप्रैक्टल एप्लिकेशन का मालिक है। . रिक्त स्थान और . सीमाएँ हैं
 ये केवल प्रवासन वाले राज्य हैं और ये कभी भी सत्य का स्रोत नहीं होते हैं।
 
 एक्सेंट और जीटीके मोड स्थिति समान रस्ट सीमा का उपयोग करती है। `आर्गवस-कॉन्फ़िगरेशन का उपयोग करें
@@ -334,11 +334,11 @@ argvus config import --scope appearance appearance.json
 
 ### डगमगाती सेटिंग्स (हाइपरलैंड 0.57+)
 
-, 
+,
 
-, 
+,
 
-, 
+,
 
 ,
  wobble_mass  wobble_damping  wobble_stiffness  `effects.wobble_enabled`  `wobble_stiffness`  `wobble_damping`  `wobble_mass` `wobble_intensity` और `wobble_mesh` सीधे `hypr/state.lua` में प्रोजेक्ट होते हैं।

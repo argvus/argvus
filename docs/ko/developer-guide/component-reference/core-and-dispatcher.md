@@ -2,7 +2,7 @@
 title: 코어 및 디스패처
 description: argvus 작업 공간, 그 디스패처 및 공유 Rust 크레이트.
 ---
-`argvus`은 `de/argvus`의 Cargo 작업 공간이며 `/usr/bin/argvus`를 제공하는 패키지입니다. `argvus-cli` 크레이트는 디스패처로 첫 번째 인수를 읽고 라이브러리 명령을 프로세스 내에서 실행하거나, GTK 4 도우미 또는 개인 실행 파일을 실행하거나, 패키지된 스크립트를 실행합니다. 전체 하위 명령 목록은 [command line reference](/docs/reference/command-line/)]에 있습니다.
+`argvus`은 `de/argvus`의 Cargo 작업 공간이며 `/usr/bin/argvus`를 제공하는 패키지입니다. `argvus-cli` 크레이트는 디스패처로 첫 번째 인수를 읽고 라이브러리 명령을 프로세스 내에서 실행하거나, GTK 4 도우미 또는 개인 실행 파일을 실행하거나, 패키지된 스크립트를 실행합니다. 전체 하위 명령 목록은 [command line reference](/docs/reference/command-line/)에 있습니다.
 
 이 작업 공간에는 명령들이 공유하는 크레이트도 포함되어 있습니다:
 

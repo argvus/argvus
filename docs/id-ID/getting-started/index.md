@@ -13,4 +13,4 @@ Jika Anda hanya menginginkan jalur terpendek, lihat [Mulai Cepat](/docs/quick-st
 2. Ikuti [Instal ARGVUS](/docs/getting-started/installation/install/) untuk menambahkan repositori paket dan menginstal paket.
 3. Selesaikan dengan [Sesi pertama](/docs/getting-started/installation/first-session/) untuk memulai sesi grafis atau TTY Anda untuk pertama kalinya.
 
-Once ARGVUS is running, the [User Guide](/docs/user-guide/) covers day-to-day configuration: appearance, sessions, applications, hardware and more.
+Setelah ARGVUS berjalan, [Panduan Pengguna](/docs/user-guide/) mencakup konfigurasi sehari-hari: tampilan, sesi, aplikasi, perangkat keras, dan lainnya.

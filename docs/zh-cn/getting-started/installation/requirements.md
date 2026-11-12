@@ -11,4 +11,4 @@ ARGVUS 以 Arch Linux 为目标，并需要支持 Wayland 的图形堆栈、Hypr
 - 用户可以运行 Wayland 会话；
 - 配置软件包仓库时网络可用。
 
-虚拟机可能需要按照 [Virtual machines](/docs/user-guide/virtual-machines/)] 中描述的兼容性设置。
+虚拟机可能需要按照 [Virtual machines](/docs/user-guide/virtual-machines/) 中描述的兼容性设置。

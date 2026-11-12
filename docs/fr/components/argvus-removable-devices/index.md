@@ -9,7 +9,6 @@ Les actions disponibles sont `open`, `mount`, `unmount`, `eject`, `poweroff`, `l
 ## Menu de la barre des tâches
 
 Avec `"mode": "gui"` (le réglage par défaut du système), un clic sur l'icône de stockage de la barre des tâches ouvre un menu GTK attaché à l'ARGVUS Taskbar, comme le popup du calendrier : en dessous de la barre lorsque la barre des tâches est en haut de l'écran, et au-dessus lorsqu'elle est en bas. Chaque ligne de périphérique possède un sous-menu d'action avec uniquement les actions permises par son état.
-
 - **Pointeur :** passer le curseur ou cliquer sur une ligne de périphérique ouvre son sous-menu. Le sous-menu reste ouvert tant que le pointeur traverse les bords du menu ou quitte les menus, et il suit une autre ligne seulement après que le pointeur s'y soit arrêté brièvement, donc un chemin diagonal vers le sous-menu ne le ferme pas. Un clic en dehors des deux menus ferme la fenêtre contextuelle.
 - **Clavier :** `Up`/`Down` sélectionne une ligne, `Right`, `Enter` ou `Space` ouvre le sous-menu (ou exécute **Rafraîchir**/**Quitter**), `Enter` ou `Space` exécute l'action sélectionnée, `Left` ou `Escape` revient à la liste des périphériques, et `Escape` ferme la fenêtre contextuelle.
 

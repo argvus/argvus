@@ -1,5 +1,5 @@
 ---
-title: Services
+title: الخدمات
 description: ARGVUS نظام وخدمات المستخدم.
 ---
 

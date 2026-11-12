@@ -1,6 +1,6 @@
 ---
 title: انٹیگریشن کا نقشہ
-description: Cross-project relationships in the ARGVUS runtime.
+description: ARGVUS رن ٹائم میں کراس پروجیکٹ تعلقات۔
 ---
 
 ```text

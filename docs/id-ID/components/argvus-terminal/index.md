@@ -1,5 +1,5 @@
 ---
-title: Terminal
+title:
 description: Buka terminal ARGVUS dan profil aplikasi terminal.
 ---
 

@@ -1,5 +1,5 @@
 ---
-title: Sessions
+title: Séances
 description: Démarrer et gérer une session graphique ARGVUS.
 ---
 `argvus-session` possède les points d'entrée de session et le cycle de vie `systemd --user`. Il lance Hyprland via `argvus start`, importe l'environnement de session et gère la cible ARGVUS.

@@ -27,6 +27,6 @@ description: このサイトに記載されているARGVUSのコンポーネン�
 | スネーク | `argvus game-snake` | [スネーク](/docs/argvus-games/snake/) |
 | AI エージェント | `argvus-ai menu` | [AI エージェント](/docs/argvus-ai/) |
 
-コマンドリファレンスは [コマンドライン](/docs/reference/command-line/)] にあります。
+コマンドリファレンスは [コマンドライン](/docs/reference/command-line/) にあります。
 
-ルートBtrfsスナップショットについては [スナップショット](/docs/components/argvus-control-center/#snapshot)] を参照してください。
+ルートBtrfsスナップショットについては [スナップショット](/docs/components/argvus-control-center/#snapshot) を参照してください。

@@ -2,7 +2,7 @@
 title: Prima sessione
 description: Avvia ARGVUS dopo l'installazione.
 ---
-Per un login grafico, configura l'integrazione greetd inclusa con `argvus greeter-setup --help` e utilizza il flusso del display-manager descritto in [Sessions](/docs/user-guide/sessions/)].
+Per un login grafico, configura l'integrazione greetd inclusa con `argvus greeter-setup --help` e utilizza il flusso del display-manager descritto in [Sessions](/docs/user-guide/sessions/).
 
 Per una sessione TTY, accedi a un terminale virtuale ed esegui:
 

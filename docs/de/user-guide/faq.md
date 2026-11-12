@@ -8,11 +8,11 @@ Diese Seite beantwortet häufige Fragen darüber, was ARGVUS ist, wie es verteil
 
 ARGVUS ist eine modulare Desktop-Umgebung für Wayland und Arch Linux, aufgebaut um Hyprland. Es ist keine von Hyprland unabhängige Desktop-Umgebung; es ist eine Desktop-Erfahrung, die auf Hyprland aufgebaut und auf Arch Linux zugeschnitten ist. ARGVUS koordiniert die grafische Sitzung, Shell-Oberflächen, Einstellungsanwendungen, Erscheinungsbild, Desktop-Dienste und integrierte Tools durch eine Sammlung von Paketen.
 
-Es ist mehr als eine Hyprland-Konfiguration oder eine Sammlung persönlicher Dotfiles: Es bietet einen unterstützten Sitzungseinstiegspunkt, gemeinsame Konfiguration und Erscheinungsbildstatus sowie definierte Zuständigkeiten für Komponenten wie die Taskleiste, das Kontrollzentrum, Benachrichtigungen, Netzwerke und Bildschirme. Siehe die [Einführung](/docs/introduction/)] für einen Überblick darüber, wie die Teile zusammenpassen.
+Es ist mehr als eine Hyprland-Konfiguration oder eine Sammlung persönlicher Dotfiles: Es bietet einen unterstützten Sitzungseinstiegspunkt, gemeinsame Konfiguration und Erscheinungsbildstatus sowie definierte Zuständigkeiten für Komponenten wie die Taskleiste, das Kontrollzentrum, Benachrichtigungen, Netzwerke und Bildschirme. Siehe die [Einführung](/docs/introduction/) für einen Überblick darüber, wie die Teile zusammenpassen.
 
 ## Ist ARGVUS kostenlos?
 
-Ja. ARGVUS kann kostenlos heruntergeladen und genutzt werden, und seine Kernprojektpakete werden als freie Software unter der [GNU General Public License Version 3](https://www.gnu.org/licenses/gpl-3.0.html)] verteilt. Dies gibt den Nutzern die Freiheit, die betreffende Software gemäß den Lizenzbedingungen auszuführen, zu studieren, zu modifizieren und weiterzuverbreiten.
+Ja. ARGVUS kann kostenlos heruntergeladen und genutzt werden, und seine Kernprojektpakete werden als freie Software unter der [GNU General Public License Version 3](https://www.gnu.org/licenses/gpl-3.0.html) verteilt. Dies gibt den Nutzern die Freiheit, die betreffende Software gemäß den Lizenzbedingungen auszuführen, zu studieren, zu modifizieren und weiterzuverbreiten.
 
 ARGVUS wird als signierte Arch-Linux-Pakete verteilt. Die Software selbst hat keinen Kaufpreis, das Herunterladen von Paketen kann jedoch normale Internet- oder Hostingkosten verursachen. Von Drittanbietern bereitgestellte Komponenten und Anwendungen können eigene Lizenzen haben.
 
@@ -20,7 +20,7 @@ ARGVUS wird als signierte Arch-Linux-Pakete verteilt. Die Software selbst hat ke
 
 Nein. ARGVUS ist die Desktop-Umgebungsebene, die auf Arch Linux installiert wird. Arch Linux stellt das Betriebssystem, den Kernel, den Paketmanager und Basispakete bereit; Hyprland stellt die Wayland-Komposition bereit; ARGVUS koordiniert die Desktop-Sitzung und ihre integrierten Komponenten.
 
-Siehe [installation](/docs/getting-started/installation/)] für das unterstützte Installationsmodell und [What ARGVUS is—and is not](/docs/introduction/#what-argvus-isand-is-not)] für die architektonische Unterscheidung.
+Siehe [installation](/docs/getting-started/installation/) für das unterstützte Installationsmodell und [What ARGVUS is—and is not](/docs/introduction/#what-argvus-isand-is-not) für die architektonische Unterscheidung.
 
 ## Warum eine Desktop-Umgebung statt einer Distribution?
 
@@ -36,7 +36,7 @@ Andere Distributionen können einige der gleichen Upstream-Komponenten bereitste
 
 ## Wie installiere ich ARGVUS?
 
-Folgen Sie der [Installationsanleitung](/docs/getting-started/installation/)]. Sie erklärt die Anforderungen, wie man das signierte ARGVUS-Paket-Repository konfiguriert, wie man das Paketset installiert und wie man die erste Sitzung startet.
+Folgen Sie der [Installationsanleitung](/docs/getting-started/installation/). Sie erklärt die Anforderungen, wie man das signierte ARGVUS-Paket-Repository konfiguriert, wie man das Paketset installiert und wie man die erste Sitzung startet.
 
 ARGVUS wird als koordiniertes Set von Arch-Paketen geliefert. Das `argvus`-Paket ist das Hauptinstallationsziel und zieht die Desktop-Komponenten, die es koordiniert, mit ein.
 
@@ -51,13 +51,13 @@ argvus --control-center
 ```
 Sie können auch einen fokussierten Bereich mit `argvus control-center` öffnen, zum Beispiel `argvus control-center appearance themes`. Führen Sie `argvus control-center --help` aus, um die in der installierten Version verfügbaren Routen zu sehen.
 
-Verwenden Sie **Systemsteuerung** für den aktuellen Status und häufige Aktionen wie Lautstärke, Helligkeit, Netzwerk, Benachrichtigungen, Stromversorgung und Sitzungssteuerung. Es ist keine zweite Konfigurationsdatenbank. Siehe [Wo Dinge zu konfigurieren sind](/docs/user-guide/where-to-configure/)] und [Kontrollzentrum](/docs/components/argvus-control-center/)] für den Unterschied.
+Verwenden Sie **Systemsteuerung** für den aktuellen Status und häufige Aktionen wie Lautstärke, Helligkeit, Netzwerk, Benachrichtigungen, Stromversorgung und Sitzungssteuerung. Es ist keine zweite Konfigurationsdatenbank. Siehe [Wo Dinge zu konfigurieren sind](/docs/user-guide/where-to-configure/) und [Kontrollzentrum](/docs/components/argvus-control-center/) für den Unterschied.
 
 ## Wo werden ARGVUS-Einstellungen gespeichert?
 
 Benutzergeführte Konfiguration wird unter `$XDG_CONFIG_HOME/argvus` (normalerweise `~/.config/argvus`) gespeichert. Die kanonische logische Konfiguration wird dort gepflegt, während die abgeleiteten Verbraucherdateien für Hyprland, Waybar und das Telemetrie-Widget, GTK, Qt6ct, Quickshell, Dunst, Hyprlock, Yazi, Superfile, Terminals, Schriftarten, Effekte, Kalender, Eingabe, Tastatur, Energie und Wechselgeräte unter `~/.config/argvus/data/generated/` liegen. Dieser Baum wird nur von `argvus-config` beschrieben und aus der kanonischen Konfiguration neu erstellt; `argvus-appearance` übernimmt Designänderungen und stimmt dann nur die externen Verbraucher ab, die die kanonische Konfiguration nicht selbst lesen können. Rofi ist die Ausnahme: `argvus launcher` verpackt seine Konfiguration und Themen, und die vom Benutzer bearbeiteten Kopien liegen unter `~/.config/argvus/data/rofi/`.
 
-Bearbeiten Sie generierte Dateien nicht als dauerhafte Konfigurationsmethode. Verwenden Sie das Control Center oder den dokumentierten nativen Überschreibungspfad für die Komponente, die Sie anpassen möchten. Siehe [Konfigurationsdateien](/docs/reference/configuration-files/)] und [Konfiguration und Zustand](/docs/developer-guide/architecture/configuration-and-state/)].
+Bearbeiten Sie generierte Dateien nicht als dauerhafte Konfigurationsmethode. Verwenden Sie das Control Center oder den dokumentierten nativen Überschreibungspfad für die Komponente, die Sie anpassen möchten. Siehe [Konfigurationsdateien](/docs/reference/configuration-files/) und [Konfiguration und Zustand](/docs/developer-guide/architecture/configuration-and-state/).
 
 ## Was soll ich tun, wenn eine Änderung nicht angewendet wird?
 

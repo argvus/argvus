@@ -2,7 +2,7 @@
 title: 核心与调度器
 description: argvus 工作区，其调度器以及共享的 Rust crate。
 ---
-`argvus` 是 `de/argvus` 的 Cargo 工作区，以及提供 `/usr/bin/argvus` 的包。`argvus-cli` 这个 crate 是调度器：它读取第一个参数，然后要么在进程中运行库命令，要么运行 GTK 4 辅助程序或私有可执行文件，或者运行打包的脚本。完整的子命令列表在 [命令行参考](/docs/reference/command-line/)] 中。
+`argvus` 是 `de/argvus` 的 Cargo 工作区，以及提供 `/usr/bin/argvus` 的包。`argvus-cli` 这个 crate 是调度器：它读取第一个参数，然后要么在进程中运行库命令，要么运行 GTK 4 辅助程序或私有可执行文件，或者运行打包的脚本。完整的子命令列表在 [命令行参考](/docs/reference/command-line/) 中。
 
 该工作区还包含命令共享的 crates：
 

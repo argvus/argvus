@@ -1,5 +1,5 @@
 ---
-title: File locations
+title: Vị trí tập tin
 description: Các tệp và thư mục ARGVUS đã cài đặt quan trọng.
 ---
 

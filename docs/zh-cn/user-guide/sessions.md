@@ -15,4 +15,4 @@ argvus sessionctl status
 argvus sessionctl logs
 argvus sessionctl restart waybar
 ```
-请查看开发者 [runtime lifecycle](/docs/developer-guide/architecture/runtime-lifecycle/)] 以了解服务所有权。
+请查看开发者 [runtime lifecycle](/docs/developer-guide/architecture/runtime-lifecycle/) 以了解服务所有权。

@@ -1,5 +1,5 @@
 ---
-title: Configuration files
+title: File cấu hình
 description: Cấu hình người dùng, hệ thống, gói mặc định và ARGVUS được tạo.
 ---
 

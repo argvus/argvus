@@ -1,5 +1,5 @@
 ---
-title: Introduction
+title: Giới thiệu
 description: ARGVUS là gì, máy tính để bàn của nó hoạt động như thế nào và các thành phần của nó phù hợp ở đâu.
 ---
 

@@ -1,5 +1,5 @@
 ---
-title: Projects
+title: المشاريع
 description: منتقي المشروع وتكوين المشروعات، من خلال مشاريع argvus.
 ---
 

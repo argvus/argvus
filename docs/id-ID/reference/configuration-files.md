@@ -1,5 +1,5 @@
 ---
-title: Configuration files
+title: File konfigurasi
 description: Pengguna, sistem, paket-default, dan konfigurasi ARGVUS yang dihasilkan.
 ---
 

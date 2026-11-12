@@ -23,7 +23,7 @@ Um zur Farbe zurückzukehren, die vom ausgewählten Thema definiert ist, öffnen
 
 - Eine von Ihnen gewählte Hervorhebungsfarbe ist eine unabhängige Überschreibung. Sie bleibt bestehen, wenn Sie zu einem anderen Thema wechseln, sodass die von Ihnen gewählte Farbe gleich bleibt.
 - Ein Thema, das Sie nach **Auf Standardfarbe des Themas zurücksetzen** anwenden, übernimmt die Hervorhebungsfarbe wieder und verwendet seine eigene Standardfarbe.
-- Das Exportieren des aktiven Themas speichert die Hervorhebungsfarbe, die beim Export als Akzent der Palette des neuen Themas aktiv ist. Siehe [Importieren und Exportieren von Themen](/docs/components/argvus-themes/import-and-export/)].
+- Das Exportieren des aktiven Themas speichert die Hervorhebungsfarbe, die beim Export als Akzent der Palette des neuen Themas aktiv ist. Siehe [Importieren und Exportieren von Themen](/docs/components/argvus-themes/import-and-export/).
 
 ## Wo der Wert gespeichert ist
 

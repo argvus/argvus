@@ -33,7 +33,7 @@ argvus config display night-light apply-schedule
 
 La preferenza canonica è `/displays/night_light`, memorizzata in modo atomico da `argvus config` in `$XDG_CONFIG_HOME/argvus/config/displays.json`. Le sovrascritture volatili e il blocco dell'azione si trovano sotto `$XDG_RUNTIME_DIR/argvus/night-light/`. I file di monitor generati sono indipendenti. Non modificare i file generati per configurare questa funzione.
 
-## Runtime
+## Durata
 
 Richiede Hyprland e **hyprsunset >= 0.4.0**. La sessione avvia una volta l'upstream `hyprsunset.service`, applica lo stato salvato tramite `argvus-night-light-init.service` e valuta le pianificazioni ogni minuto tramite `argvus-night-light.timer` e `argvus-night-light.service`. Anche le modifiche di orologio e fuso orario fanno scattare la valutazione. Con la pianificazione disattivata, l'operazione periodica lascia invariato lo stato manuale. Le applicazioni ripetute interrogano l'identità/temperatura effettiva e saltano le scritture non modificate. Non è necessario ricaricare il compositore.
 

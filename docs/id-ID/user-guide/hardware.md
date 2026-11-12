@@ -1,5 +1,5 @@
 ---
-title: Hardware
+title: Perangkat Keras
 description: Konfigurasikan tampilan, konektivitas, dan daya di ARGVUS.
 ---
 

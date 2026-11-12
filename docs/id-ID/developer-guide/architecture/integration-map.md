@@ -1,5 +1,5 @@
 ---
-title: Integration map
+title: Peta Integrasi
 description: Hubungan lintas proyek dalam runtime ARGVUS.
 ---
 

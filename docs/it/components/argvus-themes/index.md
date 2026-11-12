@@ -50,4 +50,4 @@ Le pagine del tema del Centro di Controllo mostrano i loro tasti nel piè di pag
 
 - **Un tema che ho installato non appare.** Conferma che il pacchetto è installato con `pacman -Q argvus-theme-<name>`, quindi riapri il Centro di Controllo. Il pacchetto deve essere installato con `argvus-appearance` presente.
 - **Il colore di evidenziazione è cambiato dopo aver cambiato tema.** Un colore di evidenziazione personalizzato sopravvive ai cambi di tema. Usa **Ripristina al tema predefinito** per restituire al tema il suo colore originale.
-- **Un archivio di tema non è elencato per l'importazione.** Deve essere direttamente nella tua directory principale e contenere `<id>/theme.toml`. Vedi [Importazione ed esportazione dei temi](/docs/components/argvus-themes/import-and-export/)].
+- **Un archivio di tema non è elencato per l'importazione.** Deve essere direttamente nella tua directory principale e contenere `<id>/theme.toml`. Vedi [Importazione ed esportazione dei temi](/docs/components/argvus-themes/import-and-export/).

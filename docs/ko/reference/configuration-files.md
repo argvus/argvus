@@ -12,7 +12,7 @@ description: 사용자, 시스템, 패키지 기본값 및 생성된 ARGVUS 구�
 | 생성됨 | `$XDG_CONFIG_HOME/argvus/data/generated/` | `config.json`의 투영, `argvus-config`에 의해서만 작성됨. 절대 편집하지 말고, 다른 곳에 구성으로 복사하지 말며, 출처로 다시 읽지 말 것. |
 | 런타임 | `$XDG_RUNTIME_DIR/` 및 `$XDG_CACHE_HOME/` | 소켓, 잠금 및 일시적 상태. |
 
-활성 테마, 강조, 사용자 지정 배경화면 및 효과 상태는 논리적 사용자 상태입니다. 관리되는 논리 모델은 [Canonical configuration](/docs/reference/argvus-config/)]에 문서화되어 있습니다. 생성된 Hyprland, GTK, Qt6ct, Waybar, Quickshell, Dunst, Hyprlock, Yazi, Superfile, 터미널, 글꼴 및 이동식 장치 파일은 독립적인 진실 소스로 취급해서는 안 됩니다.
+활성 테마, 강조, 사용자 지정 배경화면 및 효과 상태는 논리적 사용자 상태입니다. 관리되는 논리 모델은 [Canonical configuration](/docs/reference/argvus-config/)에 문서화되어 있습니다. 생성된 Hyprland, GTK, Qt6ct, Waybar, Quickshell, Dunst, Hyprlock, Yazi, Superfile, 터미널, 글꼴 및 이동식 장치 파일은 독립적인 진실 소스로 취급해서는 안 됩니다.
 
 `argvus-config`는 또한 테마 레이어를 `data/waybar/argvus-taskbar.{jsonc,css}` 및 `data/waybar/argvus-widget-telemetry.{jsonc,css}`로 복제합니다. 이러한 복사본은 외관 변경 시 패키지 기본값으로 대체되며, 구분된 관리 블록이 다시 작성되므로 수동으로 관리되는 파일이 아니라 파생된 것으로 취급해야 합니다. `$XDG_CONFIG_HOME/<app>` 아래의 네이티브 애플리케이션 구성은 다릅니다. 이는 외관 오케스트레이터가 작성한 어댑터 대상이며, 프로젝터에 의해 작성되지 않습니다.
 

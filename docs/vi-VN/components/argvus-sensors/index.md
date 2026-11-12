@@ -1,5 +1,5 @@
 ---
-title: Temperature sensors
+title: Cảm biến nhiệt độ
 description: Tổng quan về nhiệt độ trực tiếp được hỗ trợ bởi lm_sensors JSON.
 ---
 

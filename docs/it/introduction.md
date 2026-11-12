@@ -23,7 +23,7 @@ taskbar · control panel · notifications · wallpaper · idle · clipboard
 ```
 `argvus-session` gestisce il ciclo di vita della sessione e la configurazione dell'ambiente. Non implementa tutte le funzionalità del desktop: ogni componente mantiene la proprietà dei propri comandi, configurazioni e payload dei servizi.
 
-Per l'installazione e l'avvio, vedere [Installation](/docs/getting-started/installation/)] e [Sessions](/docs/user-guide/sessions/)]. Per la gestione dei servizi, vedere il [runtime lifecycle](/docs/developer-guide/architecture/runtime-lifecycle/)] per sviluppatori.
+Per l'installazione e l'avvio, vedere [Installation](/docs/getting-started/installation/) e [Sessions](/docs/user-guide/sessions/). Per la gestione dei servizi, vedere il [runtime lifecycle](/docs/developer-guide/architecture/runtime-lifecycle/) per sviluppatori.
 
 ## Livelli principali
 
@@ -55,7 +55,7 @@ Vedi [Hardware](/docs/user-guide/hardware/), [Privacy e sicurezza](/docs/user-gu
 
 Preferenze di tema, accento, sfondo, font ed effetti sono memorizzate come stato logico sotto `$XDG_CONFIG_HOME/argvus` (normalmente `~/.config/argvus`). `argvus-config` è l'unico componente che scrive su `data/generated/`, dove proietta i file dei consumatori per Hyprland, GTK, Qt6ct, Waybar, Quickshell, Dunst, notifiche, la schermata di blocco, Yazi, Superfile e terminali. Rofi è l'eccezione: `argvus launcher` distribuisce la sua configurazione e i temi come file semplici, e le copie modificate dall'utente risiedono sotto `data/rofi/`. Gli strumenti di supporto all'aspetto confermano il cambiamento di stato e poi riconciliano le applicazioni esterne; non scrivono mai l'albero generato.
 
-La directory generata non è la fonte della verità. Vedi [Appearance](/docs/user-guide/appearance/)] e [configuration and state](/docs/developer-guide/architecture/configuration-and-state/)].
+La directory generata non è la fonte della verità. Vedi [Appearance](/docs/user-guide/appearance/) e [configuration and state](/docs/developer-guide/architecture/configuration-and-state/).
 
 Il sistema visivo controlla anche il layout. La modalità Sticky è compatta e quadrata; la modalità Spaced utilizza spazi più ampi tra le finestre, angoli arrotondati e margini più larghi attorno alla barra delle applicazioni e alla shell. La barra delle applicazioni predefinita è sul bordo superiore, ma supporta il posizionamento in alto/ in basso tramite lo stato di layout condiviso. Gli effetti controllano trasparenza, sfocatura, ombre e animazioni attraverso il compositor e le superfici del desktop.
 
@@ -69,16 +69,16 @@ ARGVUS è il livello dell'ambiente desktop sopra Arch Linux. Arch Linux fornisce
 
 ARGVUS non deve sostituire ogni applicazione. Integra applicazioni selezionate upstream quando questa è la scelta più affidabile, mantenendo al contempo il comportamento e la configurazione coerenti su tutto il desktop.
 
-Il nome combina due idee. *ARGV*, da *argument vector*, è l'elenco degli argomenti che un programma riceve, e riflette l'obiettivo di far interagire il desktop principalmente tramite tastiera, comandi e scorciatoie. *US*, da *User System*, riflette l'obiettivo di un desktop centrato sull'utente. Per la spiegazione completa e l'audio della pronuncia, vedere [About ARGVUS](/about/)].
+Il nome combina due idee. *ARGV*, da *argument vector*, è l'elenco degli argomenti che un programma riceve, e riflette l'obiettivo di far interagire il desktop principalmente tramite tastiera, comandi e scorciatoie. *US*, da *User System*, riflette l'obiettivo di un desktop centrato sull'utente. Per la spiegazione completa e l'audio della pronuncia, vedere [About ARGVUS](/about/).
 
-Per i confini dell'implementazione e la proprietà dei pacchetti, vedere la panoramica dell'architettura dello sviluppatore [architecture overview](/docs/developer-guide/architecture/overview/)] e i [ruoli del repository](/docs/developer-guide/architecture/repository-roles/)].
+Per i confini dell'implementazione e la proprietà dei pacchetti, vedere la panoramica dell'architettura dello sviluppatore [architecture overview](/docs/developer-guide/architecture/overview/) e i [ruoli del repository](/docs/developer-guide/architecture/repository-roles/).
 
 ## Continuare per obiettivo
 
-- [Leggere le FAQ](/docs/user-guide/faq/)].
-- [Installare ARGVUS](/docs/getting-started/installation/)].
-- [Avviare una sessione grafica o TTY](/docs/user-guide/sessions/)].
-- [Configurare temi e sfondi](/docs/user-guide/appearance/)].
-- [Usare la barra delle applicazioni e il Pannello di Controllo](/docs/user-guide/desktop/)].
-- [Comprendere comandi, percorsi e servizi](/docs/reference/)].
-- [Studiare l'architettura](/docs/developer-guide/architecture/overview/)].
+- [Leggere le FAQ](/docs/user-guide/faq/).
+- [Installare ARGVUS](/docs/getting-started/installation/).
+- [Avviare una sessione grafica o TTY](/docs/user-guide/sessions/).
+- [Configurare temi e sfondi](/docs/user-guide/appearance/).
+- [Usare la barra delle applicazioni e il Pannello di Controllo](/docs/user-guide/desktop/).
+- [Comprendere comandi, percorsi e servizi](/docs/reference/).
+- [Studiare l'architettura](/docs/developer-guide/architecture/overview/).

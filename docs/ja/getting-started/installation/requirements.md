@@ -11,4 +11,4 @@ ARGVUS は Arch Linux を対象としており、Wayland 対応のグラフィ�
 - ユーザーが Wayland セッションを実行できること；
 - パッケージリポジトリが設定されている場合にネットワークが利用可能であること。
 
-仮想マシンでは [Virtual machines](/docs/user-guide/virtual-machines/)] に記載された互換性設定が必要な場合があります。
+仮想マシンでは [Virtual machines](/docs/user-guide/virtual-machines/) に記載された互換性設定が必要な場合があります。

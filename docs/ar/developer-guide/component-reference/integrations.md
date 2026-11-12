@@ -1,5 +1,5 @@
 ---
-title: Integrations
+title: التكامل
 description: تكاملات المكونات وتسجيل الدخول والقفل والبوابة.
 ---
 

@@ -34,7 +34,7 @@ journalctl --user -u argvus-session.target -u argvus-session-prepare.service -b 
 
 `greeter.vt-switch-returned active=<tty>`는 logind의 switch 호출이 반환될 때 활성 VT를 기록합니다. 그림 시간 초과도 오류에 `active-vt=<tty>`를 기록합니다. 이것들은 스냅샷일 뿐 완료된 DRM 인계 증거는 아닙니다.
 
-비교를 위해, 작업을 저장하고 동일한 기계, 테마 및 모니터 설정에서 버전별로 다섯 번 로그인하세요. 다음 로그아웃 전에 `/run/argvus-greeter/timing.log`, 세션 로그 및 부팅 저널을 `/tmp/argvus/` 아래의 별도 샘플 디렉토리에 복사하세요; 다음 그리터 실행은 그 타이밍 로그를 대체합니다. 각 샘플과 함께 부팅 ID를 기록하고 해당 부팅 내에서만 타임스탬프를 비교하세요. 인증에서 첫 프레임 전달, 세션 래퍼 진입, 최종 Hyprland 실행 및 로딩 스피너 정지까지를 측정하세요. 인증에서 스피너 정지까지의 중앙값과 최악의 시간을 비교하고, 검은 화면, 깜박임 또는 멈춘 스피너가 있는지 시각적으로 확인하세요. 데스크탑-서피스 지속 시간만으로는 끝까지 걸리는 로그인 시간이 아닙니다. 실패 및 복구 테스트는 작업 중이 아닌 임시 세션에서 반복하세요. 저장되지 않은 작업이 있는 세션을 종료하지 마세요. 
+비교를 위해, 작업을 저장하고 동일한 기계, 테마 및 모니터 설정에서 버전별로 다섯 번 로그인하세요. 다음 로그아웃 전에 `/run/argvus-greeter/timing.log`, 세션 로그 및 부팅 저널을 `/tmp/argvus/` 아래의 별도 샘플 디렉토리에 복사하세요; 다음 그리터 실행은 그 타이밍 로그를 대체합니다. 각 샘플과 함께 부팅 ID를 기록하고 해당 부팅 내에서만 타임스탬프를 비교하세요. 인증에서 첫 프레임 전달, 세션 래퍼 진입, 최종 Hyprland 실행 및 로딩 스피너 정지까지를 측정하세요. 인증에서 스피너 정지까지의 중앙값과 최악의 시간을 비교하고, 검은 화면, 깜박임 또는 멈춘 스피너가 있는지 시각적으로 확인하세요. 데스크탑-서피스 지속 시간만으로는 끝까지 걸리는 로그인 시간이 아닙니다. 실패 및 복구 테스트는 작업 중이 아닌 임시 세션에서 반복하세요. 저장되지 않은 작업이 있는 세션을 종료하지 마세요.
 
 각 시작 단계는 세션 로그에 지속 시간을 기록합니다. 마지막 로그인의 단계를 확인하려면, 가장 느린 것부터:
 
@@ -54,4 +54,4 @@ grep monotonic_ns ~/.local/state/argvus/session.log | tail -5
 
 외관 변경, 테마 파일 변경, 새 악센트 추가 또는 이전 시작 스탬프 마이그레이션 후에는 `project.theme-switch` 또는 0이 아닌 `prepare.startup-theme` 항목이 예상됩니다. 동일한 파일을 재설치하면 콘텐츠 기반 시작 캐시가 유지됩니다. 모든 로그인 시 나타나면, 실체화된 테마 파일이 누락된 것이므로 `argvus theme-switch <theme>`를 한 번 실행하십시오.
 
-세션 로그는 `$XDG_STATE_HOME/argvus/session.log`(보통 `~/.local/state/argvus/session.log`) 아래에 보관됩니다. 사용자 Hyprland 오버라이드를 변경한 후에는 로그아웃 후 다시 로그인하여 세션 진입점이 검증되고 다시 선택되도록 하십시오. 일반적인 시작 흐름은 [Graphical session](/docs/argvus-session/graphical-session/)]를 참조하십시오.
+세션 로그는 `$XDG_STATE_HOME/argvus/session.log`(보통 `~/.local/state/argvus/session.log`) 아래에 보관됩니다. 사용자 Hyprland 오버라이드를 변경한 후에는 로그아웃 후 다시 로그인하여 세션 진입점이 검증되고 다시 선택되도록 하십시오. 일반적인 시작 흐름은 [Graphical session](/docs/argvus-session/graphical-session/)를 참조하십시오.

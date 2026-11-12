@@ -181,7 +181,7 @@ argvus --setup --copy <app> --force
 ```
 ## Hyprland 用户覆盖
 
-有关完整的 Hyprland 覆盖指南，包括完整本地配置与增量 ARGVUS 片段之间的区别，请参见 [Hyprland overrides](/docs/argvus-hyprland/hyprland-overrides/)].
+有关完整的 Hyprland 覆盖指南，包括完整本地配置与增量 ARGVUS 片段之间的区别，请参见 [Hyprland overrides](/docs/argvus-hyprland/hyprland-overrides/).
 
 ```sh
 mkdir -p ~/.config/argvus/data/hypr

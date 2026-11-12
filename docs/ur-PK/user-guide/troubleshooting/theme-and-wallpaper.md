@@ -3,9 +3,9 @@ title: تھیم اور وال پیپر کی خرابیوں کا سراغ لگا�
 description: تھیم کی تشہیر اور پیدا ہونے والی ظاہری فائلوں کی تشخیص کریں۔
 ---
 
-$XDG_CONFIG_HOME/argvus/config.json میں کینونیکل `appearance` سیکشن چیک کریں، پھر  `$XDG_CONFIG_HOME/argvus/config.json` `$XDG_CONFIG_HOME/argvus/data/generated` کے تحت تیار کردہ فائلوں کا معائنہ کریں۔ Legacy dot-files صرف منتقلی کے ان پٹ ہیں۔
+$XDG_CONFIG_HOME/argvus/config.json میں کینونیکل `appearance ` سیکشن چیک کریں، پھر  `$XDG_CONFIG_HOME/argvus/config.json ` `$XDG_CONFIG_HOME/argvus/data/generated` کے تحت تیار کردہ فائلوں کا معائنہ کریں۔ Legacy dot-files صرف منتقلی کے ان پٹ ہیں۔
 
-`argvus-config` `data/generated/` کے نیچے واحد مصنف ہے۔ ٹوٹے ہوئے کو بحال کرنے کے لیے
+`argvus-config ` ` data/generated/` کے نیچے واحد مصنف ہے۔ ٹوٹے ہوئے کو بحال کرنے کے لیے
 تھیم یا وال پیپر، کیننیکل دستاویز سے پوری نسل کو دوبارہ بنائیں اور
 پیدا کردہ صارفین کو براہ راست ترمیم کرنے کے بجائے نتیجہ کا اطلاق کریں:
 
@@ -15,10 +15,10 @@ argvus config apply
 argvus sessionctl reload
 ```
 
-`argvus theme-switch` (جو `argvus config theme-apply` چلاتا ہے) اور `argvus config accent`
+`argvus theme-switch ` (جو ` argvus config theme-apply ` چلاتا ہے) اور ` argvus config accent`
 آرکیسٹریٹر ہیں: وہ توثیق کرتے ہیں، تالا لگاتے ہیں، سپلیش دکھاتے ہیں، اس کے ذریعے کمٹ کرتے ہیں۔
 `argvus-config` اور پھر ان بیرونی صارفین سے صلح کریں جو پڑھ نہیں سکتے
-`config.json`۔ وہ کبھی بھی `data/generated/` نہیں لکھتے، اور تھیم کا لین دین ہوتا ہے۔
+`config.json `۔ وہ کبھی بھی ` data/generated/` نہیں لکھتے، اور تھیم کا لین دین ہوتا ہے۔
 GTK، اسٹوریج یا `mode.css` فائلوں کو علیحدہ اسکرپٹ کے ذریعے نہ لکھیں۔
 `argvus config accent --apply` استعمال کریں صرف لہجے کی مصالحت کو دوبارہ چلانے کے لیے۔
 
@@ -29,7 +29,7 @@ cat "${XDG_CONFIG_HOME:-$HOME/.config}/argvus/data/generated/theme/current/build
 argvus config theme-runtime consumers
 ```
 
-ہر تھیم والی فائل بلڈ سے آتی ہے: ایک تھیم جو انسٹال نہیں ہے ( `theme.toml` `/usr/share/argvus/themes/` یا `~/.local/share/argvus/themes/` کے تحت کوئی theme.toml نہیں ہے) یا رینڈر نہیں کیا جاتا ہے، اور پچھلا تھیم برقرار رہتا ہے۔ `argvus theme check DIRECTORY` ہر رینڈر کی غلطی کی ٹیمپلیٹ اور لائن دکھاتا ہے۔ ایک Waybar بار اپنے JSONC میں صرف `reload_style_on_change` کے ساتھ اپنے رنگوں کو دوبارہ لوڈ کرتا ہے۔ اگر کوئی سوئچ پھنسا لگتا ہے، تو چیک کریں کہ آیا یہ اب بھی چل رہا ہے۔ یہ اپنے تالے کے ساتھ `theme-switch.active` میں خود کو ریکارڈ کرتا ہے:
+ہر تھیم والی فائل بلڈ سے آتی ہے: ایک تھیم جو انسٹال نہیں ہے (`theme.toml ` `/usr/share/argvus/themes/` یا `~/.local/share/argvus/themes/` کے تحت کوئی theme.toml نہیں ہے) یا رینڈر نہیں کیا جاتا ہے، اور پچھلا تھیم برقرار رہتا ہے۔ ` argvus theme check DIRECTORY ` ہر رینڈر کی غلطی کی ٹیمپلیٹ اور لائن دکھاتا ہے۔ ایک Waybar بار اپنے JSONC میں صرف ` reload_style_on_change ` کے ساتھ اپنے رنگوں کو دوبارہ لوڈ کرتا ہے۔ اگر کوئی سوئچ پھنسا لگتا ہے، تو چیک کریں کہ آیا یہ اب بھی چل رہا ہے۔ یہ اپنے تالے کے ساتھ ` theme-switch.active` میں خود کو ریکارڈ کرتا ہے:
 
 ```sh
 cat "${XDG_CACHE_HOME:-$HOME/.cache}/argvus/theme-switch.active"
@@ -54,7 +54,7 @@ sudo argvus greeter-setup --sync-themes
 ```
 
 وہ فائل پیشگی آرکیسٹریٹر کے ذریعہ پہلے سے تصدیق کے لئے شائع کی گئی ہے۔
-`data/generated/` سے باہر رہتا ہے، لہذا ایک سادہ `argvus config apply` نہیں کرتا
+`data/generated/` سے باہر رہتا ہے، لہذا ایک سادہ ` argvus config apply` نہیں کرتا
 اسے تازہ کریں.
 
 اگر گریٹر `Invalid color name: 'null'` کٹی کیشے میں رپورٹ کرتا ہے، تو اپ ڈیٹ کریں
@@ -80,7 +80,7 @@ argvus terminal --print-config
 نتیجہ
 
 اگر ونڈو کی سرحدیں پچھلے تھیم کا رنگ رکھتی ہیں، تو Hyprland's Lua میں ترمیم نہ کریں۔
-دستی طور پر فائل کریں. تھیم اور لہجے کی تبدیلیوں کا تخمینہ `config.json` سے لگایا جاتا ہے۔`argvus sessionctl reload` Hyprland کو دوبارہ لوڈ کرتا ہے اور فعال، غیر فعال کو دوبارہ لاگو کرتا ہے،
+دستی طور پر فائل کریں. تھیم اور لہجے کی تبدیلیوں کا تخمینہ `config.json ` سے لگایا جاتا ہے۔` argvus sessionctl reload` Hyprland کو دوبارہ لوڈ کرتا ہے اور فعال، غیر فعال کو دوبارہ لاگو کرتا ہے،
 اور سیشن لائف سائیکل کے ذریعے سرحدی رنگوں کو گروپ کریں:
 
 ```text

@@ -2,7 +2,7 @@
 title: Nucleo e dispatcher
 description: L'area di lavoro argvus, il suo dispatcher e i crate Rust condivisi.
 ---
-`argvus` è l'ambiente Cargo in `de/argvus` e il pacchetto che fornisce `/usr/bin/argvus`. La crate `argvus-cli` è il dispatcher: legge il primo argomento ed esegue un comando di libreria in-process, esegue un helper GTK 4 o un eseguibile privato, oppure esegue uno script impacchettato. L'elenco completo dei sottocomandi è nella [riferimento alla linea di comando](/docs/reference/command-line/)].
+`argvus` è l'ambiente Cargo in `de/argvus` e il pacchetto che fornisce `/usr/bin/argvus`. La crate `argvus-cli` è il dispatcher: legge il primo argomento ed esegue un comando di libreria in-process, esegue un helper GTK 4 o un eseguibile privato, oppure esegue uno script impacchettato. L'elenco completo dei sottocomandi è nella [riferimento alla linea di comando](/docs/reference/command-line/).
 
 L'ambiente contiene anche le crate che i comandi condividono:
 

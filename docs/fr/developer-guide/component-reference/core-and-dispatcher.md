@@ -2,7 +2,7 @@
 title: Noyau et répartiteur
 description: L'espace de travail argvus, son répartiteur et les crates Rust partagées.
 ---
-`argvus` est l'espace de travail Cargo à `de/argvus` et le paquet qui fournit `/usr/bin/argvus`. La crate `argvus-cli` est le répartiteur : elle lit le premier argument et exécute soit une commande de bibliothèque en processus, soit un assistant GTK 4 ou un exécutable privé, soit un script empaqueté. La liste complète des sous-commandes se trouve dans la [référence de ligne de commande](/docs/reference/command-line/)].
+`argvus` est l'espace de travail Cargo à `de/argvus` et le paquet qui fournit `/usr/bin/argvus`. La crate `argvus-cli` est le répartiteur : elle lit le premier argument et exécute soit une commande de bibliothèque en processus, soit un assistant GTK 4 ou un exécutable privé, soit un script empaqueté. La liste complète des sous-commandes se trouve dans la [référence de ligne de commande](/docs/reference/command-line/).
 
 L'espace de travail contient également les crates partagées par les commandes :
 

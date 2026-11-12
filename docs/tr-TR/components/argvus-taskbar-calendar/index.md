@@ -39,7 +39,6 @@ Etkinlikler varsayılan olarak kapalıdır. **Ayarlar > Etkinlikler** altındaki
 seçim durum dizininde tutulur ve ayrıca etkinleştirilir ve başlatılır
 Hatırlatıcıları gösteren `argvus-taskbar-calendar.service`. Bunları kapatmak şunları durdurur:
 hizmet.
-
 - **+ OLAY** (veya `n`) seçilen güne ait düzenleyiciyi açar. Etkinlikler oluşturulabilir ve
   bugünden itibaren değişti; geçmiş bir güne ait bir etkinlik hâlâ açılıp silinebilir.
 - Yeni bir etkinlik saat 09:00'da başlar ve Ayarlar'da belirlenen varsayılan süre kadar sürer. Taşıma

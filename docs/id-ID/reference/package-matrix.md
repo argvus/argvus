@@ -1,6 +1,6 @@
 ---
-title: Package matrix
-description: ARGVUS package responsibilities.
+title: Matriks paket
+description: tanggung jawab paket ARGVUS.
 ---
 
 | Paket | Tanggung jawab |

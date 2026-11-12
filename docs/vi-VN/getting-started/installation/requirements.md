@@ -1,5 +1,5 @@
 ---
-title: Requirements
+title: Yêu cầu
 description: Yêu cầu hệ thống và điều kiện tiên quyết cho ARGVUS.
 ---
 

@@ -33,7 +33,6 @@ argvus taskbar-calendar service
 ## Veranstaltungen und Erinnerungen
 
 Veranstaltungen sind standardmäßig ausgeschaltet. Schalten Sie sie im Popup unter **Einstellungen > Veranstaltungen** ein; die Auswahl wird im Zustandsverzeichnis gespeichert und aktiviert außerdem `argvus-taskbar-calendar.service`, das die Erinnerungen anzeigt. Das Ausschalten stoppt den Dienst.
-
 - **+ VERANSTALTUNG** (oder `n`) öffnet den Editor für den ausgewählten Tag. Veranstaltungen können ab heute erstellt und geändert werden; eine Veranstaltung eines vergangenen Tages kann weiterhin geöffnet und gelöscht werden.
 - Eine neue Veranstaltung beginnt um 09:00 Uhr und dauert die in den Einstellungen festgelegte Standardlänge. Das Verschieben der Startzeit behält die Länge bei; eine Endzeit, die vor der Startzeit liegt, bedeutet, dass die Veranstaltung am nächsten Tag endet.
 - Jede Veranstaltung zeigt beim Start eine Benachrichtigung mit Ton, unabhängig davon, was in den Kästchen **Erinnerung** und **Wiederholung** steht. Eine Veranstaltung, die nach ihrem Start gespeichert wird (z. B. eine ganztägige Veranstaltung, die während des Tages erstellt wird), benachrichtigt innerhalb von 30 Sekunden.
@@ -45,10 +44,10 @@ Veranstaltungen sind standardmäßig ausgeschaltet. Schalten Sie sie im Popup un
 - Ein Tag zeigt einen Punkt (`•`), wenn an diesem Tag eine Veranstaltung stattfindet, einschließlich jedes Tages einer über Nacht dauernden oder mehrtägigen Veranstaltung. Die Tage folgen der lokalen Zeitzone.
 - Lokale Veranstaltungen werden automatisch 10 Minuten nach Ende entfernt. Wenn eine Veranstaltung bereits beendet ist, wenn sie gespeichert wird, bleibt sie mindestens 10 Minuten nach dem Speichern verfügbar.
 
-Importierte `.ics`-Dateien behalten ihre Daten, Zeitzonen (`TZID`) und Alarme (`VALARM`). 
-Importierte Ereignisse benachrichtigen außerdem beim Beginn, neben ihren eigenen Alarmen. Wiederkehrende Ereignisse (`RRULE`) 
-werden gespeichert und exportiert, aber nur ihr erstes Vorkommen wird angezeigt und erinnert. 
-Nach einem Paket-Update beendet der Erinnerungsdienst seine Arbeit und systemd startet die neue Version 
+Importierte `.ics`-Dateien behalten ihre Daten, Zeitzonen (`TZID`) und Alarme (`VALARM`).
+Importierte Ereignisse benachrichtigen außerdem beim Beginn, neben ihren eigenen Alarmen. Wiederkehrende Ereignisse (`RRULE`)
+werden gespeichert und exportiert, aber nur ihr erstes Vorkommen wird angezeigt und erinnert.
+Nach einem Paket-Update beendet der Erinnerungsdienst seine Arbeit und systemd startet die neue Version
 innerhalb von 30 Sekunden. `sync` meldet nur die konfigurierten entfernten Kalender; CalDAV-Synchronisation ist noch nicht implementiert.
 
 ## Pfade

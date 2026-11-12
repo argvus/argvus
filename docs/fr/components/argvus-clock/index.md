@@ -29,12 +29,12 @@ Clavier : **Ctrl+1** à **Ctrl+5** pour changer de page, **Ctrl+N** pour créer 
 
 Les alertes jouent un vrai son jusqu'à ce que vous y répondiez :
 
-- Sons : **Carillon** (par défaut) et **Balise**, expédiés dans `/usr/share/argvus/sounds/`.  
-- **Volume de l'alarme** (10 à 100, par défaut 80) et **Écouter le son de l'alarme** se trouvent dans les paramètres ; l'éditeur dispose d'un bouton de test pour le son choisi.  
-- Une alarme qui sonne affiche une carte en haut de l'écran, au-dessus des autres fenêtres, et une notification, toutes deux avec **Snooze** et **Ignorer**. Avec la carte en focus, **Entrée** ignore et **S** reporte.  
-- Le rappel sonne à nouveau après la durée de snooze de l'alarme (1 à 60 minutes, par défaut 10).  
-- Une alarme qui n'est pas répondue s'arrête après **Arrêter de sonner après** (5, 10, 15 ou 30 minutes, par défaut 10) et laisse une notification.  
-- Deux alarmes qui sonnent en même temps sont toutes deux listées ; la seconde n’éteint jamais la première.  
+- Sons : **Carillon** (par défaut) et **Balise**, expédiés dans `/usr/share/argvus/sounds/`.
+- **Volume de l'alarme** (10 à 100, par défaut 80) et **Écouter le son de l'alarme** se trouvent dans les paramètres ; l'éditeur dispose d'un bouton de test pour le son choisi.
+- Une alarme qui sonne affiche une carte en haut de l'écran, au-dessus des autres fenêtres, et une notification, toutes deux avec **Snooze** et **Ignorer**. Avec la carte en focus, **Entrée** ignore et **S** reporte.
+- Le rappel sonne à nouveau après la durée de snooze de l'alarme (1 à 60 minutes, par défaut 10).
+- Une alarme qui n'est pas répondue s'arrête après **Arrêter de sonner après** (5, 10, 15 ou 30 minutes, par défaut 10) et laisse une notification.
+- Deux alarmes qui sonnent en même temps sont toutes deux listées ; la seconde n’éteint jamais la première.
 - Si le son ne peut pas être joué, la carte et la fenêtre l’indiquent avec l’erreur, et l’erreur est enregistrée. ARGVUS Clock ne signale jamais un son qui n’a pas été joué.
 
 La lecture utilise le support multimédia de GTK (GStreamer), donc elle fonctionne avec PipeWire, PulseAudio ou ALSA. Le paquet dépend de `gst-plugins-base` (Ogg Vorbis) et `gst-plugins-good` (sortie audio).

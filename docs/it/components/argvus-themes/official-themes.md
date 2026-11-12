@@ -22,7 +22,7 @@ Ogni tema funziona in due modalità. La modalità è indipendente dal tema: camb
 | Modalità | Spazi tra le finestre | Margine esterno | Arrotondamento finestre | Margine taskbar e shell |
 | --- | ---: | ---: | ---: | ---: |
 | Sticky | `2` | `0` | `0` | vicino al bordo |
-| Spaced | `10` | `18` | `4` | `18` |
+| Distanziato | `10` | `18` | `4` | `18` |
 
 Per cambiare modalità, apri **Centro di Controllo → Aspetto → Modalità** e scegli **Sticky** o **Spaced**. Le tue regolazioni manuali di questi valori di layout rimangono attive fino alla prossima selezione esplicita del tema.
 
@@ -30,20 +30,20 @@ Per cambiare modalità, apri **Centro di Controllo → Aspetto → Modalità** e
 
 | Tema | Pacchetto | Evidenziazione predefinita |
 | --- | --- | --- |
-| One Dark | `argvus-theme-one-dark` | `#61AFEF` |
+| Uno scuro | `argvus-theme-one-dark` | `#61AFEF` |
 | Dracula | `argvus-theme-dracula` | `#BD93F9` |
-| Silver Dark | `argvus-theme-silver-dark` | `#595959` |
-| Slate Dark | `argvus-theme-slate-dark` | `#7391A5` |
-| Universe | `argvus-theme-universe` | `#EEEEEE` |
-| Gruvbox High Dark | `argvus-theme-gruvbox-high-dark` | `#D79921` |
-| Gruvbox Dark | `argvus-theme-gruvbox-dark` | `#D4BE98` |
-| Rosé Pine | `argvus-theme-rose-pine` | `#C4A7E7` |
-| Tokyo Night | `argvus-theme-tokyo-night` | `#7AA2F7` |
-| Solitude | `argvus-theme-solitude` | `#798186` |
-| Sunset | `argvus-theme-sunset` | `#E2BE8A` |
-| Matrix | `argvus-theme-matrix` | `#82FB9C` |
-| Monokai Dark | `argvus-theme-monokai-dark` | `#78DCE8` |
-| Lady Mist | `argvus-theme-lady-mist` | `#354B78` |
+| Argento Scuro | `argvus-theme-silver-dark` | `#595959` |
+| Ardesia scura | `argvus-theme-slate-dark` | `#7391A5` |
+| Universo | `argvus-theme-universe` | `#EEEEEE` |
+| Gruvbox Alto Scuro | `argvus-theme-gruvbox-high-dark` | `#D79921` |
+| Gruvbox Scuro | `argvus-theme-gruvbox-dark` | `#D4BE98` |
+| Pino Rosato | `argvus-theme-rose-pine` | `#C4A7E7` |
+| Notte di Tokio | `argvus-theme-tokyo-night` | `#7AA2F7` |
+| Solitudine | `argvus-theme-solitude` | `#798186` |
+| Tramonto | `argvus-theme-sunset` | `#E2BE8A` |
+| Matrice | `argvus-theme-matrix` | `#82FB9C` |
+| Monokai scuro | `argvus-theme-monokai-dark` | `#78DCE8` |
+| Signora Nebbia | `argvus-theme-lady-mist` | `#354B78` |
 
 ## Temi chiari
 

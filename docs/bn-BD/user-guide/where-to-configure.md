@@ -37,4 +37,4 @@ description: সাধারণ ARGVUS সেটিংস খোঁজার জ
 
 ## সম্পর্কিত- [প্রথম কনফিগারেশন](/docs/user-guide/getting-started/)
 - [কন্ট্রোল সেন্টার](/docs/components/argvus-control-center/)
-- Control Panel
+- কন্ট্রোল প্যানেল

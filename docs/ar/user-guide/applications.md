@@ -1,5 +1,5 @@
 ---
-title: Applications
+title: التطبيقات
 description: استخدم التطبيقات المدمجة في ARGVUS.
 ---
 

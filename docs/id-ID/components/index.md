@@ -1,5 +1,5 @@
 ---
-title: Components
+title: Komponen
 description: Komponen ARGVUS yang didokumentasikan di situs ini, dan di mana catatan pengembangnya berada.
 ---
 

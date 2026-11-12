@@ -1,5 +1,5 @@
 ---
-title: Troubleshooting
+title: استكشاف الأخطاء وإصلاحها
 description: تشخيص مشكلات تثبيت ARGVUS الشائعة ووقت التشغيل.
 ---
 

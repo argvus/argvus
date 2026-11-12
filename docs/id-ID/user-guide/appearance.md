@@ -1,5 +1,5 @@
 ---
-title: Appearance
+title: Penampilan
 description: Konfigurasikan bahasa visual yang digunakan bersama oleh komponen ARGVUS.
 ---
 

@@ -2,7 +2,7 @@
 title: Thèmes officiels
 description: Le catalogue officiel des thèmes ARGVUS, les couleurs de surbrillance par défaut, et comment choisir un thème ainsi que son mode Collant ou Espacé.
 ---
-Cette page répertorie les thèmes officiels disponibles sous forme de packages de thèmes et explique comment en sélectionner un. Pour les installer, voir [Installer des thèmes](/docs/components/argvus-themes/installing-themes/). 
+Cette page répertorie les thèmes officiels disponibles sous forme de packages de thèmes et explique comment en sélectionner un. Pour les installer, voir [Installer des thèmes](/docs/components/argvus-themes/installing-themes/).
 
 ## Sélectionner un thème
 
@@ -30,20 +30,20 @@ Pour changer le mode, ouvrez **Centre de contrôle → Apparence → Mode** et c
 
 | Thème | Package | Surbrillance par défaut |
 | --- | --- | --- |
-| One Dark | `argvus-theme-one-dark` | `#61AFEF` |
+| Un | sombre | `argvus-theme-one-dark` | `#61AFEF` |
 | Dracula | `argvus-theme-dracula` | `#BD93F9` |
-| Silver Dark | `argvus-theme-silver-dark` | `#595959` |
-| Slate Dark | `argvus-theme-slate-dark` | `#7391A5` |
-| Universe | `argvus-theme-universe` | `#EEEEEE` |
-| Gruvbox High Dark | `argvus-theme-gruvbox-high-dark` | `#D79921` |
-| Gruvbox Dark | `argvus-theme-gruvbox-dark` | `#D4BE98` |
-| Rosé Pine | `argvus-theme-rose-pine` | `#C4A7E7` |
-| Tokyo Night | `argvus-theme-tokyo-night` | `#7AA2F7` |
+| Argent foncé | `argvus-theme-silver-dark` | `#595959` |
+| Ardoise foncée | `argvus-theme-slate-dark` | `#7391A5` |
+| Univers | `argvus-theme-universe` | `#EEEEEE` |
+| Gruvbox Haute Sombre | `argvus-theme-gruvbox-high-dark` | `#D79921` |
+| Gruvbox Sombre | `argvus-theme-gruvbox-dark` | `#D4BE98` |
+| Pin Rosé | `argvus-theme-rose-pine` | `#C4A7E7` |
+| Nuit de Tokyo | `argvus-theme-tokyo-night` | `#7AA2F7` |
 | Solitude | `argvus-theme-solitude` | `#798186` |
-| Sunset | `argvus-theme-sunset` | `#E2BE8A` |
-| Matrix | `argvus-theme-matrix` | `#82FB9C` |
-| Monokai Dark | `argvus-theme-monokai-dark` | `#78DCE8` |
-| Lady Mist | `argvus-theme-lady-mist` | `#354B78` |
+| Coucher de soleil | `argvus-theme-sunset` | `#E2BE8A` |
+| Matrice | `argvus-theme-matrix` | `#82FB9C` |
+| Monokai Sombre | `argvus-theme-monokai-dark` | `#78DCE8` |
+| Dame Brume | `argvus-theme-lady-mist` | `#354B78` |
 
 ## Thèmes clairs
 
@@ -54,7 +54,7 @@ Pour changer le mode, ouvrez **Centre de contrôle → Apparence → Mode** et c
 | Nord Clair | `argvus-theme-nord-light` | `#5E81AC` |
 | One Clair | `argvus-theme-one-light` | `#4078F2` |
 | Everforest Clair | `argvus-theme-everforest-light` | `#3A94C5` |
-| Catppuccin Latte | `argvus-theme-catppuccin-latte` | `#1E66F5` |
+| Latte à la catpuccine | `argvus-theme-catppuccin-latte` | `#1E66F5` |
 | Gruvbox Clair | `argvus-theme-gruvbox-light` | `#458588` |
 | Aquarelle | `argvus-theme-watercolor` | `#1A639C` |
 | Obsidian Clair | `argvus-theme-obsidian-light` | `#334A78` |

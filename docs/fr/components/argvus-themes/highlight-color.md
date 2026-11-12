@@ -23,7 +23,7 @@ Pour revenir à la couleur définie par le thème sélectionné, ouvrez **Centre
 
 - Une couleur de surbrillance que vous choisissez est une modification indépendante. Elle reste lorsque vous changez de thème, donc la couleur que vous avez choisie reste la même.
 - Un thème que vous appliquez après **Réinitialiser par défaut du thème** prend de nouveau le contrôle de la couleur de surbrillance et utilise sa propre valeur par défaut.
-- L’exportation du thème actif enregistre la couleur de surbrillance qui est active lors de l’exportation comme accent de la palette du nouveau thème. Voir [Importer et exporter des thèmes](/docs/components/argvus-themes/import-and-export/)].
+- L’exportation du thème actif enregistre la couleur de surbrillance qui est active lors de l’exportation comme accent de la palette du nouveau thème. Voir [Importer et exporter des thèmes](/docs/components/argvus-themes/import-and-export/).
 
 ## Où la valeur est stockée
 

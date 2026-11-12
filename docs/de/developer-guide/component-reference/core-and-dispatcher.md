@@ -2,7 +2,7 @@
 title: Kern und Dispatcher
 description: Der argvus-Arbeitsbereich, sein Dispatcher und die gemeinsamen Rust-Crates.
 ---
-`argvus` ist der Cargo-Arbeitsbereich bei `de/argvus` und das Paket, das `/usr/bin/argvus` bereitstellt. Die Kiste `argvus-cli` ist der Dispatcher: Sie liest das erste Argument und führt entweder einen Bibliotheksbefehl im Prozess aus, startet einen GTK 4-Helfer oder eine private ausführbare Datei, oder führt ein gepacktes Skript aus. Die vollständige Unterbefehlsliste befindet sich in der [Befehlszeilenreferenz](/docs/reference/command-line/)].
+`argvus` ist der Cargo-Arbeitsbereich bei `de/argvus` und das Paket, das `/usr/bin/argvus` bereitstellt. Die Kiste `argvus-cli` ist der Dispatcher: Sie liest das erste Argument und führt entweder einen Bibliotheksbefehl im Prozess aus, startet einen GTK 4-Helfer oder eine private ausführbare Datei, oder führt ein gepacktes Skript aus. Die vollständige Unterbefehlsliste befindet sich in der [Befehlszeilenreferenz](/docs/reference/command-line/).
 
 Der Arbeitsbereich enthält auch die Kisten, die die Befehle gemeinsam nutzen:
 

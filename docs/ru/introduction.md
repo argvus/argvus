@@ -23,7 +23,7 @@ taskbar · control panel · notifications · wallpaper · idle · clipboard
 ```
 `argvus-session` управляет жизненным циклом сессии и настройкой среды. Он не реализует все функции рабочего стола: каждый компонент сохраняет владение своими собственными командами, конфигурацией и сервисными нагрузками.
 
-Для установки и запуска см. [Installation](/docs/getting-started/installation/)] и [Sessions](/docs/user-guide/sessions/)]. Для владения сервисами см. разработческий [runtime lifecycle](/docs/developer-guide/architecture/runtime-lifecycle/)].
+Для установки и запуска см. [Installation](/docs/getting-started/installation/) и [Sessions](/docs/user-guide/sessions/). Для владения сервисами см. разработческий [runtime lifecycle](/docs/developer-guide/architecture/runtime-lifecycle/).
 
 ## Основные слои
 
@@ -41,7 +41,7 @@ taskbar · control panel · notifications · wallpaper · idle · clipboard
 
 `argvus control-center` — это приложение настроек, ориентированное на клавиатуру, поставляемое как помощник в `argvus`. Инструменты календаря и съемных устройств являются GTK 4 помощниками в `argvus`; системный монитор и терминал являются подкомандами `argvus`; запускающее приложение — `argvus-launcher`. Все они интегрированы с оболочкой и диспетчером.
 
-См. [Applications](/docs/user-guide/applications/)] и [command reference](/docs/reference/command-line/)].
+См. [Applications](/docs/user-guide/applications/) и [command reference](/docs/reference/command-line/).
 
 ### Провайдеры и интеграции
 
@@ -49,13 +49,13 @@ taskbar · control panel · notifications · wallpaper · idle · clipboard
 
 Вход в систему, блокировка и визуальные элементы запуска также отдельные: `argvus-greeter` управляет greetd, `argvus-lock` управляет Hyprlock, помощник передачи, поставляемый в `argvus`, рисует индикатор входа, накладывание загрузки управляет переходами темы, а `argvus-boot-splash` управляет загрузочным изображением.
 
-См. [Hardware](/docs/user-guide/hardware/)], [Privacy and security](/docs/user-guide/privacy-and-security/)] и справочник разработчика [component reference](/docs/developer-guide/)].
+См. [Hardware](/docs/user-guide/hardware/), [Privacy and security](/docs/user-guide/privacy-and-security/) и справочник разработчика [component reference](/docs/developer-guide/).
 
 ## Общие состояния внешнего вида
 
 Темы, акценты, обои, шрифты и предпочтения эффектов сохраняются как логическое состояние под `$XDG_CONFIG_HOME/argvus` (обычно `~/.config/argvus`). `argvus-config` — это единственный компонент, который записывает `data/generated/`, где он проецирует пользовательские файлы для Hyprland, GTK, Qt6ct, Waybar, Quickshell, Dunst, уведомлений, экрана блокировки, Yazi, Superfile и терминалов. Rofi является исключением: `argvus launcher` упаковывает его конфигурацию и темы как обычные файлы, а редактируемые пользователем копии находятся под `data/rofi/`. Помощники по внешнему виду фиксируют изменение состояния и затем согласовывают внешние приложения; они никогда не записывают сгенерированное дерево.
 
-Сгенерированный каталог не является источником истины. См. [Appearance](/docs/user-guide/appearance/)] и [configuration and state](/docs/developer-guide/architecture/configuration-and-state/)].
+Сгенерированный каталог не является источником истины. См. [Appearance](/docs/user-guide/appearance/) и [configuration and state](/docs/developer-guide/architecture/configuration-and-state/).
 
 Визуальная система также управляет расположением. Режим Sticky компактный и квадратный; режим Spaced использует большие промежутки между окнами, закругленные углы и более широкие поля вокруг панели задач и оболочки. Панель задач по умолчанию размещается на верхнем краю, но поддерживает размещение сверху/снизу через общий статус компоновки. Эффекты контролируют прозрачность, размытие, тени и анимацию на поверхностях композитора и рабочего стола.
 
@@ -71,14 +71,14 @@ ARGVUS не нуждается в замене каждого приложени
 
 Название объединяет две идеи. *ARGV*, от *argument vector* (вектор аргументов), — это список аргументов, которые получает программа, и отражает цель, ориентированную на клавиатуру, управления рабочим столом через команды и сокращения. *US*, от *User System* (система пользователя), отражает цель создания рабочего стола, ориентированного на пользователя. Для полного объяснения и аудиопроизношения см. [About ARGVUS](/about/).
 
-Для границ реализации и владения пакетами см. обзор архитектуры разработчика [architecture overview](/docs/developer-guide/architecture/overview/)] и [роли репозитория](/docs/developer-guide/architecture/repository-roles/)].
+Для границ реализации и владения пакетами см. обзор архитектуры разработчика [architecture overview](/docs/developer-guide/architecture/overview/) и [роли репозитория](/docs/developer-guide/architecture/repository-roles/).
 
 ## Продолжить по цели
 
-- [Прочитайте FAQ](/docs/user-guide/faq/)].
-- [Установите ARGVUS](/docs/getting-started/installation/)].
-- [Запустите графическую или TTY-сессию](/docs/user-guide/sessions/)].
-- [Настройте темы и обои](/docs/user-guide/appearance/)].
-- [Используйте панель задач и Панель управления](/docs/user-guide/desktop/)].
-- [Понимайте команды, пути и службы](/docs/reference/)].
-- [Изучите архитектуру](/docs/developer-guide/architecture/overview/)].
+- [Прочитайте FAQ](/docs/user-guide/faq/).
+- [Установите ARGVUS](/docs/getting-started/installation/).
+- [Запустите графическую или TTY-сессию](/docs/user-guide/sessions/).
+- [Настройте темы и обои](/docs/user-guide/appearance/).
+- [Используйте панель задач и Панель управления](/docs/user-guide/desktop/).
+- [Понимайте команды, пути и службы](/docs/reference/).
+- [Изучите архитектуру](/docs/developer-guide/architecture/overview/).

@@ -34,7 +34,6 @@ argvus taskbar-calendar service
 
 Les événements sont désactivés par défaut. Activez-les dans la fenêtre pop-up sous **Paramètres > Événements** ;
 le choix est conservé dans le répertoire d'état et active également et démarre `argvus-taskbar-calendar.service`, qui affiche les rappels. Les désactiver arrête le service.
-
 - **+ ÉVÉNEMENT** (ou `n`) ouvre l'éditeur pour le jour sélectionné. Les événements peuvent être créés et modifiés à partir d'aujourd'hui ; un événement d'un jour passé peut toujours être ouvert et supprimé.
 - Un nouvel événement commence à 09:00 et dure la longueur par défaut définie dans les Paramètres. Déplacer l'heure de début conserve la durée ; une heure de fin antérieure à l'heure de début signifie que l'événement se termine le jour suivant.
 - Chaque événement affiche une notification avec un son à son début, quel que soit le contenu des cases **Rappel** et **Répétition**. Un événement enregistré après son début (un événement sur toute la journée créé au cours de la journée, par exemple) notifie dans les 30 secondes.

@@ -23,7 +23,7 @@ taskbar · control panel · notifications · wallpaper · idle · clipboard
 ```
 `argvus-session` ist für den Lebenszyklus von Sitzungen und die Einrichtung der Umgebung verantwortlich. Es implementiert nicht jede Desktop-Funktion: Jede Komponente behält die Kontrolle über ihre eigenen Befehle, Konfigurationen und Service-Inhalte.
 
-Für Installation und Start siehe [Installation](/docs/getting-started/installation/)] und [Sessions](/docs/user-guide/sessions/)]. Für Service-Verantwortung siehe den Entwickler [runtime lifecycle](/docs/developer-guide/architecture/runtime-lifecycle/)].
+Für Installation und Start siehe [Installation](/docs/getting-started/installation/) und [Sessions](/docs/user-guide/sessions/). Für Service-Verantwortung siehe den Entwickler [runtime lifecycle](/docs/developer-guide/architecture/runtime-lifecycle/).
 
 ## Hauptschichten
 
@@ -55,7 +55,7 @@ Siehe [Hardware](/docs/user-guide/hardware/), [Datenschutz und Sicherheit](/docs
 
 Thema, Akzent, Hintergrundbild, Schriftart und Effekteinstellungen werden als logischer Zustand unter `$XDG_CONFIG_HOME/argvus` gespeichert (normalerweise `~/.config/argvus`). `argvus-config` ist die einzige Komponente, die `data/generated/` schreibt, wo es Verbraucherdateien für Hyprland, GTK, Qt6ct, Waybar, Quickshell, Dunst, Benachrichtigungen, den Sperrbildschirm, Yazi, Superfile und Terminals projiziert. Rofi ist die Ausnahme: `argvus launcher` paketiert seine Konfiguration und Themen als einfache Dateien, und die vom Benutzer bearbeiteten Kopien liegen unter `data/rofi/`. Erscheinungshilfen bestätigen die Zustandsänderung und stimmen dann externe Anwendungen ab; sie schreiben nie den erzeugten Baum.
 
-Das erzeugte Verzeichnis ist nicht die Quelle der Wahrheit. Siehe [Appearance](/docs/user-guide/appearance/)] und [Konfiguration und Zustand](/docs/developer-guide/architecture/configuration-and-state/)].
+Das erzeugte Verzeichnis ist nicht die Quelle der Wahrheit. Siehe [Appearance](/docs/user-guide/appearance/) und [Konfiguration und Zustand](/docs/developer-guide/architecture/configuration-and-state/).
 
 Das visuelle System steuert auch das Layout. Der Sticky-Modus ist kompakt und quadratisch; der Spaced-Modus verwendet größere Fensterabstände, abgerundete Ecken und breitere Ränder um die Taskleiste und die Shell. Die Taskleiste ist standardmäßig an der oberen Kante platziert, unterstützt aber die Platzierung oben/unten über den gemeinsamen Layout-Zustand. Effekte steuern Transparenz, Unschärfe, Schatten und Animationen über den Kompositor und die Desktop-Oberflächen hinweg.
 
@@ -69,7 +69,7 @@ Es ist daher mehr als eine Hyprland-Konfiguration oder eine Sammlung persönlich
 
 ARGVUS muss nicht jede Anwendung ersetzen. Es integriert ausgewählte Upstream-Anwendungen, wo dies die zuverlässigste Wahl ist, während das verhalten und die Konfiguration des gesamten Desktops kohärent bleiben.
 
-Der Name vereint zwei Ideen. *ARGV*, von *Argumentvektor*, ist die Liste der Argumente, die ein Programm erhält, und spiegelt das Ziel wider, den Desktop über Befehle und Tastenkombinationen zu steuern. *US*, von *User System*, spiegelt das Ziel eines auf den Benutzer ausgerichteten Desktops wider. Für die vollständige Erklärung und die Aussprache-Audio siehe [Über ARGVUS](/about/)].
+Der Name vereint zwei Ideen. *ARGV*, von *Argumentvektor*, ist die Liste der Argumente, die ein Programm erhält, und spiegelt das Ziel wider, den Desktop über Befehle und Tastenkombinationen zu steuern. *US*, von *User System*, spiegelt das Ziel eines auf den Benutzer ausgerichteten Desktops wider. Für die vollständige Erklärung und die Aussprache-Audio siehe [Über ARGVUS](/about/).
 
 Für die Implementierungsgrenzen und Paketverantwortlichkeiten siehe die Entwickler [Architekturübersicht](/docs/developer-guide/architecture/overview/) und [Repository-Rollen](/docs/developer-guide/architecture/repository-roles/).
 

@@ -11,7 +11,7 @@ Chaque thème officiel est une identité visuelle complète avec deux modes :
 - **Sticky** — une disposition compacte avec de petits écarts entre les fenêtres, pas d'espace extérieur et une barre des tâches proche du bord de l'écran.
 - **Spaced** — une disposition spacieuse avec des écarts plus grands, des coins arrondis et des marges autour de la barre des tâches et des surfaces du shell.
 
-Sélectionner un thème ne change pas son identité : la palette, la couleur de surlignage par défaut et l'association du fond d'écran restent les mêmes entre les modes. Le mode est un paramètre séparé, voir [Thèmes officiels](/docs/components/argvus-themes/official-themes/)].
+Sélectionner un thème ne change pas son identité : la palette, la couleur de surlignage par défaut et l'association du fond d'écran restent les mêmes entre les modes. Le mode est un paramètre séparé, voir [Thèmes officiels](/docs/components/argvus-themes/official-themes/).
 
 ## Pages de ce guide
 

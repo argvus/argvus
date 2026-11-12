@@ -1,5 +1,5 @@
 ---
-title: ARGVUS Disk Usage Analyzer
+title: Analisador de uso de disco ARGVUS
 description: Navegue pelo uso de disco com ncdu em uma janela Kitty com o tema ARGVUS.
 ---
 

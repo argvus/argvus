@@ -1,5 +1,5 @@
 ---
-title: User Guide
+title: دليل المستخدم
 description: قم بتثبيت وتكوين واستخدام بيئة سطح المكتب ARGVUS.
 ---
 

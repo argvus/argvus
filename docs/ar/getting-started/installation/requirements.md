@@ -1,5 +1,5 @@
 ---
-title: Requirements
+title: المتطلبات
 description: متطلبات النظام والمتطلبات الأساسية لـ ARGVUS.
 ---
 

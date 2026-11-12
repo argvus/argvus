@@ -1,6 +1,6 @@
 ---
 title: D-বাস ইন্টারফেস
-description: D-Bus contracts used by ARGVUS integrations.
+description: D-Bus চুক্তিগুলি ARGVUS ইন্টিগ্রেশন দ্বারা ব্যবহৃত।
 ---
 
 ARGVUS একটি ডেস্কটপ-ওয়াইড বাসকে উন্মুক্ত করার পরিবর্তে সিস্টেম D-Bus API ব্যবহার করে। গুরুত্বপূর্ণ ভোক্তাদের মধ্যে BlueZ এবং কন্ট্রোল সেন্টারে লগইন এবং greeter, অপসারণযোগ্য ডিভাইসে UDisks2 এবং হার্ডওয়্যার সেটিংসে ratbagd অন্তর্ভুক্ত রয়েছে।

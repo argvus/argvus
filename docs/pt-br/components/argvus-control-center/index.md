@@ -1,5 +1,5 @@
 ---
-title: Control Center
+title: Centro de Controle
 description: Configure as partes persistentes do seu desktop ARGVUS.
 ---
 
@@ -70,7 +70,7 @@ Cada página mostra o seu caminho no cabeçalho, por exemplo `Central de Control
 
 Aparência é a principal área de personalização. Seu grupo Área de trabalho reúne o tema (com seu modo Sticky ou Spaced), o modo de aparência, a cor de destaque, os wallpapers, o tema de ícones e a página Fontes, e seu grupo Estilo dos aplicativos reúne a transparência do terminal e do lançador. Taskbar, Painel de Controle e Widget Telemetry aparecem diretamente em Aparência na tela inicial e reaproveitam a página de transparência compartilhada da Aparência para suas próprias superfícies. O blur é uma única configuração global, em Hyprland > Blur, e se aplica a todas as superfícies do ARGVUS com blur ativo. Nessa página, o controle Ligar e os valores do Hyprland (Tamanho, Passagens, Brilho, Ruído, Contraste, Vibrância e Escurecimento da vibrância) ficam em rascunho, e nada muda até selecionar **Aplicar**. Animações funciona da mesma forma em Hyprland > Animations (Animações): o controle Ligar, as Curvas personalizadas (Bézier, Spring, Linear e Ease-out) e as cinco categorias de animações formam um único rascunho, aplicado junto com **Aplicar**. Bézier e Spring têm parâmetros editáveis (os pontos da Bézier e a massa, a rigidez e o amortecimento da mola); Linear e Ease-out são curvas fixas, então a página apenas lista seus pontos de controle e não pode ser editada. As opções de estilo seguem o que o Hyprland 0.56.2 desenha: abertura e fechamento de janelas oferecem slide, popin e gnomed; entrada e saída de camada oferecem slide, popin e fade; e as leaves de áreas de trabalho oferecem slide, fade, slidefade, slidevert e slidefadevert. Esses controles coordenam os componentes de aparência e sessão, em vez de alterar apenas a janela do Control Center.
 
-### Taskbar
+### Barra de tarefas
 
 A Taskbar configura a posição do painel, o espaçamento ao redor dele e das janelas, a altura, a borda, o grupo de ícones utilitários e os blocos de data/hora, além da própria transparência. Aparece no cartão **Aparência** da tela inicial. No modo Sticky, **Espaçamentos > Embaixo** começa em `2`; Spaced mantém sua margem-base de `18` pixels.
 
@@ -78,13 +78,13 @@ A Taskbar configura a posição do painel, o espaçamento ao redor dele e das ja
 
 A página **Ícones** abre **Módulos opcionais**, **Apresentação dos workspaces**, **Lançador** e **Utilitários**. Em Módulos opcionais, cada item pode ser mostrado ou ocultado individualmente: player de áudio, Focus, lançador, rede, perfil de energia, layout do teclado, uso de memória e CPU, temperaturas, data, relógio, bateria, bandeja do sistema, notificações, dispositivos removíveis, gravação, Bluetooth, entrada e saída de áudio e manter acordado. Os workspaces permanecem disponíveis e podem mostrar seus nomes (padrão) ou os ícones dos aplicativos. O título da janela em foco e as ações Configurações e Energia permanecem disponíveis. A visibilidade do lançador é controlada em Módulos opcionais; o submenu Lançador escolhe o ícone personalizado. As alterações são aplicadas ao selecionar **Aplicar**, que reinicia a taskbar.
 
-### Control Panel
+### Painel de controle
 
 O Control Panel configura a visibilidade e a ordem dos seus cards de ação rápida, além das próprias sessões e transparência.
 
 A página abre e aceita comandos assim que as configurações dos cards são lidas. Os cards que dependem de hardware (Bluetooth e Brilho) são verificados em segundo plano: até essa verificação terminar, eles mantêm a disponibilidade vista por último nesta janela, e a lista se atualiza sozinha quando o resultado chega.
 
-### Widget Telemetry
+### Telemetria de widget
 
 O Widget Telemetry configura as sessões e a transparência do widget de informações do sistema.
 
@@ -96,7 +96,7 @@ Fontes fica em **Aparência > Estilo do desktop > Fontes**. A página permite se
 
 Aplicativos padrão seleciona programas instalados para funções como terminal, gerenciador de arquivos, editor de texto, editor do terminal, navegador, visualizador de imagens, visualizador de PDF, reprodutor de vídeo, reprodutor de áudio, ferramenta de arquivos compactados e launcher. A seleção é salva pelo ARGVUS e pode atualizar associações XDG padrão. Gerenciadores de arquivos TUI usam o editor do terminal selecionado ao abrir arquivos de texto; as associações de arquivos da área de trabalho continuam usando o editor gráfico.
 
-### Snippets
+### Trechos
 
 Snippets é a página dos textos que o `argvus snippets` digita com `SUPER + ALT + N`. Ela fica em **Ferramentas e diagnóstico → Snippets** (busque por `snippets` ou execute `argvus control-center snippets`).
 
@@ -165,27 +165,27 @@ Chaves ›          o chaveiro, em uma página própria, com a busca no topo
 1. Abra **Control Center → Ferramentas e diagnóstico → Chaves GPG**. Pela Home, você também pode buscar por `chaves gpg`.
 2. **Pinentry** é fixo em `pinentry-gtk`. A página apenas o mostra. Na primeira vez que uma chave é gerada, o ARGVUS grava esse pinentry no `gpg-agent.conf`, entre as suas linhas de marcação, e mantém as outras linhas. Se você já escreveu uma linha `pinentry-program` fora dessas marcas, a geração para com erro, para que você remova essa linha.
 3. **Criar uma chave:** em **Gerar chave ▾**, digite **Nome completo** e **E-mail**. Os dois são obrigatórios, e **Gerar chave** fica desabilitado até que ambos tenham texto. **Comentário** é opcional. A identidade fica `Nome (comentário) <e-mail>`.
-   - **Algoritmo** alterna entre **RSA** e **DSA ElGamal**. Uma chave DSA recebe uma subchave de criptografia ElGamal; uma chave RSA recebe uma RSA.
-   - **Tamanho da chave** percorre os tamanhos do algoritmo: RSA 1024, 2048 e 4096; DSA 1024, 2048 e 3072. O gpg não cria chaves DSA acima de 3072 bits, por isso 4096 não é oferecido para DSA.
-   - **Data de expiração** abre uma página própria. Digite a data no formato do seu idioma: `DD/MM/AAAA` em pt-BR, `AAAA/MM/DD` em inglês. A data precisa ser posterior a hoje. Ative **Nunca expira** para tornar a chave permanente; o campo de data fica desabilitado e não é usado.
-   - **Senha** abre uma página própria. **Proteger com senha** vem ligado por padrão; digite a **Senha** e depois **Confirmar senha**. As duas precisam ser iguais. Desligar a proteção limpa os dois campos, e a página pede confirmação antes de gerar uma chave sem proteção.
+- **Algoritmo** alterna entre **RSA** e **DSA ElGamal**. Uma chave DSA recebe uma subchave de criptografia ElGamal; uma chave RSA recebe uma RSA.
+- **Tamanho da chave** percorre os tamanhos do algoritmo: RSA 1024, 2048 e 4096; DSA 1024, 2048 e 3072. O gpg não cria chaves DSA acima de 3072 bits, por isso 4096 não é oferecido para DSA.
+- **Data de expiração** abre uma página própria. Digite a data no formato do seu idioma: `DD/MM/AAAA` em pt-BR, `AAAA/MM/DD` em inglês. A data precisa ser posterior a hoje. Ative **Nunca expira** para tornar a chave permanente; o campo de data fica desabilitado e não é usado.
+- **Senha** abre uma página própria. **Proteger com senha** vem ligado por padrão; digite a **Senha** e depois **Confirmar senha**. As duas precisam ser iguais. Desligar a proteção limpa os dois campos, e a página pede confirmação antes de gerar uma chave sem proteção.
 4. Selecione **Gerar chave** e pressione `Enter`. A chave recebe uma chave de assinatura e uma subchave de criptografia. A senha vai ao launcher pela entrada padrão, nunca como argumento de comando. Se a geração falhar, os outros campos permanecem, mas as senhas são limpas e precisam ser digitadas de novo.
 5. **Cancelar** limpa todos os campos do formulário e volta datas e tamanhos aos padrões.
 6. **Importar:** em **Importar ▾**, escolha **Importar chave pública…** ou **Importar chave privada…**. O gerenciador de arquivos abre para você escolher o arquivo. Uma chave privada pede confirmação antes; a senha dela é pedida pelo gpg quando a chave é usada. Se o gerenciador de arquivos for gráfico, ele não consegue informar o arquivo à página; então a página abre um campo onde você digita o caminho.
 7. **Chaves ›** abre o chaveiro. Cada chave mostra identidade, fingerprint, tipo, validade e se a chave privada está no chaveiro. Cada chave tem estas ações:
    - **Editar chave ›** abre a página própria da chave (descrita abaixo).
-   - **Exportar chave pública…** pede o caminho de um arquivo, sugerido como `~/<fingerprint>.asc`. O arquivo é criado com modo `600`. Um arquivo existente nunca é substituído.
-   - **Exportar chave privada…** aparece só para chaves com parte privada. Pede confirmação e depois o caminho de um arquivo, sugerido como `~/<fingerprint>-private.asc`. O arquivo é criado com modo `600`.
-   - **Copiar chave pública** e **Copiar fingerprint** copiam para a área de transferência Wayland com o `wl-copy`.
-   - **Excluir chave…** pede confirmação, com o foco em Cancelar. Remove a chave e a parte privada dela.
+- **Exportar chave pública…** pede o caminho de um arquivo, sugerido como `~/<fingerprint>.asc`. O arquivo é criado com modo `600`. Um arquivo existente nunca é substituído.
+- **Exportar chave privada…** aparece só para chaves com parte privada. Pede confirmação e depois o caminho de um arquivo, sugerido como `~/<fingerprint>-private.asc`. O arquivo é criado com modo `600`.
+- **Copiar chave pública** e **Copiar fingerprint** copiam para a área de transferência Wayland com o `wl-copy`.
+- **Excluir chave…** pede confirmação, com o foco em Cancelar. Remove a chave e a parte privada dela.
 8. **Encontrar uma chave:** na página **Chaves**, a barra de busca no topo filtra as chaves. Digite para restringir a lista; a busca compara a identidade (que inclui o comentário) e o fingerprint. `Esc` limpa a busca.
 9. **Editar chave ›** mostra os detalhes da chave e depois estas ações:
    - **Data de expiração ›** altera a validade da chave e de cada subchave. Use **Nunca expira** para remover a validade. **Aplicar** salva a alteração.
-   - **Alterar senha** pede a senha antiga e a nova na janela do pinentry.
-   - **Assinar chave com ›** certifica esta chave com uma das suas outras chaves que tenha parte privada. A senha do assinante é pedida. A página pede confirmação antes.
-   - **Revogar chave ›** lista os motivos: sem motivo, chave comprometida, chave substituída, chave não usada mais. Cada um pede confirmação. Uma chave revogada não pode mais ser usada.
-   - **Confiança** define o quanto você confia na chave: não definida, marginal, total ou máxima.
-   - **Publicar no servidor de chaves…** envia a chave pública ao servidor configurado no `gpg.conf`, depois de confirmar. **Buscar no servidor de chaves** baixa a chave desse servidor.
+- **Alterar senha** pede a senha antiga e a nova na janela do pinentry.
+- **Assinar chave com ›** certifica esta chave com uma das suas outras chaves que tenha parte privada. A senha do assinante é pedida. A página pede confirmação antes.
+- **Revogar chave ›** lista os motivos: sem motivo, chave comprometida, chave substituída, chave não usada mais. Cada um pede confirmação. Uma chave revogada não pode mais ser usada.
+- **Confiança** define o quanto você confia na chave: não definida, marginal, total ou máxima.
+- **Publicar no servidor de chaves…** envia a chave pública ao servidor configurado no `gpg.conf`, depois de confirmar. **Buscar no servidor de chaves** baixa a chave desse servidor.
 
 Para se mover: `↑`/`↓` ou `j`/`k` percorrem a lista, `Enter` ativa uma linha, `Esc` volta e `?` mostra a ajuda.
 
@@ -371,7 +371,7 @@ Rotas diretas úteis incluem `apps`, `window-rules`, `projects`, `snippets`, `ss
 * [Atalhos de teclado](/pt/docs/argvus-hyprland/keyboard-shortcuts/)
 * [Mouse e touchpad](/pt/docs/argvus-hyprland/input/)
 
-### System Doctor
+### Médico do sistema
 
 Abra **Ferramentas e diagnóstico → System Doctor**, procure pelo nome ou execute `argvus control-center system-doctor`. As rotas anteriores `diagnostics` e `diagnostic` e seus seletores de categoria permanecem disponíveis. Use `r` para atualizar, Enter para abrir uma verificação, `o` nos detalhes para abrir a página relacionada e Esc para voltar. A coleta ocorre em segundo plano e é somente leitura.
 
@@ -383,7 +383,7 @@ Storage e System Doctor compartilham um snapshot em memória por até 10 segundo
 
 Abra **Área de trabalho e entrada > Monitores > Luz noturna** ou execute `argvus control-center displays night-light`. Configure temperatura, ativação manual e horários locais por `argvus config display night-light`. Veja [Luz noturna](/pt/docs/user-guide/night-light/) para comandos, estado e requisitos de runtime.
 
-## Snapshot
+## Instantâneo
 
 Para comparar snapshots, selecione a base e pressione **b**; selecione outro
 snapshot como destino e pressione **v**. A página mostra os IDs ordenados, as

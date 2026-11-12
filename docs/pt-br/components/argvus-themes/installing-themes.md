@@ -54,32 +54,32 @@ Os pacotes abaixo são os temas oficiais publicados hoje.
 
 | Pacote | Tema |
 | --- | --- |
-| `argvus-theme-one-dark` | One Dark |
-| `argvus-theme-dracula` | Dracula |
-| `argvus-theme-silver-dark` | Silver Dark |
-| `argvus-theme-slate-dark` | Slate Dark |
-| `argvus-theme-universe` | Universe |
-| `argvus-theme-gruvbox-high-dark` | Gruvbox High Dark |
-| `argvus-theme-gruvbox-dark` | Gruvbox Dark |
-| `argvus-theme-rose-pine` | Rosé Pine |
-| `argvus-theme-tokyo-night` | Tokyo Night |
-| `argvus-theme-solitude` | Solitude |
-| `argvus-theme-sunset` | Sunset |
-| `argvus-theme-matrix` | Matrix |
-| `argvus-theme-monokai-dark` | Monokai Dark |
+| `argvus-theme-one-dark` | Um Escuro |
+| `argvus-theme-dracula` | Drácula |
+| `argvus-theme-silver-dark` | Prata Escuro |
+| `argvus-theme-slate-dark` | Ardósia Escura |
+| `argvus-theme-universe` | Universo |
+| `argvus-theme-gruvbox-high-dark` | Gruvbox alto escuro |
+| `argvus-theme-gruvbox-dark` | Gruvbox Escuro |
+| `argvus-theme-rose-pine` | Pinho Rosé |
+| `argvus-theme-tokyo-night` | Noite de Tóquio |
+| `argvus-theme-solitude` | Solidão |
+| `argvus-theme-sunset` | Pôr do sol |
+| `argvus-theme-matrix` | Matriz |
+| `argvus-theme-monokai-dark` | Monokai Sombrio |
 
 **Temas claros**
 
 | Pacote | Tema |
 | --- | --- |
-| `argvus-theme-github-light` | GitHub Light |
-| `argvus-theme-solarized-light` | Solarized Light |
-| `argvus-theme-nord-light` | Nord Light |
-| `argvus-theme-one-light` | One Light |
-| `argvus-theme-everforest-light` | Everforest Light |
+| `argvus-theme-github-light` | Luz GitHub |
+| `argvus-theme-solarized-light` | Luz Solarizada |
+| `argvus-theme-nord-light` | Luz Norte |
+| `argvus-theme-one-light` | Uma Luz |
+| `argvus-theme-everforest-light` | Luz da Floresta Ever |
 | `argvus-theme-catppuccin-latte` | Catppuccin Latte |
-| `argvus-theme-gruvbox-light` | Gruvbox Light |
-| `argvus-theme-watercolor` | Watercolor |
+| `argvus-theme-gruvbox-light` | Luz Gruvbox |
+| `argvus-theme-watercolor` | Aquarela |
 
 Os temas nativos **ARGVUS Dark** e **ARGVUS Light** não precisam de pacote separado; eles vêm com `argvus-appearance`.
 

@@ -1,5 +1,5 @@
 ---
-title: Integrations
+title: Integrasi
 description: Kompositor, login, kunci dan integrasi portal.
 ---
 

@@ -1,5 +1,5 @@
 ---
-title: Night Light
+title: Ánh sáng ban đêm
 description: Điều chỉnh nhiệt độ màu và lịch trình cục bộ cố định trên Hyprland.
 ---
 

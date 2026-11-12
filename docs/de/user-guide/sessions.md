@@ -6,7 +6,7 @@ description: Starten und verwalten Sie eine ARGVUS-Grafiksitzung.
 
 - [Grafische Sitzung](/docs/argvus-session/graphical-session/)
 - [TTY-Sitzung](/docs/argvus-session/tty-session/)
-- [Greeter](/docs/components/argvus-greeter/)
+- [Gruß](/docs/components/argvus-greeter/)
 
 Nützliche Diagnosen:
 

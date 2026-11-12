@@ -37,4 +37,4 @@ description: مسؤوليات مستودعات مصدر ARGVUS بعد دمج م�
 
 اللغة ليست حدود الملكية: يحتفظ كل مكون بمساعديه في وقت التشغيل مع حزمته. القاعدة الصعبة الوحيدة التي تشمل الحزم: فقط `argvus-config` يكتب أسفل `data/generated/`. يقوم المكون الذي يحتاج إلى الوصول إلى تطبيق لا يمكنه قراءة `config.json` بإضافة محول في مساعده الخاص ويسمح للمنسق بالاتصال به بعد الالتزام القانوني؛ لا يكتب ملفًا تم إنشاؤه أبدًا. تنتمي CLIs العامة إلى `/usr/bin`؛ تنتمي المساعدات الداخلية إلى `/usr/lib/argvus/<component>` أو إلى دليل الأوامر عندما تكون هناك حاجة إليها في وقت التشغيل؛ تظل البيانات المستقلة عن البنية ضمن `/usr/share/argvus/<component>`.
 
-See the [package matrix](/docs/reference/package-matrix/) for the installed package boundary.
+راجع [package Matrix](/docs/reference/package-matrix/) للتعرف على حدود الحزمة المثبتة.

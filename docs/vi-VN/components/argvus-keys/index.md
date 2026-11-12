@@ -1,6 +1,6 @@
 ---
-title: Keys
-description: SSH and GPG keys managed through argvus keys and argvus gpg.
+title: Chìa khóa
+description: Khóa SSH và GPG được quản lý thông qua khóa argvus và argvus gpg.
 ---
 
 `argvus keys` quản lý các cặp khóa SSH và `argvus gpg` quản lý khóa GPG. Cả hai đều là

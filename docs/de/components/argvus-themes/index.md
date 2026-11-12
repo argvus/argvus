@@ -11,7 +11,7 @@ Jedes offizielle Thema ist eine vollständige visuelle Identität mit zwei Modi:
 - **Sticky** — ein kompaktes Layout mit kleinen Fensterabständen, keinen äußeren Rändern und einer Taskleiste nahe am Bildschirmrand.
 - **Spaced** — ein großzügiges Layout mit größeren Abständen, abgerundeten Ecken und Rändern um die Taskleiste und Shell-Oberflächen.
 
-Die Auswahl eines Themas ändert nicht seine Identität: die Palette, die Standard-Hervorhebungsfarbe und die Hintergrundbildzuordnung bleiben zwischen den Modi gleich. Der Modus ist eine separate Einstellung, siehe [Offizielle Themen](/docs/components/argvus-themes/official-themes/)].
+Die Auswahl eines Themas ändert nicht seine Identität: die Palette, die Standard-Hervorhebungsfarbe und die Hintergrundbildzuordnung bleiben zwischen den Modi gleich. Der Modus ist eine separate Einstellung, siehe [Offizielle Themen](/docs/components/argvus-themes/official-themes/).
 
 ## Seiten in diesem Handbuch
 

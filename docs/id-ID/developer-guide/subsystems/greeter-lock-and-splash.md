@@ -37,4 +37,4 @@ Kesalahan akuisisi dicatat sebagai ` when the errno changes. ` when the errno ch
 kegagalan; kesalahan normal keluar lepaskan soket. Tanda-tanda ini membedakan seorang penolong
 menunggu DRM dari yang sudah menghadirkan frame.
 
-This acquisition follows the [Linux DRM master permission rules](https://github.com/torvalds/linux/blob/v6.18/drivers/gpu/drm/drm_auth.c): an unprivileged descriptor that has never been master cannot promote itself with `SET_MASTER`, while opening the primary node with no current master acquires it implicitly. Reopening avoids adding privileges to the greeter.
+Akuisisi ini mengikuti [aturan izin master DRM Linux](https://github.com/torvalds/linux/blob/v6.18/drivers/gpu/drm/drm_auth.c): deskriptor tanpa hak istimewa yang belum pernah menjadi master tidak dapat mempromosikan dirinya sendiri dengan `SET_MASTER`, sementara membuka node utama tanpa master saat ini memperolehnya secara implisit. Pembukaan kembali menghindari penambahan hak istimewa pada penyambut.

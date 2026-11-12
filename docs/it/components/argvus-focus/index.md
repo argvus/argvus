@@ -29,7 +29,7 @@ Tastiera: **Spazio** avvia o mette in pausa, **Ctrl+,** apre le impostazioni, **
 
 ## Impostazioni
 
-I preset (Classico 25/5/15, Esteso 50/10/30, Lavoro profondo 90/20/30) completano le durate, che rimangono modificabili. Le impostazioni includono anche le sessioni prima di una pausa lunga, gli avvii automatici, la notifica alla fine di una fase e i **suoni della sessione**: un breve campanello con il proprio volume e un pulsante **Test suono**. Questi suoni sono separati dai suoni di allarme di [ARGVUS Clock](/docs/components/argvus-clock/)].
+I preset (Classico 25/5/15, Esteso 50/10/30, Lavoro profondo 90/20/30) completano le durate, che rimangono modificabili. Le impostazioni includono anche le sessioni prima di una pausa lunga, gli avvii automatici, la notifica alla fine di una fase e i **suoni della sessione**: un breve campanello con il proprio volume e un pulsante **Test suono**. Questi suoni sono separati dai suoni di allarme di [ARGVUS Clock](/docs/components/argvus-clock/).
 
 ## Cronologia
 

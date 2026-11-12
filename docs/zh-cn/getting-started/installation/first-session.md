@@ -9,4 +9,4 @@ description: 安装后启动 ARGVUS。
 ```sh
 argvus --start-desktop
 ```
-登录后，使用 `argvus sessionctl status` 检查 ARGVUS 用户目标。如果合成器或外壳未启动，请按照 [session troubleshooting](/docs/user-guide/troubleshooting/session-startup/)] 操作。
+登录后，使用 `argvus sessionctl status` 检查 ARGVUS 用户目标。如果合成器或外壳未启动，请按照 [session troubleshooting](/docs/user-guide/troubleshooting/session-startup/) 操作。

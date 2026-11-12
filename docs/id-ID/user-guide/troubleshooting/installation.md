@@ -1,5 +1,5 @@
 ---
-title: Installation troubleshooting
+title: Pemecahan masalah instalasi
 description: Mendiagnosis masalah instalasi paket dan repositori.
 ---
 

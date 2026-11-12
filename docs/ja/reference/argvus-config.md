@@ -110,8 +110,8 @@ argvus sessionctl apply-config
 | 通知 | `generated/notifications/` および `dunstrc` |
 | ロック画面 | `generated/hypr/hyprlock.conf` および Hyprtoolkit テーマプロファイル |
 | GTK | `generated/gtk/` |
-| Yazi | `generated/yazi/` |
-| Superfile | `generated/superfile/` |
+|ヤジ | `generated/yazi/` |
+|スーパーファイル | `generated/superfile/` |
 | ターミナルおよび Qt プロファイル | `generated/terminal/`、`generated/qt6ct/` |
 | フォント | `generated/fonts.conf` および Waybar スタイルシート内の管理されたフォントブロック |
 | リムーバブルデバイス | `generated/removable-devices/theme.css` |
@@ -169,7 +169,7 @@ argvus config import --scope appearance appearance.json
 
 Hyprland の設定では、ショートカットに `keyboard_shortcuts`、マウスとタッチパッドの設定に `hyprland.input`、XKB レイアウト、バリアント、およびオプションに `hyprland.keyboard` を使用します。マニフェストのバインディング ID は安定した `config_key` にマッピングされます（例えば `window.close` → `close_window` および `window.drag_mouse` → `drag_window__floating_window_only`）。ディスプレイ設定では `displays.monitors`、`displays.workspaces`、および `displays.primary_monitor` を使用します。`data/generated/` 下のネイティブ TOML ファイルと生成された Lua ファイルは、Hyprland によって使用される投影のままです。
 
-すべての `effects` スイッチはデフォルトで有効になっています（アニメーション、ぼかし、ウィジェットのテレメトリ、および各透明表面）、仮想マシンや低電力セッションでも同様です。ウィンドウシャドウ（`shadow_enabled`）および揺れ（`wobble_enabled`）はデフォルトでオフです。エフェクトの設定は、アニメーションのマスタースイッチ（`effects`、`animations`、`hyprland.lua` にプロジェクトされた `hypr/state.lua` に適用され、エフェクトスイッチである `blur_global_enabled` とは独立しており、 `transparency_<surface>_enabled` `taskbar`、`control-panel`、`widget-telemetry`、`terminal`、`launchers` を含む transparency_<surface>_enabled と組み合わせ、いずれかが有効の場合は有効として読み取られます; `argvus effects-toggle animations|effects` で切り替え可能）、グローバルぼかしスイッチ（`blur_global_enabled`）、Hyprland のぼかしパラメータ（`blur_size`、`blur_passes`、`blur_brightness`、`blur_noise`、`blur_contrast`、`blur_vibrancy`、`blur_vibrancy_darkness`）、ウィンドウシャドウ（`shadow_enabled`、`shadow_sharp`、`shadow_color`）を使用します。 `shadow_range`、`shadow_render_power`、`shadow_offset_x`、`shadow_offset_y`、`shadow_scale`）、アニメーションの値（各アニメーションについて`animation_<leaf>_speed`、`_curve`、`_style`、`_popin`および`_enabled`、カスタムカーブ用の`animation_bezier_x1`から`animation_bezier_y2`および`animation_spring_mass`、`animation_spring_stiffness`、`animation_spring_dampening`）およびサーフェスごとの透明度の値。エフェクトはテーマ所有であり、バリアント所有ではない：StickyとSpacedは同じ`<theme>.conf`のエフェクト投影を使用するが、レイアウト投影は異なる。現在のサーフェスには`taskbar`、`control-panel`、および`widget-telemetry`が含まれる；透明度の値は`0`から`100`までのパーセンテージ（コントロールセンターとランチャーのサーフェスは`15`がデフォルト、それ以外は`50`がデフォルト）、ブラーのパラメータは`schema.json`で宣言された範囲内の数値、Enabled状態はブール値。アニメーションの値は`argvus-config`によっても検証される：速度は `1` から `10` までの数値 (小数も許可)、ポップイン パーセンテージは `1` から `100` までの整数、カーブはアニメーション ページの名前である必要があり、スタイルはアニメーション ページの名前であり、アニメーション自体のリーフで受け入れられる必要があります (たとえば、`popin` は拒否されます) `animation_workspace_in_style`、`gnomed` はウィンドウの開閉にのみ受け入れられ、スライド バリアントはウィンドウとレイヤーの葉で拒否されます)、ベジェ Y ポイントは `-1` と `2` の間に留まり、Hyprland 0.56.2 が解析する範囲、およびその他の曲線パラメータは文書化された範囲内に留まります。 `layers` および `switching` リーフはもう存在しないため、削除前に保存された設定はロード時に `animation_layers_enabled`、`animation_layers_speed`、`animation_layers_curve`、および `animation_switching_*` キーを失います。現在のセット外のスタイルは削除され、`-1` から `2` の外にあるベジェ Y ポイントはクランプされるため、パッケージ化されたデフォルトが再度適用されます。 削除されたもの。 
+すべての `effects` スイッチはデフォルトで有効になっています（アニメーション、ぼかし、ウィジェットのテレメトリ、および各透明表面）、仮想マシンや低電力セッションでも同様です。ウィンドウシャドウ（`shadow_enabled`）および揺れ（`wobble_enabled`）はデフォルトでオフです。エフェクトの設定は、アニメーションのマスタースイッチ（`effects`、`animations`、`hyprland.lua` にプロジェクトされた `hypr/state.lua` に適用され、エフェクトスイッチである `blur_global_enabled` とは独立しており、 `transparency_<surface>_enabled` `taskbar`、`control-panel`、`widget-telemetry`、`terminal`、`launchers` を含む transparency_<surface>_enabled と組み合わせ、いずれかが有効の場合は有効として読み取られます; `argvus effects-toggle animations|effects` で切り替え可能）、グローバルぼかしスイッチ（`blur_global_enabled`）、Hyprland のぼかしパラメータ（`blur_size`、`blur_passes`、`blur_brightness`、`blur_noise`、`blur_contrast`、`blur_vibrancy`、`blur_vibrancy_darkness`）、ウィンドウシャドウ（`shadow_enabled`、`shadow_sharp`、`shadow_color`）を使用します。 `shadow_range`、`shadow_render_power`、`shadow_offset_x`、`shadow_offset_y`、`shadow_scale`）、アニメーションの値（各アニメーションについて`animation_<leaf>_speed`、`_curve`、`_style`、`_popin`および`_enabled`、カスタムカーブ用の`animation_bezier_x1`から`animation_bezier_y2`および`animation_spring_mass`、`animation_spring_stiffness`、`animation_spring_dampening`）およびサーフェスごとの透明度の値。エフェクトはテーマ所有であり、バリアント所有ではない：StickyとSpacedは同じ`<theme>.conf`のエフェクト投影を使用するが、レイアウト投影は異なる。現在のサーフェスには`taskbar`、`control-panel`、および`widget-telemetry`が含まれる；透明度の値は`0`から`100`までのパーセンテージ（コントロールセンターとランチャーのサーフェスは`15`がデフォルト、それ以外は`50`がデフォルト）、ブラーのパラメータは`schema.json`で宣言された範囲内の数値、Enabled状態はブール値。アニメーションの値は`argvus-config`によっても検証される：速度は `1` から `10` までの数値 (小数も許可)、ポップイン パーセンテージは `1` から `100` までの整数、カーブはアニメーション ページの名前である必要があり、スタイルはアニメーション ページの名前であり、アニメーション自体のリーフで受け入れられる必要があります (たとえば、`popin` は拒否されます) `animation_workspace_in_style`、`gnomed` はウィンドウの開閉にのみ受け入れられ、スライド バリアントはウィンドウとレイヤーの葉で拒否されます)、ベジェ Y ポイントは `-1` と `2` の間に留まり、Hyprland 0.56.2 が解析する範囲、およびその他の曲線パラメータは文書化された範囲内に留まります。 `layers` および `switching` リーフはもう存在しないため、削除前に保存された設定はロード時に `animation_layers_enabled`、`animation_layers_speed`、`animation_layers_curve`、および `animation_switching_*` キーを失います。現在のセット外のスタイルは削除され、`-1` から `2` の外にあるベジェ Y ポイントはクランプされるため、パッケージ化されたデフォルトが再度適用されます。 削除されたもの。
 
 電源の設定には`power.screen_off_minutes`、`power.lock_minutes`、`power.keep_awake`、および蓋/電源ボタンのポリシーが使用されます。予測される形式は`data/generated/hypr/hypridle.conf`で、マーカーは`data/power/keep-awake`です；`.keep-awake`は移行入力専用です。`session.language`は廃止されています：既存の値は無視され、新しい書き込みは拒否され、言語互換ファイルは投影されません。代わりにユーザーlocale.confで`LANG`を設定してください。カレンダー設定には `locale.conf` `calendar`が使用され、タスクバーのカレンダーユーザーTOMLに投影されます。リムーバブルデバイスの設定には`removable_devices`が使用されます；リムーバブルデバイスアプリケーションでは、このセクションをパッケージ済みデフォルトに対するユーザーオーバーライドとして扱います。
 
@@ -186,7 +186,7 @@ Powerも同じ投影契約に従います：コントロールセンターは`/p
 ディスプレイ検出やBluetooth制御などのハードウェア指向アダプタは現在、Rustディスプレイドメインによってインポートされています：`nwg-displays`は外部インポーターであり、`/displays`と`data/generated/hypr/monitors.lua`はそれぞれ正規および派生の状態のままです。ディスプレイツールは`argvus config monitor-set`、`monitor-primary`、`monitor-workspaces`、および`monitor-remove`でレイアウトを変更し、ディスプレイコマンドは`argvus config display status|list-modes|set|apply|apply-nwg|migrate-nwg|nwg-import|nwg-apply`です。Hyprlandファイルは`/displays`から投影されており、もはやシェルスクリプトはそれを書きません。壁紙選択、タスクバーのユーティリティグループモード、およびデフォルトアプリの検索も`argvus-config` APIを使用しており、それらの歴史的なシェルエントリポイントはUIまたは互換性ラッパーです。Keep Awakeは`/power/keep_awake`の永続的な設定で、`data/power/keep-awake`マーカーに投影され、lock-DPMSはセッションのランタイム状態下にあります。
 `$XDG_CACHE_HOME/argvus/lock-dpms`。キーボードレイアウトは現在Rust `argvus-keyboard-layout`ヘルパーによって管理されています：設定された順序は生成されたHyprland入力プロジェクションまたはロケールフォールバックに由来し、アクティブなレイアウトはHyprlandから発見されたセッションランタイム状態のままです。サイクルのエントリーポイントとキーボードレイアウトデーモンは互換性ラッパーに過ぎません；ユーザーサービスはRustデーモンを直接実行し、`argvus sessionctl keyboard-layout cycle`は呼び出し元のための安定したコマンドです。
 
-Bluetoothのランタイム状態は外部アダプタの境界に従いますが、`argvus-config`の一部ではありません：`argvus bluetooth`は`bluetoothctl`周りの型付きパースと検証、制限付きリトライ、システムサービスのチェック、およびRFKill状態を管理します。`argvus bluetoothctl`がエントリーポイントです。アダプタの電源、ペアリングデバイス、接続済みデバイスはカノニカルJSON状態ではなくBlueZのランタイム状態に留まります。ハードウェアのライブBluetooth検証は環境依存です。 
+Bluetoothのランタイム状態は外部アダプタの境界に従いますが、`argvus-config`の一部ではありません：`argvus bluetooth`は`bluetoothctl`周りの型付きパースと検証、制限付きリトライ、システムサービスのチェック、およびRFKill状態を管理します。`argvus bluetoothctl`がエントリーポイントです。アダプタの電源、ペアリングデバイス、接続済みデバイスはカノニカルJSON状態ではなくBlueZのランタイム状態に留まります。ハードウェアのライブBluetooth検証は環境依存です。
 ## ランタイムの識別と調整
 
 正確なバイナリ、ビルド識別、設定ルート、生成ルート、アセットルート、マニフェストソースおよびアクティブ世代を確認するにはargvus config status --verboseを使用してください。`argvus config status --verbose`は`synchronized`、`stale`、`incomplete`、`legacy`および`pending-transaction`の投影状態を報告します。
@@ -195,7 +195,7 @@ Bluetoothのランタイム状態は外部アダプタの境界に従います�
 
 ## ナイトライト
 
-**デスクトップ & 入力 > ディスプレイ > ナイトライト** を開くか、`argvus control-center displays night-light` を実行します。`argvus config display night-light` を通じて、色温度、手動での起動、および固定ローカルスケジュールを設定します。コマンド、状態、ランタイム要件については、[ナイトライト](/docs/user-guide/night-light/)] を参照してください。
+**デスクトップ & 入力 > ディスプレイ > ナイトライト** を開くか、`argvus control-center displays night-light` を実行します。`argvus config display night-light` を通じて、色温度、手動での起動、および固定ローカルスケジュールを設定します。コマンド、状態、ランタイム要件については、[ナイトライト](/docs/user-guide/night-light/) を参照してください。
 
 ### ぶれ設定 (Hyprland 0.57+)
 
@@ -208,7 +208,7 @@ Bluetoothのランタイム状態は外部アダプタの境界に従います�
 ```sh
 argvus effects-toggle animations-settings set enabled=enabled wobble_enabled=true wobble_intensity=0 wobble_mesh=8
 ```
-グローバル`enabled`はアニメーションを制御します；`wobble_enabled`はその独立した設定です。グローバルアニメーションを無効にすると、Luaでの揺れが抑制されますが、その設定は消去されません。無効な値はパッチ全体を拒否します。キーが欠けている場合は、既存の選択を置き換えずにARGVUSのデフォルトが適用されます。[Appearance](/docs/user-guide/appearance/#window-wobble)]で範囲とデフォルトを確認してください。
+グローバル`enabled`はアニメーションを制御します；`wobble_enabled`はその独立した設定です。グローバルアニメーションを無効にすると、Luaでの揺れが抑制されますが、その設定は消去されません。無効な値はパッチ全体を拒否します。キーが欠けている場合は、既存の選択を置き換えずにARGVUSのデフォルトが適用されます。[Appearance](/docs/user-guide/appearance/#window-wobble)で範囲とデフォルトを確認してください。
 
 ### ユーザー作成のキーボードショートカット
 

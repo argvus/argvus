@@ -1,5 +1,5 @@
 ---
-title: Reference
+title: Referensi
 description: Perintah, file, layanan dan paket yang diinstal oleh ARGVUS.
 ---
 

@@ -7,10 +7,10 @@ description: Понимайте рабочие поверхности ARGVUS.
 Конфигурация находится в [Control Center](/docs/components/argvus-control-center/), а часто используемые действия — в панели управления. Начните с [First configuration](/docs/user-guide/getting-started/), если это ваша первая сессия.
 
 - Панель управления
-- [Taskbar](/docs/argvus-taskbar/taskbar/)
-- [Widgets](/docs/argvus-taskbar/widgets/)
-- [Keyboard shortcuts](/docs/argvus-hyprland/keyboard-shortcuts/)
-- [Hyprland overrides](/docs/argvus-hyprland/hyprland-overrides/)
-- [Windows and layout](/docs/argvus-hyprland/windows-and-layout/)
+- [Панель задач](/docs/argvus-taskbar/taskbar/)
+- [Виджеты](/docs/argvus-taskbar/widgets/)
+- [Сочетания клавиш](/docs/argvus-hyprland/keyboard-shortcuts/)
+- [Hyprland переопределяет ](/docs/argvus-hyprland/hyprland-overrides/)
+- [Окна и раскладка ](/docs/argvus-hyprland/windows-and-layout/)
 
 Сессия запускает и останавливает эти поверхности; нет монолитного сервиса `argvus-shell`.

@@ -36,7 +36,6 @@ argvus taskbar-calendar service
 Os eventos começam desativados. Ative-os no popup em **Definições > Eventos**; a
 escolha fica no diretório de estado e também ativa e inicia o
 `argvus-taskbar-calendar.service`, que mostra os lembretes. Ao desativar, o serviço para.
-
 - **+ EVENTO** (ou `n`) abre o editor no dia selecionado. Eventos podem ser criados e
   alterados a partir de hoje; um evento de um dia passado ainda pode ser aberto e excluído.
 - Um evento novo começa às 09:00 e dura o tempo padrão definido nas Definições. Mudar a

@@ -1,5 +1,5 @@
 ---
-title: Localization
+title: Lokalisasi
 description: Gunakan ARGVUS dalam bahasa Inggris atau Portugis.
 ---
 

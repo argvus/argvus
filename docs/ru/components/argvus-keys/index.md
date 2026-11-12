@@ -17,7 +17,7 @@ argvus keys delete NAME                  delete the key pair from ~/.ssh
 ```
 Ключи никогда не печатаются. Парольная фраза вводится в терминал, который запускает `ssh-keygen` или `ssh-add`; она никогда не передается в виде аргумента. Установите `ARGVUS_SSH_DIR`, чтобы использовать другой каталог вместо `~/.ssh`.
 
-## GPG
+## ГПГ
 
 ```text
 argvus gpg list                          keys as TSV

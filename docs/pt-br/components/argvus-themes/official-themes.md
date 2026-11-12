@@ -23,7 +23,7 @@ Cada tema funciona em dois modos. O modo é independente do tema: trocar de tema
 | Modo | Espaçamento entre janelas | Margem externa | Arredondamento das janelas | Margem da taskbar e do shell |
 | --- | ---: | ---: | ---: | ---: |
 | Sticky | `2` | `0` | `0` | próxima à borda |
-| Spaced | `10` | `18` | `4` | `18` |
+| Espaçado | `10` | `18` | `4` | `18` |
 
 Para trocar o modo, abra **Control Center → Aparência → Modo** e escolha **Fixo** (Sticky) ou **Flutuante** (Spaced). Os ajustes manuais desses valores de layout continuam valendo até a próxima seleção explícita de tema.
 
@@ -31,34 +31,34 @@ Para trocar o modo, abra **Control Center → Aparência → Modo** e escolha **
 
 | Tema | Pacote | Destaque padrão |
 | --- | --- | --- |
-| One Dark | `argvus-theme-one-dark` | `#61AFEF` |
-| Dracula | `argvus-theme-dracula` | `#BD93F9` |
-| Silver Dark | `argvus-theme-silver-dark` | `#595959` |
-| Slate Dark | `argvus-theme-slate-dark` | `#7391A5` |
-| Universe | `argvus-theme-universe` | `#EEEEEE` |
-| Gruvbox High Dark | `argvus-theme-gruvbox-high-dark` | `#D79921` |
-| Gruvbox Dark | `argvus-theme-gruvbox-dark` | `#D4BE98` |
-| Rosé Pine | `argvus-theme-rose-pine` | `#C4A7E7` |
-| Tokyo Night | `argvus-theme-tokyo-night` | `#7AA2F7` |
-| Solitude | `argvus-theme-solitude` | `#798186` |
-| Sunset | `argvus-theme-sunset` | `#E2BE8A` |
-| Matrix | `argvus-theme-matrix` | `#82FB9C` |
-| Monokai Dark | `argvus-theme-monokai-dark` | `#78DCE8` |
-| Lady Mist | `argvus-theme-lady-mist` | `#354B78` |
+| Um Escuro | `argvus-theme-one-dark` | `#61AFEF` |
+| Drácula | `argvus-theme-dracula` | `#BD93F9` |
+| Prata Escuro | `argvus-theme-silver-dark` | `#595959` |
+| Ardósia Escura | `argvus-theme-slate-dark` | `#7391A5` |
+| Universo | `argvus-theme-universe` | `#EEEEEE` |
+| Gruvbox alto escuro | `argvus-theme-gruvbox-high-dark` | `#D79921` |
+| Gruvbox Escuro | `argvus-theme-gruvbox-dark` | `#D4BE98` |
+| Pinho Rosé | `argvus-theme-rose-pine` | `#C4A7E7` |
+| Noite de Tóquio | `argvus-theme-tokyo-night` | `#7AA2F7` |
+| Solidão | `argvus-theme-solitude` | `#798186` |
+| Pôr do sol | `argvus-theme-sunset` | `#E2BE8A` |
+| Matriz | `argvus-theme-matrix` | `#82FB9C` |
+| Monokai Sombrio | `argvus-theme-monokai-dark` | `#78DCE8` |
+| Senhora Névoa | `argvus-theme-lady-mist` | `#354B78` |
 
 ## Temas claros
 
 | Tema | Pacote | Destaque padrão |
 | --- | --- | --- |
-| GitHub Light | `argvus-theme-github-light` | `#0969DA` |
-| Solarized Light | `argvus-theme-solarized-light` | `#268BD2` |
-| Nord Light | `argvus-theme-nord-light` | `#5E81AC` |
-| One Light | `argvus-theme-one-light` | `#4078F2` |
-| Everforest Light | `argvus-theme-everforest-light` | `#3A94C5` |
+| Luz GitHub | `argvus-theme-github-light` | `#0969DA` |
+| Luz Solarizada | `argvus-theme-solarized-light` | `#268BD2` |
+| Luz Norte | `argvus-theme-nord-light` | `#5E81AC` |
+| Uma Luz | `argvus-theme-one-light` | `#4078F2` |
+| Luz da Floresta Ever | `argvus-theme-everforest-light` | `#3A94C5` |
 | Catppuccin Latte | `argvus-theme-catppuccin-latte` | `#1E66F5` |
-| Gruvbox Light | `argvus-theme-gruvbox-light` | `#458588` |
-| Watercolor | `argvus-theme-watercolor` | `#1A639C` |
-| Obsidian Light | `argvus-theme-obsidian-light` | `#334A78` |
+| Luz Gruvbox | `argvus-theme-gruvbox-light` | `#458588` |
+| Aquarela | `argvus-theme-watercolor` | `#1A639C` |
+| Luz Obsidiana | `argvus-theme-obsidian-light` | `#334A78` |
 
 ## Temas nativos
 

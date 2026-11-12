@@ -23,7 +23,7 @@ Per tornare al colore definito dal tema selezionato, apri **Centro di Controllo 
 
 - Un colore evidenziazione scelto è una sovrascrittura indipendente. Rimane anche quando si passa a un altro tema, quindi il colore selezionato resta lo stesso.
 - Un tema applicato dopo **Reimposta sul tema predefinito** prende nuovamente il controllo del colore evidenziazione e utilizza il proprio predefinito.
-- Esportare il tema attivo memorizza il colore evidenziazione attivo al momento dell'esportazione come accento della nuova palette del tema. Vedi [Importazione ed esportazione dei temi](/docs/components/argvus-themes/import-and-export/)].
+- Esportare il tema attivo memorizza il colore evidenziazione attivo al momento dell'esportazione come accento della nuova palette del tema. Vedi [Importazione ed esportazione dei temi](/docs/components/argvus-themes/import-and-export/).
 
 ## Dove viene memorizzato il valore
 

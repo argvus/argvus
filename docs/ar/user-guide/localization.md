@@ -1,5 +1,5 @@
 ---
-title: Localization
+title: التوطين
 description: استخدم ARGVUS باللغة الإنجليزية أو البرتغالية.
 ---
 
@@ -30,4 +30,4 @@ localectl status
 mv ~/.config/locale.conf ~/.config/locale.conf.backup
 ```
 
-Apply the language again in **Control Center → Locale & Region**. The Control Panel is restarted automatically; if other components still show the previous language, log out and in so the graphical session and `systemd --user` receive the new environment. Repeat the diagnostic commands afterwards. See [Environment variables](/docs/reference/environment-variables/) for the technical contracts and precedence.
+قم بتطبيق اللغة مرة أخرى في **مركز التحكم → الإعدادات المحلية والمنطقة**. تتم إعادة تشغيل لوحة التحكم تلقائيًا؛ إذا كانت المكونات الأخرى لا تزال تعرض اللغة السابقة، فقم بتسجيل الخروج حتى تتلقى الجلسة الرسومية و`systemd --user` البيئة الجديدة. كرر أوامر التشخيص بعد ذلك. راجع [متغيرات البيئة](/docs/reference/environment-variables/) للاطلاع على العقود الفنية والأسبقية.

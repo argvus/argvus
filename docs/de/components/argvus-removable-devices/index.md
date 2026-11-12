@@ -9,9 +9,8 @@ Die verfügbaren Aktionen sind `open`, `mount`, `unmount`, `eject`, `poweroff`, 
 ## Taskleistenmenü
 
 Mit `"mode": "gui"` (dem Systemsstandard) öffnet ein Klick auf das Speicher-Symbol in der Taskleiste ein GTK-Menü, das an die ARGVUS-Taskleiste angehängt ist, ähnlich wie das Kalender-Popup: unterhalb der Leiste, wenn die Taskleiste oben auf dem Bildschirm ist, und oberhalb der Leiste, wenn die Taskleiste unten ist. Jede Gerätezeile hat ein Aktions-Untermenü mit nur den Aktionen, die ihr Status erlaubt.
-
-- **Zeiger:** Das Überfahren oder Klicken einer Gerätezeile öffnet ihr Untermenü. Das Untermenü bleibt geöffnet, während der Zeiger die Menügrenzen überschreitet oder die Menüs verlässt, und es folgt einer anderen Zeile erst, nachdem der Zeiger dort kurz verweilt hat, sodass ein diagonaler Weg zum Untermenü es nicht schließt. Ein Klick außerhalb beider Menüs schließt das Popup.  
-- **Tastatur:** `Up`/`Down` wählt eine Zeile aus, `Right`, `Enter` oder `Space` öffnet das Untermenü (oder führt **Aktualisieren**/**Beenden** aus), `Enter` oder `Space` führt die ausgewählte Aktion aus, `Left` oder `Escape` kehrt zur Geräteliste zurück, und `Escape` schließt dort das Popup.  
+- **Zeiger:** Das Überfahren oder Klicken einer Gerätezeile öffnet ihr Untermenü. Das Untermenü bleibt geöffnet, während der Zeiger die Menügrenzen überschreitet oder die Menüs verlässt, und es folgt einer anderen Zeile erst, nachdem der Zeiger dort kurz verweilt hat, sodass ein diagonaler Weg zum Untermenü es nicht schließt. Ein Klick außerhalb beider Menüs schließt das Popup.
+- **Tastatur:** `Up`/`Down` wählt eine Zeile aus, `Right`, `Enter` oder `Space` öffnet das Untermenü (oder führt **Aktualisieren**/**Beenden** aus), `Enter` oder `Space` führt die ausgewählte Aktion aus, `Left` oder `Escape` kehrt zur Geräteliste zurück, und `Escape` schließt dort das Popup.
 
 **Pfad kopieren** legt den Einhängepunkt über `copy_command` (Standard `wl-copy`, von `wl-clipboard`) in die Zwischenablage, sodass der Pfad nach dem Schließen des Menüs weiterhin vorhanden ist; eine Benachrichtigung bestätigt dies, wenn `show_notification` aktiviert ist. **Sperren** wird für jedes entsperrte verschlüsselte Laufwerk angeboten und wird bei Bedarf zuerst ausgehängt.
 

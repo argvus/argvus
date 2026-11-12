@@ -29,12 +29,12 @@ Teclado: **Ctrl+1** a **Ctrl+5** cambian de página, **Ctrl+N** crea una alarma,
 
 Las alarmas reproducen un sonido real hasta que las atiendes:
 
-- Sonidos: **Chime** (predeterminado) y **Beacon**, incluidos en `/usr/share/argvus/sounds/`. 
-- **Volumen de la alarma** (10 a 100, por defecto 80) y **Escuchar el sonido de la alarma** están en los ajustes; el editor tiene un botón de prueba para el sonido elegido. 
-- Una alarma que suena muestra una tarjeta en la parte superior de la pantalla, sobre otras ventanas, y una notificación, ambas con **Posponer** y **Descartar**. Con la tarjeta seleccionada, **Enter** descarta y **S** pospone. 
-- Posponer hace que la alarma suene de nuevo tras la duración de posponer de la alarma (1 a 60 minutos, por defecto 10). 
-- Una alarma que no se atiende se detiene después de **Detener el timbre después de** (5, 10, 15 o 30 minutos, por defecto 10) y deja una notificación. 
-- Dos alarmas sonando juntas se listan ambas; la segunda nunca silencia a la primera. 
+- Sonidos: **Chime** (predeterminado) y **Beacon**, incluidos en `/usr/share/argvus/sounds/`.
+- **Volumen de la alarma** (10 a 100, por defecto 80) y **Escuchar el sonido de la alarma** están en los ajustes; el editor tiene un botón de prueba para el sonido elegido.
+- Una alarma que suena muestra una tarjeta en la parte superior de la pantalla, sobre otras ventanas, y una notificación, ambas con **Posponer** y **Descartar**. Con la tarjeta seleccionada, **Enter** descarta y **S** pospone.
+- Posponer hace que la alarma suene de nuevo tras la duración de posponer de la alarma (1 a 60 minutos, por defecto 10).
+- Una alarma que no se atiende se detiene después de **Detener el timbre después de** (5, 10, 15 o 30 minutos, por defecto 10) y deja una notificación.
+- Dos alarmas sonando juntas se listan ambas; la segunda nunca silencia a la primera.
 - Si el sonido no se puede reproducir, la tarjeta y la ventana lo indican con el error, y el error se registra. ARGVUS Clock nunca informa un sonido que no se haya reproducido.
 
 La reproducción utiliza el soporte de medios de GTK (GStreamer), por lo que funciona con PipeWire, PulseAudio o ALSA. El paquete depende de `gst-plugins-base` (Ogg Vorbis) y `gst-plugins-good` (salida de audio).
@@ -46,9 +46,9 @@ Las alarmas suenan solo mientras ARGVUS Clock se ejecuta en tu sesión:
 - Cerrar la ventana mantiene ARGVUS Clock en ejecución mientras sea necesario para alarmas, un temporizador en marcha o un cronómetro en funcionamiento (**Mantener en ejecución cuando la ventana esté cerrada**, activado por defecto). Si no hay nada pendiente, se cierra.
 - **Iniciar con la sesión** habilita la unidad de usuario `argvus-clock.service`, que ejecuta `argvus clock --background` después del inicio de sesión. Está desactivado por defecto.
 - Las alarmas no pueden sonar mientras hayas cerrado sesión, la computadora esté apagada o suspendida.
-- Una alarma notada hasta 5 minutos tarde aún suena. Más tarde que eso (el reloj no estaba funcionando, o el sistema estaba en suspensión o apagado) no suena: se informa como **perdida** en una notificación y en la página de Alarmas. Una alarma repetitiva pasa a su siguiente día; una alarma única se apaga. 
-- Cada ocurrencia se guarda como manejada antes de que suene, por lo que al reabrir ARGVUS Clock la misma alarma nunca suena dos veces, y solo se ejecuta una instancia por sesión. 
-- Las alarmas repetitivas se calculan en la hora local en los días de la semana seleccionados, por lo que mantienen su hora a través de cambios de horario de verano. Una hora saltada por el cambio de primavera suena en el primer minuto después del hueco; una hora que ocurre dos veces suena la primera vez. 
+- Una alarma notada hasta 5 minutos tarde aún suena. Más tarde que eso (el reloj no estaba funcionando, o el sistema estaba en suspensión o apagado) no suena: se informa como **perdida** en una notificación y en la página de Alarmas. Una alarma repetitiva pasa a su siguiente día; una alarma única se apaga.
+- Cada ocurrencia se guarda como manejada antes de que suene, por lo que al reabrir ARGVUS Clock la misma alarma nunca suena dos veces, y solo se ejecuta una instancia por sesión.
+- Las alarmas repetitivas se calculan en la hora local en los días de la semana seleccionados, por lo que mantienen su hora a través de cambios de horario de verano. Una hora saltada por el cambio de primavera suena en el primer minuto después del hueco; una hora que ocurre dos veces suena la primera vez.
 - Un temporizador sigue contando durante una suspensión. Si terminó mientras el sistema estaba en suspensión, suena al despertar y dice cuán tarde está. Después de cerrar ARGVUS Clock, un temporizador o cronómetro en funcionamiento vuelve pausado.
 
 ## Rutas

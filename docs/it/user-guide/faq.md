@@ -30,7 +30,7 @@ Questo modello mantiene anche il progetto modulare: la gestione delle sessioni, 
 
 ## Quali sistemi sono supportati?
 
-La base attualmente supportata è Arch Linux. ARGVUS è pacchettizzato per Arch Linux e dipende dai componenti di Wayland, Hyprland e del sistema descritti nei [requisiti di installazione](/docs/getting-started/installation/requirements/)].
+La base attualmente supportata è Arch Linux. ARGVUS è pacchettizzato per Arch Linux e dipende dai componenti di Wayland, Hyprland e del sistema descritti nei [requisiti di installazione](/docs/getting-started/installation/requirements/).
 
 Altre distribuzioni possono fornire alcuni degli stessi componenti upstream, ma ciò non significa che l'insieme completo di pacchetti ARGVUS o l'integrazione della sessione siano supportati lì.
 
@@ -51,13 +51,13 @@ argvus --control-center
 ```
 Puoi anche aprire un'area focalizzata con `argvus control-center`, ad esempio `argvus control-center appearance themes`. Esegui `argvus control-center --help` per vedere le rotte disponibili nella versione installata.
 
-Utilizza **Pannello di Controllo** per lo stato corrente e le azioni frequenti come volume, luminosità, rete, notifiche, alimentazione e controllo sessione. Non è un secondo database di configurazione. Vedi [Dove configurare le cose](/docs/user-guide/where-to-configure/)] e [Centro di Controllo](/docs/components/argvus-control-center/)] per la distinzione.
+Utilizza **Pannello di Controllo** per lo stato corrente e le azioni frequenti come volume, luminosità, rete, notifiche, alimentazione e controllo sessione. Non è un secondo database di configurazione. Vedi [Dove configurare le cose](/docs/user-guide/where-to-configure/) e [Centro di Controllo](/docs/components/argvus-control-center/) per la distinzione.
 
 ## Dove sono memorizzate le impostazioni ARGVUS?
 
 La configurazione di proprietà dell'utente è memorizzata sotto `$XDG_CONFIG_HOME/argvus` (normalmente `~/.config/argvus`). La configurazione logica canonica è mantenuta lì, mentre i file derivati per i consumatori come Hyprland, Waybar e il widget di telemetria, GTK, Qt6ct, Quickshell, Dunst, Hyprlock, Yazi, Superfile, terminali, font, effetti, calendari, input, tastiera, alimentazione e dispositivi rimovibili risiedono sotto `~/.config/argvus/data/generated/`. Quell'albero è scritto solo da `argvus-config` e ricostruito dalla configurazione canonica; `argvus-appearance` conferma le modifiche dell'aspetto e poi riconcilia solo i consumatori esterni che non possono leggere la configurazione canonica da soli. Rofi è l'eccezione: `argvus launcher` confeziona la sua configurazione e i temi, e le copie modificate dall'utente risiedono sotto `~/.config/argvus/data/rofi/`.
 
-Non modificare i file generati come metodo di configurazione permanente. Utilizza il Control Center o il percorso di override nativo documentato per il componente che desideri personalizzare. Vedi [configuration files](/docs/reference/configuration-files/)] e [configuration and state](/docs/developer-guide/architecture/configuration-and-state/)].
+Non modificare i file generati come metodo di configurazione permanente. Utilizza il Control Center o il percorso di override nativo documentato per il componente che desideri personalizzare. Vedi [configuration files](/docs/reference/configuration-files/) e [configuration and state](/docs/developer-guide/architecture/configuration-and-state/).
 
 ## Cosa dovrei fare se una modifica non viene applicata?
 

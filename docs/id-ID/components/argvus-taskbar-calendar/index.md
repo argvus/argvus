@@ -1,5 +1,5 @@
 ---
-title: Calendar
+title: Kalender
 description: Gunakan kalender bilah tugas ARGVUS.
 ---
 
@@ -39,7 +39,6 @@ Acara dinonaktifkan secara default. Aktifkan di popup pada **Pengaturan > Acara*
 pilihan disimpan di direktori negara bagian dan juga diaktifkan dan dimulai
 `argvus-taskbar-calendar.service`, yang menampilkan pengingat. Mematikannya akan menghentikan
 layanan.
-
 - **+ EVENT** (atau `n`) membuka editor untuk hari yang dipilih. Acara dapat dibuat dan
   berubah mulai hari ini; acara di hari yang lalu masih dapat dibuka dan dihapus.
 - Acara baru dimulai pada pukul 09:00 dan berlangsung sesuai durasi default yang ditetapkan di Pengaturan. Memindahkan

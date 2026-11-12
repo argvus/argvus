@@ -69,7 +69,7 @@ ARGVUS को प्रत्येक एप्लिकेशन को बद
 
 - [थीम और वॉलपेपर कॉन्फ़िगर करें] (/docs/user-guide/appearance/)।
 
--  for the installed and user paths.(/docs/developer-guide/architecture/overview/).
+- स्थापित और उपयोगकर्ता पथ के लिए। (/docs/developer-guide/architecture/overview/)।
 
 स्थापना और प्रारंभ के लिए देखें[स्थापना](/docs/getting-started/installation/)और [सत्र](/docs/user-guide/sessions/)सेवा स्वामित्व के लिए, डेवलपर देखें[रनटाइम जीवनचक्र](/docs/developer-guide/architecture/runtime-lifecycle/).
 देखें[डेस्कटॉप](/docs/user-guide/desktop/)उपयोग और[शेल सतहें](/docs/developer-guide/subsystems/shell-surfaces/)कार्यान्वयन स्वामित्व के लिए।

@@ -9,7 +9,6 @@ Las acciones disponibles son `open`, `mount`, `unmount`, `eject`, `poweroff`, `l
 ## Menú de la barra de tareas
 
 Con `"mode": "gui"` (el predeterminado del sistema), un clic en el ícono de almacenamiento de la barra de tareas abre un menú GTK adjunto a la barra de tareas ARGVUS, como el popup del calendario: debajo de la barra cuando la barra de tareas está en la parte superior de la pantalla, y por encima de ella cuando la barra de tareas está en la parte inferior. Cada fila de dispositivo tiene un submenú de acciones con solo las acciones que permite su estado.
-
 - **Puntero:** pasar el puntero o hacer clic en una fila de dispositivo abre su submenú. El submenú permanece abierto mientras el puntero cruza los bordes del menú o sale de los menús, y sigue otra fila solo después de que el puntero se detiene allí brevemente, por lo que un camino diagonal hacia el submenú no lo cierra. Un clic fuera de ambos menús cierra la ventana emergente.
 - **Teclado:** `Up`/`Down` selecciona una fila, `Right`, `Enter` o `Space` abre el submenú (o ejecuta **Actualizar**/**Salir**), `Enter` o `Space` ejecutan la acción seleccionada, `Left` o `Escape` vuelve a la lista de dispositivos, y `Escape` cierra allí la ventana emergente.
 

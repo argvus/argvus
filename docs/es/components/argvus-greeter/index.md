@@ -8,7 +8,7 @@ Es parte del paquete `argvus`, el único paquete del escritorio. Su código fuen
 
 El saludo no autentica a los usuarios por sí mismo. greetd maneja la autenticación a través de PAM. El lanzador abre el saludo con `argvus tui-terminal`, por lo que el saludo no necesita un programa de terminal separado.
 
-Los archivos de configuración del saludo se instalan bajo `/etc/argvus`. Usa `argvus greeter-setup --help` para ver las opciones de configuración que el paquete proporciona. Para el flujo de inicio de sesión, consulta [Sessions](/docs/user-guide/sessions/)].
+Los archivos de configuración del saludo se instalan bajo `/etc/argvus`. Usa `argvus greeter-setup --help` para ver las opciones de configuración que el paquete proporciona. Para el flujo de inicio de sesión, consulta [Sessions](/docs/user-guide/sessions/).
 
 El socket de transferencia de inicio de sesión autoriza a cada cliente con credenciales de par del kernel. Solo root, el propietario del asistente y la cuenta autenticada por greetd pueden enviar comandos de control. A otras cuentas locales se les niega el acceso aunque el socket permita conexiones entre usuarios. Un marco DRM preparado permanece vinculado a su descriptor original; el asistente espera ese descriptor antes de hacerse cargo de la pantalla.
 

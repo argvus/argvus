@@ -15,4 +15,4 @@ argvus sessionctl status
 argvus sessionctl logs
 argvus sessionctl restart waybar
 ```
-서비스 소유권에 대해서는 개발자 [runtime lifecycle](/docs/developer-guide/architecture/runtime-lifecycle/)]를 참조하세요.
+서비스 소유권에 대해서는 개발자 [runtime lifecycle](/docs/developer-guide/architecture/runtime-lifecycle/)를 참조하세요.

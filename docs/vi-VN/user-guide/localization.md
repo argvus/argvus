@@ -1,5 +1,5 @@
 ---
-title: Localization
+title: Bản địa hóa
 description: Sử dụng ARGVUS bằng tiếng Anh hoặc tiếng Bồ Đào Nha.
 ---
 

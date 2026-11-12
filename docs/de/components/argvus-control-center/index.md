@@ -18,7 +18,6 @@ Das Bedienfeld kann Schnellsteuerungen für eine Einstellung anzeigen, die dauer
 Das aktuelle Startmenü des Kontrollzentrums bietet diese Bereiche:
 
 Die Startseite ist ein Katalog von Reisezielen, die in sechs Karten gruppiert sind. Jedes Reiseziel öffnet seine Seite direkt, und die Suche findet es unter jeder Karte.
-
 - **Aussehen** — Passe den Desktop an: Desktop-Stil (Thema, Erscheinungsmodus, Akzentfarbe, Hintergrundbilder, Symbole und Schriftarten), Anwendungsstil (Transparenz von Terminal und Launcher), Taskleiste, Systemsteuerung und Widget-Telemetrie.
 - **Desktop & Eingabe** — den Arbeitsbereich konfigurieren: Hyprland (Windows: Regeln, Bereiche und Modi, Animationen, Unschärfe, Rahmen, Schatten und die installierte Version), Displays, Tastatur & Tastenkombinationen und Maus & Touchpad.
 - **Einstellungen** — persönliche und regionale Einstellungen: Sprache & Region (die Sprache, Zeitzone, Formate und Tastaturlayout-Zentrale), Datum & Uhrzeit, Standardanwendungen, Energie und Sitzung.
@@ -98,7 +97,6 @@ Standardanwendungen wählen installierte Programme für Rollen wie Terminal, Dat
 ### Ausschnitte
 
 Snippets ist die Seite für den Text, den `argvus snippets` mit `SUPER + ALT + N` eingibt. Sie befindet sich unter **Tools & Diagnostics → Snippets** (suche `snippets` oder führe `argvus control-center snippets` aus).
-
 - **Neuer Schnipsel** — gib einen **Namen** und einen **Inhalt** ein, dann **Schnipsel speichern**. Ein Name, der bereits existiert, ersetzt den Inhalt dieses Schnipsels.
 - **Gespeicherte Schnipsel** — aufgelistet mit ihrer Position (`1  email`) und dem Inhalt in einer Zeile. Drücke Enter bei den Inhaltsänderungen. **Typ** gibt den Schnipsel ein, und **Entfernen** fragt nach Bestätigung.
 - **Auswahl öffnen** — öffnet denselben Auswahldialog wie `SUPER + ALT + N`.
@@ -126,7 +124,7 @@ Actions       Refresh and Unload all keys from agent
 3. **Ein Paar erstellen:** Wählen Sie in **Erzeugen** **Name** aus, drücken Sie `Enter`, geben Sie den Namen ein und drücken Sie erneut `Enter`. Wählen Sie **Typ** aus und drücken Sie `Enter`, um zwischen `ed25519` und `rsa` zu wechseln. Wählen Sie **Schlüsselpaar erzeugen** und drücken Sie `Enter`. Das neue Paar erscheint sofort unter **Schlüssel**, ohne dass eine Passphrase erforderlich ist.
 4. **Öffnen Sie den öffentlichen Schlüssel:** Im Block des Paares wähle **Öffentlichen Schlüssel kopieren** und drücke `Enter`. Der Inhalt der `.pub`-Datei gelangt in die Wayland-Zwischenablage, bereit, in eine `authorized_keys` eines Servers oder eines Git-Hosts eingefügt zu werden. Der private Schlüssel wird niemals kopiert. Dies erfordert `wl-clipboard` (`wl-copy`); ohne ihn zeigt die Seite an, dass der Schlüssel nicht kopiert wurde.
 5. **Ein Paar in den Agenten laden:** Wählen Sie im Block des Paares **In Agenten laden** und drücken Sie `Enter`. Ein Schlüssel ohne Passphrase wird sofort geladen, ohne Fenster. Ein Schlüssel mit Passphrase öffnet ein ARGVUS-Terminal, in dem OpenSSH danach fragt; schließen Sie das Terminal mit `Enter`, wenn angezeigt wird, dass der Schlüssel geladen ist. Die Seite überprüft den Agenten alle paar Sekunden, solange sie geöffnet ist, sodass die Zeile von selbst zu **Aus Agenten entladen** wechselt. Um sofort zu aktualisieren, verwenden Sie **Aktualisieren** unter **Aktionen**.
-6. **Einen Schlüssel aus dem Agent entfernen:** Wählen Sie im Block des Paares **Vom Agent entladen**. Um jeden Schlüssel zu entfernen, verwenden Sie **Alle Schlüssel aus dem Agent entladen** unter **Aktionen**. Die Schlüsseldateien bleiben auf der Festplatte.  
+6. **Einen Schlüssel aus dem Agent entfernen:** Wählen Sie im Block des Paares **Vom Agent entladen**. Um jeden Schlüssel zu entfernen, verwenden Sie **Alle Schlüssel aus dem Agent entladen** unter **Aktionen**. Die Schlüsseldateien bleiben auf der Festplatte.
 7. **Ein Paar löschen:** Wählen Sie im Block des Paares **Löschen** und drücken Sie `Enter`. Die Bestätigung fokussiert **Abbrechen**, sodass ein zufälliges `Enter` nichts bewirkt. Drücken Sie `y`, um zu bestätigen, oder `n`/`Esc`, um abzubrechen. Ein im Agent geladenes Schlüssel kann nicht gelöscht werden; laden Sie ihn zuerst aus.
 
 Bewegen: `↑`/`↓` oder `j`/`k` bewegen sich durch die Liste, `Enter` aktiviert eine Zeile, `Esc` geht zurück und `?` zeigt Hilfe. `Tab` verschiebt den Fokus auf **Aktionen**, wobei `←`/`→` eine Schaltfläche auswählen und `Enter` sie ausführen. `↑`/`↓` bringen den Fokus zurück zur Liste.
@@ -161,27 +159,27 @@ Keys ›           the keyring, on its own page, with the search at the top
 
 1. Öffnen Sie **Control Center → Tools & Diagnostics → GPG-Schlüssel**. Vom Home aus können Sie auch nach `gpg keys` suchen.
 2. **Pinentry** ist auf `pinentry-gtk` festgelegt. Die Seite zeigt nur dies an. Das erste Mal, wenn ein Schlüssel generiert wird, schreibt ARGVUS diesen Pinentry in `gpg-agent.conf`, zwischen seine eigenen Markierungslinien, und behält Ihre anderen Zeilen bei. Wenn Sie bereits eine `pinentry-program`-Zeile außerhalb dieser Marker geschrieben haben, stoppt die Generierung mit einem Fehler, damit Sie diese Zeile entfernen können.
-3. **Erstellen Sie einen Schlüssel:** Geben Sie in **Schlüssel erzeugen ▾** **Vollständiger Name** und **E-Mail** ein. Beide sind erforderlich, und **Schlüssel erzeugen** bleibt deaktiviert, bis beide Text enthalten. **Kommentar** ist optional. Die Benutzer-ID wird `Name (comment) <e-mail>`.  
-   - **Algorithmus** wechselt zwischen **RSA** und **DSA ElGamal**. Ein DSA-Schlüssel erhält einen ElGamal-Verschlüsselungsunter­schlüssel; ein RSA-Schlüssel erhält einen RSA-Unter­schlüssel.
-   - **Hauptstärke** durchläuft die Größen des Algorithmus: RSA 1024, 2048 und 4096; DSA 1024, 2048 und 3072. gpg erstellt keine DSA-Schlüssel über 3072 Bits, daher wird 4096 für DSA nicht angeboten.
-   - **Ablaufdatum** öffnet eine eigene Seite. Geben Sie das Datum im Layout Ihrer Sprache ein: `DD/MM/YYYY` in Portugiesisch, Spanisch, Französisch, Italienisch, Deutsch und Russisch; `YYYY/MM/DD` in Englisch, Chinesisch, Japanisch und Koreanisch. Das Datum muss nach dem heutigen Tag liegen. Schalten Sie **Nie ablaufen** ein, um den Schlüssel dauerhaft zu machen; das Datumsfeld wird dann deaktiviert und nicht verwendet.
-   - **Passphrase** öffnet seine eigene Seite. **Mit einer Passphrase schützen** ist standardmäßig aktiviert; geben Sie die **Passphrase** ein und dann die **Passphrase bestätigen**. Beide müssen übereinstimmen. Das Deaktivieren des Schutzes löscht beide Felder, und die Seite fragt nach einer Bestätigung, bevor ein ungeschützter Schlüssel erstellt wird.
+3. **Erstellen Sie einen Schlüssel:** Geben Sie in **Schlüssel erzeugen ▾** **Vollständiger Name** und **E-Mail** ein. Beide sind erforderlich, und **Schlüssel erzeugen** bleibt deaktiviert, bis beide Text enthalten. **Kommentar** ist optional. Die Benutzer-ID wird `Name (comment) <e-mail>`.
+- **Algorithmus** wechselt zwischen **RSA** und **DSA ElGamal**. Ein DSA-Schlüssel erhält einen ElGamal-Verschlüsselungsunter­schlüssel; ein RSA-Schlüssel erhält einen RSA-Unter­schlüssel.
+- **Hauptstärke** durchläuft die Größen des Algorithmus: RSA 1024, 2048 und 4096; DSA 1024, 2048 und 3072. gpg erstellt keine DSA-Schlüssel über 3072 Bits, daher wird 4096 für DSA nicht angeboten.
+- **Ablaufdatum** öffnet eine eigene Seite. Geben Sie das Datum im Layout Ihrer Sprache ein: `DD/MM/YYYY` in Portugiesisch, Spanisch, Französisch, Italienisch, Deutsch und Russisch; `YYYY/MM/DD` in Englisch, Chinesisch, Japanisch und Koreanisch. Das Datum muss nach dem heutigen Tag liegen. Schalten Sie **Nie ablaufen** ein, um den Schlüssel dauerhaft zu machen; das Datumsfeld wird dann deaktiviert und nicht verwendet.
+- **Passphrase** öffnet seine eigene Seite. **Mit einer Passphrase schützen** ist standardmäßig aktiviert; geben Sie die **Passphrase** ein und dann die **Passphrase bestätigen**. Beide müssen übereinstimmen. Das Deaktivieren des Schutzes löscht beide Felder, und die Seite fragt nach einer Bestätigung, bevor ein ungeschützter Schlüssel erstellt wird.
 4. Wählen Sie **Schlüssel generieren** und drücken Sie `Enter`. Der Schlüssel erhält einen Signaturschlüssel und einen Verschlüsselungs-Unterschlüssel. Die Passphrase wird über die Standardausgabe an den Launcher gesendet, niemals als Befehlsargument. Wenn die Generierung fehlschlägt, bleiben die anderen Felder bestehen, aber die Passphrasen werden gelöscht und müssen erneut eingegeben werden.
 5. **Abbrechen** löscht jedes Feld des Formulars und setzt die Daten und Größen auf ihre Standardwerte zurück.
 6. **Importieren:** Wählen Sie in **Import ▾** **Öffentlichen Schlüssel importieren…** oder **Privaten Schlüssel importieren…**. Der Dateimanager öffnet sich, damit Sie die Datei auswählen können. Ein privater Schlüssel verlangt zuerst eine Bestätigung, und sein Passwort wird von gpg abgefragt, wenn der Schlüssel verwendet wird. Wenn der Dateimanager grafisch ist, kann er die Datei nicht an die Seite melden; die Seite öffnet dann ein Feld, in dem Sie den Pfad eingeben.
 7. **Schlüssel ›** öffnet den Schlüsselbund. Jeder Schlüssel zeigt seine Identität, Fingerabdruck, Typ, Ablaufdatum und ob sein privater Schlüssel im Schlüsselbund ist. Jeder Schlüssel hat folgende Aktionen:
    - **Schlüssel bearbeiten ›** öffnet die eigene Seite des Schlüssels (unten beschrieben).
-   - **Öffentlichen Schlüssel exportieren…** fragt nach einem Dateipfad, vorgeschlagen als `~/<fingerprint>.asc`. Die Datei wird mit dem Modus `600` erstellt. Eine vorhandene Datei wird niemals ersetzt.
-   - **Privaten Schlüssel exportieren…** erscheint nur bei Schlüsseln mit einem privaten Teil. Es fragt nach Bestätigung und dann nach einem Dateipfad, vorgeschlagen als `~/<fingerprint>-private.asc`. Die Datei wird mit dem Modus `600` erstellt.
+- **Öffentlichen Schlüssel exportieren…** fragt nach einem Dateipfad, vorgeschlagen als `~/<fingerprint>.asc`. Die Datei wird mit dem Modus `600` erstellt. Eine vorhandene Datei wird niemals ersetzt.
+- **Privaten Schlüssel exportieren…** erscheint nur bei Schlüsseln mit einem privaten Teil. Es fragt nach Bestätigung und dann nach einem Dateipfad, vorgeschlagen als `~/<fingerprint>-private.asc`. Die Datei wird mit dem Modus `600` erstellt.
 - **Öffentlichen Schlüssel kopieren** und **Fingerabdruck kopieren** kopieren in die Wayland-Zwischenablage mit `wl-copy`.
 - **Schlüssel löschen…** fragt nach Bestätigung, mit dem Fokus auf Abbrechen. Es entfernt den Schlüssel und seinen privaten Teil.
 8. **Finde einen Schlüssel:** Auf der **Schlüssel**-Seite filtert die Suchleiste oben die Schlüssel. Tippe, um die Liste einzugrenzen; die Suche stimmt mit der Identität (die den Kommentar einschließt) und dem Fingerabdruck überein. `Esc` löscht die Suche.
 9. **Schlüssel bearbeiten ›** zeigt die Details des Schlüssels an, dann diese Aktionen:
    - **Ablaufdatum ›** ändert das Ablaufdatum des Schlüssels und jedes seiner Unterschlüssel. Verwende **Nie läuft ab**, um das Ablaufdatum zu entfernen. **Anwenden** speichert die Änderung.
-   - **Passphrase ändern** fragt im Pinentry-Fenster nach der alten und der neuen Passphrase.
+- **Passphrase ändern** fragt im Pinentry-Fenster nach der alten und der neuen Passphrase.
 - **Key mit › signieren** zertifiziert diesen Schlüssel mit einem Ihrer anderen Schlüssel, der über einen privaten Teil verfügt. Die Passphrase des Signierenden wird abgefragt. Die Seite fragt zuerst nach einer Bestätigung.
 - **Schlüssel widerrufen ›** listet die Gründe auf: kein Grund, Schlüssel kompromittiert, Schlüssel ersetzt, Schlüssel wird nicht mehr verwendet. Jeder Grund fragt nach einer Bestätigung. Ein widerrufener Schlüssel kann nicht mehr verwendet werden.
-   - **Vertrauen** legt fest, wie sehr Sie dem Schlüssel vertrauen: nicht gesetzt, marginal, voll oder ultimativer Grad.  
+- **Vertrauen** legt fest, wie sehr Sie dem Schlüssel vertrauen: nicht gesetzt, marginal, voll oder ultimativer Grad.
 - **An Keyserver senden…** sendet den öffentlichen Schlüssel nach Bestätigung an den in `gpg.conf` festgelegten Keyserver. **Vom Keyserver abrufen** lädt den Schlüssel von diesem Keyserver herunter.
 
 Navigation: `↑`/`↓` oder `j`/`k` bewegen sich durch die Liste, `Enter` aktiviert eine Zeile, `Esc` geht zurück und `?` zeigt die Hilfe an.
@@ -313,12 +311,12 @@ Während die Homesuche aktiv ist, werden druckbare Tasten in die Abfrage eingege
 
 Öffnen Sie **Erscheinungsbild**, um die integrierten visuellen Steuerungen zu sehen. Dessen Gruppen sind:
 
-- **Desktop** — **Thema** (wählen Sie eine gebündelte Familie und ihren Sticky- oder Spaced-Modus, oder exportieren, importieren, anwenden und löschen Sie eigene Themen, siehe [Importieren und Exportieren von Themen](/docs/components/argvus-themes/import-and-export/)]), **Aussehensmodus** (Sticky oder Spaced, unabhängig vom Thema), **Akzentfarbe** (ein gebündelter Akzent oder eine gültige sechsstellige RGB-Farbe), **Hintergrundbild** (ein gebündeltes Hintergrundbild oder eine benutzerdefinierte Datei) **Symbole** (ein installiertes Symbolthema: durchsuchen Sie die Liste mit `/`, wählen Sie eines mit Space oder Enter drücken, dann **Übernehmen** auswählen; es ändert sich nichts vor dem Übernehmen) und **Schriften** (die Schriftziele und Schriftwiedergabeeinstellungen, geöffnet auf der Seite Schriften).
+- **Desktop** — **Thema** (wählen Sie eine gebündelte Familie und ihren Sticky- oder Spaced-Modus, oder exportieren, importieren, anwenden und löschen Sie eigene Themen, siehe [Importieren und Exportieren von Themen](/docs/components/argvus-themes/import-and-export/)), **Aussehensmodus** (Sticky oder Spaced, unabhängig vom Thema), **Akzentfarbe** (ein gebündelter Akzent oder eine gültige sechsstellige RGB-Farbe), **Hintergrundbild** (ein gebündeltes Hintergrundbild oder eine benutzerdefinierte Datei) **Symbole** (ein installiertes Symbolthema: durchsuchen Sie die Liste mit `/`, wählen Sie eines mit Space oder Enter drücken, dann **Übernehmen** auswählen; es ändert sich nichts vor dem Übernehmen) und **Schriften** (die Schriftziele und Schriftwiedergabeeinstellungen, geöffnet auf der Seite Schriften).
 - **Anwendungsstil** — die **Terminal**- und **Launcher**-Transparenz.
 
 Die Karte 'Aussehen' enthält die Oberflächen, die diese Einstellungen verwenden: **Widget-Telemetrie** (aktivieren Sie die Telemetrie-Oberfläche, wählen Sie ihre verfügbaren Blöcke aus und ordnen Sie sie mit `Shift+Up`/`Shift+Down` auf einem fokussierten Block neu) und **Systemsteuerung** (aktivieren, deaktivieren und ordnen Sie Panel-Karten mit `Shift+Up`/`Shift+Down` auf einer fokussierten Karte neu, angewendet sofort über dasselbe Primitive, das das Drag-and-Drop des echten Panels verwendet).
 
-Diese Aktionen aktualisieren den logischen ARGVUS-Zustand und wenden die betroffene Laufzeitkonfiguration an. Siehe [Appearance](/docs/user-guide/appearance/)], [Themes](/docs/user-guide/appearance/)] und [Windows and layout](/docs/argvus-hyprland/windows-and-layout/)].
+Diese Aktionen aktualisieren den logischen ARGVUS-Zustand und wenden die betroffene Laufzeitkonfiguration an. Siehe [Appearance](/docs/user-guide/appearance/), [Themes](/docs/user-guide/appearance/) und [Windows and layout](/docs/argvus-hyprland/windows-and-layout/).
 
 ## Tastaturnutzung
 
@@ -341,7 +339,6 @@ Der Reset-Support ist bewusst pro Bereich vorgesehen:
 - **Standardanwendungen** können alle Standardeinstellungen, eine Kategorie oder einen einzelnen Selektor wiederherstellen.
 - **Tastenkombinationen** können eine Bindung oder alle Bindungen wiederherstellen und dann die generierten Sitzungsbindungen neu laden.
 - **Fensterregeln** befinden sich in **Desktop & Eingabe → Hyprland → Fenster → Regeln** (suche `window rules` oder führe `argvus control-center window-rules` aus). Jede Regel hat eine **Arbeitsbereich**-Zeile (`Enter` oder `←/→` durchläuft 1 bis 10) und eine **Fensterklassen**-Zeile, die ein Textfeld mit durch Kommas getrennten regulären Ausdrücken öffnet. **Regel hinzufügen** erstellt `rule-N` mit Arbeitsbereich 1 und ohne Klassen. Das **Regel entfernen** jeder Regel befindet sich in der **Gefahrenzone** und fragt nach Bestätigung. Jede Änderung wird geschrieben in `hyprland.window_rules` in `argvus config` und lädt die Konfiguration sofort neu; ungültige Klassenmuster werden abgelehnt und als Fehler angezeigt.
-
 - **Projekte** befindet sich unter **Tools & Diagnostics → Projekte** (suche `projects` oder führe `argvus control-center projects` aus). **Projektordner hinzufügen** und **Stammordner hinzufügen** befinden sich oben auf der Seite und öffnen ein Textfeld mit dem Pfad; der Launcher prüft, ob es sich um ein Verzeichnis handelt, und zeigt sonst einen Fehler an, einschließlich wenn der Ordner die effektive Projektanzahl über 9 hinaus erhöhen würde (`SUPER + CTRL + 1..9` kann nicht mehr adressieren). Jeder konfigurierte Ordner, der als Stamm markiert ist (seine Unterordner sind Projekte) oder ein Einzelnes Projekt, erhält seinen eigenen Block unter dem Formular mit einer **Entfernen**-Zeile, die um Bestätigung bittet. Die Seite ruft `argvus-projects` auf, sodass Änderungen vom Launcher geschrieben werden und beim nächsten Ausführen von `SUPER + O` oder `SUPER + CTRL + 1..9` wirksam werden. Wenn `argvus-projects` nicht installiert ist, zeigt die Seite dies an.
 - **Andere Systemseiten** zeigen Zurücksetzen-, Anwenden-, Löschen- oder Wiederherstellen-Aktionen nur, wenn der zugrunde liegende Anbieter sie unterstützt.
 
@@ -403,9 +400,9 @@ identifiziert, ohne ihre vollständigen Inhalte in die Benutzeroberfläche zu la
 Eine offizielle Control Center pacman Transaktion.
 
 Die erste Version akzeptiert nur reguläre Dateien, die root gehören, unter root-eigenen übergeordneten Verzeichnissen, die nicht von Gruppe oder anderen beschreibbar sind. Sie lehnt Verzeichnisse, Symlinks, Hardlinks, spezielle Dateien, Mountpoints/Subvolumes, Snappers internes Verzeichnis und von Benutzern beschreibbare Orte ab. Dateien, die im ausgewählten Snapshot fehlen, werden niemals gelöscht. Snappers Root `undochange` garantiert keine Anwendung oder
-Datenbankkonsistenz und nicht atomar; der Sicherheitssnapshot ist ein Wiederherstellungspunkt, 
+Datenbankkonsistenz und nicht atomar; der Sicherheitssnapshot ist ein Wiederherstellungspunkt,
 Keine Garantie. Snapper bewahrt nur Metadaten, die von seinem Build unterstützt werden. Separat
-Untervolumes und Dateien außerhalb des konfigurierten Root bleiben außerhalb der Operation. 
+Untervolumes und Dateien außerhalb des konfigurierten Root bleiben außerhalb der Operation.
 
 Manuelle Schnappschüsse sind standardmäßig `single`, nur für Snapper lesegeschützt, ohne Aufräumen
 Algorithmus von dieser Seite zugewiesen. Bestehende Snapper-Timer und externe Operationen
@@ -549,8 +546,8 @@ Befehle: `argvus windows list --json`, `watch --json`, `position top|bottom`, `r
 
 ## Windows-Untermenü und Schließen der Anwendung
 
-**Desktop & Eingabe → Hyprland → Windows** gruppiert **Regeln**, **Abstände** und **Modus**.  
-Regeln bearbeiten die Platzierung pro Anwendung; Abstände bearbeiten innere und äußere Lücken; Modus enthält den sofortigen Kachel-/Schwebe-Selektor, getrennt vom Regel-Formular.  
+**Desktop & Eingabe → Hyprland → Windows** gruppiert **Regeln**, **Abstände** und **Modus**.
+Regeln bearbeiten die Platzierung pro Anwendung; Abstände bearbeiten innere und äußere Lücken; Modus enthält den sofortigen Kachel-/Schwebe-Selektor, getrennt vom Regel-Formular.
 Suche öffnet die gleichen Seiten, und Zurück kehrt zu Windows vor Hyprland zurück.
 
 Direkte Routen sind `argvus control-center hyprland windows`, optional gefolgt von `rules`, `spaces` oder `mode`. Die vorhandenen Routen `window-rules` und `appearance window-spaces` bleiben Aliase und zeigen die neuen Breadcrumbs an.

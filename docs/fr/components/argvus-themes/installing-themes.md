@@ -49,19 +49,19 @@ Les packages ci-dessous sont les packages de thèmes officiels publiés aujourd'
 
 | Package | Thème |
 | --- | --- |
-| `argvus-theme-one-dark` | One Dark |
+| `argvus-theme-one-dark` | Un | sombre |
 | `argvus-theme-dracula` | Dracula |
-| `argvus-theme-silver-dark` | Silver Dark |
-| `argvus-theme-slate-dark` | Slate Dark |
-| `argvus-theme-universe` | Universe |
-| `argvus-theme-gruvbox-high-dark` | Gruvbox High Dark |
-| `argvus-theme-gruvbox-dark` | Gruvbox Dark |
-| `argvus-theme-rose-pine` | Rosé Pine |
-| `argvus-theme-tokyo-night` | Tokyo Night |
+| `argvus-theme-silver-dark` | Argent foncé |
+| `argvus-theme-slate-dark` | Ardoise foncée |
+| `argvus-theme-universe` | Univers |
+| `argvus-theme-gruvbox-high-dark` | Gruvbox Haute Sombre |
+| `argvus-theme-gruvbox-dark` | Gruvbox Sombre |
+| `argvus-theme-rose-pine` | Pin Rosé |
+| `argvus-theme-tokyo-night` | Nuit de Tokyo |
 | `argvus-theme-solitude` | Solitude |
-| `argvus-theme-sunset` | Sunset |
-| `argvus-theme-matrix` | Matrix |
-| `argvus-theme-monokai-dark` | Monokai Dark |
+| `argvus-theme-sunset` | Coucher de soleil |
+| `argvus-theme-matrix` | Matrice |
+| `argvus-theme-monokai-dark` | Monokai Sombre |
 
 **Thèmes clairs**
 
@@ -72,7 +72,7 @@ Les packages ci-dessous sont les packages de thèmes officiels publiés aujourd'
 | `argvus-theme-nord-light` | Nord Clair |
 | `argvus-theme-one-light` | One Clair |
 | `argvus-theme-everforest-light` | Everforest Clair |
-| `argvus-theme-catppuccin-latte` | Catppuccin Latte |
+| `argvus-theme-catppuccin-latte` | Latte à la catpuccine |
 | `argvus-theme-gruvbox-light` | Gruvbox Clair |
 | `argvus-theme-watercolor` | Aquarelle |
 

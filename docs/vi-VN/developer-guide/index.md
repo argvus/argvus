@@ -1,5 +1,5 @@
 ---
-title: Developer Guide
+title: Hướng dẫn dành cho nhà phát triển
 description: Hướng dẫn phát triển và kiến trúc dành cho những người đóng góp ARGVUS.
 ---
 

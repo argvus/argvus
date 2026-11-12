@@ -1,5 +1,5 @@
 ---
-title: Architecture overview
+title: Tinjauan Arsitektur
 description: Bagaimana ARGVUS membentuk lingkungan desktop terintegrasi.
 ---
 

@@ -1,5 +1,5 @@
 ---
-title: Terminal
+title: Thiết bị đầu cuối
 description: Mở thiết bị đầu cuối ARGVUS và hồ sơ ứng dụng thiết bị đầu cuối.
 ---
 

@@ -1,5 +1,5 @@
 ---
-title: ARGVUS Configuration
+title: Konfigurasi ARGVUS
 description: Kontrak konfigurasi JSON logis yang digunakan oleh ARGVUS.
 ---
 

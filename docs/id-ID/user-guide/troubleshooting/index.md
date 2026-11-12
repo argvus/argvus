@@ -1,5 +1,5 @@
 ---
-title: Troubleshooting
+title: Pemecahan Masalah
 description: Mendiagnosis masalah umum instalasi dan runtime ARGVUS.
 ---
 

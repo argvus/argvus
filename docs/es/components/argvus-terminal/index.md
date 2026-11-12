@@ -1,5 +1,5 @@
 ---
-title: Terminal
+title:
 description: Abre el terminal ARGVUS y los perfiles de la aplicación de terminal.
 ---
 Abre la terminal configurada con:

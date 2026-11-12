@@ -1,5 +1,5 @@
 ---
-title: Sessions
+title: Phiên
 description: Bắt đầu và quản lý phiên đồ họa ARGVUS.
 ---
 

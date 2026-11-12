@@ -10,7 +10,7 @@ description: pacman으로 공식 ARGVUS 테마 패키지를 설치하십시오.
 
 - 각 테마는 `argvus-theme-<THEME_NAME>`라는 이름의 리포지토리이며(예: `argvus-theme-dracula`), 같은 이름으로 패키지로 빌드됩니다.
 
-테마 패키지는 `argvus-appearance`에 의존합니다. 먼저 [Installation](/docs/getting-started/installation/)]에 설명된 대로 ARGVUS를 설치하여 외형 구성 요소가 존재하도록 하십시오.
+테마 패키지는 `argvus-appearance`에 의존합니다. 먼저 [Installation](/docs/getting-started/installation/)에 설명된 대로 ARGVUS를 설치하여 외형 구성 요소가 존재하도록 하십시오.
 
 ## 단일 테마 설치
 
@@ -32,7 +32,7 @@ sudo pacman -S argvus-theme-<THEME_NAME>
 sudo pacman -S argvus-theme-dracula
 sudo pacman -S argvus-theme-rose-pine
 ```
-패키지는 테마 매니페스트 `/usr/share/argvus/themes/<theme-id>/theme.toml`(이름, 카테고리, 배경화면 및 팔레트, 선택적으로 `overrides/`)과 테마의 배경화면을 `/usr/share/backgrounds/argvus/` 아래에 설치합니다. 테마가 적용되면 각 구성 요소의 파일은 팔레트에서 렌더링됩니다. 홈 디렉토리에 파일을 쓰지 않으며 현재 테마를 변경하지 않습니다. 이후 제어 센터에서 선택하고, [공식 테마](/docs/components/argvus-themes/official-themes/)]를 확인하세요.
+패키지는 테마 매니페스트 `/usr/share/argvus/themes/<theme-id>/theme.toml`(이름, 카테고리, 배경화면 및 팔레트, 선택적으로 `overrides/`)과 테마의 배경화면을 `/usr/share/backgrounds/argvus/` 아래에 설치합니다. 테마가 적용되면 각 구성 요소의 파일은 팔레트에서 렌더링됩니다. 홈 디렉토리에 파일을 쓰지 않으며 현재 테마를 변경하지 않습니다. 이후 제어 센터에서 선택하고, [공식 테마](/docs/components/argvus-themes/official-themes/)를 확인하세요.
 
 ## 여러 테마 설치
 
@@ -72,9 +72,9 @@ sudo pacman -S argvus-theme-dracula argvus-theme-sunset
 | `argvus-theme-nord-light` | Nord 라이트 |
 | `argvus-theme-one-light` | One 라이트 |
 | `argvus-theme-everforest-light` | Everforest 라이트 |
-| `argvus-theme-catppuccin-latte` | Catppuccin Latte |
+| `argvus-theme-catppuccin-latte` | 캣푸친 라떼 |
 | `argvus-theme-gruvbox-light` | Gruvbox 라이트 |
-| `argvus-theme-watercolor` | Watercolor |
+| `argvus-theme-watercolor` | 수채화 |
 
 내장된 **ARGVUS Dark** 및 **ARGVUS Light** 테마는 별도의 패키지가 필요하지 않습니다; `argvus-appearance`와 함께 제공됩니다.
 

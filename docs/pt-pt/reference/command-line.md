@@ -101,7 +101,7 @@ argvus bluetooth status
 argvus gpg list
 ```
 
-## Setup
+## Configuração
 
 `argvus setup` copia os padrões empacotados de `/usr/share/argvus/<app>` para `~/.config/argvus/data/<app>`, para que você possa personalizá-los. Nunca edita os ficheiros empacotados.
 

@@ -23,7 +23,7 @@ taskbar · control panel · notifications · wallpaper · idle · clipboard
 ```
 `argvus-session` 拥有会话生命周期和环境设置的管理权。它并不实现每一个桌面功能：每个组件保留其自身命令、配置和服务负载的管理权。
 
-关于安装和启动，请参见 [Installation](/docs/getting-started/installation/)] 和 [Sessions](/docs/user-guide/sessions/)]。关于服务管理，请参见开发者 [runtime lifecycle](/docs/developer-guide/architecture/runtime-lifecycle/)]。
+关于安装和启动，请参见 [Installation](/docs/getting-started/installation/) 和 [Sessions](/docs/user-guide/sessions/)。关于服务管理，请参见开发者 [runtime lifecycle](/docs/developer-guide/architecture/runtime-lifecycle/)。
 
 ## 主要层级
 
@@ -35,13 +35,13 @@ taskbar · control panel · notifications · wallpaper · idle · clipboard
 
 `argvus-hyprland` 提供 Hyprland 配置和键绑定。`argvus-waybar` 提供修补过的 Waybar 二进制文件，而 `argvus-taskbar` 拥有任务栏配置和动作。`argvus-control-panel` 提供 Quickshell 面板，`argvus widget-telemetry` 提供可选的系统小部件，这些小部件在 `argvus` 内部运行。
 
-请参阅 [Desktop](/docs/user-guide/desktop/)] 了解用法，以及 [shell surfaces](/docs/developer-guide/subsystems/shell-surfaces/)] 了解实现所有权。
+请参阅 [Desktop](/docs/user-guide/desktop/) 了解用法，以及 [shell surfaces](/docs/developer-guide/subsystems/shell-surfaces/) 了解实现所有权。
 
 ### 设置和应用程序
 
 `argvus control-center` 是以键盘为主的设置应用程序，作为 `argvus` 的辅助工具提供。日历和可移动设备工具是 `argvus` 中的 GTK 4 辅助工具；系统监视器和终端是 `argvus` 的子命令；启动器是 `argvus-launcher`。所有这些都与 shell 和调度器集成。
 
-请参阅 [Applications](/docs/user-guide/applications/)] 和 [command reference](/docs/reference/command-line/)]。
+请参阅 [Applications](/docs/user-guide/applications/) 和 [command reference](/docs/reference/command-line/)。
 
 ### 提供者和集成
 
@@ -49,13 +49,13 @@ taskbar · control panel · notifications · wallpaper · idle · clipboard
 
 登录、锁屏和启动视觉效果也是独立的：`argvus-greeter` 处理 greetd，`argvus-lock` 处理 Hyprlock，`argvus` 中提供的转接助手绘制登录旋转器，加载覆盖层处理主题过渡，`argvus-boot-splash` 处理启动画面。
 
-请参阅 [Hardware](/docs/user-guide/hardware/)]、[Privacy and security](/docs/user-guide/privacy-and-security/)] 和开发者 [component reference](/docs/developer-guide/)]。
+请参阅 [Hardware](/docs/user-guide/hardware/)、[Privacy and security](/docs/user-guide/privacy-and-security/) 和开发者 [component reference](/docs/developer-guide/)。
 
 ## 共享外观状态
 
 主题、字体、壁纸、字体和效果偏好作为逻辑状态存储在 `$XDG_CONFIG_HOME/argvus` 下（通常为 `~/.config/argvus`）。`argvus-config` 是唯一写入 `data/generated/` 的组件，它在其中为 Hyprland、GTK、Qt6ct、Waybar、Quickshell、Dunst、通知、锁屏、Yazi、Superfile 和终端投射消费者文件。Rofi 是例外：`argvus launcher` 将其配置和主题打包为普通文件，并且用户编辑的副本位于 `data/rofi/` 下。外观辅助程序提交状态更改，然后协调外部应用程序；它们从不写入生成的树。
 
-生成的目录不是事实来源。请参阅 [Appearance](/docs/user-guide/appearance/)] 和 [configuration and state](/docs/developer-guide/architecture/configuration-and-state/)]。
+生成的目录不是事实来源。请参阅 [Appearance](/docs/user-guide/appearance/) 和 [configuration and state](/docs/developer-guide/architecture/configuration-and-state/)。
 
 视觉系统还控制布局。粘性模式紧凑且方形；间距模式使用较大的窗口间隙、圆角以及任务栏和外壳周围更宽的边距。任务栏默认为顶部边缘，但通过共享布局状态支持顶部/底部放置。效果控制合成器和桌面表面的透明度、模糊、阴影和动画。
 
@@ -69,16 +69,16 @@ ARGVUS 是运行在 Arch Linux 之上的桌面环境层。Arch Linux 提供操�
 
 ARGVUS 不需要替代每一个应用程序。它在最可靠的情况下集成选定的上游应用程序，同时保持整个桌面的行为和配置一致。
 
-这个名字结合了两个概念。*ARGV*，来自 *argument vector*，是程序接收的参数列表，反映了通过命令和快捷键驱动桌面的键盘优先目标。*US*，来自 *User System*，反映了以用户为中心的桌面目标。有关完整说明和发音音频，请参见 [About ARGVUS](/about/)].
+这个名字结合了两个概念。*ARGV*，来自 *argument vector*，是程序接收的参数列表，反映了通过命令和快捷键驱动桌面的键盘优先目标。*US*，来自 *User System*，反映了以用户为中心的桌面目标。有关完整说明和发音音频，请参见 [About ARGVUS](/about/).
 
-有关实现边界和软件包所有权，请参阅开发者[架构概览](/docs/developer-guide/architecture/overview/)]和[仓库角色](/docs/developer-guide/architecture/repository-roles/)]。
+有关实现边界和软件包所有权，请参阅开发者[架构概览](/docs/developer-guide/architecture/overview/)和[仓库角色](/docs/developer-guide/architecture/repository-roles/)。
 
 ## 按目标继续
 
-- [阅读常见问题](/docs/user-guide/faq/)]
-- [安装ARGVUS](/docs/getting-started/installation/)]
-- [启动图形界面或TTY会话](/docs/user-guide/sessions/)]
-- [配置主题和壁纸](/docs/user-guide/appearance/)]
-- [使用任务栏和控制面板](/docs/user-guide/desktop/)]
-- [了解命令、路径和服务](/docs/reference/)]
-- [研究架构](/docs/developer-guide/architecture/overview/)]
+- [阅读常见问题](/docs/user-guide/faq/)
+- [安装ARGVUS](/docs/getting-started/installation/)
+- [启动图形界面或TTY会话](/docs/user-guide/sessions/)
+- [配置主题和壁纸](/docs/user-guide/appearance/)
+- [使用任务栏和控制面板](/docs/user-guide/desktop/)
+- [了解命令、路径和服务](/docs/reference/)
+- [研究架构](/docs/developer-guide/architecture/overview/)

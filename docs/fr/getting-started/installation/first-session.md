@@ -2,7 +2,7 @@
 title: Première séance
 description: Démarrez ARGVUS après l'installation.
 ---
-Pour une connexion graphique, configurez l'intégration greetd empaquetée avec `argvus greeter-setup --help` et utilisez le flux du gestionnaire d'affichage décrit dans [Sessions](/docs/user-guide/sessions/)].
+Pour une connexion graphique, configurez l'intégration greetd empaquetée avec `argvus greeter-setup --help` et utilisez le flux du gestionnaire d'affichage décrit dans [Sessions](/docs/user-guide/sessions/).
 
 Pour une session TTY, connectez-vous sur un terminal virtuel et exécutez :
 

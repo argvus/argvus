@@ -29,12 +29,12 @@ Tastiera: **Ctrl+1** a **Ctrl+5** cambia pagina, **Ctrl+N** crea una sveglia, **
 
 Le sveglie riproducono un suono reale finché non le si risponde:
 
-- Suoni: **Chime** (predefinito) e **Beacon**, inclusi in `/usr/share/argvus/sounds/`.  
-- **Volume della sveglia** (da 10 a 100, predefinito 80) e **Ascolta il suono della sveglia** si trovano nelle impostazioni; l'editor ha un pulsante di prova per il suono scelto.  
-- Una sveglia che suona mostra una scheda in cima allo schermo, sopra le altre finestre, e una notifica, entrambe con **Posticipa** e **Chiudi**. Con la scheda selezionata, **Invio** chiude e **S** posticipa.  
-- Il posticipo suona di nuovo dopo la durata del posticipo della sveglia (da 1 a 60 minuti, predefinito 10).  
-- Una sveglia non risposta si interrompe dopo **Interrompi suoneria dopo** (5, 10, 15 o 30 minuti, predefinito 10) e lascia una notifica.  
-- Due sveglie che suonano insieme sono entrambe elencate; la seconda non silenzia mai la prima.  
+- Suoni: **Chime** (predefinito) e **Beacon**, inclusi in `/usr/share/argvus/sounds/`.
+- **Volume della sveglia** (da 10 a 100, predefinito 80) e **Ascolta il suono della sveglia** si trovano nelle impostazioni; l'editor ha un pulsante di prova per il suono scelto.
+- Una sveglia che suona mostra una scheda in cima allo schermo, sopra le altre finestre, e una notifica, entrambe con **Posticipa** e **Chiudi**. Con la scheda selezionata, **Invio** chiude e **S** posticipa.
+- Il posticipo suona di nuovo dopo la durata del posticipo della sveglia (da 1 a 60 minuti, predefinito 10).
+- Una sveglia non risposta si interrompe dopo **Interrompi suoneria dopo** (5, 10, 15 o 30 minuti, predefinito 10) e lascia una notifica.
+- Due sveglie che suonano insieme sono entrambe elencate; la seconda non silenzia mai la prima.
 - Se il suono non può essere riprodotto, la scheda e la finestra lo indicano con l'errore, e l'errore viene registrato. ARGVUS Clock non segnala mai un suono che non è stato riprodotto.
 
 La riproduzione utilizza il supporto multimediale di GTK (GStreamer), quindi funziona con PipeWire, PulseAudio o ALSA. Il pacchetto dipende da `gst-plugins-base` (Ogg Vorbis) e `gst-plugins-good` (output audio).
@@ -46,9 +46,9 @@ Le sveglie suonano solo mentre ARGVUS Clock è in esecuzione nella tua sessione:
 - Chiudere la finestra mantiene ARGVUS Clock in esecuzione mentre sveglie, un timer in esecuzione o un cronometro in esecuzione ne hanno bisogno (**Mantieni in esecuzione quando la finestra è chiusa**, attivo di default). Se non ci sono operazioni in sospeso, si chiude.
 - **Avvia con la sessione** abilita l'unità utente `argvus-clock.service`, che esegue `argvus clock --background` dopo il login. È disattivato di default.
 - Le sveglie non possono suonare mentre sei disconnesso, il computer è spento o è in sospensione.
-- Un allarme rilevato fino a 5 minuti in ritardo suona comunque. Più tardi di così (l'orologio non era in funzione, o il sistema era in sospensione o spento) non suona: viene segnalato come **mancato** in una notifica e nella pagina Allarmi. Un allarme ripetuto passa al giorno successivo; un allarme una tantum si spegne. 
-- Ogni occorrenza viene salvata come gestita prima che suoni, quindi riaprendo ARGVUS Clock lo stesso allarme non suona due volte e solo un'istanza è attiva per sessione. 
-- Gli allarmi ripetuti vengono calcolati sull'ora locale nei giorni della settimana scelti, quindi mantengono il loro orario anche durante i cambi di ora legale. Un orario saltato con il cambio di primavera suona al primo minuto dopo il vuoto; un orario che si presenta due volte suona la prima volta. 
+- Un allarme rilevato fino a 5 minuti in ritardo suona comunque. Più tardi di così (l'orologio non era in funzione, o il sistema era in sospensione o spento) non suona: viene segnalato come **mancato** in una notifica e nella pagina Allarmi. Un allarme ripetuto passa al giorno successivo; un allarme una tantum si spegne.
+- Ogni occorrenza viene salvata come gestita prima che suoni, quindi riaprendo ARGVUS Clock lo stesso allarme non suona due volte e solo un'istanza è attiva per sessione.
+- Gli allarmi ripetuti vengono calcolati sull'ora locale nei giorni della settimana scelti, quindi mantengono il loro orario anche durante i cambi di ora legale. Un orario saltato con il cambio di primavera suona al primo minuto dopo il vuoto; un orario che si presenta due volte suona la prima volta.
 - Un timer continua a contare durante una sospensione. Se è terminato mentre il sistema era in sospensione, suona al risveglio e indica quanto è in ritardo. Dopo che ARGVUS Clock è stato chiuso, un timer o un cronometro in esecuzione torna indietro in pausa.
 
 ## Percorsi

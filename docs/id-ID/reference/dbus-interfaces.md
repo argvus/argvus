@@ -1,6 +1,6 @@
 ---
-title: D-Bus interfaces
-description: D-Bus contracts used by ARGVUS integrations.
+title: antarmuka D-Bus
+description: Kontrak D-Bus yang digunakan oleh integrasi ARGVUS.
 ---
 
 ARGVUS menggunakan API D-Bus sistem daripada mengekspos satu bus di seluruh desktop. Konsumen penting termasuk BlueZ dan logind di Pusat Kontrol dan penyapa, UDisks2 di perangkat yang dapat dilepas, dan ratbagd di pengaturan perangkat keras.

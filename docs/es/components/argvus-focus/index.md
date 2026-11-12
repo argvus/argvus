@@ -29,7 +29,7 @@ Teclado: **Espacio** inicia o pausa, **Ctrl+,** abre la configuración, **Ctrl+H
 
 ## Configuración
 
-Preajustes (Clásico 25/5/15, Extendido 50/10/30, Trabajo profundo 90/20/30) rellenan las duraciones, las cuales permanecen editables. La configuración también incluye las sesiones antes de un descanso largo, los inicios automáticos, la notificación al final de una fase, y los **sonidos de la sesión**: una campanita corta con su propio volumen y un botón de **Probar sonido**. Estos sonidos son independientes de los sonidos de alarma de [ARGVUS Clock](/docs/components/argvus-clock/)].
+Preajustes (Clásico 25/5/15, Extendido 50/10/30, Trabajo profundo 90/20/30) rellenan las duraciones, las cuales permanecen editables. La configuración también incluye las sesiones antes de un descanso largo, los inicios automáticos, la notificación al final de una fase, y los **sonidos de la sesión**: una campanita corta con su propio volumen y un botón de **Probar sonido**. Estos sonidos son independientes de los sonidos de alarma de [ARGVUS Clock](/docs/components/argvus-clock/).
 
 ## Historial
 

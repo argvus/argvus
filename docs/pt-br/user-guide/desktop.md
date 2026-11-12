@@ -1,5 +1,5 @@
 ---
-title: Desktop
+title: Área de trabalho
 description: Entenda as superfícies do desktop ARGVUS.
 ---
 

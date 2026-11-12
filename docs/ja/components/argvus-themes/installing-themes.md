@@ -31,7 +31,7 @@ sudo pacman -S argvus-theme-<THEME_NAME>
 sudo pacman -S argvus-theme-dracula
 sudo pacman -S argvus-theme-rose-pine
 ```
-このパッケージはテーママニフェスト `/usr/share/argvus/themes/<theme-id>/theme.toml`（名前、カテゴリ、壁紙、パレット、およびオプションの `overrides/`）と、テーマの壁紙を `/usr/share/backgrounds/argvus/` にインストールします。テーマが適用されると、各コンポーネントのファイルはパレットからレンダリングされます。ホームディレクトリには書き込まれず、現在のテーマも変更されません。その後、コントロールセンターから選択してください。[公式テーマ](/docs/components/argvus-themes/official-themes/) を参照します。  
+このパッケージはテーママニフェスト `/usr/share/argvus/themes/<theme-id>/theme.toml`（名前、カテゴリ、壁紙、パレット、およびオプションの `overrides/`）と、テーマの壁紙を `/usr/share/backgrounds/argvus/` にインストールします。テーマが適用されると、各コンポーネントのファイルはパレットからレンダリングされます。ホームディレクトリには書き込まれず、現在のテーマも変更されません。その後、コントロールセンターから選択してください。[公式テーマ](/docs/components/argvus-themes/official-themes/) を参照します。
 
 ## 複数のテーマをインストールする
 
@@ -48,19 +48,19 @@ sudo pacman -S argvus-theme-dracula argvus-theme-sunset
 
 | パッケージ | テーマ |
 | --- | --- |
-| `argvus-theme-one-dark` | One Dark |
-| `argvus-theme-dracula` | Dracula |
-| `argvus-theme-silver-dark` | Silver Dark |
-| `argvus-theme-slate-dark` | Slate Dark |
-| `argvus-theme-universe` | Universe |
-| `argvus-theme-gruvbox-high-dark` | Gruvbox High Dark |
-| `argvus-theme-gruvbox-dark` | Gruvbox Dark |
-| `argvus-theme-rose-pine` | Rosé Pine |
-| `argvus-theme-tokyo-night` | Tokyo Night |
-| `argvus-theme-solitude` | Solitude |
-| `argvus-theme-sunset` | Sunset |
-| `argvus-theme-matrix` | Matrix |
-| `argvus-theme-monokai-dark` | Monokai Dark |
+| `argvus-theme-one-dark` |ワンダーク |
+| `argvus-theme-dracula` |ドラキュラ |
+| `argvus-theme-silver-dark` |シルバーダーク |
+| `argvus-theme-slate-dark` |スレートダーク |
+| `argvus-theme-universe` |宇宙 |
+| `argvus-theme-gruvbox-high-dark` | Gruvbox ハイダーク |
+| `argvus-theme-gruvbox-dark` | Gruvbox ダーク |
+| `argvus-theme-rose-pine` |ローズパイン |
+| `argvus-theme-tokyo-night` |東京の夜 |
+| `argvus-theme-solitude` |孤独 |
+| `argvus-theme-sunset` |日没 |
+| `argvus-theme-matrix` |マトリックス |
+| `argvus-theme-monokai-dark` |モノカイダーク |
 
 **ライトテーマ**
 
@@ -71,9 +71,9 @@ sudo pacman -S argvus-theme-dracula argvus-theme-sunset
 | `argvus-theme-nord-light` | Nord ライト |
 | `argvus-theme-one-light` | One ライト |
 | `argvus-theme-everforest-light` | Everforest ライト |
-| `argvus-theme-catppuccin-latte` | Catppuccin Latte |
+| `argvus-theme-catppuccin-latte` |キャットプッチンラテ |
 | `argvus-theme-gruvbox-light` | Gruvbox ライト |
-| `argvus-theme-watercolor` | Watercolor |
+| `argvus-theme-watercolor` |水彩画 |
 
 内蔵の **ARGVUS Dark** と **ARGVUS Light** テーマは別のパッケージを必要とせず、`argvus-appearance` に含まれています。
 

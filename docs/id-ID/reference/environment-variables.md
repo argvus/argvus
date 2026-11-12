@@ -1,6 +1,6 @@
 ---
 title: Variabel lingkungan
-description: Environment contracts used by ARGVUS session components.
+description: Kontrak lingkungan yang digunakan oleh komponen sesi ARGVUS.
 ---
 
 Sesi ini menetapkan integrasi lingkungan XDG dan Wayland dan dapat mengekspor variabel kompatibilitas virtualisasi ketika terdeteksi. `ARGVUS_CONFIG_HOME`, `ARGVUS_SYSTEM_CONFIG` dan `ARGVUS_BOOTSTRAP` digunakan oleh pembantu sesi dan operator untuk menyelesaikan akar konfigurasi.

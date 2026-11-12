@@ -1,5 +1,5 @@
 ---
-title: Hardware
+title: Phần cứng
 description: Định cấu hình màn hình, kết nối và nguồn trong ARGVUS.
 ---
 

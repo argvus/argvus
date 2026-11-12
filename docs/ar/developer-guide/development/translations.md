@@ -1,5 +1,5 @@
 ---
-title: Translations
+title: الترجمات
 description: الحفاظ على كتالوجات الترجمة ARGVUS المشتركة.
 ---
 

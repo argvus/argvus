@@ -27,4 +27,4 @@ localectl status
 ```sh
 mv ~/.config/locale.conf ~/.config/locale.conf.backup
 ```
-**제어 센터 → 지역 및 언어**에서 언어를 다시 적용하세요. 제어판은 자동으로 다시 시작됩니다. 다른 구성 요소가 여전히 이전 언어를 표시하면 로그아웃 후 다시 로그인하여 그래픽 세션과 `systemd --user`이 새 환경을 받도록 하세요. 그 후 진단 명령을 반복 실행하세요. 기술 계약 및 우선순위에 대한 환경 변수는 [Environment variables](/docs/reference/environment-variables/)]를 참조하세요.
+**제어 센터 → 지역 및 언어**에서 언어를 다시 적용하세요. 제어판은 자동으로 다시 시작됩니다. 다른 구성 요소가 여전히 이전 언어를 표시하면 로그아웃 후 다시 로그인하여 그래픽 세션과 `systemd --user`이 새 환경을 받도록 하세요. 그 후 진단 명령을 반복 실행하세요. 기술 계약 및 우선순위에 대한 환경 변수는 [Environment variables](/docs/reference/environment-variables/)를 참조하세요.

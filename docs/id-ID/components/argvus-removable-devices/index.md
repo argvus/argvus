@@ -10,7 +10,6 @@ Tindakan yang tersedia adalah `open`, `mount`, `unmount`, `eject`, `poweroff`, `
 ## Menu bilah tugas
 
 Dengan `"mode": "gui"` (default sistem), klik pada ikon penyimpanan taskbar akan membuka menu GTK yang terpasang pada Taskbar ARGVUS, seperti popup kalender: di bawah bar ketika taskbar berada di bagian atas layar, dan di atasnya ketika taskbar berada di bawah. Setiap baris perangkat memiliki submenu tindakan yang hanya berisi tindakan yang diizinkan oleh statusnya.
-
 - **Pointer:** melayang atau mengklik baris perangkat akan membuka submenunya. Submenu tetap terbuka ketika penunjuk melintasi tepi menu atau meninggalkan menu, dan mengikuti baris lain hanya setelah penunjuk berhenti di sana sebentar, sehingga jalur diagonal ke submenu tidak menutupnya. Klik di luar kedua menu akan menutup popup.
 - **Keyboard:** `Up`/`Down` pilih satu baris, `Right`, `Enter` atau `Space` buka submenu (atau jalankan **Refresh**/**Quit**), `Enter` atau `Space` menjalankan tindakan yang dipilih, `Left` atau `Escape` kembali ke daftar perangkat, dan `Escape` menutup popup.
 

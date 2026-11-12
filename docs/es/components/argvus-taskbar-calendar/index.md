@@ -33,7 +33,6 @@ argvus taskbar-calendar service
 ## Eventos y recordatorios
 
 Los eventos están desactivados por defecto. Actívalos en la ventana emergente bajo **Configuración > Eventos**; la elección se guarda en el directorio de estado y también habilita e inicia `argvus-taskbar-calendar.service`, que muestra los recordatorios. Desactivarlos detiene el servicio.
-
 - **+ EVENTO** (o `n`) abre el editor para el día seleccionado. Los eventos se pueden crear y modificar desde hoy en adelante; un evento de un día pasado aún se puede abrir y eliminar.
 - Un nuevo evento comienza a las 09:00 y dura la longitud predeterminada establecida en Configuración. Mover la hora de inicio mantiene la duración; una hora de finalización anterior a la hora de inicio significa que el evento termina al día siguiente.
 - Cada evento muestra una notificación con sonido al inicio, sin importar lo que digan las casillas de **Recordatorio** y **Repetir**. Un evento guardado después de haber empezado (un evento de todo el día creado durante el día, por ejemplo) notifica en un plazo de 30 segundos.

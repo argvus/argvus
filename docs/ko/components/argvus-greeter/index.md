@@ -8,7 +8,7 @@ description: 로그인 인사 프로그램인 greetd가 시작되며, argvus 패
 
 그리터 자체는 사용자를 인증하지 않습니다. greetd가 PAM을 통해 인증을 처리합니다. 런처는 `argvus tui-terminal`로 그리터를 열므로, 그리터는 별도의 터미널 프로그램이 필요하지 않습니다.
 
-그리터 구성 파일은 `/etc/argvus` 아래에 설치됩니다. 패키지가 제공하는 설정 옵션을 보려면 `argvus greeter-setup --help`을 사용하십시오. 로그인 흐름에 대해서는 [Sessions](/docs/user-guide/sessions/)]를 참조하십시오.
+그리터 구성 파일은 `/etc/argvus` 아래에 설치됩니다. 패키지가 제공하는 설정 옵션을 보려면 `argvus greeter-setup --help`을 사용하십시오. 로그인 흐름에 대해서는 [Sessions](/docs/user-guide/sessions/)를 참조하십시오.
 
 로그인 핸드오프 소켓은 각 클라이언트를 커널 피어 자격으로 인증합니다. root, 헬퍼 소유자 및 greetd에 의해 인증된 계정만 제어 명령을 보낼 수 있습니다. 소켓이 사용자 간 연결을 허용하더라도 다른 로컬 계정은 거부됩니다. 준비된 DRM 프레임은 원래 디스크립터에 연결되어 있으며, 헬퍼는 디스플레이를 인수하기 전에 해당 디스크립터를 기다립니다.
 

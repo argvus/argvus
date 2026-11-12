@@ -11,7 +11,7 @@ argvus taskbar-calendar toggle
 argvus taskbar-calendar status
 ```
 
-یہ مقامی واقعات، یاد دہانیوں اور ICS درآمد/برآمد کی حمایت کرتا ہے۔ اس کی صارف کی خدمت `argvus-taskbar-calendar.service` ہے۔ انسٹال شدہ ورژن کے ذریعے تعاون یافتہ اختیارات کے لیے `argvus taskbar-calendar --help` استعمال کریں۔
+یہ مقامی واقعات، یاد دہانیوں اور ICS درآمد/برآمد کی حمایت کرتا ہے۔ اس کی صارف کی خدمت `argvus-taskbar-calendar.service ` ہے۔ انسٹال شدہ ورژن کے ذریعے تعاون یافتہ اختیارات کے لیے ` argvus taskbar-calendar --help` استعمال کریں۔
 
 کیلنڈر فعال ARGVUS تھیم کی پیروی کرتا ہے، بشمول Sticky اور Spaced variants۔ تھیم کی تبدیلیاں صارف کے تیار کردہ کیشے کے ذریعے لاگو ہوتی ہیں۔ `argvus taskbar-calendar reload` استعمال کریں اگر چلنے والے پاپ اپ کو واضح ریفریش کی ضرورت ہے۔
 
@@ -61,7 +61,7 @@ argvus taskbar-calendar service
 - مقامی واقعات ختم ہونے کے 10 منٹ بعد خود بخود ہٹا دیے جاتے ہیں۔ اگر کوئی واقعہ پہلے ہی ہو چکا ہے۔
   جب اسے محفوظ کیا جاتا ہے تو ختم ہوجاتا ہے، یہ محفوظ کرنے کے بعد کم از کم 10 منٹ تک دستیاب رہتا ہے۔
 
-درآمد شدہ `.ics` فائلیں اپنی تاریخیں، ٹائم زونز (`TZID`) اور الارم (`VALARM`) رکھتی ہیں۔
+درآمد شدہ `.ics ` فائلیں اپنی تاریخیں، ٹائم زونز (` TZID `) اور الارم (` VALARM`) رکھتی ہیں۔
 درآمد شدہ واقعات اپنے الارم کے علاوہ اپنے آغاز پر بھی مطلع کرتے ہیں۔ اعادی واقعات (`RRULE`)
 ذخیرہ اور برآمد کیا جاتا ہے، لیکن صرف ان کا پہلا واقعہ دکھایا اور یاد دلایا جاتا ہے۔
 پیکج کی تازہ کاری کے بعد یاد دہانی کی سروس ختم ہوجاتی ہے اور سسٹمڈ نیا ورژن شروع کرتا ہے۔
@@ -71,7 +71,7 @@ argvus taskbar-calendar service
 ## راستے
 
 - ترتیب: `/etc/argvus/taskbar/calendar/config.toml` (سسٹم وسیع؛ پیکیج کے ساتھ ایک طے شدہ جہاز)۔
-- طرزیں: `/etc/argvus/taskbar/calendar/style.css` اور `theme.css`؛ فعال ARGVUS تھیم کے رنگ نیچے کیشے کے ذریعے تھیم کی تعمیر سے آتے ہیں۔
+- طرزیں: `/etc/argvus/taskbar/calendar/style.css ` اور ` theme.css`؛ فعال ARGVUS تھیم کے رنگ نیچے کیشے کے ذریعے تھیم کی تعمیر سے آتے ہیں۔
 - ڈیٹا: `$XDG_DATA_HOME/argvus-taskbar-calendar/` (یا `~/.local/share/argvus-taskbar-calendar/`)۔
 - ریاست: `$XDG_STATE_HOME/argvus/taskbar/calendar/` (یا `~/.local/state/...`)؛ واقعات ٹوگل وہاں رکھا جاتا ہے.
 - کیشے: `$XDG_CACHE_HOME/argvus-taskbar-calendar/` (یا `~/.cache/argvus-taskbar-calendar/`)۔
@@ -85,4 +85,4 @@ argvus taskbar-calendar service
 
 ## مشترکہ زبان کی کیٹلاگ
 
-انٹرفیس تمام دس زبانوں کے لیے مشترکہ `argvus-i18n` کیٹلاگ استعمال کرتا ہے۔ متن کو ماسٹر ورک اسپیس میں `resources/locales/<locale>/taskbar-calendar.json` میں اسٹور کیا جاتا ہے اور `argvus` کے ذریعے انسٹال کیا جاتا ہے۔ انگریزی فال بیک ہے؛ نئی زبانوں کو اب مقامی دو لسانی لغت کی ضرورت نہیں ہے۔
+انٹرفیس تمام دس زبانوں کے لیے مشترکہ `argvus-i18n ` کیٹلاگ استعمال کرتا ہے۔ متن کو ماسٹر ورک اسپیس میں ` resources/locales/<locale>/taskbar-calendar.json ` میں اسٹور کیا جاتا ہے اور ` argvus` کے ذریعے انسٹال کیا جاتا ہے۔ انگریزی فال بیک ہے؛ نئی زبانوں کو اب مقامی دو لسانی لغت کی ضرورت نہیں ہے۔

@@ -1,5 +1,5 @@
 ---
-title: Appearance
+title: المظهر
 description: قم بتكوين اللغة المرئية المشتركة بواسطة مكونات ARGVUS.
 ---
 

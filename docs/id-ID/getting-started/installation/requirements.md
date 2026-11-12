@@ -1,5 +1,5 @@
 ---
-title: Requirements
+title: Persyaratan
 description: Persyaratan sistem dan prasyarat untuk ARGVUS.
 ---
 

@@ -28,4 +28,4 @@ description: 起動画面と認証画面を分ける。
 
 取得エラーは ` when the errno changes. ` when the errno changes. handoff.acquisition-failed として記録され、最終的な失敗を示します。通常のエラー終了ではソケットが削除されます。これらのマークは、DRMを待っているヘルパーと、実際にフレームを提示したヘルパーを区別します。
 
-この取得は [Linux DRM マスター権限ルール](https://github.com/torvalds/linux/blob/v6.18/drivers/gpu/drm/drm_auth.c)] に従います：かつてマスターになったことがない特権のないディスクリプタは `SET_MASTER` で自身を昇格させることはできませんが、現在マスターのいないプライマリノードを開くことで暗黙的にマスターを取得します。再オープンはグリーターに権限を追加することを回避します。
+この取得は [Linux DRM マスター権限ルール](https://github.com/torvalds/linux/blob/v6.18/drivers/gpu/drm/drm_auth.c) に従います：かつてマスターになったことがない特権のないディスクリプタは `SET_MASTER` で自身を昇格させることはできませんが、現在マスターのいないプライマリノードを開くことで暗黙的にマスターを取得します。再オープンはグリーターに権限を追加することを回避します。

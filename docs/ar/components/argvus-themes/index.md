@@ -1,5 +1,5 @@
 ---
-title: Themes
+title: المواضيع
 description: تثبيت سمات ARGVUS وتحديدها وتخصيصها واستيرادها وتصديرها.
 ---
 
@@ -19,7 +19,7 @@ description: تثبيت سمات ARGVUS وتحديدها وتخصيصها واس
 - [تثبيت السمات](/docs/components/argvus-themes/installing-themes/) - من أين تأتي السمات الرسمية وكيفية تثبيت واحدة منها أو جميعها باستخدام `pacman`.
 - [الموضوعات الرسمية](/docs/components/argvus-themes/official-themes/) - الكتالوج ولون التمييز الافتراضي لكل سمة وكيفية اختيار السمة ووضعها.
 - [تخصيص لون التمييز](/docs/components/argvus-themes/highlight-color/) — قم بتغيير لون التمييز بشكل مستقل عن السمة.
-- [                                                         ﺕﺎﻤﺴﻟﺍ ﺮﻳﺪﺼﺗﻭ ﺩﺍﺮﻴﺘﺳﺍ](/docs/components/argvus-themes/import-and-export/).ﺮﺧﺁ ﺯﺎﻬﺟ ﻰﻠﻋ ﺎﻫﺩﺍﺮﻴﺘﺳﺍﻭ ﻚﺑ ﺔﺻﺎﺧ ﺔﻤﺴﻛ ،ﻚﺑ ﺔﺻﺎﺨﻟﺍ ﺔﺷﺎﺸﻟﺍ ﺔﻴﻔﻠﺧﻭ ﺰﻴﻴﻤﺘﻟﺍ ﻥﻮﻟ ﻊﻣ 
+- [                                                         ﺕﺎﻤﺴﻟﺍ ﺮﻳﺪﺼﺗﻭ ﺩﺍﺮﻴﺘﺳﺍ](/docs/components/argvus-themes/import-and-export/).ﺮﺧﺁ ﺯﺎﻬﺟ ﻰﻠﻋ ﺎﻫﺩﺍﺮﻴﺘﺳﺍﻭ ﻚﺑ ﺔﺻﺎﺧ ﺔﻤﺴﻛ ،ﻚﺑ ﺔﺻﺎﺨﻟﺍ ﺔﺷﺎﺸﻟﺍ ﺔﻴﻔﻠﺧﻭ ﺰﻴﻴﻤﺘﻟﺍ ﻥﻮﻟ ﻊﻣ
 
 ## مرجع سريع
 

@@ -13,6 +13,6 @@ Déconnectez-vous, sélectionnez **ARGVUS** depuis votre gestionnaire d'affichag
 
 ## Étapes suivantes
 
-- Besoin des prérequis, de la configuration manuelle du dépôt ou des détails sur ce que fait l'installateur ? Consultez le guide complet [Getting Started](/docs/getting-started/)].
-- Vous voulez personnaliser votre bureau après la première connexion ? Consultez [First configuration](/docs/user-guide/getting-started/)] dans le Guide de l'utilisateur.
-- Quelque chose ne fonctionne pas ? Consultez [Troubleshooting](/docs/user-guide/troubleshooting/)].
+- Besoin des prérequis, de la configuration manuelle du dépôt ou des détails sur ce que fait l'installateur ? Consultez le guide complet [Getting Started](/docs/getting-started/).
+- Vous voulez personnaliser votre bureau après la première connexion ? Consultez [First configuration](/docs/user-guide/getting-started/) dans le Guide de l'utilisateur.
+- Quelque chose ne fonctionne pas ? Consultez [Troubleshooting](/docs/user-guide/troubleshooting/).

@@ -18,12 +18,11 @@ El Panel de Control puede mostrar controles rápidos para una configuración que
 El hogar actual del Centro de Control proporciona estas áreas:
 
 El hogar es un catálogo de destinos agrupados en seis tarjetas. Cada destino abre su página directamente, y la búsqueda lo encuentra bajo cualquier tarjeta.
-
 - **Apariencia** — personaliza el escritorio: Estilo de Escritorio (tema, modo de apariencia, color de acento, fondos de pantalla, íconos y fuentes), Estilo de Aplicación (transparencia del terminal y del lanzador), Barra de Tareas, Panel de Control y Telemetría de Widgets.
 - **Escritorio y Entrada** — configura el espacio de trabajo: Hyprland (Windows: Reglas, Espacios y Modo, animaciones, desenfoque, bordes, sombra y la versión instalada), Pantallas, Teclado y Atajos y Ratón y Panel Táctil.
 - **Preferencias** — configuraciones personales y regionales: Idioma y Región (el idioma, zona horaria, formatos y centro de distribución del diseño del teclado), Fecha y Hora, Aplicaciones Predeterminadas, Energía y Sesión.
 - **Hardware y Conectividad** — dispositivos y conexiones: Resumen de Hardware, Red y Wi-Fi, Bluetooth, Audio y Almacenamiento.
-- **Administración del Sistema** — gestionar el sistema operativo: Paquetes, Servicios, Arranque, Nombre del Host, Usuarios y Grupos, Cortafuegos y Notificaciones (No Molestar). 
+- **Administración del Sistema** — gestionar el sistema operativo: Paquetes, Servicios, Arranque, Nombre del Host, Usuarios y Grupos, Cortafuegos y Notificaciones (No Molestar).
 - **Configuración** — el propio Centro de Control, listado después de las tarjetas: Idioma (el idioma del usuario) y Estilo (iconos decorativos y transparencia). Presione `s` para abrirlo.
 - **Herramientas y Diagnósticos** — herramientas de desarrollo y mantenimiento: Bienvenida a ARGVUS, Proyectos, Fragmentos (texto guardado para `argvus snippets`, escrito con `SUPER + ALT + N`), claves SSH (pares de claves en `~/.ssh` administrados por `argvus keys`), claves GPG (el llavero administrado por `argvus gpg`; gpg-agent usa pinentry-gtk), Servicios de Desarrollo, Doctor del Sistema y Acerca de ARGVUS.
 
@@ -98,7 +97,6 @@ Las aplicaciones predeterminadas seleccionan programas instalados para funciones
 ### Fragmentos
 
 Fragmentos es la página para el texto que `argvus snippets` escribe con `SUPER + ALT + N`. Se encuentra en **Herramientas y Diagnósticos → Fragmentos** (busque `snippets` o ejecute `argvus control-center snippets`).
-
 - **Nuevo fragmento** — escribe un **Nombre** y un **Contenido**, luego **Guardar fragmento**. Un nombre que ya exista reemplaza el contenido de ese fragmento.
 - **Fragmentos guardados** — listados con su posición (`1  email`) y el contenido en una sola línea. Presiona Enter en el contenido para editarlo. **Tipo** indica el tipo del fragmento, y **Eliminar** pide confirmación.
 - **Abrir selector** — abre el mismo selector que `SUPER + ALT + N`.
@@ -109,7 +107,7 @@ La página lee las entradas de `argvus-config` y las escribe a través de `argvu
 
 ### Claves SSH
 
-Las claves SSH son la página para los pares de claves que `argvus keys` administra. Está en **Herramientas y Diagnósticos → Claves SSH** (busca `ssh keys` o ejecuta `argvus control-center ssh-keys`). 
+Las claves SSH son la página para los pares de claves que `argvus keys` administra. Está en **Herramientas y Diagnósticos → Claves SSH** (busca `ssh keys` o ejecuta `argvus control-center ssh-keys`).
 
 La página tiene cuatro partes, de arriba hacia abajo:
 
@@ -162,19 +160,19 @@ Keys ›           the keyring, on its own page, with the search at the top
 1. Abra **Centro de control → Herramientas y Diagnósticos → Claves GPG**. Desde la página de inicio, también puede buscar `gpg keys`.
 2. **Pinentry** está fijado a `pinentry-gtk`. La página solo lo muestra. La primera vez que se genera una clave, ARGVUS escribe ese pinentry en `gpg-agent.conf`, entre sus propias líneas de marcador, y mantiene sus otras líneas. Si ya escribió una línea `pinentry-program` fuera de esos marcadores, la generación se detiene con un error para que pueda eliminar esa línea.
 3. **Crear una clave:** en **Generar clave ▾**, escriba **Nombre completo** y **Correo electrónico**. Ambos son obligatorios, y **Generar clave** permanece deshabilitado hasta que ambos tengan texto. **Comentario** es opcional. El ID de usuario se convierte en `Name (comment) <e-mail>`.
-   - **Algoritmo** alterna entre **RSA** y **DSA ElGamal**. Una clave DSA obtiene una subclave de cifrado ElGamal; una clave RSA obtiene una subclave RSA.
-   - **Fortaleza de la clave** recorre los tamaños del algoritmo: RSA 1024, 2048 y 4096; DSA 1024, 2048 y 3072. gpg no crea claves DSA superiores a 3072 bits, por lo que 4096 no se ofrece para DSA.
-   - **Fecha de vencimiento** abre su propia página. Escriba la fecha en el formato de su idioma: `DD/MM/YYYY` en portugués, español, francés, italiano, alemán y ruso; `YYYY/MM/DD` en inglés, chino, japonés y coreano. La fecha debe ser posterior a hoy. Active **Nunca expira** para que la clave sea permanente; el campo de fecha se desactiva y no se utiliza.
-   - **Frase de contraseña** abre su propia página. **Proteger con una frase de contraseña** está activado por defecto; escriba la **Frase de contraseña** y luego **Confirmar frase de contraseña**. Ambas deben coincidir. Desactivar la protección borra ambos campos, y la página solicita confirmación antes de generar una clave sin protección.
+- **Algoritmo** alterna entre **RSA** y **DSA ElGamal**. Una clave DSA obtiene una subclave de cifrado ElGamal; una clave RSA obtiene una subclave RSA.
+- **Fortaleza de la clave** recorre los tamaños del algoritmo: RSA 1024, 2048 y 4096; DSA 1024, 2048 y 3072. gpg no crea claves DSA superiores a 3072 bits, por lo que 4096 no se ofrece para DSA.
+- **Fecha de vencimiento** abre su propia página. Escriba la fecha en el formato de su idioma: `DD/MM/YYYY` en portugués, español, francés, italiano, alemán y ruso; `YYYY/MM/DD` en inglés, chino, japonés y coreano. La fecha debe ser posterior a hoy. Active **Nunca expira** para que la clave sea permanente; el campo de fecha se desactiva y no se utiliza.
+- **Frase de contraseña** abre su propia página. **Proteger con una frase de contraseña** está activado por defecto; escriba la **Frase de contraseña** y luego **Confirmar frase de contraseña**. Ambas deben coincidir. Desactivar la protección borra ambos campos, y la página solicita confirmación antes de generar una clave sin protección.
 4. Seleccione **Generar clave** y presione `Enter`. La clave obtiene una clave de firma y una subclave de cifrado. La frase de contraseña se envía al lanzador en su entrada estándar, nunca como un argumento de comando. Si la generación falla, los demás campos permanecen, pero las frases de contraseña se borran y deben ser escritas nuevamente.
 5. **Cancelar** borra todos los campos del formulario y devuelve las fechas y tamaños a sus valores predeterminados.
 6. **Importar:** en **Importar ▾**, elija **Importar clave pública…** o **Importar clave privada…**. Se abre el gestor de archivos para que pueda elegir el archivo. Una clave privada solicita confirmación primero, y su frase de contraseña la pedirá gpg cuando se use la clave. Si el gestor de archivos es gráfico, no puede informar el archivo a la página; entonces la página abre un campo donde debe escribir la ruta.
 7. **Claves ›** abre el llavero. Cada clave muestra su identidad, huella digital, tipo, caducidad y si su clave privada está en el llavero. Cada clave tiene estas acciones:
    - **Editar clave ›** abre la página de la propia clave (descrita más abajo).
-   - **Exportar clave pública…** pide una ruta de archivo, propuesta como `~/<fingerprint>.asc`. El archivo se crea con el modo `600`. Un archivo existente nunca se reemplaza.
-   - **Exportar clave privada…** aparece solo para claves con parte privada. Pide confirmación, luego una ruta de archivo, propuesta como `~/<fingerprint>-private.asc`. El archivo se crea con el modo `600`.
-   - **Copiar clave pública** y **Copiar huella digital** copian al portapapeles de Wayland con `wl-copy`.
-   - **Eliminar clave…** pide confirmación, con el enfoque en Cancelar. Elimina la clave y su parte privada.
+- **Exportar clave pública…** pide una ruta de archivo, propuesta como `~/<fingerprint>.asc`. El archivo se crea con el modo `600`. Un archivo existente nunca se reemplaza.
+- **Exportar clave privada…** aparece solo para claves con parte privada. Pide confirmación, luego una ruta de archivo, propuesta como `~/<fingerprint>-private.asc`. El archivo se crea con el modo `600`.
+- **Copiar clave pública** y **Copiar huella digital** copian al portapapeles de Wayland con `wl-copy`.
+- **Eliminar clave…** pide confirmación, con el enfoque en Cancelar. Elimina la clave y su parte privada.
 8. **Buscar una clave:** en la página de **Claves**, la barra de búsqueda en la parte superior filtra las claves. Escribe para reducir la lista; la búsqueda coincide con la identidad (que incluye el comentario) y la huella digital. `Esc` borra la búsqueda.
 9. **Editar clave ›** muestra los detalles de la clave, luego estas acciones:
    - **Fecha de caducidad ›** cambia la expiración de la clave y de cada una de sus subclaves. Use **Nunca caduca** para eliminar la expiración. **Aplicar** guarda el cambio.
@@ -313,12 +311,12 @@ Mientras la búsqueda de Inicio está activa, se ingresan claves imprimibles en 
 
 Abra **Apariencia** para ver los controles visuales integrados. Sus grupos son:
 
-- **Escritorio** — **Tema** (elige una familia incluida y su modo Pegajoso o Espaciado, o exporta, importa, aplica y elimina tus propios temas, consulta [Importar y exportar temas](/docs/components/argvus-themes/import-and-export/)), **Modo de Apariencia** (Pegajoso o Espaciado, independiente del tema), **Color de Acento** (un acento incluido o un color RGB de seis dígitos válido), **Fondo de Pantalla** (un fondo de pantalla incluido o un archivo personalizado) **Iconos** (un tema de iconos instalado: busca en la lista con `/`, elige uno con Espacio o Enter, luego selecciona **Aplicar**; nada cambia antes de Aplicar) y **Fuentes** (los objetivos de fuente y las configuraciones de renderizado de fuentes, abiertos en la página de Fuentes).  
+- **Escritorio** — **Tema** (elige una familia incluida y su modo Pegajoso o Espaciado, o exporta, importa, aplica y elimina tus propios temas, consulta [Importar y exportar temas](/docs/components/argvus-themes/import-and-export/)), **Modo de Apariencia** (Pegajoso o Espaciado, independiente del tema), **Color de Acento** (un acento incluido o un color RGB de seis dígitos válido), **Fondo de Pantalla** (un fondo de pantalla incluido o un archivo personalizado) **Iconos** (un tema de iconos instalado: busca en la lista con `/`, elige uno con Espacio o Enter, luego selecciona **Aplicar**; nada cambia antes de Aplicar) y **Fuentes** (los objetivos de fuente y las configuraciones de renderizado de fuentes, abiertos en la página de Fuentes).
 - **Estilo de la Aplicación** — la transparencia de la **Terminal** y del **Lanzador**.
 
 La tarjeta Apariencia contiene las superficies que usan estos ajustes: **Telemetría de Widget** (habilitar la superficie de telemetría, seleccionar sus bloques disponibles y reordenarlos con `Shift+Up`/`Shift+Down` en un bloque enfocado) y **Panel de Control** (habilitar, deshabilitar y reordenar tarjetas del panel con `Shift+Up`/`Shift+Down` en una tarjeta enfocada, aplicado inmediatamente a través del mismo primitivo que usa el arrastrar y soltar del panel real).
 
-Estas acciones actualizan el estado lógico ARGVUS y aplican la configuración de ejecución afectada. Ver [Apariencia](/docs/user-guide/appearance/)], [Temas](/docs/user-guide/appearance/)] y [Ventanas y disposición](/docs/argvus-hyprland/windows-and-layout/)].
+Estas acciones actualizan el estado lógico ARGVUS y aplican la configuración de ejecución afectada. Ver [Apariencia](/docs/user-guide/appearance/), [Temas](/docs/user-guide/appearance/) y [Ventanas y disposición](/docs/argvus-hyprland/windows-and-layout/).
 
 ## Uso del teclado
 
@@ -341,7 +339,6 @@ El soporte de restablecimiento es deliberadamente por dominio:
 - **Aplicaciones predeterminadas** puede restaurar todos los valores predeterminados, una categoría o un selector individual.
 - **Atajos de teclado** puede restaurar una vinculación o todas las vinculaciones y luego recargar las vinculaciones de sesión generadas.
 - **Reglas de ventana** se encuentran en **Escritorio y Entrada → Hyprland → Ventanas → Reglas** (busca `window rules` o ejecuta `argvus control-center window-rules`). Cada regla tiene una fila de **Espacio de trabajo** (`Enter` o `←/→` avanza del 1 al 10) y una fila de **Clases de ventana** que abre un campo de texto con expresiones regulares separadas por comas. **Agregar regla** crea `rule-N` con espacio de trabajo 1 y sin clases. El **Eliminar regla** de cada regla se encuentra en la **Zona de peligro** y solicita confirmación. Cada cambio se escribe en `hyprland.window_rules` en `argvus config` y recarga la configuración inmediatamente; los patrones de clase inválidos son rechazados y mostrados como error.
-
 - **Proyectos** se encuentra en **Herramientas y Diagnósticos → Proyectos** (busque `projects` o ejecute `argvus control-center projects`). **Agregar carpeta de proyecto** y **Agregar carpeta raíz** se ubican en la parte superior de la página y abren un campo de texto con la ruta; el lanzador verifica que sea un directorio y muestra el error de lo contrario, incluyendo cuando la carpeta haría que el conteo efectivo de proyectos supere 9 (`SUPER + CTRL + 1..9` no puede manejar más). Cada carpeta configurada, marcada como raíz (sus subcarpetas son proyectos) o un proyecto individual, obtiene su propio bloque debajo del formulario con una fila **Eliminar** que pide confirmación. La página invoca `argvus-projects`, por lo que los cambios son escritos por el lanzador y se aplican la próxima vez que se ejecute `SUPER + O` o `SUPER + CTRL + 1..9`. Si `argvus-projects` no está instalado, la página lo indica.
 - **Otras páginas del sistema** muestran acciones de reinicio, aplicar, eliminar o restaurar solo cuando el proveedor subyacente las soporta.
 
@@ -408,10 +405,10 @@ La instalación de paquetes, actualizaciones y eliminación no requieren Snapper
 
 ### Validación manual
 
-- En una raíz ext4/xfs, abra la página en inglés y portugués. En portugués, verifique el mensaje exacto **Este sistema de arquivos não é Btrfs** y verifique que c/d no abran una operación.  
-- En una VM desechable Btrfs, pruebe Snapper ausente, Snapper sin una configuración de raíz y una configuración llamada `root` apuntando a otro subvolumen.  
-- Con una configuración de raíz existente, liste las instantáneas, abra detalles, cree una instantánea con espacios/caracteres especiales, cancele una eliminación y luego elimine solo la instantánea recién creada después de confirmar su número y descripción.  
-- Verifique la autenticación denegada/cancelada, las instantáneas activas/protegidas por defecto, refresque, navegación por teclado, cambio de tamaño y ambos idiomas. No pruebe eliminación contra las instantáneas necesarias para la recuperación.  
+- En una raíz ext4/xfs, abra la página en inglés y portugués. En portugués, verifique el mensaje exacto **Este sistema de arquivos não é Btrfs** y verifique que c/d no abran una operación.
+- En una VM desechable Btrfs, pruebe Snapper ausente, Snapper sin una configuración de raíz y una configuración llamada `root` apuntando a otro subvolumen.
+- Con una configuración de raíz existente, liste las instantáneas, abra detalles, cree una instantánea con espacios/caracteres especiales, cancele una eliminación y luego elimine solo la instantánea recién creada después de confirmar su número y descripción.
+- Verifique la autenticación denegada/cancelada, las instantáneas activas/protegidas por defecto, refresque, navegación por teclado, cambio de tamaño y ambos idiomas. No pruebe eliminación contra las instantáneas necesarias para la recuperación.
 
 Solo el paquete `argvus` cambia. Reconstruya desde `de/argvus` con `make build` para producir el paquete `.pkg.tar.zst`; instalarlo es una acción separada del operador.
 
@@ -421,9 +418,9 @@ Bluetooth aparece en Bienvenida solo cuando el Centro de Control detecta un adap
 
 El idioma y la distribución del teclado de la sesión son preferencias personales y no requieren privilegios de administrador. Los perfiles nuevos predeterminadamente usan inglés y la distribución de teclado de EE. UU.; las preferencias personales existentes se conservan. La fecha/hora, NTP, la generación de la configuración regional del sistema y el mapa de teclado de la consola (TTY) mantienen su comportamiento administrativo a nivel del sistema.
 
-Para un teclado de sesión brasileño, seleccione `br`, aplique el diseño, luego seleccione `abnt2` en Variante. Esto escribe la configuración personal de Hyprland sin autorización administrativa; el mapa de teclas de la consola es separado. ABNT2 usa teclas muertas: `~` seguido de `a` produce `ã`, y `~` seguido de Espacio produce `~`. Aplicar la variante activa su diseño predeterminado configurado; los fallos de activación se reportan.  
+Para un teclado de sesión brasileño, seleccione `br`, aplique el diseño, luego seleccione `abnt2` en Variante. Esto escribe la configuración personal de Hyprland sin autorización administrativa; el mapa de teclas de la consola es separado. ABNT2 usa teclas muertas: `~` seguido de `a` produce `ã`, y `~` seguido de Espacio produce `~`. Aplicar la variante activa su diseño predeterminado configurado; los fallos de activación se reportan.
 
-La Zona Horaria guarda TZ bajo `$XDG_CONFIG_HOME/environment.d/20-timezone.conf` sin autorización. Cierre sesión y vuelva a iniciarla para que las aplicaciones lo hereden. Fecha y Hora continúa mostrando y editando el reloj del sistema en la zona horaria del sistema, con autorización administrativa; NTP no cambia.  
+La Zona Horaria guarda TZ bajo `$XDG_CONFIG_HOME/environment.d/20-timezone.conf` sin autorización. Cierre sesión y vuelva a iniciarla para que las aplicaciones lo hereden. Fecha y Hora continúa mostrando y editando el reloj del sistema en la zona horaria del sistema, con autorización administrativa; NTP no cambia.
 
 Los perfiles de pantalla y las asignaciones de espacios de trabajo se aplican a través de la configuración Lua generada y una recarga de Hyprland. La energía del monitor utiliza el despachador Lua DPMS soportado por Hyprland 0.56.2.
 
@@ -476,9 +473,9 @@ La salida de la transacción se sanitiza y se limita. La pantalla retiene hasta 
 
 La lectura del inventario de arranque utiliza el kernel `pkgbase` de Arch para localizar imágenes de kernel, archivos initramfs y preajustes de mkinitcpio mientras se muestra la versión del kernel por separado. Se leen arrays literales de mkinitcpio sin incluir sus paréntesis ni ejecutar la configuración.
 
-Los cambios de energía para la tapa, el botón de encendido y mantener activo se guardan en la configuración canónica solo después de que la acción en tiempo de ejecución tenga éxito. Cancelar la autorización conserva el valor guardado previamente intacto. Cuando ningún drop-in de logind de ARGVUS proporciona un valor, se lee la configuración principal de logind como respaldo.  
+Los cambios de energía para la tapa, el botón de encendido y mantener activo se guardan en la configuración canónica solo después de que la acción en tiempo de ejecución tenga éxito. Cancelar la autorización conserva el valor guardado previamente intacto. Cuando ningún drop-in de logind de ARGVUS proporciona un valor, se lee la configuración principal de logind como respaldo.
 
-Después de que un cambio de retención falla, la página vuelve a leer la configuración actual antes de mostrar sus valores nuevamente. La selección de configuración comienza en la primera entrada.  
+Después de que un cambio de retención falla, la página vuelve a leer la configuración actual antes de mostrar sus valores nuevamente. La selección de configuración comienza en la primera entrada.
 
 Las operaciones del paquete ARGVUS comparten un bloqueo exclusivo con la restauración selectiva. La instalación, eliminación, reinstalación, degradación, actualización de metadatos, limpieza de caché y cambios en el repositorio o espejo se rechazan mientras se mantiene ese bloqueo. Esta coordinación cubre las operaciones iniciadas a través del asistente de ARGVUS; las herramientas externas pacman y AUR no usan este bloqueo.
 
@@ -535,8 +532,8 @@ Comandos: `argvus windows list --json`, `watch --json`, `position top|bottom`, `
 
 ## Submenú de ventanas y cierre de la aplicación
 
-**Escritorio y Entrada → Hyprland → Ventanas** agrupa **Reglas**, **Espacios** y **Modo**. 
-Reglas edita la colocación por aplicación; Espacios edita los espacios internos y externos; Modo contiene el selector inmediato de Tile/Flotante, separado del formulario de reglas. 
+**Escritorio y Entrada → Hyprland → Ventanas** agrupa **Reglas**, **Espacios** y **Modo**.
+Reglas edita la colocación por aplicación; Espacios edita los espacios internos y externos; Modo contiene el selector inmediato de Tile/Flotante, separado del formulario de reglas.
 Buscar abre las mismas páginas, y Atrás devuelve a Ventanas antes de Hyprland.
 
 Las rutas directas son `argvus control-center hyprland windows`, seguidas opcionalmente por `rules`, `spaces` o `mode`. Las rutas existentes `window-rules` y `appearance window-spaces` permanecen como alias y muestran las nuevas migas de pan.

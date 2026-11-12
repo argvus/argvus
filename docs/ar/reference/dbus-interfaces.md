@@ -1,5 +1,5 @@
 ---
-title: D-Bus interfaces
+title: واجهات D-Bus
 description: عقود D-Bus المستخدمة بواسطة عمليات تكامل ARGVUS.
 ---
 

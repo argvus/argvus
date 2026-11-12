@@ -49,17 +49,17 @@ Die untenstehenden Pakete sind die offiziellen Themenpakete, die heute veröffen
 
 | Paket | Thema |
 | --- | --- |
-| `argvus-theme-one-dark` | One Dark |
+| `argvus-theme-one-dark` | Ein Dunkler |
 | `argvus-theme-dracula` | Dracula |
-| `argvus-theme-silver-dark` | Silver Dark |
-| `argvus-theme-slate-dark` | Slate Dark |
-| `argvus-theme-universe` | Universe |
+| `argvus-theme-silver-dark` | Silber dunkel |
+| `argvus-theme-slate-dark` | Schiefer dunkel |
+| `argvus-theme-universe` | Universum |
 | `argvus-theme-gruvbox-high-dark` | Gruvbox High Dark |
 | `argvus-theme-gruvbox-dark` | Gruvbox Dark |
-| `argvus-theme-rose-pine` | Rosé Pine |
-| `argvus-theme-tokyo-night` | Tokyo Night |
-| `argvus-theme-solitude` | Solitude |
-| `argvus-theme-sunset` | Sunset |
+| `argvus-theme-rose-pine` | Rosé-Kiefer |
+| `argvus-theme-tokyo-night` | Tokio-Nacht |
+| `argvus-theme-solitude` | Einsamkeit |
+| `argvus-theme-sunset` | Sonnenuntergang |
 | `argvus-theme-matrix` | Matrix |
 | `argvus-theme-monokai-dark` | Monokai Dark |
 
@@ -67,14 +67,14 @@ Die untenstehenden Pakete sind die offiziellen Themenpakete, die heute veröffen
 
 | Paket | Thema |
 | --- | --- |
-| `argvus-theme-github-light` | GitHub Light |
-| `argvus-theme-solarized-light` | Solarized Light |
-| `argvus-theme-nord-light` | Nord Light |
-| `argvus-theme-one-light` | One Light |
-| `argvus-theme-everforest-light` | Everforest Light |
+| `argvus-theme-github-light` | GitHub Licht |
+| `argvus-theme-solarized-light` | Solarisiertes Licht |
+| `argvus-theme-nord-light` | Nordlicht |
+| `argvus-theme-one-light` | Ein Licht |
+| `argvus-theme-everforest-light` | Everforest Licht |
 | `argvus-theme-catppuccin-latte` | Catppuccin Latte |
-| `argvus-theme-gruvbox-light` | Gruvbox Light |
-| `argvus-theme-watercolor` | Watercolor |
+| `argvus-theme-gruvbox-light` | Gruvbox Licht |
+| `argvus-theme-watercolor` | Aquarell |
 
 Die eingebauten **ARGVUS Dark** und **ARGVUS Light** Themen benötigen kein separates Paket; sie werden mit `argvus-appearance` geliefert.
 

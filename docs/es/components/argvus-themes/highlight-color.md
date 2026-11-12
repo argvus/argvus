@@ -23,7 +23,7 @@ Para volver al color definido por el tema seleccionado, abre **Centro de Control
 
 - Un color de resaltado que elijas es una anulación independiente. Permanece cuando cambias a otro tema, por lo que el color que elegiste se mantiene igual.
 - Un tema que apliques después de **Restablecer al valor predeterminado del tema** toma el color de resaltado nuevamente y usa su valor predeterminado.
-- Exportar el tema activo almacena el color de resaltado que está activo al exportar como el acento de la paleta del nuevo tema. Ver [Importar y exportar temas](/docs/components/argvus-themes/import-and-export/)].
+- Exportar el tema activo almacena el color de resaltado que está activo al exportar como el acento de la paleta del nuevo tema. Ver [Importar y exportar temas](/docs/components/argvus-themes/import-and-export/).
 
 ## Dónde se almacena el valor
 

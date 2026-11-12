@@ -41,14 +41,14 @@ description: 配置 ARGVUS 组件共享的视觉语言。
 
 现有的 `float` 布局值和 `-float` 主题标识符被识别为宽松型的旧名称。新的布局值和解析后的主题标识符使用 `spaced` 和 `-spaced`。
 
-模式更改几何和表面处理；它不会创建第六个颜色系列。请参阅 [Themes](/docs/user-guide/appearance/)] 以进行选择，以及 [Desktop](/docs/user-guide/desktop/)] 了解任务栏和窗口布局。
+模式更改几何和表面处理；它不会创建第六个颜色系列。请参阅 [Themes](/docs/user-guide/appearance/) 以进行选择，以及 [Desktop](/docs/user-guide/desktop/) 了解任务栏和窗口布局。
 
 - [主题](/docs/user-guide/appearance/)
 - [壁纸](/docs/argvus-appearance/wallpapers/)
 - [字体和图标](/docs/argvus-appearance/fonts-and-icons/)
 - [效果](/docs/argvus-appearance/effects/)
 
-控制中心公开了面向用户的设置。该实现由`argvus-appearance`、`argvus-session`、外壳组件和资产包共享。参见 [外观架构](/docs/developer-guide/subsystems/appearance-and-themes/)]。
+控制中心公开了面向用户的设置。该实现由`argvus-appearance`、`argvus-session`、外壳组件和资产包共享。参见 [外观架构](/docs/developer-guide/subsystems/appearance-and-themes/)。
 
 ## 窗口晃动
 

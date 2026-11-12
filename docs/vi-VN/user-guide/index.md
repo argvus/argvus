@@ -1,5 +1,5 @@
 ---
-title: User Guide
+title: Hướng dẫn sử dụng
 description: Cài đặt, định cấu hình và sử dụng môi trường máy tính để bàn ARGVUS.
 ---
 

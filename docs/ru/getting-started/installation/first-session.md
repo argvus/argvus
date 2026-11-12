@@ -9,4 +9,4 @@ description: Запустите ARGVUS после установки.
 ```sh
 argvus --start-desktop
 ```
-После входа в систему используйте `argvus sessionctl status`, чтобы проверить целевого пользователя ARGVUS. Если компоновщик или оболочка не запускаются, следуйте [инструкции по устранению неполадок с сессией](/docs/user-guide/troubleshooting/session-startup/)].
+После входа в систему используйте `argvus sessionctl status`, чтобы проверить целевого пользователя ARGVUS. Если компоновщик или оболочка не запускаются, следуйте [инструкции по устранению неполадок с сессией](/docs/user-guide/troubleshooting/session-startup/).

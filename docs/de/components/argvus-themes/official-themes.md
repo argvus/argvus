@@ -22,7 +22,7 @@ Jedes Thema funktioniert in zwei Modi. Der Modus ist vom Thema unabhängig: Änd
 | Modus | Fensterabstände | Außenabstand | Fensterabrundung | Taskleiste und Shell-Abstand |
 | --- | ---: | ---: | ---: | ---: |
 | Sticky | `2` | `0` | `0` | nahe am Rand |
-| Spaced | `10` | `18` | `4` | `18` |
+| Abstand | `10` | `18` | `4` | `18` |
 
 Um den Modus zu wechseln, öffnen Sie **Systemsteuerung → Erscheinungsbild → Modus** und wählen **Sticky** oder **Spaced**. Ihre manuellen Anpassungen dieser Layoutwerte bleiben bis zur nächsten expliziten Themenauswahl erhalten.
 
@@ -30,17 +30,17 @@ Um den Modus zu wechseln, öffnen Sie **Systemsteuerung → Erscheinungsbild →
 
 | Thema | Paket | Standard-Hervorhebung |
 | --- | --- | --- |
-| One Dark | `argvus-theme-one-dark` | `#61AFEF` |
+| Ein Dunkler | `argvus-theme-one-dark` | `#61AFEF` |
 | Dracula | `argvus-theme-dracula` | `#BD93F9` |
-| Silver Dark | `argvus-theme-silver-dark` | `#595959` |
-| Slate Dark | `argvus-theme-slate-dark` | `#7391A5` |
-| Universe | `argvus-theme-universe` | `#EEEEEE` |
+| Silber dunkel | `argvus-theme-silver-dark` | `#595959` |
+| Schiefer dunkel | `argvus-theme-slate-dark` | `#7391A5` |
+| Universum | `argvus-theme-universe` | `#EEEEEE` |
 | Gruvbox High Dark | `argvus-theme-gruvbox-high-dark` | `#D79921` |
 | Gruvbox Dark | `argvus-theme-gruvbox-dark` | `#D4BE98` |
-| Rosé Pine | `argvus-theme-rose-pine` | `#C4A7E7` |
-| Tokyo Night | `argvus-theme-tokyo-night` | `#7AA2F7` |
-| Solitude | `argvus-theme-solitude` | `#798186` |
-| Sunset | `argvus-theme-sunset` | `#E2BE8A` |
+| Rosé-Kiefer | `argvus-theme-rose-pine` | `#C4A7E7` |
+| Tokio-Nacht | `argvus-theme-tokyo-night` | `#7AA2F7` |
+| Einsamkeit | `argvus-theme-solitude` | `#798186` |
+| Sonnenuntergang | `argvus-theme-sunset` | `#E2BE8A` |
 | Matrix | `argvus-theme-matrix` | `#82FB9C` |
 | Monokai Dark | `argvus-theme-monokai-dark` | `#78DCE8` |
 | Lady Mist | `argvus-theme-lady-mist` | `#354B78` |
@@ -49,15 +49,15 @@ Um den Modus zu wechseln, öffnen Sie **Systemsteuerung → Erscheinungsbild →
 
 | Thema | Paket | Standardhervorhebung |
 | --- | --- | --- |
-| GitHub Light | `argvus-theme-github-light` | `#0969DA` |
-| Solarized Light | `argvus-theme-solarized-light` | `#268BD2` |
-| Nord Light | `argvus-theme-nord-light` | `#5E81AC` |
-| One Light | `argvus-theme-one-light` | `#4078F2` |
-| Everforest Light | `argvus-theme-everforest-light` | `#3A94C5` |
+| GitHub Licht | `argvus-theme-github-light` | `#0969DA` |
+| Solarisiertes Licht | `argvus-theme-solarized-light` | `#268BD2` |
+| Nordlicht | `argvus-theme-nord-light` | `#5E81AC` |
+| Ein Licht | `argvus-theme-one-light` | `#4078F2` |
+| Everforest Licht | `argvus-theme-everforest-light` | `#3A94C5` |
 | Catppuccin Latte | `argvus-theme-catppuccin-latte` | `#1E66F5` |
-| Gruvbox Light | `argvus-theme-gruvbox-light` | `#458588` |
-| Watercolor | `argvus-theme-watercolor` | `#1A639C` |
-| Obsidian Light | `argvus-theme-obsidian-light` | `#334A78` |
+| Gruvbox Licht | `argvus-theme-gruvbox-light` | `#458588` |
+| Aquarell | `argvus-theme-watercolor` | `#1A639C` |
+| Obsidianlicht | `argvus-theme-obsidian-light` | `#334A78` |
 
 ## Eingebaute Themen
 

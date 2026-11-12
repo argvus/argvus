@@ -1,5 +1,5 @@
 ---
-title: ARGVUS Clock
+title: Relógio ARGVUS
 description: Relógio, relógios mundiais, cronômetro, temporizador e alarmes com som.
 ---
 

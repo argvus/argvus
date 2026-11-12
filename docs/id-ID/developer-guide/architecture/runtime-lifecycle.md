@@ -1,5 +1,5 @@
 ---
-title: Runtime lifecycle
+title: Siklus hidup runtime
 description: Sesi startup dan kepemilikan layanan pengguna.
 ---
 

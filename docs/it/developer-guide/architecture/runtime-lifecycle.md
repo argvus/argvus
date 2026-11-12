@@ -42,7 +42,7 @@ Il target possiede comunemente `argvus-control-panel.service`, `argvus-taskbar.s
 
 I servizi che necessitano di una connessione client Wayland, compreso il Pannello di Controllo e il gestore di inattività, attendono un runtime Hyprland utilizzabile prima di avviare il loro client. Ciò evita di avviare Quickshell o hypridle su un socket obsoleto durante il passaggio del compositore; se Hyprland viene sostituito, systemd può avviare nuovamente il componente dopo che il nuovo runtime è disponibile.
 
-Un cambio di tema serializza il suo commit, la costruzione, la proiezione e i ricaricamenti dei consumer come un'unica operazione del ciclo di vita sotto il blocco del tema. Non ricarica `argvus-config.service` né riavvia i servizi: la proiezione che esegue si limita a scrivere file e lascia il tema al cambio mentre il blocco è attivo, e i consumer in esecuzione si ricaricano in loco (vedi [Aspetto e temi](/docs/developer-guide/subsystems/appearance-and-themes/)]).
+Un cambio di tema serializza il suo commit, la costruzione, la proiezione e i ricaricamenti dei consumer come un'unica operazione del ciclo di vita sotto il blocco del tema. Non ricarica `argvus-config.service` né riavvia i servizi: la proiezione che esegue si limita a scrivere file e lascia il tema al cambio mentre il blocco è attivo, e i consumer in esecuzione si ricaricano in loco (vedi [Aspetto e temi](/docs/developer-guide/subsystems/appearance-and-themes/)).
 
 Quando Hyprland esce, `argvus start` interrompe `argvus-session.target` e i servizi ad esso collegati. Ciò impedisce ai processi della barra delle applicazioni, della shell, delle notifiche, dell'inattività e degli appunti di sopravvivere al logout.
 

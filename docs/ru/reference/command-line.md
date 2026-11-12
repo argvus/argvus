@@ -20,7 +20,7 @@ description: Команда argvus, её подкоманды, флаги, ис�
 | Команда | Бежит | Заметки |
 | --- | --- | --- |
 | `argvus config ...` | В процессе | Модель конфигурации и инструменты. Также доступно через `theme-switch` и `effects-toggle`. |
-| `argvus theme ...` | В процессе | `apply ID` — это переключатель темы (такой же, как `theme-switch`). Сборки тем: `list` установленные темы, `check DIRECTORY` тема для установленных шаблонов, `render ID [--variant sticky\|spaced] [--accent #RRGGBB] [--output DIRECTORY]`. См. [Внешний вид и темы](/docs/developer-guide/subsystems/appearance-and-themes/)]. |
+| `argvus theme ...` | В процессе | `apply ID` — это переключатель темы (такой же, как `theme-switch`). Сборки тем: `list` установленные темы, `check DIRECTORY` тема для установленных шаблонов, `render ID [--variant sticky\|spaced] [--accent #RRGGBB] [--output DIRECTORY]`. См. [Внешний вид и темы](/docs/developer-guide/subsystems/appearance-and-themes/). |
 | `argvus i18n ...` | В процессе | Переводы: `get DOMAIN KEY [name=value...]`, `locale`, `list`, `validate [LOCALE]`. |
 | `argvus keys ...` | В процессе | Менеджер SSH-ключей. `gpg` — это псевдоним для подкоманд GPG. |
 | `argvus gpg ...` | В процессе | GPG-ключи: `list`, `status`, `generate`, `export-public`, `export-private`, `import`, `import-private`, `delete`, `edit`, `keyserver`. |

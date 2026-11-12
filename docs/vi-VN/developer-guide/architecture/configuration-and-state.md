@@ -1,5 +1,5 @@
 ---
-title: Configuration and state
+title: Cấu hình và trạng thái
 description: Trạng thái chia sẻ, ghi đè và tạo các tệp thời gian chạy.
 ---
 

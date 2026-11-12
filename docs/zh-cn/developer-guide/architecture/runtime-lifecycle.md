@@ -22,16 +22,16 @@ description: 会话启动与用户服务所有权。
 
 - 投影只在外观或效果部分发生更改时，或当其实际输出（已实现的用户副本和 `data/state/effects/<theme>.conf`）缺失时，才运行主题切换和效果适配器。
 - 准备阶段仅在 `$XDG_CACHE_HOME/argvus/session/theme-startup.stamp` 中的时间戳不再匹配打包的主题文件和强调标记时才应用启动主题和其上的强调。时间戳会对文件内容进行指纹识别，因此重新安装相同文件不会使其失效。更改的主题输入或新的强调会使其失效一次。迁移较旧的基于时间戳的时间戳也会重新构建一次。当主题被重新应用时，准备阶段还会重新加载已在之前文件上启动的 Hyprland。
-- GTK 设置 (`gsettings`) 仅在重新应用启动主题时写入。在登录之间，dconf 会保留它们，因此稳定登录时不会再次运行它们。  
-- `argvus-dunst.service` 是 `Type=dbus`：一旦 Dunst 拥有 `org.freedesktop.Notifications`，它就算作已启动，因此会话目标不会等待暂停状态恢复。  
-- 准备阶段并行运行 `spaces-switch.sh` 和 `borders-switch.sh` (`--apply-static`)：它们写入不相交的文件（面板的 JSONC 边距和有效几何，以及面板的 CSS 和 Rofi 主题）。  
-- 投影仅在生成文件内容更改时重写文件。未更改的文件将保持不变，因此稳定登录时不会再次 fsync 它们。  
+- GTK 设置 (`gsettings`) 仅在重新应用启动主题时写入。在登录之间，dconf 会保留它们，因此稳定登录时不会再次运行它们。
+- `argvus-dunst.service` 是 `Type=dbus`：一旦 Dunst 拥有 `org.freedesktop.Notifications`，它就算作已启动，因此会话目标不会等待暂停状态恢复。
+- 准备阶段并行运行 `spaces-switch.sh` 和 `borders-switch.sh` (`--apply-static`)：它们写入不相交的文件（面板的 JSONC 边距和有效几何，以及面板的 CSS 和 Rofi 主题）。
+- 投影仅在生成文件内容更改时重写文件。未更改的文件将保持不变，因此稳定登录时不会再次 fsync 它们。
 - 准备阶段的显示步骤 (`argvus config display session-prepare`) 仅应用 DPMS 和禁用的输出：它既不再次投影，也不重新加载合成器。
 - `argvus-session-reload.service` 运行 `argvus sessionctl reload-desktop --login`，只有在投影清单中将 `hyprland` 列为受影响的消费者时才重新加载 Hyprland。桌面组件不会等待它。
 
 会话指示器（Wayland 模式下的交接助手）从合成器交接映射，直到 `argvus sessionctl ready` 启动目标为止，因此单个指示器覆盖整个启动过程。它没有 `PartOf=`，因为在新登录时重新创建目标不能导致其关闭；`sessionctl` 会显式停止它，而 `RuntimeMaxSec=30` 会在没有停止信号时终止它。
 
-每个准备、重新加载和投影适配器步骤都会将其持续时间作为 `<epoch-ms> timing <step> <N>ms` 附加到会话日志中；参见 [会话启动故障排除](/docs/user-guide/troubleshooting/session-startup/)]。
+每个准备、重新加载和投影适配器步骤都会将其持续时间作为 `<epoch-ms> timing <step> <N>ms` 附加到会话日志中；参见 [会话启动故障排除](/docs/user-guide/troubleshooting/session-startup/)。
 
 路径解析、会话准备和 Hyprland 重载计划由 Rust 负责。
 `argvus config session-prepare` 和 `argvus config session-reload-config` 运行启动和重载步骤；旧的 `hypr-init.sh` 脚本已被移除。
@@ -42,7 +42,7 @@ description: 会话启动与用户服务所有权。
 
 需要 Wayland 客户端连接的服务，包括控制面板和空闲管理器，会在启动其客户端之前等待可用的 Hyprland 运行环境。这避免了在合成器切换期间对过时套接字启动 Quickshell 或 hypridle；如果 Hyprland 被替换，systemd 可以在新的运行环境可用后再次启动该组件。
 
-主题切换将在主题锁下将其提交、构建、投影和消费者重新加载序列化为一个生命周期操作。它不会重新加载 `argvus-config.service`，也不会重启服务：它执行的投影仅写入文件，并在持有锁的情况下将主题交给切换，正在运行的消费者将在原地重新加载（参见 [外观与主题](/docs/developer-guide/subsystems/appearance-and-themes/)]）。
+主题切换将在主题锁下将其提交、构建、投影和消费者重新加载序列化为一个生命周期操作。它不会重新加载 `argvus-config.service`，也不会重启服务：它执行的投影仅写入文件，并在持有锁的情况下将主题交给切换，正在运行的消费者将在原地重新加载（参见 [外观与主题](/docs/developer-guide/subsystems/appearance-and-themes/)）。
 
 当 Hyprland 退出时，`argvus start` 会停止 `argvus-session.target` 及与之相关的服务。这可以防止任务栏、外壳、通知、空闲和剪贴板进程在注销后继续运行。
 

@@ -93,16 +93,16 @@ argvus sessionctl apply-config
 
 `explain /path`는 리졸버(resolver)를 직접 읽고 유효한 값, 소스, 테마 및 변형을 출력합니다. 이는 생성된 파일을 파싱하거나 두 번째 우선 규칙을 생성하지 않습니다.
 
-테마와 효과 투영은 `argvus-config` 자체에서 구현됩니다.  
-테마 거래(`argvus theme-switch`, `theme-apply`를 실행), `argvus config accent` 및 `argvus effects-toggle`는 투영하지 않습니다: 이들은 이 CLI를 통해 유효성을 검사하고, 잠그고, 커밋한 후 `config.json`를 읽을 수 없는 외부 소비자를 조정합니다. `argvus effects-toggle`는 자체 출력이 없는 얇은 대리자입니다. 표현 도우미는 투영기에서 결코 호출되지 않으며, `data/generated/` 아래에 절대 작성해서는 안 됩니다.  
+테마와 효과 투영은 `argvus-config` 자체에서 구현됩니다.
+테마 거래(`argvus theme-switch`, `theme-apply`를 실행), `argvus config accent` 및 `argvus effects-toggle`는 투영하지 않습니다: 이들은 이 CLI를 통해 유효성을 검사하고, 잠그고, 커밋한 후 `config.json`를 읽을 수 없는 외부 소비자를 조정합니다. `argvus effects-toggle`는 자체 출력이 없는 얇은 대리자입니다. 표현 도우미는 투영기에서 결코 호출되지 않으며, `data/generated/` 아래에 절대 작성해서는 안 됩니다.
 
-### 투영 표면  
+### 투영 표면
 
-`project_effective`는 게시 전에 모든 ARGVUS 소유 소비자를 하나의 스테이징 트리에서 렌더링합니다:  
+`project_effective`는 게시 전에 모든 ARGVUS 소유 소비자를 하나의 스테이징 트리에서 렌더링합니다:
 
-| 표면 | 출력 |  
-| --- | --- |  
-| Hyprland | 테마 프로필을 포함한 `generated/hypr/`, `spaces-effective.conf`, `borders-effective.conf`, `hypridle.conf` 및 `monitors.lua` |  
+| 표면 | 출력 |
+| --- | --- |
+| Hyprland | 테마 프로필을 포함한 `generated/hypr/`, `spaces-effective.conf`, `borders-effective.conf`, `hypridle.conf` 및 `monitors.lua` |
 | 레이아웃/효과 | `generated/effects/`, `generated/spaces.conf`, `generated/borders.conf` |
 | Waybar | `generated/waybar/`, `argvus-taskbar.css` 및 `argvus-widget-telemetry.{jsonc,css}` 포함 |
 | Widget 텔레메트리 테마 | `generated/widget-telemetry/` 및 `generated/waybar/widget-telemetry-themes/` |
@@ -110,8 +110,8 @@ argvus sessionctl apply-config
 | 알림 | `generated/notifications/` 및 `dunstrc` |
 | 잠금 화면 | `generated/hypr/hyprlock.conf` 및 Hyprtoolkit 테마 프로필 |
 | GTK | `generated/gtk/` |
-| Yazi | `generated/yazi/` |
-| Superfile | `generated/superfile/` |
+| 야지 | `generated/yazi/` |
+| 슈퍼파일 | `generated/superfile/` |
 | 터미널 및 Qt 프로필 | `generated/terminal/`, `generated/qt6ct/` |
 | 글꼴 | `generated/fonts.conf` 및 Waybar 스타일시트에서 관리되는 글꼴 블록 |
 | 이동식 장치 | `generated/removable-devices/theme.css` |
@@ -123,7 +123,7 @@ argvus sessionctl apply-config
 `data/waybar/argvus-taskbar.{jsonc,css}`,
 `data/waybar/argvus-widget-telemetry.{jsonc,css}`, `data/foot/`,
 `data/qt6ct/`, `data/hypr/hyprtoolkit.conf` 및
-`data/hypr/application-style.conf`. 외관 섹션이 변경되면 이러한 복사본은 패키지된 기본값으로 대체되며, 프로젝터는 그 후에 자신이 관리하는 블록만 다시 작성합니다 — Waybar 스타일시트의 폰트 블록과 
+`data/hypr/application-style.conf`. 외관 섹션이 변경되면 이러한 복사본은 패키지된 기본값으로 대체되며, 프로젝터는 그 후에 자신이 관리하는 블록만 다시 작성합니다 — Waybar 스타일시트의 폰트 블록과
 텔레메트리 프로파일의 `ARGVUS_TELEMETRY_*` 블록 — 따라서 표시기 밖의 텍스트는 테마 전환 후 유지되지 않습니다. `fonts.targets`와
 `control_panel.widget_telemetry_blocks`는 표준으로 유지됩니다: 제어 센터는
 `argvus-config`를 통해 이를 지속하며 이러한 파일을 스스로 작성하지 않습니다.
@@ -183,10 +183,10 @@ Hyprland 환경설정은 단축키에 `keyboard_shortcuts`, 마우스 및 터치
 알림 외관은 정규 테마, 강조색 및 효과에서 `data/notifications/dunstrc`로 파생됩니다. 과거 알림 `theme.sh` 파일은 `argvus config notifications`를 호출하는 호환성 기능만 노출하며, Dunst 구성을 분석하거나 변형하지 않습니다.
 
 디스플레이 탐색 및 블루투스 제어와 같은 하드웨어 중심 어댑터는 이제 Rust 디스플레이 도메인에서 가져옵니다: `nwg-displays`는 외부 가져오기이며, `/displays`와 `data/generated/hypr/monitors.lua`는 각각 정규 및 파생 상태로 유지됩니다. 디스플레이 도구는 `argvus config monitor-set`, `monitor-primary`, `monitor-workspaces`, `monitor-remove`와 함께 레이아웃을 변경합니다; 디스플레이 명령은 `argvus config display status|list-modes|set|apply|apply-nwg|migrate-nwg|nwg-import|nwg-apply`입니다. Hyprland 파일은 `/displays`에서 투사되며, 더 이상 어떤 셸 스크립트도 이를 작성하지 않습니다. 배경화면 선택, 작업 표시줄 유틸리티 그룹 모드, 기본 앱 조회 또한 `argvus-config` API를 사용하며; 이들의 과거 Shell 진입점은 UI 또는 호환성 래퍼입니다. Keep Awake는 `/power/keep_awake` 지속 설정으로 `data/power/keep-awake` 마커에 투사되며, lock-DPMS는 세션 런타임 상태입니다.
-`$XDG_CACHE_HOME/argvus/lock-dpms`. 키보드 레이아웃은 이제 Rust에서 소유합니다.  
+`$XDG_CACHE_HOME/argvus/lock-dpms`. 키보드 레이아웃은 이제 Rust에서 소유합니다.
 `argvus-keyboard-layout` 헬퍼: 구성된 순서는 생성된 Hyprland 입력 프로젝션이나 로케일 폴백에서 나오며, 활성 레이아웃은 Hyprland에서 발견된 세션 런타임 상태로 유지됩니다. 사이클 진입점과 키보드 레이아웃 데몬은 호환성 래퍼일 뿐이며; 사용자 서비스는 Rust 데몬을 직접 실행하고 `argvus sessionctl keyboard-layout cycle`가 호출자를 위한 안정적인 명령입니다.
 
-블루투스 런타임 상태는 외부 어댑터 경계를 따르지만 `argvus-config`의 일부는 아닙니다: `argvus bluetooth`는 `bluetoothctl` 주위의 타입화된 파싱 및 검증, 제한된 재시도, 시스템 서비스 확인 및 RFKill 상태를 담당합니다. `argvus bluetoothctl`가 진입점입니다. 어댑터 전원, 페어링된 장치 및 연결된 장치는 표준 JSON 상태보다는 BlueZ 런타임 상태로 남아 있으며, 하드웨어 기반 블루투스 검증은 환경에 따라 달라집니다.  
+블루투스 런타임 상태는 외부 어댑터 경계를 따르지만 `argvus-config`의 일부는 아닙니다: `argvus bluetooth`는 `bluetoothctl` 주위의 타입화된 파싱 및 검증, 제한된 재시도, 시스템 서비스 확인 및 RFKill 상태를 담당합니다. `argvus bluetoothctl`가 진입점입니다. 어댑터 전원, 페어링된 장치 및 연결된 장치는 표준 JSON 상태보다는 BlueZ 런타임 상태로 남아 있으며, 하드웨어 기반 블루투스 검증은 환경에 따라 달라집니다.
 
 ## 런타임 식별 및 조정
 
@@ -196,7 +196,7 @@ Hyprland 환경설정은 단축키에 `keyboard_shortcuts`, 마우스 및 터치
 
 ## 나이트 라이트
 
-**Desktop & Input > Displays > Night Light**를 열거나 `argvus control-center displays night-light`를 실행하세요. `argvus config display night-light`를 통해 온도, 수동 활성화 및 고정된 지역 스케줄을 설정할 수 있습니다. 명령, 상태 및 런타임 요구사항에 대해서는 [Night Light](/docs/user-guide/night-light/)]를 참조하세요.
+**Desktop & Input > Displays > Night Light**를 열거나 `argvus control-center displays night-light`를 실행하세요. `argvus config display night-light`를 통해 온도, 수동 활성화 및 고정된 지역 스케줄을 설정할 수 있습니다. 명령, 상태 및 런타임 요구사항에 대해서는 [Night Light](/docs/user-guide/night-light/)를 참조하세요.
 
 ### 흔들림 설정 (Hyprland 0.57+)
 
@@ -207,7 +207,7 @@ Hyprland 환경설정은 단축키에 `keyboard_shortcuts`, 마우스 및 터치
 ```sh
 argvus effects-toggle animations-settings set enabled=enabled wobble_enabled=true wobble_intensity=0 wobble_mesh=8
 ```
-전역 `enabled`는 애니메이션을 제어합니다; `wobble_enabled`는 그 독립적인 환경설정입니다. 전역 애니메이션을 비활성화하면 Lua에서 흔들림이 억제되지만, 해당 환경설정은 삭제되지 않습니다. 잘못된 값은 전체 패치를 거부합니다. 누락된 키는 기존 선택을 대체하지 않고 ARGVUS 기본값을 받습니다. 범위와 기본값은 [Appearance](/docs/user-guide/appearance/#window-wobble)]을 참조하세요.
+전역 `enabled`는 애니메이션을 제어합니다; `wobble_enabled`는 그 독립적인 환경설정입니다. 전역 애니메이션을 비활성화하면 Lua에서 흔들림이 억제되지만, 해당 환경설정은 삭제되지 않습니다. 잘못된 값은 전체 패치를 거부합니다. 누락된 키는 기존 선택을 대체하지 않고 ARGVUS 기본값을 받습니다. 범위와 기본값은 [Appearance](/docs/user-guide/appearance/#window-wobble)을 참조하세요.
 
 ### 사용자가 만든 키보드 단축키
 
@@ -266,7 +266,7 @@ argvus config window-mode toggle
 
 최소화는 예약된 `special:argvus-minimized` 작업 공간을 사용합니다. 해당 작업 공간을 수동으로 사용하지 마십시오. `argvus windows service` 프로세스는 컴포지터 인스턴스별 런타임 레지스트리의 `$XDG_RUNTIME_DIR/argvus` 아래에 신원, 원래 작업 공간/모니터, 기하학, 전체 화면/최대화 상태 및 고정 상태를 기록합니다. 기록은 서비스 재시작이나 설정 다시 불러오기 후에도 남아 있지만, 컴포지터 세션 간에는 공유되지 않습니다. 창을 닫으면 해당 기록이 삭제됩니다. 모니터가 사라지면 복원은 사용 가능한 출력으로 수행됩니다. 복구 바가 없거나 실패하면 새로운 최소화가 방지됩니다; 복원 실패 시 기록과 복구 바는 유지됩니다.
 
-세션은 `argvus-windows.service`와 `argvus-window-bar.service`를 소유합니다. 후자는 그 Waybar 자식을 Tile 상태에서 비활성으로 유지합니다. hyprbars 플러그인은 `argvus-hyprland`에 의해 번들로 제공되며, x86_64 아키텍처에서 Hyprland 0.57.0 ABI용으로 빌드되었습니다; 사용자의 홈 디렉터리에서는 컴파일되지 않았습니다. 컴포지터 ABI 업데이트 시 플러그인을 재빌드하십시오.명령어: `argvus windows list --json`, `watch --json`, `position top|bottom`, `restore-all`, `minimize|restore|activate|maximize|close ADDRESS`. 창 주소는 리스트에서 가져옵니다. `position top --persist`는 메인 바를 재시작하지 않고도 환경설정을 저장/프로젝트합니다. 구성 및 런타임 오류 세부 사항은 저널에 기록되며, 눈에 보이는 동작 실패는 번역된 알림으로 표시됩니다.
+세션은 `argvus-windows.service`와 `argvus-window-bar.service`를 소유합니다. 후자는 그 Waybar 자식을 Tile 상태에서 비활성으로 유지합니다. hyprbars 플러그인은 `argvus-hyprland`에 의해 번들로 제공되며, x86_64 아키텍처에서 Hyprland 0.57.0 ABI용으로 빌드되었습니다; 사용자의 홈 디렉터리에서는 컴파일되지 않았습니다. 컴포지터 ABI 업데이트 시 플러그인을 재빌드하십시오. 명령어: `argvus windows list --json`, `watch --json`, `position top|bottom`, `restore-all`, `minimize|restore|activate|maximize|close ADDRESS`. 창 주소는 리스트에서 가져옵니다. `position top --persist`는 메인 바를 재시작하지 않고도 환경설정을 저장/프로젝트합니다. 구성 및 런타임 오류 세부 사항은 저널에 기록되며, 눈에 보이는 동작 실패는 번역된 알림으로 표시됩니다.
 
 **Spaced + Floating** 모드에서, 창은 외부 간격과 두 바가 예약한 영역을 존중합니다. 경계에는 테두리와 제목이 포함되며, 제목은 같은 창 테두리 안에 위치합니다. ARGVUS 제어를 통해 최대화하면 이 영역이 여백과 함께 채워지고, 복원하면 이전 지오메트리를 복구하며, 서비스 재시작 이후에도 마찬가지입니다. 전체 화면은 여전히 전체 출력 영역을 사용합니다. 플로팅 창은 겹칠 수 있으며, 타일링 내부 간격은 창을 분리하지 않습니다.
 

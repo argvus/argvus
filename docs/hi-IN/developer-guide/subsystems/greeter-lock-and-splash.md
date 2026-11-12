@@ -37,4 +37,4 @@ description: अलग स्टार्टअप और प्रमाणी�
 विफलता; सामान्य त्रुटि निकास सॉकेट को हटा दें। ये निशान मददगार की पहचान कराते हैं
 डीआरएम की प्रतीक्षा में जिसने वास्तव में एक फ्रेम प्रस्तुत किया है।
 
-This acquisition follows the [Linux DRM master permission rules](https://github.com/torvalds/linux/blob/v6.18/drivers/gpu/drm/drm_auth.c): an unprivileged descriptor that has never been master cannot promote itself with `SET_MASTER`, while opening the primary node with no current master acquires it implicitly. Reopening avoids adding privileges to the greeter.
+यह अधिग्रहण [Linux DRM मास्टर अनुमति नियम](https://github.com/torvalds/linux/blob/v6.18/drivers/gpu/drm/drm_auth.c) का पालन करता है: एक अप्रकाशित डिस्क्रिप्टर जो कभी मास्टर नहीं हुआ है वह `SET_MASTER` के साथ खुद को प्रमोट नहीं कर सकता है, जबकि बिना किसी मौजूदा मास्टर के प्राथमिक नोड खोलने पर यह अंतर्निहित रूप से प्राप्त हो जाता है। पुनः खोलने से स्वागतकर्ता को विशेषाधिकार जोड़ने से बचा जाता है।

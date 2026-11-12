@@ -1,5 +1,5 @@
 ---
-title: Packaging
+title: Kemasan
 description: Membangun dan memeriksa paket ARGVUS Arch.
 ---
 

@@ -27,4 +27,4 @@ localectl status
 ```sh
 mv ~/.config/locale.conf ~/.config/locale.conf.backup
 ```
-再次在 **控制中心 → 地区和语言** 中应用语言。控制面板会自动重启；如果其他组件仍显示之前的语言，请注销并重新登录，以便图形会话和 `systemd --user` 接收新的环境。之后重复诊断命令。请参阅 [环境变量](/docs/reference/environment-variables/)] 了解技术约定和优先级。
+再次在 **控制中心 → 地区和语言** 中应用语言。控制面板会自动重启；如果其他组件仍显示之前的语言，请注销并重新登录，以便图形会话和 `systemd --user` 接收新的环境。之后重复诊断命令。请参阅 [环境变量](/docs/reference/environment-variables/) 了解技术约定和优先级。

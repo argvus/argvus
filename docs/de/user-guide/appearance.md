@@ -10,14 +10,14 @@ Die unten aufgeführten dreiundzwanzig Familien werden durch die aktuelle Themen
 
 | Familie | Standard-Hervorhebungsfarbe zurücksetzen | Basis-Hintergrund | Modi |
 | --- | --- | --- | --- |
-| One Dark | `#61AFEF` | `#282C34` | Sticky, Spaced |
-| Dracula | `#BD93F9` | `#282A36` | Sticky, Spaced |
-| ARGVUS Dark | `#3590bd` | `#111316` | Sticky, Spaced |
-| Dark Silver | `#595959` | `#111316` | Sticky, Spaced |
-| Dark Slate | `#7391a5` | `#2f3541` | Sticky, Spaced |
-| Dark Universe | `#eeeeee` | `#000000` | Sticky, Spaced |
-| ARGVUS Dark Gruvbox High | `#D79921` | `#282828` | Sticky, Spaced |
-| ARGVUS Dark Gruvbox | `#D4BE98` | `#282828` | Sticky, Spaced |
+| Ein Dunkler | `#61AFEF` | `#282C34` | Klebrig, beabstandet |
+| Dracula | `#BD93F9` | `#282A36` | Klebrig, beabstandet |
+| ARGVUS Dunkel | `#3590bd` | `#111316` | Klebrig, beabstandet |
+| Dunkles Silber | `#595959` | `#111316` | Klebrig, beabstandet |
+| Dunkler Schiefer | `#7391a5` | `#2f3541` | Klebrig, beabstandet |
+| Dunkles Universum | `#eeeeee` | `#000000` | Klebrig, beabstandet |
+| ARGVUS Dark Gruvbox High | `#D79921` | `#282828` | Klebrig, beabstandet |
+| ARGVUS Dunkle Gruvbox | `#D4BE98` | `#282828` | Klebrig, beabstandet |
 | ARGVUS Licht | `#181818` | `#f7f7f7` | Klebrig, beabstandet |
 | GitHub Light | `#0969DA` | `#FFFFFF` | Klebrig, beabstandet |
 | Catppuccin Latte | `#1E66F5` | `#EFF1F5` | Klebrig, beabstandet |
@@ -41,7 +41,7 @@ Die im Tisch dargestellte Farbe ist der Wert, der in `config.json` geschrieben w
 
 Vorhandene `float`-Layout-Werte und `-float`-Themen-IDs werden als alte Bezeichnungen für Spaced erkannt. Neue Layout-Werte und aufgelöste Themen-IDs verwenden `spaced` und `-spaced`.
 
-Der Modus ändert die Geometrie und Oberflächenbehandlung; er erstellt keine sechste Farbenfamilie. Siehe [Themes](/docs/user-guide/appearance/)] für die Auswahl und [Desktop](/docs/user-guide/desktop/)] für Taskleisten- und Fensterplatzierung.
+Der Modus ändert die Geometrie und Oberflächenbehandlung; er erstellt keine sechste Farbenfamilie. Siehe [Themes](/docs/user-guide/appearance/) für die Auswahl und [Desktop](/docs/user-guide/desktop/) für Taskleisten- und Fensterplatzierung.
 
 - [Themen](/docs/user-guide/appearance/)
 - [Hintergründe](/docs/argvus-appearance/wallpapers/)

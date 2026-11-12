@@ -10,7 +10,7 @@ Estos componentes fueron consolidados en el espacio de trabajo `argvus`. Sus pá
 | Centro de Control | `argvus control-center` | [Centro de Control](/docs/components/argvus-control-center/) |
 | Bienvenida ARGVUS | `argvus welcome` | [Bienvenida ARGVUS](/docs/components/argvus-control-center/#argvus-welcome) |
 | Internacionalización | `argvus i18n` | [Internacionalización](/docs/components/argvus-i18n/) |
-| Terminal | `argvus terminal` | [Terminal](/docs/components/argvus-terminal/) |
+| Terminales | `argvus terminal` | [Terminal](/docs/components/argvus-terminal/) |
 | Monitor del sistema | `argvus system-monitor` | [Monitor del sistema](/docs/components/argvus-system-monitor/) |
 | Analizador de uso de disco | `argvus du` | [Analizador de uso de disco ARGVUS](/docs/components/argvus-du/) |
 | Redes y Bluetooth | `argvus network`, `argvus bluetooth` | [Redes y Bluetooth](/docs/components/argvus-network/) |

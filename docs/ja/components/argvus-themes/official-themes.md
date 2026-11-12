@@ -2,7 +2,7 @@
 title: 公式テーマ
 description: 公式のARGVUSテーマカタログ、デフォルトのハイライトカラー、テーマの選択方法とそのStickyモードまたはSpacedモードについて。
 ---
-このページでは、公式テーマパッケージとして利用可能なテーマの一覧を示し、テーマの選択方法について説明します。インストール方法については、[テーマのインストール](/docs/components/argvus-themes/installing-themes/)]を参照してください。
+このページでは、公式テーマパッケージとして利用可能なテーマの一覧を示し、テーマの選択方法について説明します。インストール方法については、[テーマのインストール](/docs/components/argvus-themes/installing-themes/)を参照してください。
 
 ## テーマを選択する
 
@@ -49,15 +49,15 @@ description: 公式のARGVUSテーマカタログ、デフォルトのハイラ�
 
 | テーマ | パッケージ | デフォルトハイライト |
 | --- | --- | --- |
-| GitHub Light | `argvus-theme-github-light` | `#0969DA` |
-| Solarized Light | `argvus-theme-solarized-light` | `#268BD2` |
-| Nord Light | `argvus-theme-nord-light` | `#5E81AC` |
-| One Light | `argvus-theme-one-light` | `#4078F2` |
-| Everforest Light | `argvus-theme-everforest-light` | `#3A94C5` |
-| Catppuccin Latte | `argvus-theme-catppuccin-latte` | `#1E66F5` |
-| Gruvbox Light | `argvus-theme-gruvbox-light` | `#458588` |
+| GitHub ライト | `argvus-theme-github-light` | `#0969DA` |
+|ソラリゼーションライト | `argvus-theme-solarized-light` | `#268BD2` |
+|ノルドライト | `argvus-theme-nord-light` | `#5E81AC` |
+|ワンライト | `argvus-theme-one-light` | `#4078F2` |
+|エバーフォレストライト | `argvus-theme-everforest-light` | `#3A94C5` |
+|キャットプッチンラテ | `argvus-theme-catppuccin-latte` | `#1E66F5` |
+| Gruvbox ライト | `argvus-theme-gruvbox-light` | `#458588` |
 | ウォーターカラー | `argvus-theme-watercolor` | `#1A639C` |
-| Obsidian Light | `argvus-theme-obsidian-light` | `#334A78` |
+|黒曜石の光 | `argvus-theme-obsidian-light` | `#334A78` |
 
 ## 組み込みテーマ
 
@@ -67,4 +67,4 @@ description: 公式のARGVUSテーマカタログ、デフォルトのハイラ�
 
 テーマは、デスクトップコンポーネントで使用されるパレットと表面処理、デフォルトのハイライトカラー、デフォルトの壁紙の関連付け、透明度およびぼかしのデフォルトを定義します。デスクトップコンポーネントは自分自身のコピーを保存するのではなく、この状態を読み取るため、テーマの変更はコンポジター、タスクバー、コントロールパネル、ロック画面、通知、およびアプリケーションに同時に反映されます。
 
-デフォルトのハイライトカラーはあくまで出発点に過ぎません。任意の6桁のカラーに置き換えることができ、[ハイライトカラーのカスタマイズ](/docs/components/argvus-themes/highlight-color/)]を参照できます。
+デフォルトのハイライトカラーはあくまで出発点に過ぎません。任意の6桁のカラーに置き換えることができ、[ハイライトカラーのカスタマイズ](/docs/components/argvus-themes/highlight-color/)を参照できます。

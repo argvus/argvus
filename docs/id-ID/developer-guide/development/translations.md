@@ -1,5 +1,5 @@
 ---
-title: Translations
+title: Terjemahan
 description: Mempertahankan katalog pelokalan ARGVUS bersama.
 ---
 

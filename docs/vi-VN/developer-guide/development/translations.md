@@ -1,5 +1,5 @@
 ---
-title: Translations
+title: Bản dịch
 description: Duy trì các danh mục bản địa hóa ARGVUS được chia sẻ.
 ---
 

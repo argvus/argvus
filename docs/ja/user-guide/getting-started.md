@@ -6,12 +6,12 @@ description: ARGVUSを構成するための実用的な初回起動パス。
 
 ## 便利な順序
 
-1. [デスクトップの概要](/docs/user-guide/desktop/)]を読んで、ウィンドウ、ワークスペース、タスクバー、コントロールパネル、ランチャーを確認します。
-2. [コントロールセンター](/docs/components/argvus-control-center/)]を開き、**外観**でテーマ、モード、アクセント、壁紙を選択します。
-3. デフォルトの隙間、境界線、タスクバーの間隔が画面に合わない場合は、[ウィンドウとレイアウト](/docs/argvus-hyprland/windows-and-layout/)]を調整します。
-4. [タスクバー](/docs/argvus-taskbar/taskbar/)]を設定し、表示したいコントロールパネルのカードを選択します。
-5. [キーボードショートカット](/docs/argvus-hyprland/keyboard-shortcuts/)]を確認し、実際に使用するものだけを変更します。
-6. 関連する設定ページから[マウスとタッチパッド](/docs/argvus-hyprland/input/)]、ディスプレイ、ネットワーク、電源を設定します。
+1. [デスクトップの概要](/docs/user-guide/desktop/)を読んで、ウィンドウ、ワークスペース、タスクバー、コントロールパネル、ランチャーを確認します。
+2. [コントロールセンター](/docs/components/argvus-control-center/)を開き、**外観**でテーマ、モード、アクセント、壁紙を選択します。
+3. デフォルトの隙間、境界線、タスクバーの間隔が画面に合わない場合は、[ウィンドウとレイアウト](/docs/argvus-hyprland/windows-and-layout/)を調整します。
+4. [タスクバー](/docs/argvus-taskbar/taskbar/)を設定し、表示したいコントロールパネルのカードを選択します。
+5. [キーボードショートカット](/docs/argvus-hyprland/keyboard-shortcuts/)を確認し、実際に使用するものだけを変更します。
+6. 関連する設定ページから[マウスとタッチパッド](/docs/argvus-hyprland/input/)、ディスプレイ、ネットワーク、電源を設定します。
 
 最初の4つのステップは任意の個人設定です。残りのステップは、通常、ハードウェア、言語、または作業フローで必要な場合にのみ行います。
 
@@ -19,7 +19,7 @@ description: ARGVUSを構成するための実用的な初回起動パス。
 
 ARGVUSの設定方法（外観、レイアウト、フォント、入力、ショートカット、言語、地域、既定のアプリケーション）を変更するには**コントロールセンター**を使用してください。音量、明るさ、ネットワーク状態、通知、電源やセッション管理などの状態と頻繁なセッション操作には**コントロールパネル**を使用してください。
 
-完全な違いについては[コントロールセンター vs コントロールパネル](/docs/components/argvus-control-center/)]を、簡単な設定項目の一覧については[設定項目の場所](/docs/user-guide/where-to-configure/)]を参照してください。
+完全な違いについては[コントロールセンター vs コントロールパネル](/docs/components/argvus-control-center/)を、簡単な設定項目の一覧については[設定項目の場所](/docs/user-guide/where-to-configure/)を参照してください。
 
 ## 変更、保持、復元
 

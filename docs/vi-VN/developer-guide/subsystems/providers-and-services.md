@@ -1,6 +1,6 @@
 ---
 title: Nhà cung cấp và dịch vụ
-description: Provider packages and their system interfaces.
+description: Các gói của nhà cung cấp và giao diện hệ thống của chúng.
 ---
 
 Các dự án của nhà cung cấp hiển thị các giao diện tập trung cho người tiêu dùng UI:

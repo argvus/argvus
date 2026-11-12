@@ -1,5 +1,5 @@
 ---
-title: ARGVUS Focus
+title: ARGVUS Foco
 description: Pomodoro e sessões de foco com pausas, notificações e um histórico local das sessões.
 ---
 

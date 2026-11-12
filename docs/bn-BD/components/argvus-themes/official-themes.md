@@ -14,7 +14,7 @@ description: অফিসিয়াল ARGVUS থিম ক্যাটাল�
 
 নির্বাচিত থিমটি একবারে পুরো ডেস্কটপে প্রয়োগ করা হয়: চলমান টাস্কবার, প্যানেল, বিজ্ঞপ্তি, উইন্ডোজ এবং ওয়ালপেপারের রঙ বদলে যায়, স্ক্রিন লোড না করে এবং পুনরায় চালু না করে। ARGVUS আপনার ওয়ালপেপার নির্বাচন রাখে যদি না থিমটি তার নিজস্ব ওয়ালপেপার অ্যাসোসিয়েশনের সাথে প্রয়োগ করা হয়।
 
-আপনি কীবোর্ড থেকে থিম নির্বাচক খুলতে `SUPER + SHIFT + T` চাপতে পারেন। ক্যাটাগরিগুলির মধ্য দিয়ে যেতে তীর কী ব্যবহার করুন, বেছে নিতে `Enter` এবং বন্ধ করতে `Esc` ব্যবহার করুন৷
+আপনি কীবোর্ড থেকে থিম নির্বাচক খুলতে `SUPER + SHIFT + T ` চাপতে পারেন। ক্যাটাগরিগুলির মধ্য দিয়ে যেতে তীর কী ব্যবহার করুন, বেছে নিতে ` Enter ` এবং বন্ধ করতে ` Esc` ব্যবহার করুন৷
 
 ## স্টিকি এবং ফাঁকা
 
@@ -22,8 +22,8 @@ description: অফিসিয়াল ARGVUS থিম ক্যাটাল�
 
 | মোড | জানালার ফাঁক | বাইরের ফাঁক | জানালা বৃত্তাকার | টাস্কবার এবং শেল মার্জিন |
 | --- | ---: | ---: | ---: | ---: |
-| স্টিকি | `2` | `0` | `0` | প্রান্তের কাছাকাছি |
-| ব্যবধান | `10` | `18` | `4` | `18` |
+| স্টিকি | `2 ` | ` 0 ` | ` 0` | প্রান্তের কাছাকাছি |
+| ব্যবধান | `10 ` | ` 18 ` | ` 4 ` | ` 18` |
 
 মোড পরিবর্তন করতে, **কন্ট্রোল সেন্টার → উপস্থিতি → মোড** খুলুন এবং **স্টিকি** বা **স্পেসড** বেছে নিন। এই লেআউট মানগুলিতে আপনার ম্যানুয়াল সামঞ্জস্যগুলি পরবর্তী সুস্পষ্ট থিম নির্বাচন না হওয়া পর্যন্ত কার্যকর থাকবে৷
 
@@ -31,38 +31,38 @@ description: অফিসিয়াল ARGVUS থিম ক্যাটাল�
 
 | থিম | প্যাকেজ | ডিফল্ট হাইলাইট |
 | --- | --- | --- |
-| এক অন্ধকার | `argvus-theme-one-dark` | `#61AFEF` |
-| ড্রাকুলা | `argvus-theme-dracula` | `#BD93F9` |
-| সিলভার ডার্ক | `argvus-theme-silver-dark` | `#595959` |
-| স্লেট ডার্ক | `argvus-theme-slate-dark` | `#7391A5` |
-| মহাবিশ্ব | `argvus-theme-universe` | `#EEEEEE` |
-| গ্রুভবক্স হাই ডার্ক | `argvus-theme-gruvbox-high-dark` | `#D79921` |
-| গ্রুভবক্স ডার্ক | `argvus-theme-gruvbox-dark` | `#D4BE98` |
-| রোজ পাইন | `argvus-theme-rose-pine` | `#C4A7E7` |
-| টোকিও নাইট | `argvus-theme-tokyo-night` | `#7AA2F7` |
-| নির্জনতা | `argvus-theme-solitude` | `#798186` |
-| সূর্যাস্ত | `argvus-theme-sunset` | `#E2BE8A` |
-| ম্যাট্রিক্স | `argvus-theme-matrix` | `#82FB9C` |
-| মনোকাই অন্ধকার | `argvus-theme-monokai-dark` | `#78DCE8` |
-| লেডি মিস্ট | `argvus-theme-lady-mist` | `#354B78` |
+| এক অন্ধকার | `argvus-theme-one-dark ` | `#61AFEF` |
+| ড্রাকুলা | `argvus-theme-dracula ` | `#BD93F9` |
+| সিলভার ডার্ক | `argvus-theme-silver-dark ` | `#595959` |
+| স্লেট ডার্ক | `argvus-theme-slate-dark ` | `#7391A5` |
+| মহাবিশ্ব | `argvus-theme-universe ` | `#EEEEEE` |
+| গ্রুভবক্স হাই ডার্ক | `argvus-theme-gruvbox-high-dark ` | `#D79921` |
+| গ্রুভবক্স ডার্ক | `argvus-theme-gruvbox-dark ` | `#D4BE98` |
+| রোজ পাইন | `argvus-theme-rose-pine ` | `#C4A7E7` |
+| টোকিও নাইট | `argvus-theme-tokyo-night ` | `#7AA2F7` |
+| নির্জনতা | `argvus-theme-solitude ` | `#798186` |
+| সূর্যাস্ত | `argvus-theme-sunset ` | `#E2BE8A` |
+| ম্যাট্রিক্স | `argvus-theme-matrix ` | `#82FB9C` |
+| মনোকাই অন্ধকার | `argvus-theme-monokai-dark ` | `#78DCE8` |
+| লেডি মিস্ট | `argvus-theme-lady-mist ` | `#354B78` |
 
 ## হালকা থিম
 
 | থিম | প্যাকেজ | ডিফল্ট হাইলাইট |
 | --- | --- | --- |
-| গিটহাব লাইট | `argvus-theme-github-light` | `#0969DA` |
-| সোলারাইজড লাইট | `argvus-theme-solarized-light` | `#268BD2` |
-| নর্ড লাইট | `argvus-theme-nord-light` | `#5E81AC` |
-| এক আলো | `argvus-theme-one-light` | `#4078F2` |
-| এভারফরেস্ট আলো | `argvus-theme-everforest-light` | `#3A94C5` |
-| Catppuccin Latte | `argvus-theme-catppuccin-latte` | `#1E66F5` |
-| গ্রুভবক্স লাইট | `argvus-theme-gruvbox-light` | `#458588` |
-| জলরঙ | `argvus-theme-watercolor` | `#1A639C` |
-| অবসিডিয়ান লাইট | `argvus-theme-obsidian-light` | `#334A78` |
+| গিটহাব লাইট | `argvus-theme-github-light ` | `#0969DA` |
+| সোলারাইজড লাইট | `argvus-theme-solarized-light ` | `#268BD2` |
+| নর্ড লাইট | `argvus-theme-nord-light ` | `#5E81AC` |
+| এক আলো | `argvus-theme-one-light ` | `#4078F2` |
+| এভারফরেস্ট আলো | `argvus-theme-everforest-light ` | `#3A94C5` |
+| Catppuccin Latte | `argvus-theme-catppuccin-latte ` | `#1E66F5` |
+| গ্রুভবক্স লাইট | `argvus-theme-gruvbox-light ` | `#458588` |
+| জলরঙ | `argvus-theme-watercolor ` | `#1A639C` |
+| অবসিডিয়ান লাইট | `argvus-theme-obsidian-light ` | `#334A78` |
 
 ## অন্তর্নির্মিত থিম
 
-**ARGVUS ডার্ক** এবং **ARGVUS লাইট** `argvus-appearance` দ্বারা সরবরাহ করা হয়েছে এবং সবসময় **অফিসিয়াল থিম** এর অধীনে উপলব্ধ। ARGVUS ডার্ক ডিফল্ট হাইলাইট `#3590BD` ব্যবহার করে; ARGVUS লাইট `#181818` ব্যবহার করে।
+**ARGVUS ডার্ক** এবং **ARGVUS লাইট** `argvus-appearance ` দ্বারা সরবরাহ করা হয়েছে এবং সবসময় **অফিসিয়াল থিম** এর অধীনে উপলব্ধ। ARGVUS ডার্ক ডিফল্ট হাইলাইট `#3590BD ` ব্যবহার করে; ARGVUS লাইট `#181818` ব্যবহার করে।
 
 ## কি একটি থিম নিয়ন্ত্রণ
 

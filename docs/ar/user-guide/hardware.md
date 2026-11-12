@@ -1,5 +1,5 @@
 ---
-title: Hardware
+title: الأجهزة
 description: قم بتكوين شاشات العرض والاتصال والطاقة في ARGVUS.
 ---
 

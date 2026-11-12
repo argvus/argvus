@@ -10,14 +10,14 @@ description: ARGVUSコンポーネントで共有されるビジュアル言語�
 
 | ファミリー | ハイライト色のリセット | ベース背景 | モード |
 | --- | --- | --- | --- |
-| One Dark | `#61AFEF` | `#282C34` | Sticky, Spaced |
-| Dracula | `#BD93F9` | `#282A36` | Sticky, Spaced |
-| ARGVUS Dark | `#3590bd` | `#111316` | Sticky, Spaced |
-| Dark Silver | `#595959` | `#111316` | Sticky, Spaced |
-| Dark Slate | `#7391a5` | `#2f3541` | Sticky, Spaced |
-| Dark Universe | `#eeeeee` | `#000000` | Sticky, Spaced |
-| ARGVUS Dark Gruvbox High | `#D79921` | `#282828` | Sticky, Spaced |
-| ARGVUS Dark Gruvbox | `#D4BE98` | `#282828` | Sticky, Spaced |
+|ワンダーク | `#61AFEF` | `#282C34` |粘着性、間隔をあけて |
+|ドラキュラ | `#BD93F9` | `#282A36` |粘着性、間隔をあけて |
+| ARGVUS ダーク | `#3590bd` | `#111316` |粘着性、間隔をあけて |
+|ダークシルバー | `#595959` | `#111316` |粘着性、間隔をあけて |
+|ダークスレート | `#7391a5` | `#2f3541` |粘着性、間隔をあけて |
+|ダークユニバース | `#eeeeee` | `#000000` |粘着性、間隔をあけて |
+| ARGVUS ダーク Gruvbox 高 | `#D79921` | `#282828` |粘着性、間隔をあけて |
+| ARGVUS ダーク Gruvbox | `#D4BE98` | `#282828` |粘着性、間隔をあけて |
 | ARGVUS ライト | `#181818` | `#f7f7f7` |粘着性、間隔をあけて |
 | GitHub ライト | `#0969DA` | `#FFFFFF` |粘着性、間隔をあけて |
 |キャットプッチンラテ | `#1E66F5` | `#EFF1F5` |粘着性、間隔をあけて |
@@ -41,14 +41,14 @@ description: ARGVUSコンポーネントで共有されるビジュアル言語�
 
 既存の `float` レイアウト値および `-float` テーマ識別子は、Spaced のレガシー名として認識されます。新しいレイアウト値および解決されたテーマ識別子は、`spaced` および `-spaced` を使用します。
 
-モードはジオメトリと表面処理を変更します；6番目のカラーファミリーを作成するものではありません。選択については [Themes](/docs/user-guide/appearance/)] を、タスクバーおよびウィンドウの配置については [Desktop](/docs/user-guide/desktop/)] を参照してください。
+モードはジオメトリと表面処理を変更します；6番目のカラーファミリーを作成するものではありません。選択については [Themes](/docs/user-guide/appearance/) を、タスクバーおよびウィンドウの配置については [Desktop](/docs/user-guide/desktop/) を参照してください。
 
 - [テーマ](/docs/user-guide/appearance/)
 - [壁紙](/docs/argvus-appearance/wallpapers/)
 - [フォントとアイコン](/docs/argvus-appearance/fonts-and-icons/)
 - [エフェクト](/docs/argvus-appearance/effects/)
 
-コントロールセンターはユーザー向けの設定を公開します。実装は`argvus-appearance`、`argvus-session`、シェルコンポーネント、およびアセットパッケージで共有されています。[外観アーキテクチャ](/docs/developer-guide/subsystems/appearance-and-themes/)]を参照してください。
+コントロールセンターはユーザー向けの設定を公開します。実装は`argvus-appearance`、`argvus-session`、シェルコンポーネント、およびアセットパッケージで共有されています。[外観アーキテクチャ](/docs/developer-guide/subsystems/appearance-and-themes/)を参照してください。
 
 ## ウィンドウの揺れ
 
@@ -62,4 +62,4 @@ Wobbleはデフォルトで無効になっています。ARGVUSのデフォル�
 
 グローバルのAnimationsスイッチは個別設定を保持したままWobbleを抑制します。標準値はARGVUS状態の`effects.wobble_*`に存在します。`hypr/state.lua`は生成されるもので、手動編集してはいけません。
 
-これは Hyprland **0.57.0 以降** が必要であり、`argvus-hyprland` のパッケージ依存によって強制されています。バージョン 0.56 はこの構成ではサポートされていません。強度の最大値は [リリースされた 0.57.0 のソース](https://github.com/hyprwm/Hyprland/blob/v0.57.0/src/config/values/ConfigValues.cpp)] に従っており、`2` に制限されています。新しいドキュメントでは `3` と表示されている場合がありますが、これは対象外です。
+これは Hyprland **0.57.0 以降** が必要であり、`argvus-hyprland` のパッケージ依存によって強制されています。バージョン 0.56 はこの構成ではサポートされていません。強度の最大値は [リリースされた 0.57.0 のソース](https://github.com/hyprwm/Hyprland/blob/v0.57.0/src/config/values/ConfigValues.cpp) に従っており、`2` に制限されています。新しいドキュメントでは `3` と表示されている場合がありますが、これは対象外です。

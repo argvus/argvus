@@ -1,5 +1,5 @@
 ---
-title: Integrations
+title: Tích hợp
 description: Bộ tổng hợp, tích hợp đăng nhập, khóa và cổng thông tin.
 ---
 

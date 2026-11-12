@@ -33,7 +33,6 @@ argvus taskbar-calendar service
 ## Eventi e promemoria
 
 Gli eventi sono disattivati di default. Attivali nel popup sotto **Impostazioni > Eventi**; la scelta viene salvata nella directory di stato e abilita e avvia anche `argvus-taskbar-calendar.service`, che mostra i promemoria. Disattivarli interrompe il servizio.
-
 - **+ EVENTO** (o `n`) apre l'editor per il giorno selezionato. Gli eventi possono essere creati e modificati a partire da oggi; un evento di un giorno passato può comunque essere aperto ed eliminato.
 - Un nuovo evento inizia alle 09:00 e dura la lunghezza predefinita impostata in Impostazioni. Spostare l'orario di inizio mantiene la durata; un orario di fine precedente all'orario di inizio significa che l'evento termina il giorno successivo.
 - Ogni evento mostra una notifica con un suono all'inizio, indipendentemente da cosa indicano le caselle **Promemoria** e **Ripeti**. Un evento salvato dopo il suo inizio (ad esempio un evento di tutta la giornata creato durante il giorno) notifica entro 30 secondi.

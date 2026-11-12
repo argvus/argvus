@@ -9,7 +9,6 @@ Le azioni disponibili sono `open`, `mount`, `unmount`, `eject`, `poweroff`, `loc
 ## Menu della taskbar
 
 Con `"mode": "gui"` (il sistema predefinito), un clic sull'icona di archiviazione della taskbar apre un menu GTK collegato alla Taskbar ARGVUS, come il popup del calendario: sotto la barra quando la taskbar è in alto sullo schermo e sopra di essa quando la taskbar è in basso. Ogni riga del dispositivo ha un sottomenu delle azioni con solo le azioni consentite dal suo stato.
-
 - **Puntatore:** passando sopra o cliccando una riga del dispositivo si apre il suo sottomenu. Il sottomenu rimane aperto mentre il puntatore attraversa i bordi del menu o lascia i menu, e segue un'altra riga solo dopo che il puntatore vi resta brevemente sopra, quindi un percorso diagonale verso il sottomenu non lo chiude. Un clic al di fuori di entrambi i menu chiude il popup.
 - **Tastiera:** `Up`/`Down` selezionano una riga, `Right`, `Enter` o `Space` aprono il sottomenu (o eseguono **Aggiorna**/**Esci**), `Enter` o `Space` eseguono l’azione selezionata, `Left` o `Escape` tornano alla lista dei dispositivi e `Escape` chiude lì il popup.
 

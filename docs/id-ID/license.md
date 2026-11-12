@@ -1,6 +1,6 @@
 ---
-title: License
-description: ARGVUS licensing information.
+title: Lisensi
+description: informasi lisensi ARGVUS.
 ---
 
 ARGVUS dan paket komponennya dilisensikan di bawah **GNU General Public License v3.0 saja (khusus GPL-3.0)**.

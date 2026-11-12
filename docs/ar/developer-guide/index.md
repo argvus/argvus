@@ -1,5 +1,5 @@
 ---
-title: Developer Guide
+title: دليل المطور
 description: إرشادات التصميم والتطوير للمساهمين في ARGVUS.
 ---
 

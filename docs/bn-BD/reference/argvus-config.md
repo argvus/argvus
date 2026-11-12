@@ -3,7 +3,7 @@ title: ARGVUS কনফিগারেশন
 description: ARGVUS দ্বারা ব্যবহৃত যৌক্তিক JSON কনফিগারেশন চুক্তি।
 ---
 
-ARGVUS মডুলার JSON ফাইলগুলিতে `$XDG_CONFIG_HOME/argvus/config/` (সাধারণত `~/.config/argvus/config/`) এর অধীনে পরিচালিত ব্যবহারকারীর পছন্দগুলি রাখে। তারা ARGVUS দ্বারা পরিচালিত পছন্দগুলির জন্য ক্যানোনিকাল লজিক্যাল মডেল তৈরি করে এবং `argvus-config` হল একমাত্র উপাদান যা `data/generated/` এর নীচে ফাইলগুলি লেখে। নেটিভ ফাইল এবং জেনারেট করা ফাইলগুলি সামঞ্জস্যপূর্ণ অনুমান বা অ্যাপ্লিকেশন-নির্দিষ্ট ওভাররাইড থেকে যায়।
+ARGVUS মডুলার JSON ফাইলগুলিতে `$XDG_CONFIG_HOME/argvus/config/` (সাধারণত `~/.config/argvus/config/`) এর অধীনে পরিচালিত ব্যবহারকারীর পছন্দগুলি রাখে। তারা ARGVUS দ্বারা পরিচালিত পছন্দগুলির জন্য ক্যানোনিকাল লজিক্যাল মডেল তৈরি করে এবং ` argvus-config ` হল একমাত্র উপাদান যা ` data/generated/` এর নীচে ফাইলগুলি লেখে। নেটিভ ফাইল এবং জেনারেট করা ফাইলগুলি সামঞ্জস্যপূর্ণ অনুমান বা অ্যাপ্লিকেশন-নির্দিষ্ট ওভাররাইড থেকে যায়।
 
 ## ব্যবহারকারী নির্দেশিকা: দ্রুত শুরু
 
@@ -35,11 +35,11 @@ argvus config apply
 └── data/
 ```
 
-ফাইলটি পরমাণুভাবে লেখা, ব্যবহারকারীর কাছে ব্যক্তিগত রাখা হয় এবং data/ গাছের বাইরে `.config.lock` দ্বারা সুরক্ষিত থাকে যা প্রজেকশনের সময় অদলবদল করা যায়। একটি পূর্ববর্তী সংস্করণ  `data/` `data/backups/config.json.bak` এ সংরক্ষণ করা হয়েছে৷
+ফাইলটি পরমাণুভাবে লেখা, ব্যবহারকারীর কাছে ব্যক্তিগত রাখা হয় এবং data/ গাছের বাইরে `.config.lock ` দ্বারা সুরক্ষিত থাকে যা প্রজেকশনের সময় অদলবদল করা যায়। একটি পূর্ববর্তী সংস্করণ  ` data/` ` data/backups/config.json.bak` এ সংরক্ষণ করা হয়েছে৷
 
 ## কমান্ড লাইন
 
-`argvus config` সাবকমান্ড `argvus` প্যাকেজ দ্বারা প্রক্রিয়াধীন সরবরাহ করা হয়েছে:
+`argvus config ` সাবকমান্ড ` argvus` প্যাকেজ দ্বারা প্রক্রিয়াধীন সরবরাহ করা হয়েছে:
 
 ```sh
 argvus config path
@@ -63,19 +63,19 @@ argvus config project
 argvus config project --force
 ```
 
-`ensure` স্কিমা ডিফল্ট সহ একটি নতুন `config.json` বাস্তবায়িত করে, বা পূরণ করে
+`ensure ` স্কিমা ডিফল্ট সহ একটি নতুন ` config.json` বাস্তবায়িত করে, বা পূরণ করে
 সুস্পষ্ট মান প্রতিস্থাপন ছাড়া ক্ষেত্র অনুপস্থিত. এটি বিকৃত JSON-এ ব্যর্থ হয়।
 `migrate` মান প্রতিস্থাপন ছাড়াই বিদ্যমান লিগ্যাসি উপস্থিতি স্থিতি আমদানি করে
-ইতিমধ্যে `config.json`-এ উপস্থিত। `argvus sessionctl` চালায় `recover`, `ensure`,
-কনফিগারেশন পরিবর্তনের পরে পুনরায় লোড প্রয়োগ করার আগে `migrate` এবং `project`:
+ইতিমধ্যে `config.json `-এ উপস্থিত। ` argvus sessionctl ` চালায় ` recover `, ` ensure`,
+কনফিগারেশন পরিবর্তনের পরে পুনরায় লোড প্রয়োগ করার আগে `migrate ` এবং ` project`:
 
 ```sh
 argvus sessionctl apply-config
 ```
 
-`apply` এবং `rebuild` হল থেকে প্রতিটি অভিক্ষেপ পুনর্নির্মাণের জন্য উপনাম
-`config.json`; `project` হল ঐতিহাসিক বানান এবং `--force` গ্রহণ করে।
-`apply` `argvus sessionctl`-এ পোস্ট-কমিট রানটাইম রিলোড অর্পণ করে।
+`apply ` এবং ` rebuild` হল থেকে প্রতিটি অভিক্ষেপ পুনর্নির্মাণের জন্য উপনাম
+`config.json `; ` project ` হল ঐতিহাসিক বানান এবং `--force` গ্রহণ করে।
+`apply ` ` argvus sessionctl`-এ পোস্ট-কমিট রানটাইম রিলোড অর্পণ করে।
 প্রস্তুতি বা বিচ্ছিন্ন পরীক্ষার জন্য `ARGVUS_NO_RUNTIME=1` সেট করুন।
 জেনারেশন মঞ্চায়নে ঘটে এবং `data/` গাছটি অদলবদল করা হয়
 প্রজেক্টর সফল। অতএব `data/generated/` মুছে ফেলা এবং চলমান
@@ -85,7 +85,7 @@ argvus sessionctl apply-config
 `$XDG_STATE_HOME/argvus/config-projection.json` (সাধারণত
 `~/.local/state/argvus/config-projection.json`)। প্রকাশও নয়
 উত্পন্ন ফাইল সত্য উৎস. `apply` পোস্ট-কমিট রিলোড সম্পাদন করে
-`argvus sessionctl` এর মাধ্যমে; `project` সামঞ্জস্যের জন্য শুধুমাত্র অভিক্ষেপ থেকে যায়।
+`argvus sessionctl ` এর মাধ্যমে; ` project` সামঞ্জস্যের জন্য শুধুমাত্র অভিক্ষেপ থেকে যায়।
 
 প্রতিটি অবিরাম মিউটেশন একই নিয়ম ব্যবহার করে: যদি ক্যানোনিকাল নথি পরিবর্তিত হয়,
 CLI কমিট করার পরে একটি কেন্দ্রীভূত `argvus sessionctl reload` আহ্বান করে। দ
@@ -108,20 +108,20 @@ CLI কমিট করার পরে একটি কেন্দ্রীভ
 
 | পরিবর্তন | লক্ষ্য | স্প্ল্যাশ |
 | --- | --- | --- |
-| থিম, হাইলাইট রঙ বা GTK মোড | `hyprland`, `consumers`, `wallpaper`, `polkit` | না |
+| থিম, হাইলাইট রঙ বা GTK মোড | `hyprland `, ` consumers `, ` wallpaper `, ` polkit` | না |
 | শুধুমাত্র ওয়ালপেপার | `wallpaper` (হাইপ্রপেপার আইপিসি; পরিষেবাটি শুধুমাত্র swaybg-এর জন্য পুনরায় চালু হয়) | না |
-| `effects` (ব্লার, অ্যানিমেশন, স্বচ্ছতা, ছায়া) | `hyprland`, `consumers` | না || উইন্ডোজের `layout` (ফাঁক, সীমানা) | `hyprland` | না |
-| `layout.taskbar` (অবস্থান, মার্জিন) | `hyprland`, `taskbar`, `widget_telemetry` | হ্যাঁ |
-| `fonts` | `consumers` | না |
-| `control_panel` (সুইচ, কার্ড) | `control_panel` | হ্যাঁ |
-| `default_apps`, `keyboard_shortcuts`, `hyprland`, `displays` | `hyprland` | না |
-| `power` | `hypridle` | না |
+| `effects ` (ব্লার, অ্যানিমেশন, স্বচ্ছতা, ছায়া) | ` hyprland `, ` consumers ` | না || উইন্ডোজের ` layout ` (ফাঁক, সীমানা) | ` hyprland` | না |
+| `layout.taskbar ` (অবস্থান, মার্জিন) | ` hyprland `, ` taskbar `, ` widget_telemetry` | হ্যাঁ |
+| `fonts ` | ` consumers` | না |
+| `control_panel ` (সুইচ, কার্ড) | ` control_panel` | হ্যাঁ |
+| `default_apps `, ` keyboard_shortcuts `, ` hyprland `, ` displays ` | ` hyprland` | না |
+| `power ` | ` hypridle` | না |
 
-`consumers` `argvus config theme-runtime consumers` চালায় (বার স্টাইলশীট,
+`consumers ` ` argvus config theme-runtime consumers` চালায় (বার স্টাইলশীট,
 আইপিসি, হাইপ্রল্যান্ডের রঙ, ডানস্টের থিম রিলোড, বিটপ এবং
 বিড়ালছানা)। ডু নট ডিস্টার্ব সক্রিয় থাকা অবস্থায় Dunst এর থিম পুনরায় লোড করা পিছিয়ে দেয়।
-`wallpaper` `argvus config theme-runtime wallpaper` চালায়, যা দেখায়
-কার্যকর `/appearance/wallpaper`। `layout.taskbar` হ্যাশ রাখা হয়েছে
+`wallpaper ` ` argvus config theme-runtime wallpaper` চালায়, যা দেখায়
+কার্যকর `/appearance/wallpaper `। ` layout.taskbar` হ্যাশ রাখা হয়েছে
 প্রজেকশন ম্যানিফেস্টে উইন্ডো লেআউট ছাড়াও, তাই একটি ফাঁক পরিবর্তন করে
 বার পুনরায় চালু করবেন না। ফলব্যাক `full` প্ল্যান, কোন প্রতিশ্রুতিবদ্ধ প্ল্যান না থাকলে ব্যবহার করা হয়
 বিদ্যমান, স্প্ল্যাশের অধীনে প্রতিটি পৃষ্ঠকে পুনরায় চালু করে।
@@ -138,9 +138,9 @@ CLI কমিট করার পরে একটি কেন্দ্রীভ
 অগ্রাধিকার নিয়ম।
 
 থিম এবং প্রভাব অভিক্ষেপ `argvus-config` নিজেই প্রয়োগ করা হয়।
-থিম লেনদেন (`argvus theme-switch`, যা `theme-apply` চালায়), `argvus config accent` এবং `argvus effects-toggle` প্রজেক্ট করে না:
+থিম লেনদেন (`argvus theme-switch `, যা ` theme-apply ` চালায়), ` argvus config accent ` এবং ` argvus effects-toggle` প্রজেক্ট করে না:
 তারা এই CLI এর মাধ্যমে যাচাই করে, লক করে, কমিট করে এবং তারপর
-যারা `config.json` পড়তে পারে না এমন বহিরাগত ভোক্তাদের সমন্বয় করুন। `argvus effects-toggle`
+যারা `config.json ` পড়তে পারে না এমন বহিরাগত ভোক্তাদের সমন্বয় করুন। ` argvus effects-toggle`
 একটি পাতলা প্রতিনিধি যার নিজস্ব কোনো আউটপুট নেই। চেহারা সাহায্যকারী কখনও হয় না
 প্রজেক্টর দ্বারা ডাকা হয়, এবং তারা অবশ্যই `data/generated/` এর নিচে লিখতে পারবে না।
 
@@ -151,40 +151,40 @@ CLI কমিট করার পরে একটি কেন্দ্রীভ
 
 | পৃষ্ঠ | আউটপুট |
 | --- | --- |
-| হাইপ্রল্যান্ড | `generated/hypr/`, থিম প্রোফাইল সহ, `spaces-effective.conf`, `borders-effective.conf`, `hypridle.conf` এবং `monitors.lua` |
-| বিন্যাস/প্রভাব | `generated/effects/`, `generated/spaces.conf`, `generated/borders.conf` |
-| ওয়েবার | `generated/waybar/`, `argvus-taskbar.css` এবং `argvus-widget-telemetry.{jsonc,css}` সহ |
-| উইজেট টেলিমেট্রি থিম | `generated/widget-telemetry/` এবং `generated/waybar/widget-telemetry-themes/` |
+| হাইপ্রল্যান্ড | `generated/hypr/`, থিম প্রোফাইল সহ, ` spaces-effective.conf `, ` borders-effective.conf `, ` hypridle.conf ` এবং ` monitors.lua` |
+| বিন্যাস/প্রভাব | `generated/effects/`, ` generated/spaces.conf `, ` generated/borders.conf` |
+| ওয়েবার | `generated/waybar/`, ` argvus-taskbar.css ` এবং ` argvus-widget-telemetry.{jsonc,css}` সহ |
+| উইজেট টেলিমেট্রি থিম | `generated/widget-telemetry/` এবং ` generated/waybar/widget-telemetry-themes/` |
 | কুইকশেল | `generated/quickshell/` |
-| বিজ্ঞপ্তি | `generated/notifications/` এবং `dunstrc` |
+| বিজ্ঞপ্তি | `generated/notifications/` এবং ` dunstrc` |
 | লক স্ক্রীন | `generated/hypr/hyprlock.conf` এবং Hyprtoolkit থিম প্রোফাইল |
 | GTK | `generated/gtk/` |
 | ইয়াজি | `generated/yazi/` |
 | সুপারফাইল | `generated/superfile/` |
-| টার্মিনাল এবং Qt প্রোফাইল | `generated/terminal/`, `generated/qt6ct/` |
+| টার্মিনাল এবং Qt প্রোফাইল | `generated/terminal/`, ` generated/qt6ct/` |
 | হরফ | ওয়েবার স্টাইলশীটে `generated/fonts.conf` প্লাস পরিচালিত ফন্ট ব্লক |
 | অপসারণযোগ্য ডিভাইস | `generated/removable-devices/theme.css` |
-| ওয়ালপেপার | `generated/hypr/hyprpaper.conf` এবং `data/hypr/hyprpaper.conf` |
-| কন্ট্রোল প্যানেল এবং ডিফল্ট | `data/control-panel/`, `data/control-center/defaults.json` |
+| ওয়ালপেপার | `generated/hypr/hyprpaper.conf ` এবং ` data/hypr/hyprpaper.conf` |
+| কন্ট্রোল প্যানেল এবং ডিফল্ট | `data/control-panel/`, ` data/control-center/defaults.json` |
 | ক্যালেন্ডার, ইনপুট, কীবোর্ড, পাওয়ার | ক্যালেন্ডার TOML, ইনপুট খণ্ড, কীবোর্ড অবস্থা, জাগ্রত রাখুন মার্কার |
 
 থিম স্তরটি উৎপন্ন মূলের বাইরেও মিরর করা হয়েছে:
 `data/waybar/argvus-taskbar.{jsonc,css}`,
-`data/waybar/argvus-widget-telemetry.{jsonc,css}`, `data/foot/`,
-`data/qt6ct/`, `data/hypr/hyprtoolkit.conf` এবং
+`data/waybar/argvus-widget-telemetry.{jsonc,css}`, ` data/foot/`,
+`data/qt6ct/`, ` data/hypr/hyprtoolkit.conf` এবং
 `data/hypr/application-style.conf`. সেই কপিগুলি প্যাকেজ থেকে প্রতিস্থাপিত হয়
 ডিফল্ট যখন চেহারা বিভাগ পরিবর্তিত হয়, এবং প্রজেক্টর তারপর পুনরায় লেখা হয়
 শুধুমাত্র এর সীমাবদ্ধ পরিচালিত ব্লকগুলি — ওয়েবার স্টাইলশীটে ফন্ট ব্লক এবং
 `ARGVUS_TELEMETRY_*` টেলিমেট্রি প্রোফাইলে ব্লক করে — তাই এর বাইরে পাঠ্য
 মার্কার একটি থিম সুইচ বেঁচে নেই. `fonts.targets` এবং
-`control_panel.widget_telemetry_blocks` ক্যানোনিকাল থাকে: নিয়ন্ত্রণ কেন্দ্র`argvus-config` এর মাধ্যমে এদের ধরে রাখে এবং নিজেই কখনো এই ফাইলগুলি লেখে না।
+`control_panel.widget_telemetry_blocks ` ক্যানোনিকাল থাকে: নিয়ন্ত্রণ কেন্দ্র` argvus-config` এর মাধ্যমে এদের ধরে রাখে এবং নিজেই কখনো এই ফাইলগুলি লেখে না।
 
 উইজেট টেলিমেট্রি ব্লক নির্বাচন
 `/control_panel/widget_telemetry_blocks` এ মানক, সাতটি ব্লক নামের একটি অ্যারে
-(`system`, `cpu_gpu`, `memory`, `storage`, `processes`, `network`, `keys`)।
+(`system `, ` cpu_gpu `, ` memory `, ` storage `, ` processes `, ` network `, ` keys`)।
 লেগ্যাসি `$XDG_STATE_HOME/argvus/widget-telemetry-blocks` ফাইলটি শুধুমাত্র
 মাইগ্রেশন ফলব্যাক এবং কখনও লেখা হয় না। `আর্গভাস উইজেট-টেলিমেট্রি-টগল ব্লক
-set` and `একটি পারমাণবিক রাইটে সব` প্যাচ ক্যানোনিকাল অ্যারেকে ব্লক করে, এবং
+set `and` একটি পারমাণবিক রাইটে সব` প্যাচ ক্যানোনিকাল অ্যারেকে ব্লক করে, এবং
 `apply-state` অনুমান করে যে নির্বাচনটি ইতিমধ্যেই তার কলার দ্বারা অব্যাহত ছিল৷
 
 হাইপ্রল্যান্ড ব্যবধান এবং সীমানা পছন্দ একই সীমানা অনুসরণ করে। দargvus config স্পেস এবং argvus config বর্ডার কমান্ড (এবং তাদের ঐতিহাসিকসামঞ্জস্যের মোড়ক) আপডেট/লেআউট; মরিচা উৎপন্ন হয়
@@ -193,41 +193,41 @@ data/generated/spaces-effective.conf এবং data/generated/borders-effective.
 শুধুমাত্র মাইগ্রেশন রাষ্ট্র এবং সত্যের উৎস কখনও হয় না.
 
 অ্যাকসেন্ট এবং GTK মোড স্টেট একই মরিচা সীমানা ব্যবহার করে। `argvus-config ব্যবহার করুন
-অ্যাকসেন্ট COLOR` or `argvus কনফিগার অ্যাকসেন্ট --theme-default` অ্যাকসেন্ট মালিকানার জন্য,
+অ্যাকসেন্ট COLOR `or` argvus কনফিগার অ্যাকসেন্ট --theme-default` অ্যাকসেন্ট মালিকানার জন্য,
 এবং GTK মোডের জন্য `argvus config mode toggle|set dark|light`। ঐতিহাসিক
 অ্যাকসেন্ট এবং মোড স্ক্রিপ্টগুলি সামঞ্জস্যপূর্ণ মোড়ক; `.accent-color`,
-`.accent-custom` এবং `.gtk-mode` শুধুমাত্র মাইগ্রেশন/প্রজেকশন ফাইল।
+`.accent-custom ` এবং `.gtk-mode` শুধুমাত্র মাইগ্রেশন/প্রজেকশন ফাইল।
 
 যৌক্তিক ARGVUS পাথগুলিও `argvus config paths` দ্বারা সমাধান করা হয়েছে৷ উত্তরাধিকার
-`paths.sh` ফাইল শুধুমাত্র সামঞ্জস্যপূর্ণ ফাংশন প্রকাশ করে; নেটিভ ওভাররাইড, ব্যবহারকারীডাটা, জেনারেটেড ডাটা এবং সিস্টেম ফলব্যাক রাস্ট পাথ মডেল দ্বারা সমাধান করা হয়।`audio` ডিফল্ট আউটপুট সিঙ্ক পরিবর্তন করে এবং ফলাফলটি `/audio`-এ এক ধাপে রেকর্ড করে: `argvus config audio volume <N|+N|-N> [--limit PERCENT]` এবং `argvus config audio mute <on|off|toggle>`। এটি কনফিগারেশন পুনরায় লোড না করেই স্টোরটি লিখে, কারণ পাইপওয়্যারের ইতিমধ্যেই মান রয়েছে। ওয়েবার ভলিউম মডিউল, হাইপ্রল্যান্ড মিডিয়া কী এবং কন্ট্রোল প্যানেল এটি ব্যবহার করে, তাই `argvus config project`, যা `/audio` কে সিঙ্কে প্রজেক্ট করে, কখনও পুরানো ভলিউম পুনরুদ্ধার করে না। 100% এর উপরে একটি ভলিউম (হাইপ্রল্যান্ড কীগুলি 150% পর্যন্ত অনুমতি দেয়) 100 হিসাবে সংরক্ষণ করা হয়।
+`paths.sh ` ফাইল শুধুমাত্র সামঞ্জস্যপূর্ণ ফাংশন প্রকাশ করে; নেটিভ ওভাররাইড, ব্যবহারকারীডাটা, জেনারেটেড ডাটা এবং সিস্টেম ফলব্যাক রাস্ট পাথ মডেল দ্বারা সমাধান করা হয়।` audio ` ডিফল্ট আউটপুট সিঙ্ক পরিবর্তন করে এবং ফলাফলটি `/audio `-এ এক ধাপে রেকর্ড করে: ` argvus config audio volume <N|+N|-N> [--limit PERCENT]` এবং ` argvus config audio mute <on|off|toggle>`। এটি কনফিগারেশন পুনরায় লোড না করেই স্টোরটি লিখে, কারণ পাইপওয়্যারের ইতিমধ্যেই মান রয়েছে। ওয়েবার ভলিউম মডিউল, হাইপ্রল্যান্ড মিডিয়া কী এবং কন্ট্রোল প্যানেল এটি ব্যবহার করে, তাই ` argvus config project `, যা `/audio` কে সিঙ্কে প্রজেক্ট করে, কখনও পুরানো ভলিউম পুনরুদ্ধার করে না। 100% এর উপরে একটি ভলিউম (হাইপ্রল্যান্ড কীগুলি 150% পর্যন্ত অনুমতি দেয়) 100 হিসাবে সংরক্ষণ করা হয়।
 
 `patch` একটি JSON অবজেক্ট প্রয়োগ করে যার কীগুলি একটি লক করা JSON পয়েন্টার
 পঠন-পরিবর্তন-লেখা অপারেশন। `apply-theme` সমতুল্য পারমাণবিক সম্পাদন করে
 থিম লেনদেন এবং এর থেকে পরিচালিত চেহারা বিভাগগুলি প্রতিস্থাপন করে
 থিমের ঐচ্ছিক চেহারা প্রোফাইল বা প্যাকেজ ডিফল্ট।
-মিউটেটিং কমান্ড একটি `NextUserConfig` তৈরি করে, একটি `EffectiveConfig`, পর্যায় সমাধান করে
+মিউটেটিং কমান্ড একটি `NextUserConfig ` তৈরি করে, একটি ` EffectiveConfig`, পর্যায় সমাধান করে
 সমস্ত প্রজেক্টর, এবং শুধুমাত্র তারপর ক্যানোনিকাল JSON প্রকাশ করুন। একটি অপারেশনাল
-`.config-transaction.json` মার্কার `argvus config recover` পুনরায় প্রজেক্ট করার অনুমতি দেয়
+`.config-transaction.json ` মার্কার ` argvus config recover` পুনরায় প্রজেক্ট করার অনুমতি দেয়
 ডেটা এবং JSON প্রকাশনার মধ্যে ক্র্যাশ হওয়ার পরে আগের কনফিগারেশন।
 থিম ডিফল্ট প্রতিটি থিমের ম্যানিফেস্ট দ্বারা ঘোষণা করা হয়
-(`themes/<theme>/theme.toml`): ডিফল্ট অ্যাকসেন্ট (`palette.accent`), GTK রঙের স্কিম
+(`themes/<theme>/theme.toml `): ডিফল্ট অ্যাকসেন্ট (` palette.accent`), GTK রঙের স্কিম
 এবং ওয়ালপেপার। CSS, Lua, Rasi এবং Qt ফাইলগুলি এটি থেকে থিম বিল্ডে রেন্ডার করা হয়।
 
 আলো/অন্ধকার সহ থিম পরিবর্তন করা, হাইলাইট রঙটিকে থিমের ডিফল্টে পুনরায় সেট করে,
 এমনকি যখন ব্যবহারকারী একটি কাস্টম রঙ বেছে নেয়: কাস্টম রঙ শুধুমাত্র পরবর্তী থিম পর্যন্ত রাখা হয়
 পরিবর্তন থিম পরিবর্তনের পরে এটি আবার সেট করতে `argvus config accent` ব্যবহার করুন। প্রয়োগ করা a
-`argvus config theme-apply` সহ থিম `/appearance/accent` এবং `/appearance/gtk_mode` লিখেছেন
-ম্যানিফেস্ট থেকে, এবং `argvus config accent` `accent_custom` দিয়ে নির্বাচিত রঙ লেখে
+`argvus config theme-apply ` সহ থিম `/appearance/accent ` এবং `/appearance/gtk_mode` লিখেছেন
+ম্যানিফেস্ট থেকে, এবং `argvus config accent ` ` accent_custom` দিয়ে নির্বাচিত রঙ লেখে
 সেট, এক কমান্ডে।
 
-`apply-theme` রূপটিকে স্পষ্টভাবে `--variant sticky|spaced` হিসাবে নেয় এবং
+`apply-theme ` রূপটিকে স্পষ্টভাবে `--variant sticky|spaced` হিসাবে নেয় এবং
 ম্যানিফেস্টের মাধ্যমে অনুরোধ করা নামের সমাধান করে, তাই একটি অনুরোধ কখনই হতে পারে নাঅন্য ভেরিয়েন্টের সম্পদের সমাধান করুন। `theme-manifest THEME` একই
 রেজোলিউশন উন্মুক্ত শুধুমাত্র-পঠন: এটি এর সাথে একসাথে ম্যানিফেস্ট এন্ট্রি প্রিন্ট করে
-`asset_id` এবং `layout_variant` এটি সমাধান করেছে, যা একজন কলারের প্রয়োজন
-ঠিকানা প্যাকেজ সম্পদ. স্টিকি হল আনসফিক্সড আইডি এবং শুধুমাত্র স্পেসড একটি বহন করে`-spaced` প্রত্যয়, তাই `dracula-sticky` এবং `argvus-dark-dracula-sticky` হল
+`asset_id ` এবং ` layout_variant` এটি সমাধান করেছে, যা একজন কলারের প্রয়োজন
+ঠিকানা প্যাকেজ সম্পদ. স্টিকি হল আনসফিক্সড আইডি এবং শুধুমাত্র স্পেসড একটি বহন করে`-spaced ` প্রত্যয়, তাই ` dracula-sticky ` এবং ` argvus-dark-dracula-sticky` হল
 গৃহীত এবং `dracula` তে স্বাভাবিককরণ।
 
-`--raw` এর সাথে, স্ট্রিং মানগুলি JSON উদ্ধৃতি ছাড়াই মুদ্রিত হয়, যখন বস্তু এবং অ্যারেগুলি JSON মান থাকে৷ থিম এবং লেআউট ডট-ফাইলগুলি আর প্রজেকশন হেল্পার দ্বারা লেখা হয় না; `config.json` সেই পছন্দগুলির জন্য একমাত্র স্থায়ী উত্স থেকে যায়৷ অভিক্ষেপ ব্যর্থ হলে, ডেস্কটপ পৃষ্ঠগুলি পুনরায় চালু করার আগে সেশন পুনরায় লোড বন্ধ হয়ে যায় যাতে একটি পুরানো আংশিক থিম বর্তমান হিসাবে উপস্থাপন করা হয় না।
+`--raw ` এর সাথে, স্ট্রিং মানগুলি JSON উদ্ধৃতি ছাড়াই মুদ্রিত হয়, যখন বস্তু এবং অ্যারেগুলি JSON মান থাকে৷ থিম এবং লেআউট ডট-ফাইলগুলি আর প্রজেকশন হেল্পার দ্বারা লেখা হয় না; ` config.json` সেই পছন্দগুলির জন্য একমাত্র স্থায়ী উত্স থেকে যায়৷ অভিক্ষেপ ব্যর্থ হলে, ডেস্কটপ পৃষ্ঠগুলি পুনরায় চালু করার আগে সেশন পুনরায় লোড বন্ধ হয়ে যায় যাতে একটি পুরানো আংশিক থিম বর্তমান হিসাবে উপস্থাপন করা হয় না।
 
 ## রপ্তানি এবং আমদানি
 
@@ -238,16 +238,16 @@ argvus config export --scope appearance --output appearance.json
 argvus config import --scope appearance appearance.json
 ```
 
-সম্পূর্ণ পরিচালিত ডেস্কটপ মডেলের জন্য `--scope desktop` ব্যবহার করুন। অনুপস্থিত ক্ষেত্রগুলি ARGVUS ডিফল্ট ব্যবহার করে; উৎপন্ন আউটপুট সরাসরি সম্পাদনা করা উচিত নয়।Control Center theme export and import exchange a theme and its visual profile: the archive holds a schema 2 theme directory (`<id>/theme.toml`, optional `appearance.json` and `effects.conf`, `overrides/`, the wallpaper) that installs under `$XDG_DATA_HOME/argvus/themes/`. The profile holds appearance,লেআউট জ্যামিতি, ভিজ্যুয়াল এফেক্ট, ফন্ট এবং প্যানেল উপস্থাপনা। অডিও, কীবোর্ড, নেটওয়ার্ক এবং অন্যান্য অ-ভিজ্যুয়াল পছন্দগুলি থিমের বাইরে থাকে। সম্পূর্ণ চেহারা কনফিগারেশন সরাতে উপরে `appearance` স্কোপ ব্যবহার করুন, এবং সম্পূর্ণ কনফিগারেশনের জন্য `desktop` সুযোগব্যাকআপThe current schema groups preferences under `appearance`, `layout`, `effects`, `fonts`, `control_panel`, `default_apps`, `keyboard_shortcuts`, `hyprland`, `displays`, `power`, `session`, `calendar`, and `removable_devices`. `default_apps` is the only persistent source for preferred applications,এবং `keyboard_shortcuts` স্থিতিশীল ইংরেজি, স্ট্রিং মান সহ লোকেল-স্বাধীন কী বা অক্ষম বাইন্ডিংয়ের জন্য `null` সঞ্চয় করে।কন্ট্রোল সেন্টার ক্যানোনিকাল উপস্থিতির মানগুলি পড়ে যখন এটি একটি চেহারা পৃষ্ঠা খোলে এবং `argvus-config` এর মাধ্যমে পরিবর্তনগুলি লেখে। উপস্থিত নেটিভ স্টেট ফাইলগুলি উপস্থিতি স্ক্রিপ্ট এবং পুরানো ইনস্টলেশনের জন্য প্রজেকশন থেকে যায়।কন্ট্রোল প্যানেল কার্ড অর্ডার এবং দৃশ্যমানতার জন্য `control_panel.cards` এবং প্যানেল মাস্টার সুইচের জন্য `control_panel.enabled` ব্যবহার করে। এর `control-panel/cards.json` এবং `state/control-panel` ফাইলগুলি সামঞ্জস্যের অনুমান হিসাবে রাখা হয়েছে৷ কন্ট্রোল প্যানেলে করা পরিবর্তনগুলি তাই `desktop` রপ্তানি সুযোগের অংশ৷ফন্ট পছন্দ `fonts.targets` পরিবার, শৈলী এবং টাস্কবারের আকার, টেলিমেট্রি, কন্ট্রোল প্যানেল, সিস্টেম, অ্যাপ্লিকেশন, টার্মিনাল এবং ব্রাউজার টার্গেটের জন্য ব্যবহার করে। `fonts.rendering` অ্যান্টিলিয়াসিং, ইঙ্গিত, সাবপিক্সেল অর্ডার এবং DPI পছন্দগুলি সঞ্চয় করে। `fonts.conf`, ফন্ট কনফিগারেশন নিয়ম, ডেস্কটপ সেটিংস এবং ওয়েবার স্টাইলশীটের ভিতরে পরিচালিত ফন্ট ব্লকগুলি হল অনুমান: কন্ট্রোল সেন্টার `/fonts/targets/*` এর মাধ্যমে `argvus-config` টিকে থাকে, এবং প্রজেক্টর শুধুমাত্র তার ডিলিকে ব্লক করে।হাইপ্রল্যান্ড পছন্দগুলি শর্টকাটের জন্য `keyboard_shortcuts`, মাউস এবং টাচপ্যাড সেটিংসের জন্য `hyprland.input` এবং XKB লেআউট, ভেরিয়েন্ট এবং বিকল্পগুলির জন্য `hyprland.keyboard` ব্যবহার করে৷ একটি ম্যানিফেস্ট বাইন্ডিং আইডি একটি স্থিতিশীল `config_key` তে ম্যাপ করে (উদাহরণস্বরূপ `window.close` → `close_window` এবং `window.drag_mouse` → `drag_window__floating_window_only`)। প্রদর্শন পছন্দ `displays.monitors`, `displays.workspaces`, এবং `displays.primary_monitor` ব্যবহার করে। `data/generated/`-এর অধীনে নেটিভ TOML ফাইল এবং জেনারেট করা লুয়া ফাইলগুলি হাইপ্রল্যান্ডের দ্বারা গ্রাস করা অনুমান থেকে যায়৷প্রতিটি `effects` স্যুইচ ডিফল্ট সক্রিয় (অ্যানিমেশন, ব্লার, উইজেট টেলিমেট্রি এবং প্রতিটি স্বচ্ছতা পৃষ্ঠ), ভার্চুয়াল মেশিনে এবং কম-পাওয়ার সেশনেও; উইন্ডো শ্যাডো (`shadow_enabled`) এবং wobble (`wobble_enabled`) ডিফল্ট বন্ধ। অ্যানিমেশন মাস্টার সুইচের জন্য ইফেক্ট পছন্দগুলি `effects` ব্যবহার করে (`animations`, প্রজেক্ট করা hypr/state.lua থেকে `hyprland.lua` এ প্রয়োগ করা হয়েছে, প্রভাব থেকে স্বাধীন, যা  `hypr/state.lua` `blur_global_enabled` plus the `transparency_<surface>_enabled` of `taskbar`, `control-panel`, `widget-telemetry`, `terminal` and `launchers`, and reads as enabled when any of them is; `argvus effects-toggle animations|effects` switch them), the global blur switch (`blur_global_enabled`), the Hyprland blur parameters (`blur_size`, `blur_passes`, `blur_brightness`, `blur_noise`, `blur_contrast`, `blur_vibrancy`, `blur_vibrancy_darkness`), the window shadow(`shadow_enabled`, `shadow_sharp`, `shadow_color`, `shadow_range`, `shadow_render_power`, `shadow_offset_x`, `shadow_offset_y`, `shadow_scale`), the Animations values (`animation_<leaf>_speed`, `_curve`, `_style`, `_popin` and `_enabled` for each animation, plus `animation_bezier_x1` to `animation_bezier_y2` and `animation_spring_mass`, `animation_spring_stiffness` and `animation_spring_dampening` for the custom curves) and per-surface transparency values. Effects areথিম-মালিকানাধীন, বৈকল্পিক-মালিকানাধীন নয়: স্টিকি এবং স্পেস একই `<theme>.conf` ইফেক্ট প্রজেকশন ব্যবহার করে যখন তাদের লেআউট অনুমানগুলি ভিন্ন। সারফেসগুলির মধ্যে বর্তমানে `taskbar`, `control-panel`, এবং `widget-telemetry` অন্তর্ভুক্ত রয়েছে; স্বচ্ছতার মান হল `0` থেকে `100` পর্যন্ত শতাংশ (নিয়ন্ত্রণ কেন্দ্র এবং লঞ্চার পৃষ্ঠগুলি `15` তে ডিফল্ট, অন্যগুলি `50`) , অস্পষ্টতা পরামিতিগুলির মধ্যে সংখ্যাগুলিপরিসীমাঘোষিত `schema.json`, and enabled states are booleans. Animations values are validated by `argvus-config` too: speeds are numbers from `1` to `10` (decimals allowed), pop-in percentages are whole numbers from `1` to `100`, curves must beঅ্যানিমেশন পৃষ্ঠা থেকে নাম, শৈলীগুলি অবশ্যই অ্যানিমেশন পৃষ্ঠার নাম হতে হবে এবং অ্যানিমেশনের নিজস্ব পাতার দ্বারা গৃহীত হতে হবে (উদাহরণস্বরূপ `popin` `animation_workspace_in_style`, `gnomed`-এর জন্য প্রত্যাখ্যান করা হয়েছে, শুধুমাত্র উইন্ডো খোলার জন্য এবং প্রত্যাখ্যানকারী উইন্ডোর ক্লোসাইডের জন্য গৃহীত হয়।জানালাএবং লেয়ার পাতা), বেজিয়ার ওয়াই পয়েন্টগুলি `-1` এবং `2`, রেঞ্জ Hyprland 0.56.2 পার্সের মধ্যে থাকে এবং অন্যান্য কার্ভ প্যারামিটারগুলি তাদের নথিভুক্ত রেঞ্জের মধ্যে থাকে। `layers` এবং `switching` পাতাগুলি আর বিদ্যমান নেই, তাই কনফিগারগুলি আগে সংরক্ষণ করা হয়েছেতাদের অপসারণ `animation_layers_enabled`, `animation_layers_speed`, `animation_layers_curve` এবং `animation_switching_*` কীগুলি লোড করার সময় হারায়৷ বর্তমান সেটের বাইরের স্টাইলগুলি বাদ দেওয়া হয়েছে এবং `-1` থেকে `2` এর বাইরের Bézier Y পয়েন্টগুলি ক্ল্যাম্প করা হয়েছে, তাই প্যাকেজ করা ডিফল্টগুলি আবার প্রযোজ্য হবেযা ছিলসরানোপাওয়ার পছন্দ `power.screen_off_minutes`, `power.lock_minutes`, `power.keep_awake`, এবং ঢাকনা/পাওয়ার-বোতাম নীতিগুলি ব্যবহার করে৷ প্রক্ষিপ্ত ফর্মগুলি হল `data/generated/hypr/hypridle.conf` এবং চিহ্নিতকারী `data/power/keep-awake`; `.keep-awake` শুধুমাত্র একটি মাইগ্রেশন ইনপুট। `session.language` অবসরপ্রাপ্ত: বিদ্যমান মানগুলি উপেক্ষা করা হয়, নতুন লেখাগুলি প্রত্যাখ্যান করা হয় এবং কোনও ভাষা সামঞ্জস্যপূর্ণ ফাইল প্রজেক্ট করা হয় না। পরিবর্তে locale.conf ব্যবহারকারীর মধ্যে `LANG` সেট করুন। ক্যালেন্ডার পছন্দ  `locale.conf` `calendar` ব্যবহার করে এবং টাস্কবার-ক্যালেন্ডার ব্যবহারকারী TOML এর কাছে প্রজেক্ট করা হয়। অপসারণযোগ্য-ডিভাইস পছন্দ `removable_devices` ব্যবহার করে; অপসারণযোগ্য-ডিভাইস অ্যাপ্লিকেশন এই বিভাগটিকে প্যাকেজ করা ডিফল্টের উপর ব্যবহারকারীকে ওভাররাইড হিসাবে বিবেচনা করে।`migrate` imports the old root files and sections once, preserving an existing canonical value. Legacy `defaults.json`, `/defaults`, `/hyprland/keybindings`, `keybindings.toml`, dot-files, `generated/` and component directories are moved below `data/`; repeated reloads do not recreate the old root layout. Selecting the current theme again is idempotent: if canonical state and projections already agree, the projectionপরিকল্পনা কোন পরিবর্তিত বিভাগ রিপোর্ট করে না এবং সেশন স্প্ল্যাশ এড়িয়ে যায় এবং পরিষেবা পুনরায় চালু হয়।শক্তি একই প্রক্ষেপণ চুক্তি অনুসরণ করে: কন্ট্রোল সেন্টার config.json-তে `/power` লিখে,  `config.json` `argvus config project` অ্যাটমিকভাবে `data/hypr/hypridle.conf` রেন্ডার করে, এবং তবেই `argvus sessionctl` `argvus-hypridle.service` পুনরায় শুরু করতে পারে। সেই ফাইলটি সরানো `argvus config project` দিয়ে পুনরুদ্ধারযোগ্য; `0`-এর মান সংশ্লিষ্ট টাইমআউটকে বাদ দেয় এবং Never মানে।
+সম্পূর্ণ পরিচালিত ডেস্কটপ মডেলের জন্য `--scope desktop ` ব্যবহার করুন। অনুপস্থিত ক্ষেত্রগুলি ARGVUS ডিফল্ট ব্যবহার করে; উৎপন্ন আউটপুট সরাসরি সম্পাদনা করা উচিত নয়।Control Center theme export and import exchange a theme and its visual profile: the archive holds a schema 2 theme directory (`<id>/theme.toml `, optional ` appearance.json ` and ` effects.conf `, ` overrides/`, the wallpaper) that installs under `$XDG_DATA_HOME/argvus/themes/`. The profile holds appearance,লেআউট জ্যামিতি, ভিজ্যুয়াল এফেক্ট, ফন্ট এবং প্যানেল উপস্থাপনা। অডিও, কীবোর্ড, নেটওয়ার্ক এবং অন্যান্য অ-ভিজ্যুয়াল পছন্দগুলি থিমের বাইরে থাকে। সম্পূর্ণ চেহারা কনফিগারেশন সরাতে উপরে ` appearance ` স্কোপ ব্যবহার করুন, এবং সম্পূর্ণ কনফিগারেশনের জন্য ` desktop ` সুযোগব্যাকআপThe current schema groups preferences under ` appearance `, ` layout `, ` effects `, ` fonts `, ` control_panel `, ` default_apps `, ` keyboard_shortcuts `, ` hyprland `, ` displays `, ` power `, ` session `, ` calendar `, and ` removable_devices `. ` default_apps ` is the only persistent source for preferred applications,এবং ` keyboard_shortcuts ` স্থিতিশীল ইংরেজি, স্ট্রিং মান সহ লোকেল-স্বাধীন কী বা অক্ষম বাইন্ডিংয়ের জন্য ` null ` সঞ্চয় করে।কন্ট্রোল সেন্টার ক্যানোনিকাল উপস্থিতির মানগুলি পড়ে যখন এটি একটি চেহারা পৃষ্ঠা খোলে এবং ` argvus-config ` এর মাধ্যমে পরিবর্তনগুলি লেখে। উপস্থিত নেটিভ স্টেট ফাইলগুলি উপস্থিতি স্ক্রিপ্ট এবং পুরানো ইনস্টলেশনের জন্য প্রজেকশন থেকে যায়।কন্ট্রোল প্যানেল কার্ড অর্ডার এবং দৃশ্যমানতার জন্য ` control_panel.cards ` এবং প্যানেল মাস্টার সুইচের জন্য ` control_panel.enabled ` ব্যবহার করে। এর ` control-panel/cards.json ` এবং ` state/control-panel ` ফাইলগুলি সামঞ্জস্যের অনুমান হিসাবে রাখা হয়েছে৷ কন্ট্রোল প্যানেলে করা পরিবর্তনগুলি তাই ` desktop ` রপ্তানি সুযোগের অংশ৷ফন্ট পছন্দ ` fonts.targets ` পরিবার, শৈলী এবং টাস্কবারের আকার, টেলিমেট্রি, কন্ট্রোল প্যানেল, সিস্টেম, অ্যাপ্লিকেশন, টার্মিনাল এবং ব্রাউজার টার্গেটের জন্য ব্যবহার করে। ` fonts.rendering ` অ্যান্টিলিয়াসিং, ইঙ্গিত, সাবপিক্সেল অর্ডার এবং DPI পছন্দগুলি সঞ্চয় করে। ` fonts.conf `, ফন্ট কনফিগারেশন নিয়ম, ডেস্কটপ সেটিংস এবং ওয়েবার স্টাইলশীটের ভিতরে পরিচালিত ফন্ট ব্লকগুলি হল অনুমান: কন্ট্রোল সেন্টার `/fonts/targets/*` এর মাধ্যমে ` argvus-config ` টিকে থাকে, এবং প্রজেক্টর শুধুমাত্র তার ডিলিকে ব্লক করে।হাইপ্রল্যান্ড পছন্দগুলি শর্টকাটের জন্য ` keyboard_shortcuts `, মাউস এবং টাচপ্যাড সেটিংসের জন্য ` hyprland.input ` এবং XKB লেআউট, ভেরিয়েন্ট এবং বিকল্পগুলির জন্য ` hyprland.keyboard ` ব্যবহার করে৷ একটি ম্যানিফেস্ট বাইন্ডিং আইডি একটি স্থিতিশীল ` config_key ` তে ম্যাপ করে (উদাহরণস্বরূপ ` window.close ` → ` close_window ` এবং ` window.drag_mouse ` → ` drag_window__floating_window_only `)। প্রদর্শন পছন্দ ` displays.monitors `, ` displays.workspaces `, এবং ` displays.primary_monitor ` ব্যবহার করে। ` data/generated/`-এর অধীনে নেটিভ TOML ফাইল এবং জেনারেট করা লুয়া ফাইলগুলি হাইপ্রল্যান্ডের দ্বারা গ্রাস করা অনুমান থেকে যায়৷প্রতিটি ` effects ` স্যুইচ ডিফল্ট সক্রিয় (অ্যানিমেশন, ব্লার, উইজেট টেলিমেট্রি এবং প্রতিটি স্বচ্ছতা পৃষ্ঠ), ভার্চুয়াল মেশিনে এবং কম-পাওয়ার সেশনেও; উইন্ডো শ্যাডো (` shadow_enabled `) এবং wobble (` wobble_enabled `) ডিফল্ট বন্ধ। অ্যানিমেশন মাস্টার সুইচের জন্য ইফেক্ট পছন্দগুলি ` effects ` ব্যবহার করে (` animations `, প্রজেক্ট করা hypr/state.lua থেকে ` hyprland.lua ` এ প্রয়োগ করা হয়েছে, প্রভাব থেকে স্বাধীন, যা  ` hypr/state.lua ` ` blur_global_enabled ` plus the ` transparency_<surface>_enabled ` of ` taskbar `, ` control-panel `, ` widget-telemetry `, ` terminal ` and ` launchers `, and reads as enabled when any of them is; ` argvus effects-toggle animations|effects ` switch them), the global blur switch (` blur_global_enabled `), the Hyprland blur parameters (` blur_size `, ` blur_passes `, ` blur_brightness `, ` blur_noise `, ` blur_contrast `, ` blur_vibrancy `, ` blur_vibrancy_darkness `), the window shadow(` shadow_enabled `, ` shadow_sharp `, ` shadow_color `, ` shadow_range `, ` shadow_render_power `, ` shadow_offset_x `, ` shadow_offset_y `, ` shadow_scale `), the Animations values (` animation_<leaf>_speed `, `_curve `, `_style `, `_popin ` and `_enabled ` for each animation, plus ` animation_bezier_x1 ` to ` animation_bezier_y2 ` and ` animation_spring_mass `, ` animation_spring_stiffness ` and ` animation_spring_dampening ` for the custom curves) and per-surface transparency values. Effects areথিম-মালিকানাধীন, বৈকল্পিক-মালিকানাধীন নয়: স্টিকি এবং স্পেস একই `<theme>.conf ` ইফেক্ট প্রজেকশন ব্যবহার করে যখন তাদের লেআউট অনুমানগুলি ভিন্ন। সারফেসগুলির মধ্যে বর্তমানে ` taskbar `, ` control-panel `, এবং ` widget-telemetry ` অন্তর্ভুক্ত রয়েছে; স্বচ্ছতার মান হল ` 0 ` থেকে ` 100 ` পর্যন্ত শতাংশ (নিয়ন্ত্রণ কেন্দ্র এবং লঞ্চার পৃষ্ঠগুলি ` 15 ` তে ডিফল্ট, অন্যগুলি ` 50 `) , অস্পষ্টতা পরামিতিগুলির মধ্যে সংখ্যাগুলিপরিসীমাঘোষিত ` schema.json `, and enabled states are booleans. Animations values are validated by ` argvus-config ` too: speeds are numbers from ` 1 ` to ` 10 ` (decimals allowed), pop-in percentages are whole numbers from ` 1 ` to ` 100 `, curves must beঅ্যানিমেশন পৃষ্ঠা থেকে নাম, শৈলীগুলি অবশ্যই অ্যানিমেশন পৃষ্ঠার নাম হতে হবে এবং অ্যানিমেশনের নিজস্ব পাতার দ্বারা গৃহীত হতে হবে (উদাহরণস্বরূপ ` popin ` ` animation_workspace_in_style `, ` gnomed `-এর জন্য প্রত্যাখ্যান করা হয়েছে, শুধুমাত্র উইন্ডো খোলার জন্য এবং প্রত্যাখ্যানকারী উইন্ডোর ক্লোসাইডের জন্য গৃহীত হয়।জানালাএবং লেয়ার পাতা), বেজিয়ার ওয়াই পয়েন্টগুলি `-1 ` এবং ` 2 `, রেঞ্জ Hyprland 0.56.2 পার্সের মধ্যে থাকে এবং অন্যান্য কার্ভ প্যারামিটারগুলি তাদের নথিভুক্ত রেঞ্জের মধ্যে থাকে। ` layers ` এবং ` switching ` পাতাগুলি আর বিদ্যমান নেই, তাই কনফিগারগুলি আগে সংরক্ষণ করা হয়েছেতাদের অপসারণ ` animation_layers_enabled `, ` animation_layers_speed `, ` animation_layers_curve ` এবং ` animation_switching_*` কীগুলি লোড করার সময় হারায়৷ বর্তমান সেটের বাইরের স্টাইলগুলি বাদ দেওয়া হয়েছে এবং `-1 ` থেকে ` 2 ` এর বাইরের Bézier Y পয়েন্টগুলি ক্ল্যাম্প করা হয়েছে, তাই প্যাকেজ করা ডিফল্টগুলি আবার প্রযোজ্য হবেযা ছিলসরানোপাওয়ার পছন্দ ` power.screen_off_minutes `, ` power.lock_minutes `, ` power.keep_awake `, এবং ঢাকনা/পাওয়ার-বোতাম নীতিগুলি ব্যবহার করে৷ প্রক্ষিপ্ত ফর্মগুলি হল ` data/generated/hypr/hypridle.conf ` এবং চিহ্নিতকারী ` data/power/keep-awake `; `.keep-awake ` শুধুমাত্র একটি মাইগ্রেশন ইনপুট। ` session.language ` অবসরপ্রাপ্ত: বিদ্যমান মানগুলি উপেক্ষা করা হয়, নতুন লেখাগুলি প্রত্যাখ্যান করা হয় এবং কোনও ভাষা সামঞ্জস্যপূর্ণ ফাইল প্রজেক্ট করা হয় না। পরিবর্তে locale.conf ব্যবহারকারীর মধ্যে ` LANG ` সেট করুন। ক্যালেন্ডার পছন্দ  ` locale.conf ` ` calendar ` ব্যবহার করে এবং টাস্কবার-ক্যালেন্ডার ব্যবহারকারী TOML এর কাছে প্রজেক্ট করা হয়। অপসারণযোগ্য-ডিভাইস পছন্দ ` removable_devices ` ব্যবহার করে; অপসারণযোগ্য-ডিভাইস অ্যাপ্লিকেশন এই বিভাগটিকে প্যাকেজ করা ডিফল্টের উপর ব্যবহারকারীকে ওভাররাইড হিসাবে বিবেচনা করে।` migrate ` imports the old root files and sections once, preserving an existing canonical value. Legacy ` defaults.json `, `/defaults `, `/hyprland/keybindings `, ` keybindings.toml `, dot-files, ` generated/` and component directories are moved below ` data/`; repeated reloads do not recreate the old root layout. Selecting the current theme again is idempotent: if canonical state and projections already agree, the projectionপরিকল্পনা কোন পরিবর্তিত বিভাগ রিপোর্ট করে না এবং সেশন স্প্ল্যাশ এড়িয়ে যায় এবং পরিষেবা পুনরায় চালু হয়।শক্তি একই প্রক্ষেপণ চুক্তি অনুসরণ করে: কন্ট্রোল সেন্টার config.json-তে `/power ` লিখে,  ` config.json ` ` argvus config project ` অ্যাটমিকভাবে ` data/hypr/hypridle.conf ` রেন্ডার করে, এবং তবেই ` argvus sessionctl ` ` argvus-hypridle.service ` পুনরায় শুরু করতে পারে। সেই ফাইলটি সরানো ` argvus config project ` দিয়ে পুনরুদ্ধারযোগ্য; ` 0`-এর মান সংশ্লিষ্ট টাইমআউটকে বাদ দেয় এবং Never মানে।
 
 লক-স্ক্রীনের চেহারাটি ক্যানোনিকাল থিম, উচ্চারণ,
 প্রভাব, ওয়ালপেপার এবং ফন্টের অবস্থা `data/hypr/hyprlock.conf` এ। ঐতিহাসিক
 `hyprlock-theme.sh` এন্ট্রিপয়েন্ট শুধুমাত্র সামঞ্জস্যপূর্ণ এবং প্রতিনিধি
-`argvus config lock apply`; `--invalidate` শুধুমাত্র প্রাপ্ত অস্পষ্টতাকে বাতিল করে
+`argvus config lock apply `; `--invalidate` শুধুমাত্র প্রাপ্ত অস্পষ্টতাকে বাতিল করে
 ওয়ালপেপার ক্যাশে।
 
 পাওয়ার টাইমআউট পরিবর্তনগুলি `/power/lock_minutes` এবং ব্যবহার করে
-`/power/screen_off_minutes` তাদের সত্যের উৎস। `argvus config project`
+`/power/screen_off_minutes ` তাদের সত্যের উৎস। ` argvus config project`
 বিদ্যমান হাইপ্রিডল রেন্ডারার পুনরায় ব্যবহার করে এবং `idle-timeout.sh` এন্ট্রিপয়েন্ট হল
 শুধুমাত্র একটি সামঞ্জস্য অ্যাডাপ্টার; পরিষেবা পুনঃসূচনা অর্পিত অবশেষ
 `argvus sessionctl`.
@@ -257,12 +257,12 @@ argvus config import --scope appearance appearance.json
 `theme.sh` ফাইল শুধুমাত্র কল যে সামঞ্জস্যতা ফাংশন প্রকাশ করে
 `argvus config notifications`; এটি Dunst কনফিগারেশন পার্স বা পরিবর্তন করে না।
 
-হার্ডওয়্যার-ভিত্তিক অ্যাডাপ্টার যেমন ডিসপ্লে আবিষ্কার এবং ব্লুটুথ নিয়ন্ত্রণএখন মরিচা প্রদর্শন ডোমেন দ্বারা আমদানি করা হয়েছে: `nwg-displays` একটি বহিরাগত আমদানিকারক,যদিও `/displays` এবং `data/generated/hypr/monitors.lua` ক্যানোনিকাল থাকে এবং
+হার্ডওয়্যার-ভিত্তিক অ্যাডাপ্টার যেমন ডিসপ্লে আবিষ্কার এবং ব্লুটুথ নিয়ন্ত্রণএখন মরিচা প্রদর্শন ডোমেন দ্বারা আমদানি করা হয়েছে: `nwg-displays ` একটি বহিরাগত আমদানিকারক,যদিও `/displays ` এবং ` data/generated/hypr/monitors.lua` ক্যানোনিকাল থাকে এবং
 প্রাপ্ত রাষ্ট্র যথাক্রমে। ডিসপ্লে টুল এর সাথে লেআউট পরিবর্তন করে
-`argvus config monitor-set`, `monitor-primary`, `monitor-workspaces` এবং `monitor-remove`; ডিসপ্লে কমান্ডগুলি হল `argvus config display status|list-modes|set|apply|apply-nwg|migrate-nwg|nwg-import|nwg-apply`। হাইপ্রল্যান্ড ফাইলটি `/displays` থেকে অনুমান করা হয়েছে; কোন শেল স্ক্রিপ্ট এটি আর লেখে না। ওয়ালপেপার নির্বাচন, টাস্কবার ইউটিলিটি-গ্রুপ মোড,
+`argvus config monitor-set `, ` monitor-primary `, ` monitor-workspaces ` এবং ` monitor-remove `; ডিসপ্লে কমান্ডগুলি হল ` argvus config display status|list-modes|set|apply|apply-nwg|migrate-nwg|nwg-import|nwg-apply `। হাইপ্রল্যান্ড ফাইলটি `/displays` থেকে অনুমান করা হয়েছে; কোন শেল স্ক্রিপ্ট এটি আর লেখে না। ওয়ালপেপার নির্বাচন, টাস্কবার ইউটিলিটি-গ্রুপ মোড,
 এবং ডিফল্ট-অ্যাপ লুকআপ এছাড়াও `argvus-config` API ব্যবহার করে; তাদের ঐতিহাসিক শেল
 এন্ট্রিপয়েন্ট হল UI বা সামঞ্জস্যপূর্ণ মোড়ক। জাগ্রত রাখুন একটি অবিরাম
-`/power/keep_awake` পছন্দ `data/power/keep-awake` মার্কারে অনুমান করা হয়েছে,
+`/power/keep_awake ` পছন্দ ` data/power/keep-awake` মার্কারে অনুমান করা হয়েছে,
 যখন লক-ডিপিএমএস সেশন রানটাইম অবস্থার অধীনে থাকে
 `$XDG_CACHE_HOME/argvus/lock-dpms`. কীবোর্ড লেআউট এখন রাস্টের মালিকানাধীন
 `argvus-keyboard-layout` হেল্পার: কনফিগার করা অর্ডার জেনারেট করা থেকে আসে
@@ -273,7 +273,7 @@ argvus config import --scope appearance appearance.json
 কলকারীদের জন্য স্থিতিশীল কমান্ড।
 
 ব্লুটুথ রানটাইম অবস্থা বাহ্যিক-অ্যাডাপ্টারের সীমানা অনুসরণ করে কিন্তু অংশ নয়
-`argvus-config`: `argvus bluetooth` টাইপ করা পার্সিংয়ের মালিক এবং
+`argvus-config `: ` argvus bluetooth` টাইপ করা পার্সিংয়ের মালিক এবং
 `bluetoothctl`, আবদ্ধ পুনঃপ্রচার, সিস্টেম-সার্ভিস চেক এবং
 RFKill অবস্থা। `argvus bluetoothctl` হল এন্ট্রিপয়েন্ট। অ্যাডাপ্টার পাওয়ার, পেয়ার করা ডিভাইস এবং সংযুক্ত ডিভাইস
 ক্যানোনিকাল JSON স্টেটের পরিবর্তে BlueZ রানটাইম স্টেট থাকুন; হার্ডওয়্যার-লাইভ
@@ -282,27 +282,27 @@ RFKill অবস্থা। `argvus bluetoothctl` হল এন্ট্রি�
 
 সঠিক বাইনারি, বিল্ড পরিদর্শন করতে `argvus config status --verbose` ব্যবহার করুন
 আইডেন্টিটি, কনফিগারেশন রুট, জেনারেটেড রুট, অ্যাসেট রুট, ম্যানিফেস্ট সোর্স এবং
-সক্রিয় প্রজন্ম। এটি `synchronized`, `stale`, `incomplete`, `legacy` রিপোর্ট করে
-এবং `pending-transaction` প্রজেকশন স্টেট।`argvus config --version` প্যাকেজ সংস্করণ রিপোর্ট করে, সরবরাহ করা হলে সংশোধন তৈরি করুনবিল্ড পরিবেশ, এবং প্রোফাইল দ্বারা. উন্নয়ন পরীক্ষা তাদের ইনজেকশন করা আবশ্যক
+সক্রিয় প্রজন্ম। এটি `synchronized `, ` stale `, ` incomplete `, ` legacy` রিপোর্ট করে
+এবং `pending-transaction ` প্রজেকশন স্টেট।` argvus config --version` প্যাকেজ সংস্করণ রিপোর্ট করে, সরবরাহ করা হলে সংশোধন তৈরি করুনবিল্ড পরিবেশ, এবং প্রোফাইল দ্বারা. উন্নয়ন পরীক্ষা তাদের ইনজেকশন করা আবশ্যক
 বাইনারি এবং সম্পদ স্পষ্টভাবে; তারা অবশ্যই নীরবে `argvus config` ব্যবহার করবে না
-অথবা `~/.config/argvus`। `apply` নিরাপদে উত্তরাধিকার সম্মিলিত শনাক্তকারীকে স্বাভাবিক করে তোলে
+অথবা `~/.config/argvus `। ` apply` নিরাপদে উত্তরাধিকার সম্মিলিত শনাক্তকারীকে স্বাভাবিক করে তোলে
 যেমন `argvus-dark-spaced` আলাদা থিম এবং বৈকল্পিক মান আগে
 পুনর্নির্মাণ অনুমান। প্যাকেজ করা সম্পদের পরিচয় এই রিলিজে একটি ম্যানিফেস্টে রেকর্ড করা হয় না।
 
 ## রাতের আলো
 
-**ডেস্কটপ ও ইনপুট > ডিসপ্লে > নাইট লাইট** খুলুন অথবা `argvus control-center displays night-light` চালান। `argvus config display night-light` এর মাধ্যমে তাপমাত্রা, ম্যানুয়াল অ্যাক্টিভেশন এবং নির্দিষ্ট স্থানীয় সময়সূচী কনফিগার করুন। কমান্ড, অবস্থা এবং রানটাইম প্রয়োজনীয়তার জন্য [নাইট লাইট](/docs/user-guide/night-light/) দেখুন।
+**ডেস্কটপ ও ইনপুট > ডিসপ্লে > নাইট লাইট** খুলুন অথবা `argvus control-center displays night-light ` চালান। ` argvus config display night-light` এর মাধ্যমে তাপমাত্রা, ম্যানুয়াল অ্যাক্টিভেশন এবং নির্দিষ্ট স্থানীয় সময়সূচী কনফিগার করুন। কমান্ড, অবস্থা এবং রানটাইম প্রয়োজনীয়তার জন্য [নাইট লাইট](/docs/user-guide/night-light/) দেখুন।
 
 ### ওয়াবল সেটিংস (হাইপ্রল্যান্ড 0.57+)
 
-`effects.wobble_enabled`, `wobble_stiffness`, `wobble_damping`, `wobble_mass`,
-`wobble_intensity` এবং `wobble_mesh` সরাসরি `hypr/state.lua` প্রকল্পে।
+`effects.wobble_enabled `, ` wobble_stiffness `, ` wobble_damping `, ` wobble_mass`,
+`wobble_intensity ` এবং ` wobble_mesh ` সরাসরি ` hypr/state.lua` প্রকল্পে।
 সেগুলি পড়তে `argvus effects-toggle wobble-settings get` ব্যবহার করুন, বা৷
 `argvus effects-toggle wobble-settings set enabled=enabled stiffness=100 damping=10 mass=1 intensity=1 mesh=8`
 সংরক্ষণ এবং একটি পুনরায় লোড অনুরোধ. `enabled=disabled` প্রভাব বন্ধ করে।
 
-কন্ট্রোল সেন্টার অ্যানিমেশনের খসড়া শেয়ার করে: `animations-settings get`ও
-`wobble_*` এন্ট্রি ফেরত দেয় এবং `animations-settings set` এই সম্পূর্ণ নামগুলি গ্রহণ করে
+কন্ট্রোল সেন্টার অ্যানিমেশনের খসড়া শেয়ার করে: `animations-settings get` ও
+`wobble_*` এন্ট্রি ফেরত দেয় এবং ` animations-settings set` এই সম্পূর্ণ নামগুলি গ্রহণ করে
 এর বিদ্যমান অ্যানিমেশন আর্গুমেন্টের পাশাপাশি। এটি একটিতে পুরো খসড়াটি টিকে থাকে
 বৈধ প্যাচ এবং একটি পুনরায় লোড অনুরোধ. যেমন:
 
@@ -310,7 +310,7 @@ RFKill অবস্থা। `argvus bluetoothctl` হল এন্ট্রি�
 argvus effects-toggle animations-settings set enabled=enabled wobble_enabled=true wobble_intensity=0 wobble_mesh=8
 ```
 
-বিশ্বব্যাপী `enabled` অ্যানিমেশন নিয়ন্ত্রণ করে; `wobble_enabled` এর স্বাধীন
+বিশ্বব্যাপী `enabled ` অ্যানিমেশন নিয়ন্ত্রণ করে; ` wobble_enabled` এর স্বাধীন
 পছন্দ গ্লোবাল অ্যানিমেশন অক্ষম করা মুছে ফেলা ছাড়াই লুয়াতে টলমলকে দমন করে
 যে পছন্দ অবৈধ মান সমগ্র প্যাচ প্রত্যাখ্যান. অনুপস্থিত চাবি গ্রহণ
 বিদ্যমান পছন্দগুলি প্রতিস্থাপন না করেই ARGVUS ডিফল্ট। দেখুন [আবির্ভাব](/docs/user-guide/appearance/#window-wobble)
@@ -319,7 +319,7 @@ argvus effects-toggle animations-settings set enabled=enabled wobble_enabled=tru
 
 ### ব্যবহারকারীর তৈরি কীবোর্ড শর্টকাট
 
-`/keyboard_shortcuts` অফিসিয়াল ম্যানিফেস্ট অ্যাকশনের জন্য তার বিদ্যমান স্ট্রিং-বা-নাল মান ধরে রাখে। কাস্টম গ্লোবাল কীবোর্ড শর্টকাটগুলি config/hyprland.json-এ সংরক্ষিত একটি পৃথক `/hyprland/custom_shortcuts` অবজেক্ট ব্যবহার করে। এর স্থিতিশীল  `config/hyprland.json` `custom_` আইডি বর্ণনা এবং লোকেলের থেকে স্বাধীন। প্রতিটি রেকর্ডে `description`, `keys`, `enabled` এবং একটি টাইপ করা `action` রয়েছে:
+`/keyboard_shortcuts ` অফিসিয়াল ম্যানিফেস্ট অ্যাকশনের জন্য তার বিদ্যমান স্ট্রিং-বা-নাল মান ধরে রাখে। কাস্টম গ্লোবাল কীবোর্ড শর্টকাটগুলি config/hyprland.json-এ সংরক্ষিত একটি পৃথক `/hyprland/custom_shortcuts ` অবজেক্ট ব্যবহার করে। এর স্থিতিশীল  ` config/hyprland.json ` ` custom_` আইডি বর্ণনা এবং লোকেলের থেকে স্বাধীন। প্রতিটি রেকর্ডে ` description `, ` keys `, ` enabled ` এবং একটি টাইপ করা ` action` রয়েছে:
 
 ```json
 {
@@ -342,7 +342,7 @@ argvus effects-toggle animations-settings set enabled=enabled wobble_enabled=tru
 }
 ```
 
-উদাহরণ হল `/hyprland/custom_shortcuts` এর মান, সম্পূর্ণ কনফিগারেশন নথি নয়। প্রেরণকারীর নামগুলি সমর্থিত লুয়া প্রেরক কারখানা থেকে আসে; আর্গুমেন্ট হল একটি ঐচ্ছিক JSON অবজেক্ট বা `null`, কখনও মূল্যায়ন করা কোড নয়। কাস্টম শর্টকাটগুলির কোনও সাবম্যাপ, মাউস বাইন্ডিং বা উন্নত পতাকা নেই৷ প্রজেকশনটি `data/generated/hypr/custom-shortcuts.lua` কে একটি এস্কেপড ডেটা টেবিল হিসাবে লেখে, শেষ রেকর্ডটি মুছে ফেলা হলে একটি খালি টেবিল সহ। সম্পূর্ণ অভিক্ষেপ এবং `project --only keyboard_shortcuts` উভয়ই এটি তৈরি করে। হাইপ্রল্যান্ড `hl.bind` এর সাথে সক্রিয় এন্ট্রি নিবন্ধন করে; ঐচ্ছিক ফাইল এবং পৃথক নিবন্ধন ব্যর্থতা অন্তর্ভুক্ত এবং লগ করা হয়.
+উদাহরণ হল `/hyprland/custom_shortcuts ` এর মান, সম্পূর্ণ কনফিগারেশন নথি নয়। প্রেরণকারীর নামগুলি সমর্থিত লুয়া প্রেরক কারখানা থেকে আসে; আর্গুমেন্ট হল একটি ঐচ্ছিক JSON অবজেক্ট বা ` null `, কখনও মূল্যায়ন করা কোড নয়। কাস্টম শর্টকাটগুলির কোনও সাবম্যাপ, মাউস বাইন্ডিং বা উন্নত পতাকা নেই৷ প্রজেকশনটি ` data/generated/hypr/custom-shortcuts.lua ` কে একটি এস্কেপড ডেটা টেবিল হিসাবে লেখে, শেষ রেকর্ডটি মুছে ফেলা হলে একটি খালি টেবিল সহ। সম্পূর্ণ অভিক্ষেপ এবং ` project --only keyboard_shortcuts ` উভয়ই এটি তৈরি করে। হাইপ্রল্যান্ড ` hl.bind` এর সাথে সক্রিয় এন্ট্রি নিবন্ধন করে; ঐচ্ছিক ফাইল এবং পৃথক নিবন্ধন ব্যর্থতা অন্তর্ভুক্ত এবং লগ করা হয়.
 
 কন্ট্রোল সেন্টার একটি `argvus config patch` লেনদেন ব্যবহার করে রেকর্ড তৈরি/সম্পাদনা করে এবং নিশ্চিত দ্বন্দ্ব নিষ্ক্রিয় করে। বিদ্যমান কনফিগারেশন পরিষেবার মাধ্যমে আবেদন করার আগে এটি সংরক্ষণ করে। একটি ব্যর্থ আবেদন একটি সফল সংরক্ষণ পূর্বাবস্থায় ফেরান না. অফিসিয়াল ডিফল্ট পুনরুদ্ধার করা কাস্টম রেকর্ড সংরক্ষণ করে এবং এটি একটি সক্রিয় কাস্টম শর্টকাটের সাথে সংঘর্ষ হলে তা প্রত্যাখ্যান করা হয়। ব্যবহারকারীর বিবরণ সমস্ত লোকেলে আক্ষরিক পাঠ্য এবং কার্যকর উৎপন্ন চিটশিট থেকে যায়।
 
@@ -352,7 +352,7 @@ argvus effects-toggle animations-settings set enabled=enabled wobble_enabled=tru
 
 পছন্দ প্রতিটি মনিটর এবং কর্মক্ষেত্রে প্রযোজ্য এবং লগআউট করার পরে মনে রাখা হয়। ফ্লোটিং বিদ্যমান অ্যাপ্লিকেশন উইন্ডো এবং নতুন খোলা উইন্ডোগুলিকে রূপান্তর করে। টাইল শুধুমাত্র উইন্ডোগুলি পুনরুদ্ধার করে যেগুলি এই নীতি রূপান্তরিত করেছে; ডায়ালগ এবং অন্যান্য উইন্ডো যা আগে থেকেই ভাসছিল তা ভাসমান থাকে। একটি উইন্ডো স্পষ্টভাবে পিন করা হয় যখন ফ্লোটিং সক্রিয় থাকে তার পিনটি সংরক্ষণ করতে ভাসমান থাকে। টাইল্ড লেআউট পুনরায় গণনা করা হয়; এর সঠিক আগের বিভক্ত গাছটি পুনরুদ্ধার করা হয়নি।`SUPER + SHIFT + Space` টাইল-এ তার স্বাভাবিক প্রতি-উইন্ডো আচরণ রাখে। ফ্লোটিং-এ এটি একটি উইন্ডোকে টাইলিংয়ে ফিরিয়ে দেয় না। প্যানেল, টাস্কবার এবং বিজ্ঞপ্তিগুলি স্তর-শেল পৃষ্ঠ এবং প্রভাবিত হয় না। পূর্ণস্ক্রীন এবং সর্বাধিকীকরণ হাইপ্রল্যান্ডের স্বাভাবিক আচরণ ব্যবহার করে চলেছে।
 
-ক্যানোনিকাল পছন্দ হল $XDG_CONFIG_HOME/argvus/config/hyprland.json-এ `/hyprland/window_mode`। এর জেনারেটেড প্রজেকশন হল  `$XDG_CONFIG_HOME/argvus/config/hyprland.json` `data/generated/hypr/window-mode.lua`; এটা সম্পাদনা করবেন না প্রতি-উইন্ডো পুনরুদ্ধার রেজিস্ট্রি `$XDG_RUNTIME_DIR/argvus`-এর অধীনে থাকে, কম্পোজিটর উদাহরণে স্কোপ করা হয় এবং কনফিগারেশন রিলোড থেকে বেঁচে থাকে। এটি একটি নতুন অধিবেশনে পুনরায় ব্যবহার করা হয় না.
+ক্যানোনিকাল পছন্দ হল $XDG_CONFIG_HOME/argvus/config/hyprland.json-এ `/hyprland/window_mode `। এর জেনারেটেড প্রজেকশন হল  `$XDG_CONFIG_HOME/argvus/config/hyprland.json ` ` data/generated/hypr/window-mode.lua `; এটা সম্পাদনা করবেন না প্রতি-উইন্ডো পুনরুদ্ধার রেজিস্ট্রি `$XDG_RUNTIME_DIR/argvus`-এর অধীনে থাকে, কম্পোজিটর উদাহরণে স্কোপ করা হয় এবং কনফিগারেশন রিলোড থেকে বেঁচে থাকে। এটি একটি নতুন অধিবেশনে পুনরায় ব্যবহার করা হয় না.
 
 আবেদন মুলতুবি থাকলে বা ব্যর্থ হলে, ইন্টারফেস এটিকে সংরক্ষিত পছন্দ থেকে আলাদা করে। পুনরায় চেষ্টা করার জন্য আবার বিকল্পটি নির্বাচন করুন। একটি কম্পোজিটর ছাড়া, পছন্দ পরবর্তী লগইনের জন্য সংরক্ষিত হয়।
 
@@ -370,14 +370,14 @@ argvus config window-mode toggle
 
 একটি দ্বিতীয় ওয়েবার প্রতিটি মনিটরে প্রধান টাস্কবারের বিপরীত প্রান্তে উপস্থিত হয়। এটি শুধুমাত্র সেই মনিটরের বর্তমান ওয়ার্কস্পেসের অন্তর্গত উইন্ডোগুলিকে তালিকাভুক্ত করে, সেই ওয়ার্কস্পেস থেকে মিনিমাইজ করা উইন্ডোগুলি সহ। একটি খোলা বিশেষ কর্মক্ষেত্র অগ্রাধিকার নেয়। পিন করা জানালা দৃশ্যমান থাকে; লুকানো গ্রুপ ট্যাব অতিরিক্ত এন্ট্রি তৈরি করে না, এবং একটি ছোট গ্রুপে একটি পুনরুদ্ধার এন্ট্রি আছে। একটি অ্যাপ্লিকেশন ভিতরে ট্যাব আলাদাভাবে গণনা করা হয় না. মিনিমাইজ করা এন্ট্রিগুলি তাদের আসল মনিটর/ওয়ার্কস্পেস অ্যাসোসিয়েশন ধরে রাখে। এটি সক্রিয় করতে একটি নিষ্ক্রিয় উইন্ডোতে ক্লিক করুন, এটিকে ছোট করার জন্য একটি সক্রিয় উইন্ডোতে ক্লিক করুন বা এটি পুনরুদ্ধার করার জন্য একটি ছোট উইন্ডোতে ক্লিক করুন; এর প্রসঙ্গ মেনু পুনরুদ্ধার, মিনিমাইজ, ম্যাক্সিমাইজ/পুনরুদ্ধার এবং বন্ধ করার প্রস্তাব দেয়। অজানা অ্যাপ্লিকেশন আইকনগুলি একটি উইন্ডো প্রতীকে ফিরে আসে। একটি এন্ট্রি সক্রিয় করা বা পুনরুদ্ধার করা পয়েন্টার অবস্থান সংরক্ষণ করে। সেকেন্ডারি বারটি এর উচ্চতা এবং বিপরীত প্রান্তে মিরর মার্জিন সহ কার্যকর প্রাথমিক CSS (রঙ, ফন্ট, সীমানা এবং রাউন্ডিং) ব্যবহার করে।
 
-`SUPER + Alt + Up` শীর্ষে প্রধান বার এবং নীচে উইন্ডো বার রাখে। `SUPER + Alt + Down` বিপরীত করে। একটি দিক পুনরাবৃত্তি করা অবস্থানগুলি অপরিবর্তিত রাখে। টাইল শুধুমাত্র প্রধান বার আছে. টাইলে ফিরে গেলে উইন্ডো বারটি সরানোর আগে সমস্ত মিনিমাইজ করা উইন্ডো পুনরুদ্ধার করে এবং তারপরে আসল টাইলড/ভাসমান নীতি সংরক্ষণ করে।
+`SUPER + Alt + Up ` শীর্ষে প্রধান বার এবং নীচে উইন্ডো বার রাখে। ` SUPER + Alt + Down` বিপরীত করে। একটি দিক পুনরাবৃত্তি করা অবস্থানগুলি অপরিবর্তিত রাখে। টাইল শুধুমাত্র প্রধান বার আছে. টাইলে ফিরে গেলে উইন্ডো বারটি সরানোর আগে সমস্ত মিনিমাইজ করা উইন্ডো পুনরুদ্ধার করে এবং তারপরে আসল টাইলড/ভাসমান নীতি সংরক্ষণ করে।
 
-মিনিমাইজেশন সংরক্ষিত `special:argvus-minimized` ওয়ার্কস্পেস ব্যবহার করে। ম্যানুয়ালি যে ওয়ার্কস্পেস ব্যবহার করবেন না. `argvus windows service` প্রক্রিয়া `$XDG_RUNTIME_DIR/argvus` এর অধীনে একটি কম্পোজিটর-ইনস্ট্যান্স-নির্দিষ্ট রানটাইম রেজিস্ট্রিতে পরিচয়, আসল ওয়ার্কস্পেস/মনিটর, জ্যামিতি, পূর্ণস্ক্রীন/সর্বোচ্চতা এবং পিন অবস্থা রেকর্ড করে। রেকর্ডগুলি একটি পরিষেবা পুনঃসূচনা বা কনফিগারেশন পুনরায় লোড করে বেঁচে থাকে, কিন্তু কম্পোজিটর সেশনগুলি অতিক্রম করে না। একটি উইন্ডো বন্ধ করলে তার রেকর্ড মুছে যায়। যদি একটি মনিটর অদৃশ্য হয়ে যায়, পুনরুদ্ধার একটি উপলব্ধ আউটপুট ব্যবহার করে। একটি অনুপস্থিত বা ব্যর্থ পুনরুদ্ধার বার নতুন মিনিমাইজেশন প্রতিরোধ করে; ব্যর্থ পুনরুদ্ধার রেকর্ড এবং পুনরুদ্ধার বার ধরে রাখে।
+মিনিমাইজেশন সংরক্ষিত `special:argvus-minimized ` ওয়ার্কস্পেস ব্যবহার করে। ম্যানুয়ালি যে ওয়ার্কস্পেস ব্যবহার করবেন না. ` argvus windows service ` প্রক্রিয়া `$XDG_RUNTIME_DIR/argvus` এর অধীনে একটি কম্পোজিটর-ইনস্ট্যান্স-নির্দিষ্ট রানটাইম রেজিস্ট্রিতে পরিচয়, আসল ওয়ার্কস্পেস/মনিটর, জ্যামিতি, পূর্ণস্ক্রীন/সর্বোচ্চতা এবং পিন অবস্থা রেকর্ড করে। রেকর্ডগুলি একটি পরিষেবা পুনঃসূচনা বা কনফিগারেশন পুনরায় লোড করে বেঁচে থাকে, কিন্তু কম্পোজিটর সেশনগুলি অতিক্রম করে না। একটি উইন্ডো বন্ধ করলে তার রেকর্ড মুছে যায়। যদি একটি মনিটর অদৃশ্য হয়ে যায়, পুনরুদ্ধার একটি উপলব্ধ আউটপুট ব্যবহার করে। একটি অনুপস্থিত বা ব্যর্থ পুনরুদ্ধার বার নতুন মিনিমাইজেশন প্রতিরোধ করে; ব্যর্থ পুনরুদ্ধার রেকর্ড এবং পুনরুদ্ধার বার ধরে রাখে।
 
-সেশনের মালিক `argvus-windows.service` এবং `argvus-window-bar.service`। পরেরটি তার ওয়েবার শিশুটিকে টাইলে সুপ্ত রাখে। হাইপ্রবার প্লাগইনটি `argvus-hyprland` দ্বারা বান্ডিল করা হয়েছে, যা x86_64-এ Hyprland 0.57.0 ABI-এর জন্য তৈরি করা হয়েছে; এটি ব্যবহারকারীর হোম ডিরেক্টরিতে সংকলিত হয় না। একটি কম্পোজিটর ABI আপডেট দিয়ে প্লাগইনটি পুনর্নির্মাণ করুন।
+সেশনের মালিক `argvus-windows.service ` এবং ` argvus-window-bar.service `। পরেরটি তার ওয়েবার শিশুটিকে টাইলে সুপ্ত রাখে। হাইপ্রবার প্লাগইনটি ` argvus-hyprland` দ্বারা বান্ডিল করা হয়েছে, যা x86_64-এ Hyprland 0.57.0 ABI-এর জন্য তৈরি করা হয়েছে; এটি ব্যবহারকারীর হোম ডিরেক্টরিতে সংকলিত হয় না। একটি কম্পোজিটর ABI আপডেট দিয়ে প্লাগইনটি পুনর্নির্মাণ করুন।
 
-কমান্ড: `argvus windows list --json`, `watch --json`, `position top|bottom`, `restore-all`, এবং `minimize|restore|activate|maximize|close ADDRESS`। উইন্ডো ঠিকানা তালিকা থেকে আসা. `position top --persist` প্রধান বার পুনরায় আরম্ভ না করেই পছন্দ সঞ্চয়/প্রজেক্ট করে। কনফিগারেশন এবং রানটাইম ত্রুটির বিবরণ জার্নালে লেখা হয়; দৃশ্যমান ক্রিয়া ব্যর্থতা একটি অনুবাদিত বিজ্ঞপ্তিও দেখায়।**স্পেস + ফ্লোটিং**-এ, জানালা বাইরের ফাঁক এবং উভয় বারের দ্বারা সংরক্ষিত এলাকাকে সম্মান করে। সীমার মধ্যে সীমানা এবং শিরোনাম অন্তর্ভুক্ত, যা একই উইন্ডো সীমানার ভিতরে বসে। ARGVUS কন্ট্রোলের মাধ্যমে ম্যাক্সিমাইজ করা এই এলাকাটিকে মার্জিন দিয়ে পূরণ করে; পুনরুদ্ধার পূর্ববর্তী জ্যামিতি পুনরুদ্ধার করে, একটি পরিষেবা পুনরায় চালু করার পরে সহ। ফুলস্ক্রিন এখনও পুরো আউটপুট ব্যবহার করে। ভাসমান জানালা ওভারল্যাপ হতে পারে; টাইলিং ভিতরের ফাঁক তাদের আলাদা না.
+কমান্ড: `argvus windows list --json `, ` watch --json `, ` position top|bottom `, ` restore-all `, এবং ` minimize|restore|activate|maximize|close ADDRESS `। উইন্ডো ঠিকানা তালিকা থেকে আসা. ` position top --persist` প্রধান বার পুনরায় আরম্ভ না করেই পছন্দ সঞ্চয়/প্রজেক্ট করে। কনফিগারেশন এবং রানটাইম ত্রুটির বিবরণ জার্নালে লেখা হয়; দৃশ্যমান ক্রিয়া ব্যর্থতা একটি অনুবাদিত বিজ্ঞপ্তিও দেখায়।**স্পেস + ফ্লোটিং**-এ, জানালা বাইরের ফাঁক এবং উভয় বারের দ্বারা সংরক্ষিত এলাকাকে সম্মান করে। সীমার মধ্যে সীমানা এবং শিরোনাম অন্তর্ভুক্ত, যা একই উইন্ডো সীমানার ভিতরে বসে। ARGVUS কন্ট্রোলের মাধ্যমে ম্যাক্সিমাইজ করা এই এলাকাটিকে মার্জিন দিয়ে পূরণ করে; পুনরুদ্ধার পূর্ববর্তী জ্যামিতি পুনরুদ্ধার করে, একটি পরিষেবা পুনরায় চালু করার পরে সহ। ফুলস্ক্রিন এখনও পুরো আউটপুট ব্যবহার করে। ভাসমান জানালা ওভারল্যাপ হতে পারে; টাইলিং ভিতরের ফাঁক তাদের আলাদা না.
 
 বার দ্বারা সংরক্ষিত অভ্যন্তরীণ মার্জিনগুলি জানালার বাইরের ফাঁকে দুবার গণনা করা হয় না। প্রতিসাম্য ব্যবধান সহ, বারগুলি অদলবদল করার পরে দৃশ্যমান উইন্ডো-থেকে-বার দূরত্ব উপরে এবং নীচে সমান।
 
-`SUPER + Alt + Space` টাস্কবার এবং কন্ট্রোল সেন্টারের মতো একই পছন্দ ব্যবহার করে গ্লোবাল টাইল/ফ্লোটিং মোড টগল করে। সমতুল্য কমান্ড হল `argvus config window-mode toggle`। সমসাময়িক আমন্ত্রণগুলি ক্রমানুসারে করা হয়; অ্যাপ্লিকেশন মুলতুবি থাকা অবস্থায়ও টগল করা সংরক্ষিত পছন্দ ব্যবহার করে। কীবোর্ড শর্টকাটে শর্টকাট পরিবর্তন বা নিষ্ক্রিয় করা যেতে পারে; `SUPER + Shift + Space` তার স্বতন্ত্র-উইন্ডো অ্যাকশন রাখে।
+`SUPER + Alt + Space ` টাস্কবার এবং কন্ট্রোল সেন্টারের মতো একই পছন্দ ব্যবহার করে গ্লোবাল টাইল/ফ্লোটিং মোড টগল করে। সমতুল্য কমান্ড হল ` argvus config window-mode toggle `। সমসাময়িক আমন্ত্রণগুলি ক্রমানুসারে করা হয়; অ্যাপ্লিকেশন মুলতুবি থাকা অবস্থায়ও টগল করা সংরক্ষিত পছন্দ ব্যবহার করে। কীবোর্ড শর্টকাটে শর্টকাট পরিবর্তন বা নিষ্ক্রিয় করা যেতে পারে; ` SUPER + Shift + Space` তার স্বতন্ত্র-উইন্ডো অ্যাকশন রাখে।

@@ -1,5 +1,5 @@
 ---
-title: Integration map
+title: Bản đồ hội nhập
 description: Mối quan hệ giữa các dự án trong thời gian chạy ARGVUS.
 ---
 

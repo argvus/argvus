@@ -10,14 +10,14 @@ Le ventitré famiglie qui sotto sono definite dal payload del tema corrente. La 
 
 | Famiglia | Resetta colore evidenza | Sfondo base | Modalità |
 | --- | --- | --- | --- |
-| One Dark | `#61AFEF` | `#282C34` | Sticky, Spaced |
-| Dracula | `#BD93F9` | `#282A36` | Sticky, Spaced |
-| ARGVUS Dark | `#3590bd` | `#111316` | Sticky, Spaced |
-| Dark Silver | `#595959` | `#111316` | Sticky, Spaced |
-| Dark Slate | `#7391a5` | `#2f3541` | Sticky, Spaced |
-| Dark Universe | `#eeeeee` | `#000000` | Sticky, Spaced |
-| ARGVUS Dark Gruvbox High | `#D79921` | `#282828` | Sticky, Spaced |
-| ARGVUS Dark Gruvbox | `#D4BE98` | `#282828` | Sticky, Spaced |
+| Uno scuro | `#61AFEF` | `#282C34` | Appiccicoso, Distanziato |
+| Dracula | `#BD93F9` | `#282A36` | Appiccicoso, Distanziato |
+| ARGVUS Scuro | `#3590bd` | `#111316` | Appiccicoso, Distanziato |
+| Argento scuro | `#595959` | `#111316` | Appiccicoso, Distanziato |
+| Ardesia scura | `#7391a5` | `#2f3541` | Appiccicoso, Distanziato |
+| Universo oscuro | `#eeeeee` | `#000000` | Appiccicoso, Distanziato |
+| ARGVUS Gruvbox scuro alto | `#D79921` | `#282828` | Appiccicoso, Distanziato |
+| ARGVUS Gruvbox scuro | `#D4BE98` | `#282828` | Appiccicoso, Distanziato |
 | ARGVUS Luce | `#181818` | `#f7f7f7` | Appiccicoso, Distanziato |
 | GitHub Luce | `#0969DA` | `#FFFFFF` | Appiccicoso, Distanziato |
 | Catppuccin Latte | `#1E66F5` | `#EFF1F5` | Appiccicoso, Distanziato |

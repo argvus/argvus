@@ -182,7 +182,7 @@ sudo pacman-key --delete KEY_ID
 ~/.config/argvus/data/generated/<app>  ->  ~/.config/argvus/data/<component>/<app>  ->  $XDG_CONFIG_HOME/<app>  ->  /usr/share/argvus/<app>  ->  upstream defaults
 ```
 
-`argvus-config` هو المكون الوحيد الذي يكتب `~/.config/argvus/data/generated/`، وهذا الإسقاط هو الطبقة النشطة: النسخة المُدارة أو الأصلية تصبح سارية المفعول فقط عندما يكون الملف الذي تم إنشاؤه المقابل غائبًا.يقع التكوين المُدار بواسطة ARGVUS ضمن `~/.config/argvus/`. يظل تجاوز `$XDG_CONFIG_HOME/<app>` الاختياري متاحًا للتطبيقات التي تدعم تكوين المستخدم الأصلي.
+`argvus-config` هو المكون الوحيد الذي يكتب `~/.config/argvus/data/generated/`، وهذا الإسقاط هو الطبقة النشطة: النسخة المُدارة أو الأصلية تصبح سارية المفعول فقط عندما يكون الملف الذي تم إنشاؤه المقابل غائبًا. يقع التكوين المُدار بواسطة ARGVUS ضمن `~/.config/argvus/`. يظل تجاوز `$XDG_CONFIG_HOME/<app>` الاختياري متاحًا للتطبيقات التي تدعم تكوين المستخدم الأصلي.
 
 يعتبر جهاز الإرسال `argvus --setup` اختياريًا وهو مخصص للدليل الصريح
 التجاوزات، وليس الانتعاش. إذا تم حذف `~/.config/argvus`، `SUPER + SHIFT + R`

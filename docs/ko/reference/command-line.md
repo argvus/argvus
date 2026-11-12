@@ -20,7 +20,7 @@ description: argvus 명령어, 그 하위 명령어들, 키 바인딩을 위해 
 | 명령 | 실행 | 메모 |
 | --- | --- | --- |
 | `argvus config ...` | 진행 중 | 구성 모델 및 도구. `theme-switch` 및 `effects-toggle`에서도 접근 가능. |
-| `argvus theme ...` | 진행 중 | `apply ID`는 테마 전환기(`theme-switch`와 동일). 테마 빌드: 설치된 테마 `list`, 설치된 템플릿에 대한 테마 `check DIRECTORY`, `render ID [--variant sticky\|spaced] [--accent #RRGGBB] [--output DIRECTORY]`. [외관 및 테마](/docs/developer-guide/subsystems/appearance-and-themes/)] 참조. |
+| `argvus theme ...` | 진행 중 | `apply ID`는 테마 전환기(`theme-switch`와 동일). 테마 빌드: 설치된 테마 `list`, 설치된 템플릿에 대한 테마 `check DIRECTORY`, `render ID [--variant sticky\|spaced] [--accent #RRGGBB] [--output DIRECTORY]`. [외관 및 테마](/docs/developer-guide/subsystems/appearance-and-themes/) 참조. |
 | `argvus i18n ...` | 진행 중 | 번역: `get DOMAIN KEY [name=value...]`, `locale`, `list`, `validate [LOCALE]`. |
 | `argvus keys ...` | 진행 중 | SSH 키 관리자. `gpg`는 GPG 하위 명령어의 별칭. |
 | `argvus gpg ...` | 진행 중 | GPG 키: `list`, `status`, `generate`, `export-public`, `export-private`, `import`, `import-private`, `delete`, `edit`, `keyserver`. |
@@ -121,7 +121,7 @@ argvus setup --copy <app> --dry-run
 
 ## 야간 조명
 
-데스크탑 및 입력 > 디스플레이 > 나이트 라이트를 열거나 `argvus control-center displays night-light`를 실행하십시오. `argvus config display night-light`를 통해 색온도, 수동 활성화 및 고정 로컬 일정을 구성할 수 있습니다. 명령, 상태 및 실행 요구 사항에 대해서는 [나이트 라이트](/docs/user-guide/night-light/)]를 참조하십시오.
+데스크탑 및 입력 > 디스플레이 > 나이트 라이트를 열거나 `argvus control-center displays night-light`를 실행하십시오. `argvus config display night-light`를 통해 색온도, 수동 활성화 및 고정 로컬 일정을 구성할 수 있습니다. 명령, 상태 및 실행 요구 사항에 대해서는 [나이트 라이트](/docs/user-guide/night-light/)를 참조하십시오.
 
 `argvus tui-terminal --frame TITLE FOOTER COMMAND [ARG...]`는 공유된 ARGVUS 터미널 프레임 안에서 인터랙티브 명령을 실행합니다. Ctrl+E를 눌러 프레임을 닫을 수 있으며, 호출자가 현지화된 푸터를 제공합니다. 이를 터미널 안에서 사용하거나 `argvus tui-terminal --term kitty -- ...`에 전달되는 명령으로 사용하십시오.
 

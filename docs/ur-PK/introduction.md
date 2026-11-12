@@ -30,23 +30,23 @@ taskbar · control panel · notifications · wallpaper · idle · clipboard
 
 ### انٹری پوائنٹس اور انفراسٹرکچر
 
-`argvus` پیکیج `/usr/bin/argvus` ڈسپیچر اور اہم پیکیج انٹری پوائنٹ فراہم کرتا ہے۔ `argvus-session` گرافیکل اور TTY انٹری پوائنٹس، صارف کا ہدف اور `argvus sessionctl` فراہم کرتا ہے۔ مشترکہ TUI اور لوکلائزیشن کی فعالیت `argvus` ورک اسپیس (`argvus-tui` اور `argvus-i18n` کریٹس) اور `argvus i18n` کمانڈ سے آتی ہے۔
+`argvus ` پیکیج `/usr/bin/argvus ` ڈسپیچر اور اہم پیکیج انٹری پوائنٹ فراہم کرتا ہے۔ ` argvus-session ` گرافیکل اور TTY انٹری پوائنٹس، صارف کا ہدف اور ` argvus sessionctl ` فراہم کرتا ہے۔ مشترکہ TUI اور لوکلائزیشن کی فعالیت ` argvus ` ورک اسپیس (` argvus-tui ` اور ` argvus-i18n ` کریٹس) اور ` argvus i18n` کمانڈ سے آتی ہے۔
 
 ### کمپوزیٹر اور ڈیسک ٹاپ شیل
 
-`argvus-hyprland` Hyprland کنفیگریشن اور کی بائنڈنگس فراہم کرتا ہے۔ `argvus-waybar` پیچ شدہ Waybar بائنری فراہم کرتا ہے، جبکہ `argvus-taskbar` ٹاسک بار کی ترتیب اور کارروائیوں کا مالک ہے۔ `argvus-control-panel` Quickshell پینل فراہم کرتا ہے، اور `argvus widget-telemetry` `argvus` میں عمل کے دوران اختیاری سسٹم ویجٹ فراہم کرتا ہے۔
+`argvus-hyprland ` Hyprland کنفیگریشن اور کی بائنڈنگس فراہم کرتا ہے۔ ` argvus-waybar ` پیچ شدہ Waybar بائنری فراہم کرتا ہے، جبکہ ` argvus-taskbar ` ٹاسک بار کی ترتیب اور کارروائیوں کا مالک ہے۔ ` argvus-control-panel ` Quickshell پینل فراہم کرتا ہے، اور ` argvus widget-telemetry ` ` argvus` میں عمل کے دوران اختیاری سسٹم ویجٹ فراہم کرتا ہے۔
 
 
 ### ترتیبات اور ایپلیکیشنز
 
-`argvus control-center` کی بورڈ کی پہلی ترتیبات کی ایپلی کیشن ہے، جو `argvus` میں بطور مددگار بھیجی گئی ہے۔ کیلنڈر اور ہٹنے کے قابل ڈیوائس ٹولز `argvus` میں GTK 4 مددگار ہیں۔ سسٹم مانیٹر اور ٹرمینل `argvus` کے ذیلی کمانڈز ہیں۔ لانچر `argvus-launcher` ہے۔ یہ سب شیل اور ڈسپیچر کے ساتھ مربوط ہیں۔
+`argvus control-center ` کی بورڈ کی پہلی ترتیبات کی ایپلی کیشن ہے، جو ` argvus ` میں بطور مددگار بھیجی گئی ہے۔ کیلنڈر اور ہٹنے کے قابل ڈیوائس ٹولز ` argvus ` میں GTK 4 مددگار ہیں۔ سسٹم مانیٹر اور ٹرمینل ` argvus ` کے ذیلی کمانڈز ہیں۔ لانچر ` argvus-launcher` ہے۔ یہ سب شیل اور ڈسپیچر کے ساتھ مربوط ہیں۔
 
 
 ### فراہم کنندگان اور انضمام
 
 ڈسپلے، نیٹ ورک، بلوٹوتھ، پاور، نوٹیفیکیشن، فائر وال اور ہٹنے والا اسٹوریج فوکسڈ پروجیکٹس کے ذریعے فراہم کیا جاتا ہے۔ کنٹرول سینٹر اور کنٹرول پینل ان فراہم کنندگان کو استعمال کرتے ہیں۔ وہ ان کی جگہ نہیں لیتے ہیں.
 
-لاگ ان، لاک اور اسٹارٹ اپ ویژول بھی الگ الگ ہیں: `argvus-greeter` ہینڈل گریٹیڈ، `argvus-lock` ہینڈل ہائپرلاک، `argvus` میں بھیجے گئے ہینڈ آف ہیلپر نے لاگ ان اسپنر کو ڈرا، اور لوڈنگ کو ہینڈل کیا۔ `argvus-boot-splash` `$XDG_CONFIG_HOME/argvus`  `~/.config/argvus`  `argvus-config`  `data/generated/`  `argvus launcher`  `data/rofi/`  بوٹ سپلیش کو ہینڈل کرتا ہے۔
+لاگ ان، لاک اور اسٹارٹ اپ ویژول بھی الگ الگ ہیں: `argvus-greeter ` ہینڈل گریٹیڈ، ` argvus-lock ` ہینڈل ہائپرلاک، ` argvus ` میں بھیجے گئے ہینڈ آف ہیلپر نے لاگ ان اسپنر کو ڈرا، اور لوڈنگ کو ہینڈل کیا۔ ` argvus-boot-splash ` `$XDG_CONFIG_HOME/argvus `  `~/.config/argvus `  ` argvus-config `  ` data/generated/`  ` argvus launcher `  ` data/rofi/`  بوٹ سپلیش کو ہینڈل کرتا ہے۔
 
 
 ## مشترکہ ظاہری حالت
@@ -69,7 +69,7 @@ ARGVUS کو ہر درخواست کو تبدیل کرنے کی ضرورت نہی�
 
 - [حکموں، راستوں اور خدمات کو سمجھیں] (/docs/reference/)۔
 
--  for the installed and user paths.(/docs/developer-guide/architecture/overview/).
+- انسٹال شدہ اور صارف کے راستوں کے لیے۔ (/docs/developer-guide/architecture/overview/)۔
 
                                              ﮟﯿﮭﮑﯾﺩ ،ﮯﯿﻟ ﮯﮐ ﺯﺎﻏﺁ ﺭﻭﺍ ﻦﺸﯿﻟﺎﭩﺴﻧﺍ[                                                                         ﺐﯿﺼﻨﺗ](/docs/getting-started/installation/)                                                                           ﺭﻭﺍ[                                                                         ﺰﻨﺸﯿﺳ](/docs/user-guide/sessions/)                                     ﮟﯾﺮﮐ ﮧﻈﺣﻼ﻿ﻣ ﺮﭙﻠﯾﻭﮈ ،ﮯﯿﻟ ﮯﮐ ﺖﯿﮑﻠﻣ ﯽﮐ ﺱﻭﺮﺳ .[                                                            ﻞﮑﯿﺋﺎﺳ ﻒﺋﻻ﻿ ﻢﺋﺎﭨ ﻥﺭ](/docs/developer-guide/architecture/runtime-lifecycle/).
                                                                         ﮟﯿﮭﮑﯾﺩ[                                                                      ﭖﺎﭨ ﮏﺴﯾﮈ](/docs/user-guide/desktop/)                                                            ﺭﻭﺍ ﮯﯿﻟ ﮯﮐ ﻝﺎﻤﻌﺘﺳﺍ[                                                                  ﮟﯿﺤﻄﺳ ﯽﮐ ﻞﯿﺷ](/docs/developer-guide/subsystems/shell-surfaces/)                                                    ۔ﮯﯿﻟ ﮯﮐ ﺖﯿﮑﻠﻣ ﯽﮐ ﺪﻣﺁﺭﺩ ﻞﻤﻋ

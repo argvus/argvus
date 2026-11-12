@@ -1,5 +1,5 @@
 ---
-title: Control Center
+title: Pusat Kontrol
 description: Konfigurasikan bagian persisten desktop ARGVUS Anda.
 ---
 
@@ -19,7 +19,6 @@ Panel Kontrol dapat menampilkan kontrol cepat untuk pengaturan yang dikonfiguras
 Rumah Pusat Kontrol saat ini menyediakan area berikut:
 
 Rumah adalah katalog tujuan yang dikelompokkan dalam enam kartu. Setiap tujuan membuka halamannya secara langsung, dan pencarian menemukannya di bawah kartu apa pun.
-
 - **Tampilan** — menyesuaikan desktop: Gaya Desktop (tema, mode tampilan, warna aksen, wallpaper, ikon, dan font), Gaya Aplikasi (transparansi terminal dan peluncur), Bilah Tugas, Panel Kontrol, dan Telemetri Widget.
 - **Desktop & Input** — konfigurasikan ruang kerja: Hyprland (Windows: Aturan, Spasi dan Mode, animasi, blur, batas, bayangan, dan versi terinstal), Layar, Keyboard & Pintasan, dan Mouse & Touchpad.
 - **Preferensi** — pengaturan pribadi dan regional: Bahasa & Wilayah (bahasa, zona waktu, format dan hub tata letak keyboard), Tanggal & Waktu, Aplikasi Default, Daya dan Sesi.
@@ -93,7 +92,6 @@ Aplikasi default memilih program yang diinstal untuk peran seperti terminal, pen
 ### Cuplikan
 
 Cuplikan adalah halaman untuk teks yang diketik `argvus snippets` dengan `SUPER + ALT + N`. Itu ada di **Alat & Diagnostik → Cuplikan** (cari `snippets` atau jalankan `argvus control-center snippets`).
-
 - **Cuplikan baru** — ketik **Nama** dan **Konten**, lalu **Simpan cuplikan**. Nama yang sudah ada menggantikan konten cuplikan tersebut.
 - **Cuplikan tersimpan** — tercantum dengan posisinya (`1  email`) dan konten dalam satu baris. Masuk pada konten, edit itu. **Ketik** ketikkan cuplikan, dan **Hapus** meminta konfirmasi.
 - **Open picker** — membuka picker yang sama dengan `SUPER + ALT + N`.
@@ -158,26 +156,27 @@ Keys ›           the keyring, on its own page, with the search at the top
 1. Buka **Pusat Kontrol → Alat & Diagnostik → Kunci GPG**. Dari Beranda, Anda juga dapat mencari `gpg keys`.
 2. **Pientry** ditetapkan ke `pinentry-gtk`. Halaman itu hanya menampilkannya. Pertama kali kunci dibuat, ARGVUS menulis pinentry tersebut ke `gpg-agent.conf`, di antara garis penandanya sendiri, dan menyimpan baris lainnya. Jika Anda telah menulis baris `pinentry-program` di luar penanda tersebut, pembuatan akan dihentikan dengan kesalahan sehingga Anda dapat menghapus baris tersebut.
 3. **Buat kunci:** di **Buat kunci ▾**, ketik **Nama lengkap** dan **Email**. Keduanya wajib diisi, dan **Buat kunci** tetap dinonaktifkan hingga keduanya memiliki teks. **Komentar** adalah opsional. ID pengguna menjadi `Name (comment) <e-mail>`.
-   - **Algoritma** beralih antara **RSA** dan **DSA ElGamal**. Kunci DSA mendapat subkunci enkripsi ElGamal; kunci RSA mendapat kunci RSA.
-   - **Kekuatan utama** menelusuri ukuran algoritme: RSA 1024, 2048, dan 4096; DSA 1024, 2048 dan 3072. gpg tidak membuat kunci DSA di atas 3072 bit, jadi 4096 tidak ditawarkan untuk DSA.
-   - **Tanggal kedaluwarsa** membuka halamannya sendiri. Ketik tanggal dalam tata letak bahasa Anda: `DD/MM/YYYY` dalam bahasa Portugis, Spanyol, Prancis, Italia, Jerman, dan Rusia; `YYYY/MM/DD` dalam bahasa Inggris, Cina, Jepang, dan Korea. Tanggalnya harus setelah hari ini. Aktifkan **Tidak pernah kedaluwarsa** untuk menjadikan kunci permanen; bidang tanggal kemudian dinonaktifkan dan tidak digunakan.- **Frase Sandi** membuka halamannya sendiri. **Lindungi dengan frasa sandi** diaktifkan secara default; ketik **Frase Sandi** lalu **Konfirmasi Frasa Sandi**. Keduanya harus cocok. Menonaktifkan perlindungan akan menghapus kedua kolom, dan halaman akan meminta konfirmasi sebelum menghasilkan kunci yang tidak dilindungi.
+- **Algoritma** beralih antara **RSA** dan **DSA ElGamal**. Kunci DSA mendapat subkunci enkripsi ElGamal; kunci RSA mendapat kunci RSA.
+- **Kekuatan utama** menelusuri ukuran algoritme: RSA 1024, 2048, dan 4096; DSA 1024, 2048 dan 3072. gpg tidak membuat kunci DSA di atas 3072 bit, jadi 4096 tidak ditawarkan untuk DSA.
+- **Tanggal kedaluwarsa** membuka halamannya sendiri. Ketik tanggal dalam tata letak bahasa Anda: `DD/MM/YYYY` dalam bahasa Portugis, Spanyol, Prancis, Italia, Jerman, dan Rusia; `YYYY/MM/DD` dalam bahasa Inggris, Cina, Jepang, dan Korea. Tanggalnya harus setelah hari ini. Aktifkan **Tidak pernah kedaluwarsa** untuk menjadikan kunci permanen; bidang tanggal kemudian dinonaktifkan dan tidak digunakan.
+- **Frase Sandi** membuka halamannya sendiri. **Lindungi dengan frasa sandi** diaktifkan secara default; ketik **Frase Sandi** lalu **Konfirmasi Frasa Sandi**. Keduanya harus cocok. Menonaktifkan perlindungan akan menghapus kedua kolom, dan halaman akan meminta konfirmasi sebelum menghasilkan kunci yang tidak dilindungi.
 4. Pilih **Buat kunci** dan tekan `Enter`. Kunci tersebut mendapat kunci penandatanganan dan subkunci enkripsi. Frasa sandi dikirim ke peluncur pada input standarnya, tidak pernah sebagai argumen perintah. Jika pembuatan gagal, kolom lainnya tetap ada, namun frasa sandi dihapus dan harus diketik lagi.
 5. **Batal** menghapus setiap bidang formulir dan mengembalikan tanggal dan ukuran ke defaultnya.
 6. **Impor:** di **Impor ▾**, pilih **Impor kunci publik…** atau **Impor kunci pribadi…**. Manajer file terbuka sehingga Anda dapat memilih file. Kunci pribadi meminta konfirmasi terlebih dahulu, dan frasa sandinya diminta oleh gpg saat kunci tersebut digunakan. Jika pengelola file berbentuk grafis, ia tidak dapat melaporkan file ke halaman; halaman tersebut kemudian membuka bidang tempat Anda mengetikkan jalur.
 7. **Tombol ›** membuka gantungan kunci. Setiap kunci menunjukkan identitasnya, sidik jari, jenis, masa berlakunya, dan apakah kunci pribadinya ada di dalam gantungan kunci. Setiap kunci memiliki tindakan berikut:
    - **Tombol Edit ›** membuka halaman kunci itu sendiri (dijelaskan di bawah).
-   - **Ekspor kunci publik…** meminta jalur file, diusulkan sebagai `~/<fingerprint>.asc`. File dibuat dengan mode `600`. File yang ada tidak pernah diganti.
-   - **Ekspor kunci pribadi…** hanya muncul untuk kunci dengan bagian pribadi. Ia meminta konfirmasi, lalu jalur file, diusulkan sebagai `~/<fingerprint>-private.asc`. File dibuat dengan mode `600`.
-   - **Salin kunci publik** dan **Salin sidik jari** salin ke papan klip Wayland dengan `wl-copy`.
-   - **Tombol hapus…** meminta konfirmasi, dengan fokus pada Batal. Ini menghilangkan kunci dan bagian pribadinya.
+- **Ekspor kunci publik…** meminta jalur file, diusulkan sebagai `~/<fingerprint>.asc`. File dibuat dengan mode `600`. File yang ada tidak pernah diganti.
+- **Ekspor kunci pribadi…** hanya muncul untuk kunci dengan bagian pribadi. Ia meminta konfirmasi, lalu jalur file, diusulkan sebagai `~/<fingerprint>-private.asc`. File dibuat dengan mode `600`.
+- **Salin kunci publik** dan **Salin sidik jari** salin ke papan klip Wayland dengan `wl-copy`.
+- **Tombol hapus…** meminta konfirmasi, dengan fokus pada Batal. Ini menghilangkan kunci dan bagian pribadinya.
 8. **Temukan kunci:** di halaman **Kunci**, bilah pencarian di bagian atas memfilter kunci. Ketik untuk mempersempit daftar; pencarian cocok dengan identitas (termasuk komentar) dan sidik jari. `Esc` menghapus pencarian.
 9. **Tombol Edit ›** menampilkan detail kunci, lalu tindakan berikut:
    - **Tanggal kedaluwarsa ›** mengubah masa berlaku kunci dan setiap subkuncinya. Gunakan **Never expired** untuk menghapus masa berlakunya. **Terapkan** menyimpan kembaliannya.
-   - **Ubah frasa sandi** menanyakan frasa sandi lama dan baru di jendela masuk pintu masuk.
-   - **Tanda kunci dengan ›** mengesahkan kunci ini dengan salah satu kunci Anda lainnya yang memiliki bagian pribadi. Frasa sandi penandatangan diminta. Halaman tersebut meminta konfirmasi terlebih dahulu.
-   - **Cabut kunci ›** mencantumkan alasannya: tidak ada alasan, kunci disusupi, kunci digantikan, kunci tidak lagi digunakan. Masing-masing meminta konfirmasi. Kunci yang dicabut tidak dapat digunakan lagi.
-   - **Kepercayaan** menetapkan seberapa jauh Anda memercayai kunci: tidak ditetapkan, marjinal, penuh, atau pamungkas.
-   - **Publikasikan ke server kunci…** mengirimkan kunci publik ke server kunci yang disetel di `gpg.conf`, setelah konfirmasi. **Ambil dari server kunci** mengunduh kunci dari server kunci tersebut.
+- **Ubah frasa sandi** menanyakan frasa sandi lama dan baru di jendela masuk pintu masuk.
+- **Tanda kunci dengan ›** mengesahkan kunci ini dengan salah satu kunci Anda lainnya yang memiliki bagian pribadi. Frasa sandi penandatangan diminta. Halaman tersebut meminta konfirmasi terlebih dahulu.
+- **Cabut kunci ›** mencantumkan alasannya: tidak ada alasan, kunci disusupi, kunci digantikan, kunci tidak lagi digunakan. Masing-masing meminta konfirmasi. Kunci yang dicabut tidak dapat digunakan lagi.
+- **Kepercayaan** menetapkan seberapa jauh Anda memercayai kunci: tidak ditetapkan, marjinal, penuh, atau pamungkas.
+- **Publikasikan ke server kunci…** mengirimkan kunci publik ke server kunci yang disetel di `gpg.conf`, setelah konfirmasi. **Ambil dari server kunci** mengunduh kunci dari server kunci tersebut.
 
 Bergerak: `↑`/`↓` atau `j`/`k` menelusuri daftar, `Enter` mengaktifkan satu baris, `Esc` kembali dan `?` menunjukkan bantuan.
 
@@ -272,7 +271,8 @@ Setiap nilai dibaca dari sistem yang sedang berjalan, tanpa hak istimewa, dan ha
 
 - **Firmware**, **Model** dan **Motherboard** berasal dari DMI (`/sys/class/dmi/id`); nilai placeholder seperti `To be filled by O.E.M.` diabaikan. **Jenis** dan **Boot Aman** berasal dari `/sys/firmware/efi`, dan **Virtualisasi** dari `systemd-detect-virt`.
 - **Bootloader** dibaca dari variabel EFI `LoaderInfo`, yang systemd-boot, Limine, dan bootloader lain yang mengikuti publikasi Antarmuka Boot Loader. GRUB tidak mempublikasikannya, sehingga dikenali oleh `/boot/grub` (atau `/efi/grub`) dan ditampilkan dengan versi paket `grub`.
-- Versi ARGVUS, Wayland, Mesa, PipeWire, Quickshell,greed, systemd dan GRUB berasal dari satu kueri `pacman -Q` dan ditampilkan tanpa epoch dan rilis paket (`1:25.2.3-1` menjadi `25.2.3`). Versi Hyprland berasal dari `hyprctl version`, atau dari paket ketika tidak ada sesi yang menjawab.- **Driver GPU** memberi nama driver yang terikat pada setiap kartu DRM di `/sys/class/drm`. Driver berpemilik menunjukkan versi modulnya (misalnya `nvidia 580.82.07`); driver dalam kernel menunjukkan versi Mesa (misalnya `amdgpu (Mesa 25.2.3)`).
+- Versi ARGVUS, Wayland, Mesa, PipeWire, Quickshell,greed, systemd dan GRUB berasal dari satu kueri `pacman -Q` dan ditampilkan tanpa epoch dan rilis paket (`1:25.2.3-1` menjadi `25.2.3`). Versi Hyprland berasal dari `hyprctl version`, atau dari paket ketika tidak ada sesi yang menjawab.
+- **Driver GPU** memberi nama driver yang terikat pada setiap kartu DRM di `/sys/class/drm`. Driver berpemilik menunjukkan versi modulnya (misalnya `nvidia 580.82.07`); driver dalam kernel menunjukkan versi Mesa (misalnya `amdgpu (Mesa 25.2.3)`).
 - **Tampilan** mencantumkan monitor aktif dari `hyprctl monitors -j`: konektor, resolusi, kecepatan refresh, dan skala (skala dibiarkan di angka 1).
 - **Paket** menghitung semua paket yang diinstal, yang diinstal secara eksplisit dan yang asing (AUR atau dibuat secara lokal), dari `pacman -Qq`, `-Qqe` dan `-Qqm`.
 - **Uptime** berasal dari `/proc/uptime` dan merupakan nilai saat halaman dibuka. **Lokal** berasal dari `LANG` di `/etc/locale.conf`.
@@ -314,7 +314,8 @@ Dukungan reset sengaja dilakukan per domain:
 - **Font** dapat memulihkan semua pengaturan font, target, atau pengaturan individual.
 - **Aplikasi bawaan** dapat memulihkan semua default, kategori, atau pemilih individual.
 - **Pintasan keyboard** dapat memulihkan satu atau semua pengikatan, lalu memuat ulang pengikatan sesi yang dihasilkan.
-- **Aturan jendela** ada di **Desktop & Input → Hyprland → Windows → Aturan** (cari `window rules` atau jalankan `argvus control-center window-rules`). Setiap aturan memiliki baris **Ruang Kerja** (`Enter` atau `←/→` langkah dari 1 hingga 10) dan baris **Kelas jendela** yang membuka kolom teks dengan ekspresi reguler yang dipisahkan koma. **Tambahkan aturan** membuat `rule-N` dengan ruang kerja 1 dan tanpa kelas. **Hapus aturan** setiap aturan berada di **zona Bahaya** dan meminta konfirmasi. Setiap perubahan ditulis ke `hyprland.window_rules` di `argvus config` dan segera memuat ulang konfigurasi; pola kelas yang tidak valid ditolak dan ditampilkan sebagai kesalahan.- **Proyek** ada di **Alat & Diagnostik → Proyek** (cari `projects` atau jalankan `argvus control-center projects`). **Tambahkan folder proyek** dan **Tambahkan folder akar** berada di bagian atas halaman dan membuka bidang teks dengan jalurnya; peluncur memeriksa apakah itu adalah direktori dan menunjukkan kesalahan sebaliknya, termasuk ketika folder tersebut akan mendorong jumlah proyek efektif melewati 9 (`SUPER + CTRL + 1..9` tidak dapat mengatasi lebih banyak). Setiap folder yang dikonfigurasi, ditandai sebagai root (subfoldernya adalah proyek) atau satu proyek, mendapatkan bloknya sendiri di bawah formulir dengan baris **Hapus** yang meminta konfirmasi. Halaman tersebut memanggil `argvus-projects`, sehingga perubahan ditulis oleh peluncur dan diterapkan saat `SUPER + O` atau `SUPER + CTRL + 1..9` dijalankan berikutnya. Jika `argvus-projects` tidak diinstal, halaman tersebut menyatakan demikian.
+- **Aturan jendela** ada di **Desktop & Input → Hyprland → Windows → Aturan** (cari `window rules` atau jalankan `argvus control-center window-rules`). Setiap aturan memiliki baris **Ruang Kerja** (`Enter` atau `←/→` langkah dari 1 hingga 10) dan baris **Kelas jendela** yang membuka kolom teks dengan ekspresi reguler yang dipisahkan koma. **Tambahkan aturan** membuat `rule-N` dengan ruang kerja 1 dan tanpa kelas. **Hapus aturan** setiap aturan berada di **zona Bahaya** dan meminta konfirmasi. Setiap perubahan ditulis ke `hyprland.window_rules` di `argvus config` dan segera memuat ulang konfigurasi; pola kelas yang tidak valid ditolak dan ditampilkan sebagai kesalahan.
+- **Proyek** ada di **Alat & Diagnostik → Proyek** (cari `projects` atau jalankan `argvus control-center projects`). **Tambahkan folder proyek** dan **Tambahkan folder akar** berada di bagian atas halaman dan membuka bidang teks dengan jalurnya; peluncur memeriksa apakah itu adalah direktori dan menunjukkan kesalahan sebaliknya, termasuk ketika folder tersebut akan mendorong jumlah proyek efektif melewati 9 (`SUPER + CTRL + 1..9` tidak dapat mengatasi lebih banyak). Setiap folder yang dikonfigurasi, ditandai sebagai root (subfoldernya adalah proyek) atau satu proyek, mendapatkan bloknya sendiri di bawah formulir dengan baris **Hapus** yang meminta konfirmasi. Halaman tersebut memanggil `argvus-projects`, sehingga perubahan ditulis oleh peluncur dan diterapkan saat `SUPER + O` atau `SUPER + CTRL + 1..9` dijalankan berikutnya. Jika `argvus-projects` tidak diinstal, halaman tersebut menyatakan demikian.
 - **Halaman sistem lain** menampilkan tindakan pengaturan ulang, penerapan, penghapusan, atau pemulihan hanya jika penyedia yang mendasarinya mendukung tindakan tersebut.
 
 Menghapus preferensi pengguna dapat membuat penyedia kembali ke status paket/defaultnya, namun menghapus file secara manual bukanlah prosedur pemulihan umum. Lebih suka tindakan pengaturan ulang halaman atau perintah khusus fitur yang terdokumentasi.

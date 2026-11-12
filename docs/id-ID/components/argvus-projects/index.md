@@ -1,5 +1,5 @@
 ---
-title: Projects
+title: Proyek
 description: Pemilih proyek dan konfigurasi proyek, melalui proyek argvus.
 ---
 

@@ -1,5 +1,5 @@
 ---
-title: Terminal
+title: المحطة الطرفية
 description: افتح محطة ARGVUS وملفات تعريف التطبيق الطرفية.
 ---
 

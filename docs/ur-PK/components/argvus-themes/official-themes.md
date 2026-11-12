@@ -14,7 +14,7 @@ description: سرکاری ARGVUS تھیم کیٹلاگ، ڈیفالٹ ہائی �
 
 منتخب تھیم کو ایک ساتھ پورے ڈیسک ٹاپ پر لاگو کیا جاتا ہے: چلتی ٹاسک بار، پینلز، اطلاعات، ونڈوز اور وال پیپر اپنی جگہ پر رنگ بدلتے ہیں، بغیر لوڈنگ اسکرین کے اور دوبارہ شروع کیے بغیر۔ ARGVUS آپ کے وال پیپر کے انتخاب کو برقرار رکھتا ہے جب تک کہ تھیم کو اس کی اپنی وال پیپر ایسوسی ایشن کے ساتھ لاگو نہ کیا جائے۔
 
-کی بورڈ سے تھیم سلیکٹر کو کھولنے کے لیے آپ `SUPER + SHIFT + T` بھی دبا سکتے ہیں۔ زمروں میں جانے کے لیے تیر والے بٹنوں کا استعمال کریں، منتخب کرنے کے لیے `Enter`، اور بند کرنے کے لیے `Esc`۔
+کی بورڈ سے تھیم سلیکٹر کو کھولنے کے لیے آپ `SUPER + SHIFT + T ` بھی دبا سکتے ہیں۔ زمروں میں جانے کے لیے تیر والے بٹنوں کا استعمال کریں، منتخب کرنے کے لیے ` Enter `، اور بند کرنے کے لیے ` Esc`۔
 
 ## چپچپا اور فاصلہ والا
 
@@ -22,8 +22,8 @@ description: سرکاری ARGVUS تھیم کیٹلاگ، ڈیفالٹ ہائی �
 
 | موڈ | ونڈو گیپس | بیرونی خلا | کھڑکی کو گول کرنا | ٹاسک بار اور شیل مارجن |
 | --- | ---: | ---: | ---: | ---: |
-| چپچپا | `2` | `0` | `0` | کنارے کے قریب |
-| فاصلہ | `10` | `18` | `4` | `18` |
+| چپچپا | `2 ` | ` 0 ` | ` 0` | کنارے کے قریب |
+| فاصلہ | `10 ` | ` 18 ` | ` 4 ` | ` 18` |
 
 موڈ کو سوئچ کرنے کے لیے، **کنٹرول سینٹر → ظاہری شکل → موڈ** کھولیں اور **چپچپا** یا **فاصلہ** کا انتخاب کریں۔ ان ترتیب اقدار میں آپ کی دستی ایڈجسٹمنٹ اگلے واضح تھیم کے انتخاب تک اثر میں رہتی ہیں۔
 
@@ -31,38 +31,38 @@ description: سرکاری ARGVUS تھیم کیٹلاگ، ڈیفالٹ ہائی �
 
 | تھیم | پیکیج | ڈیفالٹ ہائی لائٹ |
 | --- | --- | --- |
-| ایک سیاہ | `argvus-theme-one-dark` | `#61AFEF` |
-| ڈریکولا | `argvus-theme-dracula` | `#BD93F9` |
-| سلور ڈارک | `argvus-theme-silver-dark` | `#595959` |
-| سلیٹ ڈارک | `argvus-theme-slate-dark` | `#7391A5` |
-| کائنات | `argvus-theme-universe` | `#EEEEEE` |
-| Gruvbox ہائی ڈارک | `argvus-theme-gruvbox-high-dark` | `#D79921` |
-| Gruvbox ڈارک | `argvus-theme-gruvbox-dark` | `#D4BE98` |
-| روزے پائن | `argvus-theme-rose-pine` | `#C4A7E7` |
-| ٹوکیو نائٹ | `argvus-theme-tokyo-night` | `#7AA2F7` |
-| تنہائی | `argvus-theme-solitude` | `#798186` |
-| غروب آفتاب | `argvus-theme-sunset` | `#E2BE8A` |
-| میٹرکس | `argvus-theme-matrix` | `#82FB9C` |
-| مونوکائی ڈارک | `argvus-theme-monokai-dark` | `#78DCE8` |
-| لیڈی مسٹ | `argvus-theme-lady-mist` | `#354B78` |
+| ایک سیاہ | `argvus-theme-one-dark ` | `#61AFEF` |
+| ڈریکولا | `argvus-theme-dracula ` | `#BD93F9` |
+| سلور ڈارک | `argvus-theme-silver-dark ` | `#595959` |
+| سلیٹ ڈارک | `argvus-theme-slate-dark ` | `#7391A5` |
+| کائنات | `argvus-theme-universe ` | `#EEEEEE` |
+| Gruvbox ہائی ڈارک | `argvus-theme-gruvbox-high-dark ` | `#D79921` |
+| Gruvbox ڈارک | `argvus-theme-gruvbox-dark ` | `#D4BE98` |
+| روزے پائن | `argvus-theme-rose-pine ` | `#C4A7E7` |
+| ٹوکیو نائٹ | `argvus-theme-tokyo-night ` | `#7AA2F7` |
+| تنہائی | `argvus-theme-solitude ` | `#798186` |
+| غروب آفتاب | `argvus-theme-sunset ` | `#E2BE8A` |
+| میٹرکس | `argvus-theme-matrix ` | `#82FB9C` |
+| مونوکائی ڈارک | `argvus-theme-monokai-dark ` | `#78DCE8` |
+| لیڈی مسٹ | `argvus-theme-lady-mist ` | `#354B78` |
 
 ## ہلکے تھیمز
 
 | تھیم | پیکیج | ڈیفالٹ ہائی لائٹ |
 | --- | --- | --- |
-| گٹ ہب لائٹ | `argvus-theme-github-light` | `#0969DA` |
-| سولرائزڈ لائٹ | `argvus-theme-solarized-light` | `#268BD2` |
-| نورڈ لائٹ | `argvus-theme-nord-light` | `#5E81AC` |
-| ایک روشنی | `argvus-theme-one-light` | `#4078F2` |
-| ایورفورسٹ لائٹ | `argvus-theme-everforest-light` | `#3A94C5` |
-| Catppuccin Latte | `argvus-theme-catppuccin-latte` | `#1E66F5` |
-| Gruvbox لائٹ | `argvus-theme-gruvbox-light` | `#458588` |
-| پانی کا رنگ | `argvus-theme-watercolor` | `#1A639C` |
-| Obsidian Light | `argvus-theme-obsidian-light` | `#334A78` |
+| گٹ ہب لائٹ | `argvus-theme-github-light ` | `#0969DA` |
+| سولرائزڈ لائٹ | `argvus-theme-solarized-light ` | `#268BD2` |
+| نورڈ لائٹ | `argvus-theme-nord-light ` | `#5E81AC` |
+| ایک روشنی | `argvus-theme-one-light ` | `#4078F2` |
+| ایورفورسٹ لائٹ | `argvus-theme-everforest-light ` | `#3A94C5` |
+| Catppuccin Latte | `argvus-theme-catppuccin-latte ` | `#1E66F5` |
+| Gruvbox لائٹ | `argvus-theme-gruvbox-light ` | `#458588` |
+| پانی کا رنگ | `argvus-theme-watercolor ` | `#1A639C` |
+| Obsidian Light | `argvus-theme-obsidian-light ` | `#334A78` |
 
 ## بلٹ ان تھیمز
 
-**ARGVUS Dark** اور **ARGVUS Light** `argvus-appearance` کے ذریعے فراہم کیے گئے ہیں اور ہمیشہ **آفیشل تھیمز** کے تحت دستیاب ہوتے ہیں۔ ARGVUS Dark پہلے سے طے شدہ ہائی لائٹ `#3590BD` استعمال کرتا ہے۔ ARGVUS Light `#181818` استعمال کرتی ہے۔
+**ARGVUS Dark** اور **ARGVUS Light** `argvus-appearance ` کے ذریعے فراہم کیے گئے ہیں اور ہمیشہ **آفیشل تھیمز** کے تحت دستیاب ہوتے ہیں۔ ARGVUS Dark پہلے سے طے شدہ ہائی لائٹ `#3590BD ` استعمال کرتا ہے۔ ARGVUS Light `#181818` استعمال کرتی ہے۔
 
 ## کیا تھیم کنٹرول کرتی ہے۔
 

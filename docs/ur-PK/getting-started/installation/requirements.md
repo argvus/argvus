@@ -12,4 +12,4 @@ ARGVUS آرک لینکس کو نشانہ بناتا ہے اور اسے Wayland �
 - صارف Wayland سیشن چلا سکتا ہے۔
 - نیٹ ورکنگ تب دستیاب ہوتی ہے جب پیکیج ریپوزٹری کو کنفیگر کیا جاتا ہے۔
 
-Virtual machines may need the compatibility settings described in [Virtual machines](/docs/user-guide/virtual-machines/).
+ورچوئل مشینوں کو مطابقت کی ترتیبات کی ضرورت ہو سکتی ہے جو [Virtual machines](/docs/user-guide/virtual-machines/) میں بیان کی گئی ہے۔

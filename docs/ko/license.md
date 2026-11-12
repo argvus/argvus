@@ -4,7 +4,7 @@ description: ARGVUS 라이선스 정보.
 ---
 ARGVUS와 그 구성 패키지는 **GNU 일반 공중 사용 허가서 버전 3.0 전용(GPL-3.0-only)** 하에 라이선스가 부여됩니다.
 
-전체 라이선스 텍스트는 모든 저장소와 함께 제공되며 [argvus/argvus/LICENSE](https://github.com/argvus/argvus/blob/main/LICENSE)]에서 확인할 수 있습니다.
+전체 라이선스 텍스트는 모든 저장소와 함께 제공되며 [argvus/argvus/LICENSE](https://github.com/argvus/argvus/blob/main/LICENSE)에서 확인할 수 있습니다.
 
 ## 의미
 

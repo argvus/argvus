@@ -1,5 +1,5 @@
 ---
-title: Keys
+title: مفاتيح
 description: تتم إدارة مفاتيح SSH وGPG من خلال مفاتيح argvus وargvus gpg.
 ---
 

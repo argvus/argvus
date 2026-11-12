@@ -182,7 +182,7 @@ argvus --setup --copy <app> --force
 ```
 ## Hyprland 사용자 재정의
 
-전체 Hyprland 재정의 가이드와 전체 네이티브 구성과 점진적 ARGVUS 조각의 차이를 포함하여, [Hyprland overrides](/docs/argvus-hyprland/hyprland-overrides/)]를 참조하세요.
+전체 Hyprland 재정의 가이드와 전체 네이티브 구성과 점진적 ARGVUS 조각의 차이를 포함하여, [Hyprland overrides](/docs/argvus-hyprland/hyprland-overrides/)를 참조하세요.
 
 ```sh
 mkdir -p ~/.config/argvus/data/hypr

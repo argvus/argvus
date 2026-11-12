@@ -1,5 +1,5 @@
 ---
-title: Packaging
+title: Bao bì
 description: Xây dựng và kiểm tra các gói ARGVUS Arch.
 ---
 

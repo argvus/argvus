@@ -1,6 +1,6 @@
 ---
 title: বিকাশকারী গাইড
-description: Architecture and development guidance for ARGVUS contributors.
+description: ARGVUS অবদানকারীদের জন্য আর্কিটেকচার এবং উন্নয়ন নির্দেশিকা।
 ---
 
 ARGVUS হল শেয়ার্ড কনফিগারেশন, সিস্টেমড ব্যবহারকারী পরিষেবা, Wayland/Hyprland চুক্তি এবং সাধারণ i18n দ্বারা যুক্ত স্বাধীনভাবে প্যাকেজ করা প্রকল্পগুলির একটি সংগ্রহ৷

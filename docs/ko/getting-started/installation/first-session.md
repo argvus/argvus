@@ -9,4 +9,4 @@ TTY 세션의 경우, 가상 터미널에서 로그인하고 다음을 실행하
 ```sh
 argvus --start-desktop
 ```
-로그인 후, ARGVUS 사용자 대상을 검사하려면 `argvus sessionctl status`를 사용하세요. 컴포지터나 셸이 시작되지 않으면 [session troubleshooting](/docs/user-guide/troubleshooting/session-startup/)]를 따르세요.
+로그인 후, ARGVUS 사용자 대상을 검사하려면 `argvus sessionctl status`를 사용하세요. 컴포지터나 셸이 시작되지 않으면 [session troubleshooting](/docs/user-guide/troubleshooting/session-startup/)를 따르세요.

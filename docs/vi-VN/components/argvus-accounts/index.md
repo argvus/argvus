@@ -1,5 +1,5 @@
 ---
-title: Accounts
+title: Tài khoản
 description: Hồ sơ người dùng cục bộ, tên hiển thị, hình đại diện và thành viên nhóm, thông qua tài khoản argvus.
 ---
 

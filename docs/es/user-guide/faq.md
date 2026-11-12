@@ -36,7 +36,7 @@ Otras distribuciones pueden proporcionar algunos de los mismos componentes upstr
 
 ## ¿Cómo instalo ARGVUS?
 
-Sigue la [guía de instalación](/docs/getting-started/installation/)]. Explica los requisitos, cómo configurar el repositorio de paquetes firmado de ARGVUS, cómo instalar el conjunto de paquetes y cómo iniciar la primera sesión.
+Sigue la [guía de instalación](/docs/getting-started/installation/). Explica los requisitos, cómo configurar el repositorio de paquetes firmado de ARGVUS, cómo instalar el conjunto de paquetes y cómo iniciar la primera sesión.
 
 ARGVUS se entrega como un conjunto coordinado de paquetes de Arch. El paquete `argvus` es el objetivo principal de la instalación y trae los componentes de escritorio que coordina.
 
@@ -51,7 +51,7 @@ argvus --control-center
 ```
 También puedes abrir un área enfocada con `argvus control-center`, por ejemplo `argvus control-center appearance themes`. Ejecuta `argvus control-center --help` para ver las rutas disponibles en la versión instalada.
 
-Usa **Panel de Control** para el estado actual y acciones frecuentes como volumen, brillo, red, notificaciones, control de energía y de sesión. No es una segunda base de datos de configuración. Consulta [Dónde configurar las cosas](/docs/user-guide/where-to-configure/)] y [Centro de Control](/docs/components/argvus-control-center/)] para la distinción.
+Usa **Panel de Control** para el estado actual y acciones frecuentes como volumen, brillo, red, notificaciones, control de energía y de sesión. No es una segunda base de datos de configuración. Consulta [Dónde configurar las cosas](/docs/user-guide/where-to-configure/) y [Centro de Control](/docs/components/argvus-control-center/) para la distinción.
 
 ## ¿Dónde se almacenan los ajustes de ARGVUS?
 

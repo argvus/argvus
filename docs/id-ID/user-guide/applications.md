@@ -1,5 +1,5 @@
 ---
-title: Applications
+title: Aplikasi
 description: Gunakan aplikasi yang terintegrasi ke dalam ARGVUS.
 ---
 

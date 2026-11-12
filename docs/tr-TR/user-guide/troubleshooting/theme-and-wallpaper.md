@@ -16,13 +16,13 @@ argvus sessionctl reload
 `argvus theme-switch` (`argvus config theme-apply`'yu çalıştırır) ve `argvus config accent`orkestratörlerdir: doğrularlar, kilitlerler, sıçramayı gösterirler, taahhüt ederler
 `argvus-config` ve ardından okuyamayan harici tüketicileri uzlaştırın
 
-. They never write 
+. They never write
 
 , and the theme transaction does
-not write the GTK, storage or 
+not write the GTK, storage or
 
  files through separate scripts.
-Use 
+Use
 
  to re-run only the accent reconciliation.
 
@@ -57,7 +57,7 @@ sudo argvus greeter-setup --sync-themes
 
 Bu dosya, görünüm orkestratörü tarafından ön-kimlik doğrulama için yayınlanmıştır ve
 `data/generated/` dışında bulunur, bu yüzden sade bir `argvus config apply`
-refresh it.
+yenileyin.
 
 Eğer karşılama görevlisi bir Kitty önbelleğinde `Invalid color name: 'null'` bildirirse,
 `argvus terminal` paketini güncelleyin ve karşılama görevini tekrar açarak önbelleği yeniden oluşturun.
@@ -78,7 +78,7 @@ Yukarıdaki komut kanonik tercihi okur. `.active-theme` yalnızca biruyumluluk p
 tarafından tema uygulamasıyla senkronize edilerek yeniden oluşturulur. Eksik veya eski bir
 `/usr/lib/argvus/loading-theme/splash` eksik bir paket güncellemesini gösterir;
 canlı oturumu değerlendirmeden önce koordine edilen paketleri yeniden derleyip yükleyin
-result.
+sonuç.
 
 Eğer pencere kenarlıkları önceki tema rengini koruyorsa, Hyprland'ın Lua
 dosyasını manuel olarak düzenlemeyin. Tema ve vurgu değişiklikleri `config.json` üzerinden yansıtılır, sonra

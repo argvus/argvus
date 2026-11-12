@@ -2,7 +2,7 @@
 title: 官方主题
 description: 官方 ARGVUS 主题目录、默认高亮颜色，以及如何选择主题及其固定或间隔模式。
 ---
-此页面列出了可作为主题包提供的官方主题，并解释了如何选择主题。有关安装它们，请参见 [Installing themes](/docs/components/argvus-themes/installing-themes/)]。
+此页面列出了可作为主题包提供的官方主题，并解释了如何选择主题。有关安装它们，请参见 [Installing themes](/docs/components/argvus-themes/installing-themes/)。
 
 ## 选择主题
 
@@ -30,8 +30,8 @@ description: 官方 ARGVUS 主题目录、默认高亮颜色，以及如何选�
 
 | 主题 | 套餐 | 默认高亮 |
 | --- | --- | --- |
-| One Dark | `argvus-theme-one-dark` | `#61AFEF` |
-| Dracula | `argvus-theme-dracula` | `#BD93F9` |
+|一暗 | `argvus-theme-one-dark` | `#61AFEF` |
+|德古拉 | `argvus-theme-dracula` | `#BD93F9` |
 | 银暗 | `argvus-theme-silver-dark` | `#595959` |
 | Slate 暗 | `argvus-theme-slate-dark` | `#7391A5` |
 | 宇宙 | `argvus-theme-universe` | `#EEEEEE` |
@@ -43,21 +43,21 @@ description: 官方 ARGVUS 主题目录、默认高亮颜色，以及如何选�
 | 日落 | `argvus-theme-sunset` | `#E2BE8A` |
 | 矩阵 | `argvus-theme-matrix` | `#82FB9C` |
 | Monokai 暗 | `argvus-theme-monokai-dark` | `#78DCE8` |
-| Lady Mist | `argvus-theme-lady-mist` | `#354B78` |
+|雾女士 | `argvus-theme-lady-mist` | `#354B78` |
 
 ## 亮色主题
 
 | 主题 | 包 | 默认高亮 |
 | --- | --- | --- |
-| GitHub Light | `argvus-theme-github-light` | `#0969DA` |
-| Solarized Light | `argvus-theme-solarized-light` | `#268BD2` |
-| Nord Light | `argvus-theme-nord-light` | `#5E81AC` |
-| One Light | `argvus-theme-one-light` | `#4078F2` |
-| Everforest Light | `argvus-theme-everforest-light` | `#3A94C5` |
-| Catppuccin Latte | `argvus-theme-catppuccin-latte` | `#1E66F5` |
-| Gruvbox Light | `argvus-theme-gruvbox-light` | `#458588` |
-| Watercolor | `argvus-theme-watercolor` | `#1A639C` |
-| Obsidian Light | `argvus-theme-obsidian-light` | `#334A78` |
+| GitHub 灯 | `argvus-theme-github-light` | `#0969DA` |
+|日光灯| `argvus-theme-solarized-light` | `#268BD2` |
+|北欧之光 | `argvus-theme-nord-light` | `#5E81AC` |
+|一盏灯| `argvus-theme-one-light` | `#4078F2` |
+|永林之光 | `argvus-theme-everforest-light` | `#3A94C5` |
+|卡布奇诺拿铁| `argvus-theme-catppuccin-latte` | `#1E66F5` |
+| Gruvbox 灯 | `argvus-theme-gruvbox-light` | `#458588` |
+|水彩| `argvus-theme-watercolor` | `#1A639C` |
+|黑曜石灯 | `argvus-theme-obsidian-light` | `#334A78` |
 
 ## 内置主题
 
@@ -67,4 +67,4 @@ description: 官方 ARGVUS 主题目录、默认高亮颜色，以及如何选�
 
 主题定义了桌面组件使用的调色板和表面处理、默认高亮颜色、默认壁纸关联以及透明度和模糊默认值。桌面组件读取此状态，而不是存储自己的副本，因此主题更改会同时影响合成器、任务栏、控制面板、锁屏、通知和应用程序。
 
-默认高亮颜色只是起点。您可以将其替换为任意六位数颜色，详情请参见 [自定义高亮颜色](/docs/components/argvus-themes/highlight-color/)]。
+默认高亮颜色只是起点。您可以将其替换为任意六位数颜色，详情请参见 [自定义高亮颜色](/docs/components/argvus-themes/highlight-color/)。

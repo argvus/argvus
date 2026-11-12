@@ -12,7 +12,7 @@ description: 用户、系统、包默认和生成的 ARGVUS 配置。
 | 生成 | `$XDG_CONFIG_HOME/argvus/data/generated/` | `config.json`的投影，仅由`argvus-config`写入。切勿编辑，切勿复制到其他地方作为配置，切勿作为源读取回。 |
 | 运行时 | `$XDG_RUNTIME_DIR/` 和 `$XDG_CACHE_HOME/` | 套接字、锁和临时状态。 |
 
-活动的主题、强调色、自定义壁纸和效果状态都是逻辑用户状态。受管理的逻辑模型记录在 [Canonical configuration](/docs/reference/argvus-config/)] 中。生成的 Hyprland、GTK、Qt6ct、Waybar、Quickshell、Dunst、Hyprlock、Yazi、Superfile、终端、字体和可移动设备文件不应被视为独立的真实来源。
+活动的主题、强调色、自定义壁纸和效果状态都是逻辑用户状态。受管理的逻辑模型记录在 [Canonical configuration](/docs/reference/argvus-config/) 中。生成的 Hyprland、GTK、Qt6ct、Waybar、Quickshell、Dunst、Hyprlock、Yazi、Superfile、终端、字体和可移动设备文件不应被视为独立的真实来源。
 
 `argvus-config` 还将主题层镜像到 `data/waybar/argvus-taskbar.{jsonc,css}` 和 `data/waybar/argvus-widget-telemetry.{jsonc,css}`。外观发生变化时，这些副本会从打包的默认值中替换，然后重写其界定的受管理区块，因此应将它们视为派生文件，而非手工维护的文件。`$XDG_CONFIG_HOME/<app>` 下的本地应用程序配置不同：它是由外观协调器编写的适配器目标，从不由投影器编写。
 

@@ -1,5 +1,5 @@
 ---
-title: Introduction
+title: مقدمة
 description: ما هو ARGVUS وكيف يعمل سطح المكتب الخاص به وأين تتناسب مكوناته.
 ---
 
@@ -68,7 +68,7 @@ ARGVUS هي طبقة بيئة سطح المكتب الموجودة أعلى نظ
 
 ## تابع بالهدف
 
--  for the installed and user paths.(/docs/developer-guide/architecture/overview/).
+- للمسارات المثبتة والمستخدمين.(/docs/developer-guide/architecture/overview/).
 
                                                     ﺮﻈﻧﺍ ،ﻞﻴﻐﺸﺘﻟﺍ ءﺪﺑﻭ ﺖﻴﺒﺜﺘﻠﻟ[                                                                       ﺖﻴﺒﺜﺘﻟﺍ](/docs/getting-started/installation/)                                                                             ﻭ[                                                                         ﺕﺎﺴﻠﺟ](/docs/user-guide/sessions/)                                                  ﺭﻮﻄﻤﻟﺍ ﻊﺟﺍﺭ ،ﺔﻣﺪﺨﻟﺍ ﺔﻴﻜﻠﻤﻟ .[                                                         ﻞﻴﻐﺸﺘﻟﺍ ﺖﻗﻭ ﺓﺎﻴﺣ ﺓﺭﻭﺩ](/docs/developer-guide/architecture/runtime-lifecycle/).
                                                                           ﺮﻈﻧﺍ[                                                                    ﺐﺘﻜﻤﻟﺍ ﺢﻄﺳ](/docs/user-guide/desktop/)                                                                    ﻭ ﻡﺍﺪﺨﺘﺳﻼ﻿ﻟ[                                                                   ﺓﺮﺸﻘﻟﺍ ﺢﻄﺳﺃ](/docs/developer-guide/subsystems/shell-surfaces/)                                                               .ﺬﻴﻔﻨﺘﻟﺍ ﺔﻴﻜﻠﻤﻟ

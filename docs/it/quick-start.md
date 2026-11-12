@@ -13,6 +13,6 @@ Effettua il logout, seleziona **ARGVUS** dal tuo display manager (o avvia una se
 
 ## Passi successivi
 
-- Hai bisogno di requisiti, configurazione manuale del repository o dettagli su ciò che fa l'installatore? Consulta la guida completa [Getting Started](/docs/getting-started/)].
-- Vuoi personalizzare il tuo desktop dopo il primo login? Consulta [First configuration](/docs/user-guide/getting-started/)] nella Guida per l'utente.
-- Qualcosa non funziona? Controlla [Troubleshooting](/docs/user-guide/troubleshooting/)].
+- Hai bisogno di requisiti, configurazione manuale del repository o dettagli su ciò che fa l'installatore? Consulta la guida completa [Getting Started](/docs/getting-started/).
+- Vuoi personalizzare il tuo desktop dopo il primo login? Consulta [First configuration](/docs/user-guide/getting-started/) nella Guida per l'utente.
+- Qualcosa non funziona? Controlla [Troubleshooting](/docs/user-guide/troubleshooting/).

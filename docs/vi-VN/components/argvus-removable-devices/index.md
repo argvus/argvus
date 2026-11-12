@@ -10,7 +10,6 @@ Các hành động khả dụng là `open`, `mount`, `unmount`, `eject`, `powero
 ## Trình đơn thanh tác vụ
 
 Với `"mode": "gui"` (mặc định của hệ thống), một cú nhấp chuột vào biểu tượng lưu trữ trên thanh tác vụ sẽ mở ra menu GTK được gắn vào Thanh tác vụ ARGVUS, giống như cửa sổ bật lên lịch: bên dưới thanh khi thanh tác vụ ở trên cùng của màn hình và bên trên nó khi thanh tác vụ ở dưới cùng. Mỗi hàng thiết bị có một menu con hành động chỉ có những hành động mà trạng thái của nó cho phép.
-
 - **Con trỏ:** di chuột hoặc nhấp vào hàng thiết bị sẽ mở menu con của thiết bị đó. Menu con vẫn mở trong khi con trỏ đi qua các cạnh menu hoặc rời khỏi menu và nó chỉ đi theo một hàng khác sau khi con trỏ dừng ở đó một thời gian ngắn, do đó đường chéo đến menu con không đóng nó. Một cú nhấp chuột bên ngoài cả hai menu sẽ đóng cửa sổ bật lên.
 - **Bàn phím:** `Up`/`Down` chọn một hàng, `Right`, `Enter` hoặc `Space` mở menu con (hoặc chạy **Làm mới**/**Quit**), `Enter` hoặc `Space` chạy hành động đã chọn, `Left` hoặc `Escape` quay lại danh sách thiết bị và `Escape` sẽ đóng cửa sổ bật lên.
 

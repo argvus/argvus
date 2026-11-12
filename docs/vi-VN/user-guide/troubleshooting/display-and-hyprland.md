@@ -1,5 +1,5 @@
 ---
-title: Display and Hyprland troubleshooting
+title: Khắc phục sự cố hiển thị và Hyprland
 description: Chẩn đoán bố cục màn hình và cấu hình bộ tổng hợp.
 ---
 

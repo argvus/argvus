@@ -1,6 +1,6 @@
 ---
-title: License
-description: ARGVUS licensing information.
+title: الترخيص
+description: معلومات ترخيص ARGVUS.
 ---
 
 ARGVUS وحزم مكوناته مرخصة بموجب **رخصة جنو العامة الإصدار 3.0 فقط (GPL-3.0 فقط)**.

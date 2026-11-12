@@ -49,32 +49,32 @@ sudo pacman -S argvus-theme-dracula argvus-theme-sunset
 
 | Пакет | Тема |
 | --- | --- |
-| `argvus-theme-one-dark` | One Dark |
-| `argvus-theme-dracula` | Dracula |
-| `argvus-theme-silver-dark` | Silver Dark |
-| `argvus-theme-slate-dark` | Slate Dark |
-| `argvus-theme-universe` | Universe |
-| `argvus-theme-gruvbox-high-dark` | Gruvbox High Dark |
-| `argvus-theme-gruvbox-dark` | Gruvbox Dark |
-| `argvus-theme-rose-pine` | Rosé Pine |
-| `argvus-theme-tokyo-night` | Tokyo Night |
-| `argvus-theme-solitude` | Solitude |
-| `argvus-theme-sunset` | Sunset |
-| `argvus-theme-matrix` | Matrix |
-| `argvus-theme-monokai-dark` | Monokai Dark |
+| `argvus-theme-one-dark` | Одна тьма |
+| `argvus-theme-dracula` | Дракула |
+| `argvus-theme-silver-dark` | Серебряный Темный |
+| `argvus-theme-slate-dark` | Сланцевый темный |
+| `argvus-theme-universe` | Вселенная |
+| `argvus-theme-gruvbox-high-dark` | Грувбокс Хай Темный |
+| `argvus-theme-gruvbox-dark` | Грувбокс Темный |
+| `argvus-theme-rose-pine` | Розэ Пайн |
+| `argvus-theme-tokyo-night` | Токио Ночь |
+| `argvus-theme-solitude` | Одиночество |
+| `argvus-theme-sunset` | Закат |
+| `argvus-theme-matrix` | Матрица |
+| `argvus-theme-monokai-dark` | Монокай Темный |
 
 **Светлые темы**
 
 | Пакет | Тема |
 | --- | --- |
-| `argvus-theme-github-light` | GitHub Light |
-| `argvus-theme-solarized-light` | Solarized Light |
-| `argvus-theme-nord-light` | Nord Light |
-| `argvus-theme-one-light` | One Light |
-| `argvus-theme-everforest-light` | Everforest Light |
-| `argvus-theme-catppuccin-latte` | Catppuccin Latte |
-| `argvus-theme-gruvbox-light` | Gruvbox Light |
-| `argvus-theme-watercolor` | Watercolor |
+| `argvus-theme-github-light` | GitHub Свет |
+| `argvus-theme-solarized-light` | Соляризованный свет |
+| `argvus-theme-nord-light` | Норд Лайт |
+| `argvus-theme-one-light` | Один свет |
+| `argvus-theme-everforest-light` | Эверфорест Лайт |
+| `argvus-theme-catppuccin-latte` | Катпучин Латте |
+| `argvus-theme-gruvbox-light` | Грувбокс Лайт |
+| `argvus-theme-watercolor` | Акварель |
 
 Встроенные темы **ARGVUS Dark** и **ARGVUS Light** не требуют отдельного пакета; они идут в комплекте с `argvus-appearance`.
 

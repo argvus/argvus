@@ -1,5 +1,5 @@
 ---
-title: Developer Guide
+title: Panduan Pengembang
 description: Arsitektur dan panduan pengembangan untuk kontributor ARGVUS.
 ---
 

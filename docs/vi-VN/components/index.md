@@ -1,5 +1,5 @@
 ---
-title: Components
+title: Thành phần
 description: Các thành phần ARGVUS được ghi lại trên trang này và nơi ghi chú dành cho nhà phát triển của chúng.
 ---
 

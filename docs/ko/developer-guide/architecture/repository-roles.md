@@ -15,13 +15,13 @@ description: 작업 공간 통합 후 ARGVUS 소스 저장소의 책임.
 이 저장소들은 `de/argvus`로 병합되었습니다. 이들의 문서는 현재 workspace의 `docs/` 아래에 있으며, 저장소들은 역사적 기록을 위해서만 유지됩니다:
 
 | 이전 저장소 | 현재 | 문서 |
-| `argvus-config` | `argvus config` | [명령어 줄](/docs/reference/command-line/), [설정 파일](/docs/reference/configuration-files/) | 
-| `argvus-i18n` | `argvus i18n` | [국제화 구성 요소](/docs/components/argvus-i18n/) | 
-| `argvus-keys`, `argvus-projects` | `argvus keys`, `argvus projects` | 명령어 줄 | 
-| `argvus-terminal` | `argvus terminal` | [터미널 구성 요소](/docs/components/argvus-terminal/) | 
-| `argvus-system-monitor` | `argvus system-monitor` | [시스템 모니터 구성 요소](/docs/components/argvus-system-monitor/) | 
-| `argvus-network` | `argvus network`, `argvus bluetooth` | [네트워크 구성 요소](/docs/components/argvus-network/) | 
-| `argvus-widget-telemetry` | `argvus widget-telemetry` | 명령어 줄 | 
+| `argvus-config` | `argvus config` | [명령어 줄](/docs/reference/command-line/), [설정 파일](/docs/reference/configuration-files/) |
+| `argvus-i18n` | `argvus i18n` | [국제화 구성 요소](/docs/components/argvus-i18n/) |
+| `argvus-keys`, `argvus-projects` | `argvus keys`, `argvus projects` | 명령어 줄 |
+| `argvus-terminal` | `argvus terminal` | [터미널 구성 요소](/docs/components/argvus-terminal/) |
+| `argvus-system-monitor` | `argvus system-monitor` | [시스템 모니터 구성 요소](/docs/components/argvus-system-monitor/) |
+| `argvus-network` | `argvus network`, `argvus bluetooth` | [네트워크 구성 요소](/docs/components/argvus-network/) |
+| `argvus-widget-telemetry` | `argvus widget-telemetry` | 명령어 줄 |
 | `argvus-control-center` | `argvus control-center` (터미널 애플리케이션) | [제어 센터 구성 요소](/docs/components/argvus-control-center/) |
 | `argvus-taskbar-calendar` | `argvus taskbar-calendar` (GTK 4 도우미) | [작업 표시줄 달력 구성 요소](/docs/components/argvus-taskbar-calendar/) |
 | `argvus-removable-devices` | `argvus removable-devices` (GTK 4 도우미) | [이동식 장치 구성 요소](/docs/components/argvus-removable-devices/) |
@@ -35,4 +35,4 @@ description: 작업 공간 통합 후 ARGVUS 소스 저장소의 책임.
 
 언어는 소유권 경계가 아닙니다: 각 구성 요소는 패키지와 함께 실행 시 도우미를 유지합니다. 패키지를 가로지르는 한 가지 확실한 규칙: `argvus-config`만 `data/generated/` 아래에 씁니다. `config.json`를 읽을 수 없는 애플리케이션에 도달해야 하는 구성 요소는 자체 도우미에 어댑터를 추가하고 표준 커밋 후 오케스트레이터가 이를 호출하도록 합니다; 생성된 파일을 절대 쓰지 않습니다. 공개 CLI는 `/usr/bin`에 속하며; 내부 도우미는 `/usr/lib/argvus/<component>` 아래 또는 런타임 시 필요할 때 commands 디렉터리에 위치합니다; 아키텍처에 독립적인 데이터는 `/usr/share/argvus/<component>` 아래에 남습니다.
 
-설치된 패키지 경계에 대한 정보는 [package matrix](/docs/reference/package-matrix/)]을 참조하십시오.
+설치된 패키지 경계에 대한 정보는 [package matrix](/docs/reference/package-matrix/)을 참조하십시오.

@@ -41,14 +41,14 @@ description: ARGVUS 구성 요소가 공유하는 시각적 언어를 구성하�
 
 기존 `float` 레이아웃 값과 `-float` 테마 식별자는 Spaced의 레거시 이름으로 인식됩니다. 새로운 레이아웃 값과 확인된 테마 식별자는 `spaced` 및 `-spaced`를 사용합니다.
 
-모드는 지오메트리와 표면 처리를 변경하며, 여섯 번째 색상 패밀리를 생성하지 않습니다. 선택 관련 내용은 [Themes](/docs/user-guide/appearance/)]를, 작업 표시줄 및 창 배치 관련 내용은 [Desktop](/docs/user-guide/desktop/)]를 참조하십시오.
+모드는 지오메트리와 표면 처리를 변경하며, 여섯 번째 색상 패밀리를 생성하지 않습니다. 선택 관련 내용은 [Themes](/docs/user-guide/appearance/)를, 작업 표시줄 및 창 배치 관련 내용은 [Desktop](/docs/user-guide/desktop/)를 참조하십시오.
 
 - [테마](/docs/user-guide/appearance/)
 - [배경화면](/docs/argvus-appearance/wallpapers/)
 - [폰트 및 아이콘](/docs/argvus-appearance/fonts-and-icons/)
 - [효과](/docs/argvus-appearance/effects/)
 
-컨트롤 센터는 사용자 대면 설정을 노출합니다. 구현은 `argvus-appearance`, `argvus-session`, 셸 구성 요소 및 자산 패키지에서 공유됩니다. [외형 아키텍처](/docs/developer-guide/subsystems/appearance-and-themes/)]를 참조하십시오.
+컨트롤 센터는 사용자 대면 설정을 노출합니다. 구현은 `argvus-appearance`, `argvus-session`, 셸 구성 요소 및 자산 패키지에서 공유됩니다. [외형 아키텍처](/docs/developer-guide/subsystems/appearance-and-themes/)를 참조하십시오.
 
 ## 창 흔들림
 
@@ -62,4 +62,4 @@ Wobble은 기본적으로 비활성화되어 있습니다. 그 ARGVUS 기본값�
 
 글로벌 Animations 스위치는 개별 설정을 유지하면서 Wobble을 억제합니다. 정규 값은 ARGVUS 상태의 `effects.wobble_*` 아래에 있으며; `hypr/state.lua`는 생성되며 수동으로 편집해서는 안 됩니다.
 
-이것은 Hyprland **0.57.0 이상**을 필요로 하며, `argvus-hyprland`의 패키지 의존성에 의해 강제됩니다. 버전 0.56은 이 구성에서 지원되지 않습니다. 강도 최대치는 [출시된 0.57.0 소스](https://github.com/hyprwm/Hyprland/blob/v0.57.0/src/config/values/ConfigValues.cpp)]를 따르며, 이는 `2`로 제한되지만, 더 최신 문서에서는 `3`로 기재될 수 있습니다.
+이것은 Hyprland **0.57.0 이상**을 필요로 하며, `argvus-hyprland`의 패키지 의존성에 의해 강제됩니다. 버전 0.56은 이 구성에서 지원되지 않습니다. 강도 최대치는 [출시된 0.57.0 소스](https://github.com/hyprwm/Hyprland/blob/v0.57.0/src/config/values/ConfigValues.cpp)를 따르며, 이는 `2`로 제한되지만, 더 최신 문서에서는 `3`로 기재될 수 있습니다.

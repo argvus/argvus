@@ -1,5 +1,5 @@
 ---
-title: Themes
+title: Chủ đề
 description: Cài đặt, chọn, tùy chỉnh, nhập và xuất các chủ đề ARGVUS.
 ---
 

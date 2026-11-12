@@ -1,5 +1,5 @@
 ---
-title: ARGVUS Disk Usage Analyzer
+title: Trình phân tích sử dụng đĩa ARGVUS
 description: Duyệt mức sử dụng đĩa tương tác với ncdu trong cửa sổ Kitty theo chủ đề.
 ---
 

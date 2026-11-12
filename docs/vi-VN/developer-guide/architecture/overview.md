@@ -1,5 +1,5 @@
 ---
-title: Architecture overview
+title: Tổng quan về kiến trúc
 description: Cách ARGVUS hình thành môi trường máy tính để bàn tích hợp.
 ---
 

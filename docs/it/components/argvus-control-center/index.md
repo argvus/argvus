@@ -18,7 +18,6 @@ Il Pannello di Controllo può mostrare controlli rapidi per un'impostazione conf
 L'attuale schermata principale del Centro di Controllo offre queste aree:
 
 La schermata principale è un catalogo di destinazioni raggruppate in sei schede. Ogni destinazione apre direttamente la sua pagina, e la ricerca la trova in qualsiasi scheda.
-
 - **Aspetto** — personalizza il desktop: Stile del Desktop (tema, modalità di aspetto, colore accentato, sfondi, icone e caratteri), Stile dell'Applicazione (trasparenza del terminale e del launcher), Barra delle Applicazioni, Pannello di Controllo e Telemetria dei Widget.
 - **Desktop & Input** — configura lo spazio di lavoro: Hyprland (Windows: Regole, Spazi e Modalità, animazioni, sfocatura, bordi, ombra e versione installata), Schermi, Tastiera & Scorciatoie e Mouse & Touchpad.
 - **Preferenze** — impostazioni personali e regionali: Lingua & Regione (la lingua, fuso orario, formati e layout della tastiera), Data & Ora, Applicazioni Predefinite, Alimentazione e Sessione.
@@ -29,7 +28,7 @@ La schermata principale è un catalogo di destinazioni raggruppate in sei schede
 
 Quando Non Disturbare è attivo, i popup di notifica vengono chiusi e le nuove notifiche vengono conservate per dopo. Il Pannello di Controllo nasconde la cronologia delle notifiche fino a quando Non Disturbare non viene disattivato.
 
-## ARGVUS Welcome
+## ARGVUS Benvenuto
 
 Scegli **Open ARGVUS Welcome** sotto **Tools & Diagnostics**, cerca `welcome`, o esegui `argvus welcome`. Welcome è integrato nel Control Center e utilizza la sua finestra singola. Premi Invio per aprire la pagina delle impostazioni selezionata; quando hai finito, torna alla guida con Esc. F6 Next spunta il passaggio corrente e apre il prossimo nella stessa finestra. Esc torna solo indietro, e Invio nella checklist apre sempre la pagina selezionata. O rivede nuovamente il passaggio, S salta senza spuntarlo, e F termina la guida anche con passaggi opzionali ancora pendenti. Annullare o tornare indietro non completa un passaggio. Il progresso esistente viene conservato.
 
@@ -98,7 +97,6 @@ Le applicazioni predefinite selezionano i programmi installati per ruoli come te
 ### Snippet
 
 Gli snippet sono la pagina per il testo che `argvus snippets` digita con `SUPER + ALT + N`. Si trova in **Strumenti & Diagnostica → Snippet** (cerca `snippets` o esegui `argvus control-center snippets`).
-
 - **Nuovo snippet** — digita un **Nome** e un **Contenuto**, poi **Salva snippet**. Un nome già esistente sostituisce il contenuto di quello snippet.
 - **Snippet salvati** — elencati con la loro posizione (`1  email`) e il contenuto su una sola riga. Premi Invio sul contenuto per modificarlo. **Tipo** indica il tipo di snippet, e **Rimuovi** chiede conferma.
 - **Apri selettore** — apre lo stesso selettore di `SUPER + ALT + N`.
@@ -162,8 +160,8 @@ Keys ›           the keyring, on its own page, with the search at the top
 1. Apri **Centro di Controllo → Strumenti & Diagnostica → Chiavi GPG**. Dalla Home, puoi anche cercare `gpg keys`.
 2. **Pinentry** è fissato a `pinentry-gtk`. La pagina lo mostra solo. La prima volta che viene generata una chiave, ARGVUS scrive quel pinentry in `gpg-agent.conf`, tra le sue linee di marcatori, e mantiene le tue altre linee. Se hai già scritto una linea `pinentry-program` al di fuori di quei marker, la generazione si interrompe con un errore in modo che tu possa rimuovere quella linea.
 3. **Crea una chiave:** in **Genera chiave ▾**, digita **Nome completo** e **E-mail**. Entrambi sono obbligatori, e **Genera chiave** resta disabilitato finché entrambi non contengono testo. **Commento** è opzionale. L'ID utente diventa `Name (comment) <e-mail>`.
-   - **Algoritmo** passa tra **RSA** e **DSA ElGamal**. Una chiave DSA ottiene una sottchiave di crittografia ElGamal; una chiave RSA ottiene una sottchiave RSA.
-   - **Forza della chiave** cicla le dimensioni dell'algoritmo: RSA 1024, 2048 e 4096; DSA 1024, 2048 e 3072. gpg non crea chiavi DSA superiori a 3072 bit, quindi 4096 non è offerto per DSA.
+- **Algoritmo** passa tra **RSA** e **DSA ElGamal**. Una chiave DSA ottiene una sottchiave di crittografia ElGamal; una chiave RSA ottiene una sottchiave RSA.
+- **Forza della chiave** cicla le dimensioni dell'algoritmo: RSA 1024, 2048 e 4096; DSA 1024, 2048 e 3072. gpg non crea chiavi DSA superiori a 3072 bit, quindi 4096 non è offerto per DSA.
 - **Data di scadenza** apre la propria pagina. Inserisci la data nel formato della tua lingua: `DD/MM/YYYY` in portoghese, spagnolo, francese, italiano, tedesco e russo; `YYYY/MM/DD` in inglese, cinese, giapponese e coreano. La data deve essere successiva ad oggi. Attiva **Mai scade** per rendere la chiave permanente; il campo della data viene quindi disabilitato e non utilizzato.
 - **Frase d'accesso** apre la propria pagina. **Proteggi con una frase d'accesso** è attivo per impostazione predefinita; digita la **Frase d'accesso** e poi **Conferma frase d'accesso**. Le due devono corrispondere. Disattivando la protezione si cancellano entrambi i campi, e la pagina richiede conferma prima di generare una chiave non protetta.
 4. Seleziona **Genera chiave** e premi `Enter`. La chiave ottiene una chiave di firma e una sottinchiave di crittografia. La passphrase viene inviata al launcher tramite il suo input standard, mai come argomento del comando. Se la generazione fallisce, gli altri campi rimangono, ma le passphrase vengono cancellate e devono essere digitate di nuovo.
@@ -313,7 +311,7 @@ Quando la ricerca nella Home è attiva, i tasti stampabili vengono inseriti nell
 
 Aprire **Aspetto** per vedere i controlli visivi integrati. I suoi gruppi sono:
 
-- **Desktop** — **Tema** (scegli una famiglia inclusa e la sua modalità Sticky o Spaced, oppure esporta, importa, applica ed elimina i tuoi temi, vedi [Importazione ed esportazione dei temi](/docs/components/argvus-themes/import-and-export/)), **Modalità Aspetto** (Sticky o Spaced, indipendente dal tema), **Colore Accento** (un accento incluso o un colore RGB a sei cifre valido), **Sfondo** (uno sfondo incluso o un file personalizzato) **Icone** (un tema di icone installato: cerca nella lista con `/`, scegline uno con Space o Invio, poi seleziona **Applica**; nulla cambia prima di Applicare) e **Caratteri** (i target del carattere e le impostazioni di rendering dei caratteri, aperte nella pagina Caratteri).  
+- **Desktop** — **Tema** (scegli una famiglia inclusa e la sua modalità Sticky o Spaced, oppure esporta, importa, applica ed elimina i tuoi temi, vedi [Importazione ed esportazione dei temi](/docs/components/argvus-themes/import-and-export/)), **Modalità Aspetto** (Sticky o Spaced, indipendente dal tema), **Colore Accento** (un accento incluso o un colore RGB a sei cifre valido), **Sfondo** (uno sfondo incluso o un file personalizzato) **Icone** (un tema di icone installato: cerca nella lista con `/`, scegline uno con Space o Invio, poi seleziona **Applica**; nulla cambia prima di Applicare) e **Caratteri** (i target del carattere e le impostazioni di rendering dei caratteri, aperte nella pagina Caratteri).
 - **Stile Applicazione** — la trasparenza di **Terminale** e **Launcher**.
 
 La scheda Aspetto contiene le superfici che utilizzano queste impostazioni: **Widget Telemetry** (attiva la superficie di telemetria, seleziona i suoi blocchi disponibili e riordinateli con `Shift+Up`/`Shift+Down` su un blocco selezionato) e **Control Panel** (attiva, disattiva e riordina le schede del pannello con `Shift+Up`/`Shift+Down` su una scheda selezionata, applicato immediatamente attraverso lo stesso primitivo che usa il drag-and-drop del pannello reale).
@@ -341,8 +339,7 @@ Il supporto al reset è volutamente per dominio:
 - **Applicazioni predefinite** possono ripristinare tutti i valori predefiniti, una categoria o un selettore individuale.
 - **Scorciatoie da tastiera** possono ripristinare un collegamento oppure tutti i collegamenti e poi ricaricare i collegamenti di sessione generati.
 - **Regole delle finestre** si trovano in **Desktop & Input → Hyprland → Finestre → Regole** (cerca `window rules` o esegui `argvus control-center window-rules`). Ogni regola ha una riga **Spazio di lavoro** (`Enter` o `←/→` scorrono da 1 a 10) e una riga **Classi della finestra** che apre un campo di testo con espressioni regolari separate da virgola. **Aggiungi regola** crea `rule-N` con spazio di lavoro 1 e senza classi. Ogni **Rimuovi regola** della regola si trova nella **Zona pericolosa** e richiede conferma. Ogni modifica viene scritta in `hyprland.window_rules` in `argvus config` e ricarica immediatamente la configurazione; i modelli di classe non validi vengono rifiutati e mostrati come errore.
-
-- **Progetti** si trova in **Strumenti e diagnostica → Progetti** (cerca `projects` o esegui `argvus control-center projects`). **Aggiungi cartella progetto** e **Aggiungi cartella principale** si trovano in cima alla pagina e aprono un campo di testo con il percorso; il launcher verifica che sia una directory e mostra un errore altrimenti, inclusa la situazione in cui la cartella supererebbe il numero effettivo di progetti pari a 9 (`SUPER + CTRL + 1..9` non può gestire di più). Ogni cartella configurata, contrassegnata come principale (le sue sottocartelle sono progetti) o singolo progetto, ottiene il proprio blocco sotto il modulo con una riga **Rimuovi** che richiede conferma. La pagina chiama `argvus-projects`, quindi le modifiche vengono scritte dal launcher e si applicano la volta successiva che `SUPER + O` o `SUPER + CTRL + 1..9` viene eseguito. Se `argvus-projects` non è installato, la pagina lo segnala. 
+- **Progetti** si trova in **Strumenti e diagnostica → Progetti** (cerca `projects` o esegui `argvus control-center projects`). **Aggiungi cartella progetto** e **Aggiungi cartella principale** si trovano in cima alla pagina e aprono un campo di testo con il percorso; il launcher verifica che sia una directory e mostra un errore altrimenti, inclusa la situazione in cui la cartella supererebbe il numero effettivo di progetti pari a 9 (`SUPER + CTRL + 1..9` non può gestire di più). Ogni cartella configurata, contrassegnata come principale (le sue sottocartelle sono progetti) o singolo progetto, ottiene il proprio blocco sotto il modulo con una riga **Rimuovi** che richiede conferma. La pagina chiama `argvus-projects`, quindi le modifiche vengono scritte dal launcher e si applicano la volta successiva che `SUPER + O` o `SUPER + CTRL + 1..9` viene eseguito. Se `argvus-projects` non è installato, la pagina lo segnala.
 - **Altre pagine di sistema** espongono azioni di reset, applica, elimina o ripristina solo quando il provider sottostante le supporta.
 
 Rimuovere una preferenza utente può far sì che un provider torni al suo stato predefinito/confezionato, ma eliminare i file manualmente non è una procedura generale di recupero. Preferisci l'azione di reset della pagina o il comando documentato specifico per la funzione.
@@ -381,7 +378,7 @@ Storage e System Doctor condividono uno snapshot in memoria per un massimo di 10
 
 Apri **Desktop & Input > Schermi > Luce Notturna** oppure esegui `argvus control-center displays night-light`. Configura la temperatura, l'attivazione manuale e gli orari locali fissi tramite `argvus config display night-light`. Vedi [Luce Notturna](/docs/user-guide/night-light/) per comandi, stato e requisiti di esecuzione.
 
-## Snapshot
+## Istantanea
 
 Apri **Centro di Controllo > Amministrazione di Sistema > Snapshot**, cerca `Snapper`, oppure esegui `argvus control-center snapshot`. La funzionalità `snapshot` Cargo è inclusa in `full` (il default) ed è indipendente da `storage`. La pagina è contrassegnata come **Sperimentale** perché la funzionalità è ancora in sviluppo e potrebbe essere incompleta.
 

@@ -36,4 +36,4 @@ description: ワークスペース統合後のARGVUSソースリポジトリの�
 
 言語は所有権の境界ではありません：各コンポーネントは自分のパッケージ内にランタイムヘルパーを保持します。パッケージを跨ぐ唯一の厳格なルールは次の通りです：data/generated/ 以下に書き込めるのは `argvus-config` のみです。 `data/generated/` `config.json` を読めないアプリケーションに到達する必要があるコンポーネントは、自身のヘルパーにアダプターを追加し、カノニカルコミット後にオーケストレーターがそれを呼び出すようにします；生成されたファイルに書き込むことは決してありません。公開CLIは`/usr/bin`に属します；内部ヘルパーは`/usr/lib/argvus/<component>`の下、またはランタイム時に必要な場合はcommandsディレクトリ内に置かれます；アーキテクチャに依存しないデータは`/usr/share/argvus/<component>`の下に残ります。
 
-インストールされたパッケージ境界については、[package matrix](/docs/reference/package-matrix/)] を参照してください。
+インストールされたパッケージ境界については、[package matrix](/docs/reference/package-matrix/) を参照してください。

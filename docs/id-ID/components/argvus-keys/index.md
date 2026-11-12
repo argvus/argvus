@@ -1,5 +1,5 @@
 ---
-title: Keys
+title: Kunci
 description: SSH dan kunci GPG dikelola melalui kunci argvus dan argvus gpg.
 ---
 

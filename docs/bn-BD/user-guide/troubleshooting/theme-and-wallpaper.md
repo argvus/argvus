@@ -3,9 +3,9 @@ title: থিম এবং ওয়ালপেপার সমস্যা স
 description: থিম প্রচার এবং উত্পন্ন উপস্থিতি ফাইল নির্ণয়.
 ---
 
-$XDG_CONFIG_HOME/argvus/config.json-এ ক্যানোনিকাল `appearance` বিভাগটি পরীক্ষা করুন, তারপর  `$XDG_CONFIG_HOME/argvus/config.json` `$XDG_CONFIG_HOME/argvus/data/generated`-এর অধীনে জেনারেট করা ফাইলগুলি পরীক্ষা করুন৷ লিগ্যাসি ডট-ফাইলগুলি শুধুমাত্র মাইগ্রেশন ইনপুট।
+$XDG_CONFIG_HOME/argvus/config.json-এ ক্যানোনিকাল `appearance ` বিভাগটি পরীক্ষা করুন, তারপর  `$XDG_CONFIG_HOME/argvus/config.json ` `$XDG_CONFIG_HOME/argvus/data/generated`-এর অধীনে জেনারেট করা ফাইলগুলি পরীক্ষা করুন৷ লিগ্যাসি ডট-ফাইলগুলি শুধুমাত্র মাইগ্রেশন ইনপুট।
 
-`argvus-config` হল `data/generated/` এর নীচে একমাত্র লেখক। একটি ভাঙ্গা পুনরুদ্ধার করতে
+`argvus-config ` হল ` data/generated/` এর নীচে একমাত্র লেখক। একটি ভাঙ্গা পুনরুদ্ধার করতে
 থিম বা ওয়ালপেপার, ক্যানোনিকাল ডকুমেন্ট থেকে পুরো প্রজন্মকে পুনর্নির্মাণ করুন এবং
 উৎপন্ন ভোক্তাদের সরাসরি সম্পাদনা করার পরিবর্তে ফলাফল প্রয়োগ করুন:
 
@@ -15,10 +15,10 @@ argvus config apply
 argvus sessionctl reload
 ```
 
-`argvus theme-switch` (যা `argvus config theme-apply` চালায়) এবং `argvus config accent`
+`argvus theme-switch ` (যা ` argvus config theme-apply ` চালায়) এবং ` argvus config accent`
 অর্কেস্ট্রেটর হল: তারা যাচাই করে, লক করে, স্প্ল্যাশ দেখায়, কমিট করে
 `argvus-config` এবং তারপর বহিরাগত ভোক্তাদের সাথে সমন্বয় করুন যারা পড়তে পারে না
-`config.json`. তারা কখনই `data/generated/` লেখে না এবং থিম লেনদেন করে
+`config.json `. তারা কখনই ` data/generated/` লেখে না এবং থিম লেনদেন করে
 GTK, স্টোরেজ বা `mode.css` ফাইলগুলি আলাদা স্ক্রিপ্টের মাধ্যমে লিখবেন না।
 শুধুমাত্র উচ্চারণ পুনর্মিলন পুনরায় চালানোর জন্য `argvus config accent --apply` ব্যবহার করুন।
 
@@ -29,7 +29,7 @@ cat "${XDG_CONFIG_HOME:-$HOME/.config}/argvus/data/generated/theme/current/build
 argvus config theme-runtime consumers
 ```
 
-প্রতিটি থিমযুক্ত ফাইল বিল্ড থেকে আসে: একটি থিম যেটি ইনস্টল করা নেই ( `theme.toml` `/usr/share/argvus/themes/` বা `~/.local/share/argvus/themes/` এর অধীনে theme.toml) বা রেন্ডার করা হয় না তা প্রত্যাখ্যান করা হয়, এবং আগের থিমটি থেকে যায়। `argvus theme check DIRECTORY` প্রতিটি রেন্ডার ত্রুটির টেমপ্লেট এবং লাইন দেখায়। একটি ওয়েবার বার শুধুমাত্র তার JSONC-তে `reload_style_on_change` এর সাথে তার রঙগুলি পুনরায় লোড করে। একটি সুইচ আটকে আছে বলে মনে হলে, এটি এখনও চলছে কিনা তা পরীক্ষা করুন; এটি তার লকের পাশে, `theme-switch.active`-তে নিজেকে রেকর্ড করে:
+প্রতিটি থিমযুক্ত ফাইল বিল্ড থেকে আসে: একটি থিম যেটি ইনস্টল করা নেই (`theme.toml ` `/usr/share/argvus/themes/` বা `~/.local/share/argvus/themes/` এর অধীনে theme.toml) বা রেন্ডার করা হয় না তা প্রত্যাখ্যান করা হয়, এবং আগের থিমটি থেকে যায়। ` argvus theme check DIRECTORY ` প্রতিটি রেন্ডার ত্রুটির টেমপ্লেট এবং লাইন দেখায়। একটি ওয়েবার বার শুধুমাত্র তার JSONC-তে ` reload_style_on_change ` এর সাথে তার রঙগুলি পুনরায় লোড করে। একটি সুইচ আটকে আছে বলে মনে হলে, এটি এখনও চলছে কিনা তা পরীক্ষা করুন; এটি তার লকের পাশে, ` theme-switch.active`-তে নিজেকে রেকর্ড করে:
 
 ```sh
 cat "${XDG_CACHE_HOME:-$HOME/.cache}/argvus/theme-switch.active"
@@ -54,7 +54,7 @@ sudo argvus greeter-setup --sync-themes
 ```
 
 যে ফাইল উপস্থিতি অর্কেস্ট্রেটর দ্বারা প্রাক-প্রমাণিকরণের জন্য প্রকাশিত হয় এবং
-`data/generated/` এর বাইরে থাকে, তাই একটি সমতল `argvus config apply` নয়
+`data/generated/` এর বাইরে থাকে, তাই একটি সমতল ` argvus config apply` নয়
 এটা রিফ্রেশ
 
 যদি অভিবাদনকারী একটি কিটি ক্যাশে `Invalid color name: 'null'` রিপোর্ট করে, তাহলে আপডেট করুন
@@ -80,7 +80,7 @@ argvus terminal --print-config
 ফলাফল
 
 যদি উইন্ডো বর্ডার পূর্ববর্তী থিমের রঙ রাখে, হাইপ্রল্যান্ডের লুয়া সম্পাদনা করবেন না
-ম্যানুয়ালি ফাইল করুন। `config.json` থেকে থিম এবং উচ্চারণ পরিবর্তন অনুমান করা হয়`argvus sessionctl reload` হাইপ্রল্যান্ড পুনরায় লোড করে এবং সক্রিয়, নিষ্ক্রিয়, পুনরায় প্রয়োগ করে,
+ম্যানুয়ালি ফাইল করুন। `config.json ` থেকে থিম এবং উচ্চারণ পরিবর্তন অনুমান করা হয়` argvus sessionctl reload` হাইপ্রল্যান্ড পুনরায় লোড করে এবং সক্রিয়, নিষ্ক্রিয়, পুনরায় প্রয়োগ করে,
 এবং সেশন জীবনচক্রের মাধ্যমে বর্ডার রং গ্রুপ করুন:
 
 ```text

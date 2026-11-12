@@ -11,7 +11,7 @@ ARGVUS 中的主题设置了用于整个桌面的颜色、表面、墙纸默认�
 - **紧凑型（Sticky）** — 紧凑布局，窗口间隙小，无外部间隙，任务栏靠近屏幕边缘。
 - **宽敞型（Spaced）** — 宽敞布局，间隙更大，圆角，任务栏和桌面外壳表面周围有边距。
 
-选择主题不会改变其标识：调色板、默认高亮颜色和墙纸关联在两种模式之间保持不变。模式是一个单独的设置，请参见 [官方主题](/docs/components/argvus-themes/official-themes/)]。
+选择主题不会改变其标识：调色板、默认高亮颜色和墙纸关联在两种模式之间保持不变。模式是一个单独的设置，请参见 [官方主题](/docs/components/argvus-themes/official-themes/)。
 
 ## 本指南中的页面
 
@@ -50,4 +50,4 @@ ARGVUS 随 `argvus-appearance` 包提供两个内置主题，**ARGVUS Dark** 和
 
 - **我安装的主题没有出现。** 确认已使用 `pacman -Q argvus-theme-<name>` 安装该软件包，然后重新打开控制中心。该软件包必须在 `argvus-appearance` 存在的情况下安装。
 - **切换主题后高亮颜色发生了变化。** 自定义高亮颜色会在切换主题后保留。使用 **恢复为主题默认** 来将主题自身的颜色恢复。
-- **未列出主题归档供导入。** 它必须直接位于你的主目录中并包含 `<id>/theme.toml`。请参见 [导入和导出主题](/docs/components/argvus-themes/import-and-export/)]。
+- **未列出主题归档供导入。** 它必须直接位于你的主目录中并包含 `<id>/theme.toml`。请参见 [导入和导出主题](/docs/components/argvus-themes/import-and-export/)。

@@ -11,30 +11,30 @@ As vinte e três famílias abaixo são definidas pelo payload atual de temas. A 
 
 | Família | Cor de destaque restaurada | Fundo base | Modos |
 | --- | --- | --- | --- |
-| One Dark | `#61AFEF` | `#282C34` | Sticky, Spaced |
-| Dracula | `#BD93F9` | `#282A36` | Sticky, Spaced |
-| ARGVUS Dark | `#3590bd` | `#111316` | Sticky, Spaced |
-| Dark Silver | `#595959` | `#111316` | Sticky, Spaced |
-| Dark Slate | `#7391a5` | `#2f3541` | Sticky, Spaced |
-| Dark Universe | `#eeeeee` | `#000000` | Sticky, Spaced |
-| ARGVUS Dark Gruvbox High | `#D79921` | `#282828` | Sticky, Spaced |
-| ARGVUS Dark Gruvbox | `#D4BE98` | `#282828` | Sticky, Spaced |
-| ARGVUS Light | `#181818` | `#f7f7f7` | Sticky, Spaced |
-| GitHub Light | `#0969DA` | `#FFFFFF` | Sticky, Spaced |
-| Catppuccin Latte | `#1E66F5` | `#EFF1F5` | Sticky, Spaced |
-| ARGVUS Light Gruvbox | `#458588` | `#FBF1C7` | Sticky, Spaced |
-| Rosé Pine | `#C4A7E7` | `#191724` | Sticky, Spaced |
-| Tokyo-Night | `#7AA2F7` | `#1A1B26` | Sticky, Spaced |
-| Solitude | `#798186` | `#101315` | Sticky, Spaced |
-| Sunset | `#E2BE8A` | `#0F0F0F` | Sticky, Spaced |
-| Matrix | `#82FB9C` | `#0B0C16` | Sticky, Spaced |
-| Monokai Dark | `#78DCE8` | `#2D2A2E` | Sticky, Spaced |
-| Lady Mist | `#354B78` | `#131313` | Sticky, Spaced |
-| One Light | `#4078F2` | `#FAFAFA` | Sticky, Spaced |
-| Everforest Light | `#3A94C5` | `#FDF6E3` | Sticky, Spaced |
-| Solarized Light | `#268BD2` | `#FDF6E3` | Sticky, Spaced |
-| Nord Light | `#5E81AC` | `#ECEFF4` | Sticky, Spaced |
-| Watercolor | `#1A639C` | `#E9E3D3` | Sticky, Spaced |
+| Um Escuro | `#61AFEF` | `#282C34` | pegajoso, espaçado |
+| Drácula | `#BD93F9` | `#282A36` | pegajoso, espaçado |
+| ARGVUS Escuro | `#3590bd` | `#111316` | pegajoso, espaçado |
+| Prata Escuro | `#595959` | `#111316` | pegajoso, espaçado |
+| Ardósia Escura | `#7391a5` | `#2f3541` | pegajoso, espaçado |
+| Universo Sombrio | `#eeeeee` | `#000000` | pegajoso, espaçado |
+| ARGVUS Dark Gruvbox Alto | `#D79921` | `#282828` | pegajoso, espaçado |
+| ARGVUS Dark Gruvbox | `#D4BE98` | `#282828` | pegajoso, espaçado |
+| Luz ARGVUS | `#181818` | `#f7f7f7` | pegajoso, espaçado |
+| GitHub Light | `#0969DA` | `#FFFFFF` | pegajoso, espaçado |
+| Catppuccin Latte | `#1E66F5` | `#EFF1F5` | pegajoso, espaçado |
+| ARGVUS Light Gruvbox | `#458588` | `#FBF1C7` | pegajoso, espaçado |
+| Pinho Rosé | `#C4A7E7` | `#191724` | pegajoso, espaçado |
+| Noite de Tóquio | `#7AA2F7` | `#1A1B26` | pegajoso, espaçado |
+| Solidão | `#798186` | `#101315` | pegajoso, espaçado |
+| Pôr do sol | `#E2BE8A` | `#0F0F0F` | pegajoso, espaçado |
+| Matriz | `#82FB9C` | `#0B0C16` | pegajoso, espaçado |
+| Monokai Sombrio | `#78DCE8` | `#2D2A2E` | pegajoso, espaçado |
+| Senhora Névoa | `#354B78` | `#131313` | pegajoso, espaçado |
+| Uma Luz | `#4078F2` | `#FAFAFA` | pegajoso, espaçado |
+| Luz da Floresta Ever | `#3A94C5` | `#FDF6E3` | pegajoso, espaçado |
+| Luz Solarizada | `#268BD2` | `#FDF6E3` | pegajoso, espaçado |
+| Luz Norte | `#5E81AC` | `#ECEFF4` | pegajoso, espaçado |
+| Aguarela | `#1A639C` | `#E9E3D3` | pegajoso, espaçado |
 
 **Sticky** é o layout compacto: janelas lado a lado usam gaps internos pequenos, os gaps externos são zero e a taskbar fica próxima da borda. **Spaced** adiciona gaps maiores, cantos arredondados, sombras e margens às superfícies do shell.
 

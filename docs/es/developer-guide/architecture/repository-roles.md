@@ -36,4 +36,4 @@ Las notas del desarrollador de los componentes consolidados están en `docs/inte
 
 El lenguaje no es el límite de propiedad: cada componente mantiene sus ayudas de ejecución con su paquete. La única regla estricta que atraviesa los paquetes: solo `argvus-config` escribe debajo de `data/generated/`. Un componente que necesita alcanzar una aplicación que no puede leer `config.json` agrega un adaptador en su propia ayuda y permite que el orquestador lo llame después del commit canónico; nunca escribe un archivo generado. Las interfaces de línea de comandos públicas pertenecen a `/usr/bin`; las ayudas internas pertenecen a `/usr/lib/argvus/<component>` o al directorio de comandos cuando se necesitan en tiempo de ejecución; los datos independientes de la arquitectura permanecen en `/usr/share/argvus/<component>`.
 
-Consulta la [matriz de paquetes](/docs/reference/package-matrix/)] para el límite de paquetes instalados.
+Consulta la [matriz de paquetes](/docs/reference/package-matrix/) para el límite de paquetes instalados.

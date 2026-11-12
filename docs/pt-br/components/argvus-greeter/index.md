@@ -1,5 +1,5 @@
 ---
-title: Greeter
+title: Saudação
 description: O greeter de login que o greetd inicia, distribuído no pacote argvus.
 ---
 

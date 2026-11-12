@@ -49,32 +49,32 @@ Los paquetes a continuación son los paquetes de tema oficiales publicados hoy.
 
 | Paquete | Tema |
 | --- | --- |
-| `argvus-theme-one-dark` | One Dark |
-| `argvus-theme-dracula` | Dracula |
-| `argvus-theme-silver-dark` | Silver Dark |
-| `argvus-theme-slate-dark` | Slate Dark |
-| `argvus-theme-universe` | Universe |
-| `argvus-theme-gruvbox-high-dark` | Gruvbox High Dark |
-| `argvus-theme-gruvbox-dark` | Gruvbox Dark |
-| `argvus-theme-rose-pine` | Rosé Pine |
-| `argvus-theme-tokyo-night` | Tokyo Night |
-| `argvus-theme-solitude` | Solitude |
-| `argvus-theme-sunset` | Sunset |
-| `argvus-theme-matrix` | Matrix |
-| `argvus-theme-monokai-dark` | Monokai Dark |
+| `argvus-theme-one-dark` | Uno oscuro |
+| `argvus-theme-dracula` | Drácula |
+| `argvus-theme-silver-dark` | Plata Oscuro |
+| `argvus-theme-slate-dark` | Pizarra Oscura |
+| `argvus-theme-universe` | Universo |
+| `argvus-theme-gruvbox-high-dark` | Gruvbox Alto Oscuro |
+| `argvus-theme-gruvbox-dark` | Gruvbox Oscuro |
+| `argvus-theme-rose-pine` | Pino rosado |
+| `argvus-theme-tokyo-night` | Noche de Tokio |
+| `argvus-theme-solitude` | Soledad |
+| `argvus-theme-sunset` | Puesta de sol |
+| `argvus-theme-matrix` | Matriz |
+| `argvus-theme-monokai-dark` | Monokai Oscuro |
 
 **Temas claros**
 
 | Paquete | Tema |
 | --- | --- |
-| `argvus-theme-github-light` | GitHub Light |
-| `argvus-theme-solarized-light` | Solarized Light |
-| `argvus-theme-nord-light` | Nord Light |
-| `argvus-theme-one-light` | One Light |
-| `argvus-theme-everforest-light` | Everforest Light |
-| `argvus-theme-catppuccin-latte` | Catppuccin Latte |
-| `argvus-theme-gruvbox-light` | Gruvbox Light |
-| `argvus-theme-watercolor` | Watercolor |
+| `argvus-theme-github-light` | GitHub Luz |
+| `argvus-theme-solarized-light` | Luz Solarizada |
+| `argvus-theme-nord-light` | Luz del Norte |
+| `argvus-theme-one-light` | Una luz |
+| `argvus-theme-everforest-light` | Luz del bosque eterno |
+| `argvus-theme-catppuccin-latte` | Catuchino Latte |
+| `argvus-theme-gruvbox-light` | Luz Gruvbox |
+| `argvus-theme-watercolor` | Acuarela |
 
 Los temas integrados **ARGVUS Dark** y **ARGVUS Light** no necesitan un paquete separado; vienen con `argvus-appearance`.
 

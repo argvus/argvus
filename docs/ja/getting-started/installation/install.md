@@ -181,7 +181,7 @@ argvus --setup --copy <app> --force
 ```
 ## Hyprland ユーザーオーバーライド
 
-完全な Hyprland オーバーライドガイドについては、フルネイティブ構成と増分 ARGVUS フラグメントの違いを含めて、[Hyprland overrides](/docs/argvus-hyprland/hyprland-overrides/)] を参照してください。
+完全な Hyprland オーバーライドガイドについては、フルネイティブ構成と増分 ARGVUS フラグメントの違いを含めて、[Hyprland overrides](/docs/argvus-hyprland/hyprland-overrides/) を参照してください。
 
 ```sh
 mkdir -p ~/.config/argvus/data/hypr

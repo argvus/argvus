@@ -11,7 +11,7 @@ description: 配置 ARGVUS 桌面的持久部分。
 | **控制中心** | 主题、壁纸、效果、布局、任务栏行为、字体、默认应用程序、键盘和输入设置、语言、区域及系统配置。 |
 | **控制面板** | 当前状态和常用操作，如音量、亮度、网络、通知、电源和会话控制。 |
 
-控制面板可以提供对在控制中心永久配置的设置的快速控制。例如，当你想快速进行外观或显示操作时使用控制面板，而当你想更改其背后的桌面配置时使用控制中心。参见控制面板和[配置位置](/docs/user-guide/where-to-configure/)]。
+控制面板可以提供对在控制中心永久配置的设置的快速控制。例如，当你想快速进行外观或显示操作时使用控制面板，而当你想更改其背后的桌面配置时使用控制中心。参见控制面板和[配置位置](/docs/user-guide/where-to-configure/)。
 
 ## 主要区域
 
@@ -75,7 +75,7 @@ description: 配置 ARGVUS 桌面的持久部分。
 
 **高度** 可以选择 24、28（默认）、32 或 36 像素。**边框** 有一个 **启用** 开关和一个 1 到 3 像素的 **厚度**，默认是 1。关闭边框时，任务栏窗口、右侧组和 MPRIS 播放器没有边框。这些更改在选择 **应用** 之前都是草稿。应用后，高度和边框将在更换主题时保留；在应用之前，主题会决定它们。
 
-**图标** 页面打开 **可选模块**、**工作区展示**、**启动器** 和 **实用工具**。可选模块可以单独显示或隐藏：音频播放器、专注模式、启动器、网络、电源配置文件、键盘布局、内存、CPU 和温度读数、日期、时钟、电池、系统托盘、通知、可移动设备、录音、蓝牙、音频输入/输出以及保持唤醒。工作区始终可用，并且可以显示其名称（默认）或应用程序图标。焦点窗口标题、设置和电源操作始终可用。启动器的可见性由可选模块控制；其子菜单可以更改自定义图标。更改在点击 **应用** 后生效，这会重新启动任务栏。 
+**图标** 页面打开 **可选模块**、**工作区展示**、**启动器** 和 **实用工具**。可选模块可以单独显示或隐藏：音频播放器、专注模式、启动器、网络、电源配置文件、键盘布局、内存、CPU 和温度读数、日期、时钟、电池、系统托盘、通知、可移动设备、录音、蓝牙、音频输入/输出以及保持唤醒。工作区始终可用，并且可以显示其名称（默认）或应用程序图标。焦点窗口标题、设置和电源操作始终可用。启动器的可见性由可选模块控制；其子菜单可以更改自定义图标。更改在点击 **应用** 后生效，这会重新启动任务栏。
 
 ### 控制面板
 
@@ -313,12 +313,12 @@ Keys ›           the keyring, on its own page, with the search at the top
 
 打开 **外观** 查看集成的视觉控制。它的分组包括:
 
-- **桌面** — **主题**（选择一个捆绑的系列及其粘性或间隔模式，或导出、导入、应用和删除您自己的主题，参见 [导入和导出主题](/docs/components/argvus-themes/import-and-export/)])，**外观模式**（粘性或间隔，与主题独立），**强调色**（捆绑的强调色或有效的六位RGB颜色），**壁纸**（捆绑的壁纸或自定义文件），**图标**（已安装的图标主题：使用`/`搜索列表，通过空格键或回车键选择一个，然后选择 **应用**；在应用之前不会有变化），**字体**（字体目标和字体渲染设置，在字体页面打开）。
+- **桌面** — **主题**（选择一个捆绑的系列及其粘性或间隔模式，或导出、导入、应用和删除您自己的主题，参见 [导入和导出主题](/docs/components/argvus-themes/import-and-export/))，**外观模式**（粘性或间隔，与主题独立），**强调色**（捆绑的强调色或有效的六位RGB颜色），**壁纸**（捆绑的壁纸或自定义文件），**图标**（已安装的图标主题：使用`/`搜索列表，通过空格键或回车键选择一个，然后选择 **应用**；在应用之前不会有变化），**字体**（字体目标和字体渲染设置，在字体页面打开）。
 - **应用风格** — **终端**和**启动器**的透明度。
 
 外观卡包含使用以下设置的界面：**Widget Telemetry**（启用遥测界面，选择其可用块并使用 `Shift+Up`/`Shift+Down` 在聚焦块上重新排序）和 **Control Panel**（启用、禁用及重新排序面板卡，使用 `Shift+Up`/`Shift+Down` 在聚焦卡上操作，通过相同原始方法立即应用，就像真实面板的拖放功能一样）。
 
-这些操作会更新逻辑 ARGVUS 状态并应用受影响的运行时配置。参见 [Appearance](/docs/user-guide/appearance/)]、[Themes](/docs/user-guide/appearance/)] 和 [Windows and layout](/docs/argvus-hyprland/windows-and-layout/)]。
+这些操作会更新逻辑 ARGVUS 状态并应用受影响的运行时配置。参见 [Appearance](/docs/user-guide/appearance/)、[Themes](/docs/user-guide/appearance/) 和 [Windows and layout](/docs/argvus-hyprland/windows-and-layout/)。
 
 ## 键盘使用
 
@@ -379,7 +379,7 @@ argvus control-center keybindings
 
 ## 夜间模式
 
-打开 **桌面与输入 > 显示 > 夜间模式** 或运行 `argvus control-center displays night-light`。通过 `argvus config display night-light` 配置温度、手动激活和固定本地计划。请参阅 [夜间模式](/docs/user-guide/night-light/)] 了解命令、状态和运行时要求。
+打开 **桌面与输入 > 显示 > 夜间模式** 或运行 `argvus control-center displays night-light`。通过 `argvus config display night-light` 配置温度、手动激活和固定本地计划。请参阅 [夜间模式](/docs/user-guide/night-light/) 了解命令、状态和运行时要求。
 
 ## 快照
 
@@ -408,9 +408,9 @@ argvus control-center keybindings
 
 ### 手动验证
 
-- 在 ext4/xfs 根目录上，用英语和葡萄牙语打开页面。在葡萄牙语中，确认精确信息 **Este sistema de arquivos não é Btrfs** 并确认 c/d 不会打开操作。  
-- 在可丢弃的 Btrfs 虚拟机中，测试 Snapper 不存在、Snapper 无根配置，以及名为 `root` 指向另一个子卷的配置。  
-- 在已有根配置的情况下，列出快照，打开详情，创建带空格/特殊字符的快照，取消删除，然后仅在确认其编号和描述后删除新创建的快照。  
+- 在 ext4/xfs 根目录上，用英语和葡萄牙语打开页面。在葡萄牙语中，确认精确信息 **Este sistema de arquivos não é Btrfs** 并确认 c/d 不会打开操作。
+- 在可丢弃的 Btrfs 虚拟机中，测试 Snapper 不存在、Snapper 无根配置，以及名为 `root` 指向另一个子卷的配置。
+- 在已有根配置的情况下，列出快照，打开详情，创建带空格/特殊字符的快照，取消删除，然后仅在确认其编号和描述后删除新创建的快照。
 - 检查被拒绝/取消的认证，受保护的活动/默认快照，刷新，键盘导航，调整大小以及两种语言。不要测试对恢复所需快照的删除。
 
 只有 `argvus` 软件包会更改。从 `de/argvus` 使用 `make build` 重新构建以生成 `.pkg.tar.zst` 软件包；安装它是另一个操作员操作。
@@ -440,7 +440,7 @@ Wobble 默认情况下是禁用的。其 ARGVUS 默认值为：刚度 `100`、�
 
 全局动画开关会在保留其单独设置的同时抑制 Wobble。标准值存储在 ARGVUS 状态的 `effects.wobble_*` 下；`hypr/state.lua` 是生成的，不可手动编辑。
 
-这需要 Hyprland **0.57.0 或更高版本**，由 `argvus-hyprland` 的软件包依赖强制执行。版本 0.56 不支持此配置。强度最大值遵循 [发布的 0.57.0 源代码 ](https://github.com/hyprwm/Hyprland/blob/v0.57.0/src/config/values/ConfigValues.cpp)]，将其限制为 `2`，即使较新的文档可能列出 `3`。
+这需要 Hyprland **0.57.0 或更高版本**，由 `argvus-hyprland` 的软件包依赖强制执行。版本 0.56 不支持此配置。强度最大值遵循 [发布的 0.57.0 源代码 ](https://github.com/hyprwm/Hyprland/blob/v0.57.0/src/config/values/ConfigValues.cpp)，将其限制为 `2`，即使较新的文档可能列出 `3`。
 
 欢迎界面以 ARGVUS 标志和 WELCOME 开始。按 F6 下一步可以显示检查表而无需完成步骤。
 
@@ -533,7 +533,7 @@ Wi-Fi 密码、手动 DNS 和网络搜索字段支持带括号的粘贴。粘贴
 **桌面与输入 → Hyprland → 窗口** 分组 **规则**、**空间** 和 **模式**。
 规则用于编辑每个应用的放置位置；空间用于编辑内部和外部间距；模式包含即时平铺/浮动选择器，与规则表单分开。搜索打开相同的页面，返回则回到 Hyprland 之前的窗口。
 
-直接路线是 `argvus control-center hyprland windows`，可选择随后使用 `rules`、`spaces` 或 `mode`。现有的 `window-rules` 和 `appearance window-spaces` 路线仍然是别名，并显示新的面包屑。 
+直接路线是 `argvus control-center hyprland windows`，可选择随后使用 `rules`、`spaces` 或 `mode`。现有的 `window-rules` 和 `appearance window-spaces` 路线仍然是别名，并显示新的面包屑。
 
 `SUPER + Q` 会立即关闭专用控制中心窗口，而无需 Kitty 的操作系统窗口确认。以这种方式关闭窗口时，未应用的草稿将被丢弃。该覆盖仅适用于 `argvus-control-center` 窗口类；常规终端和其他 TUI 保持其关闭确认策略。
 

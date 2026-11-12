@@ -4,7 +4,7 @@ description: Informations de licence ARGVUS.
 ---
 ARGVUS et ses packages composants sont sous licence **GNU General Public License v3.0 uniquement (GPL-3.0-only)**.
 
-Le texte complet de la licence est fourni avec chaque dépôt et est disponible à [argvus/argvus/LICENSE](https://github.com/argvus/argvus/blob/main/LICENSE)].
+Le texte complet de la licence est fourni avec chaque dépôt et est disponible à [argvus/argvus/LICENSE](https://github.com/argvus/argvus/blob/main/LICENSE).
 
 ## Ce que cela signifie
 

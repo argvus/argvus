@@ -1,5 +1,5 @@
 ---
-title: ARGVUS Configuration
+title: Cấu hình ARGVUS
 description: Hợp đồng cấu hình JSON logic được ARGVUS sử dụng.
 ---
 

@@ -1,5 +1,5 @@
 ---
-title: Calendar
+title: Lịch
 description: Sử dụng lịch trên thanh tác vụ ARGVUS.
 ---
 
@@ -39,7 +39,6 @@ Sự kiện được tắt theo mặc định. Bật chúng trong cửa sổ b�
 sự lựa chọn được lưu giữ trong thư mục trạng thái và cũng cho phép và bắt đầu
 `argvus-taskbar-calendar.service`, hiển thị lời nhắc. Tắt chúng sẽ dừng
 dịch vụ.
-
 - **+ SỰ KIỆN** (hoặc `n`) mở trình chỉnh sửa cho ngày đã chọn. Sự kiện có thể được tạo ra và
   đã thay đổi kể từ hôm nay; một sự kiện của ngày hôm qua vẫn có thể được mở và xóa.
 - Sự kiện mới bắt đầu lúc 09:00 và kéo dài theo thời lượng mặc định được đặt trong Cài đặt. Di chuyển

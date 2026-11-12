@@ -1,5 +1,5 @@
 ---
-title: Hardware
+title: Ferramenta
 description: Configura schermi, connettività e alimentazione in ARGVUS.
 ---
 

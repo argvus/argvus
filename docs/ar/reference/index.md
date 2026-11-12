@@ -1,5 +1,5 @@
 ---
-title: Reference
+title: مرجع
 description: الأوامر والملفات والخدمات والحزم المثبتة بواسطة ARGVUS.
 ---
 

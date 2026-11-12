@@ -2,9 +2,9 @@
 title: ユーザーガイド
 description: ARGVUSデスクトップ環境をインストール、設定、使用する。
 ---
-ARGVUSはArch Linux向けのモジュラー型HyprlandおよびWaylandデスクトップ環境です。まず[installation](/docs/getting-started/installation/)]から始め、その後ユーザーガイドから機能を選んでください。
+ARGVUSはArch Linux向けのモジュラー型HyprlandおよびWaylandデスクトップ環境です。まず[installation](/docs/getting-started/installation/)から始め、その後ユーザーガイドから機能を選んでください。
 
-このデスクトップは、Hyprlandセッション、Waybarタスクバー、Quickshellコントロールパネル、ネイティブアプリケーション、システムプロバイダーを組み合わせています。[architecture guide](/docs/developer-guide/architecture/overview/)]は、それらの要素がどのように連携するかを説明しています。
+このデスクトップは、Hyprlandセッション、Waybarタスクバー、Quickshellコントロールパネル、ネイティブアプリケーション、システムプロバイダーを組み合わせています。[architecture guide](/docs/developer-guide/architecture/overview/)は、それらの要素がどのように連携するかを説明しています。
 
 ## 一般的なエントリーポイント
 

@@ -159,7 +159,7 @@ aparência nunca são chamados pelo projetor e jamais podem escrever em
 | Lock screen | `generated/hypr/hyprlock.conf` e os perfis de tema do Hyprtoolkit |
 | GTK | `generated/gtk/` |
 | Yazi | `generated/yazi/` |
-| Superfile | `generated/superfile/` |
+| Superarquivo | `generated/superfile/` |
 | Perfis de terminal e Qt | `generated/terminal/`, `generated/qt6ct/` |
 | Fontes | `generated/fonts.conf` e os blocos de fonte gerenciados nos stylesheets do Waybar |
 | Dispositivos removíveis | `generated/removable-devices/theme.css` |

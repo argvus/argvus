@@ -1,6 +1,6 @@
 ---
 title: Penyedia dan layanan
-description: Provider packages and their system interfaces.
+description: Paket penyedia dan antarmuka sistemnya.
 ---
 
 Proyek penyedia memaparkan antarmuka terfokus kepada konsumen UI:

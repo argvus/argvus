@@ -8,4 +8,4 @@ description: کمانڈز، فائلیں، خدمات اور پیکجز ARGVUS �
 - [سروسز](/docs/reference/services/)
 - [فائل کے مقامات](/docs/reference/file-locations/)
 - [پیکیج میٹرکس](/docs/reference/package-matrix/)
-- [Components](/docs/components/)
+- [اجزاء](/docs/components/)

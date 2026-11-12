@@ -1,5 +1,5 @@
 ---
-title: Greeter
+title: Chào hỏi
 description: Lời chào đăng nhập bắt đầu, được vận chuyển trong gói argvus.
 ---
 

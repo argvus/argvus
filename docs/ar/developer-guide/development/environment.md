@@ -1,5 +1,5 @@
 ---
-title: Development environment
+title: بيئة التطوير
 description: قم بإعداد عملية الدفع لتطوير ARGVUS.
 ---
 

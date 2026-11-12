@@ -11,4 +11,4 @@ Prima dell'installazione, assicurati che:
 - l'utente possa avviare una sessione Wayland;
 - la rete sia disponibile quando il repository dei pacchetti è configurato.
 
-Le macchine virtuali potrebbero richiedere le impostazioni di compatibilità descritte in [Virtual machines](/docs/user-guide/virtual-machines/)].
+Le macchine virtuali potrebbero richiedere le impostazioni di compatibilità descritte in [Virtual machines](/docs/user-guide/virtual-machines/).

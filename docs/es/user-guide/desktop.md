@@ -8,7 +8,7 @@ La configuración se encuentra en el [Centro de Control](/docs/components/argvus
 
 - Panel de Control
 - [Barra de tareas](/docs/argvus-taskbar/taskbar/)
-- [Widgets](/docs/argvus-taskbar/widgets/)
+- [Aparatos](/docs/argvus-taskbar/widgets/)
 - [Atajos de teclado](/docs/argvus-hyprland/keyboard-shortcuts/)
 - [Sobrescrituras de Hyprland](/docs/argvus-hyprland/hyprland-overrides/)
 - [Ventanas y disposición](/docs/argvus-hyprland/windows-and-layout/)

@@ -11,4 +11,4 @@ Antes de la instalación, asegúrese de que:
 - el usuario pueda ejecutar una sesión de Wayland;
 - la red esté disponible cuando se configure el repositorio de paquetes.
 
-Las máquinas virtuales pueden necesitar los ajustes de compatibilidad descritos en [Virtual machines](/docs/user-guide/virtual-machines/)].
+Las máquinas virtuales pueden necesitar los ajustes de compatibilidad descritos en [Virtual machines](/docs/user-guide/virtual-machines/).

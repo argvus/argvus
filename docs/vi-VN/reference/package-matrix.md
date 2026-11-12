@@ -1,6 +1,6 @@
 ---
-title: Package matrix
-description: ARGVUS package responsibilities.
+title: Ma trận gói
+description: Trách nhiệm của gói ARGVUS.
 ---
 
 | Trọn gói | Trách nhiệm |

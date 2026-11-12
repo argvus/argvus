@@ -1,5 +1,5 @@
 ---
-title: Control Center
+title: Trung tâm điều khiển
 description: Định cấu hình các phần liên tục của màn hình ARGVUS của bạn.
 ---
 
@@ -19,7 +19,6 @@ Bảng Điều khiển có thể hiển thị các điều khiển nhanh cho m�
 Trang chủ Trung tâm điều khiển hiện tại cung cấp các khu vực sau:
 
 Ngôi nhà là một danh mục các điểm đến được nhóm thành sáu thẻ. Mỗi điểm đến sẽ mở trực tiếp trang của nó và tìm kiếm sẽ tìm thấy nó dưới bất kỳ thẻ nào.
-
 - **Giao diện** — tùy chỉnh màn hình nền: Kiểu màn hình (chủ đề, chế độ giao diện, màu nhấn, hình nền, biểu tượng và phông chữ), Kiểu ứng dụng (độ trong suốt của thiết bị đầu cuối và trình khởi chạy), Thanh tác vụ, Bảng điều khiển và Đo từ xa tiện ích.
 - **Máy tính để bàn & Đầu vào** — định cấu hình không gian làm việc: Hyprland (Windows: Quy tắc, Dấu cách và Chế độ, hoạt ảnh, làm mờ, đường viền, bóng và phiên bản đã cài đặt), Màn hình, Bàn phím & Phím tắt và Chuột & Bàn di chuột.
 - **Tùy chọn** — cài đặt cá nhân và khu vực: Ngôn ngữ & Khu vực (ngôn ngữ, múi giờ, định dạng và trung tâm bố cục bàn phím), Ngày & Giờ, Ứng dụng mặc định, Nguồn và Phiên.
@@ -93,7 +92,6 @@ Các ứng dụng mặc định chọn các chương trình đã cài đặt cho
 ### Đoạn trích
 
 Đoạn mã là trang dành cho văn bản mà `argvus snippets` gõ bằng `SUPER + ALT + N`. Nó nằm trong **Công cụ & Chẩn đoán → Đoạn trích** (tìm kiếm `snippets` hoặc chạy `argvus control-center snippets`).
-
 - **Đoạn mã mới** — nhập **Tên** và **Nội dung**, sau đó **Lưu đoạn mã**. Tên đã tồn tại sẽ thay thế nội dung của đoạn mã đó.
 - **Đoạn đã lưu** — được liệt kê cùng với vị trí của chúng (`1  email`) và nội dung trên một dòng. Nhập vào nội dung chỉnh sửa nó. **Type** nhập đoạn mã và **Xóa** yêu cầu xác nhận.
 - **Mở bộ chọn** — mở bộ chọn tương tự như `SUPER + ALT + N`.
@@ -158,26 +156,27 @@ Keys ›           the keyring, on its own page, with the search at the top
 1. Mở **Trung tâm điều khiển → Công cụ & Chẩn đoán → Khóa GPG**. Từ Trang chủ, bạn cũng có thể tìm kiếm `gpg keys`.
 2. **Pinentry** được cố định thành `pinentry-gtk`. Trang này chỉ hiển thị nó. Lần đầu tiên khóa được tạo, ARGVUS ghi mã pin đó vào `gpg-agent.conf`, giữa các dòng đánh dấu của chính nó và giữ các dòng khác của bạn. Nếu bạn đã viết một dòng `pinentry-program` bên ngoài các điểm đánh dấu đó, quá trình tạo sẽ dừng lại với một lỗi để bạn có thể xóa dòng đó.
 3. **Tạo khóa:** trong **Tạo khóa ▾**, nhập **Họ tên** và **E-mail**. Cả hai đều được yêu cầu và **Tạo khóa** vẫn bị tắt cho đến khi cả hai đều có văn bản. **Bình luận** là tùy chọn. ID người dùng trở thành `Name (comment) <e-mail>`.
-   - **Thuật toán** chuyển đổi giữa **RSA** và **DSA ElGamal**. Khóa DSA nhận được khóa con mã hóa ElGamal; khóa RSA sẽ nhận được một khóa RSA.
-   - **Độ mạnh khóa** xoay quanh các kích thước của thuật toán: RSA 1024, 2048 và 4096; DSA 1024, 2048 và 3072. gpg không tạo khóa DSA trên 3072 bit, vì vậy 4096 không được cung cấp cho DSA.
-   - **Ngày hết hạn** mở trang riêng. Nhập ngày vào bố cục ngôn ngữ của bạn: `DD/MM/YYYY` bằng tiếng Bồ Đào Nha, tiếng Tây Ban Nha, tiếng Pháp, tiếng Ý, tiếng Đức và tiếng Nga; `YYYY/MM/DD` bằng tiếng Anh, tiếng Trung, tiếng Nhật và tiếng Hàn. Ngày phải sau ngày hôm nay. Bật **Không bao giờ hết hạn** để đặt khóa vĩnh viễn; trường ngày sau đó bị vô hiệu hóa và không được sử dụng.- **Cụm mật khẩu** mở trang riêng của nó. **Bảo vệ bằng cụm mật khẩu** được bật theo mặc định; nhập **Cụm mật khẩu** và sau đó **Xác nhận cụm mật khẩu**. Cả hai phải phù hợp. Tắt bảo vệ sẽ xóa cả hai trường và trang yêu cầu xác nhận trước khi tạo khóa không được bảo vệ.
+- **Thuật toán** chuyển đổi giữa **RSA** và **DSA ElGamal**. Khóa DSA nhận được khóa con mã hóa ElGamal; khóa RSA sẽ nhận được một khóa RSA.
+- **Độ mạnh khóa** xoay quanh các kích thước của thuật toán: RSA 1024, 2048 và 4096; DSA 1024, 2048 và 3072. gpg không tạo khóa DSA trên 3072 bit, vì vậy 4096 không được cung cấp cho DSA.
+- **Ngày hết hạn** mở trang riêng. Nhập ngày vào bố cục ngôn ngữ của bạn: `DD/MM/YYYY` bằng tiếng Bồ Đào Nha, tiếng Tây Ban Nha, tiếng Pháp, tiếng Ý, tiếng Đức và tiếng Nga; `YYYY/MM/DD` bằng tiếng Anh, tiếng Trung, tiếng Nhật và tiếng Hàn. Ngày phải sau ngày hôm nay. Bật **Không bao giờ hết hạn** để đặt khóa vĩnh viễn; trường ngày sau đó bị vô hiệu hóa và không được sử dụng.
+- **Cụm mật khẩu** mở trang riêng của nó. **Bảo vệ bằng cụm mật khẩu** được bật theo mặc định; nhập **Cụm mật khẩu** và sau đó **Xác nhận cụm mật khẩu**. Cả hai phải phù hợp. Tắt bảo vệ sẽ xóa cả hai trường và trang yêu cầu xác nhận trước khi tạo khóa không được bảo vệ.
 4. Chọn **Tạo khóa** và nhấn `Enter`. Khóa nhận được khóa ký và khóa con mã hóa. Cụm mật khẩu được gửi tới trình khởi chạy trên đầu vào tiêu chuẩn của nó, không bao giờ dưới dạng đối số lệnh. Nếu quá trình tạo không thành công, các trường khác vẫn giữ nguyên nhưng cụm mật khẩu sẽ bị xóa và phải nhập lại.
 5. **Hủy** xóa mọi trường của biểu mẫu và trả ngày và kích thước về mặc định.
 6. **Nhập:** trong **Nhập ▾**, chọn **Nhập khóa chung…** hoặc **Nhập khóa riêng…**. Trình quản lý tệp mở ra để bạn có thể chọn tệp. Khóa riêng sẽ yêu cầu xác nhận trước và cụm mật khẩu của nó sẽ được gpg hỏi khi khóa được sử dụng. Nếu trình quản lý tệp là trình quản lý đồ họa, nó không thể báo cáo tệp lên trang; sau đó trang sẽ mở ra một trường nơi bạn nhập đường dẫn.
 7. **Phím >>** mở móc khóa. Mỗi khóa hiển thị danh tính, dấu vân tay, loại, thời hạn sử dụng và liệu khóa riêng của nó có nằm trong khóa hay không. Mỗi phím có những hành động sau:
    - **Chỉnh sửa khóa >>** mở trang riêng của khóa (mô tả bên dưới).
-   - **Xuất khóa công khai…** yêu cầu đường dẫn tệp, được đề xuất là `~/<fingerprint>.asc`. Tệp được tạo với chế độ `600`. Một tập tin hiện có không bao giờ được thay thế.
-   - **Xuất khóa riêng tư…** chỉ xuất hiện đối với các khóa có phần riêng tư. Nó yêu cầu xác nhận, sau đó yêu cầu đường dẫn tệp, được đề xuất là `~/<fingerprint>-private.asc`. Tệp được tạo với chế độ `600`.
-   - **Sao chép khóa chung** và **Sao chép dấu vân tay** sao chép vào bảng tạm Wayland bằng `wl-copy`.
-   - **Phím xóa…** yêu cầu xác nhận, với tiêu điểm là Hủy. Nó loại bỏ chìa khóa và phần riêng tư của nó.
+- **Xuất khóa công khai…** yêu cầu đường dẫn tệp, được đề xuất là `~/<fingerprint>.asc`. Tệp được tạo với chế độ `600`. Một tập tin hiện có không bao giờ được thay thế.
+- **Xuất khóa riêng tư…** chỉ xuất hiện đối với các khóa có phần riêng tư. Nó yêu cầu xác nhận, sau đó yêu cầu đường dẫn tệp, được đề xuất là `~/<fingerprint>-private.asc`. Tệp được tạo với chế độ `600`.
+- **Sao chép khóa chung** và **Sao chép dấu vân tay** sao chép vào bảng tạm Wayland bằng `wl-copy`.
+- **Phím xóa…** yêu cầu xác nhận, với tiêu điểm là Hủy. Nó loại bỏ chìa khóa và phần riêng tư của nó.
 8. **Tìm khóa:** trên trang **Phím**, thanh tìm kiếm ở trên cùng sẽ lọc các khóa. Gõ để thu hẹp danh sách; tìm kiếm khớp với danh tính (bao gồm nhận xét) và dấu vân tay. `Esc` xóa tìm kiếm.
 9. **Chỉnh sửa khóa >>** hiển thị thông tin chi tiết về khóa, sau đó thực hiện các thao tác sau:
    - **Ngày hết hạn >>** thay đổi thời hạn sử dụng của khóa và của từng khóa con của nó. Sử dụng **Không bao giờ hết hạn** để loại bỏ thời hạn sử dụng. **Áp dụng** lưu thay đổi.
-   - **Thay đổi cụm mật khẩu** hỏi cụm mật khẩu cũ và mới trong cửa sổ pinentry.
-   - **Ký tên với khóa >>** xác nhận khóa này bằng một trong các khóa khác của bạn có phần riêng tư. Cụm mật khẩu của người ký được hỏi. Trang yêu cầu xác nhận trước.
-   - **Thu hồi key >>** liệt kê các lý do: không có lý do, key bị xâm phạm, key bị thay thế, key không còn được sử dụng. Mỗi người yêu cầu xác nhận. Khóa bị thu hồi không thể sử dụng được nữa.
-   - **Tin cậy** đặt mức độ tin cậy của bạn đối với khóa: không được đặt, cận biên, đầy đủ hoặc tối thượng.
-   - **Xuất bản lên máy chủ khóa…** gửi khóa chung tới máy chủ khóa được đặt trong `gpg.conf`, sau khi xác nhận. **Tìm nạp từ máy chủ khóa** tải xuống khóa từ máy chủ khóa đó.
+- **Thay đổi cụm mật khẩu** hỏi cụm mật khẩu cũ và mới trong cửa sổ pinentry.
+- **Ký tên với khóa >>** xác nhận khóa này bằng một trong các khóa khác của bạn có phần riêng tư. Cụm mật khẩu của người ký được hỏi. Trang yêu cầu xác nhận trước.
+- **Thu hồi key >>** liệt kê các lý do: không có lý do, key bị xâm phạm, key bị thay thế, key không còn được sử dụng. Mỗi người yêu cầu xác nhận. Khóa bị thu hồi không thể sử dụng được nữa.
+- **Tin cậy** đặt mức độ tin cậy của bạn đối với khóa: không được đặt, cận biên, đầy đủ hoặc tối thượng.
+- **Xuất bản lên máy chủ khóa…** gửi khóa chung tới máy chủ khóa được đặt trong `gpg.conf`, sau khi xác nhận. **Tìm nạp từ máy chủ khóa** tải xuống khóa từ máy chủ khóa đó.
 
 Di chuyển xung quanh: `↑`/`↓` hoặc `j`/`k` di chuyển qua danh sách, `Enter` kích hoạt một hàng, `Esc` quay lại và `?` hiển thị trợ giúp.
 
@@ -272,7 +271,8 @@ Mọi giá trị đều được đọc từ hệ thống đang chạy mà khôn
 
 - **Firmware**, **Model** và **Bo mạch chủ** đến từ DMI (`/sys/class/dmi/id`); các giá trị giữ chỗ như `To be filled by O.E.M.` bị bỏ qua. **Loại** và **Khởi động an toàn** đến từ `/sys/firmware/efi` và **Ảo hóa** từ `systemd-detect-virt`.
 - **Bootloader** được đọc từ biến `LoaderInfo` EFI, biến systemd-boot, Limine và các bộ tải khởi động khác tuân theo Giao diện bộ tải khởi động xuất bản. GRUB không xuất bản nó nên nó được `/boot/grub` (hoặc `/efi/grub`) công nhận và hiển thị cùng với phiên bản của gói `grub`.
-- Các phiên bản của ARGVUS, Wayland, Mesa, PipeWire, Quickshell, hellod, systemd và GRUB đến từ một truy vấn `pacman -Q` và được hiển thị mà không có bản phát hành gói và kỷ nguyên (`1:25.2.3-1` trở thành `25.2.3`). Phiên bản Hyprland đến từ `hyprctl version` hoặc từ gói khi không có phiên trả lời.- **Trình điều khiển GPU** đặt tên cho trình điều khiển được liên kết với từng thẻ DRM trong `/sys/class/drm`. Trình điều khiển độc quyền hiển thị phiên bản mô-đun của nó (ví dụ `nvidia 580.82.07`); trình điều khiển trong nhân hiển thị phiên bản Mesa (ví dụ `amdgpu (Mesa 25.2.3)`).
+- Các phiên bản của ARGVUS, Wayland, Mesa, PipeWire, Quickshell, hellod, systemd và GRUB đến từ một truy vấn `pacman -Q` và được hiển thị mà không có bản phát hành gói và kỷ nguyên (`1:25.2.3-1` trở thành `25.2.3`). Phiên bản Hyprland đến từ `hyprctl version` hoặc từ gói khi không có phiên trả lời.
+- **Trình điều khiển GPU** đặt tên cho trình điều khiển được liên kết với từng thẻ DRM trong `/sys/class/drm`. Trình điều khiển độc quyền hiển thị phiên bản mô-đun của nó (ví dụ `nvidia 580.82.07`); trình điều khiển trong nhân hiển thị phiên bản Mesa (ví dụ `amdgpu (Mesa 25.2.3)`).
 - **Hiển thị** liệt kê các màn hình đang hoạt động từ `hyprctl monitors -j`: đầu nối, độ phân giải, tốc độ làm mới và tỷ lệ (tỷ lệ bị bỏ ở mức 1).
 - **Gói** tính tất cả các gói đã cài đặt, gói được cài đặt rõ ràng và gói nước ngoài (AUR hoặc được xây dựng cục bộ), từ `pacman -Qq`, `-Qqe` và `-Qqm`.
 - **Thời gian hoạt động** đến từ `/proc/uptime` và là giá trị khi trang được mở. **Ngôn ngữ** đến từ `LANG` trong `/etc/locale.conf`.
@@ -314,7 +314,8 @@ Hỗ trợ thiết lập lại có chủ ý cho mỗi tên miền:
 - **Phông chữ** có thể khôi phục tất cả cài đặt phông chữ, mục tiêu hoặc cài đặt riêng lẻ.
 - **Ứng dụng mặc định** có thể khôi phục tất cả các cài đặt mặc định, một danh mục hoặc một bộ chọn riêng lẻ.
 - **Phím tắt** có thể khôi phục một hoặc tất cả các liên kết và sau đó tải lại các liên kết phiên đã tạo.
-- **Quy tắc cửa sổ** có trong **Máy tính để bàn & Đầu vào → Hyprland → Windows → Quy tắc** (tìm kiếm `window rules` hoặc chạy `argvus control-center window-rules`). Mỗi quy tắc có một hàng **Không gian làm việc** (`Enter` hoặc `←/→` bước từ 1 đến 10) và một hàng **Các lớp cửa sổ** mở ra trường văn bản có các biểu thức chính quy được phân tách bằng dấu phẩy. **Thêm quy tắc** tạo `rule-N` với không gian làm việc 1 và không có lớp nào. **Quy tắc loại bỏ** của mỗi quy tắc nằm trong **Vùng nguy hiểm** và yêu cầu xác nhận. Mọi thay đổi được ghi vào `hyprland.window_rules` trong `argvus config` và tải lại cấu hình ngay lập tức; các mẫu lớp không hợp lệ bị từ chối và hiển thị dưới dạng lỗi.- **Dự án** nằm trong **Công cụ & Chẩn đoán → Dự án** (tìm kiếm `projects` hoặc chạy `argvus control-center projects`). **Thêm thư mục dự án** và **Thêm thư mục gốc** nằm ở đầu trang và mở trường văn bản có đường dẫn; trình khởi chạy sẽ kiểm tra xem đó có phải là một thư mục hay không và hiển thị lỗi, bao gồm cả thời điểm thư mục đẩy số lượng dự án hiệu quả vượt quá 9 (`SUPER + CTRL + 1..9` không thể giải quyết thêm). Mỗi thư mục được định cấu hình, được đánh dấu là gốc (các thư mục con của nó là các dự án) hoặc một dự án, sẽ có khối riêng bên dưới biểu mẫu với hàng **Xóa** yêu cầu xác nhận. Trang gọi `argvus-projects`, do đó, các thay đổi sẽ được trình khởi chạy ghi lại và áp dụng vào lần chạy `SUPER + O` hoặc `SUPER + CTRL + 1..9` tiếp theo. Nếu `argvus-projects` chưa được cài đặt, trang sẽ thông báo như vậy.
+- **Quy tắc cửa sổ** có trong **Máy tính để bàn & Đầu vào → Hyprland → Windows → Quy tắc** (tìm kiếm `window rules` hoặc chạy `argvus control-center window-rules`). Mỗi quy tắc có một hàng **Không gian làm việc** (`Enter` hoặc `←/→` bước từ 1 đến 10) và một hàng **Các lớp cửa sổ** mở ra trường văn bản có các biểu thức chính quy được phân tách bằng dấu phẩy. **Thêm quy tắc** tạo `rule-N` với không gian làm việc 1 và không có lớp nào. **Quy tắc loại bỏ** của mỗi quy tắc nằm trong **Vùng nguy hiểm** và yêu cầu xác nhận. Mọi thay đổi được ghi vào `hyprland.window_rules` trong `argvus config` và tải lại cấu hình ngay lập tức; các mẫu lớp không hợp lệ bị từ chối và hiển thị dưới dạng lỗi.
+- **Dự án** nằm trong **Công cụ & Chẩn đoán → Dự án** (tìm kiếm `projects` hoặc chạy `argvus control-center projects`). **Thêm thư mục dự án** và **Thêm thư mục gốc** nằm ở đầu trang và mở trường văn bản có đường dẫn; trình khởi chạy sẽ kiểm tra xem đó có phải là một thư mục hay không và hiển thị lỗi, bao gồm cả thời điểm thư mục đẩy số lượng dự án hiệu quả vượt quá 9 (`SUPER + CTRL + 1..9` không thể giải quyết thêm). Mỗi thư mục được định cấu hình, được đánh dấu là gốc (các thư mục con của nó là các dự án) hoặc một dự án, sẽ có khối riêng bên dưới biểu mẫu với hàng **Xóa** yêu cầu xác nhận. Trang gọi `argvus-projects`, do đó, các thay đổi sẽ được trình khởi chạy ghi lại và áp dụng vào lần chạy `SUPER + O` hoặc `SUPER + CTRL + 1..9` tiếp theo. Nếu `argvus-projects` chưa được cài đặt, trang sẽ thông báo như vậy.
 - **Các trang hệ thống khác** chỉ hiển thị các hành động đặt lại, áp dụng, xóa hoặc khôi phục khi nhà cung cấp cơ bản hỗ trợ chúng.
 
 Việc xóa tùy chọn người dùng có thể khiến nhà cung cấp quay trở lại trạng thái đóng gói/mặc định nhưng xóa tệp bằng tay không phải là quy trình khôi phục chung. Ưu tiên hành động đặt lại của trang hoặc lệnh dành riêng cho tính năng được ghi lại.

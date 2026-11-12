@@ -13,6 +13,6 @@ curl -fsSL https://argvus.github.io/install.sh | sh
 
 ## 다음 단계
 
-- 요구 사항, 수동 저장소 설정 또는 설치 프로그램이 수행하는 작업에 대한 자세한 정보가 필요하신가요? 전체 [시작 가이드](/docs/getting-started/)]를 참조하세요.
-- 첫 로그인 후 바탕화면을 개인화하고 싶으신가요? 사용자 가이드의 [첫 번째 구성](/docs/user-guide/getting-started/)]를 참조하세요.
-- 어떤 것이 작동하지 않나요? [문제 해결](/docs/user-guide/troubleshooting/)]을 확인하세요.
+- 요구 사항, 수동 저장소 설정 또는 설치 프로그램이 수행하는 작업에 대한 자세한 정보가 필요하신가요? 전체 [시작 가이드](/docs/getting-started/)를 참조하세요.
+- 첫 로그인 후 바탕화면을 개인화하고 싶으신가요? 사용자 가이드의 [첫 번째 구성](/docs/user-guide/getting-started/)를 참조하세요.
+- 어떤 것이 작동하지 않나요? [문제 해결](/docs/user-guide/troubleshooting/)을 확인하세요.

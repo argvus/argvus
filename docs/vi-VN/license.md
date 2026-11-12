@@ -1,6 +1,6 @@
 ---
-title: License
-description: ARGVUS licensing information.
+title: Giấy phép
+description: Thông tin cấp phép ARGVUS.
 ---
 
 ARGVUS và các gói thành phần của nó được cấp phép theo **Chỉ Giấy phép Công cộng GNU v3.0 (chỉ GPL-3.0)**.

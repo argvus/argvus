@@ -2,7 +2,7 @@
 title: Núcleo y despachador
 description: El espacio de trabajo argvus, su despachador y los crates compartidos de Rust.
 ---
-`argvus` es el espacio de trabajo de Cargo en `de/argvus` y el paquete que proporciona `/usr/bin/argvus`. La caja `argvus-cli` es el despachador: lee el primer argumento y ejecuta un comando de biblioteca en proceso, ejecuta un asistente GTK 4 o un ejecutable privado, o ejecuta un script empaquetado. La lista completa de subcomandos está en la [referencia de línea de comandos](/docs/reference/command-line/)].
+`argvus` es el espacio de trabajo de Cargo en `de/argvus` y el paquete que proporciona `/usr/bin/argvus`. La caja `argvus-cli` es el despachador: lee el primer argumento y ejecuta un comando de biblioteca en proceso, ejecuta un asistente GTK 4 o un ejecutable privado, o ejecuta un script empaquetado. La lista completa de subcomandos está en la [referencia de línea de comandos](/docs/reference/command-line/).
 
 El espacio de trabajo también contiene las cajas que los comandos comparten:
 

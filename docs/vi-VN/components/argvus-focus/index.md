@@ -1,5 +1,5 @@
 ---
-title: ARGVUS Focus
+title: ARGVUS
 description: Pomodoro và các phiên tập trung với thời gian nghỉ, thông báo và lịch sử phiên cục bộ.
 ---
 
