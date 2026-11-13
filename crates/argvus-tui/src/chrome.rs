@@ -93,18 +93,29 @@ pub fn draw_header(frame: &mut Frame, area: Rect, theme: &Theme, header: Header<
   let requested = version_width;
   let left_minimum = 10 + crate::text::display_width(header.title);
   let right_width = requested.min((inner.width as usize).saturating_sub(left_minimum));
-  let columns =
-    Layout::horizontal([Constraint::Fill(1), Constraint::Length(right_width as u16)]).split(inner);
+  let right_to_left = crate::menu::is_right_to_left();
+  let constraints = if right_to_left {
+    [Constraint::Length(right_width as u16), Constraint::Fill(1)]
+  } else {
+    [Constraint::Fill(1), Constraint::Length(right_width as u16)]
+  };
+  let columns = Layout::horizontal(constraints).split(inner);
+  let brand = if right_to_left {
+    format!("{}  ARGVUS", header.title)
+  } else {
+    format!("ARGVUS  {}", header.title)
+  };
   frame.render_widget(
-    Paragraph::new(Line::from(vec![
-      Span::styled(
-        "ARGVUS",
-        Style::new().fg(theme.accent).add_modifier(Modifier::BOLD),
-      ),
-      Span::raw("  "),
-      Span::styled(header.title.to_string(), Style::new().fg(theme.foreground)),
-    ])),
-    columns[0],
+    Paragraph::new(Line::from(vec![Span::styled(
+      brand,
+      Style::new().fg(theme.foreground),
+    )]))
+    .alignment(if right_to_left {
+      Alignment::Right
+    } else {
+      Alignment::Left
+    }),
+    columns[usize::from(right_to_left)],
   );
   let mut right = Vec::new();
   if let Some(version) = header.version {
@@ -119,8 +130,12 @@ pub fn draw_header(frame: &mut Frame, area: Rect, theme: &Theme, header: Header<
     right.push(Span::raw("  "));
   }
   frame.render_widget(
-    Paragraph::new(Line::from(right)).alignment(Alignment::Right),
-    columns[1],
+    Paragraph::new(Line::from(right)).alignment(if right_to_left {
+      Alignment::Left
+    } else {
+      Alignment::Right
+    }),
+    columns[usize::from(!right_to_left)],
   );
 }
 
@@ -146,7 +161,13 @@ pub fn draw_footer(
       MessageKind::Error => theme.error,
     };
     frame.render_widget(
-      Paragraph::new(text).style(Style::new().fg(color)),
+      Paragraph::new(text)
+        .alignment(if crate::menu::is_right_to_left() {
+          Alignment::Right
+        } else {
+          Alignment::Left
+        })
+        .style(Style::new().fg(color)),
       rows[0].inner(Margin::new(1, 0)),
     );
   }
@@ -165,6 +186,11 @@ pub fn draw_help(frame: &mut Frame, area: Rect, theme: &Theme, title: &str, line
   frame.render_widget(Clear, popup);
   frame.render_widget(
     Paragraph::new(lines.join("\n"))
+      .alignment(if crate::menu::is_right_to_left() {
+        Alignment::Right
+      } else {
+        Alignment::Left
+      })
       .wrap(Wrap { trim: false })
       .style(Style::new().fg(theme.foreground).bg(theme.background))
       .block(

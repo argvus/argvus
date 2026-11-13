@@ -5,27 +5,29 @@ description: Language catalogs, selection and Unicode support.
 
 # ARGVUS Internationalization
 
-ARGVUS ships English (`en-US`), Brazilian Portuguese (`pt-BR`), Spanish (`es-ES`),
-French (`fr-FR`), Italian (`it-IT`), German (`de-DE`), Russian (`ru-RU`), Simplified
-Chinese (`zh-CN`), Japanese (`ja-JP`) and Korean (`ko-KR`). English is the canonical
-catalog and fallback. The eight additional translations were produced with machine
-translation assistance and technical corrections; independent native-speaker review
-has not been certified.
+ARGVUS ships 18 interface languages: Arabic (`ar`), Bengali (`bn-BD`), German (`de-DE`),
+English (`en-US`), Spanish (`es-ES`), French (`fr-FR`), Hindi (`hi-IN`), Indonesian
+(`id-ID`), Italian (`it-IT`), Japanese (`ja-JP`), Korean (`ko-KR`), Brazilian Portuguese
+(`pt-BR`), European Portuguese (`pt-PT`), Russian (`ru-RU`), Turkish (`tr-TR`), Urdu
+(`ur-PK`), Vietnamese (`vi-VN`) and Simplified Chinese (`zh-CN`). English is the
+canonical catalog and fallback. The translations were produced with AI assistance and
+technical corrections; independent native-speaker review has not been certified.
 
 ## Select a language
 
-Open Control Center > Preferences > Language & Region > Language, or Settings >
-Language. The page discovers installed catalogs and shows their native names.
-It saves `LANG` in `$XDG_CONFIG_HOME/locale.conf` (default `~/.config/locale.conf`).
-Enable the corresponding UTF-8 system locale in System Locales first. Examples
-include `es_ES.UTF-8`, `zh_CN.UTF-8`, `ja_JP.UTF-8` and `ko_KR.UTF-8`.
+Open Control Center > Preferences > Language & Region > Language. The page discovers
+installed catalogs and shows their native names. It saves `ARGVUS_LANGUAGE` in
+`$XDG_CONFIG_HOME/locale.conf` (default `~/.config/locale.conf`), independently of
+`LANG`; generating a system locale is not required. Brazilian Portuguese (`pt-BR`) and
+European Portuguese (`pt-PT`) are separate choices.
 
-The preference does not modify `/etc/locale.conf`. Comments and regional category
-settings are preserved. The Control Panel is restarted after saving; log out and
-back in to apply the language throughout the session. Unconfigured users use
-English. Inherited environment variables and legacy ARGVUS language files do not
-replace this preference. The login greeter runs before the user's preference is
-available and retains its own service-account language, English by default.
+The preference does not modify `/etc/locale.conf` or the regional `LANG` setting.
+Comments and regional category settings are preserved. The Control Panel is restarted
+after saving; start a new session to apply the language throughout session components.
+Unconfigured users use English. The separate Regional Locale preference controls
+`LANG`, regional formatting, and third-party applications. The login greeter runs
+before the user's preference is available and retains its own service-account
+language, English by default.
 
 Regional variants use the installed catalog for their language when an exact
 catalog is absent; for example `es_MX.UTF-8` uses `es-ES`. `zh-Hans` selects

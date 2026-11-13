@@ -1,0 +1,13 @@
+{
+  "launcher.class_requires_value": "argvus-tui-terminal: --class membutuhkan sebuah nilai",
+  "launcher.option_requires_value": "argvus-tui-terminal: {option} membutuhkan sebuah nilai",
+  "yazi.rename": "Ganti Nama",
+  "yazi.open_terminal": "Buka di terminal",
+  "yazi.move_to_trash": "Pindah ke tempat sampah",
+  "yazi.secure_destroy": "Dihancurkan dengan aman (Smog)",
+  "yazi.empty_trash": "Kosongkan tong sampah (Smog)",
+  "yazi.open_file_smart": "Buka berkas dengan cerdas",
+  "yazi.open_vscode": "Buka dengan VSCode",
+  "yazi.create_zip": "Buat arsip ZIP (zip)",
+  "yazi.open_file_roller": "Buka dengan File Roller"
+}

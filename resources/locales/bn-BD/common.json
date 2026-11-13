@@ -1,0 +1,8 @@
+{
+  "save": "সংরক্ষণ",
+  "cancel": "বাতিল",
+  "close": "বন্ধ",
+  "welcome": "স্বাগতম, {name}! !",
+  "updates.available.one": "{count} উপস্থিত নেই",
+  "updates.available.other": "{count} আপডেট উপলব্ধ রয়েছে"
+}

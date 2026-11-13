@@ -27,6 +27,20 @@ fn language_page_shows_status_lines_and_selectable_choices() {
 }
 
 #[test]
+fn language_region_hub_separates_interface_language_from_regional_locale() {
+  let app = app(Page::LocaleRegion);
+  let rows = app.rows();
+  assert_eq!(rows[0].id(), Some(&Item::Page(Page::Language)));
+  assert_eq!(rows[0].label(), "Language");
+  assert_eq!(rows[1].id(), Some(&Item::TimeZone));
+  assert!(
+    rows
+      .iter()
+      .any(|row| row.id() == Some(&Item::RegionalLocale))
+  );
+}
+
+#[test]
 fn fonts_dashboard_has_sections_icons_status_and_danger_zone() {
   let app = app(Page::Fonts);
   let rows = app.rows();

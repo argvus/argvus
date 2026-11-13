@@ -1,0 +1,13 @@
+{
+  "launcher.class_requires_value": "argvus-tui-terminal:--class yêu cầu một giá trị",
+  "launcher.option_requires_value": "argvus-tui-terminal:{option} yêu cầu một giá trị",
+  "yazi.rename": "Thay tên",
+  "yazi.open_terminal": "Mở trong thiết bị cuối",
+  "yazi.move_to_trash": "Chuyển vào Rác",
+  "yazi.secure_destroy": "Hủy diệt an toàn (Smog)",
+  "yazi.empty_trash": "Rác",
+  "yazi.open_file_smart": "Mở tập tin một cách thông minh",
+  "yazi.open_vscode": "Mở bằngVSCode",
+  "yazi.create_zip": "Tạo",
+  "yazi.open_file_roller": "Mở bằng bộ cuộn tập tin"
+}

@@ -3,31 +3,25 @@ title: Yerelleştirme
 description: ARGVUS'u İngilizce veya Portekizce kullanın.
 ---
 
-`argvus-i18n`, paylaşılan katalogları, `argvus i18n validate` komutunu ve `org.argvus.i18n` QML modülünü sağlar. ARGVUS şu anda İngilizce ve Portekizce kataloglar göndermektedir.
+`argvus-i18n` Paylaşılan kataloglar sağlar, the provides the shared catalogs, the the provides the shared catalogs, the the provides the shared catalogs, the the the provides the shared catalogs, the the provides the shared catalogs, the the the provides the shared catalogs, the the the provides the shared catalogs, the the the the shared catalogs, the `argvus i18n validate` komut ve QML modül modülü `org.argvus.i18n`. ARGVUS Gemiler 18 arayüz dilleri: Arapça, Bengali, Almanca, İngilizce, İspanyolca, Fransızca, Hindi, Endonezya, İtalya, Japonca, Kore, Brezilyalı Portekiz, Avrupa Portekiz, Rusça, Türkçe, Urdu, Vietnam ve Basitleştirilmiş Çin.
 
-Yerel uygulamalar ve kabuk bileşenleri, paylaşılan katalogları kullanır. Bu nedenle çevrilmiş bir dize birden fazla veri havuzu tarafından kullanılabilir.
+Yerli Yerli Yerli Yerli ARGVUS Uygulamalar ve kabuk bileşenleri paylaşılan katalogları tüketmektedir. Bu nedenle tercüme edilmiş bir dize birden fazla havuz tarafından kullanılabilir. Arapça ve Urdu desteklenmekte olan sağ sol düzeni kullanır GTK, Quickshell ve terminal arayüzleri.
 
-Dili, bölgesel yerel ayarı, oluşturulan sistem yerel ayarlarını, saat dilimini, tarihi/saati ve klavyeyi yapılandırmak için **Kontrol Merkezi → Yerel Ayar ve Bölge**'yi kullanın. Güncel ARGVUS katalogları İngilizce ve Portekizce sağlar; bu, işletim sisteminin oluşturduğu sistem yerel ayarları listesinden ayrıdır.
+Use **Control Center → Tercihler → Dil & Bölge → Dil** seçmek için ARGVUS arayüz dili. Bu yazıyor `ARGVUS_LANGUAGE` toklanmak için `$XDG_CONFIG_HOME/locale.conf` (normal olarak `~/.config/locale.conf`). Örneğin, `ARGVUS_LANGUAGE=pt-PT` Avrupa Portekiz'i seçin. Brezilyalı Portekiz (İngilizce).`pt-BR`) ayrı bir seçenek. Dil katalogu ile yüklenir ARGVUSAma buna bağlı değildir `locale-gen`.
 
-Görüntüleme dilinin değiştirilmesi ARGVUS tercihini kaydeder ve `argvus-control-panel.service` otomatik olarak yeniden başlatılır, böylece Kontrol Paneli değişikliği hemen yansıtır. Diğer uygulamalar ve kabuk yüzeyleri oturumun yeniden yüklenmesini veya yeni bir oturumu gerektirebilir. `/etc/locale.gen` girişlerini oluşturmak veya değiştirmek, yetkilendirme gerektirir ve `locale-gen`'yu çalıştırır; oluşturulmayan bir yerel ayarın seçilmesi reddedilir. Klavye düzeni, değişken ve konsol tuş haritası ayrı ayarlardır ve arayüz diliyle karıştırılmamalıdır.
+Kontrol Panel, arayüz dili değişikliklerinden sonra otomatik olarak yeniden başlar. Oturum bileşenleri için uygulamak için yeni bir oturum başlatın. The separate **Regional Locale** setting Write `LANG` ve bölgesel formatları ve üçüncü taraf uygulamalarını kontrol edin. Oluşturulmuş bir sistem yerel gerektirir; biri izin vermek `/etc/locale.gen` run run run run run run run `locale-gen` Yönetici izni ile. Klavye düzeni, değişken ve konsol anahtarmap ayrı ayarlardır.
 
-## Ortam değişkenleri değişikliği geçersiz kıldığında
+## Çevre değişimini değiştirirken
 
-ARGVUS uygulamaları dili önce kalıcı ARGVUS dil dosyasından, ardından `LC_ALL`, `LC_MESSAGES` ve `LANG`'dan algılar. Yerel ortam değişkenleri bu nedenle, özellikle bir kullanıcı hizmeti veya grafik oturumu eski bir ortamı koruduğunda, Kontrol Merkezinin bir dil değişikliğini görmezden geliyormuş gibi görünmesine neden olabilir.
+ARGVUS Başvuruları oku `ARGVUS_LANGUAGE` Kullanıcınınkinden `locale.conf`Eğer yok ise, bölgeyi çözdüler. `LANG` Oluşturulan bir kataloga değer. İnherited locale değişkenleri açıklanmadı `ARGVUS_LANGUAGE` tercih. Üçüncü taraf uygulamaları sistemi bölgesel yerel kullanmaya devam ediyor.
 
-Etkin değerleri aşağıdakilerle inceleyin:
+Etkili değerleri göz önünde bulundurun:
 
 ```sh
 systemctl --user show-environment | rg '^(LANG|LC_|ARGVUS)='
 locale
-echo $LANG
+printf '%s\n' "$LANG"
 localectl status
 ```
 
-`~/.config/locale.conf` mevcutsa ve `LANG`, `LC_ALL` veya `LC_MESSAGES`'yu tanımlıyorsa, bu değerleri artık yeniden vermemesi için onu geçici olarak yeniden adlandırın. Silmek yerine yedek tutun:
-
-```sh
-mv ~/.config/locale.conf ~/.config/locale.conf.backup
-```
-
-**Denetim Merkezi → Yerel Ayar ve Bölge**'de dili tekrar uygulayın. Kontrol Paneli otomatik olarak yeniden başlatılır; diğer bileşenler hala önceki dili gösteriyorsa, oturumu kapatıp açın, böylece grafik oturumu ve `systemd --user` yeni ortamı alır. Daha sonra teşhis komutlarını tekrarlayın. Teknik sözleşmeler ve öncelikler için bkz. [Ortam değişkenleri](/docs/reference/environment-variables/).
+Check that Check that Check that `~/.config/locale.conf` Geçerli bir doğrulama içerir `ARGVUS_LANGUAGE=<catalog>` değer. Bölgesel formatlama veya üçüncü taraf uygulama dili değiştirmek için, **Regional Locale** kullanın ve üretilen bir yerel seçin. Kontrol Panel, tercih edilen değişikliklerden sonra yeniden başlatılır; oturum açma ve diğer oturum bileşenleri hala eski arayüz dilini gösterirse. [Environment değişkenleri]/docs/reference/environment-variables/) teknik sözleşmeler ve öncekiler için.

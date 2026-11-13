@@ -1,0 +1,7 @@
+{
+  "usage": "Kullanım: hyprlock-theme.sh [--invalidate]",
+  "invalid_active_theme": "Hyprlock için uygun tema: {theme}",
+  "theme_not_found": "Hyprlock teması bulunamadı: {theme}",
+  "password_placeholder": "Şifre",
+  "theme_applied": "Hyprlock teması {theme} aksan ile uygulanır #{accent}."
+}

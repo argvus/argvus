@@ -1,0 +1,12 @@
+{
+  "usage": "ব্যবহারপ্রণালী:\n argvus-terminal [kitি অপশন]\n argvus-terminal --apply [theme]\n argvus-terminal --print-config [theme]\n argvus-terminal --print-tui-config [theme]\n\nবিকল্প:\n --class  সংকলন Kitty জানালার ক্লাস.\n --font-profile  টার্মিনাল অথবা উদাহরণস।\n --tui ব্যবহার করুন ARGVUS TUI Kitty প্রোফাইল।\n -  [args...] কমান্ড চালানো হবে Kitty. .",
+  "class_requires_value": "--class একটি মান আবশ্যক",
+  "font_profile_requires_value": "--font-profile একটি মান আবশ্যক",
+  "unsupported_font_profile": "অসমর্থিত ফন্ট: {profile}",
+  "kitty_not_installed": "Kitty ইনস্টল করা হয়নি",
+  "config_not_found": "Kitty কনফিগারেশন পাওয়া যায়নি {path}",
+  "tui_config_not_found": "Kitty TUI কনফিগারেশন পাওয়া যায়নি {path}",
+  "cache_create_failed": "তৈরি করা যায়নি Kitty প্রারম্ভকালে ক্যাশের ক্যাশে {path}",
+  "cache_write_failed": "লেখা যায়নি Kitty প্রারম্ভকালে ক্যাশের ক্যাশে {path}",
+  "cache_lock_failed": "লক করা যায়নি Kitty প্রারম্ভকালে ক্যাশের ক্যাশে {path}"
+}

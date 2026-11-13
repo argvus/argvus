@@ -5,32 +5,32 @@ description: Katalog bahasa, pilihan dan dukungan Unicode.
 
 # Internasionalisasi ARGVUS
 
-ARGVUS mengirimkan bahasa Inggris (`en-US`), Portugis Brasil (`pt-BR`), Spanyol (`es-ES`),
-Prancis (`fr-FR`), Italia (`it-IT`), Jerman (`de-DE`), Rusia (`ru-RU`), Sederhana
-Cina (`zh-CN`), Jepang (`ja-JP`) dan Korea (`ko-KR`). Bahasa Inggris adalah kanonik
-katalog dan cadangan. Delapan terjemahan tambahan diproduksi dengan mesin
-bantuan terjemahan dan koreksi teknis; ulasan penutur asli independen
-belum tersertifikasi.
+ARGVUS kapal 18 bahasa: Arab (`ar`), Bengali (`bn-BD`), Jerman (`de-DE`)
+Inggris (`en-US`), Spanyol (`es-ES`), Perancis (`fr-FR`), Hindi (`hi-IN`), Indonesia
+(`id-ID`), Italia (`it-IT`), Jepang (`ja-JP`), Korea (`ko-KR`), Portugis Brasil
+(`pt-BR`), Portugis Eropa (`pt-PT`), Rusia (`ru-RU`), Turki (`tr-TR`), Urdu
+(`ur-PK`), Vietnam (`vi-VN`(Dan Cina yang sederhana)`zh-CN`). Inggris adalah
+katalog kanonikal dan mundur. Terjemahan dihasilkan dengan AI Bantuan dan
+Pembenaran teknis; ulasan independen-speaker belum disertifikasi.
 
 ## Pilih bahasa
 
-Buka Pusat Kontrol > Preferensi > Bahasa & Wilayah > Bahasa, atau Pengaturan >
-Bahasa. Halaman ini menemukan katalog yang terinstal dan menampilkan nama aslinya.
-Ini menghemat `LANG` di `$XDG_CONFIG_HOME/locale.conf` (default `~/.config/locale.conf`).
-Aktifkan lokal sistem UTF-8 yang sesuai di Lokal Sistem terlebih dahulu. Contoh
-termasuk `es_ES.UTF-8`, `zh_CN.UTF-8`, `ja_JP.UTF-8` dan `ko_KR.UTF-8`.
-
-Preferensi tidak mengubah `/etc/locale.conf`. Komentar dan kategori regional
-pengaturan dipertahankan. Panel Kontrol dimulai ulang setelah disimpan; keluar dan
-kembali untuk menerapkan bahasa tersebut sepanjang sesi. Pengguna yang tidak dikonfigurasi menggunakan
-bahasa Inggris. Variabel lingkungan yang diwarisi dan file bahasa ARGVUS yang lama tidak
-ganti preferensi ini. Penyambut login berjalan sebelum preferensi pengguna
-tersedia dan mempertahankan bahasa akun layanannya sendiri, bahasa Inggris secara default.
-
-Varian regional menggunakan katalog yang terinstal untuk bahasa mereka jika tepat
-katalog tidak ada; misalnya `es_MX.UTF-8` menggunakan `es-ES`. `zh-Hans` memilih
-Cina Sederhana. Bahasa Cina Tradisional (`zh-Hant`, `zh-TW`, `zh-HK`, `zh-MO`) adalah
-tidak secara diam-diam dipetakan ke bahasa Mandarin Sederhana dan kembali ke bahasa Inggris.
+Preferensi Open Control > Preferensi > Bahasa & Daerah > Bahasa. Halaman menemukan
+katalog terpasang dan menampilkan nama asli mereka. Ini menyimpan `ARGVUS_LANGUAGE` in
+`$XDG_CONFIG_HOME/locale.conf` (baku `~/.config/locale.conf`), independen
+`LANG`; menghasilkan sebuah sistem lokal tidak diperlukan. Portugis Brasil (`pt-BR`) dan
+Portugis Eropa (`pt-PT`) adalah pilihan yang terpisah.
+Pilihan tidak diubah `/etc/locale.conf` atau regional `LANG` Mengatur.
+Komentar dan pengaturan kategori regional dipertahankan. Panel Kendali dijalankan ulang
+setelah menyimpan; memulai sesi baru untuk menerapkan bahasa di seluruh komponen sesi.
+Pengguna tak terkonfigurasi memakai bahasa Inggris. Kontrol preferensi Locale Regional terpisah
+`LANG`, format regional, dan aplikasi pihak ketiga. Pelahap log masuk berjalan
+sebelum preferensi pengguna tersedia dan mempertahankan layanan sendiri-akun
+bahasa, bahasa Inggris secara default.
+Varian regional memakai katalog terinstal untuk bahasa mereka ketika tepat
+katalog tidak ada; sebagai contoh `es_MX.UTF-8` gunakan `es-ES`. `zh-Hans` memilih
+Cina sederhana. Cina tradisional (`zh-Hant`, `zh-TW`, `zh-HK`, `zh-MO`)
+tidak dipetakan diam-diam untuk Sederhana Cina dan jatuh kembali ke Inggris.
 
 ## Katalog dan kontribusi
 

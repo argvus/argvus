@@ -1,4 +1,4 @@
-use argvus_i18n::I18n;
+use argvus_i18n::{I18n, TextDirection};
 use std::collections::HashMap;
 
 const MESSAGES: &[(&str, &str)] = &[
@@ -49,7 +49,10 @@ const MESSAGES: &[(&str, &str)] = &[
   ),
 ];
 
-pub struct Messages(HashMap<&'static str, String>);
+pub struct Messages {
+  translations: HashMap<&'static str, String>,
+  right_to_left: bool,
+}
 impl Messages {
   pub fn load() -> Self {
     let catalog = I18n::new("du").ok();
@@ -64,9 +67,21 @@ impl Messages {
         (key, translated)
       })
       .collect();
-    Self(values)
+    Self {
+      translations: values,
+      right_to_left: catalog
+        .as_ref()
+        .is_some_and(|catalog| catalog.direction() == TextDirection::RightToLeft),
+    }
   }
   pub fn get(&self, key: &'static str) -> &str {
-    self.0.get(key).map(String::as_str).unwrap_or(key)
+    self
+      .translations
+      .get(key)
+      .map(String::as_str)
+      .unwrap_or(key)
+  }
+  pub fn is_rtl(&self) -> bool {
+    self.right_to_left
   }
 }

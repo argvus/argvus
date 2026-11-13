@@ -5,32 +5,32 @@ description: Dil katalogları, seçimi ve Unicode desteği.
 
 # ARGVUS'un Uluslararasılaşması
 
-ARGVUS, İngilizce (`en-US`), Brezilya Portekizcesi (`pt-BR`), İspanyolca (`es-ES`),
-Fransızca (`fr-FR`), İtalyanca (`it-IT`), Almanca (`de-DE`), Rusça (`ru-RU`), Basitleştirilmiş
-Çince (`zh-CN`), Japonca (`ja-JP`) ve Korece (`ko-KR`). İngilizce kanoniktir
-katalog ve geri dönüş. Sekiz ek çeviri makineyle üretildi
-çeviri yardımı ve teknik düzeltmeler; bağımsız anadil konuşmacısı incelemesi
-sertifikalandırılmamıştır.
+ARGVUS Gemiler 18 arayüz dilleri: Arapça (İngilizce)`ar`), Bengali (`bn-BD`Alman (İngilizce).`de-DE`)
+İngilizce (İngilizce)`en-US`İspanyolca (İngilizce).`es-ES`Fransızca (İngilizce).`fr-FR`)`hi-IN`), Endonezya
+(`id-ID`İtalya (İngilizce).`it-IT`Japonya (İngilizce).`ja-JP`Kore (İngilizce)`ko-KR`), Brezilyalı Portekiz
+(`pt-BR`Avrupa Portekiz (İngilizce)`pt-PT`Rusya (İngilizce).`ru-RU`Türkçe (İngilizce).`tr-TR`), Urdu
+(`ur-PK`Vietnam (İngilizce).`vi-VN`) ve Basitleştirilmiş Çin (İngilizce).`zh-CN`). İngilizce İngilizcedir
+Canonical katalog ve fallback. Çeviriler ile üretildi AI Yardım ve yardım ve yardım
+Teknik düzeltmeler; bağımsız yerli-speaker incelemesi onaylanmadı.
 
 ## Bir dil seçin
 
-Denetim Merkezi > Tercihler > Dil ve Bölge > Dil veya Ayarlar > öğesini açın.
-Dil. Sayfa, yüklü katalogları keşfeder ve yerel adlarını gösterir.
-`LANG`'yu `$XDG_CONFIG_HOME/locale.conf`'ya kaydeder (varsayılan `~/.config/locale.conf`).
-Önce Sistem Yerel Ayarlarında ilgili UTF-8 sistem yerel ayarını etkinleştirin. Örnekler
-`es_ES.UTF-8`, `zh_CN.UTF-8`, `ja_JP.UTF-8` ve `ko_KR.UTF-8` içerir.
-
-Tercih, `/etc/locale.conf`'yu değiştirmez. Yorumlar ve bölgesel kategori
-ayarlar korunur. Kaydedildikten sonra Kontrol Paneli yeniden başlatılır; oturumu kapat ve
-Oturum boyunca dili uygulamak için tekrar içeri girin. Yapılandırılmamış kullanıcıların kullanımı
-İngilizce. Devralınan ortam değişkenleri ve eski ARGVUS dil dosyaları
-bu tercihi değiştirin. Oturum açma selamlayıcısı, kullanıcının tercihi yapılmadan önce çalışır.
-mevcuttur ve kendi hizmet hesabı dilini (varsayılan olarak İngilizce) korur.
-
-Bölgesel değişkenler, kesin bir bilgi olduğunda kendi dilleri için yüklü kataloğu kullanır.
-katalog yok; örneğin `es_MX.UTF-8`, `es-ES`'yu kullanır. `zh-Hans` seçer
-Basitleştirilmiş Çince. Geleneksel Çince (`zh-Hant`, `zh-TW`, `zh-HK`, `zh-MO`)
-Basitleştirilmiş Çince ile sessizce eşleştirilmez ve İngilizceye geri döner.
+Open Control Center > Tercihler > Dil & Bölge > Dil. Sayfa keşfeder
+Oluşturulan kataloglar ve yerli isimlerini gösterir. Tasarruf eder `ARGVUS_LANGUAGE` in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in
+`$XDG_CONFIG_HOME/locale.conf` (default `~/.config/locale.conf`), bağımsız olarak
+`LANG`; Bir sistemi yerelleştirmek gerekli değildir. Brezilyalı Portekiz (İngilizce).`pt-BR`)
+Avrupa Portekiz (İngilizce)`pt-PT`) ayrı seçimlerdir.
+Tercih değişmez `/etc/locale.conf` Ya da bölgesel `LANG` ayarlayın.
+Yorumlar ve bölgesel kategori ayarları korunmuştur. Kontrol Panel yeniden başlatılıyor
+Tasarrufdan sonra; oturum bileşenleri boyunca dili uygulamak için yeni bir oturum başlat.
+Yapılanmamış kullanıcılar İngilizce kullanır. Ayrı Bölgesel Yerel tercih kontrolleri
+`LANG`, bölgesel formatlama ve üçüncü taraf uygulamaları. Giriş selamlayıcı çalışır
+Kullanıcının tercihi mevcut değildir ve kendi hizmet-accountlarını korur
+Dil, İngilizce varsayılan olarak.
+Bölgesel varyantlar, tam olarak belirlenmiş katalogu dil için kullanırlar
+katalog yok; örneğin `es_MX.UTF-8` kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım kullanım `es-ES`. `zh-Hans` Seçiciler
+Basitleştirilmiş Çin. Geleneksel Çin (İngilizce)`zh-Hant`, `zh-TW`, `zh-HK`, `zh-MO`)
+Basitleştirilmiş Çin'e sessizce haritalanmadı ve İngilizce'ye geri döndü.
 
 ## Kataloglar ve katkılar
 

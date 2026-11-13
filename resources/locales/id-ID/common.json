@@ -1,0 +1,8 @@
+{
+  "save": "Simpan",
+  "cancel": "Batal",
+  "close": "Tutup",
+  "welcome": "Selamat datang, {name}!",
+  "updates.available.one": "{count} tersedia pemutakhiran",
+  "updates.available.other": "{count} pemutakhiran tersedia"
+}

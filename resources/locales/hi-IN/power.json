@@ -1,0 +1,20 @@
+{
+  "menu.lock": "लॉक",
+  "menu.suspend": "निलंबित",
+  "menu.logout": "लॉग आउट",
+  "menu.reboot": "रिबूट",
+  "menu.shutdown": "शट डाउन",
+  "menu.launcher_missing": "Rofi मेनू लॉन्चर नहीं मिला।.",
+  "menu.unsupported_launcher": "Unsupported मेन्यू लॉन्चर: {launcher}",
+  "idle.timeout.title": "लॉक टाइमआउट",
+  "idle.timeout.one_minute": "1 मिनट",
+  "idle.timeout.minutes": "{count} मिनट",
+  "idle.timeout.never": "कभी नहीं",
+  "idle.timeout.config_missing": "hypridle config नहीं मिला: {path}",
+  "idle.timeout.invalid": "Invalid lock timeout: {timeout}",
+  "idle.timeout.notification": "निष्क्रियता लॉक: {timeout}",
+  "keep_awake.title": "Awake",
+  "keep_awake.enabled": "रखना सक्षम",
+  "keep_awake.disabled": "रखना Awake विकलांग",
+  "dpms.usage": "उपयोग: {command} {arguments}"
+}

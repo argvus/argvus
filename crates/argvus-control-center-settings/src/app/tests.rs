@@ -318,7 +318,14 @@ fn breadcrumbs_show_the_home_card_of_each_page() {
       Page::DefaultApps,
       "Control Center > Preferences > Default Apps",
     ),
-    (Page::Language, "Control Center > Settings > Language"),
+    (
+      Page::Language,
+      "Control Center > Preferences > Language & Region > Language",
+    ),
+    (
+      Page::RegionalLocale,
+      "Control Center > Preferences > Language & Region > Regional Locale",
+    ),
     (
       Page::LocaleRegion,
       "Control Center > Preferences > Language & Region",
@@ -415,7 +422,7 @@ fn breadcrumbs_are_translated_in_pt_br() {
     ),
     (
       Page::Language,
-      "Central de Controle > Configurações > Idioma",
+      "Central de Controle > Preferências > Idioma e Região > Idioma",
     ),
   ];
   for (page, expected) in cases {

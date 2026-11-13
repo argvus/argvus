@@ -1,0 +1,11 @@
+{
+  "system-monitor.title.cpu": "[ نقشہ ]",
+  "system-monitor.title.memory": "میموریل گارڈ",
+  "system-monitor.title.gpu": "[ نقشہ ]",
+  "system-monitor.help.gpu": "دکھا date=",
+  "system-monitor.title.overview": "سسٹم مانیٹر",
+  "system-monitor.live": "اِس شمارے میں",
+  "system-monitor.footer.close": "بند",
+  "system-monitor.unavailable": "بوٹ شروع نہ ہو سکا۔ بند کرنے پر مجبور.",
+  "system-monitor.gpu.unavailable": "کوئی بھی ایم پی ایچ000 موٹرز دستیاب نہیں ہیں۔ چیکبپ ایس پی ایچ001 یو آر ایل کی حمایت، فراہم کرنے والی لائبریریز اور ڈیوائس رسائی."
+}

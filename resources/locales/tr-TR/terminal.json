@@ -1,0 +1,12 @@
+{
+  "usage": "Kullanım:\n argvus-terminal [kitty seçenekleri]\n argvus-terminal --apply [Buraya]\n argvus-terminal --print-config [Buraya]\n argvus-terminal --print-tui-config [Buraya]\n\nSeçenekler:\n --class  Set the Set the Set the Set Kitty Pencere sınıfı.\n --font-profile < Profil> terminal veya uygulamalar.\n --tui Kullanın ARGVUS TUI Kitty Profil.\n -e  [args...] Execute a command in Kitty.",
+  "class_requires_value": "--class bir değer gerektirir",
+  "font_profile_requires_value": "--font-profile bir değer gerektirir",
+  "unsupported_font_profile": "Desteklenen font profili: {profile}",
+  "kitty_not_installed": "Kitty yüklü değil",
+  "config_not_found": "Kitty yapılandırma {path} altında bulunamadı",
+  "tui_config_not_found": "Kitty TUI yapılandırma {path} altında bulunamadı",
+  "cache_create_failed": "Kitty runtime önbellek {path} oluşturabilir",
+  "cache_write_failed": "Kitty runtime cache at {path}",
+  "cache_lock_failed": "Kitty runtime önbelleği {path} kilitleyemez"
+}

@@ -203,9 +203,15 @@ Henüz sayfada değil: anahtar sunucusunda ada veya e-postaya göre anahtar aran
 
 Bu kartta Dil (bölgesel yerel ayar), Saat Dilimi, Tarih ve Saat, Sistem Yerel Ayarları ve Klavye Düzeni listelenir ve her biri doğrudan evden açılır. Klavye sayfaları aynı zamanda varyant ve konsol tuş haritasını da içerir. Ana sayfa araması ayrıca klavye kısayollarını ve fare/dokunmatik yüzey ayarlarını doğrudan ayar yolları olarak ortaya çıkarır.
 
-Dil listesi yüklü katalogları keşfeder ve on dilin tümü için yerel adları gösterir. Seçmeden önce ilgili UTF-8 sistem yerel ayarını etkinleştirin.
+Bu kart dili listeler Dil (the This card list Language (the This card ARGVUS arayüz dili), Bölgesel Locale, Time Zone, Date & Time, System Locales ve Klavye Layout. Dil 18 dilli seçici açılır; Bölgesel Locale bölgesel formatlar ve üçüncü taraf uygulamalar için kullanılan yerel ayarlar.
 
-Hem **Tercihler > Dil ve Bölge > Dil** hem de **Ayarlar > Dil** aynı kullanıcı tercihini kaydeder: $XDG_CONFIG_HOME/locale.conf'daki `LANG` (varsayılan  `$XDG_CONFIG_HOME/locale.conf` `~/.config/locale.conf`), örneğin `LANG=en_US.UTF-8`. Yorumlar ve bölgesel değişkenler korunur. Hiçbir global dosya veya paralel ARGVUS dil ayarı yazılmaz. Yapılandırılmamış bir kullanıcı İngilizce öğrenir; eski `session.language` ve `data/language` dosyaları yoksayılır. Dili oturumun tamamına ve uygulamalara uygulamak için oturumu kapatıp tekrar açın.
+**Preferences > Dil & Bölge > Dil** kurtarır `ARGVUS_LANGUAGE` in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in in `$XDG_CONFIG_HOME/locale.conf` (normal olarak `~/.config/locale.conf`) `ARGVUS_LANGUAGE=pt-PT`.Değişir ARGVUS Uygulamaları ve yüzeyleri korurken `LANG` Bölgesel formatlama ve üçüncü taraf uygulamaları için. Kontrol Panel hemen yeniden başlar; oturum bileşenleri boyunca dili uygulamak için yeni bir seans başlatır. Bir arayüz dili seçmek yönetici izni gerektirmez veya `locale-gen`.
+
+**Regional Locale** kurtarır `LANG` Aynı dosyada ve bölgesel formatları ve üçüncü taraf uygulamaları tarafından kullanılan dili kontrol eder. Seçilmiş onun seçilmiş UTF-8 Sistem yereli zaten oluşturulmalıdır.
+
+**Sistem Locales ** değişiklikler `/etc/locale.gen` Ve çalışır ve çalışır `locale-gen`Ancak bunu uygulamak yönetici izni gerektirir.
+
+**Regional Locale** aynı dosyada ve bölgesel formatları ve üçüncü taraf uygulamaları tarafından kullanılan dili kurtarır. Seçilen UTF-8 sistemi yerele zaten oluşturulmalıdır.
 
 **Sistem Yerel Ayarları**, `/etc/locale.gen`'yu değiştirir ve `locale-gen`'yu çalıştırır; dolayısıyla bunu uygulamak için yönetici yetkilendirmesi gerekir. Altbilginin üzerindeki kalıcı **[WARN]** bildirimi, yönetim ayarlarına sahip sayfaları tanımlar. Aynı bildirim, saat dilimi, tarih/saat, ana bilgisayar adı, konsol anahtar haritası, hesap ve grup düzenleme, güvenlik duvarı, sistem hizmetleri, CPU yöneticisi, güç profilleri ve politikaları, önyükleme yapılandırması, paket işlemleri, anlık görüntüler ve korumalı ağ değişikliklerini kapsar. Kişisel tercihler, kullanıcı hizmetleri ve salt okunur sayfalar bu bildirimi almaz. Bildirim bilgilendirme amaçlıdır; Yetkilendirme yalnızca bir eylemin gerektirdiği durumlarda istenir.
 

@@ -1,0 +1,7 @@
+{
+  "usage": "استعمال کنندہ: Hyprlock-theme.sh [حوالہ درکار]۔--invalidate[]",
+  "invalid_active_theme": "Hyprlock کے لیے سرگرم موضوع: {theme}",
+  "theme_not_found": "Hyprlock موضوع نہیں ملا: {theme}",
+  "password_placeholder": "پاس ورڈ",
+  "theme_applied": "مُنہ {theme} تقریروں کے ساتھ درخواست دینا #{accent}. ."
+}

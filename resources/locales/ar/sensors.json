@@ -1,0 +1,10 @@
+{
+  "sensors.command_failed": "لا يمكن تشغيل أجهزة الاستشعار",
+  "sensors.invalid_data": "لا يمكن قراءة أجهزة الاستشعار JSON",
+  "sensors.no_sensors": "لم يتم العثور على أجهزة استشعار درجة الحرارة.",
+  "sensors.title": "أجهزة استشعار درجة الحرارة",
+  "sensors.live": "LIVE {",
+  "sensors.loading": "أجهزة استشعار القراءة..",
+  "sensors.unavailable": "القراءات غير متاحة ارجع تلقائياً.",
+  "sensors.shortcuts": "تحديث كل ثانيتين"
+}

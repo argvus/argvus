@@ -1,0 +1,12 @@
+{
+  "usage": "Sử dụng:\n argvus-terminal [tùy chọn mỉa mai]\n argvus-terminal --apply [theme]\n argvus-terminal --print-config [theme]\n argvus-terminal --print-tui-config [theme]\n\nTùy chọn:\n --class < Class> Đặt Kitty lớp học cửa sổ.\n --font-profile Dịch bởi Vũ Hạnh, Mai Linh, Nga, Huy Tô, Yuki, Ann, Phương\n --tui Sử dụng ARGVUS TUI Kitty Hồ sơ.\n -e Silence: [ags...] Thực hiện lệnh trong Kitty.",
+  "class_requires_value": "--class cần một giá trị",
+  "font_profile_requires_value": "--font-profile cần một giá trị",
+  "unsupported_font_profile": "Hồ sơ phông chữ không được hỗ trợ:{profile}",
+  "kitty_not_installed": "Kitty chưa cài đặt",
+  "config_not_found": "Không tìm thấy cấu hìnhKitty dưới{path}",
+  "tui_config_not_found": "Không tìm thấy cấu hìnhTUI dưới{path}",
+  "cache_create_failed": "Không thể tạo bộ đệm thời gian chạy tại{path}",
+  "cache_write_failed": "Không thể ghi bộ nhớ tạm thời chạy tại{path}",
+  "cache_lock_failed": "Không thể khóa bộ nhớ tạm thời chạy tại{path}"
+}

@@ -148,6 +148,12 @@ pub fn run() -> glib::ExitCode {
 
 impl ClockApp {
   fn new(application: &gtk::Application) -> Rc<Self> {
+    let texts = Catalog::load(DOMAIN);
+    gtk::Widget::set_default_direction(if texts.is_rtl() {
+      gtk::TextDirection::Rtl
+    } else {
+      gtk::TextDirection::Ltr
+    });
     let mut notice = None;
     let paths = match AppDirs::for_app("clock") {
       Ok(directories) => Some(Paths {
@@ -180,7 +186,7 @@ impl ClockApp {
 
     Rc::new(Self {
       application: application.clone(),
-      texts: Catalog::load(DOMAIN),
+      texts,
       calendar: Calendar::load(),
       paths,
       settings: RefCell::new(settings),

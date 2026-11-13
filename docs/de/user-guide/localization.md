@@ -2,29 +2,26 @@
 title: Lokalisierung
 description: Verwenden Sie ARGVUS auf Englisch oder Portugiesisch.
 ---
-`argvus-i18n` stellt die gemeinsamen Kataloge, den Befehl `argvus i18n validate` und das QML-Modul `org.argvus.i18n` bereit. ARGVUS liefert derzeit englische und portugiesische Kataloge aus.
 
-Native Anwendungen und Shell-Komponenten verwenden die gemeinsamen Kataloge. Ein übersetzter String kann daher von mehr als einem Repository verwendet werden.
+`argvus-i18n` stellt die freigegebenen Kataloge bereit, die `argvus i18n validate` Befehl und die QML Modul `org.argvus.i18n`. ARGVUS Schiffe 18 Schnittstellensprachen: Arabisch, Bengalisch, Deutsch, Englisch, Spanisch, Französisch, Hindi, Indonesisch, Italienisch, Japanisch, Koreanisch, Brasilianisches Portugiesisch, Europäisches Portugiesisch, Russisch, Türkisch, Urdu, Vietnamesisch und Vereinfachtes Chinesisch.
 
-Verwenden Sie **Control Center → Sprache & Region**, um die Sprache, die regionale Gebietsschema-Einstellung, die generierten Systemgebietsschemata, die Zeitzone, Datum/Uhrzeit und die Tastatur zu konfigurieren. Die aktuellen ARGVUS-Kataloge bieten Englisch und Portugiesisch; dies ist getrennt von der Liste der vom Betriebssystem generierten Systemgebietsschemata.
+Eingeboren ARGVUS Anwendungen und Shell-Komponenten verbrauchen die freigegebenen Kataloge. Ein übersetzter String kann daher von mehr als einem Repository verwendet werden. Arabisch und Urdu verwenden rechts nach links Layout in der unterstützten GTK, Quickshell und Terminal-Schnittstellen.
 
-Das Ändern der Anzeigesprache speichert die ARGVUS-Einstellung und startet `argvus-control-panel.service` automatisch neu, sodass die Systemsteuerung die Änderung sofort widerspiegelt. Andere Anwendungen und Oberflächen der Shell benötigen möglicherweise einen Sitzungsladevorgang oder eine neue Sitzung. Das Erstellen oder Ändern von `/etc/locale.gen`-Einträgen erfordert eine Autorisierung und startet `locale-gen`; die Auswahl eines nicht generierten Gebietsschemas wird abgelehnt. Tastaturlayout, Variante und Konsolen-Tastaturbelegung sind separate Einstellungen und sollten nicht mit der Benutzerschnittstellensprache verwechselt werden.
+Verwenden Sie ** Control Center → Präferenzen → Sprache & Region → Sprache**, um die ARGVUS Schnittstellensprache. Dies schreibt `ARGVUS_LANGUAGE` bis `$XDG_CONFIG_HOME/locale.conf` (normalerweise) `~/.config/locale.conf`. Zum Beispiel: `ARGVUS_LANGUAGE=pt-PT` Wählen Sie europäisches Portugiesisch. Brasilianisches Portugiesisch`pt-BR`) ist eine separate Option. Der Sprachkatalog wird installiert mit ARGVUSEs hängt also nicht von `locale-gen`.
 
-## Wenn Umgebungsvariablen die Änderung überschreiben
+Die Systemsteuerung wird automatisch neu gestartet, nachdem sich die Schnittstellensprache geändert hat. Starten Sie eine neue Sitzung, um sie auf Sitzungskomponenten anzuwenden. Die separate **Regional Locale** Einstellung schreibt `LANG` und kontrolliert regionale Formate und Drittanwendungen. Es erfordert ein generiertes System locale; ermöglicht eine in `/etc/locale.gen` Läufe `locale-gen` mit Administratorautorisierung. Tastaturlayout, Variante und Konsolen-Keymap sind separate Einstellungen.
 
-ARGVUS-Anwendungen erkennen die Sprache zunächst aus der vorhandenen ARGVUS-Sprachdatei, dann aus `LC_ALL`, `LC_MESSAGES` und `LANG`. Lokale Umgebungsvariablen können daher dazu führen, dass die Systemsteuerung eine Sprachänderung scheinbar ignoriert, insbesondere wenn ein Benutzerdienst oder eine grafische Sitzung eine ältere Umgebung beibehält.
+## Wenn Umgebungsvariablen die Änderung außer Kraft setzen
 
-Überprüfen Sie die effektiven Werte mit:
+ARGVUS Anträge lesen `ARGVUS_LANGUAGE` vom Benutzer `locale.conf`Wenn sie fehlt, lösen sie die regionale `LANG` Wert für einen installierten Katalog. Vererbte Locale-Variablen überschreiben keine explizite `ARGVUS_LANGUAGE` Präferenz. Anwendungen von Drittanbietern verwenden weiterhin das regionale System.
+
+Prüfen Sie die effektiven Werte mit:
 
 ```sh
 systemctl --user show-environment | rg '^(LANG|LC_|ARGVUS)='
 locale
-echo $LANG
+printf '%s\n' "$LANG"
 localectl status
 ```
-Wenn `~/.config/locale.conf` existiert und `LANG`, `LC_ALL` oder `LC_MESSAGES` definiert, benennen Sie es vorübergehend um, damit diese Werte nicht erneut eingeführt werden. Erstellen Sie stattdessen eine Sicherungskopie, anstatt es zu löschen:
 
-```sh
-mv ~/.config/locale.conf ~/.config/locale.conf.backup
-```
-Wenden Sie die Sprache erneut in **Systemsteuerung → Gebietsschema & Region** an. Die Systemsteuerung wird automatisch neu gestartet; wenn andere Komponenten weiterhin die vorherige Sprache anzeigen, melden Sie sich ab und wieder an, damit die grafische Sitzung und `systemd --user` die neue Umgebung erhalten. Wiederholen Sie danach die Diagnosebefehle. Siehe [Umgebungsvariablen](/docs/reference/environment-variables/) für die technischen Verträge und Prioritäten.
+Prüfen Sie: `~/.config/locale.conf` enthält eine gültige `ARGVUS_LANGUAGE=<catalog>` Wert. Um die regionale Formatierung oder die Anwendungssprache eines Drittanbieters zu ändern, verwenden Sie **Regional Locale** und wählen Sie ein generiertes Locale aus. Die Systemsteuerung wird nach den Einstellungen neu gestartet; melden Sie sich aus und in, wenn andere Sitzungskomponenten noch die alte Schnittstellensprache anzeigen. Siehe [Umweltvariablen](/docs/reference/environment-variables/) für die technischen Verträge und Vorrang.

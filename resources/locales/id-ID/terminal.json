@@ -1,0 +1,12 @@
+{
+  "usage": "Penggunaan:\n argvus-terminal [pilihan kitty]\n argvus-terminal --apply [Tema]\n argvus-terminal --print-config [Tema]\n argvus-terminal --print-tui-config [Tema]\n\nOpsi:\n --class < kelas > Set Kitty kelas jendela.\n --font-profile < profile > terminal atau aplikasi.\n --tui Gunakan ARGVUS TUI Kitty profil.\n -e < perintah > [args...] Jalankan perintah dalam Kitty.",
+  "class_requires_value": "--class membutuhkan sebuah nilai",
+  "font_profile_requires_value": "--font-profile membutuhkan sebuah nilai",
+  "unsupported_font_profile": "Profil fonta tidak didukung: {profile}",
+  "kitty_not_installed": "[PH000] belum terpasang",
+  "config_not_found": "konfigurasi tidak ditemukan dibawah {path}",
+  "tui_config_not_found": "Konfigurasi tidak ditemukan di bawah {path}",
+  "cache_create_failed": "Tidak dapat membuat singgahan waktu jalan {path}",
+  "cache_write_failed": "Tak bisa menulis singgahan waktu jalan {path}",
+  "cache_lock_failed": "Tidak dapat mengunci singgahan waktu jalan {path}"
+}

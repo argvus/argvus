@@ -1,0 +1,7 @@
+{
+  "usage": "Sử dụng: hyplock-theme.sh--invalidate]",
+  "invalid_active_theme": "Name {theme}",
+  "theme_not_found": "Không tìm thấy sắc thái Hypprilock: {theme}",
+  "password_placeholder": "Mật khẩu",
+  "theme_applied": "Name {theme} áp dụng với giọng điệu #{accent}."
+}

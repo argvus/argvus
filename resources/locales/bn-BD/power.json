@@ -1,0 +1,20 @@
+{
+  "menu.lock": "লক",
+  "menu.suspend": "স্থগিত করুন",
+  "menu.logout": "প্রস্থান করুন",
+  "menu.reboot": "পুনরারম্ভ",
+  "menu.shutdown": "বন্ধ করুন",
+  "menu.launcher_missing": "Rofi লঞ্চার পাওয়া যায়নি।",
+  "menu.unsupported_launcher": "অসমর্থিত মেনু লঞ্চার: {launcher}",
+  "idle.timeout.title": "লক করার সময়সীমা",
+  "idle.timeout.one_minute": "১ মিনিট",
+  "idle.timeout.minutes": "{count} মিনিট",
+  "idle.timeout.never": "কখনো নয়",
+  "idle.timeout.config_missing": "উচ্চ পর্যায়ের কনফিগারেশন পাওয়া যায়নি: {path}",
+  "idle.timeout.invalid": "টাইম- আউট নির্ধারিত সময়সীমা: %s {timeout}",
+  "idle.timeout.notification": "বিচ্ছিন্নকরণ লক: {timeout}",
+  "keep_awake.title": "সচেতন থাক",
+  "keep_awake.enabled": "রাখো সচেতন থাক",
+  "keep_awake.disabled": "রাখো নিষ্ক্রিয়",
+  "dpms.usage": "ব্যবহারপ্রণালী: {command} {arguments}"
+}

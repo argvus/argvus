@@ -1,0 +1,13 @@
+{
+  "launcher.class_requires_value": "argvus-tui-terminal: --classيتطلب قيمة",
+  "launcher.option_requires_value": "argvus-tui-terminal: {option}يتطلب قيمة",
+  "yazi.rename": "الاسم",
+  "yazi.open_terminal": "مفتوحة في محطة طرفية",
+  "yazi.move_to_trash": "تحركوا إلى القمامة",
+  "yazi.secure_destroy": "التدمير المأمون (Smog)",
+  "yazi.empty_trash": "قمامة فارغة",
+  "yazi.open_file_smart": "ملف مفتوح بذكاء",
+  "yazi.open_vscode": "إفتح مع VSCode",
+  "yazi.create_zip": "Create ZIP archive (zip)",
+  "yazi.open_file_roller": "إفتح مع (فايل رولر)"
+}

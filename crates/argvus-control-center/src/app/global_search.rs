@@ -83,6 +83,8 @@ impl App {
       (_, "welcome") => self.open_destination(crate::home::HomeDestination::Welcome),
       #[cfg(feature = "apps")]
       (_, "default-apps") => self.open_settings(Page::DefaultApps),
+      #[cfg(feature = "language")]
+      (_, "language") => self.open_settings(Page::Language),
       ("hyprland", "windows") => crate::hyprland::open_windows(self),
       #[cfg(feature = "apps")]
       (_, "window-rules" | "windows-rules") => self.open_settings(Page::WindowRules),

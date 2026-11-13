@@ -1,0 +1,20 @@
+{
+  "menu.lock": "Kunci",
+  "menu.suspend": "Suspensi",
+  "menu.logout": "Keluar",
+  "menu.reboot": "Reboot",
+  "menu.shutdown": "Matikan",
+  "menu.launcher_missing": "Peluncur menu [PH000] tidak ditemukan.",
+  "menu.unsupported_launcher": "Peluncur menu tidak didukung: {launcher}",
+  "idle.timeout.title": "Kunci waktu",
+  "idle.timeout.one_minute": "1 menit",
+  "idle.timeout.minutes": "{count} menit",
+  "idle.timeout.never": "Tidak pernah",
+  "idle.timeout.config_missing": "konfig hypridle tidak ditemukan: {path}",
+  "idle.timeout.invalid": "Tenggat kunci tidak valid: {timeout}",
+  "idle.timeout.notification": "Kunci aktivitas: {timeout}",
+  "keep_awake.title": "Tetap Awake",
+  "keep_awake.enabled": "Simpan Awake diaktifkan",
+  "keep_awake.disabled": "Simpan Awake dinonaktifkan",
+  "dpms.usage": "Penggunaan: {command} {arguments}"
+}

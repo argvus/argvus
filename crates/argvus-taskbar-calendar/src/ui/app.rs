@@ -631,6 +631,11 @@ pub fn run_ui(
   let app =
     RelmApp::new("sh.argvus.Calendar").with_args(vec!["argvus-taskbar-calendar".to_string()]);
   app.allow_multiple_instances(true);
+  gtk::Widget::set_default_direction(if Language::resolve(&settings.locale.language).is_rtl() {
+    gtk::TextDirection::Rtl
+  } else {
+    gtk::TextDirection::Ltr
+  });
   let application = relm4::main_application();
   let _application_hold = application.hold();
   app.run::<AppModel>(AppInit {

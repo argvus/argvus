@@ -1,5 +1,6 @@
 {
   "locale": "it-IT",
   "name": "Italian (Italy)",
-  "native_name": "Italiano (Italia)"
+  "native_name": "Italiano (Italia)",
+  "direction": "ltr"
 }

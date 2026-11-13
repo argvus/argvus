@@ -1,1 +1,6 @@
-{"locale":"pt-BR","name":"Portuguese (Brazil)","native_name":"Português (Brasil)"}
+{
+  "locale": "pt-BR",
+  "name": "Portuguese (Brazil)",
+  "native_name": "Português (Brasil)",
+  "direction": "ltr"
+}

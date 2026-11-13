@@ -1,0 +1,11 @@
+{
+  "system-monitor.title.cpu": "Theo dõiCPU",
+  "system-monitor.title.memory": "Bộ nhớ",
+  "system-monitor.title.gpu": "Theo dõiGPU",
+  "system-monitor.help.gpu": "Hiện GPU Bảng điều khiển (lên đến sáu GPUs)",
+  "system-monitor.title.overview": "Bộ theo dõi hệ thống",
+  "system-monitor.live": "ĐƯỢC RỒI",
+  "system-monitor.footer.close": "Đóng",
+  "system-monitor.unavailable": "không thể khởi động btop. Nhấn Esc để đóng.",
+  "system-monitor.gpu.unavailable": "Không có máy đo mét. Kiểm tra hỗ trợ GPU, thư viện cung cấp và truy cập thiết bị."
+}

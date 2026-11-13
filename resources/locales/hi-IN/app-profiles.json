@@ -1,0 +1,13 @@
+{
+  "launcher.class_requires_value": "argvus-tui-terminal: --class को मूल्य की आवश्यकता होती है",
+  "launcher.option_requires_value": "argvus-tui-terminal: {option} को मूल्य की आवश्यकता होती है",
+  "yazi.rename": "नाम बदलें",
+  "yazi.open_terminal": "टर्मिनल में खोलें",
+  "yazi.move_to_trash": "कचरा",
+  "yazi.secure_destroy": "सुरक्षित रूप से नष्ट (धूम्रपान)",
+  "yazi.empty_trash": "खाली कचरा (स्मोग)",
+  "yazi.open_file_smart": "बुद्धिमानी से फ़ाइल खोलें",
+  "yazi.open_vscode": "VSCode के साथ खुला",
+  "yazi.create_zip": "ZIP संग्रह (zip) बनाएं",
+  "yazi.open_file_roller": "फ़ाइल रोलर के साथ खुला"
+}

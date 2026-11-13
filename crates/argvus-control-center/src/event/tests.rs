@@ -166,6 +166,32 @@ fn home_global_search_accepts_j_and_k_and_uses_arrows_for_navigation() {
   assert_eq!(app.search_query, "zzzz");
 }
 
+#[cfg(feature = "language")]
+#[test]
+fn global_language_search_opens_the_preferences_language_page() {
+  let mut app = App::new(InitialRoute::Home);
+  let entry = app
+    .search_registry
+    .entries()
+    .iter()
+    .find(|entry| entry.id == "settings.language")
+    .expect("interface language is searchable");
+  assert_eq!(entry.category, "preferences");
+  assert_eq!(entry.route, "settings/language");
+  let route = entry.route.clone();
+
+  app.open_search_route(&route);
+  assert_eq!(app.route, Route::Settings);
+  assert_eq!(
+    app.settings.page(),
+    argvus_control_center_settings::Page::Language
+  );
+  assert_eq!(
+    app.settings.breadcrumb(),
+    "Control Center > Preferences > Language & Region > Language"
+  );
+}
+
 #[test]
 fn clicking_home_search_field_focuses_global_search() {
   let mut app = App::new(InitialRoute::Home);

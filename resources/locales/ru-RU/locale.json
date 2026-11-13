@@ -1,5 +1,6 @@
 {
   "locale": "ru-RU",
   "name": "Russian (Russia)",
-  "native_name": "Русский (Россия)"
+  "native_name": "Русский (Россия)",
+  "direction": "ltr"
 }

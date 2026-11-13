@@ -1,0 +1,10 @@
+{
+  "sensors.command_failed": "سینسر نہیں چل سکتا۔",
+  "sensors.invalid_data": "سینسر نہیں پڑھ سکتے",
+  "sensors.no_sensors": "کوئی درجہ حرارت سینسر نہیں ملا۔.",
+  "sensors.title": "مایوسی کے عالم",
+  "sensors.live": "ایس . اے ",
+  "sensors.loading": "پڑھنے کے سینسر..",
+  "sensors.unavailable": "خواندگی غیر معمولی ہے۔ خود ذمہ‌داری اُٹھانا ۔.",
+  "sensors.shortcuts": "Esc بند · ہر 2 سیکنڈ کی تجدید کرتا ہے۔"
+}

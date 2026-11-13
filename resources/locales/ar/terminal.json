@@ -1,0 +1,12 @@
+{
+  "usage": "Usage:\nargvus-terminal [خيارات المهارات]\nargvus-terminal --apply [theme]\nargvus-terminal --print-config [theme]\nargvus-terminal --print-tui-config [theme]\n\nالخيارات:\n--class Kitty صف النافذة\n--font-profileالمحطة النهائية أو التطبيقات\n--tuiاستخدم ملف ARGVUS TUI Kitty\n-هنا نفذوا أمرًا في Kitty.",
+  "class_requires_value": "--classيتطلب قيمة",
+  "font_profile_requires_value": "--font-profileيتطلب قيمة",
+  "unsupported_font_profile": "Unsupported font profile: {profile}",
+  "kitty_not_installed": "Kittyلم يتم تركيبه",
+  "config_not_found": "Kittyتشكيل لم يعثر عليه تحت {path}",
+  "tui_config_not_found": "Kitty TUIتشكيل لم يعثر عليه تحت {path}",
+  "cache_create_failed": "لا يمكن أن يخلق Kitty مخبأ في {path}",
+  "cache_write_failed": "لا يمكن أن تكتب Kitty مخبأ طارئ {path}",
+  "cache_lock_failed": "لا يمكن قفل Kitty مخبأ طارئ {path}"
+}

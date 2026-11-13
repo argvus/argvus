@@ -1,5 +1,6 @@
 {
   "locale": "zh-CN",
   "name": "Chinese (Simplified)",
-  "native_name": "简体中文"
+  "native_name": "简体中文",
+  "direction": "ltr"
 }

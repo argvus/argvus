@@ -1,0 +1,8 @@
+{
+  "save": "Lưu",
+  "cancel": "Thôi",
+  "close": "Đóng",
+  "welcome": "Chào mừng, {name}Không!",
+  "updates.available.one": "Có thể cập nhật{count}",
+  "updates.available.other": "{count} Cập nhật sẵn sàng"
+}

@@ -267,6 +267,12 @@ impl App {
 
   fn locale_region_rows(&self) -> Vec<Row<Item>> {
     vec![
+      Row::submenu(
+        Item::Page(Page::Language),
+        self.label("control_center.language"),
+      )
+      .icon(icons::TRANSLATE)
+      .detail(self.lang.locale()),
       Row::submenu(Item::TimeZone, self.label("control_center.time_zone"))
         .icon(icons::CLOCK)
         .detail(non_empty(&self.datetime.time_zone)),

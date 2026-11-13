@@ -1,0 +1,7 @@
+{
+  "usage": "उपयोग: hyprlock-theme.sh [--invalidate]",
+  "invalid_active_theme": "Hyprlock के लिए अमान्य सक्रिय विषय: {theme}",
+  "theme_not_found": "Hyprlock थीम नहीं मिला: {theme}",
+  "password_placeholder": "पासवर्ड",
+  "theme_applied": "Hyprlock थीम {theme} उच्चारण #{accent} के साथ लागू होता है।."
+}

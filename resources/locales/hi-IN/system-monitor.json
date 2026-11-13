@@ -1,0 +1,11 @@
+{
+  "system-monitor.title.cpu": "CPU मॉनिटर",
+  "system-monitor.title.memory": "मेमोरी मॉनिटर",
+  "system-monitor.title.gpu": "GPU मॉनिटर",
+  "system-monitor.help.gpu": "GPU केवल पैनल दिखाएं (केवल छह GPUs तक)",
+  "system-monitor.title.overview": "सिस्टम मॉनिटर",
+  "system-monitor.live": "LIVE",
+  "system-monitor.footer.close": "Esc Close",
+  "system-monitor.unavailable": "btop शुरू नहीं किया जा सकता है। Esc को बंद करने के लिए प्रेस करें।.",
+  "system-monitor.gpu.unavailable": "No GPU मीट्रिक उपलब्ध हैं। Btop GPU समर्थन, प्रदाता पुस्तकालयों और डिवाइस एक्सेस की जाँच करें।."
+}

@@ -1,0 +1,13 @@
+{
+  "launcher.class_requires_value": "argvus-tui-terminal: --class قیمت درکار",
+  "launcher.option_requires_value": "argvus-tui-terminal: {option} قیمت درکار",
+  "yazi.rename": "نام بدلیں",
+  "yazi.open_terminal": "ٹرمینل میں کھولیں",
+  "yazi.move_to_trash": "دوبارہ شروع کریں",
+  "yazi.secure_destroy": "محفوظ‌ترین تباہی ( ساموج )",
+  "yazi.empty_trash": "غیر متصل",
+  "yazi.open_file_smart": "فولڈر کھولیں",
+  "yazi.open_vscode": "تنصیب کے ساتھ",
+  "yazi.create_zip": "وائیرڈ نیٹ ورک %000 محفوظہ بنائیں (zip)",
+  "yazi.open_file_roller": "فائل رولر کے ساتھ کھولیں"
+}

@@ -1769,6 +1769,7 @@ Ajustes aprovados junto com o plano da Fase 1:
 | D70 | (`network`) Escrita como o usuário da sessão, sem `pkexec`: o polkit do NetworkManager autoriza `wheel` local e pede senha aos demais pelo agente da sessão. Segredos (senha Wi-Fi/802.1X/PPPoE, chave privada, peers WireGuard com PSK, `vpn.secrets`) vão só pela stdin de `nmcli connection edit` e nunca são lidos de volta (exceto os peers, lidos com `-s` para não perder a PSK ao regravar). Como o `edit` sai com 0 mesmo recusando um valor, qualquer linha `Error` na stderr é falha. Salvar um perfil ativo pede confirmação e o reativa (`connection up`). | decidido (2026-10-27) |
 | D71 | (`network`) Excluir uma bridge, bond ou team exclui também os perfis de porta que apontam para ela (por UUID ou nome de interface), como o `nmtui`; a confirmação lista as portas. As portas são escolhidas no rascunho (um toggle por dispositivo Ethernet) e criadas ou apagadas no Salvar. | decidido (2026-10-27) |
 | D72 | (`network`) Perfis WireGuard passam a aparecer na página VPN (antes só tipos com "vpn" no nome). | decidido (2026-10-27) |
+| D73 | Idioma da interface fica em `Preferences > Language & Region > Language` (`Page::Language`) e grava `ARGVUS_LANGUAGE`. `Regional Locale` (`Page::RegionalLocale`) permanece separado e grava `LANG`; o seletor de interface usa catálogos instalados e não exige `locale-gen`. Breadcrumb, busca global e documentação usam o caminho da preferência. | decidido (2026-11-12) |
 
 ## System Doctor
 
@@ -1798,11 +1799,13 @@ Implementation and privilege contract: [Snapshot](snapshot.md).
 
 ## Locale por usuário e aviso administrativo
 
-`Preferences > Language & Region > Language` corresponde a `Page::RegionalLocale`.
-O arquivo `$XDG_CONFIG_HOME/locale.conf` persiste `LANG` e é a única fonte de
-idioma, inclusive em `Settings > Language`. Sem preferência válida, o padrão é
-inglês. Não há gravação de `/session/language` nem projeção paralela. O helper rejeita o antigo
-`locale set-lang` antes da elevação; somente `locale set-generated` é administrativo.
+`Preferences > Language & Region > Language` abre `Page::Language` e altera
+`ARGVUS_LANGUAGE` em `$XDG_CONFIG_HOME/locale.conf`. `Page::RegionalLocale`, na mesma
+seção, altera `LANG` e exige um locale de sistema já gerado. Isso mantém o idioma da
+interface separado dos formatos regionais e do idioma herdado por aplicativos de
+terceiros. O seletor de interface lista os catálogos ARGVUS instalados e não chama
+`locale-gen`; a preferência regional também não gera locales. Somente a página
+**System Locales** altera `/etc/locale.gen` por meio de `locale set-generated`.
 
 `argvus_tui::page::admin_warning` reserva linhas no fim do corpo, com quebra e
 `[WARN]` do componente de status, antes do conteúdo e dos overlays. Cada domínio

@@ -1,0 +1,10 @@
+{
+  "sensors.command_failed": "सेंसर नहीं चला सकता -j",
+  "sensors.invalid_data": "सेंसर JSON पढ़ा नहीं सकता",
+  "sensors.no_sensors": "कोई तापमान सेंसर नहीं मिला।.",
+  "sensors.title": "तापमान सेंसर",
+  "sensors.live": "LIVE · 2 s",
+  "sensors.loading": "पढ़ना सेंसर..",
+  "sensors.unavailable": "तापमान रीडिंग अनुपलब्ध हैं। स्वचालित रूप से पुनः प्राप्त करना।.",
+  "sensors.shortcuts": "Esc Close · अद्यतन हर 2 सेकंड"
+}

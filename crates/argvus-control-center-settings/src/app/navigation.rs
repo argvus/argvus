@@ -33,7 +33,6 @@ impl App {
       tr(self.lang, "control_center.users_groups")
     );
     let preferences_root = category_root(HomeCardId::Preferences.label(self.lang));
-    let settings_root = category_root(tr(self.lang, "control_center.settings"));
     match self.page() {
       Page::Main => root.to_string(),
       Page::DefaultApps => format!(
@@ -71,10 +70,9 @@ impl App {
         "{preferences_root} > {}",
         tr(self.lang, "control_center.date_time")
       ),
-      // The first Language & Region entry (formerly Regional Locale).
       Page::RegionalLocale => format!(
         "{language_root} > {}",
-        tr(self.lang, "control_center.language")
+        tr(self.lang, "control_center.regional_locale")
       ),
       Page::SystemLocales => format!(
         "{language_root} > {}",
@@ -201,10 +199,8 @@ impl App {
         tr(self.lang, "control_center.keyboard"),
         tr(self.lang, "control_center.console_keymap")
       ),
-      // Preferences keeps the interface language; Language & Region > Language
-      // is the regional locale page.
       Page::Language => format!(
-        "{settings_root} > {}",
+        "{language_root} > {}",
         tr(self.lang, "control_center.language")
       ),
       Page::UsersGroups => users_groups_root,

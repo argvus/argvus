@@ -31,6 +31,12 @@ impl Catalog {
     self.translations.as_ref().map_or("en-US", I18n::locale)
   }
 
+  pub fn is_rtl(&self) -> bool {
+    self.translations.as_ref().is_some_and(|translations| {
+      translations.direction() == argvus_i18n::TextDirection::RightToLeft
+    })
+  }
+
   pub fn tr(&self, key: &str) -> String {
     match &self.translations {
       Some(translations) => translations.tr(key),

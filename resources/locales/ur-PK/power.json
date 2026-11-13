@@ -1,0 +1,20 @@
+{
+  "menu.lock": "تالا لگاؤ",
+  "menu.suspend": "معطل",
+  "menu.logout": "لاگ آؤٹ",
+  "menu.reboot": "دوبارہ شروع",
+  "menu.shutdown": "بند",
+  "menu.launcher_missing": "جی پی ایچ000 مینو لانچر نہیں پائے گئے.",
+  "menu.unsupported_launcher": "غیر درج شدہ مینو: {launcher}",
+  "idle.timeout.title": "تالا لگاؤ",
+  "idle.timeout.one_minute": "1 منٹ",
+  "idle.timeout.minutes": "{count} منٹ",
+  "idle.timeout.never": "کبھی نہیں",
+  "idle.timeout.config_missing": "Hypr GmailTنہیں پائی گئی: {path}",
+  "idle.timeout.invalid": "انفنٹری وقت میں: {timeout}",
+  "idle.timeout.notification": "کرس اینڈرسن: {timeout}",
+  "keep_awake.title": "جاگو ",
+  "keep_awake.enabled": "برقرار رکھیں جاگو ",
+  "keep_awake.disabled": "برقرار رکھیں جاگو ",
+  "dpms.usage": "استعمال: {command} {arguments}"
+}

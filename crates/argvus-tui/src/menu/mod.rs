@@ -9,6 +9,6 @@ mod render;
 mod row;
 mod state;
 
-pub use render::{MenuStyle, draw_menu};
+pub use render::{MenuStyle, draw_menu, is_right_to_left, set_right_to_left};
 pub use row::{Emphasis, Row, RowKind, draft_actions};
 pub use state::{MenuEvent, MenuState};

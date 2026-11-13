@@ -443,7 +443,7 @@ fn launch_kitty(launch: Launch) -> Result<ExitCode, String> {
   // Kitty initializes XKB compose before starting the shell. A shell's later
   // LANG export cannot repair a compose table initialized in the C locale.
   if env::var_os("LANG").is_none_or(|value| value.is_empty()) {
-    terminal.env("LANG", argvus_i18n::user_locale());
+    terminal.env("LANG", argvus_i18n::user_regional_locale());
   }
   let error = terminal
     .args(["--class", &launch.class, "--config"])

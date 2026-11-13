@@ -209,9 +209,15 @@ Aún no en la página: buscar en el servidor de claves una clave por nombre o co
 
 Esta tarjeta lista el idioma (la configuración regional), la zona horaria, la fecha y hora, las localidades del sistema y la distribución del teclado, y cada uno se abre directamente desde la página principal. Las páginas del teclado también contienen la variante y el mapa de teclas de la consola. La búsqueda de la página principal también muestra atajos de teclado y configuraciones de ratón/panel táctil como rutas de configuración directas.
 
-La lista de idiomas detecta los catálogos instalados y muestra los nombres nativos de los diez idiomas. Habilite la localidad del sistema UTF-8 correspondiente antes de seleccionarla.
+Esta tarjeta lista Idioma (el ARGVUS idioma de la interfaz), Local Regional, Zona horaria, Fecha " Tiempo, Locales del sistema y Teclado. El lenguaje abre el selector de 18 idiomas; Regional Locale establece el local utilizado para formatos regionales y aplicaciones de terceros.
 
-Tanto **Preferencias > Idioma y región > Idioma** como **Configuración > Idioma** guardan la misma preferencia de usuario: `LANG` en `$XDG_CONFIG_HOME/locale.conf` (por defecto `~/.config/locale.conf`), por ejemplo `LANG=en_US.UTF-8`. Se preservan los comentarios y las variables regionales. No se escribe ningún archivo global ni configuración de idioma ARGVUS paralela. Un usuario no configurado recibe inglés; los archivos heredados `session.language` y `data/language` se ignoran. Cierra sesión y vuelve a iniciarla para aplicar el idioma a toda la sesión y las aplicaciones.
+**Preferencias de idioma " Región " Idioma** ahorra `ARGVUS_LANGUAGE` dentro `$XDG_CONFIG_HOME/locale.conf` (normalmente `~/.config/locale.conf`), por ejemplo `ARGVUS_LANGUAGE=pt-PT`Cambios ARGVUS aplicaciones y superficies preservando `LANG` para formato regional y aplicaciones de terceros. El Grupo de control se reinicia inmediatamente; inicia un nuevo período de sesiones para aplicar el idioma a lo largo de los componentes del período de sesiones. Seleccionar un lenguaje de interfaz no requiere autorización de administrador o `locale-gen`.
+
+**Secretal Locale** salva `LANG` en el mismo archivo y controla formatos regionales y el lenguaje utilizado por aplicaciones de terceros. Su seleccionado UTF-8 sistema locale debe ser generado ya.
+
+**System Locales** cambios `/etc/locale.gen` y carreras `locale-gen`, así que aplicarlo requiere autorización de administrador.
+
+**Regional Locale** guarda `LANG` en el mismo archivo y controla los formatos regionales y el idioma utilizado por aplicaciones de terceros. Su selecto UTF-8 sistema locale debe ya ser generado.
 
 **Locales del sistema** cambia `/etc/locale.gen` y ejecuta `locale-gen`, por lo que aplicarlo requiere autorización de administrador. Un aviso persistente **[WARN]** arriba del pie de página identifica las páginas con configuraciones administrativas. El mismo aviso cubre zona horaria, fecha/hora, nombre de host, mapa de teclas de la consola, edición de cuentas y grupos, firewall, servicios del sistema, gobernador de CPU, perfiles y políticas de energía, configuración de arranque, operaciones de paquetes, instantáneas y cambios de red protegidos. Las preferencias personales, servicios de usuario y páginas de solo lectura no reciben este aviso. El aviso es informativo; la autorización solo se solicita cuando una acción lo necesita.
 

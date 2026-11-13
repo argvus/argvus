@@ -1,0 +1,10 @@
+{
+  "sensors.command_failed": "Không thể chạy bộ nhạy -j",
+  "sensors.invalid_data": "Không đọc được bộ nhạyJSON",
+  "sensors.no_sensors": "Không tìm thấy bộ cảm biến nhiệt độ.",
+  "sensors.title": "Cảm biến nhiệt độ",
+  "sensors.live": "GenericName",
+  "sensors.loading": "Đang đọc bộ nhạy..",
+  "sensors.unavailable": "Không có tín hiệu nhiệt độ. Đang thử lại tự động.",
+  "sensors.shortcuts": "Esc Đóng 2 giây"
+}

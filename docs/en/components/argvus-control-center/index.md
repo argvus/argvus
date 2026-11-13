@@ -212,11 +212,13 @@ Not in the page yet: searching the keyserver for a key by name or e-mail. Use **
 
 ### Language & Region
 
-This card lists Language (the regional locale), Time Zone, Date & Time, System Locales and Keyboard Layout, and each one opens directly from the home. The keyboard pages also hold the variant and console keymap. The home search also exposes keyboard shortcuts and mouse/touchpad settings as direct settings routes.
+This card lists Language (the ARGVUS interface language), Regional Locale, Time Zone, Date & Time, System Locales and Keyboard Layout. Language opens the 18-language selector; Regional Locale sets the locale used for regional formats and third-party applications. The keyboard pages also hold the variant and console keymap. The home search also exposes keyboard shortcuts and mouse/touchpad settings as direct settings routes.
 
-The language list discovers installed catalogs and shows native names for all ten languages. Enable the corresponding UTF-8 system locale before selecting it.
+The language list discovers installed catalogs and shows native names for all 18 supported ARGVUS interface languages. Interface language does not depend on generated system locales.
 
-Both **Preferences > Language & Region > Language** and **Settings > Language** save the same user preference: `LANG` in `$XDG_CONFIG_HOME/locale.conf` (default `~/.config/locale.conf`), for example `LANG=en_US.UTF-8`. Comments and regional variables are preserved. No global file or parallel ARGVUS language setting is written. An unconfigured user gets English; legacy `session.language` and `data/language` files are ignored. Log out and back in to apply the language to the full session and applications.
+**Preferences > Language & Region > Language** saves `ARGVUS_LANGUAGE` in `$XDG_CONFIG_HOME/locale.conf` (default `~/.config/locale.conf`), for example `ARGVUS_LANGUAGE=pt-PT`. It changes ARGVUS applications and surfaces while preserving `LANG` for regional formatting and third-party applications. The Control Panel restarts immediately; start a new session to apply the language throughout session components. Selecting an interface language does not require administrator authorization or `locale-gen`.
+
+The separate **Regional Locale** preference saves `LANG` and requires a generated system locale. It controls regional formats and the language used by third-party applications. An unconfigured ARGVUS interface uses English.
 
 **System Locales** changes `/etc/locale.gen` and runs `locale-gen`, so applying it requires administrator authorization. A persistent **[WARN]** notice above the footer identifies pages with administrative settings. The same notice covers time zone, date/time, hostname, console keymap, account and group editing, firewall, system services, CPU governor, power profiles and policies, boot configuration, package operations, snapshots and protected network changes. Personal preferences, user services and read-only pages do not receive this notice. The notice is informational; authorization is requested only when an action needs it.
 

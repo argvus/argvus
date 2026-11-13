@@ -1,0 +1,12 @@
+{
+  "save": "أنقذ",
+  "cancel": "إلغاء",
+  "close": "اقترب",
+  "welcome": "مرحبا {name}!",
+  "updates.available.one": "{count} تحديث متاح",
+  "updates.available.other": "{count} تحديثات متاحة",
+  "updates.available.zero": "{count} تحديثات متاحة",
+  "updates.available.two": "{count} تحديثات متاحة",
+  "updates.available.few": "{count} تحديثات متاحة",
+  "updates.available.many": "{count} تحديثات متاحة"
+}

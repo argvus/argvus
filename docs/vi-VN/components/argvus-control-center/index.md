@@ -203,9 +203,15 @@ Chưa có trong trang: tìm kiếm khóa trên máy chủ khóa theo tên hoặc
 
 Thẻ này liệt kê Ngôn ngữ (ngôn ngữ khu vực), Múi giờ, Ngày & Giờ, Ngôn ngữ hệ thống và Bố cục bàn phím và mỗi thẻ đều mở trực tiếp từ nhà. Các trang bàn phím cũng chứa sơ đồ bàn phím của biến thể và bảng điều khiển. Tìm kiếm tại nhà cũng hiển thị các phím tắt và cài đặt chuột/bàn di chuột dưới dạng các tuyến cài đặt trực tiếp.
 
-Danh sách ngôn ngữ khám phá các danh mục đã cài đặt và hiển thị tên gốc của tất cả mười ngôn ngữ. Kích hoạt ngôn ngữ hệ thống UTF-8 tương ứng trước khi chọn nó.
+Thẻ này liệt kê Ngôn ngữ (the ARGVUS Ngôn ngữ giao diện), Vùng địa phương, Vùng làm việc thời gian, ngày và giờ, hệ thống cục bộ và bố trí bàn phím. Ngôn ngữ mở ra bộ chọn 18-language; khu vực địa phương thiết lập địa phương được sử dụng cho định dạng khu vực và ứng dụng bên thứ ba.
 
-Cả **Tùy chọn > Ngôn ngữ & Khu vực > Ngôn ngữ** và **Cài đặt > Ngôn ngữ** đều lưu cùng một tùy chọn người dùng: `LANG` trong `$XDG_CONFIG_HOME/locale.conf` (`~/.config/locale.conf` mặc định), ví dụ `LANG=en_US.UTF-8`. Nhận xét và các biến khu vực được bảo tồn. Không có tệp chung hoặc cài đặt ngôn ngữ ARGVUS song song nào được ghi. Người dùng chưa được định cấu hình sẽ nhận được tiếng Anh; Các tệp `session.language` và `data/language` kế thừa bị bỏ qua. Đăng xuất và đăng nhập lại để áp dụng ngôn ngữ cho toàn bộ phiên và ứng dụng.
+**P tham khảo > Ngôn ngữ và Vùng > Ngôn ngữ** tiết kiệm `ARGVUS_LANGUAGE` in `$XDG_CONFIG_HOME/locale.conf` (bình thường `~/.config/locale.conf`) Thí dụ `ARGVUS_LANGUAGE=pt-PT`Nó thay đổi ARGVUS ứng dụng và bề mặt trong khi bảo tồn `LANG` để định dạng khu vực và các ứng dụng bên thứ ba. Bảng điều khiển khởi chạy lại ngay lập tức; bắt đầu một phiên chạy mới để áp dụng ngôn ngữ trong suốt các thành phần phiên chạy. Chọn một ngôn ngữ giao diện không cần thiết quyền quản trị hoặc `locale-gen`.
+
+**Tin đồn địa phương** tiết kiệm `LANG` trong cùng tập tin và điều khiển định dạng khu vực và ngôn ngữ được sử dụng bởi các ứng dụng phần ba. Đã chọn UTF-8 Hệ thống địa phương phải được tạo ra.
+
+**System locales** thay đổi `/etc/locale.gen` chạy `locale-gen`Vậy cần phải có quyền quản trị.
+
+**Regional Locale** lưu `LANG` trong cùng tệp và xác định định dạng theo vùng cùng ngôn ngữ dùng cho các ứng dụng của bên thứ ba. Locale hệ thống UTF-8 được chọn phải được tạo sẵn.
 
 **Vị trí hệ thống** thay đổi `/etc/locale.gen` và chạy `locale-gen`, vì vậy việc áp dụng nó cần có sự cho phép của quản trị viên. Thông báo **[WARN]** liên tục phía trên chân trang xác định các trang có cài đặt quản trị. Thông báo tương tự bao gồm múi giờ, ngày/giờ, tên máy chủ, sơ đồ bàn phím bảng điều khiển, chỉnh sửa tài khoản và nhóm, tường lửa, dịch vụ hệ thống, bộ điều chỉnh CPU, cấu hình và chính sách nguồn, cấu hình khởi động, hoạt động gói, ảnh chụp nhanh và các thay đổi mạng được bảo vệ. Tùy chọn cá nhân, dịch vụ người dùng và các trang chỉ đọc không nhận được thông báo này. Thông báo mang tính thông tin; ủy quyền chỉ được yêu cầu khi một hành động cần nó.
 

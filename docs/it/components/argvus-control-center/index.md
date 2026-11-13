@@ -209,9 +209,15 @@ Non ancora presente nella pagina: ricerca della chiave sul keyserver per nome o 
 
 Questa scheda elenca Lingua (locale regionale), Fuso Orario, Data e Ora, Locali di Sistema e Layout della Tastiera, e ciascuno si apre direttamente dalla home. Le pagine della tastiera contengono anche variante e mappa dei tasti della console. La ricerca dalla home mostra anche scorciatoie da tastiera e impostazioni del mouse/touchpad come percorsi diretti alle impostazioni.
 
-L'elenco delle lingue rileva i cataloghi installati e mostra i nomi nativi per tutte e dieci le lingue. Abilitare il locale di sistema UTF-8 corrispondente prima di selezionarlo.
+Questa carta elenca Lingua (il ARGVUS linguaggio di interfaccia), Regionale, Time Zone, Data & Time, System Locales e Keyboard Layout. La lingua apre il selettore di 18 lingue; Regional Locale imposta il locale utilizzato per i formati regionali e le applicazioni di terze parti.
 
-Sia **Preferenze > Lingua e Regione > Lingua** sia **Impostazioni > Lingua** salvano la stessa preferenza utente: `LANG` in `$XDG_CONFIG_HOME/locale.conf` (predefinito `~/.config/locale.conf`), ad esempio `LANG=en_US.UTF-8`. Commenti e variabili regionali sono preservati. Non viene scritto alcun file globale o impostazione linguistica ARGVUS parallela. Un utente non configurato riceve l'inglese; i file legacy `session.language` e `data/language` vengono ignorati. Effettuare il logout e accedere nuovamente per applicare la lingua all'intera sessione e alle applicazioni.
+**Preferenze > Lingua e regione > Lingua * Salva `ARGVUS_LANGUAGE` in `$XDG_CONFIG_HOME/locale.conf` (normalmente) `~/.config/locale.conf`), per esempio `ARGVUS_LANGUAGE=pt-PT`. Cambia ARGVUS applicazioni e superfici preservando `LANG` per la formattazione regionale e applicazioni di terze parti. Il Pannello di controllo riavvia immediatamente; avviare una nuova sessione per applicare la lingua durante i componenti di sessione. La selezione di una lingua di interfaccia non richiede l'autorizzazione dell'amministratore o `locale-gen`.
+
+**Regional Locale** salva `LANG` nello stesso file e controlla i formati regionali e la lingua utilizzata da applicazioni di terze parti. La sua selezione UTF-8 sistema locale deve già essere generato.
+
+**Sistema Locales** modifiche `/etc/locale.gen` e corre `locale-gen`, quindi l'applicazione richiede l'autorizzazione dell'amministratore.
+
+**Regional Locale** salva `LANG` nello stesso file e controlla i formati regionali e la lingua utilizzata da applicazioni di terze parti. Il suo sistema locale selezionato UTF-8 deve già essere generato.
 
 **Locali di sistema** modifica `/etc/locale.gen` e esegue `locale-gen`, quindi l'applicazione richiede l'autorizzazione dell'amministratore. Una notifica persistente **[WARN]** sopra il piè di pagina identifica le pagine con impostazioni amministrative. La stessa notifica copre fuso orario, data/ora, nome host, mappa tastiera della console, modifica di account e gruppi, firewall, servizi di sistema, governor della CPU, profili e politiche di alimentazione, configurazione di avvio, operazioni sui pacchetti, snapshot e modifiche della rete protetta. Le preferenze personali, i servizi dell'utente e le pagine di sola lettura non ricevono questa notifica. La notifica è informativa; l'autorizzazione viene richiesta solo quando un'azione lo richiede.
 

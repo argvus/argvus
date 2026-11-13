@@ -2,17 +2,35 @@
 title: ARGVUS Internationalisierung
 description: Sprachkataloge, Auswahl und Unicode-Unterstützung.
 ---
+
 # ARGVUS Internationalisierung
 
-ARGVUS liefert Englisch (`en-US`), Brasilianisches Portugiesisch (`pt-BR`), Spanisch (`es-ES`), Französisch (`fr-FR`), Italienisch (`it-IT`), Deutsch (`de-DE`), Russisch (`ru-RU`), Vereinfachtes Chinesisch (`zh-CN`), Japanisch (`ja-JP`) und Koreanisch (`ko-KR`). Englisch ist der kanonische Katalog und die Fallback-Sprache. Die acht zusätzlichen Übersetzungen wurden mit maschineller Übersetzungshilfe und technischen Korrekturen erstellt; eine unabhängige Überprüfung durch Muttersprachler wurde nicht zertifiziert.
+ARGVUS Schiffe 18 Schnittstellensprachen: Arabisch`ar`), Bengalisch (`bn-BD`), Deutsch (`de-DE`,
+Englisch ()`en-US`), Spanisch (`es-ES`), Französisch (`fr-FR`), Hindi (`hi-IN`), indonesisch
+()`id-ID`), italienisch (`it-IT`), Japanisch (`ja-JP`), Koreanisch (`ko-KR`), Brasilianisches Portugiesisch
+()`pt-BR`), Europäisches Portugiesisch (`pt-PT`), Russisch (`ru-RU`), Türkisch (`tr-TR`), Urdu
+()`ur-PK`), Vietnamesisch (`vi-VN`) und vereinfachtes Chinesisch (`zh-CN`. Englisch ist die
+kanonischer Katalog und Fallback. Die Übersetzungen wurden erstellt mit AI Unterstützung und
+technische Korrekturen; unabhängige muttersprachliche Überprüfung wurde nicht zertifiziert.
 
 ## Sprache auswählen
 
-Öffnen Sie das Kontrollzentrum > Einstellungen > Sprache & Region > Sprache oder Einstellungen > Sprache. Die Seite erkennt installierte Kataloge und zeigt deren native Namen an. Sie speichert `LANG` in `$XDG_CONFIG_HOME/locale.conf` (Standard `~/.config/locale.conf`). Aktivieren Sie zuerst die entsprechende UTF-8-Systemgebietsschema in den Systemgebietsschemata. Beispiele sind `es_ES.UTF-8`, `zh_CN.UTF-8`, `ja_JP.UTF-8` und `ko_KR.UTF-8`.
-
-Die Einstellung ändert `/etc/locale.conf` nicht. Kommentare und regionale Kategorieseinstellungen werden beibehalten. Das Bedienfeld wird nach dem Speichern neu gestartet; melden Sie sich ab und wieder an, um die Sprache für die gesamte Sitzung anzuwenden. Nicht konfigurierte Benutzer verwenden Englisch. Vererbte Umgebungsvariablen und ältere ARGVUS-Sprachdateien ersetzen diese Einstellung nicht. Der Login-Greeter wird ausgeführt, bevor die Benutzereinstellung verfügbar ist, und behält seine eigene Dienstkonto-Sprache bei, standardmäßig Englisch.
-
-Regionale Varianten verwenden den installierten Katalog für ihre Sprache, wenn ein exakter Katalog nicht vorhanden ist; zum Beispiel verwendet `es_MX.UTF-8` `es-ES`. `zh-Hans` wählt vereinfachtes Chinesisch. Traditionelles Chinesisch (`zh-Hant`, `zh-TW`, `zh-HK`, `zh-MO`) wird nicht stillschweigend auf vereinfachtes Chinesisch abgebildet und fällt auf Englisch zurück.
+Open Control Center > Präferenzen > Sprache & Region > Sprache. Die Seite entdeckt
+installiert Kataloge und zeigt ihre nativen Namen. Es spart `ARGVUS_LANGUAGE` in
+`$XDG_CONFIG_HOME/locale.conf` (Standard) `~/.config/locale.conf`, unabhängig von
+`LANG`Erzeugen eines Systemlocals ist nicht erforderlich. Brasilianisches Portugiesisch`pt-BR`) und
+Europäisches Portugiesisch`pt-PT`) sind getrennte Entscheidungen.
+Die Präferenz ändert sich nicht `/etc/locale.conf` oder die regionale `LANG` Einstellung.
+Kommentare und regionale Kategorieeinstellungen bleiben erhalten. Das Control Panel wird neu gestartet
+nach dem Speichern; Starten einer neuen Sitzung, um die Sprache in allen Sitzungskomponenten anzuwenden.
+Unkonfigurierte Benutzer verwenden Englisch. Die separaten Regional Locale Präferenzkontrollen
+`LANG`, regionale Formatierung und Anwendungen von Drittanbietern. Der Login Greet läuft
+bevor die Präferenz des Benutzers verfügbar ist und ein eigenes Service-Konto behält
+Sprache, Englisch standardmäßig.
+Regionale Varianten verwenden den installierten Katalog für ihre Sprache, wenn eine genaue
+Katalog fehlt; zum Beispiel `es_MX.UTF-8` Verwendung `es-ES`. `zh-Hans` auswählt
+Vereinfachtes Chinesisch. Traditionelles Chinesisch`zh-Hant`, `zh-TW`, `zh-HK`, `zh-MO`) ist
+nicht still auf vereinfachtes Chinesisch abgebildet und fällt auf Englisch zurück.
 
 ## Kataloge und Beiträge
 

@@ -78,6 +78,32 @@ fn resolves_installed_regional_variants_without_changing_chinese_script() {
 }
 
 #[test]
+fn resolves_new_application_languages_and_keeps_portuguese_variants_distinct() {
+  let root = root();
+  for locale in [
+    "ar", "bn-BD", "hi-IN", "id-ID", "pt-PT", "tr-TR", "ur-PK", "vi-VN",
+  ] {
+    fs::create_dir_all(root.join(locale)).unwrap();
+  }
+  for (requested, expected) in [
+    ("ar_EG.UTF-8", Some("ar")),
+    ("bn", Some("bn-BD")),
+    ("hi", Some("hi-IN")),
+    ("id", Some("id-ID")),
+    ("pt_PT.UTF-8", Some("pt-PT")),
+    ("pt", Some("pt-BR")),
+    ("tr", Some("tr-TR")),
+    ("ur", Some("ur-PK")),
+    ("vi", Some("vi-VN")),
+  ] {
+    assert_eq!(
+      argvus_i18n::resolve_locale(&root, requested).as_deref(),
+      expected
+    );
+  }
+}
+
+#[test]
 fn plural_fallback_uses_english_grammar_and_interpolation_is_single_pass() {
   let root = root();
   fs::create_dir_all(root.join("ru-RU")).unwrap();
@@ -93,15 +119,22 @@ fn plural_fallback_uses_english_grammar_and_interpolation_is_single_pass() {
 }
 
 #[test]
-fn shipped_catalogs_cover_all_ten_languages_and_plural_forms() {
+fn shipped_catalogs_cover_all_eighteen_languages_and_plural_forms() {
   let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../resources/locales");
   validate_catalogs(&root, None).unwrap_or_else(|errors| panic!("{}", errors.join("\n")));
   let locales = discover_locales(&root);
   for locale in [
-    "en-US", "pt-BR", "es-ES", "fr-FR", "it-IT", "de-DE", "ru-RU", "zh-CN", "ja-JP", "ko-KR",
+    "ar", "bn-BD", "de-DE", "en-US", "es-ES", "fr-FR", "hi-IN", "id-ID", "it-IT", "ja-JP", "ko-KR",
+    "pt-BR", "pt-PT", "ru-RU", "tr-TR", "ur-PK", "vi-VN", "zh-CN",
   ] {
     assert!(locales.iter().any(|info| info.locale == locale));
     let i18n = I18n::from_locale(&root, locale, "common").unwrap();
+    let direction = if matches!(locale, "ar" | "ur-PK") {
+      argvus_i18n::TextDirection::RightToLeft
+    } else {
+      argvus_i18n::TextDirection::LeftToRight
+    };
+    assert_eq!(i18n.direction(), direction, "{locale}");
     for count in [0, 1, 2, 5, 11, 21, 22, 1_000_000] {
       assert!(
         !i18n
@@ -110,6 +143,7 @@ fn shipped_catalogs_cover_all_ten_languages_and_plural_forms() {
       );
     }
   }
+  assert_eq!(locales.len(), 18);
   let russian = I18n::from_locale(&root, "ru-RU", "common").unwrap();
   assert!(
     russian
@@ -125,6 +159,23 @@ fn shipped_catalogs_cover_all_ten_languages_and_plural_forms() {
     russian
       .tr_plural("updates.available", 25)
       .contains("обновлений")
+  );
+}
+
+#[test]
+fn locale_metadata_controls_text_direction() {
+  let root = root();
+  fs::create_dir_all(root.join("ar")).unwrap();
+  fs::write(
+    root.join("ar/locale.json"),
+    r#"{"locale":"ar","name":"Arabic","native_name":"العربية","direction":"rtl"}"#,
+  )
+  .unwrap();
+  fs::write(root.join("ar/common.json"), "{}").unwrap();
+  let language = I18n::from_locale(&root, "ar", "common").unwrap();
+  assert_eq!(
+    language.direction(),
+    argvus_i18n::TextDirection::RightToLeft
   );
 }
 
@@ -635,5 +686,53 @@ fn user_locale_parser_ignores_invalid_values_and_handles_quotes() {
       argvus_i18n::parse_user_locale(contents).as_deref(),
       expected
     );
+  }
+}
+
+#[test]
+fn application_language_preference_is_parsed_separately_from_regional_locale() {
+  for (contents, expected) in [
+    ("ARGVUS_LANGUAGE=ar\nLANG=pt_BR.UTF-8\n", Some("ar")),
+    ("ARGVUS_LANGUAGE='pt-PT'\n", Some("pt-PT")),
+    ("ARGVUS_LANGUAGE=$(touch x)\n", None),
+    ("LANG=ur_PK.UTF-8\n", None),
+  ] {
+    assert_eq!(
+      argvus_i18n::parse_user_language(contents).as_deref(),
+      expected
+    );
+  }
+  assert_eq!(
+    argvus_i18n::parse_user_locale("ARGVUS_LANGUAGE=ar\nLANG=pt_BR.UTF-8\n").as_deref(),
+    Some("pt_BR.UTF-8")
+  );
+}
+
+#[test]
+fn app_language_overrides_catalog_detection_without_replacing_regional_locale() {
+  let _guard = env_lock().lock().unwrap();
+  let root = root();
+  fs::create_dir_all(root.join("ar")).unwrap();
+  fs::write(
+    root.join("ar/locale.json"),
+    r#"{"locale":"ar","name":"Arabic","native_name":"العربية","direction":"rtl"}"#,
+  )
+  .unwrap();
+  let config = root.join("config");
+  fs::create_dir_all(&config).unwrap();
+  fs::write(
+    config.join("locale.conf"),
+    "ARGVUS_LANGUAGE=ar\nLANG=pt_BR.UTF-8\n",
+  )
+  .unwrap();
+  let previous = std::env::var_os("XDG_CONFIG_HOME");
+  unsafe { std::env::set_var("XDG_CONFIG_HOME", &config) };
+  assert_eq!(detect_locale_from(&root), "ar");
+  assert_eq!(argvus_i18n::user_regional_locale(), "pt_BR.UTF-8");
+  unsafe {
+    match previous {
+      Some(value) => std::env::set_var("XDG_CONFIG_HOME", value),
+      None => std::env::remove_var("XDG_CONFIG_HOME"),
+    }
   }
 }

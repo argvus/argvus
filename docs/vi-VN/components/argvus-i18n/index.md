@@ -5,32 +5,32 @@ description: Danh mục ngôn ngữ, lựa chọn và hỗ trợ Unicode.
 
 # Quốc tế hóa ARGVUS
 
-ARGVUS giao hàng bằng tiếng Anh (`en-US`), tiếng Bồ Đào Nha Brazil (`pt-BR`), tiếng Tây Ban Nha (`es-ES`),
-Tiếng Pháp (`fr-FR`), Tiếng Ý (`it-IT`), Tiếng Đức (`de-DE`), Tiếng Nga (`ru-RU`), Đơn giản hóa
-Tiếng Trung (`zh-CN`), tiếng Nhật (`ja-JP`) và tiếng Hàn (`ko-KR`). Tiếng Anh là kinh điển
-danh mục và dự phòng. Tám bản dịch bổ sung được thực hiện bằng máy
-hỗ trợ dịch thuật và chỉnh sửa kỹ thuật; đánh giá của người bản xứ độc lập
-chưa được chứng nhận.
+ARGVUS tàu 18 giao diện ngôn ngữ: Ả Rập (`ar`), Ben-ga-li (`bn-BD`), Đức (`de-DE`)
+Tiếng Anh`en-US`), Tây Ban Nha (`es-ES`), Pháp (`fr-FR`), Ấn Độ (`hi-IN`), Indonesia
+(Tiếng cười)`id-ID`), Ý (Tiếng Ý)`it-IT`), tiếng Nhật (tiếng Nhật)`ja-JP`), Hàn Quốc (`ko-KR`), Bồ Đào Nha Brazil
+(Tiếng cười)`pt-BR`), Bồ Đào Nha Châu Âu (`pt-PT`), Nga (`ru-RU`), Thổ Nhĩ Kỳ (`tr-TR`), Urdu
+(Tiếng cười)`ur-PK`), Việt Nam (`vi-VN`) và Simplified Trung Hoa (`zh-CN`). Tiếng Anh là
+danh mục chính thống và hậu phương. Các bản dịch được xuất bản với AI Trợ giúp và
+Việc sửa chữa kỹ thuật; việc xem xét ngôn ngữ bản địa độc lập chưa được chứng nhận.
 
 ## Chọn ngôn ngữ
 
-Mở Trung tâm điều khiển > Tùy chọn > Ngôn ngữ & Khu vực > Ngôn ngữ hoặc Cài đặt >
-Ngôn ngữ. Trang này khám phá các danh mục đã cài đặt và hiển thị tên gốc của chúng.
-Nó lưu `LANG` trong `$XDG_CONFIG_HOME/locale.conf` (`~/.config/locale.conf` mặc định).
-Trước tiên, hãy bật ngôn ngữ hệ thống UTF-8 tương ứng trong Ngôn ngữ hệ thống. Ví dụ
-bao gồm `es_ES.UTF-8`, `zh_CN.UTF-8`, `ja_JP.UTF-8` và `ko_KR.UTF-8`.
-
-Tùy chọn không sửa đổi `/etc/locale.conf`. Bình luận và thể loại khu vực
-cài đặt được bảo tồn. Bảng điều khiển được khởi động lại sau khi lưu; đăng xuất và
-quay lại để áp dụng ngôn ngữ trong suốt phiên. Người dùng chưa được định cấu hình sử dụng
-Tiếng Anh. Các biến môi trường được kế thừa và các tệp ngôn ngữ ARGVUS kế thừa không
-thay thế tùy chọn này. Lời chào đăng nhập chạy trước tùy chọn của người dùng
-có sẵn và giữ lại ngôn ngữ tài khoản dịch vụ của riêng mình, tiếng Anh theo mặc định.
-
-Các biến thể khu vực sử dụng danh mục đã cài đặt cho ngôn ngữ của chúng khi có thông tin chính xác
-danh mục vắng mặt; ví dụ `es_MX.UTF-8` sử dụng `es-ES`. `zh-Hans` chọn
-Tiếng Trung giản thể. Tiếng Trung phồn thể (`zh-Hant`, `zh-TW`, `zh-HK`, `zh-MO`) là
-không được ánh xạ âm thầm sang tiếng Trung giản thể và quay trở lại tiếng Anh.
+Trung tâm Điều khiển Mở > Tùy thích > Ngôn ngữ & Vùng > Ngôn ngữ Trang web phát hiện ra
+đã cài đặt mục lục và cho thấy tên của họ. Nó tiết kiệm `ARGVUS_LANGUAGE` in
+`$XDG_CONFIG_HOME/locale.conf` (mặc định `~/.config/locale.conf`), độc lập
+`LANG`; tạo ra địa phương hệ thống không cần thiết. Bồ Đào Nha Brazil (`pt-BR`) và
+Bồ Đào Nha Châu Âu (`pt-PT`) là những lựa chọn khác nhau.
+Tùy thích không sửa đổi `/etc/locale.conf` hay vùng `LANG` cài đặt.
+Ghi chú và thiết lập phân loại khu vực được bảo tồn. Name
+sau khi lưu; bắt đầu một phiên chạy mới để áp dụng ngôn ngữ trong suốt các thành phần phiên chạy.
+Người dùng không cấu hình sử dụng tiếng Anh. Name
+`LANG`Định dạng khu vực và các ứng dụng bên thứ ba. Trình chào mừng đăng nhập chạy
+Trước khi tùy thích của người dùng là có sẵn và giữ lại dịch vụ của riêng mình-ac Count
+Ngôn ngữ, tiếng Anh theo mặc định.
+Các biến thể vùng dùng danh mục đã cài đặt cho ngôn ngữ của họ khi chính xác
+catalog vắng mặt; chẳng hạn `es_MX.UTF-8` sử dụng `es-ES`. `zh-Hans` lựa chọn
+Truyền thống Trung Quốc. Truyền thống Trung Quốc (`zh-Hant`. `zh-TW`. `zh-HK`. `zh-MO`) là
+không âm thầm lập bản đồ Trung Quốc và trở lại tiếng Anh.
 
 ## Danh mục và đóng góp
 

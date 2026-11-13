@@ -209,9 +209,15 @@ Noch nicht auf der Seite: Suche auf dem Keyserver nach einem Schlüssel per Name
 
 Diese Karte listet Sprache (das regionale Gebietsschema), Zeitzone, Datum & Uhrzeit, System-Gebietsschemas und Tastaturlayout auf, und jedes davon lässt sich direkt vom Startbildschirm aus öffnen. Die Tastaturseiten enthalten auch die Variante und das Konsolentastaturlayout. Die Startbildsuchen zeigen außerdem Tastenkombinationen und Maus-/Touchpad-Einstellungen als direkte Einstellungsrouten an.
 
-Die Sprachliste erkennt installierte Kataloge und zeigt die einheimischen Namen für alle zehn Sprachen. Aktivieren Sie das entsprechende UTF-8-Systemgebietsschema, bevor Sie es auswählen.
+Diese Karte listet die Sprache (die) ARGVUS Schnittstellensprache), Regional Locale, Time Zone, Date & Time, System Locales und Keyboard Layout. Language öffnet den 18-Sprachen-Selektor; Regional Locale legt das für regionale Formate und Anwendungen von Drittanbietern verwendete Locale fest.
 
-Sowohl **Preferences > Language & Region > Language** als auch **Settings > Language** speichern dieselbe Benutzereinstellung: `LANG` in `$XDG_CONFIG_HOME/locale.conf` (Standard `~/.config/locale.conf`), zum Beispiel `LANG=en_US.UTF-8`. Kommentare und regionale Variablen werden beibehalten. Keine globale Datei oder parallele ARGVUS-Spracheneinstellung wird geschrieben. Ein nicht konfigurierter Benutzer erhält Englisch; alte `session.language`- und `data/language`-Dateien werden ignoriert. Melden Sie sich ab und wieder an, um die Sprache auf die gesamte Sitzung anzuwenden und Anwendungen.
+**Präferenzen > Sprache & Region > Sprache** speichert `ARGVUS_LANGUAGE` in `$XDG_CONFIG_HOME/locale.conf` (normalerweise) `~/.config/locale.conf`), z.B. `ARGVUS_LANGUAGE=pt-PT`Es ändert sich ARGVUS Anwendungen und Oberflächen unter Erhaltung `LANG` für regionale Formatierung und Drittanwendungen. Die Systemsteuerung wird sofort neu gestartet; Starten Sie eine neue Sitzung, um die Sprache in allen Sitzungskomponenten anzuwenden. Die Auswahl einer Schnittstellensprache erfordert keine Administratorautorisierung oder `locale-gen`.
+
+**Regional Locale** speichert `LANG` in derselben Datei und kontrolliert regionale Formate und die Sprache, die von Drittanwendungen verwendet wird. Seine ausgewählte UTF-8 System locale muss bereits generiert werden.
+
+**System Locales** Änderungen `/etc/locale.gen` und läuft `locale-gen`Die Anwendung erfordert daher eine Administratorautorisierung.
+
+**Regional Locale** speichert `LANG` in der gleichen Datei und kontrolliert die regionalen Formate und die Sprache, die von Drittanwendungen verwendet wird. Seine ausgewählte UTF-8 System-Lokale muss bereits generiert werden.
 
 **System-Lokale** ändern `/etc/locale.gen` und führen `locale-gen` aus, daher erfordert deren Anwendung Administratorberechtigung. Eine dauerhafte **[WARN]**-Meldung über der Fußzeile kennzeichnet Seiten mit administrativen Einstellungen. Dieselbe Meldung gilt für Zeitzone, Datum/Uhrzeit, Hostname, Konsolen-Tastaturbelegung, Benutzer- und Gruppenbearbeitung, Firewall, Systemdienste, CPU-Governor, Energieprofile und -richtlinien, Boot-Konfiguration, Paketoperationen, Snapshots und geschützte Netzwerkänderungen. Persönliche Einstellungen, Benutzer Dienste und Nur-Lese-Seiten erhalten diese Benachrichtigung nicht. Die Benachrichtigung ist informativ; eine Autorisierung wird nur angefordert, wenn eine Handlung dies erfordert.
 

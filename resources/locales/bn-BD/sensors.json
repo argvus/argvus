@@ -1,0 +1,10 @@
+{
+  "sensors.command_failed": "সেন্সর চালু করা যায়নি - %s",
+  "sensors.invalid_data": "সেন্সর ব্লক পড়া যায়নি",
+  "sensors.no_sensors": "কোন তাপমাত্রার সেন্সর পাওয়া যায় নি ।.",
+  "sensors.title": "তাপমাত্রার সেন্সর",
+  "sensors.live": "ঠিক আছে",
+  "sensors.loading": "সেন্সর পড়া হচ্ছে..",
+  "sensors.unavailable": "তাপমাত্রার শতাংশ সম্পন্ন নয় । স্বয়ংক্রিয়ভাবে পুনরায় প্রচেষ্টা করা হচ্ছে।.",
+  "sensors.shortcuts": "এস. আর. এল"
+}

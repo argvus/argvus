@@ -42,7 +42,7 @@ pub fn parse_os_release(contents: &str) -> Distro {
 }
 
 pub fn current_lang() -> String {
-  argvus_i18n::user_locale()
+  argvus_i18n::user_regional_locale()
 }
 
 pub fn generated_locales() -> Vec<String> {
@@ -126,6 +126,8 @@ pub fn apply_locale_gen(contents: &str, selected: &BTreeSet<String>) -> String {
 pub enum UserLocaleError {
   #[error("locale is invalid or not generated: {0}")]
   NotGenerated(String),
+  #[error("application language is not installed: {0}")]
+  NotInstalled(String),
   #[error("cannot locate user locale configuration")]
   MissingConfigPath,
   #[error("could not save user locale: {0}")]
@@ -135,6 +137,15 @@ pub enum UserLocaleError {
 pub fn set_lang(locale: &str, generated: &[String]) -> Result<(), UserLocaleError> {
   let path = argvus_i18n::config_path().ok_or(UserLocaleError::MissingConfigPath)?;
   save_user_language(&path, locale, generated)
+}
+
+pub fn set_application_language(locale: &str) -> Result<(), UserLocaleError> {
+  let installed = argvus_i18n::installed_locales()
+    .into_iter()
+    .map(|info| info.locale)
+    .collect::<Vec<_>>();
+  let path = argvus_i18n::config_path().ok_or(UserLocaleError::MissingConfigPath)?;
+  save_application_language(&path, locale, &installed)
 }
 
 pub fn restart_control_panel() -> std::io::Result<()> {
@@ -166,7 +177,23 @@ fn save_user_language(
   Ok(())
 }
 
+fn save_application_language(
+  path: &Path,
+  locale: &str,
+  installed: &[String],
+) -> Result<(), UserLocaleError> {
+  if !installed.iter().any(|candidate| candidate == locale) {
+    return Err(UserLocaleError::NotInstalled(locale.to_owned()));
+  }
+  write_user_setting(path, "ARGVUS_LANGUAGE", locale)?;
+  Ok(())
+}
+
 fn write_user_locale(path: &Path, locale: &str) -> std::io::Result<()> {
+  write_user_setting(path, "LANG", locale)
+}
+
+fn write_user_setting(path: &Path, key: &str, value: &str) -> std::io::Result<()> {
   use std::io::Write;
   use std::os::unix::fs::OpenOptionsExt;
   let previous = match fs::read_to_string(path) {
@@ -176,9 +203,14 @@ fn write_user_locale(path: &Path, locale: &str) -> std::io::Result<()> {
   };
   let mut lines: Vec<&str> = previous
     .lines()
-    .filter(|line| !line.trim_start().starts_with("LANG="))
+    .filter(|line| {
+      line
+        .trim_start()
+        .split_once('=')
+        .is_none_or(|(existing, _)| existing.trim() != key)
+    })
     .collect();
-  let setting = format!("LANG={locale}");
+  let setting = format!("{key}={value}");
   lines.push(&setting);
   let parent = path
     .parent()
@@ -357,6 +389,18 @@ mod user_locale_tests {
       ));
       assert!(!path.exists());
     }
+  }
+
+  #[test]
+  fn application_language_does_not_require_a_generated_system_locale() {
+    let directory = tempfile::tempdir().unwrap();
+    let path = directory.path().join("locale.conf");
+    fs::write(&path, "LANG=pt_BR.UTF-8\nLC_TIME=de_DE.UTF-8\n").unwrap();
+    save_application_language(&path, "ar", &["ar".into()]).unwrap();
+    assert_eq!(
+      fs::read_to_string(path).unwrap(),
+      "LANG=pt_BR.UTF-8\nLC_TIME=de_DE.UTF-8\nARGVUS_LANGUAGE=ar\n"
+    );
   }
 
   #[test]

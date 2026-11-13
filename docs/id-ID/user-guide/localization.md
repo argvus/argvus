@@ -3,31 +3,25 @@ title: Lokalisasi
 description: Gunakan ARGVUS dalam bahasa Inggris atau Portugis.
 ---
 
-`argvus-i18n` menyediakan katalog bersama, perintah `argvus i18n validate` dan modul QML `org.argvus.i18n`. ARGVUS saat ini mengirimkan katalog berbahasa Inggris dan Portugis.
+`argvus-i18n` menyediakan katalog bersama, yang `argvus i18n validate` perintah dan QML modul `org.argvus.i18n`. ARGVUS Kapal 18 bahasa interface: Arab, Bengali, Jerman, Inggris, Spanyol, Prancis, Hindi, Indonesia, Italia, Jepang, Korea, Portugis Brasil, Portugis Eropa, Rusia, Turki, Vietnam dan Cina Sederhana.
 
-Aplikasi asli dan komponen shell menggunakan katalog bersama. Oleh karena itu, string yang diterjemahkan dapat digunakan oleh lebih dari satu repositori.
+Asli ARGVUS aplikasi dan komponen shell mengkonsumsi katalog bersama. String yang diterjemahkan dapat digunakan oleh lebih dari satu repositori. Arab dan Urdu gunakan tata letak -to-left dengan didukung GTK, Quickshell dan antarmuka terminal.
 
-Gunakan **Pusat Kontrol → Lokal & Wilayah** untuk mengonfigurasi bahasa, lokal regional, lokal sistem yang dihasilkan, zona waktu, tanggal/waktu, dan keyboard. Katalog ARGVUS saat ini menyediakan bahasa Inggris dan Portugis; ini terpisah dari daftar lokal sistem yang dihasilkan sistem operasi.
+Gunakan * * Control Center Averence Language & Daerah Bahasa * * untuk memilih ARGVUS Bahasa antarmuka. Ini menulis `ARGVUS_LANGUAGE` ke `$XDG_CONFIG_HOME/locale.conf` (biasanya `~/.config/locale.conf`). Misalnya, `ARGVUS_LANGUAGE=pt-PT` Memilih Portugis Eropa. Portugis Brasil (`pt-BR`) adalah pilihan yang terpisah. Katalog bahasa diinstal dengan ARGVUS, sehingga tidak tergantung pada `locale-gen`.
 
-Mengubah bahasa tampilan akan menyimpan preferensi ARGVUS dan secara otomatis memulai ulang `argvus-control-panel.service`, sehingga Panel Kontrol segera mencerminkan perubahan tersebut. Aplikasi lain dan permukaan shell mungkin memerlukan sesi memuat ulang atau sesi baru. Membuat atau mengubah entri `/etc/locale.gen` memerlukan otorisasi dan menjalankan `locale-gen`; memilih lokal yang tidak dihasilkan ditolak. Tata letak keyboard, varian, dan peta tombol konsol merupakan pengaturan terpisah dan berbeda dengan bahasa antarmuka.
+Panel Kendali dijalankan ulang secara otomatis setelah perubahan bahasa antar muka. Mulai sesi baru untuk menerapkannya ke komponen sesi. Pengaturan terpisah * * Regional Locale * * menulis `LANG` dan mengontrol format regional dan aplikasi pihak ketiga. Ini memerlukan lokal sistem yang dihasilkan; memungkinkan satu di `/etc/locale.gen` berjalan `locale-gen` dengan otorisasi administrator. Tata letak papan tik, varian dan peta kunci konsol adalah pengaturan terpisah.
 
-## Ketika variabel lingkungan mengesampingkan perubahan
+# # Ketika variabel lingkungan menimpa perubahan
 
-Aplikasi ARGVUS mendeteksi bahasa dari file bahasa ARGVUS persisten terlebih dahulu, kemudian `LC_ALL`, `LC_MESSAGES`, dan `LANG`. Oleh karena itu, variabel lingkungan lokal dapat membuat Pusat Kontrol tampak mengabaikan perubahan bahasa, terutama ketika layanan pengguna atau sesi grafis mempertahankan lingkungan yang lebih lama.
+ARGVUS aplikasi dibaca `ARGVUS_LANGUAGE` dari pengguna `locale.conf`Jika tidak ada, mereka menyelesaikan regional `LANG` nilai ke katalog yang terpasang. Variabel lokal tidak override sebuah eksplisit `ARGVUS_LANGUAGE` preferensi. Aplikasi pihak ketiga terus menggunakan sistem lokal regional.
 
-Periksa nilai efektif dengan:
+Inspeksi nilai efektif dengan:
 
 ```sh
 systemctl --user show-environment | rg '^(LANG|LC_|ARGVUS)='
 locale
-echo $LANG
+printf '%s\n' "$LANG"
 localectl status
 ```
 
-Jika `~/.config/locale.conf` ada dan mendefinisikan `LANG`, `LC_ALL`, atau `LC_MESSAGES`, ganti namanya untuk sementara sehingga nilai tersebut tidak lagi diperkenalkan kembali. Simpan cadangan alih-alih menghapusnya:
-
-```sh
-mv ~/.config/locale.conf ~/.config/locale.conf.backup
-```
-
-Terapkan bahasa itu lagi di **Pusat Kontrol → Lokal & Wilayah**. Panel Kontrol dimulai ulang secara otomatis; jika komponen lain masih menampilkan bahasa sebelumnya, keluar dan masuk sehingga sesi grafis dan `systemd --user` menerima lingkungan baru. Ulangi perintah diagnostik setelahnya. Lihat [Variabel lingkungan](/docs/reference/environment-variables/) untuk kontrak teknis dan prioritasnya.
+Periksa `~/.config/locale.conf` berisi sebuah valid `ARGVUS_LANGUAGE=<catalog>` nilai. Untuk mengubah format regional atau bahasa aplikasi pihak ketiga, gunakan * * Regional Locale * * dan pilih lokal yang dihasilkan. Panel Kendali dijalankan ulang setelah perubahan preferensi; log keluar dan masuk bila komponen sesi lain masih menampilkan bahasa antar muka lama. Lihat [Variabel Lingkungan] (/docs/reference/environment-variables/) untuk kontrak teknis dan mendahului.

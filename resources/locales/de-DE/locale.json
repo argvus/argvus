@@ -1,5 +1,6 @@
 {
   "locale": "de-DE",
   "name": "German (Germany)",
-  "native_name": "Deutsch (Deutschland)"
+  "native_name": "Deutsch (Deutschland)",
+  "direction": "ltr"
 }

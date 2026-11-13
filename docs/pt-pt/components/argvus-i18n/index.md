@@ -5,32 +5,32 @@ description: Catálogos, seleção de idioma e suporte Unicode.
 
 # Internacionalização ARGVUS
 
-O ARGVUS inclui inglês (`en-US`), português brasileiro (`pt-BR`), espanhol (`es-ES`),
-francês (`fr-FR`), italiano (`it-IT`), alemão (`de-DE`), russo (`ru-RU`), chinês
-simplificado (`zh-CN`), japonês (`ja-JP`) e coreano (`ko-KR`). O inglês é o catálogo
-canônico e o fallback. As oito traduções adicionais foram produzidas com auxílio
-de tradução automática e correções técnicas; não há certificação de revisão
-independente por falantes nativos.
+ARGVUS naves 18 línguas de interface: árabe (`ar`), Bengali (`bn-BD`), alemão (`de-DE`),
+Inglês (`en-US`), Espanhol (`es-ES`), Francês (`fr-FR`), Hindi (`hi-IN`), indonésio
+(`id-ID`), Italiano (`it-IT`), Japonês (`ja-JP`), Coreano (`ko-KR`), Português Brasileiro
+(`pt-BR`), português europeu (`pt-PT`), Russo (`ru-RU`), Turco (`tr-TR`), Urdu
+(`ur-PK`), Vietnamita (`vi-VN`) e chinês simplificado (`zh-CN`). Inglês é o
+catálogo canônico e retrocesso. As traduções foram produzidas com AI assistência e
+Correcções técnicas; não foi certificada a revisão independente de falantes nativos.
 
 ## Seleção do idioma
 
-Abra Control Center > Preferências > Idioma e região > Idioma ou Definições >
-Idioma. A página descobre os catálogos instalados e mostra seus nomes nativos.
-A escolha grava `LANG` em `$XDG_CONFIG_HOME/locale.conf` (padrão
-`~/.config/locale.conf`). Habilite antes o locale UTF-8 correspondente em System
-Locales. Exemplos: `es_ES.UTF-8`, `zh_CN.UTF-8`, `ja_JP.UTF-8` e `ko_KR.UTF-8`.
-
-A seleção preserva comentários e categorias regionais e não altera
-`/etc/locale.conf`. O Control Panel é reiniciado após guardar; saia e entre de novo
-para aplicar o idioma à sessão inteira. Utilizadores sem preferência usam inglês.
-Variáveis herdadas e ficheiros legados de idioma não substituem essa preferência.
-O greeter executa antes de conhecer a preferência do utilizador e usa o idioma da
-sua própria conta de serviço, inglês por padrão.
-
-Variantes regionais usam o catálogo instalado do idioma quando não existe um
-catálogo exato: `es_MX.UTF-8`, por exemplo, usa `es-ES`. `zh-Hans` usa chinês
-simplificado. Chinês tradicional (`zh-Hant`, `zh-TW`, `zh-HK`, `zh-MO`) não é
-convertido silenciosamente para simplificado e usa o fallback inglês.
+Centro de Controle Aberto > Preferências > Idioma e Região > Idioma. A página descobre
+catálogos instalados e mostra seus nomes nativos. Salva `ARGVUS_LANGUAGE` em
+`$XDG_CONFIG_HOME/locale.conf` (padrão `~/.config/locale.conf`), independentemente de
+`LANG`; não é necessário gerar um sistema locale. Português do Brasil (`pt-BR`) e
+Português Europeu (`pt-PT`) são escolhas separadas.
+A preferência não modifica `/etc/locale.conf` ou o regional `LANG` Preparar.
+Comentários e configurações de categoria regional são preservadas. O painel de controle é reiniciado
+após salvar; inicie uma nova sessão para aplicar o idioma em todos os componentes da sessão.
+Usuários não configurados usam o inglês. Controlos de preferência regionais distintos
+`LANG`, formatação regional e aplicações de terceiros. A saudação de login é executada
+antes que a preferência do usuário esteja disponível e mantenha sua própria conta de serviço
+idioma, inglês por padrão.
+As variantes regionais usam o catálogo instalado para o seu idioma quando um exato
+catálogo está ausente; por exemplo `es_MX.UTF-8` utilizações `es-ES`. `zh-Hans` seleciona
+Chinês simplificado. Chinês tradicional (`zh-Hant`, `zh-TW`, `zh-HK`, `zh-MO`) é
+não silenciosamente mapeado para chinês simplificado e cai de volta para o Inglês.
 
 ## Catálogos e contribuições
 

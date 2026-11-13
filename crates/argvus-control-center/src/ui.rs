@@ -19,6 +19,9 @@ use crate::app::{App, Route};
 use crate::home::{HomeCategory, HomeDestination, HomeRow};
 
 pub fn draw(app: &mut App, frame: &mut Frame) {
+  argvus_tui::menu::set_right_to_left(
+    app.lang.direction() == argvus_i18n::TextDirection::RightToLeft,
+  );
   let area = frame.area();
   app.resize(area.width, area.height);
   if area.width < MIN_WIDTH || area.height < MIN_HEIGHT {

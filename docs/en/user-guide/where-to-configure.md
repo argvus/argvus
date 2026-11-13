@@ -18,9 +18,9 @@ For a guided review of the main desktop areas, open **ARGVUS Welcome** with `arg
 | Change window gaps or borders | **Control Center → Desktop & Input → Hyprland → Windows → Spaces** and **Borders** |
 | Change the window shadow | **Control Center → Desktop & Input → Hyprland → Borders → Shadow** |
 | Choose visible Control Panel cards | **Control Center → Appearance → Control Panel** |
-| Change keyboard shortcuts | **Control Center → Locale & Region → Keyboard shortcuts** |
+| Change keyboard shortcuts | **Control Center → Desktop & Input → Keyboard Shortcuts** |
 | Add an advanced Hyprland rule, monitor setting or new keybinding | [Hyprland overrides](/docs/argvus-hyprland/hyprland-overrides/) |
-| Change mouse or touchpad behavior | **Control Center → Locale & Region → Mouse & Touchpad** |
+| Change mouse or touchpad behavior | **Control Center → Desktop & Input → Mouse & Touchpad** |
 | Change fonts | **Control Center → Fonts** |
 | Choose default applications | **Control Center → Default applications** |
 | Change display settings | **Control Center → Displays** or the Control Panel display card |
@@ -28,7 +28,9 @@ For a guided review of the main desktop areas, open **ARGVUS Welcome** with `arg
 | Change volume or mute quickly | Control Panel volume card or the media keys |
 | Change brightness quickly | Control Panel brightness card or the brightness keys |
 | Lock, log out, suspend or power off | Control Panel session/power cards |
-| Configure language, time zone or regional settings | **Control Center → Locale & Region** |
+| Change the ARGVUS interface language | **Control Center → Preferences → Language & Region → Language** |
+| Configure regional formats or the locale used by third-party applications | **Control Center → Preferences → Language & Region → Regional Locale** |
+| Configure time zone, system locales or regional settings | **Control Center → Preferences → Language & Region** |
 
 ## Configuration or quick action?
 

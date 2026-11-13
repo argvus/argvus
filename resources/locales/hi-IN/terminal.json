@@ -1,0 +1,12 @@
+{
+  "usage": "उपयोग:\nargvus-terminal [किट्टी विकल्प]\nargvus-terminal --apply\nargvus-terminal --print-config [थीम]\nargvus-terminal --print-tui-config [थीम]\n\nविकल्प:\n--class <class> Kitty विंडो क्लास सेट करें।\n--font-profile <profile> टर्मिनल या ऐप्स।\n--tui ARGVUS TUI Kitty प्रोफ़ाइल का उपयोग करें।\n-e <command> [args...] Kitty में एक कमांड को निष्पादित करें।.",
+  "class_requires_value": "--class को मान की आवश्यकता है",
+  "font_profile_requires_value": "--font-profile को मान की आवश्यकता है",
+  "unsupported_font_profile": "Unsupported font Profile: {profile}",
+  "kitty_not_installed": "Kitty स्थापित नहीं है",
+  "config_not_found": "Kitty कॉन्फ़िगरेशन {path} के तहत नहीं मिला था",
+  "tui_config_not_found": "Kitty TUI कॉन्फ़िगरेशन {path} के तहत नहीं मिला था",
+  "cache_create_failed": "{path} पर Kitty रनटाइम कैश नहीं बना सका",
+  "cache_write_failed": "{path} पर Kitty रनटाइम कैश नहीं लिख सका",
+  "cache_lock_failed": "{path} पर Kitty रनटाइम कैश को लॉक नहीं कर सका"
+}

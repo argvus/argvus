@@ -18,6 +18,9 @@ impl Language {
     let locale = argvus_i18n::resolve_installed_locale(tag).unwrap_or_else(|| "en-US".to_owned());
     Self(argvus_i18n::Lang::for_domain(&locale, "taskbar-calendar"))
   }
+  pub fn is_rtl(self) -> bool {
+    self.0.direction() == argvus_i18n::TextDirection::RightToLeft
+  }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

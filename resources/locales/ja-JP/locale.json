@@ -1,5 +1,6 @@
 {
   "locale": "ja-JP",
   "name": "Japanese",
-  "native_name": "日本語"
+  "native_name": "日本語",
+  "direction": "ltr"
 }

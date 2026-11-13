@@ -212,9 +212,15 @@ Ainda não está na página: buscar uma chave no servidor por nome ou e-mail. Us
 
 ### Idioma e região
 
-Este cartão lista Idioma (a localidade regional), Fuso horário, Data e hora, Locales do sistema e Layout do teclado, e cada um abre diretamente pelo ecrã inicial. As páginas de teclado também concentram a variante e o mapa de teclado do console. A busca inicial também expõe atalhos de teclado e rato/touchpad como rotas diretas de configuração.
+Este cartão lista a Língua (o ARGVUS Linguagem de interface), Regional Locale, Zona horária, Data & Hora, Locales do Sistema e Disposição do Teclado. A língua abre o seletor de 18 idiomas; Regional Locale define o locale usado para formatos regionais e aplicações de terceiros.
 
-Tanto **Preferências > Idioma e região > Idioma** quanto **Definições > Idioma** salvam a mesma preferência do utilizador: `LANG` em `$XDG_CONFIG_HOME/locale.conf` (padrão `~/.config/locale.conf`), por exemplo `LANG=en_US.UTF-8`. Comentários e variáveis regionais são preservados. Nenhum ficheiro global ou preferência paralela de idioma do ARGVUS é gravado. Um utilizador sem configuração recebe inglês; `session.language` e ficheiros `data/language` legados são ignorados. Saia e entre novamente para aplicar o idioma à sessão completa e às aplicações.
+**Preferências > Idioma & Região > Língua** salva `ARGVUS_LANGUAGE` em `$XDG_CONFIG_HOME/locale.conf` (normalmente `~/.config/locale.conf`), por exemplo `ARGVUS_LANGUAGE=pt-PT`. Muda ARGVUS aplicações e superfícies enquanto preserva `LANG` Para a formatação regional e aplicações de terceiros. O Painel de Controle reinicia imediatamente; inicie uma nova sessão para aplicar o idioma em todos os componentes da sessão. Selecionar um idioma de interface não requer autorização de administrador ou `locale-gen`.
+
+** Local Regional** salva `LANG` no mesmo arquivo e controla os formatos regionais e a linguagem utilizada por aplicativos de terceiros. Sua seleção UTF-8 o locale do sistema já deve ser gerado.
+
+** Localidades do sistema** alterações `/etc/locale.gen` e corre `locale-gen`, então aplicá-lo requer autorização do administrador.
+
+** Regional Locale** salva `LANG` no mesmo arquivo e controla os formatos regionais e o idioma usado por aplicativos de terceiros. Seu local do sistema UTF-8 selecionado já deve ser gerado.
 
 **Locales do sistema** altera `/etc/locale.gen` e executa `locale-gen`, portanto a aplicação exige autorização de administrador. Um aviso permanente **[WARN]** acima do rodapé identifica os ecrãs com definições administrativas. O mesmo aviso abrange fuso horário, data/hora, hostname, mapa de teclado do console, edição de contas e grupos, firewall, serviços do sistema, governador da CPU, perfis e políticas de energia, configuração de boot, operações de pacotes, snapshots e alterações protegidas de rede. Preferências pessoais, serviços do utilizador e páginas somente de leitura não recebem esse aviso. O aviso é informativo; a autorização só é solicitada quando uma ação precisa dela.
 

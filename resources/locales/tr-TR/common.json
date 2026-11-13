@@ -1,0 +1,8 @@
+{
+  "save": "Kaydet",
+  "cancel": "Cancel",
+  "close": "Close",
+  "welcome": "Hoşgeldiniz, {name}!",
+  "updates.available.one": "{count} Güncelleme mevcut",
+  "updates.available.other": "{count} Güncellemeler mevcut"
+}

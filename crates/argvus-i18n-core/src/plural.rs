@@ -5,12 +5,24 @@ pub(crate) fn category(locale: &str, count: i64) -> &'static str {
   let count = count.unsigned_abs();
   let language = locale.split('-').next().unwrap_or("en");
   match language {
+    "ar" => match count {
+      0 => "zero",
+      1 => "one",
+      2 => "two",
+      _ if (3..=10).contains(&(count % 100)) => "few",
+      _ if (11..=99).contains(&(count % 100)) => "many",
+      _ => "other",
+    },
     "zh" | "ja" | "ko" => "other",
+    "id" | "vi" => "other",
     "ru" => match (count % 10, count % 100) {
       (1, last_two) if last_two != 11 => "one",
       (2..=4, last_two) if !(12..=14).contains(&last_two) => "few",
       _ => "many",
     },
+    "pt" if locale == "pt-PT" && count == 1 => "one",
+    "pt" if locale == "pt-PT" && count != 0 && count.is_multiple_of(1_000_000) => "many",
+    "pt" if locale == "pt-PT" => "other",
     "fr" | "pt" if count <= 1 => "one",
     "fr" | "pt" | "es" | "it" if count != 0 && count.is_multiple_of(1_000_000) => "many",
     _ if count == 1 => "one",
@@ -20,6 +32,7 @@ pub(crate) fn category(locale: &str, count: i64) -> &'static str {
 
 pub(crate) fn extra_categories(locale: &str) -> &'static [&'static str] {
   match locale.split('-').next().unwrap_or("en") {
+    "ar" => &["zero", "two", "few", "many"],
     "ru" => &["few", "many"],
     "fr" | "pt" | "es" | "it" => &["many"],
     _ => &[],
@@ -37,6 +50,23 @@ mod tests {
         assert_eq!(category(locale, count), "other");
       }
     }
+    for (count, expected) in [
+      (0, "zero"),
+      (1, "one"),
+      (2, "two"),
+      (3, "few"),
+      (10, "few"),
+      (11, "many"),
+      (99, "many"),
+      (100, "other"),
+    ] {
+      assert_eq!(category("ar", count), expected);
+    }
+    assert_eq!(category("id-ID", 1), "other");
+    assert_eq!(category("vi-VN", 1), "other");
+    assert_eq!(category("pt-PT", 0), "other");
+    assert_eq!(category("pt-PT", 1), "one");
+    assert_eq!(category("pt-PT", 1_000_000), "many");
     for (count, expected) in [
       (0, "many"),
       (1, "one"),

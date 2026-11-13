@@ -1,0 +1,9 @@
+{
+  "save": "Gravar",
+  "cancel": "Cancelar",
+  "close": "Fechar",
+  "welcome": "Bem-vindo. {name}!",
+  "updates.available.one": "Actualização {count} disponível",
+  "updates.available.other": "{count} actualizações disponíveis",
+  "updates.available.many": "{count} actualizações disponíveis"
+}

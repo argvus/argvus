@@ -1,0 +1,10 @@
+{
+  "sensors.command_failed": "Tidak dapat menjalankan sensor -j",
+  "sensors.invalid_data": "Tak bisa membaca sensor JSON",
+  "sensors.no_sensors": "Tidak ditemukan sensor suhu.",
+  "sensors.title": "Sensor suhu",
+  "sensors.live": "[PH000]",
+  "sensors.loading": "Membaca sensor..",
+  "sensors.unavailable": "Pembacaan suhu tidak tersedia. Mencoba lagi secara otomatis.",
+  "sensors.shortcuts": "Penutupan esc setiap 2 detik"
+}

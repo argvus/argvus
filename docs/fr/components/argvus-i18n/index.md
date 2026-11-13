@@ -5,16 +5,32 @@ description: Catalogues de langues, sélection et prise en charge de l'Unicode.
 
 # Internationalisation ARGVUS
 
-ARGVUS propose l'anglais (`en-US`), le portugais brésilien (`pt-BR`), l'espagnol (`es-ES`),
-le français (`fr-FR`), l'italien (`it-IT`), l'allemand (`de-DE`), le russe (`ru-RU`), le chinois simplifié (`zh-CN`), le japonais (`ja-JP`) et le coréen (`ko-KR`). L'anglais est le catalogue canonique et de secours. Les huit traductions supplémentaires ont été produites avec l'aide de la traduction automatique et des corrections techniques ; une révision indépendante par un locuteur natif n'a pas été certifiée.
+ARGVUS navires 18 langues d'interface: arabe (`ar`), Bengali (`bn-BD`), allemand (`de-DE`),
+Français (`en-US`), espagnol (`es-ES`), français (`fr-FR`), Hindi (`hi-IN`), Indonésie
+(`id-ID`), italien (`it-IT`), japonais (`ja-JP`), coréen (`ko-KR`), portugais brésilien
+(`pt-BR`), portugais européen (`pt-PT`), russe (`ru-RU`), turc (`tr-TR`), Urdu
+(`ur-PK`), vietnamien (`vi-VN`) et chinois simplifié (`zh-CN`). L'anglais est le
+catalogue canonique et repli. Les traductions ont été produites avec AI l ' assistance et
+les corrections techniques; l'examen indépendant par un orateur natif n'a pas été certifié.
 
 ## Sélectionner une langue
 
-Ouvrez le Centre de Contrôle > Préférences > Langue et Région > Langue, ou Paramètres > Langue. La page découvre les catalogues installés et affiche leurs noms natifs. Elle sauvegarde `LANG` dans `$XDG_CONFIG_HOME/locale.conf` (par défaut `~/.config/locale.conf`). Activez d'abord la locale système UTF-8 correspondante dans les Locales Système. Des exemples incluent `es_ES.UTF-8`, `zh_CN.UTF-8`, `ja_JP.UTF-8` et `ko_KR.UTF-8`.
-
-La préférence ne modifie pas `/etc/locale.conf`. Les commentaires et les paramètres de catégorie régionale sont conservés. Le Panneau de configuration est redémarré après l'enregistrement ; déconnectez-vous puis reconnectez-vous pour appliquer la langue dans toute la session. Les utilisateurs non configurés utilisent l'anglais. Les variables d'environnement héritées et les fichiers de langue ARGVUS hérités ne remplacent pas cette préférence. Le greet de connexion s'exécute avant que la préférence de l'utilisateur ne soit disponible et conserve sa propre langue de compte de service, l'anglais par défaut.
-
-Les variantes régionales utilisent le catalogue installé pour leur langue lorsqu'un catalogue exact est absent ; par exemple `es_MX.UTF-8` utilise `es-ES`. `zh-Hans` sélectionne le chinois simplifié. Le chinois traditionnel (`zh-Hant`, `zh-TW`, `zh-HK`, `zh-MO`) n'est pas mappé silencieusement au chinois simplifié et revient à l'anglais.
+Open Control Center > Préférences > Langue et région > Langue. La page découvre
+les catalogues installés et montre leurs noms natifs. Il sauve `ARGVUS_LANGUAGE` dans
+`$XDG_CONFIG_HOME/locale.conf` (par défaut) `~/.config/locale.conf`), indépendamment de
+`LANG`; il n'est pas nécessaire de générer une localisation du système. Portugais brésilien (`pt-BR`) et
+Portugais européen (`pt-PT`) sont des choix séparés.
+La préférence ne modifie pas `/etc/locale.conf` ou les régions `LANG` mise en place.
+Les commentaires et les paramètres de catégorie régionale sont conservés. Le panneau de configuration est redémarré
+après l'enregistrement; commencer une nouvelle session pour appliquer la langue à tous les composants de la session.
+Les utilisateurs non configurés utilisent l'anglais. Contrôles distincts des préférences régionales locales
+`LANG`, le formatage régional et les applications tierces. L'accueil de connexion fonctionne
+avant que la préférence de l'utilisateur soit disponible et conserve son propre compte de service
+langue, anglais par défaut.
+Les variantes régionales utilisent le catalogue installé pour leur langue quand une
+catalogue est absent; par exemple `es_MX.UTF-8` Utilisations `es-ES`. `zh-Hans` sélectionne
+Chinois simplifié. Chinois traditionnel (`zh-Hant`, `zh-TW`, `zh-HK`, `zh-MO`) est
+pas tapé silencieusement sur le chinois simplifié et tombe à l'anglais.
 
 ## Catalogues et contributions
 

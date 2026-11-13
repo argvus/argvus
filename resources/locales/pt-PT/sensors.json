@@ -1,0 +1,10 @@
+{
+  "sensors.command_failed": "Não foi possível executar sensores - j",
+  "sensors.invalid_data": "Não foi possível ler os sensores JSON",
+  "sensors.no_sensors": "Não foram encontrados sensores de temperatura.",
+  "sensors.title": "Sensores de temperatura",
+  "sensors.live": "LIVE · 2 s",
+  "sensors.loading": "A ler sensores..",
+  "sensors.unavailable": "As leituras de temperatura não estão disponíveis. A tentar automaticamente.",
+  "sensors.shortcuts": "Esc Fechar · Atualiza a cada 2 segundos"
+}

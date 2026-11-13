@@ -1,0 +1,10 @@
+{
+  "sensors.command_failed": "Sensörleri çalıştıramaz -j",
+  "sensors.invalid_data": "Sensörleri okumayabilir JSON",
+  "sensors.no_sensors": "Sıcaklık sensörleri bulunamadı.",
+  "sensors.title": "Sıcaklık sensörleri",
+  "sensors.live": "LIVE",
+  "sensors.loading": "Okuma sensörleri..",
+  "sensors.unavailable": "Sıcaklık okumaları mevcut değildir. Otomatik olarak yeniden deneme.",
+  "sensors.shortcuts": "Esc Close · Güncellemeler her 2 saniyede"
+}

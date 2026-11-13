@@ -105,6 +105,23 @@ fn markers_icons_and_submenu_suffix_are_drawn_in_their_columns() {
 }
 
 #[test]
+fn rtl_menu_rows_place_the_cursor_and_submenu_marker_on_the_right() {
+  let row = Row::submenu(1, "Themes").detail("Nord");
+  let theme = Theme::load();
+  let line = row_line(
+    &row,
+    true,
+    Columns::for_rows(std::slice::from_ref(&row), MenuStyle { icons: false }),
+    50,
+    &theme,
+    true,
+  )
+  .to_string();
+  assert!(line.starts_with(" ‹Nord"), "{line:?}");
+  assert!(line.trim_end().ends_with("<"), "{line:?}");
+}
+
+#[test]
 fn labels_stay_aligned_with_icons_on_and_off() {
   let rows = sample_rows();
   for icons_on in [true, false] {

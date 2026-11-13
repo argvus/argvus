@@ -69,6 +69,13 @@ fn main() -> glib::ExitCode {
     .application_id("sh.argvus.WindowMode")
     .build();
   application.connect_activate(move |app| {
+    gtk::Widget::set_default_direction(
+      if i18n.direction() == argvus_i18n::TextDirection::RightToLeft {
+        gtk::TextDirection::Rtl
+      } else {
+        gtk::TextDirection::Ltr
+      },
+    );
     if let Some(window) = app.active_window() {
       window.close();
       return;

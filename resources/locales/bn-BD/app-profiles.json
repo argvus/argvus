@@ -1,0 +1,13 @@
+{
+  "launcher.class_requires_value": "argvus-tui-terminal: --class একটি মান আবশ্যক",
+  "launcher.option_requires_value": "argvus-tui-terminal: {option} একটি মান আবশ্যক",
+  "yazi.rename": "পুনরায় নামকরণ",
+  "yazi.open_terminal": "টার্মিনাল আরম্ভ করুন",
+  "yazi.move_to_trash": "আবর্জনার বাক্সে সরিয়ে ফেলুন",
+  "yazi.secure_destroy": "নিরাপদভাবে ধ্বংস (SMog)",
+  "yazi.empty_trash": "আবর্জনার বাক্স ফাঁকা (SMog)",
+  "yazi.open_file_smart": "বুদ্ধিমান ফাইল খুলুন",
+  "yazi.open_vscode": "খুলে দাও",
+  "yazi.create_zip": "তৈরি করুন ( r) ZIP আর্কাইভ (zip)",
+  "yazi.open_file_roller": "ফাইল রোলারের সাহায্যে খুলুন"
+}

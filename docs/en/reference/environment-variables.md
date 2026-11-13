@@ -14,10 +14,10 @@ applies, plus `argvus/session.log`. Neither is a source of truth.
 
 ## Language environment
 
-The only general language preference is `LANG` in `$XDG_CONFIG_HOME/locale.conf` (default `~/.config/locale.conf`). Without a valid value, ARGVUS selects English (`en-US`), even when `/etc/locale.conf`, PAM or the login manager supplies Portuguese. Values such as `pt_BR.UTF-8` normalize to `pt-BR` for catalogs.
+`ARGVUS_LANGUAGE` in `$XDG_CONFIG_HOME/locale.conf` (default `~/.config/locale.conf`) selects the ARGVUS interface language from its installed catalogs. Without it, ARGVUS resolves the regional `LANG` value to a catalog and falls back to English (`en-US`). Values such as `pt_BR.UTF-8` resolve to Brazilian Portuguese (`pt-BR`); `pt-PT` explicitly selects European Portuguese.
 
-The session applies this preference before starting desktop components and importing the systemd user and D-Bus activation environments. It replaces inherited `LANG`, `LC_MESSAGES`, `LANGUAGE` and clears `LC_ALL`; regional `LC_*` settings in the same file are preserved. English uses `en_US.UTF-8` when generated, otherwise `C.UTF-8`. No preference file is created automatically. Log out and back in after changing the language.
+The session keeps `LANG` as the regional locale for formatting and third-party applications. `ARGVUS_LANGUAGE` does not need a generated system locale and does not replace `LANG`. The Control Panel restarts after the interface language changes; log out and back in to apply it throughout session components. The separate Regional Locale setting changes `LANG` and requires the selected UTF-8 system locale to be generated. No preference file is created automatically.
 
 `session.language`, `argvus/data/language` and `argvus/data/internal/language` are ignored legacy data. They are neither imported nor regenerated; existing files are preserved. `argvus config set` and `patch` reject new writes to `session.language` and direct callers to `locale.conf`.
 
-For diagnosis, compare `argvus i18n locale`, `cat "${XDG_CONFIG_HOME:-$HOME/.config}/locale.conf"` and `systemctl --user show-environment`. `localectl status` describes the system, not the user's ARGVUS language. `ARGVUS_I18N_DIR` selects a catalog directory for development, not the language.
+For diagnosis, compare `argvus i18n locale`, `cat "${XDG_CONFIG_HOME:-$HOME/.config}/locale.conf"` and `systemctl --user show-environment`. `localectl status` describes the system, not the user's ARGVUS interface language. `ARGVUS_I18N_DIR` selects a catalog directory for development, not the language.

@@ -3,31 +3,25 @@ title: Localization
 description: Use ARGVUS in English or Portuguese.
 ---
 
-`argvus-i18n` provides the shared catalogs, the `argvus i18n validate` command and the QML module `org.argvus.i18n`. ARGVUS currently ships English and Portuguese catalogs.
+`argvus-i18n` provides the shared catalogs, the `argvus i18n validate` command and the QML module `org.argvus.i18n`. ARGVUS ships 18 interface languages: Arabic, Bengali, German, English, Spanish, French, Hindi, Indonesian, Italian, Japanese, Korean, Brazilian Portuguese, European Portuguese, Russian, Turkish, Urdu, Vietnamese and Simplified Chinese.
 
-Native applications and shell components consume the shared catalogs. A translated string may therefore be used by more than one repository.
+Native ARGVUS applications and shell components consume the shared catalogs. A translated string may therefore be used by more than one repository. Arabic and Urdu use right-to-left layout in the supported GTK, Quickshell and terminal interfaces.
 
-Use **Control Center → Locale & Region** to configure the language, regional locale, generated system locales, time zone, date/time and keyboard. The current ARGVUS catalogs provide English and Portuguese; this is separate from the list of system locales that the operating system has generated.
+Use **Control Center → Preferences → Language & Region → Language** to select the ARGVUS interface language. This writes `ARGVUS_LANGUAGE` to `$XDG_CONFIG_HOME/locale.conf` (normally `~/.config/locale.conf`). For example, `ARGVUS_LANGUAGE=pt-PT` selects European Portuguese. Brazilian Portuguese (`pt-BR`) is a separate option. The language catalog is installed with ARGVUS, so it does not depend on `locale-gen`.
 
-Changing the display language saves the ARGVUS preference and automatically restarts `argvus-control-panel.service`, so the Control Panel reflects the change immediately. Other applications and shell surfaces may require a session reload or a new session. Generating or changing `/etc/locale.gen` entries requires authorization and runs `locale-gen`; selecting a locale that is not generated is rejected. Keyboard layout, variant and console keymap are separate settings and should not be confused with the interface language.
+The Control Panel restarts automatically after the interface language changes. Start a new session to apply it to session components. The separate **Regional Locale** setting writes `LANG` and controls regional formats and third-party applications. It requires a generated system locale; enabling one in `/etc/locale.gen` runs `locale-gen` with administrator authorization. Keyboard layout, variant and console keymap are separate settings.
 
 ## When environment variables override the change
 
-ARGVUS applications detect the language from the persistent ARGVUS language file first, then `LC_ALL`, `LC_MESSAGES` and `LANG`. Local environment variables can therefore make the Control Center appear to ignore a language change, especially when a user service or graphical session retains an older environment.
+ARGVUS applications read `ARGVUS_LANGUAGE` from the user's `locale.conf`. If it is absent, they resolve the regional `LANG` value to an installed catalog. Inherited locale variables do not override an explicit `ARGVUS_LANGUAGE` preference. Third-party applications continue to use the system regional locale.
 
 Inspect the effective values with:
 
 ```sh
 systemctl --user show-environment | rg '^(LANG|LC_|ARGVUS)='
 locale
-echo $LANG
+printf '%s\n' "$LANG"
 localectl status
 ```
 
-If `~/.config/locale.conf` exists and defines `LANG`, `LC_ALL` or `LC_MESSAGES`, rename it temporarily so it no longer reintroduces those values. Keep a backup instead of deleting it:
-
-```sh
-mv ~/.config/locale.conf ~/.config/locale.conf.backup
-```
-
-Apply the language again in **Control Center → Locale & Region**. The Control Panel is restarted automatically; if other components still show the previous language, log out and in so the graphical session and `systemd --user` receive the new environment. Repeat the diagnostic commands afterwards. See [Environment variables](/docs/reference/environment-variables/) for the technical contracts and precedence.
+Check that `~/.config/locale.conf` contains a valid `ARGVUS_LANGUAGE=<catalog>` value. To change regional formatting or third-party application language, use **Regional Locale** and select a generated locale. The Control Panel is restarted after either preference changes; log out and in if other session components still show the old interface language. See [Environment variables](/docs/reference/environment-variables/) for the technical contracts and precedence.

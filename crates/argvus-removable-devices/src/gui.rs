@@ -120,6 +120,12 @@ pub fn run(
     return 1;
   }
 
+  gtk::Widget::set_default_direction(if i18n::is_rtl() {
+    gtk::TextDirection::Rtl
+  } else {
+    gtk::TextDirection::Ltr
+  });
+
   install_css(config_path);
 
   let position = popup_position(click, bar_bottom);

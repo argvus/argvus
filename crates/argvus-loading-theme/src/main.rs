@@ -147,6 +147,13 @@ fn main() -> glib::ExitCode {
   let palette = Palette::from_cli(&cli);
   let application = Application::builder().application_id(APP_ID).build();
   application.connect_activate(move |application| {
+    gtk::Widget::set_default_direction(
+      if argvus_i18n::Lang::detect().direction() == argvus_i18n::TextDirection::RightToLeft {
+        gtk::TextDirection::Rtl
+      } else {
+        gtk::TextDirection::Ltr
+      },
+    );
     build_surfaces(application, &cli, &palette);
   });
   // GTK parses its own argv after clap. Pass only the application name so

@@ -4,7 +4,7 @@ use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind, KeyModifier
 use portable_pty::{CommandBuilder, MasterPty, PtySize, native_pty_system};
 use ratatui::{
   Frame,
-  layout::{Constraint, Layout, Rect},
+  layout::{Alignment, Constraint, Layout, Rect},
   style::{Modifier, Style},
   text::{Line, Span},
   widgets::{Block, Borders, Paragraph},
@@ -407,6 +407,11 @@ fn draw(f: &mut Frame, a: &App) {
         Style::default().add_modifier(Modifier::BOLD),
       ),
     ]))
+    .alignment(if a.messages.is_rtl() {
+      Alignment::Right
+    } else {
+      Alignment::Left
+    })
     .block(
       Block::default()
         .borders(Borders::BOTTOM)
@@ -415,9 +420,18 @@ fn draw(f: &mut Frame, a: &App) {
     rows[0],
   );
   let prefix = &a.path[..a.cursor];
-  let directory_areas =
-    Layout::horizontal([Constraint::Min(1), Constraint::Length(16)]).split(rows[1]);
-  let width = usize::from(directory_areas[0].width.saturating_sub(2));
+  let directory_constraints = if a.messages.is_rtl() {
+    [Constraint::Length(16), Constraint::Min(1)]
+  } else {
+    [Constraint::Min(1), Constraint::Length(16)]
+  };
+  let directory_areas = Layout::horizontal(directory_constraints).split(rows[1]);
+  let (path_area, browse_slot) = if a.messages.is_rtl() {
+    (directory_areas[1], directory_areas[0])
+  } else {
+    (directory_areas[0], directory_areas[1])
+  };
+  let width = usize::from(path_area.width.saturating_sub(2));
   let mut start = 0;
   for (offset, _) in prefix.char_indices() {
     if UnicodeWidthStr::width(&prefix[start..]) < width {
@@ -437,13 +451,19 @@ fn draw(f: &mut Frame, a: &App) {
         .borders(Borders::ALL)
         .border_style(Style::default().fg(theme.accent)),
     ),
-    directory_areas[0],
+    path_area,
   );
   let browse_area = Layout::vertical([Constraint::Length(1)])
     .flex(ratatui::layout::Flex::Center)
-    .split(directory_areas[1])[0];
+    .split(browse_slot)[0];
   f.render_widget(
-    Paragraph::new(format!("[ {} ]", a.messages.get("browse"))).style(focus(1)),
+    Paragraph::new(format!("[ {} ]", a.messages.get("browse")))
+      .alignment(if a.messages.is_rtl() {
+        Alignment::Right
+      } else {
+        Alignment::Left
+      })
+      .style(focus(1)),
     browse_area,
   );
   if a.focus == 0 && a.child.is_none() && width > 0 {
@@ -455,20 +475,36 @@ fn draw(f: &mut Frame, a: &App) {
       Line::from(Span::styled(
         format!(
           "{} {}",
-          if a.options[i] { "[x]" } else { "[ ]" },
-          a.messages.get(OPTIONS[i].0)
+          if a.messages.is_rtl() {
+            a.messages.get(OPTIONS[i].0)
+          } else if a.options[i] {
+            "[x]"
+          } else {
+            "[ ]"
+          },
+          if a.messages.is_rtl() {
+            if a.options[i] { "[x]" } else { "[ ]" }
+          } else {
+            a.messages.get(OPTIONS[i].0)
+          }
         ),
         focus(i + 2),
       ))
     })
     .collect::<Vec<_>>();
   f.render_widget(
-    Paragraph::new(opts).block(
-      Block::default()
-        .title(format!(" {} ", a.messages.get("options")))
-        .borders(Borders::ALL)
-        .border_style(Style::default().fg(theme.accent)),
-    ),
+    Paragraph::new(opts)
+      .alignment(if a.messages.is_rtl() {
+        Alignment::Right
+      } else {
+        Alignment::Left
+      })
+      .block(
+        Block::default()
+          .title(format!(" {} ", a.messages.get("options")))
+          .borders(Borders::ALL)
+          .border_style(Style::default().fg(theme.accent)),
+      ),
     rows[2],
   );
   f.render_widget(
@@ -487,12 +523,23 @@ fn draw(f: &mut Frame, a: &App) {
         a.messages.get("initial")
       } else {
         &a.status
+      })
+      .alignment(if a.messages.is_rtl() {
+        Alignment::Right
+      } else {
+        Alignment::Left
       }),
       inner,
     );
   }
   f.render_widget(
-    Paragraph::new(format!("[ {} ]", a.messages.get("analyze"))).style(focus(ANALYZE_FOCUS)),
+    Paragraph::new(format!("[ {} ]", a.messages.get("analyze")))
+      .alignment(if a.messages.is_rtl() {
+        Alignment::Right
+      } else {
+        Alignment::Left
+      })
+      .style(focus(ANALYZE_FOCUS)),
     rows[4],
   );
   f.render_widget(
@@ -500,6 +547,11 @@ fn draw(f: &mut Frame, a: &App) {
       a.messages.get("footer_results")
     } else {
       a.messages.get("footer_main")
+    })
+    .alignment(if a.messages.is_rtl() {
+      Alignment::Right
+    } else {
+      Alignment::Left
     })
     .style(Style::default().fg(theme.muted)),
     rows[5],

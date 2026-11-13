@@ -1,0 +1,12 @@
+{
+  "usage": "استعمال:\n argvus-terminal [تلفظ]\n argvus-terminal --apply )\n argvus-terminal --print-config )\n argvus-terminal --print-tui-config )\n\nاختیارات:\n --class &یہ جگہ Kitty ونڈو کلاس.\n --font-profile محمد علی مکی makki.ma@gmail.com اردو کوڈر لینکس فورم www.urducoder.com\n --tui استعمال کريں ARGVUS TUI Kitty پرو فا ئل\n - ^ ا ب ایس این اے سی آرک آئی ڈی: کمانڈ ميں کام کريں Kitty. .",
+  "class_requires_value": "--class قیمت درکار",
+  "font_profile_requires_value": "--font-profile قیمت درکار",
+  "unsupported_font_profile": "بغیر-نام کے آئی ڈی: {profile}",
+  "kitty_not_installed": "وائیرڈ نیٹ ورک نصب نہیں کیا جاسکتا",
+  "config_not_found": "Kitty زیریں اتصال نہیں پایا گیا تھا {path}",
+  "tui_config_not_found": "Kitty TUI زیریں اتصال نہیں پایا گیا تھا {path}",
+  "cache_create_failed": "نیا نہیں بنایا جاسکتا Kitty وقت کا دورہ {path}",
+  "cache_write_failed": "لکھ نہیں سکا Kitty وقت کا دورہ {path}",
+  "cache_lock_failed": "بند نہیں کیا جاسکتا Kitty وقت کا دورہ {path}"
+}

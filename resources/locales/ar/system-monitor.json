@@ -1,0 +1,11 @@
+{
+  "system-monitor.title.cpu": "CPU",
+  "system-monitor.title.memory": "رصد الذاكرة",
+  "system-monitor.title.gpu": "GPU",
+  "system-monitor.help.gpu": "Show GPU panels only (up to six GPUs)",
+  "system-monitor.title.overview": "رصد النظام",
+  "system-monitor.live": "LIVE",
+  "system-monitor.footer.close": "Esc close",
+  "system-monitor.unavailable": "(ب) لا يمكن أن تبدأ. اضغط على اسكت لإغلاقه.",
+  "system-monitor.gpu.unavailable": "No GPU metrics are available. تحقق من GPU الدعم، مكتبات مقدمي الخدمات، ووصول الأجهزة."
+}

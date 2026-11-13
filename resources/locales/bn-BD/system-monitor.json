@@ -1,0 +1,11 @@
+{
+  "system-monitor.title.cpu": "ঠিক আছে",
+  "system-monitor.title.memory": "মেমরি নিরীক্ষণ ব্যবস্থা",
+  "system-monitor.title.gpu": "ঠিক আছে",
+  "system-monitor.help.gpu": "শুধু প্যানেল দেখানো হবে (পাঁচ থেকে ৬",
+  "system-monitor.title.overview": "সিস্টেম নিরীক্ষণ ব্যবস্থা",
+  "system-monitor.live": "ঠিক আছে",
+  "system-monitor.footer.close": "বন্ধ করুন",
+  "system-monitor.unavailable": "ঊর্ধ্বস্থ আরম্ভ করতে ব্যর্থ। বন্ধ করতে চাপ দিন।.",
+  "system-monitor.gpu.unavailable": "না GPU মেট্রিক পাওয়া গেছে। উপরে: GPU হ্যা, পরিসেবা লাইব্রেরি, এবং ডিভাইস অ্যাক্সেস।"
+}

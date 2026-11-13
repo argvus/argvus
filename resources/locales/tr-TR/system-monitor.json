@@ -1,0 +1,11 @@
+{
+  "system-monitor.title.cpu": "CPU monitörü",
+  "system-monitor.title.memory": "Memory monitörü",
+  "system-monitor.title.gpu": "GPU monitörü",
+  "system-monitor.help.gpu": "Show GPU paneller sadece altı GPUs",
+  "system-monitor.title.overview": "Sistem monitörü",
+  "system-monitor.live": "LIVE",
+  "system-monitor.footer.close": "Esc Close",
+  "system-monitor.unavailable": "btop başlamamıştı. Press Esc yakın.",
+  "system-monitor.gpu.unavailable": "Hayır GPU metrikler mevcuttur. btop GPU desteği, sağlayıcı kütüphaneleri ve cihaz erişimi kontrol edin."
+}

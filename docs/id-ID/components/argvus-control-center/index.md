@@ -203,9 +203,15 @@ Belum ada di halaman: mencari kunci di server kunci berdasarkan nama atau email.
 
 Kartu ini mencantumkan Bahasa (lokal regional), Zona Waktu, Tanggal & Waktu, Lokal Sistem, dan Tata Letak Keyboard, dan masing-masing dapat dibuka langsung dari rumah. Halaman keyboard juga berisi varian dan peta tombol konsol. Pencarian beranda juga menampilkan pintasan keyboard dan pengaturan mouse/touchpad sebagai rute pengaturan langsung.
 
-Daftar bahasa menemukan katalog yang terinstal dan menampilkan nama asli untuk sepuluh bahasa. Aktifkan lokal sistem UTF-8 yang sesuai sebelum memilihnya.
+Daftar Bahasa kartu ini ( ARGVUS bahasa antar-muka), Locale Regional, Zona Waktu, Tanggal & Waktu, Locales Sistem dan Tata Letak Papan Tik. Bahasa membuka pemilih 18- bahasa; Locale Regional mengatur lokal yang digunakan untuk format regional dan aplikasi partai ketiga.
 
-**Preferensi > Bahasa & Wilayah > Bahasa** dan **Pengaturan > Bahasa** menyimpan preferensi pengguna yang sama: `LANG` di `$XDG_CONFIG_HOME/locale.conf` (`~/.config/locale.conf` default), misalnya `LANG=en_US.UTF-8`. Komentar dan variabel regional dipertahankan. Tidak ada file global atau pengaturan bahasa ARGVUS paralel yang ditulis. Pengguna yang tidak dikonfigurasi mendapatkan bahasa Inggris; file `session.language` dan `data/language` lama diabaikan. Keluar dan masuk kembali untuk menerapkan bahasa tersebut ke sesi dan aplikasi penuh.
+* * Preferensi > Bahasa & Daerah > Bahasa * * menghemat `ARGVUS_LANGUAGE` in `$XDG_CONFIG_HOME/locale.conf` (biasanya `~/.config/locale.conf`), misalnya `ARGVUS_LANGUAGE=pt-PT`Ini berubah ARGVUS aplikasi dan permukaan ketika memelihara `LANG` untuk format daerah dan aplikasi pihak ketiga. Panel Kendali segera dimulai kembali; memulai sesi baru untuk menerapkan bahasa di seluruh komponen sesi. Memilih bahasa antar muka tidak memerlukan otorisasi administrator atau `locale-gen`.
+
+* * Regional Locale * * menghemat `LANG` dalam berkas yang sama dan mengontrol format regional dan bahasa yang digunakan oleh aplikasi pihak ketiga. Its dipilih UTF-8 lokal sistem harus sudah dihasilkan.
+
+* * Locales Sistem * * berubah `/etc/locale.gen` dan berjalan `locale-gen`, sehingga menerapkannya membutuhkan otorisasi administrator.
+
+* * Regional Locale * * menyimpan `LANG` dalam berkas yang sama dan mengontrol format regional dan bahasa yang digunakan oleh aplikasi pihak ketiga. lokal sistem yang dipilih UTF-8 harus sudah dihasilkan.
 
 **Lokal Sistem** mengubah `/etc/locale.gen` dan menjalankan `locale-gen`, sehingga penerapannya memerlukan otorisasi administrator. Pemberitahuan **[PERINGATAN]** yang terus-menerus di atas footer mengidentifikasi halaman dengan pengaturan administratif. Pemberitahuan yang sama mencakup zona waktu, tanggal/waktu, nama host, peta kunci konsol, pengeditan akun dan grup, firewall, layanan sistem, pengatur CPU, profil dan kebijakan daya, konfigurasi boot, operasi paket, snapshot, dan perubahan jaringan yang dilindungi. Preferensi pribadi, layanan pengguna, dan halaman hanya-baca tidak menerima pemberitahuan ini. Pemberitahuan ini bersifat informatif; otorisasi diminta hanya ketika suatu tindakan memerlukannya.
 

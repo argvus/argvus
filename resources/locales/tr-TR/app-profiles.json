@@ -1,0 +1,13 @@
+{
+  "launcher.class_requires_value": "argvus-tui-terminal: --class bir değer gerektirir",
+  "launcher.option_requires_value": "argvus-tui-terminal: {option} bir değer gerektirir",
+  "yazi.rename": "Rename",
+  "yazi.open_terminal": "Terminalde açık",
+  "yazi.move_to_trash": "Çöpe atla",
+  "yazi.secure_destroy": "Güvenli bir şekilde yok (Smog)",
+  "yazi.empty_trash": "Boş çöp (Smog)",
+  "yazi.open_file_smart": "Açık dosya akıllı olarak",
+  "yazi.open_vscode": "VSCode ile açın",
+  "yazi.create_zip": "Create ZIP archive (zip)",
+  "yazi.open_file_roller": "File Roller ile Açık"
+}

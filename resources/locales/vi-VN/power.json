@@ -1,0 +1,20 @@
+{
+  "menu.lock": "Khoá",
+  "menu.suspend": "Ngưng",
+  "menu.logout": "Đăng xuất",
+  "menu.reboot": "Khởi động lại",
+  "menu.shutdown": "Đóng cửa",
+  "menu.launcher_missing": "Không tìm thấy bệ phóng thực đơnRofi.",
+  "menu.unsupported_launcher": "Súng phóng thanh không được hỗ trợ:{launcher}",
+  "idle.timeout.title": "Thời hạn khoá",
+  "idle.timeout.one_minute": "1 phút",
+  "idle.timeout.minutes": "{count} phút",
+  "idle.timeout.never": "Không bao giờ",
+  "idle.timeout.config_missing": "không tìm thấy tập tin cấu hình hypridle:{path}",
+  "idle.timeout.invalid": "Thời hạn khoá không hợp lệ:{timeout}",
+  "idle.timeout.notification": "Khóa không hoạt động:{timeout}",
+  "keep_awake.title": "Hãy tỉnh thức",
+  "keep_awake.enabled": "Giữ Comment",
+  "keep_awake.disabled": "Giữ Bị tắt",
+  "dpms.usage": "Sử dụng:{command}{arguments}"
+}

@@ -41,6 +41,14 @@ pub(super) fn build_search_registry(lang: Lang) -> SearchRegistry {
       "default application apps browser terminal file manager",
       "settings/default-apps",
     ),
+    #[cfg(feature = "language")]
+    (
+      "settings.language",
+      "preferences",
+      "control_center.language",
+      "language interface display language idioma idioma da interface",
+      "settings/language",
+    ),
     #[cfg(feature = "apps")]
     (
       "settings.window_rules",

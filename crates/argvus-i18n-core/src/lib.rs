@@ -53,6 +53,10 @@ impl Lang {
     self.0.locale().to_owned()
   }
 
+  pub fn direction(self) -> TextDirection {
+    self.0.direction()
+  }
+
   pub fn tr(self, key: &str) -> String {
     self.0.tr(key)
   }
@@ -125,6 +129,7 @@ pub const SYSTEM_CATALOG_DIR: &str = "/usr/share/argvus/i18n";
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct I18n {
   locale: String,
+  direction: TextDirection,
   root: PathBuf,
   domain: String,
   translations: HashMap<String, String>,
@@ -136,6 +141,13 @@ pub struct LocaleInfo {
   pub locale: String,
   pub name: String,
   pub native_name: String,
+  pub direction: TextDirection,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum TextDirection {
+  LeftToRight,
+  RightToLeft,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -172,10 +184,22 @@ impl I18n {
   pub fn from_locale(root: &Path, locale: &str, domain: &str) -> Result<Self, I18nError> {
     let normalized = normalize_locale(locale);
     let locale = resolve_locale(root, &normalized).unwrap_or(normalized);
+    let direction = read_json(&root.join(&locale).join("locale.json"))
+      .ok()
+      .and_then(|metadata| {
+        metadata
+          .get("direction")
+          .and_then(|value| value.as_str())
+          .map(str::to_owned)
+      })
+      .as_deref()
+      .map(parse_text_direction)
+      .unwrap_or(TextDirection::LeftToRight);
     let fallback = load_catalog(root, FALLBACK_LOCALE, domain)?;
     let translations = load_catalog(root, &locale, domain).unwrap_or_default();
     Ok(Self {
       locale,
+      direction,
       root: root.to_path_buf(),
       domain: domain.to_owned(),
       translations,
@@ -185,6 +209,10 @@ impl I18n {
 
   pub fn locale(&self) -> &str {
     &self.locale
+  }
+
+  pub fn direction(&self) -> TextDirection {
+    self.direction
   }
 
   pub fn reload(&mut self) -> Result<(), I18nError> {
@@ -226,6 +254,13 @@ impl I18n {
   }
 }
 
+fn parse_text_direction(value: &str) -> TextDirection {
+  match value {
+    "rtl" => TextDirection::RightToLeft,
+    _ => TextDirection::LeftToRight,
+  }
+}
+
 pub fn normalize_locale(value: &str) -> String {
   let value = value.split(':').next().unwrap_or(value).trim();
   let value = value.split(['.', '@']).next().unwrap_or(value);
@@ -263,6 +298,13 @@ pub fn resolve_locale(root: &Path, requested: &str) -> Option<String> {
     "ru" => "ru-RU",
     "ja" => "ja-JP",
     "ko" => "ko-KR",
+    "ar" => "ar",
+    "bn" => "bn-BD",
+    "hi" => "hi-IN",
+    "id" => "id-ID",
+    "tr" => "tr-TR",
+    "ur" => "ur-PK",
+    "vi" => "vi-VN",
     "zh"
       if !requested.split('-').any(|part| part == "Hant")
         && (requested.split('-').any(|part| part == "Hans")
@@ -280,7 +322,7 @@ pub fn resolve_locale(root: &Path, requested: &str) -> Option<String> {
     .then(|| default.to_owned())
 }
 
-/// The only persistent language preference of the logged-in user.
+/// Path to the user's ARGVUS language and regional locale preferences.
 pub fn config_path() -> Option<PathBuf> {
   let root = env::var_os("XDG_CONFIG_HOME")
     .map(PathBuf::from)
@@ -289,7 +331,7 @@ pub fn config_path() -> Option<PathBuf> {
   Some(root.join("locale.conf"))
 }
 
-/// Reads LANG without evaluating shell expressions or consulting global state.
+/// Reads a validated `LANG` value without evaluating shell expressions.
 pub fn parse_user_locale(contents: &str) -> Option<String> {
   contents
     .lines()
@@ -309,8 +351,36 @@ pub fn parse_user_locale(contents: &str) -> Option<String> {
     .next_back()
 }
 
+/// Reads the optional ARGVUS interface-language preference.
+pub fn parse_user_language(contents: &str) -> Option<String> {
+  contents
+    .lines()
+    .filter_map(|line| {
+      let (key, value) = line.trim().split_once('=')?;
+      if key != "ARGVUS_LANGUAGE" {
+        return None;
+      }
+      let value = value.trim().trim_matches(['"', '\'']);
+      (!value.is_empty()
+        && value != "null"
+        && value
+          .bytes()
+          .all(|byte| byte.is_ascii_alphanumeric() || matches!(byte, b'_' | b'-')))
+      .then(|| value.to_owned())
+    })
+    .next_back()
+}
+
 /// An unconfigured user gets English even on a Portuguese host.
 pub fn user_locale() -> String {
+  config_path()
+    .and_then(|path| fs::read_to_string(path).ok())
+    .and_then(|contents| parse_user_language(&contents).or_else(|| parse_user_locale(&contents)))
+    .unwrap_or_else(|| "en_US.UTF-8".into())
+}
+
+/// The regional locale remains separate from the ARGVUS interface language.
+pub fn user_regional_locale() -> String {
   config_path()
     .and_then(|path| fs::read_to_string(path).ok())
     .and_then(|contents| parse_user_locale(&contents))
@@ -354,6 +424,14 @@ pub fn discover_locales(root: &Path) -> Vec<LocaleInfo> {
           .and_then(|v| v.as_str())
           .unwrap_or(&locale)
           .into(),
+        direction: match metadata
+          .as_ref()
+          .and_then(|v| v.get("direction"))
+          .and_then(|v| v.as_str())
+        {
+          Some("rtl") => TextDirection::RightToLeft,
+          _ => TextDirection::LeftToRight,
+        },
         locale,
       }
     })
@@ -389,7 +467,7 @@ pub fn validate_catalogs(root: &Path, requested: Option<&str>) -> Result<(), Vec
   {
     match read_json(&root.join(&locale).join("locale.json")) {
       Ok(metadata) => {
-        for field in ["locale", "name", "native_name"] {
+        for field in ["locale", "name", "native_name", "direction"] {
           if metadata
             .get(field)
             .and_then(serde_json::Value::as_str)
@@ -401,6 +479,16 @@ pub fn validate_catalogs(root: &Path, requested: Option<&str>) -> Result<(), Vec
         if metadata.get("locale").and_then(serde_json::Value::as_str) != Some(locale.as_str()) {
           errors.push(format!(
             "{locale}/locale.json: locale does not match directory"
+          ));
+        }
+        if !matches!(
+          metadata
+            .get("direction")
+            .and_then(serde_json::Value::as_str),
+          Some("ltr" | "rtl")
+        ) {
+          errors.push(format!(
+            "{locale}/locale.json: direction must be ltr or rtl"
           ));
         }
       }

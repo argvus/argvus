@@ -1,0 +1,7 @@
+{
+  "usage": "Penggunaan: hyprlock -theme.sh [--invalidate]",
+  "invalid_active_theme": "Tema aktif tidak valid untuk Hyprlock: {theme}",
+  "theme_not_found": "Tema Hyprlock tidak ditemukan: {theme}",
+  "password_placeholder": "Sandi",
+  "theme_applied": "Tema Hyprlock {theme} diterapkan dengan aksen #{accent}."
+}

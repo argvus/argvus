@@ -2,29 +2,26 @@
 title: 本地化
 description: 使用 ARGVUS 英语或葡萄牙语。
 ---
-`argvus-i18n` 提供共享目录、`argvus i18n validate` 命令和 QML 模块 `org.argvus.i18n`。ARGVUS 目前提供英语和葡萄牙语目录。
 
-本地应用程序和 shell 组件使用共享目录。因此，翻译后的字符串可能被多个存储库使用。
+`argvus-i18n` 提供共享目录 `argvus i18n validate` 命令和 QML 模块 `org.argvus.i18n`。 。 。 。 ARGVUS 18艘相交语言:阿拉伯语、孟加拉语、德语、英语、西班牙语、法语、印地语、印度尼西亚语、意大利语、日语、朝鲜语、巴西葡萄牙语、欧洲葡萄牙语、俄语、土耳其语、乌尔都语、越南语和简化中文。
 
-使用 **控制中心 → 语言和地区** 配置语言、区域设置、生成的系统区域设置、时区、日期/时间和键盘。当前 ARGVUS 目录提供英语和葡萄牙语；这与操作系统生成的系统区域设置列表是分开的。
+土著 ARGVUS 应用程序和 shell 组件消耗共享目录。 因此,一个被翻译的字符串可能被一个以上的寄存器所使用. 阿拉伯语和乌尔都语在所支持的区域使用从右到左的布局 GTK, (中文(简体) ). Quickshell 和终端接口。
 
-更改显示语言会保存 ARGVUS 的偏好设置，并自动重启 `argvus-control-panel.service`，因此控制面板会立即反映更改。其他应用程序和 shell 界面可能需要重新加载会话或启动新会话。生成或更改 `/etc/locale.gen` 条目需要授权，并会运行 `locale-gen`；选择未生成的区域设置会被拒绝。键盘布局、变体和控制台键盘映射是单独的设置，不应与界面语言混淆。
+使用 ** 控制中心 → 首选项 → 语言和地区 → 语言 ** 选择 ARGVUS 界面语言。 这个写着 `ARGVUS_LANGUAGE` 改为 `$XDG_CONFIG_HOME/locale.conf` (通常情况下) `~/.config/locale.conf`) (中文(简体) ). 譬如说. `ARGVUS_LANGUAGE=pt-PT` 选择欧洲葡萄牙语。 巴西葡萄牙语`pt-BR`)是一个单独的选项。 语言目录已安装 ARGVUS,所以它不依赖于 `locale-gen`。 。 。 。
 
-## 当环境变量覆盖更改时
+控制面板在界面语言变化后自动重启. 启动新会话, 将其应用到会话组件 。 不同的** 区域语言** 设置写道 `LANG` 并控制区域格式和第三方应用程序。 它需要一个生成的系统 locale; 允许在 `/etc/locale.gen` 运行 `locale-gen` 有管理员授权。 键盘布局,变体和控制台键图是独立的设置.
 
-ARGVUS 应用程序会首先从持久的 ARGVUS 语言文件中检测语言，然后依次检查 `LC_ALL`、`LC_MESSAGES` 和 `LANG`。因此，本地环境变量可能会导致控制中心似乎忽略语言更改，尤其是在用户服务或图形会话保留了旧环境时。
+□ 当环境变量覆盖变化时
 
-使用以下命令检查有效值:
+ARGVUS 应用程序已读取 `ARGVUS_LANGUAGE` 从用户的 `locale.conf`如果缺少这种机制,它们将解决区域问题。 `LANG` 值为已安装目录。 继承的地语变量不会覆盖一个明确的 `ARGVUS_LANGUAGE` 优先选择。 第三方应用程序继续使用系统区域地块.
+
+检查有效值:
 
 ```sh
 systemctl --user show-environment | rg '^(LANG|LC_|ARGVUS)='
 locale
-echo $LANG
+printf '%s\n' "$LANG"
 localectl status
 ```
-如果 `~/.config/locale.conf` 存在并定义了 `LANG`、`LC_ALL` 或 `LC_MESSAGES`，请临时重命名它，以便不再重新引入这些值。请保留备份，而不是删除它：
 
-```sh
-mv ~/.config/locale.conf ~/.config/locale.conf.backup
-```
-再次在 **控制中心 → 地区和语言** 中应用语言。控制面板会自动重启；如果其他组件仍显示之前的语言，请注销并重新登录，以便图形会话和 `systemd --user` 接收新的环境。之后重复诊断命令。请参阅 [环境变量](/docs/reference/environment-variables/) 了解技术约定和优先级。
+检查 `~/.config/locale.conf` 包含一个有效的 `ARGVUS_LANGUAGE=<catalog>` 数值。 要改变区域格式化或第三方应用语言,请使用**区域地语**并选择生成地语. Control 面板在任一偏好更改后重新启动; 关闭, 如果其他会话组件仍然显示旧界面语言 。 见[环境变量] (/docs/reference/environment-variables技术合同和优先权。

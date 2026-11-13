@@ -2,11 +2,12 @@
 
 ## Delivered architecture
 
-- Ten locales, 29 application domains and locale metadata in the master package.
+- Eighteen locales, 29 application domains and locale metadata in the master package.
   Each locale covers all 3,286 canonical keys; extra keys are locale-specific
-  plural forms. The optional argvus-ai package supplies its ai domain in all ten.
+-  plural forms. The optional argvus-ai package supplies its ai domain in all eighteen.
 - Installed-catalog discovery replaces the Control Center's two-language list.
-  Locale persistence and session environment remain based on user locale.conf.
+  The interface language is persisted separately as `ARGVUS_LANGUAGE`; regional `LANG`
+  and the session environment remain available to third-party applications.
 - Script-aware normalization, regional resolution and English fallback are
   centralized. Traditional Chinese is not mislabeled as Simplified Chinese.
 - Cardinal integer plural rules and validation cover Russian and the other

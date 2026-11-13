@@ -1,0 +1,20 @@
+{
+  "menu.lock": "Lock",
+  "menu.suspend": "Suspend",
+  "menu.logout": "Log Out",
+  "menu.reboot": "Reboot",
+  "menu.shutdown": "Shut Down",
+  "menu.launcher_missing": "Rofi menü başlatıcı bulunamadı.",
+  "menu.unsupported_launcher": "Desteksiz menü başlatıcısı: {launcher}",
+  "idle.timeout.title": "Lock timeout",
+  "idle.timeout.one_minute": "1 dakika",
+  "idle.timeout.minutes": "{count} dakika",
+  "idle.timeout.never": "Never",
+  "idle.timeout.config_missing": "hypridle yapılandırılmadı: {path}",
+  "idle.timeout.invalid": "Invalid kilitleme süresi: {timeout}",
+  "idle.timeout.notification": "Inactivity Lock: {timeout}",
+  "keep_awake.title": "Keep Awake",
+  "keep_awake.enabled": "Keep Keep Keep Keep Awake etkinleştirdi",
+  "keep_awake.disabled": "Keep Keep Keep Keep Awake disabled",
+  "dpms.usage": "Kullanım: {command} {arguments}"
+}

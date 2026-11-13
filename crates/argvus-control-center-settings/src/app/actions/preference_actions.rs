@@ -75,13 +75,9 @@ impl App {
     let Some(value) = self.generated_locales.get(index).cloned() else {
       return;
     };
-    self.apply_user_language(&value);
-  }
-
-  fn apply_user_language(&mut self, value: &str) {
-    match locale::set_lang(value, &self.generated_locales) {
+    match locale::set_lang(&value, &self.generated_locales) {
       Ok(()) => {
-        self.lang = Lang::for_locale(value);
+        self.lang = Lang::detect();
         match locale::restart_control_panel() {
           Ok(()) => self.success(tr(self.lang, "control_center.user_locale_applied").to_owned()),
           Err(error) => {
@@ -190,8 +186,23 @@ impl App {
     let Some(info) = self.languages.get(index) else {
       return;
     };
-    let locale = format!("{}.UTF-8", info.locale.replace('-', "_"));
-    self.apply_user_language(&locale);
+    let locale = info.locale.clone();
+    match locale::set_application_language(&locale) {
+      Ok(()) => {
+        self.lang = Lang::for_locale(&locale);
+        match locale::restart_control_panel() {
+          Ok(()) => self.success(tr(self.lang, "control_center.user_locale_applied").to_owned()),
+          Err(error) => {
+            eprintln!("could not restart argvus-control-panel.service: {error}");
+            self.fail(tr(self.lang, "control_center.control_panel_restart_failed"));
+          }
+        }
+      }
+      Err(error) => {
+        eprintln!("{error}");
+        self.fail(tr(self.lang, "control_center.user_locale_save_failed"));
+      }
+    }
   }
 
   /// Enter/Space on a Mouse & Touchpad row: toggles flip, values step up.

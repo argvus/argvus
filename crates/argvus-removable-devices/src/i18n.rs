@@ -11,3 +11,12 @@ pub fn tr(key: &str) -> &'static str {
     *LANGUAGE.get_or_init(|| argvus_i18n::Lang::for_domain("en-US", "removable-devices"));
   argvus_i18n::tr(language, key)
 }
+
+pub fn is_rtl() -> bool {
+  LANGUAGE
+    .get()
+    .copied()
+    .unwrap_or_else(|| argvus_i18n::Lang::for_domain("en-US", "removable-devices"))
+    .direction()
+    == argvus_i18n::TextDirection::RightToLeft
+}

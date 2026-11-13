@@ -18,9 +18,9 @@ Para revisar as principais áreas do desktop com orientação, abra as **Boas-vi
 | Alterar gaps ou bordas das janelas | **Control Center → Desktop e entrada → Hyprland → Janelas → Espaços** e **Bordas** |
 | Alterar a sombra das janelas | **Control Center → Desktop e entrada → Hyprland → Bordas → Sombra** |
 | Escolher cards visíveis do Control Panel | **Control Center → Aparência → Control Panel** |
-| Alterar atalhos de teclado | **Control Center → Localidade e região → Atalhos de teclado** |
+| Alterar atalhos de teclado | **Control Center → Desktop e entrada → Atalhos de teclado** |
 | Adicionar uma regra avançada do Hyprland, configuração de monitor ou novo keybinding | [Overrides do Hyprland](/pt/docs/argvus-hyprland/hyprland-overrides/) |
-| Alterar comportamento do mouse ou touchpad | **Control Center → Localidade e região → Mouse e touchpad** |
+| Alterar comportamento do mouse ou touchpad | **Control Center → Desktop e entrada → Mouse e touchpad** |
 | Alterar fontes | **Control Center → Fontes** |
 | Escolher aplicativos padrão | **Control Center → Aplicativos padrão** |
 | Alterar configurações de display | **Control Center → Displays** ou card de display do Control Panel |
@@ -28,7 +28,9 @@ Para revisar as principais áreas do desktop com orientação, abra as **Boas-vi
 | Alterar volume ou silenciar rapidamente | Card de volume do Control Panel ou teclas de mídia |
 | Alterar brilho rapidamente | Card de brilho do Control Panel ou teclas de brilho |
 | Bloquear, sair, suspender ou desligar | Cards de sessão/energia do Control Panel |
-| Configurar idioma, fuso horário ou região | **Control Center → Localidade e região** |
+| Alterar o idioma da interface do ARGVUS | **Control Center → Preferências → Idioma e região → Idioma** |
+| Configurar formatos regionais ou locale de aplicativos de terceiros | **Control Center → Preferências → Idioma e região → Localidade regional** |
+| Configurar fuso horário, locales do sistema ou outras opções regionais | **Control Center → Preferências → Idioma e região** |
 
 ## Configuração ou ação rápida?
 

@@ -20,6 +20,7 @@ use ratatui::{
   text::{Line, Span},
   widgets::Paragraph,
 };
+use std::cell::Cell;
 
 use super::row::{Emphasis, Row, RowKind};
 use super::state::MenuState;
@@ -35,6 +36,18 @@ const SUBMENU_MARKER: &str = "›";
 const SEPARATOR_GLYPH: &str = "─";
 const COLLAPSED_GLYPH: &str = "▸";
 const EXPANDED_GLYPH: &str = "▾";
+thread_local! {
+  static RIGHT_TO_LEFT: Cell<bool> = const { Cell::new(false) };
+}
+
+/// Sets the shared menu direction for the current process.
+pub fn set_right_to_left(enabled: bool) {
+  RIGHT_TO_LEFT.with(|right_to_left| right_to_left.set(enabled));
+}
+
+pub fn is_right_to_left() -> bool {
+  RIGHT_TO_LEFT.with(Cell::get)
+}
 
 /// Presentation options that come from the application configuration.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -80,6 +93,7 @@ pub fn draw_menu<Id>(
   style: MenuStyle,
 ) {
   let area = area.inner(Margin::new(1, 0));
+  let right_to_left = is_right_to_left();
   let viewport = usize::from(area.height);
   if viewport == 0 || area.width == 0 {
     return;
@@ -94,7 +108,7 @@ pub fn draw_menu<Id>(
     .take(viewport)
     .map(|(index, row)| {
       let is_selected = state.selected_index() == Some(index);
-      row_line(row, is_selected, columns, width, theme)
+      row_line(row, is_selected, columns, width, theme, right_to_left)
     })
     .collect::<Vec<_>>();
   frame.render_widget(
@@ -109,12 +123,13 @@ fn row_line<Id>(
   columns: Columns,
   width: usize,
   theme: &Theme,
+  right_to_left: bool,
 ) -> Line<'static> {
   if let RowKind::CollapsibleSection { collapsed } = row.kind() {
-    return collapsible_line(row, collapsed, is_selected, width, theme);
+    return collapsible_line(row, collapsed, is_selected, width, theme, right_to_left);
   }
   if row.is_section() {
-    return section_line(row, width, theme);
+    return section_line(row, width, theme, right_to_left);
   }
   if row.kind() == RowKind::Separator {
     return Line::from(Span::styled(
@@ -124,7 +139,11 @@ fn row_line<Id>(
   }
 
   let base = row_style(row, is_selected, theme);
-  let cursor = if is_selected { CURSOR } else { " " };
+  let cursor = if is_selected {
+    if right_to_left { "<" } else { CURSOR }
+  } else {
+    " "
+  };
   // The mark column is dropped entirely when no row of the list is marked.
   let mark = if columns.mark {
     mark_cell(row.is_marked())
@@ -141,7 +160,7 @@ fn row_line<Id>(
   let prefix = format!(" {cursor} {mark}{marker}{icon}");
 
   let suffix = if row.kind() == RowKind::Submenu {
-    format!(" {SUBMENU_MARKER}")
+    format!(" {}", if right_to_left { "‹" } else { SUBMENU_MARKER })
   } else {
     String::new()
   };
@@ -157,20 +176,35 @@ fn row_line<Id>(
   } else {
     base
   };
-  Line::from(vec![
-    Span::styled(prefix, base),
-    Span::styled(label, base),
-    Span::styled(" ".repeat(padding), base),
-    Span::styled(detail, detail_style),
-    Span::styled(suffix, base),
-  ])
-  .style(base)
+  let spans = if right_to_left {
+    vec![
+      Span::styled(suffix, base),
+      Span::styled(detail, detail_style),
+      Span::styled(" ".repeat(padding), base),
+      Span::styled(label, base),
+      Span::styled(prefix, base),
+    ]
+  } else {
+    vec![
+      Span::styled(prefix, base),
+      Span::styled(label, base),
+      Span::styled(" ".repeat(padding), base),
+      Span::styled(detail, detail_style),
+      Span::styled(suffix, base),
+    ]
+  };
+  Line::from(spans).style(base)
 }
 
 /// Section title: accent and bold, starting in the cursor column so the
 /// section's rows read as indented under it. The optional detail is dimmed
 /// and right-aligned like an Info value.
-fn section_line<Id>(row: &Row<Id>, width: usize, theme: &Theme) -> Line<'static> {
+fn section_line<Id>(
+  row: &Row<Id>,
+  width: usize,
+  theme: &Theme,
+  right_to_left: bool,
+) -> Line<'static> {
   let title_style = Style::new()
     .fg(theme.accent)
     .bg(theme.background)
@@ -181,12 +215,21 @@ fn section_line<Id>(row: &Row<Id>, width: usize, theme: &Theme) -> Line<'static>
   let detail = row.detail_text().unwrap_or_default();
   let (label, detail) = fit_label_and_detail(row.label(), detail, available);
   let padding = available.saturating_sub(display_width(&label) + display_width(&detail));
-  Line::from(vec![
-    Span::styled(prefix, title_style),
-    Span::styled(label, title_style),
-    Span::styled(" ".repeat(padding), detail_style),
-    Span::styled(detail, detail_style),
-  ])
+  if right_to_left {
+    Line::from(vec![
+      Span::styled(detail, detail_style),
+      Span::styled(" ".repeat(padding), detail_style),
+      Span::styled(label, title_style),
+      Span::styled(prefix, title_style),
+    ])
+  } else {
+    Line::from(vec![
+      Span::styled(prefix, title_style),
+      Span::styled(label, title_style),
+      Span::styled(" ".repeat(padding), detail_style),
+      Span::styled(detail, detail_style),
+    ])
+  }
 }
 
 /// A collapsible section title: the cursor, a chevron that shows the state, and
@@ -197,9 +240,14 @@ fn collapsible_line<Id>(
   is_selected: bool,
   width: usize,
   theme: &Theme,
+  right_to_left: bool,
 ) -> Line<'static> {
   let chevron = if collapsed {
-    COLLAPSED_GLYPH
+    if right_to_left {
+      "◂"
+    } else {
+      COLLAPSED_GLYPH
+    }
   } else {
     EXPANDED_GLYPH
   };
@@ -214,7 +262,11 @@ fn collapsible_line<Id>(
       .bg(theme.background)
       .add_modifier(Modifier::BOLD)
   };
-  let text = ellipsize(&format!("{cursor} {chevron} {}", row.label()), width);
+  let text = if right_to_left {
+    ellipsize(&format!("{} {chevron} {cursor}", row.label()), width)
+  } else {
+    ellipsize(&format!("{cursor} {chevron} {}", row.label()), width)
+  };
   let padding = width.saturating_sub(display_width(&text));
   Line::from(vec![
     Span::styled(text, style),

@@ -1,0 +1,11 @@
+{
+  "system-monitor.title.cpu": "[PH000] monitor",
+  "system-monitor.title.memory": "Monitor memori",
+  "system-monitor.title.gpu": "[PH000] monitor",
+  "system-monitor.help.gpu": "Tampilkan panel hanya (sampai enam GPUs)",
+  "system-monitor.title.overview": "Monitor sistem",
+  "system-monitor.live": "[PH000]",
+  "system-monitor.footer.close": "Tutup Esc",
+  "system-monitor.unavailable": "btop tidak bisa dimulai. Tekan Esc untuk menutup.",
+  "system-monitor.gpu.unavailable": "Tidak ada GPU metrik tersedia. Periksa btop GPU dukungan, perpustakaan penyedia, dan akses perangkat."
+}
