@@ -547,3 +547,19 @@ Las rutas directas son `argvus control-center hyprland windows`, seguidas opcion
 `SUPER + Q` cierra la ventana dedicada del Centro de Control inmediatamente, sin la confirmación de la ventana del sistema de Kitty. Los borradores no aplicados se descartan cuando la ventana se cierra de esta manera. La anulación está limitada a la clase de ventana `argvus-control-center`; los terminales regulares y otras TUI mantienen su política de confirmación al cerrar.
 
 `SUPER + Alt + Space` alterna el modo global de Azulejo/Flotante, utilizando la misma preferencia que la barra de tareas y el Centro de Control. El comando equivalente es `argvus config window-mode toggle`. Las invocaciones concurrentes se serializan; alternar utiliza la preferencia guardada incluso cuando la aplicación está pendiente. El atajo se puede cambiar o desactivar en Atajos de Teclado; `SUPER + Shift + Space` mantiene su acción de ventana individual.
+
+## Instalar temas desde Git
+
+Instala un repositorio del skeleton mediante HTTPS o SSH con tus credenciales de Git. La instalación es por usuario y no activa el tema. `--ref` selecciona una rama o etiqueta; `--replace` sustituye un tema personalizado existente. Los IDs oficiales instalados están protegidos.
+
+```sh
+argvus theme install https://github.com/USER/argvus-theme-NAME.git
+argvus theme install https://gitlab.com/USER/argvus-theme-NAME.git --ref v1.0
+argvus theme install git@host:USER/argvus-theme-NAME.git --replace
+argvus theme apply NAME
+argvus theme uninstall NAME
+```
+
+El tema aparece en **Custom themes**; pulsa `r` para actualizar. Aplica otro tema antes de eliminar el activo en el CLI o Control Center. Vuelve a aplicarlo tras sustituirlo.
+
+Debe existir un único tema schema 2 en `src/usr/share/argvus/themes/<id>/`, con ID coincidente. Incluye las imágenes en el tema o en `src/usr/share/`. No se ejecutan scripts. No se admiten submódulos ni Git LFS. Instala `git` y `openssh` para SSH. Destino: `$XDG_DATA_HOME/argvus/themes/<id>`. Los paquetes oficiales usan pacman.

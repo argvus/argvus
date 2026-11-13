@@ -551,3 +551,19 @@ Wi-Fi পাসওয়ার্ড, ম্যানুয়াল DNS এব�
 ক্লাস; নিয়মিত টার্মিনাল এবং অন্যান্য TUI তাদের ক্লোজ-নিশ্চিতকরণ নীতি বজায় রাখে।
 
 `SUPER + Alt + Space ` টাস্কবার এবং কন্ট্রোল সেন্টারের মতো একই পছন্দ ব্যবহার করে গ্লোবাল টাইল/ফ্লোটিং মোড টগল করে। সমতুল্য কমান্ড হল ` argvus config window-mode toggle `। সমসাময়িক আমন্ত্রণগুলি ক্রমানুসারে করা হয়; অ্যাপ্লিকেশন মুলতুবি থাকা অবস্থায়ও টগল করা সংরক্ষিত পছন্দ ব্যবহার করে। কীবোর্ড শর্টকাটে শর্টকাট পরিবর্তন বা নিষ্ক্রিয় করা যেতে পারে; ` SUPER + Shift + Space` তার স্বতন্ত্র-উইন্ডো অ্যাকশন রাখে।
+
+## Git থেকে থিম ইনস্টল
+
+বিদ্যমান Git পরিচয়পত্র দিয়ে HTTPS বা SSH-তে skeleton সংগ্রহস্থল ইনস্টল করুন। প্রতি ব্যবহারকারীর জন্য ইনস্টল হয়, স্বয়ংক্রিয়ভাবে প্রয়োগ হয় না। `--ref` শাখা বা ট্যাগ বেছে নেয়; `--replace` বিদ্যমান নিজস্ব থিম বদলায়। ইনস্টল করা সরকারি ID সুরক্ষিত।
+
+```sh
+argvus theme install https://github.com/USER/argvus-theme-NAME.git
+argvus theme install https://gitlab.com/USER/argvus-theme-NAME.git --ref v1.0
+argvus theme install git@host:USER/argvus-theme-NAME.git --replace
+argvus theme apply NAME
+argvus theme uninstall NAME
+```
+
+থিম **Custom themes**-এ দেখা যাবে; `r` দিয়ে হালনাগাদ করুন। CLI বা Control Center-এ সক্রিয় থিম মুছতে আগে অন্য থিম প্রয়োগ করুন। প্রতিস্থাপনের পর আবার প্রয়োগ করুন।
+
+`src/usr/share/argvus/themes/<id>/`-এ মিলযুক্ত ID সহ একটি schema 2 থিম থাকতে হবে। ছবি থিমে বা `src/usr/share/`-এ রাখুন। স্ক্রিপ্ট চলে না; সাবমডিউল ও Git LFS সমর্থিত নয়। `git` এবং SSH-এর জন্য `openssh` প্রয়োজন। গন্তব্য `$XDG_DATA_HOME/argvus/themes/<id>`। সরকারি প্যাকেজ pacman দিয়ে পরিচালিত হয়।

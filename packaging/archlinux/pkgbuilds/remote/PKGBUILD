@@ -95,6 +95,8 @@ install=argvus.install
 
 # Optional runtime integrations and companion tools.
 optdepends=(
+	'git: install custom themes from Git repositories'
+	'openssh: install custom themes over SSH'
     'argvus-ai: AI agent desktop integration'
 	'argvus-pentest: authorized security auditing and penetration testing tools'
 	'argvus-themes: install all official ARGVUS themes'

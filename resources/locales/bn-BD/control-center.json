@@ -1512,7 +1512,7 @@
   "control_center.theme_profile_deleted": "স্বনির্ধারিত থিম",
   "control_center.theme_profile_official": "থিম",
   "control_center.theme_profile_custom": "স্বনির্ধারিত থিম",
-  "control_center.theme_profile_custom_empty": "আপনার ব্যবহৃত থিম এখনো ইনস্টল করা নেই: সক্রিয় থিম অথবা ইম্পোর্ট করুন",
+  "control_center.theme_profile_custom_empty": "আপনার ব্যবহৃত থিম এখনো ইনস্টল করা নেই: সক্রিয় থিম অথবা ইম্পোর্ট করুন · argvus theme install URL",
   "control_center.theme_profile_delete": "মুছে ফেলুন",
   "control_center.theme_profile_delete_title": "নতুন ফোল্ডার?",
   "control_center.theme_profile_delete_description": "থিম থেকে থিমটি মুছে ফেলা হবে",
@@ -2213,5 +2213,6 @@
   "control_center.window_mode_hint": "ফ্লোটিং উইন্ডোটি এবং একটি বিপরীত অ্যাপ্লিকেশন বার প্রদর্শন করা হবে । টালির উদিত হলে উইন্ডোগুলো শুধুমাত্র ভাসমান দ্বারা পরিবর্তিত হয়। ভাসমান ভাসমান জানালা।.",
   "control_center.window_mode_working": "উইন্ডো মোড প্রয়োগ করা হচ্ছে..",
   "control_center.window_mode_pending": "পছন্দ সংরক্ষিত। সেশানের জন্য অ্যাপ্লিকেশন স্থগিত রয়েছে।.",
-  "control_center.window_mode_failed": "উইন্ডো নির্মাণ করতে ব্যর্থ। পুনরায় চেষ্টা করার জন্য একটি বিকল্প নির্বাচন করুন।."
+  "control_center.window_mode_failed": "উইন্ডো নির্মাণ করতে ব্যর্থ। পুনরায় চেষ্টা করার জন্য একটি বিকল্প নির্বাচন করুন।.",
+  "control_center.theme_remove_active": "সক্রিয় থিম সরানোর আগে অন্য থিম প্রয়োগ করুন।"
 }

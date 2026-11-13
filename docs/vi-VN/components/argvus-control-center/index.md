@@ -612,3 +612,19 @@ Xác nhận cửa sổ hệ điều hành của Kitty. Các bản nháp không �
 lớp; thiết bị đầu cuối thông thường và các TUI khác vẫn duy trì chính sách xác nhận chặt chẽ của họ.
 
 `SUPER + Alt + Space` chuyển đổi chế độ Xếp chồng/Nổi toàn cục, sử dụng cùng tùy chọn với thanh tác vụ và Trung tâm điều khiển. Lệnh tương đương là `argvus config window-mode toggle`. Các lời gọi đồng thời được tuần tự hóa; chuyển đổi sử dụng tùy chọn đã lưu ngay cả khi ứng dụng đang chờ xử lý. Phím tắt có thể được thay đổi hoặc vô hiệu hóa trong Phím tắt; `SUPER + Shift + Space` giữ hành động trên từng cửa sổ.
+
+## Cài giao diện từ Git
+
+Cài kho skeleton qua HTTPS hoặc SSH với thông tin xác thực Git hiện có. Cài đặt theo người dùng và không tự áp dụng. `--ref` chọn nhánh hoặc thẻ; `--replace` thay giao diện riêng đã có. ID chính thức đã cài được bảo vệ.
+
+```sh
+argvus theme install https://github.com/USER/argvus-theme-NAME.git
+argvus theme install https://gitlab.com/USER/argvus-theme-NAME.git --ref v1.0
+argvus theme install git@host:USER/argvus-theme-NAME.git --replace
+argvus theme apply NAME
+argvus theme uninstall NAME
+```
+
+Giao diện xuất hiện trong **Custom themes**; nhấn `r` để làm mới. Áp dụng giao diện khác trước khi xóa giao diện đang dùng qua CLI hoặc Control Center. Áp dụng lại sau khi thay thế.
+
+Cần đúng một giao diện schema 2 trong `src/usr/share/argvus/themes/<id>/` với ID khớp thư mục. Lưu ảnh trong giao diện hoặc `src/usr/share/`. Không chạy tập lệnh. Không hỗ trợ mô-đun con hay Git LFS. Cần `git` và `openssh` cho SSH. Đích: `$XDG_DATA_HOME/argvus/themes/<id>`. Gói chính thức vẫn do pacman quản lý.

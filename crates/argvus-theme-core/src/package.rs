@@ -247,10 +247,26 @@ pub fn install_user_theme(
   Ok(target)
 }
 
+/// Whether the current rendered build (or legacy marker) uses this theme family.
+pub fn is_active(paths: &ThemePaths, id: &str) -> bool {
+  let active = crate::build::current_theme(&paths.current())
+    .or_else(|| fs::read_to_string(paths.generated.parent()?.parent()?.join(".active-theme")).ok());
+  active.as_deref().map(str::trim).is_some_and(|active| {
+    active
+      .strip_suffix("-spaced")
+      .or_else(|| active.strip_suffix("-float"))
+      .unwrap_or(active)
+      == id
+  })
+}
+
 /// Removes the user's theme `id`. Only a directory with a valid manifest of
 /// that id is removed.
 pub fn remove_user_theme(paths: &ThemePaths, id: &str) -> Result<(), String> {
   validate_id(id)?;
+  if is_active(paths, id) {
+    return Err("apply another theme before removing the active theme".into());
+  }
   let target = paths.user_themes.join(id);
   let manifest = ThemeManifest::load(&target).map_err(|error| error.to_string())?;
   if manifest.id != id {
@@ -357,6 +373,44 @@ mod tests {
     write(&dir.join("overrides/terminal.conf"), "fg {{ @fg }}\n");
     write(&dir.join("wallpaper.png"), "png");
     dir
+  }
+
+  #[test]
+  fn active_user_themes_cannot_be_removed_in_either_layout() {
+    let (root, mut paths) = tree();
+    paths.generated = root.path().join("data/generated/theme");
+    let source = derived(root.path(), &paths, "mine");
+    install_user_theme(&paths, &source, false).unwrap();
+    for variant in ["sticky", "spaced", "float"] {
+      fs::create_dir_all(paths.current()).unwrap();
+      fs::write(
+        paths.current().join("build.toml"),
+        format!("theme = \"mine\"\nvariant = \"{variant}\"\n"),
+      )
+      .unwrap();
+      // The marker also protects sessions without a current build.
+      let marker = paths
+        .generated
+        .parent()
+        .unwrap()
+        .parent()
+        .unwrap()
+        .join(".active-theme");
+      fs::write(
+        &marker,
+        format!(
+          "mine-{}",
+          if variant == "sticky" {
+            "float"
+          } else {
+            variant
+          }
+        ),
+      )
+      .unwrap();
+      assert!(remove_user_theme(&paths, "mine").is_err());
+      assert!(is_user_theme(&paths, "mine"));
+    }
   }
 
   #[test]

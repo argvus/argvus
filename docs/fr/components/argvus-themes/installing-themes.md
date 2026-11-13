@@ -121,3 +121,19 @@ Supprimez un seul paquet de thème avec :
 sudo pacman -R argvus-theme-<THEME_NAME>
 ```
 La suppression d’un package de thème ne supprime pas vos profils importés. Si le thème supprimé est celui actuellement appliqué, sélectionnez un autre thème depuis le Centre de Contrôle avant de le supprimer.
+
+## Installer des thèmes depuis Git
+
+Installez un dépôt du skeleton via HTTPS ou SSH avec vos identifiants Git. L’installation est personnelle et n’active pas le thème. `--ref` choisit une branche ou une étiquette ; `--replace` remplace un thème personnel existant. Les identifiants officiels installés sont protégés.
+
+```sh
+argvus theme install https://github.com/USER/argvus-theme-NAME.git
+argvus theme install https://gitlab.com/USER/argvus-theme-NAME.git --ref v1.0
+argvus theme install git@host:USER/argvus-theme-NAME.git --replace
+argvus theme apply NAME
+argvus theme uninstall NAME
+```
+
+Le thème apparaît dans **Custom themes** ; `r` actualise la page. Appliquez un autre thème avant de supprimer le thème actif dans le CLI ou le Control Center. Réappliquez un thème remplacé.
+
+Un seul thème schema 2 est requis dans `src/usr/share/argvus/themes/<id>/`, avec un identifiant correspondant. Incluez les images dans le thème ou dans `src/usr/share/`. Aucun script n’est exécuté. Sous-modules et Git LFS ne sont pas pris en charge. Installez `git` et `openssh` pour SSH. Destination : `$XDG_DATA_HOME/argvus/themes/<id>`. Les paquets officiels restent gérés par pacman.

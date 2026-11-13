@@ -561,3 +561,19 @@ Direkte Routen sind `argvus control-center hyprland windows`, optional gefolgt v
 `SUPER + Q` schließt das dedizierte Control-Center-Fenster sofort, ohne die Bestätigung des OS-Fensters von Kitty. Nicht angewendete Entwürfe werden verworfen, wenn das Fenster auf diese Weise geschlossen wird. Die Überschreibung gilt nur für die Fensterklasse `argvus-control-center`; reguläre Terminals und andere TUIs behalten ihre Richtlinie zur Schließen-Bestätigung bei.
 
 `SUPER + Alt + Space` schaltet den globalen Kachel-/Schwebemodus um und verwendet dieselbe Einstellung wie die Taskleiste und das Kontrollzentrum. Der entsprechende Befehl ist `argvus config window-mode toggle`. Gleichzeitige Aufrufe werden serialisiert; das Umschalten verwendet die gespeicherte Einstellung, auch wenn die Anwendung aussteht. Die Verknüpfung kann in den Tastaturkürzeln geändert oder deaktiviert werden; `SUPER + Shift + Space` behält seine Aktion für einzelne Fenster bei.
+
+## Designs aus Git installieren
+
+Installieren Sie ein Skeleton-Repository über HTTPS oder SSH mit vorhandenen Git-Zugangsdaten. Die Installation erfolgt pro Benutzer ohne Aktivierung. `--ref` wählt Branch oder Tag; `--replace` ersetzt ein eigenes Design. Installierte offizielle IDs sind geschützt.
+
+```sh
+argvus theme install https://github.com/USER/argvus-theme-NAME.git
+argvus theme install https://gitlab.com/USER/argvus-theme-NAME.git --ref v1.0
+argvus theme install git@host:USER/argvus-theme-NAME.git --replace
+argvus theme apply NAME
+argvus theme uninstall NAME
+```
+
+Das Design erscheint unter **Custom themes**; `r` aktualisiert die Seite. Wenden Sie vor dem Entfernen des aktiven Designs im CLI oder Control Center ein anderes an. Ersetzte Designs müssen erneut angewendet werden.
+
+Genau ein Schema-2-Design unter `src/usr/share/argvus/themes/<id>/` mit passender ID ist erforderlich. Bilder müssen im Design oder unter `src/usr/share/` versioniert sein. Skripte werden nicht ausgeführt. Submodule und Git LFS werden nicht unterstützt. Benötigt: `git`, für SSH `openssh`. Ziel: `$XDG_DATA_HOME/argvus/themes/<id>`. Offizielle Pakete bleiben bei pacman.

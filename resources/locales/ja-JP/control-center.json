@@ -1512,7 +1512,7 @@
   "control_center.theme_profile_deleted": "カスタムテーマが削除されました",
   "control_center.theme_profile_official": "公式テーマ",
   "control_center.theme_profile_custom": "カスタムテーマ",
-  "control_center.theme_profile_custom_empty": "独自のテーマがまだありません: アクティブなテーマをエクスポートするか、テーマをインポートしてください",
+  "control_center.theme_profile_custom_empty": "独自のテーマがまだありません: アクティブなテーマをエクスポートするか、テーマをインポートしてください · argvus theme install URL",
   "control_center.theme_profile_delete": "削除",
   "control_center.theme_profile_delete_title": "Deleteのテーマ?",
   "control_center.theme_profile_delete_description": "テーマは ~/.local/share/argvus/themes. から削除されます",
@@ -2213,5 +2213,6 @@
   "control_center.window_mode_hint": "フローティングでは、ウィンドウ ボタンとその反対側のアプリケーション バーが表示されます。 [並べて表示] は最小化されたウィンドウを復元し、フローティングによって変換されたウィンドウのみを並べ替えます。もともとフローティングウィンドウはフローティングのままです。",
   "control_center.window_mode_working": "ウィンドウモードを適用中…",
   "control_center.window_mode_pending": "設定が保存されました。 Hyprland セッションの申し込みは保留中です。",
-  "control_center.window_mode_failed": "ウィンドウモードを適用できませんでした。再試行するオプションを選択します。"
+  "control_center.window_mode_failed": "ウィンドウモードを適用できませんでした。再試行するオプションを選択します。",
+  "control_center.theme_remove_active": "使用中のテーマを削除する前に、別のテーマを適用してください。"
 }

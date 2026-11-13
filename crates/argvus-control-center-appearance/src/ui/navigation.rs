@@ -41,6 +41,9 @@ impl AppearanceApp {
     if self.page == AppearancePage::ControlPanel && page != AppearancePage::ControlPanel {
       self.control_panel_draft = None;
     }
+    if page == AppearancePage::CustomThemes {
+      self.refreshed.retain(|(old, _)| *old != page);
+    }
     self.page = page;
     self.menu = MenuState::default();
     // The Icons draft, search and Actions focus belong to that page only.

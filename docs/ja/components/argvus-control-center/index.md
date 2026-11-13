@@ -552,3 +552,19 @@ Wi-Fi パスワード、手動 DNS、およびネットワーク検索フィー�
 `SUPER + Q` は専用のコントロールセンターウィンドウを即座に閉じます。Kitty の OS ウィンドウの確認は不要です。この方法でウィンドウを閉じると、未適用のドラフトは破棄されます。このオーバーライドは `argvus-control-center` ウィンドウクラスに限定されており、通常の端末や他の TUI では閉じる際の確認ポリシーは保持されます。
 
 `SUPER + Alt + Space` は、タスクバーやコントロールセンターと同じ設定を使用して、グローバルなタイル/フローティングモードを切り替えます。同等のコマンドは `argvus config window-mode toggle` です。複数回の呼び出しは直列化されます；アプリケーションが保留中の場合でも、切り替えは保存された設定を使用します。ショートカットはキーボードショートカットで変更または無効化できます；`SUPER + Shift + Space` は個別ウィンドウの操作を維持します。
+
+## Git からテーマをインストール
+
+既存の Git 認証情報で HTTPS または SSH 経由の skeleton リポジトリをインストールします。ユーザー単位でインストールされ、自動適用されません。`--ref` はブランチやタグ、`--replace` は既存のカスタムテーマの置換を指定します。インストール済みの公式 ID は保護されます。
+
+```sh
+argvus theme install https://github.com/USER/argvus-theme-NAME.git
+argvus theme install https://gitlab.com/USER/argvus-theme-NAME.git --ref v1.0
+argvus theme install git@host:USER/argvus-theme-NAME.git --replace
+argvus theme apply NAME
+argvus theme uninstall NAME
+```
+
+テーマは **Custom themes** に表示されます。`r` で更新します。CLI や Control Center で使用中のテーマを削除する前に、別のテーマを適用してください。置換後は再適用が必要です。
+
+`src/usr/share/argvus/themes/<id>/` に ID が一致する schema 2 テーマが一つ必要です。画像はテーマ内か `src/usr/share/` にコミットしてください。スクリプトは実行されません。サブモジュールと Git LFS は非対応です。`git` と SSH 用の `openssh` が必要です。保存先は `$XDG_DATA_HOME/argvus/themes/<id>`。公式パッケージは pacman で管理します。

@@ -1512,7 +1512,7 @@
   "control_center.theme_profile_deleted": "Tema gubahan dihapus",
   "control_center.theme_profile_official": "Tema Resmi",
   "control_center.theme_profile_custom": "Tema Gubahan",
-  "control_center.theme_profile_custom_empty": "Belum ada tema Anda sendiri: ekspor tema aktif atau impor satu",
+  "control_center.theme_profile_custom_empty": "Belum ada tema Anda sendiri: ekspor tema aktif atau impor satu · argvus theme install URL",
   "control_center.theme_profile_delete": "Hapus",
   "control_center.theme_profile_delete_title": "Hapus tema?",
   "control_center.theme_profile_delete_description": "Temanya akan dihapus dari ~ /.local/share/argvus/themes.",
@@ -2213,5 +2213,6 @@
   "control_center.window_mode_hint": "Mengambang menunjukkan tombol jendela dan bilah aplikasi yang berlawanan. Ubin menyimpan kembali jendela diminimalkan dan hanya pensiun jendela dikonversi oleh Floating. Awalnya jendela mengambang tetap mengambang.",
   "control_center.window_mode_working": "Menerapkan mode jendela..",
   "control_center.window_mode_pending": "Preferensi disimpan. Aplikasi tertunda untuk sesi Hyprland.",
-  "control_center.window_mode_failed": "Tidak dapat menerapkan mode jendela. Pilih sebuah opsi untuk dicoba kembali."
+  "control_center.window_mode_failed": "Tidak dapat menerapkan mode jendela. Pilih sebuah opsi untuk dicoba kembali.",
+  "control_center.theme_remove_active": "Terapkan tema lain sebelum menghapus tema aktif."
 }

@@ -549,3 +549,19 @@ Les itinéraires directs sont `argvus control-center hyprland windows`, suivis �
 `SUPER + Q` ferme immédiatement la fenêtre dédiée du Centre de Contrôle, sans confirmation de la fenêtre de l'OS de Kitty. Les brouillons non appliqués sont supprimés lorsque la fenêtre est fermée de cette manière. L'override est limité à la classe de fenêtre `argvus-control-center` ; les terminaux réguliers et autres TUI conservent leur politique de confirmation de fermeture.
 
 `SUPER + Alt + Space` bascule le mode tuile/flottant global, en utilisant la même préférence que la barre des tâches et le Centre de contrôle. La commande équivalente est `argvus config window-mode toggle`. Les invocations concurrentes sont sérialisées ; le basculement utilise la préférence enregistrée même lorsque l'application est en attente. Le raccourci peut être modifié ou désactivé dans les Raccourcis clavier ; `SUPER + Shift + Space` conserve son action pour une fenêtre individuelle.
+
+## Installer des thèmes depuis Git
+
+Installez un dépôt du skeleton via HTTPS ou SSH avec vos identifiants Git. L’installation est personnelle et n’active pas le thème. `--ref` choisit une branche ou une étiquette ; `--replace` remplace un thème personnel existant. Les identifiants officiels installés sont protégés.
+
+```sh
+argvus theme install https://github.com/USER/argvus-theme-NAME.git
+argvus theme install https://gitlab.com/USER/argvus-theme-NAME.git --ref v1.0
+argvus theme install git@host:USER/argvus-theme-NAME.git --replace
+argvus theme apply NAME
+argvus theme uninstall NAME
+```
+
+Le thème apparaît dans **Custom themes** ; `r` actualise la page. Appliquez un autre thème avant de supprimer le thème actif dans le CLI ou le Control Center. Réappliquez un thème remplacé.
+
+Un seul thème schema 2 est requis dans `src/usr/share/argvus/themes/<id>/`, avec un identifiant correspondant. Incluez les images dans le thème ou dans `src/usr/share/`. Aucun script n’est exécuté. Sous-modules et Git LFS ne sont pas pris en charge. Installez `git` et `openssh` pour SSH. Destination : `$XDG_DATA_HOME/argvus/themes/<id>`. Les paquets officiels restent gérés par pacman.

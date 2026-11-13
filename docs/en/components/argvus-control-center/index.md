@@ -651,3 +651,30 @@ is closed this way. The override is scoped to the `argvus-control-center` window
 class; regular terminals and other TUIs retain their close-confirmation policy.
 
 `SUPER + Alt + Space` toggles the global Tile/Floating mode, using the same preference as the taskbar and Control Center. The equivalent command is `argvus config window-mode toggle`. Concurrent invocations are serialized; toggling uses the saved preference even when application is pending. The shortcut can be changed or disabled in Keyboard Shortcuts; `SUPER + Shift + Space` keeps its individual-window action.
+
+## Install a community theme from Git
+
+Publish the skeleton-format repository, including its wallpaper, then install it:
+
+```sh
+argvus theme install https://github.com/USER/argvus-theme-NAME.git
+argvus theme install https://gitlab.com/USER/argvus-theme-NAME.git --ref v1.0
+argvus theme install git@host:USER/argvus-theme-NAME.git --replace
+argvus theme apply NAME
+argvus theme uninstall NAME
+```
+
+HTTPS and SSH use your existing Git authentication. Install `git`, and `openssh`
+for SSH. Installation uses the default branch unless `--ref` selects a branch or
+tag. The repository must contain exactly one schema-2 theme under
+`src/usr/share/argvus/themes/<id>/`. The manifest ID must match its directory.
+Wallpaper and preview assets must be committed regular files, either relative to
+the theme or shipped under `src/usr/share/`. Submodules and Git LFS are unsupported.
+Repository scripts and package build instructions are never executed.
+
+Installation is per user in `$XDG_DATA_HOME/argvus/themes/<id>` and does not apply
+the theme. Select it in Control Center → Appearance → Themes → Custom themes;
+press `r` to refresh an already open page. Existing custom IDs require `--replace`;
+official installed IDs cannot be replaced. Reapply an active theme after replacing
+it to see changes. Apply another theme before uninstalling the active one, including
+when deleting through the Control Center. Official packages remain managed by pacman.

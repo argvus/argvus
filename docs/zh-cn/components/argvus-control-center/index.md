@@ -544,3 +544,19 @@ Wi-Fi 密码、手动 DNS 和网络搜索字段支持带括号的粘贴。粘贴
 `SUPER + Q` 会立即关闭专用控制中心窗口，而无需 Kitty 的操作系统窗口确认。以这种方式关闭窗口时，未应用的草稿将被丢弃。该覆盖仅适用于 `argvus-control-center` 窗口类；常规终端和其他 TUI 保持其关闭确认策略。
 
 `SUPER + Alt + Space` 切换全局平铺/浮动模式，使用与任务栏和控制中心相同的偏好设置。等效命令是 `argvus config window-mode toggle`。并发调用会序列化；即使应用程序待处理，切换也会使用已保存的偏好设置。快捷键可以在键盘快捷方式中更改或禁用；`SUPER + Shift + Space` 保持其单窗口操作。
+
+## 从 Git 安装主题
+
+通过 HTTPS 或 SSH 安装基于 skeleton 的仓库，使用已有 Git 凭据。主题按用户安装，不会自动应用。`--ref` 选择分支或标签；`--replace` 替换已有自定义主题。已安装的官方 ID 受到保护。
+
+```sh
+argvus theme install https://github.com/USER/argvus-theme-NAME.git
+argvus theme install https://gitlab.com/USER/argvus-theme-NAME.git --ref v1.0
+argvus theme install git@host:USER/argvus-theme-NAME.git --replace
+argvus theme apply NAME
+argvus theme uninstall NAME
+```
+
+主题显示在 **Custom themes** 中；按 `r` 刷新页面。通过 CLI 或 Control Center 删除当前主题前，先应用其他主题。替换后需重新应用。
+
+仓库必须在 `src/usr/share/argvus/themes/<id>/` 中包含且仅包含一个 schema 2 主题，ID 与目录一致。图片必须提交到主题目录或 `src/usr/share/` 中。不执行脚本，不支持子模块或 Git LFS。需要 `git`，SSH 还需要 `openssh`。目标目录为 `$XDG_DATA_HOME/argvus/themes/<id>`。官方软件包仍由 pacman 管理。

@@ -1512,7 +1512,7 @@
   "control_center.theme_profile_deleted": "Name",
   "control_center.theme_profile_official": "Sắc thái chính thức",
   "control_center.theme_profile_custom": "Sắc thái tự chọn",
-  "control_center.theme_profile_custom_empty": "Chưa có sắc thái riêng: xuất khẩu sắc thái hay nhập khẩu một",
+  "control_center.theme_profile_custom_empty": "Chưa có sắc thái riêng: xuất khẩu sắc thái hay nhập khẩu một · argvus theme install URL",
   "control_center.theme_profile_delete": "Xoá",
   "control_center.theme_profile_delete_title": "Xoá bỏ sắc thái?",
   "control_center.theme_profile_delete_description": "Name",
@@ -2213,5 +2213,6 @@
   "control_center.window_mode_hint": "Nổi hiển thị nút cửa sổ và thanh ứng dụng đối diện. Làm cho cửa sổ nhỏ lại và chỉ làm cho cửa sổ đảo lộn bằng cách nổi. Các cửa sổ nổi đầu tiên vẫn nổi.",
   "control_center.window_mode_working": "Đang áp dụng chế độ cửa sổ..",
   "control_center.window_mode_pending": "Đã lưu tham chiếu. Ứng dụng đang chờ phiên chạyHyprland.",
-  "control_center.window_mode_failed": "Không áp dụng được chế độ cửa sổ. Chọn một tùy chọn cần thử lại."
+  "control_center.window_mode_failed": "Không áp dụng được chế độ cửa sổ. Chọn một tùy chọn cần thử lại.",
+  "control_center.theme_remove_active": "Áp dụng giao diện khác trước khi xóa giao diện đang dùng."
 }

@@ -661,3 +661,19 @@ terminais comuns e outros TUIs mantêm sua política de confirmação.
 ## Idiomas e Unicode
 
 A página Idioma descobre os catálogos instalados e mostra os nomes nativos dos dez idiomas. Habilite o locale UTF-8 em System Locales antes de selecionar a língua. A seleção continua gravada em `~/.config/locale.conf`; saia e entre novamente para aplicar à sessão inteira. Datas das chaves GPG usam dia/mês/ano nos idiomas europeus e ano/mês/dia em inglês e nos idiomas CJK.
+
+## Instalar temas da comunidade por Git
+
+Instale o repositório do skeleton por HTTPS ou SSH com as credenciais do Git. A instalação é por utilizador e não ativa o tema. `--ref` seleciona um ramo ou etiqueta; `--replace` substitui um tema personalizado existente. Os IDs oficiais instalados estão protegidos.
+
+```sh
+argvus theme install https://github.com/USER/argvus-theme-NAME.git
+argvus theme install https://gitlab.com/USER/argvus-theme-NAME.git --ref v1.0
+argvus theme install git@host:USER/argvus-theme-NAME.git --replace
+argvus theme apply NAME
+argvus theme uninstall NAME
+```
+
+O tema aparece em **Custom themes**; `r` atualiza a página aberta. Aplique outro tema antes de remover o ativo no CLI ou Control Center. Volte a aplicar o tema após o substituir.
+
+É necessário um único tema schema 2 em `src/usr/share/argvus/themes/<id>/`, com ID correspondente. Inclua as imagens no tema ou em `src/usr/share/`. Os scripts não são executados. Submódulos e Git LFS não são suportados. Instale `git` e `openssh` para SSH. Destino: `$XDG_DATA_HOME/argvus/themes/<id>`. Os pacotes oficiais usam pacman.

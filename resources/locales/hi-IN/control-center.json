@@ -1512,7 +1512,7 @@
   "control_center.theme_profile_deleted": "कस्टम थीम हटा दिया गया",
   "control_center.theme_profile_official": "आधिकारिक थीम",
   "control_center.theme_profile_custom": "कस्टम थीम",
-  "control_center.theme_profile_custom_empty": "अभी तक अपने स्वयं के कोई विषय नहीं: सक्रिय विषय का निर्यात करें या एक आयात करें",
+  "control_center.theme_profile_custom_empty": "अभी तक अपने स्वयं के कोई विषय नहीं: सक्रिय विषय का निर्यात करें या एक आयात करें · argvus theme install URL",
   "control_center.theme_profile_delete": "डिलीट",
   "control_center.theme_profile_delete_title": "थीम हटाएं?",
   "control_center.theme_profile_delete_description": "थीम को ~ /.local/share/argvus/themes. से हटाया जाएगा",
@@ -2213,5 +2213,6 @@
   "control_center.window_mode_hint": "फ्लोटिंग विंडो बटन और एक विपरीत अनुप्रयोग बार दिखाता है। टाइल को कम से कम खिड़कियों को पुनर्स्थापित करता है और केवल फ्लोटिंग द्वारा परिवर्तित खिड़कियों को रोकता है। मूल रूप से अस्थायी खिड़कियां अस्थायी रहती हैं।.",
   "control_center.window_mode_working": "विंडो मोड लागू करना..",
   "control_center.window_mode_pending": "प्राथमिकता बचाई गई। आवेदन Hyprland सत्र के लिए लंबित है।.",
-  "control_center.window_mode_failed": "विंडो मोड लागू नहीं हो सकता है। पुनः प्रयास करने का विकल्प चुनें।."
+  "control_center.window_mode_failed": "विंडो मोड लागू नहीं हो सकता है। पुनः प्रयास करने का विकल्प चुनें।.",
+  "control_center.theme_remove_active": "सक्रिय थीम हटाने से पहले दूसरी थीम लागू करें।"
 }

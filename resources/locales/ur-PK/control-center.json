@@ -1512,7 +1512,7 @@
   "control_center.theme_profile_deleted": "غیر متصل",
   "control_center.theme_profile_official": "سرکاری انس",
   "control_center.theme_profile_custom": "اِس شمارے میں",
-  "control_center.theme_profile_custom_empty": "اپنے آپ کا ابھی تک کوئی موضوع نہیں: فعال موضوع یا درآمد کرنے والے کو برآمد کریں۔",
+  "control_center.theme_profile_custom_empty": "اپنے آپ کا ابھی تک کوئی موضوع نہیں: فعال موضوع یا درآمد کرنے والے کو برآمد کریں۔ · argvus theme install URL",
   "control_center.theme_profile_delete": "حذف",
   "control_center.theme_profile_delete_title": "موضوع حذف؟?",
   "control_center.theme_profile_delete_description": "اس موضوع کو ~PH000 یو آر سے ہٹا دیا جائے گا۔",
@@ -2213,5 +2213,6 @@
   "control_center.window_mode_hint": "فاختہ کھڑکی بٹن اور مخالف درخواست بار دکھاتا ہے۔ تیل کے ذریعے کھڑکیاں کم ہو جاتی ہیں اور صرف عارضی کھڑکیاں ہی فیور تبدیل ہو جاتی ہیں۔ ابتدائی طور پر تیرنے والی کھڑکیاں تیرتی رہیں۔.",
   "control_center.window_mode_working": "ونڈو موڈ استعمال کریں..",
   "control_center.window_mode_pending": "پرویز مشرف نے نجات پائی۔ اطلاقیہ %sTH000 یو آر ایل سیشن کے لیے پلنگ کررہا ہے.",
-  "control_center.window_mode_failed": "ونڈو موڈ کا استعمال نہیں کیا جاسکتا. دوبارہ شروع کرنے کا انتخاب کریں ۔."
+  "control_center.window_mode_failed": "ونڈو موڈ کا استعمال نہیں کیا جاسکتا. دوبارہ شروع کرنے کا انتخاب کریں ۔.",
+  "control_center.theme_remove_active": "فعال تھیم ہٹانے سے پہلے دوسری تھیم لاگو کریں۔"
 }

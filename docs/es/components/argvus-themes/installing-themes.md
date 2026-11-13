@@ -121,3 +121,19 @@ Elimina un solo paquete de tema con:
 sudo pacman -R argvus-theme-<THEME_NAME>
 ```
 Eliminar un paquete de tema no borra tus perfiles importados. Si el tema eliminado es el que está aplicado actualmente, selecciona otro tema desde el Centro de Control antes de eliminarlo.
+
+## Instalar temas desde Git
+
+Instala un repositorio del skeleton mediante HTTPS o SSH con tus credenciales de Git. La instalación es por usuario y no activa el tema. `--ref` selecciona una rama o etiqueta; `--replace` sustituye un tema personalizado existente. Los IDs oficiales instalados están protegidos.
+
+```sh
+argvus theme install https://github.com/USER/argvus-theme-NAME.git
+argvus theme install https://gitlab.com/USER/argvus-theme-NAME.git --ref v1.0
+argvus theme install git@host:USER/argvus-theme-NAME.git --replace
+argvus theme apply NAME
+argvus theme uninstall NAME
+```
+
+El tema aparece en **Custom themes**; pulsa `r` para actualizar. Aplica otro tema antes de eliminar el activo en el CLI o Control Center. Vuelve a aplicarlo tras sustituirlo.
+
+Debe existir un único tema schema 2 en `src/usr/share/argvus/themes/<id>/`, con ID coincidente. Incluye las imágenes en el tema o en `src/usr/share/`. No se ejecutan scripts. No se admiten submódulos ni Git LFS. Instala `git` y `openssh` para SSH. Destino: `$XDG_DATA_HOME/argvus/themes/<id>`. Los paquetes oficiales usan pacman.

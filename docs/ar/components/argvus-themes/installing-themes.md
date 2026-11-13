@@ -140,3 +140,19 @@ sudo pacman -R argvus-theme-<THEME_NAME>
 ```
 
 لا تؤدي إزالة حزمة السمات إلى حذف ملفات التعريف المستوردة. إذا كانت السمة التي تمت إزالتها هي السمة المطبقة حاليًا، فحدد سمة أخرى من مركز التحكم قبل إزالتها.
+
+## تثبيت السمات من Git
+
+ثبّت مستودع skeleton عبر HTTPS أو SSH باستخدام بيانات Git الحالية. التثبيت للمستخدم ولا يفعّل السمة. يحدد `--ref` فرعًا أو وسمًا ويستبدل `--replace` سمة مخصصة موجودة. المعرّفات الرسمية المثبتة محمية.
+
+```sh
+argvus theme install https://github.com/USER/argvus-theme-NAME.git
+argvus theme install https://gitlab.com/USER/argvus-theme-NAME.git --ref v1.0
+argvus theme install git@host:USER/argvus-theme-NAME.git --replace
+argvus theme apply NAME
+argvus theme uninstall NAME
+```
+
+تظهر السمة في **Custom themes**؛ اضغط `r` للتحديث. طبّق سمة أخرى قبل حذف السمة النشطة من CLI أو Control Center. أعد تطبيق السمة بعد استبدالها.
+
+يلزم وجود سمة schema 2 واحدة في `src/usr/share/argvus/themes/<id>/` بمعرّف مطابق. احفظ الصور داخل السمة أو `src/usr/share/`. لا تُنفّذ البرامج النصية ولا تُدعم الوحدات الفرعية أو Git LFS. يلزم `git` و`openssh` لاتصال SSH. الوجهة `$XDG_DATA_HOME/argvus/themes/<id>`. تُدار الحزم الرسمية بواسطة pacman.

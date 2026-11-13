@@ -140,3 +140,19 @@ sudo pacman -R argvus-theme-<THEME_NAME>
 ```
 
 Bir tema paketini kaldırmak, içe aktarılan profillerinizi silmez. Kaldırılan tema şu anda uygulanan temaysa, kaldırmadan önce Kontrol Merkezi'nden başka bir tema seçin.
+
+## Git üzerinden tema yükleme
+
+Mevcut Git kimlik bilgileriyle HTTPS veya SSH üzerinden skeleton deposunu yükleyin. Kurulum kullanıcıya özeldir ve temayı etkinleştirmez. `--ref` dal veya etiket seçer; `--replace` özel temayı değiştirir. Kurulu resmi kimlikler korunur.
+
+```sh
+argvus theme install https://github.com/USER/argvus-theme-NAME.git
+argvus theme install https://gitlab.com/USER/argvus-theme-NAME.git --ref v1.0
+argvus theme install git@host:USER/argvus-theme-NAME.git --replace
+argvus theme apply NAME
+argvus theme uninstall NAME
+```
+
+Tema **Custom themes** içinde görünür; `r` yeniler. CLI veya Control Center üzerinden etkin temayı kaldırmadan önce başka bir tema uygulayın. Değiştirdikten sonra yeniden uygulayın.
+
+`src/usr/share/argvus/themes/<id>/` içinde kimliği eşleşen tek bir schema 2 teması gerekir. Görseller temada veya `src/usr/share/` altında sürümlenmelidir. Betikler çalıştırılmaz. Alt modüller ve Git LFS desteklenmez. `git` ve SSH için `openssh` gerekir. Hedef: `$XDG_DATA_HOME/argvus/themes/<id>`. Resmi paketleri pacman yönetir.

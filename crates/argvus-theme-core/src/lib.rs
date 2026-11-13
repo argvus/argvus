@@ -15,6 +15,7 @@ pub mod color;
 pub mod discovery;
 pub mod error;
 pub mod expr;
+pub mod git_install;
 pub mod layout;
 pub mod manifest;
 pub mod package;

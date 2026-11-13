@@ -547,3 +547,19 @@ Le rotte dirette sono `argvus control-center hyprland windows`, seguite facoltat
 `SUPER + Q` chiude immediatamente la finestra dedicata del Centro di Controllo, senza la conferma della finestra OS di Kitty. Le bozze non applicate vengono eliminate quando la finestra viene chiusa in questo modo. La sovrascrittura è limitata alla classe di finestre `argvus-control-center`; i terminali normali e altre interfacce TUI mantengono la loro policy di conferma alla chiusura.
 
 `SUPER + Alt + Space` attiva o disattiva la modalità Tile/Fluttuante globale, utilizzando la stessa preferenza della barra delle applicazioni e del Centro di Controllo. Il comando equivalente è `argvus config window-mode toggle`. Le invocazioni concorrenti vengono serializzate; l'attivazione utilizza la preferenza salvata anche quando l'applicazione è in attesa. La scorciatoia può essere cambiata o disabilitata nelle Scorciatoie da tastiera; `SUPER + Shift + Space` mantiene la sua azione a finestra singola.
+
+## Installare temi da Git
+
+Installa un repository dello skeleton tramite HTTPS o SSH con le credenziali Git esistenti. L’installazione è per utente e non attiva il tema. `--ref` seleziona un branch o tag; `--replace` sostituisce un tema personale. Gli ID ufficiali installati sono protetti.
+
+```sh
+argvus theme install https://github.com/USER/argvus-theme-NAME.git
+argvus theme install https://gitlab.com/USER/argvus-theme-NAME.git --ref v1.0
+argvus theme install git@host:USER/argvus-theme-NAME.git --replace
+argvus theme apply NAME
+argvus theme uninstall NAME
+```
+
+Il tema appare in **Custom themes**; `r` aggiorna la pagina. Applica un altro tema prima di rimuovere quello attivo dal CLI o Control Center. Riapplica un tema sostituito.
+
+Serve un solo tema schema 2 in `src/usr/share/argvus/themes/<id>/`, con ID corrispondente. Includi le immagini nel tema o in `src/usr/share/`. Gli script non vengono eseguiti. Sottomoduli e Git LFS non sono supportati. Installa `git` e `openssh` per SSH. Destinazione: `$XDG_DATA_HOME/argvus/themes/<id>`. I pacchetti ufficiali restano gestiti da pacman.

@@ -140,3 +140,19 @@ sudo pacman -R argvus-theme-<THEME_NAME>
 ```
 
 Menghapus paket tema tidak menghapus profil yang Anda impor. Jika tema yang dihapus adalah tema yang sedang diterapkan, pilih tema lain dari Pusat Kontrol sebelum menghapusnya.
+
+## Memasang tema dari Git
+
+Pasang repositori skeleton melalui HTTPS atau SSH memakai kredensial Git yang tersedia. Pemasangan per pengguna tidak mengaktifkan tema. `--ref` memilih cabang atau tag; `--replace` mengganti tema pribadi. ID resmi terpasang dilindungi.
+
+```sh
+argvus theme install https://github.com/USER/argvus-theme-NAME.git
+argvus theme install https://gitlab.com/USER/argvus-theme-NAME.git --ref v1.0
+argvus theme install git@host:USER/argvus-theme-NAME.git --replace
+argvus theme apply NAME
+argvus theme uninstall NAME
+```
+
+Tema muncul di **Custom themes**; tekan `r` untuk memperbarui. Terapkan tema lain sebelum menghapus tema aktif melalui CLI atau Control Center. Terapkan kembali setelah menggantinya.
+
+Harus ada satu tema schema 2 di `src/usr/share/argvus/themes/<id>/` dengan ID sesuai. Simpan gambar dalam tema atau `src/usr/share/`. Skrip tidak dijalankan. Submodul dan Git LFS tidak didukung. Diperlukan `git` dan `openssh` untuk SSH. Tujuan: `$XDG_DATA_HOME/argvus/themes/<id>`. Paket resmi tetap dikelola pacman.

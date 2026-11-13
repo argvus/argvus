@@ -546,3 +546,19 @@ Wi-Fi پاس ورڈ، دستی DNS اور نیٹ ورک سرچ فیلڈز بری
 - [                                                               ﮉﯿﭘ ﭻﭨ ﺭﻭﺍ ﺱﺅﺎﻣ](/docs/argvus-hyprland/input/)
 کھولیں **ڈیسک ٹاپ اور ان پٹ> ڈسپلے> نائٹ لائٹ** یا چلائیں argvus کنٹرول سینٹر نائٹ لائٹ ڈسپلے کرتا ہے۔ argvus کنفیگریشن ڈسپلے نائٹ لائٹ کے ذریعے درجہ حرارت، دستی ایکٹیویشن اور فکسڈ لوکل شیڈول کو ترتیب دیں۔ کمانڈز، حالت اور رن ٹائم کی ضروریات کے لیے [نائٹ لائٹ](/docs/user-guide/night-light/) دیکھیں۔
                                                      ﺪﻌﺑ ﮯﮐ ﮦﺩﺎﯾﺯ ﮯﺳ ﮦﺩﺎﯾﺯ ﺕﺪﺷ[                                                            ﺬﺧﺎﻣ 0.57.0 ﯽﺗﺭﺍﺪﺻ](https://github.com/hyprwm/Hyprland/blob/v0.57.0/src/config/values/ConfigValues.cpp),
+
+## Git سے تھیم نصب کریں
+
+موجودہ Git اسناد کے ساتھ HTTPS یا SSH سے skeleton مخزن نصب کریں۔ تنصیب فی صارف ہوتی ہے اور تھیم خود لاگو نہیں ہوتا۔ `--ref` شاخ یا ٹیگ چنتا ہے؛ `--replace` موجودہ ذاتی تھیم بدلتا ہے۔ نصب سرکاری شناختیں محفوظ ہیں۔
+
+```sh
+argvus theme install https://github.com/USER/argvus-theme-NAME.git
+argvus theme install https://gitlab.com/USER/argvus-theme-NAME.git --ref v1.0
+argvus theme install git@host:USER/argvus-theme-NAME.git --replace
+argvus theme apply NAME
+argvus theme uninstall NAME
+```
+
+تھیم **Custom themes** میں نظر آتا ہے؛ `r` سے تازہ کریں۔ CLI یا Control Center میں فعال تھیم ہٹانے سے پہلے دوسرا تھیم لاگو کریں۔ تبدیل کرنے کے بعد دوبارہ لاگو کریں۔
+
+`src/usr/share/argvus/themes/<id>/` میں مماثل شناخت والا ایک schema 2 تھیم ہونا چاہیے۔ تصاویر تھیم یا `src/usr/share/` میں محفوظ کریں۔ اسکرپٹ نہیں چلتے؛ ذیلی ماڈیول اور Git LFS معاون نہیں۔ `git` اور SSH کے لیے `openssh` درکار ہیں۔ منزل `$XDG_DATA_HOME/argvus/themes/<id>` ہے۔ سرکاری پیکیج pacman کے زیر انتظام رہتے ہیں۔

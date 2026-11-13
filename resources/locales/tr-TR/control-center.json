@@ -1512,7 +1512,7 @@
   "control_center.theme_profile_deleted": "Özel tema silindi",
   "control_center.theme_profile_official": "Resmi Temalar",
   "control_center.theme_profile_custom": "Özel Temalar",
-  "control_center.theme_profile_custom_empty": "Henüz kendi temalarınız yok: Aktif temayı ihraç etmek veya bir tane ithal etmek",
+  "control_center.theme_profile_custom_empty": "Henüz kendi temalarınız yok: Aktif temayı ihraç etmek veya bir tane ithal etmek · argvus theme install URL",
   "control_center.theme_profile_delete": "Delete",
   "control_center.theme_profile_delete_title": "Delete teması?",
   "control_center.theme_profile_delete_description": "Temadan kaldırılacaktır -/.local/share/argvus/themes.",
@@ -2213,5 +2213,6 @@
   "control_center.window_mode_hint": "Floating pencere düğmelerini ve tam bir uygulama çubuğunu gösterir. Kaplamalar pencereleri en aza indirir ve sadece Floating tarafından dönüştürülen pencereleri yeniden döndürür. Başlangıçta yüzen pencereler yüz yüze kalır.",
   "control_center.window_mode_working": "Pencere modu uygulamak..",
   "control_center.window_mode_pending": "Tercih kurtarıldı. Uygulama Hyprland oturumu için bekliyor.",
-  "control_center.window_mode_failed": "Pencere modunu uygulamayabilir. Yeniden deneme seçeneği seçin."
+  "control_center.window_mode_failed": "Pencere modunu uygulamayabilir. Yeniden deneme seçeneği seçin.",
+  "control_center.theme_remove_active": "Etkin temayı kaldırmadan önce başka bir tema uygulayın."
 }

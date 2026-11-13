@@ -1512,7 +1512,7 @@
   "control_center.theme_profile_deleted": "Custom theme deleted",
   "control_center.theme_profile_official": "Official Themes",
   "control_center.theme_profile_custom": "Custom Themes",
-  "control_center.theme_profile_custom_empty": "No themes of your own yet: export the active theme or import one",
+  "control_center.theme_profile_custom_empty": "No themes of your own yet: export the active theme or import one · argvus theme install URL",
   "control_center.theme_profile_delete": "Delete",
   "control_center.theme_profile_delete_title": "Delete theme?",
   "control_center.theme_profile_delete_description": "The theme will be removed from ~/.local/share/argvus/themes.",
@@ -2213,5 +2213,6 @@
   "control_center.window_mode_hint": "Floating shows window buttons and an opposite application bar. Tile restores minimized windows and only retiles windows converted by Floating. Originally floating windows stay floating.",
   "control_center.window_mode_working": "Applying window mode…",
   "control_center.window_mode_pending": "Preference saved. Application is pending for the Hyprland session.",
-  "control_center.window_mode_failed": "Could not apply the window mode. Select an option to retry."
+  "control_center.window_mode_failed": "Could not apply the window mode. Select an option to retry.",
+  "control_center.theme_remove_active": "Apply another theme before removing the active theme."
 }

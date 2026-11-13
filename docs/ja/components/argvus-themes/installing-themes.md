@@ -121,3 +121,19 @@ argvus theme apply mist
 sudo pacman -R argvus-theme-<THEME_NAME>
 ```
 テーマパッケージを削除しても、インポートしたプロファイルは削除されません。削除するテーマが現在適用されている場合は、削除する前にコントロールセンターから別のテーマを選択してください。
+
+## Git からテーマをインストール
+
+既存の Git 認証情報で HTTPS または SSH 経由の skeleton リポジトリをインストールします。ユーザー単位でインストールされ、自動適用されません。`--ref` はブランチやタグ、`--replace` は既存のカスタムテーマの置換を指定します。インストール済みの公式 ID は保護されます。
+
+```sh
+argvus theme install https://github.com/USER/argvus-theme-NAME.git
+argvus theme install https://gitlab.com/USER/argvus-theme-NAME.git --ref v1.0
+argvus theme install git@host:USER/argvus-theme-NAME.git --replace
+argvus theme apply NAME
+argvus theme uninstall NAME
+```
+
+テーマは **Custom themes** に表示されます。`r` で更新します。CLI や Control Center で使用中のテーマを削除する前に、別のテーマを適用してください。置換後は再適用が必要です。
+
+`src/usr/share/argvus/themes/<id>/` に ID が一致する schema 2 テーマが一つ必要です。画像はテーマ内か `src/usr/share/` にコミットしてください。スクリプトは実行されません。サブモジュールと Git LFS は非対応です。`git` と SSH 用の `openssh` が必要です。保存先は `$XDG_DATA_HOME/argvus/themes/<id>`。公式パッケージは pacman で管理します。

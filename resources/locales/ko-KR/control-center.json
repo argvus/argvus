@@ -1512,7 +1512,7 @@
   "control_center.theme_profile_deleted": "맞춤 테마가 삭제되었습니다.",
   "control_center.theme_profile_official": "공식 테마",
   "control_center.theme_profile_custom": "맞춤 테마",
-  "control_center.theme_profile_custom_empty": "아직 나만의 테마가 없습니다. 활성 테마를 내보내거나 가져오세요.",
+  "control_center.theme_profile_custom_empty": "아직 나만의 테마가 없습니다. 활성 테마를 내보내거나 가져오세요. · argvus theme install URL",
   "control_center.theme_profile_delete": "삭제",
   "control_center.theme_profile_delete_title": "Delete 테마?",
   "control_center.theme_profile_delete_description": "테마가 ~/.local/share/argvus/themes.에서 제거됩니다.",
@@ -2213,5 +2213,6 @@
   "control_center.window_mode_hint": "플로팅에는 창 버튼과 반대쪽 응용 프로그램 표시줄이 표시됩니다. 타일은 최소화된 창을 복원하고 플로팅으로 변환된 창만 리타일합니다. 원래 떠 있던 창은 계속 떠 있습니다.",
   "control_center.window_mode_working": "창모드 적용 중…",
   "control_center.window_mode_pending": "환경설정이 저장되었습니다. Hyprland 세션에 대한 신청이 보류 중입니다.",
-  "control_center.window_mode_failed": "창모드를 적용할 수 없습니다. 다시 시도하려면 옵션을 선택하세요."
+  "control_center.window_mode_failed": "창모드를 적용할 수 없습니다. 다시 시도하려면 옵션을 선택하세요.",
+  "control_center.theme_remove_active": "사용 중인 테마를 삭제하기 전에 다른 테마를 적용하세요."
 }

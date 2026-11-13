@@ -121,3 +121,19 @@ argvus theme apply mist
 sudo pacman -R argvus-theme-<THEME_NAME>
 ```
 Удаление пакета тем не удаляет ваши импортированные профили. Если удаляемая тема является текущей применяемой, выберите другую тему в Центре управления перед её удалением.
+
+## Установка тем из Git
+
+Установите репозиторий skeleton по HTTPS или SSH с существующими учётными данными Git. Установка выполняется для пользователя без активации. `--ref` выбирает ветку или тег; `--replace` заменяет пользовательскую тему. Установленные официальные ID защищены.
+
+```sh
+argvus theme install https://github.com/USER/argvus-theme-NAME.git
+argvus theme install https://gitlab.com/USER/argvus-theme-NAME.git --ref v1.0
+argvus theme install git@host:USER/argvus-theme-NAME.git --replace
+argvus theme apply NAME
+argvus theme uninstall NAME
+```
+
+Тема появится в **Custom themes**; `r` обновляет страницу. Перед удалением активной темы через CLI или Control Center примените другую. После замены примените тему заново.
+
+Нужна одна тема schema 2 в `src/usr/share/argvus/themes/<id>/` с совпадающим ID. Изображения должны быть в теме или в `src/usr/share/`. Скрипты не выполняются. Подмодули и Git LFS не поддерживаются. Установите `git` и `openssh` для SSH. Каталог: `$XDG_DATA_HOME/argvus/themes/<id>`. Официальные пакеты управляются pacman.

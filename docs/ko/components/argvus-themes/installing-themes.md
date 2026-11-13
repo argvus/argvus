@@ -123,3 +123,19 @@ argvus theme apply mist
 sudo pacman -R argvus-theme-<THEME_NAME>
 ```
 테마 패키지를 제거해도 가져온 프로필은 삭제되지 않습니다. 제거하려는 테마가 현재 적용된 테마인 경우 제거하기 전에 제어 센터에서 다른 테마를 선택하십시오.
+
+## Git에서 테마 설치
+
+기존 Git 인증 정보로 HTTPS 또는 SSH를 통해 skeleton 저장소를 설치합니다. 사용자별로 설치하며 자동 적용하지 않습니다. `--ref`는 브랜치나 태그를 선택하고 `--replace`는 기존 사용자 테마를 교체합니다. 설치된 공식 ID는 보호됩니다.
+
+```sh
+argvus theme install https://github.com/USER/argvus-theme-NAME.git
+argvus theme install https://gitlab.com/USER/argvus-theme-NAME.git --ref v1.0
+argvus theme install git@host:USER/argvus-theme-NAME.git --replace
+argvus theme apply NAME
+argvus theme uninstall NAME
+```
+
+테마는 **Custom themes**에 표시됩니다. `r`로 새로 고칩니다. CLI나 Control Center에서 현재 테마를 삭제하기 전에 다른 테마를 적용하세요. 교체 후 다시 적용해야 합니다.
+
+`src/usr/share/argvus/themes/<id>/`에 ID가 일치하는 schema 2 테마가 하나 있어야 합니다. 이미지는 테마 내부 또는 `src/usr/share/`에 커밋해야 합니다. 스크립트를 실행하지 않으며 하위 모듈과 Git LFS는 지원하지 않습니다. `git`과 SSH용 `openssh`가 필요합니다. 설치 위치: `$XDG_DATA_HOME/argvus/themes/<id>`. 공식 패키지는 pacman으로 관리합니다.

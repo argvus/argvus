@@ -1512,7 +1512,7 @@
   "control_center.theme_profile_deleted": "Benutzerdefiniertes Design gelöscht",
   "control_center.theme_profile_official": "Offizielle Themen",
   "control_center.theme_profile_custom": "Benutzerdefinierte Themen",
-  "control_center.theme_profile_custom_empty": "Noch keine eigenen Themes: Exportieren Sie das aktive Theme oder importieren Sie eines",
+  "control_center.theme_profile_custom_empty": "Noch keine eigenen Themes: Exportieren Sie das aktive Theme oder importieren Sie eines · argvus theme install URL",
   "control_center.theme_profile_delete": "Löschen",
   "control_center.theme_profile_delete_title": "Delete-Thema?",
   "control_center.theme_profile_delete_description": "Das Thema wird aus ~/.local/share/argvus/themes. entfernt",
@@ -2213,5 +2213,6 @@
   "control_center.window_mode_hint": "Floating zeigt Fensterschaltflächen und eine gegenüberliegende Anwendungsleiste an. „Kacheln“ stellt minimierte Fenster wieder her und ordnet nur die durch „Floating“ konvertierten Fenster neu an. Ursprünglich schwebende Fenster bleiben schwebend.",
   "control_center.window_mode_working": "Fenstermodus anwenden…",
   "control_center.window_mode_pending": "Präferenz gespeichert. Die Bewerbung für die Hyprland-Sitzung steht noch aus.",
-  "control_center.window_mode_failed": "Der Fenstermodus konnte nicht angewendet werden. Wählen Sie eine Option zum erneuten Versuch."
+  "control_center.window_mode_failed": "Der Fenstermodus konnte nicht angewendet werden. Wählen Sie eine Option zum erneuten Versuch.",
+  "control_center.theme_remove_active": "Wenden Sie ein anderes Design an, bevor Sie das aktive Design entfernen."
 }

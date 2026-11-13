@@ -77,10 +77,16 @@ pub fn apply_custom_theme(theme: &CustomTheme) -> Result<(), String> {
   crate::backend::set_theme(&theme.id)
 }
 
-/// Removes a user theme, after switching to ARGVUS Dark when it is active.
+/// Removes an inactive user theme.
 pub fn delete_custom_theme(theme: &CustomTheme) -> Result<(), String> {
-  if active_custom_theme().as_deref() == Some(theme.id.as_str()) {
-    crate::backend::set_theme("argvus-dark")?;
+  if package::is_active(&theme_paths()?, &theme.id) {
+    return Err(
+      argvus_i18n::tr(
+        argvus_i18n::Lang::detect(),
+        "control_center.theme_remove_active",
+      )
+      .into(),
+    );
   }
   package::remove_user_theme(&theme_paths()?, &theme.id)
 }

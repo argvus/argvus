@@ -140,3 +140,19 @@ sudo pacman -R argvus-theme-<THEME_NAME>
 ```
 
 थीम पैकेज को हटाने से आपकी आयातित प्रोफ़ाइलें नहीं हटतीं। यदि हटाई गई थीम वर्तमान में लागू थीम है, तो उसे हटाने से पहले नियंत्रण केंद्र से किसी अन्य थीम का चयन करें।
+
+## Git से थीम स्थापित करें
+
+मौजूदा Git पहचान के साथ HTTPS या SSH से skeleton रिपॉज़िटरी स्थापित करें। स्थापना प्रति उपयोगकर्ता होती है, स्वतः लागू नहीं होती। `--ref` शाखा या टैग चुनता है; `--replace` मौजूदा निजी थीम बदलता है। स्थापित आधिकारिक ID सुरक्षित हैं।
+
+```sh
+argvus theme install https://github.com/USER/argvus-theme-NAME.git
+argvus theme install https://gitlab.com/USER/argvus-theme-NAME.git --ref v1.0
+argvus theme install git@host:USER/argvus-theme-NAME.git --replace
+argvus theme apply NAME
+argvus theme uninstall NAME
+```
+
+थीम **Custom themes** में दिखती है; `r` से ताज़ा करें। CLI या Control Center में सक्रिय थीम हटाने से पहले दूसरी थीम लागू करें। बदलने के बाद फिर लागू करें।
+
+`src/usr/share/argvus/themes/<id>/` में समान ID वाली एक schema 2 थीम चाहिए। चित्र थीम में या `src/usr/share/` में कमिट करें। स्क्रिप्ट नहीं चलतीं; सबमॉड्यूल और Git LFS समर्थित नहीं हैं। `git` और SSH के लिए `openssh` चाहिए। गंतव्य `$XDG_DATA_HOME/argvus/themes/<id>` है। आधिकारिक पैकेज pacman से प्रबंधित होते हैं।

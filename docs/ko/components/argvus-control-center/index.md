@@ -543,3 +543,19 @@ Wi-Fi 비밀번호, 수동 DNS 및 네트워크 검색 필드에서는 대괄호
 `SUPER + Q`는 Kitty의 OS-창 확인 없이 전용 제어 센터 창을 즉시 닫습니다. 창이 이 방식으로 닫힐 경우 적용되지 않은 초안은 폐기됩니다. 이 무시는 `argvus-control-center` 창 클래스에만 적용되며, 일반 터미널과 다른 TUI는 닫기 확인 정책을 유지합니다.
 
 `SUPER + Alt + Space`는 작업 표시줄과 제어 센터에서 사용하는 것과 동일한 설정을 사용하여 전역 타일/플로팅 모드를 전환합니다. 동등한 명령은 `argvus config window-mode toggle`입니다. 동시 호출은 직렬화되며, 애플리케이션이 대기 중일 때도 토글은 저장된 설정을 사용합니다. 바로 가기는 키보드 단축키에서 변경하거나 비활성화할 수 있으며, `SUPER + Shift + Space`는 개별 창 동작을 유지합니다.
+
+## Git에서 테마 설치
+
+기존 Git 인증 정보로 HTTPS 또는 SSH를 통해 skeleton 저장소를 설치합니다. 사용자별로 설치하며 자동 적용하지 않습니다. `--ref`는 브랜치나 태그를 선택하고 `--replace`는 기존 사용자 테마를 교체합니다. 설치된 공식 ID는 보호됩니다.
+
+```sh
+argvus theme install https://github.com/USER/argvus-theme-NAME.git
+argvus theme install https://gitlab.com/USER/argvus-theme-NAME.git --ref v1.0
+argvus theme install git@host:USER/argvus-theme-NAME.git --replace
+argvus theme apply NAME
+argvus theme uninstall NAME
+```
+
+테마는 **Custom themes**에 표시됩니다. `r`로 새로 고칩니다. CLI나 Control Center에서 현재 테마를 삭제하기 전에 다른 테마를 적용하세요. 교체 후 다시 적용해야 합니다.
+
+`src/usr/share/argvus/themes/<id>/`에 ID가 일치하는 schema 2 테마가 하나 있어야 합니다. 이미지는 테마 내부 또는 `src/usr/share/`에 커밋해야 합니다. 스크립트를 실행하지 않으며 하위 모듈과 Git LFS는 지원하지 않습니다. `git`과 SSH용 `openssh`가 필요합니다. 설치 위치: `$XDG_DATA_HOME/argvus/themes/<id>`. 공식 패키지는 pacman으로 관리합니다.

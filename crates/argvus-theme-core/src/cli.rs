@@ -15,7 +15,7 @@ use std::process::ExitCode;
 
 const USAGE: &str = "\
 usage: argvus theme apply ID
-       argvus theme list
+       argvus theme install URL [--ref BRANCH_OR_TAG] [--replace]\n       argvus theme uninstall ID\n       argvus theme list
        argvus theme check DIRECTORY [--variant sticky|spaced]
        argvus theme render ID [--variant sticky|spaced] [--accent #RRGGBB] [--output DIRECTORY]";
 
@@ -31,11 +31,48 @@ pub fn run_command(arguments: Vec<String>) -> ExitCode {
     Ok(options) => options,
     Err(message) => return usage_error(&message),
   };
+  let build_flags =
+    options.variant.is_some() || options.accent.is_some() || options.output.is_some();
+  if (command != "install" && (options.replace || options.revision.is_some()))
+    || (matches!(command.as_str(), "install" | "uninstall") && build_flags)
+  {
+    return usage_error("options are not supported by this command");
+  }
   let Some(paths) = ThemePaths::from_environment() else {
     eprintln!("argvus theme: cannot resolve the configuration directories (HOME is not set)");
     return ExitCode::FAILURE;
   };
   match command.as_str() {
+    "install" if options.positional.len() == 1 => {
+      match crate::git_install::install(
+        &paths,
+        &options.positional[0],
+        options.revision.as_deref(),
+        options.replace,
+      ) {
+        Ok(directory) => {
+          println!(
+            "Installed {}. Apply with argvus theme apply {}",
+            directory.display(),
+            directory.file_name().unwrap_or_default().to_string_lossy()
+          );
+          ExitCode::SUCCESS
+        }
+        Err(message) => {
+          eprintln!("argvus theme: {message}");
+          ExitCode::FAILURE
+        }
+      }
+    }
+    "uninstall" if options.positional.len() == 1 => {
+      match crate::package::remove_user_theme(&paths, &options.positional[0]) {
+        Ok(()) => ExitCode::SUCCESS,
+        Err(message) => {
+          eprintln!("argvus theme: {message}");
+          ExitCode::FAILURE
+        }
+      }
+    }
     "list" if options.positional.is_empty() => list(&paths),
     "check" if options.positional.len() == 1 => {
       check(&paths, Path::new(&options.positional[0]), &options)
@@ -57,6 +94,8 @@ fn usage_error(message: &str) -> ExitCode {
 #[derive(Debug, Default, PartialEq)]
 struct Options {
   positional: Vec<String>,
+  revision: Option<String>,
+  replace: bool,
   variant: Option<Variant>,
   accent: Option<Color>,
   output: Option<PathBuf>,
@@ -74,6 +113,8 @@ impl Options {
           .ok_or_else(|| format!("{flag} needs a value"))
       };
       match word.as_str() {
+        "--ref" => options.revision = Some(value("--ref")?),
+        "--replace" => options.replace = true,
         "--variant" => {
           let text = value("--variant")?;
           options.variant =

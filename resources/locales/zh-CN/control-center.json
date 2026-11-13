@@ -1512,7 +1512,7 @@
   "control_center.theme_profile_deleted": "自定义主题已删除",
   "control_center.theme_profile_official": "官方主题",
   "control_center.theme_profile_custom": "自定义主题",
-  "control_center.theme_profile_custom_empty": "您还没有自己的主题：导出活动主题或导入主题",
+  "control_center.theme_profile_custom_empty": "您还没有自己的主题：导出活动主题或导入主题 · argvus theme install URL",
   "control_center.theme_profile_delete": "删除",
   "control_center.theme_profile_delete_title": "Delete主题？",
   "control_center.theme_profile_delete_description": "该主题将从 ~/.local/share/argvus/themes. 中删除",
@@ -2213,5 +2213,6 @@
   "control_center.window_mode_hint": "浮动显示窗口按钮和相反的应用程序栏。平铺恢复最小化的窗口，并且仅重新平铺通过浮动转换的窗口。原来的浮动窗口保持浮动。",
   "control_center.window_mode_working": "应用窗口模式...",
   "control_center.window_mode_pending": "已保存首选项。 Hyprland 会议的申请正在等待处理。",
-  "control_center.window_mode_failed": "无法应用窗口模式。选择一个选项重试。"
+  "control_center.window_mode_failed": "无法应用窗口模式。选择一个选项重试。",
+  "control_center.theme_remove_active": "删除当前主题前，请先应用其他主题。"
 }
