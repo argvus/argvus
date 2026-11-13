@@ -17,3 +17,5 @@ remove an active theme. User removal leaves generated builds intact.
 Runtime dependencies are Git and, for SSH URLs, OpenSSH. Branches and tags use
 `--ref`; default installs follow the remote default branch. Submodules and Git
 LFS are unsupported. Official IDs already installed cannot be replaced.
+
+The installer reads only `src/usr/share/argvus/themes/<id>/` and referenced assets under `src/usr/share/`. It does not read `packaging/`; that directory is only needed when building Arch Linux packages.

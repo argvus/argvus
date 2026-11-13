@@ -13,6 +13,9 @@ Sumber dari setiap tema resmi ada di organisasi proyek ARGVUS:
 
 Paket tema bergantung pada `argvus-appearance`. Instal ARGVUS terlebih dahulu seperti dijelaskan pada [Instalasi](/docs/getting-started/installation/), sehingga komponen tampilannya ada.
 
+
+Instalasi Git hanya membaca berkas tema dari `src/`. Direktori `packaging/` tidak diperlukan untuk instalasi dan digunakan untuk membuat paket Arch Linux.
+
 ## Instal satu tema
 
 Untuk menginstal setiap tema resmi sekaligus, instal metapackage `argvus-themes`:
@@ -140,6 +143,19 @@ sudo pacman -R argvus-theme-<THEME_NAME>
 ```
 
 Menghapus paket tema tidak menghapus profil yang Anda impor. Jika tema yang dihapus adalah tema yang sedang diterapkan, pilih tema lain dari Pusat Kontrol sebelum menghapusnya.
+
+## Membuat tema dengan skeleton
+
+Mulai dari repositori `argvus-skeleton-theme` untuk membuat tema yang kompatibel. Jalankan `make new ID=ocean-night NAME="Ocean Night" CATEGORY=dark`, lalu ubah palet dan wallpaper. Validasi dengan `make check` dan coba dengan `make try`. Setelah repositori diterbitkan, instal dengan `argvus theme install URL`. Berkas tema berada di `src/`; `packaging/` hanya untuk membuat paket Arch.
+
+```sh
+git clone https://github.com/argvus/argvus-skeleton-theme.git argvus-theme-ocean-night
+cd argvus-theme-ocean-night
+make new ID=ocean-night NAME="Ocean Night" CATEGORY=dark
+make check
+make try
+argvus theme apply ocean-night
+```
 
 ## Memasang tema dari Git
 

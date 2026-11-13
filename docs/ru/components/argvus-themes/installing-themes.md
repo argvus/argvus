@@ -12,6 +12,9 @@ description: Установите официальные пакеты темы A
 
 Пакеты тем зависят от `argvus-appearance`. Сначала установите ARGVUS, как описано в [Installation](/docs/getting-started/installation/), чтобы компонент внешнего вида был присутствующим.
 
+
+Установка из Git читает файлы темы только из `src/`. Каталог `packaging/` для установки не нужен и используется для сборки пакетов Arch Linux.
+
 ## Установка одной темы
 
 Чтобы установить сразу все официальные темы, установите метапакет `argvus-themes`:
@@ -121,6 +124,19 @@ argvus theme apply mist
 sudo pacman -R argvus-theme-<THEME_NAME>
 ```
 Удаление пакета тем не удаляет ваши импортированные профили. Если удаляемая тема является текущей применяемой, выберите другую тему в Центре управления перед её удалением.
+
+## Создание темы с помощью skeleton
+
+Начните с репозитория `argvus-skeleton-theme`, чтобы создать совместимую тему. Выполните `make new ID=ocean-night NAME="Ocean Night" CATEGORY=dark`, затем настройте палитру и обои. Проверьте тему командой `make check` и испытайте её с `make try`. После публикации установите через `argvus theme install URL`. Файлы темы находятся в `src/`; `packaging/` нужен только для сборки пакетов Arch.
+
+```sh
+git clone https://github.com/argvus/argvus-skeleton-theme.git argvus-theme-ocean-night
+cd argvus-theme-ocean-night
+make new ID=ocean-night NAME="Ocean Night" CATEGORY=dark
+make check
+make try
+argvus theme apply ocean-night
+```
 
 ## Установка тем из Git
 

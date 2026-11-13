@@ -13,6 +13,9 @@ description: पैक्मैन के साथ आधिकारिक ARG
 
 थीम पैकेज `argvus-appearance` पर निर्भर करते हैं। पहले ARGVUS स्थापित करें, जैसा कि [इंस्टॉलेशन](/docs/getting-started/installation/) में बताया गया है, ताकि उपस्थिति घटक मौजूद रहे।
 
+
+Git स्थापना केवल `src/` से थीम फ़ाइलें पढ़ती है। स्थापना के लिए `packaging/` वैकल्पिक है; इसका उपयोग Arch Linux पैकेज बनाने में होता है।
+
 ## एक ही थीम स्थापित करें
 
 प्रत्येक आधिकारिक थीम को एक साथ इंस्टॉल करने के लिए, `argvus-themes` मेटापैकेज इंस्टॉल करें:
@@ -140,6 +143,19 @@ sudo pacman -R argvus-theme-<THEME_NAME>
 ```
 
 थीम पैकेज को हटाने से आपकी आयातित प्रोफ़ाइलें नहीं हटतीं। यदि हटाई गई थीम वर्तमान में लागू थीम है, तो उसे हटाने से पहले नियंत्रण केंद्र से किसी अन्य थीम का चयन करें।
+
+## skeleton से थीम बनाएँ
+
+संगत थीम बनाने के लिए `argvus-skeleton-theme` रिपॉज़िटरी से शुरू करें। `make new ID=ocean-night NAME="Ocean Night" CATEGORY=dark` चलाएँ, फिर रंग और वॉलपेपर संपादित करें। `make check` से जाँचें और `make try` से आज़माएँ। रिपॉज़िटरी प्रकाशित करने के बाद `argvus theme install URL` से स्थापित करें। थीम फ़ाइलें `src/` में हैं; `packaging/` केवल Arch पैकेज के लिए है।
+
+```sh
+git clone https://github.com/argvus/argvus-skeleton-theme.git argvus-theme-ocean-night
+cd argvus-theme-ocean-night
+make new ID=ocean-night NAME="Ocean Night" CATEGORY=dark
+make check
+make try
+argvus theme apply ocean-night
+```
 
 ## Git से थीम स्थापित करें
 

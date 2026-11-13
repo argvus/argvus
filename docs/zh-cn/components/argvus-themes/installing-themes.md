@@ -12,6 +12,9 @@ description: 使用 pacman 安装官方 ARGVUS 主题包。
 
 主题软件包依赖于 `argvus-appearance`。请先按照 [安装](/docs/getting-started/installation/) 的说明安装 ARGVUS，以确保外观组件存在。
 
+
+Git 安装只读取 `src/` 中的主题文件。安装不需要 `packaging/`；该目录用于构建 Arch Linux 软件包。
+
 ## 安装单个主题
 
 要一次性安装所有官方主题，请安装 `argvus-themes` 元软件包：
@@ -122,6 +125,19 @@ argvus theme apply mist
 sudo pacman -R argvus-theme-<THEME_NAME>
 ```
 移除主题包不会删除您导入的配置文件。如果被移除的主题是当前应用的主题，请在移除之前从控制中心选择另一个主题。
+
+## 使用 skeleton 创建主题
+
+从 `argvus-skeleton-theme` 仓库开始创建兼容主题。运行 `make new ID=ocean-night NAME="Ocean Night" CATEGORY=dark`，然后编辑配色和壁纸。使用 `make check` 验证，使用 `make try` 试用。发布仓库后，可用 `argvus theme install URL` 安装。主题文件位于 `src/`；`packaging/` 仅用于构建 Arch 软件包。
+
+```sh
+git clone https://github.com/argvus/argvus-skeleton-theme.git argvus-theme-ocean-night
+cd argvus-theme-ocean-night
+make new ID=ocean-night NAME="Ocean Night" CATEGORY=dark
+make check
+make try
+argvus theme apply ocean-night
+```
 
 ## 从 Git 安装主题
 

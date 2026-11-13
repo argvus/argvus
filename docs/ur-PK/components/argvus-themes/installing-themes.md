@@ -13,6 +13,9 @@ description: Pacman کے ساتھ آفیشل ARGVUS تھیم پیکجز انسٹ
 
 تھیم پیکجز کا انحصار `argvus-appearance` پر ہے۔ پہلے ARGVUS انسٹال کریں، جیسا کہ [Installation](/docs/getting-started/installation/) میں بیان کیا گیا ہے، تاکہ ظاہری جزو موجود ہو۔
 
+
+Git تنصیب صرف `src/` سے تھیم فائلیں پڑھتی ہے۔ تنصیب کے لیے `packaging/` ضروری نہیں؛ یہ Arch Linux پیکیج بنانے کے لیے ہے۔
+
 ## ایک ہی تھیم انسٹال کریں۔
 
 ہر آفیشل تھیم کو ایک ساتھ انسٹال کرنے کے لیے، `argvus-themes` میٹا پیکج انسٹال کریں:
@@ -140,6 +143,19 @@ sudo pacman -R argvus-theme-<THEME_NAME>
 ```
 
 تھیم پیکج کو ہٹانے سے آپ کے درآمد شدہ پروفائلز حذف نہیں ہوتے ہیں۔ اگر ہٹائی گئی تھیم فی الحال لاگو کی گئی ہے، تو اسے ہٹانے سے پہلے کنٹرول سینٹر سے کوئی اور تھیم منتخب کریں۔
+
+## skeleton سے تھیم بنائیں
+
+مطابقت رکھنے والا تھیم بنانے کے لیے `argvus-skeleton-theme` مخزن سے آغاز کریں۔ `make new ID=ocean-night NAME="Ocean Night" CATEGORY=dark` چلائیں، پھر رنگ اور وال پیپر تبدیل کریں۔ `make check` سے جانچیں اور `make try` سے آزمائیں۔ مخزن شائع کرنے کے بعد `argvus theme install URL` سے نصب کریں۔ تھیم فائلیں `src/` میں ہیں؛ `packaging/` صرف Arch پیکیج بنانے کے لیے ہے۔
+
+```sh
+git clone https://github.com/argvus/argvus-skeleton-theme.git argvus-theme-ocean-night
+cd argvus-theme-ocean-night
+make new ID=ocean-night NAME="Ocean Night" CATEGORY=dark
+make check
+make try
+argvus theme apply ocean-night
+```
 
 ## Git سے تھیم نصب کریں
 

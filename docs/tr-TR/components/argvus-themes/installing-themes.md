@@ -13,6 +13,9 @@ Her resmi temanın kaynağı ARGVUS proje organizasyonunda yaşar:
 
 Tema paketleri `argvus-appearance`'ya bağlıdır. Görünüm bileşeninin mevcut olması için önce [Kurulum](/docs/getting-started/installation/) bölümünde açıklandığı gibi ARGVUS'u yükleyin.
 
+
+Git kurulumu tema dosyalarını yalnızca `src/` içinden okur. Kurulum için `packaging/` gerekmez; Arch Linux paketleri oluşturmak için kullanılır.
+
 ## Tek bir tema yükleyin
 
 Tüm resmi temaları tek seferde yüklemek için `argvus-themes` meta paketini yükleyin:
@@ -140,6 +143,19 @@ sudo pacman -R argvus-theme-<THEME_NAME>
 ```
 
 Bir tema paketini kaldırmak, içe aktarılan profillerinizi silmez. Kaldırılan tema şu anda uygulanan temaysa, kaldırmadan önce Kontrol Merkezi'nden başka bir tema seçin.
+
+## skeleton ile tema oluşturma
+
+Uyumlu bir tema oluşturmak için `argvus-skeleton-theme` deposundan başlayın. `make new ID=ocean-night NAME="Ocean Night" CATEGORY=dark` komutunu çalıştırıp paleti ve duvar kâğıdını düzenleyin. `make check` ile doğrulayın, `make try` ile deneyin. Depoyu yayımladıktan sonra `argvus theme install URL` ile yükleyin. Tema dosyaları `src/` içindedir; `packaging/` yalnızca Arch paketi oluşturmak içindir.
+
+```sh
+git clone https://github.com/argvus/argvus-skeleton-theme.git argvus-theme-ocean-night
+cd argvus-theme-ocean-night
+make new ID=ocean-night NAME="Ocean Night" CATEGORY=dark
+make check
+make try
+argvus theme apply ocean-night
+```
 
 ## Git üzerinden tema yükleme
 

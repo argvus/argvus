@@ -13,6 +13,9 @@ description: প্যাকম্যানের সাথে অফিসি�
 
 থিম প্যাকেজ `argvus-appearance` এর উপর নির্ভর করে। প্রথমে ARGVUS ইনস্টল করুন, যেমনটি [ইনস্টলেশন](/docs/getting-started/installation/) এ বর্ণিত হয়েছে, যাতে উপস্থিতি উপাদানটি উপস্থিত থাকে।
 
+
+Git দিয়ে ইনস্টল করতে শুধু `src/`-এর থিম ফাইল লাগে। `packaging/` ঐচ্ছিক; এটি Arch Linux প্যাকেজ তৈরির জন্য।
+
 ## একটি একক থিম ইনস্টল করুন
 
 প্রতিটি অফিসিয়াল থিম একবারে ইনস্টল করতে, `argvus-themes` মেটাপ্যাকেজ ইনস্টল করুন:
@@ -140,6 +143,19 @@ sudo pacman -R argvus-theme-<THEME_NAME>
 ```
 
 একটি থিম প্যাকেজ সরানো আপনার আমদানি করা প্রোফাইল মুছে ফেলবে না। যদি সরানো থিমটি বর্তমানে প্রয়োগ করা হয় তবে এটি সরানোর আগে নিয়ন্ত্রণ কেন্দ্র থেকে অন্য একটি থিম নির্বাচন করুন৷
+
+## skeleton দিয়ে থিম তৈরি
+
+সামঞ্জস্যপূর্ণ থিম বানাতে `argvus-skeleton-theme` সংগ্রহস্থল দিয়ে শুরু করুন। `make new ID=ocean-night NAME="Ocean Night" CATEGORY=dark` চালান, তারপর রং ও ওয়ালপেপার সম্পাদনা করুন। `make check` দিয়ে যাচাই এবং `make try` দিয়ে পরীক্ষা করুন। সংগ্রহস্থল প্রকাশের পর `argvus theme install URL` দিয়ে ইনস্টল করা যায়। থিম থাকে `src/`-এ; Arch প্যাকেজ বানাতে `packaging/` ঐচ্ছিক।
+
+```sh
+git clone https://github.com/argvus/argvus-skeleton-theme.git argvus-theme-ocean-night
+cd argvus-theme-ocean-night
+make new ID=ocean-night NAME="Ocean Night" CATEGORY=dark
+make check
+make try
+argvus theme apply ocean-night
+```
 
 ## Git থেকে থিম ইনস্টল
 

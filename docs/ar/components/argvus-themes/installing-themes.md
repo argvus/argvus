@@ -13,6 +13,9 @@ description: قم بتثبيت حزم سمات ARGVUS الرسمية باستخ�
 
 تعتمد حزم السمات على `argvus-appearance`. قم بتثبيت ARGVUS أولاً، كما هو موضح في [التثبيت](/docs/getting-started/installation/)، بحيث يكون مكون المظهر موجودًا.
 
+
+يقرأ التثبيت ملفات السمة من `src/` فقط. مجلد `packaging/` اختياري للتثبيت عبر Git ويُستخدم لإنشاء حزم Arch Linux.
+
 ## تثبيت سمة واحدة
 
 لتثبيت كل قالب رسمي مرة واحدة، قم بتثبيت الحزمة التعريفية `argvus-themes`:
@@ -140,6 +143,19 @@ sudo pacman -R argvus-theme-<THEME_NAME>
 ```
 
 لا تؤدي إزالة حزمة السمات إلى حذف ملفات التعريف المستوردة. إذا كانت السمة التي تمت إزالتها هي السمة المطبقة حاليًا، فحدد سمة أخرى من مركز التحكم قبل إزالتها.
+
+## إنشاء سمة باستخدام skeleton
+
+ابدأ من مستودع `argvus-skeleton-theme` لإنشاء سمة متوافقة. شغّل `make new ID=ocean-night NAME="Ocean Night" CATEGORY=dark`، ثم عدّل لوحة الألوان والخلفية. تحقّق باستخدام `make check` وجرّبها باستخدام `make try`. بعد نشر المستودع، يمكن تثبيت السمة عبر `argvus theme install URL`. ملفات السمة في `src/`؛ مجلد `packaging/` اختياري لإنشاء حزم Arch.
+
+```sh
+git clone https://github.com/argvus/argvus-skeleton-theme.git argvus-theme-ocean-night
+cd argvus-theme-ocean-night
+make new ID=ocean-night NAME="Ocean Night" CATEGORY=dark
+make check
+make try
+argvus theme apply ocean-night
+```
 
 ## تثبيت السمات من Git
 

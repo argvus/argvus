@@ -12,6 +12,9 @@ description: pacmanを使って公式のARGVUSテーマパッケージをイン�
 
 テーマパッケージは `argvus-appearance` に依存します。外観コンポーネントが存在するように、[インストール](/docs/getting-started/installation/) に記載されている通り、まず ARGVUS をインストールしてください。
 
+
+Git インストールがテーマファイルを読み込む場所は `src/` のみです。インストールに `packaging/` は不要で、Arch Linux パッケージの作成に使います。
+
 ## 単一のテーマをインストールする
 
 すべての公式テーマを一度にインストールするには、`argvus-themes` メタパッケージをインストールしてください：
@@ -121,6 +124,19 @@ argvus theme apply mist
 sudo pacman -R argvus-theme-<THEME_NAME>
 ```
 テーマパッケージを削除しても、インポートしたプロファイルは削除されません。削除するテーマが現在適用されている場合は、削除する前にコントロールセンターから別のテーマを選択してください。
+
+## skeleton でテーマを作成
+
+互換性のあるテーマを作るには `argvus-skeleton-theme` リポジトリから始めます。`make new ID=ocean-night NAME="Ocean Night" CATEGORY=dark` を実行し、配色と壁紙を編集します。`make check` で検証し、`make try` で試します。リポジトリ公開後は `argvus theme install URL` でインストールできます。テーマファイルは `src/` にあり、`packaging/` は Arch パッケージ作成用です。
+
+```sh
+git clone https://github.com/argvus/argvus-skeleton-theme.git argvus-theme-ocean-night
+cd argvus-theme-ocean-night
+make new ID=ocean-night NAME="Ocean Night" CATEGORY=dark
+make check
+make try
+argvus theme apply ocean-night
+```
 
 ## Git からテーマをインストール
 

@@ -12,6 +12,9 @@ description: pacman으로 공식 ARGVUS 테마 패키지를 설치하십시오.
 
 테마 패키지는 `argvus-appearance`에 의존합니다. 먼저 [Installation](/docs/getting-started/installation/)에 설명된 대로 ARGVUS를 설치하여 외형 구성 요소가 존재하도록 하십시오.
 
+
+Git 설치는 `src/`의 테마 파일만 읽습니다. 설치에 `packaging/`은 필요하지 않으며 Arch Linux 패키지를 만드는 데 사용합니다.
+
 ## 단일 테마 설치
 
 모든 공식 테마를 한 번에 설치하려면 `argvus-themes` 메타패키지를 설치하십시오:
@@ -123,6 +126,19 @@ argvus theme apply mist
 sudo pacman -R argvus-theme-<THEME_NAME>
 ```
 테마 패키지를 제거해도 가져온 프로필은 삭제되지 않습니다. 제거하려는 테마가 현재 적용된 테마인 경우 제거하기 전에 제어 센터에서 다른 테마를 선택하십시오.
+
+## skeleton으로 테마 만들기
+
+호환되는 테마를 만들려면 `argvus-skeleton-theme` 저장소에서 시작하세요. `make new ID=ocean-night NAME="Ocean Night" CATEGORY=dark`를 실행하고 팔레트와 배경화면을 수정합니다. `make check`로 검사하고 `make try`로 시험하세요. 저장소를 공개한 뒤 `argvus theme install URL`로 설치할 수 있습니다. 테마 파일은 `src/`에 있으며 `packaging/`은 Arch 패키지용입니다.
+
+```sh
+git clone https://github.com/argvus/argvus-skeleton-theme.git argvus-theme-ocean-night
+cd argvus-theme-ocean-night
+make new ID=ocean-night NAME="Ocean Night" CATEGORY=dark
+make check
+make try
+argvus theme apply ocean-night
+```
 
 ## Git에서 테마 설치
 

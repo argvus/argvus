@@ -12,6 +12,9 @@ La sorgente di ogni tema ufficiale si trova nell'organizzazione del progetto ARG
 
 I pacchetti dei temi dipendono da `argvus-appearance`. Installa prima ARGVUS, come descritto in [Installation](/docs/getting-started/installation/), affinché il componente dell'aspetto sia presente.
 
+
+L’installazione Git legge i file del tema solo da `src/`. La cartella `packaging/` è facoltativa per l’installazione e serve a creare pacchetti Arch Linux.
+
 ## Installare un singolo tema
 
 Per installare tutti i temi ufficiali contemporaneamente, installa il metapacchetto `argvus-themes`:
@@ -121,6 +124,19 @@ Rimuovi un singolo pacchetto tema con:
 sudo pacman -R argvus-theme-<THEME_NAME>
 ```
 Rimuovere un pacchetto di temi non elimina i profili importati. Se il tema rimosso è quello attualmente applicato, seleziona un altro tema dal Centro di Controllo prima di rimuoverlo.
+
+## Creare un tema con lo skeleton
+
+Parti dal repository `argvus-skeleton-theme` per creare un tema compatibile. Esegui `make new ID=ocean-night NAME="Ocean Night" CATEGORY=dark`, poi modifica palette e sfondo. Verifica con `make check` e prova con `make try`. Dopo aver pubblicato il repository, installalo con `argvus theme install URL`. I file del tema sono in `src/`; `packaging/` serve solo a creare pacchetti Arch.
+
+```sh
+git clone https://github.com/argvus/argvus-skeleton-theme.git argvus-theme-ocean-night
+cd argvus-theme-ocean-night
+make new ID=ocean-night NAME="Ocean Night" CATEGORY=dark
+make check
+make try
+argvus theme apply ocean-night
+```
 
 ## Installare temi da Git
 

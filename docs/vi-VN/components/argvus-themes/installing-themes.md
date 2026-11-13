@@ -13,6 +13,9 @@ Nguồn của mọi chủ đề chính thức đều có trong tổ chức dự 
 
 Các gói chủ đề phụ thuộc vào `argvus-appearance`. Trước tiên hãy cài đặt ARGVUS, như được mô tả trong [Cài đặt](/docs/getting-started/installation/), để có thành phần ngoại hình.
 
+
+Cài đặt qua Git chỉ đọc tệp giao diện trong `src/`. Thư mục `packaging/` không cần cho việc cài đặt; thư mục này dùng để tạo gói Arch Linux.
+
 ## Cài đặt một chủ đề duy nhất
 
 Để cài đặt mọi chủ đề chính thức cùng một lúc, hãy cài đặt siêu gói `argvus-themes`:
@@ -140,6 +143,19 @@ sudo pacman -R argvus-theme-<THEME_NAME>
 ```
 
 Việc xóa gói chủ đề sẽ không xóa các hồ sơ đã nhập của bạn. Nếu chủ đề đã xóa là chủ đề hiện đang được áp dụng, hãy chọn một chủ đề khác từ Trung tâm điều khiển trước khi xóa chủ đề đó.
+
+## Tạo giao diện bằng skeleton
+
+Bắt đầu từ kho `argvus-skeleton-theme` để tạo giao diện tương thích. Chạy `make new ID=ocean-night NAME="Ocean Night" CATEGORY=dark`, sau đó chỉnh bảng màu và hình nền. Kiểm tra bằng `make check` và dùng thử bằng `make try`. Sau khi công bố kho, cài bằng `argvus theme install URL`. Tệp giao diện nằm trong `src/`; `packaging/` chỉ dùng để tạo gói Arch.
+
+```sh
+git clone https://github.com/argvus/argvus-skeleton-theme.git argvus-theme-ocean-night
+cd argvus-theme-ocean-night
+make new ID=ocean-night NAME="Ocean Night" CATEGORY=dark
+make check
+make try
+argvus theme apply ocean-night
+```
 
 ## Cài giao diện từ Git
 
