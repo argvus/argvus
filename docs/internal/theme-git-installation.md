@@ -19,3 +19,5 @@ Runtime dependencies are Git and, for SSH URLs, OpenSSH. Branches and tags use
 LFS are unsupported. Official IDs already installed cannot be replaced.
 
 The installer reads only `src/usr/share/argvus/themes/<id>/` and referenced assets under `src/usr/share/`. It does not read `packaging/`; that directory is only needed when building Arch Linux packages.
+
+Theme authors use `misc/argvus-skeleton-theme`, which contains source data and documentation without build scripts. Arch package authors use `misc/argvus-skeleton-theme-zst`, which retains its packaging workflow.

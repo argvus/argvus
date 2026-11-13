@@ -146,16 +146,19 @@ Menghapus paket tema tidak menghapus profil yang Anda impor. Jika tema yang diha
 
 ## Membuat tema dengan skeleton
 
-Mulai dari repositori `argvus-skeleton-theme` untuk membuat tema yang kompatibel. Jalankan `make new ID=ocean-night NAME="Ocean Night" CATEGORY=dark`, lalu ubah palet dan wallpaper. Validasi dengan `make check` dan coba dengan `make try`. Setelah repositori diterbitkan, instal dengan `argvus theme install URL`. Berkas tema berada di `src/`; `packaging/` hanya untuk membuat paket Arch.
+Ubah nama direktori seperti di bawah lalu edit `theme.toml`: tetapkan `id = "ocean-night"`, nama, `name_i18n`, kategori, palet dan wallpaper. Validasi setelah mengedit. Terbitkan repositori di server Git Anda sebelum menjalankan `argvus theme install URL` dan menerapkan tema.
 
 ```sh
 git clone https://github.com/argvus/argvus-skeleton-theme.git argvus-theme-ocean-night
 cd argvus-theme-ocean-night
-make new ID=ocean-night NAME="Ocean Night" CATEGORY=dark
-make check
-make try
-argvus theme apply ocean-night
+mv src/usr/share/argvus/themes/skeleton src/usr/share/argvus/themes/ocean-night
 ```
+
+```sh
+argvus theme check src/usr/share/argvus/themes/ocean-night
+```
+
+Untuk paket Arch Linux `.pkg.tar.zst`, gunakan `argvus-skeleton-theme-zst` dengan alat pembuat paket. Skeleton Git tidak berisi Makefile, tools atau packaging.
 
 ## Memasang tema dari Git
 

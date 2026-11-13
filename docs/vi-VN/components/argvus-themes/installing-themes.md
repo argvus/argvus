@@ -146,16 +146,19 @@ Việc xóa gói chủ đề sẽ không xóa các hồ sơ đã nhập của b�
 
 ## Tạo giao diện bằng skeleton
 
-Bắt đầu từ kho `argvus-skeleton-theme` để tạo giao diện tương thích. Chạy `make new ID=ocean-night NAME="Ocean Night" CATEGORY=dark`, sau đó chỉnh bảng màu và hình nền. Kiểm tra bằng `make check` và dùng thử bằng `make try`. Sau khi công bố kho, cài bằng `argvus theme install URL`. Tệp giao diện nằm trong `src/`; `packaging/` chỉ dùng để tạo gói Arch.
+Đổi tên thư mục như bên dưới rồi sửa `theme.toml`: đặt `id = "ocean-night"`, tên, `name_i18n`, loại, bảng màu và hình nền. Kiểm tra sau khi sửa. Công bố kho trên máy chủ Git của bạn trước khi chạy `argvus theme install URL` và áp dụng giao diện.
 
 ```sh
 git clone https://github.com/argvus/argvus-skeleton-theme.git argvus-theme-ocean-night
 cd argvus-theme-ocean-night
-make new ID=ocean-night NAME="Ocean Night" CATEGORY=dark
-make check
-make try
-argvus theme apply ocean-night
+mv src/usr/share/argvus/themes/skeleton src/usr/share/argvus/themes/ocean-night
 ```
+
+```sh
+argvus theme check src/usr/share/argvus/themes/ocean-night
+```
+
+Để tạo gói Arch Linux `.pkg.tar.zst`, dùng `argvus-skeleton-theme-zst` có công cụ đóng gói. Skeleton Git không chứa Makefile, tools hay packaging.
 
 ## Cài giao diện từ Git
 

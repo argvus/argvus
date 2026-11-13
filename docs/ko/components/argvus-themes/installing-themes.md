@@ -129,16 +129,19 @@ sudo pacman -R argvus-theme-<THEME_NAME>
 
 ## skeleton으로 테마 만들기
 
-호환되는 테마를 만들려면 `argvus-skeleton-theme` 저장소에서 시작하세요. `make new ID=ocean-night NAME="Ocean Night" CATEGORY=dark`를 실행하고 팔레트와 배경화면을 수정합니다. `make check`로 검사하고 `make try`로 시험하세요. 저장소를 공개한 뒤 `argvus theme install URL`로 설치할 수 있습니다. 테마 파일은 `src/`에 있으며 `packaging/`은 Arch 패키지용입니다.
+아래와 같이 디렉터리 이름을 바꾸고 `theme.toml`에서 `id = "ocean-night"`, 이름, `name_i18n`, 분류, 팔레트와 배경화면을 수정한 뒤 검사하세요. 자신의 Git 서버에 저장소를 게시한 후 `argvus theme install URL`을 실행하고 테마를 적용하세요.
 
 ```sh
 git clone https://github.com/argvus/argvus-skeleton-theme.git argvus-theme-ocean-night
 cd argvus-theme-ocean-night
-make new ID=ocean-night NAME="Ocean Night" CATEGORY=dark
-make check
-make try
-argvus theme apply ocean-night
+mv src/usr/share/argvus/themes/skeleton src/usr/share/argvus/themes/ocean-night
 ```
+
+```sh
+argvus theme check src/usr/share/argvus/themes/ocean-night
+```
+
+Arch Linux `.pkg.tar.zst` 패키지는 패키지 도구를 포함하는 `argvus-skeleton-theme-zst`를 사용하세요. Git skeleton에는 Makefile, tools, packaging이 없습니다.
 
 ## Git에서 테마 설치
 

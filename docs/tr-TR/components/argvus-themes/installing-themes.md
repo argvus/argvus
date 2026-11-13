@@ -146,16 +146,19 @@ Bir tema paketini kaldırmak, içe aktarılan profillerinizi silmez. Kaldırıla
 
 ## skeleton ile tema oluşturma
 
-Uyumlu bir tema oluşturmak için `argvus-skeleton-theme` deposundan başlayın. `make new ID=ocean-night NAME="Ocean Night" CATEGORY=dark` komutunu çalıştırıp paleti ve duvar kâğıdını düzenleyin. `make check` ile doğrulayın, `make try` ile deneyin. Depoyu yayımladıktan sonra `argvus theme install URL` ile yükleyin. Tema dosyaları `src/` içindedir; `packaging/` yalnızca Arch paketi oluşturmak içindir.
+Dizini aşağıdaki gibi yeniden adlandırıp `theme.toml` içinde `id = "ocean-night"`, ad, `name_i18n`, kategori, palet ve duvar kâğıdını düzenleyin. Ardından doğrulayın. `argvus theme install URL` çalıştırıp temayı uygulamadan önce depoyu kendi Git sunucunuzda yayımlayın.
 
 ```sh
 git clone https://github.com/argvus/argvus-skeleton-theme.git argvus-theme-ocean-night
 cd argvus-theme-ocean-night
-make new ID=ocean-night NAME="Ocean Night" CATEGORY=dark
-make check
-make try
-argvus theme apply ocean-night
+mv src/usr/share/argvus/themes/skeleton src/usr/share/argvus/themes/ocean-night
 ```
+
+```sh
+argvus theme check src/usr/share/argvus/themes/ocean-night
+```
+
+Arch Linux `.pkg.tar.zst` paketleri için paket araçlarını içeren `argvus-skeleton-theme-zst` kullanın. Git skeleton içinde Makefile, tools veya packaging yoktur.
 
 ## Git üzerinden tema yükleme
 

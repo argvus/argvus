@@ -127,16 +127,19 @@ Eliminar un paquete de tema no borra tus perfiles importados. Si el tema elimina
 
 ## Crear un tema con el skeleton
 
-Empieza con el repositorio `argvus-skeleton-theme` para crear un tema compatible. Ejecuta `make new ID=ocean-night NAME="Ocean Night" CATEGORY=dark` y edita la paleta y el fondo. Valídalo con `make check` y pruébalo con `make try`. Tras publicar el repositorio, se instala con `argvus theme install URL`. Los archivos del tema están en `src/`; `packaging/` solo sirve para crear paquetes de Arch.
+Renombra la carpeta como se muestra y edita `theme.toml`: establece `id = "ocean-night"`, nombre, `name_i18n`, categoría, paleta y fondo. Valida tras editar. Publica el repositorio en tu servidor Git antes de ejecutar `argvus theme install URL` y aplicar el tema.
 
 ```sh
 git clone https://github.com/argvus/argvus-skeleton-theme.git argvus-theme-ocean-night
 cd argvus-theme-ocean-night
-make new ID=ocean-night NAME="Ocean Night" CATEGORY=dark
-make check
-make try
-argvus theme apply ocean-night
+mv src/usr/share/argvus/themes/skeleton src/usr/share/argvus/themes/ocean-night
 ```
+
+```sh
+argvus theme check src/usr/share/argvus/themes/ocean-night
+```
+
+Para paquetes Arch Linux `.pkg.tar.zst`, usa `argvus-skeleton-theme-zst`, que incluye las herramientas de empaquetado. El skeleton Git no contiene Makefile, tools ni packaging.
 
 ## Instalar temas desde Git
 

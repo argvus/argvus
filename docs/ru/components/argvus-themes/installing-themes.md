@@ -127,16 +127,19 @@ sudo pacman -R argvus-theme-<THEME_NAME>
 
 ## Создание темы с помощью skeleton
 
-Начните с репозитория `argvus-skeleton-theme`, чтобы создать совместимую тему. Выполните `make new ID=ocean-night NAME="Ocean Night" CATEGORY=dark`, затем настройте палитру и обои. Проверьте тему командой `make check` и испытайте её с `make try`. После публикации установите через `argvus theme install URL`. Файлы темы находятся в `src/`; `packaging/` нужен только для сборки пакетов Arch.
+Переименуйте каталог как показано ниже и измените `theme.toml`: задайте `id = "ocean-night"`, имя, `name_i18n`, категорию, палитру и обои. Затем проверьте тему. Опубликуйте репозиторий на своём Git-сервере перед выполнением `argvus theme install URL` и применением темы.
 
 ```sh
 git clone https://github.com/argvus/argvus-skeleton-theme.git argvus-theme-ocean-night
 cd argvus-theme-ocean-night
-make new ID=ocean-night NAME="Ocean Night" CATEGORY=dark
-make check
-make try
-argvus theme apply ocean-night
+mv src/usr/share/argvus/themes/skeleton src/usr/share/argvus/themes/ocean-night
 ```
+
+```sh
+argvus theme check src/usr/share/argvus/themes/ocean-night
+```
+
+Для пакетов Arch Linux `.pkg.tar.zst` используйте `argvus-skeleton-theme-zst` с инструментами сборки. Git-шаблон не содержит Makefile, tools или packaging.
 
 ## Установка тем из Git
 

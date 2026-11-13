@@ -146,16 +146,19 @@ sudo pacman -R argvus-theme-<THEME_NAME>
 
 ## إنشاء سمة باستخدام skeleton
 
-ابدأ من مستودع `argvus-skeleton-theme` لإنشاء سمة متوافقة. شغّل `make new ID=ocean-night NAME="Ocean Night" CATEGORY=dark`، ثم عدّل لوحة الألوان والخلفية. تحقّق باستخدام `make check` وجرّبها باستخدام `make try`. بعد نشر المستودع، يمكن تثبيت السمة عبر `argvus theme install URL`. ملفات السمة في `src/`؛ مجلد `packaging/` اختياري لإنشاء حزم Arch.
+أعد تسمية المجلد كما هو موضح ثم عدّل `theme.toml`: حدّد `id = "ocean-night"` والاسم و`name_i18n` والفئة والألوان والخلفية. تحقّق بعد التعديل. انشر المستودع على خادم Git الخاص بك قبل تشغيل `argvus theme install URL` وتطبيق السمة.
 
 ```sh
 git clone https://github.com/argvus/argvus-skeleton-theme.git argvus-theme-ocean-night
 cd argvus-theme-ocean-night
-make new ID=ocean-night NAME="Ocean Night" CATEGORY=dark
-make check
-make try
-argvus theme apply ocean-night
+mv src/usr/share/argvus/themes/skeleton src/usr/share/argvus/themes/ocean-night
 ```
+
+```sh
+argvus theme check src/usr/share/argvus/themes/ocean-night
+```
+
+لإنشاء حزم Arch Linux بصيغة `.pkg.tar.zst` استخدم `argvus-skeleton-theme-zst` مع أدوات الحزم. قالب Git لا يحتوي على Makefile أو tools أو packaging.
 
 ## تثبيت السمات من Git
 

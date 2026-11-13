@@ -146,16 +146,19 @@ sudo pacman -R argvus-theme-<THEME_NAME>
 
 ## skeleton দিয়ে থিম তৈরি
 
-সামঞ্জস্যপূর্ণ থিম বানাতে `argvus-skeleton-theme` সংগ্রহস্থল দিয়ে শুরু করুন। `make new ID=ocean-night NAME="Ocean Night" CATEGORY=dark` চালান, তারপর রং ও ওয়ালপেপার সম্পাদনা করুন। `make check` দিয়ে যাচাই এবং `make try` দিয়ে পরীক্ষা করুন। সংগ্রহস্থল প্রকাশের পর `argvus theme install URL` দিয়ে ইনস্টল করা যায়। থিম থাকে `src/`-এ; Arch প্যাকেজ বানাতে `packaging/` ঐচ্ছিক।
+নিচের মতো ফোল্ডারের নাম বদলে `theme.toml` সম্পাদনা করুন: `id = "ocean-night"`, নাম, `name_i18n`, বিভাগ, রং ও ওয়ালপেপার নির্ধারণ করুন। এরপর যাচাই করুন। `argvus theme install URL` চালিয়ে থিম প্রয়োগের আগে নিজের Git সার্ভারে সংগ্রহস্থল প্রকাশ করুন।
 
 ```sh
 git clone https://github.com/argvus/argvus-skeleton-theme.git argvus-theme-ocean-night
 cd argvus-theme-ocean-night
-make new ID=ocean-night NAME="Ocean Night" CATEGORY=dark
-make check
-make try
-argvus theme apply ocean-night
+mv src/usr/share/argvus/themes/skeleton src/usr/share/argvus/themes/ocean-night
 ```
+
+```sh
+argvus theme check src/usr/share/argvus/themes/ocean-night
+```
+
+Arch Linux `.pkg.tar.zst` প্যাকেজের জন্য প্যাকেজ তৈরির সরঞ্জামসহ `argvus-skeleton-theme-zst` ব্যবহার করুন। Git skeleton-এ Makefile, tools বা packaging নেই।
 
 ## Git থেকে থিম ইনস্টল
 
