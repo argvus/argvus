@@ -579,3 +579,7 @@ Das Design erscheint unter **Custom themes**; `r` aktualisiert die Seite. Wenden
 Genau ein Schema-2-Design unter `src/usr/share/argvus/themes/<id>/` mit passender ID ist erforderlich. Bilder müssen im Design oder unter `src/usr/share/` versioniert sein. Skripte werden nicht ausgeführt. Submodule und Git LFS werden nicht unterstützt. Benötigt: `git`, für SSH `openssh`. Ziel: `$XDG_DATA_HOME/argvus/themes/<id>`. Offizielle Pakete bleiben bei pacman.
 
 Beim Öffnen von **Packages → Official Repositories → Update**, auch über die Taskleiste, werden Aktualisierungen automatisch im Hintergrund mit `checkupdates` abgefragt und angezeigt, wie in der Taskleiste. **Refresh database** ist vorher nicht erforderlich. Die Prüfung nutzt eine separate Datenbank ohne Administratorrechte. Ohne installiertes `checkupdates` wird die lokale pacman-Datenbank verwendet.
+
+Nach Paketoperationen im Control Center (einschließlich offizieller und AUR-Upgrades) prüft die Taskleiste die verbleibenden Aktualisierungen automatisch ohne Neustart. Dies geschieht auch nach Fehlern, da einige Pakete bereits geändert sein können. Die stündliche Prüfung bleibt aktiv und erkennt Operationen außerhalb des Control Centers.
+
+Das Control Center speichert seine Prüfdatenbank unter `$XDG_CACHE_HOME/argvus/control-center/checkupdates` (Standard: `~/.cache/argvus/control-center/checkupdates`), getrennt von der Taskleiste, um Sperrkonflikte bei gleichzeitiger Synchronisierung zu vermeiden.

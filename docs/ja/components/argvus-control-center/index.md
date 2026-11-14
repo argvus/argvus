@@ -570,3 +570,7 @@ argvus theme uninstall NAME
 `src/usr/share/argvus/themes/<id>/` に ID が一致する schema 2 テーマが一つ必要です。画像はテーマ内か `src/usr/share/` にコミットしてください。スクリプトは実行されません。サブモジュールと Git LFS は非対応です。`git` と SSH 用の `openssh` が必要です。保存先は `$XDG_DATA_HOME/argvus/themes/<id>`。公式パッケージは pacman で管理します。
 
 **Packages → Official Repositories → Update** を開くと、タスクバーから開いた場合も、タスクバーと同じ `checkupdates` でバックグラウンドの確認が自動的に行われ、更新一覧が表示されます。先に **Refresh database** を実行する必要はありません。確認には別のデータベースを使い、管理者権限は不要です。`checkupdates` が未インストールの場合は pacman のローカルデータベースを使います。
+
+Control Center でのパッケージ操作（公式リポジトリと AUR の更新を含む）が終了すると、タスクバーは再起動せずに残りの更新を自動確認します。一部のパッケージが変更済みの場合があるため、失敗後も確認します。毎時の確認も引き続き行われ、Control Center 外での操作を検出します。
+
+Control Center の確認用データベースは `$XDG_CACHE_HOME/argvus/control-center/checkupdates`（既定：`~/.cache/argvus/control-center/checkupdates`）に保存されます。タスクバーとは別にすることで、同時同期時のロック競合を防ぎます。

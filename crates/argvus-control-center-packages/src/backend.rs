@@ -285,6 +285,14 @@ impl<R: ProcessRunner> PackageBackend<R> {
       .unwrap_or_else(|| "checkupdates".into());
     let request = ProcessRequest::new(program)
       .arg("--nocolor")
+      // The page and taskbar refresh together after a transaction. Separate
+      // sync databases prevent their checkupdates processes sharing db.lck.
+      .env(
+        "CHECKUPDATES_DB",
+        argvus_control_center_core::paths::cache_home()
+          .join("argvus/control-center/checkupdates")
+          .to_string_lossy(),
+      )
       .timeout(Duration::from_secs(120))
       .output_limit(1024 * 1024);
     let output = match self.runner.run(&request) {

@@ -680,3 +680,7 @@ it to see changes. Apply another theme before uninstalling the active one, inclu
 when deleting through the Control Center. Official packages remain managed by pacman.
 
 Opening **Packages → Official Repositories → Update**, including from the taskbar indicator, automatically checks and lists updates in the background using `checkupdates`, the same tool as the taskbar. You do not need **Refresh database** first. This check uses a separate database and needs no administrator privileges. If `checkupdates` is not installed, the page falls back to the local pacman database.
+
+After package operations in the Control Center finish (including official and AUR upgrades), the taskbar automatically checks the remaining updates without restarting. It also checks after failures, since some packages may already have changed. The hourly check remains enabled; operations outside the Control Center are detected by that periodic check.
+
+The Control Center keeps its update-check database in `$XDG_CACHE_HOME/argvus/control-center/checkupdates` (default: `~/.cache/argvus/control-center/checkupdates`), separate from the taskbar database to avoid concurrent synchronization locks.

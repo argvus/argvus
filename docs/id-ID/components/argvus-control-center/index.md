@@ -630,3 +630,7 @@ Tema muncul di **Custom themes**; tekan `r` untuk memperbarui. Terapkan tema lai
 Harus ada satu tema schema 2 di `src/usr/share/argvus/themes/<id>/` dengan ID sesuai. Simpan gambar dalam tema atau `src/usr/share/`. Skrip tidak dijalankan. Submodul dan Git LFS tidak didukung. Diperlukan `git` dan `openssh` untuk SSH. Tujuan: `$XDG_DATA_HOME/argvus/themes/<id>`. Paket resmi tetap dikelola pacman.
 
 Saat membuka **Packages → Official Repositories → Update**, termasuk dari indikator bilah tugas, halaman otomatis memeriksa dan menampilkan pembaruan di latar belakang dengan `checkupdates`, sama seperti bilah tugas. Tidak perlu menekan **Refresh database** terlebih dahulu. Pemeriksaan memakai basis data terpisah tanpa hak administrator. Jika `checkupdates` tidak terpasang, basis data lokal pacman digunakan.
+
+Setelah operasi paket di Control Center selesai (termasuk peningkatan resmi dan AUR), bilah tugas otomatis memeriksa pembaruan tersisa tanpa memulai ulang. Pemeriksaan juga dilakukan setelah kegagalan karena beberapa paket mungkin sudah berubah. Pemeriksaan setiap jam tetap aktif dan mendeteksi operasi di luar Control Center.
+
+Control Center menyimpan basis data pemeriksaan di `$XDG_CACHE_HOME/argvus/control-center/checkupdates` (bawaan: `~/.cache/argvus/control-center/checkupdates`), terpisah dari bilah tugas untuk menghindari konflik kunci saat sinkronisasi bersamaan.

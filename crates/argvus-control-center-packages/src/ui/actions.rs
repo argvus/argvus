@@ -498,6 +498,7 @@ pub(super) fn aur_command(caps: &Capabilities, args: &[&str]) -> Result<ActionCo
 
 /// Runs the validated package command on its retained PTY.
 pub(super) fn run_action(a: Action, caps: Capabilities, io: TerminalIo) -> Result<String, String> {
+  let refresh_updates = action_changes_updates(&a);
   let (echo, process) = match action_command(a, &caps)? {
     ActionCommand::Privileged { echo, request } => {
       let executable = std::env::current_exe().map_err(|error| error.to_string())?;
@@ -509,7 +510,35 @@ pub(super) fn run_action(a: Action, caps: Capabilities, io: TerminalIo) -> Resul
     }
     ActionCommand::User { echo, process } => (echo, process),
   };
-  io.run(&process, &echo)
+  let result = io.run(&process, &echo);
+  if refresh_updates {
+    // A failed transaction can still have upgraded some packages. This runs
+    // on the transaction worker after the child exits, even with its PTY hidden.
+    // No running taskbar is normal; notification failure must not change the
+    // package operation's result. The hourly check remains the fallback.
+    let _ = SystemProcessRunner.run(&taskbar_update_request());
+  }
+  result
+}
+
+/// Cache cleanup and mirror generation do not change the pending update count.
+pub(super) fn action_changes_updates(action: &Action) -> bool {
+  !matches!(action, Action::CleanCache(_) | Action::ApplyMirrors(_))
+}
+
+/// Matches `custom/update-status.signal` in the taskbar's packaged config.
+/// Signal Waybar itself: the service's main process can be a shell supervisor.
+pub(super) fn taskbar_update_request() -> ProcessRequest {
+  // SAFETY: geteuid has no arguments or memory-safety preconditions.
+  let uid = unsafe { libc::geteuid() };
+  ProcessRequest::new("pkill")
+    .arg("--signal")
+    .arg("RTMIN+10")
+    .arg("--euid")
+    .arg(uid.to_string())
+    .arg("--exact")
+    .arg("waybar")
+    .timeout(std::time::Duration::from_secs(5))
 }
 
 pub(super) fn generate_mirror_preview(

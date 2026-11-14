@@ -564,3 +564,7 @@ argvus theme uninstall NAME
 `src/usr/share/argvus/themes/<id>/` میں مماثل شناخت والا ایک schema 2 تھیم ہونا چاہیے۔ تصاویر تھیم یا `src/usr/share/` میں محفوظ کریں۔ اسکرپٹ نہیں چلتے؛ ذیلی ماڈیول اور Git LFS معاون نہیں۔ `git` اور SSH کے لیے `openssh` درکار ہیں۔ منزل `$XDG_DATA_HOME/argvus/themes/<id>` ہے۔ سرکاری پیکیج pacman کے زیر انتظام رہتے ہیں۔
 
 **Packages → Official Repositories → Update** کھولنے پر، ٹاسک بار کے اشارے سے بھی، صفحہ ٹاسک بار کی طرح `checkupdates` سے پس منظر میں خودکار جانچ کرکے اپ ڈیٹس دکھاتا ہے۔ پہلے **Refresh database** دبانا ضروری نہیں۔ جانچ الگ ڈیٹابیس استعمال کرتی ہے اور منتظم کے اختیارات نہیں مانگتی۔ اگر `checkupdates` نصب نہ ہو تو pacman کا مقامی ڈیٹابیس استعمال ہوتا ہے۔
+
+Control Center میں پیکیج کے کام مکمل ہونے پر (بشمول سرکاری اور AUR اپ گریڈ)، ٹاسک بار دوبارہ شروع ہوئے بغیر باقی اپ ڈیٹس خودکار طور پر جانچتا ہے۔ ناکامی کے بعد بھی جانچ ہوتی ہے، کیونکہ کچھ پیکیج پہلے ہی بدل چکے ہو سکتے ہیں۔ ہر گھنٹے کی جانچ جاری رہتی ہے اور Control Center سے باہر کے کاموں کا پتہ لگاتی ہے۔
+
+Control Center جانچ کا ڈیٹابیس `$XDG_CACHE_HOME/argvus/control-center/checkupdates` میں رکھتا ہے (طے شدہ: `~/.cache/argvus/control-center/checkupdates`)، ٹاسک بار سے الگ، تاکہ بیک وقت ہم وقت سازی میں لاک کا تصادم نہ ہو۔

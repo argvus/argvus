@@ -630,3 +630,7 @@ Giao diện xuất hiện trong **Custom themes**; nhấn `r` để làm mới. 
 Cần đúng một giao diện schema 2 trong `src/usr/share/argvus/themes/<id>/` với ID khớp thư mục. Lưu ảnh trong giao diện hoặc `src/usr/share/`. Không chạy tập lệnh. Không hỗ trợ mô-đun con hay Git LFS. Cần `git` và `openssh` cho SSH. Đích: `$XDG_DATA_HOME/argvus/themes/<id>`. Gói chính thức vẫn do pacman quản lý.
 
 Khi mở **Packages → Official Repositories → Update**, kể cả từ chỉ báo trên thanh tác vụ, trang tự động kiểm tra và liệt kê các bản cập nhật ở nền bằng `checkupdates`, giống thanh tác vụ. Không cần nhấn **Refresh database** trước. Việc kiểm tra dùng cơ sở dữ liệu riêng và không cần quyền quản trị. Nếu chưa cài `checkupdates`, trang dùng cơ sở dữ liệu pacman cục bộ.
+
+Sau khi thao tác gói trong Control Center kết thúc (gồm nâng cấp chính thức và AUR), thanh tác vụ tự động kiểm tra các bản cập nhật còn lại mà không khởi động lại. Việc kiểm tra cũng diễn ra sau lỗi vì một số gói có thể đã thay đổi. Kiểm tra hàng giờ vẫn hoạt động để phát hiện các thao tác ngoài Control Center.
+
+Control Center lưu cơ sở dữ liệu kiểm tra tại `$XDG_CACHE_HOME/argvus/control-center/checkupdates` (mặc định: `~/.cache/argvus/control-center/checkupdates`), tách khỏi thanh tác vụ để tránh xung đột khóa khi đồng bộ đồng thời.

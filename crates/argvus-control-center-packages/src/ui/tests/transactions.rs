@@ -3,6 +3,50 @@
 use super::*;
 
 #[test]
+fn package_changes_refresh_the_taskbar_for_official_and_aur_transactions() {
+  for action in [
+    Action::Upgrade,
+    Action::UpgradePackage("linux".into()),
+    Action::UpgradeAfterRepoAdd,
+    Action::AurUpgrade,
+    Action::AurUpgradePackage("example".into()),
+    Action::Install(vec!["linux".into()]),
+    Action::AurInstall("example".into()),
+    Action::Remove(vec!["linux".into()]),
+    Action::Downgrade("/tmp/linux.pkg.tar.zst".into()),
+    Action::RefreshDatabase,
+  ] {
+    assert!(actions::action_changes_updates(&action), "{action:?}");
+  }
+  assert!(!actions::action_changes_updates(&Action::CleanCache(
+    "keep-three"
+  )));
+  assert!(!actions::action_changes_updates(&Action::ApplyMirrors(
+    String::new()
+  )));
+}
+
+#[test]
+fn taskbar_update_signal_targets_only_waybar_of_the_current_user() {
+  let request = actions::taskbar_update_request();
+  // SAFETY: geteuid has no arguments or memory-safety preconditions.
+  let uid = unsafe { libc::geteuid() };
+  assert_eq!(request.program, "pkill");
+  assert_eq!(
+    request.args,
+    [
+      "--signal",
+      "RTMIN+10",
+      "--euid",
+      &uid.to_string(),
+      "--exact",
+      "waybar"
+    ]
+  );
+  assert_eq!(request.timeout, Some(std::time::Duration::from_secs(5)));
+}
+
+#[test]
 fn upgrades_complete_without_snapshot_output() {
   for action in [
     Action::Upgrade,

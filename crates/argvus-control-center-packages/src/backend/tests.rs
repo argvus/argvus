@@ -134,7 +134,7 @@ fn pacman_capabilities() -> Capabilities {
 }
 
 #[test]
-fn update_page_checks_the_same_database_as_the_taskbar_without_root() {
+fn update_page_checks_updates_like_the_taskbar_with_an_independent_database() {
   let backend = PackageBackend::new(
     ScriptedRunner::new("linux 6.17-1 -> 6.18-1\nmesa 25.1-1 -> 25.2-1\n", 0),
     pacman_capabilities(),
@@ -149,6 +149,16 @@ fn update_page_checks_the_same_database_as_the_taskbar_without_root() {
     "checkupdates"
   );
   assert_eq!(requests[0].args, ["--nocolor"]);
+  assert_eq!(
+    requests[0].env,
+    vec![(
+      "CHECKUPDATES_DB".into(),
+      argvus_control_center_core::paths::cache_home()
+        .join("argvus/control-center/checkupdates")
+        .to_string_lossy()
+        .into_owned(),
+    )]
+  );
   assert_eq!(requests[0].timeout, Some(Duration::from_secs(120)));
 }
 

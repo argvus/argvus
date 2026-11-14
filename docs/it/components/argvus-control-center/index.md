@@ -565,3 +565,7 @@ Il tema appare in **Custom themes**; `r` aggiorna la pagina. Applica un altro te
 Serve un solo tema schema 2 in `src/usr/share/argvus/themes/<id>/`, con ID corrispondente. Includi le immagini nel tema o in `src/usr/share/`. Gli script non vengono eseguiti. Sottomoduli e Git LFS non sono supportati. Installa `git` e `openssh` per SSH. Destinazione: `$XDG_DATA_HOME/argvus/themes/<id>`. I pacchetti ufficiali restano gestiti da pacman.
 
 Aprendo **Packages → Official Repositories → Update**, anche dalla barra delle applicazioni, la pagina cerca e mostra automaticamente gli aggiornamenti in background con `checkupdates`, come la barra. Non serve prima **Refresh database**. Il controllo usa un database separato senza privilegi amministrativi. Se `checkupdates` non è installato, viene usato il database locale di pacman.
+
+Al termine delle operazioni sui pacchetti nel Control Center (inclusi gli aggiornamenti ufficiali e AUR), la barra delle applicazioni controlla automaticamente gli aggiornamenti rimanenti senza riavviarsi. Il controllo avviene anche dopo un errore, poiché alcuni pacchetti potrebbero essere già cambiati. Il controllo orario resta attivo e rileva le operazioni esterne al Control Center.
+
+Il Control Center conserva il database di controllo in `$XDG_CACHE_HOME/argvus/control-center/checkupdates` (predefinito: `~/.cache/argvus/control-center/checkupdates`), separato da quello della barra per evitare conflitti di blocco nelle sincronizzazioni simultanee.

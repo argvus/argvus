@@ -638,3 +638,7 @@ argvus theme uninstall NAME
 يلزم وجود سمة schema 2 واحدة في `src/usr/share/argvus/themes/<id>/` بمعرّف مطابق. احفظ الصور داخل السمة أو `src/usr/share/`. لا تُنفّذ البرامج النصية ولا تُدعم الوحدات الفرعية أو Git LFS. يلزم `git` و`openssh` لاتصال SSH. الوجهة `$XDG_DATA_HOME/argvus/themes/<id>`. تُدار الحزم الرسمية بواسطة pacman.
 
 عند فتح **Packages → Official Repositories → Update**، بما في ذلك من مؤشر شريط المهام، تتحقق الصفحة تلقائيًا من التحديثات وتعرضها في الخلفية باستخدام `checkupdates` مثل شريط المهام. لا حاجة إلى **Refresh database** أولًا. يستخدم الفحص قاعدة بيانات منفصلة ولا يحتاج إلى صلاحيات إدارية. إذا لم يكن `checkupdates` مثبتًا، تُستخدم قاعدة pacman المحلية.
+
+بعد انتهاء عمليات الحزم في Control Center (بما فيها ترقيات المستودعات الرسمية وAUR)، يتحقق شريط المهام تلقائيًا من التحديثات المتبقية دون إعادة تشغيله. يجري الفحص أيضًا بعد الفشل، فقد تكون بعض الحزم قد تغيرت بالفعل. يستمر الفحص كل ساعة لاكتشاف العمليات خارج Control Center.
+
+يحفظ Control Center قاعدة الفحص في `$XDG_CACHE_HOME/argvus/control-center/checkupdates` (افتراضيًا: `~/.cache/argvus/control-center/checkupdates`)، منفصلة عن قاعدة شريط المهام لتجنب تعارض الأقفال أثناء المزامنة المتزامنة.
