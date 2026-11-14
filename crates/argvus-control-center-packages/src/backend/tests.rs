@@ -134,6 +134,62 @@ fn pacman_capabilities() -> Capabilities {
 }
 
 #[test]
+fn update_page_checks_the_same_database_as_the_taskbar_without_root() {
+  let backend = PackageBackend::new(
+    ScriptedRunner::new("linux 6.17-1 -> 6.18-1\nmesa 25.1-1 -> 25.2-1\n", 0),
+    pacman_capabilities(),
+  );
+  let updates = backend.available_updates().unwrap();
+  assert_eq!(updates.len(), 2);
+  assert_eq!(updates[0].name, "linux");
+  let requests = backend.runner.requests.lock().unwrap();
+  assert_eq!(requests.len(), 1);
+  assert_eq!(
+    Path::new(&requests[0].program).file_name().unwrap(),
+    "checkupdates"
+  );
+  assert_eq!(requests[0].args, ["--nocolor"]);
+  assert_eq!(requests[0].timeout, Some(Duration::from_secs(120)));
+}
+
+#[test]
+fn update_page_accepts_checkupdates_no_updates_exit_status() {
+  let backend = PackageBackend::new(ScriptedRunner::new("", 2), pacman_capabilities());
+  assert!(backend.available_updates().unwrap().is_empty());
+}
+
+#[test]
+fn update_page_reports_failed_checks_instead_of_no_updates() {
+  let backend = PackageBackend::new(
+    ScriptedRunner::failing("Cannot fetch updates", ""),
+    pacman_capabilities(),
+  );
+  assert!(
+    backend
+      .available_updates()
+      .unwrap_err()
+      .to_string()
+      .contains("Cannot fetch updates")
+  );
+}
+
+#[test]
+fn update_page_falls_back_to_local_database_when_checkupdates_is_missing() {
+  struct MissingCheckupdates;
+  impl ProcessRunner for MissingCheckupdates {
+    fn run(&self, request: &ProcessRequest) -> Result<ProcessOutput, ProcessError> {
+      if Path::new(&request.program).file_name().unwrap() == "checkupdates" {
+        return Err(ProcessError::Io(std::io::ErrorKind::NotFound.into()));
+      }
+      assert_eq!(request.args, ["-Qu"]);
+      ScriptedRunner::new("linux 6.17-1 -> 6.18-1\n", 0).run(request)
+    }
+  }
+  let backend = PackageBackend::new(MissingCheckupdates, pacman_capabilities());
+  assert_eq!(backend.available_updates().unwrap()[0].name, "linux");
+}
+
+#[test]
 fn foreign_lists_the_packages_outside_the_repositories() {
   let backend = PackageBackend::new(
     ScriptedRunner::new("yay-bin 12.4.2-1\n", 0),

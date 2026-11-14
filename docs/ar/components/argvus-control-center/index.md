@@ -636,3 +636,5 @@ argvus theme uninstall NAME
 تظهر السمة في **Custom themes**؛ اضغط `r` للتحديث. طبّق سمة أخرى قبل حذف السمة النشطة من CLI أو Control Center. أعد تطبيق السمة بعد استبدالها.
 
 يلزم وجود سمة schema 2 واحدة في `src/usr/share/argvus/themes/<id>/` بمعرّف مطابق. احفظ الصور داخل السمة أو `src/usr/share/`. لا تُنفّذ البرامج النصية ولا تُدعم الوحدات الفرعية أو Git LFS. يلزم `git` و`openssh` لاتصال SSH. الوجهة `$XDG_DATA_HOME/argvus/themes/<id>`. تُدار الحزم الرسمية بواسطة pacman.
+
+عند فتح **Packages → Official Repositories → Update**، بما في ذلك من مؤشر شريط المهام، تتحقق الصفحة تلقائيًا من التحديثات وتعرضها في الخلفية باستخدام `checkupdates` مثل شريط المهام. لا حاجة إلى **Refresh database** أولًا. يستخدم الفحص قاعدة بيانات منفصلة ولا يحتاج إلى صلاحيات إدارية. إذا لم يكن `checkupdates` مثبتًا، تُستخدم قاعدة pacman المحلية.

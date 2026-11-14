@@ -562,3 +562,5 @@ argvus theme uninstall NAME
 تھیم **Custom themes** میں نظر آتا ہے؛ `r` سے تازہ کریں۔ CLI یا Control Center میں فعال تھیم ہٹانے سے پہلے دوسرا تھیم لاگو کریں۔ تبدیل کرنے کے بعد دوبارہ لاگو کریں۔
 
 `src/usr/share/argvus/themes/<id>/` میں مماثل شناخت والا ایک schema 2 تھیم ہونا چاہیے۔ تصاویر تھیم یا `src/usr/share/` میں محفوظ کریں۔ اسکرپٹ نہیں چلتے؛ ذیلی ماڈیول اور Git LFS معاون نہیں۔ `git` اور SSH کے لیے `openssh` درکار ہیں۔ منزل `$XDG_DATA_HOME/argvus/themes/<id>` ہے۔ سرکاری پیکیج pacman کے زیر انتظام رہتے ہیں۔
+
+**Packages → Official Repositories → Update** کھولنے پر، ٹاسک بار کے اشارے سے بھی، صفحہ ٹاسک بار کی طرح `checkupdates` سے پس منظر میں خودکار جانچ کرکے اپ ڈیٹس دکھاتا ہے۔ پہلے **Refresh database** دبانا ضروری نہیں۔ جانچ الگ ڈیٹابیس استعمال کرتی ہے اور منتظم کے اختیارات نہیں مانگتی۔ اگر `checkupdates` نصب نہ ہو تو pacman کا مقامی ڈیٹابیس استعمال ہوتا ہے۔

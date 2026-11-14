@@ -83,7 +83,7 @@ impl PackagesApp {
           Loaded::Packages(packages)
         }
         PackagesPage::Task(PackageSource::Official, PackageTask::Update) => {
-          Loaded::Updates(b.updates().map_err(|e| e.to_string())?)
+          Loaded::Updates(b.available_updates().map_err(|e| e.to_string())?)
         }
         PackagesPage::Task(PackageSource::Aur, PackageTask::Install) => Loaded::Aur(
           b.aur_search(aur_helper()?, &query)

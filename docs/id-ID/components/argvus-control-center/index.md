@@ -628,3 +628,5 @@ argvus theme uninstall NAME
 Tema muncul di **Custom themes**; tekan `r` untuk memperbarui. Terapkan tema lain sebelum menghapus tema aktif melalui CLI atau Control Center. Terapkan kembali setelah menggantinya.
 
 Harus ada satu tema schema 2 di `src/usr/share/argvus/themes/<id>/` dengan ID sesuai. Simpan gambar dalam tema atau `src/usr/share/`. Skrip tidak dijalankan. Submodul dan Git LFS tidak didukung. Diperlukan `git` dan `openssh` untuk SSH. Tujuan: `$XDG_DATA_HOME/argvus/themes/<id>`. Paket resmi tetap dikelola pacman.
+
+Saat membuka **Packages → Official Repositories → Update**, termasuk dari indikator bilah tugas, halaman otomatis memeriksa dan menampilkan pembaruan di latar belakang dengan `checkupdates`, sama seperti bilah tugas. Tidak perlu menekan **Refresh database** terlebih dahulu. Pemeriksaan memakai basis data terpisah tanpa hak administrator. Jika `checkupdates` tidak terpasang, basis data lokal pacman digunakan.

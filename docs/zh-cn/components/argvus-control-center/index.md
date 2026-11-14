@@ -560,3 +560,5 @@ argvus theme uninstall NAME
 主题显示在 **Custom themes** 中；按 `r` 刷新页面。通过 CLI 或 Control Center 删除当前主题前，先应用其他主题。替换后需重新应用。
 
 仓库必须在 `src/usr/share/argvus/themes/<id>/` 中包含且仅包含一个 schema 2 主题，ID 与目录一致。图片必须提交到主题目录或 `src/usr/share/` 中。不执行脚本，不支持子模块或 Git LFS。需要 `git`，SSH 还需要 `openssh`。目标目录为 `$XDG_DATA_HOME/argvus/themes/<id>`。官方软件包仍由 pacman 管理。
+
+打开 **Packages → Official Repositories → Update** 时（包括通过任务栏指示器），页面会像任务栏一样使用 `checkupdates` 在后台自动检查并列出更新，无需先点击 **Refresh database**。检查使用独立数据库，不需要管理员权限。如果未安装 `checkupdates`，则使用 pacman 的本地数据库。

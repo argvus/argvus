@@ -621,3 +621,5 @@ argvus theme uninstall NAME
 Tema **Custom themes** içinde görünür; `r` yeniler. CLI veya Control Center üzerinden etkin temayı kaldırmadan önce başka bir tema uygulayın. Değiştirdikten sonra yeniden uygulayın.
 
 `src/usr/share/argvus/themes/<id>/` içinde kimliği eşleşen tek bir schema 2 teması gerekir. Görseller temada veya `src/usr/share/` altında sürümlenmelidir. Betikler çalıştırılmaz. Alt modüller ve Git LFS desteklenmez. `git` ve SSH için `openssh` gerekir. Hedef: `$XDG_DATA_HOME/argvus/themes/<id>`. Resmi paketleri pacman yönetir.
+
+**Packages → Official Repositories → Update** açıldığında, görev çubuğundan açılması dahil, sayfa görev çubuğu gibi `checkupdates` ile güncellemeleri arka planda otomatik denetler ve listeler. Önce **Refresh database** kullanmak gerekmez. Denetim ayrı bir veritabanı kullanır ve yönetici yetkisi istemez. `checkupdates` kurulu değilse pacman yerel veritabanı kullanılır.

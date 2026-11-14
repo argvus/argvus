@@ -673,3 +673,5 @@ argvus theme uninstall NAME
 O tema aparece em **Custom themes** no Control Center; pressione `r` para atualizar a página aberta. Aplique outro tema antes de remover o ativo, tanto no CLI quanto no Control Center. Após substituir o tema ativo, aplique-o novamente.
 
 O repositório deve conter exatamente um tema schema 2 em `src/usr/share/argvus/themes/<id>/`, com o mesmo ID no manifesto e no diretório. Wallpaper e preview devem ser arquivos versionados: relativos ao tema ou incluídos em `src/usr/share/`. Scripts do repositório não são executados. Submódulos e Git LFS não são suportados. Instale `git` e, para SSH, `openssh`. O destino é `$XDG_DATA_HOME/argvus/themes/<id>`. Pacotes oficiais continuam gerenciados pelo pacman.
+
+Ao abrir **Pacotes → Repositórios oficiais → Atualizar**, inclusive pelo indicador da taskbar, a tela consulta e lista automaticamente as atualizações em segundo plano com `checkupdates`, a mesma ferramenta da taskbar. Não é necessário usar **Refresh database** antes. A consulta usa uma base separada e não exige privilégios administrativos. Sem `checkupdates` instalado, a tela consulta a base local do pacman.

@@ -577,3 +577,5 @@ argvus theme uninstall NAME
 Das Design erscheint unter **Custom themes**; `r` aktualisiert die Seite. Wenden Sie vor dem Entfernen des aktiven Designs im CLI oder Control Center ein anderes an. Ersetzte Designs müssen erneut angewendet werden.
 
 Genau ein Schema-2-Design unter `src/usr/share/argvus/themes/<id>/` mit passender ID ist erforderlich. Bilder müssen im Design oder unter `src/usr/share/` versioniert sein. Skripte werden nicht ausgeführt. Submodule und Git LFS werden nicht unterstützt. Benötigt: `git`, für SSH `openssh`. Ziel: `$XDG_DATA_HOME/argvus/themes/<id>`. Offizielle Pakete bleiben bei pacman.
+
+Beim Öffnen von **Packages → Official Repositories → Update**, auch über die Taskleiste, werden Aktualisierungen automatisch im Hintergrund mit `checkupdates` abgefragt und angezeigt, wie in der Taskleiste. **Refresh database** ist vorher nicht erforderlich. Die Prüfung nutzt eine separate Datenbank ohne Administratorrechte. Ohne installiertes `checkupdates` wird die lokale pacman-Datenbank verwendet.

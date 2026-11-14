@@ -568,3 +568,5 @@ argvus theme uninstall NAME
 テーマは **Custom themes** に表示されます。`r` で更新します。CLI や Control Center で使用中のテーマを削除する前に、別のテーマを適用してください。置換後は再適用が必要です。
 
 `src/usr/share/argvus/themes/<id>/` に ID が一致する schema 2 テーマが一つ必要です。画像はテーマ内か `src/usr/share/` にコミットしてください。スクリプトは実行されません。サブモジュールと Git LFS は非対応です。`git` と SSH 用の `openssh` が必要です。保存先は `$XDG_DATA_HOME/argvus/themes/<id>`。公式パッケージは pacman で管理します。
+
+**Packages → Official Repositories → Update** を開くと、タスクバーから開いた場合も、タスクバーと同じ `checkupdates` でバックグラウンドの確認が自動的に行われ、更新一覧が表示されます。先に **Refresh database** を実行する必要はありません。確認には別のデータベースを使い、管理者権限は不要です。`checkupdates` が未インストールの場合は pacman のローカルデータベースを使います。

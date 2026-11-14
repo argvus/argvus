@@ -559,3 +559,5 @@ argvus theme uninstall NAME
 테마는 **Custom themes**에 표시됩니다. `r`로 새로 고칩니다. CLI나 Control Center에서 현재 테마를 삭제하기 전에 다른 테마를 적용하세요. 교체 후 다시 적용해야 합니다.
 
 `src/usr/share/argvus/themes/<id>/`에 ID가 일치하는 schema 2 테마가 하나 있어야 합니다. 이미지는 테마 내부 또는 `src/usr/share/`에 커밋해야 합니다. 스크립트를 실행하지 않으며 하위 모듈과 Git LFS는 지원하지 않습니다. `git`과 SSH용 `openssh`가 필요합니다. 설치 위치: `$XDG_DATA_HOME/argvus/themes/<id>`. 공식 패키지는 pacman으로 관리합니다.
+
+작업 표시줄에서 여는 경우를 포함하여 **Packages → Official Repositories → Update**를 열면 작업 표시줄과 같은 `checkupdates`로 백그라운드에서 업데이트를 자동 확인하고 표시합니다. 먼저 **Refresh database**를 누를 필요가 없습니다. 별도 데이터베이스를 사용하며 관리자 권한은 필요하지 않습니다. `checkupdates`가 설치되지 않았다면 pacman의 로컬 데이터베이스를 사용합니다.

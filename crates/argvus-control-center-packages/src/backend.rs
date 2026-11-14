@@ -273,6 +273,39 @@ impl<R: ProcessRunner> PackageBackend<R> {
     let text = self.run_with_limit(&["-Qu"], Some(1024 * 1024))?;
     Ok(parse_updates(&text))
   }
+  /// Checks official updates against a separate sync database, like the
+  /// taskbar. The system database can be older than its update indicator.
+  /// Called by the page's background job, never from rendering or the dashboard.
+  pub fn available_updates(&self) -> Result<Vec<Update>, PackageError> {
+    if !self.capabilities.has_pacman {
+      return Err(PackageError::BackendUnavailable);
+    }
+    let program = resolve_executable("checkupdates")
+      .map(|path| path.to_string_lossy().into_owned())
+      .unwrap_or_else(|| "checkupdates".into());
+    let request = ProcessRequest::new(program)
+      .arg("--nocolor")
+      .timeout(Duration::from_secs(120))
+      .output_limit(1024 * 1024);
+    let output = match self.runner.run(&request) {
+      Ok(output) => output,
+      // pacman-contrib is optional outside the taskbar installation.
+      Err(ProcessError::Io(error)) if error.kind() == std::io::ErrorKind::NotFound => {
+        return self.updates();
+      }
+      Err(error) => return Err(error.into()),
+    };
+    if output.timed_out {
+      return Err(PackageError::Command("timeout".into()));
+    }
+    let stdout = terminal_text(&String::from_utf8_lossy(&output.stdout));
+    let stderr = terminal_text(&String::from_utf8_lossy(&output.stderr));
+    match output.status {
+      Some(0) => Ok(parse_updates(&stdout)),
+      Some(2) if stdout.trim().is_empty() && stderr.trim().is_empty() => Ok(Vec::new()),
+      _ => Err(PackageError::Command(stderr)),
+    }
+  }
   pub fn search(&self, query: &str) -> Result<Vec<Package>, PackageError> {
     validate_search(query)?;
     let text = self.run(&["-Ss", query])?;

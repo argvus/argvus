@@ -628,3 +628,5 @@ argvus theme uninstall NAME
 Giao diện xuất hiện trong **Custom themes**; nhấn `r` để làm mới. Áp dụng giao diện khác trước khi xóa giao diện đang dùng qua CLI hoặc Control Center. Áp dụng lại sau khi thay thế.
 
 Cần đúng một giao diện schema 2 trong `src/usr/share/argvus/themes/<id>/` với ID khớp thư mục. Lưu ảnh trong giao diện hoặc `src/usr/share/`. Không chạy tập lệnh. Không hỗ trợ mô-đun con hay Git LFS. Cần `git` và `openssh` cho SSH. Đích: `$XDG_DATA_HOME/argvus/themes/<id>`. Gói chính thức vẫn do pacman quản lý.
+
+Khi mở **Packages → Official Repositories → Update**, kể cả từ chỉ báo trên thanh tác vụ, trang tự động kiểm tra và liệt kê các bản cập nhật ở nền bằng `checkupdates`, giống thanh tác vụ. Không cần nhấn **Refresh database** trước. Việc kiểm tra dùng cơ sở dữ liệu riêng và không cần quyền quản trị. Nếu chưa cài `checkupdates`, trang dùng cơ sở dữ liệu pacman cục bộ.
