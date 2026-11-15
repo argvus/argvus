@@ -12,6 +12,7 @@
   "gtk.gsettings_missing": "gsettings non trovato: tema GTK non modificato.",
   "gtk.buttons_disabled": "Pulsanti disabilitati \"minimizza, massimizza, chiudi\" nella finestra",
   "keyboard.layout.title": "Disposizione della tastiera",
+  "keyboard.layout.changed": "Passaggio a {layout}",
   "keyboard.layout.english_us": "Inglese (Stati Uniti) 🇺🇸",
   "keyboard.layout.portuguese_br": "Portoghese (BR) 🇧🇷",
   "default_apps.title": "Programmi predefiniti",

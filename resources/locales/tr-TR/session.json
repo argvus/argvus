@@ -12,6 +12,7 @@
   "gtk.gsettings_missing": "tanımlar bulunamadı - GTK tema değişmedi.",
   "gtk.buttons_disabled": "Disabled düğmeleri ‘minring,max fit,close' in pencerede",
   "keyboard.layout.title": "Klavye düzeni",
+  "keyboard.layout.changed": "{layout} olarak değiştirildi",
   "keyboard.layout.english_us": "İngilizce (US)",
   "keyboard.layout.portuguese_br": "Portekiz ( Portekiz)BR🇧🇷",
   "default_apps.title": "Varsayılan Programlar",

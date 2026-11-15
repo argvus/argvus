@@ -12,6 +12,7 @@
   "gtk.gsettings_missing": "未找到 gsettings — GTK 主题未更改。",
   "gtk.buttons_disabled": "窗口中禁用按钮“最小化、最大化、关闭”",
   "keyboard.layout.title": "键盘布局",
+  "keyboard.layout.changed": "已切换为 {layout}",
   "keyboard.layout.english_us": "英语（美国）🇺🇸",
   "keyboard.layout.portuguese_br": "葡萄牙语（巴西）🇧🇷",
   "default_apps.title": "默认程序",

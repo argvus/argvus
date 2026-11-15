@@ -12,6 +12,7 @@
   "gtk.gsettings_missing": "gsettings не найден — тема GTK не изменена.",
   "gtk.buttons_disabled": "Отключены кнопки «свернуть, развернуть, закрыть» в окне.",
   "keyboard.layout.title": "Раскладка клавиатуры",
+  "keyboard.layout.changed": "Изменено на {layout}",
   "keyboard.layout.english_us": "Английский (США) 🇺🇸",
   "keyboard.layout.portuguese_br": "Португальский (BR) 🇧🇷",
   "default_apps.title": "Программы по умолчанию",

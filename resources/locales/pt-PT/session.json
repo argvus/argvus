@@ -12,6 +12,7 @@
   "gtk.gsettings_missing": "gsettings não encontrados — GTK tema não alterado.",
   "gtk.buttons_disabled": "Os botões desativados 'minimizar, maximizar, fechar' na janela",
   "keyboard.layout.title": "Disposição do teclado",
+  "keyboard.layout.changed": "Alterado para {layout}",
   "keyboard.layout.english_us": "Inglês (US)",
   "keyboard.layout.portuguese_br": "Português (BR)",
   "default_apps.title": "Programas Predefinidos",

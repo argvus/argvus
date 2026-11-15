@@ -12,6 +12,7 @@
   "gtk.gsettings_missing": "gsettings が見つかりません — GTK テーマは変更されていません。",
   "gtk.buttons_disabled": "ウィンドウ内の「最小化、最大化、閉じる」ボタンを無効にしました",
   "keyboard.layout.title": "キーボードのレイアウト",
+  "keyboard.layout.changed": "{layout} に変更しました",
   "keyboard.layout.english_us": "英語 (米国) 🇺🇸",
   "keyboard.layout.portuguese_br": "ポルトガル語 (BR) 🇧🇷",
   "default_apps.title": "デフォルトのプログラム",

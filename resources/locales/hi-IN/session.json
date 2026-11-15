@@ -12,6 +12,7 @@
   "gtk.gsettings_missing": "gsetting नहीं मिला - GTK थीम नहीं बदली।.",
   "gtk.buttons_disabled": "विंडो में अक्षम बटन 'minimize, अधिकतम, बंद करें'",
   "keyboard.layout.title": "कीबोर्ड लेआउट",
+  "keyboard.layout.changed": "{layout} में बदला गया",
   "keyboard.layout.english_us": "English (US)",
   "keyboard.layout.portuguese_br": "🇧🇷",
   "default_apps.title": "डिफ़ॉल्ट कार्यक्रम",

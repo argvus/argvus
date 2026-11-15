@@ -12,6 +12,7 @@
   "gtk.gsettings_missing": "gsettings nicht gefunden – GTK-Theme nicht geändert.",
   "gtk.buttons_disabled": "Deaktivierte Schaltflächen „Minimieren, Maximieren, Schließen“ im Fenster",
   "keyboard.layout.title": "Tastaturlayout",
+  "keyboard.layout.changed": "Geändert zu {layout}",
   "keyboard.layout.english_us": "Englisch (USA) 🇺🇸",
   "keyboard.layout.portuguese_br": "Portugiesisch (BR) 🇧🇷",
   "default_apps.title": "Standardprogramme",

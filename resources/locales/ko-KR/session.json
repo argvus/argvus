@@ -12,6 +12,7 @@
   "gtk.gsettings_missing": "gsettings notfound — GTK 테마가 변경되지 않았습니다.",
   "gtk.buttons_disabled": "창에서 '최소화, 최대화, 닫기' 버튼이 비활성화되었습니다.",
   "keyboard.layout.title": "키보드 레이아웃",
+  "keyboard.layout.changed": "{layout}(으)로 변경됨",
   "keyboard.layout.english_us": "영어(미국) 🇺🇸",
   "keyboard.layout.portuguese_br": "포르투갈어(BR) 🇧🇷",
   "default_apps.title": "기본 프로그램",

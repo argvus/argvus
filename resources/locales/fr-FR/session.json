@@ -12,6 +12,7 @@
   "gtk.gsettings_missing": "gsettings introuvable – Le thème GTK n’a pas changé.",
   "gtk.buttons_disabled": "Boutons désactivés « réduire, maximiser, fermer » dans la fenêtre",
   "keyboard.layout.title": "Disposition du clavier",
+  "keyboard.layout.changed": "Passage à {layout}",
   "keyboard.layout.english_us": "Anglais (États-Unis) 🇺🇸",
   "keyboard.layout.portuguese_br": "Portugais (BR) 🇧🇷",
   "default_apps.title": "Programmes par défaut",
