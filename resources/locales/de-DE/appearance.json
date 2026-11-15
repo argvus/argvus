@@ -47,5 +47,19 @@
   "wallpaper.notification.message": "Geändert in:\n{name}",
   "brightness.night_light_on": "Nachtlicht: ein ({temperature} K) – umschalten",
   "brightness.night_light_off": "Nachtlicht: aus – umschalten",
-  "brightness.night_light_failed": "Das Nachtlicht konnte nicht geändert werden"
+  "brightness.night_light_failed": "Das Nachtlicht konnte nicht geändert werden",
+  "selector.search": "Themes suchen",
+  "selector.all": "Alle",
+  "selector.apply": "Theme anwenden",
+  "selector.close": "Schließen",
+  "selector.previous": "Vorheriges Theme",
+  "selector.next": "Nächstes Theme",
+  "selector.active": "Aktiv",
+  "selector.illustrative": "Illustrative Vorschau",
+  "selector.loading": "Themes werden geladen…",
+  "selector.empty": "Keine Themes gefunden",
+  "selector.failed": "Theme konnte nicht geladen oder angewendet werden. Erneut versuchen.",
+  "selector.hint": "← → Blättern · / Suche fokussieren · Enter Anwenden · Esc Schließen",
+  "selector.custom": "Benutzerdefiniert",
+  "selector.filter": "Themes filtern"
 }

@@ -47,5 +47,19 @@
   "wallpaper.notification.message": "পরিবর্তিত হয়েছে:\n{name}",
   "brightness.night_light_on": "রাত ্ রির উপর:{temperature} কে- টুলবার",
   "brightness.night_light_off": "রাত্রি: চালু করুন - চালু করুন",
-  "brightness.night_light_failed": "রাতের আলো পরিবর্তন করা যায়নি"
+  "brightness.night_light_failed": "রাতের আলো পরিবর্তন করা যায়নি",
+  "selector.search": "থিম খুঁজুন",
+  "selector.all": "সব",
+  "selector.apply": "থিম প্রয়োগ করুন",
+  "selector.close": "বন্ধ করুন",
+  "selector.previous": "আগের থিম",
+  "selector.next": "পরের থিম",
+  "selector.active": "সক্রিয়",
+  "selector.illustrative": "উদাহরণ প্রাকদর্শন",
+  "selector.loading": "থিম লোড হচ্ছে…",
+  "selector.empty": "কোনো থিম পাওয়া যায়নি",
+  "selector.failed": "থিম লোড বা প্রয়োগ করা যায়নি। আবার চেষ্টা করুন।",
+  "selector.hint": "← → ব্রাউজ · / খুঁজুন · Enter প্রয়োগ · Esc বন্ধ",
+  "selector.custom": "কাস্টম",
+  "selector.filter": "থিম ফিল্টার করুন"
 }

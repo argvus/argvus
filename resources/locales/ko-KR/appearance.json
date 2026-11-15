@@ -47,5 +47,19 @@
   "wallpaper.notification.message": "다음으로 변경됨:\n{name}",
   "brightness.night_light_on": "야간 조명: 켜짐({temperature} K) — 토글",
   "brightness.night_light_off": "야간 조명: 꺼짐 — 토글",
-  "brightness.night_light_failed": "야간 조명을 변경할 수 없습니다."
+  "brightness.night_light_failed": "야간 조명을 변경할 수 없습니다.",
+  "selector.search": "테마 검색",
+  "selector.all": "모두",
+  "selector.apply": "테마 적용",
+  "selector.close": "닫기",
+  "selector.previous": "이전 테마",
+  "selector.next": "다음 테마",
+  "selector.active": "사용 중",
+  "selector.illustrative": "예시 미리 보기",
+  "selector.loading": "테마 불러오는 중…",
+  "selector.empty": "테마를 찾을 수 없음",
+  "selector.failed": "테마를 불러오거나 적용할 수 없습니다. 다시 시도하세요.",
+  "selector.hint": "← → 둘러보기 · / 검색 · Enter 적용 · Esc 닫기",
+  "selector.custom": "사용자 지정",
+  "selector.filter": "테마 필터"
 }

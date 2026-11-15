@@ -47,5 +47,19 @@
   "wallpaper.notification.message": "تحول إلى:\n{name}",
   "brightness.night_light_on": "النور الليلي:{temperature} K) - toggle",
   "brightness.night_light_off": "النور الليلي: قبالة - نضال",
-  "brightness.night_light_failed": "لا يمكن تغيير ضوء الليل"
+  "brightness.night_light_failed": "لا يمكن تغيير ضوء الليل",
+  "selector.search": "البحث عن سمات",
+  "selector.all": "الكل",
+  "selector.apply": "تطبيق السمة",
+  "selector.close": "إغلاق",
+  "selector.previous": "السمة السابقة",
+  "selector.next": "السمة التالية",
+  "selector.active": "نشطة",
+  "selector.illustrative": "معاينة توضيحية",
+  "selector.loading": "جارٍ تحميل السمات…",
+  "selector.empty": "لم يتم العثور على سمات",
+  "selector.failed": "تعذر تحميل السمة أو تطبيقها. حاول مجددًا.",
+  "selector.hint": "← → تصفح · / البحث · Enter تطبيق · Esc إغلاق",
+  "selector.custom": "مخصص",
+  "selector.filter": "تصفية السمات"
 }

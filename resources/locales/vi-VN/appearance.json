@@ -47,5 +47,19 @@
   "wallpaper.notification.message": "Đổi thành:\n{name}",
   "brightness.night_light_on": "Ánh sáng ban đêm: bật ({temperature} K) — bật lên",
   "brightness.night_light_off": "Ánh sáng ban đêm: tắt — bật",
-  "brightness.night_light_failed": "Không thể thay đổi ánh sáng đêm"
+  "brightness.night_light_failed": "Không thể thay đổi ánh sáng đêm",
+  "selector.search": "Tìm chủ đề",
+  "selector.all": "Tất cả",
+  "selector.apply": "Áp dụng chủ đề",
+  "selector.close": "Đóng",
+  "selector.previous": "Chủ đề trước",
+  "selector.next": "Chủ đề tiếp theo",
+  "selector.active": "Đang dùng",
+  "selector.illustrative": "Xem trước minh họa",
+  "selector.loading": "Đang tải chủ đề…",
+  "selector.empty": "Không tìm thấy chủ đề",
+  "selector.failed": "Không thể tải hoặc áp dụng chủ đề. Hãy thử lại.",
+  "selector.hint": "← → Duyệt · / Tìm kiếm · Enter Áp dụng · Esc Đóng",
+  "selector.custom": "Tùy chỉnh",
+  "selector.filter": "Lọc giao diện"
 }

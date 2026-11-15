@@ -47,5 +47,19 @@
   "wallpaper.notification.message": "Berubah menjadi:\n{name}",
   "brightness.night_light_on": "Lampu Malam: pada ({temperature} K) - toggle",
   "brightness.night_light_off": "Lampu Malam: mati - toggle",
-  "brightness.night_light_failed": "Tak bisa mengubah Cahaya Malam"
+  "brightness.night_light_failed": "Tak bisa mengubah Cahaya Malam",
+  "selector.search": "Cari tema",
+  "selector.all": "Semua",
+  "selector.apply": "Terapkan tema",
+  "selector.close": "Tutup",
+  "selector.previous": "Tema sebelumnya",
+  "selector.next": "Tema berikutnya",
+  "selector.active": "Aktif",
+  "selector.illustrative": "Pratinjau ilustratif",
+  "selector.loading": "Memuat tema…",
+  "selector.empty": "Tema tidak ditemukan",
+  "selector.failed": "Tidak dapat memuat atau menerapkan tema. Coba lagi.",
+  "selector.hint": "← → Jelajahi · / Cari · Enter Terapkan · Esc Tutup",
+  "selector.custom": "Kustom",
+  "selector.filter": "Saring tema"
 }

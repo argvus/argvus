@@ -47,5 +47,19 @@
   "wallpaper.notification.message": "Değişin:\n{name}",
   "brightness.night_light_on": "Night Light: on ({temperature} K) – toggle",
   "brightness.night_light_off": "Night Light: off – toggle",
-  "brightness.night_light_failed": "Gece Işığı değiştirmeyebilir"
+  "brightness.night_light_failed": "Gece Işığı değiştirmeyebilir",
+  "selector.search": "Tema ara",
+  "selector.all": "Tümü",
+  "selector.apply": "Temayı uygula",
+  "selector.close": "Kapat",
+  "selector.previous": "Önceki tema",
+  "selector.next": "Sonraki tema",
+  "selector.active": "Etkin",
+  "selector.illustrative": "Örnek önizleme",
+  "selector.loading": "Temalar yükleniyor…",
+  "selector.empty": "Tema bulunamadı",
+  "selector.failed": "Tema yüklenemedi veya uygulanamadı. Tekrar deneyin.",
+  "selector.hint": "← → Göz at · / Ara · Enter Uygula · Esc Kapat",
+  "selector.custom": "Özel",
+  "selector.filter": "Temaları filtrele"
 }

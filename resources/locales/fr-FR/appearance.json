@@ -47,5 +47,19 @@
   "wallpaper.notification.message": "Changé par :\n{name}",
   "brightness.night_light_on": "Veilleuse : allumée ({temperature} K) – bascule",
   "brightness.night_light_off": "Veilleuse : éteint – basculer",
-  "brightness.night_light_failed": "Impossible de changer la veilleuse"
+  "brightness.night_light_failed": "Impossible de changer la veilleuse",
+  "selector.search": "Rechercher des thèmes",
+  "selector.all": "Tous",
+  "selector.apply": "Appliquer le thème",
+  "selector.close": "Fermer",
+  "selector.previous": "Thème précédent",
+  "selector.next": "Thème suivant",
+  "selector.active": "Actif",
+  "selector.illustrative": "Aperçu illustratif",
+  "selector.loading": "Chargement des thèmes…",
+  "selector.empty": "Aucun thème trouvé",
+  "selector.failed": "Impossible de charger ou appliquer le thème. Réessayez.",
+  "selector.hint": "← → Parcourir · / Rechercher · Enter Appliquer · Esc Fermer",
+  "selector.custom": "Personnalisé",
+  "selector.filter": "Filtrer les thèmes"
 }

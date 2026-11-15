@@ -47,5 +47,19 @@
   "wallpaper.notification.message": "Изменено на:\n{name}",
   "brightness.night_light_on": "Ночной свет: вкл ({temperature} K) — переключить",
   "brightness.night_light_off": "Ночной свет: выкл. — переключить",
-  "brightness.night_light_failed": "Не удалось изменить ночной свет"
+  "brightness.night_light_failed": "Не удалось изменить ночной свет",
+  "selector.search": "Поиск тем",
+  "selector.all": "Все",
+  "selector.apply": "Применить тему",
+  "selector.close": "Закрыть",
+  "selector.previous": "Предыдущая тема",
+  "selector.next": "Следующая тема",
+  "selector.active": "Активна",
+  "selector.illustrative": "Иллюстративный просмотр",
+  "selector.loading": "Загрузка тем…",
+  "selector.empty": "Темы не найдены",
+  "selector.failed": "Не удалось загрузить или применить тему. Повторите попытку.",
+  "selector.hint": "← → Просмотр · / Поиск · Enter Применить · Esc Закрыть",
+  "selector.custom": "Пользовательские",
+  "selector.filter": "Фильтр тем"
 }

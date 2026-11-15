@@ -45,7 +45,7 @@ pub fn run(paths: &SessionPaths, theme_argument: &str, layout_variant: &str) -> 
   }
   let theme = theme_resolve::resolve_theme(theme_argument, layout_variant);
   if theme.is_empty() {
-    return run_menu(paths);
+    return run_menu();
   }
   let custom_theme = theme_resolve::is_user_theme(&theme_resolve::theme_paths(), &theme);
   let mode_switch = env::var("ARGVUS_MODE_SWITCH").as_deref() == Ok("1");
@@ -140,11 +140,10 @@ pub fn run(paths: &SessionPaths, theme_argument: &str, layout_variant: &str) -> 
   status
 }
 
-/// The theme menu, when no theme was named. The shell ran it with `exec`.
-fn run_menu(paths: &SessionPaths) -> i32 {
-  let menu = paths.read_config("appearance/sh/theme-menu.sh");
-  Command::new("sh")
-    .arg(menu)
+/// Open the independent selector before acquiring the application lock.
+fn run_menu() -> i32 {
+  Command::new("argvus")
+    .arg("theme-selector")
     .status()
     .map(exit_code)
     .unwrap_or(127)

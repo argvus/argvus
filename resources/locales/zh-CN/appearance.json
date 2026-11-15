@@ -47,5 +47,19 @@
   "wallpaper.notification.message": "更改为：\n{name}",
   "brightness.night_light_on": "夜灯：开 ({temperature} K) — 切换",
   "brightness.night_light_off": "夜灯：关闭 — 切换",
-  "brightness.night_light_failed": "无法更改夜灯"
+  "brightness.night_light_failed": "无法更改夜灯",
+  "selector.search": "搜索主题",
+  "selector.all": "全部",
+  "selector.apply": "应用主题",
+  "selector.close": "关闭",
+  "selector.previous": "上一个主题",
+  "selector.next": "下一个主题",
+  "selector.active": "当前主题",
+  "selector.illustrative": "示意预览",
+  "selector.loading": "正在加载主题…",
+  "selector.empty": "未找到主题",
+  "selector.failed": "无法加载或应用主题，请重试。",
+  "selector.hint": "← → 浏览 · / 搜索 · Enter 应用 · Esc 关闭",
+  "selector.custom": "自定义",
+  "selector.filter": "筛选主题"
 }

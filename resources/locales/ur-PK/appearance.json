@@ -47,5 +47,19 @@
   "wallpaper.notification.message": "تبدیلی:\n{name}",
   "brightness.night_light_on": "رات کی روشنی: پر ( ({temperature} کی ) — گلّہ‌بانی",
   "brightness.night_light_off": "رات کی روشنی : دُور — گلّے کیلئے",
-  "brightness.night_light_failed": "رات کو روشنی تبدیل نہیں کر سکتے"
+  "brightness.night_light_failed": "رات کو روشنی تبدیل نہیں کر سکتے",
+  "selector.search": "تھیم تلاش کریں",
+  "selector.all": "سب",
+  "selector.apply": "تھیم لاگو کریں",
+  "selector.close": "بند کریں",
+  "selector.previous": "پچھلا تھیم",
+  "selector.next": "اگلا تھیم",
+  "selector.active": "فعال",
+  "selector.illustrative": "وضاحتی پیش منظر",
+  "selector.loading": "تھیم لوڈ ہو رہے ہیں…",
+  "selector.empty": "کوئی تھیم نہیں ملا",
+  "selector.failed": "تھیم لوڈ یا لاگو نہیں ہو سکا۔ دوبارہ کوشش کریں۔",
+  "selector.hint": "← → براؤز · / تلاش · Enter لاگو · Esc بند",
+  "selector.custom": "حسبِ ضرورت",
+  "selector.filter": "تھیمز فلٹر کریں"
 }

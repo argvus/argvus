@@ -47,5 +47,19 @@
   "wallpaper.notification.message": "に変更されました:\n{name}",
   "brightness.night_light_on": "ナイトライト: オン ({temperature} K) — トグル",
   "brightness.night_light_off": "常夜灯: オフ — 切り替え",
-  "brightness.night_light_failed": "常夜灯を変更できませんでした"
+  "brightness.night_light_failed": "常夜灯を変更できませんでした",
+  "selector.search": "テーマを検索",
+  "selector.all": "すべて",
+  "selector.apply": "テーマを適用",
+  "selector.close": "閉じる",
+  "selector.previous": "前のテーマ",
+  "selector.next": "次のテーマ",
+  "selector.active": "使用中",
+  "selector.illustrative": "イメージプレビュー",
+  "selector.loading": "テーマを読み込み中…",
+  "selector.empty": "テーマがありません",
+  "selector.failed": "テーマを読み込みまたは適用できません。再試行してください。",
+  "selector.hint": "← → 移動 · / 検索 · Enter 適用 · Esc 閉じる",
+  "selector.custom": "カスタム",
+  "selector.filter": "テーマを絞り込む"
 }

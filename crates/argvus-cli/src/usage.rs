@@ -40,7 +40,7 @@ Hyprland script commands (used by the Hyprland configuration):
   argvus windows service | bar | list --json | position top|bottom
   argvus windows minimize | restore | activate | maximize | close ADDRESS
   argvus spaces-switch | emoji-picker | toggle-sidebar | weather-location
-  argvus theme-switch | layout-mode-menu | brightness-switch | toggle-mode
+  argvus theme-selector | theme-switch | layout-mode-menu | brightness-switch | toggle-mode
   argvus idle-timeout | keep-awake | hypr-power-menu | effects-toggle
 
 Aliases:

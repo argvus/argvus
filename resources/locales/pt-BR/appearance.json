@@ -47,5 +47,19 @@
   "wallpaper.notification.message": "Alterado para:\n{name}",
   "brightness.night_light_on": "Luz noturna: ligada ({temperature} K) — alternar",
   "brightness.night_light_off": "Luz noturna: desligada — alternar",
-  "brightness.night_light_failed": "Não foi possível alterar a luz noturna"
+  "brightness.night_light_failed": "Não foi possível alterar a luz noturna",
+  "selector.search": "Buscar temas",
+  "selector.all": "Todos",
+  "selector.apply": "Aplicar tema",
+  "selector.close": "Fechar",
+  "selector.previous": "Tema anterior",
+  "selector.next": "Próximo tema",
+  "selector.active": "Ativo",
+  "selector.illustrative": "Prévia ilustrativa",
+  "selector.loading": "Carregando temas…",
+  "selector.empty": "Nenhum tema encontrado",
+  "selector.failed": "Não foi possível aplicar ou carregar o tema. Tente novamente.",
+  "selector.hint": "← → Navegar · / Buscar · Enter Aplicar · Esc Fechar",
+  "selector.custom": "Custom",
+  "selector.filter": "Filtrar temas"
 }

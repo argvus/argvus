@@ -47,5 +47,19 @@
   "wallpaper.notification.message": "Modificato in:\n{name}",
   "brightness.night_light_on": "Luce notturna: accesa ({temperature} K) — attiva/disattiva",
   "brightness.night_light_off": "Luce notturna: disattivata: attiva/disattiva",
-  "brightness.night_light_failed": "Impossibile modificare la luce notturna"
+  "brightness.night_light_failed": "Impossibile modificare la luce notturna",
+  "selector.search": "Cerca temi",
+  "selector.all": "Tutti",
+  "selector.apply": "Applica tema",
+  "selector.close": "Chiudi",
+  "selector.previous": "Tema precedente",
+  "selector.next": "Tema successivo",
+  "selector.active": "Attivo",
+  "selector.illustrative": "Anteprima illustrativa",
+  "selector.loading": "Caricamento temi…",
+  "selector.empty": "Nessun tema trovato",
+  "selector.failed": "Impossibile caricare o applicare il tema. Riprova.",
+  "selector.hint": "← → Sfoglia · / Cerca · Enter Applica · Esc Chiudi",
+  "selector.custom": "Personalizzato",
+  "selector.filter": "Filtra temi"
 }

@@ -47,5 +47,19 @@
   "wallpaper.notification.message": "बदलना:\n{name}",
   "brightness.night_light_on": "नाइट लाइट: ऑन ({temperature} K) - टॉगल",
   "brightness.night_light_off": "रात की रोशनी: बंद - टॉगल",
-  "brightness.night_light_failed": "नाइट लाइट बदल नहीं सकता"
+  "brightness.night_light_failed": "नाइट लाइट बदल नहीं सकता",
+  "selector.search": "थीम खोजें",
+  "selector.all": "सभी",
+  "selector.apply": "थीम लागू करें",
+  "selector.close": "बंद करें",
+  "selector.previous": "पिछली थीम",
+  "selector.next": "अगली थीम",
+  "selector.active": "सक्रिय",
+  "selector.illustrative": "उदाहरण पूर्वावलोकन",
+  "selector.loading": "थीम लोड हो रही हैं…",
+  "selector.empty": "कोई थीम नहीं मिली",
+  "selector.failed": "थीम लोड या लागू नहीं हो सकी। फिर प्रयास करें।",
+  "selector.hint": "← → ब्राउज़ · / खोजें · Enter लागू करें · Esc बंद करें",
+  "selector.custom": "कस्टम",
+  "selector.filter": "थीम फ़िल्टर करें"
 }

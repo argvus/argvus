@@ -416,13 +416,28 @@ fn gpg_route_runs_argvus_keys_in_process() {
 }
 
 #[test]
-fn theme_switch_is_not_dispatched_to_a_private_executable() {
-  // `theme-switch` applies a theme, which touches the desktop, so the test does not
-  // run it. It only checks the route name is known, by the usage it prints without
-  // arguments: `argvus config theme-apply` reports the missing argument.
-  let sandbox = Sandbox::new("theme");
+fn theme_selector_dispatches_to_private_helper() {
+  let sandbox = Sandbox::new("theme-selector");
+  sandbox.fake(&sandbox.commands(), "theme-selector");
+  let output = sandbox.run(&sandbox.tools_path(), &["theme-selector", "--help"], "");
+  assert!(output.status.success());
+  assert_eq!(text(&output.stdout), "[--help]\nstdin=");
+}
+
+#[test]
+fn theme_switch_without_id_opens_selector_and_propagates_status() {
+  let sandbox = Sandbox::new("theme-switch-menu");
+  let argvus = sandbox.root.join("tools/argvus");
+  write_executable(&argvus, "#!/bin/sh\nprintf '%s' \"$1\"\nexit 23\n");
   let output = sandbox.run(&sandbox.tools_path(), &["theme-switch"], "");
-  assert!(!String::from_utf8_lossy(&output.stderr).contains("unknown command"));
+  assert_eq!(output.status.code(), Some(23));
+  assert_eq!(text(&output.stdout), "theme-selector");
+  assert!(
+    !sandbox
+      .root
+      .join(".config/argvus/data/.active-theme")
+      .exists()
+  );
 }
 
 #[test]

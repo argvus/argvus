@@ -54,7 +54,7 @@ power, display, network, notifications and themes — all packaged for Arch Linu
 
 `argvus` is the master package and the only package built from this repository. It installs the
 command, its in-process subcommands and the shared runtime, the Control Center with integrated ARGVUS Welcome (terminal
-applications), the GTK 4 helpers for the taskbar calendar and removable devices, the loading
+applications), the GTK 4 helpers for the taskbar calendar, removable devices and visual theme selection, the loading
 overlay, the ARGVUS Focus and ARGVUS Clock applications, the Disk Usage Analyzer helper, and
 the login greeter (built from `crates/argvus-greeter`). Every component package
 depends on it, so no install order is required.
@@ -69,7 +69,7 @@ depends on it, so no install order is required.
 | First-setup guide | `argvus welcome` (in `argvus`; first automatic opening is tracked in per-user progress) |
 | Launcher and lock screen | `argvus-launcher`, `argvus-lock` |
 | Appearance, wallpapers, fonts and icons | `argvus-appearance`, `argvus-wallpapers`, `argvus-fonts`, `argvus-icons`, `argvus-branding` |
-| Themes | `argvus-theme-*` (one package per official theme) |
+| Themes | `argvus theme-selector`, `argvus-theme-*` (one package per official theme) |
 | Terminal, TUI apps and system monitor | `argvus terminal`, `argvus tui-terminal`, `argvus system-monitor`, `argvus du`, `argvus-app-profiles` (data) |
 | Display, power, network and notifications | `argvus-display`, `argvus-power`, `argvus network`, `argvus-notifications` |
 | Desktop portals and Wayland/DBus defaults | `argvus-portal` |
@@ -100,6 +100,8 @@ argvus --setup --copy <app>   # copy packaged defaults for explicit customizatio
 ```
 
 ## Themes
+
+`argvus theme-selector` (also `SUPER + Shift + T` or `argvus theme-switch` without an ID) opens an independent preview carousel. Search is focused on open; `/` toggles its focus. Filters include all themes, system Dark/Light themes and user-installed Custom themes. Sticky uses square corners and Spaced uses rounded corners. Browsing does not apply a theme; Enter or **Apply theme** confirms.
 
 Twenty-three theme families, each available in the Sticky and Spaced layouts,
 with a shared accent-color system that unifies GTK, terminals, rofi, Waybar and
