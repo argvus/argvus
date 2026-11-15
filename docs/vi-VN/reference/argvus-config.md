@@ -405,3 +405,9 @@ Các lệnh: `argvus windows list --json`, `watch --json`, `position top|bottom`
 Lề bên trong dành riêng cho các thanh không được tính hai lần ở các khoảng trống bên ngoài cửa sổ. Với khoảng cách đối xứng, khoảng cách từ cửa sổ đến thanh hiển thị bằng nhau ở trên và dưới, kể cả sau khi hoán đổi các thanh.
 
 `SUPER + Alt + Space` chuyển đổi chế độ Ngói/Nổi chung, sử dụng cùng tùy chọn với thanh tác vụ và Trung tâm điều khiển. Lệnh tương đương là `argvus config window-mode toggle`. Các lời gọi đồng thời được tuần tự hóa; chuyển đổi sử dụng tùy chọn đã lưu ngay cả khi ứng dụng đang chờ xử lý. Phím tắt có thể được thay đổi hoặc vô hiệu hóa trong Phím tắt; `SUPER + Shift + Space` giữ hành động trên từng cửa sổ.
+
+### Điều hướng theo màn hình
+
+Trước/sau chỉ duyệt vòng các không gian hiện có trên màn hình đang được chọn: số trước, rồi tên và dự án theo tên gốc. Cuộn trên thanh tác vụ dùng màn hình dưới con trỏ. Không gian đặc biệt bị loại và tạm dừng chu kỳ khi mở. Phím tắt số giữ ID toàn cục. Phân công vẫn ở `/displays/workspaces`.
+
+`argvus config workspace-cycle next|previous [--monitor focused|cursor]`

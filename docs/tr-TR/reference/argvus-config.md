@@ -407,3 +407,9 @@ Komutlar: `argvus windows list --json`, `watch --json`, `position top|bottom`, `
 Pencere dış boşluklarında çubukların ayırdığı iç kenar boşlukları iki kez sayılmaz. Simetrik aralıkta, çubukların değiştirilmesi sonrası da dahil olmak üzere görünür pencere-çubuk mesafesi üstte ve altta eşittir.
 
 `SUPER + Alt + Space`, görev çubuğu ve Kontrol Merkezi ile aynı tercihi kullanarak genel Döşeme/Kayan mod arasında geçiş yapar. Eşdeğer komut `argvus config window-mode toggle`'dur. Eşzamanlı çağrılar serileştirilir; Geçiş, uygulama beklemedeyken bile kaydedilen tercihi kullanır. Kısayol, Klavye Kısayolları'nda değiştirilebilir veya devre dışı bırakılabilir; `SUPER + Shift + Space` bireysel pencere eylemini koruyor.
+
+### Monitöre göre gezinme
+
+Sonraki/önceki yalnızca odaklanılan monitördeki mevcut çalışma alanlarını döngüyle gezer: önce sayısal alanlar, ardından özgün ada göre adlandırılmış alanlar ve projeler. Görev çubuğunu kaydırmak işaretçinin altındaki monitörü kullanır. Özel alanlar dışlanır ve açıkken gezinmeyi durdurur. Sayısal kısayollar genel kimlikleri korur. Atamalar `/displays/workspaces` içinde kalır.
+
+`argvus config workspace-cycle next|previous [--monitor focused|cursor]`

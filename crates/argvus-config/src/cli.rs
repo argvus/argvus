@@ -22,6 +22,7 @@ mod session_commands;
 mod store_commands;
 mod taskbar_commands;
 mod theme_commands;
+mod workspace_commands;
 
 use monitor_commands::{
   monitor_import, monitor_primary, monitor_remove, monitor_set, monitor_sync, monitor_workspaces,
@@ -47,6 +48,7 @@ pub fn run_command(arguments: Vec<String>) -> ExitCode {
   };
   let args = &arguments[1..];
   match command {
+    "workspace-cycle" => workspace_commands::run(args),
     "session-restart" => session_restart(args),
     "session-reload-config" => session_reload_config(args),
     "session-sync-config" => session_sync_config(),

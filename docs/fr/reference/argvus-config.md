@@ -275,3 +275,9 @@ En **Espacé + Flottant**, les fenêtres respectent les marges extérieures et l
 Les marges intérieures réservées par les barres ne sont pas comptées deux fois dans les espacements extérieurs de la fenêtre. Avec un espacement symétrique, la distance visible entre la fenêtre et la barre est égale en haut et en bas, y compris après permutation des barres.
 
 `SUPER + Alt + Space` bascule le mode global Carrelage/Flottant, en utilisant la même préférence que la barre des tâches et le Centre de contrôle. La commande équivalente est `argvus config window-mode toggle`. Les invocations simultanées sont sérialisées ; le basculement utilise la préférence enregistrée même lorsque l’application est en attente. Le raccourci peut être modifié ou désactivé dans les Raccourcis clavier ; `SUPER + Shift + Space` conserve son action pour la fenêtre individuelle.
+
+### Navigation par écran
+
+Suivant/précédent parcourt uniquement les espaces existants de l’écran actif : numériques, puis nommés et projets par nom natif, en boucle. Le défilement sur la barre utilise l’écran sous le pointeur. Les espaces spéciaux sont exclus et suspendent le cycle lorsqu’ils sont ouverts. Les raccourcis numériques conservent les identifiants globaux. Les affectations restent dans `/displays/workspaces`.
+
+`argvus config workspace-cycle next|previous [--monitor focused|cursor]`

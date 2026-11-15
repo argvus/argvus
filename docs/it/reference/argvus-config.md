@@ -268,3 +268,9 @@ In **Spaziato + Fluttuante**, le finestre rispettano i margini esterni e le aree
 I margini interni riservati dalle barre non vengono conteggiati due volte nei gap esterni della finestra. Con la spaziatura simmetrica, la distanza visibile tra finestra e barra è uguale sopra e sotto, anche dopo aver invertito le barre.
 
 `SUPER + Alt + Space` alterna la modalità globale Piastrella/Fluttuante, utilizzando la stessa preferenza della barra delle applicazioni e del Centro di Controllo. Il comando equivalente è `argvus config window-mode toggle`. Le invocazioni concorrenti vengono serializzate; l'alternanza utilizza la preferenza salvata anche quando l'applicazione è in sospeso. La scorciatoia può essere cambiata o disabilitata nelle Scorciatoie da tastiera; `SUPER + Shift + Space` mantiene la sua azione per finestra singola.
+
+### Navigazione per monitor
+
+Successivo/precedente scorre solo gli spazi esistenti del monitor attivo: prima numerici, poi nomi e progetti ordinati per nome nativo, tornando all’inizio. Lo scorrimento sulla barra usa il monitor sotto il puntatore. Gli spazi speciali sono esclusi e sospendono il ciclo quando aperti. Le scorciatoie numeriche mantengono gli ID globali. Le assegnazioni restano in `/displays/workspaces`.
+
+`argvus config workspace-cycle next|previous [--monitor focused|cursor]`

@@ -272,3 +272,9 @@ En **Espaciado + Flotante**, las ventanas respetan los huecos exteriores y las �
 Los márgenes internos reservados por las barras no se cuentan dos veces en los espacios exteriores de la ventana. Con espaciado simétrico, la distancia visible de la ventana a la barra es igual arriba y abajo, incluso después de intercambiar las barras.
 
 `SUPER + Alt + Space` alterna el modo global de Mosaico/Flotante, usando la misma preferencia que la barra de tareas y el Centro de Control. El comando equivalente es `argvus config window-mode toggle`. Las invocaciones concurrentes se serializan; la alternancia usa la preferencia guardada incluso cuando la aplicación está pendiente. El atajo se puede cambiar o deshabilitar en Atajos de Teclado; `SUPER + Shift + Space` mantiene su acción de ventana individual.
+
+### Navegación por monitor
+
+Siguiente/anterior recorre solo los espacios existentes del monitor enfocado: primero numéricos, después nombres y proyectos por nombre nativo, volviendo al inicio. La rueda sobre la barra usa el monitor bajo el puntero. Los espacios especiales se excluyen y detienen el ciclo mientras están abiertos. Los atajos numéricos conservan IDs globales. Las asignaciones siguen en `/displays/workspaces`.
+
+`argvus config workspace-cycle next|previous [--monitor focused|cursor]`

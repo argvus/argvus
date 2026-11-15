@@ -407,3 +407,9 @@ Perintah: `argvus windows list --json`, `watch --json`, `position top|bottom`, `
 Margin dalam yang disediakan oleh palang tidak dihitung dua kali pada celah luar jendela. Dengan jarak simetris, jarak jendela-ke-bar yang terlihat adalah sama di atas dan di bawah, termasuk setelah bar ditukar.
 
 `SUPER + Alt + Space` mengaktifkan mode Ubin/Mengambang global, menggunakan preferensi yang sama seperti bilah tugas dan Pusat Kontrol. Perintah yang setara adalah `argvus config window-mode toggle`. Pemanggilan serentak dibuat berseri; beralih menggunakan preferensi yang disimpan bahkan ketika aplikasi tertunda. Pintasan dapat diubah atau dinonaktifkan di Pintasan Keyboard; `SUPER + Shift + Space` mempertahankan tindakan jendela individualnya.
+
+### Navigasi per monitor
+
+Berikutnya/sebelumnya berputar hanya pada ruang kerja yang ada di monitor terfokus: numerik dahulu, lalu nama dan proyek menurut nama asli. Gulir bilah memakai monitor di bawah penunjuk. Ruang khusus dikecualikan dan menghentikan siklus saat terbuka. Pintasan angka tetap memakai ID global. Penetapan tetap di `/displays/workspaces`.
+
+`argvus config workspace-cycle next|previous [--monitor focused|cursor]`

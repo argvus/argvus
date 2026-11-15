@@ -271,3 +271,9 @@ In **Spaced + Floating** respektieren Fenster äußere Abstände und die von bei
 Die inneren Ränder, die von den Balken reserviert werden, werden in den äußeren Fensterabständen nicht doppelt gezählt. Bei symmetrischem Abstand ist der sichtbare Abstand zwischen Fenster und Balken oben und unten gleich, auch nach dem Tausch der Balken.
 
 `SUPER + Alt + Space` schaltet den globalen Kachel-/Schwebemodus um und verwendet die gleiche Einstellung wie die Taskleiste und das Control Center. Der entsprechende Befehl ist `argvus config window-mode toggle`. Gleichzeitige Aufrufe werden seriell ausgeführt; das Umschalten verwendet die gespeicherte Einstellung, selbst wenn die Anwendung ausstehend ist. Die Tastenkombination kann in den Tastenkombinationen geändert oder deaktiviert werden; `SUPER + Shift + Space` behält seine Einzel-Fenster-Aktion bei.
+
+### Arbeitsbereichswechsel pro Monitor
+
+Vorwärts/rückwärts durchläuft nur vorhandene Arbeitsbereiche des fokussierten Monitors: zuerst numerische, dann benannte und Projekte nach nativem Namen, mit Umlauf. Scrollen auf der Taskleiste verwendet den Monitor unter dem Zeiger. Spezielle Arbeitsbereiche sind ausgeschlossen und unterbrechen den Wechsel, solange sie geöffnet sind. Ziffernkürzel behalten globale IDs. Zuordnungen bleiben in `/displays/workspaces`.
+
+`argvus config workspace-cycle next|previous [--monitor focused|cursor]`

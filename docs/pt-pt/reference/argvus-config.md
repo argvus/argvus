@@ -425,3 +425,9 @@ No modo **Spaced + Floating**, as janelas respeitam os espaços externos e as á
 As margens internas reservadas pelas barras não são somadas duas vezes aos espaços externos das janelas. Com espaçamento simétrico, a distância visível entre a janela e as barras superior e inferior é igual, inclusive após inverter a posição das barras.
 
 `SUPER + Alt + Espaço` alterna o modo global entre mosaico e flutuante, usando a mesma preferência da taskbar e do Control Center. O comando equivalente é `argvus config window-mode toggle`. Acionamentos simultâneos são serializados; a alternância considera a preferência salva, mesmo quando sua aplicação está pendente. O atalho pode ser alterado ou desativado em Atalhos de teclado; `SUPER + Shift + Espaço` mantém a ação individual.
+
+### Navegação de workspaces por monitor
+
+Seguinte/anterior percorre os workspaces existentes apenas no monitor em foco: primeiro os numéricos, depois os nomeados e projetos por nome nativo, regressando ao início no final. A deslocação na barra usa o monitor sob o ponteiro. Workspaces especiais são excluídos e suspendem o ciclo enquanto abertos. Atalhos numéricos mantêm IDs globais. As associações permanecem em `/displays/workspaces`.
+
+`argvus config workspace-cycle next|previous [--monitor focused|cursor]`

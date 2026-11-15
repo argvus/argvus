@@ -273,3 +273,9 @@ argvus config window-mode toggle
 由工具栏保留的内边距不会在窗口外间隙中被重复计算。使用对称间距时，可见的窗口与工具栏的距离上下相等，包括在交换工具栏之后。
 
 `SUPER + Alt + Space` 切换全局平铺/浮动模式，使用与任务栏和控制中心相同的偏好设置。等效命令是 `argvus config window-mode toggle`。并发调用会被顺序处理；即使应用程序待处理时，切换也会使用保存的偏好设置。快捷键可以在键盘快捷键中更改或禁用；`SUPER + Shift + Space` 保持其单窗口操作。
+
+### 按显示器切换工作区
+
+上一个/下一个仅循环切换焦点显示器上已有的工作区：先按数字排序，再按原始名称排列命名工作区和项目。任务栏滚动使用指针所在的显示器。特殊工作区不参与循环，打开时暂停切换。数字快捷键保留全局 ID。显示器分配仍保存在 `/displays/workspaces`。
+
+`argvus config workspace-cycle next|previous [--monitor focused|cursor]`

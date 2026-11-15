@@ -419,3 +419,9 @@ In **Spaced + Floating**, windows respect outer gaps and the areas reserved by b
 Inner margins reserved by the bars are not counted twice in window outer gaps. With symmetric spacing, the visible window-to-bar distance is equal above and below, including after swapping the bars.
 
 `SUPER + Alt + Space` toggles the global Tile/Floating mode, using the same preference as the taskbar and Control Center. The equivalent command is `argvus config window-mode toggle`. Concurrent invocations are serialized; toggling uses the saved preference even when application is pending. The shortcut can be changed or disabled in Keyboard Shortcuts; `SUPER + Shift + Space` keeps its individual-window action.
+
+### Monitor-local workspace navigation
+
+Next/previous cycles existing numeric workspaces, then named workspaces and projects in native-name order, on the focused monitor only. Taskbar scrolling uses the monitor under the pointer. Cycling wraps; special workspaces are excluded and an open special workspace pauses navigation. Numeric shortcuts retain global IDs. Assignments remain in `/displays/workspaces`.
+
+`argvus config workspace-cycle next|previous [--monitor focused|cursor]`
