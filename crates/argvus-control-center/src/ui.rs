@@ -41,6 +41,7 @@ pub fn draw(app: &mut App, frame: &mut Frame) {
     Route::Home => draw_home(app, frame),
     Route::AppSettings => app.settings_hub.draw(frame, app.lang, &app.theme),
     Route::Config => app.config.draw(frame),
+    Route::Launcher => app.launcher.draw(frame, app.lang, &app.theme),
     Route::Settings => argvus_control_center_settings::ui::draw(&mut app.settings, frame),
     #[cfg(feature = "about")]
     Route::About => argvus_control_center_about::ui::draw(&mut app.about, frame),

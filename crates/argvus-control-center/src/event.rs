@@ -105,6 +105,9 @@ pub fn handle(app: &mut App, event: Event) {
 
 fn handle_inner(app: &mut App, event: Event) {
   if let Event::Paste(text) = event {
+    if app.route == Route::Launcher {
+      app.launcher.paste(&text);
+    }
     #[cfg(feature = "snapshot")]
     if app.route == Route::Snapshot {
       app.snapshot.paste(&text);
@@ -197,6 +200,11 @@ fn handle_inner(app: &mut App, event: Event) {
       crate::settings_hub::HubAction::Style => app.route = Route::Config,
       crate::settings_hub::HubAction::None => {}
     },
+    Route::Launcher => {
+      if app.launcher.handle(key, app.lang) {
+        app.route = Route::Home;
+      }
+    }
     Route::Config => {
       if app.config.handle(key.code) {
         app.route = Route::AppSettings;

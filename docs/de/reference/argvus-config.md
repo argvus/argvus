@@ -277,3 +277,13 @@ Die inneren Ränder, die von den Balken reserviert werden, werden in den äußer
 Vorwärts/rückwärts durchläuft nur vorhandene Arbeitsbereiche des fokussierten Monitors: zuerst numerische, dann benannte und Projekte nach nativem Namen, mit Umlauf. Scrollen auf der Taskleiste verwendet den Monitor unter dem Zeiger. Spezielle Arbeitsbereiche sind ausgeschlossen und unterbrechen den Wechsel, solange sie geöffnet sind. Ziffernkürzel behalten globale IDs. Zuordnungen bleiben in `/displays/workspaces`.
 
 `argvus config workspace-cycle next|previous [--monitor focused|cursor]`
+
+## Starter und Suche
+
+`argvus control-center launcher` · `argvus launcher`
+
+`argvus config get /launcher --effective`
+
+Suche konfigurieren: Favoriten, Zuletzt verwendete Dateien anzeigen, Dateinamen indizieren, Indizierter Ordner, Ausgeschlossener Ordner, Indizierung pausieren, Versteckte Dateien einschließen, Animationen reduzieren.
+
+`argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.

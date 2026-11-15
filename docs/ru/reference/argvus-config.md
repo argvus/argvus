@@ -275,3 +275,13 @@ argvus config window-mode toggle
 Переход вперёд/назад циклически перебирает существующие рабочие столы текущего монитора: сначала числовые, затем именованные и проекты по исходному имени. Прокрутка панели использует монитор под указателем. Специальные столы исключены и при открытии приостанавливают цикл. Числовые сочетания сохраняют глобальные ID. Назначения остаются в `/displays/workspaces`.
 
 `argvus config workspace-cycle next|previous [--monitor focused|cursor]`
+
+## Запуск и поиск
+
+`argvus control-center launcher` · `argvus launcher`
+
+`argvus config get /launcher --effective`
+
+Настроить поиск: Избранное, Показывать недавние файлы, Индексировать имена файлов, Индексируемая папка, Исключённая папка, Приостановить индексацию, Включать скрытые файлы, Уменьшить анимацию.
+
+`argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.

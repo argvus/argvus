@@ -127,3 +127,13 @@ Buka **Desktop & Input > Tampilan > Lampu Malam** atau jalankan `argvus control-
 `argvus tui-terminal --frame TITLE FOOTER COMMAND [ARG...]` menjalankan perintah interaktif di dalam bingkai terminal ARGVUS bersama. Ctrl+E menutup bingkai; peneleponnya menyediakan footer yang dilokalkan. Gunakan ini di dalam terminal, atau sebagai perintah yang diteruskan ke `argvus tui-terminal --term kitty -- ...`.
 
 `argvus tui-terminal --term kitty --profile ai-agents` menggunakan konfigurasi Kitty khusus dengan tab tersembunyi dan hanya pintasan clipboard. Penelepon memberikan perintah dan gelar; penempatan jendela ditangani oleh aturan Hyprland untuk kelas `argvus-ai`.
+
+## Peluncur dan Pencarian
+
+`argvus control-center launcher` · `argvus launcher`
+
+`argvus config get /launcher --effective`
+
+Atur pencarian: Favorit, Tampilkan berkas terbaru, Indeks nama berkas, Folder terindeks, Folder dikecualikan, Jeda pengindeksan, Sertakan berkas tersembunyi, Kurangi animasi.
+
+`argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.

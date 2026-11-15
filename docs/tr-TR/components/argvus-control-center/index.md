@@ -627,3 +627,29 @@ Tema **Custom themes** içinde görünür; `r` yeniler. CLI veya Control Center 
 Control Center paket işlemleri (resmî ve AUR yükseltmeleri dahil) bittiğinde görev çubuğu yeniden başlamadan kalan güncellemeleri otomatik denetler. Bazı paketler değişmiş olabileceğinden hatalardan sonra da denetler. Saatlik denetim etkin kalır ve Control Center dışındaki işlemleri algılar.
 
 Control Center denetim veritabanını `$XDG_CACHE_HOME/argvus/control-center/checkupdates` yolunda tutar (varsayılan: `~/.cache/argvus/control-center/checkupdates`); eşzamanlı senkronizasyon kilitlerini önlemek için görev çubuğunun veritabanından ayrıdır.
+
+## Başlatıcı ve Arama
+
+Ana başlatıcı Quickshell/QML ve yerel Rust arama motoruyla uygulama, pencere, ayar, eylem, proje, SSH sunucusu, dosya ve kısayol arar. Dizinleme başlangıçta kapalıdır; klasörleri açıkça seçin. Yalnızca adlar ve yollar dizinlenir, belge içerikleri okunmaz. Son dosyalar XDG kaydına bağlıdır. Gizli dosyalar varsayılan olarak dışlanır ve dizin sembolik bağlantıları izlenmez. Özel Rofi menüleri kullanılabilir.
+
+`argvus launcher` · `argvus control-center launcher`
+
+↑↓ Gezin · Enter Aç · Esc Geri · Ctrl+F Favori
+
+- Aramayı yapılandır: Uygulamalar, Windows, Ayarlar, Eylemler, Projeler, SSH, dosyaları, Yardım.
+- Dizinlenecek klasör ekle / Hariç tutma ekle — Mutlak yol.
+- Dizinlemeyi duraklat / Dizini temizle ve duraklat / Dizini yeniden oluştur.
+- ↑↓ Gezin · Enter Değiştir/Ekle · Delete Kaldır · Ctrl+↑↓ Sırala · F5 Yenile · Esc Geri
+
+`argvus config get /launcher --effective`
+
+`$XDG_CONFIG_HOME/argvus/config/launcher.json` → `$XDG_CACHE_HOME/argvus/launcher/index.json`
+
+Quickshell: `launcher/Theme.qml` · Rofi: `launcher/theme.rasi`
+
+`--config` / Rasi: Aramayı yapılandır → `argvus control-center launcher`.
+
+
+`/launcher/show_icons`: `true` / `false`.
+
+`/launcher/selected_category`: `""` (All), `applications`, `windows`, `settings`, `actions`, `projects`, `ssh`, `files`, `help`.

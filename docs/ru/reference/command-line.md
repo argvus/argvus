@@ -126,3 +126,13 @@ argvus setup --copy <app> --dry-run
 `argvus tui-terminal --frame TITLE FOOTER COMMAND [ARG...]` запускает интерактивную команду внутри общего терминального фрейма ARGVUS. Ctrl+E закрывает фрейм; его вызывающий элемент предоставляет локализованный нижний колонтитул. Используйте это внутри терминала или как команду, переданную в `argvus tui-terminal --term kitty -- ...`.
 
 `argvus tui-terminal --term kitty --profile ai-agents` использует специальную конфигурацию Kitty с скрытыми вкладками и только комбинациями для буфера обмена. Вызывающий элемент задает команду и заголовок; размещение окна обрабатывается правилом Hyprland для класса `argvus-ai`.
+
+## Запуск и поиск
+
+`argvus control-center launcher` · `argvus launcher`
+
+`argvus config get /launcher --effective`
+
+Настроить поиск: Избранное, Показывать недавние файлы, Индексировать имена файлов, Индексируемая папка, Исключённая папка, Приостановить индексацию, Включать скрытые файлы, Уменьшить анимацию.
+
+`argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.

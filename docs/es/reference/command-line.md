@@ -126,3 +126,13 @@ Abre **Escritorio y Entrada > Pantallas > Luz Nocturna** o ejecuta `argvus contr
 `argvus tui-terminal --frame TITLE FOOTER COMMAND [ARG...]` ejecuta un comando interactivo dentro del marco de terminal compartido ARGVUS. Ctrl+E cierra el marco; su llamador suministra el pie de página localizado. Úsalo dentro de una terminal o como el comando pasado a `argvus tui-terminal --term kitty -- ...`.
 
 `argvus tui-terminal --term kitty --profile ai-agents` utiliza una configuración dedicada de Kitty con pestañas ocultas y solo accesos directos al portapapeles. El llamador suministra el comando y el título; la colocación de la ventana se maneja mediante la regla de Hyprland para la clase `argvus-ai`.
+
+## Lanzador y búsqueda
+
+`argvus control-center launcher` · `argvus launcher`
+
+`argvus config get /launcher --effective`
+
+Configurar búsqueda: Favoritos, Mostrar archivos recientes, Indexar nombres de archivos, Carpeta indexada, Carpeta excluida, Pausar indexación, Incluir archivos ocultos, Reducir animaciones.
+
+`argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.

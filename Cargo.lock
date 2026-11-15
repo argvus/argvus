@@ -175,6 +175,7 @@ dependencies = [
  "argvus-i18n",
  "argvus-i18n-core",
  "argvus-keys",
+ "argvus-launcher-core",
  "argvus-network-commands",
  "argvus-projects",
  "argvus-sensors",
@@ -189,6 +190,7 @@ dependencies = [
  "chrono",
  "libc",
  "serde_json",
+ "tempfile",
 ]
 
 [[package]]
@@ -250,11 +252,13 @@ dependencies = [
  "argvus-control-center-snapshot",
  "argvus-control-center-storage",
  "argvus-i18n-core",
+ "argvus-launcher-core",
  "argvus-theme",
  "argvus-tui",
  "argvus-welcome",
  "crossterm",
  "ratatui",
+ "serde_json",
  "tempfile",
 ]
 
@@ -633,6 +637,21 @@ version = "0.1.0"
 dependencies = [
  "libc",
  "thiserror 2.0.21",
+]
+
+[[package]]
+name = "argvus-launcher-core"
+version = "0.1.0"
+dependencies = [
+ "argvus-config",
+ "argvus-control-center-audio",
+ "argvus-control-center-core",
+ "argvus-i18n-core",
+ "quick-xml",
+ "serde",
+ "serde_json",
+ "tempfile",
+ "url",
 ]
 
 [[package]]

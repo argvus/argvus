@@ -565,3 +565,29 @@ argvus theme uninstall NAME
 Control Center의 패키지 작업(공식 저장소 및 AUR 업그레이드 포함)이 끝나면 작업 표시줄이 재시작 없이 남은 업데이트를 자동으로 확인합니다. 일부 패키지가 이미 변경되었을 수 있으므로 실패 후에도 확인합니다. 매시간 확인도 계속 유지되어 Control Center 외부의 작업을 감지합니다.
 
 Control Center는 확인용 데이터베이스를 `$XDG_CACHE_HOME/argvus/control-center/checkupdates`(기본값: `~/.cache/argvus/control-center/checkupdates`)에 저장합니다. 동시 동기화 시 잠금 충돌을 피하도록 작업 표시줄 데이터베이스와 분리합니다.
+
+## 실행기 및 검색
+
+기본 실행기는 Quickshell/QML과 로컬 Rust 검색 엔진으로 앱, 창, 설정, 작업, 프로젝트, SSH 호스트, 파일, 단축키를 검색합니다. 색인은 기본적으로 꺼져 있으며 폴더를 명시적으로 선택해야 합니다. 이름과 경로만 색인하고 문서 내용은 읽지 않습니다. 최근 파일은 XDG 기록에 따릅니다. 숨김 파일은 기본적으로 제외하며 디렉터리 심볼릭 링크를 따라가지 않습니다. 전용 Rofi 메뉴도 계속 사용할 수 있습니다.
+
+`argvus launcher` · `argvus control-center launcher`
+
+↑↓ 이동 · Enter 열기 · Esc 뒤로 · Ctrl+F 즐겨찾기
+
+- 검색 설정: 응용, 윈도우, 설정, 행위, 프로젝트, SSH, 파일, 돕다.
+- 색인 폴더 추가 / 제외 항목 추가 — 절대 경로.
+- 색인 일시 중지 / 색인 지우고 일시 중지 / 색인 다시 만들기.
+- ↑↓ 이동 · Enter 전환/추가 · Delete 삭제 · Ctrl+↑↓ 순서 · F5 새로고침 · Esc 뒤로
+
+`argvus config get /launcher --effective`
+
+`$XDG_CONFIG_HOME/argvus/config/launcher.json` → `$XDG_CACHE_HOME/argvus/launcher/index.json`
+
+Quickshell: `launcher/Theme.qml` · Rofi: `launcher/theme.rasi`
+
+`--config` / Rasi: 검색 설정 → `argvus control-center launcher`.
+
+
+`/launcher/show_icons`: `true` / `false`.
+
+`/launcher/selected_category`: `""` (All), `applications`, `windows`, `settings`, `actions`, `projects`, `ssh`, `files`, `help`.

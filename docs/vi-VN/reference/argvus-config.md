@@ -411,3 +411,13 @@ Lề bên trong dành riêng cho các thanh không được tính hai lần ở 
 Trước/sau chỉ duyệt vòng các không gian hiện có trên màn hình đang được chọn: số trước, rồi tên và dự án theo tên gốc. Cuộn trên thanh tác vụ dùng màn hình dưới con trỏ. Không gian đặc biệt bị loại và tạm dừng chu kỳ khi mở. Phím tắt số giữ ID toàn cục. Phân công vẫn ở `/displays/workspaces`.
 
 `argvus config workspace-cycle next|previous [--monitor focused|cursor]`
+
+## Trình khởi chạy và tìm kiếm
+
+`argvus control-center launcher` · `argvus launcher`
+
+`argvus config get /launcher --effective`
+
+Cấu hình tìm kiếm: Yêu thích, Hiển thị tệp gần đây, Lập chỉ mục tên tệp, Thư mục được lập chỉ mục, Thư mục bị loại trừ, Tạm dừng lập chỉ mục, Bao gồm tệp ẩn, Giảm hoạt ảnh.
+
+`argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.

@@ -387,3 +387,13 @@ argvus config window-mode toggle
 اگلا اور پچھلا صرف فعال مانیٹر کی موجودہ ورک اسپیسز میں چکر لگاتے ہیں: پہلے عددی، پھر اصل نام کی ترتیب سے نام والی اور منصوبے۔ ٹاسک بار اسکرول اشارے کے نیچے والا مانیٹر استعمال کرتا ہے۔ خصوصی ورک اسپیسز شامل نہیں اور کھلی ہوں تو چکر رک جاتا ہے۔ عددی شارٹ کٹس عالمی ID رکھتے ہیں۔ تقسیم `/displays/workspaces` میں رہتی ہے۔
 
 `argvus config workspace-cycle next|previous [--monitor focused|cursor]`
+
+## لانچر اور تلاش
+
+`argvus control-center launcher` · `argvus launcher`
+
+`argvus config get /launcher --effective`
+
+تلاش ترتیب دیں: پسندیدہ, حالیہ فائلیں دکھائیں, فائل ناموں کی اشاریہ سازی, اشاریہ شدہ فولڈر, خارج شدہ فولڈر, اشاریہ سازی روکیں, پوشیدہ فائلیں شامل کریں, حرکت پذیری کم کریں.
+
+`argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.

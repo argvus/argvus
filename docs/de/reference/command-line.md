@@ -126,3 +126,13 @@ Das Setup überprüft jede Option, bevor es irgendetwas ändert. Ungültige App-
 `argvus tui-terminal --frame TITLE FOOTER COMMAND [ARG...]` führt einen interaktiven Befehl innerhalb des gemeinsamen ARGVUS-Terminalrahmens aus. Strg+E schließt den Rahmen; der Aufrufer liefert die lokalisierte Fußzeile. Verwenden Sie dies innerhalb eines Terminals oder als Befehl, der an `argvus tui-terminal --term kitty -- ...` übergeben wird.
 
 `argvus tui-terminal --term kitty --profile ai-agents` verwendet eine dedizierte Kitty-Konfiguration mit versteckten Tabs und nur Zwischenablagenkürzeln. Der Aufrufer liefert den Befehl und den Titel; die Fensterplatzierung wird durch die Hyprland-Regel für die Klasse `argvus-ai` gehandhabt.
+
+## Starter und Suche
+
+`argvus control-center launcher` · `argvus launcher`
+
+`argvus config get /launcher --effective`
+
+Suche konfigurieren: Favoriten, Zuletzt verwendete Dateien anzeigen, Dateinamen indizieren, Indizierter Ordner, Ausgeschlossener Ordner, Indizierung pausieren, Versteckte Dateien einschließen, Animationen reduzieren.
+
+`argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.

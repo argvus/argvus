@@ -571,3 +571,29 @@ Un seul thème schema 2 est requis dans `src/usr/share/argvus/themes/<id>/`, ave
 Après une opération de paquets dans le Control Center (y compris les mises à niveau officielles et AUR), la barre des tâches vérifie automatiquement les mises à jour restantes sans redémarrer. Cette vérification suit aussi les échecs, car certains paquets peuvent déjà avoir changé. La vérification horaire reste active et détecte les opérations effectuées hors du Control Center.
 
 Le Control Center conserve sa base de vérification dans `$XDG_CACHE_HOME/argvus/control-center/checkupdates` (par défaut : `~/.cache/argvus/control-center/checkupdates`), séparée de celle de la barre des tâches pour éviter les conflits de verrouillage lors des synchronisations simultanées.
+
+## Lanceur et recherche
+
+Le lanceur principal utilise Quickshell/QML et un moteur local en Rust. Il recherche applications, fenêtres, paramètres, actions, projets, hôtes SSH, fichiers et raccourcis. L’indexation est désactivée au départ et nécessite des dossiers choisis explicitement. Seuls les noms et chemins sont indexés, jamais le contenu. Les fichiers récents dépendent du registre XDG. Les fichiers cachés sont exclus par défaut et les liens symboliques de dossiers ne sont pas suivis. Les menus spécialisés Rofi restent disponibles.
+
+`argvus launcher` · `argvus control-center launcher`
+
+↑↓ Naviguer · Enter Ouvrir · Esc Retour · Ctrl+F Favori
+
+- Configurer la recherche: Applications, Fenêtres, Paramètres, Actes, Projets, SSH, fichiers, Aide.
+- Ajouter un dossier indexé / Ajouter une exclusion — Chemin absolu.
+- Suspendre l’indexation / Effacer l’index et suspendre / Reconstruire l’index.
+- ↑↓ Naviguer · Enter Basculer/Ajouter · Delete Supprimer · Ctrl+↑↓ Réordonner · F5 Actualiser · Esc Retour
+
+`argvus config get /launcher --effective`
+
+`$XDG_CONFIG_HOME/argvus/config/launcher.json` → `$XDG_CACHE_HOME/argvus/launcher/index.json`
+
+Quickshell: `launcher/Theme.qml` · Rofi: `launcher/theme.rasi`
+
+`--config` / Rasi: Configurer la recherche → `argvus control-center launcher`.
+
+
+`/launcher/show_icons`: `true` / `false`.
+
+`/launcher/selected_category`: `""` (All), `applications`, `windows`, `settings`, `actions`, `projects`, `ssh`, `files`, `help`.

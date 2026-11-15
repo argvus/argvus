@@ -280,3 +280,13 @@ argvus config window-mode toggle
 前後への移動は、フォーカス中のモニターに存在するワークスペースを循環します。数値順の後に、名前付きとプロジェクトを元の名前順で並べます。タスクバーのスクロールはポインター下のモニターを使用します。特殊ワークスペースは対象外で、開いている間は移動しません。数字ショートカットはグローバル ID を維持します。割り当ては `/displays/workspaces` に保存されます。
 
 `argvus config workspace-cycle next|previous [--monitor focused|cursor]`
+
+## ランチャーと検索
+
+`argvus control-center launcher` · `argvus launcher`
+
+`argvus config get /launcher --effective`
+
+検索を設定: お気に入り, 最近のファイルを表示, ファイル名を索引化, 索引対象フォルダー, 除外フォルダー, 索引化を一時停止, 隠しファイルを含める, アニメーションを減らす.
+
+`argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.

@@ -569,3 +569,29 @@ Al abrir **Packages → Official Repositories → Update**, también desde el in
 Al terminar una operación de paquetes en Control Center (incluidas las actualizaciones oficiales y AUR), la barra de tareas comprueba automáticamente las actualizaciones restantes sin reiniciarse. También lo hace tras un fallo, pues algunos paquetes pueden haber cambiado. La comprobación horaria sigue activa y detecta las operaciones realizadas fuera de Control Center.
 
 Control Center guarda su base de consulta en `$XDG_CACHE_HOME/argvus/control-center/checkupdates` (por defecto: `~/.cache/argvus/control-center/checkupdates`), separada de la barra de tareas para evitar bloqueos de sincronización simultánea.
+
+## Lanzador y búsqueda
+
+El lanzador principal usa Quickshell/QML con un motor local en Rust. Busca aplicaciones, ventanas, ajustes, acciones, proyectos, hosts SSH, archivos y atajos. La indexación empieza desactivada y requiere carpetas elegidas explícitamente. Solo indexa nombres y rutas, nunca el contenido. Los archivos recientes dependen del registro XDG. Excluye archivos ocultos por defecto y no sigue enlaces simbólicos de directorios. Los menús especializados de Rofi siguen disponibles.
+
+`argvus launcher` · `argvus control-center launcher`
+
+↑↓ Navegar · Enter Abrir · Esc Volver · Ctrl+F Favorito
+
+- Configurar búsqueda: Aplicaciones, ventanas, Configuración, Comportamiento, Proyectos, SSH, archivos, Ayuda.
+- Añadir carpeta indexada / Añadir exclusión — Ruta absoluta.
+- Pausar indexación / Borrar índice y pausar / Reconstruir índice.
+- ↑↓ Navegar · Enter Alternar/Añadir · Delete Quitar · Ctrl+↑↓ Reordenar · F5 Actualizar · Esc Volver
+
+`argvus config get /launcher --effective`
+
+`$XDG_CONFIG_HOME/argvus/config/launcher.json` → `$XDG_CACHE_HOME/argvus/launcher/index.json`
+
+Quickshell: `launcher/Theme.qml` · Rofi: `launcher/theme.rasi`
+
+`--config` / Rasi: Configurar búsqueda → `argvus control-center launcher`.
+
+
+`/launcher/show_icons`: `true` / `false`.
+
+`/launcher/selected_category`: `""` (All), `applications`, `windows`, `settings`, `actions`, `projects`, `ssh`, `files`, `help`.

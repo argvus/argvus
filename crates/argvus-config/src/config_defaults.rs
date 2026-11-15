@@ -29,6 +29,7 @@ pub(super) const DEFAULTED_OBJECTS: &[&[&str]] = &[
   &["hyprland", "input", "touchpad"],
   &["power"],
   &["audio"],
+  &["launcher"],
 ];
 
 pub(super) fn check_defaulted_objects(document: &ConfigDocument) -> ConfigResult<()> {
@@ -359,7 +360,7 @@ fn default_applications(document: &mut ConfigDocument) {
     ("video_player", "mpv"),
     ("audio_player", "audacious"),
     ("archive", "xarchiver"),
-    ("launcher", "rofi"),
+    ("launcher", "argvus"),
   ] {
     default_apps
       .entry(category)

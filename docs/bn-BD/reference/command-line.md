@@ -110,3 +110,13 @@ argvus setup --copy <app> --dry-run
 **ডেস্কটপ ও ইনপুট > ডিসপ্লে > নাইট লাইট** খুলুন অথবা `argvus control-center displays night-light ` চালান। ` argvus config display night-light` এর মাধ্যমে তাপমাত্রা, ম্যানুয়াল অ্যাক্টিভেশন এবং নির্দিষ্ট স্থানীয় সময়সূচী কনফিগার করুন। কমান্ড, অবস্থা এবং রানটাইম প্রয়োজনীয়তার জন্য [নাইট লাইট](/docs/user-guide/night-light/) দেখুন।
 
 `argvus tui-terminal --frame TITLE FOOTER COMMAND [ARG...]` শেয়ার করা ARGVUS টার্মিনাল ফ্রেমের ভিতরে একটি ইন্টারেক্টিভ কমান্ড চালায়। Ctrl+E ফ্রেম বন্ধ করে; এর কলার স্থানীয় ফুটার সরবরাহ করে। এটিকে একটি টার্মিনালের ভিতরে ব্যবহার করুন, বা ` argvus tui-terminal --term kitty -- ...`-তে পাঠানো কমান্ড হিসাবে।` argvus tui-terminal --term kitty --profile ai-agents ` লুকানো ট্যাব এবং শুধুমাত্র ক্লিপবোর্ড শর্টকাট সহ একটি ডেডিকেটেড কিটি কনফিগারেশন ব্যবহার করে। কলার কমান্ড এবং শিরোনাম সরবরাহ করে; ` argvus-ai` ক্লাসের জন্য উইন্ডো প্লেসমেন্ট হাইপ্রল্যান্ড নিয়ম দ্বারা পরিচালিত হয়।
+
+## লঞ্চার ও অনুসন্ধান
+
+`argvus control-center launcher` · `argvus launcher`
+
+`argvus config get /launcher --effective`
+
+অনুসন্ধান সেট করুন: প্রিয়, সাম্প্রতিক ফাইল দেখান, ফাইলের নাম সূচিবদ্ধ করুন, সূচিবদ্ধ ফোল্ডার, বাদ দেওয়া ফোল্ডার, সূচিকরণ থামান, লুকানো ফাইল অন্তর্ভুক্ত করুন, অ্যানিমেশন কমান.
+
+`argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.

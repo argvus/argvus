@@ -413,3 +413,13 @@ Pencere dış boşluklarında çubukların ayırdığı iç kenar boşlukları i
 Sonraki/önceki yalnızca odaklanılan monitördeki mevcut çalışma alanlarını döngüyle gezer: önce sayısal alanlar, ardından özgün ada göre adlandırılmış alanlar ve projeler. Görev çubuğunu kaydırmak işaretçinin altındaki monitörü kullanır. Özel alanlar dışlanır ve açıkken gezinmeyi durdurur. Sayısal kısayollar genel kimlikleri korur. Atamalar `/displays/workspaces` içinde kalır.
 
 `argvus config workspace-cycle next|previous [--monitor focused|cursor]`
+
+## Başlatıcı ve Arama
+
+`argvus control-center launcher` · `argvus launcher`
+
+`argvus config get /launcher --effective`
+
+Aramayı yapılandır: Favoriler, Son dosyaları göster, Dosya adlarını dizine ekle, Dizinlenen klasör, Hariç tutulan klasör, Dizinlemeyi duraklat, Gizli dosyaları dahil et, Animasyonları azalt.
+
+`argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.

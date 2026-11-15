@@ -425,3 +425,13 @@ Inner margins reserved by the bars are not counted twice in window outer gaps. W
 Next/previous cycles existing numeric workspaces, then named workspaces and projects in native-name order, on the focused monitor only. Taskbar scrolling uses the monitor under the pointer. Cycling wraps; special workspaces are excluded and an open special workspace pauses navigation. Numeric shortcuts retain global IDs. Assignments remain in `/displays/workspaces`.
 
 `argvus config workspace-cycle next|previous [--monitor focused|cursor]`
+
+## Launcher and Search
+
+`argvus control-center launcher` · `argvus launcher`
+
+`argvus config get /launcher --effective`
+
+Configure search: Favorites, Show recent files, Index file names, Indexed folder, Excluded folder, Pause indexing, Include hidden files, Reduce animations.
+
+`argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.

@@ -39,7 +39,7 @@ power, display, network, notifications and themes — all packaged for Arch Linu
 - **Control panel** — Quickshell panel for quick system controls and widgets
 - **Control Center** — Terminal settings application for appearance, apps, displays, locale, users and more
 - **ARGVUS Welcome** — Resumable setup flow integrated into the Control Center, with a checklist and sequential settings pages
-- **Launcher** — Application launcher with ARGVUS themes
+- **Launcher** — Universal Quickshell search with a local Rust engine, configurable sources, optional file-name indexing and ARGVUS themes
 - **Lock screen** — Hyprlock-based lock screen synchronized with the active theme
 - **Notifications, power, display, network** — Desktop providers with their own packaged configuration
 - **Removable devices** — UDisks2-backed storage actions in the taskbar and menus

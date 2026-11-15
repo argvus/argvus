@@ -568,3 +568,29 @@ argvus theme uninstall NAME
 Control Center میں پیکیج کے کام مکمل ہونے پر (بشمول سرکاری اور AUR اپ گریڈ)، ٹاسک بار دوبارہ شروع ہوئے بغیر باقی اپ ڈیٹس خودکار طور پر جانچتا ہے۔ ناکامی کے بعد بھی جانچ ہوتی ہے، کیونکہ کچھ پیکیج پہلے ہی بدل چکے ہو سکتے ہیں۔ ہر گھنٹے کی جانچ جاری رہتی ہے اور Control Center سے باہر کے کاموں کا پتہ لگاتی ہے۔
 
 Control Center جانچ کا ڈیٹابیس `$XDG_CACHE_HOME/argvus/control-center/checkupdates` میں رکھتا ہے (طے شدہ: `~/.cache/argvus/control-center/checkupdates`)، ٹاسک بار سے الگ، تاکہ بیک وقت ہم وقت سازی میں لاک کا تصادم نہ ہو۔
+
+## لانچر اور تلاش
+
+مرکزی لانچر Quickshell/QML اور مقامی Rust سرچ انجن سے ایپس، ونڈوز، ترتیبات، کارروائیاں، منصوبے، SSH میزبان، فائلیں اور شارٹ کٹس تلاش کرتا ہے۔ اشاریہ سازی شروع میں بند ہے؛ فولڈر واضح طور پر منتخب کریں۔ صرف نام اور راستے شامل ہوتے ہیں، دستاویز کا مواد نہیں۔ حالیہ فائلیں XDG ریکارڈ پر منحصر ہیں۔ پوشیدہ فائلیں بطورِ طے شدہ خارج ہیں اور ڈائریکٹری سم لنکس کی پیروی نہیں ہوتی۔ مخصوص Rofi مینو دستیاب رہتے ہیں۔
+
+`argvus launcher` · `argvus control-center launcher`
+
+↑↓ حرکت · Enter کھولیں · Esc واپس · Ctrl+F پسندیدہ
+
+- تلاش ترتیب دیں: ایپلیکیشنز, ونڈو, ترتیبات, عمل, پراجیکٹ, SSH, فائلیں, مدد.
+- اشاریہ فولڈر شامل کریں / استثنا شامل کریں — مکمل راستہ.
+- اشاریہ سازی روکیں / اشاریہ مٹائیں اور روکیں / اشاریہ دوبارہ بنائیں.
+- ↑↓ حرکت · Enter بدلیں/شامل · Delete ہٹائیں · Ctrl+↑↓ ترتیب · F5 تازہ · Esc واپس
+
+`argvus config get /launcher --effective`
+
+`$XDG_CONFIG_HOME/argvus/config/launcher.json` → `$XDG_CACHE_HOME/argvus/launcher/index.json`
+
+Quickshell: `launcher/Theme.qml` · Rofi: `launcher/theme.rasi`
+
+`--config` / Rasi: تلاش ترتیب دیں → `argvus control-center launcher`.
+
+
+`/launcher/show_icons`: `true` / `false`.
+
+`/launcher/selected_category`: `""` (All), `applications`, `windows`, `settings`, `actions`, `projects`, `ssh`, `files`, `help`.

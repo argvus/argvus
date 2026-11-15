@@ -156,6 +156,30 @@ fn copy_tree(source: &Path, target: &Path) -> io::Result<()> {
   Ok(())
 }
 
+/// Upgrade the bundled launcher layout without replacing palette or user declarations.
+fn migrate_launcher_surface(paths: &SessionPaths, relative: &str, user: &Path) -> io::Result<()> {
+  if relative != "launcher/config/theme.rasi" || user.is_symlink() {
+    return Ok(());
+  }
+  let text = fs::read_to_string(user)?;
+  if text.contains("menu-card {") || !text.contains("/* Author: William C. Canin */") {
+    return Ok(());
+  }
+  let packaged = fs::read_to_string(paths.system_config(relative))?;
+  let Some(start) = packaged.find("window {") else {
+    return Ok(());
+  };
+  let Some(end) = packaged.find("menu-card {") else {
+    return Ok(());
+  };
+  let Some(position) = text.find("window {") else {
+    return Ok(());
+  };
+  let mut upgraded = text.clone();
+  upgraded.replace_range(position..position + "window {".len(), &format!("{}menu-card {{\n  orientation: vertical;\n  expand: false;\n  width: 50%;\n  children: [ mainbox ];", &packaged[start..end]));
+  crate::text_edit::replace_file(user, &upgraded)
+}
+
 #[cfg(test)]
 mod tests {
   use super::*;
@@ -278,28 +302,4 @@ mod tests {
     );
     let _ = fs::remove_dir_all(root);
   }
-}
-
-/// Upgrade the bundled launcher layout without replacing palette or user declarations.
-fn migrate_launcher_surface(paths: &SessionPaths, relative: &str, user: &Path) -> io::Result<()> {
-  if relative != "launcher/config/theme.rasi" || user.is_symlink() {
-    return Ok(());
-  }
-  let text = fs::read_to_string(user)?;
-  if text.contains("menu-card {") || !text.contains("/* Author: William C. Canin */") {
-    return Ok(());
-  }
-  let packaged = fs::read_to_string(paths.system_config(relative))?;
-  let Some(start) = packaged.find("window {") else {
-    return Ok(());
-  };
-  let Some(end) = packaged.find("menu-card {") else {
-    return Ok(());
-  };
-  let Some(position) = text.find("window {") else {
-    return Ok(());
-  };
-  let mut upgraded = text.clone();
-  upgraded.replace_range(position..position + "window {".len(), &format!("{}menu-card {{\n  orientation: vertical;\n  expand: false;\n  width: 50%;\n  children: [ mainbox ];", &packaged[start..end]));
-  crate::text_edit::replace_file(user, &upgraded)
 }

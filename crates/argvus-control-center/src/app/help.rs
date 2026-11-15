@@ -24,6 +24,9 @@ impl App {
         tr(self.lang, "control_center.s_configuration"),
       ]);
     }
+    if self.route == Route::Launcher {
+      lines.push(tr(self.lang, "control_center.launcher_hints"));
+    }
     if self.route == Route::Config {
       lines.extend([
         tr(self.lang, "control_center.configuration"),

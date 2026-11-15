@@ -679,3 +679,29 @@ Ao abrir **Pacotes → Repositórios oficiais → Atualizar**, inclusive pelo in
 Ao terminar uma operação de pacotes no Control Center (incluindo upgrades oficiais e AUR), a taskbar consulta automaticamente as atualizações restantes, sem reiniciar. A consulta também ocorre após falhas, pois alguns pacotes podem já ter sido alterados. A verificação a cada hora continua ativa; operações fora do Control Center são detectadas por essa verificação periódica.
 
 O Control Center mantém a base de consulta de atualizações em `$XDG_CACHE_HOME/argvus/control-center/checkupdates` (padrão: `~/.cache/argvus/control-center/checkupdates`), separada da base da taskbar para evitar disputa de locks nas consultas simultâneas.
+
+## Launcher e Pesquisa
+
+O launcher principal usa Quickshell/QML com um motor local de busca em Rust. Pesquisa aplicativos, janelas abertas, configurações, ações, projetos, hosts SSH, arquivos e atalhos. A indexação começa desativada; escolha as pastas explicitamente. Somente nomes e caminhos são indexados, nunca o conteúdo dos documentos. Arquivos recentes dependem do registro XDG. Arquivos ocultos são excluídos por padrão e links simbólicos de diretórios não são seguidos. Os menus especializados do Rofi continuam disponíveis.
+
+`argvus launcher` · `argvus control-center launcher`
+
+↑↓ Navegar · Enter Abrir · Esc Voltar · Ctrl+F Favorito
+
+- Configurar pesquisa: Aplicativos, Janelas, Configurações, Ações, Projetos, SSH, arquivos, Ajuda.
+- Adicionar pasta indexada / Adicionar exclusão — Caminho absoluto.
+- Pausar indexação / Apagar índice e pausar / Reconstruir índice.
+- ↑↓ Navegar · Enter Alternar/Adicionar · Delete Remover · Ctrl+↑↓ Reordenar · F5 Atualizar · Esc Voltar
+
+`argvus config get /launcher --effective`
+
+`$XDG_CONFIG_HOME/argvus/config/launcher.json` → `$XDG_CACHE_HOME/argvus/launcher/index.json`
+
+Quickshell: `launcher/Theme.qml` · Rofi: `launcher/theme.rasi`
+
+`--config` / Rasi: Configurar pesquisa → `argvus control-center launcher`.
+
+
+`/launcher/show_icons`: `true` / `false`.
+
+`/launcher/selected_category`: `""` (All), `applications`, `windows`, `settings`, `actions`, `projects`, `ssh`, `files`, `help`.

@@ -129,3 +129,13 @@ Abra **Área de trabalho e entrada > Monitores > Luz noturna** ou execute `argvu
 `argvus tui-terminal --frame TITULO RODAPE COMANDO [ARG...]` executa um comando interativo na moldura ARGVUS. Ctrl+E fecha a moldura; o chamador fornece o rodapé traduzido. Use dentro de um terminal ou como comando de `argvus tui-terminal --term kitty -- ...`.
 
 `argvus tui-terminal --term kitty --profile ai-agents` usa uma configuração Kitty dedicada com abas ocultas e somente atalhos de clipboard. O chamador fornece o comando e o título; a regra Hyprland da classe `argvus-ai` controla o posicionamento.
+
+## Launcher e Pesquisa
+
+`argvus control-center launcher` · `argvus launcher`
+
+`argvus config get /launcher --effective`
+
+Configurar pesquisa: Favoritos, Mostrar arquivos recentes, Indexar nomes de arquivos, Pasta indexada, Pasta excluída, Pausar indexação, Incluir arquivos ocultos, Reduzir animações.
+
+`argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.

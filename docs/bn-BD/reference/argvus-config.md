@@ -387,3 +387,13 @@ argvus config window-mode toggle
 পরবর্তী/পূর্ববর্তী শুধু সক্রিয় মনিটরের বিদ্যমান কর্মক্ষেত্র ঘুরে দেখায়: আগে সংখ্যাযুক্ত, পরে মূল নামের ক্রমে নামযুক্ত ও প্রকল্প। টাস্কবার স্ক্রল পয়েন্টারের নিচের মনিটর ব্যবহার করে। বিশেষ কর্মক্ষেত্র বাদ থাকে এবং খোলা থাকলে চক্র থামে। সংখ্যার শর্টকাট বিশ্বব্যাপী ID রাখে। বরাদ্দ `/displays/workspaces`-এ থাকে।
 
 `argvus config workspace-cycle next|previous [--monitor focused|cursor]`
+
+## লঞ্চার ও অনুসন্ধান
+
+`argvus control-center launcher` · `argvus launcher`
+
+`argvus config get /launcher --effective`
+
+অনুসন্ধান সেট করুন: প্রিয়, সাম্প্রতিক ফাইল দেখান, ফাইলের নাম সূচিবদ্ধ করুন, সূচিবদ্ধ ফোল্ডার, বাদ দেওয়া ফোল্ডার, সূচিকরণ থামান, লুকানো ফাইল অন্তর্ভুক্ত করুন, অ্যানিমেশন কমান.
+
+`argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.

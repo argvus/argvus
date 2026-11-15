@@ -36,3 +36,9 @@ Jalur direktori kanonik menentukan identitas ruang kerja yang stabil; mengubah u
 Ruang kerja yang dibuka sebelum pembaruan tetap mempertahankan jendela dan nama aslinya. Membuka proyek setelah pembaruan menggunakan identitas turunan jalur barunya; tutup jendela proyek lama jika memungkinkan. Tidak ada asosiasi atau perpindahan otomatis yang dilakukan karena nama lama tidak dapat mengidentifikasi direktori dengan andal. Dengan nama direktori duplikat, gunakan picker, nomor, atau jalur kanonik lengkap, bukan nama yang ambigu.
 
 Membuka proyek akan membuat ulang `$XDG_RUNTIME_DIR/argvus/project-workspaces.json` secara atom dari daftar proyek yang dikonfigurasi dan terjemahannya. Ini adalah metadata sesi untuk label ruang kerja dan keterangan alat, bukan konfigurasi; jangan mengeditnya. Buka kembali proyek setelah mengubah daftar atau bahasa untuk menyegarkan labelnya. Perbarui `argvus` dan `argvus-waybar`, ditambah konfigurasi `argvus-taskbar`, untuk integrasi ini.
+
+## Proyek
+
+`argvus projects list --resolved` → `argvus launcher`
+
+Peluncur utama memakai Quickshell/QML dan mesin Rust lokal untuk aplikasi, jendela, pengaturan, tindakan, proyek, host SSH, berkas, dan pintasan. Pengindeksan awalnya nonaktif; pilih folder secara eksplisit. Hanya nama dan jalur yang diindeks, bukan isi dokumen. Berkas terbaru bergantung pada catatan XDG. Berkas tersembunyi dikecualikan secara bawaan dan symlink direktori tidak diikuti. Menu khusus Rofi tetap tersedia.

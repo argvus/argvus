@@ -1,5 +1,5 @@
 //! Search interaction.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize)]
 pub struct SearchEntry {
   pub id: String,
   pub category: String,

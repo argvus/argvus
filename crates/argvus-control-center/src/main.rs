@@ -21,6 +21,38 @@ macro_rules! poll_domain {
 
 fn main() -> Result<()> {
   let args: Vec<String> = std::env::args().skip(1).collect();
+  if args.as_slice() == ["--search-catalog"] {
+    let mut registry = argvus_control_center::app::search_catalog::build_search_registry(
+      argvus_i18n::Lang::detect(),
+    );
+    let lang = argvus_i18n::Lang::detect();
+    use argvus_control_center_settings::system::keybindings;
+    for binding in keybindings::load()
+      .into_iter()
+      .filter(|binding| binding.enabled)
+    {
+      let title = binding
+        .custom
+        .as_ref()
+        .map(|custom| custom.description.clone())
+        .or_else(|| keybindings::cheatsheet_description(lang, &binding))
+        .unwrap_or_else(|| argvus_i18n::tr(lang, &binding.description_key).into());
+      if title == binding.description_key || title.trim().is_empty() {
+        continue;
+      }
+      registry
+        .register(argvus_control_center_core::search::SearchEntry {
+          id: format!("shortcut:{}", binding.id),
+          category: "help".into(),
+          title: format!("{title} — {}", binding.keys),
+          keywords: vec![binding.keys, binding.context],
+          route: "settings/shortcuts-list".into(),
+        })
+        .map_err(anyhow::Error::msg)?;
+    }
+    println!("{}", serde_json::to_string(registry.entries())?);
+    return Ok(());
+  }
   if args.first().is_some_and(|arg| arg == "system-settings") {
     if let Err(error) = argvus_control_center_settings::system::command::run(&args[1..]) {
       eprintln!("argvus-control-center: {error}");
@@ -29,16 +61,41 @@ fn main() -> Result<()> {
     return Ok(());
   }
 
-  let Some(initial) = cli::parse_or_print()? else {
+  let search_id = if args.first().is_some_and(|arg| arg == "--search-id") && args.len() == 2 {
+    Some(args[1].clone())
+  } else {
+    None
+  };
+  let initial = if search_id.is_some() {
+    Some(argvus_control_center::app::InitialRoute::Home)
+  } else {
+    cli::parse_or_print()?
+  };
+  let Some(initial) = initial else {
     return Ok(());
   };
 
   install_panic_hook();
   let mut app = App::new(initial);
+  if let Some(id) = search_id {
+    let route = app
+      .search_registry
+      .entries()
+      .iter()
+      .find(|entry| entry.id == id)
+      .map(|entry| entry.route.clone());
+    if let Some(route) = route {
+      app.open_search_route(&route);
+    } else {
+      anyhow::bail!("unknown search destination: {id}");
+    }
+  }
   let mut terminal = TerminalGuard::new()?;
   let mut dirty = true;
   while !app.quit {
     dirty |= app.poll_welcome_request();
+    dirty |= app.launcher.poll();
+    dirty |= app.poll_launcher_request();
     if dirty {
       terminal
         .terminal_mut()

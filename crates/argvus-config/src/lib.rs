@@ -118,7 +118,7 @@ fn write_backup(backup: &Path, contents: &str) -> io::Result<()> {
 }
 const MODULE_DIRECTORY: &str = "config";
 
-const KNOWN_SECTIONS: [&str; 17] = [
+const KNOWN_SECTIONS: [&str; 18] = [
   "appearance",
   "layout",
   "effects",
@@ -135,6 +135,7 @@ const KNOWN_SECTIONS: [&str; 17] = [
   "audio",
   "taskbar",
   "projects",
+  "launcher",
   "snippets",
 ];
 
@@ -211,6 +212,7 @@ impl ConfigScope {
         "audio",
         "taskbar",
         "projects",
+        "launcher",
       ],
     }
   }
@@ -327,6 +329,7 @@ impl ConfigDocument {
     validate_keyboard_shortcuts(self)?;
     validate_power(self)?;
     validate_audio(self)?;
+    config_validation::validate_launcher(self)?;
     validate_session(self)?;
     validate_taskbar(self)?;
     Ok(())

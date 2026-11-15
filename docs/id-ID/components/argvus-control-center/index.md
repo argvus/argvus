@@ -634,3 +634,29 @@ Saat membuka **Packages → Official Repositories → Update**, termasuk dari in
 Setelah operasi paket di Control Center selesai (termasuk peningkatan resmi dan AUR), bilah tugas otomatis memeriksa pembaruan tersisa tanpa memulai ulang. Pemeriksaan juga dilakukan setelah kegagalan karena beberapa paket mungkin sudah berubah. Pemeriksaan setiap jam tetap aktif dan mendeteksi operasi di luar Control Center.
 
 Control Center menyimpan basis data pemeriksaan di `$XDG_CACHE_HOME/argvus/control-center/checkupdates` (bawaan: `~/.cache/argvus/control-center/checkupdates`), terpisah dari bilah tugas untuk menghindari konflik kunci saat sinkronisasi bersamaan.
+
+## Peluncur dan Pencarian
+
+Peluncur utama memakai Quickshell/QML dan mesin Rust lokal untuk aplikasi, jendela, pengaturan, tindakan, proyek, host SSH, berkas, dan pintasan. Pengindeksan awalnya nonaktif; pilih folder secara eksplisit. Hanya nama dan jalur yang diindeks, bukan isi dokumen. Berkas terbaru bergantung pada catatan XDG. Berkas tersembunyi dikecualikan secara bawaan dan symlink direktori tidak diikuti. Menu khusus Rofi tetap tersedia.
+
+`argvus launcher` · `argvus control-center launcher`
+
+↑↓ Navigasi · Enter Buka · Esc Kembali · Ctrl+F Favorit
+
+- Atur pencarian: Aplikasi, Jendela, Pengaturan, Aksi, Proyek, SSH, berkas, Bantuan.
+- Tambah folder terindeks / Tambah pengecualian — Jalur absolut.
+- Jeda pengindeksan / Hapus indeks dan jeda / Bangun ulang indeks.
+- ↑↓ Navigasi · Enter Alih/Tambah · Delete Hapus · Ctrl+↑↓ Urutkan · F5 Segarkan · Esc Kembali
+
+`argvus config get /launcher --effective`
+
+`$XDG_CONFIG_HOME/argvus/config/launcher.json` → `$XDG_CACHE_HOME/argvus/launcher/index.json`
+
+Quickshell: `launcher/Theme.qml` · Rofi: `launcher/theme.rasi`
+
+`--config` / Rasi: Atur pencarian → `argvus control-center launcher`.
+
+
+`/launcher/show_icons`: `true` / `false`.
+
+`/launcher/selected_category`: `""` (All), `applications`, `windows`, `settings`, `actions`, `projects`, `ssh`, `files`, `help`.

@@ -152,6 +152,7 @@ impl App {
         self.route = Route::Session;
         self.session.reload();
       }
+      HomeDestination::Launcher => self.open_launcher(),
       HomeDestination::Settings => self.route = Route::AppSettings,
       HomeDestination::Welcome => self.open_welcome(),
       #[cfg(feature = "hardware")]

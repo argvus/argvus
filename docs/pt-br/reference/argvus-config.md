@@ -431,3 +431,13 @@ As margens internas reservadas pelas barras não são somadas duas vezes aos esp
 Próximo/anterior percorre os workspaces existentes somente no monitor em foco: primeiro os numéricos, depois os nomeados e projetos em ordem do nome nativo, retornando ao início no final. A rolagem na taskbar usa o monitor sob o ponteiro. Workspaces especiais são excluídos e, enquanto um estiver aberto, o ciclo não atua. Atalhos numéricos mantêm IDs globais. As associações permanecem em `/displays/workspaces`.
 
 `argvus config workspace-cycle next|previous [--monitor focused|cursor]`
+
+## Launcher e Pesquisa
+
+`argvus control-center launcher` · `argvus launcher`
+
+`argvus config get /launcher --effective`
+
+Configurar pesquisa: Favoritos, Mostrar arquivos recentes, Indexar nomes de arquivos, Pasta indexada, Pasta excluída, Pausar indexação, Incluir arquivos ocultos, Reduzir animações.
+
+`argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.

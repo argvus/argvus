@@ -432,3 +432,13 @@ argvus config window-mode toggle
 अगला/पिछला केवल केंद्रित मॉनिटर के मौजूदा कार्यस्थानों में चक्र करता है: पहले संख्यात्मक, फिर मूल नाम के क्रम में नामित कार्यस्थान और प्रोजेक्ट। टास्कबार स्क्रॉल सूचक के नीचे का मॉनिटर उपयोग करता है। विशेष कार्यस्थान बाहर रहते हैं और खुले होने पर चक्र रोकते हैं। संख्या शॉर्टकट वैश्विक ID रखते हैं। आवंटन `/displays/workspaces` में रहते हैं।
 
 `argvus config workspace-cycle next|previous [--monitor focused|cursor]`
+
+## लॉन्चर और खोज
+
+`argvus control-center launcher` · `argvus launcher`
+
+`argvus config get /launcher --effective`
+
+खोज सेट करें: पसंदीदा, हाल की फ़ाइलें दिखाएँ, फ़ाइल नाम अनुक्रमित करें, अनुक्रमित फ़ोल्डर, बाहर रखा फ़ोल्डर, अनुक्रमण रोकें, छिपी फ़ाइलें शामिल करें, एनिमेशन कम करें.
+
+`argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.

@@ -684,3 +684,29 @@ Opening **Packages → Official Repositories → Update**, including from the ta
 After package operations in the Control Center finish (including official and AUR upgrades), the taskbar automatically checks the remaining updates without restarting. It also checks after failures, since some packages may already have changed. The hourly check remains enabled; operations outside the Control Center are detected by that periodic check.
 
 The Control Center keeps its update-check database in `$XDG_CACHE_HOME/argvus/control-center/checkupdates` (default: `~/.cache/argvus/control-center/checkupdates`), separate from the taskbar database to avoid concurrent synchronization locks.
+
+## Launcher and Search
+
+The main launcher uses Quickshell/QML with a local Rust search engine. It searches applications, open windows, settings, actions, projects, SSH hosts, files and shortcuts. File indexing starts disabled; select folders explicitly. Only names and paths are indexed, never document contents. Recent files depend on the XDG recent-file registry. Hidden files are excluded by default, and directory symlinks are not followed. Specialized Rofi menus remain available.
+
+`argvus launcher` · `argvus control-center launcher`
+
+↑↓ Navigate · Enter Open · Esc Back · Ctrl+F Favorite
+
+- Configure search: Applications, Windows, Settings, Actions, Projects, SSH, files, Help.
+- Add indexed folder / Add exclusion — Absolute path.
+- Pause indexing / Clear index and pause / Rebuild index.
+- ↑↓ Navigate · Enter Toggle/Add · Delete Remove · Ctrl+↑↓ Reorder · F5 Refresh · Esc Back
+
+`argvus config get /launcher --effective`
+
+`$XDG_CONFIG_HOME/argvus/config/launcher.json` → `$XDG_CACHE_HOME/argvus/launcher/index.json`
+
+Quickshell: `launcher/Theme.qml` · Rofi: `launcher/theme.rasi`
+
+`--config` / Rasi: Configure search → `argvus control-center launcher`.
+
+
+`/launcher/show_icons`: `true` / `false`.
+
+`/launcher/selected_category`: `""` (All), `applications`, `windows`, `settings`, `actions`, `projects`, `ssh`, `files`, `help`.

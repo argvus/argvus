@@ -29,3 +29,9 @@ argvus projects pick [PROMPT]      print the path picked from the list, for othe
 更新前打开的工作区会保留其现有的窗口和本地名称。更新后打开项目将使用其新的基于路径的身份；在方便的时候关闭旧项目窗口。不会尝试自动关联或移动，因为旧名称不能可靠地识别目录。对于重复的目录名称，请使用选择器、编号或完整的规范路径，而不是模糊的名称。
 
 打开项目会根据配置的项目列表和翻译原子性地重新生成 `$XDG_RUNTIME_DIR/argvus/project-workspaces.json`。这是用于工作区标签和工具提示的会话元数据，而不是配置；请勿编辑。更改列表或语言后重新打开项目以刷新其标签。请同时更新 `argvus` 和 `argvus-waybar`，以及 `argvus-taskbar` 配置，以进行此集成。
+
+## 项目
+
+`argvus projects list --resolved` → `argvus launcher`
+
+主启动器采用 Quickshell/QML 和本地 Rust 搜索引擎，可查找应用、窗口、设置、操作、项目、SSH 主机、文件和快捷键。文件索引默认关闭，需明确选择文件夹。仅索引名称和路径，不读取文档内容。最近文件来自 XDG 记录。默认排除隐藏文件，不跟随目录符号链接。专用 Rofi 菜单继续可用。

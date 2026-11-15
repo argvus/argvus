@@ -112,3 +112,13 @@ argvus setup --copy <app> --dry-run
 **ڈیسک ٹاپ اور ان پٹ> ڈسپلے> نائٹ لائٹ** کھولیں یا `argvus control-center displays night-light ` چلائیں۔ ` argvus config display night-light` کے ذریعے درجہ حرارت، دستی ایکٹیویشن اور فکسڈ لوکل شیڈول کو ترتیب دیں۔ کمانڈز، حالت اور رن ٹائم کے تقاضوں کے لیے [نائٹ لائٹ](/docs/user-guide/night-light/) دیکھیں۔
 
 `argvus tui-terminal --frame TITLE FOOTER COMMAND [ARG...]` مشترکہ ARGVUS ٹرمینل فریم کے اندر ایک انٹرایکٹو کمانڈ چلاتا ہے۔ Ctrl+E فریم کو بند کرتا ہے۔ اس کا کالر مقامی فوٹر فراہم کرتا ہے۔ اسے ٹرمینل کے اندر استعمال کریں، یا ` argvus tui-terminal --term kitty -- ...` کو بھیجی گئی کمانڈ کے طور پر۔` argvus tui-terminal --term kitty --profile ai-agents ` پوشیدہ ٹیبز اور صرف کلپ بورڈ شارٹ کٹس کے ساتھ ایک سرشار کٹی کنفیگریشن کا استعمال کرتا ہے۔ کال کرنے والا کمانڈ اور ٹائٹل فراہم کرتا ہے۔ ونڈو پلیسمنٹ کلاس ` argvus-ai` کے لیے Hyprland اصول کے ذریعے سنبھالی جاتی ہے۔
+
+## لانچر اور تلاش
+
+`argvus control-center launcher` · `argvus launcher`
+
+`argvus config get /launcher --effective`
+
+تلاش ترتیب دیں: پسندیدہ, حالیہ فائلیں دکھائیں, فائل ناموں کی اشاریہ سازی, اشاریہ شدہ فولڈر, خارج شدہ فولڈر, اشاریہ سازی روکیں, پوشیدہ فائلیں شامل کریں, حرکت پذیری کم کریں.
+
+`argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.

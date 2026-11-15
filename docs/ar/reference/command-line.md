@@ -127,3 +127,13 @@ argvus setup --copy <app> --dry-run
 يقوم `argvus tui-terminal --frame TITLE FOOTER COMMAND [ARG...]` بتشغيل أمر تفاعلي داخل إطار محطة ARGVUS المشترك. Ctrl+E يغلق الإطار؛ المتصل به يوفر التذييل المترجم. استخدم هذا داخل المحطة، أو عند تمرير الأمر إلى `argvus tui-terminal --term kitty -- ...`.
 
 يستخدم `argvus tui-terminal --term kitty --profile ai-agents` تكوين Kitty مخصصًا مع علامات تبويب مخفية واختصارات الحافظة فقط. يقوم المتصل بتوفير الأمر والعنوان؛ تتم معالجة وضع النافذة بواسطة قاعدة Hyprland للفئة `argvus-ai`.
+
+## المشغّل والبحث
+
+`argvus control-center launcher` · `argvus launcher`
+
+`argvus config get /launcher --effective`
+
+إعداد البحث: المفضلة, إظهار الملفات الحديثة, فهرسة أسماء الملفات, مجلد مفهرس, مجلد مستبعد, إيقاف الفهرسة مؤقتًا, تضمين الملفات المخفية, تقليل الرسوم المتحركة.
+
+`argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.

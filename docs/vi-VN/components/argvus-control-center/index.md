@@ -634,3 +634,29 @@ Khi mở **Packages → Official Repositories → Update**, kể cả từ chỉ
 Sau khi thao tác gói trong Control Center kết thúc (gồm nâng cấp chính thức và AUR), thanh tác vụ tự động kiểm tra các bản cập nhật còn lại mà không khởi động lại. Việc kiểm tra cũng diễn ra sau lỗi vì một số gói có thể đã thay đổi. Kiểm tra hàng giờ vẫn hoạt động để phát hiện các thao tác ngoài Control Center.
 
 Control Center lưu cơ sở dữ liệu kiểm tra tại `$XDG_CACHE_HOME/argvus/control-center/checkupdates` (mặc định: `~/.cache/argvus/control-center/checkupdates`), tách khỏi thanh tác vụ để tránh xung đột khóa khi đồng bộ đồng thời.
+
+## Trình khởi chạy và tìm kiếm
+
+Trình khởi chạy chính dùng Quickshell/QML và công cụ Rust cục bộ để tìm ứng dụng, cửa sổ, cài đặt, thao tác, dự án, máy chủ SSH, tệp và phím tắt. Lập chỉ mục ban đầu bị tắt; cần chọn thư mục rõ ràng. Chỉ tên và đường dẫn được lập chỉ mục, không đọc nội dung tài liệu. Tệp gần đây dựa vào bản ghi XDG. Tệp ẩn bị loại trừ mặc định và không đi theo liên kết tượng trưng của thư mục. Các menu Rofi chuyên dụng vẫn có sẵn.
+
+`argvus launcher` · `argvus control-center launcher`
+
+↑↓ Di chuyển · Enter Mở · Esc Quay lại · Ctrl+F Yêu thích
+
+- Cấu hình tìm kiếm: Ứng dụng, Cửa sổ, Thiết lập, Hành động, Dự án, SSH, tập tin, Trợ giúp.
+- Thêm thư mục lập chỉ mục / Thêm mục loại trừ — Đường dẫn tuyệt đối.
+- Tạm dừng lập chỉ mục / Xóa chỉ mục và tạm dừng / Tạo lại chỉ mục.
+- ↑↓ Di chuyển · Enter Đổi/Thêm · Delete Xóa · Ctrl+↑↓ Sắp xếp · F5 Làm mới · Esc Quay lại
+
+`argvus config get /launcher --effective`
+
+`$XDG_CONFIG_HOME/argvus/config/launcher.json` → `$XDG_CACHE_HOME/argvus/launcher/index.json`
+
+Quickshell: `launcher/Theme.qml` · Rofi: `launcher/theme.rasi`
+
+`--config` / Rasi: Cấu hình tìm kiếm → `argvus control-center launcher`.
+
+
+`/launcher/show_icons`: `true` / `false`.
+
+`/launcher/selected_category`: `""` (All), `applications`, `windows`, `settings`, `actions`, `projects`, `ssh`, `files`, `help`.

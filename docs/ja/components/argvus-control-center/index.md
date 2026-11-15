@@ -574,3 +574,29 @@ argvus theme uninstall NAME
 Control Center でのパッケージ操作（公式リポジトリと AUR の更新を含む）が終了すると、タスクバーは再起動せずに残りの更新を自動確認します。一部のパッケージが変更済みの場合があるため、失敗後も確認します。毎時の確認も引き続き行われ、Control Center 外での操作を検出します。
 
 Control Center の確認用データベースは `$XDG_CACHE_HOME/argvus/control-center/checkupdates`（既定：`~/.cache/argvus/control-center/checkupdates`）に保存されます。タスクバーとは別にすることで、同時同期時のロック競合を防ぎます。
+
+## ランチャーと検索
+
+メインランチャーは Quickshell/QML とローカルの Rust 検索エンジンを使用し、アプリ、ウィンドウ、設定、操作、プロジェクト、SSH ホスト、ファイル、ショートカットを検索します。索引化は初期状態で無効で、対象フォルダーの明示的な選択が必要です。名前とパスのみを索引化し、文書の内容は読み取りません。最近のファイルは XDG の履歴に依存します。隠しファイルは標準で除外し、ディレクトリーのシンボリックリンクはたどりません。専用の Rofi メニューも引き続き利用できます。
+
+`argvus launcher` · `argvus control-center launcher`
+
+↑↓ 移動 · Enter 開く · Esc 戻る · Ctrl+F お気に入り
+
+- 検索を設定: アプリケーション, 窓, 設定, アクション, プロジェクト, SSH, ファイル, ヘルプ.
+- 索引対象フォルダーを追加 / 除外を追加 — 絶対パス.
+- 索引化を一時停止 / 索引を削除して一時停止 / 索引を再構築.
+- ↑↓ 移動 · Enter 切替/追加 · Delete 削除 · Ctrl+↑↓ 並替 · F5 更新 · Esc 戻る
+
+`argvus config get /launcher --effective`
+
+`$XDG_CONFIG_HOME/argvus/config/launcher.json` → `$XDG_CACHE_HOME/argvus/launcher/index.json`
+
+Quickshell: `launcher/Theme.qml` · Rofi: `launcher/theme.rasi`
+
+`--config` / Rasi: 検索を設定 → `argvus control-center launcher`.
+
+
+`/launcher/show_icons`: `true` / `false`.
+
+`/launcher/selected_category`: `""` (All), `applications`, `windows`, `settings`, `actions`, `projects`, `ssh`, `files`, `help`.

@@ -68,11 +68,12 @@ impl App {
     self.open_search_route(&route);
   }
 
-  pub(crate) fn open_search_route(&mut self, route: &str) {
+  pub fn open_search_route(&mut self, route: &str) {
     let Some((domain, page)) = route.split_once('/') else {
       return;
     };
     match (domain, page) {
+      ("launcher", "settings") => self.open_launcher(),
       #[cfg(feature = "appearance")]
       ("hyprland", "animations-windows") => crate::hyprland::open_appearance_page(
         self,

@@ -92,6 +92,7 @@ pub fn parse(args: &[String]) -> Result<Option<InitialRoute>, String> {
     }
     #[cfg(feature = "language")]
     "language" if args.len() == 1 => Ok(settings_route(Page::Language)),
+    "launcher" if args.len() == 1 => Ok(Some(InitialRoute::Launcher)),
     "welcome" if args.len() == 1 => Ok(Some(InitialRoute::Welcome)),
     "config" if args.len() == 1 => Ok(Some(InitialRoute::Config)),
     #[cfg(feature = "system")]

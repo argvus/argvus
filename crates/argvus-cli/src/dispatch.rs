@@ -52,6 +52,7 @@ pub fn run(arguments: &[OsString]) -> Outcome {
     "tui-terminal" => Ok(argvus_tui_terminal::run_command(owned_arguments(rest)?)),
     "sensors" => Ok(argvus_sensors::run_command(owned_arguments(rest)?)),
     "--terminal" | "terminal" => Ok(argvus_terminal::run_command(owned_arguments(rest)?)),
+    "launcher-engine" => Ok(argvus_launcher_core::run_command(owned_arguments(rest)?)),
     "projects" => Ok(argvus_projects::run_command(owned_arguments(rest)?)),
     "widget-telemetry" => widget_telemetry(rest),
     "loading-theme" => exec_program(Path::new(LOADING_THEME_BINARY), rest),

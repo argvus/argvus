@@ -31,6 +31,11 @@ const ICON_SCALE: &str = "3/3";
 /// the page name the Control Center understands.
 pub fn run(arguments: Vec<OsString>) -> Outcome {
   let control_center = required_executable(CONTROL_CENTER)?;
+  if arguments.as_slice() == [OsString::from("--search-catalog")] {
+    return Err(crate::exec::replace_process(
+      Command::new(control_center).args(arguments),
+    ));
+  }
   let argvus = std::env::current_exe()
     .map_err(|error| Failure::new(format!("cannot locate argvus: {error}")))?;
   let arguments = map_page_alias(arguments);
@@ -44,6 +49,7 @@ pub fn run(arguments: Vec<OsString>) -> Outcome {
   }
 
   if let Some(address) = find_window_address() {
+    request_launcher_navigation(&arguments)?;
     focus_window(&address);
     return Ok(ExitCode::SUCCESS);
   }
@@ -56,6 +62,7 @@ pub fn run(arguments: Vec<OsString>) -> Outcome {
   // Recheck under the lock: another invocation may have started the window
   // while this one was waiting.
   if let Some(address) = find_window_address() {
+    request_launcher_navigation(&arguments)?;
     focus_window(&address);
     return Ok(ExitCode::SUCCESS);
   }
@@ -217,6 +224,36 @@ fn status_code(status: ExitStatus) -> u8 {
     .or_else(|| status.signal().map(|signal| 128 + signal))
     .and_then(|code| u8::try_from(code).ok())
     .unwrap_or(1)
+}
+
+/// Uses the per-user runtime directory; the request contains IDs, never commands.
+fn request_launcher_navigation(arguments: &[OsString]) -> Result<(), Failure> {
+  if !(arguments.first().is_some_and(|arg| arg == "--search-id")
+    || arguments == [OsString::from("launcher")])
+  {
+    return Ok(());
+  }
+  let directory = std::env::var_os("XDG_RUNTIME_DIR")
+    .ok_or_else(|| Failure::new("XDG_RUNTIME_DIR is unavailable"))?;
+  let path = PathBuf::from(directory).join("argvus-control-center-search.json");
+  let temporary = path.with_extension(format!("{}.tmp", std::process::id()));
+  let arguments: Vec<_> = arguments
+    .iter()
+    .map(|arg| arg.to_string_lossy().into_owned())
+    .collect();
+  let bytes = serde_json::to_vec(&arguments).map_err(|error| Failure::new(error.to_string()))?;
+  use std::io::Write;
+  use std::os::unix::fs::OpenOptionsExt;
+  let mut file = OpenOptions::new()
+    .create_new(true)
+    .write(true)
+    .mode(0o600)
+    .open(&temporary)
+    .map_err(|error| Failure::new(error.to_string()))?;
+  file
+    .write_all(&bytes)
+    .and_then(|_| std::fs::rename(&temporary, &path))
+    .map_err(|error| Failure::new(error.to_string()))
 }
 
 #[cfg(test)]

@@ -127,3 +127,13 @@ Kurulum, herhangi bir şeyi değiştirmeden önce her seçeneği doğrular. Geç
 `argvus tui-terminal --frame TITLE FOOTER COMMAND [ARG...]`, paylaşılan ARGVUS terminal çerçevesi içinde etkileşimli bir komut çalıştırır. Ctrl+E çerçeveyi kapatır; arayan kişi yerelleştirilmiş altbilgiyi sağlar. Bunu bir terminalin içinde veya `argvus tui-terminal --term kitty -- ...`'ya iletilen komut olarak kullanın.
 
 `argvus tui-terminal --term kitty --profile ai-agents`, gizli sekmelere ve yalnızca pano kısayollarına sahip özel bir Kitty yapılandırması kullanır. Arayan kişi komutu ve unvanı sağlar; pencere yerleşimi `argvus-ai` sınıfı için Hyprland kuralıyla gerçekleştirilir.
+
+## Başlatıcı ve Arama
+
+`argvus control-center launcher` · `argvus launcher`
+
+`argvus config get /launcher --effective`
+
+Aramayı yapılandır: Favoriler, Son dosyaları göster, Dosya adlarını dizine ekle, Dizinlenen klasör, Hariç tutulan klasör, Dizinlemeyi duraklat, Gizli dosyaları dahil et, Animasyonları azalt.
+
+`argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.

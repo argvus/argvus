@@ -7,9 +7,16 @@ use super::*;
 /// Registers every searchable destination compiled into this build. Entries
 /// behind a disabled feature are left out, so search never offers a page the
 /// build cannot open.
-pub(super) fn build_search_registry(lang: Lang) -> SearchRegistry {
+pub fn build_search_registry(lang: Lang) -> SearchRegistry {
   let mut search_registry = SearchRegistry::default();
   let entries: [(&str, &str, &str, &str, &str); _] = [
+    (
+      "launcher",
+      "card_preferences",
+      "control_center.launcher_search",
+      "launcher search pesquisa busca arquivos indexacao",
+      "launcher/settings",
+    ),
     #[cfg(feature = "appearance")]
     (
       "hyprland.wobble",

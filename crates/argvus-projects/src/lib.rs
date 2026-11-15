@@ -32,6 +32,12 @@ fn run(arguments: &[String]) -> ExitCode {
     Some("open") => open(&arguments[1..]),
     Some("add") => add(&arguments[1..]),
     Some("remove") => remove(&arguments[1..]),
+    Some("list") if arguments.get(1).is_some_and(|arg| arg == "--resolved") => {
+      for path in collect_projects() {
+        println!("{path}");
+      }
+      ExitCode::SUCCESS
+    }
     Some("list") => list(),
     Some("pick") => pick_command(&arguments[1..]),
     Some("-V" | "--version") => {

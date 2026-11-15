@@ -709,3 +709,49 @@ pub(super) fn validate_control_panel(document: &ConfigDocument) -> ConfigResult<
   }
   Ok(())
 }
+
+/// Rejects malformed search preferences before canonical persistence.
+pub(super) fn validate_launcher(document: &ConfigDocument) -> ConfigResult<()> {
+  let Some(section) = document.get("/launcher").and_then(Value::as_object) else {
+    return Ok(());
+  };
+  let sources = [
+    "applications",
+    "windows",
+    "settings",
+    "actions",
+    "projects",
+    "ssh",
+    "files",
+    "help",
+  ];
+  for (key, value) in section {
+    let valid = match key.as_str() {
+      "selected_category" => value
+        .as_str()
+        .is_some_and(|s| s.is_empty() || sources.contains(&s)),
+      "show_icons" => value.is_boolean(),
+      "recent_files" | "index_enabled" | "index_paused" | "include_hidden" | "reduced_motion" => {
+        value.is_boolean()
+      }
+      "sources" | "favorites" | "roots" | "exclusions" => value.as_array().is_some_and(|values| {
+        let mut unique = std::collections::HashSet::new();
+        values.iter().all(|value| {
+          value.as_str().is_some_and(|value| {
+            unique.insert(value)
+              && match key.as_str() {
+                "sources" => sources.contains(&value),
+                "roots" | "exclusions" => std::path::Path::new(value).is_absolute(),
+                _ => !value.is_empty(),
+              }
+          })
+        })
+      }),
+      _ => false,
+    };
+    if !valid {
+      return Err(ConfigError::Invalid(format!("invalid launcher.{key}")));
+    }
+  }
+  Ok(())
+}

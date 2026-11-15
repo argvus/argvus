@@ -408,3 +408,13 @@ argvus config window-mode toggle
 يتنقل التالي والسابق دورياً بين مساحات العمل الموجودة على الشاشة النشطة فقط: الرقمية أولاً ثم المسماة والمشاريع حسب الاسم الأصلي. يستخدم تمرير شريط المهام الشاشة تحت المؤشر. تُستثنى المساحات الخاصة ويتوقف التنقل أثناء فتحها. تحتفظ اختصارات الأرقام بالمعرفات العامة. تبقى التعيينات في `/displays/workspaces`.
 
 `argvus config workspace-cycle next|previous [--monitor focused|cursor]`
+
+## المشغّل والبحث
+
+`argvus control-center launcher` · `argvus launcher`
+
+`argvus config get /launcher --effective`
+
+إعداد البحث: المفضلة, إظهار الملفات الحديثة, فهرسة أسماء الملفات, مجلد مفهرس, مجلد مستبعد, إيقاف الفهرسة مؤقتًا, تضمين الملفات المخفية, تقليل الرسوم المتحركة.
+
+`argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.

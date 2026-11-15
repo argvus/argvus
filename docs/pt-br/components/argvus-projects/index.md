@@ -37,3 +37,9 @@ O caminho canônico do diretório determina uma identidade estável: alterar a o
 Workspaces abertos antes da atualização mantêm suas janelas e nomes nativos. Abrir um projeto após a atualização usa sua nova identidade derivada do caminho; feche as janelas antigas quando for conveniente. Não há associação nem movimentação automática porque o nome antigo não identifica o diretório com segurança. Com nomes de diretório duplicados, use o seletor, um número ou o caminho canônico completo em vez de um nome ambíguo.
 
 Abrir um projeto regenera atomicamente `$XDG_RUNTIME_DIR/argvus/project-workspaces.json`, usando a lista configurada e as traduções. Esse arquivo é metadado da sessão para rótulos e tooltips; não é configuração e não deve ser editado. Reabra um projeto após alterar a lista ou o idioma para atualizar os rótulos. Atualize `argvus`, `argvus-waybar` e a configuração do `argvus-taskbar` para usar essa integração.
+
+## Projetos
+
+`argvus projects list --resolved` → `argvus launcher`
+
+O launcher principal usa Quickshell/QML com um motor local de busca em Rust. Pesquisa aplicativos, janelas abertas, configurações, ações, projetos, hosts SSH, arquivos e atalhos. A indexação começa desativada; escolha as pastas explicitamente. Somente nomes e caminhos são indexados, nunca o conteúdo dos documentos. Arquivos recentes dependem do registro XDG. Arquivos ocultos são excluídos por padrão e links simbólicos de diretórios não são seguidos. Os menus especializados do Rofi continuam disponíveis.

@@ -50,7 +50,7 @@ use argvus_i18n::{Lang, tr};
 use argvus_theme::Theme;
 use std::time::{Duration, Instant};
 
-mod search_catalog;
+pub mod search_catalog;
 
 use search_catalog::build_search_registry;
 
@@ -67,6 +67,7 @@ pub enum Route {
   AppSettings,
   Settings,
   Config,
+  Launcher,
   #[cfg(feature = "about")]
   About,
   #[cfg(feature = "hardware")]
@@ -112,6 +113,7 @@ pub enum InitialRoute {
   HyprlandWindows,
   Welcome,
   Config,
+  Launcher,
   Settings(Page),
   #[cfg(feature = "apps")]
   Apps,
@@ -165,6 +167,7 @@ impl InitialRoute {
       InitialRoute::Hyprland | InitialRoute::HyprlandWindows => Route::Hyprland,
       InitialRoute::Welcome => Route::Welcome,
       InitialRoute::Config => Route::Config,
+      InitialRoute::Launcher => Route::Launcher,
       InitialRoute::Settings(_) => Route::Settings,
       #[cfg(feature = "apps")]
       InitialRoute::Apps => Route::Settings,
@@ -252,6 +255,7 @@ pub struct App {
   pub home_scroll: usize,
   pub settings: SettingsState,
   pub config: ConfigApp,
+  pub launcher: crate::launcher::LauncherPage,
   #[cfg(feature = "about")]
   pub about: AboutState,
   /// Requests contextual help without replacing the current route.
@@ -459,6 +463,7 @@ impl App {
       home_scroll: 0,
       settings: SettingsState::with_context(page, lang, theme.clone()),
       config: ConfigApp::new(lang, theme.clone()),
+      launcher: crate::launcher::LauncherPage::default(),
       #[cfg(feature = "about")]
       about: AboutState::with_context(tab, lang, theme),
       help: false,
@@ -510,6 +515,7 @@ impl App {
       jobs: JobManager::default(),
     };
     match initial {
+      InitialRoute::Launcher => app.open_launcher(),
       InitialRoute::HyprlandWindows => crate::hyprland::open_windows(&mut app),
       #[cfg(feature = "apps")]
       InitialRoute::Settings(Page::WindowRules) => {
@@ -591,7 +597,10 @@ impl App {
 
   /// Check all pages: navigating away must not hide a running mutation.
   pub fn has_pending_action(&self) -> bool {
-    if self.settings.has_pending_action() || self.config.has_pending_action() {
+    if self.settings.has_pending_action()
+      || self.config.has_pending_action()
+      || self.launcher.busy()
+    {
       return true;
     }
     #[cfg(feature = "hardware")]
@@ -657,6 +666,7 @@ impl App {
   pub fn captures_text(&self) -> bool {
     match self.route {
       Route::Home => self.search_active,
+      Route::Launcher => self.launcher.captures_text(),
       #[cfg(feature = "snapshot")]
       Route::Snapshot => self.snapshot.captures_text(),
       Route::Settings => self.settings.captures_text(),
@@ -684,12 +694,18 @@ impl App {
     }
   }
 
+  pub fn open_launcher(&mut self) {
+    self.launcher.open();
+    self.route = Route::Launcher;
+  }
+
   pub fn back(&mut self) {
     match self.route {
       Route::Welcome => self.route = Route::Home,
       Route::Home => {}
       Route::AppSettings => self.route = Route::Home,
       Route::Config => self.route = Route::AppSettings,
+      Route::Launcher => self.route = Route::Home,
       #[cfg(feature = "about")]
       Route::About => self.route = Route::Home,
       #[cfg(feature = "hardware")]

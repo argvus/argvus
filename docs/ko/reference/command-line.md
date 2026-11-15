@@ -126,3 +126,13 @@ argvus setup --copy <app> --dry-run
 `argvus tui-terminal --frame TITLE FOOTER COMMAND [ARG...]`는 공유된 ARGVUS 터미널 프레임 안에서 인터랙티브 명령을 실행합니다. Ctrl+E를 눌러 프레임을 닫을 수 있으며, 호출자가 현지화된 푸터를 제공합니다. 이를 터미널 안에서 사용하거나 `argvus tui-terminal --term kitty -- ...`에 전달되는 명령으로 사용하십시오.
 
 `argvus tui-terminal --term kitty --profile ai-agents`는 숨겨진 탭과 클립보드 단축키만 있는 전용 Kitty 구성을 사용합니다. 호출자가 명령과 제목을 제공하며, 창 배치는 `argvus-ai` 클래스에 대한 Hyprland 규칙에 의해 처리됩니다.
+
+## 실행기 및 검색
+
+`argvus control-center launcher` · `argvus launcher`
+
+`argvus config get /launcher --effective`
+
+검색 설정: 즐겨찾기, 최근 파일 표시, 파일 이름 색인, 색인 폴더, 제외 폴더, 색인 일시 중지, 숨김 파일 포함, 애니메이션 줄이기.
+
+`argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.

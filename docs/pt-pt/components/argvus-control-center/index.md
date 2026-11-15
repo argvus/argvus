@@ -683,3 +683,29 @@ Ao abrir **Pacotes → Repositórios oficiais → Atualizar**, incluindo pelo in
 Ao terminar uma operação de pacotes no Control Center (incluindo atualizações oficiais e AUR), a taskbar consulta automaticamente as atualizações restantes, sem reiniciar. A consulta também ocorre após falhas, pois alguns pacotes podem já ter sido alterados. A verificação a cada hora continua ativa; operações fora do Control Center são detetadas por essa verificação periódica.
 
 O Control Center mantém a base de consulta de atualizações em `$XDG_CACHE_HOME/argvus/control-center/checkupdates` (predefinição: `~/.cache/argvus/control-center/checkupdates`), separada da base da taskbar para evitar conflitos de bloqueio nas consultas simultâneas.
+
+## Launcher e Pesquisa
+
+O launcher principal usa Quickshell/QML com um motor local de pesquisa em Rust. Pesquisa aplicações, janelas abertas, definições, ações, projetos, hosts SSH, ficheiros e atalhos. A indexação começa desativada; escolha as pastas explicitamente. Apenas nomes e caminhos são indexados, nunca o conteúdo dos documentos. Ficheiros recentes dependem do registo XDG. Ficheiros ocultos são excluídos por predefinição e ligações simbólicas de diretórios não são seguidas. Os menus especializados do Rofi continuam disponíveis.
+
+`argvus launcher` · `argvus control-center launcher`
+
+↑↓ Navegar · Enter Abrir · Esc Voltar · Ctrl+F Favorito
+
+- Configurar pesquisa: Aplicações, Janelas, Configurações, Acções, Projectos, SSH, arquivos, Ajuda.
+- Adicionar pasta indexada / Adicionar exclusão — Caminho absoluto.
+- Pausar indexação / Apagar índice e pausar / Reconstruir índice.
+- ↑↓ Navegar · Enter Alternar/Adicionar · Delete Remover · Ctrl+↑↓ Reordenar · F5 Atualizar · Esc Voltar
+
+`argvus config get /launcher --effective`
+
+`$XDG_CONFIG_HOME/argvus/config/launcher.json` → `$XDG_CACHE_HOME/argvus/launcher/index.json`
+
+Quickshell: `launcher/Theme.qml` · Rofi: `launcher/theme.rasi`
+
+`--config` / Rasi: Configurar pesquisa → `argvus control-center launcher`.
+
+
+`/launcher/show_icons`: `true` / `false`.
+
+`/launcher/selected_category`: `""` (All), `applications`, `windows`, `settings`, `actions`, `projects`, `ssh`, `files`, `help`.

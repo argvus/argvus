@@ -93,7 +93,7 @@ impl Category {
       Category::VideoPlayer => "mpv",
       Category::AudioPlayer => "audacious",
       Category::Archive => "xarchiver",
-      Category::Launcher => "rofi",
+      Category::Launcher => "argvus",
     }
   }
 
@@ -495,6 +495,7 @@ pub const CATALOG: &[CategorySpec] = &[
   CategorySpec {
     category: Category::Launcher,
     apps: &[
+      known("argvus", "ARGVUS", ""),
       known("rofi", "Rofi", "rofi.desktop"),
       known("fuzzel", "Fuzzel", "fuzzel.desktop"),
       known("tofi", "tofi", "tofi.desktop"),

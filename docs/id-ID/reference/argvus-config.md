@@ -413,3 +413,13 @@ Margin dalam yang disediakan oleh palang tidak dihitung dua kali pada celah luar
 Berikutnya/sebelumnya berputar hanya pada ruang kerja yang ada di monitor terfokus: numerik dahulu, lalu nama dan proyek menurut nama asli. Gulir bilah memakai monitor di bawah penunjuk. Ruang khusus dikecualikan dan menghentikan siklus saat terbuka. Pintasan angka tetap memakai ID global. Penetapan tetap di `/displays/workspaces`.
 
 `argvus config workspace-cycle next|previous [--monitor focused|cursor]`
+
+## Peluncur dan Pencarian
+
+`argvus control-center launcher` · `argvus launcher`
+
+`argvus config get /launcher --effective`
+
+Atur pencarian: Favorit, Tampilkan berkas terbaru, Indeks nama berkas, Folder terindeks, Folder dikecualikan, Jeda pengindeksan, Sertakan berkas tersembunyi, Kurangi animasi.
+
+`argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.

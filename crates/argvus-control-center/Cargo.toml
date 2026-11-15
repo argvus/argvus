@@ -72,6 +72,8 @@ language = []
 system = []
 
 [dependencies]
+serde_json.workspace = true
+argvus-launcher-core.workspace = true
 argvus-welcome.workspace = true
 anyhow.workspace = true
 argvus-control-center-about = { workspace = true, optional = true }

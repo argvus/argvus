@@ -31,7 +31,7 @@ fn config_default(category: Category) -> &'static str {
     Category::VideoPlayer => "mpv",
     Category::AudioPlayer => "audacious",
     Category::Archive => "xarchiver",
-    Category::Launcher => "rofi",
+    Category::Launcher => "argvus",
   }
 }
 

@@ -566,3 +566,29 @@ argvus theme uninstall NAME
 После завершения операций с пакетами в Control Center (включая официальные обновления и AUR) панель задач автоматически проверяет оставшиеся обновления без перезапуска. Проверка выполняется и после ошибок, поскольку часть пакетов уже могла измениться. Ежечасная проверка сохраняется и обнаруживает операции вне Control Center.
 
 Control Center хранит базу проверки в `$XDG_CACHE_HOME/argvus/control-center/checkupdates` (по умолчанию: `~/.cache/argvus/control-center/checkupdates`) отдельно от панели задач, чтобы избежать конфликтов блокировок при одновременной синхронизации.
+
+## Запуск и поиск
+
+Основная панель использует Quickshell/QML и локальный движок Rust для поиска приложений, окон, настроек, действий, проектов, узлов SSH, файлов и сочетаний клавиш. Индексация изначально отключена: папки выбираются явно. Индексируются только имена и пути, без содержимого. Недавние файлы берутся из реестра XDG. Скрытые файлы по умолчанию исключены, символические ссылки на каталоги не обходятся. Специализированные меню Rofi сохранены.
+
+`argvus launcher` · `argvus control-center launcher`
+
+↑↓ Навигация · Enter Открыть · Esc Назад · Ctrl+F Избранное
+
+- Настроить поиск: Приложения, Окна, Настройки, Действия, Проекты, SSH, файлы, Помощь.
+- Добавить индексируемую папку / Добавить исключение — Абсолютный путь.
+- Приостановить индексацию / Очистить индекс и приостановить / Перестроить индекс.
+- ↑↓ Навигация · Enter Выбрать/Добавить · Delete Удалить · Ctrl+↑↓ Порядок · F5 Обновить · Esc Назад
+
+`argvus config get /launcher --effective`
+
+`$XDG_CONFIG_HOME/argvus/config/launcher.json` → `$XDG_CACHE_HOME/argvus/launcher/index.json`
+
+Quickshell: `launcher/Theme.qml` · Rofi: `launcher/theme.rasi`
+
+`--config` / Rasi: Настроить поиск → `argvus control-center launcher`.
+
+
+`/launcher/show_icons`: `true` / `false`.
+
+`/launcher/selected_category`: `""` (All), `applications`, `windows`, `settings`, `actions`, `projects`, `ssh`, `files`, `help`.

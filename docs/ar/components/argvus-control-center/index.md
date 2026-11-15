@@ -642,3 +642,29 @@ argvus theme uninstall NAME
 بعد انتهاء عمليات الحزم في Control Center (بما فيها ترقيات المستودعات الرسمية وAUR)، يتحقق شريط المهام تلقائيًا من التحديثات المتبقية دون إعادة تشغيله. يجري الفحص أيضًا بعد الفشل، فقد تكون بعض الحزم قد تغيرت بالفعل. يستمر الفحص كل ساعة لاكتشاف العمليات خارج Control Center.
 
 يحفظ Control Center قاعدة الفحص في `$XDG_CACHE_HOME/argvus/control-center/checkupdates` (افتراضيًا: `~/.cache/argvus/control-center/checkupdates`)، منفصلة عن قاعدة شريط المهام لتجنب تعارض الأقفال أثناء المزامنة المتزامنة.
+
+## المشغّل والبحث
+
+يستخدم المشغّل الرئيسي Quickshell/QML ومحرك بحث محليًا بلغة Rust للتطبيقات والنوافذ والإعدادات والإجراءات والمشاريع ومضيفي SSH والملفات والاختصارات. الفهرسة معطّلة افتراضيًا وتتطلب اختيار المجلدات صراحةً. تُفهرس الأسماء والمسارات فقط دون محتوى المستندات. تعتمد الملفات الحديثة على سجل XDG. تُستبعد الملفات المخفية افتراضيًا ولا تُتبع روابط المجلدات الرمزية. تبقى قوائم Rofi المتخصصة متاحة.
+
+`argvus launcher` · `argvus control-center launcher`
+
+↑↓ تنقل · Enter فتح · Esc رجوع · Ctrl+F مفضلة
+
+- إعداد البحث: التطبيقات, النوافذ, الترتيبات, الإجراءات, المشاريع, SSH, الملفات, النجدة.
+- إضافة مجلد للفهرسة / إضافة استثناء — مسار مطلق.
+- إيقاف الفهرسة مؤقتًا / مسح الفهرس والإيقاف مؤقتًا / إعادة بناء الفهرس.
+- ↑↓ تنقل · Enter تبديل/إضافة · Delete حذف · Ctrl+↑↓ ترتيب · F5 تحديث · Esc رجوع
+
+`argvus config get /launcher --effective`
+
+`$XDG_CONFIG_HOME/argvus/config/launcher.json` → `$XDG_CACHE_HOME/argvus/launcher/index.json`
+
+Quickshell: `launcher/Theme.qml` · Rofi: `launcher/theme.rasi`
+
+`--config` / Rasi: إعداد البحث → `argvus control-center launcher`.
+
+
+`/launcher/show_icons`: `true` / `false`.
+
+`/launcher/selected_category`: `""` (All), `applications`, `windows`, `settings`, `actions`, `projects`, `ssh`, `files`, `help`.

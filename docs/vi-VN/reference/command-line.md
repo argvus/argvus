@@ -127,3 +127,13 @@ Mở **Máy tính để bàn & Đầu vào > Hiển thị > Đèn ngủ** hoặc
 `argvus tui-terminal --frame TITLE FOOTER COMMAND [ARG...]` chạy lệnh tương tác bên trong khung thiết bị đầu cuối ARGVUS được chia sẻ. Ctrl+E đóng khung; người gọi nó cung cấp phần chân trang được bản địa hóa. Sử dụng lệnh này bên trong thiết bị đầu cuối hoặc khi lệnh được truyền tới `argvus tui-terminal --term kitty -- ...`.
 
 `argvus tui-terminal --term kitty --profile ai-agents` sử dụng cấu hình Kitty chuyên dụng với các tab ẩn và chỉ các phím tắt trong khay nhớ tạm. Người gọi cung cấp lệnh và tiêu đề; vị trí cửa sổ được xử lý theo quy tắc Hyprland cho lớp `argvus-ai`.
+
+## Trình khởi chạy và tìm kiếm
+
+`argvus control-center launcher` · `argvus launcher`
+
+`argvus config get /launcher --effective`
+
+Cấu hình tìm kiếm: Yêu thích, Hiển thị tệp gần đây, Lập chỉ mục tên tệp, Thư mục được lập chỉ mục, Thư mục bị loại trừ, Tạm dừng lập chỉ mục, Bao gồm tệp ẩn, Giảm hoạt ảnh.
+
+`argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.

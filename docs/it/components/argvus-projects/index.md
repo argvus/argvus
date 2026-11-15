@@ -29,3 +29,9 @@ Il percorso della directory canonica determina un'identità stabile dello spazio
 Gli spazi di lavoro aperti prima dell'aggiornamento mantengono le finestre esistenti e i nomi nativi. Aprire un progetto dopo l'aggiornamento utilizza la sua nuova identità derivata dal percorso; chiudere le vecchie finestre del progetto quando conveniente. Non viene tentata alcuna associazione o spostamento automatico perché un vecchio nome non identifica la directory in modo affidabile. In caso di nomi di directory duplicati, utilizzare il selettore, un numero o il percorso canonico completo anziché un nome ambiguo.
 
 Aprire un progetto rigenera `$XDG_RUNTIME_DIR/argvus/project-workspaces.json` in modo atomico dalla lista di progetti configurata e dalle traduzioni. Questi sono metadati di sessione per etichette e suggerimenti degli spazi di lavoro, non configurazione; non modificarli. Riaprire un progetto dopo aver modificato la lista o la lingua per aggiornare le sue etichette. Aggiornare sia `argvus` che `argvus-waybar`, oltre alla configurazione `argvus-taskbar`, per questa integrazione.
+
+## Progetti
+
+`argvus projects list --resolved` → `argvus launcher`
+
+Il lanciatore principale usa Quickshell/QML con un motore locale Rust per applicazioni, finestre, impostazioni, azioni, progetti, host SSH, file e scorciatoie. L’indicizzazione è inizialmente disattivata e richiede cartelle scelte esplicitamente. Indicizza solo nomi e percorsi, mai il contenuto. I file recenti dipendono dal registro XDG. I file nascosti sono esclusi per impostazione predefinita e i collegamenti simbolici alle cartelle non vengono seguiti. I menu Rofi specializzati restano disponibili.

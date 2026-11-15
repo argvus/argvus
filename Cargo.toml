@@ -4,6 +4,7 @@ members = [
   "crates/argvus-accounts",
   "crates/argvus-accounts-core",
   "crates/argvus-cli",
+  "crates/argvus-launcher-core",
   "crates/argvus-clock",
   "crates/argvus-config",
   "crates/argvus-control-center",
@@ -75,6 +76,7 @@ homepage = "https://github.com/argvus/argvus"
 description = "ARGVUS desktop: command dispatcher and shared Rust crates"
 
 [workspace.dependencies]
+argvus-launcher-core = { path = "crates/argvus-launcher-core" }
 anyhow = "1.0"
 argvus-accounts = { version = "0.1.0", path = "crates/argvus-accounts" }
 argvus-accounts-core = { version = "0.1.0", path = "crates/argvus-accounts-core" }

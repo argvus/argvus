@@ -80,6 +80,7 @@ pub enum HomeDestination {
   #[cfg(feature = "about")]
   About,
   Settings,
+  Launcher,
   Welcome,
 }
 
@@ -155,6 +156,7 @@ impl HomeDestination {
       #[cfg(feature = "about")]
       Self::About => icons::INFO,
       Self::Settings => icons::SETTINGS,
+      Self::Launcher => icons::SEARCH,
       Self::Welcome => icons::APPLY,
     }
   }
@@ -366,6 +368,11 @@ fn preferences_card_items(
   // Every push may be compiled out, which leaves `items` unmodified.
   #[allow(unused_mut)]
   let mut items = Vec::new();
+  items.push(item(
+    lang,
+    "control_center.launcher_search",
+    HomeDestination::Launcher,
+  ));
   #[cfg(feature = "locale")]
   items.push(item(
     lang,

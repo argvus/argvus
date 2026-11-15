@@ -129,3 +129,13 @@ Open **Desktop & Input > Displays > Night Light** or run `argvus control-center 
 `argvus tui-terminal --frame TITLE FOOTER COMMAND [ARG...]` runs an interactive command inside the shared ARGVUS terminal frame. Ctrl+E closes the frame; its caller supplies the localized footer. Use this inside a terminal, or as the command passed to `argvus tui-terminal --term kitty -- ...`.
 
 `argvus tui-terminal --term kitty --profile ai-agents` uses a dedicated Kitty configuration with hidden tabs and only clipboard shortcuts. The caller supplies the command and title; window placement is handled by the Hyprland rule for class `argvus-ai`.
+
+## Launcher and Search
+
+`argvus control-center launcher` · `argvus launcher`
+
+`argvus config get /launcher --effective`
+
+Configure search: Favorites, Show recent files, Index file names, Indexed folder, Excluded folder, Pause indexing, Include hidden files, Reduce animations.
+
+`argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.

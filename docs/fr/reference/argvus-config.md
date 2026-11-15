@@ -281,3 +281,13 @@ Les marges intérieures réservées par les barres ne sont pas comptées deux fo
 Suivant/précédent parcourt uniquement les espaces existants de l’écran actif : numériques, puis nommés et projets par nom natif, en boucle. Le défilement sur la barre utilise l’écran sous le pointeur. Les espaces spéciaux sont exclus et suspendent le cycle lorsqu’ils sont ouverts. Les raccourcis numériques conservent les identifiants globaux. Les affectations restent dans `/displays/workspaces`.
 
 `argvus config workspace-cycle next|previous [--monitor focused|cursor]`
+
+## Lanceur et recherche
+
+`argvus control-center launcher` · `argvus launcher`
+
+`argvus config get /launcher --effective`
+
+Configurer la recherche: Favoris, Afficher les fichiers récents, Indexer les noms de fichiers, Dossier indexé, Dossier exclu, Suspendre l’indexation, Inclure les fichiers cachés, Réduire les animations.
+
+`argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.

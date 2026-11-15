@@ -279,3 +279,13 @@ argvus config window-mode toggle
 上一个/下一个仅循环切换焦点显示器上已有的工作区：先按数字排序，再按原始名称排列命名工作区和项目。任务栏滚动使用指针所在的显示器。特殊工作区不参与循环，打开时暂停切换。数字快捷键保留全局 ID。显示器分配仍保存在 `/displays/workspaces`。
 
 `argvus config workspace-cycle next|previous [--monitor focused|cursor]`
+
+## 启动器与搜索
+
+`argvus control-center launcher` · `argvus launcher`
+
+`argvus config get /launcher --effective`
+
+配置搜索: 收藏, 显示最近文件, 索引文件名, 索引文件夹, 排除文件夹, 暂停索引, 包含隐藏文件, 减少动画.
+
+`argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.

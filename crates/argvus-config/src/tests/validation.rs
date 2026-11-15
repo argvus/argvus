@@ -369,3 +369,16 @@ fn wobble_defaults_preserve_existing_choices() {
     Some(&Value::from(100))
   );
 }
+
+#[test]
+fn launcher_rejects_unknown_sources_duplicate_order_and_relative_paths() {
+  for value in [
+    serde_json::json!({"sources":["applications","applications"]}),
+    serde_json::json!({"sources":["shell"]}),
+    serde_json::json!({"roots":["relative"]}),
+    serde_json::json!({"index_enabled":"yes"}),
+  ] {
+    let mut document = ConfigDocument::default();
+    assert!(document.set("/launcher", value).is_err());
+  }
+}

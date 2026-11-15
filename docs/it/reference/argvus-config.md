@@ -274,3 +274,13 @@ I margini interni riservati dalle barre non vengono conteggiati due volte nei ga
 Successivo/precedente scorre solo gli spazi esistenti del monitor attivo: prima numerici, poi nomi e progetti ordinati per nome nativo, tornando all’inizio. Lo scorrimento sulla barra usa il monitor sotto il puntatore. Gli spazi speciali sono esclusi e sospendono il ciclo quando aperti. Le scorciatoie numeriche mantengono gli ID globali. Le assegnazioni restano in `/displays/workspaces`.
 
 `argvus config workspace-cycle next|previous [--monitor focused|cursor]`
+
+## Lanciatore e ricerca
+
+`argvus control-center launcher` · `argvus launcher`
+
+`argvus config get /launcher --effective`
+
+Configura ricerca: Preferiti, Mostra file recenti, Indicizza nomi dei file, Cartella indicizzata, Cartella esclusa, Sospendi indicizzazione, Includi file nascosti, Riduci animazioni.
+
+`argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.

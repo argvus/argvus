@@ -122,3 +122,13 @@ argvus setup --copy <app> --dry-run
 `argvus tui-terminal --frame TITLE FOOTER COMMAND [ARG...]` साझा ARGVUS टर्मिनल फ्रेम के अंदर एक इंटरैक्टिव कमांड चलाता है। Ctrl+E फ़्रेम बंद कर देता है; इसका कॉलर स्थानीयकृत फ़ुटर की आपूर्ति करता है। इसे टर्मिनल के अंदर या `argvus tui-terminal --term kitty -- ...` को दिए गए आदेश के रूप में उपयोग करें।
 
 `argvus tui-terminal --term kitty --profile ai-agents` छिपे हुए टैब और केवल क्लिपबोर्ड शॉर्टकट के साथ एक समर्पित किट्टी कॉन्फ़िगरेशन का उपयोग करता है। कॉल करने वाला आदेश और शीर्षक प्रदान करता है; कक्षा `argvus-ai` के लिए विंडो प्लेसमेंट को हाइप्रलैंड नियम द्वारा नियंत्रित किया जाता है।
+
+## लॉन्चर और खोज
+
+`argvus control-center launcher` · `argvus launcher`
+
+`argvus config get /launcher --effective`
+
+खोज सेट करें: पसंदीदा, हाल की फ़ाइलें दिखाएँ, फ़ाइल नाम अनुक्रमित करें, अनुक्रमित फ़ोल्डर, बाहर रखा फ़ोल्डर, अनुक्रमण रोकें, छिपी फ़ाइलें शामिल करें, एनिमेशन कम करें.
+
+`argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.

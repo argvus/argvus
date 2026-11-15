@@ -583,3 +583,29 @@ Beim Öffnen von **Packages → Official Repositories → Update**, auch über d
 Nach Paketoperationen im Control Center (einschließlich offizieller und AUR-Upgrades) prüft die Taskleiste die verbleibenden Aktualisierungen automatisch ohne Neustart. Dies geschieht auch nach Fehlern, da einige Pakete bereits geändert sein können. Die stündliche Prüfung bleibt aktiv und erkennt Operationen außerhalb des Control Centers.
 
 Das Control Center speichert seine Prüfdatenbank unter `$XDG_CACHE_HOME/argvus/control-center/checkupdates` (Standard: `~/.cache/argvus/control-center/checkupdates`), getrennt von der Taskleiste, um Sperrkonflikte bei gleichzeitiger Synchronisierung zu vermeiden.
+
+## Starter und Suche
+
+Der Hauptstarter verwendet Quickshell/QML mit einer lokalen Rust-Suche für Apps, Fenster, Einstellungen, Aktionen, Projekte, SSH-Ziele, Dateien und Tastenkürzel. Die Indizierung ist zunächst deaktiviert; Ordner müssen ausdrücklich ausgewählt werden. Nur Namen und Pfade werden indiziert, keine Dokumentinhalte. Zuletzt verwendete Dateien stammen aus dem XDG-Verzeichnis. Versteckte Dateien sind standardmäßig ausgeschlossen; Verzeichnis-Symlinks werden nicht verfolgt. Spezialisierte Rofi-Menüs bleiben verfügbar.
+
+`argvus launcher` · `argvus control-center launcher`
+
+↑↓ Navigieren · Enter Öffnen · Esc Zurück · Ctrl+F Favorit
+
+- Suche konfigurieren: Anwendungen, Windows, Einstellungen, Aktionen, Projekte, SSH, Dateien, Helfen.
+- Indizierten Ordner hinzufügen / Ausschluss hinzufügen — Absoluter Pfad.
+- Indizierung pausieren / Index löschen und pausieren / Index neu erstellen.
+- ↑↓ Navigieren · Enter Umschalten/Hinzufügen · Delete Entfernen · Ctrl+↑↓ Sortieren · F5 Aktualisieren · Esc Zurück
+
+`argvus config get /launcher --effective`
+
+`$XDG_CONFIG_HOME/argvus/config/launcher.json` → `$XDG_CACHE_HOME/argvus/launcher/index.json`
+
+Quickshell: `launcher/Theme.qml` · Rofi: `launcher/theme.rasi`
+
+`--config` / Rasi: Suche konfigurieren → `argvus control-center launcher`.
+
+
+`/launcher/show_icons`: `true` / `false`.
+
+`/launcher/selected_category`: `""` (All), `applications`, `windows`, `settings`, `actions`, `projects`, `ssh`, `files`, `help`.

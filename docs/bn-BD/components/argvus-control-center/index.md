@@ -573,3 +573,29 @@ argvus theme uninstall NAME
 Control Center-এ প্যাকেজের কাজ শেষ হলে (অফিসিয়াল ও AUR আপগ্রেডসহ), টাস্কবার পুনরায় চালু না করেই অবশিষ্ট আপডেট স্বয়ংক্রিয়ভাবে পরীক্ষা করে। ব্যর্থতার পরেও পরীক্ষা হয়, কারণ কিছু প্যাকেজ ইতিমধ্যে বদলে যেতে পারে। প্রতি ঘণ্টার পরীক্ষা চালু থাকে এবং Control Center-এর বাইরের কাজ শনাক্ত করে।
 
 Control Center পরীক্ষার ডেটাবেস `$XDG_CACHE_HOME/argvus/control-center/checkupdates`-এ রাখে (ডিফল্ট: `~/.cache/argvus/control-center/checkupdates`), টাস্কবারের ডেটাবেস থেকে আলাদা রেখে একসঙ্গে সিঙ্ক করার সময় লক সংঘাত এড়ায়।
+
+## লঞ্চার ও অনুসন্ধান
+
+প্রধান লঞ্চার Quickshell/QML ও স্থানীয় Rust অনুসন্ধান ইঞ্জিন দিয়ে অ্যাপ, উইন্ডো, সেটিংস, কাজ, প্রকল্প, SSH হোস্ট, ফাইল ও শর্টকাট খোঁজে। সূচিকরণ শুরুতে বন্ধ থাকে; স্পষ্টভাবে ফোল্ডার বাছুন। শুধু নাম ও পথ সূচিবদ্ধ হয়, নথির বিষয়বস্তু নয়। সাম্প্রতিক ফাইল XDG রেকর্ডের উপর নির্ভর করে। লুকানো ফাইল সাধারণত বাদ থাকে এবং ডিরেক্টরির সিমলিংক অনুসরণ করা হয় না। বিশেষ Rofi মেনুগুলো উপলব্ধ থাকে।
+
+`argvus launcher` · `argvus control-center launcher`
+
+↑↓ চলুন · Enter খুলুন · Esc ফিরুন · Ctrl+F প্রিয়
+
+- অনুসন্ধান সেট করুন: অ্যাপ্লিকেশন পরিচিত, উইন্ডো, বৈশিষ্ট্য, কাজ, প্রজেক্ট, SSH, ফাইল, সাহায্য.
+- সূচিবদ্ধ ফোল্ডার যোগ করুন / ব্যতিক্রম যোগ করুন — পূর্ণ পথ.
+- সূচিকরণ থামান / সূচি মুছুন ও থামান / সূচি আবার তৈরি করুন.
+- ↑↓ চলুন · Enter বদলান/যোগ · Delete সরান · Ctrl+↑↓ সাজান · F5 হালনাগাদ · Esc ফিরুন
+
+`argvus config get /launcher --effective`
+
+`$XDG_CONFIG_HOME/argvus/config/launcher.json` → `$XDG_CACHE_HOME/argvus/launcher/index.json`
+
+Quickshell: `launcher/Theme.qml` · Rofi: `launcher/theme.rasi`
+
+`--config` / Rasi: অনুসন্ধান সেট করুন → `argvus control-center launcher`.
+
+
+`/launcher/show_icons`: `true` / `false`.
+
+`/launcher/selected_category`: `""` (All), `applications`, `windows`, `settings`, `actions`, `projects`, `ssh`, `files`, `help`.

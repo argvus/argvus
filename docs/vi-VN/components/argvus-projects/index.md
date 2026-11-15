@@ -36,3 +36,9 @@ Các dự án sử dụng không gian làm việc Hyprland có tên thông thư�
 Không gian làm việc được mở trước khi cập nhật sẽ giữ nguyên các cửa sổ và tên gốc hiện có của chúng. Mở một dự án sau khi cập nhật sẽ sử dụng danh tính bắt nguồn từ đường dẫn mới của nó; đóng các cửa sổ dự án cũ khi thuận tiện. Không có liên kết hoặc di chuyển tự động nào được thực hiện vì tên cũ không xác định được thư mục một cách đáng tin cậy. Với tên thư mục trùng lặp, hãy sử dụng bộ chọn, một số hoặc đường dẫn chuẩn đầy đủ thay vì một tên mơ hồ.
 
 Việc mở một dự án sẽ tái tạo nguyên tử `$XDG_RUNTIME_DIR/argvus/project-workspaces.json` từ danh sách dự án đã định cấu hình và các bản dịch. Đây là siêu dữ liệu phiên dành cho nhãn và chú giải công cụ của không gian làm việc, không phải cấu hình; không chỉnh sửa nó. Mở lại dự án sau khi thay đổi danh sách hoặc ngôn ngữ để làm mới nhãn của dự án. Cập nhật cả `argvus` và `argvus-waybar`, cùng với cấu hình `argvus-taskbar` cho sự tích hợp này.
+
+## Dự án
+
+`argvus projects list --resolved` → `argvus launcher`
+
+Trình khởi chạy chính dùng Quickshell/QML và công cụ Rust cục bộ để tìm ứng dụng, cửa sổ, cài đặt, thao tác, dự án, máy chủ SSH, tệp và phím tắt. Lập chỉ mục ban đầu bị tắt; cần chọn thư mục rõ ràng. Chỉ tên và đường dẫn được lập chỉ mục, không đọc nội dung tài liệu. Tệp gần đây dựa vào bản ghi XDG. Tệp ẩn bị loại trừ mặc định và không đi theo liên kết tượng trưng của thư mục. Các menu Rofi chuyên dụng vẫn có sẵn.

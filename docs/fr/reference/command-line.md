@@ -126,3 +126,13 @@ Ouvrez **Bureau & Saisie > Affichages > Lumière nocturne** ou exécutez `argvus
 `argvus tui-terminal --frame TITLE FOOTER COMMAND [ARG...]` exécute une commande interactive à l'intérieur du cadre de terminal partagé ARGVUS. Ctrl+E ferme le cadre ; son appelant fournit le pied de page localisé. Utilisez ceci à l'intérieur d'un terminal, ou comme la commande passée à `argvus tui-terminal --term kitty -- ...`.
 
 `argvus tui-terminal --term kitty --profile ai-agents` utilise une configuration Kitty dédiée avec des onglets cachés et uniquement des raccourcis pour le presse-papiers. L'appelant fournit la commande et le titre ; le placement de la fenêtre est géré par la règle Hyprland pour la classe `argvus-ai`.
+
+## Lanceur et recherche
+
+`argvus control-center launcher` · `argvus launcher`
+
+`argvus config get /launcher --effective`
+
+Configurer la recherche: Favoris, Afficher les fichiers récents, Indexer les noms de fichiers, Dossier indexé, Dossier exclu, Suspendre l’indexation, Inclure les fichiers cachés, Réduire les animations.
+
+`argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.

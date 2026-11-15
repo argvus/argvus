@@ -566,3 +566,29 @@ argvus theme uninstall NAME
 Control Center 中的软件包操作结束后（包括官方仓库和 AUR 升级），任务栏会自动检查剩余更新，无需重启。失败后也会检查，因为部分软件包可能已发生变化。每小时检查仍然启用，用于检测 Control Center 之外的操作。
 
 Control Center 将检查数据库保存在 `$XDG_CACHE_HOME/argvus/control-center/checkupdates`（默认：`~/.cache/argvus/control-center/checkupdates`），与任务栏数据库分开，避免同时同步时发生锁冲突。
+
+## 启动器与搜索
+
+主启动器采用 Quickshell/QML 和本地 Rust 搜索引擎，可查找应用、窗口、设置、操作、项目、SSH 主机、文件和快捷键。文件索引默认关闭，需明确选择文件夹。仅索引名称和路径，不读取文档内容。最近文件来自 XDG 记录。默认排除隐藏文件，不跟随目录符号链接。专用 Rofi 菜单继续可用。
+
+`argvus launcher` · `argvus control-center launcher`
+
+↑↓ 导航 · Enter 打开 · Esc 返回 · Ctrl+F 收藏
+
+- 配置搜索: 应用领域, 视窗, 设置, 行动, 项目, SSH, 文件, 帮助.
+- 添加索引文件夹 / 添加排除项 — 绝对路径.
+- 暂停索引 / 清除索引并暂停 / 重建索引.
+- ↑↓ 导航 · Enter 切换/添加 · Delete 删除 · Ctrl+↑↓ 排序 · F5 刷新 · Esc 返回
+
+`argvus config get /launcher --effective`
+
+`$XDG_CONFIG_HOME/argvus/config/launcher.json` → `$XDG_CACHE_HOME/argvus/launcher/index.json`
+
+Quickshell: `launcher/Theme.qml` · Rofi: `launcher/theme.rasi`
+
+`--config` / Rasi: 配置搜索 → `argvus control-center launcher`.
+
+
+`/launcher/show_icons`: `true` / `false`.
+
+`/launcher/selected_category`: `""` (All), `applications`, `windows`, `settings`, `actions`, `projects`, `ssh`, `files`, `help`.

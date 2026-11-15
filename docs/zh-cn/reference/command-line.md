@@ -126,3 +126,13 @@ argvus setup --copy <app> --dry-run
 `argvus tui-terminal --frame TITLE FOOTER COMMAND [ARG...]` 在共享的 ARGVUS 终端框架中运行交互式命令。Ctrl+E 关闭该框架；调用者提供本地化页脚。在终端中使用此命令，或将其作为传递给 `argvus tui-terminal --term kitty -- ...` 的命令。
 
 `argvus tui-terminal --term kitty --profile ai-agents` 使用专用的 Kitty 配置，带隐藏标签页，仅有剪贴板快捷键。调用者提供命令和标题；窗口位置由 `argvus-ai` 类的 Hyprland 规则处理。
+
+## 启动器与搜索
+
+`argvus control-center launcher` · `argvus launcher`
+
+`argvus config get /launcher --effective`
+
+配置搜索: 收藏, 显示最近文件, 索引文件名, 索引文件夹, 排除文件夹, 暂停索引, 包含隐藏文件, 减少动画.
+
+`argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.

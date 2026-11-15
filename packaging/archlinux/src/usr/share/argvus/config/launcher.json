@@ -1,0 +1,22 @@
+{
+  "sources": [
+    "applications",
+    "windows",
+    "settings",
+    "actions",
+    "projects",
+    "ssh",
+    "files",
+    "help"
+  ],
+  "favorites": [],
+  "recent_files": true,
+  "index_enabled": false,
+  "index_paused": false,
+  "include_hidden": false,
+  "roots": [],
+  "exclusions": [],
+  "reduced_motion": false,
+  "show_icons": true,
+  "selected_category": ""
+}

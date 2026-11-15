@@ -4,7 +4,7 @@
   "browser": "firefox",
   "file_manager": "spf",
   "image_viewer": "imv",
-  "launcher": "rofi",
+  "launcher": "argvus",
   "pdf_viewer": "zathura",
   "terminal": "argvus-terminal",
   "terminal_editor": "vim",
