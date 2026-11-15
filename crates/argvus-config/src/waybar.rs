@@ -262,7 +262,11 @@ pub fn apply_layout(paths: &SessionPaths, theme: &str) -> io::Result<()> {
     edit_text(path, |text| {
       let text = css_edit::set_declaration_in_blocks(
         text,
-        "window {",
+        if text.contains("menu-card {") {
+          "menu-card {"
+        } else {
+          "window {"
+        },
         Declaration::Radius,
         layout.rofi_radii[0],
       );
