@@ -34,6 +34,8 @@ struct Widgets {
   close: gtk::Button,
   status: gtk::Label,
   spaced: Rc<Cell<bool>>,
+  applying: gtk::Box,
+  spinner: gtk::Spinner,
 }
 
 fn build(app: &gtk::Application, i18n: &I18n) -> Widgets {
@@ -96,7 +98,37 @@ fn build(app: &gtk::Application, i18n: &I18n) -> Widgets {
   drawing.set_focusable(true);
   drawing.set_content_height(320);
   drawing.set_vexpand(true);
-  content.append(&drawing);
+  let preview_overlay = gtk::Overlay::new();
+  preview_overlay.set_child(Some(&drawing));
+  let applying = gtk::Box::new(gtk::Orientation::Vertical, 16);
+  applying.set_halign(gtk::Align::Center);
+  applying.set_valign(gtk::Align::Center);
+  applying.add_css_class("applying-preview");
+  let spinner = gtk::Spinner::new();
+  spinner.set_size_request(64, 64);
+  let applying_content = gtk::Box::new(gtk::Orientation::Vertical, 16);
+  applying_content.set_valign(gtk::Align::Center);
+  applying_content.set_vexpand(true);
+  applying_content.append(&spinner);
+  applying_content.append(&gtk::Label::new(Some(&i18n.tr("theme.applying"))));
+  applying.append(&applying_content);
+  applying.set_visible(false);
+  preview_overlay.add_overlay(&applying);
+  drawing.add_tick_callback({
+    let applying = applying.downgrade();
+    move |drawing, _| {
+      if let Some(applying) = applying.upgrade() {
+        let width =
+          crate::render::center_width(f64::from(drawing.width()), f64::from(drawing.height()))
+            .round() as i32;
+        if applying.width_request() != width {
+          applying.set_size_request(width, (f64::from(width) * 9.0 / 16.0).round() as i32);
+        }
+      }
+      glib::ControlFlow::Continue
+    }
+  });
+  content.append(&preview_overlay);
   let swatches = gtk::DrawingArea::new();
   swatches.set_content_width(200);
   swatches.set_content_height(14);
@@ -147,6 +179,8 @@ fn build(app: &gtk::Application, i18n: &I18n) -> Widgets {
     close,
     status,
     spaced: Rc::new(Cell::new(false)),
+    applying,
+    spinner,
   }
 }
 
@@ -168,6 +202,8 @@ pub fn open(app: &gtk::Application, i18n: Arc<I18n>) {
     close,
     status,
     spaced: _,
+    applying: _,
+    spinner: _,
   } = widgets.clone();
   let catalog: Shared = Rc::default();
   let images = Rc::new(RefCell::new(HashMap::<
@@ -359,6 +395,8 @@ pub fn open(app: &gtk::Application, i18n: Arc<I18n>) {
   connect_keys(&window, &search, &drawing, &apply, &busy, &navigate);
   let (sender, receiver) = mpsc::channel();
   apply.connect_clicked({
+    let applying = widgets.applying.clone();
+    let spinner = widgets.spinner.clone();
     let (catalog, busy, status, sender, i18n, controls) = (
       catalog.clone(),
       busy.clone(),
@@ -376,6 +414,8 @@ pub fn open(app: &gtk::Application, i18n: Arc<I18n>) {
         busy.set(false);
         return;
       };
+      applying.set_visible(true);
+      spinner.start();
       status.set_text(&i18n.tr("theme.applying"));
       controls.set_sensitive(false);
       apply_button.set_sensitive(false);
@@ -456,14 +496,15 @@ pub fn open(app: &gtk::Application, i18n: Arc<I18n>) {
   );
 }
 
-pub fn refocus(window: &gtk::Window) {
-  if let Some(controls) = window
+pub fn focus_carousel(window: &gtk::Window) {
+  if let Some(carousel) = window
     .child()
     .and_then(|content| content.first_child())
     .and_then(|heading| heading.next_sibling())
-    && let Some(search) = controls.first_child()
+    .and_then(|controls| controls.next_sibling())
+    && let Some(drawing) = carousel.first_child()
   {
-    search.grab_focus();
+    drawing.grab_focus();
   }
 }
 
@@ -720,6 +761,8 @@ fn poll_events(
     close,
     status,
     spaced,
+    applying,
+    spinner,
     ..
   } = widgets;
   glib::timeout_add_local(Duration::from_millis(30), {
@@ -780,7 +823,7 @@ fn poll_events(
               }
             }
             window.present();
-            gtk::prelude::GtkWindowExt::set_focus(&window, Some(&search));
+            gtk::prelude::GtkWindowExt::set_focus(&window, Some(&drawing));
           }
           Event::Catalog(Ok(loaded)) => {
             provider.load_from_string(&crate::render::css(
@@ -838,6 +881,8 @@ fn poll_events(
           }
           Event::Applied(Err(error), active) => {
             eprintln!("argvus-theme-selector: {error}");
+            spinner.stop();
+            applying.set_visible(false);
             busy.set(false);
             controls.set_sensitive(true);
             close.set_sensitive(true);

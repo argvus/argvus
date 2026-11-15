@@ -101,7 +101,7 @@ argvus --setup --copy <app>   # copy packaged defaults for explicit customizatio
 
 ## Themes
 
-`argvus theme-selector` (also `SUPER + Shift + T` or `argvus theme-switch` without an ID) opens an independent preview carousel. Search is focused on open; `/` toggles its focus. Filters include all themes, system Dark/Light themes and user-installed Custom themes. Sticky uses square corners and Spaced uses rounded corners. Browsing does not apply a theme; Enter or **Apply theme** confirms.
+`argvus theme-selector` (also `SUPER + Shift + T` or `argvus theme-switch` without an ID) opens an independent preview carousel focused on theme navigation. Press `/` to focus or unfocus search; typing filters themes while the search field is focused. Filters include all themes, system Dark/Light themes and user-installed Custom themes. Sticky uses square corners and Spaced uses rounded corners. Browsing does not apply a theme; Enter or **Apply theme** confirms.
 
 Twenty-three theme families, each available in the Sticky and Spaced layouts,
 with a shared accent-color system that unifies GTK, terminals, rofi, Waybar and

@@ -22,9 +22,9 @@ uses bounded `djxl` execution; derived PNGs are cached by path, size and mtime i
 premultiplied native ARGB surfaces, without requiring desktop image loader plugins.
 A missing or corrupt preview falls back to the wallpaper and a palette illustration.
 No preview writes canonical configuration or generates a theme build.
-Search is focused on open and reactivation. `/` toggles focus between search and
-carousel without clearing its query; arrows edit the query when search is focused
-and navigate the carousel otherwise.
+The carousel receives focus on open and reactivation. `/` toggles focus between
+search and carousel without clearing its query; arrows edit the query when search
+is focused and navigate the carousel otherwise.
 
 Application is asynchronous and serialized by the existing backend. The selector
 stays open on error and rereads effective state. It closes after success. The
@@ -53,3 +53,17 @@ private-helper dispatcher and all catalogs at their runtime paths. The full
 release `argvus theme-switch` route opened and closed the staged selector without
 changing appearance state. The package recipes include the helper in their normal
 build/install lists and declare `libjxl`; no `.pkg.tar.zst` was generated or installed.
+
+## Application feedback
+
+The preview overlay follows the central card geometry. Applying displays a dim
+layer, a GTK spinner and the existing localized application label. The existing
+busy state blocks repeated confirmation and navigation. Failure stops the spinner,
+hides the layer and restores controls; success closes the window.
+Search focus uses the effective appearance accent, falling back to the active
+manifest palette. The dropdown owns one visible border on its internal button.
+
+Scoped check, Clippy and five selector tests passed for this refinement. A real
+Hyprland session verified the centered busy overlay and simulated failure recovery
+and success, without applying a desktop theme. Multiple outputs and fractional
+scaling still need hardware validation.

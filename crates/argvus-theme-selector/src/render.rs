@@ -137,14 +137,24 @@ pub fn css(theme: Option<&ThemeManifest>, spaced: bool) -> String {
     .with_opacity(0.94)
     .hex_with_alpha();
   let fg = token("fg", Color::opaque(238, 238, 238)).hex();
-  let accent = token("accent", Color::opaque(53, 144, 189));
+  let accent = argvus_config_core::ConfigStore::from_environment()
+    .and_then(|store| store.load_effective())
+    .ok()
+    .and_then(|document| {
+      document
+        .get("/appearance/accent")
+        .and_then(|value| value.as_str())
+        .and_then(Color::parse)
+    })
+    .unwrap_or_else(|| token("accent", Color::opaque(53, 144, 189)));
   let radius = if spaced { "6px" } else { "0" };
   format!(
-    "window.theme-selector {{ background: {bg}; color: {fg}; font-family: monospace; font-size: 13px; }} .theme-selector * {{ border-radius: {radius}; box-shadow: none; text-shadow: none; }} .theme-selector button, .theme-selector entry, .theme-selector dropdown {{ min-height: 38px; padding: 0 12px; border: 1px solid alpha({fg}, 0.22); background: alpha({fg}, 0.045); color: {fg}; }} .theme-selector button:hover, .theme-selector entry:focus, .theme-selector dropdown:focus {{ border-color: {}; }} .theme-selector button:focus-visible {{ outline: 2px solid {}; outline-offset: 2px; }} .theme-selector button:hover {{ background: alpha({fg}, 0.10); }} .theme-selector .title {{ font-size: 20px; font-weight: bold; }} .theme-selector .muted {{ opacity: 0.72; }} .theme-selector .suggested-action {{ background: {}; color: {}; border-color: {}; font-weight: bold; }} .theme-selector .suggested-action:hover {{ background: {}; }} .theme-selector popover, .theme-selector popover contents {{ background: {bg}; color: {fg}; border: 1px solid alpha({fg}, 0.3); }} .theme-selector separator {{ background: alpha({fg}, 0.16); }}",
+    "window.theme-selector {{ background: {bg}; color: {fg}; font-family: monospace; font-size: 13px; }} .theme-selector * {{ border-radius: {radius}; box-shadow: none; text-shadow: none; }} .theme-selector button, .theme-selector entry, .theme-selector dropdown {{ min-height: 38px; padding: 0 12px; border: 1px solid alpha({fg}, 0.22); background: alpha({fg}, 0.045); color: {fg}; }} .theme-selector button:hover, .theme-selector entry:focus-within, .theme-selector searchentry:focus-within, .theme-selector dropdown:focus {{ border-color: {}; }} .theme-selector button:focus-visible {{ outline: 2px solid {}; outline-offset: 2px; }} .theme-selector button:hover {{ background: alpha({fg}, 0.10); }} .theme-selector .title {{ font-size: 20px; font-weight: bold; }} .theme-selector .muted {{ opacity: 0.72; }} .theme-selector .suggested-action {{ background: {}; color: {}; border-color: {}; font-weight: bold; }} .theme-selector .suggested-action:hover {{ background: {}; }} .theme-selector popover, .theme-selector popover contents {{ background: {bg}; color: {fg}; border: 1px solid alpha({fg}, 0.3); }} .theme-selector .applying-preview {{ padding: 0; background: alpha(black, 0.72); color: white; border: none; }} .theme-selector dropdown {{ padding: 0; border: none; background: transparent; }} .theme-selector dropdown > button {{ min-height: 38px; }} .theme-selector searchentry:focus-within {{ outline: none; border-color: {}; }} .theme-selector searchentry:focus-within * {{ outline: none; box-shadow: none; }} .theme-selector separator {{ background: alpha({fg}, 0.16); }}",
     accent.hex(),
     accent.hex(),
     accent.hex(),
     accent.contrast().hex(),
+    accent.hex(),
     accent.hex(),
     accent.hex()
   )

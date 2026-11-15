@@ -33,7 +33,7 @@ fn main() -> glib::ExitCode {
   application.connect_activate(move |app| {
     if let Some(window) = app.active_window() {
       window.present();
-      ui::refocus(&window);
+      ui::focus_carousel(&window);
     } else {
       ui::open(app, Arc::clone(&i18n));
     }
