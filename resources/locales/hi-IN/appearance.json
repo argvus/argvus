@@ -61,5 +61,16 @@
   "selector.failed": "थीम लोड या लागू नहीं हो सकी। फिर प्रयास करें।",
   "selector.hint": "← → ब्राउज़ · / खोजें · Enter लागू करें · Esc बंद करें",
   "selector.custom": "कस्टम",
-  "selector.filter": "थीम फ़िल्टर करें"
+  "selector.filter": "थीम फ़िल्टर करें",
+  "layout_mode.apply": "लेआउट लागू करें",
+  "layout_mode.applying": "लेआउट लागू हो रहा है…",
+  "layout_mode.hint": "↑/↓ मोड · ←/→ उपमोड · Tab फ़ोकस · Enter लागू · Esc बंद",
+  "layout_mode.tile": "टाइल विंडो",
+  "layout_mode.floating": "फ़्लोटिंग विंडो",
+  "layout_mode.top": "टास्कबार ऊपर",
+  "layout_mode.bottom": "टास्कबार नीचे",
+  "layout_mode.saved": "सहेजा गया",
+  "layout_mode.pending": "पसंद सहेजी गई। सत्र में लेआउट लागू होने की प्रतीक्षा है।",
+  "layout_mode.failed": "लेआउट लागू नहीं हो सका। वर्तमान स्थिति जाँचें और फिर कोशिश करें।",
+  "layout_mode.selection": "चयन बदल गया। लेआउट सहेजने और सक्रिय करने के लिए लागू करें।"
 }

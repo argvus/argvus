@@ -70,7 +70,7 @@ description: আরগভাস কমান্ড, এর সাবকমান
 
 ## Hyprland স্ক্রিপ্ট কমান্ডগুলো
 
-এই রান প্যাকেজ স্ক্রিপ্ট এবং Hyprland কনফিগারেশন দ্বারা ব্যবহৃত হয়:`cheatsheets-hypr `, ` cheatsheets-launcher `, ` scratchpad `, ` hypr-screenshot `, ` spaces-switch `, ` emoji-picker `, ` toggle-sidebar `, ` weather-location `, ` layout-mode-menu `, ` brightness-switch `, ` toggle-mode `, ` idle-timeout `, ` keep-awake `, ` hypr-power-menu`.
+এই রান প্যাকেজ স্ক্রিপ্ট এবং Hyprland কনফিগারেশন দ্বারা ব্যবহৃত হয়:`cheatsheets-hypr `, ` cheatsheets-launcher `, ` scratchpad `, ` hypr-screenshot `, ` spaces-switch `, ` emoji-picker `, ` toggle-sidebar `, ` weather-location `, ` brightness-switch `, ` toggle-mode `, ` idle-timeout `, ` keep-awake `, ` hypr-power-menu`.
 
 ব্যবহারকারীর কনফিগারেশনের একটি স্ক্রিপ্ট প্যাকেজ করাকে ওভাররাইড করে। লুকআপ অর্ডারটি hyprland.lua-তে `_config_path `-এর মতোই: ব্যবহারকারীর কনফিগারেশন কপি, তারপর ARGVUS ডেটা কপি, তারপর স্টেট কপি, তারপর জেনারেট করা কপি এবং শুধুমাত্র তারপর  ` hyprland.lua ` `/usr/share/argvus` এর অধীনে প্যাকেজ করা ফাইল।## উদাহরণ
 
@@ -120,3 +120,5 @@ argvus setup --copy <app> --dry-run
 অনুসন্ধান সেট করুন: প্রিয়, সাম্প্রতিক ফাইল দেখান, ফাইলের নাম সূচিবদ্ধ করুন, সূচিবদ্ধ ফোল্ডার, বাদ দেওয়া ফোল্ডার, সূচিকরণ থামান, লুকানো ফাইল অন্তর্ভুক্ত করুন, অ্যানিমেশন কমান.
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
+
+`argvus layout-mode-menu` (SUPER + Shift + M): ↑/↓ দিয়ে Sticky বা Spaced বেছে নিন। ডানের চারটি কার্ডে টাইল বা ভাসমান উইন্ডোর সঙ্গে উপরে বা নিচে টাস্কবারের সমন্বয় রয়েছে; ←/→ শেষ প্রান্তে ঘুরে আসে না। ক্লিক করে নির্বাচন, Enter দিয়ে প্রয়োগ বা Escape দিয়ে বাতিল করুন। অনির্বাচিত মোড ম্লান থাকে; প্রাকদর্শনে বর্তমান থিম ও ওয়ালপেপার ব্যবহৃত হয়। অপেক্ষমাণ অবস্থা দেখা যায় এবং ত্রুটিতে আবার চেষ্টা করা যায়।

@@ -82,7 +82,7 @@ description: argvus 命令、它的子命令、为键绑定保留的标志，以
 
 这些运行打包脚本，并被 Hyprland 配置使用：
 
-`cheatsheets-hypr`, `cheatsheets-launcher`, `scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `layout-mode-menu`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`。
+`cheatsheets-hypr`, `cheatsheets-launcher`, `scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`。
 
 用户配置中的脚本会覆盖打包脚本。查找顺序与 hyprland.lua 中的 `_config_path` 相同：先是用户的配置副本，然后是 ARGVUS 数据副本，再是状态副本，然后是生成的副本，最后才是  `hyprland.lua` `/usr/share/argvus` 下的打包文件。
 
@@ -136,3 +136,5 @@ argvus setup --copy <app> --dry-run
 配置搜索: 收藏, 显示最近文件, 索引文件名, 索引文件夹, 排除文件夹, 暂停索引, 包含隐藏文件, 减少动画.
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
+
+`argvus layout-mode-menu` (SUPER + Shift + M): 使用 ↑/↓ 选择 Sticky 或 Spaced。右侧四张卡片组合平铺或浮动窗口与顶部或底部任务栏；←/→ 依次移动，不循环。点击选择，Enter 应用，Escape 取消。未选模式变暗；预览使用当前主题和壁纸。待应用状态会保持显示，失败后可重试。

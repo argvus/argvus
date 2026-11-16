@@ -505,3 +505,12 @@ fn window_mode_toggle_persists_pending_preferences_and_serializes_concurrent_cal
     .expect("invalid toggle");
   assert!(!output.status.success());
 }
+
+#[test]
+fn layout_mode_menu_dispatches_to_private_helper() {
+  let sandbox = Sandbox::new("layout-mode-menu");
+  sandbox.fake(&sandbox.commands(), "layout-mode-selector");
+  let output = sandbox.run(&sandbox.tools_path(), &["layout-mode-menu", "--help"], "");
+  assert!(output.status.success());
+  assert_eq!(text(&output.stdout), "[--help]\nstdin=");
+}

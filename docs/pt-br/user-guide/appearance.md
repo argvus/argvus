@@ -85,3 +85,5 @@ Abra `argvus theme-selector`, `argvus theme-switch` sem argumentos ou `SUPER + S
 Ao abrir o seletor, o foco inicial fica na navegação do carrossel. Pressione `/` para focar ou desfocar a busca; a digitação filtra os temas quando ela está focada. **Custom** lista temas instalados pelo usuário; **Dark** e **Light** listam temas do sistema de cada categoria. A linha de busca acompanha a largura da prévia central. Sticky usa cantos retos em toda a interface; Spaced mantém os cantos arredondados. O visual compacto e monoespaçado acompanha os utilitários do ARGVUS.
 
 Durante a aplicação, a prévia central escurece e exibe um indicador animado. O foco da busca usa o destaque ativo; o filtro possui uma única borda.
+
+`argvus layout-mode-menu` (SUPER + Shift + M): Escolha Sticky ou Spaced com ↑/↓. Os quatro cartões à direita combinam janelas em Mosaico ou Flutuantes com a Taskbar no topo ou embaixo; ←/→ percorre as opções sem voltar ao início. Clique para selecionar, Enter para aplicar ou Escape para cancelar. O modo não selecionado fica esmaecido; as prévias usam o tema e o wallpaper atuais. Aplicações pendentes permanecem visíveis e falhas permitem nova tentativa.

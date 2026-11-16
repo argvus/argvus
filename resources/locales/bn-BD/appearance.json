@@ -61,5 +61,16 @@
   "selector.failed": "থিম লোড বা প্রয়োগ করা যায়নি। আবার চেষ্টা করুন।",
   "selector.hint": "← → ব্রাউজ · / খুঁজুন · Enter প্রয়োগ · Esc বন্ধ",
   "selector.custom": "কাস্টম",
-  "selector.filter": "থিম ফিল্টার করুন"
+  "selector.filter": "থিম ফিল্টার করুন",
+  "layout_mode.apply": "বিন্যাস প্রয়োগ করুন",
+  "layout_mode.applying": "বিন্যাস প্রয়োগ হচ্ছে…",
+  "layout_mode.hint": "↑/↓ মোড · ←/→ উপমোড · Tab ফোকাস · Enter প্রয়োগ · Esc বন্ধ",
+  "layout_mode.tile": "টাইল উইন্ডো",
+  "layout_mode.floating": "ভাসমান উইন্ডো",
+  "layout_mode.top": "টাস্কবার উপরে",
+  "layout_mode.bottom": "টাস্কবার নিচে",
+  "layout_mode.saved": "সংরক্ষিত",
+  "layout_mode.pending": "পছন্দ সংরক্ষিত। সেশনে বিন্যাস প্রয়োগের অপেক্ষায়।",
+  "layout_mode.failed": "বিন্যাস প্রয়োগ করা যায়নি। বর্তমান অবস্থা দেখে আবার চেষ্টা করুন।",
+  "layout_mode.selection": "নির্বাচন পরিবর্তিত হয়েছে। লেআউট সংরক্ষণ ও সক্রিয় করতে প্রয়োগ চাপুন।"
 }

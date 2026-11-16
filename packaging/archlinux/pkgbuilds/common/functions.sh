@@ -18,6 +18,7 @@ ARGVUS_GTK_COMMANDS=(
 	taskbar-calendar
 	window-mode-menu
 	theme-selector
+	layout-mode-selector
 )
 
 arch_source_root() {

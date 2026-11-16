@@ -82,7 +82,7 @@ Das Kontrollzentrum akzeptiert Legacy-Seitenflags als erstes Argument und ordnet
 
 Diese führen verpackte Skripte aus und werden von der Hyprland-Konfiguration verwendet:
 
-`cheatsheets-hypr`, `cheatsheets-launcher`, `scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `layout-mode-menu`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
+`cheatsheets-hypr`, `cheatsheets-launcher`, `scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
 
 Ein Skript in der Benutzerkonfiguration überschreibt das verpackte Skript. Die Suchreihenfolge ist dieselbe wie `_config_path` in `hyprland.lua`: die Kopie der Benutzerkonfiguration, dann die ARGVUS-Datenkopie, dann die Statuskopie, dann die generierte Kopie, und erst danach die verpackte Datei unter `/usr/share/argvus`.
 
@@ -136,3 +136,5 @@ Das Setup überprüft jede Option, bevor es irgendetwas ändert. Ungültige App-
 Suche konfigurieren: Favoriten, Zuletzt verwendete Dateien anzeigen, Dateinamen indizieren, Indizierter Ordner, Ausgeschlossener Ordner, Indizierung pausieren, Versteckte Dateien einschließen, Animationen reduzieren.
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
+
+`argvus layout-mode-menu` (SUPER + Shift + M): Wählen Sie Sticky oder Spaced mit ↑/↓. Die vier Karten rechts kombinieren gekachelte oder schwebende Fenster mit der Taskleiste oben oder unten; ←/→ durchläuft sie ohne Schleife. Klicken zum Auswählen, Enter zum Anwenden, Escape zum Abbrechen. Der nicht ausgewählte Modus ist abgedunkelt; die Vorschauen verwenden das aktuelle Theme und Hintergrundbild. Ausstehende Anwendungen bleiben sichtbar, Fehler erlauben einen erneuten Versuch.

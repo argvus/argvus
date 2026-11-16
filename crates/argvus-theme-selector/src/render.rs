@@ -147,13 +147,15 @@ pub fn css(theme: Option<&ThemeManifest>, spaced: bool) -> String {
         .and_then(Color::parse)
     })
     .unwrap_or_else(|| token("accent", Color::opaque(53, 144, 189)));
+  let selection = accent.hex();
   let radius = if spaced { "6px" } else { "0" };
   format!(
-    "window.theme-selector {{ background: {bg}; color: {fg}; font-family: monospace; font-size: 13px; }} .theme-selector * {{ border-radius: {radius}; box-shadow: none; text-shadow: none; }} .theme-selector button, .theme-selector entry, .theme-selector dropdown {{ min-height: 38px; padding: 0 12px; border: 1px solid alpha({fg}, 0.22); background: alpha({fg}, 0.045); color: {fg}; }} .theme-selector button:hover, .theme-selector entry:focus-within, .theme-selector searchentry:focus-within, .theme-selector dropdown:focus {{ border-color: {}; }} .theme-selector button:focus-visible {{ outline: 2px solid {}; outline-offset: 2px; }} .theme-selector button:hover {{ background: alpha({fg}, 0.10); }} .theme-selector .title {{ font-size: 20px; font-weight: bold; }} .theme-selector .muted {{ opacity: 0.72; }} .theme-selector .suggested-action {{ background: {}; color: {}; border-color: {}; font-weight: bold; }} .theme-selector .suggested-action:hover {{ background: {}; }} .theme-selector popover, .theme-selector popover contents {{ background: {bg}; color: {fg}; border: 1px solid alpha({fg}, 0.3); }} .theme-selector .applying-preview {{ padding: 0; background: alpha(black, 0.72); color: white; border: none; }} .theme-selector dropdown {{ padding: 0; border: none; background: transparent; }} .theme-selector dropdown > button {{ min-height: 38px; }} .theme-selector searchentry:focus-within {{ outline: none; border-color: {}; }} .theme-selector searchentry:focus-within * {{ outline: none; box-shadow: none; }} .theme-selector separator {{ background: alpha({fg}, 0.16); }}",
+    "window.theme-selector {{ background: {bg}; color: {fg}; font-family: monospace; font-size: 13px; }} .theme-selector * {{ border-radius: {radius}; box-shadow: none; text-shadow: none; }} .theme-selector button, .theme-selector entry, .theme-selector dropdown {{ min-height: 38px; padding: 0 12px; border: 1px solid alpha({fg}, 0.22); background: alpha({fg}, 0.045); color: {fg}; }} .theme-selector button:hover, .theme-selector entry:focus-within, .theme-selector searchentry:focus-within, .theme-selector dropdown:focus {{ border-color: {}; }} .theme-selector button:focus-visible {{ outline: 2px solid {}; outline-offset: 2px; }} .theme-selector button:checked {{ border-color: {selection}; background: alpha({selection}, 0.18); }} .theme-selector button:hover {{ background: alpha({fg}, 0.10); }} .theme-selector .title {{ font-size: 20px; font-weight: bold; }} .theme-selector .muted {{ opacity: 0.72; }} .theme-selector .suggested-action {{ background: {}; color: {}; border-color: {}; font-weight: bold; }} .theme-selector .suggested-action:hover {{ background: {}; }} .theme-selector popover, .theme-selector popover contents {{ background: {bg}; color: {fg}; border: 1px solid alpha({fg}, 0.3); }} .theme-selector .applying-preview {{ padding: 0; background: alpha(black, 0.72); color: white; border: none; }} .theme-selector dropdown {{ padding: 0; border: none; background: transparent; }} .theme-selector dropdown > button {{ min-height: 38px; }} .theme-selector searchentry:focus-within {{ outline: none; border-color: {}; }} .theme-selector searchentry:focus-within * {{ outline: none; box-shadow: none; }} .theme-selector separator {{ background: alpha({fg}, 0.16); }} .theme-selector button.mode-choice {{ padding: 8px; }} .theme-selector button.mode-choice.mode-selected {{ border-color: {selection}; background: alpha({selection}, 0.18); }} .theme-selector button.mode-choice.mode-cursor {{ outline: 2px solid {}; outline-offset: 2px; }}",
     accent.hex(),
     accent.hex(),
     accent.hex(),
     accent.contrast().hex(),
+    accent.hex(),
     accent.hex(),
     accent.hex(),
     accent.hex()
@@ -211,9 +213,257 @@ pub fn hit_test(width: f64, height: f64, count: usize, x: f64, y: f64) -> Option
     .map(|card| card.offset)
 }
 
+/// A layout comparison uses the same wallpaper and palette, with distinct geometry.
+pub fn paint_mode(
+  context: &cairo::Context,
+  theme: &ThemeManifest,
+  image: Option<&cairo::ImageSurface>,
+  spaced: bool,
+) {
+  paint_preset(context, theme, image, spaced, false, false);
+}
+
+/// Draw each edge explicitly: moving bars must never flip the wallpaper.
+pub fn paint_preset(
+  context: &cairo::Context,
+  theme: &ThemeManifest,
+  image: Option<&cairo::ImageSurface>,
+  spaced: bool,
+  floating: bool,
+  bottom: bool,
+) {
+  paint(context, theme, image, false, spaced);
+  let bg = theme.token("bg").unwrap_or(Color::opaque(20, 22, 28));
+  let fg = theme.token("fg").unwrap_or(Color::opaque(235, 235, 235));
+  let accent = theme.token("accent").unwrap_or(fg);
+  let margin = if spaced { 24.0 } else { 3.0 };
+  let gap = if spaced { 18.0 } else { 3.0 };
+  let radius = if spaced { 8.0 } else { 0.0 };
+  let bar_height = 30.0;
+  let main_y = if bottom {
+    540.0 - margin - bar_height
+  } else {
+    margin
+  };
+  illustration_panel(
+    context,
+    (margin, main_y, 960.0 - 2.0 * margin, bar_height),
+    radius,
+    [bg, fg, accent],
+    PanelKind::Taskbar,
+  );
+  if floating {
+    let opposite_y = if bottom {
+      margin
+    } else {
+      540.0 - margin - bar_height
+    };
+    illustration_panel(
+      context,
+      (margin, opposite_y, 960.0 - 2.0 * margin, bar_height),
+      radius,
+      [bg, fg, accent],
+      PanelKind::ApplicationBar,
+    );
+    illustration_panel(
+      context,
+      (90.0, 86.0, 510.0, 328.0),
+      radius,
+      [bg, fg, accent],
+      PanelKind::Window,
+    );
+    illustration_panel(
+      context,
+      (400.0, 180.0, 450.0, 275.0),
+      radius,
+      [bg, fg, accent],
+      PanelKind::Window,
+    );
+  } else {
+    let window_y = if bottom {
+      margin
+    } else {
+      margin + bar_height + gap
+    };
+    let window_height = 540.0 - 2.0 * margin - bar_height - gap;
+    let left_width = (960.0 - 2.0 * margin - gap) * 0.6;
+    illustration_panel(
+      context,
+      (margin, window_y, left_width, window_height),
+      radius,
+      [bg, fg, accent],
+      PanelKind::Window,
+    );
+    illustration_panel(
+      context,
+      (
+        margin + left_width + gap,
+        window_y,
+        (960.0 - 2.0 * margin - gap) * 0.4,
+        window_height,
+      ),
+      radius,
+      [bg, fg, accent],
+      PanelKind::Window,
+    );
+  }
+}
+
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum PanelKind {
+  Taskbar,
+  ApplicationBar,
+  Window,
+}
+
+fn illustration_panel(
+  context: &cairo::Context,
+  bounds: (f64, f64, f64, f64),
+  radius: f64,
+  colors: [Color; 3],
+  kind: PanelKind,
+) {
+  let (x, y, width, height) = bounds;
+  let [bg, fg, accent] = colors;
+  rounded(context, x, y, width, height, radius);
+  context.set_source_rgb(
+    f64::from(bg.red) / 255.0,
+    f64::from(bg.green) / 255.0,
+    f64::from(bg.blue) / 255.0,
+  );
+  let _ = context.fill_preserve();
+  context.set_source_rgb(
+    f64::from(accent.red) / 255.0,
+    f64::from(accent.green) / 255.0,
+    f64::from(accent.blue) / 255.0,
+  );
+  context.set_line_width(2.0);
+  let _ = context.stroke();
+  if kind == PanelKind::Taskbar {
+    for index in 0..6 {
+      fill(
+        context,
+        accent,
+        x + 16.0 + f64::from(index) * 32.0,
+        y + 10.0,
+        18.0,
+        10.0,
+      );
+    }
+    fill(
+      context,
+      fg.with_opacity(0.5),
+      x + width - 110.0,
+      y + 12.0,
+      90.0,
+      5.0,
+    );
+  } else if kind == PanelKind::ApplicationBar {
+    for index in 0..6 {
+      fill(
+        context,
+        accent,
+        x + width / 2.0 - 110.0 + f64::from(index) * 40.0,
+        y + 8.0,
+        24.0,
+        14.0,
+      );
+    }
+  } else {
+    // Window controls stay on the top edge for both taskbar positions.
+    for index in 0..3 {
+      fill(
+        context,
+        accent,
+        x + width - 60.0 + f64::from(index) * 16.0,
+        y + 12.0,
+        8.0,
+        8.0,
+      );
+    }
+    fill(context, accent, x + 16.0, y + 14.0, width * 0.28, 4.0);
+    for row in 0..((height - 48.0) / 20.0) as usize {
+      fill(
+        context,
+        if row % 4 == 0 {
+          accent
+        } else {
+          fg.with_opacity(0.5)
+        },
+        x + 16.0,
+        y + 42.0 + row as f64 * 20.0,
+        (width - 32.0) * (0.35 + (row % 4) as f64 * 0.12),
+        4.0,
+      );
+    }
+  }
+}
+
 #[cfg(test)]
 mod tests {
   use super::*;
+  #[test]
+  fn mode_previews_have_distinct_window_geometry() {
+    std::fs::create_dir_all("/tmp/argvus").unwrap();
+    let root = tempfile::tempdir_in("/tmp/argvus").unwrap();
+    std::fs::write(
+      root.path().join("theme.toml"),
+      r##"schema = 2
+id = "demo"
+name = "Demo"
+category = "dark"
+[palette]
+bg = "#112233"
+fg = "#ffffff"
+accent = "#dd9900"
+"##,
+    )
+    .unwrap();
+    let theme = ThemeManifest::load(root.path()).unwrap();
+    let wallpaper = cairo::ImageSurface::create(cairo::Format::ARgb32, 960, 540).unwrap();
+    {
+      let context = cairo::Context::new(&wallpaper).unwrap();
+      context.set_source_rgb(1.0, 0.0, 0.0);
+      context.rectangle(0.0, 0.0, 960.0, 270.0);
+      context.fill().unwrap();
+      context.set_source_rgb(0.0, 0.0, 1.0);
+      context.rectangle(0.0, 270.0, 960.0, 270.0);
+      context.fill().unwrap();
+    }
+    let pixels = |spaced, floating, bottom| {
+      let mut surface = cairo::ImageSurface::create(cairo::Format::ARgb32, 960, 540).unwrap();
+      {
+        let context = cairo::Context::new(&surface).unwrap();
+        paint_preset(&context, &theme, Some(&wallpaper), spaced, floating, bottom);
+      }
+      surface.data().unwrap().to_vec()
+    };
+    let sticky = pixels(false, false, false);
+    let spaced = pixels(true, false, false);
+    let bottom = pixels(true, false, true);
+    let wallpaper_sample = (100 * 960 + 10) * 4;
+    assert_eq!(
+      &spaced[wallpaper_sample..wallpaper_sample + 4],
+      &bottom[wallpaper_sample..wallpaper_sample + 4]
+    );
+    let mut previews = Vec::new();
+    for spaced in [false, true] {
+      for floating in [false, true] {
+        for bottom in [false, true] {
+          let preview = pixels(spaced, floating, bottom);
+          assert!(!previews.contains(&preview));
+          previews.push(preview);
+        }
+      }
+    }
+    assert_eq!(previews.len(), 8);
+    let left_edge = (100 * 960 + 24) * 4;
+    assert_ne!(
+      &sticky[left_edge..left_edge + 4],
+      &spaced[left_edge..left_edge + 4]
+    );
+  }
+
   #[test]
   fn central_card_wins_over_neighbors_and_empty_space_cancels() {
     assert!(cards(1920.0, 480.0, 0).is_empty());

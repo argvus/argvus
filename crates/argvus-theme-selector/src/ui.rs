@@ -559,7 +559,7 @@ fn active_theme() -> String {
 }
 
 /// A stale compositor socket must not prevent the selector from opening.
-fn focused_monitor() -> Option<String> {
+pub(crate) fn focused_monitor() -> Option<String> {
   use std::{
     process::{Command, Stdio},
     time::Instant,

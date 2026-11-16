@@ -61,5 +61,16 @@
   "selector.failed": "Could not apply or load the theme. Try again.",
   "selector.hint": "← → Browse · / Search · Enter Apply · Esc Close",
   "selector.custom": "Custom",
-  "selector.filter": "Filter themes"
+  "selector.filter": "Filter themes",
+  "layout_mode.apply": "Apply layout",
+  "layout_mode.applying": "Applying layout, please wait…",
+  "layout_mode.hint": "↑/↓ Mode · ←/→ Submode · Tab Focus · Enter Apply · Esc Close",
+  "layout_mode.tile": "Tile Windows",
+  "layout_mode.floating": "Floating Windows",
+  "layout_mode.top": "Taskbar Top",
+  "layout_mode.bottom": "Taskbar Bottom",
+  "layout_mode.saved": "Saved",
+  "layout_mode.pending": "Preference saved. Waiting for the session to apply this layout.",
+  "layout_mode.failed": "Could not apply the layout. Check the current state and retry.",
+  "layout_mode.selection": "Selection changed. Apply to save and activate the layout."
 }

@@ -82,7 +82,7 @@ description: argvusコマンド、そのサブコマンド、キー割り当て�
 
 これらはパッケージ化されたスクリプトを実行し、Hyprland の設定で使用されます:
 
-`cheatsheets-hypr`、`cheatsheets-launcher`、`scratchpad`、`hypr-screenshot`、`spaces-switch`、`emoji-picker`、`toggle-sidebar`、`weather-location`、`layout-mode-menu`、`brightness-switch`、`toggle-mode`、`idle-timeout`、`keep-awake`、`hypr-power-menu`。
+`cheatsheets-hypr`、`cheatsheets-launcher`、`scratchpad`、`hypr-screenshot`、`spaces-switch`、`emoji-picker`、`toggle-sidebar`、`weather-location`、`brightness-switch`、`toggle-mode`、`idle-timeout`、`keep-awake`、`hypr-power-menu`。
 
 ユーザーの設定にあるスクリプトは、パッケージ化されたものを上書きします。検索の順序は、hyprland.lua 内の `_config_path` と同じです: ユーザーの設定コピー、次に ARGVUS データコピー、次にステートコピー、次に生成されたコピー、そして最後に  `hyprland.lua` `/usr/share/argvus` の下にあるパッケージ化ファイルです。
 
@@ -136,3 +136,5 @@ argvus setup --copy <app> --dry-run
 検索を設定: お気に入り, 最近のファイルを表示, ファイル名を索引化, 索引対象フォルダー, 除外フォルダー, 索引化を一時停止, 隠しファイルを含める, アニメーションを減らす.
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
+
+`argvus layout-mode-menu` (SUPER + Shift + M): ↑/↓ で Sticky または Spaced を選びます。右の4枚はタイル／フローティングとタスクバー上／下の組み合わせです。←/→ は端で折り返さずに移動します。クリックで選択、Enter で適用、Escape でキャンセルします。未選択のモードは暗く表示され、プレビューには現在のテーマと壁紙を使用します。適用待ちは表示されたままになり、失敗時は再試行できます。

@@ -76,7 +76,7 @@ description: argvus कमांड, इसके उपकमांड, की�
 
 ये पैकेज्ड स्क्रिप्ट चलाते हैं और हाइप्रलैंड कॉन्फ़िगरेशन द्वारा उपयोग किए जाते हैं:
 
-`cheatsheets-hypr`, `cheatsheets-launcher`, `scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `layout-mode-menu`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`।
+`cheatsheets-hypr`, `cheatsheets-launcher`, `scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`।
 
 उपयोगकर्ता के कॉन्फ़िगरेशन में एक स्क्रिप्ट पैकेज्ड स्क्रिप्ट को ओवरराइड करती है। लुकअप ऑर्डर hyprland.lua में `_config_path` के समान है: उपयोगकर्ता की कॉन्फ़िगरेशन कॉपी, फिर ARGVUS डेटा कॉपी, फिर स्टेट कॉपी, फिर जेनरेट की गई कॉपी, और उसके बाद ही  `hyprland.lua` `/usr/share/argvus` के तहत पैक की गई फ़ाइल।
 
@@ -132,3 +132,5 @@ argvus setup --copy <app> --dry-run
 खोज सेट करें: पसंदीदा, हाल की फ़ाइलें दिखाएँ, फ़ाइल नाम अनुक्रमित करें, अनुक्रमित फ़ोल्डर, बाहर रखा फ़ोल्डर, अनुक्रमण रोकें, छिपी फ़ाइलें शामिल करें, एनिमेशन कम करें.
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
+
+`argvus layout-mode-menu` (SUPER + Shift + M): ↑/↓ से Sticky या Spaced चुनें। दाईं ओर चार कार्ड टाइल या फ़्लोटिंग विंडो को ऊपर या नीचे टास्कबार के साथ जोड़ते हैं; ←/→ किनारे पर वापस नहीं घूमता। क्लिक से चुनें, Enter से लागू करें या Escape से रद्द करें। अचयनित मोड मंद रहता है और पूर्वावलोकन वर्तमान थीम व वॉलपेपर उपयोग करते हैं। लंबित स्थिति दिखती है और विफलता पर फिर प्रयास कर सकते हैं।

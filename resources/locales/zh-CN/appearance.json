@@ -61,5 +61,16 @@
   "selector.failed": "无法加载或应用主题，请重试。",
   "selector.hint": "← → 浏览 · / 搜索 · Enter 应用 · Esc 关闭",
   "selector.custom": "自定义",
-  "selector.filter": "筛选主题"
+  "selector.filter": "筛选主题",
+  "layout_mode.apply": "应用布局",
+  "layout_mode.applying": "正在应用布局…",
+  "layout_mode.hint": "↑/↓ 模式 · ←/→ 子模式 · Tab 焦点 · Enter 应用 · Esc 关闭",
+  "layout_mode.tile": "平铺窗口",
+  "layout_mode.floating": "浮动窗口",
+  "layout_mode.top": "任务栏置顶",
+  "layout_mode.bottom": "任务栏置底",
+  "layout_mode.saved": "已保存",
+  "layout_mode.pending": "偏好已保存，等待会话应用此布局。",
+  "layout_mode.failed": "无法应用布局。请检查当前状态后重试。",
+  "layout_mode.selection": "选择已更改。按“应用”保存并启用布局。"
 }

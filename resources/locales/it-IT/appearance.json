@@ -61,5 +61,16 @@
   "selector.failed": "Impossibile caricare o applicare il tema. Riprova.",
   "selector.hint": "← → Sfoglia · / Cerca · Enter Applica · Esc Chiudi",
   "selector.custom": "Personalizzato",
-  "selector.filter": "Filtra temi"
+  "selector.filter": "Filtra temi",
+  "layout_mode.apply": "Applica layout",
+  "layout_mode.applying": "Applicazione del layout…",
+  "layout_mode.hint": "↑/↓ Modalità · ←/→ Sottomodalità · Tab Fuoco · Enter Applica · Esc Chiudi",
+  "layout_mode.tile": "Finestre affiancate",
+  "layout_mode.floating": "Finestre mobili",
+  "layout_mode.top": "Barra delle applicazioni in alto",
+  "layout_mode.bottom": "Barra delle applicazioni in basso",
+  "layout_mode.saved": "Salvato",
+  "layout_mode.pending": "Preferenza salvata. In attesa che la sessione applichi il layout.",
+  "layout_mode.failed": "Impossibile applicare il layout. Controlla lo stato attuale e riprova.",
+  "layout_mode.selection": "Selezione modificata. Premi Applica per salvare e attivare il layout."
 }

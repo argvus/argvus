@@ -81,7 +81,7 @@ Kontrol Merkezi, eski sayfa bayraklarını ilk argüman olarak kabul eder ve bun
 
 Bunlar paketlenmiş komut dosyalarını çalıştırır ve Hyprland yapılandırması tarafından kullanılır:
 
-`cheatsheets-hypr`, `cheatsheets-launcher`, `scratchpad`, `hypr-screenshot` layout-mode-menu  weather-location  toggle-sidebar  emoji-picker  `spaces-switch` ,  `emoji-picker`  `toggle-sidebar`  `weather-location`  `layout-mode-menu` `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`, brightness-switch, toggle-mode, idle-timeout, keep-awake, hypr-power-menu.
+`cheatsheets-hypr`, `cheatsheets-launcher`, `scratchpad`, `hypr-screenshot` weather-location  toggle-sidebar  emoji-picker  `spaces-switch` ,  `emoji-picker`  `toggle-sidebar`  `weather-location`  `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`, brightness-switch, toggle-mode, idle-timeout, keep-awake, hypr-power-menu.
 
 Kullanıcının yapılandırmasındaki bir komut dosyası, paketlenmiş olanı geçersiz kılar. Arama sırası, hyprland.lua'daki `_config_path` ile aynıdır: kullanıcının yapılandırma kopyası, ardından ARGVUS veri kopyası, ardından durum kopyası, ardından oluşturulan kopya ve ancak bundan sonra  `hyprland.lua` `/usr/share/argvus` altında paketlenmiş dosya.
 
@@ -137,3 +137,5 @@ Kurulum, herhangi bir şeyi değiştirmeden önce her seçeneği doğrular. Geç
 Aramayı yapılandır: Favoriler, Son dosyaları göster, Dosya adlarını dizine ekle, Dizinlenen klasör, Hariç tutulan klasör, Dizinlemeyi duraklat, Gizli dosyaları dahil et, Animasyonları azalt.
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
+
+`argvus layout-mode-menu` (SUPER + Shift + M): ↑/↓ ile Sticky veya Spaced seçin. Sağdaki dört kart döşenmiş veya yüzen pencereleri üstte veya altta görev çubuğuyla birleştirir; ←/→ uçta başa dönmez. Seçmek için tıklayın, uygulamak için Enter, iptal için Escape kullanın. Seçili olmayan mod soluktur; önizlemeler geçerli tema ve duvar kâğıdını kullanır. Bekleyen durum görünür kalır ve hata durumunda yeniden denenebilir.

@@ -61,5 +61,16 @@
   "selector.failed": "Tidak dapat memuat atau menerapkan tema. Coba lagi.",
   "selector.hint": "← → Jelajahi · / Cari · Enter Terapkan · Esc Tutup",
   "selector.custom": "Kustom",
-  "selector.filter": "Saring tema"
+  "selector.filter": "Saring tema",
+  "layout_mode.apply": "Terapkan tata letak",
+  "layout_mode.applying": "Menerapkan tata letak…",
+  "layout_mode.hint": "↑/↓ Mode · ←/→ Submode · Tab Fokus · Enter Terapkan · Esc Tutup",
+  "layout_mode.tile": "Jendela ubin",
+  "layout_mode.floating": "Jendela mengambang",
+  "layout_mode.top": "Taskbar di atas",
+  "layout_mode.bottom": "Taskbar di bawah",
+  "layout_mode.saved": "Tersimpan",
+  "layout_mode.pending": "Preferensi disimpan. Menunggu sesi menerapkan tata letak ini.",
+  "layout_mode.failed": "Tata letak tidak dapat diterapkan. Periksa keadaan saat ini dan coba lagi.",
+  "layout_mode.selection": "Pilihan berubah. Terapkan untuk menyimpan dan mengaktifkan tata letak."
 }

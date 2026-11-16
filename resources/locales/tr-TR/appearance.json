@@ -61,5 +61,16 @@
   "selector.failed": "Tema yüklenemedi veya uygulanamadı. Tekrar deneyin.",
   "selector.hint": "← → Göz at · / Ara · Enter Uygula · Esc Kapat",
   "selector.custom": "Özel",
-  "selector.filter": "Temaları filtrele"
+  "selector.filter": "Temaları filtrele",
+  "layout_mode.apply": "Düzeni uygula",
+  "layout_mode.applying": "Düzen uygulanıyor…",
+  "layout_mode.hint": "↑/↓ Mod · ←/→ Alt mod · Tab Odak · Enter Uygula · Esc Kapat",
+  "layout_mode.tile": "Döşenmiş pencereler",
+  "layout_mode.floating": "Yüzen pencereler",
+  "layout_mode.top": "Görev çubuğu üstte",
+  "layout_mode.bottom": "Görev çubuğu altta",
+  "layout_mode.saved": "Kaydedildi",
+  "layout_mode.pending": "Tercih kaydedildi. Oturumun düzeni uygulaması bekleniyor.",
+  "layout_mode.failed": "Düzen uygulanamadı. Geçerli durumu kontrol edip yeniden deneyin.",
+  "layout_mode.selection": "Seçim değişti. Düzeni kaydedip etkinleştirmek için Uygula’ya basın."
 }

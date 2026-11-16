@@ -61,5 +61,16 @@
   "selector.failed": "Theme konnte nicht geladen oder angewendet werden. Erneut versuchen.",
   "selector.hint": "← → Blättern · / Suche fokussieren · Enter Anwenden · Esc Schließen",
   "selector.custom": "Benutzerdefiniert",
-  "selector.filter": "Themes filtern"
+  "selector.filter": "Themes filtern",
+  "layout_mode.apply": "Layout anwenden",
+  "layout_mode.applying": "Layout wird angewendet…",
+  "layout_mode.hint": "↑/↓ Modus · ←/→ Untermodus · Tab Fokus · Enter Anwenden · Esc Schließen",
+  "layout_mode.tile": "Gekachelte Fenster",
+  "layout_mode.floating": "Schwebende Fenster",
+  "layout_mode.top": "Taskleiste oben",
+  "layout_mode.bottom": "Taskleiste unten",
+  "layout_mode.saved": "Gespeichert",
+  "layout_mode.pending": "Einstellung gespeichert. Die Anwendung durch die Sitzung steht noch aus.",
+  "layout_mode.failed": "Das Layout konnte nicht angewendet werden. Prüfe den aktuellen Zustand und versuche es erneut.",
+  "layout_mode.selection": "Auswahl geändert. Mit Anwenden das Layout speichern und aktivieren."
 }

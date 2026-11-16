@@ -61,5 +61,16 @@
   "selector.failed": "테마를 불러오거나 적용할 수 없습니다. 다시 시도하세요.",
   "selector.hint": "← → 둘러보기 · / 검색 · Enter 적용 · Esc 닫기",
   "selector.custom": "사용자 지정",
-  "selector.filter": "테마 필터"
+  "selector.filter": "테마 필터",
+  "layout_mode.apply": "레이아웃 적용",
+  "layout_mode.applying": "레이아웃 적용 중…",
+  "layout_mode.hint": "↑/↓ 모드 · ←/→ 하위 모드 · Tab 포커스 · Enter 적용 · Esc 닫기",
+  "layout_mode.tile": "타일 창",
+  "layout_mode.floating": "플로팅 창",
+  "layout_mode.top": "작업 표시줄 위쪽",
+  "layout_mode.bottom": "작업 표시줄 아래쪽",
+  "layout_mode.saved": "저장됨",
+  "layout_mode.pending": "설정이 저장되었습니다. 세션에서 레이아웃 적용을 기다리는 중입니다.",
+  "layout_mode.failed": "레이아웃을 적용할 수 없습니다. 현재 상태를 확인하고 다시 시도하세요.",
+  "layout_mode.selection": "선택이 변경되었습니다. 적용을 눌러 레이아웃을 저장하고 활성화하세요."
 }

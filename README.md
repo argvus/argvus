@@ -227,3 +227,5 @@ If [ARGVUS](https://argvus.github.io) is useful to you, please consider supporti
 Licensed under [GPL-3.0](./LICENSE)
 
 </div>
+
+`argvus layout-mode-menu` (SUPER + Shift + M): Choose Sticky or Spaced with ↑/↓. The four cards on the right combine Tile or Floating windows with Taskbar Top or Bottom; ←/→ moves through them without wrapping. Click a card to select it, Enter to apply, or Escape to cancel. The unselected mode is dimmed; previews use the current theme and wallpaper. Pending applications remain visible and failures can be retried.

@@ -61,5 +61,16 @@
   "selector.failed": "تعذر تحميل السمة أو تطبيقها. حاول مجددًا.",
   "selector.hint": "← → تصفح · / البحث · Enter تطبيق · Esc إغلاق",
   "selector.custom": "مخصص",
-  "selector.filter": "تصفية السمات"
+  "selector.filter": "تصفية السمات",
+  "layout_mode.apply": "تطبيق التخطيط",
+  "layout_mode.applying": "جارٍ تطبيق التخطيط…",
+  "layout_mode.hint": "↑/↓ الوضع · ←/→ الخيار · Tab التركيز · Enter تطبيق · Esc إغلاق",
+  "layout_mode.tile": "نوافذ متجانبة",
+  "layout_mode.floating": "نوافذ عائمة",
+  "layout_mode.top": "شريط المهام بالأعلى",
+  "layout_mode.bottom": "شريط المهام بالأسفل",
+  "layout_mode.saved": "محفوظ",
+  "layout_mode.pending": "حُفظ التفضيل. في انتظار تطبيق التخطيط في الجلسة.",
+  "layout_mode.failed": "تعذر تطبيق التخطيط. تحقق من الحالة الحالية وأعد المحاولة.",
+  "layout_mode.selection": "تم تغيير الاختيار. اضغط تطبيق لحفظ التخطيط وتفعيله."
 }

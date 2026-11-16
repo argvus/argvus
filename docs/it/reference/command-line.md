@@ -82,7 +82,7 @@ Il Centro di controllo accetta i flag di pagina legacy come primo argomento e li
 
 Questi eseguono script pacchettizzati e sono utilizzati dalla configurazione di Hyprland:
 
-`cheatsheets-hypr`, `cheatsheets-launcher`, `scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `layout-mode-menu`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
+`cheatsheets-hypr`, `cheatsheets-launcher`, `scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
 
 Uno script nella configurazione dell'utente sostituisce quello pacchettizzato. L'ordine di ricerca è lo stesso di `_config_path` in `hyprland.lua`: la copia della configurazione dell'utente, poi la copia dei dati ARGVUS, poi la copia dello stato, poi la copia generata, e solo allora il file pacchettizzato sotto `/usr/share/argvus`.
 
@@ -136,3 +136,5 @@ Apri **Desktop e Input > Schermi > Luce Notturna** oppure esegui `argvus control
 Configura ricerca: Preferiti, Mostra file recenti, Indicizza nomi dei file, Cartella indicizzata, Cartella esclusa, Sospendi indicizzazione, Includi file nascosti, Riduci animazioni.
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
+
+`argvus layout-mode-menu` (SUPER + Shift + M): Scegli Sticky o Spaced con ↑/↓. Le quattro schede a destra combinano finestre affiancate o mobili e barra in alto o in basso; ←/→ le percorre senza ciclo. Clic per selezionare, Invio per applicare, Esc per annullare. La modalità non selezionata è attenuata; le anteprime usano tema e sfondo attuali. Le applicazioni in attesa restano visibili e gli errori consentono di riprovare.

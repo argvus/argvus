@@ -82,7 +82,7 @@ description: argvus 명령어, 그 하위 명령어들, 키 바인딩을 위해 
 
 이들은 패키지로 제공되는 스크립트를 실행하며 Hyprland 구성에서 사용됩니다:
 
-`cheatsheets-hypr`, `cheatsheets-launcher`, `scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `layout-mode-menu`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
+`cheatsheets-hypr`, `cheatsheets-launcher`, `scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
 
 사용자의 구성에 있는 스크립트는 패키지화된 스크립트를 덮어씁니다. 조회 순서는 hyprland.lua의 `_config_path`와 동일합니다: 사용자의 구성 복사본, 그 다음 ARGVUS 데이터 복사본, 그 다음 상태 복사본, 그 다음 생성된 복사본, 그 이후에야  `hyprland.lua` `/usr/share/argvus` 아래의 패키지 파일이 적용됩니다.
 
@@ -136,3 +136,5 @@ argvus setup --copy <app> --dry-run
 검색 설정: 즐겨찾기, 최근 파일 표시, 파일 이름 색인, 색인 폴더, 제외 폴더, 색인 일시 중지, 숨김 파일 포함, 애니메이션 줄이기.
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
+
+`argvus layout-mode-menu` (SUPER + Shift + M): ↑/↓로 Sticky 또는 Spaced를 선택합니다. 오른쪽 카드 네 개는 타일 또는 플로팅 창과 작업 표시줄 위 또는 아래를 조합합니다. ←/→는 끝에서 순환하지 않습니다. 클릭으로 선택하고 Enter로 적용, Escape로 취소합니다. 선택하지 않은 모드는 흐리게 표시되며 미리 보기는 현재 테마와 배경을 사용합니다. 대기 상태가 표시되고 실패하면 다시 시도할 수 있습니다.

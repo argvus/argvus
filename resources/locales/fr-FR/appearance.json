@@ -61,5 +61,16 @@
   "selector.failed": "Impossible de charger ou appliquer le thème. Réessayez.",
   "selector.hint": "← → Parcourir · / Rechercher · Enter Appliquer · Esc Fermer",
   "selector.custom": "Personnalisé",
-  "selector.filter": "Filtrer les thèmes"
+  "selector.filter": "Filtrer les thèmes",
+  "layout_mode.apply": "Appliquer la disposition",
+  "layout_mode.applying": "Application de la disposition…",
+  "layout_mode.hint": "↑/↓ Mode · ←/→ Sous-mode · Tab Focus · Enter Appliquer · Esc Fermer",
+  "layout_mode.tile": "Fenêtres en mosaïque",
+  "layout_mode.floating": "Fenêtres flottantes",
+  "layout_mode.top": "Barre des tâches en haut",
+  "layout_mode.bottom": "Barre des tâches en bas",
+  "layout_mode.saved": "Enregistré",
+  "layout_mode.pending": "Préférence enregistrée. En attente de l’application par la session.",
+  "layout_mode.failed": "Impossible d’appliquer la disposition. Vérifiez l’état actuel et réessayez.",
+  "layout_mode.selection": "Sélection modifiée. Appuyez sur Appliquer pour enregistrer et activer la disposition."
 }

@@ -83,3 +83,5 @@ daha yeni belgelerde 3 listelense de bu onu `2` `3`  ile sınırlandırır.
 Seçici açıldığında başlangıç odağı karusel gezinmesindedir. Aramaya odaklanmak veya odağı kaldırmak için `/` tuşuna basın; arama odaktayken yazmak temaları filtreler. **Özel**, kullanıcı tarafından yüklenen temaları; **Koyu** ve **Açık**, ilgili kategorideki sistem temalarını listeler. Arama satırı orta önizlemeyle aynı genişliktedir. Sticky tüm köşeleri düz yapar; Spaced yuvarlak köşeleri korur. Kompakt tek aralıklı yazı tipi ARGVUS masaüstü araçlarının görünümünü izler.
 
 Uygulama sırasında orta önizleme kararır ve yükleme göstergesi görünür. Arama odağı etkin vurgu rengini kullanır; filtrenin tek kenarlığı vardır.
+
+`argvus layout-mode-menu` (SUPER + Shift + M): ↑/↓ ile Sticky veya Spaced seçin. Sağdaki dört kart döşenmiş veya yüzen pencereleri üstte veya altta görev çubuğuyla birleştirir; ←/→ uçta başa dönmez. Seçmek için tıklayın, uygulamak için Enter, iptal için Escape kullanın. Seçili olmayan mod soluktur; önizlemeler geçerli tema ve duvar kâğıdını kullanır. Bekleyen durum görünür kalır ve hata durumunda yeniden denenebilir.

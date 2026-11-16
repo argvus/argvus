@@ -82,7 +82,7 @@ description: Команда argvus, её подкоманды, флаги, ис�
 
 Эти упакованные скрипты запускаются и используются конфигурацией Hyprland:
 
-`cheatsheets-hypr`, `cheatsheets-launcher`, `scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `layout-mode-menu`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
+`cheatsheets-hypr`, `cheatsheets-launcher`, `scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
 
 Скрипт в конфигурации пользователя переопределяет упакованный. Порядок поиска такой же, как у `_config_path` в `hyprland.lua`: копия конфигурации пользователя, затем копия данных ARGVUS, затем копия состояния, затем сгенерированная копия, и только потом упакованный файл под `/usr/share/argvus`.
 
@@ -136,3 +136,5 @@ argvus setup --copy <app> --dry-run
 Настроить поиск: Избранное, Показывать недавние файлы, Индексировать имена файлов, Индексируемая папка, Исключённая папка, Приостановить индексацию, Включать скрытые файлы, Уменьшить анимацию.
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
+
+`argvus layout-mode-menu` (SUPER + Shift + M): Выберите Sticky или Spaced клавишами ↑/↓. Четыре карточки справа сочетают мозаичные или плавающие окна с панелью сверху или снизу; ←/→ перемещаются без перехода по кругу. Выберите щелчком, примените Enter или отмените Escape. Неактивный режим затемнён; предпросмотры используют текущую тему и обои. Ожидающее применение остаётся видимым, после ошибки можно повторить.

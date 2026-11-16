@@ -27,6 +27,7 @@ pub mod hyprland_ipc;
 pub mod i18n;
 pub mod icons;
 mod json_pointers;
+pub mod layout_preset;
 pub mod monitor_state;
 pub mod night_light;
 pub mod project;

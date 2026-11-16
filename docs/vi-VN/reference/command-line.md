@@ -81,7 +81,7 @@ Trung tâm điều khiển chấp nhận cờ trang cũ làm đối số đầu 
 
 Các tập lệnh này chạy các tập lệnh đóng gói và được cấu hình Hyprland sử dụng:
 
-`cheatsheets-hypr`, `cheatsheets-launcher`, `scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `layout-mode-menu`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
+`cheatsheets-hypr`, `cheatsheets-launcher`, `scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
 
 Một tập lệnh trong cấu hình của người dùng sẽ ghi đè tập lệnh được đóng gói. Thứ tự tra cứu giống như `_config_path` trong `hyprland.lua`: bản sao cấu hình của người dùng, sau đó là bản sao dữ liệu ARGVUS, sau đó là bản sao trạng thái, sau đó là bản sao được tạo và chỉ sau đó là tệp được đóng gói trong `/usr/share/argvus`.
 
@@ -137,3 +137,5 @@ Mở **Máy tính để bàn & Đầu vào > Hiển thị > Đèn ngủ** hoặc
 Cấu hình tìm kiếm: Yêu thích, Hiển thị tệp gần đây, Lập chỉ mục tên tệp, Thư mục được lập chỉ mục, Thư mục bị loại trừ, Tạm dừng lập chỉ mục, Bao gồm tệp ẩn, Giảm hoạt ảnh.
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
+
+`argvus layout-mode-menu` (SUPER + Shift + M): Chọn Sticky hoặc Spaced bằng ↑/↓. Bốn thẻ bên phải kết hợp cửa sổ lát gạch hoặc nổi với thanh tác vụ ở trên hoặc dưới; ←/→ di chuyển không quay vòng. Nhấp để chọn, Enter để áp dụng, Escape để hủy. Chế độ chưa chọn được làm mờ; bản xem trước dùng giao diện và hình nền hiện tại. Trạng thái chờ vẫn hiển thị và có thể thử lại khi lỗi.

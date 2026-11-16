@@ -84,3 +84,5 @@ Open `argvus theme-selector`, `argvus theme-switch` without arguments, or `SUPER
 The carousel receives initial focus when the selector opens. Press `/` to focus or leave search; typing filters themes while search is focused. **Custom** lists themes installed by the user, while **Dark** and **Light** list system themes of each category. The search row matches the central preview width. Sticky uses square corners throughout; Spaced keeps rounded corners. The compact monospace styling follows ARGVUS desktop utilities.
 
 While applying, the central preview is dimmed and displays a spinner. Search focus follows the active accent; the filter has a single border.
+
+`argvus layout-mode-menu` (SUPER + Shift + M): Choose Sticky or Spaced with ↑/↓. The four cards on the right combine Tile or Floating windows with Taskbar Top or Bottom; ←/→ moves through them without wrapping. Click a card to select it, Enter to apply, or Escape to cancel. The unselected mode is dimmed; previews use the current theme and wallpaper. Pending applications remain visible and failures can be retried.

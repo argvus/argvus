@@ -61,5 +61,16 @@
   "selector.failed": "تھیم لوڈ یا لاگو نہیں ہو سکا۔ دوبارہ کوشش کریں۔",
   "selector.hint": "← → براؤز · / تلاش · Enter لاگو · Esc بند",
   "selector.custom": "حسبِ ضرورت",
-  "selector.filter": "تھیمز فلٹر کریں"
+  "selector.filter": "تھیمز فلٹر کریں",
+  "layout_mode.apply": "لے آؤٹ لاگو کریں",
+  "layout_mode.applying": "لے آؤٹ لاگو ہو رہا ہے…",
+  "layout_mode.hint": "↑/↓ موڈ · ←/→ ذیلی موڈ · Tab فوکس · Enter لاگو · Esc بند",
+  "layout_mode.tile": "ٹائل ونڈوز",
+  "layout_mode.floating": "تیرتی ونڈوز",
+  "layout_mode.top": "ٹاسک بار اوپر",
+  "layout_mode.bottom": "ٹاسک بار نیچے",
+  "layout_mode.saved": "محفوظ",
+  "layout_mode.pending": "ترجیح محفوظ ہے۔ سیشن میں لے آؤٹ لاگو ہونے کا انتظار ہے۔",
+  "layout_mode.failed": "لے آؤٹ لاگو نہیں ہو سکا۔ موجودہ حالت دیکھ کر دوبارہ کوشش کریں۔",
+  "layout_mode.selection": "انتخاب تبدیل ہو گیا۔ لے آؤٹ محفوظ اور فعال کرنے کے لیے لاگو کریں۔"
 }

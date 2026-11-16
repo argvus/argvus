@@ -61,5 +61,16 @@
   "selector.failed": "Não foi possível aplicar ou carregar o tema. Tente novamente.",
   "selector.hint": "← → Navegar · / Buscar · Enter Aplicar · Esc Fechar",
   "selector.custom": "Custom",
-  "selector.filter": "Filtrar temas"
+  "selector.filter": "Filtrar temas",
+  "layout_mode.apply": "Aplicar layout",
+  "layout_mode.applying": "Aplicando modo, aguarde…",
+  "layout_mode.hint": "↑/↓ Modo · ←/→ Submodo · Tab Foco · Enter Aplicar · Esc Fechar",
+  "layout_mode.tile": "Janelas em mosaico",
+  "layout_mode.floating": "Janelas flutuantes",
+  "layout_mode.top": "Taskbar no topo",
+  "layout_mode.bottom": "Taskbar embaixo",
+  "layout_mode.saved": "Salvo",
+  "layout_mode.pending": "Preferência salva. Aguardando a sessão aplicar este layout.",
+  "layout_mode.failed": "Não foi possível aplicar o layout. Confira o estado atual e tente novamente.",
+  "layout_mode.selection": "Seleção alterada. Use Aplicar para salvar e ativar o layout."
 }

@@ -61,5 +61,16 @@
   "selector.failed": "Não foi possível aplicar ou carregar o tema. Tente novamente.",
   "selector.hint": "← → Navegar · / Pesquisar · Enter Aplicar · Esc Fechar",
   "selector.custom": "Personalizado",
-  "selector.filter": "Filtrar temas"
+  "selector.filter": "Filtrar temas",
+  "layout_mode.apply": "Aplicar layout",
+  "layout_mode.applying": "A aplicar modo, aguarde…",
+  "layout_mode.hint": "↑/↓ Modo · ←/→ Submodo · Tab Foco · Enter Aplicar · Esc Fechar",
+  "layout_mode.tile": "Janelas em mosaico",
+  "layout_mode.floating": "Janelas flutuantes",
+  "layout_mode.top": "Barra de tarefas no topo",
+  "layout_mode.bottom": "Barra de tarefas em baixo",
+  "layout_mode.saved": "Guardado",
+  "layout_mode.pending": "Preferência guardada. A aguardar que a sessão aplique este layout.",
+  "layout_mode.failed": "Não foi possível aplicar o layout. Verifique o estado atual e tente novamente.",
+  "layout_mode.selection": "Seleção alterada. Prima Aplicar para guardar e ativar o esquema."
 }

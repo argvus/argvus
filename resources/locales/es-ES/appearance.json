@@ -61,5 +61,16 @@
   "selector.failed": "No se pudo aplicar o cargar el tema. Inténtalo de nuevo.",
   "selector.hint": "← → Explorar · / Buscar · Enter Aplicar · Esc Cerrar",
   "selector.custom": "Personalizado",
-  "selector.filter": "Filtrar temas"
+  "selector.filter": "Filtrar temas",
+  "layout_mode.apply": "Aplicar diseño",
+  "layout_mode.applying": "Aplicando diseño…",
+  "layout_mode.hint": "↑/↓ Modo · ←/→ Submodo · Tab Foco · Enter Aplicar · Esc Cerrar",
+  "layout_mode.tile": "Ventanas en mosaico",
+  "layout_mode.floating": "Ventanas flotantes",
+  "layout_mode.top": "Barra de tareas arriba",
+  "layout_mode.bottom": "Barra de tareas abajo",
+  "layout_mode.saved": "Guardado",
+  "layout_mode.pending": "Preferencia guardada. Esperando a que la sesión aplique el diseño.",
+  "layout_mode.failed": "No se pudo aplicar el diseño. Comprueba el estado actual y vuelve a intentarlo.",
+  "layout_mode.selection": "Selección cambiada. Pulsa Aplicar para guardar y activar el diseño."
 }

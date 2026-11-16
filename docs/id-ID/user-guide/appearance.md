@@ -83,3 +83,5 @@ Buka `argvus theme-selector`, `argvus theme-switch` tanpa argumen, atau `SUPER +
 Saat pemilih dibuka, fokus awal berada pada navigasi karusel. Tekan `/` untuk memfokuskan atau meninggalkan pencarian; mengetik akan menyaring tema saat kolom pencarian berfokus. **Kustom** menampilkan tema yang dipasang pengguna; **Gelap** dan **Terang** menampilkan tema sistem sesuai kategorinya. Baris pencarian selebar pratinjau tengah. Sticky memakai sudut siku di seluruh antarmuka; Spaced tetap membulat. Gaya monospace yang ringkas mengikuti utilitas desktop ARGVUS.
 
 Saat menerapkan, pratinjau tengah diredupkan dan menampilkan indikator pemuatan. Fokus pencarian memakai aksen aktif; filter memiliki satu bingkai.
+
+`argvus layout-mode-menu` (SUPER + Shift + M): Pilih Sticky atau Spaced dengan ↑/↓. Empat kartu di kanan menggabungkan jendela ubin atau mengambang dengan taskbar atas atau bawah; ←/→ bergerak tanpa berputar. Klik untuk memilih, Enter untuk menerapkan, Escape untuk membatalkan. Mode yang tidak dipilih diredupkan; pratinjau memakai tema dan wallpaper saat ini. Status tertunda tetap terlihat dan kegagalan dapat dicoba lagi.

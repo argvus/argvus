@@ -81,7 +81,7 @@ Pusat Kontrol menerima tanda halaman lama sebagai argumen pertamanya dan memetak
 
 Ini menjalankan skrip yang dikemas dan digunakan oleh konfigurasi Hyprland:
 
-`cheatsheets-hypr`, `cheatsheets-launcher`, `scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `layout-mode-menu`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
+`cheatsheets-hypr`, `cheatsheets-launcher`, `scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
 
 Skrip dalam konfigurasi pengguna akan menggantikan skrip yang dipaketkan. Urutan pencariannya sama dengan `_config_path` di `hyprland.lua`: salinan konfigurasi pengguna, lalu salinan data ARGVUS, lalu salinan status, lalu salinan yang dihasilkan, dan baru kemudian file paket di bawah `/usr/share/argvus`.
 
@@ -137,3 +137,5 @@ Buka **Desktop & Input > Tampilan > Lampu Malam** atau jalankan `argvus control-
 Atur pencarian: Favorit, Tampilkan berkas terbaru, Indeks nama berkas, Folder terindeks, Folder dikecualikan, Jeda pengindeksan, Sertakan berkas tersembunyi, Kurangi animasi.
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
+
+`argvus layout-mode-menu` (SUPER + Shift + M): Pilih Sticky atau Spaced dengan ↑/↓. Empat kartu di kanan menggabungkan jendela ubin atau mengambang dengan taskbar atas atau bawah; ←/→ bergerak tanpa berputar. Klik untuk memilih, Enter untuk menerapkan, Escape untuk membatalkan. Mode yang tidak dipilih diredupkan; pratinjau memakai tema dan wallpaper saat ini. Status tertunda tetap terlihat dan kegagalan dapat dicoba lagi.

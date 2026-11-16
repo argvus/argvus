@@ -61,5 +61,16 @@
   "selector.failed": "Không thể tải hoặc áp dụng chủ đề. Hãy thử lại.",
   "selector.hint": "← → Duyệt · / Tìm kiếm · Enter Áp dụng · Esc Đóng",
   "selector.custom": "Tùy chỉnh",
-  "selector.filter": "Lọc giao diện"
+  "selector.filter": "Lọc giao diện",
+  "layout_mode.apply": "Áp dụng bố cục",
+  "layout_mode.applying": "Đang áp dụng bố cục…",
+  "layout_mode.hint": "↑/↓ Chế độ · ←/→ chế độ phụ · Tab tiêu điểm · Enter Áp dụng · Esc Đóng",
+  "layout_mode.tile": "Cửa sổ lát gạch",
+  "layout_mode.floating": "Cửa sổ nổi",
+  "layout_mode.top": "Thanh tác vụ trên",
+  "layout_mode.bottom": "Thanh tác vụ dưới",
+  "layout_mode.saved": "Đã lưu",
+  "layout_mode.pending": "Đã lưu tùy chọn. Đang chờ phiên áp dụng bố cục này.",
+  "layout_mode.failed": "Không thể áp dụng bố cục. Hãy kiểm tra trạng thái hiện tại và thử lại.",
+  "layout_mode.selection": "Đã đổi lựa chọn. Nhấn Áp dụng để lưu và kích hoạt bố cục."
 }

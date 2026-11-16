@@ -1,8 +1,5 @@
 //! Independent visual theme selector. Theme application stays in argvus config.
-mod model;
-mod preview;
-mod render;
-mod ui;
+use argvus_theme_selector::ui;
 
 use argvus_i18n::I18n;
 use gtk::{glib, prelude::*};

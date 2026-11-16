@@ -81,7 +81,7 @@ description: أمر argvus وأوامره الفرعية والأعلام الم
 
 تعمل هذه البرامج النصية المجمعة ويتم استخدامها بواسطة تكوين Hyprland:
 
-`cheatsheets-hypr`، `cheatsheets-launcher`، `scratchpad`، `hypr-screenshot`، `spaces-switch`، `emoji-picker`، `toggle-sidebar`، `weather-location`، `layout-mode-menu`، `brightness-switch`، `toggle-mode`، `idle-timeout`، `keep-awake`، `hypr-power-menu`.
+`cheatsheets-hypr`، `cheatsheets-launcher`، `scratchpad`، `hypr-screenshot`، `spaces-switch`، `emoji-picker`، `toggle-sidebar`، `weather-location`، `brightness-switch`، `toggle-mode`، `idle-timeout`، `keep-awake`، `hypr-power-menu`.
 
 يتجاوز البرنامج النصي الموجود في تكوين المستخدم البرنامج النصي المعبأ. ترتيب البحث هو نفسه `_config_path` في `hyprland.lua`: نسخة تكوين المستخدم، ثم نسخة بيانات ARGVUS، ثم نسخة الحالة، ثم النسخة التي تم إنشاؤها، وبعد ذلك فقط الملف المعبأ تحت `/usr/share/argvus`.
 
@@ -137,3 +137,5 @@ argvus setup --copy <app> --dry-run
 إعداد البحث: المفضلة, إظهار الملفات الحديثة, فهرسة أسماء الملفات, مجلد مفهرس, مجلد مستبعد, إيقاف الفهرسة مؤقتًا, تضمين الملفات المخفية, تقليل الرسوم المتحركة.
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
+
+`argvus layout-mode-menu` (SUPER + Shift + M): اختر Sticky أو Spaced بالسهمين ↑/↓. تجمع البطاقات الأربع يمينًا بين النوافذ المتجانبة أو العائمة وشريط المهام في الأعلى أو الأسفل؛ يتنقل ←/→ بينها دون تكرار. انقر للاختيار، واضغط Enter للتطبيق أو Escape للإلغاء. يظهر الوضع غير المحدد باهتًا وتستخدم المعاينات السمة والخلفية الحاليتين. تبقى التطبيقات المعلقة ظاهرة ويمكن إعادة المحاولة عند الخطأ.

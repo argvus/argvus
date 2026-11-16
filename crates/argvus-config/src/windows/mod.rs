@@ -170,6 +170,11 @@ pub(crate) fn prepare_tile() -> ConfigResult<()> {
   }
 }
 
+/// Applies the primary taskbar edge through the same backend as `argvus windows position`.
+pub(crate) fn set_position(position: &str) -> ConfigResult<()> {
+  bar::position(position, bar::PositionMode::Apply)
+}
+
 #[cfg(test)]
 mod tests {
   use super::*;

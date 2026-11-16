@@ -72,7 +72,7 @@ description: argvus کمانڈ، اس کی ذیلی کمانڈ، کی بائنڈ
 
 ## ﺯﮉﻧﺎﻤﮐ ﭧﭘﺮﮑﺳﺍ
 
-یہ پیکڈ اسکرپٹس چلاتے ہیں اور ہائپرلینڈ کنفیگریشن کے ذریعہ استعمال ہوتے ہیں: system  --hostname  locale  --keyboard-layout  apps  --apps  apps  --keyboard-layout  locale  --hostname  system `cheatsheets-hypr `, ` cheatsheets-launcher `, ` scratchpad `, ` hypr-screenshot `, ` spaces-switch `, ` emoji-picker `, ` toggle-sidebar `, ` weather-location `, ` layout-mode-menu `, ` brightness-switch `, ` toggle-mode `, ` idle-timeout `, ` keep-awake `, ` hypr-power-menu`.
+یہ پیکڈ اسکرپٹس چلاتے ہیں اور ہائپرلینڈ کنفیگریشن کے ذریعہ استعمال ہوتے ہیں: system  --hostname  locale  --keyboard-layout  apps  --apps  apps  --keyboard-layout  locale  --hostname  system `cheatsheets-hypr `, ` cheatsheets-launcher `, ` scratchpad `, ` hypr-screenshot `, ` spaces-switch `, ` emoji-picker `, ` toggle-sidebar `, ` weather-location `, ` brightness-switch `, ` toggle-mode `, ` idle-timeout `, ` keep-awake `, ` hypr-power-menu`.
 
 صارف کی ترتیب میں ایک اسکرپٹ پیک شدہ کو اوور رائیڈ کرتا ہے۔ تلاش کا آرڈر `_config_path ` میں ` hyprland.lua ` جیسا ہی ہے: صارف کی کنفیگریشن کاپی، پھر ARGVUS ڈیٹا کاپی، پھر اسٹیٹ کاپی، پھر جنریٹڈ کاپی، اور صرف اس کے بعد `/usr/share/argvus` کے تحت پیک کردہ فائل۔## مثالیں۔
 
@@ -122,3 +122,5 @@ argvus setup --copy <app> --dry-run
 تلاش ترتیب دیں: پسندیدہ, حالیہ فائلیں دکھائیں, فائل ناموں کی اشاریہ سازی, اشاریہ شدہ فولڈر, خارج شدہ فولڈر, اشاریہ سازی روکیں, پوشیدہ فائلیں شامل کریں, حرکت پذیری کم کریں.
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
+
+`argvus layout-mode-menu` (SUPER + Shift + M): ↑/↓ سے Sticky یا Spaced منتخب کریں۔ دائیں چار کارڈ ٹائل یا تیرتی ونڈوز کو اوپر یا نیچے ٹاسک بار کے ساتھ ملاتے ہیں؛ ←/→ کنارے پر واپس نہیں گھومتا۔ کلک سے منتخب کریں، Enter سے لاگو یا Escape سے منسوخ کریں۔ غیر منتخب موڈ مدھم اور پیش منظر موجودہ تھیم اور وال پیپر استعمال کرتے ہیں۔ زیر انتظار حالت نظر آتی ہے اور خرابی پر دوبارہ کوشش ممکن ہے۔

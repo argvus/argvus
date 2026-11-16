@@ -70,3 +70,5 @@ Apri `argvus theme-selector`, `argvus theme-switch` senza argomenti o `SUPER + S
 All’apertura del selettore, il focus iniziale è sulla navigazione del carosello. Premi `/` per attivare o lasciare la ricerca; digitando con la ricerca attiva si filtrano i temi. **Personalizzato** mostra i temi installati dall’utente; **Scuro** e **Chiaro** mostrano i temi di sistema delle rispettive categorie. La riga di ricerca ha la stessa larghezza dell’anteprima centrale. Sticky usa angoli retti ovunque; Spaced mantiene gli angoli arrotondati. Lo stile compatto monospazio segue le utility desktop ARGVUS.
 
 Durante l’applicazione, l’anteprima centrale si oscura e mostra un indicatore animato. La ricerca usa l’accento attivo e il filtro ha un solo bordo.
+
+`argvus layout-mode-menu` (SUPER + Shift + M): Scegli Sticky o Spaced con ↑/↓. Le quattro schede a destra combinano finestre affiancate o mobili e barra in alto o in basso; ←/→ le percorre senza ciclo. Clic per selezionare, Invio per applicare, Esc per annullare. La modalità non selezionata è attenuata; le anteprime usano tema e sfondo attuali. Le applicazioni in attesa restano visibili e gli errori consentono di riprovare.
