@@ -64,7 +64,7 @@
   "selector.filter": "筛选主题",
   "layout_mode.apply": "应用布局",
   "layout_mode.applying": "正在应用布局…",
-  "layout_mode.hint": "↑/↓ 模式 · ←/→ 子模式 · Tab 焦点 · Enter 应用 · Esc 关闭",
+  "layout_mode.hint": "Tab / Shift+Tab ⇄ · ↑ ↓ ← → · Enter 应用 · Esc 关闭",
   "layout_mode.tile": "平铺窗口",
   "layout_mode.floating": "浮动窗口",
   "layout_mode.top": "任务栏置顶",

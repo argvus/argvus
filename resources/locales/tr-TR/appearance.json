@@ -64,7 +64,7 @@
   "selector.filter": "Temaları filtrele",
   "layout_mode.apply": "Düzeni uygula",
   "layout_mode.applying": "Düzen uygulanıyor…",
-  "layout_mode.hint": "↑/↓ Mod · ←/→ Alt mod · Tab Odak · Enter Uygula · Esc Kapat",
+  "layout_mode.hint": "Tab / Shift+Tab ⇄ · ↑ ↓ ← → · Enter Uygula · Esc Kapat",
   "layout_mode.tile": "Döşenmiş pencereler",
   "layout_mode.floating": "Yüzen pencereler",
   "layout_mode.top": "Görev çubuğu üstte",

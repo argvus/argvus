@@ -137,4 +137,6 @@ argvus setup --copy <app> --dry-run
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
 
-`argvus layout-mode-menu` (SUPER + Shift + M): ↑/↓로 Sticky 또는 Spaced를 선택합니다. 오른쪽 카드 네 개는 타일 또는 플로팅 창과 작업 표시줄 위 또는 아래를 조합합니다. ←/→는 끝에서 순환하지 않습니다. 클릭으로 선택하고 Enter로 적용, Escape로 취소합니다. 선택하지 않은 모드는 흐리게 표시되며 미리 보기는 현재 테마와 배경을 사용합니다. 대기 상태가 표시되고 실패하면 다시 시도할 수 있습니다.
+`argvus layout-mode-menu` (SUPER + Shift + M): **Tab / Shift+Tab**: Sticky / Spaced ⇄ Tile / Floating · Taskbar Top / Bottom. **Sticky / Spaced**: ↑ / ↓. **Tile / Floating · Taskbar Top / Bottom** (2 × 2): ↑ / ↓ / ← / →. **Enter**: ✓. **Esc**: ×.
+
+선택하지 않은 카드의 불투명도는 40%이며 하위 모드 미리보기는 기본 미리보기 크기의 75%입니다.

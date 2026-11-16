@@ -71,4 +71,6 @@ Al abrir el selector, el foco inicial queda en la navegación del carrusel. Puls
 
 Al aplicar, la vista central se oscurece y muestra un indicador animado. El foco usa el acento activo y el filtro tiene un solo borde.
 
-`argvus layout-mode-menu` (SUPER + Shift + M): Elija Sticky o Spaced con ↑/↓. Las cuatro tarjetas de la derecha combinan ventanas en mosaico o flotantes con la barra arriba o abajo; ←/→ recorre las opciones sin bucle. Haga clic para seleccionar, Enter para aplicar o Escape para cancelar. El modo no seleccionado se atenúa; las vistas usan el tema y fondo actuales. Las aplicaciones pendientes permanecen visibles y los errores permiten reintentar.
+`argvus layout-mode-menu` (SUPER + Shift + M): **Tab / Shift+Tab**: Sticky / Spaced ⇄ Tile / Floating · Taskbar Top / Bottom. **Sticky / Spaced**: ↑ / ↓. **Tile / Floating · Taskbar Top / Bottom** (2 × 2): ↑ / ↓ / ← / →. **Enter**: ✓. **Esc**: ×.
+
+Las tarjetas no seleccionadas tienen un 40% de opacidad; las vistas de submodos tienen el 75% del tamaño principal.

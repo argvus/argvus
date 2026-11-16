@@ -121,4 +121,6 @@ argvus setup --copy <app> --dry-run
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
 
-`argvus layout-mode-menu` (SUPER + Shift + M): ↑/↓ দিয়ে Sticky বা Spaced বেছে নিন। ডানের চারটি কার্ডে টাইল বা ভাসমান উইন্ডোর সঙ্গে উপরে বা নিচে টাস্কবারের সমন্বয় রয়েছে; ←/→ শেষ প্রান্তে ঘুরে আসে না। ক্লিক করে নির্বাচন, Enter দিয়ে প্রয়োগ বা Escape দিয়ে বাতিল করুন। অনির্বাচিত মোড ম্লান থাকে; প্রাকদর্শনে বর্তমান থিম ও ওয়ালপেপার ব্যবহৃত হয়। অপেক্ষমাণ অবস্থা দেখা যায় এবং ত্রুটিতে আবার চেষ্টা করা যায়।
+`argvus layout-mode-menu` (SUPER + Shift + M): **Tab / Shift+Tab**: Sticky / Spaced ⇄ Tile / Floating · Taskbar Top / Bottom. **Sticky / Spaced**: ↑ / ↓. **Tile / Floating · Taskbar Top / Bottom** (2 × 2): ↑ / ↓ / ← / →. **Enter**: ✓. **Esc**: ×.
+
+অনির্বাচিত কার্ডের অস্বচ্ছতা 40%; উপমোডের প্রিভিউ মূল প্রিভিউয়ের 75% আকারের।

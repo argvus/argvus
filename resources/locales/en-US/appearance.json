@@ -64,7 +64,7 @@
   "selector.filter": "Filter themes",
   "layout_mode.apply": "Apply layout",
   "layout_mode.applying": "Applying layout, please wait…",
-  "layout_mode.hint": "↑/↓ Mode · ←/→ Submode · Tab Focus · Enter Apply · Esc Close",
+  "layout_mode.hint": "Tab / Shift+Tab ⇄ · ↑ ↓ ← → · Enter Apply · Esc Close",
   "layout_mode.tile": "Tile Windows",
   "layout_mode.floating": "Floating Windows",
   "layout_mode.top": "Taskbar Top",

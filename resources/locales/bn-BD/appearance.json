@@ -64,7 +64,7 @@
   "selector.filter": "থিম ফিল্টার করুন",
   "layout_mode.apply": "বিন্যাস প্রয়োগ করুন",
   "layout_mode.applying": "বিন্যাস প্রয়োগ হচ্ছে…",
-  "layout_mode.hint": "↑/↓ মোড · ←/→ উপমোড · Tab ফোকাস · Enter প্রয়োগ · Esc বন্ধ",
+  "layout_mode.hint": "Tab / Shift+Tab ⇄ · ↑ ↓ ← → · Enter প্রয়োগ · Esc বন্ধ",
   "layout_mode.tile": "টাইল উইন্ডো",
   "layout_mode.floating": "ভাসমান উইন্ডো",
   "layout_mode.top": "টাস্কবার উপরে",

@@ -85,4 +85,6 @@ The carousel receives initial focus when the selector opens. Press `/` to focus 
 
 While applying, the central preview is dimmed and displays a spinner. Search focus follows the active accent; the filter has a single border.
 
-`argvus layout-mode-menu` (SUPER + Shift + M): Choose Sticky or Spaced with ↑/↓. The four cards on the right combine Tile or Floating windows with Taskbar Top or Bottom; ←/→ moves through them without wrapping. Click a card to select it, Enter to apply, or Escape to cancel. The unselected mode is dimmed; previews use the current theme and wallpaper. Pending applications remain visible and failures can be retried.
+`argvus layout-mode-menu` (SUPER + Shift + M): **Tab / Shift+Tab**: Sticky / Spaced ⇄ Tile / Floating · Taskbar Top / Bottom. **Sticky / Spaced**: ↑ / ↓. **Tile / Floating · Taskbar Top / Bottom** (2 × 2): ↑ / ↓ / ← / →. **Enter**: ✓. **Esc**: ×.
+
+Unselected cards use 40% opacity; submode previews are 75% of the main previews.

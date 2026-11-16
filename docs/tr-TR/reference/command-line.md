@@ -138,4 +138,6 @@ Aramayı yapılandır: Favoriler, Son dosyaları göster, Dosya adlarını dizin
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
 
-`argvus layout-mode-menu` (SUPER + Shift + M): ↑/↓ ile Sticky veya Spaced seçin. Sağdaki dört kart döşenmiş veya yüzen pencereleri üstte veya altta görev çubuğuyla birleştirir; ←/→ uçta başa dönmez. Seçmek için tıklayın, uygulamak için Enter, iptal için Escape kullanın. Seçili olmayan mod soluktur; önizlemeler geçerli tema ve duvar kâğıdını kullanır. Bekleyen durum görünür kalır ve hata durumunda yeniden denenebilir.
+`argvus layout-mode-menu` (SUPER + Shift + M): **Tab / Shift+Tab**: Sticky / Spaced ⇄ Tile / Floating · Taskbar Top / Bottom. **Sticky / Spaced**: ↑ / ↓. **Tile / Floating · Taskbar Top / Bottom** (2 × 2): ↑ / ↓ / ← / →. **Enter**: ✓. **Esc**: ×.
+
+Seçilmeyen kartların opaklığı %40; alt mod önizlemelerinin boyutu ana önizlemelerin %75’idir.

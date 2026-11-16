@@ -64,7 +64,7 @@
   "selector.filter": "थीम फ़िल्टर करें",
   "layout_mode.apply": "लेआउट लागू करें",
   "layout_mode.applying": "लेआउट लागू हो रहा है…",
-  "layout_mode.hint": "↑/↓ मोड · ←/→ उपमोड · Tab फ़ोकस · Enter लागू · Esc बंद",
+  "layout_mode.hint": "Tab / Shift+Tab ⇄ · ↑ ↓ ← → · Enter लागू · Esc बंद",
   "layout_mode.tile": "टाइल विंडो",
   "layout_mode.floating": "फ़्लोटिंग विंडो",
   "layout_mode.top": "टास्कबार ऊपर",

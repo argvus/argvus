@@ -138,4 +138,6 @@ Atur pencarian: Favorit, Tampilkan berkas terbaru, Indeks nama berkas, Folder te
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
 
-`argvus layout-mode-menu` (SUPER + Shift + M): Pilih Sticky atau Spaced dengan ↑/↓. Empat kartu di kanan menggabungkan jendela ubin atau mengambang dengan taskbar atas atau bawah; ←/→ bergerak tanpa berputar. Klik untuk memilih, Enter untuk menerapkan, Escape untuk membatalkan. Mode yang tidak dipilih diredupkan; pratinjau memakai tema dan wallpaper saat ini. Status tertunda tetap terlihat dan kegagalan dapat dicoba lagi.
+`argvus layout-mode-menu` (SUPER + Shift + M): **Tab / Shift+Tab**: Sticky / Spaced ⇄ Tile / Floating · Taskbar Top / Bottom. **Sticky / Spaced**: ↑ / ↓. **Tile / Floating · Taskbar Top / Bottom** (2 × 2): ↑ / ↓ / ← / →. **Enter**: ✓. **Esc**: ×.
+
+Kartu yang tidak dipilih memiliki opasitas 40%; pratinjau submode berukuran 75% dari pratinjau utama.

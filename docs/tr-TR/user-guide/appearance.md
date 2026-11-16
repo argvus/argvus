@@ -84,4 +84,6 @@ Seçici açıldığında başlangıç odağı karusel gezinmesindedir. Aramaya o
 
 Uygulama sırasında orta önizleme kararır ve yükleme göstergesi görünür. Arama odağı etkin vurgu rengini kullanır; filtrenin tek kenarlığı vardır.
 
-`argvus layout-mode-menu` (SUPER + Shift + M): ↑/↓ ile Sticky veya Spaced seçin. Sağdaki dört kart döşenmiş veya yüzen pencereleri üstte veya altta görev çubuğuyla birleştirir; ←/→ uçta başa dönmez. Seçmek için tıklayın, uygulamak için Enter, iptal için Escape kullanın. Seçili olmayan mod soluktur; önizlemeler geçerli tema ve duvar kâğıdını kullanır. Bekleyen durum görünür kalır ve hata durumunda yeniden denenebilir.
+`argvus layout-mode-menu` (SUPER + Shift + M): **Tab / Shift+Tab**: Sticky / Spaced ⇄ Tile / Floating · Taskbar Top / Bottom. **Sticky / Spaced**: ↑ / ↓. **Tile / Floating · Taskbar Top / Bottom** (2 × 2): ↑ / ↓ / ← / →. **Enter**: ✓. **Esc**: ×.
+
+Seçilmeyen kartların opaklığı %40; alt mod önizlemelerinin boyutu ana önizlemelerin %75’idir.

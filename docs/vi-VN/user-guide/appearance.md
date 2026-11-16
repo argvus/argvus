@@ -84,4 +84,6 @@ Khi mở bộ chọn, tiêu điểm ban đầu nằm ở phần điều hướng
 
 Khi áp dụng, bản xem trước ở giữa tối đi và hiển thị biểu tượng tải. Tiêu điểm tìm kiếm dùng màu nhấn hiện tại; bộ lọc có một đường viền.
 
-`argvus layout-mode-menu` (SUPER + Shift + M): Chọn Sticky hoặc Spaced bằng ↑/↓. Bốn thẻ bên phải kết hợp cửa sổ lát gạch hoặc nổi với thanh tác vụ ở trên hoặc dưới; ←/→ di chuyển không quay vòng. Nhấp để chọn, Enter để áp dụng, Escape để hủy. Chế độ chưa chọn được làm mờ; bản xem trước dùng giao diện và hình nền hiện tại. Trạng thái chờ vẫn hiển thị và có thể thử lại khi lỗi.
+`argvus layout-mode-menu` (SUPER + Shift + M): **Tab / Shift+Tab**: Sticky / Spaced ⇄ Tile / Floating · Taskbar Top / Bottom. **Sticky / Spaced**: ↑ / ↓. **Tile / Floating · Taskbar Top / Bottom** (2 × 2): ↑ / ↓ / ← / →. **Enter**: ✓. **Esc**: ×.
+
+Thẻ chưa chọn có độ mờ 40%; bản xem trước chế độ phụ có kích thước bằng 75% bản xem trước chính.

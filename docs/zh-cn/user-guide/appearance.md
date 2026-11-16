@@ -72,4 +72,6 @@ Wobble 默认情况下是禁用的。其 ARGVUS 默认值为：刚度 `100`、�
 
 应用时，中央预览变暗并显示加载动画。搜索焦点使用当前强调色，筛选器只有一层边框。
 
-`argvus layout-mode-menu` (SUPER + Shift + M): 使用 ↑/↓ 选择 Sticky 或 Spaced。右侧四张卡片组合平铺或浮动窗口与顶部或底部任务栏；←/→ 依次移动，不循环。点击选择，Enter 应用，Escape 取消。未选模式变暗；预览使用当前主题和壁纸。待应用状态会保持显示，失败后可重试。
+`argvus layout-mode-menu` (SUPER + Shift + M): **Tab / Shift+Tab**: Sticky / Spaced ⇄ Tile / Floating · Taskbar Top / Bottom. **Sticky / Spaced**: ↑ / ↓. **Tile / Floating · Taskbar Top / Bottom** (2 × 2): ↑ / ↓ / ← / →. **Enter**: ✓. **Esc**: ×.
+
+未选中卡片的不透明度为40%；子模式预览大小为主模式预览的75%。

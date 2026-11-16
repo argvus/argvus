@@ -72,4 +72,6 @@ Ouvrez `argvus theme-selector`, `argvus theme-switch` sans argument ou `SUPER + 
 
 Pendant l’application, l’aperçu central est assombri et affiche un indicateur animé. La recherche utilise l’accent actif et le filtre possède une seule bordure.
 
-`argvus layout-mode-menu` (SUPER + Shift + M): Choisissez Sticky ou Spaced avec ↑/↓. Les quatre cartes à droite combinent fenêtres en mosaïque ou flottantes et barre en haut ou en bas ; ←/→ les parcourt sans boucle. Cliquez pour choisir, Entrée pour appliquer ou Échap pour annuler. Le mode non sélectionné est atténué ; les aperçus utilisent le thème et le fond actuels. Les applications en attente restent visibles et les erreurs permettent de réessayer.
+`argvus layout-mode-menu` (SUPER + Shift + M): **Tab / Shift+Tab**: Sticky / Spaced ⇄ Tile / Floating · Taskbar Top / Bottom. **Sticky / Spaced**: ↑ / ↓. **Tile / Floating · Taskbar Top / Bottom** (2 × 2): ↑ / ↓ / ← / →. **Enter**: ✓. **Esc**: ×.
+
+Les cartes non sélectionnées ont une opacité de 40 % ; les aperçus des sous-modes mesurent 75 % des aperçus principaux.

@@ -64,7 +64,7 @@
   "selector.filter": "Themes filtern",
   "layout_mode.apply": "Layout anwenden",
   "layout_mode.applying": "Layout wird angewendet…",
-  "layout_mode.hint": "↑/↓ Modus · ←/→ Untermodus · Tab Fokus · Enter Anwenden · Esc Schließen",
+  "layout_mode.hint": "Tab / Shift+Tab ⇄ · ↑ ↓ ← → · Enter Anwenden · Esc Schließen",
   "layout_mode.tile": "Gekachelte Fenster",
   "layout_mode.floating": "Schwebende Fenster",
   "layout_mode.top": "Taskleiste oben",

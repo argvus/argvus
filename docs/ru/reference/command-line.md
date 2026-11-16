@@ -137,4 +137,6 @@ argvus setup --copy <app> --dry-run
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
 
-`argvus layout-mode-menu` (SUPER + Shift + M): Выберите Sticky или Spaced клавишами ↑/↓. Четыре карточки справа сочетают мозаичные или плавающие окна с панелью сверху или снизу; ←/→ перемещаются без перехода по кругу. Выберите щелчком, примените Enter или отмените Escape. Неактивный режим затемнён; предпросмотры используют текущую тему и обои. Ожидающее применение остаётся видимым, после ошибки можно повторить.
+`argvus layout-mode-menu` (SUPER + Shift + M): **Tab / Shift+Tab**: Sticky / Spaced ⇄ Tile / Floating · Taskbar Top / Bottom. **Sticky / Spaced**: ↑ / ↓. **Tile / Floating · Taskbar Top / Bottom** (2 × 2): ↑ / ↓ / ← / →. **Enter**: ✓. **Esc**: ×.
+
+Невыбранные карточки имеют непрозрачность 40%; размер превью подрежимов составляет 75% от основных.

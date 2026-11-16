@@ -34,8 +34,8 @@ The package installs the helper without new dependencies. Documentation and
 appearance strings are synchronized in every existing locale. Tests cover tuple
 round trips, legacy names, all eight application orders, failure short circuiting,
 runtime pending status, distinct preview pixels and wallpaper orientation. UI
-tests cover separate vertical mode navigation, the non-wrapping horizontal
-submode sequence, four complete window/taskbar combinations, inactive-mode opacity,
+tests cover separate vertical mode navigation, spatial navigation within the focused
+submode grid, four complete window/taskbar combinations, inactive-mode opacity,
 focus-only Tab movement, and output sizing.
 
 Validation used isolated configuration and mocked runtime commands for all eight
@@ -46,3 +46,12 @@ failure/retry and cancellation were exercised without changing the user's saved
 layout. Unit tests cover navigation, focus, opacity and sizing. These simulations
 do not replace hardware validation of multiple physical outputs and fractional
 scaling.
+
+Main previews retain a 16:9 aspect ratio; submode previews are 75% of their
+size and vertically centered. All unselected cards use 40% opacity. The apply
+spinner is centered at 20 logical pixels without expanding to fill its cover.
+
+Initial focus is on the selected main mode. Tab and Shift+Tab toggle groups
+without changing selection. Arrows stay within the focused group, stopping at
+grid boundaries; Up/Down select the main mode, while all four arrows navigate
+the 2×2 submode grid. Enter applies and Escape closes.

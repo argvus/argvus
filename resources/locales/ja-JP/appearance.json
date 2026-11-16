@@ -64,7 +64,7 @@
   "selector.filter": "テーマを絞り込む",
   "layout_mode.apply": "レイアウトを適用",
   "layout_mode.applying": "レイアウトを適用中…",
-  "layout_mode.hint": "↑/↓ モード · ←/→ サブモード · Tab フォーカス · Enter 適用 · Esc 閉じる",
+  "layout_mode.hint": "Tab / Shift+Tab ⇄ · ↑ ↓ ← → · Enter 適用 · Esc 閉じる",
   "layout_mode.tile": "タイルウィンドウ",
   "layout_mode.floating": "フローティングウィンドウ",
   "layout_mode.top": "タスクバーを上に",

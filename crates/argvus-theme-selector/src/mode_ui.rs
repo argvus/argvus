@@ -82,7 +82,7 @@ impl Selection {
       windows: preset.windows,
       position: preset.position,
       cursor: WindowTaskbarChoice::from_preset(preset),
-      focus: FocusColumn::Submodes,
+      focus: FocusColumn::Modes,
     }
   }
 
@@ -112,10 +112,15 @@ impl Selection {
     }
   }
 
-  fn move_right(self, key: gdk::Key) -> Self {
+  fn navigate(self, key: gdk::Key) -> Self {
+    if self.focus == FocusColumn::Modes {
+      return self.move_mode(key);
+    }
     let cursor = match key {
-      gdk::Key::Left => self.cursor.saturating_sub(1),
-      gdk::Key::Right => (self.cursor + 1).min(WindowTaskbarChoice::ALL.len() - 1),
+      gdk::Key::Left if self.cursor % 2 == 1 => self.cursor - 1,
+      gdk::Key::Right if self.cursor.is_multiple_of(2) => self.cursor + 1,
+      gdk::Key::Up if self.cursor >= 2 => self.cursor - 2,
+      gdk::Key::Down if self.cursor < 2 => self.cursor + 2,
       _ => self.cursor,
     };
     self.choose(cursor)
@@ -228,8 +233,8 @@ fn preview_height(width: i32, height: i32) -> i32 {
 }
 
 fn preview_width(width: i32) -> i32 {
-  // Three previews, three button borders and padding, column gaps, and outer margins.
-  ((width - 180) / 3).clamp(1, 840)
+  // One main preview and two subpreviews at 75%, plus chrome and margins.
+  ((width - 180) * 2 / 5).clamp(1, 840)
 }
 
 fn preset_for_card(kind: CardKind, selection: Selection) -> LayoutPreset {
@@ -254,7 +259,7 @@ fn card_is_selected(kind: CardKind, selection: Selection) -> bool {
 }
 
 fn card_opacity(kind: CardKind, selection: Selection) -> f64 {
-  if matches!(kind, CardKind::Variant(variant) if variant != selection.variant) {
+  if !card_is_selected(kind, selection) {
     0.4
   } else {
     1.0
@@ -381,6 +386,7 @@ pub fn open(app: &gtk::Application, i18n: Arc<I18n>) {
   cards.extend(mode_cards.clone());
 
   let submode_grid = gtk::Grid::new();
+  submode_grid.set_valign(gtk::Align::Center);
   submode_grid.set_row_spacing(12);
   submode_grid.set_column_spacing(12);
   submode_grid.set_column_homogeneous(true);
@@ -491,25 +497,18 @@ pub fn open(app: &gtk::Application, i18n: Arc<I18n>) {
             card.button.grab_focus();
           }
         }
-        gdk::Key::Up | gdk::Key::Down => {
-          let current = selection.get().move_mode(key);
-          selection.set(current);
-          refresh_cards(&cards, current, theme.borrow().as_ref(), &provider);
-          status.set_text(&i18n.tr("layout_mode.selection"));
-          if let Some(card) = cards.iter().find(
-            |card| matches!(card.kind, CardKind::Variant(variant) if variant == current.variant),
-          ) {
-            card.button.grab_focus();
-          }
-        }
-        gdk::Key::Left | gdk::Key::Right => {
-          let current = selection.get().move_right(key);
+        gdk::Key::Up | gdk::Key::Down | gdk::Key::Left | gdk::Key::Right => {
+          let current = selection.get().navigate(key);
           selection.set(current);
           refresh_cards(&cards, current, theme.borrow().as_ref(), &provider);
           status.set_text(&i18n.tr("layout_mode.selection"));
           if let Some(card) = cards.iter().find(|card| {
-            option_kind_for_card(card.kind) == Some(current.cursor)
-              && matches!(card.kind, CardKind::WindowTaskbar(_))
+            card_is_selected(card.kind, current)
+              && matches!(
+                (current.focus, card.kind),
+                (FocusColumn::Modes, CardKind::Variant(_))
+                  | (FocusColumn::Submodes, CardKind::WindowTaskbar(_))
+              )
           }) {
             card.button.grab_focus();
           }
@@ -695,15 +694,20 @@ fn make_card(
   let cover = gtk::Box::new(gtk::Orientation::Vertical, 8);
   cover.add_css_class("applying-preview");
   let spinner = gtk::Spinner::new();
-  spinner.set_size_request(24, 24);
+  spinner.set_size_request(20, 20);
+  spinner.set_halign(gtk::Align::Center);
+  spinner.set_valign(gtk::Align::Center);
   cover.set_halign(gtk::Align::Fill);
   cover.set_valign(gtk::Align::Fill);
-  cover.set_homogeneous(true);
+
   cover.append(&spinner);
   cover.set_visible(false);
   overlay.add_overlay(&cover);
 
   let label = gtk::Label::new(Some(&card_title(kind, i18n)));
+  label.set_wrap(true);
+  label.set_wrap_mode(gtk::pango::WrapMode::WordChar);
+  label.set_lines(2);
   label.set_ellipsize(gtk::pango::EllipsizeMode::End);
   label.set_width_chars(1);
   label.set_justify(gtk::Justification::Center);
@@ -780,14 +784,21 @@ fn connect_monitor(window: &gtk::ApplicationWindow, monitor: Option<&str>, cards
       let update = {
         let drawings = cards
           .iter()
-          .map(|card| card.drawing.clone())
+          .map(|card| (card.kind, card.drawing.clone()))
           .collect::<Vec<_>>();
         move |output: &gdk::Monitor| {
           let geometry = output.geometry();
           let height = preview_height(geometry.width(), geometry.height());
-          for drawing in &drawings {
-            drawing.set_content_width(preview_width(geometry.width()));
-            drawing.set_content_height(height);
+          let width = preview_width(geometry.width()).min(height * 16 / 9);
+          let height = width * 9 / 16;
+          for (kind, drawing) in &drawings {
+            let scale = if matches!(kind, CardKind::Variant(_)) {
+              4
+            } else {
+              3
+            };
+            drawing.set_content_width(width * scale / 4);
+            drawing.set_content_height(height * scale / 4);
           }
         }
       };
@@ -824,27 +835,29 @@ mod tests {
   }
 
   #[test]
-  fn horizontal_navigation_selects_unique_window_and_taskbar_pairs() {
-    let selection = Selection::from_preset(LayoutPreset::ALL[0]);
-    let mut current = selection;
-    let mut seen = Vec::new();
-    for _ in 0..4 {
-      seen.push((current.windows, current.position));
-      current = current.move_right(gdk::Key::Right);
+  fn arrows_follow_focus_and_grid_boundaries() {
+    let initial = Selection::from_preset(LayoutPreset::ALL[0]);
+    assert_eq!(initial.focus, FocusColumn::Modes);
+    assert_eq!(initial.navigate(gdk::Key::Right), initial);
+    let selected = initial.choose(0);
+    assert_eq!(selected.navigate(gdk::Key::Left).cursor, 0);
+    assert_eq!(selected.navigate(gdk::Key::Up).cursor, 0);
+    assert_eq!(selected.navigate(gdk::Key::Right).cursor, 1);
+    assert_eq!(selected.navigate(gdk::Key::Down).cursor, 2);
+    for index in 0..4 {
+      let selection = initial.choose(index);
+      for key in [
+        gdk::Key::Up,
+        gdk::Key::Down,
+        gdk::Key::Left,
+        gdk::Key::Right,
+      ] {
+        let next = selection.navigate(key);
+        assert_eq!(next.variant, selection.variant);
+        assert_eq!(next.focus, FocusColumn::Submodes);
+        assert!(next.cursor < 4);
+      }
     }
-    assert_eq!(seen.len(), 4);
-    assert_eq!(seen[0], (WindowMode::Tile, TaskbarPosition::Top));
-    assert_eq!(seen[1], (WindowMode::Floating, TaskbarPosition::Top));
-    assert_eq!(seen[2], (WindowMode::Tile, TaskbarPosition::Bottom));
-    assert_eq!(seen[3], (WindowMode::Floating, TaskbarPosition::Bottom));
-    assert_eq!(current, seen_selection(selection, 3));
-  }
-
-  fn seen_selection(mut selection: Selection, index: usize) -> Selection {
-    for _ in 0..index {
-      selection = selection.move_right(gdk::Key::Right);
-    }
-    selection
   }
 
   #[test]
@@ -887,6 +900,13 @@ mod tests {
       ),
       1.0
     );
+
+    for choice in WindowTaskbarChoice::ALL.into_iter().skip(1) {
+      assert_eq!(
+        card_opacity(CardKind::WindowTaskbar(choice), selection),
+        0.4
+      );
+    }
 
     let focused = Selection {
       focus: selection.focus.next(),

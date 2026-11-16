@@ -64,7 +64,7 @@
   "selector.filter": "تصفية السمات",
   "layout_mode.apply": "تطبيق التخطيط",
   "layout_mode.applying": "جارٍ تطبيق التخطيط…",
-  "layout_mode.hint": "↑/↓ الوضع · ←/→ الخيار · Tab التركيز · Enter تطبيق · Esc إغلاق",
+  "layout_mode.hint": "Tab / Shift+Tab ⇄ · ↑ ↓ ← → · Enter تطبيق · Esc إغلاق",
   "layout_mode.tile": "نوافذ متجانبة",
   "layout_mode.floating": "نوافذ عائمة",
   "layout_mode.top": "شريط المهام بالأعلى",

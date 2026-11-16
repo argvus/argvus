@@ -137,4 +137,6 @@ Configura ricerca: Preferiti, Mostra file recenti, Indicizza nomi dei file, Cart
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
 
-`argvus layout-mode-menu` (SUPER + Shift + M): Scegli Sticky o Spaced con ↑/↓. Le quattro schede a destra combinano finestre affiancate o mobili e barra in alto o in basso; ←/→ le percorre senza ciclo. Clic per selezionare, Invio per applicare, Esc per annullare. La modalità non selezionata è attenuata; le anteprime usano tema e sfondo attuali. Le applicazioni in attesa restano visibili e gli errori consentono di riprovare.
+`argvus layout-mode-menu` (SUPER + Shift + M): **Tab / Shift+Tab**: Sticky / Spaced ⇄ Tile / Floating · Taskbar Top / Bottom. **Sticky / Spaced**: ↑ / ↓. **Tile / Floating · Taskbar Top / Bottom** (2 × 2): ↑ / ↓ / ← / →. **Enter**: ✓. **Esc**: ×.
+
+Le schede non selezionate hanno opacità del 40%; le anteprime dei sottomodi sono grandi il 75% delle principali.

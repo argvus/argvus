@@ -123,4 +123,6 @@ argvus setup --copy <app> --dry-run
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
 
-`argvus layout-mode-menu` (SUPER + Shift + M): ↑/↓ سے Sticky یا Spaced منتخب کریں۔ دائیں چار کارڈ ٹائل یا تیرتی ونڈوز کو اوپر یا نیچے ٹاسک بار کے ساتھ ملاتے ہیں؛ ←/→ کنارے پر واپس نہیں گھومتا۔ کلک سے منتخب کریں، Enter سے لاگو یا Escape سے منسوخ کریں۔ غیر منتخب موڈ مدھم اور پیش منظر موجودہ تھیم اور وال پیپر استعمال کرتے ہیں۔ زیر انتظار حالت نظر آتی ہے اور خرابی پر دوبارہ کوشش ممکن ہے۔
+`argvus layout-mode-menu` (SUPER + Shift + M): **Tab / Shift+Tab**: Sticky / Spaced ⇄ Tile / Floating · Taskbar Top / Bottom. **Sticky / Spaced**: ↑ / ↓. **Tile / Floating · Taskbar Top / Bottom** (2 × 2): ↑ / ↓ / ← / →. **Enter**: ✓. **Esc**: ×.
+
+غیر منتخب کارڈز کی غیر شفافیت 40% ہے؛ ذیلی موڈ کے پیش نظارے مرکزی پیش نظاروں کے حجم کے 75% ہیں۔

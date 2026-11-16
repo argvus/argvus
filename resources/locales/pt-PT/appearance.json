@@ -64,7 +64,7 @@
   "selector.filter": "Filtrar temas",
   "layout_mode.apply": "Aplicar layout",
   "layout_mode.applying": "A aplicar modo, aguarde…",
-  "layout_mode.hint": "↑/↓ Modo · ←/→ Submodo · Tab Foco · Enter Aplicar · Esc Fechar",
+  "layout_mode.hint": "Tab / Shift+Tab ⇄ · ↑ ↓ ← → · Enter Aplicar · Esc Fechar",
   "layout_mode.tile": "Janelas em mosaico",
   "layout_mode.floating": "Janelas flutuantes",
   "layout_mode.top": "Barra de tarefas no topo",

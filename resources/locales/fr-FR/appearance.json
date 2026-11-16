@@ -64,7 +64,7 @@
   "selector.filter": "Filtrer les thèmes",
   "layout_mode.apply": "Appliquer la disposition",
   "layout_mode.applying": "Application de la disposition…",
-  "layout_mode.hint": "↑/↓ Mode · ←/→ Sous-mode · Tab Focus · Enter Appliquer · Esc Fermer",
+  "layout_mode.hint": "Tab / Shift+Tab ⇄ · ↑ ↓ ← → · Enter Appliquer · Esc Fermer",
   "layout_mode.tile": "Fenêtres en mosaïque",
   "layout_mode.floating": "Fenêtres flottantes",
   "layout_mode.top": "Barre des tâches en haut",

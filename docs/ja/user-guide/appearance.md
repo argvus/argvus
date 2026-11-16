@@ -72,4 +72,6 @@ Wobbleはデフォルトで無効になっています。ARGVUSのデフォル�
 
 適用中は中央プレビューを暗くして読み込み表示を重ねます。検索のフォーカスは現在のアクセント色を使い、フィルターの枠は一重です。
 
-`argvus layout-mode-menu` (SUPER + Shift + M): ↑/↓ で Sticky または Spaced を選びます。右の4枚はタイル／フローティングとタスクバー上／下の組み合わせです。←/→ は端で折り返さずに移動します。クリックで選択、Enter で適用、Escape でキャンセルします。未選択のモードは暗く表示され、プレビューには現在のテーマと壁紙を使用します。適用待ちは表示されたままになり、失敗時は再試行できます。
+`argvus layout-mode-menu` (SUPER + Shift + M): **Tab / Shift+Tab**: Sticky / Spaced ⇄ Tile / Floating · Taskbar Top / Bottom. **Sticky / Spaced**: ↑ / ↓. **Tile / Floating · Taskbar Top / Bottom** (2 × 2): ↑ / ↓ / ← / →. **Enter**: ✓. **Esc**: ×.
+
+未選択のカードの不透明度は40%で、サブモードのプレビューはメインの75%のサイズです。

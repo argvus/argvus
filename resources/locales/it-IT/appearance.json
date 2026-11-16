@@ -64,7 +64,7 @@
   "selector.filter": "Filtra temi",
   "layout_mode.apply": "Applica layout",
   "layout_mode.applying": "Applicazione del layout…",
-  "layout_mode.hint": "↑/↓ Modalità · ←/→ Sottomodalità · Tab Fuoco · Enter Applica · Esc Chiudi",
+  "layout_mode.hint": "Tab / Shift+Tab ⇄ · ↑ ↓ ← → · Enter Applica · Esc Chiudi",
   "layout_mode.tile": "Finestre affiancate",
   "layout_mode.floating": "Finestre mobili",
   "layout_mode.top": "Barra delle applicazioni in alto",

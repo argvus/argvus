@@ -64,7 +64,7 @@
   "selector.filter": "테마 필터",
   "layout_mode.apply": "레이아웃 적용",
   "layout_mode.applying": "레이아웃 적용 중…",
-  "layout_mode.hint": "↑/↓ 모드 · ←/→ 하위 모드 · Tab 포커스 · Enter 적용 · Esc 닫기",
+  "layout_mode.hint": "Tab / Shift+Tab ⇄ · ↑ ↓ ← → · Enter 적용 · Esc 닫기",
   "layout_mode.tile": "타일 창",
   "layout_mode.floating": "플로팅 창",
   "layout_mode.top": "작업 표시줄 위쪽",

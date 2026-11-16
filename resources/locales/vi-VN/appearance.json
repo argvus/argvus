@@ -64,7 +64,7 @@
   "selector.filter": "Lọc giao diện",
   "layout_mode.apply": "Áp dụng bố cục",
   "layout_mode.applying": "Đang áp dụng bố cục…",
-  "layout_mode.hint": "↑/↓ Chế độ · ←/→ chế độ phụ · Tab tiêu điểm · Enter Áp dụng · Esc Đóng",
+  "layout_mode.hint": "Tab / Shift+Tab ⇄ · ↑ ↓ ← → · Enter Áp dụng · Esc Đóng",
   "layout_mode.tile": "Cửa sổ lát gạch",
   "layout_mode.floating": "Cửa sổ nổi",
   "layout_mode.top": "Thanh tác vụ trên",

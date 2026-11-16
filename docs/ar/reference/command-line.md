@@ -138,4 +138,6 @@ argvus setup --copy <app> --dry-run
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
 
-`argvus layout-mode-menu` (SUPER + Shift + M): اختر Sticky أو Spaced بالسهمين ↑/↓. تجمع البطاقات الأربع يمينًا بين النوافذ المتجانبة أو العائمة وشريط المهام في الأعلى أو الأسفل؛ يتنقل ←/→ بينها دون تكرار. انقر للاختيار، واضغط Enter للتطبيق أو Escape للإلغاء. يظهر الوضع غير المحدد باهتًا وتستخدم المعاينات السمة والخلفية الحاليتين. تبقى التطبيقات المعلقة ظاهرة ويمكن إعادة المحاولة عند الخطأ.
+`argvus layout-mode-menu` (SUPER + Shift + M): **Tab / Shift+Tab**: Sticky / Spaced ⇄ Tile / Floating · Taskbar Top / Bottom. **Sticky / Spaced**: ↑ / ↓. **Tile / Floating · Taskbar Top / Bottom** (2 × 2): ↑ / ↓ / ← / →. **Enter**: ✓. **Esc**: ×.
+
+تستخدم البطاقات غير المحددة عتامة 40%؛ وحجم معاينات الأوضاع الفرعية 75% من المعاينات الرئيسية.
