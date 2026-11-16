@@ -25,16 +25,28 @@ pub struct Finish<'a> {
 /// Runs the finishing steps in order. The error is the key of the message the
 /// switch shows, without its `theme.` prefix.
 pub fn run(paths: &SessionPaths, finish: &Finish) -> Result<(), &'static str> {
-  restore_accent()?;
+  crate::session_timing::timed("theme.finish.accent", restore_accent)?;
   let projecting = env::var("ARGVUS_PROJECTING").as_deref() == Ok("1");
-  run_hypr_geometry(paths, projecting)?;
+  // Live transactions project the canonical geometry immediately afterwards.
+  // Re-running shell resets here duplicates that projection and its reload.
+  let projects_geometry = finish.runtime
+    && !projecting
+    && env::var("ARGVUS_CONFIG_SERVICE").as_deref() != Ok("1")
+    && env::var_os("HYPRLAND_INSTANCE_SIGNATURE").is_some();
+  if !projects_geometry {
+    crate::session_timing::timed("theme.finish.geometry", || {
+      run_hypr_geometry(paths, projecting)
+    })?;
+  }
   if !projecting {
     clear_custom_wallpaper(paths);
   }
   if let Some(file) = user_copy::config_path(paths, "appearance/config/hypr/hyprpaper.conf") {
     appearance_runtime::apply_wallpaper(&file, finish.wallpaper, finish.runtime);
   }
-  effects::run(&["apply".to_string()]);
+  crate::session_timing::timed("theme.finish.effects", || {
+    effects::run(&["apply".to_string()])
+  });
   Ok(())
 }
 

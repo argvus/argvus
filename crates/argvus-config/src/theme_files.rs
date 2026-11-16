@@ -101,6 +101,10 @@ fn build_file(paths: &SessionPaths, relative: &str) -> io::Result<PathBuf> {
 /// Copies `source` over `destination`, through a file beside it and a rename,
 /// so a reader never sees half a file.
 fn copy_atomic(source: &Path, destination: &Path) -> io::Result<()> {
+  let contents = fs::read(source)?;
+  if fs::read(destination).ok().as_deref() == Some(contents.as_slice()) {
+    return Ok(());
+  }
   if let Some(parent) = destination.parent() {
     fs::create_dir_all(parent)?;
   }

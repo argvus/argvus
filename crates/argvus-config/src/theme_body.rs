@@ -12,6 +12,7 @@ use crate::appearance_runtime::{self, GtkFiles, GtkRuntime};
 use crate::effects::{effects_state_home, theme_effects_path};
 use crate::icons;
 use crate::session_paths::SessionPaths;
+use crate::session_timing::timed;
 use crate::text_edit::{self, Target};
 use crate::theme_build;
 use crate::theme_files::{self, Fonts, on_path, run_quiet};
@@ -66,7 +67,9 @@ pub fn run(paths: &SessionPaths, theme: &str, runtime: bool, live: bool) -> i32 
     return 1;
   }
 
-  let icon = icons::resolve(paths, theme, Stdio::inherit());
+  let icon = timed("theme.icons", || {
+    icons::resolve(paths, theme, Stdio::inherit())
+  });
   let fonts = Fonts::read(paths);
 
   let mut status = 0;
@@ -92,29 +95,35 @@ pub fn run(paths: &SessionPaths, theme: &str, runtime: bool, live: bool) -> i32 
     theme_surfaces::current_user_id(),
   );
 
-  apply_waybar(paths, theme, !runtime || layout_changed, &fonts);
-  apply_qt6ct(paths);
-  if let Err(key) = theme_files::write_build_copies(paths, theme, &fonts, &icon.current) {
+  timed("theme.taskbar", || {
+    apply_waybar(paths, theme, !runtime || layout_changed, &fonts)
+  });
+  timed("theme.qt", || apply_qt6ct(paths));
+  if let Err(key) = timed("theme.files", || {
+    theme_files::write_build_copies(paths, theme, &fonts, &icon.current)
+  }) {
     message(&format!("theme.{key}"), &[format!("theme={theme}")]);
     status = 1;
   }
   if let Err(error) = theme_files::reset_mode_stylesheet(paths) {
     eprintln!("argvus-config: theme files: {error}");
   }
-  apply_gtk(
-    paths,
-    &theme_paths,
-    theme,
-    &icon.current,
-    &fonts.apps,
-    runtime,
-  );
+  timed("theme.gtk", || {
+    apply_gtk(
+      paths,
+      &theme_paths,
+      theme,
+      &icon.current,
+      &fonts.apps,
+      runtime,
+    )
+  });
 
   let finish = Finish {
     wallpaper: &wallpaper,
     runtime,
   };
-  if let Err(key) = theme_finish::run(paths, &finish) {
+  if let Err(key) = timed("theme.finish", || theme_finish::run(paths, &finish)) {
     message(&format!("theme.{key}"), &[format!("theme={theme}")]);
     status = 1;
   }
@@ -249,12 +258,17 @@ fn apply_waybar(paths: &SessionPaths, theme: &str, refresh_bars: bool, fonts: &F
       let _ = waybar::refresh_managed(paths, relative);
     }
   }
-  for script in [
-    "appearance/sh/taskbar-right-2-mode.sh",
-    "appearance/sh/taskbar-widgets-mode.sh",
-  ] {
+  let snapshot = ConfigStore::from_environment()
+    .and_then(|store| store.load_effective())
+    .ok()
+    .and_then(|document| serde_json::to_string(&document).ok());
+  for script in ["appearance/sh/taskbar-widgets-mode.sh"] {
     if let Some(path) = user_copy::config_path(paths, script).filter(|path| path.is_file()) {
-      let _ = Command::new(path)
+      let mut command = Command::new(path);
+      if let Some(snapshot) = &snapshot {
+        command.env("ARGVUS_THEME_TASKBAR_SNAPSHOT", snapshot);
+      }
+      let _ = command
         .arg("apply")
         .stdout(Stdio::null())
         .stderr(Stdio::null())

@@ -104,7 +104,15 @@ pub(super) fn get_value(
     .first()
     .ok_or("usage: argvus config get /path [--effective]")?;
   let effective = arguments.iter().any(|argument| argument == "--effective");
-  let document = if effective {
+  // A theme transaction supplies one effective snapshot to its read-only
+  // taskbar projector, avoiding repeated default discovery for every field.
+  let snapshot = effective && pointer.starts_with("/taskbar/");
+  let snapshot = snapshot
+    .then(|| std::env::var("ARGVUS_THEME_TASKBAR_SNAPSHOT").ok())
+    .flatten();
+  let document = if let Some(snapshot) = snapshot {
+    serde_json::from_str::<ConfigDocument>(&snapshot)?
+  } else if effective {
     store.load_effective()?
   } else {
     store.load()?
