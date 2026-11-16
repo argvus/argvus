@@ -39,7 +39,9 @@ pub fn refresh(paths: &SessionPaths, theme: &str, accent: Option<&str>) -> Resul
   let accent = accent
     .map(|text| Color::parse(text.trim()).ok_or_else(|| format!("accent `{text}` is not a colour")))
     .transpose()?;
-  let rendered = render::render_installed(&theme_paths, theme, accent, None)?;
+  let rendered = crate::session_timing::timed("theme.render", || {
+    render::render_installed(&theme_paths, theme, accent, None)
+  })?;
   let directory = rendered
     .write_build(&theme_paths.builds())
     .map_err(|error| error.to_string())?;

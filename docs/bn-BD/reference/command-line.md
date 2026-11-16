@@ -124,3 +124,5 @@ argvus setup --copy <app> --dry-run
 `argvus layout-mode-menu` (SUPER + Shift + M): **Tab / Shift+Tab**: Sticky / Spaced ⇄ Tile / Floating · Taskbar Top / Bottom. **Sticky / Spaced**: ↑ / ↓. **Tile / Floating · Taskbar Top / Bottom** (2 × 2): ↑ / ↓ / ← / →. **Enter**: ✓. **Esc**: ×.
 
 অনির্বাচিত কার্ডের অস্বচ্ছতা 40%; উপমোডের প্রিভিউ মূল প্রিভিউয়ের 75% আকারের।
+
+থিম ও মোড নির্বাচক নিজেদের উইন্ডোতে অগ্রগতি দেখায়, সেশনের স্প্ল্যাশ ছাড়াই। পুনরায় লোডের আগে টাস্কবারের চূড়ান্ত অবস্থান প্রস্তুত হয় এবং প্রয়োজনীয় পুনরারম্ভ এক systemd লেনদেনে একত্রিত হয়।

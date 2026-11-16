@@ -87,3 +87,5 @@ Uygulama sırasında orta önizleme kararır ve yükleme göstergesi görünür.
 `argvus layout-mode-menu` (SUPER + Shift + M): **Tab / Shift+Tab**: Sticky / Spaced ⇄ Tile / Floating · Taskbar Top / Bottom. **Sticky / Spaced**: ↑ / ↓. **Tile / Floating · Taskbar Top / Bottom** (2 × 2): ↑ / ↓ / ← / →. **Enter**: ✓. **Esc**: ×.
 
 Seçilmeyen kartların opaklığı %40; alt mod önizlemelerinin boyutu ana önizlemelerin %75’idir.
+
+Tema ve mod seçicileri oturum açılış ekranı olmadan ilerlemeyi kendi pencerelerinde gösterir. Yeniden yüklemeden önce görev çubuğunun son konumu hazırlanır; gerekli yeniden başlatmalar tek bir systemd işleminde birleştirilir.

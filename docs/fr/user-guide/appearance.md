@@ -75,3 +75,5 @@ Pendant l’application, l’aperçu central est assombri et affiche un indicate
 `argvus layout-mode-menu` (SUPER + Shift + M): **Tab / Shift+Tab**: Sticky / Spaced ⇄ Tile / Floating · Taskbar Top / Bottom. **Sticky / Spaced**: ↑ / ↓. **Tile / Floating · Taskbar Top / Bottom** (2 × 2): ↑ / ↓ / ← / →. **Enter**: ✓. **Esc**: ×.
 
 Les cartes non sélectionnées ont une opacité de 40 % ; les aperçus des sous-modes mesurent 75 % des aperçus principaux.
+
+Les applications lancées depuis les sélecteurs affichent leur progression dans le sélecteur, sans écran de chargement de session. Les modes préparent la position finale de la barre avant le rechargement ; les redémarrages nécessaires sont regroupés dans une transaction systemd.

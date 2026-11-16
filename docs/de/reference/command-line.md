@@ -140,3 +140,5 @@ Suche konfigurieren: Favoriten, Zuletzt verwendete Dateien anzeigen, Dateinamen 
 `argvus layout-mode-menu` (SUPER + Shift + M): **Tab / Shift+Tab**: Sticky / Spaced ⇄ Tile / Floating · Taskbar Top / Bottom. **Sticky / Spaced**: ↑ / ↓. **Tile / Floating · Taskbar Top / Bottom** (2 × 2): ↑ / ↓ / ← / →. **Enter**: ✓. **Esc**: ×.
 
 Nicht ausgewählte Karten haben 40 % Deckkraft; Untermodusvorschauen sind 75 % so groß wie die Hauptvorschauen.
+
+Die Auswahlfenster zeigen den Fortschritt ohne Ladebildschirm der Sitzung. Moduswechsel bereiten die endgültige Taskleistenposition vor dem Neuladen vor; notwendige Neustarts werden in einer systemd-Transaktion gebündelt.

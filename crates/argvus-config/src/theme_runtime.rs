@@ -105,7 +105,7 @@ pub fn apply(paths: &SessionPaths, before: &Before, theme: &str) {
         .map_err(|error| error.to_string()),
     );
   }
-  reload_consumers(paths, Some(ReloadStage::Files));
+  reload_consumers(paths, None);
   if !restart.is_empty() {
     let _ = Command::new("systemctl")
       .args(["--user", "try-restart"])
@@ -118,8 +118,8 @@ pub fn apply(paths: &SessionPaths, before: &Before, theme: &str) {
 
 /// Runs the reload of the registered consumers of `stage` (all of them with
 /// `None`), together, and waits for them at most `HOOK_WAIT_LIMIT`. A switch
-/// runs the `Build` stage as soon as the build is active and the `Files` stage
-/// at its end; an accent change runs them all.
+/// reloads all consumers after the final build and files are ready, avoiding
+/// duplicate build-stage hooks when the accent step updates the build again.
 pub fn reload_consumers(paths: &SessionPaths, stage: Option<ReloadStage>) {
   let consumers = registered_consumers(paths);
   let build = build_name(&theme_build::theme_paths(paths).current());

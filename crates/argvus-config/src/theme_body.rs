@@ -21,7 +21,6 @@ use crate::theme_surfaces;
 use crate::user_copy;
 use crate::waybar;
 use argvus_theme_core::paths::ThemePaths;
-use argvus_theme_core::registry::ReloadStage;
 use std::env;
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -83,11 +82,8 @@ pub fn run(paths: &SessionPaths, theme: &str, runtime: bool, live: bool) -> i32 
   crate::effects::apply_launcher();
   // The consumers that read the build directly change now; the files the
   // others read are written below and reloaded when the switch ends.
-  if live {
-    crate::theme_runtime::reload_consumers(paths, Some(ReloadStage::Build));
-    if !wallpaper.is_empty() {
-      crate::theme_runtime::show_wallpaper(paths, &wallpaper);
-    }
+  if live && !wallpaper.is_empty() {
+    crate::theme_runtime::show_wallpaper(paths, &wallpaper);
   }
   let _ = theme_surfaces::publish_greeter_theme(
     &theme_paths.system_themes(),

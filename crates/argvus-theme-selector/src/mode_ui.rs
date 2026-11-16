@@ -700,7 +700,11 @@ fn make_card(
   cover.set_halign(gtk::Align::Fill);
   cover.set_valign(gtk::Align::Fill);
 
-  cover.append(&spinner);
+  let progress_center = gtk::CenterBox::new();
+  progress_center.set_orientation(gtk::Orientation::Vertical);
+  progress_center.set_vexpand(true);
+  progress_center.set_center_widget(Some(&spinner));
+  cover.append(&progress_center);
   cover.set_visible(false);
   overlay.add_overlay(&cover);
 

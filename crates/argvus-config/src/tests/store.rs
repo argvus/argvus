@@ -567,3 +567,36 @@ fn apply_theme_restores_exported_profile_but_keeps_the_active_mode() {
   );
   fs::remove_dir_all(directory).unwrap();
 }
+
+#[test]
+fn mode_geometry_and_final_edge_survive_theme_reapplication() {
+  let directory = env::temp_dir().join(format!("argvus-preset-edge-{}", std::process::id()));
+  let store = ConfigStore::at(&directory);
+  for variant in ["sticky", "spaced"] {
+    for position in ["top", "bottom"] {
+      let selected = store
+        .apply_layout_preset_geometry(variant, position)
+        .unwrap();
+      assert_eq!(
+        selected
+          .get("/layout/taskbar/position")
+          .and_then(Value::as_str),
+        Some(position)
+      );
+      let applied = store
+        .apply_theme_with_profile_and_mode_geometry("argvus-dark", None, None, None, None, true)
+        .unwrap();
+      assert_eq!(
+        applied
+          .get("/layout/taskbar/position")
+          .and_then(Value::as_str),
+        Some(position)
+      );
+      assert_eq!(
+        applied.get("/layout/variant").and_then(Value::as_str),
+        Some(variant)
+      );
+    }
+  }
+  fs::remove_dir_all(directory).unwrap();
+}

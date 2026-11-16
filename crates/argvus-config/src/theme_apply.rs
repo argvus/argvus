@@ -88,16 +88,20 @@ pub fn run(paths: &SessionPaths, theme_argument: &str, layout_variant: &str) -> 
   let config_service = env::var("ARGVUS_CONFIG_SERVICE").as_deref() == Ok("1");
   let live = runtime && !projecting && !config_service;
   let before = theme_runtime::Before::capture(paths);
-  let mut status = theme_body::run(paths, &theme, runtime, live);
+  let mut status = crate::session_timing::timed("theme.prepare", || {
+    theme_body::run(paths, &theme, runtime, live)
+  });
   if live && status == 0 {
     // Project first so sessionctl can execute the changed-section reload plan.
-    match run_bounded(
-      Command::new("argvus")
-        .args(["config", "project"])
-        .stdout(Stdio::null())
-        .stderr(Stdio::inherit()),
-      PROJECTION_WAIT_LIMIT,
-    ) {
+    match crate::session_timing::timed("theme.project", || {
+      run_bounded(
+        Command::new("argvus")
+          .args(["config", "project"])
+          .stdout(Stdio::null())
+          .stderr(Stdio::inherit()),
+        PROJECTION_WAIT_LIMIT,
+      )
+    }) {
       Ok(result) if result.success() => {
         if env::var_os("HYPRLAND_INSTANCE_SIGNATURE").is_some() {
           let mut runtime_command = Command::new("argvus");
@@ -111,7 +115,9 @@ pub fn run(paths: &SessionPaths, theme_argument: &str, layout_variant: &str) -> 
           } else if custom_theme {
             runtime_command.env("ARGVUS_CUSTOM_THEME", "1");
           }
-          let runtime_status = run_bounded(&mut runtime_command, PROJECTION_WAIT_LIMIT);
+          let runtime_status = crate::session_timing::timed("theme.runtime", || {
+            run_bounded(&mut runtime_command, PROJECTION_WAIT_LIMIT)
+          });
           match runtime_status {
             Ok(result) if result.success() => {}
             Ok(result) => {
@@ -147,6 +153,16 @@ fn run_menu() -> i32 {
     .status()
     .map(exit_code)
     .unwrap_or(127)
+}
+
+/// Serializes the preset's canonical preparation with an ongoing theme switch.
+/// Release before launching the transaction, which takes this same lock.
+pub(crate) fn lock_mode_preparation() -> io::Result<fs::File> {
+  let path = cache_home().join("theme-switch.lock");
+  if let Some(parent) = path.parent() {
+    fs::create_dir_all(parent)?;
+  }
+  acquire_lock(&path)
 }
 
 /// The record of a running switch: the pid of its process and that process's

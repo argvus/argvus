@@ -140,3 +140,5 @@ Configura ricerca: Preferiti, Mostra file recenti, Indicizza nomi dei file, Cart
 `argvus layout-mode-menu` (SUPER + Shift + M): **Tab / Shift+Tab**: Sticky / Spaced ⇄ Tile / Floating · Taskbar Top / Bottom. **Sticky / Spaced**: ↑ / ↓. **Tile / Floating · Taskbar Top / Bottom** (2 × 2): ↑ / ↓ / ← / →. **Enter**: ✓. **Esc**: ×.
 
 Le schede non selezionate hanno opacità del 40%; le anteprime dei sottomodi sono grandi il 75% delle principali.
+
+Le applicazioni avviate dai selettori mostrano il progresso nel selettore, senza schermata di caricamento della sessione. I modi preparano la posizione finale della barra prima del ricaricamento; i riavvii necessari sono raggruppati in una transazione systemd.

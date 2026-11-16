@@ -140,3 +140,5 @@ argvus setup --copy <app> --dry-run
 `argvus layout-mode-menu` (SUPER + Shift + M): **Tab / Shift+Tab**: Sticky / Spaced ⇄ Tile / Floating · Taskbar Top / Bottom. **Sticky / Spaced**: ↑ / ↓. **Tile / Floating · Taskbar Top / Bottom** (2 × 2): ↑ / ↓ / ← / →. **Enter**: ✓. **Esc**: ×.
 
 Невыбранные карточки имеют непрозрачность 40%; размер превью подрежимов составляет 75% от основных.
+
+Селекторы тем и режимов показывают ход применения в своём окне без заставки сеанса. Перед перезагрузкой подготавливается итоговое положение панели; необходимые перезапуски объединяются в одну транзакцию systemd.

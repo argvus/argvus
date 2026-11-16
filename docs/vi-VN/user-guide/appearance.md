@@ -87,3 +87,5 @@ Khi áp dụng, bản xem trước ở giữa tối đi và hiển thị biểu 
 `argvus layout-mode-menu` (SUPER + Shift + M): **Tab / Shift+Tab**: Sticky / Spaced ⇄ Tile / Floating · Taskbar Top / Bottom. **Sticky / Spaced**: ↑ / ↓. **Tile / Floating · Taskbar Top / Bottom** (2 × 2): ↑ / ↓ / ← / →. **Enter**: ✓. **Esc**: ×.
 
 Thẻ chưa chọn có độ mờ 40%; bản xem trước chế độ phụ có kích thước bằng 75% bản xem trước chính.
+
+Bộ chọn giao diện và chế độ hiển thị tiến trình trong cửa sổ của mình, không có màn hình chờ phiên. Vị trí cuối của thanh tác vụ được chuẩn bị trước khi tải lại; các lần khởi động lại cần thiết được gộp trong một giao dịch systemd.

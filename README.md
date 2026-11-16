@@ -228,4 +228,4 @@ Licensed under [GPL-3.0](./LICENSE)
 
 </div>
 
-`argvus layout-mode-menu` (SUPER + Shift + M): Choose Sticky or Spaced with ↑/↓. The four cards on the right combine Tile or Floating windows with Taskbar Top or Bottom; ←/→ moves through them without wrapping. Click a card to select it, Enter to apply, or Escape to cancel. The unselected mode is dimmed; previews use the current theme and wallpaper. Pending applications remain visible and failures can be retried.
+`argvus layout-mode-menu` (SUPER + Shift + M): Tab switches between Sticky/Spaced and the four window/taskbar combinations. Arrows navigate within the focused group; Enter applies and Escape cancels. Progress stays inside the selector without a session splash. Unselected cards are dimmed and submode previews are smaller. Pending applications remain visible and failures can be retried.

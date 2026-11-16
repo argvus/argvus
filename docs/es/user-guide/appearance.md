@@ -74,3 +74,5 @@ Al aplicar, la vista central se oscurece y muestra un indicador animado. El foco
 `argvus layout-mode-menu` (SUPER + Shift + M): **Tab / Shift+Tab**: Sticky / Spaced ⇄ Tile / Floating · Taskbar Top / Bottom. **Sticky / Spaced**: ↑ / ↓. **Tile / Floating · Taskbar Top / Bottom** (2 × 2): ↑ / ↓ / ← / →. **Enter**: ✓. **Esc**: ×.
 
 Las tarjetas no seleccionadas tienen un 40% de opacidad; las vistas de submodos tienen el 75% del tamaño principal.
+
+Las aplicaciones iniciadas desde los selectores muestran el progreso en el selector, sin splash de sesión. Los modos preparan la posición final de la barra antes de recargar; los reinicios necesarios se agrupan en una transacción de systemd.

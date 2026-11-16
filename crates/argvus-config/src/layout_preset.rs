@@ -1,7 +1,6 @@
 //! The eight layout combinations, composed through the existing domain backends.
 use crate::{
   ConfigDocument, ConfigError, ConfigResult, ConfigStore, config_lock,
-  session_paths::SessionPaths,
   window_mode::{self, WindowMode},
   windows,
 };
@@ -137,15 +136,39 @@ pub fn apply(preset: LayoutPreset) -> ConfigResult<ApplyOutcome> {
     .open(root.join("layout-preset.lock"))?;
   config_lock::lock_file(&lock)?;
   let _guard = config_lock::LockGuard(&lock);
-  let paths =
-    SessionPaths::from_environment().ok_or_else(|| invalid("cannot resolve layout paths"))?;
+  let before = LayoutPreset::from_document(&store.load_effective()?)?;
+  let paths = crate::session_paths::SessionPaths::from_environment()
+    .ok_or_else(|| invalid("configuration paths unavailable"))?;
+  let displayed = crate::theme_build::displayed_theme(&paths);
+  let rendered_spaced = displayed.ends_with("-spaced") || displayed.ends_with("-float");
+  // A previous attempt may have saved the mode before rendering failed.
+  let retry_marker = root.join("layout-preset.pending");
+  let geometry_changed = retry_marker.exists()
+    || before.variant != preset.variant
+    || rendered_spaced != (preset.variant == Variant::Spaced);
+  // Preserve retry intent when saving succeeded but a runtime step failed.
+  fs::write(&retry_marker, "pending\n")?;
   let mut window_status = None;
   apply_steps(preset, |step| {
     match step {
       Step::Geometry(variant) => {
-        let output = Command::new("sh")
-          .arg(paths.read_config("appearance/sh/layout-mode-switch.sh"))
-          .arg(variant.as_str())
+        if !geometry_changed {
+          return Ok(());
+        }
+        // Commit the final edge before rendering so the session restarts each bar once.
+        {
+          let _theme_lock = crate::theme_apply::lock_mode_preparation()?;
+          store.apply_layout_preset_geometry(variant.as_str(), preset.position.as_str())?;
+        }
+        let document = store.load_effective()?;
+        let theme = document
+          .get("/appearance/theme")
+          .and_then(|value| value.as_str())
+          .unwrap_or("argvus-dark");
+        let output = Command::new("argvus")
+          .args(["theme-switch", theme])
+          .env("ARGVUS_MODE_SWITCH", "1")
+          .env("ARGVUS_SELECTOR_APPLY", "1")
           .output()?;
         if !output.status.success() {
           return Err(invalid(format!(
@@ -155,16 +178,24 @@ pub fn apply(preset: LayoutPreset) -> ConfigResult<ApplyOutcome> {
           )));
         }
       }
-      Step::Position(position) => windows::set_position(position.as_str())?,
+      Step::Position(position) => {
+        if !geometry_changed && before.position != position {
+          windows::set_position(position.as_str())?;
+        }
+      }
       Step::Windows(mode) => window_status = Some(window_mode::set(mode)?),
     }
     Ok(())
   })?;
-  completion(
+  let outcome = completion(
     preset,
     LayoutPreset::from_document(&store.load_effective()?)?,
     window_status.ok_or_else(|| invalid("window application status unavailable"))?,
-  )
+  )?;
+  if outcome == ApplyOutcome::Applied {
+    fs::remove_file(retry_marker)?;
+  }
+  Ok(outcome)
 }
 
 fn completion(

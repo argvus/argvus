@@ -143,3 +143,5 @@ Configurar pesquisa: Favoritos, Mostrar ficheiros recentes, Indexar nomes de fic
 `argvus layout-mode-menu` (SUPER + Shift + M): **Tab / Shift+Tab**: Sticky / Spaced ⇄ Tile / Floating · Taskbar Top / Bottom. **Sticky / Spaced**: ↑ / ↓. **Tile / Floating · Taskbar Top / Bottom** (2 × 2): ↑ / ↓ / ← / →. **Enter**: ✓. **Esc**: ×.
 
 Cartões não selecionados usam 40% de opacidade; prévias dos submodos têm 75% do tamanho das prévias principais.
+
+As aplicações iniciadas pelos seletores de temas e modos mostram o progresso no próprio seletor, sem splash da sessão. As mudanças de modo preparam a posição final da taskbar antes de recarregar; os reinícios necessários são agrupados numa transação do systemd.

@@ -87,3 +87,5 @@ argvus control-center hyprland animations windows
 `argvus layout-mode-menu` (SUPER + Shift + M): **Tab / Shift+Tab**: Sticky / Spaced ⇄ Tile / Floating · Taskbar Top / Bottom. **Sticky / Spaced**: ↑ / ↓. **Tile / Floating · Taskbar Top / Bottom** (2 × 2): ↑ / ↓ / ← / →. **Enter**: ✓. **Esc**: ×.
 
 अचयनित कार्ड की अपारदर्शिता 40% है; उपमोड पूर्वावलोकन मुख्य पूर्वावलोकन के आकार के 75% हैं।
+
+थीम और मोड चयनक सत्र स्प्लैश के बिना अपनी विंडो में प्रगति दिखाते हैं। पुनः लोड से पहले टास्कबार की अंतिम स्थिति तैयार होती है और आवश्यक पुनरारंभ एक systemd लेनदेन में किए जाते हैं।

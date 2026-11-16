@@ -247,7 +247,12 @@ fn apply(
     &accent_value,
   ));
   // The theme build carries the accent: every themed file follows it.
-  crate::theme_build::refresh_or_report(paths, &theme, Some(&accent_value.color));
+  let theme_switch = env::var("ARGVUS_THEME_SWITCH").as_deref() == Ok("1");
+  // The transaction has already rendered the default palette. Custom accents
+  // still need their own build; an explicit accent command always refreshes it.
+  if !theme_switch || requested_mode != "--theme-default" {
+    crate::theme_build::refresh_or_report(paths, &theme, Some(&accent_value.color));
+  }
   let context = accent::Context {
     paths,
     theme: &theme,
@@ -255,7 +260,7 @@ fn apply(
     icon_default_dark: &icons.dark,
     icon_default_light: &icons.light,
     runtime,
-    theme_switch: env::var("ARGVUS_THEME_SWITCH").as_deref() == Ok("1"),
+    theme_switch,
     xdg_config_home: &xdg_config_home,
   };
   accent::apply(&context);

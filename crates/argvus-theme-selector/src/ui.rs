@@ -424,6 +424,7 @@ pub fn open(app: &gtk::Application, i18n: Arc<I18n>) {
       std::thread::spawn(move || {
         let result = std::process::Command::new("argvus")
           .args(["theme-switch", &id])
+          .env("ARGVUS_SELECTOR_APPLY", "1")
           .env("ARGVUS_ACCENT_OFFICIAL", "1")
           .output()
           .map_err(|error| error.to_string())

@@ -753,6 +753,10 @@ impl ConfigStore {
         .unwrap_or("sticky")
         .to_owned();
 
+      // Keep the final taskbar edge while resetting geometry to the mode defaults.
+      let mode_position = preserve_mode_geometry
+        .then(|| document.get("/layout/taskbar/position").cloned())
+        .flatten();
       let mut defaults = ConfigDocument::default();
       apply_packaged_defaults(&mut defaults)?;
       apply_defaults(&mut defaults)?;
@@ -778,6 +782,10 @@ impl ConfigStore {
             document.sections.insert(section.to_owned(), value);
           }
         }
+      }
+
+      if let Some(position) = mode_position {
+        document.set("/layout/taskbar/position", position)?;
       }
 
       document.set(
@@ -840,6 +848,25 @@ impl ConfigStore {
         Value::String(variant.to_owned()),
       )?;
       reset_layout_geometry(document, variant)
+    })
+  }
+
+  /// Selects mode geometry and its final taskbar edge in one canonical write.
+  pub(crate) fn apply_layout_preset_geometry(
+    &self,
+    variant: &str,
+    position: &str,
+  ) -> ConfigResult<ConfigDocument> {
+    self.modify(|document| {
+      document.set(
+        json_pointers::LAYOUT_VARIANT,
+        Value::String(variant.to_owned()),
+      )?;
+      reset_layout_geometry(document, variant)?;
+      document.set(
+        "/layout/taskbar/position",
+        Value::String(position.to_owned()),
+      )
     })
   }
 

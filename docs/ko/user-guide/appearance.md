@@ -75,3 +75,5 @@ Wobble은 기본적으로 비활성화되어 있습니다. 그 ARGVUS 기본값�
 `argvus layout-mode-menu` (SUPER + Shift + M): **Tab / Shift+Tab**: Sticky / Spaced ⇄ Tile / Floating · Taskbar Top / Bottom. **Sticky / Spaced**: ↑ / ↓. **Tile / Floating · Taskbar Top / Bottom** (2 × 2): ↑ / ↓ / ← / →. **Enter**: ✓. **Esc**: ×.
 
 선택하지 않은 카드의 불투명도는 40%이며 하위 모드 미리보기는 기본 미리보기 크기의 75%입니다.
+
+테마 및 모드 선택기는 세션 시작 화면 없이 자체 창에 진행 상황을 표시합니다. 다시 불러오기 전에 작업 표시줄의 최종 위치를 준비하고 필요한 재시작을 하나의 systemd 트랜잭션으로 묶습니다.

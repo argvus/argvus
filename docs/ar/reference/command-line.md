@@ -141,3 +141,5 @@ argvus setup --copy <app> --dry-run
 `argvus layout-mode-menu` (SUPER + Shift + M): **Tab / Shift+Tab**: Sticky / Spaced ⇄ Tile / Floating · Taskbar Top / Bottom. **Sticky / Spaced**: ↑ / ↓. **Tile / Floating · Taskbar Top / Bottom** (2 × 2): ↑ / ↓ / ← / →. **Enter**: ✓. **Esc**: ×.
 
 تستخدم البطاقات غير المحددة عتامة 40%؛ وحجم معاينات الأوضاع الفرعية 75% من المعاينات الرئيسية.
+
+تعرض محددات السمات والأوضاع التقدم داخل نافذتها دون شاشة تحميل الجلسة. تُجهز مواضع شريط المهام النهائية قبل إعادة التحميل، وتُجمع عمليات إعادة التشغيل اللازمة في معاملة systemd واحدة.
