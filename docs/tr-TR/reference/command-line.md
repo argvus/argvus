@@ -143,3 +143,7 @@ Aramayı yapılandır: Favoriler, Son dosyaları göster, Dosya adlarını dizin
 Seçilmeyen kartların opaklığı %40; alt mod önizlemelerinin boyutu ana önizlemelerin %75’idir.
 
 Tema ve mod seçicileri oturum açılış ekranı olmadan ilerlemeyi kendi pencerelerinde gösterir. Yeniden yüklemeden önce görev çubuğunun son konumu hazırlanır; gerekli yeniden başlatmalar tek bir systemd işleminde birleştirilir.
+
+`argvus-lifecycle` · `SUPER + Esc`
+
+`argvus lock` · Hyprlock

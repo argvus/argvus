@@ -527,10 +527,13 @@ pub(super) fn project_hypridle(document: &ConfigDocument, paths: &ArgvusPaths) -
     .and_then(Value::as_u64)
     .unwrap_or(0);
   let mut text = String::from(
-    "# ARGVUS hypridle configuration\n# Generated from modular ARGVUS configuration by argvus-config project. Do not edit.\n\ngeneral {\n  lock_cmd = sh /usr/share/argvus/power/sh/hypr-power-menu.sh --lock\n  before_sleep_cmd = sh /usr/share/argvus/power/sh/hypr-power-menu.sh --lock\n  after_sleep_cmd = argvus config hyprland dpms on\n}\n",
+    "# ARGVUS hypridle configuration\n# Generated from modular ARGVUS configuration by argvus-config project. Do not edit.\n\ngeneral {\n  lock_cmd = argvus lock\n  before_sleep_cmd = argvus lock\n  after_sleep_cmd = argvus config hyprland dpms on\n}\n",
   );
   if lock_minutes > 0 {
-    text.push_str(&format!("\nlistener {{\n  timeout = {}\n  on-timeout = sh /usr/share/argvus/power/sh/hypr-power-menu.sh --lock\n}}\n", lock_minutes * 60));
+    text.push_str(&format!(
+      "\nlistener {{\n  timeout = {}\n  on-timeout = argvus lock\n}}\n",
+      lock_minutes * 60
+    ));
   }
   if screen_minutes > 0 {
     text.push_str(&format!("\nlistener {{\n  timeout = {}\n  on-timeout = argvus config hyprland dpms off\n  on-resume = argvus config hyprland dpms on\n}}\n", screen_minutes * 60));

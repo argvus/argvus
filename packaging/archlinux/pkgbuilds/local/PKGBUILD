@@ -17,6 +17,7 @@ depends=(
 	'libjxl'
 	'base-devel'
 	'systemd-libs'
+	'hyprshutdown'
 	'argvus-fonts'
 	'argvus-icons'
 	'argvus-desktop'

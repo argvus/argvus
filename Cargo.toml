@@ -2,6 +2,8 @@
 resolver = "2"
 members = [
   "crates/argvus-calculator",
+  "crates/argvus-lifecycle",
+  "crates/argvus-session-actions",
   "crates/argvus-accounts",
   "crates/argvus-accounts-core",
   "crates/argvus-cli",

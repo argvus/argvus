@@ -142,3 +142,7 @@ argvus setup --copy <app> --dry-run
 未选中卡片的不透明度为40%；子模式预览大小为主模式预览的75%。
 
 主题和模式选择器在自身窗口中显示应用进度，不显示会话加载画面。重新加载前先准备任务栏的最终位置；必要的重启合并为一次systemd事务。
+
+`argvus-lifecycle` · `SUPER + Esc`
+
+`argvus lock` · Hyprlock

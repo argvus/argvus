@@ -517,3 +517,57 @@ fn layout_mode_menu_dispatches_to_private_helper() {
   assert!(output.status.success());
   assert_eq!(text(&output.stdout), "[--help]\nstdin=");
 }
+
+#[test]
+fn legacy_power_menu_dispatches_only_recognized_actions() {
+  let sandbox = Sandbox::new("legacy-power");
+  sandbox.fake(&sandbox.root.join("tools"), "argvus-lifecycle");
+  sandbox.fake(&sandbox.root.join("tools"), "hyprshutdown");
+  let path = sandbox.tools_path();
+
+  assert!(
+    sandbox
+      .run(&path, &["hypr-power-menu"], "")
+      .status
+      .success()
+  );
+  let poweroff = sandbox.run(&path, &["hypr-power-menu", "--poweroff"], "");
+  assert!(poweroff.status.success());
+  assert!(String::from_utf8_lossy(&poweroff.stdout).contains("[systemctl poweroff]"));
+  assert!(
+    !sandbox
+      .run(&path, &["hypr-power-menu", "--unknown"], "")
+      .status
+      .success()
+  );
+}
+
+#[test]
+fn legacy_suspend_does_not_run_systemctl_when_lock_fails() {
+  let sandbox = Sandbox::new("suspend-lock-failure");
+  let tools = sandbox.root.join("tools");
+  write_executable(&tools.join("hyprctl"), "#!/bin/sh\nprintf 'false\\n'\n");
+  write_executable(&tools.join("argvus"), "#!/bin/sh\nexit 1\n");
+  sandbox.fake(&tools, "systemctl");
+
+  let result = sandbox.run(&sandbox.tools_path(), &["hypr-power-menu", "--suspend"], "");
+  assert!(!result.status.success());
+  assert!(result.stdout.is_empty());
+  assert!(String::from_utf8_lossy(&result.stderr).contains("locker exited before locking"));
+}
+
+#[test]
+fn lock_and_legacy_lock_use_the_same_packaged_helper() {
+  let sandbox = Sandbox::new("lock-helper");
+  let directory = sandbox.root.join("lock/sh");
+  fs::create_dir_all(&directory).expect("create lock script directory");
+  sandbox.fake(&directory, "lock-session.sh");
+
+  for arguments in [&["lock"][..], &["hypr-power-menu", "--lock"][..]] {
+    let mut command = sandbox.command(&sandbox.tools_path(), arguments);
+    command.env("ARGVUS_SYSTEM_CONFIG", &sandbox.root);
+    let result = finish(command, "lock-helper");
+    assert!(result.status.success());
+    assert_eq!(result.stdout, b"stdin=lock-helper\n");
+  }
+}

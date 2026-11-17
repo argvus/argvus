@@ -143,3 +143,7 @@ Atur pencarian: Favorit, Tampilkan berkas terbaru, Indeks nama berkas, Folder te
 Kartu yang tidak dipilih memiliki opasitas 40%; pratinjau submode berukuran 75% dari pratinjau utama.
 
 Pemilih tema dan mode menampilkan kemajuan di jendelanya tanpa splash sesi. Posisi akhir taskbar disiapkan sebelum pemuatan ulang; restart yang diperlukan digabung dalam satu transaksi systemd.
+
+`argvus-lifecycle` · `SUPER + Esc`
+
+`argvus lock` · Hyprlock

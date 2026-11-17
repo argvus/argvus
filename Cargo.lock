@@ -192,6 +192,7 @@ dependencies = [
  "argvus-network-commands",
  "argvus-projects",
  "argvus-sensors",
+ "argvus-session-actions",
  "argvus-system-monitor",
  "argvus-terminal",
  "argvus-theme-core",
@@ -668,6 +669,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "argvus-lifecycle"
+version = "0.1.0"
+dependencies = [
+ "argvus-i18n-core",
+ "argvus-session-actions",
+ "argvus-time-ui",
+ "gtk4",
+ "gtk4-layer-shell",
+ "serde_json",
+]
+
+[[package]]
 name = "argvus-loading-theme"
 version = "0.1.0"
 dependencies = [
@@ -740,6 +753,13 @@ dependencies = [
  "env_logger",
  "log",
  "ratatui",
+ "serde_json",
+]
+
+[[package]]
+name = "argvus-session-actions"
+version = "0.1.0"
+dependencies = [
  "serde_json",
 ]
 

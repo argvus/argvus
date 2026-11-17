@@ -1,0 +1,14 @@
+[package]
+name = "argvus-lifecycle"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+argvus-session-actions = { path = "../argvus-session-actions" }
+gtk.workspace = true
+gtk4-layer-shell.workspace = true
+serde_json.workspace = true
+argvus-i18n.workspace = true
+argvus-time-ui.workspace = true

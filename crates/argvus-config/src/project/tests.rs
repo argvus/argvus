@@ -110,6 +110,10 @@ fn hypridle_projection_uses_the_runtime_consumer_path() {
   let runtime =
     fs::read_to_string(root.join("data/hypr/hypridle.conf")).expect("runtime hypridle file exists");
   assert!(runtime.contains("timeout = 900"));
+  assert!(runtime.contains("lock_cmd = argvus lock"));
+  assert!(runtime.contains("before_sleep_cmd = argvus lock"));
+  assert!(runtime.contains("on-timeout = argvus lock"));
+  assert!(!runtime.contains("hypr-power-menu"));
   // Idle actions are runtime commands; they must not go back through hyprctl.
   assert!(!runtime.contains("hyprctl"));
   assert!(runtime.contains("argvus config hyprland dpms off"));

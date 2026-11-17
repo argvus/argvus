@@ -145,3 +145,7 @@ Configure search: Favorites, Show recent files, Index file names, Indexed folder
 Unselected cards use 40% opacity; submode previews are 75% of the main previews.
 
 Applications started by the theme and mode selectors keep progress inside the selector, without a session splash. Mode changes prepare the final taskbar position before reloading; required surface restarts are grouped in one systemd transaction.
+
+Open **ARGVUS Lifecycle** with `SUPER + Esc`, the taskbar Power button, or `argvus-lifecycle`. Arrow keys and J/K move the selection. L/S/O/R/D select an action, Enter activates it, and Esc cancels. Log Out, Reboot, and Shutdown require confirmation. Suspend waits for Hyprland to confirm the lock. Use `argvus-lifecycle --preview` to test the interface without executing any action.
+
+`argvus lock` · Hyprlock

@@ -71,6 +71,7 @@ arch_build_argvus_workspace() {
 		-p argvus-du \
 		-p argvus-focus \
 		-p argvus-calculator \
+		-p argvus-lifecycle \
 		-p argvus-clock
 
 	# The greeter is a member of the root workspace, built with the compact
@@ -85,7 +86,8 @@ arch_check_argvus_workspace() {
 	source_root="$(arch_source_root)"
 	cd -- "$source_root" || return 1
 
-	test -x "$(arch_cargo_target_dir)/release/argvus"
+	test -x "$(arch_cargo_target_dir)/release/argvus" || return 1
+	test -x "$(arch_cargo_target_dir)/release/argvus-lifecycle" || return 1
 	cargo test --workspace --locked
 }
 
@@ -137,6 +139,7 @@ arch_package_argvus() {
 	source_root="$(arch_source_root)"
 
 	install -Dm755 "$(arch_cargo_target_dir)/release/argvus" "${pkgdir}/usr/bin/argvus"
+	install -Dm755 "$(arch_cargo_target_dir)/release/argvus-lifecycle" "${pkgdir}/usr/bin/argvus-lifecycle" || return 1
 	arch_install_payload
 
   arch_install_catalogs || return 1

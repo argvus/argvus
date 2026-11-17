@@ -116,7 +116,7 @@ script_routes! {
   ToggleMode => "toggle-mode" => "appearance/sh/toggle-mode.sh",
   IdleTimeout => "idle-timeout" => "power/sh/idle-timeout.sh",
   KeepAwake => "keep-awake" => "power/sh/keep-awake.sh",
-  HyprPowerMenu => "hypr-power-menu" => "power/sh/hypr-power-menu.sh",
+  Lock => "lock" => "lock/sh/lock-session.sh",
 }
 
 /// The directory of the private executables. `ARGVUS_COMMANDS_DIR` overrides it

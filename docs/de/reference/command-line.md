@@ -142,3 +142,7 @@ Suche konfigurieren: Favoriten, Zuletzt verwendete Dateien anzeigen, Dateinamen 
 Nicht ausgewählte Karten haben 40 % Deckkraft; Untermodusvorschauen sind 75 % so groß wie die Hauptvorschauen.
 
 Die Auswahlfenster zeigen den Fortschritt ohne Ladebildschirm der Sitzung. Moduswechsel bereiten die endgültige Taskleistenposition vor dem Neuladen vor; notwendige Neustarts werden in einer systemd-Transaktion gebündelt.
+
+`argvus-lifecycle` · `SUPER + Esc`
+
+`argvus lock` · Hyprlock

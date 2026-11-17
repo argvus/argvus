@@ -142,3 +142,7 @@ Configurar búsqueda: Favoritos, Mostrar archivos recientes, Indexar nombres de 
 Las tarjetas no seleccionadas tienen un 40% de opacidad; las vistas de submodos tienen el 75% del tamaño principal.
 
 Las aplicaciones iniciadas desde los selectores muestran el progreso en el selector, sin splash de sesión. Los modos preparan la posición final de la barra antes de recargar; los reinicios necesarios se agrupan en una transacción de systemd.
+
+`argvus-lifecycle` · `SUPER + Esc`
+
+`argvus lock` · Hyprlock

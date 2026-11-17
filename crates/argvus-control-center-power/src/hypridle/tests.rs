@@ -28,12 +28,12 @@ fn finds_the_dpms_listener_timeout() {
 fn finds_the_lock_listener_timeout() {
   let config = "\
 general {
-lock_cmd = sh /usr/share/argvus/power/sh/hypr-power-menu.sh --lock
+lock_cmd = argvus lock
 }
 
 listener {
 timeout = 900
-on-timeout = sh /usr/share/argvus/power/sh/hypr-power-menu.sh --lock
+on-timeout = argvus lock
 }
 
 listener {
@@ -87,12 +87,12 @@ on-timeout = systemctl suspend
 fn adds_a_dpms_listener_when_missing() {
   let stock = "\
 general {
-lock_cmd = sh /usr/share/argvus/power/sh/hypr-power-menu.sh --lock
+lock_cmd = argvus lock
 }
 
 listener {
 timeout = 900
-on-timeout = sh /usr/share/argvus/power/sh/hypr-power-menu.sh --lock
+on-timeout = argvus lock
 }
 ";
   assert_eq!(screen_off_minutes_from(stock), None);
@@ -110,7 +110,7 @@ on-timeout = sh /usr/share/argvus/power/sh/hypr-power-menu.sh --lock
 fn removing_the_dpms_listener_disables_screen_off() {
   let config = "\
 general {
-lock_cmd = sh /usr/share/argvus/power/sh/hypr-power-menu.sh --lock
+lock_cmd = argvus lock
 }
 
 listener {
@@ -121,7 +121,7 @@ on-resume = hyprctl dispatch dpms on
 
 listener {
 timeout = 1800
-on-timeout = sh /usr/share/argvus/power/sh/hypr-power-menu.sh --lock
+on-timeout = argvus lock
 }
 ";
   assert_eq!(screen_off_minutes_from(config), Some(1));
@@ -163,7 +163,7 @@ lock_cmd = custom-locker --damp
 
 listener {
 timeout = 900
-on-timeout = sh /usr/share/argvus/power/sh/hypr-power-menu.sh --lock
+on-timeout = argvus lock
 }
 ";
   assert_eq!(lock_command(config), "custom-locker --damp");
@@ -179,7 +179,7 @@ on-timeout = sh /usr/share/argvus/power/sh/hypr-power-menu.sh --lock
 fn removing_the_lock_listener_disables_lock() {
   let config = "\
 general {
-lock_cmd = sh /usr/share/argvus/power/sh/hypr-power-menu.sh --lock
+lock_cmd = argvus lock
 }
 
 listener {
@@ -189,28 +189,20 @@ on-timeout = hyprctl dispatch dpms off
 
 listener {
 timeout = 900
-on-timeout = sh /usr/share/argvus/power/sh/hypr-power-menu.sh --lock
+on-timeout = argvus lock
 }
 ";
   assert_eq!(lock_minutes_from(config), Some(15));
   let updated = remove_listener(config, calls_lock);
   assert_eq!(lock_minutes_from(&updated), None);
   assert_eq!(listener_minutes_from(&updated, calls_dpms_off), Some(5));
-  assert!(
-    updated.contains("lock_cmd = sh /usr/share/argvus/power/sh/hypr-power-menu.sh --lock"),
-    "{updated}"
-  );
-  assert!(
-    !updated.contains("on-timeout = sh /usr/share/argvus/power/sh/hypr-power-menu.sh --lock"),
-    "{updated}"
-  );
+  assert!(updated.contains("lock_cmd = argvus lock"), "{updated}");
+  assert!(!updated.contains("on-timeout = argvus lock"), "{updated}");
 }
 
 #[test]
 fn calls_lock_matches_lock_idioms_but_not_sleep_or_dpms() {
-  assert!(calls_lock(
-    "sh /usr/share/argvus/power/sh/hypr-power-menu.sh --lock"
-  ));
+  assert!(calls_lock("argvus lock"));
   assert!(calls_lock("swaylock"));
   assert!(!calls_lock("systemctl suspend"));
   assert!(!calls_lock("hyprctl dispatch dpms off"));

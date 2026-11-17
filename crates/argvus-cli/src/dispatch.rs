@@ -43,6 +43,9 @@ pub fn run(arguments: &[OsString]) -> Outcome {
       Ok(argvus_system_monitor::run_command(owned_arguments(rest)?))
     }
     "--control-center" | "control-center" => control_center::run(rest.to_vec()),
+    "lock" if rest.is_empty() => script::run(ScriptRoute::Lock, rest),
+    "lock" => Err(Failure::new("usage: argvus lock")),
+    "hypr-power-menu" => legacy_power(rest),
     "welcome" => welcome::run(rest.to_vec()),
     // The taskbar indicator of ARGVUS Focus runs in this process, so the bar
     // never loads the GTK application for it.
@@ -239,6 +242,26 @@ fn with_leading_pair(first: &str, second: &str, arguments: &[OsString]) -> Vec<O
     .into_iter()
     .chain(arguments.iter().cloned())
     .collect()
+}
+
+fn legacy_power(arguments: &[OsString]) -> Outcome {
+  use argvus_session_actions::Action;
+
+  let action = match arguments {
+    [] => return Err(replace_process(&mut Command::new("argvus-lifecycle"))),
+    [flag] => match flag.to_str() {
+      Some("--lock") => return script::run(ScriptRoute::Lock, &[]),
+      Some("--suspend") => Action::Suspend,
+      Some("--logout") => Action::LogOut,
+      Some("--reboot") => Action::Reboot,
+      Some("--shutdown" | "--poweroff") => Action::Shutdown,
+      _ => return Err(Failure::new("invalid hypr-power-menu argument")),
+    },
+    _ => return Err(Failure::new("hypr-power-menu accepts at most one argument")),
+  };
+  argvus_session_actions::run(action, || {})
+    .map(|_| ExitCode::SUCCESS)
+    .map_err(|error| Failure::new(error.to_string()))
 }
 
 #[cfg(test)]

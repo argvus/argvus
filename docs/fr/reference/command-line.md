@@ -142,3 +142,7 @@ Configurer la recherche: Favoris, Afficher les fichiers récents, Indexer les no
 Les cartes non sélectionnées ont une opacité de 40 % ; les aperçus des sous-modes mesurent 75 % des aperçus principaux.
 
 Les applications lancées depuis les sélecteurs affichent leur progression dans le sélecteur, sans écran de chargement de session. Les modes préparent la position finale de la barre avant le rechargement ; les redémarrages nécessaires sont regroupés dans une transaction systemd.
+
+`argvus-lifecycle` · `SUPER + Esc`
+
+`argvus lock` · Hyprlock
