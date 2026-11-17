@@ -572,7 +572,7 @@ Control Center guarda su base de consulta en `$XDG_CACHE_HOME/argvus/control-cen
 
 ## Lanzador y búsqueda
 
-El lanzador principal usa Quickshell/QML con un motor local en Rust. Busca aplicaciones, ventanas, ajustes, acciones, proyectos, hosts SSH, archivos y atajos. La indexación empieza desactivada y requiere carpetas elegidas explícitamente. Solo indexa nombres y rutas, nunca el contenido. Los archivos recientes dependen del registro XDG. Excluye archivos ocultos por defecto y no sigue enlaces simbólicos de directorios. Los menús especializados de Rofi siguen disponibles.
+El lanzador principal usa Quickshell/QML con un motor local en Rust. Busca aplicaciones, ventanas, ajustes, acciones, proyectos, hosts SSH, archivos y atajos. La indexación empieza desactivada y requiere carpetas elegidas explícitamente. Solo indexa nombres y rutas, nunca el contenido. Los archivos recientes dependen del registro XDG. Excluye archivos ocultos por defecto y no sigue enlaces simbólicos de directorios. Los menús especializados de Rofi siguen disponibles. Al abrir el lanzador, las ventanas abiertas aparecen primero en «Abiertas ahora». La categoría guardada sigue filtrando los demás resultados; desactiva la fuente Windows en la configuración de búsqueda para ocultar este grupo.
 
 `argvus launcher` · `argvus control-center launcher`
 

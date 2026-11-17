@@ -630,7 +630,7 @@ Control Center denetim veritabanını `$XDG_CACHE_HOME/argvus/control-center/che
 
 ## Başlatıcı ve Arama
 
-Ana başlatıcı Quickshell/QML ve yerel Rust arama motoruyla uygulama, pencere, ayar, eylem, proje, SSH sunucusu, dosya ve kısayol arar. Dizinleme başlangıçta kapalıdır; klasörleri açıkça seçin. Yalnızca adlar ve yollar dizinlenir, belge içerikleri okunmaz. Son dosyalar XDG kaydına bağlıdır. Gizli dosyalar varsayılan olarak dışlanır ve dizin sembolik bağlantıları izlenmez. Özel Rofi menüleri kullanılabilir.
+Ana başlatıcı Quickshell/QML ve yerel Rust arama motoruyla uygulama, pencere, ayar, eylem, proje, SSH sunucusu, dosya ve kısayol arar. Dizinleme başlangıçta kapalıdır; klasörleri açıkça seçin. Yalnızca adlar ve yollar dizinlenir, belge içerikleri okunmaz. Son dosyalar XDG kaydına bağlıdır. Gizli dosyalar varsayılan olarak dışlanır ve dizin sembolik bağlantıları izlenmez. Özel Rofi menüleri kullanılabilir. Başlatıcı açıldığında açık pencereler önce “Şu anda açık” grubunda gösterilir. Kaydedilen kategori diğer sonuçları filtrelemeye devam eder; bu grubu gizlemek için arama ayarlarında Windows kaynağını kapatın.
 
 `argvus launcher` · `argvus control-center launcher`
 

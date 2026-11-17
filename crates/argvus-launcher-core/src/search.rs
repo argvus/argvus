@@ -28,6 +28,8 @@ pub struct Entry {
   pub icon: String,
   #[serde(default)]
   pub keywords: Vec<String>,
+  #[serde(default)]
+  pub is_active: bool,
   pub action: Action,
 }
 
@@ -91,18 +93,25 @@ fn score(entry: &Entry, query: &str) -> Option<u8> {
 
 pub fn rank(entries: &[Entry], query: &str, category: &str, settings: &Settings) -> Vec<Entry> {
   let query = normalize(query);
+  let is_initial_query = query.is_empty();
   let mut seen = std::collections::HashSet::new();
   let mut matches: Vec<_> = entries
     .iter()
     .filter(|entry| {
+      // Open windows are landing suggestions independent of the saved category,
+      // while the source toggle above remains authoritative.
+      let is_open_window = is_initial_query && entry.category == "windows";
       settings.enabled(&entry.category)
-        && (category.is_empty() || entry.category == category)
+        && (category.is_empty() || entry.category == category || is_open_window)
         && seen.insert(&entry.id)
     })
     .filter_map(|entry| {
       let favorite = settings.favorites.contains(&entry.id);
       let rank = if query.is_empty() {
-        if category.is_empty() && entry.category != "applications" && !favorite {
+        if category.is_empty()
+          && !matches!(entry.category.as_str(), "applications" | "windows")
+          && !favorite
+        {
           return None;
         }
         0
@@ -114,16 +123,27 @@ pub fn rank(entries: &[Entry], query: &str, category: &str, settings: &Settings)
         .iter()
         .position(|source| source == &entry.category)
         .unwrap_or(usize::MAX);
-      Some((rank, !favorite, priority, entry))
+      let window_priority = usize::from(is_initial_query && entry.category != "windows");
+      let active_priority =
+        usize::from(!(is_initial_query && entry.category == "windows" && entry.is_active));
+      Some((
+        rank,
+        window_priority,
+        active_priority,
+        !favorite,
+        priority,
+        entry,
+      ))
     })
     .collect();
   matches.sort_by(|a, b| {
-    (a.0, a.1, a.2, &a.3.title, &a.3.id).cmp(&(b.0, b.1, b.2, &b.3.title, &b.3.id))
+    (a.0, a.1, a.2, a.3, a.4, &a.5.title, &a.5.id)
+      .cmp(&(b.0, b.1, b.2, b.3, b.4, &b.5.title, &b.5.id))
   });
   matches
     .into_iter()
     .take(100)
-    .map(|(_, _, _, entry)| entry.clone())
+    .map(|(_, _, _, _, _, entry)| entry.clone())
     .collect()
 }
 
@@ -138,6 +158,7 @@ mod tests {
       category: "settings".into(),
       icon: String::new(),
       keywords: vec!["internet sem acesso".into()],
+      is_active: false,
       action: Action::Configure,
     }
   }
@@ -163,5 +184,88 @@ mod tests {
       ..Settings::default()
     };
     assert!(rank(&entries, "audio", "", &settings).is_empty());
+  }
+
+  #[test]
+  fn initial_results_show_active_windows_before_the_saved_category() {
+    let mut active_window = entry("window:1", "Editor: notes.md");
+    active_window.category = "windows".into();
+    active_window.is_active = true;
+    active_window.action = Action::Window("1".into());
+
+    let mut other_window = entry("window:2", "Browser: docs");
+    other_window.category = "windows".into();
+    other_window.action = Action::Window("2".into());
+
+    let mut last_window = entry("window:3", "Mail: inbox");
+    last_window.category = "windows".into();
+    last_window.action = Action::Window("3".into());
+
+    let mut application = entry("app:editor", "Editor");
+    application.category = "applications".into();
+    application.action = Action::Application("editor.desktop".into());
+
+    let results = rank(
+      &[application, last_window, other_window, active_window],
+      "",
+      "applications",
+      &Settings::default(),
+    );
+
+    assert_eq!(
+      results
+        .iter()
+        .map(|entry| entry.id.as_str())
+        .collect::<Vec<_>>(),
+      ["window:1", "window:2", "window:3", "app:editor"]
+    );
+  }
+
+  #[test]
+  fn initial_all_category_keeps_windows_ahead_of_applications() {
+    let mut window = entry("window:1", "Browser: docs");
+    window.category = "windows".into();
+    window.action = Action::Window("1".into());
+    let mut application = entry("app:browser", "Browser");
+    application.category = "applications".into();
+    application.action = Action::Application("browser.desktop".into());
+
+    let results = rank(&[application, window], "", "", &Settings::default());
+
+    assert_eq!(results[0].id, "window:1");
+    assert_eq!(results[1].id, "app:browser");
+  }
+
+  #[test]
+  fn typed_search_respects_the_selected_category() {
+    let mut window = entry("window:1", "Editor");
+    window.category = "windows".into();
+    window.action = Action::Window("1".into());
+    let mut application = entry("app:editor", "Editor");
+    application.category = "applications".into();
+    application.action = Action::Application("editor.desktop".into());
+
+    let results = rank(
+      &[window, application],
+      "editor",
+      "applications",
+      &Settings::default(),
+    );
+
+    assert_eq!(results.len(), 1);
+    assert_eq!(results[0].id, "app:editor");
+  }
+
+  #[test]
+  fn disabled_windows_source_hides_open_windows_from_initial_results() {
+    let mut window = entry("window:1", "Editor");
+    window.category = "windows".into();
+    window.action = Action::Window("1".into());
+    let settings = Settings {
+      sources: vec!["applications".into()],
+      ..Settings::default()
+    };
+
+    assert!(rank(&[window], "", "applications", &settings).is_empty());
   }
 }

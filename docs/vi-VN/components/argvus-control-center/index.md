@@ -637,7 +637,7 @@ Control Center lưu cơ sở dữ liệu kiểm tra tại `$XDG_CACHE_HOME/argvu
 
 ## Trình khởi chạy và tìm kiếm
 
-Trình khởi chạy chính dùng Quickshell/QML và công cụ Rust cục bộ để tìm ứng dụng, cửa sổ, cài đặt, thao tác, dự án, máy chủ SSH, tệp và phím tắt. Lập chỉ mục ban đầu bị tắt; cần chọn thư mục rõ ràng. Chỉ tên và đường dẫn được lập chỉ mục, không đọc nội dung tài liệu. Tệp gần đây dựa vào bản ghi XDG. Tệp ẩn bị loại trừ mặc định và không đi theo liên kết tượng trưng của thư mục. Các menu Rofi chuyên dụng vẫn có sẵn.
+Trình khởi chạy chính dùng Quickshell/QML và công cụ Rust cục bộ để tìm ứng dụng, cửa sổ, cài đặt, thao tác, dự án, máy chủ SSH, tệp và phím tắt. Lập chỉ mục ban đầu bị tắt; cần chọn thư mục rõ ràng. Chỉ tên và đường dẫn được lập chỉ mục, không đọc nội dung tài liệu. Tệp gần đây dựa vào bản ghi XDG. Tệp ẩn bị loại trừ mặc định và không đi theo liên kết tượng trưng của thư mục. Các menu Rofi chuyên dụng vẫn có sẵn. Khi mở launcher, các cửa sổ đang mở được hiển thị đầu tiên trong nhóm “Đang mở”. Danh mục đã lưu tiếp tục lọc các kết quả khác; hãy tắt nguồn Windows trong cài đặt tìm kiếm để ẩn nhóm này.
 
 `argvus launcher` · `argvus control-center launcher`
 

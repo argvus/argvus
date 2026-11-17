@@ -637,7 +637,7 @@ Control Center menyimpan basis data pemeriksaan di `$XDG_CACHE_HOME/argvus/contr
 
 ## Peluncur dan Pencarian
 
-Peluncur utama memakai Quickshell/QML dan mesin Rust lokal untuk aplikasi, jendela, pengaturan, tindakan, proyek, host SSH, berkas, dan pintasan. Pengindeksan awalnya nonaktif; pilih folder secara eksplisit. Hanya nama dan jalur yang diindeks, bukan isi dokumen. Berkas terbaru bergantung pada catatan XDG. Berkas tersembunyi dikecualikan secara bawaan dan symlink direktori tidak diikuti. Menu khusus Rofi tetap tersedia.
+Peluncur utama memakai Quickshell/QML dan mesin Rust lokal untuk aplikasi, jendela, pengaturan, tindakan, proyek, host SSH, berkas, dan pintasan. Pengindeksan awalnya nonaktif; pilih folder secara eksplisit. Hanya nama dan jalur yang diindeks, bukan isi dokumen. Berkas terbaru bergantung pada catatan XDG. Berkas tersembunyi dikecualikan secara bawaan dan symlink direktori tidak diikuti. Menu khusus Rofi tetap tersedia. Saat launcher dibuka, jendela yang terbuka ditampilkan lebih dahulu di bagian “Terbuka sekarang”. Kategori tersimpan tetap memfilter hasil lainnya; nonaktifkan sumber Windows di pengaturan pencarian untuk menyembunyikan grup ini.
 
 `argvus launcher` · `argvus control-center launcher`
 

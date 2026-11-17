@@ -572,7 +572,7 @@ Il Control Center conserva il database di controllo in `$XDG_CACHE_HOME/argvus/c
 
 ## Lanciatore e ricerca
 
-Il lanciatore principale usa Quickshell/QML con un motore locale Rust per applicazioni, finestre, impostazioni, azioni, progetti, host SSH, file e scorciatoie. L’indicizzazione è inizialmente disattivata e richiede cartelle scelte esplicitamente. Indicizza solo nomi e percorsi, mai il contenuto. I file recenti dipendono dal registro XDG. I file nascosti sono esclusi per impostazione predefinita e i collegamenti simbolici alle cartelle non vengono seguiti. I menu Rofi specializzati restano disponibili.
+Il lanciatore principale usa Quickshell/QML con un motore locale Rust per applicazioni, finestre, impostazioni, azioni, progetti, host SSH, file e scorciatoie. L’indicizzazione è inizialmente disattivata e richiede cartelle scelte esplicitamente. Indicizza solo nomi e percorsi, mai il contenuto. I file recenti dipendono dal registro XDG. I file nascosti sono esclusi per impostazione predefinita e i collegamenti simbolici alle cartelle non vengono seguiti. I menu Rofi specializzati restano disponibili. All’apertura del launcher, le finestre aperte vengono mostrate per prime nella sezione “Aperte ora”. La categoria salvata continua a filtrare gli altri risultati; disattiva la sorgente Windows nelle impostazioni di ricerca per nascondere questo gruppo.
 
 `argvus launcher` · `argvus control-center launcher`
 

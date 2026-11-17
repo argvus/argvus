@@ -23,9 +23,10 @@ No additional Rust executable is installed.
 
 The QML process keeps the engine's stdin open and exchanges one JSON object per
 line. Requests contain `op` and, for queries, a monotonic `sequence`, `query` and
-optional `category`. `clients` supplies application/window metadata. `activate`
-accepts a visible result ID; it cannot execute arbitrary shell text. `favorite`,
-`refresh`, `back`, `configure`, `rebuild` and `clear_index` are control operations.
+optional `category`. `clients` supplies application/window metadata, including
+whether a window is active. `activate` accepts a visible result ID; it cannot
+execute arbitrary shell text. `favorite`, `refresh`, `back`, `configure`,
+`rebuild` and `clear_index` are control operations.
 
 Events are `ready` (effective preferences), `results` (sequence and entries),
 `submenu`, `activate` (frontend action), `index_status`, `error` and `close`.
@@ -67,3 +68,8 @@ exclusion entry, hidden files, recent files, reduced motion, pause, cache remova
 and rebuild. Settings I/O runs off the render loop; F5 refreshes index status.
 The new consumer renders `launcher/Theme.qml`; Rofi continues using
 `launcher/theme.rasi`.
+
+On an empty query, enabled open windows are included before other results
+regardless of the saved category. The active window is first; remaining windows
+are ordered by title. Once the user types a query, the saved category filters
+results normally.

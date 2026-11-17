@@ -586,7 +586,7 @@ Das Control Center speichert seine Prüfdatenbank unter `$XDG_CACHE_HOME/argvus/
 
 ## Starter und Suche
 
-Der Hauptstarter verwendet Quickshell/QML mit einer lokalen Rust-Suche für Apps, Fenster, Einstellungen, Aktionen, Projekte, SSH-Ziele, Dateien und Tastenkürzel. Die Indizierung ist zunächst deaktiviert; Ordner müssen ausdrücklich ausgewählt werden. Nur Namen und Pfade werden indiziert, keine Dokumentinhalte. Zuletzt verwendete Dateien stammen aus dem XDG-Verzeichnis. Versteckte Dateien sind standardmäßig ausgeschlossen; Verzeichnis-Symlinks werden nicht verfolgt. Spezialisierte Rofi-Menüs bleiben verfügbar.
+Der Hauptstarter verwendet Quickshell/QML mit einer lokalen Rust-Suche für Apps, Fenster, Einstellungen, Aktionen, Projekte, SSH-Ziele, Dateien und Tastenkürzel. Die Indizierung ist zunächst deaktiviert; Ordner müssen ausdrücklich ausgewählt werden. Nur Namen und Pfade werden indiziert, keine Dokumentinhalte. Zuletzt verwendete Dateien stammen aus dem XDG-Verzeichnis. Versteckte Dateien sind standardmäßig ausgeschlossen; Verzeichnis-Symlinks werden nicht verfolgt. Spezialisierte Rofi-Menüs bleiben verfügbar. Beim Öffnen des Launchers erscheinen offene Fenster zuerst unter „Jetzt geöffnet“. Die gespeicherte Kategorie filtert weiterhin die übrigen Ergebnisse; deaktivieren Sie die Quelle Windows in den Sucheinstellungen, um diese Gruppe auszublenden.
 
 `argvus launcher` · `argvus control-center launcher`
 

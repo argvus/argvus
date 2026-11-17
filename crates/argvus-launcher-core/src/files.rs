@@ -180,6 +180,7 @@ fn file_entry(path: PathBuf) -> Entry {
     category: "files".into(),
     icon: "text-x-generic".into(),
     keywords: Vec::new(),
+    is_active: false,
     action: Action::File(path.to_string_lossy().into_owned()),
   }
 }
