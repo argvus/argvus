@@ -146,3 +146,5 @@ argvus setup --copy <app> --dry-run
 `argvus-lifecycle` · `SUPER + Esc`
 
 `argvus lock` · Hyprlock
+
+ARGVUS Lifecycle 遵循窗口实际的圆角半径和 Hyprland 的全局模糊设置。启用动画时始终使用淡入淡出。

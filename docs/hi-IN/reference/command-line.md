@@ -142,3 +142,5 @@ argvus setup --copy <app> --dry-run
 `argvus-lifecycle` · `SUPER + Esc`
 
 `argvus lock` · Hyprlock
+
+ARGVUS Lifecycle विंडो के प्रभावी कोने के रेडियस और Hyprland की वैश्विक ब्लर सेटिंग का पालन करता है। ऐनिमेशन चालू होने पर हमेशा फ़ेड का उपयोग होता है।

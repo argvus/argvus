@@ -1,9 +1,10 @@
-window.lifecycle { background: rgba(12, 16, 23, 0.70); color: #f6f8fb; }
-.lifecycle-frame { margin: 9px; border: 1px solid @time_accent; border-radius: 9px; }
+window.lifecycle { background: transparent; color: #f6f8fb; }
+.lifecycle-backdrop { background: rgba(12, 16, 23, 0.70); }
+.lifecycle-frame { margin: 9px; border: 1px solid @time_accent; }
 .lifecycle-header { margin: 28px 38px; font-family: monospace; font-size: 28px; }
-.lifecycle-brand { padding: 4px 14px; background: @time_accent; color: @time_on_accent; border-radius: 4px; }
+.lifecycle-brand { padding: 4px 14px; background: @time_accent; color: @time_on_accent; }
 .lifecycle-footer { margin: 0 36px 24px; padding: 16px 12px 0; border-top: 1px solid @time_accent; font-family: monospace; }
-.lifecycle-action { min-width: 390px; min-height: 62px; padding: 0 24px; border: 1px solid @time_accent; border-radius: 9px; font-size: 22px; }
+.lifecycle-action { min-width: 390px; min-height: 62px; padding: 0 24px; border: 1px solid @time_accent; font-size: 22px; }
 .lifecycle button { background: mix(#171c25, @time_accent, 0.06); color: #f6f8fb; box-shadow: none; }
 .lifecycle button.selected { background: @time_accent; color: @time_on_accent; }
 .lifecycle.compact .lifecycle-action { min-width: 240px; min-height: 42px; padding: 0 12px; font-size: 16px; }

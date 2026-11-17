@@ -146,3 +146,5 @@ argvus setup --copy <app> --dry-run
 `argvus-lifecycle` · `SUPER + Esc`
 
 `argvus lock` · Hyprlock
+
+ARGVUS Lifecycle은 창의 실제 모서리 반경과 Hyprland의 전역 흐림 설정을 따릅니다. 애니메이션이 켜져 있으면 항상 페이드를 사용합니다.

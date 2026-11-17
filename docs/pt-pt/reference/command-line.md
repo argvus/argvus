@@ -149,3 +149,5 @@ As aplicações iniciadas pelos seletores de temas e modos mostram o progresso n
 `argvus-lifecycle` · `SUPER + Esc`
 
 `argvus lock` · Hyprlock
+
+O ARGVUS Lifecycle segue o arredondamento efetivo das janelas e o desfoque global do Hyprland. Utiliza sempre o estilo de transição gradual quando as animações estão ativas.

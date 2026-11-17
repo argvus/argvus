@@ -132,3 +132,5 @@ argvus setup --copy <app> --dry-run
 `argvus-lifecycle` · `SUPER + Esc`
 
 `argvus lock` · Hyprlock
+
+ARGVUS Lifecycle ونڈو کے کناروں کے مؤثر رداس اور Hyprland کی عمومی دھندلاہٹ کی ترتیبات پر عمل کرتا ہے۔ اینیمیشن فعال ہونے پر ہمیشہ فیڈ استعمال ہوتا ہے۔

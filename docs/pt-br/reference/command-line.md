@@ -146,6 +146,8 @@ Cartões não selecionados usam 40% de opacidade; prévias dos submodos têm 75%
 
 Aplicações iniciadas pelos seletores de temas e modos mostram o progresso no próprio seletor, sem splash da sessão. Mudanças de modo preparam a posição final da taskbar antes da recarga; os reinícios necessários são agrupados em uma transação do systemd.
 
-Abra o **ARGVUS Lifecycle** com `SUPER + Esc`, o botão de energia da barra de tarefas ou `argvus-lifecycle`. As setas e J/K movem a seleção. L/S/O/R/D selecionam uma ação, Enter a ativa e Esc cancela. Sair, reiniciar e desligar exigem confirmação. A suspensão aguarda o Hyprland confirmar o bloqueio. Use `argvus-lifecycle --preview` para testar a interface sem executar ações.
+Abra o **ARGVUS Lifecycle** com `SUPER + Esc`, o botão de energia da barra de tarefas ou `argvus-lifecycle`. Use as setas ou o mouse para selecionar uma ação. Clique ou pressione Enter para ativá-la, ou Esc para cancelar. Sair, reiniciar e desligar exigem confirmação. A suspensão aguarda o Hyprland confirmar o bloqueio. Use `argvus-lifecycle --preview` para testar a interface sem executar ações.
 
 `argvus lock` · Hyprlock
+
+O ARGVUS Lifecycle segue o arredondamento efetivo das janelas e o desfoque global do Hyprland. Usa sempre o estilo fade quando as animações estão habilitadas.

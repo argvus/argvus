@@ -146,3 +146,5 @@ Las aplicaciones iniciadas desde los selectores muestran el progreso en el selec
 `argvus-lifecycle` · `SUPER + Esc`
 
 `argvus lock` · Hyprlock
+
+ARGVUS Lifecycle respeta el radio efectivo de las esquinas y el desenfoque global de Hyprland. Usa un fundido siempre que las animaciones estén activadas.

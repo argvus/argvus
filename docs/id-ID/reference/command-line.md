@@ -147,3 +147,5 @@ Pemilih tema dan mode menampilkan kemajuan di jendelanya tanpa splash sesi. Posi
 `argvus-lifecycle` · `SUPER + Esc`
 
 `argvus lock` · Hyprlock
+
+ARGVUS Lifecycle mengikuti radius sudut jendela yang berlaku dan pengaturan blur global Hyprland. Saat animasi aktif, transisi selalu memakai fade.

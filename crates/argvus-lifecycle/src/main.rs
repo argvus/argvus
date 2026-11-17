@@ -2,14 +2,18 @@ use argvus_lifecycle::{Action, Screen, State};
 use argvus_session_actions::{Handoff, run};
 use gtk::{gdk, glib, prelude::*};
 use gtk4_layer_shell::{Edge, KeyboardMode, Layer, LayerShell};
-use std::{cell::RefCell, process::Command, rc::Rc};
+use std::{
+  cell::{Cell, RefCell},
+  process::Command,
+  rc::Rc,
+};
 
-const ROWS: [(&str, &str, &str); 5] = [
-  ("menu.lock", "system-lock-screen-symbolic", "L"),
-  ("menu.suspend", "weather-clear-night-symbolic", "S"),
-  ("menu.logout", "system-log-out-symbolic", "O"),
-  ("menu.reboot", "system-reboot-symbolic", "R"),
-  ("menu.shutdown", "system-shutdown-symbolic", "D"),
+const ROWS: [(&str, &str); 5] = [
+  ("menu.lock", "system-lock-screen-symbolic"),
+  ("menu.suspend", "weather-clear-night-symbolic"),
+  ("menu.logout", "system-log-out-symbolic"),
+  ("menu.reboot", "system-reboot-symbolic"),
+  ("menu.shutdown", "system-shutdown-symbolic"),
 ];
 
 fn tr(domain: &str, key: &str) -> &'static str {
@@ -93,11 +97,21 @@ fn open(app: &gtk::Application, preview: bool) {
     }
   }
 
-  let _theme = argvus_time_ui::theme::ThemeStyle::install(include_str!("style.css"));
+  let effects = compositor_css();
+  let _theme = argvus_time_ui::theme::ThemeStyle::install(&format!(
+    "{}\n{effects}",
+    include_str!("style.css")
+  ));
   window.add_css_class("lifecycle");
   let frame = gtk::Overlay::new();
   frame.add_css_class("lifecycle-frame");
-  window.set_child(Some(&frame));
+  let surface = gtk::Overlay::new();
+  let backdrop = gtk::Box::new(gtk::Orientation::Vertical, 0);
+  backdrop.add_css_class("lifecycle-backdrop");
+  surface.set_child(Some(&backdrop));
+  surface.add_overlay(&frame);
+  surface.set_measure_overlay(&frame, true);
+  window.set_child(Some(&surface));
   let center = gtk::Box::new(gtk::Orientation::Vertical, 12);
   center.set_halign(gtk::Align::Center);
   center.set_valign(gtk::Align::Center);
@@ -131,11 +145,16 @@ fn open(app: &gtk::Application, preview: bool) {
 
   let ui = Rc::new(Ui {
     preview,
+    animations: compositor_option("animations:enabled")
+      .and_then(|option| option["bool"].as_bool())
+      .unwrap_or(false),
+    fade_generation: Rc::new(Cell::new(0)),
+    closing: Cell::new(false),
     window: window.downgrade(),
     state: RefCell::new(State::default()),
     center,
     status: gtk::Label::new(None),
-    buttons: ROWS.map(|(label, icon, key)| {
+    buttons: ROWS.map(|(label, icon)| {
       let button = gtk::Button::new();
       button.add_css_class("lifecycle-action");
       let row = gtk::Box::new(gtk::Orientation::Horizontal, 18);
@@ -146,7 +165,6 @@ fn open(app: &gtk::Application, preview: bool) {
       title.set_xalign(0.0);
       row.append(&image);
       row.append(&title);
-      row.append(&gtk::Label::new(Some(&format!("[{key}]"))));
       button.set_child(Some(&row));
       button
     }),
@@ -160,6 +178,10 @@ fn open(app: &gtk::Application, preview: bool) {
   if preview {
     ui.status.set_label("--preview");
   }
+  if ui.animations {
+    window.set_opacity(0.0);
+    ui.fade(&window, 1.0);
+  }
   window.present();
 }
 
@@ -170,6 +192,36 @@ fn update_size(window: &gtk::ApplicationWindow, monitor: &gdk::Monitor) {
   } else {
     window.remove_css_class("compact");
   }
+}
+
+fn compositor_option(name: &str) -> Option<serde_json::Value> {
+  let output = Command::new("hyprctl")
+    .args(["getoption", name, "-j"])
+    .output()
+    .ok()?;
+  if !output.status.success() {
+    return None;
+  }
+  serde_json::from_slice(&output.stdout).ok()
+}
+
+/// Use the resolved compositor radius, including explicit Control Center overrides.
+fn compositor_css() -> String {
+  let radius = compositor_option("decoration:rounding")
+    .and_then(|option| option["int"].as_u64())
+    .unwrap_or(0)
+    .min(10);
+  let mut css = format!(
+    ".lifecycle-frame, .lifecycle-brand, .lifecycle button {{ border-radius: {radius}px; }}"
+  );
+
+  // GTK 4.22+ can advertise a Wayland blur region from backdrop-filter.
+  // Use a radius large enough to trigger GTK's region detection. Hyprland
+  // chooses the actual blur strength from its global settings.
+  if (gtk::major_version(), gtk::minor_version()) >= (4, 22) {
+    css.push_str("\n.lifecycle-backdrop { backdrop-filter: blur(20px); }");
+  }
+  css
 }
 
 fn focused_output() -> Option<String> {
@@ -187,6 +239,9 @@ fn focused_output() -> Option<String> {
 }
 
 struct Ui {
+  animations: bool,
+  fade_generation: Rc<Cell<u64>>,
+  closing: Cell<bool>,
   preview: bool,
   window: glib::WeakRef<gtk::ApplicationWindow>,
   state: RefCell<State>,
@@ -265,30 +320,61 @@ impl Ui {
     window.add_controller(keys);
   }
 
+  fn fade(&self, window: &gtk::ApplicationWindow, target: f64) {
+    const DURATION_US: f64 = 150_000.0;
+    let generation = self.fade_generation.get().wrapping_add(1);
+    self.fade_generation.set(generation);
+    let current_generation = Rc::clone(&self.fade_generation);
+    let initial = window.opacity();
+    let start = Cell::new(None);
+    window.add_tick_callback(move |window, clock| {
+      if current_generation.get() != generation {
+        return glib::ControlFlow::Break;
+      }
+      let now = clock.frame_time();
+      let first = start.get().unwrap_or(now);
+      start.set(Some(first));
+      let progress = ((now - first) as f64 / DURATION_US).min(1.0);
+      window.set_opacity(initial + (target - initial) * progress);
+      if progress >= 1.0 {
+        if target == 0.0 {
+          window.close();
+        }
+        glib::ControlFlow::Break
+      } else {
+        glib::ControlFlow::Continue
+      }
+    });
+  }
+
   fn key(&self, key: gdk::Key) {
+    if self.closing.get() {
+      return;
+    }
     let mut state = self.state.borrow_mut();
     if key == gdk::Key::Escape {
       if state.cancel()
         && let Some(window) = self.window.upgrade()
       {
-        window.close();
+        self.closing.set(true);
+        window.set_sensitive(false);
+        if self.animations {
+          self.fade(&window, 0.0);
+        } else {
+          window.close();
+        }
+        return;
       }
-    } else if let Screen::Confirm { confirmed, .. } = state.screen {
+    } else if let Screen::Confirm { .. } = state.screen {
       match key {
-        gdk::Key::Left | gdk::Key::Up | gdk::Key::k => state.set_confirmation(true),
-        gdk::Key::Right | gdk::Key::Down | gdk::Key::j => state.set_confirmation(false),
-        gdk::Key::Tab | gdk::Key::ISO_Left_Tab => state.set_confirmation(!confirmed),
+        gdk::Key::Left | gdk::Key::Up => state.set_confirmation(true),
+        gdk::Key::Right | gdk::Key::Down => state.set_confirmation(false),
         _ => {}
       }
     } else {
-      match key.to_lower() {
-        gdk::Key::Up | gdk::Key::k => state.move_selection(-1),
-        gdk::Key::Down | gdk::Key::j => state.move_selection(1),
-        gdk::Key::l => state.select(Action::Lock),
-        gdk::Key::s => state.select(Action::Suspend),
-        gdk::Key::o => state.select(Action::LogOut),
-        gdk::Key::r => state.select(Action::Reboot),
-        gdk::Key::d => state.select(Action::Shutdown),
+      match key {
+        gdk::Key::Up => state.move_selection(-1),
+        gdk::Key::Down => state.move_selection(1),
         _ => {}
       }
     }
@@ -322,6 +408,9 @@ impl Ui {
   }
 
   fn activate(self: &Rc<Self>) {
+    if self.closing.get() {
+      return;
+    }
     let action = self.state.borrow_mut().activate();
     self.render();
     let Some(action) = action else { return };
@@ -331,6 +420,18 @@ impl Ui {
       return;
     }
     self.status.set_label(common("control_center.loading"));
+    // Unmap before the locker takes over. Waiting until suspend finishes can
+    // defer the close until the session resumes.
+    if matches!(action, Action::Lock | Action::Suspend)
+      && let Some(window) = self.window.upgrade()
+    {
+      self
+        .fade_generation
+        .set(self.fade_generation.get().wrapping_add(1));
+      window.set_visible(false);
+      window.set_opacity(1.0);
+      gtk::prelude::WidgetExt::display(&window).sync();
+    }
     let (sender, receiver) = std::sync::mpsc::channel();
     std::thread::spawn(move || {
       let _ = sender.send(run(action, || {

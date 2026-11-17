@@ -146,3 +146,5 @@ Le applicazioni avviate dai selettori mostrano il progresso nel selettore, senza
 `argvus-lifecycle` · `SUPER + Esc`
 
 `argvus lock` · Hyprlock
+
+ARGVUS Lifecycle segue il raggio effettivo degli angoli e la sfocatura globale di Hyprland. Usa sempre una dissolvenza quando le animazioni sono attive.

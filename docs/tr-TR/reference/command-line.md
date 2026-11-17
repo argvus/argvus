@@ -147,3 +147,5 @@ Tema ve mod seçicileri oturum açılış ekranı olmadan ilerlemeyi kendi pence
 `argvus-lifecycle` · `SUPER + Esc`
 
 `argvus lock` · Hyprlock
+
+ARGVUS Lifecycle, etkin pencere köşe yarıçapını ve Hyprland genel bulanıklık ayarlarını izler. Animasyonlar açıkken her zaman solma geçişini kullanır.

@@ -146,3 +146,5 @@ argvus setup --copy <app> --dry-run
 `argvus-lifecycle` · `SUPER + Esc`
 
 `argvus lock` · Hyprlock
+
+ARGVUS Lifecycle использует действующий радиус скругления окон и глобальное размытие Hyprland. При включённых анимациях используется плавное появление и исчезновение.

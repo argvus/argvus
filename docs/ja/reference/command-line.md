@@ -146,3 +146,5 @@ argvus setup --copy <app> --dry-run
 `argvus-lifecycle` · `SUPER + Esc`
 
 `argvus lock` · Hyprlock
+
+ARGVUS Lifecycle はウィンドウの有効な角丸半径と Hyprland の全体ぼかし設定に従います。アニメーションが有効な場合は常にフェードします。

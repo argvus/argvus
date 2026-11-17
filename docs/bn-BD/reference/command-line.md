@@ -130,3 +130,5 @@ argvus setup --copy <app> --dry-run
 `argvus-lifecycle` · `SUPER + Esc`
 
 `argvus lock` · Hyprlock
+
+ARGVUS Lifecycle উইন্ডোর কার্যকর কোণের ব্যাসার্ধ এবং Hyprland-এর বৈশ্বিক ব্লার সেটিং অনুসরণ করে। অ্যানিমেশন চালু থাকলে সব সময় ফেড ব্যবহার করে।

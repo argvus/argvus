@@ -146,3 +146,5 @@ Die Auswahlfenster zeigen den Fortschritt ohne Ladebildschirm der Sitzung. Modus
 `argvus-lifecycle` · `SUPER + Esc`
 
 `argvus lock` · Hyprlock
+
+ARGVUS Lifecycle übernimmt den wirksamen Eckenradius und die globale Unschärfe von Hyprland. Bei aktivierten Animationen verwendet es immer eine Überblendung.
