@@ -2240,5 +2240,10 @@
   "control_center.launcher_search": "Запуск и поиск",
   "control_center.launcher_hints": "↑↓ Навигация · Enter Выбрать/Добавить · Delete Удалить · Ctrl+↑↓ Порядок · F5 Обновить · Esc Назад",
   "control_center.launcher_favorite": "Избранное",
-  "control_center.launcher_icons": "Иконки"
+  "control_center.launcher_icons": "Иконки",
+  "control_center.launcher_open_now": "Открыты сейчас",
+  "control_center.launcher_clear_usage": "Очистить историю использования приложений",
+  "control_center.launcher_application_order": "Порядок приложений",
+  "control_center.launcher_sort_alphabetical": "По алфавиту (А–Я)",
+  "control_center.launcher_sort_recent": "Недавно открытые"
 }

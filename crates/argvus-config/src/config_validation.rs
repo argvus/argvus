@@ -730,7 +730,10 @@ pub(super) fn validate_launcher(document: &ConfigDocument) -> ConfigResult<()> {
       "selected_category" => value
         .as_str()
         .is_some_and(|s| s.is_empty() || sources.contains(&s)),
-      "show_icons" => value.is_boolean(),
+      "application_sort" => value
+        .as_str()
+        .is_some_and(|sort| matches!(sort, "alphabetical" | "recent")),
+      "show_icons" | "show_open_now" => value.is_boolean(),
       "recent_files" | "index_enabled" | "index_paused" | "include_hidden" | "reduced_motion" => {
         value.is_boolean()
       }

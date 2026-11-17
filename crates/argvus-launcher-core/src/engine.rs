@@ -333,6 +333,16 @@ fn serve() -> Result<(), String> {
                 }
               },
               Action::Application(_) | Action::Window(_) => {
+                let application_id = match &entry.action {
+                  Action::Application(id) => Some(id.as_str()),
+                  Action::Window(_) if !entry.usage_id.is_empty() => Some(entry.usage_id.as_str()),
+                  _ => None,
+                };
+                if let Some(application_id) = application_id
+                  && let Err(error) = crate::usage::record(application_id)
+                {
+                  eprintln!("launcher usage history: {error}");
+                }
                 emit(json!({"event":"activate","action":entry.action}));
                 redraw = false;
               }
@@ -363,7 +373,17 @@ fn serve() -> Result<(), String> {
         };
       } else {
         let entries: Vec<_> = sources.values().flatten().cloned().collect();
-        visible = search::rank(&entries, &current.query, &current.category, &settings);
+        let recent_order = crate::usage::recent_order().unwrap_or_else(|error| {
+          eprintln!("launcher usage history: {error}");
+          Vec::new()
+        });
+        visible = search::rank_with_recent_order(
+          &entries,
+          &current.query,
+          &current.category,
+          &settings,
+          &recent_order,
+        );
       }
       response(current.sequence, &visible, None);
     }

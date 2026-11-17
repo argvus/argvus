@@ -14,6 +14,14 @@ pub const SOURCES: [&str; 8] = [
   "help",
 ];
 
+#[derive(Debug, Clone, Copy, Default, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "snake_case")]
+pub enum ApplicationSort {
+  Alphabetical,
+  #[default]
+  Recent,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(default, deny_unknown_fields)]
 pub struct Settings {
@@ -28,6 +36,8 @@ pub struct Settings {
   pub exclusions: Vec<PathBuf>,
   pub reduced_motion: bool,
   pub show_icons: bool,
+  pub show_open_now: bool,
+  pub application_sort: ApplicationSort,
   pub selected_category: String,
 }
 
@@ -44,6 +54,8 @@ impl Default for Settings {
       exclusions: Vec::new(),
       reduced_motion: false,
       show_icons: true,
+      show_open_now: false,
+      application_sort: ApplicationSort::default(),
       selected_category: String::new(),
     }
   }
@@ -152,6 +164,8 @@ mod tests {
     let initial = Settings::default();
     let mut files = initial.clone();
     files.index_enabled = true;
+    files.show_open_now = true;
+    files.application_sort = ApplicationSort::Alphabetical;
     files.save_changes_at(&initial, &store).unwrap();
     let mut favorites = initial.clone();
     favorites.favorites.push("app:example.desktop".into());
@@ -165,11 +179,21 @@ mod tests {
       document.get("/launcher/favorites"),
       Some(&serde_json::json!(["app:example.desktop"]))
     );
+    assert_eq!(
+      document.get("/launcher/show_open_now"),
+      Some(&serde_json::json!(true))
+    );
+    assert_eq!(
+      document.get("/launcher/application_sort"),
+      Some(&serde_json::json!("alphabetical"))
+    );
   }
   #[test]
   fn appearance_and_category_defaults_and_validation() {
     let mut settings: Settings = serde_json::from_str("{}").unwrap();
     assert!(settings.show_icons);
+    assert!(!settings.show_open_now);
+    assert_eq!(settings.application_sort, ApplicationSort::Recent);
     assert!(settings.selected_category.is_empty());
     settings.selected_category = "applications".into();
     assert!(settings.validate().is_ok());

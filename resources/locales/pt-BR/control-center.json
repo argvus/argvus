@@ -2240,5 +2240,10 @@
   "control_center.launcher_search": "Launcher e Pesquisa",
   "control_center.launcher_hints": "↑↓ Navegar · Enter Alternar/Adicionar · Delete Remover · Ctrl+↑↓ Reordenar · F5 Atualizar · Esc Voltar",
   "control_center.launcher_favorite": "Favoritos",
-  "control_center.launcher_icons": "Ícones"
+  "control_center.launcher_icons": "Ícones",
+  "control_center.launcher_open_now": "Open now",
+  "control_center.launcher_clear_usage": "Limpar histórico de uso dos aplicativos",
+  "control_center.launcher_application_order": "Ordem dos aplicativos",
+  "control_center.launcher_sort_alphabetical": "A–Z",
+  "control_center.launcher_sort_recent": "Abertos recentemente"
 }

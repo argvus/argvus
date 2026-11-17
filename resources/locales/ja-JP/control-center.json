@@ -2240,5 +2240,10 @@
   "control_center.launcher_search": "ランチャーと検索",
   "control_center.launcher_hints": "↑↓ 移動 · Enter 切替/追加 · Delete 削除 · Ctrl+↑↓ 並替 · F5 更新 · Esc 戻る",
   "control_center.launcher_favorite": "お気に入り",
-  "control_center.launcher_icons": "アイコン"
+  "control_center.launcher_icons": "アイコン",
+  "control_center.launcher_open_now": "現在開いている",
+  "control_center.launcher_clear_usage": "アプリの使用履歴を消去",
+  "control_center.launcher_application_order": "アプリの並び順",
+  "control_center.launcher_sort_alphabetical": "アルファベット順 (A–Z)",
+  "control_center.launcher_sort_recent": "最近開いた順"
 }

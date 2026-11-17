@@ -2240,5 +2240,10 @@
   "control_center.launcher_search": "Trình khởi chạy và tìm kiếm",
   "control_center.launcher_hints": "↑↓ Di chuyển · Enter Đổi/Thêm · Delete Xóa · Ctrl+↑↓ Sắp xếp · F5 Làm mới · Esc Quay lại",
   "control_center.launcher_favorite": "Yêu thích",
-  "control_center.launcher_icons": "Biểu tượng"
+  "control_center.launcher_icons": "Biểu tượng",
+  "control_center.launcher_open_now": "Đang mở",
+  "control_center.launcher_clear_usage": "Xóa lịch sử sử dụng ứng dụng",
+  "control_center.launcher_application_order": "Thứ tự ứng dụng",
+  "control_center.launcher_sort_alphabetical": "Theo bảng chữ cái (A–Z)",
+  "control_center.launcher_sort_recent": "Mới mở gần đây"
 }

@@ -2240,5 +2240,10 @@
   "control_center.launcher_search": "Starter und Suche",
   "control_center.launcher_hints": "↑↓ Navigieren · Enter Umschalten/Hinzufügen · Delete Entfernen · Ctrl+↑↓ Sortieren · F5 Aktualisieren · Esc Zurück",
   "control_center.launcher_favorite": "Favoriten",
-  "control_center.launcher_icons": "Symbole"
+  "control_center.launcher_icons": "Symbole",
+  "control_center.launcher_open_now": "Jetzt geöffnet",
+  "control_center.launcher_clear_usage": "App-Nutzungsverlauf löschen",
+  "control_center.launcher_application_order": "App-Reihenfolge",
+  "control_center.launcher_sort_alphabetical": "Alphabetisch (A–Z)",
+  "control_center.launcher_sort_recent": "Zuletzt geöffnet"
 }

@@ -569,7 +569,7 @@ Control Center 将检查数据库保存在 `$XDG_CACHE_HOME/argvus/control-cente
 
 ## 启动器与搜索
 
-主启动器采用 Quickshell/QML 和本地 Rust 搜索引擎，可查找应用、窗口、设置、操作、项目、SSH 主机、文件和快捷键。文件索引默认关闭，需明确选择文件夹。仅索引名称和路径，不读取文档内容。最近文件来自 XDG 记录。默认排除隐藏文件，不跟随目录符号链接。专用 Rofi 菜单继续可用。 打开启动器时，已打开的窗口会优先显示在“当前打开”分组中。已保存的类别仍会筛选其他结果；如要隐藏此分组，请在搜索设置中关闭 Windows 来源。
+主启动器采用 Quickshell/QML 和本地 Rust 搜索引擎，可查找应用、窗口、设置、操作、项目、SSH 主机、文件和快捷键。文件索引默认关闭，需明确选择文件夹。仅索引名称和路径，不读取文档内容。最近文件来自 XDG 记录。默认排除隐藏文件，不跟随目录符号链接。专用 Rofi 菜单继续可用。 在 Launcher and Search 中可选择按 A–Z 或最近打开排序；默认使用最近打开。**当前打开**默认关闭。在 Control Center > Preferences > Launcher and Search 中启用后，空查询时会显示当前窗口。你也可以在同一页面清除应用使用记录。
 
 `argvus launcher` · `argvus control-center launcher`
 

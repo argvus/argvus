@@ -2240,5 +2240,10 @@
   "control_center.launcher_search": "لانچر اور تلاش",
   "control_center.launcher_hints": "↑↓ حرکت · Enter بدلیں/شامل · Delete ہٹائیں · Ctrl+↑↓ ترتیب · F5 تازہ · Esc واپس",
   "control_center.launcher_favorite": "پسندیدہ",
-  "control_center.launcher_icons": "نام"
+  "control_center.launcher_icons": "نام",
+  "control_center.launcher_open_now": "ابھی کھلی ہوئی",
+  "control_center.launcher_clear_usage": "ایپ کے استعمال کی تاریخ صاف کریں",
+  "control_center.launcher_application_order": "ایپس کی ترتیب",
+  "control_center.launcher_sort_alphabetical": "حروفِ تہجی کے مطابق (A–Z)",
+  "control_center.launcher_sort_recent": "حال ہی میں کھولی گئی"
 }

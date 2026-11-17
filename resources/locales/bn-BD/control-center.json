@@ -2240,5 +2240,10 @@
   "control_center.launcher_search": "লঞ্চার ও অনুসন্ধান",
   "control_center.launcher_hints": "↑↓ চলুন · Enter বদলান/যোগ · Delete সরান · Ctrl+↑↓ সাজান · F5 হালনাগাদ · Esc ফিরুন",
   "control_center.launcher_favorite": "প্রিয়",
-  "control_center.launcher_icons": "আইকন"
+  "control_center.launcher_icons": "আইকন",
+  "control_center.launcher_open_now": "এখন খোলা",
+  "control_center.launcher_clear_usage": "অ্যাপ ব্যবহারের ইতিহাস মুছুন",
+  "control_center.launcher_application_order": "অ্যাপ সাজানোর ক্রম",
+  "control_center.launcher_sort_alphabetical": "বর্ণানুক্রমে (A–Z)",
+  "control_center.launcher_sort_recent": "সম্প্রতি খোলা"
 }

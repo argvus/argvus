@@ -2240,5 +2240,10 @@
   "control_center.launcher_search": "المشغّل والبحث",
   "control_center.launcher_hints": "↑↓ تنقل · Enter تبديل/إضافة · Delete حذف · Ctrl+↑↓ ترتيب · F5 تحديث · Esc رجوع",
   "control_center.launcher_favorite": "المفضلة",
-  "control_center.launcher_icons": "Icons"
+  "control_center.launcher_icons": "Icons",
+  "control_center.launcher_open_now": "فتح الآن",
+  "control_center.launcher_clear_usage": "مسح سجل استخدام التطبيقات",
+  "control_center.launcher_application_order": "ترتيب التطبيقات",
+  "control_center.launcher_sort_alphabetical": "أبجديًا (A–Z)",
+  "control_center.launcher_sort_recent": "المفتوحة مؤخرًا"
 }

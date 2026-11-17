@@ -2240,5 +2240,10 @@
   "control_center.launcher_search": "लॉन्चर और खोज",
   "control_center.launcher_hints": "↑↓ नेविगेट · Enter बदलें/जोड़ें · Delete हटाएँ · Ctrl+↑↓ क्रम · F5 ताज़ा · Esc वापस",
   "control_center.launcher_favorite": "पसंदीदा",
-  "control_center.launcher_icons": "प्रतीक"
+  "control_center.launcher_icons": "प्रतीक",
+  "control_center.launcher_open_now": "अभी खुले",
+  "control_center.launcher_clear_usage": "ऐप उपयोग इतिहास मिटाएँ",
+  "control_center.launcher_application_order": "ऐप क्रम",
+  "control_center.launcher_sort_alphabetical": "वर्णानुक्रम (A–Z)",
+  "control_center.launcher_sort_recent": "हाल ही में खोले गए"
 }

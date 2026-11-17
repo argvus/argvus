@@ -2240,5 +2240,10 @@
   "control_center.launcher_search": "启动器与搜索",
   "control_center.launcher_hints": "↑↓ 导航 · Enter 切换/添加 · Delete 删除 · Ctrl+↑↓ 排序 · F5 刷新 · Esc 返回",
   "control_center.launcher_favorite": "收藏",
-  "control_center.launcher_icons": "图标"
+  "control_center.launcher_icons": "图标",
+  "control_center.launcher_open_now": "当前打开",
+  "control_center.launcher_clear_usage": "清除应用使用记录",
+  "control_center.launcher_application_order": "应用排序方式",
+  "control_center.launcher_sort_alphabetical": "按字母顺序 (A–Z)",
+  "control_center.launcher_sort_recent": "最近打开"
 }

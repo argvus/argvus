@@ -2240,5 +2240,10 @@
   "control_center.launcher_search": "Lanceur et recherche",
   "control_center.launcher_hints": "↑↓ Naviguer · Enter Basculer/Ajouter · Delete Supprimer · Ctrl+↑↓ Réordonner · F5 Actualiser · Esc Retour",
   "control_center.launcher_favorite": "Favoris",
-  "control_center.launcher_icons": "Icônes"
+  "control_center.launcher_icons": "Icônes",
+  "control_center.launcher_open_now": "Ouvertes maintenant",
+  "control_center.launcher_clear_usage": "Effacer l’historique d’utilisation des applications",
+  "control_center.launcher_application_order": "Ordre des applications",
+  "control_center.launcher_sort_alphabetical": "Alphabétique (A–Z)",
+  "control_center.launcher_sort_recent": "Ouvertes récemment"
 }

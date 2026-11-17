@@ -2240,5 +2240,10 @@
   "control_center.launcher_search": "Başlatıcı ve Arama",
   "control_center.launcher_hints": "↑↓ Gezin · Enter Değiştir/Ekle · Delete Kaldır · Ctrl+↑↓ Sırala · F5 Yenile · Esc Geri",
   "control_center.launcher_favorite": "Favoriler",
-  "control_center.launcher_icons": "Icons"
+  "control_center.launcher_icons": "Icons",
+  "control_center.launcher_open_now": "Şu anda açık",
+  "control_center.launcher_clear_usage": "Uygulama kullanım geçmişini temizle",
+  "control_center.launcher_application_order": "Uygulama sıralaması",
+  "control_center.launcher_sort_alphabetical": "Alfabetik (A–Z)",
+  "control_center.launcher_sort_recent": "Son açılanlar"
 }

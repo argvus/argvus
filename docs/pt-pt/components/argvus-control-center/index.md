@@ -686,7 +686,7 @@ O Control Center mantém a base de consulta de atualizações em `$XDG_CACHE_HOM
 
 ## Launcher e Pesquisa
 
-O launcher principal usa Quickshell/QML com um motor local de pesquisa em Rust. Pesquisa aplicações, janelas abertas, definições, ações, projetos, hosts SSH, ficheiros e atalhos. A indexação começa desativada; escolha as pastas explicitamente. Apenas nomes e caminhos são indexados, nunca o conteúdo dos documentos. Ficheiros recentes dependem do registo XDG. Ficheiros ocultos são excluídos por predefinição e ligações simbólicas de diretórios não são seguidas. Os menus especializados do Rofi continuam disponíveis. Ao abrir o launcher, as janelas abertas surgem primeiro em “Abertas agora”. A categoria guardada continua a filtrar os restantes resultados; desative a origem Windows nas definições de pesquisa para ocultar este grupo.
+O launcher principal usa Quickshell/QML com um motor local de pesquisa em Rust. Pesquisa aplicações, janelas abertas, definições, ações, projetos, hosts SSH, ficheiros e atalhos. A indexação começa desativada; escolha as pastas explicitamente. Apenas nomes e caminhos são indexados, nunca o conteúdo dos documentos. Ficheiros recentes dependem do registo XDG. Ficheiros ocultos são excluídos por predefinição e ligações simbólicas de diretórios não são seguidas. Os menus especializados do Rofi continuam disponíveis. Em Launcher and Search, escolha a ordem A–Z ou Abertas recentemente; Abertas recentemente é a predefinição. **Abertas agora** está desativado por predefinição; ative em Control Center > Preferences > Launcher and Search para mostrar as janelas atuais quando a pesquisa estiver vazia. O histórico de utilização pode ser limpo nessa mesma página.
 
 `argvus launcher` · `argvus control-center launcher`
 

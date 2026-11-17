@@ -69,6 +69,7 @@ pub fn settings() -> Result<Vec<Entry>, String> {
           icon: "preferences-system".into(),
           keywords,
           is_active: false,
+          usage_id: String::new(),
           action: if id.starts_with("shortcut:") {
             Action::Help
           } else {
@@ -97,6 +98,7 @@ pub fn projects() -> Result<Vec<Entry>, String> {
         icon: "folder-development".into(),
         keywords: vec![],
         is_active: false,
+        usage_id: String::new(),
         action: Action::Project(path.into()),
       })
       .collect(),
@@ -115,6 +117,7 @@ pub fn ssh() -> Result<Vec<Entry>, String> {
         icon: "network-server".into(),
         keywords: vec!["ssh".into()],
         is_active: false,
+        usage_id: String::new(),
         action: Action::Ssh(host.into()),
       })
       .collect(),
@@ -134,6 +137,7 @@ pub fn builtin() -> Vec<Entry> {
         .map(str::to_owned)
         .collect(),
       is_active: false,
+      usage_id: String::new(),
       action: Action::AudioOutputs,
     },
     Entry {
@@ -147,6 +151,7 @@ pub fn builtin() -> Vec<Entry> {
         .map(str::to_owned)
         .collect(),
       is_active: false,
+      usage_id: String::new(),
       action: Action::Help,
     },
   ]
@@ -167,6 +172,7 @@ pub fn audio_outputs() -> Result<Vec<Entry>, String> {
         icon: "audio-speakers".into(),
         keywords: Vec::new(),
         is_active: false,
+        usage_id: String::new(),
         action: Action::AudioOutput(device.id.to_string()),
       })
       .collect(),

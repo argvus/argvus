@@ -2240,5 +2240,10 @@
   "control_center.launcher_search": "Peluncur dan Pencarian",
   "control_center.launcher_hints": "↑↓ Navigasi · Enter Alih/Tambah · Delete Hapus · Ctrl+↑↓ Urutkan · F5 Segarkan · Esc Kembali",
   "control_center.launcher_favorite": "Favorit",
-  "control_center.launcher_icons": "Ikon"
+  "control_center.launcher_icons": "Ikon",
+  "control_center.launcher_open_now": "Sedang dibuka",
+  "control_center.launcher_clear_usage": "Hapus riwayat penggunaan aplikasi",
+  "control_center.launcher_application_order": "Urutan aplikasi",
+  "control_center.launcher_sort_alphabetical": "Alfabetis (A–Z)",
+  "control_center.launcher_sort_recent": "Baru dibuka"
 }

@@ -1,5 +1,5 @@
 //! Pure ranking and typed activation targets. No user text is evaluated as shell.
-use crate::settings::Settings;
+use crate::settings::{ApplicationSort, Settings};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
@@ -30,6 +30,8 @@ pub struct Entry {
   pub keywords: Vec<String>,
   #[serde(default)]
   pub is_active: bool,
+  #[serde(default)]
+  pub usage_id: String,
   pub action: Action,
 }
 
@@ -92,24 +94,45 @@ fn score(entry: &Entry, query: &str) -> Option<u8> {
 }
 
 pub fn rank(entries: &[Entry], query: &str, category: &str, settings: &Settings) -> Vec<Entry> {
+  rank_with_recent_order(entries, query, category, settings, &[])
+}
+
+pub(crate) fn rank_with_recent_order(
+  entries: &[Entry],
+  query: &str,
+  category: &str,
+  settings: &Settings,
+  recent_order: &[String],
+) -> Vec<Entry> {
   let query = normalize(query);
   let is_initial_query = query.is_empty();
   let mut seen = std::collections::HashSet::new();
   let mut matches: Vec<_> = entries
     .iter()
     .filter(|entry| {
-      // Open windows are landing suggestions independent of the saved category,
-      // while the source toggle above remains authoritative.
-      let is_open_window = is_initial_query && entry.category == "windows";
+      // Open now suggestions ignore the saved category only when explicitly enabled.
+      let is_open_window = is_initial_query
+        && settings.show_open_now
+        && category != "windows"
+        && entry.category == "windows";
       settings.enabled(&entry.category)
         && (category.is_empty() || entry.category == category || is_open_window)
+        && (entry.category != "windows"
+          || !is_initial_query
+          || category == "windows"
+          || is_open_window)
         && seen.insert(&entry.id)
     })
     .filter_map(|entry| {
       let favorite = settings.favorites.contains(&entry.id);
+      let is_open_window = is_initial_query
+        && settings.show_open_now
+        && category != "windows"
+        && entry.category == "windows";
       let rank = if query.is_empty() {
         if category.is_empty()
-          && !matches!(entry.category.as_str(), "applications" | "windows")
+          && !matches!(entry.category.as_str(), "applications")
+          && !is_open_window
           && !favorite
         {
           return None;
@@ -123,28 +146,74 @@ pub fn rank(entries: &[Entry], query: &str, category: &str, settings: &Settings)
         .iter()
         .position(|source| source == &entry.category)
         .unwrap_or(usize::MAX);
-      let window_priority = usize::from(is_initial_query && entry.category != "windows");
-      let active_priority =
-        usize::from(!(is_initial_query && entry.category == "windows" && entry.is_active));
-      Some((
+      let window_priority = usize::from(
+        is_initial_query
+          && settings.show_open_now
+          && category != "windows"
+          && entry.category != "windows",
+      );
+      let active_priority = usize::from(
+        !(is_initial_query
+          && settings.show_open_now
+          && entry.category == "windows"
+          && entry.is_active),
+      );
+      let application_order = (entry.category == "applications").then(|| {
+        let recent_position = match &entry.action {
+          Action::Application(id) => recent_order
+            .iter()
+            .position(|recent_id| recent_id == id)
+            .unwrap_or(usize::MAX),
+          _ => usize::MAX,
+        };
+        let title = normalize(&entry.title);
+        match settings.application_sort {
+          ApplicationSort::Alphabetical => (0, title),
+          ApplicationSort::Recent => (recent_position, title),
+        }
+      });
+      Some(RankedEntry {
         rank,
         window_priority,
         active_priority,
-        !favorite,
+        application_order,
+        favorite,
         priority,
+        title: normalize(&entry.title),
         entry,
-      ))
+      })
     })
     .collect();
   matches.sort_by(|a, b| {
-    (a.0, a.1, a.2, a.3, a.4, &a.5.title, &a.5.id)
-      .cmp(&(b.0, b.1, b.2, b.3, b.4, &b.5.title, &b.5.id))
+    (a.rank, a.window_priority, a.active_priority)
+      .cmp(&(b.rank, b.window_priority, b.active_priority))
+      .then_with(|| a.priority.cmp(&b.priority))
+      .then_with(|| a.application_order.cmp(&b.application_order))
+      .then_with(|| {
+        (!a.favorite, a.priority, &a.title, &a.entry.id).cmp(&(
+          !b.favorite,
+          b.priority,
+          &b.title,
+          &b.entry.id,
+        ))
+      })
   });
   matches
     .into_iter()
     .take(100)
-    .map(|(_, _, _, _, _, entry)| entry.clone())
+    .map(|ranked| ranked.entry.clone())
     .collect()
+}
+
+struct RankedEntry<'a> {
+  rank: u8,
+  window_priority: usize,
+  active_priority: usize,
+  application_order: Option<(usize, String)>,
+  favorite: bool,
+  priority: usize,
+  title: String,
+  entry: &'a Entry,
 }
 
 #[cfg(test)]
@@ -159,6 +228,7 @@ mod tests {
       icon: String::new(),
       keywords: vec!["internet sem acesso".into()],
       is_active: false,
+      usage_id: String::new(),
       action: Action::Configure,
     }
   }
@@ -187,7 +257,7 @@ mod tests {
   }
 
   #[test]
-  fn initial_results_show_active_windows_before_the_saved_category() {
+  fn open_now_is_disabled_by_default_and_can_be_enabled() {
     let mut active_window = entry("window:1", "Editor: notes.md");
     active_window.category = "windows".into();
     active_window.is_active = true;
@@ -205,11 +275,26 @@ mod tests {
     application.category = "applications".into();
     application.action = Action::Application("editor.desktop".into());
 
+    let mut settings = Settings::default();
+    let default_results = rank(
+      &[
+        application.clone(),
+        last_window.clone(),
+        other_window.clone(),
+        active_window.clone(),
+      ],
+      "",
+      "applications",
+      &settings,
+    );
+    assert_eq!(default_results.len(), 1);
+    assert_eq!(default_results[0].id, "app:editor");
+    settings.show_open_now = true;
     let results = rank(
       &[application, last_window, other_window, active_window],
       "",
       "applications",
-      &Settings::default(),
+      &settings,
     );
 
     assert_eq!(
@@ -222,7 +307,7 @@ mod tests {
   }
 
   #[test]
-  fn initial_all_category_keeps_windows_ahead_of_applications() {
+  fn initial_all_category_hides_windows_when_open_now_is_disabled() {
     let mut window = entry("window:1", "Browser: docs");
     window.category = "windows".into();
     window.action = Action::Window("1".into());
@@ -232,8 +317,8 @@ mod tests {
 
     let results = rank(&[application, window], "", "", &Settings::default());
 
-    assert_eq!(results[0].id, "window:1");
-    assert_eq!(results[1].id, "app:browser");
+    assert_eq!(results.len(), 1);
+    assert_eq!(results[0].id, "app:browser");
   }
 
   #[test]
@@ -267,5 +352,60 @@ mod tests {
     };
 
     assert!(rank(&[window], "", "applications", &settings).is_empty());
+  }
+
+  #[test]
+  fn application_order_supports_recent_and_alphabetical_modes() {
+    let mut browser = entry("app:browser", "Browser");
+    browser.category = "applications".into();
+    browser.keywords.push("suite".into());
+    browser.action = Action::Application("browser.desktop".into());
+    let mut editor = entry("app:editor", "Editor");
+    editor.category = "applications".into();
+    editor.keywords.push("suite".into());
+    editor.action = Action::Application("editor.desktop".into());
+    let recent_order = vec!["editor.desktop".into(), "browser.desktop".into()];
+    let results = rank_with_recent_order(
+      &[editor.clone(), browser.clone()],
+      "",
+      "applications",
+      &Settings::default(),
+      &recent_order,
+    );
+    assert_eq!(results[0].id, "app:editor");
+    let query_results = rank_with_recent_order(
+      &[editor.clone(), browser.clone()],
+      "suite",
+      "applications",
+      &Settings::default(),
+      &recent_order,
+    );
+    assert_eq!(query_results[0].id, "app:editor");
+    let alphabetical = Settings {
+      application_sort: ApplicationSort::Alphabetical,
+      ..Settings::default()
+    };
+    let alphabetical_results = rank_with_recent_order(
+      &[editor, browser],
+      "",
+      "applications",
+      &alphabetical,
+      &recent_order,
+    );
+    assert_eq!(alphabetical_results[0].id, "app:browser");
+  }
+
+  #[test]
+  fn all_search_includes_windows_and_keeps_category_order_stable() {
+    let mut window = entry("window:1", "Editor window");
+    window.category = "windows".into();
+    window.action = Action::Window("1".into());
+    let mut application = entry("app:editor", "Editor application");
+    application.category = "applications".into();
+    application.action = Action::Application("editor.desktop".into());
+    let results = rank(&[window, application], "editor", "", &Settings::default());
+    assert_eq!(results.len(), 2);
+    assert_eq!(results[0].category, "applications");
+    assert_eq!(results[1].category, "windows");
   }
 }

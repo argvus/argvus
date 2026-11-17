@@ -18,5 +18,7 @@
   "exclusions": [],
   "reduced_motion": false,
   "show_icons": true,
+  "show_open_now": false,
+  "application_sort": "recent",
   "selected_category": ""
 }

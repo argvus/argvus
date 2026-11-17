@@ -687,7 +687,7 @@ The Control Center keeps its update-check database in `$XDG_CACHE_HOME/argvus/co
 
 ## Launcher and Search
 
-The main launcher uses Quickshell/QML with a local Rust search engine. It searches applications, open windows, settings, actions, projects, SSH hosts, files and shortcuts. File indexing starts disabled; select folders explicitly. Only names and paths are indexed, never document contents. Recent files depend on the XDG recent-file registry. Hidden files are excluded by default, and directory symlinks are not followed. Specialized Rofi menus remain available. When the launcher opens, open windows appear first under “Open now.” The saved category continues to filter other results; disable the Windows source in search settings to hide this group.
+The main launcher uses Quickshell/QML with a local Rust search engine. It searches applications, open windows, settings, actions, projects, SSH hosts, files and shortcuts. File indexing starts disabled; select folders explicitly. Only names and paths are indexed, never document contents. Recent files depend on the XDG recent-file registry. Hidden files are excluded by default, and directory symlinks are not followed. Specialized Rofi menus remain available. In Launcher and Search, choose A–Z or Recently opened; Recently opened is the default. **Open now** is off by default; enable it in Control Center > Preferences > Launcher and Search to show current windows when the query is empty. Clear application usage history from the same page.
 
 `argvus launcher` · `argvus control-center launcher`
 

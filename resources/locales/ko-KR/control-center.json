@@ -2240,5 +2240,10 @@
   "control_center.launcher_search": "실행기 및 검색",
   "control_center.launcher_hints": "↑↓ 이동 · Enter 전환/추가 · Delete 삭제 · Ctrl+↑↓ 순서 · F5 새로고침 · Esc 뒤로",
   "control_center.launcher_favorite": "즐겨찾기",
-  "control_center.launcher_icons": "아이콘"
+  "control_center.launcher_icons": "아이콘",
+  "control_center.launcher_open_now": "현재 열림",
+  "control_center.launcher_clear_usage": "앱 사용 기록 지우기",
+  "control_center.launcher_application_order": "앱 정렬 순서",
+  "control_center.launcher_sort_alphabetical": "가나다순 (A–Z)",
+  "control_center.launcher_sort_recent": "최근 열림"
 }

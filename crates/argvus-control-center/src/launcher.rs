@@ -1,6 +1,6 @@
 //! Launcher preferences: asynchronous canonical persistence and explicit file roots.
 use argvus_i18n::{Lang, tr};
-use argvus_launcher_core::settings::{SOURCES, Settings};
+use argvus_launcher_core::settings::{ApplicationSort, SOURCES, Settings};
 use argvus_theme::Theme;
 use argvus_tui::page::{list, shell};
 use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
@@ -15,6 +15,8 @@ use std::sync::mpsc::{self, Receiver};
 enum Row {
   AppearanceHeading,
   Source(String),
+  ApplicationOrder,
+  OpenNow,
   Recent,
   Index,
   Pause,
@@ -28,6 +30,13 @@ enum Row {
   AddExclude,
   Rebuild,
   Clear,
+  ClearUsage,
+}
+#[derive(Clone, Copy)]
+enum Operation {
+  Save,
+  RebuildIndex,
+  ClearUsage,
 }
 enum Work {
   Loaded(Settings, (usize, u64)),
@@ -48,9 +57,9 @@ impl LauncherPage {
   pub fn open(&mut self) {
     self.selected = 0;
     self.editing = None;
-    self.start(None, false);
+    self.start(None, Operation::Save);
   }
-  fn start(&mut self, settings: Option<Settings>, clear: bool) {
+  fn start(&mut self, settings: Option<Settings>, operation: Operation) {
     if self.receiver.is_some() {
       return;
     }
@@ -67,8 +76,10 @@ impl LauncherPage {
             settings.save()?;
           }
         }
-        if clear {
-          argvus_launcher_core::rebuild_index()?;
+        match operation {
+          Operation::Save => {}
+          Operation::RebuildIndex => argvus_launcher_core::rebuild_index()?,
+          Operation::ClearUsage => argvus_launcher_core::clear_usage_history()?,
         }
         Ok::<_, String>((Settings::load()?, argvus_launcher_core::index_status()))
       })();
@@ -141,6 +152,26 @@ impl LauncherPage {
         (Row::Source(source), title)
       })
       .collect();
+    let application_sort = match settings.application_sort {
+      ApplicationSort::Alphabetical => "control_center.launcher_sort_alphabetical",
+      ApplicationSort::Recent => "control_center.launcher_sort_recent",
+    };
+    rows.push((
+      Row::ApplicationOrder,
+      format!(
+        "{}: {}",
+        tr(lang, "control_center.launcher_application_order"),
+        tr(lang, application_sort)
+      ),
+    ));
+    rows.push((
+      Row::OpenNow,
+      format!(
+        "[{}] {}",
+        if settings.show_open_now { "x" } else { " " },
+        tr(lang, "control_center.launcher_open_now")
+      ),
+    ));
     for (row, key, enabled) in [
       (Row::Recent, "recent", settings.recent_files),
       (Row::Index, "index", settings.index_enabled),
@@ -194,6 +225,7 @@ impl LauncherPage {
     }
     rows.push((Row::Rebuild, text("control_center.launcher_rebuild")));
     rows.push((Row::Clear, text("control_center.launcher_clear")));
+    rows.push((Row::ClearUsage, text("control_center.launcher_clear_usage")));
     rows
   }
   pub fn handle(&mut self, key: KeyEvent, lang: Lang) -> bool {
@@ -224,7 +256,7 @@ impl LauncherPage {
             paths.push(path);
           }
           self.editing = None;
-          self.start(Some(settings), false);
+          self.start(Some(settings), Operation::Save);
         }
         _ => {}
       }
@@ -263,7 +295,7 @@ impl LauncherPage {
         };
         settings.sources.swap(index, next);
         self.selected = next;
-        self.start(Some(settings), false);
+        self.start(Some(settings), Operation::Save);
       }
       return false;
     }
@@ -285,6 +317,13 @@ impl LauncherPage {
           Row::Hidden => settings.include_hidden = !settings.include_hidden,
           Row::Motion => settings.reduced_motion = !settings.reduced_motion,
           Row::Icons => settings.show_icons = !settings.show_icons,
+          Row::OpenNow => settings.show_open_now = !settings.show_open_now,
+          Row::ApplicationOrder => {
+            settings.application_sort = match settings.application_sort {
+              ApplicationSort::Alphabetical => ApplicationSort::Recent,
+              ApplicationSort::Recent => ApplicationSort::Alphabetical,
+            };
+          }
           Row::AddRoot => {
             self.editing = Some((false, String::new()));
             return false;
@@ -296,17 +335,21 @@ impl LauncherPage {
           Row::Rebuild => {
             settings.index_enabled = true;
             settings.index_paused = false;
-            self.start(Some(settings), true);
+            self.start(Some(settings), Operation::RebuildIndex);
             return false;
           }
           Row::Clear => {
             settings.index_paused = true;
-            self.start(Some(settings), true);
+            self.start(Some(settings), Operation::RebuildIndex);
+            return false;
+          }
+          Row::ClearUsage => {
+            self.start(None, Operation::ClearUsage);
             return false;
           }
           _ => return false,
         }
-        self.start(Some(settings), false);
+        self.start(Some(settings), Operation::Save);
       }
       KeyCode::Delete => {
         match row {
@@ -322,7 +365,7 @@ impl LauncherPage {
           _ => return false,
         }
         self.selected = self.selected.saturating_sub(1);
-        self.start(Some(settings), false);
+        self.start(Some(settings), Operation::Save);
       }
       KeyCode::F(5) => self.open(),
       _ => {}
@@ -431,5 +474,24 @@ mod tests {
         ..
       }
     )));
+  }
+
+  #[test]
+  fn launcher_search_preferences_include_open_now_and_application_order() {
+    let page = LauncherPage {
+      settings: Some(Settings::default()),
+      ..LauncherPage::default()
+    };
+
+    let rows = page.rows(Lang::for_locale("en-US"));
+
+    assert!(
+      rows
+        .iter()
+        .any(|(row, label)| { matches!(row, Row::OpenNow) && label.contains("Open now") })
+    );
+    assert!(rows.iter().any(|(row, label)| {
+      matches!(row, Row::ApplicationOrder) && label.contains("Recently opened")
+    }));
   }
 }

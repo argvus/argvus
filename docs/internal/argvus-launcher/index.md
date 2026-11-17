@@ -69,7 +69,18 @@ and rebuild. Settings I/O runs off the render loop; F5 refreshes index status.
 The new consumer renders `launcher/Theme.qml`; Rofi continues using
 `launcher/theme.rasi`.
 
-On an empty query, enabled open windows are included before other results
-regardless of the saved category. The active window is first; remaining windows
-are ordered by title. Once the user types a query, the saved category filters
-results normally.
+Application activations launched or selected through the launcher are recorded
+by desktop-entry ID in `$XDG_STATE_HOME/argvus/launcher/application-usage.json`
+(falling back to `~/.local/state/argvus/launcher/application-usage.json`). The
+file keeps the existing activation counts and a most-recent-first ID list. Writes
+are locked and atomic; no window title or timestamp is stored. Empty Applications
+results use the configured A–Z or Recently opened order (Recently opened by default),
+with unknown IDs falling back alphabetically. For typed searches, relevance remains
+primary and the selected order breaks ties. The Control Center can clear both counts
+and recency history.
+
+The `show_open_now` preference defaults to `false`. When enabled, empty-query
+results include the currently open windows before other results regardless of
+the saved category; the active window is first and the remaining windows follow
+the source order. The Windows source toggle remains authoritative. Typed queries
+continue to respect the selected category.
