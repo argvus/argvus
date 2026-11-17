@@ -206,6 +206,9 @@ pub fn activate(action: &Action) -> Result<(), String> {
     Action::Configure => {
       command.args(["control-center", "launcher"]);
     }
+    Action::Window(address) => {
+      command.args(["windows", "activate", address]);
+    }
     Action::Help => {
       command.args(["control-center", "shortcuts", "list"]);
     }

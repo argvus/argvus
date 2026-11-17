@@ -332,7 +332,7 @@ fn serve() -> Result<(), String> {
                   let _ = sender.send(Message::Failure("audio".into(), error));
                 }
               },
-              Action::Application(_) | Action::Window(_) => {
+              Action::Application(_) => {
                 let application_id = match &entry.action {
                   Action::Application(id) => Some(id.as_str()),
                   Action::Window(_) if !entry.usage_id.is_empty() => Some(entry.usage_id.as_str()),
@@ -344,6 +344,22 @@ fn serve() -> Result<(), String> {
                   eprintln!("launcher usage history: {error}");
                 }
                 emit(json!({"event":"activate","action":entry.action}));
+                redraw = false;
+              }
+              Action::Window(_) => {
+                let action = entry.action.clone();
+                let usage_id = entry.usage_id.clone();
+                let tx = sender.clone();
+                std::thread::spawn(move || {
+                  let result = providers::activate(&action);
+                  if result.is_ok()
+                    && !usage_id.is_empty()
+                    && let Err(error) = crate::usage::record(&usage_id)
+                  {
+                    eprintln!("launcher usage history: {error}");
+                  }
+                  let _ = tx.send(Message::Activated(result));
+                });
                 redraw = false;
               }
               action => {
