@@ -66,3 +66,7 @@ Los fallos de lectura del calendario se muestran por separado de una agenda vac�
 ## Catálogos de idioma compartidos
 
 La interfaz utiliza los catálogos compartidos `argvus-i18n` para los diez idiomas. Los textos se almacenan en `resources/locales/<locale>/taskbar-calendar.json` en el espacio de trabajo maestro y se instalan mediante `argvus`. El inglés es el idioma de respaldo; los nuevos idiomas ya no requieren un diccionario bilingüe local.
+
+Los textos siguen Applications Font en Control Center → Appearance → Desktop Style → Fonts. Las aplicaciones GTK heredan gtk-font-name; se mantienen los tamaños de números y títulos. El lanzador lee apps_family generado y observa los cambios.
+
+`appearance.font_family` → `gtk-font-name`.

@@ -54,3 +54,5 @@ ARGVUS `argvus-appearance` पैकेज के साथ दो अंतर�
 - [हाइलाइट रंग को अनुकूलित करना](/docs/components/argvus-themes/highlight-color/)— थीम से स्वतंत्र रूप से ऐकसेंट रंग बदलें।
 - [थीम्स को आयात और निर्यात करना](/docs/components/argvus-themes/import-and-export/)— सक्रिय थीम को, आपके हाइलाइट रंग और वॉलपेपर के साथ, अपनी खुद की थीम के रूप में निर्यात करें और इसे किसी अन्य मशीन पर आयात करें।
 - **एक थीम संग्रह आयात के लिए सूचीबद्ध नहीं है।** यह सीधे आपकी होम निर्देशिका में होना चाहिए और <id>/theme.toml को दबाए रखना चाहिए। [थीम आयात और निर्यात करना](/docs/components/argvus-themes/import-and-export/) देखें।
+
+ऐप का पाठ Control Center → Appearance → Desktop Style → Fonts के Applications Font का उपयोग करता है। GTK ऐप gtk-font-name लेते हैं; संख्या और शीर्षक के आकार बने रहते हैं। लॉन्चर जनित apps_family पढ़ता है और बदलाव देखता है।

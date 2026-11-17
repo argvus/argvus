@@ -51,3 +51,5 @@ Les pages de thèmes du Centre de Contrôle affichent leurs touches dans le pied
 - **Un thème que j'ai installé n'apparaît pas.** Vérifiez que le paquet est installé avec `pacman -Q argvus-theme-<name>`, puis rouvrez le Centre de Contrôle. Le paquet doit être installé avec `argvus-appearance` présent.
 - **La couleur de surlignage a changé après avoir changé de thème.** Une couleur de surlignage personnalisée survit aux changements de thème. Utilisez **Réinitialiser par défaut du thème** pour redonner au thème sa propre couleur.
 - **Une archive de thème n'est pas listée pour l'importation.** Elle doit être directement dans votre répertoire personnel et contenir `<id>/theme.toml`. Voir [Importer et exporter des thèmes](/docs/components/argvus-themes/import-and-export/).
+
+Le texte suit Applications Font dans Control Center → Appearance → Desktop Style → Fonts. Les applications GTK héritent de gtk-font-name ; les tailles des nombres et titres sont conservées. Le lanceur lit apps_family généré et suit les modifications.

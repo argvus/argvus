@@ -86,3 +86,7 @@ argvus taskbar-calendar service
 ## مشترکہ زبان کی کیٹلاگ
 
 انٹرفیس تمام دس زبانوں کے لیے مشترکہ `argvus-i18n ` کیٹلاگ استعمال کرتا ہے۔ متن کو ماسٹر ورک اسپیس میں ` resources/locales/<locale>/taskbar-calendar.json ` میں اسٹور کیا جاتا ہے اور ` argvus` کے ذریعے انسٹال کیا جاتا ہے۔ انگریزی فال بیک ہے؛ نئی زبانوں کو اب مقامی دو لسانی لغت کی ضرورت نہیں ہے۔
+
+ایپ کا متن Control Center → Appearance → Desktop Style → Fonts کے Applications Font کی پیروی کرتا ہے۔ GTK ایپس gtk-font-name لیتی ہیں؛ اعداد اور عنوان کے سائز برقرار رہتے ہیں۔ لانچر تیار شدہ apps_family پڑھتا اور تبدیلیاں دیکھتا ہے۔
+
+`appearance.font_family` → `gtk-font-name`.

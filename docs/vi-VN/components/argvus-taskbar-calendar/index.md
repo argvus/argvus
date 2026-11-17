@@ -85,3 +85,7 @@ Lỗi đọc lịch được hiển thị riêng biệt với chương trình l�
 ## Danh mục ngôn ngữ được chia sẻ
 
 Giao diện sử dụng danh mục `argvus-i18n` được chia sẻ cho tất cả mười ngôn ngữ. Văn bản được lưu trữ trong `resources/locales/<locale>/taskbar-calendar.json` trong không gian làm việc chính và được cài đặt bởi `argvus`. Tiếng Anh là dự phòng; ngôn ngữ mới không còn yêu cầu từ điển song ngữ địa phương nữa.
+
+Văn bản ứng dụng theo Applications Font trong Control Center → Appearance → Desktop Style → Fonts. GTK kế thừa gtk-font-name, giữ kích thước số và tiêu đề. Trình khởi chạy đọc apps_family được tạo và theo dõi thay đổi.
+
+`appearance.font_family` → `gtk-font-name`.

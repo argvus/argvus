@@ -58,3 +58,5 @@ Os arquivos são gravados de forma atômica. Um arquivo que não pode ser lido �
 As cores seguem o tema e a cor de destaque ativos do ARGVUS (consumidor de tema `time`). Os textos vêm dos domínios de tradução `focus` e `time`.
 
 O calendário da taskbar, ARGVUS Focus, ARGVUS Clock e Control Panel são exclusivos entre si: abrir um fecha os demais.
+
+Os textos dos aplicativos seguem Applications Font em Control Center → Appearance → Desktop Style → Fonts. Aplicativos GTK herdam gtk-font-name; os tamanhos específicos de números e títulos são preservados. O launcher lê apps_family gerado e acompanha alterações.

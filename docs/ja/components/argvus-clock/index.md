@@ -64,3 +64,5 @@ ARGVUS Focus、ARGVUS Clock、そしてコントロールパネルは同じ画�
 ファイルは原子的に書き込まれます。読み取れないファイルは `<name>.corrupt-<time>` にリネームされ、デフォルトが使用されます。色はアクティブな ARGVUS テーマとハイライトカラー（テーマコンシューマー `time`）に従います。文字列は `clock` および `time` 翻訳ドメインから取得されます。
 
 タスクバーのカレンダー、ARGVUS フォーカス、ARGVUS クロック、およびコントロールパネルは相互に排他的です：1 つを開くと、他のものは閉じられます。
+
+アプリの文字は Control Center → Appearance → Desktop Style → Fonts の Applications Font に従います。GTK は gtk-font-name を継承し、数字や見出しのサイズは保持します。ランチャーは生成された apps_family を読み変更を監視します。

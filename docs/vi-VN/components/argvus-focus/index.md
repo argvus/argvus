@@ -56,3 +56,5 @@ Các tập tin được viết nguyên tử. Một tệp không thể đọc đ�
 Màu sắc tuân theo chủ đề ARGVUS đang hoạt động và màu nổi bật (chủ đề tiêu dùng `time`). Các chuỗi đến từ miền dịch thuật `focus` và `time`.
 
 Lịch trên thanh tác vụ, ARGVUS Focus, ARGVUS Clock và Control Panel loại trừ lẫn nhau: mở cái này sẽ đóng cái kia.
+
+Văn bản ứng dụng theo Applications Font trong Control Center → Appearance → Desktop Style → Fonts. GTK kế thừa gtk-font-name, giữ kích thước số và tiêu đề. Trình khởi chạy đọc apps_family được tạo và theo dõi thay đổi.

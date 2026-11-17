@@ -85,3 +85,7 @@ Takvim okuma hataları, boş ajandadan ayrı olarak görüntülenir. Veritabanı
 ## Paylaşılan dil katalogları
 
 Arayüz, on dilin tümü için paylaşılan `argvus-i18n` kataloglarını kullanır. Metinler ana çalışma alanındaki `resources/locales/<locale>/taskbar-calendar.json`'da saklanır ve `argvus` tarafından yüklenir. İngilizce geri dönüştür; yeni diller artık yerel iki dilli bir sözlüğe ihtiyaç duymuyor.
+
+Uygulama metni Control Center → Appearance → Desktop Style → Fonts içindeki Applications Font ayarını izler. GTK gtk-font-name değerini devralır; sayı ve başlık boyutları korunur. Başlatıcı üretilen apps_family değerini okur ve değişiklikleri izler.
+
+`appearance.font_family` → `gtk-font-name`.

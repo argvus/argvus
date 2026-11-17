@@ -56,3 +56,5 @@ ARGVUS Focus、ARGVUS Clock 和控制面板共享相同的屏幕边缘。打开 
 颜色遵循当前活动 ARGVUS 主题和高亮颜色（主题使用者 `time`）。字符串来自 `focus` 和 `time` 翻译域。
 
 任务栏日历、ARGVUS 焦点、ARGVUS 时钟和控制面板互斥：打开其中一个会关闭其他所有组件。
+
+应用文本使用 Control Center → Appearance → Desktop Style → Fonts 中的 Applications Font。GTK 应用继承 gtk-font-name，保留数字和标题的独立字号。启动器读取生成的 apps_family 并监听更改。

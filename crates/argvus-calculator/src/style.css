@@ -1,4 +1,4 @@
-window.calculator { font-family: "IBM Plex Mono", monospace; font-size: 13px; }
+window.calculator { font-size: 13px; }
 window.calculator button { background-image: none; background-color: @time_surface; color: @time_fg; border: none; border-radius: 3px; min-height: 24px; padding: 4px 8px; box-shadow: none; }
 window.calculator button:hover { background-color: @time_border; }
 window.calculator button:focus-visible { background-color: @time_border; }
@@ -7,10 +7,12 @@ window.calculator checkbutton:focus-visible { outline: none; box-shadow: none; }
 window.calculator entry { font-size: 18px; background: @time_surface; color: @time_fg; border: none; border-radius: 3px; padding: 10px; }
 window.calculator button.primary { background-color: @time_accent; color: @time_on_accent; }
 
-window.calculator button.footer-hint { background: transparent; color: @time_muted; margin: 0 12px 8px; min-height: 20px; padding: 2px 4px; }
+window.calculator button.footer-hint { background: transparent; color: @time_muted; margin: 0; min-height: 20px; padding: 6px 16px; border-radius: 0; }
 window.calculator button.footer-hint:hover, window.calculator button.footer-hint:focus-visible { color: @time_accent; }
 
-window.calculator button.number-key { font-size: 16px; }
+window.calculator button.keypad-key { font-size: 18px; }
+window.calculator button.number-key { font-size: 20px; }
+window.calculator button.symbol-key { font-size: 22px; }
 
 /* Override the shared GTK focus rule on internal nodes as well as controls. */
 window.calculator *,
@@ -27,3 +29,12 @@ window.calculator .settings-list { background: transparent; }
 window.calculator .settings-list row { padding: 10px 12px; margin: 2px 0; border: none; border-radius: 0; color: @time_fg; }
 window.calculator .settings-list row:selected { background: @time_accent; color: @time_on_accent; }
 window.calculator .settings-list row:hover:not(:selected) { background: @time_surface; }
+
+window.calculator .financial-fields entry { font-size: 14px; padding: 4px 8px; min-height: 20px; }
+
+/* Shared visual hierarchy with the ARGVUS live monitors and Control Center. */
+window.calculator .calculator-header { padding: 12px 16px 8px; background-color: @time_bg; }
+window.calculator .calculator-brand { background-color: @time_accent; color: @time_on_accent; font-weight: 700; font-size: 14px; padding: 2px 10px; }
+window.calculator .calculator-heading { color: @time_fg; font-size: 18px; font-weight: 600; }
+window.calculator .calculator-footer { background-color: @time_surface; border-top: 1px solid @time_border; }
+window.calculator .calculator-footer .shortcut-key { color: @time_accent; font-weight: 700; }

@@ -61,3 +61,5 @@ Alarme klingeln nur, solange ARGVUS Clock in Ihrer Sitzung läuft:
 Dateien werden atomar geschrieben; eine Datei, die nicht gelesen werden kann, wird in `<name>.corrupt-<time>` umbenannt und Standardwerte werden verwendet. Die Farben folgen dem aktiven ARGVUS-Thema und der Highlight-Farbe (Theme-Consumer `time`). Zeichenketten stammen aus den Übersetzungsbereichen `clock` und `time`.
 
 Der Kalender in der Taskleiste, ARGVUS Focus, ARGVUS Clock und die Systemsteuerung schließen sich gegenseitig aus: Das Öffnen eines Elements schließt die anderen.
+
+Anwendungstexte folgen Applications Font unter Control Center → Appearance → Desktop Style → Fonts. GTK-Anwendungen erben gtk-font-name; Größen für Zahlen und Überschriften bleiben erhalten. Der Launcher liest das erzeugte apps_family und verfolgt Änderungen.

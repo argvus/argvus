@@ -24,7 +24,6 @@ window.argvus-calendar-window,
   border: 1px solid @argvus_border;
   border-radius: 4px;
   padding: 12px 14px;
-  font-family: monospace;
   font-size: 13px;
   box-shadow: none;
 }
@@ -226,7 +225,6 @@ window.argvus-calendar-window,
 .event-editor {
   background: transparent;
   color: @argvus_fg;
-  font-family: monospace;
   padding: 0;
 }
 

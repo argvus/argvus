@@ -86,3 +86,7 @@ argvus taskbar-calendar service
 ## ভাগ করা ভাষার ক্যাটালগ
 
 ইন্টারফেসটি সমস্ত দশটি ভাষার জন্য শেয়ার করা `argvus-i18n ` ক্যাটালগ ব্যবহার করে। পাঠ্যগুলি মাস্টার ওয়ার্কস্পেসে ` resources/locales/<locale>/taskbar-calendar.json ` এ সংরক্ষণ করা হয় এবং ` argvus` দ্বারা ইনস্টল করা হয়। ইংরেজি হল ফলব্যাক; নতুন ভাষার জন্য আর স্থানীয় দ্বিভাষিক অভিধানের প্রয়োজন নেই।
+
+অ্যাপের লেখা Control Center → Appearance → Desktop Style → Fonts-এর Applications Font অনুসরণ করে। GTK অ্যাপ gtk-font-name ব্যবহার করে; সংখ্যা ও শিরোনামের আকার অপরিবর্তিত থাকে। লঞ্চার তৈরি apps_family পড়ে ও পরিবর্তন দেখে।
+
+`appearance.font_family` → `gtk-font-name`.

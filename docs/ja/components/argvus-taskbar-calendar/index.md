@@ -66,3 +66,7 @@ argvus taskbar-calendar service
 ## 共通言語カタログ
 
 インターフェイスは、すべての10言語で共通の`argvus-i18n`カタログを使用します。テキストはマスターワークスペースの`resources/locales/<locale>/taskbar-calendar.json`に保存され、`argvus`によってインストールされます。英語がフォールバック言語です；新しい言語ではもはやローカルの二言語辞書は必要ありません。
+
+アプリの文字は Control Center → Appearance → Desktop Style → Fonts の Applications Font に従います。GTK は gtk-font-name を継承し、数字や見出しのサイズは保持します。ランチャーは生成された apps_family を読み変更を監視します。
+
+`appearance.font_family` → `gtk-font-name`.

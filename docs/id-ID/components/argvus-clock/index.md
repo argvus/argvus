@@ -65,3 +65,5 @@ Alarm hanya berdering saat Jam ARGVUS berjalan di sesi Anda:
 File ditulis secara atom; file yang tidak dapat dibaca diubah namanya menjadi `<name>.corrupt-<time>` dan default digunakan. Warnanya mengikuti tema ARGVUS aktif dan warna highlight (konsumen tema `time`). String berasal dari domain terjemahan `clock` dan `time`.
 
 Kalender bilah tugas, Fokus ARGVUS, Jam ARGVUS, dan Panel Kontrol saling eksklusif: membuka satu akan menutup yang lain.
+
+Teks aplikasi mengikuti Applications Font di Control Center → Appearance → Desktop Style → Fonts. GTK mewarisi gtk-font-name; ukuran angka dan judul dipertahankan. Peluncur membaca apps_family yang dihasilkan dan memantau perubahan.

@@ -9,8 +9,17 @@ use std::{
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct Record {
+  #[serde(default)]
+  pub context: Option<Context>,
   pub expression: String,
   pub result: String,
+}
+
+#[derive(Clone, Serialize, Deserialize)]
+pub struct Context {
+  pub preferences: crate::preferences::Preferences,
+  #[serde(default)]
+  pub fields: [String; 3],
 }
 
 pub fn path() -> io::Result<PathBuf> {
@@ -71,6 +80,7 @@ mod tests {
     save(
       &path,
       &[Record {
+        context: None,
         expression: "2+2".into(),
         result: "4".into(),
       }],
@@ -83,6 +93,36 @@ mod tests {
     );
     save(&path, &[]).unwrap();
     assert!(load(&path).unwrap().is_empty());
+  }
+  #[test]
+  fn legacy_and_contextual_records_remain_readable() {
+    let temp = tempfile::tempdir().unwrap();
+    let path = temp.path().join("history.json");
+    fs::write(&path, r#"[{"expression":"2+2","result":"4"}]"#).unwrap();
+    let mut records = load(&path).unwrap();
+    assert!(records[0].context.is_none());
+    let preferences = crate::preferences::Preferences {
+      profile: crate::preferences::Profile::Programming,
+      ..Default::default()
+    };
+    records.push(Record {
+      expression: "0xFF".into(),
+      result: "255".into(),
+      context: Some(Context {
+        preferences,
+        fields: std::array::from_fn(|_| String::new()),
+      }),
+    });
+    save(&path, &records).unwrap();
+    assert_eq!(
+      load(&path).unwrap()[1]
+        .context
+        .as_ref()
+        .unwrap()
+        .preferences
+        .profile,
+      crate::preferences::Profile::Programming
+    );
   }
   #[test]
   fn malformed_history_is_reported_without_overwriting_it() {

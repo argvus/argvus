@@ -51,3 +51,5 @@ ARGVUS는 `argvus-appearance` 패키지와 함께 두 가지 기본 테마, **AR
 - **내가 설치한 테마가 나타나지 않습니다.** `pacman -Q argvus-theme-<name>`로 패키지가 설치되었는지 확인한 다음, 제어 센터를 다시 엽니다. 패키지는 `argvus-appearance`이 있는 상태로 설치되어야 합니다.
 - **테마를 전환한 후 강조 색상이 변경되었습니다.** 사용자 지정 강조 색상은 테마 전환 시 유지됩니다. **테마 기본값으로 재설정**을 사용하여 테마 고유의 색상을 되돌리세요.
 - **가져오기할 테마 아카이브가 목록에 없습니다.** 홈 디렉토리에 직접 있어야 하며, `<id>/theme.toml`을 포함해야 합니다. [테마 가져오기 및 내보내기](/docs/components/argvus-themes/import-and-export/)를 참조하세요.
+
+앱 텍스트는 Control Center → Appearance → Desktop Style → Fonts의 Applications Font를 따릅니다. GTK는 gtk-font-name을 상속하며 숫자와 제목 크기는 유지합니다. 런처는 생성된 apps_family를 읽고 변경을 감시합니다.

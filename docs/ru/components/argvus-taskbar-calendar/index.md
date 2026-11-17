@@ -69,3 +69,7 @@ argvus taskbar-calendar service
 ## Общие языковые каталоги
 
 Интерфейс использует общие каталоги `argvus-i18n` для всех десяти языков. Тексты хранятся в `resources/locales/<locale>/taskbar-calendar.json` в основной рабочей области и устанавливаются с помощью `argvus`. Английский язык используется по умолчанию; новые языки больше не требуют локального двуязычного словаря.
+
+Текст приложений использует Applications Font в Control Center → Appearance → Desktop Style → Fonts. GTK наследует gtk-font-name; размеры цифр и заголовков сохраняются. Лаунчер читает сгенерированный apps_family и отслеживает изменения.
+
+`appearance.font_family` → `gtk-font-name`.

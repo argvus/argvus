@@ -52,3 +52,5 @@ As páginas de temas do Control Center mostram as teclas no rodapé:
 - **Um tema que instalei não aparece.** Confirme que o pacote está instalado com `pacman -Q argvus-theme-<nome>` e depois reabra o Control Center. O pacote precisa de `argvus-appearance` instalado.
 - **A cor de destaque mudou depois que troquei de tema.** Uma cor de destaque personalizada sobrevive às trocas de tema. Use **Restaurar padrão do tema** para devolver ao tema a cor dele.
 - **Um arquivo de tema não aparece para importar.** Ele precisa estar diretamente na sua pasta pessoal e conter `<id>/theme.toml`. Veja [Importando e exportando temas](/pt/docs/components/argvus-themes/import-and-export/).
+
+Os textos dos aplicativos seguem Applications Font em Control Center → Appearance → Desktop Style → Fonts. Aplicativos GTK herdam gtk-font-name; os tamanhos específicos de números e títulos são preservados. O launcher lê apps_family gerado e acompanha alterações.

@@ -51,3 +51,5 @@ ARGVUSには、`argvus-appearance`パッケージと共に、2つの組み込み
 - **インストールしたテーマが表示されません。** `pacman -Q argvus-theme-<name>`でパッケージがインストールされていることを確認し、コントロールセンターを再度開いてください。パッケージは`argvus-appearance`が存在する状態でインストールされている必要があります。
 - **テーマを切り替えた後にハイライト色が変わった。** カスタムハイライト色はテーマの切り替え後も保持されます。**テーマのデフォルトにリセット**を使用して、テーマ固有の色に戻してください。
 - **インポート用のテーマアーカイブが表示されない。** それはホームディレクトリ直下にあり、`<id>/theme.toml`を含んでいる必要があります。詳細は[テーマのインポートとエクスポート](/docs/components/argvus-themes/import-and-export/)を参照してください。
+
+アプリの文字は Control Center → Appearance → Desktop Style → Fonts の Applications Font に従います。GTK は gtk-font-name を継承し、数字や見出しのサイズは保持します。ランチャーは生成された apps_family を読み変更を監視します。

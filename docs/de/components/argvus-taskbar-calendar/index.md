@@ -70,3 +70,7 @@ Fehler beim Lesen des Kalenders werden separat von einem leeren Terminplan angez
 ## Gemeinsame Sprachkataloge
 
 Die Benutzeroberfläche verwendet die gemeinsamen `argvus-i18n`-Kataloge für alle zehn Sprachen. Texte werden in `resources/locales/<locale>/taskbar-calendar.json` im Hauptarbeitsbereich gespeichert und durch `argvus` installiert. Englisch ist die Standardsprache; neue Sprachen erfordern kein lokales zweisprachiges Wörterbuch mehr.
+
+Anwendungstexte folgen Applications Font unter Control Center → Appearance → Desktop Style → Fonts. GTK-Anwendungen erben gtk-font-name; Größen für Zahlen und Überschriften bleiben erhalten. Der Launcher liest das erzeugte apps_family und verfolgt Änderungen.
+
+`appearance.font_family` → `gtk-font-name`.

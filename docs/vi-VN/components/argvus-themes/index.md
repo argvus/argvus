@@ -52,3 +52,5 @@ Các trang chủ đề của Trung tâm điều khiển hiển thị các phím 
 - **Chủ đề tôi đã cài đặt không xuất hiện.** Xác nhận rằng gói đã được cài đặt với `pacman -Q argvus-theme-<name>`, sau đó mở lại Trung tâm điều khiển. Gói phải được cài đặt có `argvus-appearance`.
 - **Màu đánh dấu đã thay đổi sau khi tôi chuyển đổi chủ đề.** Màu đánh dấu tùy chỉnh vẫn tồn tại khi chuyển đổi chủ đề. Sử dụng **Đặt lại về mặc định của chủ đề** để trả lại màu sắc riêng cho chủ đề.
 - **Kho lưu trữ chủ đề không được liệt kê để nhập.** Nó phải nằm ngay trong thư mục chính của bạn và chứa `<id>/theme.toml`. Xem [Nhập và xuất chủ đề](/docs/components/argvus-themes/import-and-export/).
+
+Văn bản ứng dụng theo Applications Font trong Control Center → Appearance → Desktop Style → Fonts. GTK kế thừa gtk-font-name, giữ kích thước số và tiêu đề. Trình khởi chạy đọc apps_family được tạo và theo dõi thay đổi.

@@ -129,7 +129,7 @@ window.argvus-time scale highlight {
 
 /* Popups that open next to the taskbar (.argvus-popup), in the look of the
    taskbar calendar: a transparent window around one card with a thin accent
-   border, square corners and the monospace font. */
+   border and square corners; text inherits the GTK Applications Font. */
 window.argvus-time.argvus-popup {
   background-color: transparent;
   background-image: none;
@@ -142,7 +142,6 @@ window.argvus-popup .time-card {
   border: 1px solid @time_border;
   border-radius: 4px;
   padding: 12px 14px;
-  font-family: monospace;
   font-size: 13px;
 }
 

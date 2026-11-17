@@ -66,3 +66,5 @@ Alarms ring only while ARGVUS Clock runs in your session:
 Files are written atomically; a file that cannot be read is renamed to `<name>.corrupt-<time>` and defaults are used. The colours follow the active ARGVUS theme and highlight colour (theme consumer `time`). Strings come from the `clock` and `time` translation domains.
 
 The taskbar calendar, ARGVUS Focus, ARGVUS Clock and Control Panel are mutually exclusive: opening one closes the others.
+
+Application text follows Applications Font in Control Center → Appearance → Desktop Style → Fonts. GTK applications inherit gtk-font-name; local sizes for numbers and headings remain. The launcher reads the generated apps_family and watches for changes.

@@ -1,45 +1,75 @@
 ---
 title: Calcolatrice ARGVUS
-description: Calcolatrice ARGVUS — GTK4 / ARGVUS
+description: Base · Scientifica · Programmazione · Finanziaria · Conversione di unità
 ---
 
 # Calcolatrice ARGVUS
 
-`argvus calculator` · launcher: **Calcolatrice ARGVUS**
+`argvus calculator` · `SUPER + C` · launcher: **ARGVUS Calculator**
 
-- GTK4 / Relm4; ARGVUS theme (`time`), IBM Plex Mono.
-- `+`, `-`, `*`, `/`, `%`, `±`; `50% = 0.5`.
-- **Scientifica**: `sqrt`, `log`, `ln`, `exp`, `sin`, `cos`, `tan`, `asin`, `acos`, `atan`, `pi`, `e`, `^`, `(`, `)`.
-- **Radianti**: Non selezionato: gradi.
-- `-2^2 = -4`; `2^3^2 = 512`; `2*pi`; `1.5 = 1,5`.
-- Enter: `=`; Escape: **Cancella**; Backspace: **Elimina carattere**; Tab / Shift+Tab.
-- **Copia risultato**; **Cronologia**: 100; **Cancella cronologia**.
-- IEEE 754 / f64; 15 digits; 4096 bytes; 64 levels.
+Scegliere un profilo in Impostazioni → Profilo con ↑/↓ e Invio oppure facendo clic. Profilo e opzioni vengono salvati subito e ripristinati al prossimo avvio. Ogni profilo conserva la propria espressione durante la sessione. Invio o = sostituisce l’espressione con il risultato senza selezionarlo, con il cursore alla fine.
+
+I tassi sono percentuali per periodo; usare lo stesso periodo per tasso, numero e pagamento. I pagamenti avvengono a fine periodo. Il tasso zero è supportato. Gli interessi semplici e composti restituiscono il totale accumulato. La conversione è offline, senza valute. La cronologia salva fino a 100 voci con profilo, opzioni e campi finanziari; selezionare un risultato ripristina il contesto. Cancellare svuota anche il file salvato.
+
+## Impostazioni
+
+- `s Impostazioni` → **Profilo** → Base / Scientifica / Programmazione / Finanziaria / Conversione di unità.
+- ↑ / ↓ · Enter · Escape / ←.
+- **Copia risultato** · **Cronologia** · **Cancella cronologia**.
+- **Base**: 370 × 420; **Scientifica**: 440 × 640.
+- **Programmazione**: 520 × 640; **Finanziaria**: 440 × 640; **Conversione di unità**: 440 × 520.
+
+## Base / Scientifica
+
+`+ - * / %` · `50% = 0.5` · `1.5 = 1,5` · `2+2` → Enter → `4` → `+2` → Enter → `6`.
+
+`sin`, `cos`, `tan`, `asin`, `acos`, `atan`, `sqrt`, `log`, `ln`, `exp`, `pi`, `e`, `^`, `(`, `)`.
+
+**Unità angolare**: Gradi / Radianti. `-2^2 = -4`; `2^3^2 = 512`; `2*pi`.
+
+IEEE 754 / f64 · 15 cifre significative · 4096 byte · 64 livelli di analisi.
+
+## Programmazione
+
+Predefinito: decimale, 64 bit con segno. L’aritmetica ritorna entro la larghezza scelta; lo scorrimento destro con segno conserva il segno. La divisione intera tronca verso zero. Divisione per zero e scorrimenti fuori da [0, bits) sono errori. Senza prefisso si usa la base scelta. Cambiare base converte l’espressione valida; larghezza o segno reinterpretano gli stessi bit.
+
+- **Base**: 2 / 8 / 10 / 16; **Dimensione parola (bit)**: 8 / 16 / 32 / 64.
+- **Con segno** / **Senza segno** · `0b1010`, `0o12`, `0xA`.
+- `+ - * / %`, `AND OR XOR NOT`, `<< >>`, `& | ^ ~`, `(`, `)`.
+- `9007199254740993+2 = 9007199254740995`; `0xFF AND 0b1010 = 10` (base 10).
+- 8-bit: `255+1 = 0`; `NOT 0 = -1` (Con segno); `-7/2 = -3`.
+
+## Finanziaria
+
+Interesse semplice · Interesse composto · Rata fissa · Valore attuale · Valore futuro · Variazione percentuale.
+
+- `P`: Capitale iniziale; `FV`: Importo futuro; `A`: Pagamento per periodo.
+- `r`: Tasso per periodo (%) / 100; `n`: Numero di periodi.
+- `G=(1+r)^n`; `H=(G-1)/r` (`r=0`: `H=n`).
+- Interesse semplice: `P*(1+r*n)`; Interesse composto: `P*G`.
+- Rata fissa: `P*G/H`; Valore attuale: `(FV+A*H)/G`; Valore futuro: `P*G+A*H`.
+- Variazione percentuale: `(Importo finale - Importo originale) / Importo originale * 100`.
+
+## Conversione di unità
+
+Lunghezza · Massa · Temperatura · Area · Volume · Tempo · Velocità · Archiviazione dati.
+
+**Da** / **A**: Impostazioni · `1500 m → 1.5 km` · `32 °F → 0 °C` · `K ≥ 0`.
+
+`1 B = 8 bit`; `1 kB = 1000 B`; `1 KiB = 1024 B`; `US gal = 3.785411784 L`.
 
 ## Cronologia
 
-La cronologia resta dopo la chiusura (fino a 100 risultati). Cancellarla elimina anche i dati salvati. Impostazioni: ↑/↓ per navigare, Invio o clic per attivare, Escape per tornare.
+100 · Profilo + `context` · `Cancella cronologia`.
 
-`$XDG_DATA_HOME/argvus/calculator/history.json` (`~/.local/share/argvus/calculator/history.json`)
+`$XDG_DATA_HOME/argvus/calculator/history.json` (→ `~/.local/share/argvus/calculator/history.json`).
 
-Si apre sempre in una piccola finestra flottante centrata (370 × 420); la modalità scientifica può ampliarla.
+`$XDG_CONFIG_HOME/argvus/calculator/settings.json` (→ `~/.config/argvus/calculator/settings.json`).
 
-La schermata principale contiene solo espressione, risultato e tastiera. Il menu offre modalità scientifica, unità angolari, copia e cronologia separata. Indietro o Escape torna al calcolo; selezionare un risultato lo riutilizza. La modalità base ripristina la finestra compatta e conserva l’espressione.
+`{"scientific":true}` → `{"profile":"scientific"}`; `{"scientific":false}` → `{"profile":"basic"}`.
 
-`SUPER + C` → `argvus calculator`
+`.desktop`: `/usr/share/applications/argvus-calculator.desktop` · `Name=ARGVUS Calculator` · `Exec=argvus calculator`.
 
-`.desktop`: `/usr/share/applications/argvus-calculator.desktop` · `Name=ARGVUS Calculator` · `Exec=argvus calculator`
+Il testo segue Applications Font in Control Center → Appearance → Desktop Style → Fonts. Le applicazioni GTK ereditano gtk-font-name; le dimensioni di numeri e titoli restano. Il launcher legge apps_family generato e segue le modifiche.
 
-ARGVUS: `focus_on_activate = true` (`org.argvus.*`, `sh.argvus.*`, `com.argvus.*`, `argvus-*`, `argvus.*`).
-
-Ridimensionando la finestra si ingrandiscono i tasti. Ogni nuova apertura usa le dimensioni predefinite. Le schermate secondarie hanno una freccia indietro in alto.
-
-`s Settings` → `settings` · Escape / ←
-
-Min: **370 × 420** / **440 × 640** · `0–9`: **16 px**.
-
-`2+2` → Enter / `=` → `4` (input) · `4*3` → Enter → `12`.
-
-La modalità base o scientifica scelta viene salvata subito e ripristinata al prossimo avvio.
-
-`$XDG_CONFIG_HOME/argvus/calculator/settings.json` (`~/.config/argvus/calculator/settings.json`).
+L’intestazione unisce il badge ARGVUS nel colore di accento al nome dell’applicazione. Il piè di pagina cliccabile s Settings occupa una fascia a tutta larghezza con sfondo distinto del tema, nello stile del Control Center.

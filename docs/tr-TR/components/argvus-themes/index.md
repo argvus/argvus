@@ -52,3 +52,4 @@ Kontrol Merkezi tema sayfaları, anahtarlarını alt bilgide gösterir:
 - **Yüklediğim bir tema görünmüyor.** Paketin `pacman -Q argvus-theme-<name>` ile yüklendiğini doğrulayın ve ardından Kontrol Merkezini yeniden açın. Paket, `argvus-appearance` mevcut olacak şekilde kurulmalıdır.
 - **Temayı değiştirdikten sonra vurgu rengi değişti.** Özel bir vurgu rengi, tema geçişlerinde geçerliliğini korur. Temaya kendi rengini geri vermek için **Tema varsayılanına sıfırla** seçeneğini kullanın.
 - **İçe aktarma için bir tema arşivi listelenmemiştir.** Doğrudan ana dizininizde bulunmalı ve `<id>/theme.toml`'ya sahip olmalıdır. Bkz. [Temaları içe ve dışa aktarma](/docs/components/argvus-themes/import-and-export/).
+Uygulama metni Control Center → Appearance → Desktop Style → Fonts içindeki Applications Font ayarını izler. GTK gtk-font-name değerini devralır; sayı ve başlık boyutları korunur. Başlatıcı üretilen apps_family değerini okur ve değişiklikleri izler.

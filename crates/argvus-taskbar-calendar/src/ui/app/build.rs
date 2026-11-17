@@ -452,8 +452,6 @@ pub(super) fn build_settings_view(
 
   let font_family_label = settings_label();
   let font_family = editor_entry();
-  settings_root.append(&font_family_label);
-  settings_root.append(&font_family);
 
   let font_size_label = settings_label();
   let font_size = settings_number_spin(32, 2);

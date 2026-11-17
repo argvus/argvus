@@ -52,3 +52,5 @@ Halaman tema Pusat Kontrol memperlihatkan kuncinya di footer:
 - **Tema yang saya instal tidak muncul.** Konfirmasikan bahwa paket diinstal dengan `pacman -Q argvus-theme-<name>`, lalu buka kembali Pusat Kontrol. Paket harus diinstal dengan kehadiran `argvus-appearance`.
 - **Warna sorotan berubah setelah saya mengganti tema.** Warna sorotan khusus tetap bertahan dalam peralihan tema. Gunakan **Setel ulang ke default tema** untuk mengembalikan warna pada tema.
 - **Arsip tema tidak terdaftar untuk diimpor.** Arsip tersebut harus langsung berada di direktori home Anda dan berisi `<id>/theme.toml`. Lihat [Mengimpor dan mengekspor tema](/docs/components/argvus-themes/import-and-export/).
+
+Teks aplikasi mengikuti Applications Font di Control Center → Appearance → Desktop Style → Fonts. GTK mewarisi gtk-font-name; ukuran angka dan judul dipertahankan. Peluncur membaca apps_family yang dihasilkan dan memantau perubahan.

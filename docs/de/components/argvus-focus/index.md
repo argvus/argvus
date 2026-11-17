@@ -56,3 +56,5 @@ Dateien werden atomar geschrieben. Eine Datei, die nicht gelesen werden kann, wi
 Die Farben folgen dem aktiven ARGVUS-Thema und der Hervorhebungsfarbe (Themenverbraucher `time`). Zeichenketten stammen aus den Übersetzungsdomänen `focus` und `time`.
 
 Die Taskleisten-Kalender, ARGVUS Focus, ARGVUS-Uhr und das Kontrollfeld sind gegenseitig exklusiv: Das Öffnen eines Elements schließt die anderen.
+
+Anwendungstexte folgen Applications Font unter Control Center → Appearance → Desktop Style → Fonts. GTK-Anwendungen erben gtk-font-name; Größen für Zahlen und Überschriften bleiben erhalten. Der Launcher liest das erzeugte apps_family und verfolgt Änderungen.

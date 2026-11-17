@@ -1,45 +1,75 @@
 ---
 title: ARGVUS 電卓
-description: ARGVUS 電卓 — GTK4 / ARGVUS
+description: 基本 · 関数電卓 · プログラミング · 金融 · 単位換算
 ---
 
 # ARGVUS 電卓
 
-`argvus calculator` · launcher: **ARGVUS 電卓**
+`argvus calculator` · `SUPER + C` · launcher: **ARGVUS Calculator**
 
-- GTK4 / Relm4; ARGVUS theme (`time`), IBM Plex Mono.
-- `+`, `-`, `*`, `/`, `%`, `±`; `50% = 0.5`.
-- **関数電卓**: `sqrt`, `log`, `ln`, `exp`, `sin`, `cos`, `tan`, `asin`, `acos`, `atan`, `pi`, `e`, `^`, `(`, `)`.
-- **ラジアン**: 未選択：度.
-- `-2^2 = -4`; `2^3^2 = 512`; `2*pi`; `1.5 = 1,5`.
-- Enter: `=`; Escape: **クリア**; Backspace: **一文字削除**; Tab / Shift+Tab.
-- **結果をコピー**; **履歴**: 100; **履歴を消去**.
-- IEEE 754 / f64; 15 digits; 4096 bytes; 64 levels.
+設定 → プロファイルで ↑/↓ と Enter、または行をクリックして選択します。プロファイルと設定はすぐに保存され、次回起動時に復元されます。各プロファイルはセッション中の数式を個別に保持します。Enter または = で数式が結果に置き換わり、選択せず末尾にカーソルを置きます。
+
+利率は期間ごとの百分率です。利率、期間数、支払額には同じ周期を使います。支払いは期末で、ゼロ金利に対応します。単利と複利は累積総額を返します。換算はオフラインで通貨は含みません。履歴はプロファイル、設定、金融入力を含め最大100件を保存し、結果の選択で復元します。履歴の消去は保存ファイルも空にします。
+
+## 設定
+
+- `s 設定` → **プロファイル** → 基本 / 関数電卓 / プログラミング / 金融 / 単位換算.
+- ↑ / ↓ · Enter · Escape / ←.
+- **結果をコピー** · **履歴** · **履歴を消去**.
+- **基本**: 370 × 420; **関数電卓**: 440 × 640.
+- **プログラミング**: 520 × 640; **金融**: 440 × 640; **単位換算**: 440 × 520.
+
+## 基本 / 関数電卓
+
+`+ - * / %` · `50% = 0.5` · `1.5 = 1,5` · `2+2` → Enter → `4` → `+2` → Enter → `6`.
+
+`sin`, `cos`, `tan`, `asin`, `acos`, `atan`, `sqrt`, `log`, `ln`, `exp`, `pi`, `e`, `^`, `(`, `)`.
+
+**角度単位**: 度 / ラジアン. `-2^2 = -4`; `2^3^2 = 512`; `2*pi`.
+
+IEEE 754 / f64 · 有効数字15桁 · 4096バイト · 解析深度64.
+
+## プログラミング
+
+標準は10進数、符号付き64ビットです。演算はワード長で折り返し、符号付き右シフトは符号を拡張します。整数除算はゼロ方向に切り捨てます。ゼロ除算や [0, bits) 外のシフトはエラーです。接頭辞なしの数値には選択中の基数を使います。基数変更は有効な数式を変換し、長さや符号の変更は同じビット列を再解釈します。
+
+- **基数**: 2 / 8 / 10 / 16; **ワード長（ビット）**: 8 / 16 / 32 / 64.
+- **符号付き** / **符号なし** · `0b1010`, `0o12`, `0xA`.
+- `+ - * / %`, `AND OR XOR NOT`, `<< >>`, `& | ^ ~`, `(`, `)`.
+- `9007199254740993+2 = 9007199254740995`; `0xFF AND 0b1010 = 10` (base 10).
+- 8-bit: `255+1 = 0`; `NOT 0 = -1` (符号付き); `-7/2 = -3`.
+
+## 金融
+
+単利 · 複利 · 定額返済 · 現在価値 · 将来価値 · 変化率.
+
+- `P`: 元本; `FV`: 将来の金額; `A`: 期間ごとの支払額.
+- `r`: 期間ごとの利率（%） / 100; `n`: 期間数.
+- `G=(1+r)^n`; `H=(G-1)/r` (`r=0`: `H=n`).
+- 単利: `P*(1+r*n)`; 複利: `P*G`.
+- 定額返済: `P*G/H`; 現在価値: `(FV+A*H)/G`; 将来価値: `P*G+A*H`.
+- 変化率: `(最終金額 - 元の金額) / 元の金額 * 100`.
+
+## 単位換算
+
+長さ · 質量 · 温度 · 面積 · 体積 · 時間 · 速度 · データ容量.
+
+**換算元** / **換算先**: 設定 · `1500 m → 1.5 km` · `32 °F → 0 °C` · `K ≥ 0`.
+
+`1 B = 8 bit`; `1 kB = 1000 B`; `1 KiB = 1024 B`; `US gal = 3.785411784 L`.
 
 ## 履歴
 
-終了後も履歴を最大100件保存します。履歴を消すと保存データも削除されます。設定は行を選んで操作します。↑/↓で移動、Enterまたはクリックで実行、Escapeで戻ります。
+100 · プロファイル + `context` · `履歴を消去`.
 
-`$XDG_DATA_HOME/argvus/calculator/history.json` (`~/.local/share/argvus/calculator/history.json`)
+`$XDG_DATA_HOME/argvus/calculator/history.json` (→ `~/.local/share/argvus/calculator/history.json`).
 
-常に中央の小さなフローティングウィンドウ（370 × 420）で開きます。関数モードでは拡大できます。
+`$XDG_CONFIG_HOME/argvus/calculator/settings.json` (→ `~/.config/argvus/calculator/settings.json`).
 
-メイン画面には数式、結果、キーのみを表示します。メニューから関数モード、角度単位、コピー、独立した履歴画面を開けます。戻るまたは Escape で計算に戻り、履歴の結果を選ぶと再利用できます。基本モードに戻すと数式を保持して小さいウィンドウに戻ります。
+`{"scientific":true}` → `{"profile":"scientific"}`; `{"scientific":false}` → `{"profile":"basic"}`.
 
-`SUPER + C` → `argvus calculator`
+`.desktop`: `/usr/share/applications/argvus-calculator.desktop` · `Name=ARGVUS Calculator` · `Exec=argvus calculator`.
 
-`.desktop`: `/usr/share/applications/argvus-calculator.desktop` · `Name=ARGVUS Calculator` · `Exec=argvus calculator`
+アプリの文字は Control Center → Appearance → Desktop Style → Fonts の Applications Font に従います。GTK は gtk-font-name を継承し、数字や見出しのサイズは保持します。ランチャーは生成された apps_family を読み変更を監視します。
 
-ARGVUS: `focus_on_activate = true` (`org.argvus.*`, `sh.argvus.*`, `com.argvus.*`, `argvus-*`, `argvus.*`).
-
-ウィンドウを拡大するとキーも大きくなります。新しく起動するたびに標準サイズで開きます。サブ画面の上部には戻る矢印があります。
-
-`s Settings` → `settings` · Escape / ←
-
-Min: **370 × 420** / **440 × 640** · `0–9`: **16 px**.
-
-`2+2` → Enter / `=` → `4` (input) · `4*3` → Enter → `12`.
-
-選択した基本・関数モードはすぐに保存され、次回起動時に復元されます。
-
-`$XDG_CONFIG_HOME/argvus/calculator/settings.json` (`~/.config/argvus/calculator/settings.json`).
+ヘッダーにはアクセント色の ARGVUS バッジとアプリ名を並べます。クリック可能な s Settings はテーマ内の別の背景色で全幅の帯に表示し、Control Center の視覚的な階層に合わせます。

@@ -64,3 +64,5 @@ Las alarmas suenan solo mientras ARGVUS Clock se ejecuta en tu sesión:
 Los archivos se escriben de manera atómica; un archivo que no se puede leer se renombra a `<name>.corrupt-<time>` y se utilizan valores predeterminados. Los colores siguen el tema activo de ARGVUS y el color de resaltado (consumidor del tema `time`). Las cadenas provienen de los dominios de traducción `clock` y `time`.
 
 El calendario de la barra de tareas, ARGVUS Focus, ARGVUS Clock y el Panel de Control son mutuamente excluyentes: abrir uno cierra los demás.
+
+Los textos siguen Applications Font en Control Center → Appearance → Desktop Style → Fonts. Las aplicaciones GTK heredan gtk-font-name; se mantienen los tamaños de números y títulos. El lanzador lee apps_family generado y observa los cambios.

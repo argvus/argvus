@@ -56,3 +56,5 @@ argvus focus status --waybar --follow  # stream status changes for Waybar
 تتبع الألوان سمة ARGVUS النشطة وتسلط الضوء على اللون (مستهلك السمة `time`). تأتي السلاسل من مجالات الترجمة `focus` و`time`.
 
 تقويم شريط المهام وتركيز ARGVUS وساعة ARGVUS ولوحة التحكم يتعارضان: فتح أحدهما يغلق الآخر.
+
+يتبع نص التطبيقات Applications Font في Control Center → Appearance → Desktop Style → Fonts. ترث تطبيقات GTK قيمة gtk-font-name مع الحفاظ على أحجام الأرقام والعناوين. يقرأ المشغّل apps_family المولّد ويتابع التغييرات.

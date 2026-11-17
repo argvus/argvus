@@ -85,3 +85,7 @@ Kegagalan pembacaan kalender ditampilkan secara terpisah dari agenda kosong. Mem
 ## Katalog bahasa bersama
 
 Antarmukanya menggunakan katalog `argvus-i18n` bersama untuk sepuluh bahasa. Teks disimpan di `resources/locales/<locale>/taskbar-calendar.json` di ruang kerja master dan diinstal oleh `argvus`. Bahasa Inggris adalah penggantinya; bahasa baru tidak lagi memerlukan kamus bilingual lokal.
+
+Teks aplikasi mengikuti Applications Font di Control Center → Appearance → Desktop Style → Fonts. GTK mewarisi gtk-font-name; ukuran angka dan judul dipertahankan. Peluncur membaca apps_family yang dihasilkan dan memantau perubahan.
+
+`appearance.font_family` → `gtk-font-name`.

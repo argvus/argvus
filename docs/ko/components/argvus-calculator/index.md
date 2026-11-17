@@ -1,45 +1,75 @@
 ---
 title: ARGVUS 계산기
-description: ARGVUS 계산기 — GTK4 / ARGVUS
+description: 기본 · 공학용 · 프로그래밍 · 금융 · 단위 변환
 ---
 
 # ARGVUS 계산기
 
-`argvus calculator` · launcher: **ARGVUS 계산기**
+`argvus calculator` · `SUPER + C` · launcher: **ARGVUS Calculator**
 
-- GTK4 / Relm4; ARGVUS theme (`time`), IBM Plex Mono.
-- `+`, `-`, `*`, `/`, `%`, `±`; `50% = 0.5`.
-- **공학용**: `sqrt`, `log`, `ln`, `exp`, `sin`, `cos`, `tan`, `asin`, `acos`, `atan`, `pi`, `e`, `^`, `(`, `)`.
-- **라디안**: 선택 해제: 도.
-- `-2^2 = -4`; `2^3^2 = 512`; `2*pi`; `1.5 = 1,5`.
-- Enter: `=`; Escape: **지우기**; Backspace: **문자 삭제**; Tab / Shift+Tab.
-- **결과 복사**; **기록**: 100; **기록 지우기**.
-- IEEE 754 / f64; 15 digits; 4096 bytes; 64 levels.
+설정 → 프로필에서 ↑/↓와 Enter 또는 행 클릭으로 선택합니다. 프로필과 옵션은 즉시 저장되며 다음 실행 때 복원됩니다. 각 프로필은 세션 동안 별도 수식을 유지합니다. Enter 또는 =는 수식을 결과로 바꾸고 선택 없이 끝에 커서를 둡니다.
+
+이율은 기간당 백분율입니다. 이율, 기간 수, 납입액은 같은 주기를 사용합니다. 납입은 기말이며 0%도 지원합니다. 단리와 복리는 누적 총액을 반환합니다. 변환은 오프라인이며 통화는 제외합니다. 기록은 프로필, 옵션, 금융 입력을 포함해 최대 100개를 저장하며 결과 선택 시 복원합니다. 기록 지우기는 저장 파일도 비웁니다.
+
+## 설정
+
+- `s 설정` → **프로필** → 기본 / 공학용 / 프로그래밍 / 금융 / 단위 변환.
+- ↑ / ↓ · Enter · Escape / ←.
+- **결과 복사** · **기록** · **기록 지우기**.
+- **기본**: 370 × 420; **공학용**: 440 × 640.
+- **프로그래밍**: 520 × 640; **금융**: 440 × 640; **단위 변환**: 440 × 520.
+
+## 기본 / 공학용
+
+`+ - * / %` · `50% = 0.5` · `1.5 = 1,5` · `2+2` → Enter → `4` → `+2` → Enter → `6`.
+
+`sin`, `cos`, `tan`, `asin`, `acos`, `atan`, `sqrt`, `log`, `ln`, `exp`, `pi`, `e`, `^`, `(`, `)`.
+
+**각도 단위**: 도 / 라디안. `-2^2 = -4`; `2^3^2 = 512`; `2*pi`.
+
+IEEE 754 / f64 · 유효 숫자 15자리 · 4096바이트 · 구문 분석 깊이 64.
+
+## 프로그래밍
+
+기본값은 10진수, 부호 있는 64비트입니다. 연산은 워드 크기에 맞춰 순환하며 부호 있는 오른쪽 시프트는 부호를 확장합니다. 정수 나눗셈은 0 방향으로 버립니다. 0으로 나누거나 [0, bits) 밖의 시프트는 오류입니다. 접두사 없는 숫자는 선택한 진법을 사용합니다. 진법 변경은 유효한 수식을 변환하고 크기나 부호 변경은 같은 비트를 재해석합니다.
+
+- **진법**: 2 / 8 / 10 / 16; **워드 크기(비트)**: 8 / 16 / 32 / 64.
+- **부호 있음** / **부호 없음** · `0b1010`, `0o12`, `0xA`.
+- `+ - * / %`, `AND OR XOR NOT`, `<< >>`, `& | ^ ~`, `(`, `)`.
+- `9007199254740993+2 = 9007199254740995`; `0xFF AND 0b1010 = 10` (base 10).
+- 8-bit: `255+1 = 0`; `NOT 0 = -1` (부호 있음); `-7/2 = -3`.
+
+## 금융
+
+단리 · 복리 · 고정 상환액 · 현재 가치 · 미래 가치 · 백분율 변화.
+
+- `P`: 초기 원금; `FV`: 미래 금액; `A`: 기간당 납입액.
+- `r`: 기간당 이율(%) / 100; `n`: 기간 수.
+- `G=(1+r)^n`; `H=(G-1)/r` (`r=0`: `H=n`).
+- 단리: `P*(1+r*n)`; 복리: `P*G`.
+- 고정 상환액: `P*G/H`; 현재 가치: `(FV+A*H)/G`; 미래 가치: `P*G+A*H`.
+- 백분율 변화: `(최종 금액 - 원래 금액) / 원래 금액 * 100`.
+
+## 단위 변환
+
+길이 · 질량 · 온도 · 면적 · 부피 · 시간 · 속도 · 데이터 저장.
+
+**변환 전** / **변환 후**: 설정 · `1500 m → 1.5 km` · `32 °F → 0 °C` · `K ≥ 0`.
+
+`1 B = 8 bit`; `1 kB = 1000 B`; `1 KiB = 1024 B`; `US gal = 3.785411784 L`.
 
 ## 기록
 
-종료 후에도 최대 100개의 기록을 보관합니다. 기록 지우기는 저장된 항목도 삭제합니다. 설정은 ↑/↓로 탐색하고 Enter 또는 클릭으로 실행하며 Escape로 돌아갑니다.
+100 · 프로필 + `context` · `기록 지우기`.
 
-`$XDG_DATA_HOME/argvus/calculator/history.json` (`~/.local/share/argvus/calculator/history.json`)
+`$XDG_DATA_HOME/argvus/calculator/history.json` (→ `~/.local/share/argvus/calculator/history.json`).
 
-항상 중앙의 작은 플로팅 창(370 × 420)으로 열립니다. 공학용 모드에서는 확대할 수 있습니다.
+`$XDG_CONFIG_HOME/argvus/calculator/settings.json` (→ `~/.config/argvus/calculator/settings.json`).
 
-기본 화면에는 수식, 결과, 키패드만 표시됩니다. 메뉴에서 공학용 모드, 각도 단위, 복사 및 별도 기록 화면에 접근합니다. 뒤로 또는 Escape로 계산에 돌아가고 기록 결과를 선택하면 재사용합니다. 기본 모드로 돌아오면 수식을 유지하며 작은 창으로 복원됩니다.
+`{"scientific":true}` → `{"profile":"scientific"}`; `{"scientific":false}` → `{"profile":"basic"}`.
 
-`SUPER + C` → `argvus calculator`
+`.desktop`: `/usr/share/applications/argvus-calculator.desktop` · `Name=ARGVUS Calculator` · `Exec=argvus calculator`.
 
-`.desktop`: `/usr/share/applications/argvus-calculator.desktop` · `Name=ARGVUS Calculator` · `Exec=argvus calculator`
+앱 텍스트는 Control Center → Appearance → Desktop Style → Fonts의 Applications Font를 따릅니다. GTK는 gtk-font-name을 상속하며 숫자와 제목 크기는 유지합니다. 런처는 생성된 apps_family를 읽고 변경을 감시합니다.
 
-ARGVUS: `focus_on_activate = true` (`org.argvus.*`, `sh.argvus.*`, `com.argvus.*`, `argvus-*`, `argvus.*`).
-
-창을 늘리면 버튼도 커집니다. 새로 실행할 때마다 기본 크기로 열립니다. 보조 화면 위쪽에 뒤로 화살표가 있습니다.
-
-`s Settings` → `settings` · Escape / ←
-
-Min: **370 × 420** / **440 × 640** · `0–9`: **16 px**.
-
-`2+2` → Enter / `=` → `4` (input) · `4*3` → Enter → `12`.
-
-선택한 기본 또는 공학용 모드는 즉시 저장되며 다음 실행 시 복원됩니다.
-
-`$XDG_CONFIG_HOME/argvus/calculator/settings.json` (`~/.config/argvus/calculator/settings.json`).
+헤더에는 강조색 ARGVUS 배지와 앱 이름이 나란히 표시됩니다. 클릭 가능한 s Settings 바닥글은 테마의 다른 배경색을 사용한 전체 너비 띠로 Control Center 스타일을 따릅니다.

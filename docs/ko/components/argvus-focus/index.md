@@ -56,3 +56,5 @@ ARGVUS Focus, ARGVUS Clock 및 제어판은 동일한 화면 가장자리를 공
 색상은 활성 ARGVUS 테마와 강조 색상을 따릅니다(테마 소비자 `time`). 문자열은 `focus` 및 `time` 번역 도메인에서 가져옵니다.
 
 작업 표시줄 달력, ARGVUS 집중, ARGVUS 시계 및 제어판은 상호 배타적입니다: 하나를 열면 다른 것들은 닫힙니다.
+
+앱 텍스트는 Control Center → Appearance → Desktop Style → Fonts의 Applications Font를 따릅니다. GTK는 gtk-font-name을 상속하며 숫자와 제목 크기는 유지합니다. 런처는 생성된 apps_family를 읽고 변경을 감시합니다.

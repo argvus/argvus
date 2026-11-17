@@ -65,3 +65,5 @@ argvus clock --background        # run without a window, to keep alarms active
 تتم كتابة الملفات ذريًا؛ تتم إعادة تسمية الملف الذي لا يمكن قراءته إلى `<name>.corrupt-<time>` ويتم استخدام الإعدادات الافتراضية. تتبع الألوان سمة ARGVUS النشطة وتسلط الضوء على اللون (مستهلك السمة `time`). تأتي السلاسل من مجالات الترجمة `clock` و`time`.
 
 تقويم شريط المهام وتركيز ARGVUS وساعة ARGVUS ولوحة التحكم يتعارضان: فتح أحدهما يغلق الآخر.
+
+يتبع نص التطبيقات Applications Font في Control Center → Appearance → Desktop Style → Fonts. ترث تطبيقات GTK قيمة gtk-font-name مع الحفاظ على أحجام الأرقام والعناوين. يقرأ المشغّل apps_family المولّد ويتابع التغييرات.

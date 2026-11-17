@@ -56,3 +56,5 @@ Dosyalar atomik olarak yazılır. Okunamayan bir dosya `<name>.corrupt-<time>` o
 Renkler etkin ARGVUS temasını takip eder ve rengi vurgular (tema tüketicisi `time`). Dizeler `focus` ve `time` çeviri etki alanlarından gelir.
 
 Görev çubuğu takvimi, ARGVUS Focus, ARGVUS Saati ve Kontrol Paneli birbirini dışlar: birinin açılması diğerlerini kapatır.
+
+Uygulama metni Control Center → Appearance → Desktop Style → Fonts içindeki Applications Font ayarını izler. GTK gtk-font-name değerini devralır; sayı ve başlık boyutları korunur. Başlatıcı üretilen apps_family değerini okur ve değişiklikleri izler.

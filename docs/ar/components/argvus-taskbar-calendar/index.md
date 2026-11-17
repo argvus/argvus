@@ -85,3 +85,7 @@ argvus taskbar-calendar service
 ## كتالوجات اللغة المشتركة
 
 تستخدم الواجهة كتالوجات `argvus-i18n` المشتركة لجميع اللغات العشر. يتم تخزين النصوص في `resources/locales/<locale>/taskbar-calendar.json` في مساحة العمل الرئيسية ويتم تثبيتها بواسطة `argvus`. اللغة الإنجليزية هي البديل. لم تعد اللغات الجديدة تتطلب قاموسًا محليًا ثنائي اللغة.
+
+يتبع نص التطبيقات Applications Font في Control Center → Appearance → Desktop Style → Fonts. ترث تطبيقات GTK قيمة gtk-font-name مع الحفاظ على أحجام الأرقام والعناوين. يقرأ المشغّل apps_family المولّد ويتابع التغييرات.
+
+`appearance.font_family` → `gtk-font-name`.

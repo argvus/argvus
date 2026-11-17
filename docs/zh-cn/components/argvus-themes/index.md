@@ -51,3 +51,5 @@ ARGVUS 随 `argvus-appearance` 包提供两个内置主题，**ARGVUS Dark** 和
 - **我安装的主题没有出现。** 确认已使用 `pacman -Q argvus-theme-<name>` 安装该软件包，然后重新打开控制中心。该软件包必须在 `argvus-appearance` 存在的情况下安装。
 - **切换主题后高亮颜色发生了变化。** 自定义高亮颜色会在切换主题后保留。使用 **恢复为主题默认** 来将主题自身的颜色恢复。
 - **未列出主题归档供导入。** 它必须直接位于你的主目录中并包含 `<id>/theme.toml`。请参见 [导入和导出主题](/docs/components/argvus-themes/import-and-export/)。
+
+应用文本使用 Control Center → Appearance → Desktop Style → Fonts 中的 Applications Font。GTK 应用继承 gtk-font-name，保留数字和标题的独立字号。启动器读取生成的 apps_family 并监听更改。

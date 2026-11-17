@@ -56,3 +56,5 @@ File ditulis secara atom. File yang tidak dapat dibaca diubah namanya menjadi `<
 Warnanya mengikuti tema ARGVUS aktif dan warna highlight (konsumen tema `time`). String berasal dari domain terjemahan `focus` dan `time`.
 
 Kalender bilah tugas, Fokus ARGVUS, Jam ARGVUS, dan Panel Kontrol saling eksklusif: membuka satu akan menutup yang lain.
+
+Teks aplikasi mengikuti Applications Font di Control Center → Appearance → Desktop Style → Fonts. GTK mewarisi gtk-font-name; ukuran angka dan judul dipertahankan. Peluncur membaca apps_family yang dihasilkan dan memantau perubahan.

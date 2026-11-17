@@ -52,3 +52,5 @@ The Control Center theme pages show their keys in the footer:
 - **A theme I installed does not appear.** Confirm that the package is installed with `pacman -Q argvus-theme-<name>`, then reopen the Control Center. The package must be installed with `argvus-appearance` present.
 - **The highlight color changed after I switched theme.** A custom highlight color survives theme switches. Use **Reset to theme default** to give the theme its own color back.
 - **A theme archive is not listed for import.** It must be directly in your home directory and hold `<id>/theme.toml`. See [Importing and exporting themes](/docs/components/argvus-themes/import-and-export/).
+
+Application text follows Applications Font in Control Center → Appearance → Desktop Style → Fonts. GTK applications inherit gtk-font-name; local sizes for numbers and headings remain. The launcher reads the generated apps_family and watches for changes.

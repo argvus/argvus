@@ -64,3 +64,5 @@ Le sveglie suonano solo mentre ARGVUS Clock è in esecuzione nella tua sessione:
 I file vengono scritti in modo atomico; un file che non può essere letto viene rinominato in `<name>.corrupt-<time>` e vengono utilizzati valori predefiniti. I colori seguono il tema ARGVUS attivo e il colore di evidenziazione (consumer del tema `time`). Le stringhe provengono dai domini di traduzione `clock` e `time`.
 
 Il calendario della barra delle applicazioni, ARGVUS Focus, ARGVUS Clock e il Pannello di Controllo si escludono a vicenda: aprirne uno chiude gli altri.
+
+Il testo segue Applications Font in Control Center → Appearance → Desktop Style → Fonts. Le applicazioni GTK ereditano gtk-font-name; le dimensioni di numeri e titoli restano. Il launcher legge apps_family generato e segue le modifiche.

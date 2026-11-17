@@ -98,10 +98,9 @@ pub(super) fn cache_theme_is_current(paths: &Paths, active_theme: Option<&str>) 
 
 pub(super) fn runtime_css(_config_path: &std::path::Path, paths: &Paths) -> String {
   let settings = Settings::load(paths).unwrap_or_default();
-  let family = css_string(&settings.appearance.font_family);
   let size = settings.appearance.font_size.clamp(8, 32);
   format!(
-    ".argvus-calendar, .event-editor {{ font-family: \"{family}\", monospace; font-size: {size}px; }}\n\
+    ".argvus-calendar, .event-editor {{ font-size: {size}px; }}\n\
          window.argvus-calendar-window, .argvus-calendar-window {{ background-color: transparent; background-image: none; box-shadow: none; }}\n{}",
     accent_runtime_css(paths)
   )
@@ -146,11 +145,4 @@ pub(super) fn accent_runtime_css(paths: &Paths) -> String {
      .event-divider {{ color: rgba({red}, {green}, {blue}, 0.54); }}\n\
      .day-selected, .editor-save {{ color: {text}; }}"
   )
-}
-
-pub(super) fn css_string(value: &str) -> String {
-  value
-    .chars()
-    .filter(|ch| !matches!(ch, '"' | '\\' | '\n' | '\r'))
-    .collect()
 }

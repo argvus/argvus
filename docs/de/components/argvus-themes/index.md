@@ -51,3 +51,5 @@ Die Themen-Seiten des Kontrollzentrums zeigen ihre Tasten in der Fußzeile an:
 - **Ein installiertes Thema wird nicht angezeigt.** Bestätigen Sie, dass das Paket mit `pacman -Q argvus-theme-<name>` installiert ist, und öffnen Sie dann das Kontrollzentrum erneut. Das Paket muss mit `argvus-appearance` vorhanden installiert sein.
 - **Die Hervorhebungsfarbe hat sich nach dem Themenwechsel geändert.** Eine benutzerdefinierte Hervorhebungsfarbe überdauert Themenwechsel. Verwenden Sie **Auf Standardfarbe des Themas zurücksetzen**, um dem Thema seine eigene Farbe zurückzugeben.
 - **Ein Themenarchiv wird nicht für den Import angezeigt.** Es muss direkt in Ihrem Heimatverzeichnis liegen und `<id>/theme.toml` enthalten. Siehe [Themen importieren und exportieren](/docs/components/argvus-themes/import-and-export/).
+
+Anwendungstexte folgen Applications Font unter Control Center → Appearance → Desktop Style → Fonts. GTK-Anwendungen erben gtk-font-name; Größen für Zahlen und Überschriften bleiben erhalten. Der Launcher liest das erzeugte apps_family und verfolgt Änderungen.

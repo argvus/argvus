@@ -51,3 +51,5 @@ Las páginas de temas del Centro de Control muestran sus teclas en el pie de pá
 - **Un tema que instalé no aparece.** Confirma que el paquete está instalado con `pacman -Q argvus-theme-<name>`, luego vuelve a abrir el Centro de Control. El paquete debe estar instalado con `argvus-appearance` presente.
 - **El color de resaltado cambió después de cambiar de tema.** Un color de resaltado personalizado permanece tras cambiar de tema. Usa **Restablecer al valor predeterminado del tema** para devolver al tema su propio color.
 - **Un archivo de tema no aparece listado para importar.** Debe estar directamente en tu directorio personal y contener `<id>/theme.toml`. Consulta [Importar y exportar temas](/docs/components/argvus-themes/import-and-export/).
+
+Los textos siguen Applications Font en Control Center → Appearance → Desktop Style → Fonts. Las aplicaciones GTK heredan gtk-font-name; se mantienen los tamaños de números y títulos. El lanzador lee apps_family generado y observa los cambios.

@@ -88,3 +88,7 @@ Calendar read failures are displayed separately from an empty agenda. Opening th
 ## Shared language catalogs
 
 The interface uses the shared `argvus-i18n` catalogs for all ten languages. Texts are stored in `resources/locales/<locale>/taskbar-calendar.json` in the master workspace and installed by `argvus`. English is the fallback; new languages no longer require a local bilingual dictionary.
+
+Application text follows Applications Font in Control Center → Appearance → Desktop Style → Fonts. GTK applications inherit gtk-font-name; local sizes for numbers and headings remain. The launcher reads the generated apps_family and watches for changes.
+
+`appearance.font_family` → `gtk-font-name`.

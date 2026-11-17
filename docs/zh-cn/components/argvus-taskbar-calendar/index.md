@@ -70,3 +70,7 @@ argvus taskbar-calendar service
 ## 共享语言目录
 
 界面对所有十种语言使用共享的 `argvus-i18n` 目录。文本存储在主工作区的 `resources/locales/<locale>/taskbar-calendar.json` 中，并由 `argvus` 安装。英语为备用语言；新语言不再需要本地双语字典。
+
+应用文本使用 Control Center → Appearance → Desktop Style → Fonts 中的 Applications Font。GTK 应用继承 gtk-font-name，保留数字和标题的独立字号。启动器读取生成的 apps_family 并监听更改。
+
+`appearance.font_family` → `gtk-font-name`.
