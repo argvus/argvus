@@ -31,3 +31,4 @@ description: ARGVUS উপাদানগুলি যা এই সাইটে
 কমান্ড রেফারেন্সটি রয়েছে[কমান্ড লাইন](/docs/reference/command-line/).
 
 রুট Btrfs স্ন্যাপশটের জন্য [স্ন্যাপশট](/docs/components/argvus-control-center/#snapshot) দেখুন।
+- [ARGVUS ক্যালকুলেটর](/docs/components/argvus-calculator/) — `argvus calculator`

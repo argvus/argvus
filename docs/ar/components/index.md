@@ -31,3 +31,5 @@ description: مكونات ARGVUS الموثقة في هذا الموقع، وح�
                                                           ﻲﻓ ﺩﻮﺟﻮﻣ ﺮﻣﺍﻭﻷ﻿ﺍ ﻊﺟﺮﻣ[                                                                    ﺮﻣﺍﻭﻷ﻿ﺍ ﺮﻄﺳ](/docs/reference/command-line/).
 
 راجع [Snapshot](/docs/components/argvus-control-center/#snapshot) للحصول على لقطات Btrfs الجذرية.
+
+- [حاسبة ARGVUS](/docs/components/argvus-calculator/) — `argvus calculator`

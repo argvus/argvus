@@ -31,3 +31,5 @@ Các thành phần này được hợp nhất vào không gian làm việc `argv
 Tham chiếu lệnh nằm trong [Dòng lệnh](/docs/reference/command-line/).
 
 Xem [Ảnh chụp nhanh](/docs/components/argvus-control-center/#snapshot) để biết ảnh chụp nhanh Btrfs gốc.
+
+- [Máy tính ARGVUS](/docs/components/argvus-calculator/) — `argvus calculator`

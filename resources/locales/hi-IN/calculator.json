@@ -1,0 +1,20 @@
+{
+  "app.name": "ARGVUS कैलकुलेटर",
+  "mode.scientific": "वैज्ञानिक",
+  "angle.radians": "रेडियन",
+  "angle.hint": "अचयनित: डिग्री",
+  "expression": "व्यंजक",
+  "history": "इतिहास",
+  "action.copy": "परिणाम कॉपी करें",
+  "action.clear": "साफ़ करें",
+  "action.backspace": "अक्षर मिटाएँ",
+  "action.clear_history": "इतिहास साफ़ करें",
+  "error.syntax": "व्यंजक जाँचें",
+  "error.domain": "अपरिभाषित परिणाम",
+  "error.limit": "व्यंजक बहुत जटिल है",
+  "menu": "मेनू",
+  "action.back": "वापस",
+  "settings": "सेटिंग्स",
+  "error.history": "इतिहास पढ़ा या सहेजा नहीं जा सका",
+  "error.settings": "सेटिंग्स पढ़ी या सहेजी नहीं जा सकीं"
+}

@@ -31,3 +31,4 @@ description: ARGVUS اجزاء جو اس سائٹ میں دستاویزی ہیں
                                                            ﮯﮨ ﮟﯿﻣ ﺲﻧﺮﻔﯾﺭ ﮉﻧﺎﻤﮐ[                                                                     ﻦﺋﻻ﻿ ﮉﻧﺎﻤﮐ](/docs/reference/command-line/).
 
 روٹ Btrfs سنیپ شاٹس کے لیے [Snapshot](/docs/components/argvus-control-center/#snapshot) دیکھیں۔
+- [ARGVUS کیلکولیٹر](/docs/components/argvus-calculator/) — `argvus calculator`

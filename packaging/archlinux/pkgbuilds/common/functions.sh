@@ -11,6 +11,7 @@
 # commands directory under their subcommand names (for example `argvus clock`).
 # Cargo builds them as argvus-<name>; the installed file drops the prefix.
 ARGVUS_GTK_COMMANDS=(
+	calculator
 	clock
 	control-center
 	focus
@@ -69,6 +70,7 @@ arch_build_argvus_workspace() {
 		-p argvus-accounts \
 		-p argvus-du \
 		-p argvus-focus \
+		-p argvus-calculator \
 		-p argvus-clock
 
 	# The greeter is a member of the root workspace, built with the compact

@@ -1,0 +1,20 @@
+{
+  "app.name": "ARGVUS Hesap Makinesi",
+  "mode.scientific": "Bilimsel",
+  "angle.radians": "Radyan",
+  "angle.hint": "İşaretli değil: derece",
+  "expression": "İfade",
+  "history": "Geçmiş",
+  "action.copy": "Sonucu kopyala",
+  "action.clear": "Temizle",
+  "action.backspace": "Karakter sil",
+  "action.clear_history": "Geçmişi temizle",
+  "error.syntax": "İfadeyi kontrol edin",
+  "error.domain": "Tanımsız sonuç",
+  "error.limit": "İfade çok karmaşık",
+  "menu": "Menü",
+  "action.back": "Geri dön",
+  "settings": "Ayarlar",
+  "error.history": "Geçmiş okunamadı veya kaydedilemedi",
+  "error.settings": "Ayarlar okunamadı veya kaydedilemedi"
+}

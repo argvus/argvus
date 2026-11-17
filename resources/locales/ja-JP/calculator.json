@@ -1,0 +1,20 @@
+{
+  "app.name": "ARGVUS 電卓",
+  "mode.scientific": "関数電卓",
+  "angle.radians": "ラジアン",
+  "angle.hint": "未選択：度",
+  "expression": "数式",
+  "history": "履歴",
+  "action.copy": "結果をコピー",
+  "action.clear": "クリア",
+  "action.backspace": "一文字削除",
+  "action.clear_history": "履歴を消去",
+  "error.syntax": "数式を確認してください",
+  "error.domain": "結果は未定義です",
+  "error.limit": "数式が複雑すぎます",
+  "menu": "メニュー",
+  "action.back": "戻る",
+  "settings": "設定",
+  "error.history": "履歴を読み込みまたは保存できません",
+  "error.settings": "設定を読み込みまたは保存できません"
+}

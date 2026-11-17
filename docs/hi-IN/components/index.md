@@ -31,3 +31,4 @@ description: ARGVUS घटक जो इस साइट में प्रल�
 कमांड संदर्भ [कमांड लाइन](/docs/reference/command-line/) में है।
 
 रूट Btrfs स्नैपशॉट के लिए [स्नैपशॉट](/docs/components/argvus-control-center/#snapshot) देखें।
+- [ARGVUS कैलकुलेटर](/docs/components/argvus-calculator/) — `argvus calculator`

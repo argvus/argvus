@@ -1,0 +1,20 @@
+{
+  "app.name": "Калькулятор ARGVUS",
+  "mode.scientific": "Научный",
+  "angle.radians": "Радианы",
+  "angle.hint": "Без отметки: градусы",
+  "expression": "Выражение",
+  "history": "История",
+  "action.copy": "Копировать результат",
+  "action.clear": "Очистить",
+  "action.backspace": "Удалить символ",
+  "action.clear_history": "Очистить историю",
+  "error.syntax": "Проверьте выражение",
+  "error.domain": "Результат не определён",
+  "error.limit": "Слишком сложное выражение",
+  "menu": "Меню",
+  "action.back": "Назад",
+  "settings": "Настройки",
+  "error.history": "Не удалось прочитать или сохранить историю",
+  "error.settings": "Не удалось прочитать или сохранить настройки"
+}

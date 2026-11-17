@@ -1,0 +1,20 @@
+{
+  "app.name": "ARGVUS ক্যালকুলেটর",
+  "mode.scientific": "বৈজ্ঞানিক",
+  "angle.radians": "রেডিয়ান",
+  "angle.hint": "অনির্বাচিত: ডিগ্রি",
+  "expression": "রাশি",
+  "history": "ইতিহাস",
+  "action.copy": "ফলাফল কপি করুন",
+  "action.clear": "মুছুন",
+  "action.backspace": "অক্ষর মুছুন",
+  "action.clear_history": "ইতিহাস মুছুন",
+  "error.syntax": "রাশি পরীক্ষা করুন",
+  "error.domain": "অনির্ধারিত ফলাফল",
+  "error.limit": "রাশি অত্যন্ত জটিল",
+  "menu": "মেনু",
+  "action.back": "পূর্ববর্তী",
+  "settings": "বৈশিষ্ট্য",
+  "error.history": "ইতিহাস পড়া বা সংরক্ষণ করা যায়নি",
+  "error.settings": "সেটিংস পড়া বা সংরক্ষণ করা যায়নি"
+}

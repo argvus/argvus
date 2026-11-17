@@ -30,3 +30,5 @@ description: このサイトに記載されているARGVUSのコンポーネン�
 コマンドリファレンスは [コマンドライン](/docs/reference/command-line/) にあります。
 
 ルートBtrfsスナップショットについては [スナップショット](/docs/components/argvus-control-center/#snapshot) を参照してください。
+
+- [ARGVUS 電卓](/docs/components/argvus-calculator/) — `argvus calculator`

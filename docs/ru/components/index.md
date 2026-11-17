@@ -30,3 +30,5 @@ description: Компоненты ARGVUS, которые задокументи�
 Справочник команд находится в [Командной строке](/docs/reference/command-line/).
 
 См. [Снимок](/docs/components/argvus-control-center/#snapshot) для корневых снимков Btrfs.
+
+- [Калькулятор ARGVUS](/docs/components/argvus-calculator/) — `argvus calculator`

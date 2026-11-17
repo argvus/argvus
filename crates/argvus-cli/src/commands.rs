@@ -62,6 +62,7 @@ private_commands! {
   WindowModeMenu => "window-mode-menu" => "window-mode-menu",
   RemovableDevices => "removable-devices" => "removable-devices",
   Focus => "focus" => "focus",
+  Calculator => "calculator" => "calculator",
   Clock => "clock" => "clock",
   Notifications => "notifications" => "notifications",
   Displayctl => "displayctl" => "displayctl",

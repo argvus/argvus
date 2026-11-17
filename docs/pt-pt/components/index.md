@@ -31,3 +31,5 @@ Estes componentes foram consolidados no workspace `argvus`. As páginas de utili
 A referência de comandos está em [Linha de comando](/pt/docs/reference/command-line/).
 
 Consulte [Snapshot](/pt/docs/components/argvus-control-center/#snapshot) para snapshots Btrfs da raiz.
+
+- [Calculadora ARGVUS](/docs/components/argvus-calculator/) — `argvus calculator`

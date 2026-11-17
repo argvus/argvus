@@ -30,3 +30,5 @@ Estos componentes fueron consolidados en el espacio de trabajo `argvus`. Sus pá
 La referencia de comandos está en [Línea de comandos](/docs/reference/command-line/).
 
 Consulte [Instantánea](/docs/components/argvus-control-center/#snapshot) para snapshots raíz de Btrfs.
+
+- [Calculadora ARGVUS](/docs/components/argvus-calculator/) — `argvus calculator`

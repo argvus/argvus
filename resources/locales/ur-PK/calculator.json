@@ -1,0 +1,20 @@
+{
+  "app.name": "ARGVUS کیلکولیٹر",
+  "mode.scientific": "سائنسی",
+  "angle.radians": "ریڈین",
+  "angle.hint": "غیر منتخب: درجے",
+  "expression": "عبارت",
+  "history": "تاریخ",
+  "action.copy": "نتیجہ نقل کریں",
+  "action.clear": "صاف کریں",
+  "action.backspace": "حرف حذف کریں",
+  "action.clear_history": "تاریخ صاف کریں",
+  "error.syntax": "عبارت کی جانچ کریں",
+  "error.domain": "غیر متعین نتیجہ",
+  "error.limit": "عبارت بہت پیچیدہ ہے",
+  "menu": "مینو",
+  "action.back": "پشت",
+  "settings": "ترتیبات",
+  "error.history": "تاریخ پڑھی یا محفوظ نہیں کی جا سکی",
+  "error.settings": "ترتیبات پڑھی یا محفوظ نہیں کی جا سکیں"
+}

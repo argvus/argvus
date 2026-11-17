@@ -1,0 +1,20 @@
+{
+  "app.name": "Máy tính ARGVUS",
+  "mode.scientific": "Khoa học",
+  "angle.radians": "Radian",
+  "angle.hint": "Bỏ chọn: độ",
+  "expression": "Biểu thức",
+  "history": "Lịch sử",
+  "action.copy": "Sao chép kết quả",
+  "action.clear": "Xóa",
+  "action.backspace": "Xóa ký tự",
+  "action.clear_history": "Xóa lịch sử",
+  "error.syntax": "Kiểm tra biểu thức",
+  "error.domain": "Kết quả không xác định",
+  "error.limit": "Biểu thức quá phức tạp",
+  "menu": "Menu",
+  "action.back": "Lùi",
+  "settings": "Thiết lập",
+  "error.history": "Không thể đọc hoặc lưu lịch sử",
+  "error.settings": "Không thể đọc hoặc lưu cài đặt"
+}

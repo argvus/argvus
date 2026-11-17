@@ -1,0 +1,20 @@
+{
+  "app.name": "ARGVUS Rechner",
+  "mode.scientific": "Wissenschaftlich",
+  "angle.radians": "Bogenmaß",
+  "angle.hint": "Nicht markiert: Grad",
+  "expression": "Ausdruck",
+  "history": "Verlauf",
+  "action.copy": "Ergebnis kopieren",
+  "action.clear": "Löschen",
+  "action.backspace": "Zeichen löschen",
+  "action.clear_history": "Verlauf löschen",
+  "error.syntax": "Ausdruck prüfen",
+  "error.domain": "Ergebnis nicht definiert",
+  "error.limit": "Ausdruck zu komplex",
+  "menu": "Menü",
+  "action.back": "Zurück",
+  "settings": "Einstellungen",
+  "error.history": "Verlauf konnte nicht gelesen oder gespeichert werden",
+  "error.settings": "Einstellungen konnten nicht gelesen oder gespeichert werden"
+}

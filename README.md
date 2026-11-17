@@ -33,6 +33,8 @@ power, display, network, notifications and themes — all packaged for Arch Linu
 
 ## Features
 
+- **Calculator** — `argvus calculator`: basic and scientific GTK4 calculator following the ARGVUS theme.
+
 - **Session** — Login through `greetd` with the ARGVUS greeter, session startup and systemd user services
 - **Hyprland** — Wayland compositor configured in Lua, with tiling, workspaces, monitors and keybindings
 - **Taskbar** — Waybar-based taskbar with the ARGVUS patched Waybar binary

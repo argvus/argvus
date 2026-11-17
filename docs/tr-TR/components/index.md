@@ -31,3 +31,4 @@ Bu bileşenler `argvus` çalışma alanında birleştirildi. Kullanıcı sayfala
 Komut referansı [Komut satırı](/docs/reference/command-line/) içindedir.
 
 Kök Btrfs anlık görüntüleri için bkz. [Anlık görüntü](/docs/components/argvus-control-center/#snapshot).
+- [ARGVUS Hesap Makinesi](/docs/components/argvus-calculator/) — `argvus calculator`

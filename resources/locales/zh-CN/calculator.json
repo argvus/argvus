@@ -1,0 +1,20 @@
+{
+  "app.name": "ARGVUS 计算器",
+  "mode.scientific": "科学",
+  "angle.radians": "弧度",
+  "angle.hint": "未选中：角度",
+  "expression": "表达式",
+  "history": "历史记录",
+  "action.copy": "复制结果",
+  "action.clear": "清除",
+  "action.backspace": "删除字符",
+  "action.clear_history": "清除历史记录",
+  "error.syntax": "请检查表达式",
+  "error.domain": "结果未定义",
+  "error.limit": "表达式过于复杂",
+  "menu": "菜单",
+  "action.back": "返回",
+  "settings": "设置",
+  "error.history": "无法读取或保存历史记录",
+  "error.settings": "无法读取或保存设置"
+}

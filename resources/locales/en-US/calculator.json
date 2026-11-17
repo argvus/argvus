@@ -1,0 +1,20 @@
+{
+  "app.name": "ARGVUS Calculator",
+  "mode.scientific": "Scientific",
+  "angle.radians": "Radians",
+  "angle.hint": "Unchecked: degrees",
+  "expression": "Expression",
+  "history": "History",
+  "action.copy": "Copy result",
+  "action.clear": "Clear",
+  "action.backspace": "Backspace",
+  "action.clear_history": "Clear history",
+  "error.syntax": "Check the expression",
+  "error.domain": "Undefined result",
+  "error.limit": "Expression too complex",
+  "menu": "Menu",
+  "action.back": "Back",
+  "settings": "Settings",
+  "error.history": "Could not read or save history",
+  "error.settings": "Could not read or save calculator settings"
+}

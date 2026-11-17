@@ -31,3 +31,5 @@ Komponen-komponen ini dikonsolidasikan ke dalam ruang kerja `argvus`. Halaman pe
 Referensi perintah ada di [Command line](/docs/reference/command-line/).
 
 Lihat [Snapshot](/docs/components/argvus-control-center/#snapshot) untuk snapshot root Btrfs.
+
+- [Kalkulator ARGVUS](/docs/components/argvus-calculator/) — `argvus calculator`

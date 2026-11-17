@@ -1,0 +1,29 @@
+window.calculator { font-family: "IBM Plex Mono", monospace; font-size: 13px; }
+window.calculator button { background-image: none; background-color: @time_surface; color: @time_fg; border: none; border-radius: 3px; min-height: 24px; padding: 4px 8px; box-shadow: none; }
+window.calculator button:hover { background-color: @time_border; }
+window.calculator button:focus-visible { background-color: @time_border; }
+window.calculator button, window.calculator button:focus, window.calculator entry, window.calculator entry:focus { outline: none; box-shadow: none; border: none; }
+window.calculator checkbutton:focus-visible { outline: none; box-shadow: none; }
+window.calculator entry { font-size: 18px; background: @time_surface; color: @time_fg; border: none; border-radius: 3px; padding: 10px; }
+window.calculator button.primary { background-color: @time_accent; color: @time_on_accent; }
+
+window.calculator button.footer-hint { background: transparent; color: @time_muted; margin: 0 12px 8px; min-height: 20px; padding: 2px 4px; }
+window.calculator button.footer-hint:hover, window.calculator button.footer-hint:focus-visible { color: @time_accent; }
+
+window.calculator button.number-key { font-size: 16px; }
+
+/* Override the shared GTK focus rule on internal nodes as well as controls. */
+window.calculator *,
+window.calculator *:focus,
+window.calculator *:focus-visible,
+window.calculator *:focus-within {
+  outline-style: none;
+  outline-width: 0;
+  outline-offset: 0;
+  box-shadow: none;
+}
+
+window.calculator .settings-list { background: transparent; }
+window.calculator .settings-list row { padding: 10px 12px; margin: 2px 0; border: none; border-radius: 0; color: @time_fg; }
+window.calculator .settings-list row:selected { background: @time_accent; color: @time_on_accent; }
+window.calculator .settings-list row:hover:not(:selected) { background: @time_surface; }

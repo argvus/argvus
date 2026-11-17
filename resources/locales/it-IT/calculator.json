@@ -1,0 +1,20 @@
+{
+  "app.name": "Calcolatrice ARGVUS",
+  "mode.scientific": "Scientifica",
+  "angle.radians": "Radianti",
+  "angle.hint": "Non selezionato: gradi",
+  "expression": "Espressione",
+  "history": "Cronologia",
+  "action.copy": "Copia risultato",
+  "action.clear": "Cancella",
+  "action.backspace": "Elimina carattere",
+  "action.clear_history": "Cancella cronologia",
+  "error.syntax": "Controlla l’espressione",
+  "error.domain": "Risultato indefinito",
+  "error.limit": "Espressione troppo complessa",
+  "menu": "Menu",
+  "action.back": "Indietro",
+  "settings": "Impostazioni",
+  "error.history": "Impossibile leggere o salvare la cronologia",
+  "error.settings": "Impossibile leggere o salvare le impostazioni"
+}

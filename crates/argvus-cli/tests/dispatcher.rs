@@ -336,11 +336,14 @@ fn du_runs_the_private_argvus_du_executable_and_forwards_arguments() {
 }
 
 #[test]
-fn focus_and_clock_run_their_private_executables() {
+fn desktop_tools_run_their_private_executables() {
   let sandbox = Sandbox::new("time-apps");
-  for name in ["focus", "clock"] {
+  for name in ["focus", "clock", "calculator"] {
     sandbox.fake(&sandbox.commands(), name);
     for route in [name.to_owned(), format!("--{name}")] {
+      if route == "--calculator" {
+        continue;
+      }
       let output = sandbox.run(&sandbox.tools_path(), &[route.as_str(), "--toggle"], "");
       assert!(output.status.success(), "{route} failed");
       assert_eq!(text(&output.stdout), expected(&["[--toggle]", "stdin="]));

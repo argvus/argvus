@@ -1,0 +1,20 @@
+{
+  "app.name": "Kalkulator ARGVUS",
+  "mode.scientific": "Ilmiah",
+  "angle.radians": "Radian",
+  "angle.hint": "Tidak dicentang: derajat",
+  "expression": "Ekspresi",
+  "history": "Riwayat",
+  "action.copy": "Salin hasil",
+  "action.clear": "Hapus",
+  "action.backspace": "Hapus karakter",
+  "action.clear_history": "Hapus riwayat",
+  "error.syntax": "Periksa ekspresi",
+  "error.domain": "Hasil tidak terdefinisi",
+  "error.limit": "Ekspresi terlalu rumit",
+  "menu": "Menu",
+  "action.back": "Mundur",
+  "settings": "Pengaturan",
+  "error.history": "Tidak dapat membaca atau menyimpan riwayat",
+  "error.settings": "Tidak dapat membaca atau menyimpan pengaturan"
+}

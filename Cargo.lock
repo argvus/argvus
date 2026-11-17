@@ -168,6 +168,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "argvus-calculator"
+version = "0.1.0"
+dependencies = [
+ "argvus-i18n-core",
+ "argvus-time-ui",
+ "gtk4",
+ "relm4",
+ "serde",
+ "serde_json",
+ "tempfile",
+]
+
+[[package]]
 name = "argvus-cli"
 version = "0.1.0"
 dependencies = [

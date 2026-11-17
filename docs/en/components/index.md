@@ -31,3 +31,5 @@ These components were consolidated into the `argvus` workspace. Their user pages
 The command reference is in [Command line](/docs/reference/command-line/).
 
 See [Snapshot](/docs/components/argvus-control-center/#snapshot) for root Btrfs snapshots.
+
+- [ARGVUS Calculator](/docs/components/argvus-calculator/) — `argvus calculator`

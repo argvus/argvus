@@ -1,0 +1,20 @@
+{
+  "app.name": "ARGVUS 계산기",
+  "mode.scientific": "공학용",
+  "angle.radians": "라디안",
+  "angle.hint": "선택 해제: 도",
+  "expression": "수식",
+  "history": "기록",
+  "action.copy": "결과 복사",
+  "action.clear": "지우기",
+  "action.backspace": "문자 삭제",
+  "action.clear_history": "기록 지우기",
+  "error.syntax": "수식을 확인하세요",
+  "error.domain": "정의되지 않은 결과",
+  "error.limit": "수식이 너무 복잡합니다",
+  "menu": "메뉴",
+  "action.back": "뒤로",
+  "settings": "설정",
+  "error.history": "기록을 읽거나 저장할 수 없습니다",
+  "error.settings": "설정을 읽거나 저장할 수 없습니다"
+}

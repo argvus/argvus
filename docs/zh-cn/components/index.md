@@ -30,3 +30,5 @@ description: 本网站中记录的 ARGVUS 组件，以及它们的开发者笔�
 命令参考见 [命令行](/docs/reference/command-line/)。
 
 查看 [快照](/docs/components/argvus-control-center/#snapshot) 以获取根 Btrfs 快照。
+
+- [ARGVUS 计算器](/docs/components/argvus-calculator/) — `argvus calculator`

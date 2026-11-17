@@ -1,0 +1,20 @@
+{
+  "app.name": "Calculatrice ARGVUS",
+  "mode.scientific": "Scientifique",
+  "angle.radians": "Radians",
+  "angle.hint": "Décoché : degrés",
+  "expression": "Expression",
+  "history": "Historique",
+  "action.copy": "Copier le résultat",
+  "action.clear": "Effacer",
+  "action.backspace": "Effacer un caractère",
+  "action.clear_history": "Effacer l’historique",
+  "error.syntax": "Vérifiez l’expression",
+  "error.domain": "Résultat indéfini",
+  "error.limit": "Expression trop complexe",
+  "menu": "Menu",
+  "action.back": "Retour",
+  "settings": "Paramètres",
+  "error.history": "Impossible de lire ou enregistrer l’historique",
+  "error.settings": "Impossible de lire ou enregistrer les réglages"
+}

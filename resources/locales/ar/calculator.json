@@ -1,0 +1,20 @@
+{
+  "app.name": "حاسبة ARGVUS",
+  "mode.scientific": "علمية",
+  "angle.radians": "راديان",
+  "angle.hint": "غير محدد: درجات",
+  "expression": "التعبير",
+  "history": "السجل",
+  "action.copy": "نسخ النتيجة",
+  "action.clear": "مسح",
+  "action.backspace": "حذف حرف",
+  "action.clear_history": "مسح السجل",
+  "error.syntax": "تحقق من التعبير",
+  "error.domain": "نتيجة غير معرّفة",
+  "error.limit": "التعبير معقد للغاية",
+  "menu": "القائمة",
+  "action.back": "العودة",
+  "settings": "الترتيبات",
+  "error.history": "تعذرت قراءة السجل أو حفظه",
+  "error.settings": "تعذرت قراءة الإعدادات أو حفظها"
+}

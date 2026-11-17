@@ -30,3 +30,5 @@ Diese Komponenten wurden in den `argvus`-Arbeitsbereich konsolidiert. Ihre Benut
 Die Befehlsreferenz befindet sich in [Befehlszeile](/docs/reference/command-line/).
 
 Siehe [Snapshot](/docs/components/argvus-control-center/#snapshot) für Root-Btrfs-Snapshots.
+
+- [ARGVUS Rechner](/docs/components/argvus-calculator/) — `argvus calculator`

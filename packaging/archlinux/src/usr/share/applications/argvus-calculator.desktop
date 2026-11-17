@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=ARGVUS Calculator
+Comment=Basic and scientific calculator
+Exec=argvus calculator
+Icon=accessories-calculator
+Terminal=false
+Categories=Utility;Calculator;
+Keywords=math;scientific;arithmetic;
+StartupNotify=true
+StartupWMClass=org.argvus.Calculator

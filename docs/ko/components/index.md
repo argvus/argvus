@@ -30,3 +30,5 @@ description: 이 사이트에 문서화된 ARGVUS 구성 요소와 해당 개발
 명령 참조는 [명령줄](/docs/reference/command-line/) 에 있습니다.
 
 루트 Btrfs 스냅샷은 [스냅샷](/docs/components/argvus-control-center/#snapshot) 에서 확인하세요.
+
+- [ARGVUS 계산기](/docs/components/argvus-calculator/) — `argvus calculator`

@@ -30,7 +30,7 @@ Commands:
   argvus sessionctl | session | start | tty
   argvus greeter | greeter-session | greeter-tui | greeter-setup
   argvus config | theme | i18n | accounts | firewall
-  argvus taskbar-calendar | removable-devices | notifications | focus | clock | du | window-mode-menu
+  argvus taskbar-calendar | removable-devices | notifications | focus | clock | calculator | du | window-mode-menu
   argvus networkctl | bluetoothctl | displayctl | widget-telemetry-toggle
   argvus launcher | projects | snippets | ssh | keys | gpg | git
   argvus tui-terminal | sensors | app-profiles-yazi-keymap | game-snake | terminal
@@ -44,7 +44,7 @@ Hyprland script commands (used by the Hyprland configuration):
   argvus idle-timeout | keep-awake | hypr-power-menu | effects-toggle
 
 Aliases:
-  argvus setup | system-monitor | control-center | terminal | spf | yazi | about | calendar | game-snake | focus | clock | default-apps | removable-devices | displays | version
+  argvus setup | system-monitor | control-center | terminal | spf | yazi | about | calendar | game-snake | focus | clock | calculator | default-apps | removable-devices | displays | version
 
 Setup options:
   --copy <app>   Copy /usr/share/argvus/<app> to ~/.config/argvus/data/<app>.
