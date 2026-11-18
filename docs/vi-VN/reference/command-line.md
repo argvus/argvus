@@ -81,7 +81,7 @@ Trung tâm điều khiển chấp nhận cờ trang cũ làm đối số đầu 
 
 Các tập lệnh này chạy các tập lệnh đóng gói và được cấu hình Hyprland sử dụng:
 
-`cheatsheets-hypr`, `cheatsheets-launcher`, `scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
+`scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
 
 Một tập lệnh trong cấu hình của người dùng sẽ ghi đè tập lệnh được đóng gói. Thứ tự tra cứu giống như `_config_path` trong `hyprland.lua`: bản sao cấu hình của người dùng, sau đó là bản sao dữ liệu ARGVUS, sau đó là bản sao trạng thái, sau đó là bản sao được tạo và chỉ sau đó là tệp được đóng gói trong `/usr/share/argvus`.
 
@@ -149,3 +149,11 @@ Bộ chọn giao diện và chế độ hiển thị tiến trình trong cửa s
 ARGVUS Lifecycle tuân theo bán kính bo góc thực tế của cửa sổ và thiết lập làm mờ toàn cục của Hyprland. Khi bật hoạt ảnh, ứng dụng luôn dùng hiệu ứng mờ dần.
 
 Khi Lifecycle mở, thao tác nhấp và cuộn trên màn hình nền bị chặn trên mọi màn hình, còn các phím tắt thông thường của Hyprland tạm ngừng.
+
+## ARGVUS Keybindings
+
+`argvus keybindings` · `SUPER + Shift + ?`
+
+`↑ / ↓` Di chuyển · `Tab` Đổi bảng · `/` Tìm kiếm · `Esc` Đóng
+
+Các góc của bảng dùng độ bo góc được đặt trong Trung tâm điều khiển hoặc bộ chọn chế độ.

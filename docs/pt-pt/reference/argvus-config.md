@@ -384,7 +384,7 @@ para os limites e padrões.
 
 O exemplo é o valor de `/hyprland/custom_shortcuts`, não um documento de configuração completo. Os nomes de dispatcher vêm das factories Lua suportadas; os argumentos são um objeto JSON opcional ou `null`, nunca código avaliado. Os personalizados não têm submap, binding do rato nem flags avançadas. A projeção grava `data/generated/hypr/custom-shortcuts.lua` como tabela de dados com escape, incluindo uma tabela vazia quando o último registro é removido. A projeção completa e `project --only keyboard_shortcuts` geram esse ficheiro. O Hyprland registra entradas ativas com `hl.bind`; falhas no ficheiro opcional ou no registro de um atalho são contidas e registradas no log.
 
-O Control Center cria/edita registros e desativa conflitos confirmados em uma transação `argvus config patch`. A gravação precede a aplicação pelo serviço de configuração existente. Uma falha de aplicação não desfaz a gravação bem-sucedida. Restaurar os padrões oficiais preserva os registros personalizados e é recusado se houver colisão com um personalizado ativo. Descrições do utilizador permanecem texto literal em todos os idiomas e no cheatsheet efetivo gerado.
+O Control Center cria/edita registros e desativa conflitos confirmados em uma transação `argvus config patch`. A gravação precede a aplicação pelo serviço de configuração existente. Uma falha de aplicação não desfaz a gravação bem-sucedida. Restaurar os padrões oficiais preserva os registros personalizados e é recusado se houver colisão com um personalizado ativo. Descrições do utilizador permanecem texto literal em todos os idiomas e no ARGVUS Keybindings efetivo gerado.
 
 ## Modo global de janelas
 

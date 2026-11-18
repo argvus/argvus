@@ -82,7 +82,7 @@ description: argvus 명령어, 그 하위 명령어들, 키 바인딩을 위해 
 
 이들은 패키지로 제공되는 스크립트를 실행하며 Hyprland 구성에서 사용됩니다:
 
-`cheatsheets-hypr`, `cheatsheets-launcher`, `scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
+`scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
 
 사용자의 구성에 있는 스크립트는 패키지화된 스크립트를 덮어씁니다. 조회 순서는 hyprland.lua의 `_config_path`와 동일합니다: 사용자의 구성 복사본, 그 다음 ARGVUS 데이터 복사본, 그 다음 상태 복사본, 그 다음 생성된 복사본, 그 이후에야  `hyprland.lua` `/usr/share/argvus` 아래의 패키지 파일이 적용됩니다.
 
@@ -148,3 +148,11 @@ argvus setup --copy <app> --dry-run
 ARGVUS Lifecycle은 창의 실제 모서리 반경과 Hyprland의 전역 흐림 설정을 따릅니다. 애니메이션이 켜져 있으면 항상 페이드를 사용합니다.
 
 Lifecycle이 열려 있는 동안 모든 모니터에서 바탕 화면 클릭과 스크롤을 차단하고 일반 Hyprland 단축키를 일시 중지합니다.
+
+## ARGVUS Keybindings
+
+`argvus keybindings` · `SUPER + Shift + ?`
+
+`↑ / ↓` 이동 · `Tab` 패널 전환 · `/` 찾다 · `Esc` 닫기
+
+패널 모서리는 제어 센터 또는 모드 선택기의 모서리 둥글기 설정을 따릅니다.

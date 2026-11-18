@@ -2,7 +2,6 @@
   "error.project_metadata_write": "Не удалось подготовить метки рабочей области проекта: {reason}.",
   "project.workspace_label": "Проект: {name}",
   "search.application": "Поиск приложения",
-  "search.cheatsheet": "Поиск",
   "search.project": "Открыть проект",
   "search.git_project": "Git: выберите проект",
   "error.no_projects": "argvus-projects: в настроенных корнях и путях не найдено проектов.",

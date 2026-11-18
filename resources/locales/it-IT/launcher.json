@@ -2,7 +2,6 @@
   "error.project_metadata_write": "Impossibile preparare le etichette dell'area di lavoro del progetto: {reason}",
   "project.workspace_label": "Progetto: {name}",
   "search.application": "Cerca applicazione",
-  "search.cheatsheet": "Ricerca",
   "search.project": "Apri progetto",
   "search.git_project": "Git: scegli un progetto",
   "error.no_projects": "argvus-projects: nessun progetto trovato nelle radici e nei percorsi configurati",

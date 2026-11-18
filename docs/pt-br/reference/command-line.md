@@ -83,7 +83,7 @@ O Centro de Controle aceita flags de página antigas como primeiro argumento e a
 
 Estes executam scripts empacotados e são usados pela configuração do Hyprland:
 
-`cheatsheets-hypr`, `cheatsheets-launcher`, `scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
+`scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
 
 Um script na configuração do usuário substitui o empacotado. A ordem de busca é a mesma de `_config_path` em `hyprland.lua`: a cópia da configuração do usuário, depois a cópia de dados do ARGVUS, depois a cópia de estado, depois a cópia gerada, e só então o arquivo empacotado em `/usr/share/argvus`.
 
@@ -151,3 +151,11 @@ Abra o **ARGVUS Lifecycle** com `SUPER + Esc`, o botão de energia da barra de t
 O ARGVUS Lifecycle segue o arredondamento efetivo das janelas e o desfoque global do Hyprland. Usa sempre o estilo fade quando as animações estão habilitadas.
 
 Enquanto o Lifecycle está aberto, cliques e rolagem no desktop ficam bloqueados em todos os monitores, e os atalhos comuns do Hyprland ficam suspensos.
+
+## ARGVUS Keybindings
+
+`argvus keybindings` · `SUPER + Shift + ?`
+
+`↑ / ↓` Navegar · `Tab` Trocar painel · `/` Buscar · `Esc` Fechar
+
+Os cantos do painel seguem o arredondamento definido no Control Center ou no seletor de modo.

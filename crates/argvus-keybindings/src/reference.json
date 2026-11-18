@@ -1,0 +1,102 @@
+[
+  {
+    "category": "category.packages",
+    "keys": "/",
+    "description": "reference.1"
+  },
+  {
+    "category": "category.packages",
+    "keys": "Enter (Search)",
+    "description": "reference.2"
+  },
+  {
+    "category": "category.packages",
+    "keys": "Down / Up on first result",
+    "description": "reference.3"
+  },
+  {
+    "category": "category.packages",
+    "keys": "Esc (Search)",
+    "description": "reference.4"
+  },
+  {
+    "category": "category.packages",
+    "keys": "F8",
+    "description": "reference.5"
+  },
+  {
+    "category": "category.packages",
+    "keys": "Esc",
+    "description": "reference.6"
+  },
+  {
+    "category": "category.packages",
+    "keys": "Shift + PageUp/PageDown",
+    "description": "reference.7"
+  },
+  {
+    "category": "category.packages",
+    "keys": "Shift + End",
+    "description": "reference.8"
+  },
+  {
+    "category": "category.packages",
+    "keys": "Ctrl + C",
+    "description": "reference.9"
+  },
+  {
+    "category": "category.paths",
+    "keys": "$HOME/.config/argvus/",
+    "description": "reference.10"
+  },
+  {
+    "category": "category.paths",
+    "keys": "$HOME/.config/argvus/data/<app>/  (hypr, waybar, quickshell, ...)",
+    "description": "reference.11"
+  },
+  {
+    "category": "category.paths",
+    "keys": "$HOME/.config/<app>/  (free user override)",
+    "description": "reference.12"
+  },
+  {
+    "category": "category.paths",
+    "keys": "$HOME/.local/state/argvus/session.log",
+    "description": "reference.13"
+  },
+  {
+    "category": "category.paths",
+    "keys": "$HOME/.config/argvus/data/removable-devices/",
+    "description": "reference.14"
+  },
+  {
+    "category": "category.paths",
+    "keys": "$HOME/.config/argvus/data/waybar/",
+    "description": "reference.15"
+  },
+  {
+    "category": "category.paths",
+    "keys": "$HOME/.config/argvus/data/quickshell/",
+    "description": "reference.16"
+  },
+  {
+    "category": "category.appearance",
+    "keys": "/",
+    "description": "reference.19"
+  },
+  {
+    "category": "category.system",
+    "keys": "Alt + Shift",
+    "description": "reference.20"
+  },
+  {
+    "category": "category.notes",
+    "keys": "SUPER + Alt + Space / SUPER + Shift + Space",
+    "description": "reference.21"
+  },
+  {
+    "category": "category.notes",
+    "keys": "SUPER + Alt + ↑ / ↓",
+    "description": "reference.22"
+  }
+]

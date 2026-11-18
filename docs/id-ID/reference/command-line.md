@@ -81,7 +81,7 @@ Pusat Kontrol menerima tanda halaman lama sebagai argumen pertamanya dan memetak
 
 Ini menjalankan skrip yang dikemas dan digunakan oleh konfigurasi Hyprland:
 
-`cheatsheets-hypr`, `cheatsheets-launcher`, `scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
+`scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
 
 Skrip dalam konfigurasi pengguna akan menggantikan skrip yang dipaketkan. Urutan pencariannya sama dengan `_config_path` di `hyprland.lua`: salinan konfigurasi pengguna, lalu salinan data ARGVUS, lalu salinan status, lalu salinan yang dihasilkan, dan baru kemudian file paket di bawah `/usr/share/argvus`.
 
@@ -149,3 +149,11 @@ Pemilih tema dan mode menampilkan kemajuan di jendelanya tanpa splash sesi. Posi
 ARGVUS Lifecycle mengikuti radius sudut jendela yang berlaku dan pengaturan blur global Hyprland. Saat animasi aktif, transisi selalu memakai fade.
 
 Saat Lifecycle terbuka, klik dan gulir desktop diblokir pada semua monitor, dan pintasan biasa Hyprland ditangguhkan.
+
+## ARGVUS Keybindings
+
+`argvus keybindings` · `SUPER + Shift + ?`
+
+`↑ / ↓` Navigasi · `Tab` Ganti panel · `/` Cari · `Esc` Tutup
+
+Sudut panel mengikuti pengaturan pembulatan di Pusat Kontrol atau pemilih mode.

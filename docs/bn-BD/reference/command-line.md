@@ -70,7 +70,7 @@ description: আরগভাস কমান্ড, এর সাবকমান
 
 ## Hyprland স্ক্রিপ্ট কমান্ডগুলো
 
-এই রান প্যাকেজ স্ক্রিপ্ট এবং Hyprland কনফিগারেশন দ্বারা ব্যবহৃত হয়:`cheatsheets-hypr `, ` cheatsheets-launcher `, ` scratchpad `, ` hypr-screenshot `, ` spaces-switch `, ` emoji-picker `, ` toggle-sidebar `, ` weather-location `, ` brightness-switch `, ` toggle-mode `, ` idle-timeout `, ` keep-awake `, ` hypr-power-menu`.
+এই রান প্যাকেজ স্ক্রিপ্ট এবং Hyprland কনফিগারেশন দ্বারা ব্যবহৃত হয়:`ARGVUS Keybindings-hypr `, ` ARGVUS Keybindings-launcher `, ` scratchpad `, ` hypr-screenshot `, ` spaces-switch `, ` emoji-picker `, ` toggle-sidebar `, ` weather-location `, ` brightness-switch `, ` toggle-mode `, ` idle-timeout `, ` keep-awake `, ` hypr-power-menu`.
 
 ব্যবহারকারীর কনফিগারেশনের একটি স্ক্রিপ্ট প্যাকেজ করাকে ওভাররাইড করে। লুকআপ অর্ডারটি hyprland.lua-তে `_config_path `-এর মতোই: ব্যবহারকারীর কনফিগারেশন কপি, তারপর ARGVUS ডেটা কপি, তারপর স্টেট কপি, তারপর জেনারেট করা কপি এবং শুধুমাত্র তারপর  ` hyprland.lua ` `/usr/share/argvus` এর অধীনে প্যাকেজ করা ফাইল।## উদাহরণ
 
@@ -132,3 +132,11 @@ argvus setup --copy <app> --dry-run
 ARGVUS Lifecycle উইন্ডোর কার্যকর কোণের ব্যাসার্ধ এবং Hyprland-এর বৈশ্বিক ব্লার সেটিং অনুসরণ করে। অ্যানিমেশন চালু থাকলে সব সময় ফেড ব্যবহার করে।
 
 Lifecycle খোলা থাকলে সব মনিটরে ডেস্কটপে ক্লিক ও স্ক্রল বন্ধ থাকে এবং Hyprland-এর সাধারণ শর্টকাট স্থগিত থাকে।
+
+## ARGVUS Keybindings
+
+`argvus keybindings` · `SUPER + Shift + ?`
+
+`↑ / ↓` চলাচল · `Tab` প্যানেল বদলান · `/` অনুসন্ধান · `Esc` বন্ধ করুন
+
+প্যানেলের কোণ কন্ট্রোল সেন্টার বা মোড নির্বাচকে সেট করা গোলাকৃতি অনুসরণ করে।

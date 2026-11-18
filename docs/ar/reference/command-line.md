@@ -81,7 +81,7 @@ description: أمر argvus وأوامره الفرعية والأعلام الم
 
 تعمل هذه البرامج النصية المجمعة ويتم استخدامها بواسطة تكوين Hyprland:
 
-`cheatsheets-hypr`، `cheatsheets-launcher`، `scratchpad`، `hypr-screenshot`، `spaces-switch`، `emoji-picker`، `toggle-sidebar`، `weather-location`، `brightness-switch`، `toggle-mode`، `idle-timeout`، `keep-awake`، `hypr-power-menu`.
+`ARGVUS Keybindings-hypr`، `ARGVUS Keybindings-launcher`، `scratchpad`، `hypr-screenshot`، `spaces-switch`، `emoji-picker`، `toggle-sidebar`، `weather-location`، `brightness-switch`، `toggle-mode`، `idle-timeout`، `keep-awake`، `hypr-power-menu`.
 
 يتجاوز البرنامج النصي الموجود في تكوين المستخدم البرنامج النصي المعبأ. ترتيب البحث هو نفسه `_config_path` في `hyprland.lua`: نسخة تكوين المستخدم، ثم نسخة بيانات ARGVUS، ثم نسخة الحالة، ثم النسخة التي تم إنشاؤها، وبعد ذلك فقط الملف المعبأ تحت `/usr/share/argvus`.
 
@@ -149,3 +149,11 @@ argvus setup --copy <app> --dry-run
 يتبع ARGVUS Lifecycle نصف قطر زوايا النوافذ الفعلي وإعدادات التمويه العامة في Hyprland. ويستخدم التلاشي عند تفعيل الحركات.
 
 أثناء فتح Lifecycle، يمنع النقر والتمرير على سطح المكتب في جميع الشاشات ويعلّق اختصارات Hyprland العادية.
+
+## ARGVUS Keybindings
+
+`argvus keybindings` · `SUPER + Shift + ?`
+
+`↑ / ↓` تنقّل · `Tab` بدّل اللوحة · `/` البحث · `Esc` إغلاق
+
+تتبع زوايا اللوحة إعداد تدوير الحواف المحدد في مركز التحكم أو محدد الوضع.

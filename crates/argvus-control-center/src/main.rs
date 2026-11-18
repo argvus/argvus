@@ -35,7 +35,7 @@ fn main() -> Result<()> {
         .custom
         .as_ref()
         .map(|custom| custom.description.clone())
-        .or_else(|| keybindings::cheatsheet_description(lang, &binding))
+        .or_else(|| keybindings::binding_description(lang, &binding))
         .unwrap_or_else(|| argvus_i18n::tr(lang, &binding.description_key).into());
       if title == binding.description_key || title.trim().is_empty() {
         continue;

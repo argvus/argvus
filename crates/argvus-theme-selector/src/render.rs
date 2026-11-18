@@ -227,6 +227,19 @@ pub fn paint_mode_background(
   }
 }
 
+/// Background opacity used by the theme selector and its search controls.
+pub const SELECTOR_BACKDROP_OPACITY: f64 = 0.94;
+
+/// Shared treatment for a search bar over a translucent ARGVUS surface.
+pub fn search_css(scope: &str, fg: &str, accent: &str, radius: &str) -> String {
+  format!(
+    "{scope} .argvus-search {{ min-height: 38px; padding: 0 12px; border: 1px solid alpha({fg}, 0.22); border-radius: {radius}; background: alpha({fg}, 0.045); color: {fg}; font-size: 13px; box-shadow: none; text-shadow: none; }}
+     {scope} .argvus-search text {{ background: transparent; box-shadow: none; }}
+     {scope} .argvus-search:focus-within {{ outline: none; border-color: {accent}; }}
+     {scope} .argvus-search:focus-within * {{ outline: none; box-shadow: none; }}"
+  )
+}
+
 pub fn css(theme: Option<&ThemeManifest>, spaced: bool) -> String {
   let token = |name: &str, fallback| {
     theme
@@ -234,19 +247,19 @@ pub fn css(theme: Option<&ThemeManifest>, spaced: bool) -> String {
       .unwrap_or(fallback)
   };
   let bg = token("bg", Color::opaque(17, 19, 22))
-    .with_opacity(0.94)
+    .with_opacity(SELECTOR_BACKDROP_OPACITY)
     .hex_with_alpha();
   let fg = token("fg", Color::opaque(238, 238, 238)).hex();
   let accent = configured_accent(token("accent", Color::opaque(53, 144, 189)));
   let selection = accent.hex();
   let radius = if spaced { "6px" } else { "0" };
+  let search = search_css(".theme-selector", &fg, &selection, radius);
   format!(
-    "window.theme-selector {{ background: {bg}; color: {fg}; font-size: 13px; }} .theme-selector * {{ border-radius: {radius}; box-shadow: none; text-shadow: none; }} .theme-selector button, .theme-selector entry, .theme-selector dropdown {{ min-height: 38px; padding: 0 12px; border: 1px solid alpha({fg}, 0.22); background: alpha({fg}, 0.045); color: {fg}; }} .theme-selector button:hover, .theme-selector entry:focus-within, .theme-selector searchentry:focus-within, .theme-selector dropdown:focus {{ border-color: {}; }} .theme-selector button:focus-visible {{ outline: 2px solid {}; outline-offset: 2px; }} .theme-selector button:checked {{ border-color: {selection}; background: alpha({selection}, 0.18); }} .theme-selector button:hover {{ background: alpha({fg}, 0.10); }} .theme-selector .title {{ font-size: 20px; font-weight: bold; }} .theme-selector .muted {{ opacity: 0.72; }} .theme-selector .suggested-action {{ background: {}; color: {}; border-color: {}; font-weight: bold; }} .theme-selector .suggested-action:hover {{ background: {}; }} .theme-selector popover, .theme-selector popover contents {{ background: {bg}; color: {fg}; border: 1px solid alpha({fg}, 0.3); }} .theme-selector .applying-preview {{ padding: 0; background: alpha(black, 0.72); color: white; border: none; }} .theme-selector dropdown {{ padding: 0; border: none; background: transparent; }} .theme-selector dropdown > button {{ min-height: 38px; }} .theme-selector searchentry:focus-within {{ outline: none; border-color: {}; }} .theme-selector searchentry:focus-within * {{ outline: none; box-shadow: none; }} .theme-selector separator {{ background: alpha({fg}, 0.16); }} .theme-selector button.mode-choice {{ padding: 8px; }} .theme-selector button.mode-choice.mode-selected {{ border-color: {selection}; background: alpha({selection}, 0.18); }} .theme-selector button.mode-choice.mode-cursor {{ outline: 2px solid {}; outline-offset: 2px; }}",
+    "window.theme-selector {{ background: {bg}; color: {fg}; font-size: 13px; }} .theme-selector * {{ border-radius: {radius}; box-shadow: none; text-shadow: none; }} .theme-selector button, .theme-selector entry, .theme-selector dropdown {{ min-height: 38px; padding: 0 12px; border: 1px solid alpha({fg}, 0.22); background: alpha({fg}, 0.045); color: {fg}; }} .theme-selector button:hover, .theme-selector entry:focus-within, .theme-selector dropdown:focus {{ border-color: {}; }} .theme-selector button:focus-visible {{ outline: 2px solid {}; outline-offset: 2px; }} .theme-selector button:checked {{ border-color: {selection}; background: alpha({selection}, 0.18); }} .theme-selector button:hover {{ background: alpha({fg}, 0.10); }} .theme-selector .title {{ font-size: 20px; font-weight: bold; }} .theme-selector .muted {{ opacity: 0.72; }} .theme-selector .suggested-action {{ background: {}; color: {}; border-color: {}; font-weight: bold; }} .theme-selector .suggested-action:hover {{ background: {}; }} .theme-selector popover, .theme-selector popover contents {{ background: {bg}; color: {fg}; border: 1px solid alpha({fg}, 0.3); }} .theme-selector .applying-preview {{ padding: 0; background: alpha(black, 0.72); color: white; border: none; }} .theme-selector dropdown {{ padding: 0; border: none; background: transparent; }} .theme-selector dropdown > button {{ min-height: 38px; }} {search} .theme-selector separator {{ background: alpha({fg}, 0.16); }} .theme-selector button.mode-choice {{ padding: 8px; }} .theme-selector button.mode-choice.mode-selected {{ border-color: {selection}; background: alpha({selection}, 0.18); }} .theme-selector button.mode-choice.mode-cursor {{ outline: 2px solid {}; outline-offset: 2px; }}",
     accent.hex(),
     accent.hex(),
     accent.hex(),
     accent.contrast().hex(),
-    accent.hex(),
     accent.hex(),
     accent.hex(),
     accent.hex()

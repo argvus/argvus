@@ -59,6 +59,7 @@ mod config_defaults;
 mod config_lock;
 mod config_validation;
 mod json_tree;
+pub mod keybindings;
 mod legacy_formats;
 mod legacy_import;
 mod legacy_migration;
@@ -219,7 +220,37 @@ impl ConfigScope {
   }
 }
 
+fn effective_rounding(rounded: bool, rounding: u64) -> u64 {
+  if rounded { rounding.clamp(2, 10) } else { 0 }
+}
+
 impl ConfigDocument {
+  /// Effective corner radius shared by the compositor and desktop surfaces.
+  pub fn window_rounding(&self) -> u64 {
+    let rounded = self
+      .get("/layout/window/rounded")
+      .and_then(Value::as_bool)
+      .unwrap_or(false);
+    let rounding = self
+      .get("/layout/window/rounding")
+      .and_then(Value::as_u64)
+      .unwrap_or_default();
+    effective_rounding(rounded, rounding)
+  }
+
+  fn migrate_keybindings(&mut self) {
+    if let Some(shortcuts) = self
+      .sections
+      .get_mut("keyboard_shortcuts")
+      .and_then(Value::as_object_mut)
+    {
+      if let Some(previous) = shortcuts.remove("system_hyprland_cheatsheet") {
+        shortcuts.entry("system_keybindings").or_insert(previous);
+      }
+      shortcuts.remove("system_kitty_cheatsheet");
+    }
+  }
+
   pub fn load(path: &Path) -> ConfigResult<Self> {
     if !path.exists() {
       return Ok(Self::default());
@@ -227,6 +258,7 @@ impl ConfigDocument {
     let text = fs::read_to_string(path)?;
     let mut document: Self = serde_json::from_str(&text)?;
     migrate_legacy_sections(&mut document)?;
+    document.migrate_keybindings();
     document.migrate_layout_variant();
     document.migrate_animation_settings();
     document.migrate_shadow_settings();
@@ -506,11 +538,26 @@ impl ConfigStore {
     let mut document = self.load_legacy_or_modules(root)?;
     let before = document.clone();
     let imported = import_legacy_values(&mut document, root)?;
+    document.migrate_keybindings();
+    let persisted_shortcuts = directory.join("keyboard_shortcuts.json");
+    let shortcuts_migrated = persisted_shortcuts.is_file()
+      && serde_json::from_str::<Value>(&fs::read_to_string(persisted_shortcuts)?)?
+        .as_object()
+        .is_some_and(|shortcuts| {
+          shortcuts.contains_key("system_hyprland_cheatsheet")
+            || shortcuts.contains_key("system_kitty_cheatsheet")
+        });
     let moved = migrate_legacy_layout(root)?;
     apply_packaged_defaults(&mut document)?;
     apply_defaults(&mut document)?;
     document.validate()?;
-    if document != before || imported || moved || was_missing || !directory.exists() {
+    if document != before
+      || imported
+      || shortcuts_migrated
+      || moved
+      || was_missing
+      || !directory.exists()
+    {
       self.save_modules_locked(&document)?;
     }
     Ok(document)
@@ -600,6 +647,7 @@ impl ConfigStore {
         document.sections.insert(section.to_owned(), value);
       }
     }
+    document.migrate_keybindings();
     document.migrate_layout_variant();
     document.migrate_animation_settings();
     document.migrate_shadow_settings();

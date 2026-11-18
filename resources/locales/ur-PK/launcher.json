@@ -2,7 +2,6 @@
   "error.project_metadata_write": "منصوبے کے کام کے لیبل تیار نہیں ہو سکے: {reason}",
   "project.workspace_label": "پروجیکٹ: {name}",
   "search.application": "تلاش اطلاقیے",
-  "search.cheatsheet": "تلاش",
   "search.project": "کھولیں",
   "search.git_project": "جٹ: ایک منصوبہ منتخب کریں",
   "error.no_projects": "%PH000 کلو میٹر : کسی بھی منصوبے کو جڑوں اور راستوں میں نہیں پایا جاتا۔",

@@ -80,6 +80,7 @@ fn build(app: &gtk::Application, i18n: &I18n) -> Widgets {
   let controls = gtk::Box::new(gtk::Orientation::Horizontal, 12);
   controls.set_halign(gtk::Align::Center);
   let search = gtk::SearchEntry::new();
+  search.add_css_class("argvus-search");
   search.set_hexpand(true);
   search.set_placeholder_text(Some(&i18n.tr("selector.search")));
   controls.append(&search);

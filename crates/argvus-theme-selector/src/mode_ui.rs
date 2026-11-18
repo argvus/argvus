@@ -222,19 +222,7 @@ fn load(locale: &str) -> Result<State, String> {
         .token("accent")
         .unwrap_or(argvus_theme_core::color::Color::opaque(53, 144, 189))
     });
-  let radius = if document
-    .get("/layout/window/rounded")
-    .and_then(|value| value.as_bool())
-    == Some(true)
-  {
-    document
-      .get("/layout/window/rounding")
-      .and_then(|value| value.as_u64())
-      .unwrap_or(0)
-      .clamp(2, 10)
-  } else {
-    0
-  };
+  let radius = document.window_rounding();
   Ok(State {
     accent,
     radius,

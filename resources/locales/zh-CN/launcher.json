@@ -2,7 +2,6 @@
   "error.project_metadata_write": "无法准备项目工作区标签：{reason}",
   "project.workspace_label": "项目：{name}",
   "search.application": "搜索应用程序",
-  "search.cheatsheet": "搜索",
   "search.project": "打开项目",
   "search.git_project": "Git：选择一个项目",
   "error.no_projects": "argvus-projects：在配置的根和路径中找不到项目",

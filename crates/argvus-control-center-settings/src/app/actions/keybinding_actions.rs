@@ -10,7 +10,7 @@ impl App {
       .keybindings
       .iter()
       .enumerate()
-      .filter(|(_, binding)| keybinding_is_cheatsheet_entry(binding))
+      .filter(|(_, binding)| keybinding_is_reference_entry(binding))
       .filter(|(_, binding)| {
         search_matches(
           &self.search,

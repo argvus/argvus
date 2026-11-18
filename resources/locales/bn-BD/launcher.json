@@ -2,7 +2,6 @@
   "error.project_metadata_write": "প্রজেক্টর লেবেল প্রস্তুত করতে ব্যর্থ: {reason}",
   "project.workspace_label": "প্রজেক্ট: {name}",
   "search.application": "অ্যাপ্লিকেশন অনুসন্ধান করুন",
-  "search.cheatsheet": "অনুসন্ধান",
   "search.project": "প্রজেক্ট খুলুন",
   "search.git_project": "গেট: একটি প্রজেক্ট নির্বাচন করুন",
   "error.no_projects": "argvus-projectsকনফিগার করা কোনো প্রজেক্ট পাওয়া যায়নি",

@@ -2,7 +2,6 @@
   "error.project_metadata_write": "Could not prepare project workspace labels: {reason}",
   "project.workspace_label": "Project: {name}",
   "search.application": "Search application",
-  "search.cheatsheet": "Search",
   "search.project": "Open project",
   "search.git_project": "Git: choose a project",
   "error.no_projects": "argvus-projects: no projects found in the configured roots and paths",

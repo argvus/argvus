@@ -2,7 +2,6 @@
   "error.project_metadata_write": "프로젝트 작업공간 라벨을 준비할 수 없습니다: {reason}",
   "project.workspace_label": "프로젝트: {name}",
   "search.application": "애플리케이션 검색",
-  "search.cheatsheet": "찾다",
   "search.project": "프로젝트 열기",
   "search.git_project": "Git: 프로젝트 선택",
   "error.no_projects": "argvus-projects: 구성된 루트 및 경로에서 프로젝트를 찾을 수 없습니다.",

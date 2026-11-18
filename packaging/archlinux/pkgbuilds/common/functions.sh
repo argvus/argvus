@@ -20,6 +20,7 @@ ARGVUS_GTK_COMMANDS=(
 	window-mode-menu
 	theme-selector
 	layout-mode-selector
+	keybindings
 )
 
 arch_source_root() {
@@ -66,6 +67,7 @@ arch_build_argvus_workspace() {
 		-p argvus-removable-devices \
 		-p argvus-taskbar-calendar \
 		-p argvus-window-mode-menu \
+		-p argvus-keybindings \
 		-p argvus-theme-selector \
 		-p argvus-accounts \
 		-p argvus-du \

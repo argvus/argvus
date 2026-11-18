@@ -311,3 +311,34 @@ fn legacy_language_is_not_imported() {
   );
   fs::remove_dir_all(directory).unwrap();
 }
+
+#[test]
+fn migrates_the_shortcut_reference_without_losing_explicit_values() {
+  let mut document = ConfigDocument::default();
+  document.sections.insert(
+    "keyboard_shortcuts".into(),
+    serde_json::json!({
+      "system_hyprland_cheatsheet": null,
+      "system_kitty_cheatsheet": "SUPER + CTRL + slash",
+    }),
+  );
+  document.migrate_keybindings();
+  assert_eq!(
+    document.get("/keyboard_shortcuts"),
+    Some(&serde_json::json!({"system_keybindings": null})),
+  );
+
+  document.sections.insert(
+    "keyboard_shortcuts".into(),
+    serde_json::json!({
+      "system_hyprland_cheatsheet": null,
+      "system_keybindings": "SUPER + F10",
+    }),
+  );
+  document.migrate_keybindings();
+  document.migrate_keybindings();
+  assert_eq!(
+    document.get("/keyboard_shortcuts"),
+    Some(&serde_json::json!({"system_keybindings": "SUPER + F10"})),
+  );
+}

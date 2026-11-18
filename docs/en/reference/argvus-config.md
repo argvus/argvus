@@ -378,7 +378,7 @@ for bounds and defaults.
 
 The example is the value of `/hyprland/custom_shortcuts`, not a complete configuration document. Dispatcher names come from the supported Lua dispatcher factories; arguments are an optional JSON object or `null`, never evaluated code. Custom shortcuts have no submap, mouse binding or advanced flags. The projection writes `data/generated/hypr/custom-shortcuts.lua` as an escaped data table, including an empty table when the last record is removed. Both full projection and `project --only keyboard_shortcuts` generate it. Hyprland registers enabled entries with `hl.bind`; optional file and individual registration failures are contained and logged.
 
-The Control Center creates/edits records and disables confirmed conflicts using one `argvus config patch` transaction. It saves before applying through the existing config service. A failed apply does not undo a successful save. Restoring official defaults preserves custom records and is refused if it would collide with an active custom shortcut. User descriptions remain literal text in all locales and the effective generated cheatsheet.
+The Control Center creates/edits records and disables confirmed conflicts using one `argvus config patch` transaction. It saves before applying through the existing config service. A failed apply does not undo a successful save. Restoring official defaults preserves custom records and is refused if it would collide with an active custom shortcut. User descriptions remain literal text in all locales and the effective generated ARGVUS Keybindings.
 
 ## Global window mode
 

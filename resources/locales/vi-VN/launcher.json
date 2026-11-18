@@ -2,7 +2,6 @@
   "error.project_metadata_write": "Không thể chuẩn bị nhãn vùng làm việc của dự án:{reason}",
   "project.workspace_label": "Dự án: {name}",
   "search.application": "Ứng dụng tìm kiếm",
-  "search.cheatsheet": "Tìm kiếm",
   "search.project": "Dự án Mở",
   "search.git_project": "Git: chọn một dự án",
   "error.no_projects": "argvus-projects: không tìm thấy dự án nào trong các nguồn gốc và đường dẫn đã cấu hình",

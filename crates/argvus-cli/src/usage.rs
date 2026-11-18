@@ -36,11 +36,11 @@ Commands:
   argvus tui-terminal | sensors | app-profiles-yazi-keymap | game-snake | terminal
 
 Hyprland script commands (used by the Hyprland configuration):
-  argvus cheatsheets-hypr | cheatsheets-launcher | scratchpad | hypr-screenshot
+  argvus scratchpad | hypr-screenshot
   argvus windows service | bar | list --json | position top|bottom
   argvus windows minimize | restore | activate | maximize | close ADDRESS
   argvus spaces-switch | emoji-picker | toggle-sidebar | weather-location
-  argvus theme-selector | theme-switch | layout-mode-menu | brightness-switch | toggle-mode
+  argvus keybindings | theme-selector | theme-switch | layout-mode-menu | brightness-switch | toggle-mode
   argvus idle-timeout | keep-awake | lock | effects-toggle
 
 Aliases:

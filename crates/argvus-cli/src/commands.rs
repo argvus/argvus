@@ -58,6 +58,7 @@ private_commands! {
   Firewall => "firewall" => "firewall",
   TaskbarCalendar => "taskbar-calendar" => "taskbar-calendar",
   LayoutModeMenu => "layout-mode-menu" => "layout-mode-selector",
+  Keybindings => "keybindings" => "keybindings",
   ThemeSelector => "theme-selector" => "theme-selector",
   WindowModeMenu => "window-mode-menu" => "window-mode-menu",
   RemovableDevices => "removable-devices" => "removable-devices",
@@ -104,8 +105,6 @@ macro_rules! script_routes {
 }
 
 script_routes! {
-  CheatsheetsHypr => "cheatsheets-hypr" => "hyprland/sh/cheatsheets.sh",
-  CheatsheetsLauncher => "cheatsheets-launcher" => "launcher/sh/cheatsheets.sh",
   Scratchpad => "scratchpad" => "hyprland/sh/scratchpad.sh",
   HyprScreenshot => "hypr-screenshot" => "hyprland/sh/hypr-screenshot.sh",
   SpacesSwitch => "spaces-switch" => "hyprland/sh/spaces-switch.sh",

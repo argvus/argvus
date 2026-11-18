@@ -181,7 +181,7 @@
     },
     // ARGVUS_TELEMETRY_NETWORK_END
 
-    // -- Hyprland cheatsheets -------------------------------------------------
+    // -- Hyprland keyboard shortcuts -------------------------------------------------
     // ARGVUS_TELEMETRY_KEYS_BEGIN
     "custom/header-keys": {
       "exec": "argvus widget-telemetry block header keys",

@@ -2,7 +2,6 @@
   "error.project_metadata_write": "No se pudieron preparar las etiquetas del espacio de trabajo del proyecto: {reason}",
   "project.workspace_label": "Proyecto: {name}",
   "search.application": "Aplicación de búsqueda",
-  "search.cheatsheet": "Buscar",
   "search.project": "Abrir proyecto",
   "search.git_project": "Git: elige un proyecto",
   "error.no_projects": "argvus-projects: no se encontraron proyectos en las raíces y rutas configuradas",

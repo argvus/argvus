@@ -107,7 +107,5 @@ Existing unrelated Hyprland Lua/window-layout documentation edits were preserved
 
 - `docs/en/keyboard-shortcuts.md`
 - `docs/pt-br/keyboard-shortcuts.md`
-- `src/usr/share/argvus/hyprland/docs/cheatsheets/en.txt`
-- `src/usr/share/argvus/hyprland/docs/cheatsheets/pt.txt`
 
 README files remain unchanged because this addition did not invalidate their existing descriptions. The generated requirements file was not edited; the workspace uses its installed, pinned Rust 1.95.0 toolchain.

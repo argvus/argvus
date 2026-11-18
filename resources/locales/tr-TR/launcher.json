@@ -2,7 +2,6 @@
   "error.project_metadata_write": "Proje çalışma alanı etiketleri hazırlayamaz: {reason}",
   "project.workspace_label": "Project: {name}",
   "search.application": "Arama uygulaması",
-  "search.cheatsheet": "Arama",
   "search.project": "Açık proje",
   "search.git_project": "Git: Bir proje seçin",
   "error.no_projects": "argvus-projects: yapılandırılmış köklerde ve yollarda bulunan projeler yok",

@@ -1,4 +1,4 @@
-//! Keyboard shortcut editing: capturing a key combination, conflicts with other bindings and the cheatsheet sections.
+//! Keyboard shortcut editing: capturing a key combination, conflicts with other bindings and the shortcut sections.
 
 use super::*;
 
@@ -272,7 +272,7 @@ impl App {
   }
 }
 
-pub(super) fn keybinding_is_cheatsheet_entry(binding: &keybindings::Binding) -> bool {
+pub(super) fn keybinding_is_reference_entry(binding: &keybindings::Binding) -> bool {
   !matches!(
     binding.id.as_str(),
     "resize.right"
@@ -297,8 +297,7 @@ pub(super) fn keybinding_section(lang: Lang, binding: &keybindings::Binding) -> 
     id if id.starts_with("app.")
       || matches!(
         id,
-        "system.kitty_cheatsheet"
-          | "system.hyprland_cheatsheet"
+          "system.keybindings"
           | "system.clipboard"
           | "system.clipboard_clear"
           | "system.color_picker"
@@ -349,8 +348,7 @@ pub(super) fn keybinding_section_order(binding: &keybindings::Binding) -> usize 
   if binding.id.starts_with("app.")
     || matches!(
       binding.id.as_str(),
-      "system.kitty_cheatsheet"
-        | "system.hyprland_cheatsheet"
+      "system.keybindings"
         | "system.clipboard"
         | "system.clipboard_clear"
         | "system.color_picker"
@@ -368,7 +366,7 @@ pub(super) fn keybinding_label(lang: Lang, binding: &keybindings::Binding) -> St
   if let Some(custom) = &binding.custom {
     return custom.description.clone();
   }
-  if let Some(description) = keybindings::cheatsheet_description(lang, binding) {
+  if let Some(description) = keybindings::binding_description(lang, binding) {
     return description;
   }
   let translated = tr(lang, &binding.description_key);

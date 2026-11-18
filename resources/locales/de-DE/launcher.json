@@ -2,7 +2,6 @@
   "error.project_metadata_write": "Projektarbeitsbereichsbezeichnungen konnten nicht vorbereitet werden: {reason}",
   "project.workspace_label": "Projekt: {name}",
   "search.application": "Suchanwendung",
-  "search.cheatsheet": "Suchen",
   "search.project": "Projekt öffnen",
   "search.git_project": "Git: Wählen Sie ein Projekt",
   "error.no_projects": "argvus-projects: In den konfigurierten Roots und Pfaden wurden keine Projekte gefunden",

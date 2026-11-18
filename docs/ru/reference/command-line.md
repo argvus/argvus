@@ -82,7 +82,7 @@ description: Команда argvus, её подкоманды, флаги, ис�
 
 Эти упакованные скрипты запускаются и используются конфигурацией Hyprland:
 
-`cheatsheets-hypr`, `cheatsheets-launcher`, `scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
+`scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
 
 Скрипт в конфигурации пользователя переопределяет упакованный. Порядок поиска такой же, как у `_config_path` в `hyprland.lua`: копия конфигурации пользователя, затем копия данных ARGVUS, затем копия состояния, затем сгенерированная копия, и только потом упакованный файл под `/usr/share/argvus`.
 
@@ -148,3 +148,11 @@ argvus setup --copy <app> --dry-run
 ARGVUS Lifecycle использует действующий радиус скругления окон и глобальное размытие Hyprland. При включённых анимациях используется плавное появление и исчезновение.
 
 Пока открыт Lifecycle, щелчки и прокрутка на всех мониторах блокируются, а обычные сочетания клавиш Hyprland приостанавливаются.
+
+## ARGVUS Keybindings
+
+`argvus keybindings` · `SUPER + Shift + ?`
+
+`↑ / ↓` Навигация · `Tab` Сменить панель · `/` Поиск · `Esc` Закрыть
+
+Углы панели используют скругление, заданное в Центре управления или в меню выбора режима.

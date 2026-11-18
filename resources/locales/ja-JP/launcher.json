@@ -2,7 +2,6 @@
   "error.project_metadata_write": "プロジェクト ワークスペース ラベルを準備できませんでした: {reason}",
   "project.workspace_label": "プロジェクト: {name}",
   "search.application": "検索アプリケーション",
-  "search.cheatsheet": "検索",
   "search.project": "プロジェクトを開く",
   "search.git_project": "Git: プロジェクトを選択する",
   "error.no_projects": "argvus-projects: 構成されたルートとパスにプロジェクトが見つかりません",

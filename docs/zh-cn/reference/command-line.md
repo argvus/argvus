@@ -82,7 +82,7 @@ description: argvus 命令、它的子命令、为键绑定保留的标志，以
 
 这些运行打包脚本，并被 Hyprland 配置使用：
 
-`cheatsheets-hypr`, `cheatsheets-launcher`, `scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`。
+`scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`。
 
 用户配置中的脚本会覆盖打包脚本。查找顺序与 hyprland.lua 中的 `_config_path` 相同：先是用户的配置副本，然后是 ARGVUS 数据副本，再是状态副本，然后是生成的副本，最后才是  `hyprland.lua` `/usr/share/argvus` 下的打包文件。
 
@@ -148,3 +148,11 @@ argvus setup --copy <app> --dry-run
 ARGVUS Lifecycle 遵循窗口实际的圆角半径和 Hyprland 的全局模糊设置。启用动画时始终使用淡入淡出。
 
 Lifecycle 打开时，会阻止所有显示器上的桌面点击和滚动，并暂停 Hyprland 的常规快捷键。
+
+## ARGVUS Keybindings
+
+`argvus keybindings` · `SUPER + Shift + ?`
+
+`↑ / ↓` 导航 · `Tab` 切换面板 · `/` 搜索 · `Esc` 关闭
+
+面板圆角遵循控制中心或模式选择器中设置的圆角大小。

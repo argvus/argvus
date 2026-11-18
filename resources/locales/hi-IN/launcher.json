@@ -2,7 +2,6 @@
   "error.project_metadata_write": "परियोजना कार्यक्षेत्र लेबल तैयार नहीं कर सका: {reason}",
   "project.workspace_label": "परियोजना: {name}",
   "search.application": "खोज अनुप्रयोग",
-  "search.cheatsheet": "खोज",
   "search.project": "परियोजना",
   "search.git_project": "गिट: एक परियोजना चुनें",
   "error.no_projects": "argvus-projects: कॉन्फ़िगर किए गए जड़ों और पथों में कोई प्रोजेक्ट नहीं मिला",

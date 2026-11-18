@@ -6,13 +6,6 @@ use super::*;
 /// Projects the canonical layout values into the compatibility inputs consumed
 /// by the official Hyprland spacing and border adapters. These files remain
 /// derived state; the modular configuration files are the only persistent source of truth.
-/// Compute the effective rounding value.
-/// When `rounded` is false (disabled), rounding must be 0 regardless of the configured value.
-/// When `rounded` is true, clamp rounding to the valid range [2..10].
-pub(super) fn effective_rounding(rounded: bool, rounding: u64) -> u64 {
-  if !rounded { 0 } else { rounding.clamp(2, 10) }
-}
-
 pub(super) fn project_layout(document: &ConfigDocument, paths: &ArgvusPaths) -> ConfigResult<()> {
   let Some(layout) = document.get("/layout").and_then(Value::as_object) else {
     return Ok(());
@@ -42,17 +35,10 @@ pub(super) fn project_layout(document: &ConfigDocument, paths: &ArgvusPaths) -> 
     }
 
     let mut border_lines = Vec::new();
-    let rounded = window
-      .get("rounded")
-      .and_then(Value::as_bool)
-      .unwrap_or(false);
     if let Some(value) = window.get("rounded").and_then(Value::as_bool) {
       border_lines.push(format!("rounded={}", u8::from(value)));
     }
-    // Use effective rounding: when rounded is false, force rounding to 0
-    let rounding = window.get("rounding").and_then(Value::as_u64).unwrap_or(0);
-    let effective_rounding_value = effective_rounding(rounded, rounding);
-    border_lines.push(format!("rounding={effective_rounding_value}"));
+    border_lines.push(format!("rounding={}", document.window_rounding()));
 
     // border_size (mapped to thickness) is independent of rounded state
     if let Some(value) = window.get("border_size").and_then(Value::as_u64) {

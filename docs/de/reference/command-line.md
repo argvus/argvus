@@ -82,7 +82,7 @@ Das Kontrollzentrum akzeptiert Legacy-Seitenflags als erstes Argument und ordnet
 
 Diese führen verpackte Skripte aus und werden von der Hyprland-Konfiguration verwendet:
 
-`cheatsheets-hypr`, `cheatsheets-launcher`, `scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
+`scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
 
 Ein Skript in der Benutzerkonfiguration überschreibt das verpackte Skript. Die Suchreihenfolge ist dieselbe wie `_config_path` in `hyprland.lua`: die Kopie der Benutzerkonfiguration, dann die ARGVUS-Datenkopie, dann die Statuskopie, dann die generierte Kopie, und erst danach die verpackte Datei unter `/usr/share/argvus`.
 
@@ -150,3 +150,11 @@ Die Auswahlfenster zeigen den Fortschritt ohne Ladebildschirm der Sitzung. Modus
 ARGVUS Lifecycle übernimmt den wirksamen Eckenradius und die globale Unschärfe von Hyprland. Bei aktivierten Animationen verwendet es immer eine Überblendung.
 
 Solange Lifecycle geöffnet ist, blockiert es Klicks und Scrollen auf allen Monitoren sowie normale Hyprland-Tastenkürzel.
+
+## ARGVUS Keybindings
+
+`argvus keybindings` · `SUPER + Shift + ?`
+
+`↑ / ↓` Navigieren · `Tab` Bereich wechseln · `/` Suchen · `Esc` Schließen
+
+Die Ecken übernehmen die Rundung aus dem Control Center oder der Modusauswahl.

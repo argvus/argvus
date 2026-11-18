@@ -638,6 +638,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "argvus-keybindings"
+version = "0.1.0"
+dependencies = [
+ "argvus-config",
+ "argvus-i18n-core",
+ "argvus-theme-core",
+ "argvus-theme-selector",
+ "gtk4",
+ "gtk4-layer-shell",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "argvus-keys"
 version = "0.1.0"
 dependencies = [

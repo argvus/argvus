@@ -10,7 +10,7 @@ use argvus_tui::hints::{HintContext, confirm_hints, hints};
 use argvus_tui::menu::{MenuEvent, MenuState, Row, RowKind};
 
 use super::keybinding_capture::{
-  keybinding_category_order, keybinding_is_cheatsheet_entry, keybinding_label, keybinding_section,
+  keybinding_category_order, keybinding_is_reference_entry, keybinding_label, keybinding_section,
   keybinding_section_order,
 };
 use super::keyboard_draft;

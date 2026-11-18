@@ -81,7 +81,7 @@ Kontrol Merkezi, eski sayfa bayraklarını ilk argüman olarak kabul eder ve bun
 
 Bunlar paketlenmiş komut dosyalarını çalıştırır ve Hyprland yapılandırması tarafından kullanılır:
 
-`cheatsheets-hypr`, `cheatsheets-launcher`, `scratchpad`, `hypr-screenshot` weather-location  toggle-sidebar  emoji-picker  `spaces-switch` ,  `emoji-picker`  `toggle-sidebar`  `weather-location`  `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`, brightness-switch, toggle-mode, idle-timeout, keep-awake, hypr-power-menu.
+`scratchpad`, `hypr-screenshot` weather-location  toggle-sidebar  emoji-picker  `spaces-switch` ,  `emoji-picker`  `toggle-sidebar`  `weather-location`  `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`, brightness-switch, toggle-mode, idle-timeout, keep-awake, hypr-power-menu.
 
 Kullanıcının yapılandırmasındaki bir komut dosyası, paketlenmiş olanı geçersiz kılar. Arama sırası, hyprland.lua'daki `_config_path` ile aynıdır: kullanıcının yapılandırma kopyası, ardından ARGVUS veri kopyası, ardından durum kopyası, ardından oluşturulan kopya ve ancak bundan sonra  `hyprland.lua` `/usr/share/argvus` altında paketlenmiş dosya.
 
@@ -151,3 +151,11 @@ Tema ve mod seçicileri oturum açılış ekranı olmadan ilerlemeyi kendi pence
 ARGVUS Lifecycle, etkin pencere köşe yarıçapını ve Hyprland genel bulanıklık ayarlarını izler. Animasyonlar açıkken her zaman solma geçişini kullanır.
 
 Lifecycle açıkken tüm monitörlerde masaüstü tıklamaları ve kaydırma engellenir, normal Hyprland kısayolları askıya alınır.
+
+## ARGVUS Keybindings
+
+`argvus keybindings` · `SUPER + Shift + ?`
+
+`↑ / ↓` Gezin · `Tab` Panel değiştir · `/` Arama · `Esc` Kapat
+
+Panel köşeleri, Denetim Merkezi veya mod seçicide ayarlanan yuvarlaklığı kullanır.

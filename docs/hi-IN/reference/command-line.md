@@ -76,7 +76,7 @@ description: argvus कमांड, इसके उपकमांड, की�
 
 ये पैकेज्ड स्क्रिप्ट चलाते हैं और हाइप्रलैंड कॉन्फ़िगरेशन द्वारा उपयोग किए जाते हैं:
 
-`cheatsheets-hypr`, `cheatsheets-launcher`, `scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`।
+`scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`।
 
 उपयोगकर्ता के कॉन्फ़िगरेशन में एक स्क्रिप्ट पैकेज्ड स्क्रिप्ट को ओवरराइड करती है। लुकअप ऑर्डर hyprland.lua में `_config_path` के समान है: उपयोगकर्ता की कॉन्फ़िगरेशन कॉपी, फिर ARGVUS डेटा कॉपी, फिर स्टेट कॉपी, फिर जेनरेट की गई कॉपी, और उसके बाद ही  `hyprland.lua` `/usr/share/argvus` के तहत पैक की गई फ़ाइल।
 
@@ -144,3 +144,11 @@ argvus setup --copy <app> --dry-run
 ARGVUS Lifecycle विंडो के प्रभावी कोने के रेडियस और Hyprland की वैश्विक ब्लर सेटिंग का पालन करता है। ऐनिमेशन चालू होने पर हमेशा फ़ेड का उपयोग होता है।
 
 Lifecycle खुला रहने पर सभी मॉनिटर पर डेस्कटॉप क्लिक और स्क्रॉल रुक जाते हैं और Hyprland के सामान्य शॉर्टकट निलंबित रहते हैं।
+
+## ARGVUS Keybindings
+
+`argvus keybindings` · `SUPER + Shift + ?`
+
+`↑ / ↓` नेविगेट करें · `Tab` पैनल बदलें · `/` खोज · `Esc` बंद करें
+
+पैनल के कोने कंट्रोल सेंटर या मोड चयनकर्ता में तय की गई गोलाई का पालन करते हैं।

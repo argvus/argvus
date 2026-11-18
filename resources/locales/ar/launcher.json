@@ -2,7 +2,6 @@
   "error.project_metadata_write": "Can not prepare project workspace labels: {reason}",
   "project.workspace_label": "Project: {name}",
   "search.application": "طلب البحث",
-  "search.cheatsheet": "البحث",
   "search.project": "المشروع المفتوح",
   "search.git_project": "Git: choose a project",
   "error.no_projects": "argvus-projects: لا توجد مشاريع في الجذور والمسارات المكوَّنة",

@@ -19,6 +19,16 @@ fn executable(path: &Path, source: &str) {
 fn universal_session_isolates_failed_providers_and_keeps_query_sequences() {
   let temporary = tempfile::tempdir().unwrap();
   let root = temporary.path();
+  let config = root.join("config");
+  let modules = config.join("argvus/config");
+  fs::create_dir_all(&modules).unwrap();
+  // The projects provider runs before SSH and can call a host-configured
+  // ARGVUS_CONFIG_BIN. Only enable the providers exercised by this test.
+  fs::write(
+    modules.join("launcher.json"),
+    json!({"sources":["settings","ssh"],"recent_files":false,"index_enabled":false}).to_string(),
+  )
+  .unwrap();
   let commands = root.join("commands");
   fs::create_dir(&commands).unwrap();
   executable(
@@ -28,10 +38,13 @@ fn universal_session_isolates_failed_providers_and_keeps_query_sequences() {
   // A provider failure must not prevent other sources from answering queries.
   executable(&commands.join("ssh"), "#!/bin/sh\nexit 1\n");
   let catalogs = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../resources/locales");
+  let diagnostics = root.join("launcher.stderr");
   let mut child = Command::new(env!("CARGO_BIN_EXE_argvus"))
     .args(["launcher-engine", "serve"])
     .env("HOME", root)
-    .env("ARGVUS_CONFIG_HOME", root.join("config"))
+    .env("ARGVUS_CONFIG_HOME", &config)
+    .env("XDG_CONFIG_HOME", &config)
+    .env_remove("ARGVUS_CONFIG_BIN")
     .env("XDG_CACHE_HOME", root.join("cache"))
     .env("ARGVUS_SYSTEM_CONFIG", root.join("system"))
     .env("ARGVUS_COMMANDS_DIR", &commands)
@@ -40,7 +53,7 @@ fn universal_session_isolates_failed_providers_and_keeps_query_sequences() {
     .env("PATH", &commands)
     .stdin(Stdio::piped())
     .stdout(Stdio::piped())
-    .stderr(Stdio::null())
+    .stderr(fs::File::create(&diagnostics).unwrap())
     .spawn()
     .unwrap();
   let mut input = child.stdin.take().unwrap();
@@ -111,8 +124,18 @@ fn universal_session_isolates_failed_providers_and_keeps_query_sequences() {
     Ok::<_, String>(())
   })();
   drop(input);
+  if result.is_err() {
+    let _ = child.kill();
+  }
   let status = child.wait().unwrap();
   reader.join().unwrap();
-  assert!(status.success());
-  assert!(result.is_ok(), "{result:?}");
+  let diagnostics = fs::read_to_string(diagnostics).unwrap();
+  assert!(
+    result.is_ok(),
+    "{result:?}\nlauncher stderr:\n{diagnostics}"
+  );
+  assert!(
+    status.success(),
+    "{status}\nlauncher stderr:\n{diagnostics}"
+  );
 }

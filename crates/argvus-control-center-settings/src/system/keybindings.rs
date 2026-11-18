@@ -1,51 +1,27 @@
-//! Keyboard-binding defaults and overrides of the Settings pages.
+//! Keyboard shortcut editing and persistence.
 pub use argvus_config_core::custom_shortcuts::{CustomShortcut, ShortcutAction};
-use serde::{Deserialize, Serialize};
-use std::{fs, path::PathBuf};
-
+pub use argvus_config_core::keybindings::{
+  Binding, custom_binding, display_key, display_keys, manifest_path, normalize_keys,
+};
 use argvus_control_center_core::process::{ProcessRequest, ProcessRunner, SystemProcessRunner};
 use argvus_i18n::Lang;
 use std::time::Duration;
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-pub struct Binding {
-  pub id: String,
-  #[serde(skip)]
-  pub custom: Option<CustomShortcut>,
-  pub category: String,
-  pub description_key: String,
-  pub keys: String,
-  pub action: String,
-  #[serde(default)]
-  pub context: String,
-  #[serde(default)]
-  pub input: String,
-  #[serde(default = "default_true")]
-  pub configurable: bool,
-  #[serde(default)]
-  pub flags: Vec<String>,
-  #[serde(default)]
-  pub enabled: bool,
-}
-fn default_true() -> bool {
-  true
-}
-#[derive(Debug, Clone, Serialize, Deserialize)]
-struct Manifest {
-  version: u32,
-  bindings: Vec<Binding>,
-}
-pub fn manifest_path() -> PathBuf {
-  std::env::var_os("ARGVUS_SYSTEM_CONFIG")
-    .map(PathBuf::from)
-    .unwrap_or_else(|| PathBuf::from("/usr/share/argvus"))
-    .join("hyprland/keybindings.json")
-}
-fn generated_cheatsheet_path() -> PathBuf {
-  crate::config::paths::argvus_data_home().join("generated/hypr/keybindings.txt")
+pub fn load() -> Vec<Binding> {
+  argvus_config_core::keybindings::load().unwrap_or_else(|_| {
+    let mut bindings = defaults();
+    for binding in &mut bindings {
+      binding.enabled = true;
+    }
+    bindings
+  })
 }
 
-pub fn cheatsheet_description(lang: Lang, binding: &Binding) -> Option<String> {
+fn defaults() -> Vec<Binding> {
+  argvus_config_core::keybindings::defaults().unwrap_or_default()
+}
+
+pub fn binding_description(lang: Lang, binding: &Binding) -> Option<String> {
   let portuguese = lang.locale().starts_with("pt");
   if let Some(number) = binding.id.strip_prefix("workspace.switch.") {
     return Some(if portuguese {
@@ -213,8 +189,7 @@ pub fn cheatsheet_description(lang: Lang, binding: &Binding) -> Option<String> {
       "Project picker, then git TUI (argvus git)",
       "Seletor de projetos e TUI de git (argvus git)",
     ),
-    "system.kitty_cheatsheet" => ("Kitty Cheatsheets", "Cheatsheets do Kitty"),
-    "system.hyprland_cheatsheet" => ("Hyprland Cheatsheets", "Cheatsheets do Hyprland"),
+    "system.keybindings" => ("ARGVUS Keybindings", "ARGVUS Keybindings"),
     "system.clipboard" => ("Clipboard History", "Histórico no Clipboard"),
     "system.clipboard_clear" => ("Clear Clipboard History", "Apagar histórico do Clipboard"),
     "system.color_picker" => ("Color Picker", "Seletor de cores (Color Picker)"),
@@ -231,78 +206,6 @@ pub fn cheatsheet_description(lang: Lang, binding: &Binding) -> Option<String> {
     description.0.to_string()
   })
 }
-pub fn load() -> Vec<Binding> {
-  let canonical = load_canonical_value("/keyboard_shortcuts");
-  let mut bindings = defaults();
-  for binding in &mut bindings {
-    binding.keys = normalize_keys(&binding.keys).unwrap_or_else(|_| binding.keys.clone());
-    match canonical
-      .as_ref()
-      .and_then(|value| value.get(config_key_for_binding(&binding.id)))
-    {
-      Some(serde_json::Value::String(keys)) => {
-        binding.keys = normalize_keys(keys).unwrap_or_else(|_| binding.keys.clone());
-        binding.enabled = true;
-      }
-      Some(serde_json::Value::Null) => binding.enabled = false,
-      _ => binding.enabled = true,
-    }
-  }
-  let custom = load_canonical_value("/hyprland/custom_shortcuts");
-  if let Some(custom) = custom
-    && let Ok(shortcuts) =
-      serde_json::from_value::<std::collections::BTreeMap<String, CustomShortcut>>(custom)
-  {
-    for (id, shortcut) in shortcuts {
-      bindings.push(custom_binding(id, shortcut));
-    }
-  }
-  bindings
-}
-
-pub fn custom_binding(id: String, mut shortcut: CustomShortcut) -> Binding {
-  shortcut.keys = normalize_keys(&shortcut.keys).unwrap_or(shortcut.keys);
-  Binding {
-    id,
-    category: "custom".into(),
-    description_key: shortcut.description.clone(),
-    keys: shortcut.keys.clone(),
-    enabled: shortcut.enabled,
-    action: match &shortcut.action {
-      ShortcutAction::Command { command } => command.clone(),
-      ShortcutAction::Dispatcher {
-        dispatcher,
-        arguments,
-      } => format!(
-        "{dispatcher} {}",
-        arguments
-          .as_ref()
-          .map(ToString::to_string)
-          .unwrap_or_default()
-      ),
-    },
-    context: String::new(),
-    input: String::new(),
-    configurable: true,
-    flags: Vec::new(),
-    custom: Some(shortcut),
-  }
-}
-
-fn load_canonical_value(pointer: &str) -> Option<serde_json::Value> {
-  let request = ProcessRequest::new("argvus")
-    .arg("config")
-    .arg("get")
-    .arg(pointer)
-    .arg("--effective")
-    .timeout(Duration::from_secs(10));
-  let output = SystemProcessRunner.run(&request).ok()?;
-  if output.status != Some(0) {
-    return None;
-  }
-  serde_json::from_slice(&output.stdout).ok()
-}
-
 /// One patch saves the target and disables every conflicting shortcut under the store lock.
 pub fn persist_custom(
   id: &str,
@@ -398,8 +301,7 @@ pub fn delete_custom(id: &str) -> Result<(), String> {
 
 /// A successful save remains saved when applying to the running session fails.
 pub fn apply_saved() -> Result<(), String> {
-  project_canonical_config()?;
-  generate(&load())
+  argvus_control_center_core::config::reload_argvus_config_service()
 }
 
 fn config_key_for_binding(id: &str) -> String {
@@ -415,122 +317,6 @@ fn config_key_for_binding(id: &str) -> String {
   .into()
 }
 
-fn project_canonical_config() -> Result<(), String> {
-  argvus_control_center_core::config::reload_argvus_config_service()
-}
-pub fn normalize_keys(value: &str) -> Result<String, String> {
-  let mut parts: Vec<String> = value
-    .split('+')
-    .map(str::trim)
-    .filter(|v| !v.is_empty())
-    .map(|v| match v.to_ascii_lowercase().as_str() {
-      "super" | "win" | "meta" => "SUPER".into(),
-      "ctrl" | "control" => "CTRL".into(),
-      "alt" => "ALT".into(),
-      "shift" => "SHIFT".into(),
-      "enter" | "return" => "Return".into(),
-      "esc" | "escape" => "Escape".into(),
-      "space" => "Space".into(),
-      "tab" => "Tab".into(),
-      "left" | "leftarrow" => "left".into(),
-      "right" | "rightarrow" => "right".into(),
-      "up" | "uparrow" => "up".into(),
-      "down" | "downarrow" => "down".into(),
-      "pageup" | "page_up" => "Page_Up".into(),
-      "pagedown" | "page_down" => "Page_Down".into(),
-      "backspace" => "BackSpace".into(),
-      "delete" => "Delete".into(),
-      "insert" => "Insert".into(),
-      "home" => "Home".into(),
-      "end" => "End".into(),
-      "/" | "slash" => "slash".into(),
-      "-" | "minus" => "minus".into(),
-      "." | "period" => "period".into(),
-      "," | "comma" => "comma".into(),
-      ";" | "semicolon" => "semicolon".into(),
-      "'" | "apostrophe" => "apostrophe".into(),
-      "[" | "bracketleft" => "bracketleft".into(),
-      "]" | "bracketright" => "bracketright".into(),
-      "\\" | "backslash" => "backslash".into(),
-      "`" | "grave" => "grave".into(),
-      "=" | "equal" => "equal".into(),
-      "print" => "Print".into(),
-      "xf86audioraisevolume" => "XF86AudioRaiseVolume".into(),
-      "xf86audiolowervolume" => "XF86AudioLowerVolume".into(),
-      "xf86audiomute" => "XF86AudioMute".into(),
-      "xf86audionext" => "XF86AudioNext".into(),
-      "xf86audioplay" => "XF86AudioPlay".into(),
-      "xf86audioprev" => "XF86AudioPrev".into(),
-      "xf86audiostop" => "XF86AudioStop".into(),
-      "xf86monbrightnessdown" => "XF86MonBrightnessDown".into(),
-      "xf86monbrightnessup" => "XF86MonBrightnessUp".into(),
-      v => {
-        if v.starts_with("mouse:") || v.starts_with("XF86") || v == "Print" {
-          v.to_string()
-        } else if v.len() == 1
-          || (v.len() >= 2
-            && v.starts_with('f')
-            && v[1..].parse::<u8>().is_ok_and(|n| (1..=24).contains(&n)))
-        {
-          v.to_ascii_uppercase()
-        } else {
-          v.to_string()
-        }
-      }
-    })
-    .collect();
-  let key = parts.pop().ok_or("shortcut needs a key")?;
-  if ["CTRL", "ALT", "SHIFT", "SUPER"].contains(&key.as_str()) {
-    return Err("shortcut needs a non-modifier key".into());
-  }
-  let mut mods = parts;
-  mods.sort_by_key(|v| {
-    ["SUPER", "CTRL", "ALT", "SHIFT"]
-      .iter()
-      .position(|m| m == v)
-      .unwrap_or(99)
-  });
-  mods.dedup();
-  Ok(if mods.is_empty() {
-    key
-  } else {
-    format!("{} + {key}", mods.join(" + "))
-  })
-}
-
-pub fn display_key(key: &str) -> String {
-  match key {
-    "slash" => "/".into(),
-    "minus" => "-".into(),
-    "period" => ".".into(),
-    "comma" => ",".into(),
-    "semicolon" => ";".into(),
-    "apostrophe" => "'".into(),
-    "bracketleft" => "[".into(),
-    "bracketright" => "]".into(),
-    "backslash" => "\\".into(),
-    "grave" => "`".into(),
-    "equal" => "=".into(),
-    "left" => "Left Arrow".into(),
-    "right" => "Right Arrow".into(),
-    "up" => "Up Arrow".into(),
-    "down" => "Down Arrow".into(),
-    "Return" => "Enter".into(),
-    "Escape" => "Escape".into(),
-    "Page_Up" => "Page Up".into(),
-    "Page_Down" => "Page Down".into(),
-    "BackSpace" => "Backspace".into(),
-    "XF86AudioLowerVolume" => "Volume Down".into(),
-    "XF86AudioMute" => "Mute".into(),
-    "XF86AudioNext" => "Next Track".into(),
-    "XF86AudioPlay" => "Play/Pause".into(),
-    "XF86AudioPrev" => "Previous Track".into(),
-    "XF86AudioStop" => "Stop".into(),
-    "XF86MonBrightnessDown" => "Brightness Down".into(),
-    "XF86MonBrightnessUp" => "Brightness Up".into(),
-    other => other.into(),
-  }
-}
 pub fn conflicts(bindings: &[Binding], id: &str, keys: &str) -> Vec<String> {
   conflicts_in_context(bindings, id, keys, "", "")
 }
@@ -668,80 +454,6 @@ pub fn restore(id: &str, bindings: &[Binding]) -> Result<(), String> {
     .ok_or("unknown keybinding")?;
   save_override(id, Some(default.keys), Some(true), bindings)
 }
-pub fn generate(bindings: &[Binding]) -> Result<(), String> {
-  let mut cheatsheet =
-    String::from("ARGVUS effective Hyprland shortcuts\n===================================\n\n");
-  let language = argvus_i18n::Lang::detect();
-  for binding in bindings.iter().filter(|binding| binding.configurable) {
-    let state = if binding.enabled {
-      &display_keys(&binding.keys)
-    } else {
-      "Disabled"
-    };
-    let description = if let Some(custom) = &binding.custom {
-      custom.description.clone()
-    } else {
-      cheatsheet_description(language, binding)
-        .unwrap_or_else(|| language.tr(&binding.description_key))
-    };
-    let description = if binding.custom.is_none() && description == binding.description_key {
-      binding
-        .id
-        .rsplit('.')
-        .next()
-        .unwrap_or(&binding.id)
-        .replace('_', " ")
-    } else {
-      description
-    };
-    cheatsheet.push_str(&format!("{:<34} {}\n", state, description));
-  }
-  let cheat_path = generated_cheatsheet_path();
-  if let Some(parent) = cheat_path.parent() {
-    fs::create_dir_all(parent).map_err(|error| error.to_string())?;
-  }
-  let cheat_tmp = cheat_path.with_extension("txt.tmp");
-  fs::write(&cheat_tmp, cheatsheet).map_err(|e| e.to_string())?;
-  fs::rename(cheat_tmp, cheat_path).map_err(|e| e.to_string())
-}
-pub fn display_keys(keys: &str) -> String {
-  let mut modifiers = Vec::new();
-  let mut key = "";
-  for part in keys.split(" + ") {
-    match part.to_ascii_uppercase().as_str() {
-      "SUPER" | "CTRL" | "ALT" | "SHIFT" => modifiers.push(part.to_ascii_uppercase()),
-      _ => key = part,
-    }
-  }
-  modifiers.sort_by_key(|part| {
-    ["SUPER", "CTRL", "ALT", "SHIFT"]
-      .iter()
-      .position(|m| m == part)
-      .unwrap_or(99)
-  });
-  let mut output = modifiers
-    .into_iter()
-    .map(|part| {
-      if part == "SHIFT" {
-        "Shift".into()
-      } else {
-        part
-      }
-    })
-    .collect::<Vec<String>>();
-  if !key.is_empty() {
-    output.push(display_key(key));
-  }
-  output.join(" + ")
-}
-fn defaults() -> Vec<Binding> {
-  let Ok(raw) = fs::read_to_string(manifest_path()) else {
-    return Vec::new();
-  };
-  serde_json::from_str::<Manifest>(&raw)
-    .map(|m| m.bindings)
-    .unwrap_or_default()
-}
 #[cfg(test)]
 mod tests {
   use super::*;
@@ -818,8 +530,8 @@ mod launcher_shortcut_tests {
   #[test]
   fn launcher_shortcuts_have_readable_descriptions_in_both_languages() {
     for id in ["app.projects", "app.ssh", "app.snippets", "app.git"] {
-      let en = cheatsheet_description(Lang::for_locale("en-US"), &binding(id));
-      let pt = cheatsheet_description(Lang::for_locale("pt-BR"), &binding(id));
+      let en = binding_description(Lang::for_locale("en-US"), &binding(id));
+      let pt = binding_description(Lang::for_locale("pt-BR"), &binding(id));
       assert!(
         en.as_deref().is_some_and(|text| text.contains("argvus")),
         "{id}"

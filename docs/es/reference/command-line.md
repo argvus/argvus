@@ -82,7 +82,7 @@ El Centro de control acepta indicadores de páginas heredadas como primer argume
 
 Estos ejecutan scripts empaquetados y son usados por la configuración de Hyprland:
 
-`cheatsheets-hypr`, `cheatsheets-launcher`, `scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
+`scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
 
 Un script en la configuración del usuario sobrescribe el empaquetado. El orden de búsqueda es el mismo que `_config_path` en `hyprland.lua`: la copia de la configuración del usuario, luego la copia de los datos ARGVUS, luego la copia del estado, luego la copia generada, y solo entonces el archivo empaquetado bajo `/usr/share/argvus`.
 
@@ -148,3 +148,11 @@ Las aplicaciones iniciadas desde los selectores muestran el progreso en el selec
 ARGVUS Lifecycle respeta el radio efectivo de las esquinas y el desenfoque global de Hyprland. Usa un fundido siempre que las animaciones estén activadas.
 
 Mientras Lifecycle está abierto, bloquea los clics y el desplazamiento del escritorio en todos los monitores y suspende los atajos normales de Hyprland.
+
+## ARGVUS Keybindings
+
+`argvus keybindings` · `SUPER + Shift + ?`
+
+`↑ / ↓` Navegar · `Tab` Cambiar de panel · `/` Buscar · `Esc` Cerrar
+
+Las esquinas del panel siguen el redondeo configurado en el Centro de control o en el selector de modo.

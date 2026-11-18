@@ -2,7 +2,6 @@
   "error.project_metadata_write": "Tak bisa menyiapkan label area kerja projek: {reason}",
   "project.workspace_label": "Projek: {name}",
   "search.application": "Cari aplikasi",
-  "search.cheatsheet": "Cari",
   "search.project": "Buka projek",
   "search.git_project": "Git: pilih suatu projek",
   "error.no_projects": "argvus-projects: tidak ditemukan proyek dalam akar dan tapak yang dikonfigurasi",

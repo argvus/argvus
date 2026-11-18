@@ -83,7 +83,7 @@ The Control Center accepts legacy page flags as its first argument and maps them
 
 These run packaged scripts and are used by the Hyprland configuration:
 
-`cheatsheets-hypr`, `cheatsheets-launcher`, `scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
+`scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
 
 A script in the user's configuration overrides the packaged one. The lookup order is the same as `_config_path` in `hyprland.lua`: the user's config copy, then the ARGVUS data copy, then the state copy, then the generated copy, and only then the packaged file under `/usr/share/argvus`.
 
@@ -151,3 +151,11 @@ Open **ARGVUS Lifecycle** with `SUPER + Esc`, the taskbar Power button, or `argv
 ARGVUS Lifecycle follows the effective window corner radius and Hyprland’s global blur settings. It uses a fade regardless of the selected animation style and respects the global animation switch.
 
 While Lifecycle is open, it blocks desktop clicks and scrolling on all monitors and inhibits ordinary Hyprland shortcuts.
+
+## ARGVUS Keybindings
+
+`argvus keybindings` · `SUPER + Shift + ?`
+
+`↑ / ↓` Navigate · `Tab` Switch panel · `/` Search · `Esc` Close
+
+The panel corners follow the border rounding set in Control Center or the mode selector.

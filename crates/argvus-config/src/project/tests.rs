@@ -1,11 +1,11 @@
 use super::component_adapters::{AdapterInputs, AdapterPlan, plan_adapters};
 use super::file_writes::atomic_write_lua;
 use super::hyprland_projection::{
-  effective_rounding, lua_table, render_window_rules, splash_background_color,
-  virtual_machine_state,
+  lua_table, render_window_rules, splash_background_color, virtual_machine_state,
 };
 use super::manifest::manifest_affects_compositor;
 use super::*;
+use crate::effective_rounding;
 
 fn stable_login_inputs<'a>(changed_sections: &'a [&'a str]) -> AdapterInputs<'a> {
   AdapterInputs {

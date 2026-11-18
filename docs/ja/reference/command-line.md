@@ -82,7 +82,7 @@ description: argvusコマンド、そのサブコマンド、キー割り当て�
 
 これらはパッケージ化されたスクリプトを実行し、Hyprland の設定で使用されます:
 
-`cheatsheets-hypr`、`cheatsheets-launcher`、`scratchpad`、`hypr-screenshot`、`spaces-switch`、`emoji-picker`、`toggle-sidebar`、`weather-location`、`brightness-switch`、`toggle-mode`、`idle-timeout`、`keep-awake`、`hypr-power-menu`。
+`ARGVUS Keybindings-hypr`、`ARGVUS Keybindings-launcher`、`scratchpad`、`hypr-screenshot`、`spaces-switch`、`emoji-picker`、`toggle-sidebar`、`weather-location`、`brightness-switch`、`toggle-mode`、`idle-timeout`、`keep-awake`、`hypr-power-menu`。
 
 ユーザーの設定にあるスクリプトは、パッケージ化されたものを上書きします。検索の順序は、hyprland.lua 内の `_config_path` と同じです: ユーザーの設定コピー、次に ARGVUS データコピー、次にステートコピー、次に生成されたコピー、そして最後に  `hyprland.lua` `/usr/share/argvus` の下にあるパッケージ化ファイルです。
 
@@ -148,3 +148,11 @@ argvus setup --copy <app> --dry-run
 ARGVUS Lifecycle はウィンドウの有効な角丸半径と Hyprland の全体ぼかし設定に従います。アニメーションが有効な場合は常にフェードします。
 
 Lifecycle を開いている間は、すべてのモニターでデスクトップのクリックとスクロールを遮断し、Hyprland の通常のショートカットを一時停止します。
+
+## ARGVUS Keybindings
+
+`argvus keybindings` · `SUPER + Shift + ?`
+
+`↑ / ↓` 移動 · `Tab` パネル切替 · `/` 検索 · `Esc` 閉じる
+
+パネルの角の丸みは、コントロールセンターまたはモードセレクターの設定に従います。
