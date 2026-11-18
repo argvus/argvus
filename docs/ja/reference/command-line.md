@@ -137,9 +137,7 @@ argvus setup --copy <app> --dry-run
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
 
-`argvus layout-mode-menu` (SUPER + Shift + M): **Tab / Shift+Tab**: Sticky / Spaced ⇄ Tile / Floating · Taskbar Top / Bottom. **Sticky / Spaced**: ↑ / ↓. **Tile / Floating · Taskbar Top / Bottom** (2 × 2): ↑ / ↓ / ← / →. **Enter**: ✓. **Esc**: ×.
-
-未選択のカードの不透明度は40%で、サブモードのプレビューはメインの75%のサイズです。
+`argvus layout-mode-menu` (SUPER + Shift + M). レイアウトモード、ウィンドウの配置、タスクバーの位置を選択します。 **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: 選択. **Enter**: 適用. **Esc**: 閉じる.
 
 テーマとモードの選択画面内で進行状況を表示し、セッションのスプラッシュは表示しません。再読み込み前にタスクバーの最終位置を準備し、必要な再起動を1つのsystemdトランザクションにまとめます。
 

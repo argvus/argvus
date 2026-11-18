@@ -133,9 +133,7 @@ argvus setup --copy <app> --dry-run
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
 
-`argvus layout-mode-menu` (SUPER + Shift + M): **Tab / Shift+Tab**: Sticky / Spaced ⇄ Tile / Floating · Taskbar Top / Bottom. **Sticky / Spaced**: ↑ / ↓. **Tile / Floating · Taskbar Top / Bottom** (2 × 2): ↑ / ↓ / ← / →. **Enter**: ✓. **Esc**: ×.
-
-अचयनित कार्ड की अपारदर्शिता 40% है; उपमोड पूर्वावलोकन मुख्य पूर्वावलोकन के आकार के 75% हैं।
+`argvus layout-mode-menu` (SUPER + Shift + M). लेआउट मोड, विंडो की व्यवस्था और टास्कबार की जगह चुनें। **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: चुनें. **Enter**: लागू करें. **Esc**: बंद करें.
 
 थीम और मोड चयनक सत्र स्प्लैश के बिना अपनी विंडो में प्रगति दिखाते हैं। पुनः लोड से पहले टास्कबार की अंतिम स्थिति तैयार होती है और आवश्यक पुनरारंभ एक systemd लेनदेन में किए जाते हैं।
 

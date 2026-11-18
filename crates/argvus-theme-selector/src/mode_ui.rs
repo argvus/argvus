@@ -1,4 +1,4 @@
-//! Two-column layout-mode selector; configuration and application belong to argvus-config.
+//! Layout-mode selector; configuration and application belong to argvus-config.
 use crate::{model::Catalog, preview, render};
 use argvus_config_core::{
   layout_preset::{self, ApplyOutcome, LayoutPreset, TaskbarPosition},
@@ -30,12 +30,12 @@ impl WindowTaskbarChoice {
       position: TaskbarPosition::Top,
     },
     Self {
-      windows: WindowMode::Floating,
-      position: TaskbarPosition::Top,
-    },
-    Self {
       windows: WindowMode::Tile,
       position: TaskbarPosition::Bottom,
+    },
+    Self {
+      windows: WindowMode::Floating,
+      position: TaskbarPosition::Top,
     },
     Self {
       windows: WindowMode::Floating,
@@ -52,12 +52,12 @@ impl WindowTaskbarChoice {
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-enum FocusColumn {
+enum FocusGroup {
   Modes,
   Submodes,
 }
 
-impl FocusColumn {
+impl FocusGroup {
   fn next(self) -> Self {
     match self {
       Self::Modes => Self::Submodes,
@@ -72,7 +72,7 @@ struct Selection {
   windows: WindowMode,
   position: TaskbarPosition,
   cursor: usize,
-  focus: FocusColumn,
+  focus: FocusGroup,
 }
 
 impl Selection {
@@ -82,7 +82,7 @@ impl Selection {
       windows: preset.windows,
       position: preset.position,
       cursor: WindowTaskbarChoice::from_preset(preset),
-      focus: FocusColumn::Modes,
+      focus: FocusGroup::Modes,
     }
   }
 
@@ -107,20 +107,22 @@ impl Selection {
       windows: choice.windows,
       position: choice.position,
       cursor,
-      focus: FocusColumn::Submodes,
+      focus: FocusGroup::Submodes,
       ..self
     }
   }
 
-  fn navigate(self, key: gdk::Key) -> Self {
-    if self.focus == FocusColumn::Modes {
+  fn navigate(self, key: gdk::Key, columns: usize) -> Self {
+    if self.focus == FocusGroup::Modes {
       return self.move_mode(key);
     }
     let cursor = match key {
-      gdk::Key::Left if self.cursor % 2 == 1 => self.cursor - 1,
-      gdk::Key::Right if self.cursor.is_multiple_of(2) => self.cursor + 1,
-      gdk::Key::Up if self.cursor >= 2 => self.cursor - 2,
-      gdk::Key::Down if self.cursor < 2 => self.cursor + 2,
+      gdk::Key::Left if !self.cursor.is_multiple_of(columns) => self.cursor - 1,
+      gdk::Key::Right if self.cursor % columns + 1 < columns => self.cursor + 1,
+      gdk::Key::Up if self.cursor >= columns => self.cursor - columns,
+      gdk::Key::Down if self.cursor + columns < WindowTaskbarChoice::ALL.len() => {
+        self.cursor + columns
+      }
       _ => self.cursor,
     };
     self.choose(cursor)
@@ -129,11 +131,11 @@ impl Selection {
   fn move_mode(self, key: gdk::Key) -> Self {
     let mut selected = self;
     match key {
-      gdk::Key::Up => selected.variant = Variant::Sticky,
-      gdk::Key::Down => selected.variant = Variant::Spaced,
+      gdk::Key::Up | gdk::Key::Left => selected.variant = Variant::Sticky,
+      gdk::Key::Down | gdk::Key::Right => selected.variant = Variant::Spaced,
       _ => {}
     }
-    selected.focus = FocusColumn::Modes;
+    selected.focus = FocusGroup::Modes;
     selected
   }
 }
@@ -151,14 +153,16 @@ struct Card {
   drawing: gtk::DrawingArea,
   cover: gtk::Box,
   spinner: gtk::Spinner,
+  indicator: Option<gtk::Label>,
 }
 
 struct State {
   theme: ThemeManifest,
-  saved: usize,
   selection: Selection,
   image: Option<preview::Image>,
   pending: bool,
+  accent: argvus_theme_core::color::Color,
+  radius: u64,
 }
 
 enum Event {
@@ -209,9 +213,32 @@ fn load(locale: &str) -> Result<State, String> {
     .get(saved)
     .copied()
     .ok_or_else(|| "saved layout preset is invalid".to_owned())?;
+  let accent = document
+    .get("/appearance/accent")
+    .and_then(|value| value.as_str())
+    .and_then(argvus_theme_core::color::Color::parse)
+    .unwrap_or_else(|| {
+      theme
+        .token("accent")
+        .unwrap_or(argvus_theme_core::color::Color::opaque(53, 144, 189))
+    });
+  let radius = if document
+    .get("/layout/window/rounded")
+    .and_then(|value| value.as_bool())
+    == Some(true)
+  {
+    document
+      .get("/layout/window/rounding")
+      .and_then(|value| value.as_u64())
+      .unwrap_or(0)
+      .clamp(2, 10)
+  } else {
+    0
+  };
   Ok(State {
+    accent,
+    radius,
     theme,
-    saved,
     selection: Selection::from_preset(preset),
     image,
     pending: window_mode::status().map_or(true, |status| status.pending || !status.available),
@@ -225,16 +252,8 @@ fn apply_mode(index: usize) -> Result<ApplyOutcome, String> {
   layout_preset::apply(*preset).map_err(|error| error.to_string())
 }
 
-fn preview_height(width: i32, height: i32) -> i32 {
-  let card_width = preview_width(width);
-  (card_width * 9 / 16)
-    .max(24)
-    .min(((height - 250) / 2).max(24))
-}
-
-fn preview_width(width: i32) -> i32 {
-  // One main preview and two subpreviews at 75%, plus chrome and margins.
-  ((width - 180) * 2 / 5).clamp(1, 840)
+fn grid_columns(width: i32) -> usize {
+  if width >= 1200 { 4 } else { 2 }
 }
 
 fn preset_for_card(kind: CardKind, selection: Selection) -> LayoutPreset {
@@ -258,35 +277,34 @@ fn card_is_selected(kind: CardKind, selection: Selection) -> bool {
   }
 }
 
-fn card_opacity(kind: CardKind, selection: Selection) -> f64 {
-  if !card_is_selected(kind, selection) {
-    0.4
-  } else {
-    1.0
-  }
-}
-
-fn refresh_cards(
-  cards: &[Card],
-  selection: Selection,
-  theme: Option<&ThemeManifest>,
-  provider: &gtk::CssProvider,
-) {
-  provider.load_from_string(&render::css(theme, selection.variant == Variant::Spaced));
+fn refresh_cards(cards: &[Card], selection: Selection) {
   for card in cards {
     let selected = card_is_selected(card.kind, selection);
-    card.button.set_opacity(card_opacity(card.kind, selection));
+    if let Some(indicator) = &card.indicator {
+      indicator.set_text(if selected { "✓" } else { "" });
+      indicator.set_css_classes(&[if selected {
+        "mode-checked"
+      } else {
+        "mode-unchecked"
+      }]);
+    }
+    card
+      .button
+      .update_state(&[gtk::accessible::State::Pressed(if selected {
+        gtk::AccessibleTristate::True
+      } else {
+        gtk::AccessibleTristate::False
+      })]);
     if selected {
       card.button.add_css_class("mode-selected");
     } else {
       card.button.remove_css_class("mode-selected");
     }
-    let has_cursor = matches!(card.kind, CardKind::Variant(_))
-      && selection.focus == FocusColumn::Modes
-      && selected
-      || matches!(card.kind, CardKind::WindowTaskbar(_))
-        && selection.focus == FocusColumn::Submodes
-        && Some(selection.cursor) == option_kind_for_card(card.kind);
+    let has_cursor =
+      matches!(card.kind, CardKind::Variant(_)) && selection.focus == FocusGroup::Modes && selected
+        || matches!(card.kind, CardKind::WindowTaskbar(_))
+          && selection.focus == FocusGroup::Submodes
+          && Some(selection.cursor) == option_kind_for_card(card.kind);
     if has_cursor {
       card.button.add_css_class("mode-cursor");
     } else {
@@ -326,6 +344,18 @@ fn card_title(kind: CardKind, i18n: &I18n) -> String {
   }
 }
 
+fn mode_icon(size: i32) -> gtk::Box {
+  let icon = gtk::Box::new(gtk::Orientation::Horizontal, 2);
+  icon.set_valign(gtk::Align::Center);
+  for _ in 0..2 {
+    let pane = gtk::Box::new(gtk::Orientation::Vertical, 0);
+    pane.set_size_request(size, size + 1);
+    pane.add_css_class("mode-icon-pane");
+    icon.append(&pane);
+  }
+  icon
+}
+
 pub fn open(app: &gtk::Application, i18n: Arc<I18n>) {
   gtk::Widget::set_default_direction(
     if i18n.direction() == argvus_i18n::TextDirection::RightToLeft {
@@ -347,32 +377,45 @@ pub fn open(app: &gtk::Application, i18n: Arc<I18n>) {
     window.set_anchor(edge, true);
   }
   let provider = gtk::CssProvider::new();
-  provider.load_from_string(&render::css(None, false));
+  provider.load_from_string(&render::mode_css(
+    None,
+    argvus_theme_core::color::Color::opaque(53, 144, 189),
+    0,
+  ));
   gtk::style_context_add_provider_for_display(
     &gtk::prelude::WidgetExt::display(&window),
     &provider,
     gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
   );
-  window.add_css_class("theme-selector");
+  window.add_css_class("layout-mode-selector");
 
   let content = gtk::Box::new(gtk::Orientation::Vertical, 14);
   content.set_valign(gtk::Align::Center);
   content.set_margin_start(24);
   content.set_margin_end(24);
-  let title = gtk::Label::new(Some(&format!("ARGVUS · {}", i18n.tr("layout_mode.select"))));
-  title.add_css_class("title");
+  let brand = gtk::Label::new(Some("A R G V U S"));
+  brand.add_css_class("mode-brand");
+  content.append(&brand);
+  let title = gtk::Label::new(Some(&i18n.tr("layout_mode.select")));
+  title.add_css_class("mode-title");
   content.append(&title);
+  let instruction = gtk::Label::new(Some(&i18n.tr("layout_mode.intro")));
+  instruction.set_wrap(true);
+  instruction.set_justify(gtk::Justification::Center);
+  instruction.add_css_class("mode-muted");
+  content.append(&instruction);
 
   let selection = Rc::new(Cell::new(Selection::from_preset(LayoutPreset::ALL[0])));
   let theme = Rc::new(RefCell::new(None::<ThemeManifest>));
   let image: Surface = Rc::default();
   let busy = Rc::new(Cell::new(false));
   let mut cards = Vec::with_capacity(6);
-  let layout = gtk::Box::new(gtk::Orientation::Horizontal, 18);
-  layout.set_halign(gtk::Align::Center);
-  layout.set_direction(gtk::TextDirection::Ltr);
-  let mode_column = gtk::Box::new(gtk::Orientation::Vertical, 12);
-  let mode_cards = [Variant::Sticky, Variant::Spaced].map(|variant| {
+  let segments = gtk::Box::new(gtk::Orientation::Horizontal, 2);
+  segments.set_homogeneous(true);
+  segments.set_halign(gtk::Align::Center);
+  segments.set_direction(gtk::TextDirection::Ltr);
+  segments.add_css_class("mode-segments");
+  for variant in [Variant::Sticky, Variant::Spaced] {
     let card = make_card(
       CardKind::Variant(variant),
       &i18n,
@@ -380,39 +423,58 @@ pub fn open(app: &gtk::Application, i18n: Arc<I18n>) {
       &theme,
       &image,
     );
-    mode_column.append(&card.button);
-    card
-  });
-  cards.extend(mode_cards.clone());
+    segments.append(&card.button);
+    cards.push(card);
+  }
+  content.append(&segments);
+
+  let panel = gtk::Box::new(gtk::Orientation::Vertical, 16);
+  panel.add_css_class("mode-panel");
+  let heading = gtk::Box::new(gtk::Orientation::Horizontal, 14);
+  heading.append(&mode_icon(24));
+  let mode_text = gtk::Box::new(gtk::Orientation::Vertical, 4);
+  let mode_title = gtk::Label::new(None);
+  mode_title.set_xalign(0.0);
+  mode_title.add_css_class("mode-heading");
+  let description = gtk::Label::new(None);
+  description.set_xalign(0.0);
+  description.set_wrap(true);
+  description.add_css_class("mode-muted");
+  mode_text.append(&mode_title);
+  mode_text.append(&description);
+  heading.append(&mode_text);
+  panel.append(&heading);
 
   let submode_grid = gtk::Grid::new();
-  submode_grid.set_valign(gtk::Align::Center);
   submode_grid.set_row_spacing(12);
   submode_grid.set_column_spacing(12);
   submode_grid.set_column_homogeneous(true);
-  submode_grid.set_row_homogeneous(true);
   submode_grid.set_direction(gtk::TextDirection::Ltr);
-  for (index, choice) in WindowTaskbarChoice::ALL.into_iter().enumerate() {
-    let card = make_card(
+  for choice in WindowTaskbarChoice::ALL {
+    cards.push(make_card(
       CardKind::WindowTaskbar(choice),
       &i18n,
       &selection,
       &theme,
       &image,
-    );
-    submode_grid.attach(&card.button, (index % 2) as i32, (index / 2) as i32, 1, 1);
-    cards.push(card);
+    ));
   }
-  layout.append(&mode_column);
-  layout.append(&submode_grid);
-  content.append(&layout);
+  panel.append(&submode_grid);
+  let scroll = gtk::ScrolledWindow::builder()
+    .hscrollbar_policy(gtk::PolicyType::Never)
+    .propagate_natural_height(true)
+    .child(&panel)
+    .build();
+  content.append(&scroll);
+  let columns = Rc::new(Cell::new(2));
 
   let status = gtk::Label::new(Some(&i18n.tr("selector.loading")));
   status.set_wrap(true);
   content.append(&status);
   let footer = gtk::Box::new(gtk::Orientation::Horizontal, 12);
   footer.set_halign(gtk::Align::Center);
-  let apply = gtk::Button::with_label(&i18n.tr("layout_mode.apply"));
+  footer.add_css_class("mode-actions");
+  let apply = gtk::Button::with_label(&i18n.tr("layout_mode.apply_short"));
   apply.add_css_class("suggested-action");
   apply.set_sensitive(false);
   let close = gtk::Button::with_label(&i18n.tr("selector.close"));
@@ -421,12 +483,43 @@ pub fn open(app: &gtk::Application, i18n: Arc<I18n>) {
   content.append(&footer);
   let hint = gtk::Label::new(Some(&i18n.tr("layout_mode.hint")));
   hint.set_wrap(true);
-  hint.add_css_class("muted");
+  hint.add_css_class("mode-muted");
   content.append(&hint);
-  window.set_child(Some(&content));
+  let background = gtk::DrawingArea::new();
+  background.set_draw_func({
+    let image = image.clone();
+    let theme = theme.clone();
+    move |_, context, width, height| {
+      render::paint_mode_background(
+        context,
+        theme.borrow().as_ref(),
+        image.borrow().as_ref(),
+        width,
+        height,
+      );
+    }
+  });
+  let overlay = gtk::Overlay::new();
+  overlay.set_child(Some(&background));
+  overlay.add_overlay(&content);
+  overlay.set_measure_overlay(&content, true);
+  window.set_child(Some(&overlay));
+
+  let refresh_heading = Rc::new({
+    let i18n = i18n.clone();
+    move |variant| {
+      mode_title.set_text(&card_title(CardKind::Variant(variant), &i18n));
+      description.set_text(&i18n.tr(if variant == Variant::Sticky {
+        "layout_mode.sticky_description"
+      } else {
+        "layout_mode.spaced_description"
+      }));
+    }
+  });
+  refresh_heading(selection.get().variant);
 
   for card in &cards {
-    connect_card(card, &cards, &selection, &theme, &provider, &status, &i18n);
+    connect_card(card, &cards, &selection, &status, &refresh_heading);
   }
 
   close.connect_clicked({
@@ -462,14 +555,13 @@ pub fn open(app: &gtk::Application, i18n: Arc<I18n>) {
     let busy = busy.clone();
     let selection = selection.clone();
     let cards = cards.clone();
-    let theme = theme.clone();
-    let provider = provider.clone();
     let status = status.clone();
     let apply = apply.clone();
     let close = close.clone();
     let weak = window.downgrade();
-    let i18n = i18n.clone();
-    move |_, key, _, _| {
+    let columns = columns.clone();
+    let refresh_heading = refresh_heading.clone();
+    move |_, key, _, modifiers| {
       if busy.get() {
         return glib::Propagation::Stop;
       }
@@ -479,16 +571,18 @@ pub fn open(app: &gtk::Application, i18n: Arc<I18n>) {
             window.close();
           }
         }
-        gdk::Key::Tab | gdk::Key::ISO_Left_Tab => {
+        gdk::Key::ISO_Left_Tab => {}
+        gdk::Key::Tab if !modifiers.contains(gdk::ModifierType::SHIFT_MASK) => {
           let mut current = selection.get();
           current.focus = current.focus.next();
           selection.set(current);
-          refresh_cards(&cards, current, theme.borrow().as_ref(), &provider);
+          refresh_heading(current.variant);
+          refresh_cards(&cards, current);
           let focused_card = match current.focus {
-            FocusColumn::Modes => cards.iter().find(
+            FocusGroup::Modes => cards.iter().find(
               |card| matches!(card.kind, CardKind::Variant(variant) if variant == current.variant),
             ),
-            FocusColumn::Submodes => cards.iter().find(|card| {
+            FocusGroup::Submodes => cards.iter().find(|card| {
               matches!(card.kind, CardKind::WindowTaskbar(_))
                 && option_kind_for_card(card.kind) == Some(current.cursor)
             }),
@@ -497,17 +591,19 @@ pub fn open(app: &gtk::Application, i18n: Arc<I18n>) {
             card.button.grab_focus();
           }
         }
+        gdk::Key::Tab => {}
         gdk::Key::Up | gdk::Key::Down | gdk::Key::Left | gdk::Key::Right => {
-          let current = selection.get().navigate(key);
+          let current = selection.get().navigate(key, columns.get());
           selection.set(current);
-          refresh_cards(&cards, current, theme.borrow().as_ref(), &provider);
-          status.set_text(&i18n.tr("layout_mode.selection"));
+          refresh_heading(current.variant);
+          refresh_cards(&cards, current);
+          status.set_visible(false);
           if let Some(card) = cards.iter().find(|card| {
             card_is_selected(card.kind, current)
               && matches!(
                 (current.focus, card.kind),
-                (FocusColumn::Modes, CardKind::Variant(_))
-                  | (FocusColumn::Submodes, CardKind::WindowTaskbar(_))
+                (FocusGroup::Modes, CardKind::Variant(_))
+                  | (FocusGroup::Submodes, CardKind::WindowTaskbar(_))
               )
           }) {
             card.button.grab_focus();
@@ -558,6 +654,7 @@ pub fn open(app: &gtk::Application, i18n: Arc<I18n>) {
       close.set_sensitive(false);
       apply.set_sensitive(false);
       status.set_text(&i18n.tr("layout_mode.applying"));
+      status.set_visible(true);
       let sender = sender.clone();
       std::thread::spawn(move || {
         let result = apply_mode(selected.index());
@@ -579,11 +676,24 @@ pub fn open(app: &gtk::Application, i18n: Arc<I18n>) {
     while let Ok(event) = receiver.try_recv() {
       match event {
         Event::Loaded(result, monitor) => {
-          connect_monitor(&window, monitor.as_deref(), &cards);
+          connect_monitor(
+            &window,
+            monitor.as_deref(),
+            &cards,
+            &submode_grid,
+            &columns,
+            &scroll,
+          );
           match result {
             Ok(state) => {
               selection.set(state.selection);
-              refresh_cards(&cards, state.selection, Some(&state.theme), &provider);
+              refresh_heading(state.selection.variant);
+              provider.load_from_string(&render::mode_css(
+                Some(&state.theme),
+                state.accent,
+                state.radius,
+              ));
+              refresh_cards(&cards, state.selection);
               *theme.borrow_mut() = Some(state.theme);
               if let Some(loaded) = state.image {
                 *image.borrow_mut() = gtk::cairo::ImageSurface::create_for_data(
@@ -595,21 +705,20 @@ pub fn open(app: &gtk::Application, i18n: Arc<I18n>) {
                 )
                 .ok();
               }
+              background.queue_draw();
               for card in &cards {
                 card.drawing.queue_draw();
               }
-              status.set_text(&i18n.tr(if state.pending {
-                "layout_mode.pending"
-              } else if state.saved == state.selection.index() {
-                "selector.illustrative"
+              status.set_text(&if state.pending {
+                i18n.tr("layout_mode.pending")
               } else {
-                "layout_mode.selection"
-              }));
+                String::new()
+              });
+              status.set_visible(state.pending);
               apply.set_sensitive(true);
               window.present();
               if let Some(card) = cards.iter().find(|card| {
-                option_kind_for_card(card.kind) == Some(state.selection.cursor)
-                  && matches!(card.kind, CardKind::WindowTaskbar(_))
+                matches!(card.kind, CardKind::Variant(variant) if variant == state.selection.variant)
               }) {
                 card.button.grab_focus();
               }
@@ -676,7 +785,12 @@ fn make_card(
       if let Some(theme) = theme.borrow().as_ref() {
         let preset = preset_for_card(kind, selection.get());
         let _ = context.save();
-        context.scale(f64::from(width) / 960.0, f64::from(height) / 540.0);
+        let scale = (f64::from(width) / 960.0).min(f64::from(height) / 540.0);
+        context.translate(
+          (f64::from(width) - 960.0 * scale) / 2.0,
+          (f64::from(height) - 540.0 * scale) / 2.0,
+        );
+        context.scale(scale, scale);
         render::paint_preset(
           context,
           theme,
@@ -708,7 +822,11 @@ fn make_card(
   cover.set_visible(false);
   overlay.add_overlay(&cover);
 
-  let label = gtk::Label::new(Some(&card_title(kind, i18n)));
+  let title = card_title(kind, i18n);
+  let (primary, secondary) = title.split_once(" · ").unwrap_or((&title, ""));
+  let label = gtk::Label::new(Some(primary));
+  label.set_xalign(0.0);
+  label.add_css_class("mode-card-title");
   label.set_wrap(true);
   label.set_wrap_mode(gtk::pango::WrapMode::WordChar);
   label.set_lines(2);
@@ -716,12 +834,32 @@ fn make_card(
   label.set_width_chars(1);
   label.set_justify(gtk::Justification::Center);
   let child = gtk::Box::new(gtk::Orientation::Vertical, 8);
-  child.append(&overlay);
-  child.append(&label);
   let button = gtk::Button::new();
+  let caption = gtk::Box::new(gtk::Orientation::Horizontal, 8);
+  caption.append(&mode_icon(12));
+  let labels = gtk::Box::new(gtk::Orientation::Vertical, 3);
+  labels.set_hexpand(true);
+  labels.append(&label);
+  caption.append(&labels);
+  let indicator = if matches!(kind, CardKind::WindowTaskbar(_)) {
+    let position = gtk::Label::new(Some(secondary));
+    position.set_wrap(true);
+    position.set_xalign(0.0);
+    position.add_css_class("mode-muted");
+    labels.append(&position);
+    let indicator = gtk::Label::new(None);
+    indicator.set_valign(gtk::Align::Center);
+    caption.append(&indicator);
+    child.append(&overlay);
+    button.add_css_class("mode-choice");
+    Some(indicator)
+  } else {
+    button.add_css_class("mode-segment");
+    None
+  };
+  child.append(&caption);
   button.set_child(Some(&child));
-  button.add_css_class("mode-choice");
-  button.set_tooltip_text(Some(&card_title(kind, i18n)));
+  button.set_tooltip_text(Some(&title));
   button.set_hexpand(true);
   button.set_focusable(true);
   Card {
@@ -730,6 +868,7 @@ fn make_card(
     drawing,
     cover,
     spinner,
+    indicator,
   }
 }
 
@@ -737,25 +876,21 @@ fn connect_card(
   card: &Card,
   cards: &[Card],
   selection: &Rc<Cell<Selection>>,
-  theme: &Rc<RefCell<Option<ThemeManifest>>>,
-  provider: &gtk::CssProvider,
   status: &gtk::Label,
-  i18n: &Arc<I18n>,
+  refresh_heading: &Rc<impl Fn(Variant) + 'static>,
 ) {
   card.button.connect_clicked({
     let card = card.clone();
     let cards = cards.to_vec();
     let selection = selection.clone();
-    let theme = theme.clone();
-    let provider = provider.clone();
     let status = status.clone();
-    let i18n = i18n.clone();
+    let refresh_heading = refresh_heading.clone();
     move |_| {
       let next = match card.kind {
         CardKind::Variant(variant) => {
           let mut next = selection.get();
           next.variant = variant;
-          next.focus = FocusColumn::Modes;
+          next.focus = FocusGroup::Modes;
           next
         }
         CardKind::WindowTaskbar(choice) => selection.get().choose(
@@ -768,41 +903,82 @@ fn connect_card(
         ),
       };
       selection.set(next);
+      refresh_heading(next.variant);
       card.button.grab_focus();
-      refresh_cards(&cards, next, theme.borrow().as_ref(), &provider);
-      status.set_text(&i18n.tr("layout_mode.selection"));
+      refresh_cards(&cards, next);
+      status.set_visible(false);
     }
   });
 }
 
-fn connect_monitor(window: &gtk::ApplicationWindow, monitor: Option<&str>, cards: &[Card]) {
+fn connect_monitor(
+  window: &gtk::ApplicationWindow,
+  monitor: Option<&str>,
+  cards: &[Card],
+  grid: &gtk::Grid,
+  columns: &Rc<Cell<usize>>,
+  scroll: &gtk::ScrolledWindow,
+) {
   let Some(display) = gdk::Display::default() else {
     return;
   };
   let outputs = display.monitors();
+  let requested_is_available = monitor.is_some_and(|connector| {
+    (0..outputs.n_items()).any(|index| {
+      outputs
+        .item(index)
+        .and_downcast::<gdk::Monitor>()
+        .is_some_and(|output| output.connector().as_deref() == Some(connector))
+    })
+  });
   for index in 0..outputs.n_items() {
     if let Some(output) = outputs.item(index).and_downcast::<gdk::Monitor>()
-      && (monitor == output.connector().as_deref() || (monitor.is_none() && index == 0))
+      && ((requested_is_available && monitor == output.connector().as_deref())
+        || (!requested_is_available && index == 0))
     {
       window.set_monitor(Some(&output));
       let update = {
-        let drawings = cards
+        let cards = cards
           .iter()
-          .map(|card| (card.kind, card.drawing.clone()))
+          .filter(|card| card.indicator.is_some())
+          .cloned()
           .collect::<Vec<_>>();
+        let grid = grid.clone();
+        let columns = columns.clone();
+        let scroll = scroll.clone();
+        let window = window.downgrade();
         move |output: &gdk::Monitor| {
           let geometry = output.geometry();
-          let height = preview_height(geometry.width(), geometry.height());
-          let width = preview_width(geometry.width()).min(height * 16 / 9);
-          let height = width * 9 / 16;
-          for (kind, drawing) in &drawings {
-            let scale = if matches!(kind, CardKind::Variant(_)) {
-              4
+          let count = grid_columns(geometry.width());
+          columns.set(count);
+          let preview = ((geometry.width() - 140) / count as i32).clamp(40, 440);
+          if let Some(window) = window.upgrade() {
+            if geometry.height() < 650 {
+              window.add_css_class("compact-output");
             } else {
-              3
-            };
-            drawing.set_content_width(width * scale / 4);
-            drawing.set_content_height(height * scale / 4);
+              window.remove_css_class("compact-output");
+            }
+          }
+          scroll.set_max_content_height((geometry.height() - 290).max(90));
+          let focused = cards.iter().position(|card| card.button.has_focus());
+          for card in &cards {
+            if card.button.parent().is_some() {
+              grid.remove(&card.button);
+            }
+          }
+          for (index, card) in cards.iter().enumerate() {
+            grid.attach(
+              &card.button,
+              (index % count) as i32,
+              (index / count) as i32,
+              1,
+              1,
+            );
+            card.drawing.set_content_width(preview.min(100));
+            card.drawing.set_content_height(preview * 9 / 16);
+            if focused == Some(index) {
+              card.button.grab_focus();
+            }
           }
         }
       };
@@ -841,13 +1017,16 @@ mod tests {
   #[test]
   fn arrows_follow_focus_and_grid_boundaries() {
     let initial = Selection::from_preset(LayoutPreset::ALL[0]);
-    assert_eq!(initial.focus, FocusColumn::Modes);
-    assert_eq!(initial.navigate(gdk::Key::Right), initial);
+    assert_eq!(initial.focus, FocusGroup::Modes);
+    assert_eq!(
+      initial.navigate(gdk::Key::Right, 2).variant,
+      Variant::Spaced
+    );
     let selected = initial.choose(0);
-    assert_eq!(selected.navigate(gdk::Key::Left).cursor, 0);
-    assert_eq!(selected.navigate(gdk::Key::Up).cursor, 0);
-    assert_eq!(selected.navigate(gdk::Key::Right).cursor, 1);
-    assert_eq!(selected.navigate(gdk::Key::Down).cursor, 2);
+    assert_eq!(selected.navigate(gdk::Key::Left, 2).cursor, 0);
+    assert_eq!(selected.navigate(gdk::Key::Up, 2).cursor, 0);
+    assert_eq!(selected.navigate(gdk::Key::Right, 2).cursor, 1);
+    assert_eq!(selected.navigate(gdk::Key::Down, 2).cursor, 2);
     for index in 0..4 {
       let selection = initial.choose(index);
       for key in [
@@ -856,9 +1035,9 @@ mod tests {
         gdk::Key::Left,
         gdk::Key::Right,
       ] {
-        let next = selection.navigate(key);
+        let next = selection.navigate(key, 2);
         assert_eq!(next.variant, selection.variant);
-        assert_eq!(next.focus, FocusColumn::Submodes);
+        assert_eq!(next.focus, FocusGroup::Submodes);
         assert!(next.cursor < 4);
       }
     }
@@ -887,53 +1066,22 @@ mod tests {
   }
 
   #[test]
-  fn inactive_mode_is_dimmed_and_tab_does_not_change_selected_values() {
-    let selection = Selection::from_preset(LayoutPreset::ALL[0]);
-    assert_eq!(
-      card_opacity(CardKind::Variant(Variant::Sticky), selection),
-      1.0
-    );
-    assert_eq!(
-      card_opacity(CardKind::Variant(Variant::Spaced), selection),
-      0.4
-    );
-    assert_eq!(
-      card_opacity(
-        CardKind::WindowTaskbar(WindowTaskbarChoice::ALL[0]),
-        selection
-      ),
-      1.0
-    );
-
-    for choice in WindowTaskbarChoice::ALL.into_iter().skip(1) {
-      assert_eq!(
-        card_opacity(CardKind::WindowTaskbar(choice), selection),
-        0.4
-      );
+  fn tab_cycles_without_changing_the_preset() {
+    let mut selection = Selection::from_preset(LayoutPreset::ALL[0]);
+    let preset = selection.preset();
+    for group in [FocusGroup::Submodes, FocusGroup::Modes] {
+      selection.focus = selection.focus.next();
+      assert_eq!(selection.focus, group);
+      assert_eq!(selection.preset(), preset);
     }
-
-    let focused = Selection {
-      focus: selection.focus.next(),
-      ..selection
-    };
-    assert_eq!(focused.variant, selection.variant);
-    assert_eq!(focused.windows, selection.windows);
-    assert_eq!(focused.position, selection.position);
-    assert_eq!(focused.cursor, selection.cursor);
   }
 
   #[test]
-  fn two_preview_rows_fit_small_and_large_outputs() {
-    for (width, height) in [
-      (640, 480),
-      (800, 600),
-      (1280, 720),
-      (1920, 1080),
-      (2560, 1440),
-    ] {
-      let preview = preview_height(width, height);
-      assert!(preview >= 24);
-      assert!(2 * preview + 250 <= height);
-    }
+  fn wide_grid_uses_a_single_row() {
+    assert_eq!(grid_columns(1199), 2);
+    assert_eq!(grid_columns(1200), 4);
+    let selected = Selection::from_preset(LayoutPreset::ALL[0]).choose(2);
+    assert_eq!(selected.navigate(gdk::Key::Down, 4), selected);
+    assert_eq!(selected.navigate(gdk::Key::Right, 4).cursor, 3);
   }
 }

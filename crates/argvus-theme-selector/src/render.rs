@@ -127,6 +127,106 @@ fn rounded(context: &cairo::Context, x: f64, y: f64, width: f64, height: f64, ra
   context.close_path();
 }
 
+fn configured_accent(fallback: Color) -> Color {
+  argvus_config_core::ConfigStore::from_environment()
+    .and_then(|store| store.load_effective())
+    .ok()
+    .and_then(|document| {
+      document
+        .get("/appearance/accent")
+        .and_then(|value| value.as_str())
+        .and_then(Color::parse)
+    })
+    .unwrap_or(fallback)
+}
+
+pub fn mode_css(theme: Option<&ThemeManifest>, accent: Color, radius: u64) -> String {
+  let fg = theme
+    .and_then(|theme| theme.token("fg").ok())
+    .unwrap_or(Color::opaque(238, 238, 238))
+    .hex();
+  let bg = theme
+    .and_then(|theme| theme.token("bg").ok())
+    .unwrap_or(Color::opaque(17, 19, 22))
+    .hex();
+  let on_accent = accent.contrast().hex();
+  let accent = accent.hex();
+  format!(
+    "window.layout-mode-selector {{ background: {bg}; color: {fg}; font-size: 15px; }}
+    .layout-mode-selector button {{ color: {fg}; background: alpha({fg}, 0.05); border: 1px solid alpha({fg}, 0.25); border-radius: {radius}px; padding: 10px 16px; }}
+    .layout-mode-selector button:hover {{ background: alpha({fg}, 0.12); }}
+    .layout-mode-selector button:disabled {{ opacity: 0.65; }}
+    .layout-mode-selector button:focus-visible, .layout-mode-selector .mode-cursor {{ outline: 2px dashed {fg}; outline-offset: -4px; }}
+    .layout-mode-selector .mode-brand {{ font-weight: bold; color: {accent}; }}
+    .layout-mode-selector .mode-title {{ font-size: 42px; font-weight: bold; }}
+    .layout-mode-selector .mode-heading {{ font-size: 27px; font-weight: bold; }}
+    .layout-mode-selector .mode-muted {{ opacity: 0.82; }}
+    .layout-mode-selector .mode-segments {{ border-radius: {radius}px; background: alpha({fg}, 0.06); padding: 2px; margin: 10px 0; }}
+    .layout-mode-selector .mode-segment {{ font-size: 20px; font-weight: bold; min-width: 200px; padding: 12px 24px; }}
+    .layout-mode-selector .mode-panel {{ background: alpha({bg}, 0.82); border: 1px solid alpha({accent}, 0.48); border-radius: {radius}px; padding: 20px; }}
+    .layout-mode-selector .mode-choice {{ padding: 10px; }}
+    .layout-mode-selector .mode-card-title {{ font-weight: bold; }}
+    .layout-mode-selector .mode-selected {{ border-color: {accent}; background: alpha({accent}, 0.19); box-shadow: inset 0 0 0 1px {accent}, 0 0 8px alpha({accent}, 0.30); }}
+    .layout-mode-selector .mode-icon-pane {{ border: 2px solid currentColor; border-radius: {radius}px; }}
+    .layout-mode-selector .mode-selected .mode-icon-pane, .layout-mode-selector .mode-panel > box > box:first-child {{ color: {accent}; }}
+    .layout-mode-selector .mode-checked, .layout-mode-selector .mode-unchecked {{ min-width: 20px; min-height: 20px; border: 1px solid alpha({fg}, 0.65); border-radius: {radius}px; }}
+    .layout-mode-selector .mode-checked {{ background: {accent}; color: {on_accent}; border-color: {accent}; font-weight: bold; }}
+    .layout-mode-selector.compact-output .mode-title {{ font-size: 30px; }}
+    .layout-mode-selector.compact-output .mode-segments {{ margin: 0; }}
+    .layout-mode-selector.compact-output .mode-segment {{ min-width: 0; }}
+    .layout-mode-selector.compact-output .mode-panel {{ padding: 12px; }}
+    .layout-mode-selector .mode-actions button {{ min-width: 96px; }}
+    .layout-mode-selector .suggested-action {{ background: {accent}; color: {on_accent}; font-weight: bold; }}
+    .layout-mode-selector .applying-preview {{ background: alpha(black, 0.72); color: white; }}"
+  )
+}
+
+pub fn paint_mode_background(
+  context: &cairo::Context,
+  theme: Option<&ThemeManifest>,
+  image: Option<&cairo::ImageSurface>,
+  width: i32,
+  height: i32,
+) {
+  let (width, height) = (f64::from(width), f64::from(height));
+  let bg = theme
+    .and_then(|theme| theme.token("bg").ok())
+    .unwrap_or(Color::opaque(17, 19, 22));
+  fill(context, bg, 0.0, 0.0, width, height);
+  if let Some(image) = image {
+    let (image_width, image_height) = (f64::from(image.width()), f64::from(image.height()));
+    let scale = (width / image_width).max(height / image_height);
+    if scale > 0.0 {
+      let _ = context.save();
+      context.translate(
+        (width - image_width * scale) / 2.0,
+        (height - image_height * scale) / 2.0,
+      );
+      context.scale(scale, scale);
+      if context.set_source_surface(image, 0.0, 0.0).is_ok() {
+        let _ = context.paint_with_alpha(0.26);
+      }
+      let _ = context.restore();
+    }
+  }
+  let accent = theme
+    .and_then(|theme| theme.token("accent").ok())
+    .unwrap_or(Color::opaque(53, 144, 189));
+  let gradient = cairo::LinearGradient::new(0.0, height, width, 0.0);
+  gradient.add_color_stop_rgba(
+    0.0,
+    f64::from(accent.red) / 255.0,
+    f64::from(accent.green) / 255.0,
+    f64::from(accent.blue) / 255.0,
+    0.14,
+  );
+  gradient.add_color_stop_rgba(0.65, 0.0, 0.0, 0.0, 0.0);
+  gradient.add_color_stop_rgba(1.0, 0.0, 0.0, 0.0, 0.14);
+  if context.set_source(gradient).is_ok() {
+    let _ = context.paint();
+  }
+}
+
 pub fn css(theme: Option<&ThemeManifest>, spaced: bool) -> String {
   let token = |name: &str, fallback| {
     theme
@@ -137,16 +237,7 @@ pub fn css(theme: Option<&ThemeManifest>, spaced: bool) -> String {
     .with_opacity(0.94)
     .hex_with_alpha();
   let fg = token("fg", Color::opaque(238, 238, 238)).hex();
-  let accent = argvus_config_core::ConfigStore::from_environment()
-    .and_then(|store| store.load_effective())
-    .ok()
-    .and_then(|document| {
-      document
-        .get("/appearance/accent")
-        .and_then(|value| value.as_str())
-        .and_then(Color::parse)
-    })
-    .unwrap_or_else(|| token("accent", Color::opaque(53, 144, 189)));
+  let accent = configured_accent(token("accent", Color::opaque(53, 144, 189)));
   let selection = accent.hex();
   let radius = if spaced { "6px" } else { "0" };
   format!(
@@ -362,7 +453,7 @@ fn illustration_panel(
     for index in 0..6 {
       fill(
         context,
-        accent,
+        fg.with_opacity(0.45),
         x + width / 2.0 - 110.0 + f64::from(index) * 40.0,
         y + 8.0,
         24.0,
@@ -402,6 +493,22 @@ fn illustration_panel(
 #[cfg(test)]
 mod tests {
   use super::*;
+  #[test]
+  fn mode_selector_corners_follow_the_active_radius() {
+    for radius in [0, 8] {
+      let css = mode_css(None, Color::opaque(53, 144, 189), radius);
+      let expected = format!("{radius}px");
+      let corners = css
+        .split("border-radius: ")
+        .skip(1)
+        .filter_map(|declaration| declaration.split_once(';'))
+        .map(|(value, _)| value)
+        .collect::<Vec<_>>();
+      assert!(!corners.is_empty());
+      assert!(corners.iter().all(|value| *value == expected));
+    }
+  }
+
   #[test]
   fn mode_previews_have_distinct_window_geometry() {
     std::fs::create_dir_all("/tmp/argvus").unwrap();

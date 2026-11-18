@@ -71,8 +71,6 @@ All’apertura del selettore, il focus iniziale è sulla navigazione del carosel
 
 Durante l’applicazione, l’anteprima centrale si oscura e mostra un indicatore animato. La ricerca usa l’accento attivo e il filtro ha un solo bordo.
 
-`argvus layout-mode-menu` (SUPER + Shift + M): **Tab / Shift+Tab**: Sticky / Spaced ⇄ Tile / Floating · Taskbar Top / Bottom. **Sticky / Spaced**: ↑ / ↓. **Tile / Floating · Taskbar Top / Bottom** (2 × 2): ↑ / ↓ / ← / →. **Enter**: ✓. **Esc**: ×.
-
-Le schede non selezionate hanno opacità del 40%; le anteprime dei sottomodi sono grandi il 75% delle principali.
+`argvus layout-mode-menu` (SUPER + Shift + M). Scegli la modalità, la disposizione delle finestre e la posizione della barra delle applicazioni. **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: Seleziona. **Enter**: Applica. **Esc**: Chiudi.
 
 Le applicazioni avviate dai selettori mostrano il progresso nel selettore, senza schermata di caricamento della sessione. I modi preparano la posizione finale della barra prima del ricaricamento; i riavvii necessari sono raggruppati in una transazione systemd.

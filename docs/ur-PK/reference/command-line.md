@@ -123,9 +123,7 @@ argvus setup --copy <app> --dry-run
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
 
-`argvus layout-mode-menu` (SUPER + Shift + M): **Tab / Shift+Tab**: Sticky / Spaced ⇄ Tile / Floating · Taskbar Top / Bottom. **Sticky / Spaced**: ↑ / ↓. **Tile / Floating · Taskbar Top / Bottom** (2 × 2): ↑ / ↓ / ← / →. **Enter**: ✓. **Esc**: ×.
-
-غیر منتخب کارڈز کی غیر شفافیت 40% ہے؛ ذیلی موڈ کے پیش نظارے مرکزی پیش نظاروں کے حجم کے 75% ہیں۔
+`argvus layout-mode-menu` (SUPER + Shift + M). لے آؤٹ موڈ، ونڈوز کی ترتیب اور ٹاسک بار کی جگہ منتخب کریں۔ **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: منتخب کریں. **Enter**: لاگو کریں. **Esc**: بند کریں.
 
 تھیم اور موڈ منتخب کرنے والی ونڈوز سیشن اسپلش کے بغیر پیش رفت دکھاتی ہیں۔ دوبارہ لوڈ کرنے سے پہلے ٹاسک بار کی حتمی جگہ تیار ہوتی ہے اور ضروری ری اسٹارٹ ایک systemd ٹرانزیکشن میں جمع کیے جاتے ہیں۔
 

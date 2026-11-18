@@ -230,4 +230,4 @@ Licensed under [GPL-3.0](./LICENSE)
 
 </div>
 
-`argvus layout-mode-menu` (SUPER + Shift + M): Tab switches between Sticky/Spaced and the four window/taskbar combinations. Arrows navigate within the focused group; Enter applies and Escape cancels. Progress stays inside the selector without a session splash. Unselected cards are dimmed and submode previews are smaller. Pending applications remain visible and failures can be retried.
+`argvus layout-mode-menu` (SUPER + Shift + M) opens the layout selector over the active wallpaper. Choose Sticky or Spaced, then select one of four window and taskbar arrangements. Tab switches between the mode control and the cards. The selector’s corners follow the active window rounding setting. Arrows select within the focused group, Enter applies and Escape closes. Progress, pending state and retry messages appear in the selector.

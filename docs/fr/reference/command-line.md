@@ -137,7 +137,7 @@ Configurer la recherche: Favoris, Afficher les fichiers récents, Indexer les no
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
 
-`argvus layout-mode-menu` (SUPER + Shift + M): **Tab / Shift+Tab**: Sticky / Spaced ⇄ Tile / Floating · Taskbar Top / Bottom. **Sticky / Spaced**: ↑ / ↓. **Tile / Floating · Taskbar Top / Bottom** (2 × 2): ↑ / ↓ / ← / →. **Enter**: ✓. **Esc**: ×.
+`argvus layout-mode-menu` (SUPER + Shift + M). Choisissez le mode, la disposition des fenêtres et la position de la barre des tâches. **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: Sélectionner. **Enter**: Appliquer. **Esc**: Fermer.
 
 Les cartes non sélectionnées ont une opacité de 40 % ; les aperçus des sous-modes mesurent 75 % des aperçus principaux.
 

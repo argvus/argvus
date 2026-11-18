@@ -138,9 +138,7 @@ argvus setup --copy <app> --dry-run
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
 
-`argvus layout-mode-menu` (SUPER + Shift + M): **Tab / Shift+Tab**: Sticky / Spaced ⇄ Tile / Floating · Taskbar Top / Bottom. **Sticky / Spaced**: ↑ / ↓. **Tile / Floating · Taskbar Top / Bottom** (2 × 2): ↑ / ↓ / ← / →. **Enter**: ✓. **Esc**: ×.
-
-تستخدم البطاقات غير المحددة عتامة 40%؛ وحجم معاينات الأوضاع الفرعية 75% من المعاينات الرئيسية.
+`argvus layout-mode-menu` (SUPER + Shift + M). اختر وضع التخطيط وترتيب النوافذ وموضع شريط المهام. **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: اختيار. **Enter**: تطبيق. **Esc**: إغلاق.
 
 تعرض محددات السمات والأوضاع التقدم داخل نافذتها دون شاشة تحميل الجلسة. تُجهز مواضع شريط المهام النهائية قبل إعادة التحميل، وتُجمع عمليات إعادة التشغيل اللازمة في معاملة systemd واحدة.
 

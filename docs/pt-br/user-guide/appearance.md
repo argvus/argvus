@@ -86,8 +86,6 @@ Ao abrir o seletor, o foco inicial fica na navegação do carrossel. Pressione `
 
 Durante a aplicação, a prévia central escurece e exibe um indicador animado. O foco da busca usa o destaque ativo; o filtro possui uma única borda.
 
-`argvus layout-mode-menu` (SUPER + Shift + M): **Tab / Shift+Tab**: Sticky / Spaced ⇄ Tile / Floating · Taskbar Top / Bottom. **Sticky / Spaced**: ↑ / ↓. **Tile / Floating · Taskbar Top / Bottom** (2 × 2): ↑ / ↓ / ← / →. **Enter**: ✓. **Esc**: ×.
-
-Cartões não selecionados usam 40% de opacidade; prévias dos submodos têm 75% do tamanho das prévias principais.
+`argvus layout-mode-menu` (SUPER + Shift + M). Escolha o modo, o tipo de janela e a posição da barra de tarefas. **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: Selecionar. **Enter**: Aplicar. **Esc**: Fechar.
 
 Aplicações iniciadas pelos seletores de temas e modos mostram o progresso no próprio seletor, sem splash da sessão. Mudanças de modo preparam a posição final da taskbar antes da recarga; os reinícios necessários são agrupados em uma transação do systemd.

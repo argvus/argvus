@@ -137,7 +137,7 @@ Suche konfigurieren: Favoriten, Zuletzt verwendete Dateien anzeigen, Dateinamen 
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
 
-`argvus layout-mode-menu` (SUPER + Shift + M): **Tab / Shift+Tab**: Sticky / Spaced ⇄ Tile / Floating · Taskbar Top / Bottom. **Sticky / Spaced**: ↑ / ↓. **Tile / Floating · Taskbar Top / Bottom** (2 × 2): ↑ / ↓ / ← / →. **Enter**: ✓. **Esc**: ×.
+`argvus layout-mode-menu` (SUPER + Shift + M). Wählen Sie Layoutmodus, Fensteranordnung und Position der Taskleiste. **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: Auswählen. **Enter**: Anwenden. **Esc**: Schließen.
 
 Nicht ausgewählte Karten haben 40 % Deckkraft; Untermodusvorschauen sind 75 % so groß wie die Hauptvorschauen.
 

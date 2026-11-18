@@ -84,8 +84,6 @@ Saat pemilih dibuka, fokus awal berada pada navigasi karusel. Tekan `/` untuk me
 
 Saat menerapkan, pratinjau tengah diredupkan dan menampilkan indikator pemuatan. Fokus pencarian memakai aksen aktif; filter memiliki satu bingkai.
 
-`argvus layout-mode-menu` (SUPER + Shift + M): **Tab / Shift+Tab**: Sticky / Spaced ⇄ Tile / Floating · Taskbar Top / Bottom. **Sticky / Spaced**: ↑ / ↓. **Tile / Floating · Taskbar Top / Bottom** (2 × 2): ↑ / ↓ / ← / →. **Enter**: ✓. **Esc**: ×.
-
-Kartu yang tidak dipilih memiliki opasitas 40%; pratinjau submode berukuran 75% dari pratinjau utama.
+`argvus layout-mode-menu` (SUPER + Shift + M). Pilih mode tata letak, susunan jendela, dan posisi bilah tugas. **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: Pilih. **Enter**: Terapkan. **Esc**: Tutup.
 
 Pemilih tema dan mode menampilkan kemajuan di jendelanya tanpa splash sesi. Posisi akhir taskbar disiapkan sebelum pemuatan ulang; restart yang diperlukan digabung dalam satu transaksi systemd.

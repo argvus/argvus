@@ -4,8 +4,9 @@
 The helper shares catalog, bounded wallpaper decoding, theme styles and monitor
 discovery with the theme selector. No Rofi process is involved.
 
-The picker uses six previews: Sticky and Spaced in the left column, with four
-window and taskbar combinations in a right-hand grid. The public typed model is
+The picker uses a Sticky / Spaced segmented control and four preview cards
+for the selected mode. Four cards fit in one row starting at 1,200 logical
+pixels. Narrower outputs use a 2 × 2 grid. The public typed model is
 `argvus_config_core::layout_preset::LayoutPreset`. Canonical values remain
 `/layout/variant`, `/hyprland/window_mode` and `/layout/taskbar/position`.
 No new configuration schema or public command was added. `float` remains a
@@ -28,35 +29,25 @@ window placement. During apply, the spinner overlays the last focused submode pr
 
 Illustrations reuse the current wallpaper without flipping it. Tile windows are
 side by side; Floating windows overlap and include the opposite application bar.
-The four right-hand cards each show a unique window and taskbar combination;
-the left cards follow the selected combination. These are illustrative
+The four cards show distinct combinations in order: Tile Top, Tile Bottom,
+Floating Top and Floating Bottom. The taskbar uses accent-colored markers and
+the auxiliary bar uses muted markers. These are illustrative
 layouts, not live application screenshots.
 
 The package installs the helper without new dependencies. Documentation and
 appearance strings are synchronized in every existing locale. Tests cover tuple
 round trips, legacy names, all eight application orders, failure short circuiting,
-runtime pending status, distinct preview pixels and wallpaper orientation. UI
-tests cover separate vertical mode navigation, spatial navigation within the focused
-submode grid, four complete window/taskbar combinations, inactive-mode opacity,
-focus-only Tab movement, and output sizing.
+runtime pending status, distinct preview pixels and wallpaper orientation. UI tests cover focus traversal, spatial navigation, all eight preset tuples
+and the responsive breakpoint.
 
-Validation used isolated configuration and mocked runtime commands for all eight
-coordinator combinations, including real theme reapplication and final Bottom
-position. A real Wayland session displayed the two-column UI with isolated XDG
-state and a mock compositor endpoint; keyboard selection, pending status,
-failure/retry and cancellation were exercised without changing the user's saved
-layout. Unit tests cover navigation, focus, opacity and sizing. These simulations
-do not replace hardware validation of multiple physical outputs and fractional
-scaling.
+Previews retain a 16:9 aspect ratio. The active wallpaper is shared with the
+background, where it is cropped proportionally beneath a theme-colored veil.
+The apply spinner is centered at 20 logical pixels over the selected card.
 
-Main previews retain a 16:9 aspect ratio; submode previews are 75% of their
-size and vertically centered. All unselected cards use 40% opacity. The apply
-spinner is centered at 20 logical pixels without expanding to fill its cover.
-
-Initial focus is on the selected main mode. Tab and Shift+Tab toggle groups
-without changing selection. Arrows stay within the focused group, stopping at
-grid boundaries; Up/Down select the main mode, while all four arrows navigate
-the 2×2 submode grid. Enter applies and Escape closes.
+Initial focus is on the selected mode. Tab toggles between the mode control
+and the cards. The selector reads the effective window rounding settings when
+it opens, while the illustrations show the geometry of the selected preset. Arrows stay within the focused group and stop at
+its boundaries. Enter applies, except when Close is focused. Escape closes.
 
 Selector-initiated application propagates `ARGVUS_SELECTOR_APPLY=1` to the
 runtime controller, which leaves progress to the selector instead of starting
