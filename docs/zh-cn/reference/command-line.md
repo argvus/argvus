@@ -148,3 +148,5 @@ argvus setup --copy <app> --dry-run
 `argvus lock` · Hyprlock
 
 ARGVUS Lifecycle 遵循窗口实际的圆角半径和 Hyprland 的全局模糊设置。启用动画时始终使用淡入淡出。
+
+Lifecycle 打开时，会阻止所有显示器上的桌面点击和滚动，并暂停 Hyprland 的常规快捷键。

@@ -1,3 +1,5 @@
+mod modal;
+
 use argvus_lifecycle::{Action, Screen, State};
 use argvus_session_actions::{Handoff, run};
 use gtk::{gdk, glib, prelude::*};
@@ -72,30 +74,35 @@ fn open(app: &gtk::Application, preview: bool) {
     window.set_anchor(edge, true);
   }
   let display = gtk::prelude::WidgetExt::display(&window);
-  if let Some(output) = focused_output() {
-    let monitors = display.monitors();
-    for index in 0..monitors.n_items() {
-      if let Some(monitor) = monitors.item(index).and_downcast::<gdk::Monitor>()
-        && monitor.connector().as_deref() == Some(output.as_str())
-      {
-        window.set_monitor(Some(&monitor));
-        update_size(&window, &monitor);
-        let weak = window.downgrade();
-        monitor.connect_geometry_notify(move |monitor| {
-          if let Some(window) = weak.upgrade() {
-            update_size(&window, monitor);
-          }
-        });
-        let weak = window.downgrade();
-        monitor.connect_invalidate(move |_| {
-          if let Some(window) = weak.upgrade() {
-            window.close();
-          }
-        });
-        break;
-      }
+  let monitors = display.monitors();
+  let focused = focused_output();
+  let primary = (0..monitors.n_items())
+    .filter_map(|index| monitors.item(index).and_downcast::<gdk::Monitor>())
+    .find(|monitor| {
+      focused
+        .as_deref()
+        .is_some_and(|name| monitor.connector().as_deref() == Some(name))
+    })
+    .or_else(|| monitors.item(0).and_downcast::<gdk::Monitor>());
+  let Some(primary) = primary else {
+    window.close();
+    return;
+  };
+  window.set_monitor(Some(&primary));
+  update_size(&window, &primary);
+  let weak = window.downgrade();
+  primary.connect_geometry_notify(move |monitor| {
+    if let Some(window) = weak.upgrade() {
+      update_size(&window, monitor);
     }
-  }
+  });
+  let weak = window.downgrade();
+  primary.connect_invalidate(move |_| {
+    if let Some(window) = weak.upgrade() {
+      window.close();
+    }
+  });
+  modal::connect(&window, &monitors, &primary);
 
   let effects = compositor_css();
   let _theme = argvus_time_ui::theme::ThemeStyle::install(&format!(

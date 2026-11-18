@@ -151,3 +151,5 @@ As aplicações iniciadas pelos seletores de temas e modos mostram o progresso n
 `argvus lock` · Hyprlock
 
 O ARGVUS Lifecycle segue o arredondamento efetivo das janelas e o desfoque global do Hyprland. Utiliza sempre o estilo de transição gradual quando as animações estão ativas.
+
+Enquanto o Lifecycle está aberto, bloqueia cliques e deslocamento no ambiente de trabalho em todos os monitores e suspende os atalhos comuns do Hyprland.

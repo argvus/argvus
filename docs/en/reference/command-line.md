@@ -151,3 +151,5 @@ Open **ARGVUS Lifecycle** with `SUPER + Esc`, the taskbar Power button, or `argv
 `argvus lock` · Hyprlock
 
 ARGVUS Lifecycle follows the effective window corner radius and Hyprland’s global blur settings. It uses a fade regardless of the selected animation style and respects the global animation switch.
+
+While Lifecycle is open, it blocks desktop clicks and scrolling on all monitors and inhibits ordinary Hyprland shortcuts.

@@ -10,3 +10,5 @@ window.lifecycle { background: transparent; color: #f6f8fb; }
 .lifecycle.compact .lifecycle-action { min-width: 240px; min-height: 42px; padding: 0 12px; font-size: 16px; }
 .lifecycle.compact .lifecycle-header { margin: 10px 16px; font-size: 20px; }
 .lifecycle.compact .lifecycle-footer { margin: 0 12px 10px; padding: 6px 0 0; }
+
+window.lifecycle-shield { background: transparent; }

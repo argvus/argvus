@@ -148,3 +148,5 @@ Las aplicaciones iniciadas desde los selectores muestran el progreso en el selec
 `argvus lock` · Hyprlock
 
 ARGVUS Lifecycle respeta el radio efectivo de las esquinas y el desenfoque global de Hyprland. Usa un fundido siempre que las animaciones estén activadas.
+
+Mientras Lifecycle está abierto, bloquea los clics y el desplazamiento del escritorio en todos los monitores y suspende los atajos normales de Hyprland.

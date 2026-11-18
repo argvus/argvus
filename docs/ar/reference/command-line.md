@@ -149,3 +149,5 @@ argvus setup --copy <app> --dry-run
 `argvus lock` · Hyprlock
 
 يتبع ARGVUS Lifecycle نصف قطر زوايا النوافذ الفعلي وإعدادات التمويه العامة في Hyprland. ويستخدم التلاشي عند تفعيل الحركات.
+
+أثناء فتح Lifecycle، يمنع النقر والتمرير على سطح المكتب في جميع الشاشات ويعلّق اختصارات Hyprland العادية.

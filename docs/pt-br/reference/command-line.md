@@ -151,3 +151,5 @@ Abra o **ARGVUS Lifecycle** com `SUPER + Esc`, o botão de energia da barra de t
 `argvus lock` · Hyprlock
 
 O ARGVUS Lifecycle segue o arredondamento efetivo das janelas e o desfoque global do Hyprland. Usa sempre o estilo fade quando as animações estão habilitadas.
+
+Enquanto o Lifecycle está aberto, cliques e rolagem no desktop ficam bloqueados em todos os monitores, e os atalhos comuns do Hyprland ficam suspensos.

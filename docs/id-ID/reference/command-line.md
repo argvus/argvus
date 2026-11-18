@@ -149,3 +149,5 @@ Pemilih tema dan mode menampilkan kemajuan di jendelanya tanpa splash sesi. Posi
 `argvus lock` · Hyprlock
 
 ARGVUS Lifecycle mengikuti radius sudut jendela yang berlaku dan pengaturan blur global Hyprland. Saat animasi aktif, transisi selalu memakai fade.
+
+Saat Lifecycle terbuka, klik dan gulir desktop diblokir pada semua monitor, dan pintasan biasa Hyprland ditangguhkan.

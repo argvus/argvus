@@ -148,3 +148,5 @@ argvus setup --copy <app> --dry-run
 `argvus lock` · Hyprlock
 
 ARGVUS Lifecycle はウィンドウの有効な角丸半径と Hyprland の全体ぼかし設定に従います。アニメーションが有効な場合は常にフェードします。
+
+Lifecycle を開いている間は、すべてのモニターでデスクトップのクリックとスクロールを遮断し、Hyprland の通常のショートカットを一時停止します。

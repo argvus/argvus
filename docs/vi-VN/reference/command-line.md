@@ -149,3 +149,5 @@ Bộ chọn giao diện và chế độ hiển thị tiến trình trong cửa s
 `argvus lock` · Hyprlock
 
 ARGVUS Lifecycle tuân theo bán kính bo góc thực tế của cửa sổ và thiết lập làm mờ toàn cục của Hyprland. Khi bật hoạt ảnh, ứng dụng luôn dùng hiệu ứng mờ dần.
+
+Khi Lifecycle mở, thao tác nhấp và cuộn trên màn hình nền bị chặn trên mọi màn hình, còn các phím tắt thông thường của Hyprland tạm ngừng.

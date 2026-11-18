@@ -148,3 +148,5 @@ Le applicazioni avviate dai selettori mostrano il progresso nel selettore, senza
 `argvus lock` · Hyprlock
 
 ARGVUS Lifecycle segue il raggio effettivo degli angoli e la sfocatura globale di Hyprland. Usa sempre una dissolvenza quando le animazioni sono attive.
+
+Quando Lifecycle è aperto, blocca clic e scorrimento sul desktop su tutti i monitor e sospende le normali scorciatoie di Hyprland.

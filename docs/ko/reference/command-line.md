@@ -148,3 +148,5 @@ argvus setup --copy <app> --dry-run
 `argvus lock` · Hyprlock
 
 ARGVUS Lifecycle은 창의 실제 모서리 반경과 Hyprland의 전역 흐림 설정을 따릅니다. 애니메이션이 켜져 있으면 항상 페이드를 사용합니다.
+
+Lifecycle이 열려 있는 동안 모든 모니터에서 바탕 화면 클릭과 스크롤을 차단하고 일반 Hyprland 단축키를 일시 중지합니다.

@@ -148,3 +148,5 @@ Les applications lancées depuis les sélecteurs affichent leur progression dans
 `argvus lock` · Hyprlock
 
 ARGVUS Lifecycle suit le rayon effectif des coins et le flou global de Hyprland. Il utilise un fondu lorsque les animations sont activées.
+
+Lorsque Lifecycle est ouvert, il bloque les clics et le défilement sur tous les écrans et suspend les raccourcis ordinaires de Hyprland.
