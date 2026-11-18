@@ -126,8 +126,7 @@ pub fn ssh() -> Result<Vec<Entry>, String> {
       .collect(),
   )
 }
-pub fn builtin() -> Vec<Entry> {
-  let lang = language();
+pub fn builtin(lang: Lang) -> Vec<Entry> {
   vec![
     Entry {
       id: "action:audio-outputs".into(),

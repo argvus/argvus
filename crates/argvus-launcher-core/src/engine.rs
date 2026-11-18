@@ -46,6 +46,26 @@ fn response(sequence: u64, entries: &[Entry], error: Option<String>) {
   emit(json!({"event":"results","sequence":sequence,"entries":entries,"error":error}));
 }
 
+fn ready(settings: &Settings, language: argvus_i18n::Lang) {
+  emit(json!({
+    "event": "ready",
+    "settings": settings,
+    "locale": language.locale(),
+    "rtl": language.direction() == argvus_i18n::TextDirection::RightToLeft,
+  }));
+}
+
+fn refresh_builtin(sources: &mut BTreeMap<String, Vec<Entry>>, language: argvus_i18n::Lang) {
+  sources.remove("actions");
+  sources.remove("help");
+  for entry in providers::builtin(language) {
+    sources
+      .entry(entry.category.clone())
+      .or_default()
+      .push(entry);
+  }
+}
+
 fn refresh(
   sender: mpsc::Sender<Message>,
   settings: Settings,
@@ -144,12 +164,8 @@ fn serve() -> Result<(), String> {
     let _ = input.send(Message::End);
   });
   let mut sources: BTreeMap<String, Vec<Entry>> = BTreeMap::new();
-  for entry in providers::builtin() {
-    sources
-      .entry(entry.category.clone())
-      .or_default()
-      .push(entry);
-  }
+  let mut language = providers::language();
+  refresh_builtin(&mut sources, language);
   let mut active_stop = Arc::new(AtomicBool::new(false));
   let mut busy = false;
   let mut pending = true;
@@ -159,7 +175,7 @@ fn serve() -> Result<(), String> {
   let mut current = Request::default();
   let mut devices: Option<Vec<Entry>> = None;
   let mut visible: Vec<Entry> = Vec::new();
-  emit(json!({"event":"ready","settings":settings}));
+  ready(&settings, language);
   loop {
     if checked.elapsed() > Duration::from_secs(2) {
       // Pacman replaces the executable while the old process is still running.
@@ -178,6 +194,16 @@ fn serve() -> Result<(), String> {
         pending = true;
       }
       checked = Instant::now();
+      let next_language = providers::language();
+      if next_language != language {
+        language = next_language;
+        active_stop.store(true, Ordering::Relaxed);
+        pending = true;
+        sources.remove("settings");
+        sources.remove("ssh");
+        refresh_builtin(&mut sources, language);
+        ready(&settings, language);
+      }
       match Settings::load() {
         Ok(next) if next != settings => {
           settings = next;
@@ -185,7 +211,7 @@ fn serve() -> Result<(), String> {
           pending = true;
           sources.remove("files");
           devices = None;
-          emit(json!({"event":"ready","settings":settings}));
+          ready(&settings, language);
         }
         Err(error) => eprintln!("launcher preferences: {error}"),
         _ => {}
@@ -254,7 +280,7 @@ fn serve() -> Result<(), String> {
           if request.category.is_empty() || settings.enabled(&request.category) {
             settings.selected_category = request.category;
             match settings.save_changes(&previous) {
-              Ok(()) => emit(json!({"event":"ready","settings":settings})),
+              Ok(()) => ready(&settings, language),
               Err(error) => {
                 settings = previous;
                 eprintln!("launcher preferences: {error}");
@@ -293,7 +319,7 @@ fn serve() -> Result<(), String> {
           // Hide old file results immediately after a policy change.
           sources.remove("files");
           devices = None;
-          emit(json!({"event":"ready","settings":settings}));
+          ready(&settings, language);
         }
         "rebuild" => {
           active_stop.store(true, Ordering::Relaxed);
@@ -308,7 +334,7 @@ fn serve() -> Result<(), String> {
           sources.remove("files");
           active_stop.store(true, Ordering::Relaxed);
           pending = true;
-          emit(json!({"event":"ready","settings":settings}));
+          ready(&settings, language);
         }
         "back" => {
           devices = None;
@@ -329,7 +355,7 @@ fn serve() -> Result<(), String> {
             settings.favorites.push(request.id);
           }
           settings.save_changes(&previous)?;
-          emit(json!({"event":"ready","settings":settings}));
+          ready(&settings, language);
         }
         "activate" => {
           if let Some(entry) = visible.iter().find(|entry| entry.id == request.id) {

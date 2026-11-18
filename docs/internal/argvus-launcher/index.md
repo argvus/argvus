@@ -4,6 +4,11 @@ The `argvus-launcher` component owns the Quickshell/QML surface and its theme
 consumer. `argvus-launcher-core` in the master workspace owns typed preferences,
 ranking, provider orchestration, the file-name cache and action activation.
 `argvus launcher-engine serve` runs the engine in-process in the public dispatcher.
+The engine resolves the ARGVUS interface language and reports the locale and text
+direction in `ready`. The panel loads its shared `launcher` catalog from
+`ARGVUS_I18N_DIR` or the system catalog directory, with English fallback. When
+the interface language changes, the engine rebuilds translated search entries
+and the panel resubmits the current query.
 The engine checks whether its executable was replaced during the session.
 Once the replacement exists, the engine exits and Quickshell starts the new
 binary automatically, then resends the current search.
