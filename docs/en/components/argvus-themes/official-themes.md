@@ -59,6 +59,11 @@ To switch the mode, open **Control Center → Appearance → Mode** and choose *
 | Gruvbox Light | `argvus-theme-gruvbox-light` | `#458588` |
 | Watercolor | `argvus-theme-watercolor` | `#1A639C` |
 | Obsidian Light | `argvus-theme-obsidian-light` | `#334A78` |
+| Porcelain Light | `argvus-theme-porcelain-light` | `#A52253` |
+| Saffron Light | `argvus-theme-saffron-light` | `#8A4905` |
+| Celadon Light | `argvus-theme-celadon-light` | `#286347` |
+| Iris Light | `argvus-theme-iris-light` | `#6240A2` |
+| Foundry Light | `argvus-theme-foundry-light` | `#783D2A` |
 
 ## Built-in themes
 

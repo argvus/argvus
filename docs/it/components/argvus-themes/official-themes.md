@@ -58,6 +58,11 @@ Per cambiare modalità, apri **Centro di Controllo → Aspetto → Modalità** e
 | Gruvbox Chiaro | `argvus-theme-gruvbox-light` | `#458588` |
 | Acquerello | `argvus-theme-watercolor` | `#1A639C` |
 | Obsidian Chiaro | `argvus-theme-obsidian-light` | `#334A78` |
+| Porcelain Light | `argvus-theme-porcelain-light` | `#A52253` |
+| Saffron Light | `argvus-theme-saffron-light` | `#8A4905` |
+| Celadon Light | `argvus-theme-celadon-light` | `#286347` |
+| Iris Light | `argvus-theme-iris-light` | `#6240A2` |
+| Foundry Light | `argvus-theme-foundry-light` | `#783D2A` |
 
 ## Temi integrati
 

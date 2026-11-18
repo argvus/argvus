@@ -59,6 +59,11 @@ Untuk beralih mode, buka **Pusat Kontrol → Tampilan → Mode** dan pilih **Sti
 | Lampu Gruvbox | `argvus-theme-gruvbox-light` | `#458588` |
 | Cat Air | `argvus-theme-watercolor` | `#1A639C` |
 | Cahaya Obsidian | `argvus-theme-obsidian-light` | `#334A78` |
+| Porcelain Light | `argvus-theme-porcelain-light` | `#A52253` |
+| Saffron Light | `argvus-theme-saffron-light` | `#8A4905` |
+| Celadon Light | `argvus-theme-celadon-light` | `#286347` |
+| Iris Light | `argvus-theme-iris-light` | `#6240A2` |
+| Foundry Light | `argvus-theme-foundry-light` | `#783D2A` |
 
 ## Tema bawaan
 

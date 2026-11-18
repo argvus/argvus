@@ -59,6 +59,11 @@ description: आधिकारिक ARGVUS थीम कैटलॉग, ड�
 | ग्रुवबॉक्स लाइट | `argvus-theme-gruvbox-light` | `#458588` |
 | जल रंग | `argvus-theme-watercolor` | `#1A639C` |
 | ओब्सीडियन लाइट | `argvus-theme-obsidian-light` | `#334A78` |
+| Porcelain Light | `argvus-theme-porcelain-light` | `#A52253` |
+| Saffron Light | `argvus-theme-saffron-light` | `#8A4905` |
+| Celadon Light | `argvus-theme-celadon-light` | `#286347` |
+| Iris Light | `argvus-theme-iris-light` | `#6240A2` |
+| Foundry Light | `argvus-theme-foundry-light` | `#783D2A` |
 
 ## अंतर्निर्मित थीम
 
