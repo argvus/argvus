@@ -4,6 +4,9 @@ The `argvus-launcher` component owns the Quickshell/QML surface and its theme
 consumer. `argvus-launcher-core` in the master workspace owns typed preferences,
 ranking, provider orchestration, the file-name cache and action activation.
 `argvus launcher-engine serve` runs the engine in-process in the public dispatcher.
+The engine checks whether its executable was replaced during the session.
+Once the replacement exists, the engine exits and Quickshell starts the new
+binary automatically, then resends the current search.
 No additional Rust executable is installed.
 
 ## Sources of truth

@@ -9,6 +9,7 @@ use serde_json::{Value, json};
 use std::{
   collections::BTreeMap,
   io::{self, BufRead, Write},
+  os::unix::fs::MetadataExt,
   process::ExitCode,
   sync::{
     Arc,
@@ -116,6 +117,8 @@ pub fn run_command(arguments: Vec<String>) -> ExitCode {
 }
 
 fn serve() -> Result<(), String> {
+  let executable_path = std::env::current_exe().ok();
+  let running_executable = std::fs::metadata("/proc/self/exe").ok();
   let mut settings = Settings::load()?;
   let (sender, receiver) = mpsc::channel();
   let input = sender.clone();
@@ -159,6 +162,15 @@ fn serve() -> Result<(), String> {
   emit(json!({"event":"ready","settings":settings}));
   loop {
     if checked.elapsed() > Duration::from_secs(2) {
+      // Pacman replaces the executable while the old process is still running.
+      // Wait for the replacement to exist before asking Quickshell to restart us.
+      if let (Some(path), Some(running)) = (&executable_path, &running_executable)
+        && let Ok(installed) = std::fs::metadata(path)
+        && (running.dev(), running.ino()) != (installed.dev(), installed.ino())
+      {
+        active_stop.store(true, Ordering::Relaxed);
+        break;
+      }
       if settings.index_enabled
         && !settings.index_paused
         && files::cache_path().is_ok_and(|path| !path.exists())

@@ -7,7 +7,10 @@ pub fn language() -> Lang {
   Lang::for_domain(&Lang::detect().locale(), "launcher")
 }
 pub fn argvus() -> PathBuf {
-  std::env::current_exe().unwrap_or_else(|_| PathBuf::from("argvus"))
+  std::env::current_exe()
+    .ok()
+    .filter(|path| path.is_file())
+    .unwrap_or_else(|| PathBuf::from("argvus"))
 }
 pub fn output(args: &[&str]) -> Result<String, String> {
   let output = Command::new(argvus())
