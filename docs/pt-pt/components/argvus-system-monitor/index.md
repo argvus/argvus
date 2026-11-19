@@ -3,6 +3,8 @@ title: Monitor do sistema
 description: Abra o monitor do sistema ARGVUS.
 ---
 
+O menu de aplicações e o atalho abrem o **ARGVUS System Monitor** numa janela flutuante do mesmo tamanho que o monitor de memória da barra de tarefas.
+
 ```sh
 argvus --system-monitor
 ```

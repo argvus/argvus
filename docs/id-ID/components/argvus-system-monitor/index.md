@@ -3,6 +3,8 @@ title: Monitor sistem
 description: Buka monitor sistem ARGVUS.
 ---
 
+Menu aplikasi dan pintasan membuka **ARGVUS System Monitor** dalam jendela mengambang seukuran monitor memori di bilah tugas.
+
 Buka monitor yang dikonfigurasi dengan:
 
 ```sh

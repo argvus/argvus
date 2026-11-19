@@ -2,6 +2,8 @@
 title: 시스템 모니터
 description: ARGVUS 시스템 모니터를 열어라.
 ---
+
+앱 메뉴와 단축키는 작업 표시줄의 메모리 모니터와 같은 크기의 플로팅 창에서 **ARGVUS System Monitor**를 엽니다.
 다음으로 설정된 모니터를 엽니다:
 
 ```sh

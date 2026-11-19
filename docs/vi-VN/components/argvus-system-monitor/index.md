@@ -3,6 +3,8 @@ title: Màn hình hệ thống
 description: Mở màn hình hệ thống ARGVUS.
 ---
 
+Menu ứng dụng và phím tắt mở **ARGVUS System Monitor** trong cửa sổ nổi cùng kích thước với trình giám sát bộ nhớ trên thanh tác vụ.
+
 Mở màn hình được cấu hình bằng:
 
 ```sh

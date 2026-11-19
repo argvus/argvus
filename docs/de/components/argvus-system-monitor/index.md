@@ -2,6 +2,8 @@
 title: Systemmonitor
 description: Öffnen Sie den ARGVUS-Systemmonitor.
 ---
+
+Das Anwendungsmenü und das Tastenkürzel öffnen das schwebende Fenster **ARGVUS System Monitor** in derselben Größe wie die Speicheranzeige in der Taskleiste.
 Öffnen Sie den konfigurierten Monitor mit:
 
 ```sh

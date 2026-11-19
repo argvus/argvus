@@ -36,7 +36,7 @@ pub fn draw_live_header(
       Span::styled(
         " ARGVUS ",
         Style::new()
-          .fg(theme.background)
+          .fg(theme.selected_foreground)
           .bg(theme.accent)
           .add_modifier(Modifier::BOLD),
       ),

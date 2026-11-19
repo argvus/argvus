@@ -2,6 +2,8 @@
 title: Moniteur système
 description: Ouvrez le moniteur de système ARGVUS.
 ---
+
+Le menu des applications et le raccourci ouvrent **ARGVUS System Monitor** dans une fenêtre flottante de la même taille que le moniteur de mémoire de la barre des tâches.
 Ouvrez le moniteur configuré avec :
 
 ```sh

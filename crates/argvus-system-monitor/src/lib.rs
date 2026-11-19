@@ -184,16 +184,16 @@ fn run(arguments: &[String]) -> Result<ExitCode, String> {
       if use_panel {
         let _ = env_logger::try_init();
         let catalog = panel::Catalog::load();
-        let title_key = match shown_boxes.as_str() {
-          "cpu" => "system-monitor.title.cpu",
-          "mem" => "system-monitor.title.memory",
-          value if value.starts_with("gpu") => "system-monitor.title.gpu",
-          _ => "system-monitor.title.overview",
+        let subtitle = match shown_boxes.as_str() {
+          "cpu" => catalog.tr("system-monitor.title.cpu"),
+          "mem" => catalog.tr("system-monitor.title.memory"),
+          value if value.starts_with("gpu") => catalog.tr("system-monitor.title.gpu"),
+          _ => String::new(),
         };
         if shown_boxes.starts_with("gpu") {
-          panel::run_gpu(&btop_arguments, catalog.tr(title_key), catalog)
+          panel::run_gpu(&btop_arguments, subtitle, catalog)
         } else {
-          panel::run(&btop_arguments, catalog.tr(title_key), catalog)
+          panel::run(&btop_arguments, subtitle, catalog)
         }
       } else {
         exec_btop(&btop_arguments)

@@ -3,6 +3,8 @@ title: Sistem monitörü
 description: ARGVUS sistem monitörünü açın.
 ---
 
+Uygulama menüsü ve kısayol, **ARGVUS System Monitor** uygulamasını görev çubuğundaki bellek izleyicisiyle aynı boyutta bir kayan pencerede açar.
+
 Yapılandırılmış monitörü şununla açın:
 
 ```sh

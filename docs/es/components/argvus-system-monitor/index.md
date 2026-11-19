@@ -2,6 +2,8 @@
 title: Monitor del sistema
 description: Abre el monitor del sistema ARGVUS.
 ---
+
+El menú de aplicaciones y el atajo abren **ARGVUS System Monitor** en una ventana flotante del mismo tamaño que el monitor de memoria de la barra de tareas.
 Abre el monitor configurado con:
 
 ```sh

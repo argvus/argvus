@@ -3,6 +3,8 @@ title: System monitor
 description: Open the ARGVUS system monitor.
 ---
 
+The application menu and shortcut open **ARGVUS System Monitor** in a floating window the same size as the taskbar memory monitor.
+
 Open the configured monitor with:
 
 ```sh

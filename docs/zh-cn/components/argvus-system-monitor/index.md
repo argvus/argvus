@@ -2,6 +2,8 @@
 title: 系统监视器
 description: 打开 ARGVUS 系统监视器。
 ---
+
+应用菜单和快捷键会以浮动窗口打开 **ARGVUS System Monitor**，窗口大小与任务栏的内存监视器相同。
 使用以下方式打开已配置的监视器：
 
 ```sh

@@ -308,7 +308,26 @@ fn draw(
   ])
   .split(frame.area());
   let live_status = matches!(state, PanelState::Running).then(|| catalog.tr("system-monitor.live"));
-  draw_live_header(frame, areas[0], theme, title, live_status.as_deref());
+  let header = areas[0];
+  let title_area = Rect::new(header.x, header.y, header.width, header.height.min(2));
+  draw_live_header(
+    frame,
+    title_area,
+    theme,
+    "System Monitor",
+    live_status.as_deref(),
+  );
+  if !title.is_empty() && header.height > 2 {
+    frame.render_widget(
+      Paragraph::new(title).style(Style::new().fg(theme.muted)),
+      Rect::new(
+        header.x.saturating_add(1),
+        header.y + 2,
+        header.width.saturating_sub(2),
+        1,
+      ),
+    );
+  }
   match state {
     PanelState::Running => view.render(frame, areas[1], theme),
     PanelState::LaunchError => frame.render_widget(
