@@ -126,9 +126,17 @@ fn apply_theme(window: &gtk::ApplicationWindow, locale: &str) {
   let search_style =
     argvus_theme_selector::render::search_css(".keybindings", &fg, &accent, &format!("{radius}px"));
   let search_backdrop = search_backdrop_opacity(opacity);
+  // GTK 4.22+ derives the Wayland blur region from this filter. Hyprland
+  // uses its own blur settings for that region.
+  let blur = if opacity < 1.0 && (gtk::major_version(), gtk::minor_version()) >= (4, 22) {
+    "backdrop-filter: blur(20px);"
+  } else {
+    ""
+  };
   let provider = gtk::CssProvider::new();
   provider.load_from_string(&format!(
-    "window.keybindings {{ background: alpha({bg}, {opacity}); color: {fg}; }}
+    "window.keybindings {{ background: transparent; color: {fg}; }}
+     .keybindings .window-backdrop {{ background: alpha({bg}, {opacity}); {blur} }}
      .keybindings .panel {{ border: 1px solid alpha({fg}, .38); border-radius: {radius}px; padding: 20px; }}
      .keybindings .header, .keybindings .browser {{ background: alpha({bg}, .68); border-radius: {radius}px; font: 15px monospace; }}
      .keybindings list, .keybindings scrolledwindow, .keybindings viewport {{ background: transparent; color: {fg}; }}
@@ -176,7 +184,13 @@ fn open(app: &gtk::Application, i18n: &I18n) {
   }
   let content = gtk::Box::new(gtk::Orientation::Vertical, 14);
   content.add_css_class("panel");
-  window.set_child(Some(&content));
+  let surface = gtk::Overlay::new();
+  let backdrop = gtk::Box::new(gtk::Orientation::Vertical, 0);
+  backdrop.add_css_class("window-backdrop");
+  surface.set_child(Some(&backdrop));
+  surface.add_overlay(&content);
+  surface.set_measure_overlay(&content, true);
+  window.set_child(Some(&surface));
   window.add_tick_callback({
     let content = content.downgrade();
     move |window, _| {
