@@ -1,0 +1,23 @@
+{
+  "search": "Busca por nombre o palabra clave",
+  "recent": "Recientes",
+  "favorites": "Favoritos",
+  "all": "Todos",
+  "smileys": "Caritas",
+  "people": "Personas",
+  "nature": "Animales y naturaleza",
+  "food": "Comida",
+  "travel": "Viajes",
+  "objects": "Objetos",
+  "symbols": "Símbolos",
+  "insert": "Insertar",
+  "copy": "Copiar",
+  "empty": "No se encontraron emojis",
+  "favorite_added": "Añadido a favoritos",
+  "favorite_removed": "Eliminado de favoritos",
+  "focus_error": "Ventana original no disponible. Puedes copiar.",
+  "insert_error": "Error al insertar. Puedes copiar.",
+  "copy_error": "No se pudo copiar el emoji.",
+  "state_error": "No se pudo leer o guardar el historial.",
+  "hints": "←↑↓→  Tab   / Busca por nombre o palabra clave   Enter Insertar   Ctrl+C Copiar   Ctrl+D Favoritos   Esc"
+}

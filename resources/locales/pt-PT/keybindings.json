@@ -80,7 +80,7 @@
   "keybindings.action.animations": "Ativa/Desativa efeitos visuais",
   "keybindings.action.control_center": "Centro de controlo aberto",
   "keybindings.action.color_picker": "Seletor de cores (Color Picker)",
-  "keybindings.action.emoji_picker": "Seletor de Emoji",
+  "keybindings.action.emoji_picker": "ARGVUS Emoji",
   "keybindings.action.clipboard": "Histórico no Clipboard",
   "keybindings.action.clipboard_clear": "Apagar histórico do Clipboard",
   "keybindings.action.dpms": "Desligar/Ligar monitor (não é suspender)",

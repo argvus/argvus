@@ -82,9 +82,15 @@ description: Команда argvus, её подкоманды, флаги, ис�
 
 Эти упакованные скрипты запускаются и используются конфигурацией Hyprland:
 
-`scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
+`scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
 
 Скрипт в конфигурации пользователя переопределяет упакованный. Порядок поиска такой же, как у `_config_path` в `hyprland.lua`: копия конфигурации пользователя, затем копия данных ARGVUS, затем копия состояния, затем сгенерированная копия, и только потом упакованный файл под `/usr/share/argvus`.
+
+## ARGVUS Emoji
+
+`argvus emoji-picker` (`Super + .`). ←↑↓→  Tab   / Поиск по названию или ключевому слову   Enter Вставить   Ctrl+C Копировать   Ctrl+D Избранное   Esc.
+
+При открытии выбрана вкладка «Все». Tab переключает категории, а стрелки перемещают выбор по сетке.
 
 ## Примеры
 

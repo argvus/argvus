@@ -82,9 +82,15 @@ Das Kontrollzentrum akzeptiert Legacy-Seitenflags als erstes Argument und ordnet
 
 Diese führen verpackte Skripte aus und werden von der Hyprland-Konfiguration verwendet:
 
-`scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
+`scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
 
 Ein Skript in der Benutzerkonfiguration überschreibt das verpackte Skript. Die Suchreihenfolge ist dieselbe wie `_config_path` in `hyprland.lua`: die Kopie der Benutzerkonfiguration, dann die ARGVUS-Datenkopie, dann die Statuskopie, dann die generierte Kopie, und erst danach die verpackte Datei unter `/usr/share/argvus`.
+
+## ARGVUS Emoji
+
+`argvus emoji-picker` (`Super + .`). ←↑↓→  Tab   / Nach Name oder Stichwort suchen   Enter Einfügen   Ctrl+C Kopieren   Ctrl+D Favoriten   Esc.
+
+Beim Öffnen ist „Alle“ ausgewählt. Tab wechselt die Kategorie, die Pfeiltasten bewegen die Auswahl im Raster.
 
 ## Beispiele
 

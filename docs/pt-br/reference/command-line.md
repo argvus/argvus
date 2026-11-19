@@ -83,9 +83,15 @@ O Centro de Controle aceita flags de página antigas como primeiro argumento e a
 
 Estes executam scripts empacotados e são usados pela configuração do Hyprland:
 
-`scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
+`scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
 
 Um script na configuração do usuário substitui o empacotado. A ordem de busca é a mesma de `_config_path` em `hyprland.lua`: a cópia da configuração do usuário, depois a cópia de dados do ARGVUS, depois a cópia de estado, depois a cópia gerada, e só então o arquivo empacotado em `/usr/share/argvus`.
+
+## ARGVUS Emoji
+
+`argvus emoji-picker` (`Super + .`). ←↑↓→  Tab   / Busque por nome ou palavra-chave   Enter Inserir   Ctrl+C Copiar   Ctrl+D Favoritos   Esc.
+
+O seletor abre na aba Todos. Tab percorre as categorias e as setas percorrem a grade de emojis.
 
 ## Exemplos
 

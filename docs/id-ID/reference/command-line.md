@@ -81,9 +81,15 @@ Pusat Kontrol menerima tanda halaman lama sebagai argumen pertamanya dan memetak
 
 Ini menjalankan skrip yang dikemas dan digunakan oleh konfigurasi Hyprland:
 
-`scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
+`scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
 
 Skrip dalam konfigurasi pengguna akan menggantikan skrip yang dipaketkan. Urutan pencariannya sama dengan `_config_path` di `hyprland.lua`: salinan konfigurasi pengguna, lalu salinan data ARGVUS, lalu salinan status, lalu salinan yang dihasilkan, dan baru kemudian file paket di bawah `/usr/share/argvus`.
+
+## ARGVUS Emoji
+
+`argvus emoji-picker` (`Super + .`). ←↑↓→  Tab   / Cari berdasarkan nama atau kata kunci   Enter Sisipkan   Ctrl+C Salin   Ctrl+D Favorit   Esc.
+
+Pemilih dibuka pada tab Semua. Tab berpindah kategori dan tombol panah menavigasi kisi emoji.
 
 ## Contoh
 

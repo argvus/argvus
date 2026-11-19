@@ -86,6 +86,12 @@ description: argvusコマンド、そのサブコマンド、キー割り当て�
 
 ユーザーの設定にあるスクリプトは、パッケージ化されたものを上書きします。検索の順序は、hyprland.lua 内の `_config_path` と同じです: ユーザーの設定コピー、次に ARGVUS データコピー、次にステートコピー、次に生成されたコピー、そして最後に  `hyprland.lua` `/usr/share/argvus` の下にあるパッケージ化ファイルです。
 
+## ARGVUS Emoji
+
+`argvus emoji-picker` (`Super + .`). ←↑↓→  Tab   / 名前またはキーワードで検索   Enter 挿入   Ctrl+C コピー   Ctrl+D お気に入り   Esc.
+
+最初は「すべて」が選択されます。Tab でカテゴリを切り替え、矢印キーで絵文字を選択します。
+
 ## 例
 
 ```sh

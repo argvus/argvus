@@ -1,0 +1,23 @@
+{
+  "search": "Rechercher par nom ou mot-clé",
+  "recent": "Récents",
+  "favorites": "Favoris",
+  "all": "Tous",
+  "smileys": "Émoticônes",
+  "people": "Personnes",
+  "nature": "Animaux et nature",
+  "food": "Alimentation",
+  "travel": "Voyages",
+  "objects": "Objets",
+  "symbols": "Symboles",
+  "insert": "Insérer",
+  "copy": "Copier",
+  "empty": "Aucun emoji trouvé",
+  "favorite_added": "Ajouté aux favoris",
+  "favorite_removed": "Retiré des favoris",
+  "focus_error": "Fenêtre d’origine indisponible. Vous pouvez copier.",
+  "insert_error": "Échec de l’insertion. Vous pouvez copier.",
+  "copy_error": "Impossible de copier l’emoji.",
+  "state_error": "Impossible de lire ou d’enregistrer l’historique.",
+  "hints": "←↑↓→  Tab   / Rechercher par nom ou mot-clé   Enter Insérer   Ctrl+C Copier   Ctrl+D Favoris   Esc"
+}

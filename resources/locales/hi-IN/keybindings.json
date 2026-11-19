@@ -80,7 +80,7 @@
   "keybindings.action.animations": "दृश्य प्रभावों को टॉगल करें",
   "keybindings.action.control_center": "नियंत्रण केंद्र खोलें",
   "keybindings.action.color_picker": "रंग चुनने वाला",
-  "keybindings.action.emoji_picker": "इमोजी पिकर",
+  "keybindings.action.emoji_picker": "ARGVUS Emoji",
   "keybindings.action.clipboard": "क्लिपबोर्ड इतिहास",
   "keybindings.action.clipboard_clear": "क्लिपबोर्ड इतिहास साफ़ करें",
   "keybindings.action.dpms": "मॉनिटर को बंद/चालू करें (सिस्टम को निलंबित नहीं करें)",

@@ -76,9 +76,15 @@ description: argvus कमांड, इसके उपकमांड, की�
 
 ये पैकेज्ड स्क्रिप्ट चलाते हैं और हाइप्रलैंड कॉन्फ़िगरेशन द्वारा उपयोग किए जाते हैं:
 
-`scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`।
+`scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`।
 
 उपयोगकर्ता के कॉन्फ़िगरेशन में एक स्क्रिप्ट पैकेज्ड स्क्रिप्ट को ओवरराइड करती है। लुकअप ऑर्डर hyprland.lua में `_config_path` के समान है: उपयोगकर्ता की कॉन्फ़िगरेशन कॉपी, फिर ARGVUS डेटा कॉपी, फिर स्टेट कॉपी, फिर जेनरेट की गई कॉपी, और उसके बाद ही  `hyprland.lua` `/usr/share/argvus` के तहत पैक की गई फ़ाइल।
+
+## ARGVUS Emoji
+
+`argvus emoji-picker` (`Super + .`). ←↑↓→  Tab   / नाम या खोजशब्द से खोजें   Enter सम्मिलित करें   Ctrl+C कॉपी करें   Ctrl+D पसंदीदा   Esc.
+
+चयनकर्ता सभी टैब पर खुलता है। Tab श्रेणियाँ बदलता है और तीर कुंजियाँ इमोजी चुनती हैं।
 
 ## उदाहरण
 

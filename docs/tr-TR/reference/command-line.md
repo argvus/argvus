@@ -85,6 +85,12 @@ Bunlar paketlenmiş komut dosyalarını çalıştırır ve Hyprland yapılandır
 
 Kullanıcının yapılandırmasındaki bir komut dosyası, paketlenmiş olanı geçersiz kılar. Arama sırası, hyprland.lua'daki `_config_path` ile aynıdır: kullanıcının yapılandırma kopyası, ardından ARGVUS veri kopyası, ardından durum kopyası, ardından oluşturulan kopya ve ancak bundan sonra  `hyprland.lua` `/usr/share/argvus` altında paketlenmiş dosya.
 
+## ARGVUS Emoji
+
+`argvus emoji-picker` (`Super + .`). ←↑↓→  Tab   / Ada veya anahtar sözcüğe göre ara   Enter Ekle   Ctrl+C Kopyala   Ctrl+D Favoriler   Esc.
+
+Seçici Tümü sekmesinde açılır. Tab kategoriler arasında geçiş yapar, ok tuşları emoji ızgarasında gezinir.
+
 ## Örnekler
 
 ```sh

@@ -80,7 +80,7 @@
   "keybindings.action.animations": "Attiva/disattiva gli effetti visivi",
   "keybindings.action.control_center": "Apri Centro di controllo",
   "keybindings.action.color_picker": "Selettore colore",
-  "keybindings.action.emoji_picker": "Selettore emoji",
+  "keybindings.action.emoji_picker": "ARGVUS Emoji",
   "keybindings.action.clipboard": "Cronologia degli appunti",
   "keybindings.action.clipboard_clear": "Cancella la cronologia degli appunti",
   "keybindings.action.dpms": "Spegne/accende il monitor (non sospende il sistema)",

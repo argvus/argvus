@@ -14,6 +14,8 @@ makedepends=('cargo' 'pkgconf' 'gtk4' 'gtk4-layer-shell')
 options=('!debug' '!lto')
 
 depends=(
+	'wl-clipboard'
+	'wtype'
 	'libjxl'
 	'base-devel'
 	'systemd-libs'

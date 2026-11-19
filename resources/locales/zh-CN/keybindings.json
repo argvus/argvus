@@ -80,7 +80,7 @@
   "keybindings.action.animations": "切换视觉效果",
   "keybindings.action.control_center": "打开控制中心",
   "keybindings.action.color_picker": "颜色选择器",
-  "keybindings.action.emoji_picker": "表情符号选择器",
+  "keybindings.action.emoji_picker": "ARGVUS Emoji",
   "keybindings.action.clipboard": "剪贴板历史记录",
   "keybindings.action.clipboard_clear": "清除剪贴板历史记录",
   "keybindings.action.dpms": "关闭/打开显示器（不暂停系统）",

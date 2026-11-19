@@ -80,7 +80,7 @@
   "keybindings.action.animations": "視覚効果を切り替えます",
   "keybindings.action.control_center": "コントロールセンターを開く",
   "keybindings.action.color_picker": "カラーピッカー",
-  "keybindings.action.emoji_picker": "絵文字ピッカー",
+  "keybindings.action.emoji_picker": "ARGVUS Emoji",
   "keybindings.action.clipboard": "クリップボード履歴",
   "keybindings.action.clipboard_clear": "クリップボード履歴をクリア",
   "keybindings.action.dpms": "モニターをオフ/オンにします (システムを一時停止しない)",

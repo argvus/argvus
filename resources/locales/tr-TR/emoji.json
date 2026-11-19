@@ -1,0 +1,23 @@
+{
+  "search": "Ada veya anahtar sözcüğe göre ara",
+  "recent": "Son kullanılanlar",
+  "favorites": "Favoriler",
+  "all": "Tümü",
+  "smileys": "Yüzler",
+  "people": "İnsanlar",
+  "nature": "Hayvanlar ve doğa",
+  "food": "Yiyecek",
+  "travel": "Seyahat",
+  "objects": "Nesneler",
+  "symbols": "Simgeler",
+  "insert": "Ekle",
+  "copy": "Kopyala",
+  "empty": "Emoji bulunamadı",
+  "favorite_added": "Favorilere eklendi",
+  "favorite_removed": "Favorilerden kaldırıldı",
+  "focus_error": "İlk pencere kullanılamıyor. Kopyalayabilirsiniz.",
+  "insert_error": "Ekleme başarısız. Kopyalayabilirsiniz.",
+  "copy_error": "Emoji kopyalanamadı.",
+  "state_error": "Geçmiş okunamadı veya kaydedilemedi.",
+  "hints": "←↑↓→  Tab   / Ada veya anahtar sözcüğe göre ara   Enter Ekle   Ctrl+C Kopyala   Ctrl+D Favoriler   Esc"
+}

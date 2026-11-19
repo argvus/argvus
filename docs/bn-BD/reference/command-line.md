@@ -70,7 +70,7 @@ description: আরগভাস কমান্ড, এর সাবকমান
 
 ## Hyprland স্ক্রিপ্ট কমান্ডগুলো
 
-এই রান প্যাকেজ স্ক্রিপ্ট এবং Hyprland কনফিগারেশন দ্বারা ব্যবহৃত হয়:`ARGVUS Keybindings-hypr `, ` ARGVUS Keybindings-launcher `, ` scratchpad `, ` hypr-screenshot `, ` spaces-switch `, ` emoji-picker `, ` toggle-sidebar `, ` weather-location `, ` brightness-switch `, ` toggle-mode `, ` idle-timeout `, ` keep-awake `, ` hypr-power-menu`.
+এই রান প্যাকেজ স্ক্রিপ্ট এবং Hyprland কনফিগারেশন দ্বারা ব্যবহৃত হয়:`ARGVUS Keybindings-hypr `, ` ARGVUS Keybindings-launcher `, ` scratchpad `, ` hypr-screenshot `, ` spaces-switch `, ` toggle-sidebar `, ` weather-location `, ` brightness-switch `, ` toggle-mode `, ` idle-timeout `, ` keep-awake `, ` hypr-power-menu`.
 
 ব্যবহারকারীর কনফিগারেশনের একটি স্ক্রিপ্ট প্যাকেজ করাকে ওভাররাইড করে। লুকআপ অর্ডারটি hyprland.lua-তে `_config_path `-এর মতোই: ব্যবহারকারীর কনফিগারেশন কপি, তারপর ARGVUS ডেটা কপি, তারপর স্টেট কপি, তারপর জেনারেট করা কপি এবং শুধুমাত্র তারপর  ` hyprland.lua ` `/usr/share/argvus` এর অধীনে প্যাকেজ করা ফাইল।## উদাহরণ
 
@@ -85,6 +85,12 @@ argvus network status
 argvus bluetooth status
 argvus gpg list
 ```
+
+## ARGVUS Emoji
+
+`argvus emoji-picker` (`Super + .`). ←↑↓→  Tab   / নাম বা কীওয়ার্ড দিয়ে খুঁজুন   Enter সন্নিবেশ   Ctrl+C কপি   Ctrl+D প্রিয়   Esc.
+
+শুরুতে সব ট্যাব খোলে। Tab দিয়ে বিভাগ এবং তীরচিহ্ন দিয়ে ইমোজি বদলান।
 
 ## সেটআপ `argvus setup` প্যাকেজ করা ডিফল্টগুলিকে `/usr/share/argvus/<app>` থেকে `~/.config/argvus/data/<app>` এ কপি করে, যাতে আপনি সেগুলি কাস্টমাইজ করতে পারেন। এটি কখনই প্যাকেজ করা ফাইল সম্পাদনা করে না।
 

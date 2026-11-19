@@ -1,0 +1,23 @@
+{
+  "search": "이름 또는 키워드로 검색",
+  "recent": "최근",
+  "favorites": "즐겨찾기",
+  "all": "전체",
+  "smileys": "표정",
+  "people": "사람",
+  "nature": "동물과 자연",
+  "food": "음식",
+  "travel": "여행",
+  "objects": "사물",
+  "symbols": "기호",
+  "insert": "삽입",
+  "copy": "복사",
+  "empty": "이모지를 찾을 수 없습니다",
+  "favorite_added": "즐겨찾기에 추가했습니다",
+  "favorite_removed": "즐겨찾기에서 삭제했습니다",
+  "focus_error": "원래 창을 사용할 수 없습니다. 복사할 수 있습니다.",
+  "insert_error": "삽입에 실패했습니다. 복사할 수 있습니다.",
+  "copy_error": "이모지를 복사하지 못했습니다.",
+  "state_error": "기록을 읽거나 저장하지 못했습니다.",
+  "hints": "←↑↓→  Tab   / 이름 또는 키워드로 검색   Enter 삽입   Ctrl+C 복사   Ctrl+D 즐겨찾기   Esc"
+}

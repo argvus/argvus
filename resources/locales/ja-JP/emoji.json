@@ -1,0 +1,23 @@
+{
+  "search": "名前またはキーワードで検索",
+  "recent": "最近",
+  "favorites": "お気に入り",
+  "all": "すべて",
+  "smileys": "顔",
+  "people": "人",
+  "nature": "動物と自然",
+  "food": "食べ物",
+  "travel": "旅行",
+  "objects": "物",
+  "symbols": "記号",
+  "insert": "挿入",
+  "copy": "コピー",
+  "empty": "絵文字が見つかりません",
+  "favorite_added": "お気に入りに追加しました",
+  "favorite_removed": "お気に入りから削除しました",
+  "focus_error": "元のウィンドウが見つかりません。コピーできます。",
+  "insert_error": "挿入に失敗しました。コピーできます。",
+  "copy_error": "絵文字をコピーできませんでした。",
+  "state_error": "履歴を読み込みまたは保存できませんでした。",
+  "hints": "←↑↓→  Tab   / 名前またはキーワードで検索   Enter 挿入   Ctrl+C コピー   Ctrl+D お気に入り   Esc"
+}

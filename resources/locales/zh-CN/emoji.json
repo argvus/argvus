@@ -1,0 +1,23 @@
+{
+  "search": "按名称或关键词搜索",
+  "recent": "最近",
+  "favorites": "收藏",
+  "all": "全部",
+  "smileys": "笑脸",
+  "people": "人物",
+  "nature": "动物和自然",
+  "food": "食物",
+  "travel": "旅行",
+  "objects": "物品",
+  "symbols": "符号",
+  "insert": "插入",
+  "copy": "复制",
+  "empty": "未找到表情",
+  "favorite_added": "已添加到收藏",
+  "favorite_removed": "已从收藏中移除",
+  "focus_error": "原窗口不可用。仍可复制。",
+  "insert_error": "插入失败。仍可复制。",
+  "copy_error": "无法复制表情。",
+  "state_error": "无法读取或保存历史记录。",
+  "hints": "←↑↓→  Tab   / 按名称或关键词搜索   Enter 插入   Ctrl+C 复制   Ctrl+D 收藏   Esc"
+}

@@ -338,10 +338,10 @@ fn du_runs_the_private_argvus_du_executable_and_forwards_arguments() {
 #[test]
 fn desktop_tools_run_their_private_executables() {
   let sandbox = Sandbox::new("time-apps");
-  for name in ["focus", "clock", "calculator"] {
+  for name in ["focus", "clock", "calculator", "emoji-picker"] {
     sandbox.fake(&sandbox.commands(), name);
     for route in [name.to_owned(), format!("--{name}")] {
-      if route == "--calculator" {
+      if matches!(route.as_str(), "--calculator" | "--emoji-picker") {
         continue;
       }
       let output = sandbox.run(&sandbox.tools_path(), &[route.as_str(), "--toggle"], "");

@@ -80,7 +80,7 @@
   "keybindings.action.animations": "Basculer les effets visuels",
   "keybindings.action.control_center": "Ouvrir le centre de contrôle",
   "keybindings.action.color_picker": "Sélecteur de couleurs",
-  "keybindings.action.emoji_picker": "Sélecteur d'Emoji",
+  "keybindings.action.emoji_picker": "ARGVUS Emoji",
   "keybindings.action.clipboard": "Historique du Presse-papiers",
   "keybindings.action.clipboard_clear": "Effacer l'historique du presse-papiers",
   "keybindings.action.dpms": "Éteindre/allumer le moniteur (pas suspendre le système)",

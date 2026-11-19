@@ -1,0 +1,23 @@
+{
+  "search": "Search by name or keyword",
+  "recent": "Recent",
+  "favorites": "Favorites",
+  "all": "All",
+  "smileys": "Smileys",
+  "people": "People",
+  "nature": "Animals & Nature",
+  "food": "Food",
+  "travel": "Travel",
+  "objects": "Objects",
+  "symbols": "Symbols",
+  "insert": "Insert",
+  "copy": "Copy",
+  "empty": "No emojis found",
+  "favorite_added": "Added to favorites",
+  "favorite_removed": "Removed from favorites",
+  "focus_error": "Original window unavailable. You can still copy.",
+  "insert_error": "Insertion failed. You can still copy.",
+  "copy_error": "Could not copy the emoji.",
+  "state_error": "Could not read or save emoji history.",
+  "hints": "←↑↓→  Tab   / Search by name or keyword   Enter Insert   Ctrl+C Copy   Ctrl+D Favorites   Esc"
+}

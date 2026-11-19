@@ -82,9 +82,15 @@ Le centre de contrôle accepte les anciens indicateurs de page comme premier arg
 
 Ces scripts emballés sont exécutés et utilisés par la configuration de Hyprland :
 
-`scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
+`scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
 
 Un script dans la configuration de l'utilisateur remplace celui emballé. L'ordre de recherche est le même que `_config_path` dans `hyprland.lua` : la copie de la configuration de l'utilisateur, puis la copie des données ARGVUS, puis la copie d'état, puis la copie générée, et seulement ensuite le fichier emballé sous `/usr/share/argvus`.
+
+## ARGVUS Emoji
+
+`argvus emoji-picker` (`Super + .`). ←↑↓→  Tab   / Rechercher par nom ou mot-clé   Enter Insérer   Ctrl+C Copier   Ctrl+D Favoris   Esc.
+
+Le sélecteur s’ouvre sur Tous. Tab parcourt les catégories et les flèches parcourent la grille.
 
 ## Exemples
 

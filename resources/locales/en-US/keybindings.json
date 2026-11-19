@@ -80,7 +80,7 @@
   "keybindings.action.animations": "Toggle visual effects",
   "keybindings.action.control_center": "Open Control Center",
   "keybindings.action.color_picker": "Color Picker",
-  "keybindings.action.emoji_picker": "Emoji Picker",
+  "keybindings.action.emoji_picker": "ARGVUS Emoji",
   "keybindings.action.clipboard": "Clipboard History",
   "keybindings.action.clipboard_clear": "Clear Clipboard History",
   "keybindings.action.dpms": "Turn monitor off/on (not suspend system)",

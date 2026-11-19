@@ -1,0 +1,23 @@
+{
+  "search": "Nach Name oder Stichwort suchen",
+  "recent": "Zuletzt",
+  "favorites": "Favoriten",
+  "all": "Alle",
+  "smileys": "Smileys",
+  "people": "Personen",
+  "nature": "Tiere und Natur",
+  "food": "Essen",
+  "travel": "Reisen",
+  "objects": "Objekte",
+  "symbols": "Symbole",
+  "insert": "Einfügen",
+  "copy": "Kopieren",
+  "empty": "Keine Emojis gefunden",
+  "favorite_added": "Zu Favoriten hinzugefügt",
+  "favorite_removed": "Aus Favoriten entfernt",
+  "focus_error": "Ursprüngliches Fenster nicht verfügbar. Kopieren ist möglich.",
+  "insert_error": "Einfügen fehlgeschlagen. Kopieren ist möglich.",
+  "copy_error": "Emoji konnte nicht kopiert werden.",
+  "state_error": "Verlauf konnte nicht gelesen oder gespeichert werden.",
+  "hints": "←↑↓→  Tab   / Nach Name oder Stichwort suchen   Enter Einfügen   Ctrl+C Kopieren   Ctrl+D Favoriten   Esc"
+}

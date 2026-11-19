@@ -82,9 +82,15 @@ description: argvus 명령어, 그 하위 명령어들, 키 바인딩을 위해 
 
 이들은 패키지로 제공되는 스크립트를 실행하며 Hyprland 구성에서 사용됩니다:
 
-`scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
+`scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
 
 사용자의 구성에 있는 스크립트는 패키지화된 스크립트를 덮어씁니다. 조회 순서는 hyprland.lua의 `_config_path`와 동일합니다: 사용자의 구성 복사본, 그 다음 ARGVUS 데이터 복사본, 그 다음 상태 복사본, 그 다음 생성된 복사본, 그 이후에야  `hyprland.lua` `/usr/share/argvus` 아래의 패키지 파일이 적용됩니다.
+
+## ARGVUS Emoji
+
+`argvus emoji-picker` (`Super + .`). ←↑↓→  Tab   / 이름 또는 키워드로 검색   Enter 삽입   Ctrl+C 복사   Ctrl+D 즐겨찾기   Esc.
+
+선택기는 전체 탭에서 열립니다. Tab으로 카테고리를 전환하고 방향키로 이모지를 탐색합니다.
 
 ## 예시
 

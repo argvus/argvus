@@ -83,9 +83,15 @@ The Control Center accepts legacy page flags as its first argument and maps them
 
 These run packaged scripts and are used by the Hyprland configuration:
 
-`scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
+`scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
 
 A script in the user's configuration overrides the packaged one. The lookup order is the same as `_config_path` in `hyprland.lua`: the user's config copy, then the ARGVUS data copy, then the state copy, then the generated copy, and only then the packaged file under `/usr/share/argvus`.
+
+## ARGVUS Emoji
+
+`argvus emoji-picker` (`Super + .`). ←↑↓→  Tab   / Search by name or keyword   Enter Insert   Ctrl+C Copy   Ctrl+D Favorites   Esc.
+
+All is selected on open. Tab cycles through categories and the arrow keys move through the emoji grid.
 
 ## Examples
 

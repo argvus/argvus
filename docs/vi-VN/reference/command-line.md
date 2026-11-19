@@ -81,9 +81,15 @@ Trung tâm điều khiển chấp nhận cờ trang cũ làm đối số đầu 
 
 Các tập lệnh này chạy các tập lệnh đóng gói và được cấu hình Hyprland sử dụng:
 
-`scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
+`scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
 
 Một tập lệnh trong cấu hình của người dùng sẽ ghi đè tập lệnh được đóng gói. Thứ tự tra cứu giống như `_config_path` trong `hyprland.lua`: bản sao cấu hình của người dùng, sau đó là bản sao dữ liệu ARGVUS, sau đó là bản sao trạng thái, sau đó là bản sao được tạo và chỉ sau đó là tệp được đóng gói trong `/usr/share/argvus`.
+
+## ARGVUS Emoji
+
+`argvus emoji-picker` (`Super + .`). ←↑↓→  Tab   / Tìm theo tên hoặc từ khóa   Enter Chèn   Ctrl+C Sao chép   Ctrl+D Yêu thích   Esc.
+
+Trình chọn mở ở mục Tất cả. Tab chuyển danh mục và các phím mũi tên di chuyển trong lưới emoji.
 
 ## Ví dụ
 

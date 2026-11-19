@@ -1,0 +1,23 @@
+{
+  "search": "Cari berdasarkan nama atau kata kunci",
+  "recent": "Terbaru",
+  "favorites": "Favorit",
+  "all": "Semua",
+  "smileys": "Wajah",
+  "people": "Orang",
+  "nature": "Hewan dan alam",
+  "food": "Makanan",
+  "travel": "Perjalanan",
+  "objects": "Benda",
+  "symbols": "Simbol",
+  "insert": "Sisipkan",
+  "copy": "Salin",
+  "empty": "Emoji tidak ditemukan",
+  "favorite_added": "Ditambahkan ke favorit",
+  "favorite_removed": "Dihapus dari favorit",
+  "focus_error": "Jendela asal tidak tersedia. Anda masih bisa menyalin.",
+  "insert_error": "Gagal menyisipkan. Anda masih bisa menyalin.",
+  "copy_error": "Gagal menyalin emoji.",
+  "state_error": "Gagal membaca atau menyimpan riwayat.",
+  "hints": "←↑↓→  Tab   / Cari berdasarkan nama atau kata kunci   Enter Sisipkan   Ctrl+C Salin   Ctrl+D Favorit   Esc"
+}

@@ -72,7 +72,7 @@ description: argvus کمانڈ، اس کی ذیلی کمانڈ، کی بائنڈ
 
 ## ﺯﮉﻧﺎﻤﮐ ﭧﭘﺮﮑﺳﺍ
 
-یہ پیکڈ اسکرپٹس چلاتے ہیں اور ہائپرلینڈ کنفیگریشن کے ذریعہ استعمال ہوتے ہیں: system  --hostname  locale  --keyboard-layout  apps  --apps  apps  --keyboard-layout  locale  --hostname  system `ARGVUS Keybindings-hypr `, ` ARGVUS Keybindings-launcher `, ` scratchpad `, ` hypr-screenshot `, ` spaces-switch `, ` emoji-picker `, ` toggle-sidebar `, ` weather-location `, ` brightness-switch `, ` toggle-mode `, ` idle-timeout `, ` keep-awake `, ` hypr-power-menu`.
+یہ پیکڈ اسکرپٹس چلاتے ہیں اور ہائپرلینڈ کنفیگریشن کے ذریعہ استعمال ہوتے ہیں: system  --hostname  locale  --keyboard-layout  apps  --apps  apps  --keyboard-layout  locale  --hostname  system `ARGVUS Keybindings-hypr `, ` ARGVUS Keybindings-launcher `, ` scratchpad `, ` hypr-screenshot `, ` spaces-switch `, ` toggle-sidebar `, ` weather-location `, ` brightness-switch `, ` toggle-mode `, ` idle-timeout `, ` keep-awake `, ` hypr-power-menu`.
 
 صارف کی ترتیب میں ایک اسکرپٹ پیک شدہ کو اوور رائیڈ کرتا ہے۔ تلاش کا آرڈر `_config_path ` میں ` hyprland.lua ` جیسا ہی ہے: صارف کی کنفیگریشن کاپی، پھر ARGVUS ڈیٹا کاپی، پھر اسٹیٹ کاپی، پھر جنریٹڈ کاپی، اور صرف اس کے بعد `/usr/share/argvus` کے تحت پیک کردہ فائل۔## مثالیں۔
 
@@ -87,6 +87,12 @@ argvus network status
 argvus bluetooth status
 argvus gpg list
 ```
+
+## ARGVUS Emoji
+
+`argvus emoji-picker` (`Super + .`). ←↑↓→  Tab   / نام یا کلیدی لفظ سے تلاش کریں   Enter داخل کریں   Ctrl+C نقل کریں   Ctrl+D پسندیدہ   Esc.
+
+منتخب کنندہ تمام کے ٹیب پر کھلتا ہے۔ Tab سے زمرے بدلیں اور تیر والے بٹنوں سے ایموجی منتخب کریں۔
 
 ## سیٹ اپ `argvus setup` پیکڈ ڈیفالٹس کو `/usr/share/argvus/<app>` سے `~/.config/argvus/data/<app>` میں کاپی کرتا ہے، تاکہ آپ انہیں اپنی مرضی کے مطابق بنا سکیں۔ یہ کبھی بھی پیک شدہ فائلوں میں ترمیم نہیں کرتا ہے۔
 

@@ -80,7 +80,7 @@
   "keybindings.action.animations": "Переключить визуальные эффекты",
   "keybindings.action.control_center": "Открыть Центр управления",
   "keybindings.action.color_picker": "Выбор цвета",
-  "keybindings.action.emoji_picker": "Выбор эмодзи",
+  "keybindings.action.emoji_picker": "ARGVUS Emoji",
   "keybindings.action.clipboard": "История буфера обмена",
   "keybindings.action.clipboard_clear": "Очистить историю буфера обмена",
   "keybindings.action.dpms": "Включение и выключение монитора (не приостанавливать работу системы)",

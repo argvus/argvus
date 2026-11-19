@@ -82,9 +82,15 @@ description: argvus 命令、它的子命令、为键绑定保留的标志，以
 
 这些运行打包脚本，并被 Hyprland 配置使用：
 
-`scratchpad`, `hypr-screenshot`, `spaces-switch`, `emoji-picker`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`。
+`scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`。
 
 用户配置中的脚本会覆盖打包脚本。查找顺序与 hyprland.lua 中的 `_config_path` 相同：先是用户的配置副本，然后是 ARGVUS 数据副本，再是状态副本，然后是生成的副本，最后才是  `hyprland.lua` `/usr/share/argvus` 下的打包文件。
+
+## ARGVUS Emoji
+
+`argvus emoji-picker` (`Super + .`). ←↑↓→  Tab   / 按名称或关键词搜索   Enter 插入   Ctrl+C 复制   Ctrl+D 收藏   Esc.
+
+选择器默认打开“全部”标签页。用 Tab 循环切换类别，用方向键浏览表情网格。
 
 ## 示例
 

@@ -1,0 +1,23 @@
+{
+  "search": "Tìm theo tên hoặc từ khóa",
+  "recent": "Gần đây",
+  "favorites": "Yêu thích",
+  "all": "Tất cả",
+  "smileys": "Mặt cười",
+  "people": "Con người",
+  "nature": "Động vật và thiên nhiên",
+  "food": "Đồ ăn",
+  "travel": "Du lịch",
+  "objects": "Đồ vật",
+  "symbols": "Ký hiệu",
+  "insert": "Chèn",
+  "copy": "Sao chép",
+  "empty": "Không tìm thấy emoji",
+  "favorite_added": "Đã thêm vào yêu thích",
+  "favorite_removed": "Đã xóa khỏi yêu thích",
+  "focus_error": "Cửa sổ ban đầu không khả dụng. Bạn vẫn có thể sao chép.",
+  "insert_error": "Không thể chèn. Bạn vẫn có thể sao chép.",
+  "copy_error": "Không thể sao chép emoji.",
+  "state_error": "Không thể đọc hoặc lưu lịch sử.",
+  "hints": "←↑↓→  Tab   / Tìm theo tên hoặc từ khóa   Enter Chèn   Ctrl+C Sao chép   Ctrl+D Yêu thích   Esc"
+}

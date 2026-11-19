@@ -21,6 +21,7 @@ ARGVUS_GTK_COMMANDS=(
 	theme-selector
 	layout-mode-selector
 	keybindings
+	emoji-picker
 )
 
 arch_source_root() {
@@ -68,6 +69,7 @@ arch_build_argvus_workspace() {
 		-p argvus-taskbar-calendar \
 		-p argvus-window-mode-menu \
 		-p argvus-keybindings \
+		-p argvus-emoji \
 		-p argvus-theme-selector \
 		-p argvus-accounts \
 		-p argvus-du \
@@ -154,6 +156,7 @@ arch_package_argvus() {
 		"${pkgdir}/usr/lib/argvus/commands/argvus-du"
 
 	install -Dm644 "${source_root}/LICENSE" "${pkgdir}/usr/share/licenses/argvus/LICENSE"
+	install -Dm644 "${source_root}/crates/argvus-emoji/data/LICENSE" "${pkgdir}/usr/share/licenses/argvus/UNICODE-LICENSE"
 }
 
 arch_package_argvus_gtk() {
