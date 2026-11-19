@@ -9,3 +9,7 @@ The picker uses `XDG_STATE_HOME/argvus/emoji.json` for personal history and favo
 ## Insertion
 
 The picker unmaps its Wayland layer before checking the destination window again. Insert uses Shift+Insert and temporarily offers the emoji on both Wayland selections because applications differ in which selection this shortcut reads. If the primary offer is unavailable, Insert uses Ctrl+V with the regular clipboard. The previous MIME offers are restored when the temporary picker offer still owns the selection. Explicit Copy writes to the regular clipboard.
+
+## Grid rendering
+
+The GTK grid binds catalog indices to reusable cells. Search and category changes replace the model items, while GTK creates and binds widgets for the scrollable viewport.

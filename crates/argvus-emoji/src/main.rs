@@ -82,13 +82,14 @@ fn main() -> glib::ExitCode {
 }
 
 struct Picker {
-  catalog: Vec<catalog::Emoji>,
+  catalog: Rc<Vec<catalog::Emoji>>,
   history: RefCell<state::History>,
   history_readable: bool,
   category: Cell<usize>,
-  results: RefCell<Vec<usize>>,
+  items: gtk::gio::ListStore,
+  selection: gtk::SingleSelection,
   window: glib::WeakRef<gtk::ApplicationWindow>,
-  grid: gtk::FlowBox,
+  grid: gtk::GridView,
   search: gtk::Entry,
   name: gtk::Label,
   code: gtk::Label,
@@ -103,9 +104,12 @@ struct Picker {
 
 impl Picker {
   fn selected(&self) -> Option<&catalog::Emoji> {
-    let child = self.grid.selected_children().into_iter().next()?;
-    let index = *self.results.borrow().get(child.index() as usize)?;
-    self.catalog.get(index)
+    let item = self
+      .selection
+      .selected_item()?
+      .downcast::<glib::BoxedAnyObject>()
+      .ok()?;
+    self.catalog.get(*item.borrow::<usize>())
   }
 
   fn details(&self) {
@@ -163,24 +167,14 @@ impl Picker {
           .position(|index| self.catalog[*index].sequence == sequence)
       })
       .unwrap_or(0);
-    while let Some(child) = self.grid.first_child() {
-      self.grid.remove(&child);
-    }
-    for index in &results {
-      let item = &self.catalog[*index];
-      let label = gtk::Label::new(Some(&item.sequence));
-      label.set_tooltip_text(Some(&item.name));
-      label.set_size_request(62, 54);
-      let child = gtk::FlowBoxChild::new();
-      child.add_css_class("emoji-cell");
-      child.update_property(&[gtk::accessible::Property::Label(&item.name)]);
-      child.set_child(Some(&label));
-      self.grid.insert(&child, -1);
-    }
     let is_empty = results.is_empty();
-    self.results.replace(results);
-    if let Some(child) = self.grid.child_at_index(selected as i32) {
-      self.grid.select_child(&child);
+    let items: Vec<_> = results.into_iter().map(glib::BoxedAnyObject::new).collect();
+    self.items.splice(0, self.items.n_items(), &items);
+    if !is_empty {
+      self.selection.set_selected(selected as u32);
+      self
+        .grid
+        .scroll_to(selected as u32, gtk::ListScrollFlags::NONE, None);
     }
     self.status.set_text(&if !self.history_readable {
       self.i18n.tr("state_error")
@@ -193,46 +187,35 @@ impl Picker {
   }
 
   fn focus_grid(&self) {
-    if let Some(child) = self.grid.selected_children().first() {
-      child.grab_focus();
-    } else {
-      self.grid.grab_focus();
+    let position = self.selection.selected();
+    self.grid.grab_focus();
+    if position != gtk::INVALID_LIST_POSITION {
+      self
+        .grid
+        .scroll_to(position, gtk::ListScrollFlags::FOCUS, None);
     }
   }
 
   fn move_selection(&self, key: gdk::Key) {
-    let Some(selected) = self.grid.selected_children().into_iter().next() else {
+    let position = self.selection.selected();
+    if position == gtk::INVALID_LIST_POSITION {
       return;
-    };
-    let len = self.results.borrow().len() as i32;
-    let first_row = self.grid.child_at_index(0).and_then(|child| {
-      child
-        .compute_bounds(&self.grid)
-        .map(|bounds| bounds.y() as i32)
-    });
-    let columns = (0..len)
-      .take_while(|index| {
-        self.grid.child_at_index(*index).and_then(|child| {
-          child
-            .compute_bounds(&self.grid)
-            .map(|bounds| bounds.y() as i32)
-        }) == first_row
-      })
-      .count()
-      .max(1) as i32;
+    }
+    let columns = i64::from(self.grid.max_columns());
     let rtl = self.grid.direction() == gtk::TextDirection::Rtl;
     let step = match key {
+      gdk::Key::Home => -i64::from(position),
+      gdk::Key::End => i64::from(self.items.n_items()),
       gdk::Key::Up => -columns,
       gdk::Key::Down => columns,
       gdk::Key::Left if !rtl => -1,
       gdk::Key::Right if rtl => -1,
       _ => 1,
     };
-    let index = (selected.index() + step).clamp(0, len - 1);
-    if let Some(child) = self.grid.child_at_index(index) {
-      self.grid.select_child(&child);
-      child.grab_focus();
-    }
+    let last = i64::from(self.items.n_items() - 1);
+    let next = (i64::from(position) + step).clamp(0, last) as u32;
+    self.grid.scroll_to(next, gtk::ListScrollFlags::NONE, None);
+    self.selection.set_selected(next);
   }
 
   fn favorite(&self) {
@@ -310,7 +293,7 @@ impl Picker {
 
 fn open(app: &gtk::Application, i18n: &Rc<I18n>, target: Option<String>) {
   let catalog = match catalog::load(i18n.locale()) {
-    Ok(entries) => entries,
+    Ok(entries) => Rc::new(entries),
     Err(error) => {
       eprintln!("argvus emoji-picker: {error}");
       return;
@@ -362,23 +345,66 @@ fn open(app: &gtk::Application, i18n: &Rc<I18n>, target: Option<String>) {
     .child(&categories)
     .build();
   panel.append(&category_scroll);
-  let grid = gtk::FlowBox::builder()
-    .selection_mode(gtk::SelectionMode::Single)
-    .max_children_per_line(12)
-    .min_children_per_line(1)
-    .homogeneous(true)
-    .valign(gtk::Align::Start)
-    .focusable(true)
-    .row_spacing(6)
-    .column_spacing(6)
-    .activate_on_single_click(false)
+  let items = gtk::gio::ListStore::new::<glib::BoxedAnyObject>();
+  let selection = gtk::SingleSelection::new(Some(items.clone()));
+  let factory = gtk::SignalListItemFactory::new();
+  factory.connect_setup(|_, object| {
+    let Some(item) = object.downcast_ref::<gtk::ListItem>() else {
+      return;
+    };
+    let label = gtk::Label::new(None);
+    label.set_size_request(62, 54);
+    item.set_child(Some(&label));
+  });
+  factory.connect_bind({
+    let catalog = Rc::clone(&catalog);
+    move |_, object| {
+      let Some(item) = object.downcast_ref::<gtk::ListItem>() else {
+        return;
+      };
+      let Some(index) = item.item().and_downcast::<glib::BoxedAnyObject>() else {
+        return;
+      };
+      let Some(label) = item.child().and_downcast::<gtk::Label>() else {
+        return;
+      };
+      let emoji = &catalog[*index.borrow::<usize>()];
+      label.set_text(&emoji.sequence);
+      label.set_tooltip_text(Some(&emoji.name));
+      label.update_property(&[gtk::accessible::Property::Label(&emoji.name)]);
+    }
+  });
+  let grid = gtk::GridView::builder()
+    .model(&selection)
+    .factory(&factory)
+    .min_columns(1)
+    .max_columns(12)
+    .single_click_activate(false)
     .build();
+  // A cell needs 62 px for its label, 12 px for padding and borders, and 6 px of spacing.
+  grid.connect_map(|grid| update_columns(grid, grid.width()));
+  fn update_columns(grid: &gtk::GridView, width: i32) {
+    let columns = (width / 80).clamp(1, 12) as u32;
+    if grid.max_columns() != columns || grid.min_columns() != columns {
+      grid.set_min_columns(1);
+      grid.set_max_columns(columns);
+      grid.set_min_columns(columns);
+    }
+  }
+  grid.add_css_class("emoji-grid");
   let scroll = gtk::ScrolledWindow::builder()
     .hscrollbar_policy(gtk::PolicyType::Never)
     .vexpand(true)
     .child(&grid)
     .build();
-  grid.set_vadjustment(&scroll.vadjustment());
+  scroll.hadjustment().connect_page_size_notify({
+    let grid = grid.downgrade();
+    move |adjustment| {
+      if let Some(grid) = grid.upgrade() {
+        update_columns(&grid, adjustment.page_size() as i32);
+      }
+    }
+  });
   panel.append(&scroll);
   let details = gtk::Box::new(gtk::Orientation::Horizontal, 12);
   details.add_css_class("details");
@@ -412,7 +438,8 @@ fn open(app: &gtk::Application, i18n: &Rc<I18n>, target: Option<String>) {
     history: RefCell::new(history.unwrap_or_default()),
     history_readable,
     category: Cell::new(ALL_CATEGORY),
-    results: RefCell::new(Vec::new()),
+    items,
+    selection,
     window: window.downgrade(),
     grid: grid.clone(),
     search: search.clone(),
@@ -505,7 +532,14 @@ fn connect(window: &gtk::ApplicationWindow, categories: &gtk::Box, picker: &Rc<P
         gdk::Key::Return | gdk::Key::KP_Enter | gdk::Key::Down if in_search => picker.focus_grid(),
         gdk::Key::c if control => picker.deliver(false),
         gdk::Key::d if control => picker.favorite(),
-        gdk::Key::Left | gdk::Key::Right | gdk::Key::Up | gdk::Key::Down if !in_search => {
+        gdk::Key::Left
+        | gdk::Key::Right
+        | gdk::Key::Up
+        | gdk::Key::Down
+        | gdk::Key::Home
+        | gdk::Key::End
+          if !in_search =>
+        {
           picker.move_selection(key);
         }
         _ => return glib::Propagation::Proceed,
@@ -538,7 +572,7 @@ fn connect(window: &gtk::ApplicationWindow, categories: &gtk::Box, picker: &Rc<P
       }
     }
   });
-  picker.grid.connect_selected_children_changed({
+  picker.selection.connect_selected_notify({
     let picker = Rc::downgrade(picker);
     move |_| {
       if let Some(picker) = picker.upgrade() {
@@ -546,10 +580,11 @@ fn connect(window: &gtk::ApplicationWindow, categories: &gtk::Box, picker: &Rc<P
       }
     }
   });
-  picker.grid.connect_child_activated({
+  picker.grid.connect_activate({
     let picker = Rc::downgrade(picker);
-    move |_, _| {
+    move |_, position| {
       if let Some(picker) = picker.upgrade() {
+        picker.selection.set_selected(position);
         picker.deliver(true);
       }
     }

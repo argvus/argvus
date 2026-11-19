@@ -90,10 +90,12 @@ pub fn apply_theme(window: &gtk::ApplicationWindow, locale: &str) {
   provider.load_from_string(&format!(
     "window.emoji-picker {{ background: transparent; color: {fg}; font: 15px monospace; }}
      .emoji-picker .panel {{ background: alpha({bg}, {opacity}); {blur} border: {border}px solid alpha({fg}, .38); border-radius: {radius}px; padding: 20px; }}
-     .emoji-picker entry, .emoji-picker button, .emoji-picker .details, .emoji-picker .emoji-cell {{ background: alpha({bg}, {search_backdrop}); color: {fg}; border: 1px solid alpha({fg}, .28); border-radius: {radius}px; padding: 5px; }}
-     .emoji-picker .emoji-cell label, .emoji-picker .preview {{ font: 34px 'Noto Color Emoji'; }}
-     .emoji-picker .emoji-cell:selected, .emoji-picker button:checked {{ background: alpha({accent}, .24); border-color: {accent}; }}
-     .emoji-picker button:focus-visible, .emoji-picker .emoji-cell:focus-visible {{ outline: 2px solid {accent}; outline-offset: -2px; }}
+     .emoji-picker entry, .emoji-picker button, .emoji-picker .details, .emoji-picker .emoji-grid > child {{ background: alpha({bg}, {search_backdrop}); color: {fg}; border: 1px solid alpha({fg}, .28); border-radius: {radius}px; padding: 5px; }}
+     .emoji-picker .emoji-grid {{ background: transparent; }}
+     .emoji-picker .emoji-grid > child {{ margin: 0 6px 6px 0; }}
+     .emoji-picker .emoji-grid > child label, .emoji-picker .preview {{ font: 34px 'Noto Color Emoji'; }}
+     .emoji-picker .emoji-grid > child:selected, .emoji-picker button:checked {{ background: alpha({accent}, .24); border-color: {accent}; }}
+     .emoji-picker button:focus-visible, .emoji-picker .emoji-grid > child:focus-visible {{ outline: 2px solid {accent}; outline-offset: -2px; }}
      .emoji-picker .heading, .emoji-picker .brand {{ font-size: 22px; font-weight: bold; }}
      .emoji-picker .brand, .emoji-picker .primary {{ background: {accent}; color: {on_accent}; padding: 4px 10px; }}
      .emoji-picker .footer {{ border-top: 1px solid {accent}; padding-top: 12px; }}
