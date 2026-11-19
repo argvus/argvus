@@ -13,6 +13,8 @@ argvus focus --pause      # pause the running phase
 argvus focus status --waybar         # print one Waybar JSON status and exit
 argvus focus status --waybar --follow  # stream status changes for Waybar
 ```
+
+La barra de título muestra el distintivo `ARGVUS` en el color de acento junto a `Focus`.
 La barra de tareas pasa las coordenadas del clic raíz para que el popup use el monitor en el que se hizo clic y se alinee con la barra; un lanzamiento sin coordenadas usa la posición del puntero. Si el puntero permanece fuera del popup durante 5 segundos, este se cierra automáticamente; mover el puntero dentro del popup cancela esa cuenta regresiva. **Esc** en la página principal todavía lo oculta inmediatamente, y **Esc** en una subpágina regresa a la página anterior. El indicador de la barra de tareas muestra solo su ícono mientras está inactivo y el `MM:SS` restante durante una fase, con el color de la fase; una fase pausada mantiene su tiempo restante y añade un estado de pausa. El comando `status` se ejecuta dentro de `argvus` sin iniciar GTK. `argvus --focus` es un alias. Solo hay una instancia de Focus por sesión: un segundo lanzamiento entrega sus opciones a la instancia en ejecución.
 
 ARGVUS Focus, ARGVUS Clock y el Panel de Control comparten el mismo borde de la pantalla. Abrir Focus cierra primero Clock y el Panel de Control; abrir cualquiera de esas superficies cierra Focus.

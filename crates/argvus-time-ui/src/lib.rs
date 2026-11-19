@@ -7,6 +7,7 @@
 //! - [`text`]: translation catalogs that never fail to load, and localized
 //!   times and dates built from them.
 
+pub mod popup_title;
 pub mod sound;
 pub mod text;
 pub mod theme;

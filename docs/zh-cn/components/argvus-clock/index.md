@@ -11,6 +11,8 @@ argvus clock --toggle --x 1600 --y 30  # open next to a taskbar click position
 argvus clock --page alarms       # open on a page: clock, world, stopwatch, timer, alarms
 argvus clock --background        # run without a window, to keep alarms active
 ```
+
+标题栏在 `Clock` 旁显示使用强调色的 `ARGVUS` 徽标。
 ARGVUS 时钟以一个与任务栏对齐的弹出窗口打开，间隔为 4 像素。任务栏会传递根点击坐标，因此弹出窗口会使用被点击的显示器；如果没有坐标打开，则使用指针位置。如果指针在弹出窗口外停留 5 秒，它会自动关闭；将指针移入弹出窗口会取消倒计时。在主标签页按 **Esc** 仍会立即隐藏窗口，在完整页面按 **Esc** 则返回到前一个标签页。`argvus --clock` 是一个别名。点击任务栏中的日期仍会打开日历；ARGVUS 时钟不会显示事件。
 
 ARGVUS Focus、ARGVUS 时钟和控制面板共享同一个屏幕边缘。打开时钟会先关闭 Focus 和控制面板；打开其中任意一个界面会关闭时钟。

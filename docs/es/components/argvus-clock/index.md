@@ -11,6 +11,8 @@ argvus clock --toggle --x 1600 --y 30  # open next to a taskbar click position
 argvus clock --page alarms       # open on a page: clock, world, stopwatch, timer, alarms
 argvus clock --background        # run without a window, to keep alarms active
 ```
+
+La barra de título muestra el distintivo `ARGVUS` en el color de acento junto a `Clock`.
 El reloj ARGVUS se abre como una ventana emergente alineada con la barra de tareas, con un espacio de 4 píxeles. La barra de tareas pasa las coordenadas del clic raíz, de modo que la ventana emergente usa el monitor clicado; iniciarla sin coordenadas usa la posición del puntero. Si el puntero permanece fuera de la ventana emergente durante 5 segundos, esta se cierra automáticamente; mover el puntero dentro de la ventana cancelará la cuenta regresiva. **Esc** en una pestaña principal todavía la oculta inmediatamente, y **Esc** en una página completa vuelve a la pestaña anterior. `argvus --clock` es un alias. Hacer clic en la fecha en la barra de tareas aún abre el calendario; Reloj ARGVUS no muestra eventos.
 
 ARGVUS Focus, Reloj ARGVUS y el Panel de Control comparten el mismo borde de pantalla. Abrir Reloj cierra primero Focus y el Panel de Control; abrir cualquiera de esas superficies cierra Reloj.

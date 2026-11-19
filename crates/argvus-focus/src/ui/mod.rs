@@ -12,6 +12,7 @@ use std::rc::Rc;
 use std::time::Duration;
 
 use argvus_taskbar_popup::{PopupAnchor, PopupController, PopupSize};
+use argvus_time_ui::popup_title::PopupTitle;
 use gtk::prelude::*;
 use gtk::{gdk, glib};
 
@@ -54,7 +55,7 @@ pub struct FocusWindow {
   /// without a click position (shortcut, notification).
   anchor: Cell<Option<PopupAnchor>>,
   stack: gtk::Stack,
-  title: gtk::Label,
+  title: PopupTitle,
   back: gtk::Button,
   timer: timer::TimerPage,
   settings: settings::SettingsPage,
@@ -67,7 +68,7 @@ impl FocusWindow {
     let texts = &app.texts;
     let window = gtk::Window::builder()
       .application(&app.application)
-      .title(texts.tr("app.name"))
+      .title("ARGVUS Focus")
       .icon_name(APP_ID)
       .default_width(POPUP_WIDTH)
       .resizable(false)
@@ -84,12 +85,7 @@ impl FocusWindow {
       .build();
     let back = icon_button("go-previous-symbolic", &texts.tr("action.back"));
     back.set_visible(false);
-    let title = gtk::Label::builder()
-      .label(texts.tr("app.name"))
-      .xalign(0.0)
-      .hexpand(true)
-      .css_classes(["popup-title"])
-      .build();
+    let title = PopupTitle::new("Focus");
     let history_button = icon_button("document-open-recent-symbolic", &texts.tr("action.history"));
     history_button.set_action_name(Some("app.history"));
     let settings_button = icon_button("emblem-system-symbolic", &texts.tr("action.settings"));
@@ -98,7 +94,7 @@ impl FocusWindow {
       button.add_css_class("flat");
     }
     header.append(&back);
-    header.append(&title);
+    header.append(&title.widget);
     header.append(&history_button);
     header.append(&settings_button);
 
@@ -235,11 +231,11 @@ impl FocusWindow {
 
   pub fn update(&self, app: &FocusApp) {
     let title = match self.page.get() {
-      Page::Timer => app.texts.tr("app.name"),
-      Page::Settings => app.texts.tr("settings.title"),
-      Page::History => app.texts.tr("history.title"),
+      Page::Timer => None,
+      Page::Settings => Some(app.texts.tr("settings.title")),
+      Page::History => Some(app.texts.tr("history.title")),
     };
-    self.title.set_label(&title);
+    self.title.set_page(title.as_deref());
     self.timer.update(app);
     match self.page.get() {
       Page::Settings => self.settings.update(app),

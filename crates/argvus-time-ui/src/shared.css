@@ -154,6 +154,18 @@ window.argvus-popup .popup-title {
   font-weight: 700;
 }
 
+window.argvus-popup .popup-branded-title {
+  font-family: monospace;
+}
+
+window.argvus-popup .popup-brand {
+  background-color: @time_accent;
+  color: @time_on_accent;
+  border-radius: 0;
+  font-size: 16px;
+  padding: 2px 7px;
+}
+
 window.argvus-popup .popup-header button.flat {
   background: transparent;
   background-image: none;

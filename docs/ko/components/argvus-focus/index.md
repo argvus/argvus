@@ -13,6 +13,8 @@ argvus focus --pause      # pause the running phase
 argvus focus status --waybar         # print one Waybar JSON status and exit
 argvus focus status --waybar --follow  # stream status changes for Waybar
 ```
+
+제목 표시줄에는 강조색의 `ARGVUS` 배지와 `Focus`이 나란히 표시됩니다.
 작업 표시줄은 루트 클릭 좌표를 전달하므로 팝업이 클릭된 모니터를 사용하고 표시줄에 맞춰 정렬됩니다; 좌표 없이 실행하면 포인터 위치를 사용합니다. 포인터가 팝업 외부에 5초 동안 머물면 자동으로 닫히며; 포인터를 팝업 안으로 이동시키면 그 카운트다운이 취소됩니다. 메인 페이지에서 **Esc**를 누르면 여전히 즉시 숨기고, 하위 페이지에서 **Esc**를 누르면 이전 페이지로 돌아갑니다. 작업 표시줄 표시기는 유휴 상태에서는 아이콘만 표시하고, 단계 동안에는 남은 `MM:SS`와 단계 색상을 표시합니다; 일시 정지된 단계는 남은 시간을 유지하고 일시 정지 상태를 추가합니다. `status` 명령은 GTK를 시작하지 않고 `argvus` 내부에서 실행됩니다. `argvus --focus`는 별칭입니다. 한 세션당 Focus 인스턴스는 하나만 실행되며, 두 번째 실행 시 옵션을 이미 실행 중인 인스턴스에 전달합니다.
 
 ARGVUS Focus, ARGVUS Clock 및 제어판은 동일한 화면 가장자리를 공유합니다. Focus를 열면 먼저 Clock과 제어판이 닫히며, 이 중 어느 하나를 열면 Focus가 닫힙니다.

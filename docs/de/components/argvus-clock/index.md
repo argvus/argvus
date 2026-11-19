@@ -11,6 +11,8 @@ argvus clock --toggle --x 1600 --y 30  # open next to a taskbar click position
 argvus clock --page alarms       # open on a page: clock, world, stopwatch, timer, alarms
 argvus clock --background        # run without a window, to keep alarms active
 ```
+
+In der Titelleiste steht `ARGVUS` in der Akzentfarbe neben `Clock`.
 ARGVUS Clock öffnet sich als Popup, ausgerichtet an der Taskleiste, mit einem 4-Pixel-Abstand. Die Taskleiste übermittelt die Root-Klick-Koordinaten, sodass das Popup den angeklickten Monitor verwendet; wird es ohne Koordinaten gestartet, verwendet es die Position des Zeigers. Bleibt der Zeiger 5 Sekunden lang außerhalb des Popups, schließt es sich automatisch; das Bewegen des Zeigers in das Popup bricht den Countdown ab. **Esc** auf einem Haupttab blendet es weiterhin sofort aus, und **Esc** auf einer Vollseite kehrt zum vorherigen Tab zurück. `argvus --clock` ist ein Alias. Ein Klick auf das Datum in der Taskleiste öffnet weiterhin den Kalender; ARGVUS Clock zeigt keine Ereignisse an.
 
 ARGVUS Focus, ARGVUS Clock und das Kontrollpanel teilen sich dieselbe Bildschirmkante. Das Öffnen von Clock schließt zuerst Focus und das Kontrollpanel; das Öffnen einer dieser Oberflächen schließt Clock.

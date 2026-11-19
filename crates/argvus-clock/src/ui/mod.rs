@@ -17,6 +17,7 @@ use std::time::Duration;
 
 use argvus_taskbar_popup::{PopupAnchor, PopupController, PopupSize};
 use argvus_time_core::alarm::AlarmId;
+use argvus_time_ui::popup_title::PopupTitle;
 use argvus_time_ui::text::Catalog;
 use gtk::prelude::*;
 use gtk::{gdk, glib};
@@ -105,7 +106,7 @@ pub struct ClockWindow {
   outer: gtk::Stack,
   tabs: gtk::Stack,
   tab_buttons: Vec<(Page, gtk::ToggleButton)>,
-  title: gtk::Label,
+  title: PopupTitle,
   back: gtk::Button,
   notice: gtk::Box,
   notice_text: gtk::Label,
@@ -125,7 +126,7 @@ impl ClockWindow {
     let texts = &app.texts;
     let window = gtk::Window::builder()
       .application(&app.application)
-      .title(texts.tr("app.name"))
+      .title("ARGVUS Clock")
       .icon_name(APP_ID)
       .default_width(POPUP_WIDTH)
       .resizable(false)
@@ -142,19 +143,14 @@ impl ClockWindow {
       .build();
     let back = icon_button("go-previous-symbolic", &texts.tr("action.back"));
     back.set_visible(false);
-    let title = gtk::Label::builder()
-      .label(texts.tr("app.name"))
-      .xalign(0.0)
-      .hexpand(true)
-      .css_classes(["popup-title"])
-      .build();
+    let title = PopupTitle::new("Clock");
     let settings_button = icon_button("emblem-system-symbolic", &texts.tr("page.settings"));
     settings_button.set_action_name(Some("app.settings"));
     for button in [&back, &settings_button] {
       button.add_css_class("flat");
     }
     header.append(&back);
-    header.append(&title);
+    header.append(&title.widget);
     header.append(&settings_button);
 
     let clock = clock_page::ClockPage::build(app);
@@ -407,12 +403,8 @@ impl ClockWindow {
   /// Everything, after a change.
   pub fn update(&self, app: &Rc<ClockApp>) {
     let page = self.current_page();
-    let title = if page.is_tab() {
-      app.texts.tr("app.name")
-    } else {
-      app.texts.tr(page.title_key())
-    };
-    self.title.set_label(&title);
+    let title = (!page.is_tab()).then(|| app.texts.tr(page.title_key()));
+    self.title.set_page(title.as_deref());
 
     match app.notice_text() {
       Some((text, warning)) => {

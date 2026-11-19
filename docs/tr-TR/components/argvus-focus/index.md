@@ -15,6 +15,8 @@ argvus focus status --waybar         # print one Waybar JSON status and exit
 argvus focus status --waybar --follow  # stream status changes for Waybar
 ```
 
+Başlık çubuğunda `Focus` adının yanında vurgu renginde `ARGVUS` rozeti görünür.
+
 Görev çubuğu kök tıklama koordinatlarını iletir, böylece açılır pencere tıklanan monitörü kullanır ve çubukla hizalanır; koordinatları olmayan bir başlatma, işaretçi konumunu kullanır. İşaretçi 5 saniye boyunca açılır pencerenin dışında kalırsa otomatik olarak kapanır; İşaretçiyi açılır pencereye taşımak, geri sayımı iptal eder. Ana sayfadaki **Esc** yine de onu anında gizler ve alt sayfadaki **Esc** önceki sayfaya döner. Görev çubuğu göstergesi boştayken yalnızca simgesini ve bir aşama sırasında kalan `MM:SS`'yu aşama rengiyle gösterir; duraklatılmış bir aşama kalan süresini korur ve duraklatılmış bir durum ekler. `status` komutu, GTK'yı başlatmadan `argvus` içinde çalışır. `argvus --focus` bir takma addır. Oturum başına yalnızca bir Focus örneği çalıştırılır: ikinci bir başlatma, seçeneklerini çalışana aktarır.
 
 ARGVUS Focus, ARGVUS Clock ve Kontrol Paneli aynı ekran kenarını paylaşır. Odağı açmak önce Saat'i ve Kontrol Panelini kapatır; bu yüzeylerden herhangi birinin açılması Focus'u kapatır.

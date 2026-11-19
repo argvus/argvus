@@ -13,6 +13,8 @@ argvus clock --page alarms       # open on a page: clock, world, stopwatch, time
 argvus clock --background        # run without a window, to keep alarms active
 ```
 
+Başlık çubuğunda `Clock` adının yanında vurgu renginde `ARGVUS` rozeti görünür.
+
 ARGVUS Saat, görev çubuğuyla aynı hizada, 4 piksel boşlukla açılır bir pencere olarak açılır. Görev çubuğu kök tıklama koordinatlarını iletir, böylece açılır pencere tıklanan monitörü kullanır; koordinatlar olmadan başlatmak işaretçi konumunu kullanır. İşaretçi 5 saniye boyunca açılır pencerenin dışında kalırsa otomatik olarak kapanır; İşaretçiyi açılır pencereye taşımak geri sayımı iptal eder. Ana sekmedeki **Esc** yine de onu hemen gizler ve tam sayfada **Esc** önceki sekmeye döner. `argvus --clock` bir takma addır. Görev çubuğundaki tarihe tıklamak yine de takvimi açar; ARGVUS Saati olayları göstermez.
 
 ARGVUS Focus, ARGVUS Clock ve Kontrol Paneli aynı ekran kenarını paylaşır. Saatin açılması önce Odak ve Kontrol Panelini kapatır; bu yüzeylerden herhangi birinin açılması Saati kapatır.

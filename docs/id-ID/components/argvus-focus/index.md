@@ -15,6 +15,8 @@ argvus focus status --waybar         # print one Waybar JSON status and exit
 argvus focus status --waybar --follow  # stream status changes for Waybar
 ```
 
+Bilah judul menampilkan lencana `ARGVUS` berwarna aksen di samping `Focus`.
+
 Bilah tugas meneruskan koordinat klik akar sehingga popup menggunakan monitor yang diklik dan sejajar dengan bilah; peluncuran tanpa koordinat menggunakan posisi penunjuk. Jika penunjuk tetap berada di luar popup selama 5 detik, penunjuk akan menutup secara otomatis; memindahkan penunjuk ke dalam popup akan membatalkan hitungan mundur tersebut. **Esc** di halaman utama tetap menyembunyikannya dengan segera, dan **Esc** di subhalaman kembali ke halaman sebelumnya. Indikator bilah tugas hanya menampilkan ikonnya saat idle dan `MM:SS` yang tersisa selama suatu fase, dengan warna fase; fase yang dijeda mempertahankan waktu yang tersisa dan menambahkan status jeda. Perintah `status` berjalan di dalam `argvus` tanpa memulai GTK. `argvus --focus` adalah alias. Hanya satu instans Fokus yang berjalan per sesi: peluncuran kedua menyerahkan opsinya kepada instans yang sedang berjalan.
 
 Fokus ARGVUS, Jam ARGVUS, dan Panel Kontrol berbagi tepi layar yang sama. Membuka Fokus akan menutup Jam dan Panel Kontrol terlebih dahulu; membuka salah satu permukaan tersebut akan menutup Fokus.

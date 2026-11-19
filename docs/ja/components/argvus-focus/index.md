@@ -13,6 +13,8 @@ argvus focus --pause      # pause the running phase
 argvus focus status --waybar         # print one Waybar JSON status and exit
 argvus focus status --waybar --follow  # stream status changes for Waybar
 ```
+
+タイトルバーにはアクセントカラーの `ARGVUS` バッジと `Focus` が並びます。
 タスクバーはルートクリックの座標を渡すため、ポップアップはクリックされたモニターを使用し、バーに合わせて配置されます。座標なしで起動した場合は、ポインタ位置が使用されます。ポインタが5秒間ポップアップ外にあると、自動的に閉じます。ポインタをポップアップ内に移動すると、そのカウントダウンはキャンセルされます。メインページでの **Esc** は依然として即座に非表示にし、サブページでの **Esc** は前のページに戻ります。タスクバーのインジケーターは、アイドル中はアイコンのみを表示し、フェーズ中は残り時間 `MM:SS` とフェーズカラーを表示します。フェーズが一時停止している場合、残り時間を保持し、一時停止状態を追加します。`status` コマンドは GTK を起動せずに `argvus` 内で実行されます。`argvus --focus` はエイリアスです。セッションごとに Focus のインスタンスは1つだけ実行されます。2回目の起動は、そのオプションを既に動作中のインスタンスに渡します。
 
 ARGVUS Focus、ARGVUS Clock、およびコントロールパネルは同じ画面端を共有します。Focusを開くと、まずClockとコントロールパネルが閉じます；それらのいずれかのサーフェスを開くと、Focusが閉じます。

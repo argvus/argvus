@@ -13,6 +13,8 @@ argvus focus --pause      # pause the running phase
 argvus focus status --waybar         # print one Waybar JSON status and exit
 argvus focus status --waybar --follow  # stream status changes for Waybar
 ```
+
+La barre de titre affiche le badge `ARGVUS` dans la couleur d’accent, à côté de `Focus`.
 La barre des tâches transmet les coordonnées du clic racine afin que le popup utilise l'écran cliqué et s'aligne avec la barre ; un lancement sans coordonnées utilise la position du pointeur. Si le pointeur reste en dehors du popup pendant 5 secondes, celui-ci se ferme automatiquement ; déplacer le pointeur à l'intérieur du popup annule ce compte à rebours. **Échap** sur la page principale le masque toujours immédiatement, et **Échap** sur une sous-page revient à la page précédente. L'indicateur de la barre des tâches n'affiche que son icône lorsqu'il est inactif et le `MM:SS` restant pendant une phase, avec la couleur de la phase ; une phase en pause conserve son temps restant et ajoute un état en pause. La commande `status` s'exécute à l'intérieur de `argvus` sans démarrer GTK. `argvus --focus` est un alias. Une seule instance de Focus s'exécute par session : un deuxième lancement transmet ses options à celle déjà en cours.
 
 ARGVUS Focus, ARGVUS Clock et le Panneau de configuration partagent le même bord de l'écran. Ouvrir Focus ferme d'abord Clock et le Panneau de configuration ; ouvrir l'une de ces surfaces ferme Focus.

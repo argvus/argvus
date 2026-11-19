@@ -11,6 +11,8 @@ argvus clock --toggle --x 1600 --y 30  # open next to a taskbar click position
 argvus clock --page alarms       # open on a page: clock, world, stopwatch, timer, alarms
 argvus clock --background        # run without a window, to keep alarms active
 ```
+
+La barre de titre affiche le badge `ARGVUS` dans la couleur d’accent, à côté de `Clock`.
 L'horloge ARGVUS s'ouvre sous forme de popup aligné avec la barre des tâches, avec un écart de 4 pixels. La barre des tâches transmet les coordonnées du clic racine afin que le popup utilise le moniteur cliqué ; le lancer sans coordonnées utilise la position du pointeur. Si le pointeur reste en dehors du popup pendant 5 secondes, celui-ci se ferme automatiquement ; déplacer le pointeur à l'intérieur du popup annule le compte à rebours. **Échap** sur un onglet principal le cache toujours immédiatement, et **Échap** sur une page complète revient à l'onglet précédent. `argvus --clock` est un alias. Cliquer sur la date dans la barre des tâches ouvre toujours le calendrier ; l'horloge ARGVUS n'affiche pas les événements.
 
 ARGVUS Focus, ARGVUS Clock et le Panneau de configuration partagent le même bord de l'écran. L'ouverture de l'horloge ferme d'abord Focus et le Panneau de configuration ; ouvrir l'une de ces surfaces ferme l'horloge.

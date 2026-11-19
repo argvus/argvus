@@ -13,6 +13,8 @@ argvus clock --page alarms       # open on a page: clock, world, stopwatch, time
 argvus clock --background        # run without a window, to keep alarms active
 ```
 
+The title bar shows an accent-colored `ARGVUS` badge next to `Clock`.
+
 ARGVUS Clock opens as a popup aligned with the taskbar, with a 4-pixel gap. The taskbar passes the root click coordinates so the popup uses the clicked monitor; launching it without coordinates uses the pointer position. If the pointer stays outside the popup for 5 seconds, it closes automatically; moving the pointer into the popup cancels the countdown. **Esc** on a main tab still hides it immediately, and **Esc** on a full page returns to the previous tab. `argvus --clock` is an alias. Clicking the date in the taskbar still opens the calendar; ARGVUS Clock does not show events.
 
 ARGVUS Focus, ARGVUS Clock and the Control Panel share the same screen edge. Opening Clock closes Focus and the Control Panel first; opening either of those surfaces closes Clock.

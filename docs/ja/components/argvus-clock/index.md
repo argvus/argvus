@@ -11,6 +11,8 @@ argvus clock --toggle --x 1600 --y 30  # open next to a taskbar click position
 argvus clock --page alarms       # open on a page: clock, world, stopwatch, timer, alarms
 argvus clock --background        # run without a window, to keep alarms active
 ```
+
+タイトルバーにはアクセントカラーの `ARGVUS` バッジと `Clock` が並びます。
 ARGVUS Clockは、タスクバーに揃ったポップアップとして開き、4ピクセルの隙間があります。タスクバーはルートクリックの座標を渡すため、ポップアップはクリックされたモニターを使用します。座標なしで起動すると、ポインター位置が使用されます。ポインターがポップアップ外に5秒間留まると、自動的に閉じます。ポインターをポップアップ内に移動すると、カウントダウンがキャンセルされます。メインタブで**Esc**を押すと、すぐに非表示になります。全画面表示で**Esc**を押すと、前のタブに戻ります。`argvus --clock`はエイリアスです。タスクバーの日付をクリックしてもカレンダーは開き、ARGVUS Clockはイベントを表示しません。
 
 ARGVUS Focus、ARGVUS Clock、そしてコントロールパネルは同じ画面端を共有します。Clockを開くと、まずFocusとコントロールパネルが閉じます。いずれかのサーフェスを開くと、Clockが閉じます。

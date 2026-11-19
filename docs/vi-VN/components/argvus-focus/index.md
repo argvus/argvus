@@ -15,6 +15,8 @@ argvus focus status --waybar         # print one Waybar JSON status and exit
 argvus focus status --waybar --follow  # stream status changes for Waybar
 ```
 
+Thanh tiêu đề hiển thị nhãn `ARGVUS` bằng màu nhấn bên cạnh `Focus`.
+
 Thanh tác vụ chuyển tọa độ nhấp chuột gốc để cửa sổ bật lên sử dụng màn hình được nhấp và căn chỉnh với thanh; phóng không có tọa độ sử dụng vị trí con trỏ. Nếu con trỏ ở bên ngoài cửa sổ bật lên trong 5 giây, nó sẽ tự động đóng lại; di chuyển con trỏ vào cửa sổ bật lên sẽ hủy việc đếm ngược đó. **Esc** trên trang chính vẫn ẩn ngay lập tức và **Esc** trên trang con sẽ quay lại trang trước. Chỉ báo trên thanh tác vụ chỉ hiển thị biểu tượng của nó khi không hoạt động và `MM:SS` còn lại trong một pha, với màu pha; giai đoạn tạm dừng sẽ giữ nguyên thời gian còn lại và thêm trạng thái tạm dừng. Lệnh `status` chạy bên trong `argvus` mà không khởi động GTK. `argvus --focus` là bí danh. Chỉ một phiên bản Focus chạy mỗi phiên: lần khởi chạy thứ hai sẽ chuyển các tùy chọn của nó cho phiên bản đang chạy.
 
 ARGVUS Focus, ARGVUS Clock và Control Panel có chung cạnh màn hình. Việc mở Tiêu điểm sẽ đóng Đồng hồ và Bảng điều khiển trước; mở một trong hai bề mặt đó sẽ đóng Focus.

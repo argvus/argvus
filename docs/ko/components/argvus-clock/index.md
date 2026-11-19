@@ -11,6 +11,8 @@ argvus clock --toggle --x 1600 --y 30  # open next to a taskbar click position
 argvus clock --page alarms       # open on a page: clock, world, stopwatch, timer, alarms
 argvus clock --background        # run without a window, to keep alarms active
 ```
+
+제목 표시줄에는 강조색의 `ARGVUS` 배지와 `Clock`이 나란히 표시됩니다.
 ARGVUS 시계는 작업 표시줄과 정렬된 팝업으로 열리며 4픽셀 간격이 있습니다. 작업 표시줄은 루트 클릭 좌표를 전달하므로 팝업이 클릭된 모니터를 사용합니다. 좌표 없이 실행하면 포인터 위치를 사용합니다. 포인터가 팝업 외부에 5초 동안 머물면 자동으로 닫히며, 포인터를 팝업 안으로 이동하면 카운트다운이 취소됩니다. 주요 탭에서 **Esc**를 누르면 즉시 숨겨지고, 전체 페이지에서 **Esc**를 누르면 이전 탭으로 돌아갑니다. `argvus --clock`는 별칭입니다. 작업 표시줄에서 날짜를 클릭하면 여전히 달력이 열리며, ARGVUS 시계는 이벤트를 표시하지 않습니다.
 
 ARGVUS Focus, ARGVUS 시계 및 제어판은 동일한 화면 가장자리를 공유합니다. 시계를 열면 먼저 Focus와 제어판이 닫히고, 이들 표면 중 하나를 열면 시계가 닫힙니다.

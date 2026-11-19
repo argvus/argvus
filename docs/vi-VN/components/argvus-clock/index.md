@@ -13,6 +13,8 @@ argvus clock --page alarms       # open on a page: clock, world, stopwatch, time
 argvus clock --background        # run without a window, to keep alarms active
 ```
 
+Thanh tiêu đề hiển thị nhãn `ARGVUS` bằng màu nhấn bên cạnh `Clock`.
+
 Đồng hồ ARGVUS mở ra dưới dạng cửa sổ bật lên được căn chỉnh với thanh tác vụ, với khoảng cách 4 pixel. Thanh tác vụ chuyển tọa độ nhấp chuột gốc để cửa sổ bật lên sử dụng màn hình được nhấp; khởi chạy nó mà không có tọa độ sử dụng vị trí con trỏ. Nếu con trỏ ở bên ngoài cửa sổ bật lên trong 5 giây, nó sẽ tự động đóng lại; di chuyển con trỏ vào cửa sổ bật lên sẽ hủy đếm ngược. **Esc** trên tab chính vẫn ẩn nó ngay lập tức và **Esc** trên toàn trang sẽ quay lại tab trước đó. `argvus --clock` là bí danh. Bấm vào ngày trên thanh tác vụ vẫn mở lịch; Đồng hồ ARGVUS không hiển thị sự kiện.
 
 ARGVUS Focus, ARGVUS Clock và Control Panel có chung cạnh màn hình. Việc mở Đồng hồ sẽ đóng Tiêu điểm và Bảng điều khiển trước; mở một trong hai bề mặt đó sẽ đóng Đồng hồ.

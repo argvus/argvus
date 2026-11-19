@@ -15,6 +15,8 @@ argvus focus status --waybar           # imprime um status JSON Waybar e encerra
 argvus focus status --waybar --follow  # transmite as mudanças de status para Waybar
 ```
 
+A barra de título apresenta a marca `ARGVUS` na cor de destaque, ao lado de `Focus`.
+
 A taskbar passa as coordenadas raiz do clique para que o popup use o monitor clicado e se alinhe à barra; ao iniciar sem coordenadas, usa a posição do ponteiro. Se o ponteiro permanecer fora do popup por 5 segundos, ele fecha automaticamente; mover o ponteiro para dentro cancela a contagem. **Esc** na página principal ainda o oculta imediatamente, e **Esc** numa subpágina volta à página anterior. O indicador da taskbar mostra só o ícone quando ocioso e o tempo restante `MM:SS` durante uma fase, com a cor da fase; uma fase pausada mantém o tempo restante e sinaliza a pausa. O comando `status` roda dentro do `argvus`, sem iniciar GTK. `argvus --focus` é um alias. Só uma instância do Focus roda por sessão: uma segunda execução repassa as opções para a que já está aberta.
 
 ARGVUS Focus, ARGVUS Clock e o Control Panel compartilham a mesma lateral do ecrã. Ao abrir o Focus, o Clock e o Control Panel são fechados primeiro; ao abrir qualquer uma dessas outras superfícies, o Focus é fechado.

@@ -13,6 +13,8 @@ argvus clock --page alarms       # open on a page: clock, world, stopwatch, time
 argvus clock --background        # run without a window, to keep alarms active
 ```
 
+Bilah judul menampilkan lencana `ARGVUS` berwarna aksen di samping `Clock`.
+
 ARGVUS Clock terbuka sebagai popup yang sejajar dengan taskbar, dengan celah 4 piksel. Bilah tugas meneruskan koordinat klik akar sehingga popup menggunakan monitor yang diklik; meluncurkannya tanpa koordinat menggunakan posisi penunjuk. Jika penunjuk tetap berada di luar popup selama 5 detik, penunjuk akan menutup secara otomatis; memindahkan penunjuk ke dalam popup akan membatalkan hitungan mundur. **Esc** pada tab utama tetap menyembunyikannya dengan segera, dan **Esc** pada halaman penuh kembali ke tab sebelumnya. `argvus --clock` adalah alias. Mengklik tanggal di bilah tugas masih membuka kalender; Jam ARGVUS tidak menampilkan acara.
 
 Fokus ARGVUS, Jam ARGVUS, dan Panel Kontrol berbagi tepi layar yang sama. Jam Pembukaan menutup Fokus dan Panel Kontrol terlebih dahulu; membuka salah satu permukaan tersebut akan menutup Jam.

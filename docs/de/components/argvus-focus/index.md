@@ -13,6 +13,8 @@ argvus focus --pause      # pause the running phase
 argvus focus status --waybar         # print one Waybar JSON status and exit
 argvus focus status --waybar --follow  # stream status changes for Waybar
 ```
+
+In der Titelleiste steht `ARGVUS` in der Akzentfarbe neben `Focus`.
 Die Taskleiste übergibt die Root-Klick-Koordinaten, sodass das Popup den angeklickten Monitor verwendet und mit der Leiste ausgerichtet wird; ein Start ohne Koordinaten verwendet die Zeigerposition. Wenn der Zeiger 5 Sekunden lang außerhalb des Popups bleibt, schließt es sich automatisch; das Bewegen des Zeigers in das Popup bricht diesen Countdown ab. **Esc** auf der Hauptseite blendet es weiterhin sofort aus, und **Esc** auf einer Unterseite kehrt zur vorherigen Seite zurück. Der Taskleistenanzeiger zeigt im Leerlauf nur sein Symbol und die verbleibende `MM:SS` während einer Phase, mit der Phasenfarbe; eine pausierte Phase behält ihre verbleibende Zeit und fügt einen pausierten Zustand hinzu. Der Befehl `status` wird innerhalb von `argvus` ausgeführt, ohne GTK zu starten. `argvus --focus` ist ein Alias. Pro Sitzung läuft nur eine Focus-Instanz: Ein zweiter Start übergibt seine Optionen an die bereits laufende Instanz.
 
 ARGVUS Focus, ARGVUS Clock und das Bedienfeld teilen sich denselben Bildschirmrand. Das Öffnen von Focus schließt zuerst Clock und das Bedienfeld; das Öffnen einer dieser Oberflächen schließt Focus.

@@ -13,6 +13,8 @@ argvus focus --pause      # pause the running phase
 argvus focus status --waybar         # print one Waybar JSON status and exit
 argvus focus status --waybar --follow  # stream status changes for Waybar
 ```
+
+标题栏在 `Focus` 旁显示使用强调色的 `ARGVUS` 徽标。
 任务栏传递根点击坐标，因此弹出窗口使用被点击的显示器并与任务栏对齐；如果启动时没有坐标，则使用指针位置。如果指针在弹出窗口外停留5秒，它会自动关闭；将指针移入弹出窗口会取消该倒计时。主页面上的 **Esc** 仍会立即隐藏它，而子页面上的 **Esc** 会返回到前一页。任务栏指示器在空闲时只显示其图标，而在某阶段显示剩余的 `MM:SS` 并带有该阶段颜色；暂停阶段保留其剩余时间并添加暂停状态。`status` 命令在 `argvus` 内部运行而不启动 GTK。`argvus --focus` 是别名。每个会话中只运行一个 Focus 实例：第二次启动会将其选项传递给正在运行的实例。
 
 ARGVUS Focus、ARGVUS Clock 和控制面板共享相同的屏幕边缘。打开 Focus 会首先关闭 Clock 和控制面板；打开其中任何一个界面都会关闭 Focus。
