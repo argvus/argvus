@@ -1,6 +1,6 @@
 # Eight layout presets
 
-`argvus layout-mode-menu` dispatches to the GTK helper `layout-mode-selector`.
+**ARGVUS Layout Mode** (`argvus layout-mode-menu`) dispatches to the GTK helper `layout-mode-selector`.
 The helper shares catalog, bounded wallpaper decoding, theme styles and monitor
 discovery with the theme selector. No Rofi process is involved.
 

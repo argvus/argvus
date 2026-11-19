@@ -84,6 +84,6 @@ argvus control-center hyprland animations windows
 
 लागू करते समय केंद्रीय पूर्वावलोकन मंद होता है और लोडिंग संकेत दिखाता है। खोज फ़ोकस सक्रिय एक्सेंट रंग उपयोग करता है; फ़िल्टर में एक बॉर्डर है।
 
-`argvus layout-mode-menu` (SUPER + Shift + M). लेआउट मोड, विंडो की व्यवस्था और टास्कबार की जगह चुनें। **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: चुनें. **Enter**: लागू करें. **Esc**: बंद करें.
+**ARGVUS Layout Mode** (`argvus layout-mode-menu`) (SUPER + Shift + M). लेआउट मोड, विंडो की व्यवस्था और टास्कबार की जगह चुनें। **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: चुनें. **Enter**: लागू करें. **Esc**: बंद करें.
 
 थीम और मोड चयनक सत्र स्प्लैश के बिना अपनी विंडो में प्रगति दिखाते हैं। पुनः लोड से पहले टास्कबार की अंतिम स्थिति तैयार होती है और आवश्यक पुनरारंभ एक systemd लेनदेन में किए जाते हैं।

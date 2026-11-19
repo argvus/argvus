@@ -17,7 +17,7 @@ use std::{
 
 type Shared = Rc<RefCell<Catalog>>;
 
-const BRAND: &str = "ARGVUS";
+pub(crate) const BRAND: &str = "ARGVUS";
 const SELECTOR_NAME: &str = "Theme Selector";
 
 #[derive(Clone)]
@@ -39,6 +39,21 @@ struct Widgets {
   spaced: Rc<Cell<bool>>,
   applying: gtk::Box,
   spinner: gtk::Spinner,
+}
+
+pub(crate) fn selector_header(name: &str, left: i32, top: i32) -> gtk::Box {
+  let header = gtk::Box::new(gtk::Orientation::Horizontal, 14);
+  header.set_direction(gtk::TextDirection::Ltr);
+  header.set_halign(gtk::Align::Start);
+  header.set_valign(gtk::Align::Start);
+  header.set_margin_start(left);
+  header.set_margin_top(top);
+  header.add_css_class("selector-header");
+  let brand = gtk::Label::new(Some(BRAND));
+  brand.add_css_class("selector-brand");
+  header.append(&brand);
+  header.append(&gtk::Label::new(Some(name)));
+  header
 }
 
 fn build(app: &gtk::Application, i18n: &I18n) -> Widgets {
@@ -166,17 +181,7 @@ fn build(app: &gtk::Application, i18n: &I18n) -> Widgets {
   hint.add_css_class("muted");
   hint.set_wrap(true);
   content.append(&hint);
-  let header = gtk::Box::new(gtk::Orientation::Horizontal, 14);
-  header.set_direction(gtk::TextDirection::Ltr);
-  header.set_halign(gtk::Align::Start);
-  header.set_valign(gtk::Align::Start);
-  header.set_margin_start(35);
-  header.set_margin_top(30);
-  header.add_css_class("selector-header");
-  let brand = gtk::Label::new(Some(BRAND));
-  brand.add_css_class("selector-brand");
-  header.append(&brand);
-  header.append(&gtk::Label::new(Some(SELECTOR_NAME)));
+  let header = selector_header(SELECTOR_NAME, 35, 30);
 
   let overlay = gtk::Overlay::new();
   overlay.set_child(Some(&content));

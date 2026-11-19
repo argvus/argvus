@@ -144,7 +144,7 @@ Atur pencarian: Favorit, Tampilkan berkas terbaru, Indeks nama berkas, Folder te
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
 
-`argvus layout-mode-menu` (SUPER + Shift + M). Pilih mode tata letak, susunan jendela, dan posisi bilah tugas. **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: Pilih. **Enter**: Terapkan. **Esc**: Tutup.
+**ARGVUS Layout Mode** (`argvus layout-mode-menu`) (SUPER + Shift + M). Pilih mode tata letak, susunan jendela, dan posisi bilah tugas. **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: Pilih. **Enter**: Terapkan. **Esc**: Tutup.
 
 Pemilih tema dan mode menampilkan kemajuan di jendelanya tanpa splash sesi. Posisi akhir taskbar disiapkan sebelum pemuatan ulang; restart yang diperlukan digabung dalam satu transaksi systemd.
 

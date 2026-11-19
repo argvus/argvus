@@ -144,7 +144,7 @@ Cấu hình tìm kiếm: Yêu thích, Hiển thị tệp gần đây, Lập ch�
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
 
-`argvus layout-mode-menu` (SUPER + Shift + M). Chọn chế độ bố cục, cách sắp xếp cửa sổ và vị trí thanh tác vụ. **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: Chọn. **Enter**: Áp dụng. **Esc**: Đóng.
+**ARGVUS Layout Mode** (`argvus layout-mode-menu`) (SUPER + Shift + M). Chọn chế độ bố cục, cách sắp xếp cửa sổ và vị trí thanh tác vụ. **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: Chọn. **Enter**: Áp dụng. **Esc**: Đóng.
 
 Bộ chọn giao diện và chế độ hiển thị tiến trình trong cửa sổ của mình, không có màn hình chờ phiên. Vị trí cuối của thanh tác vụ được chuẩn bị trước khi tải lại; các lần khởi động lại cần thiết được gộp trong một giao dịch systemd.
 

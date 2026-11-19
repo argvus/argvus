@@ -143,7 +143,7 @@ argvus setup --copy <app> --dry-run
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
 
-`argvus layout-mode-menu` (SUPER + Shift + M). 选择布局模式、窗口排列方式和任务栏位置。 **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: 选择. **Enter**: 应用. **Esc**: 关闭.
+**ARGVUS Layout Mode** (`argvus layout-mode-menu`) (SUPER + Shift + M). 选择布局模式、窗口排列方式和任务栏位置。 **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: 选择. **Enter**: 应用. **Esc**: 关闭.
 
 主题和模式选择器在自身窗口中显示应用进度，不显示会话加载画面。重新加载前先准备任务栏的最终位置；必要的重启合并为一次systemd事务。
 

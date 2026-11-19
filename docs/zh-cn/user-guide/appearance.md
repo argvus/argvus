@@ -72,6 +72,6 @@ Wobble 默认情况下是禁用的。其 ARGVUS 默认值为：刚度 `100`、�
 
 应用时，中央预览变暗并显示加载动画。搜索焦点使用当前强调色，筛选器只有一层边框。
 
-`argvus layout-mode-menu` (SUPER + Shift + M). 选择布局模式、窗口排列方式和任务栏位置。 **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: 选择. **Enter**: 应用. **Esc**: 关闭.
+**ARGVUS Layout Mode** (`argvus layout-mode-menu`) (SUPER + Shift + M). 选择布局模式、窗口排列方式和任务栏位置。 **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: 选择. **Enter**: 应用. **Esc**: 关闭.
 
 主题和模式选择器在自身窗口中显示应用进度，不显示会话加载画面。重新加载前先准备任务栏的最终位置；必要的重启合并为一次systemd事务。

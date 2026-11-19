@@ -146,7 +146,7 @@ Configurar pesquisa: Favoritos, Mostrar arquivos recentes, Indexar nomes de arqu
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
 
-`argvus layout-mode-menu` (SUPER + Shift + M). Escolha o modo, o tipo de janela e a posição da barra de tarefas. **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: Selecionar. **Enter**: Aplicar. **Esc**: Fechar.
+**ARGVUS Layout Mode** (`argvus layout-mode-menu`) (SUPER + Shift + M). Escolha o modo, o tipo de janela e a posição da barra de tarefas. **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: Selecionar. **Enter**: Aplicar. **Esc**: Fechar.
 
 Aplicações iniciadas pelos seletores de temas e modos mostram o progresso no próprio seletor, sem splash da sessão. Mudanças de modo preparam a posição final da taskbar antes da recarga; os reinícios necessários são agrupados em uma transação do systemd.
 

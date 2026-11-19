@@ -72,7 +72,7 @@ Beim Öffnen des Selektors liegt der anfängliche Fokus auf der Karussellnavigat
 
 Während der Anwendung wird die zentrale Vorschau abgedunkelt und zeigt einen Ladeindikator. Der Suchfokus verwendet die aktive Akzentfarbe; der Filter hat einen einzelnen Rahmen.
 
-`argvus layout-mode-menu` (SUPER + Shift + M). Wählen Sie Layoutmodus, Fensteranordnung und Position der Taskleiste. **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: Auswählen. **Enter**: Anwenden. **Esc**: Schließen.
+**ARGVUS Layout Mode** (`argvus layout-mode-menu`) (SUPER + Shift + M). Wählen Sie Layoutmodus, Fensteranordnung und Position der Taskleiste. **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: Auswählen. **Enter**: Anwenden. **Esc**: Schließen.
 
 Nicht ausgewählte Karten haben 40 % Deckkraft; Untermodusvorschauen sind 75 % so groß wie die Hauptvorschauen.
 

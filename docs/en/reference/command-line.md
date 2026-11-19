@@ -146,7 +146,7 @@ Configure search: Favorites, Show recent files, Index file names, Indexed folder
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
 
-`argvus layout-mode-menu` (SUPER + Shift + M). Choose a layout mode and its window and taskbar arrangement. **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: Select. **Enter**: Apply. **Esc**: Close.
+**ARGVUS Layout Mode** (`argvus layout-mode-menu`) (SUPER + Shift + M). Choose a layout mode and its window and taskbar arrangement. **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: Select. **Enter**: Apply. **Esc**: Close.
 
 Applications started by the theme and mode selectors keep progress inside the selector, without a session splash. Mode changes prepare the final taskbar position before reloading; required surface restarts are grouped in one systemd transaction.
 

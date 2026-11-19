@@ -72,7 +72,7 @@ Ouvrez **ARGVUS Theme Selector** (`argvus theme-selector`), `argvus theme-switch
 
 Pendant l’application, l’aperçu central est assombri et affiche un indicateur animé. La recherche utilise l’accent actif et le filtre possède une seule bordure.
 
-`argvus layout-mode-menu` (SUPER + Shift + M). Choisissez le mode, la disposition des fenêtres et la position de la barre des tâches. **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: Sélectionner. **Enter**: Appliquer. **Esc**: Fermer.
+**ARGVUS Layout Mode** (`argvus layout-mode-menu`) (SUPER + Shift + M). Choisissez le mode, la disposition des fenêtres et la position de la barre des tâches. **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: Sélectionner. **Enter**: Appliquer. **Esc**: Fermer.
 
 Les cartes non sélectionnées ont une opacité de 40 % ; les aperçus des sous-modes mesurent 75 % des aperçus principaux.
 

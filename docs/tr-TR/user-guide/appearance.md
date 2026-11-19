@@ -84,7 +84,7 @@ Seçici açıldığında başlangıç odağı karusel gezinmesindedir. Aramaya o
 
 Uygulama sırasında orta önizleme kararır ve yükleme göstergesi görünür. Arama odağı etkin vurgu rengini kullanır; filtrenin tek kenarlığı vardır.
 
-`argvus layout-mode-menu` (SUPER + Shift + M). Yerleşim modunu, pencere düzenini ve görev çubuğunun konumunu seçin. **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: Seç. **Enter**: Uygula. **Esc**: Kapat.
+**ARGVUS Layout Mode** (`argvus layout-mode-menu`) (SUPER + Shift + M). Yerleşim modunu, pencere düzenini ve görev çubuğunun konumunu seçin. **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: Seç. **Enter**: Uygula. **Esc**: Kapat.
 
 Seçilmeyen kartların opaklığı %40; alt mod önizlemelerinin boyutu ana önizlemelerin %75’idir.
 

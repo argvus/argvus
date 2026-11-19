@@ -72,6 +72,6 @@ Wobble은 기본적으로 비활성화되어 있습니다. 그 ARGVUS 기본값�
 
 적용 중에는 중앙 미리 보기가 어두워지고 로딩 표시가 나타납니다. 검색 포커스는 활성 강조색을 사용하며 필터 테두리는 하나입니다.
 
-`argvus layout-mode-menu` (SUPER + Shift + M). 레이아웃 모드, 창 배치 및 작업 표시줄 위치를 선택하세요. **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: 선택. **Enter**: 적용. **Esc**: 닫기.
+**ARGVUS Layout Mode** (`argvus layout-mode-menu`) (SUPER + Shift + M). 레이아웃 모드, 창 배치 및 작업 표시줄 위치를 선택하세요. **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: 선택. **Enter**: 적용. **Esc**: 닫기.
 
 테마 및 모드 선택기는 세션 시작 화면 없이 자체 창에 진행 상황을 표시합니다. 다시 불러오기 전에 작업 표시줄의 최종 위치를 준비하고 필요한 재시작을 하나의 systemd 트랜잭션으로 묶습니다.

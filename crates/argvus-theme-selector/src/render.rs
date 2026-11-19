@@ -140,6 +140,19 @@ fn configured_accent(fallback: Color) -> Color {
     .unwrap_or(fallback)
 }
 
+fn selector_header_css(accent: &str, on_accent: &str) -> String {
+  format!(
+    ".selector-header {{ font-family: monospace; font-size: 30px; font-weight: bold; }}
+     .selector-header .selector-brand {{
+       background: {accent};
+       color: {on_accent};
+       border-radius: 0;
+       font-size: 27px;
+       padding: 2px 10px;
+     }}"
+  )
+}
+
 pub fn mode_css(theme: Option<&ThemeManifest>, accent: Color, radius: u64) -> String {
   let fg = theme
     .and_then(|theme| theme.token("fg").ok())
@@ -151,14 +164,15 @@ pub fn mode_css(theme: Option<&ThemeManifest>, accent: Color, radius: u64) -> St
     .hex();
   let on_accent = accent.contrast().hex();
   let accent = accent.hex();
+  let header = selector_header_css(&accent, &on_accent);
   format!(
     "window.layout-mode-selector {{ background: {bg}; color: {fg}; font-size: 15px; }}
     .layout-mode-selector button {{ color: {fg}; background: alpha({fg}, 0.05); border: 1px solid alpha({fg}, 0.25); border-radius: {radius}px; padding: 10px 16px; }}
     .layout-mode-selector button:hover {{ background: alpha({fg}, 0.12); }}
     .layout-mode-selector button:disabled {{ opacity: 0.65; }}
     .layout-mode-selector button:focus-visible, .layout-mode-selector .mode-cursor {{ outline: 2px dashed {fg}; outline-offset: -4px; }}
-    .layout-mode-selector .mode-brand {{ font-weight: bold; color: {accent}; }}
-    .layout-mode-selector .mode-title {{ font-size: 42px; font-weight: bold; }}
+    {header}
+    .layout-mode-selector .mode-content {{ margin-top: 104px; }}
     .layout-mode-selector .mode-heading {{ font-size: 27px; font-weight: bold; }}
     .layout-mode-selector .mode-muted {{ opacity: 0.82; }}
     .layout-mode-selector .mode-segments {{ border-radius: {radius}px; background: alpha({fg}, 0.06); padding: 2px; margin: 10px 0; }}
@@ -167,11 +181,12 @@ pub fn mode_css(theme: Option<&ThemeManifest>, accent: Color, radius: u64) -> St
     .layout-mode-selector .mode-choice {{ padding: 10px; }}
     .layout-mode-selector .mode-card-title {{ font-weight: bold; }}
     .layout-mode-selector .mode-selected {{ border-color: {accent}; background: alpha({accent}, 0.19); box-shadow: inset 0 0 0 1px {accent}, 0 0 8px alpha({accent}, 0.30); }}
-    .layout-mode-selector .mode-icon-pane {{ border: 2px solid currentColor; border-radius: {radius}px; }}
+    .layout-mode-selector .mode-icon-pane {{ border: 2px solid currentColor; border-radius: 0; }}
+    .layout-mode-selector .mode-icon-spaced .mode-icon-pane {{ border-radius: 4px; }}
     .layout-mode-selector .mode-selected .mode-icon-pane, .layout-mode-selector .mode-panel > box > box:first-child {{ color: {accent}; }}
     .layout-mode-selector .mode-checked, .layout-mode-selector .mode-unchecked {{ min-width: 20px; min-height: 20px; border: 1px solid alpha({fg}, 0.65); border-radius: {radius}px; }}
     .layout-mode-selector .mode-checked {{ background: {accent}; color: {on_accent}; border-color: {accent}; font-weight: bold; }}
-    .layout-mode-selector.compact-output .mode-title {{ font-size: 30px; }}
+    .layout-mode-selector.compact-output .mode-content {{ margin-top: 80px; }}
     .layout-mode-selector.compact-output .mode-segments {{ margin: 0; }}
     .layout-mode-selector.compact-output .mode-segment {{ min-width: 0; }}
     .layout-mode-selector.compact-output .mode-panel {{ padding: 12px; }}
@@ -255,22 +270,10 @@ pub fn css(theme: Option<&ThemeManifest>, spaced: bool) -> String {
   let radius = if spaced { "6px" } else { "0" };
   let search = search_css(".theme-selector", &fg, &selection, radius);
   let brand_fg = accent.contrast().hex();
-  let header = format!(
-    ".theme-selector .selector-header, .theme-selector .selector-heading {{
-       font-family: monospace;
-       font-size: 30px;
-       font-weight: bold;
-     }}
-     .theme-selector .selector-brand {{
-       background: {selection};
-       color: {brand_fg};
-       border-radius: 0;
-       font-size: 27px;
-       padding: 2px 10px;
-     }}"
-  );
+  let header = selector_header_css(&selection, &brand_fg);
+  let heading = ".theme-selector .selector-heading { font-family: monospace; font-size: 30px; font-weight: bold; }";
   format!(
-    "window.theme-selector {{ background: {bg}; color: {fg}; font-size: 13px; }} .theme-selector * {{ border-radius: {radius}; box-shadow: none; text-shadow: none; }} .theme-selector button, .theme-selector entry, .theme-selector dropdown {{ min-height: 38px; padding: 0 12px; border: 1px solid alpha({fg}, 0.22); background: alpha({fg}, 0.045); color: {fg}; }} .theme-selector button:hover, .theme-selector entry:focus-within, .theme-selector dropdown:focus {{ border-color: {}; }} .theme-selector button:focus-visible {{ outline: 2px solid {}; outline-offset: 2px; }} .theme-selector button:checked {{ border-color: {selection}; background: alpha({selection}, 0.18); }} .theme-selector button:hover {{ background: alpha({fg}, 0.10); }} .theme-selector .title {{ font-size: 20px; font-weight: bold; }} .theme-selector .muted {{ opacity: 0.72; }} .theme-selector .suggested-action {{ background: {}; color: {}; border-color: {}; font-weight: bold; }} .theme-selector .suggested-action:hover {{ background: {}; }} .theme-selector popover, .theme-selector popover contents {{ background: {bg}; color: {fg}; border: 1px solid alpha({fg}, 0.3); }} .theme-selector .applying-preview {{ padding: 0; background: alpha(black, 0.72); color: white; border: none; }} .theme-selector dropdown {{ padding: 0; border: none; background: transparent; }} .theme-selector dropdown > button {{ min-height: 38px; }} {search} {header} .theme-selector separator {{ background: alpha({fg}, 0.16); }} .theme-selector button.mode-choice {{ padding: 8px; }} .theme-selector button.mode-choice.mode-selected {{ border-color: {selection}; background: alpha({selection}, 0.18); }} .theme-selector button.mode-choice.mode-cursor {{ outline: 2px solid {}; outline-offset: 2px; }}",
+    "window.theme-selector {{ background: {bg}; color: {fg}; font-size: 13px; }} .theme-selector * {{ border-radius: {radius}; box-shadow: none; text-shadow: none; }} .theme-selector button, .theme-selector entry, .theme-selector dropdown {{ min-height: 38px; padding: 0 12px; border: 1px solid alpha({fg}, 0.22); background: alpha({fg}, 0.045); color: {fg}; }} .theme-selector button:hover, .theme-selector entry:focus-within, .theme-selector dropdown:focus {{ border-color: {}; }} .theme-selector button:focus-visible {{ outline: 2px solid {}; outline-offset: 2px; }} .theme-selector button:checked {{ border-color: {selection}; background: alpha({selection}, 0.18); }} .theme-selector button:hover {{ background: alpha({fg}, 0.10); }} .theme-selector .title {{ font-size: 20px; font-weight: bold; }} .theme-selector .muted {{ opacity: 0.72; }} .theme-selector .suggested-action {{ background: {}; color: {}; border-color: {}; font-weight: bold; }} .theme-selector .suggested-action:hover {{ background: {}; }} .theme-selector popover, .theme-selector popover contents {{ background: {bg}; color: {fg}; border: 1px solid alpha({fg}, 0.3); }} .theme-selector .applying-preview {{ padding: 0; background: alpha(black, 0.72); color: white; border: none; }} .theme-selector dropdown {{ padding: 0; border: none; background: transparent; }} .theme-selector dropdown > button {{ min-height: 38px; }} {search} {header} {heading} .theme-selector separator {{ background: alpha({fg}, 0.16); }} .theme-selector button.mode-choice {{ padding: 8px; }} .theme-selector button.mode-choice.mode-selected {{ border-color: {selection}; background: alpha({selection}, 0.18); }} .theme-selector button.mode-choice.mode-cursor {{ outline: 2px solid {}; outline-offset: 2px; }}",
     accent.hex(),
     accent.hex(),
     accent.hex(),
@@ -526,14 +529,11 @@ mod tests {
     for radius in [0, 8] {
       let css = mode_css(None, Color::opaque(53, 144, 189), radius);
       let expected = format!("{radius}px");
-      let corners = css
-        .split("border-radius: ")
-        .skip(1)
-        .filter_map(|declaration| declaration.split_once(';'))
-        .map(|(value, _)| value)
-        .collect::<Vec<_>>();
-      assert!(!corners.is_empty());
-      assert!(corners.iter().all(|value| *value == expected));
+      assert!(css.contains(&format!("border-radius: {expected}; padding: 10px 16px")));
+      assert!(
+        css.contains(".mode-icon-pane { border: 2px solid currentColor; border-radius: 0; }")
+      );
+      assert!(css.contains(".mode-icon-spaced .mode-icon-pane { border-radius: 4px; }"));
     }
   }
 

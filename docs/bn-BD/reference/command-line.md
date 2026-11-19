@@ -127,7 +127,7 @@ argvus setup --copy <app> --dry-run
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
 
-`argvus layout-mode-menu` (SUPER + Shift + M). বিন্যাসের মোড, জানালার ধরন ও টাস্কবারের অবস্থান বেছে নিন। **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: নির্বাচন. **Enter**: প্রয়োগ. **Esc**: বন্ধ.
+**ARGVUS Layout Mode** (`argvus layout-mode-menu`) (SUPER + Shift + M). বিন্যাসের মোড, জানালার ধরন ও টাস্কবারের অবস্থান বেছে নিন। **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: নির্বাচন. **Enter**: প্রয়োগ. **Esc**: বন্ধ.
 
 থিম ও মোড নির্বাচক নিজেদের উইন্ডোতে অগ্রগতি দেখায়, সেশনের স্প্ল্যাশ ছাড়াই। পুনরায় লোডের আগে টাস্কবারের চূড়ান্ত অবস্থান প্রস্তুত হয় এবং প্রয়োজনীয় পুনরারম্ভ এক systemd লেনদেনে একত্রিত হয়।
 

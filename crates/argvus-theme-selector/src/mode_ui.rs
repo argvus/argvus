@@ -1,5 +1,5 @@
 //! Layout-mode selector; configuration and application belong to argvus-config.
-use crate::{model::Catalog, preview, render};
+use crate::{model::Catalog, preview, render, ui};
 use argvus_config_core::{
   layout_preset::{self, ApplyOutcome, LayoutPreset, TaskbarPosition},
   window_mode::{self, WindowMode},
@@ -14,6 +14,8 @@ use std::{
   sync::{Arc, mpsc},
   time::Duration,
 };
+
+const SELECTOR_NAME: &str = "Layout Mode";
 
 type Surface = Rc<RefCell<Option<gtk::cairo::ImageSurface>>>;
 
@@ -151,6 +153,7 @@ struct Card {
   kind: CardKind,
   button: gtk::Button,
   drawing: gtk::DrawingArea,
+  icon: gtk::Box,
   cover: gtk::Box,
   spinner: gtk::Spinner,
   indicator: Option<gtk::Label>,
@@ -298,6 +301,7 @@ fn refresh_cards(cards: &[Card], selection: Selection) {
     } else {
       card.button.remove_css_class("mode-cursor");
     }
+    update_mode_icon(&card.icon, preset_for_card(card.kind, selection).variant);
     card.drawing.queue_draw();
   }
 }
@@ -344,6 +348,16 @@ fn mode_icon(size: i32) -> gtk::Box {
   icon
 }
 
+fn update_mode_icon(icon: &gtk::Box, variant: Variant) {
+  let spaced = variant == Variant::Spaced;
+  icon.set_spacing(if spaced { 8 } else { 2 });
+  if spaced {
+    icon.add_css_class("mode-icon-spaced");
+  } else {
+    icon.remove_css_class("mode-icon-spaced");
+  }
+}
+
 pub fn open(app: &gtk::Application, i18n: Arc<I18n>) {
   gtk::Widget::set_default_direction(
     if i18n.direction() == argvus_i18n::TextDirection::RightToLeft {
@@ -354,7 +368,7 @@ pub fn open(app: &gtk::Application, i18n: Arc<I18n>) {
   );
   let window = gtk::ApplicationWindow::builder()
     .application(app)
-    .title(i18n.tr("layout_mode.select"))
+    .title(format!("{} {SELECTOR_NAME}", ui::BRAND))
     .build();
   window.init_layer_shell();
   window.set_namespace(Some("argvus-layout-mode-selector"));
@@ -381,12 +395,7 @@ pub fn open(app: &gtk::Application, i18n: Arc<I18n>) {
   content.set_valign(gtk::Align::Center);
   content.set_margin_start(24);
   content.set_margin_end(24);
-  let brand = gtk::Label::new(Some("A R G V U S"));
-  brand.add_css_class("mode-brand");
-  content.append(&brand);
-  let title = gtk::Label::new(Some(&i18n.tr("layout_mode.select")));
-  title.add_css_class("mode-title");
-  content.append(&title);
+  content.add_css_class("mode-content");
   let instruction = gtk::Label::new(Some(&i18n.tr("layout_mode.intro")));
   instruction.set_wrap(true);
   instruction.set_justify(gtk::Justification::Center);
@@ -419,7 +428,8 @@ pub fn open(app: &gtk::Application, i18n: Arc<I18n>) {
   let panel = gtk::Box::new(gtk::Orientation::Vertical, 16);
   panel.add_css_class("mode-panel");
   let heading = gtk::Box::new(gtk::Orientation::Horizontal, 14);
-  heading.append(&mode_icon(24));
+  let heading_icon = mode_icon(24);
+  heading.append(&heading_icon);
   let mode_text = gtk::Box::new(gtk::Orientation::Vertical, 4);
   let mode_title = gtk::Label::new(None);
   mode_title.set_xalign(0.0);
@@ -491,11 +501,13 @@ pub fn open(app: &gtk::Application, i18n: Arc<I18n>) {
   overlay.set_child(Some(&background));
   overlay.add_overlay(&content);
   overlay.set_measure_overlay(&content, true);
+  overlay.add_overlay(&ui::selector_header(SELECTOR_NAME, 20, 36));
   window.set_child(Some(&overlay));
 
   let refresh_heading = Rc::new({
     let i18n = i18n.clone();
     move |variant| {
+      update_mode_icon(&heading_icon, variant);
       mode_title.set_text(&card_title(CardKind::Variant(variant), &i18n));
       description.set_text(&i18n.tr(if variant == Variant::Sticky {
         "layout_mode.sticky_description"
@@ -824,7 +836,9 @@ fn make_card(
   let child = gtk::Box::new(gtk::Orientation::Vertical, 8);
   let button = gtk::Button::new();
   let caption = gtk::Box::new(gtk::Orientation::Horizontal, 8);
-  caption.append(&mode_icon(12));
+  let icon = mode_icon(12);
+  update_mode_icon(&icon, preset_for_card(kind, selection.get()).variant);
+  caption.append(&icon);
   let labels = gtk::Box::new(gtk::Orientation::Vertical, 3);
   labels.set_hexpand(true);
   labels.append(&label);
@@ -854,6 +868,7 @@ fn make_card(
     kind,
     button,
     drawing,
+    icon,
     cover,
     spinner,
     indicator,

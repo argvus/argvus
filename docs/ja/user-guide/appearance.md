@@ -72,6 +72,6 @@ Wobbleはデフォルトで無効になっています。ARGVUSのデフォル�
 
 適用中は中央プレビューを暗くして読み込み表示を重ねます。検索のフォーカスは現在のアクセント色を使い、フィルターの枠は一重です。
 
-`argvus layout-mode-menu` (SUPER + Shift + M). レイアウトモード、ウィンドウの配置、タスクバーの位置を選択します。 **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: 選択. **Enter**: 適用. **Esc**: 閉じる.
+**ARGVUS Layout Mode** (`argvus layout-mode-menu`) (SUPER + Shift + M). レイアウトモード、ウィンドウの配置、タスクバーの位置を選択します。 **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: 選択. **Enter**: 適用. **Esc**: 閉じる.
 
 テーマとモードの選択画面内で進行状況を表示し、セッションのスプラッシュは表示しません。再読み込み前にタスクバーの最終位置を準備し、必要な再起動を1つのsystemdトランザクションにまとめます。

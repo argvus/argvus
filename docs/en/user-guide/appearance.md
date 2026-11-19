@@ -85,6 +85,6 @@ The carousel receives initial focus when the selector opens. Press `/` to focus 
 
 While applying, the central preview is dimmed and displays a spinner. Search focus follows the active accent; the filter has a single border.
 
-`argvus layout-mode-menu` (SUPER + Shift + M). Choose a layout mode and its window and taskbar arrangement. **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: Select. **Enter**: Apply. **Esc**: Close.
+**ARGVUS Layout Mode** (`argvus layout-mode-menu`) (SUPER + Shift + M). Choose a layout mode and its window and taskbar arrangement. **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: Select. **Enter**: Apply. **Esc**: Close.
 
 Applications started by the theme and mode selectors keep progress inside the selector, without a session splash. Mode changes prepare the final taskbar position before reloading; required surface restarts are grouped in one systemd transaction.

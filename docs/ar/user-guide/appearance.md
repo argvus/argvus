@@ -84,6 +84,6 @@ argvus control-center hyprland animations windows
 
 أثناء التطبيق تعتم المعاينة المركزية وتعرض مؤشر تحميل. يستخدم تركيز البحث لون التمييز النشط وللمرشح إطار واحد.
 
-`argvus layout-mode-menu` (SUPER + Shift + M). اختر وضع التخطيط وترتيب النوافذ وموضع شريط المهام. **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: اختيار. **Enter**: تطبيق. **Esc**: إغلاق.
+**ARGVUS Layout Mode** (`argvus layout-mode-menu`) (SUPER + Shift + M). اختر وضع التخطيط وترتيب النوافذ وموضع شريط المهام. **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: اختيار. **Enter**: تطبيق. **Esc**: إغلاق.
 
 تعرض محددات السمات والأوضاع التقدم داخل نافذتها دون شاشة تحميل الجلسة. تُجهز مواضع شريط المهام النهائية قبل إعادة التحميل، وتُجمع عمليات إعادة التشغيل اللازمة في معاملة systemd واحدة.

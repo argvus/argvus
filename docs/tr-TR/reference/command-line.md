@@ -144,7 +144,7 @@ Aramayı yapılandır: Favoriler, Son dosyaları göster, Dosya adlarını dizin
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
 
-`argvus layout-mode-menu` (SUPER + Shift + M). Yerleşim modunu, pencere düzenini ve görev çubuğunun konumunu seçin. **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: Seç. **Enter**: Uygula. **Esc**: Kapat.
+**ARGVUS Layout Mode** (`argvus layout-mode-menu`) (SUPER + Shift + M). Yerleşim modunu, pencere düzenini ve görev çubuğunun konumunu seçin. **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: Seç. **Enter**: Uygula. **Esc**: Kapat.
 
 Seçilmeyen kartların opaklığı %40; alt mod önizlemelerinin boyutu ana önizlemelerin %75’idir.
 

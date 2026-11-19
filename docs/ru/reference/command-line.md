@@ -143,7 +143,7 @@ argvus setup --copy <app> --dry-run
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
 
-`argvus layout-mode-menu` (SUPER + Shift + M). Выберите режим, расположение окон и положение панели задач. **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: Выбрать. **Enter**: Применить. **Esc**: Закрыть.
+**ARGVUS Layout Mode** (`argvus layout-mode-menu`) (SUPER + Shift + M). Выберите режим, расположение окон и положение панели задач. **Tab**: Sticky / Spaced ⇄ Tile / Floating · Top / Bottom. **↑ / ↓ / ← / →**: Выбрать. **Enter**: Применить. **Esc**: Закрыть.
 
 Селекторы тем и режимов показывают ход применения в своём окне без заставки сеанса. Перед перезагрузкой подготавливается итоговое положение панели; необходимые перезапуски объединяются в одну транзакцию systemd.
 
