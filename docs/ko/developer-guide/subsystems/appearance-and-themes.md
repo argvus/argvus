@@ -10,7 +10,7 @@ description: ARGVUS 전반에 걸친 테마 상태 전파.
 
 `argvus-config`(`argvus theme-switch`)의 테마 트랜잭션은 `config.json`나 그 자체의 게시된 프로젝션을 읽을 수 없는 모든 소비자를 소유한다 — 네이티브 Qt6ct 파일, GTK `settings.ini` 및 `gsettings` 힌트, Foot 및 Kitty, 그리터 테마 상태, 작업 표시줄 캘린더 캐시, 시스템 모니터, 바탕 화면 런타임 및 Hyprtoolkit. 이는 `argvus sessionctl reload`에서 실행되므로, 테마 전환, 키바인드 재로드 및 세션 시작 모두 동일한 런타임 상태에 도달한다. 어댑터는 커밋된 세대만 읽는다: 어댑터는 자신만의 소비자 파일과 캐시를 쓰며, 정식 문서나 `data/generated/`는 절대 쓰지 않는다. 잠금 화면의 흐릿한 배경화면은 이미 커밋된 프로젝션의 일부이므로 무효화만 되고, 다시 쓰이지 않는다. `argvus config accent`는 정식 악센트를 기록하고, 빌드를 다시 렌더링하며, 모든 등록된 소비자를 제자리에서 재로드하므로, 악센트 변경과 테마 변경이 서로 불일치할 수 없다. 변형. 레거시 작업 표시줄 유틸리티 그룹 표시기가 트랜잭션 내에 가져와지며, `argvus config taskbar status`는 세대를 기록하지 않고도 유효 값을 보고합니다.
 
-`argvus theme-selector`, 인수 없는 `argvus theme-switch` 또는 `SUPER + Shift + T`로 엽니다. 스위치가 실행되는 동안에는 `theme-switch.active`을 캐시 디렉토리에 pid와 프로세스 시작 시간과 함께 유지합니다. 스위치가 시작하는 프로젝션은 해당 마커를 읽고 테마를 스위치에 남겨 잠금이 두 번 걸리지 않도록 합니다. 잠금과 프로젝션 대기는 각각 최대 60초로 제한되며, 소비자의 리로드 명령은 합쳐서 5초입니다. 직접 `argvus sessionctl reload`(`SUPER + Shift + R` 포함)은 이미 커밋된 세대를 다시 프로젝션하지 않고 적용하며, 또한 기준 값이 변경되지 않았을 때 오래된 런타임 소비자를 복구합니다. `argvus terminal --apply`는 사용자의 캐시 아래에 파생된 Kitty 프로필을 공유 잠금과 원자적 교체로 생성합니다.
+**ARGVUS Theme Selector** (`argvus theme-selector`), 인수 없는 `argvus theme-switch` 또는 `SUPER + Shift + T`로 엽니다. 스위치가 실행되는 동안에는 `theme-switch.active`을 캐시 디렉토리에 pid와 프로세스 시작 시간과 함께 유지합니다. 스위치가 시작하는 프로젝션은 해당 마커를 읽고 테마를 스위치에 남겨 잠금이 두 번 걸리지 않도록 합니다. 잠금과 프로젝션 대기는 각각 최대 60초로 제한되며, 소비자의 리로드 명령은 합쳐서 5초입니다. 직접 `argvus sessionctl reload`(`SUPER + Shift + R` 포함)은 이미 커밋된 세대를 다시 프로젝션하지 않고 적용하며, 또한 기준 값이 변경되지 않았을 때 오래된 런타임 소비자를 복구합니다. `argvus terminal --apply`는 사용자의 캐시 아래에 파생된 Kitty 프로필을 공유 잠금과 원자적 교체로 생성합니다.
 
 ## 테마 빌드(`argvus-theme-core`)
 

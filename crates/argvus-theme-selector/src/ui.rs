@@ -17,6 +17,9 @@ use std::{
 
 type Shared = Rc<RefCell<Catalog>>;
 
+const BRAND: &str = "ARGVUS";
+const SELECTOR_NAME: &str = "Theme Selector";
+
 #[derive(Clone)]
 struct Widgets {
   window: gtk::ApplicationWindow,
@@ -48,7 +51,7 @@ fn build(app: &gtk::Application, i18n: &I18n) -> Widgets {
   );
   let window = gtk::ApplicationWindow::builder()
     .application(app)
-    .title(i18n.tr("theme.select"))
+    .title(format!("{BRAND} {SELECTOR_NAME}"))
     .build();
   window.init_layer_shell();
   window.set_namespace(Some("argvus-theme-selector"));
@@ -74,8 +77,8 @@ fn build(app: &gtk::Application, i18n: &I18n) -> Widgets {
   content.set_margin_bottom(24);
   content.set_margin_start(24);
   content.set_margin_end(24);
-  let heading = gtk::Label::new(Some(&format!("ARGVUS · {}", i18n.tr("theme.select"))));
-  heading.add_css_class("title");
+  let heading = gtk::Label::new(Some(&i18n.tr("theme.select")));
+  heading.add_css_class("selector-heading");
   content.append(&heading);
   let controls = gtk::Box::new(gtk::Orientation::Horizontal, 12);
   controls.set_halign(gtk::Align::Center);
@@ -163,7 +166,22 @@ fn build(app: &gtk::Application, i18n: &I18n) -> Widgets {
   hint.add_css_class("muted");
   hint.set_wrap(true);
   content.append(&hint);
-  window.set_child(Some(&content));
+  let header = gtk::Box::new(gtk::Orientation::Horizontal, 14);
+  header.set_direction(gtk::TextDirection::Ltr);
+  header.set_halign(gtk::Align::Start);
+  header.set_valign(gtk::Align::Start);
+  header.set_margin_start(35);
+  header.set_margin_top(30);
+  header.add_css_class("selector-header");
+  let brand = gtk::Label::new(Some(BRAND));
+  brand.add_css_class("selector-brand");
+  header.append(&brand);
+  header.append(&gtk::Label::new(Some(SELECTOR_NAME)));
+
+  let overlay = gtk::Overlay::new();
+  overlay.set_child(Some(&content));
+  overlay.add_overlay(&header);
+  window.set_child(Some(&overlay));
   Widgets {
     window,
     provider,
@@ -501,6 +519,8 @@ pub fn open(app: &gtk::Application, i18n: Arc<I18n>) {
 pub fn focus_carousel(window: &gtk::Window) {
   if let Some(carousel) = window
     .child()
+    .and_downcast::<gtk::Overlay>()
+    .and_then(|overlay| overlay.child())
     .and_then(|content| content.first_child())
     .and_then(|heading| heading.next_sibling())
     .and_then(|controls| controls.next_sibling())
