@@ -60,7 +60,7 @@ description: ARGVUS 데스크톱의 지속적인 부분을 구성하십시오.
 
 일부는 전체 페이지이고 일부는 검색이나 도메인 요약을 통해 접근할 수 있는 하위 페이지입니다. 정확한 목록은 설치된 ARGVUS 제공자에 따라 결정됩니다.
 
-각 페이지는 헤더에 경로를 표시합니다. 예를 들어 `Control Center > Hardware & Connectivity > Audio`입니다. 경로는 페이지를 나열하는 홈 카드에서 시작하므로 같은 페이지는 홈, 검색, CLI에서 동일하게 표시됩니다. 루트 및 카드 이름은 번역됩니다: 포르투갈어 인터페이스는 `Central de Controle > Hardware e conectividade > Áudio`를 보여줍니다.
+**ARGVUS Control Center** 제목은 상단에 고정됩니다. 탐색 경로는 그 아래 별도 줄에 표시되며 홈 카드에서 시작합니다. `Hardware & Connectivity > Audio`
 
 ## 각 영역의 용도
 
@@ -281,7 +281,7 @@ NetworkManager에 아무 것도 도달하지 않는 것은 **저장** 버튼을 
 
 ### ARGVUS 정보
 
-**ARGVUS 정보**는 **도구 및 진단 → ARGVUS 정보**에 있습니다 (`about`, `hardware` 또는 `firmware` 검색, 또는 `argvus control-center about` 실행). 다섯 개의 탭이 있으며 `Tab`/`Shift+Tab`, `←`/`→` 또는 `h`/`l`로 전환할 수 있습니다: **시스템 및 하드웨어**, **정보**, **기부**, **크레딧** 및 **저작권**. 헤더에는 전체 경로가 표시됩니다. 예: `Control Center > Tools & Diagnostics > About ARGVUS > System & Hardware`.
+**ARGVUS 정보**는 **도구 및 진단 → ARGVUS 정보**에 있습니다 (`about`, `hardware` 또는 `firmware` 검색, 또는 `argvus control-center about` 실행). 다섯 개의 탭이 있으며 `Tab`/`Shift+Tab`, `←`/`→` 또는 `h`/`l`로 전환할 수 있습니다: **시스템 및 하드웨어**, **정보**, **기부**, **크레딧** 및 **저작권**. 헤더에는 전체 경로가 표시됩니다. 예: `Tools & Diagnostics > About ARGVUS > System & Hardware`.
 
 **시스템 및 하드웨어**는 읽기 전용이며, 이 컴퓨터의 정보를 세 개 섹션으로 그룹화하고 값은 한 열로 정렬됩니다:
 

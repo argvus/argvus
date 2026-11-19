@@ -10,14 +10,12 @@ use ratatui::{
   widgets::{Block, Borders, Paragraph, Widget},
 };
 
-use crate::chrome::{Header, draw_footer, draw_header};
+use crate::chrome::{draw_control_center_header, draw_footer};
 use crate::components::StatusMessage;
 
 /// The common shell used by every Control Center domain page.
 ///
-/// The header is `<root> > <breadcrumb>`. The root comes from the catalog key
-/// `control_center.breadcrumb.root`, resolved in `lang`; `breadcrumb` is the
-/// already translated path below the root, such as `Hardware & Connectivity > Audio`.
+/// The branded title sits above the translated path from the Home card.
 pub fn shell(
   frame: &mut Frame,
   area: Rect,
@@ -75,27 +73,14 @@ pub fn shell_with_status(
     crate::components::status_line_count(warning, inner.width).min(usize::from(inner.height)) as u16
   });
   let rows = Layout::vertical([
-    Constraint::Length(1),
+    Constraint::Length(2),
     Constraint::Min(1),
     Constraint::Length(2),
     Constraint::Length(status_height),
     Constraint::Length(warning_height),
   ])
   .split(inner);
-  let title = format!(
-    "{} > {breadcrumb}",
-    tr(lang, "control_center.breadcrumb.root")
-  );
-  draw_header(
-    frame,
-    rows[0],
-    theme,
-    Header {
-      title: &title,
-      version: None,
-      version_label: "",
-    },
-  );
+  draw_control_center_header(frame, rows[0], theme, breadcrumb, None);
   draw_footer(frame, rows[2], theme, None, hints);
   if let Some(message) = message {
     crate::components::draw_status(frame, rows[3], theme, message);
@@ -247,30 +232,27 @@ mod tests {
   use ratatui::{Terminal, backend::TestBackend};
 
   #[test]
-  /// The shell header root is a catalog key, so it must exist and differ
-  /// between en-US and pt-BR in the workspace `resources/locales` directory.
-  fn shell_root_is_translated_in_en_us_and_pt_br() {
-    let root = |locale: &str, content: &str| {
-      let catalog: serde_json::Value = serde_json::from_str(content).unwrap();
-      catalog
-        .get("control_center.breadcrumb.root")
-        .and_then(serde_json::Value::as_str)
-        .map(str::to_owned)
-        .unwrap_or_else(|| panic!("{locale} misses control_center.breadcrumb.root"))
-    };
+  fn shell_draws_title_and_path_on_separate_rows() {
+    let mut terminal = Terminal::new(TestBackend::new(80, 12)).unwrap();
+    terminal
+      .draw(|frame| {
+        let area = frame.area();
+        shell(
+          frame,
+          area,
+          &Theme::load(),
+          Lang::for_locale("en-US"),
+          "Desktop & Input > Hyprland",
+          "",
+        );
+      })
+      .unwrap();
+    let buffer = terminal.backend().buffer();
+    let row = |y| (0..80).map(|x| buffer[(x, y)].symbol()).collect::<String>();
+    assert!(row(1).contains("ARGVUS  Control Center"));
     assert_eq!(
-      root(
-        "en-US",
-        include_str!("../../../resources/locales/en-US/control-center.json")
-      ),
-      "Control Center"
-    );
-    assert_eq!(
-      root(
-        "pt-BR",
-        include_str!("../../../resources/locales/pt-BR/control-center.json")
-      ),
-      "Central de Controle"
+      row(2).trim_matches([' ', '│']),
+      "Desktop & Input > Hyprland"
     );
   }
 

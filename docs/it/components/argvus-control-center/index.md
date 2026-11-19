@@ -60,7 +60,7 @@ L'albero principale delle impostazioni attualmente include:
 
 Alcune di queste sono pagine complete e alcune sono sottopagine raggiunte tramite ricerca o panoramica di un dominio. L'elenco esatto è determinato dai provider ARGVUS installati.
 
-Ogni pagina mostra il proprio percorso nell'intestazione, ad esempio `Control Center > Hardware & Connectivity > Audio`. Il percorso inizia con la scheda Home che elenca la pagina, quindi la stessa pagina appare uguale dalla Home, dalla ricerca e dal CLI. I nomi root e delle schede sono tradotti: l'interfaccia portoghese mostra `Central de Controle > Hardware e conectividade > Áudio`.
+**ARGVUS Control Center** rimane in alto. Il percorso di navigazione parte dalla scheda Home e compare su una riga separata sotto il titolo. `Hardware & Connectivity > Audio`
 
 ## A cosa serve ogni area
 
@@ -281,7 +281,7 @@ I gruppi hanno le proprie pagine di elenco e di modifica, inclusa la gestione de
 
 ### Informazioni su ARGVUS
 
-**Informazioni su ARGVUS** si trovano in **Strumenti & Diagnostica → Informazioni su ARGVUS** (cerca `about`, `hardware` o `firmware`, oppure esegui `argvus control-center about`). Ha cinque schede, che si possono cambiare con `Tab`/`Shift+Tab`, `←`/`→` o `h`/`l`: **Sistema & Hardware**, **Informazioni**, **Dona**, **Crediti** e **Copyright**. L'intestazione mostra il percorso completo, ad esempio `Control Center > Tools & Diagnostics > About ARGVUS > System & Hardware`.
+**Informazioni su ARGVUS** si trovano in **Strumenti & Diagnostica → Informazioni su ARGVUS** (cerca `about`, `hardware` o `firmware`, oppure esegui `argvus control-center about`). Ha cinque schede, che si possono cambiare con `Tab`/`Shift+Tab`, `←`/`→` o `h`/`l`: **Sistema & Hardware**, **Informazioni**, **Dona**, **Crediti** e **Copyright**. L'intestazione mostra il percorso completo, ad esempio `Tools & Diagnostics > About ARGVUS > System & Hardware`.
 
 **Sistema & Hardware** è in sola lettura e raggruppa i dettagli di questa macchina in tre sezioni, con i valori allineati in una colonna:
 

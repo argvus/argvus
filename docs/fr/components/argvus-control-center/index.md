@@ -60,7 +60,7 @@ L'arborescence principale des paramètres comprend actuellement :
 
 Certaines de ces sections sont des pages complètes et d'autres sont des sous-pages accessibles via la recherche ou un résumé de domaine. La liste exacte est déterminée par les fournisseurs ARGVUS installés.
 
-Chaque page affiche son chemin dans l'en-tête, par exemple `Control Center > Hardware & Connectivity > Audio`. Le chemin commence par la carte Accueil qui liste la page, ainsi la même page se lit de la même manière depuis l'Accueil, depuis la recherche et depuis le CLI. La racine et les noms des cartes sont traduits : l'interface portugaise affiche `Central de Controle > Hardware e conectividade > Áudio`.
+**ARGVUS Control Center** reste en haut. Le chemin de navigation commence par la carte d’accueil et apparaît sur une ligne distincte en dessous. `Hardware & Connectivity > Audio`
 
 ## À quoi sert chaque zone
 
@@ -281,7 +281,7 @@ Les groupes ont leur propre liste et pages d'édition, y compris la gestion des 
 
 ### À propos d'ARGVUS
 
-**À propos d'ARGVUS** se trouve dans **Outils & Diagnostics → À propos d'ARGVUS** (recherchez `about`, `hardware` ou `firmware`, ou exécutez `argvus control-center about`). Il possède cinq onglets, basculés avec `Tab`/`Shift+Tab`, `←`/`→` ou `h`/`l` : **Système & Matériel**, **À propos**, **Faire un don**, **Crédits** et **Droits d'auteur**. L'en-tête montre le chemin complet, par exemple `Control Center > Tools & Diagnostics > About ARGVUS > System & Hardware`.
+**À propos d'ARGVUS** se trouve dans **Outils & Diagnostics → À propos d'ARGVUS** (recherchez `about`, `hardware` ou `firmware`, ou exécutez `argvus control-center about`). Il possède cinq onglets, basculés avec `Tab`/`Shift+Tab`, `←`/`→` ou `h`/`l` : **Système & Matériel**, **À propos**, **Faire un don**, **Crédits** et **Droits d'auteur**. L'en-tête montre le chemin complet, par exemple `Tools & Diagnostics > About ARGVUS > System & Hardware`.
 
 **Système & Matériel** est en lecture seule et regroupe les informations de cette machine en trois sections, avec les valeurs alignées dans une colonne :
 

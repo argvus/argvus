@@ -79,6 +79,60 @@ pub enum MessageKind {
   Error,
 }
 
+/// Draws the Control Center name above its optional navigation path.
+pub fn draw_control_center_header(
+  frame: &mut Frame,
+  area: Rect,
+  theme: &Theme,
+  breadcrumb: &str,
+  version: Option<(&str, &str)>,
+) {
+  let rows = Layout::vertical([Constraint::Length(1), Constraint::Min(0)]).split(area);
+  let title = rows[0].inner(Margin::new(1, 0));
+  let version = version.map(|(label, value)| format!("{label} {value}"));
+  let version_width = version
+    .as_ref()
+    .map_or(0, |value| {
+      u16::try_from(crate::text::display_width(value) + 1).unwrap_or(u16::MAX)
+    })
+    .min(title.width.saturating_sub(24));
+  let columns =
+    Layout::horizontal([Constraint::Fill(1), Constraint::Length(version_width)]).split(title);
+  frame.render_widget(
+    Paragraph::new(Line::from(vec![
+      Span::styled(
+        " ARGVUS ",
+        Style::new()
+          .fg(theme.selected_foreground)
+          .bg(theme.accent)
+          .bold(),
+      ),
+      Span::styled(" Control Center", Style::new().fg(theme.foreground).bold()),
+    ])),
+    columns[0],
+  );
+  if let Some(version) = version {
+    frame.render_widget(
+      Paragraph::new(version)
+        .right_aligned()
+        .style(Style::new().fg(theme.muted)),
+      columns[1],
+    );
+  }
+  if !breadcrumb.is_empty() {
+    frame.render_widget(
+      Paragraph::new(breadcrumb)
+        .alignment(if crate::menu::is_right_to_left() {
+          Alignment::Right
+        } else {
+          Alignment::Left
+        })
+        .style(Style::new().fg(theme.foreground).bg(theme.surface)),
+      rows[1].inner(Margin::new(1, 0)),
+    );
+  }
+}
+
 pub fn draw_header(frame: &mut Frame, area: Rect, theme: &Theme, header: Header<'_>) {
   Block::new()
     .bg(theme.surface)

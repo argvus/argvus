@@ -62,7 +62,7 @@ A árvore atual de definições inclui:
 
 Alguns itens são páginas completas e outros são subpáginas alcançadas pela busca ou por um resumo de domínio. A lista exata depende dos providers ARGVUS instalados.
 
-Cada página mostra o seu caminho no cabeçalho, por exemplo `Central de Controle > Hardware e conectividade > Áudio`. O caminho começa no cartão da Home que lista a página, então ela aparece do mesmo jeito pela Home, pela busca e pela CLI. A raiz e os nomes dos cartões são traduzidos; em inglês o cabeçalho mostra `Control Center > Hardware & Connectivity > Audio`.
+**ARGVUS Control Center** fica fixo no topo. O caminho aparece numa linha própria abaixo, a começar pelo cartão da página inicial. `Hardware e conectividade > Áudio`
 
 ## Para que serve cada área
 
@@ -284,7 +284,7 @@ Os grupos possuem suas próprias páginas de lista e edição, incluindo gerenci
 
 ### Sobre o ARGVUS
 
-**Sobre o ARGVUS** fica em **Ferramentas e diagnóstico → Sobre o ARGVUS** (busque `sobre`, `hardware` ou `firmware`, ou execute `argvus control-center about`). A página tem cinco abas, trocadas com `Tab`/`Shift+Tab`, `←`/`→` ou `h`/`l`: **Sistema e hardware**, **Sobre**, **Donate**, **Créditos** e **Direitos autorais**. O cabeçalho mostra o caminho completo, por exemplo `Central de Controle > Ferramentas e diagnóstico > Sobre o ARGVUS > Sistema e hardware`.
+**Sobre o ARGVUS** fica em **Ferramentas e diagnóstico → Sobre o ARGVUS** (busque `sobre`, `hardware` ou `firmware`, ou execute `argvus control-center about`). A página tem cinco abas, trocadas com `Tab`/`Shift+Tab`, `←`/`→` ou `h`/`l`: **Sistema e hardware**, **Sobre**, **Donate**, **Créditos** e **Direitos autorais**. O cabeçalho mostra o caminho completo, por exemplo `Ferramentas e diagnóstico > Sobre o ARGVUS > Sistema e hardware`.
 
 **Sistema e hardware** é somente leitura e agrupa os dados desta máquina em três seções, com os valores alinhados numa coluna:
 

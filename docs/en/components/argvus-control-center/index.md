@@ -62,7 +62,7 @@ The main settings tree currently includes:
 
 Some of these are full pages and some are subpages reached through search or a domain summary. The exact list is determined by the installed ARGVUS providers.
 
-Each page shows its path in the header, for example `Control Center > Hardware & Connectivity > Audio`. The path starts with the Home card that lists the page, so the same page reads the same from the Home, from search and from the CLI. The root and the card names are translated: the Portuguese interface shows `Central de Controle > Hardware e conectividade > Áudio`.
+**ARGVUS Control Center** stays at the top. The navigation path appears on its own line below it and starts with the Home card. `Hardware & Connectivity > Audio`
 
 ## What each area is for
 
@@ -282,7 +282,7 @@ Groups have their own list and edit pages, including member management and group
 
 ### About ARGVUS
 
-**About ARGVUS** is in **Tools & Diagnostics → About ARGVUS** (search `about`, `hardware` or `firmware`, or run `argvus control-center about`). It has five tabs, switched with `Tab`/`Shift+Tab`, `←`/`→` or `h`/`l`: **System & Hardware**, **About**, **Donate**, **Credits** and **Copyright**. The header shows the full path, for example `Control Center > Tools & Diagnostics > About ARGVUS > System & Hardware`.
+**About ARGVUS** is in **Tools & Diagnostics → About ARGVUS** (search `about`, `hardware` or `firmware`, or run `argvus control-center about`). It has five tabs, switched with `Tab`/`Shift+Tab`, `←`/`→` or `h`/`l`: **System & Hardware**, **About**, **Donate**, **Credits** and **Copyright**. The header shows the full path, for example `Tools & Diagnostics > About ARGVUS > System & Hardware`.
 
 **System & Hardware** is read-only and groups the facts of this machine in three sections, with the values aligned in one column:
 

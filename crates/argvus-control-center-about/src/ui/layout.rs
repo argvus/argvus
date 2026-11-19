@@ -10,7 +10,7 @@ pub struct Areas {
 
 pub fn areas(area: Rect) -> Areas {
   let rows = Layout::vertical([
-    Constraint::Length(1),
+    Constraint::Length(2),
     Constraint::Length(1),
     Constraint::Min(0),
     Constraint::Length(2),
@@ -43,10 +43,10 @@ mod tests {
   #[test]
   fn areas_cover_full_height() {
     let areas = areas(Rect::new(0, 0, 120, 30));
-    assert_eq!(areas.header.height, 1);
+    assert_eq!(areas.header.height, 2);
     assert_eq!(areas.tabs.height, 1);
     assert_eq!(areas.footer.height, 2);
-    assert_eq!(areas.body.y, 2);
+    assert_eq!(areas.body.y, 3);
     assert_eq!(areas.footer.y, 28);
   }
 

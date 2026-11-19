@@ -298,75 +298,39 @@ fn gpg_keys_with_two_secrets(app: &mut App) {
 /// breadcrumb keeps the path the user followed (see the Control Center Home).
 fn breadcrumbs_show_the_home_card_of_each_page() {
   let cases = [
-    (
-      Page::Hostname,
-      "Control Center > System Administration > Hostname",
-    ),
-    (
-      Page::UsersGroups,
-      "Control Center > System Administration > Users & Groups",
-    ),
-    (
-      Page::Notifications,
-      "Control Center > System Administration > Notifications",
-    ),
-    (
-      Page::Firewall,
-      "Control Center > System Administration > Firewall",
-    ),
-    (
-      Page::DefaultApps,
-      "Control Center > Preferences > Default Apps",
-    ),
-    (
-      Page::Language,
-      "Control Center > Preferences > Language & Region > Language",
-    ),
+    (Page::Hostname, "System Administration > Hostname"),
+    (Page::UsersGroups, "System Administration > Users & Groups"),
+    (Page::Notifications, "System Administration > Notifications"),
+    (Page::Firewall, "System Administration > Firewall"),
+    (Page::DefaultApps, "Preferences > Default Apps"),
+    (Page::Language, "Preferences > Language & Region > Language"),
     (
       Page::RegionalLocale,
-      "Control Center > Preferences > Language & Region > Regional Locale",
+      "Preferences > Language & Region > Regional Locale",
     ),
-    (
-      Page::LocaleRegion,
-      "Control Center > Preferences > Language & Region",
-    ),
-    (Page::DateTime, "Control Center > Preferences > Date & Time"),
-    (
-      Page::Keybindings,
-      "Control Center > Desktop & Input > Keyboard Shortcuts",
-    ),
+    (Page::LocaleRegion, "Preferences > Language & Region"),
+    (Page::DateTime, "Preferences > Date & Time"),
+    (Page::Keybindings, "Desktop & Input > Keyboard Shortcuts"),
     (
       Page::CustomShortcut,
-      "Control Center > Desktop & Input > Keyboard Shortcuts > Create Shortcuts",
+      "Desktop & Input > Keyboard Shortcuts > Create Shortcuts",
     ),
     (
       Page::KeybindingEdit,
-      "Control Center > Desktop & Input > Keyboard Shortcuts > All Shortcuts > Edit shortcut",
+      "Desktop & Input > Keyboard Shortcuts > All Shortcuts > Edit shortcut",
     ),
     (
       Page::AllShortcuts,
-      "Control Center > Desktop & Input > Keyboard Shortcuts > All Shortcuts",
+      "Desktop & Input > Keyboard Shortcuts > All Shortcuts",
     ),
     (
       Page::WindowRules,
-      "Control Center > Desktop & Input > Hyprland > Windows > Rules",
+      "Desktop & Input > Hyprland > Windows > Rules",
     ),
-    (
-      Page::MouseTouchpad,
-      "Control Center > Desktop & Input > Mouse & Touchpad",
-    ),
-    (
-      Page::Projects,
-      "Control Center > Tools & Diagnostics > Projects",
-    ),
-    (
-      Page::SshKeys,
-      "Control Center > Tools & Diagnostics > SSH keys",
-    ),
-    (
-      Page::Fonts,
-      "Control Center > Appearance > Desktop Style > Fonts",
-    ),
+    (Page::MouseTouchpad, "Desktop & Input > Mouse & Touchpad"),
+    (Page::Projects, "Tools & Diagnostics > Projects"),
+    (Page::SshKeys, "Tools & Diagnostics > SSH keys"),
+    (Page::Fonts, "Appearance > Desktop Style > Fonts"),
   ];
   for (page, expected) in cases {
     assert_eq!(app(page).breadcrumb(), expected, "{page:?}");
@@ -384,46 +348,22 @@ fn app_in(page: Page, locale: &str) -> App {
 /// no English card name leaks into the path.
 fn breadcrumbs_are_translated_in_pt_br() {
   let cases = [
-    (
-      Page::Hostname,
-      "Central de Controle > Administração do sistema > Nome do host",
-    ),
+    (Page::Hostname, "Administração do sistema > Nome do host"),
     (
       Page::UsersGroups,
-      "Central de Controle > Administração do sistema > Usuários e grupos",
+      "Administração do sistema > Usuários e grupos",
     ),
-    (
-      Page::DefaultApps,
-      "Central de Controle > Preferências > Aplicativos padrão",
-    ),
-    (
-      Page::LocaleRegion,
-      "Central de Controle > Preferências > Idioma e Região",
-    ),
-    (
-      Page::Fonts,
-      "Central de Controle > Aparência > Estilo do desktop > Fontes",
-    ),
+    (Page::DefaultApps, "Preferências > Aplicativos padrão"),
+    (Page::LocaleRegion, "Preferências > Idioma e Região"),
+    (Page::Fonts, "Aparência > Estilo do desktop > Fontes"),
     (
       Page::AllShortcuts,
-      "Central de Controle > Desktop e entrada > Atalhos de Teclado > Todos os atalhos",
+      "Desktop e entrada > Atalhos de Teclado > Todos os atalhos",
     ),
-    (
-      Page::MouseTouchpad,
-      "Central de Controle > Desktop e entrada > Mouse e Touchpad",
-    ),
-    (
-      Page::Projects,
-      "Central de Controle > Ferramentas e diagnóstico > Projetos",
-    ),
-    (
-      Page::SshKeys,
-      "Central de Controle > Ferramentas e diagnóstico > Chaves SSH",
-    ),
-    (
-      Page::Language,
-      "Central de Controle > Preferências > Idioma e Região > Idioma",
-    ),
+    (Page::MouseTouchpad, "Desktop e entrada > Mouse e Touchpad"),
+    (Page::Projects, "Ferramentas e diagnóstico > Projetos"),
+    (Page::SshKeys, "Ferramentas e diagnóstico > Chaves SSH"),
+    (Page::Language, "Preferências > Idioma e Região > Idioma"),
   ];
   for (page, expected) in cases {
     let breadcrumb = app_in(page, "pt-BR").breadcrumb();

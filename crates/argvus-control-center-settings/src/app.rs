@@ -25,7 +25,7 @@ use crate::system::ssh_keys;
 use crate::system::window_rules;
 use crate::system::{host, input, keyboard, locale, time};
 use crate::theme::Theme;
-use argvus_control_center_core::navigation::{HomeCardId, root_label};
+use argvus_control_center_core::navigation::HomeCardId;
 use argvus_control_center_core::{
   jobs::{JobHandle, JobManager, JobState},
   privileged::{PrivilegedRequest, SystemSettingsOperation},

@@ -168,7 +168,7 @@ fn diagnostics_header_is_translated_in_pt_br() {
     .map(|cell| cell.symbol())
     .collect::<String>();
   assert!(
-    rendered.contains("Central de Controle > Ferramentas e diagnóstico > System Doctor"),
+    rendered.contains("Ferramentas e diagnóstico > System Doctor"),
     "{rendered}"
   );
   assert!(!rendered.contains("Tools & Diagnostics"), "{rendered}");

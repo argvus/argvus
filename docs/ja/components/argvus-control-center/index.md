@@ -61,7 +61,7 @@ description: ARGVUSデスクトップの永続的な部分を設定してくだ�
 
 これらの一部はフルページで、一部は検索やドメイン概要を通じてアクセスするサブページです。正確なリストはインストールされているARGVUSプロバイダーによって決まります。
 
-各ページはヘッダーにそのパスを表示します。例えば `Control Center > Hardware & Connectivity > Audio` のようにです。パスはページを一覧表示するホームカードから始まるため、同じページはホーム、検索、CLI のいずれから見ても同じです。ルートおよびカード名は翻訳されます：ポルトガル語のインターフェースでは `Central de Controle > Hardware e conectividade > Áudio` と表示されます。
+**ARGVUS Control Center** は上部に固定されます。ナビゲーションパスはその下の別の行に表示され、ホームカードから始まります。 `Hardware & Connectivity > Audio`
 
 ## 各エリアの用途
 
@@ -283,7 +283,7 @@ Keys ›           the keyring, on its own page, with the search at the top
 
 ### ARGVUS について
 
-**ARGVUSについて** は **ツール & 診断 → ARGVUSについて** にあります（`about`、`hardware`、`firmware` を検索するか、`argvus control-center about` を実行してください）。タブは 5 つあり、`Tab`/`Shift+Tab`、`←`/`→`、`h`/`l` で切り替えます: **システム & ハードウェア**、**概要**、**寄付**、**クレジット**、**著作権**。ヘッダーにはフルパスが表示されます（例: `Control Center > Tools & Diagnostics > About ARGVUS > System & Hardware`）。
+**ARGVUSについて** は **ツール & 診断 → ARGVUSについて** にあります（`about`、`hardware`、`firmware` を検索するか、`argvus control-center about` を実行してください）。タブは 5 つあり、`Tab`/`Shift+Tab`、`←`/`→`、`h`/`l` で切り替えます: **システム & ハードウェア**、**概要**、**寄付**、**クレジット**、**著作権**。ヘッダーにはフルパスが表示されます（例: `Tools & Diagnostics > About ARGVUS > System & Hardware`）。
 
 **システム & ハードウェア** は読み取り専用で、このマシンの情報を 3 つのセクションにまとめ、値は 1 列に揃えられています:
 

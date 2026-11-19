@@ -59,7 +59,7 @@ Cây cài đặt chính hiện bao gồm:
 
 Một số trong số này là các trang đầy đủ và một số là các trang con được truy cập thông qua tìm kiếm hoặc tóm tắt tên miền. Danh sách chính xác được xác định bởi các nhà cung cấp ARGVUS đã cài đặt.
 
-Mỗi trang hiển thị đường dẫn của nó trong tiêu đề, ví dụ `Control Center > Hardware & Connectivity > Audio`. Đường dẫn bắt đầu bằng thẻ Trang chủ liệt kê trang, do đó, cùng một trang sẽ đọc giống nhau từ Trang chủ, từ tìm kiếm và từ CLI. Tên gốc và tên thẻ được dịch: giao diện tiếng Bồ Đào Nha hiển thị `Central de Controle > Hardware e conectividade > Áudio`.
+**ARGVUS Control Center** luôn nằm ở trên cùng. Đường dẫn nằm ở dòng riêng bên dưới và bắt đầu bằng thẻ trên Trang chủ. `Hardware & Connectivity > Audio`
 
 ## Công dụng của từng khu vực
 
@@ -263,7 +263,7 @@ Các nhóm có trang danh sách và chỉnh sửa riêng, bao gồm quản lý t
 
 ### Giới thiệu về ARGVUS
 
-**Giới thiệu về ARGVUS** nằm trong **Công cụ & Chẩn đoán → Giới thiệu về ARGVUS** (tìm kiếm `about`, `hardware` hoặc `firmware` hoặc chạy `argvus control-center about`). Nó có năm tab, được chuyển đổi bằng `Tab`/`Shift+Tab`, `←`/`→` hoặc `h`/`l`: **Hệ thống & Phần cứng**, **Giới thiệu**, **Quyên góp**, **Tín dụng** và **Bản quyền**. Tiêu đề hiển thị đường dẫn đầy đủ, ví dụ `Control Center > Tools & Diagnostics > About ARGVUS > System & Hardware`.
+**Giới thiệu về ARGVUS** nằm trong **Công cụ & Chẩn đoán → Giới thiệu về ARGVUS** (tìm kiếm `about`, `hardware` hoặc `firmware` hoặc chạy `argvus control-center about`). Nó có năm tab, được chuyển đổi bằng `Tab`/`Shift+Tab`, `←`/`→` hoặc `h`/`l`: **Hệ thống & Phần cứng**, **Giới thiệu**, **Quyên góp**, **Tín dụng** và **Bản quyền**. Tiêu đề hiển thị đường dẫn đầy đủ, ví dụ `Tools & Diagnostics > About ARGVUS > System & Hardware`.
 
 **Hệ thống & Phần cứng** ở chế độ chỉ đọc và nhóm các dữ kiện của máy này thành ba phần, với các giá trị được căn chỉnh trong một cột:
 

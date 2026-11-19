@@ -188,7 +188,7 @@ fn global_language_search_opens_the_preferences_language_page() {
   );
   assert_eq!(
     app.settings.breadcrumb(),
-    "Control Center > Preferences > Language & Region > Language"
+    "Preferences > Language & Region > Language"
   );
 }
 

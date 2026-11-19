@@ -60,7 +60,7 @@ Der aktuelle Haupteinstellungsbaum umfasst derzeit:
 
 Einige davon sind vollständige Seiten und einige Unterseiten, die über die Suche oder eine Domainzusammenfassung erreicht werden. Die genaue Liste wird durch die installierten ARGVUS-Anbieter bestimmt.
 
-Jede Seite zeigt ihren Pfad in der Kopfzeile an, zum Beispiel `Control Center > Hardware & Connectivity > Audio`. Der Pfad beginnt mit der Startseite, die die Seite auflistet, sodass dieselbe Seite von der Startseite, aus der Suche und von der CLI aus gleich gelesen wird. Die Wurzel- und Kartennamen sind übersetzt: Die portugiesische Oberfläche zeigt `Central de Controle > Hardware e conectividade > Áudio`.
+Der Titel **ARGVUS Control Center** bleibt oben. Der Navigationspfad beginnt in der Zeile darunter mit der entsprechenden Startseitenkarte. `Hardware & Connectivity > Audio`
 
 ## Wofür jeder Bereich gedacht ist
 
@@ -281,7 +281,7 @@ Gruppen haben ihre eigenen Listen- und Bearbeitungsseiten, einschließlich Mitgl
 
 ### Über ARGVUS
 
-**Über ARGVUS** befindet sich in **Tools & Diagnostics → Über ARGVUS** (suche `about`, `hardware` oder `firmware`, oder führe `argvus control-center about` aus). Es hat fünf Registerkarten, die mit `Tab`/`Shift+Tab`, `←`/`→` oder `h`/`l` gewechselt werden: **System & Hardware**, **Über**, **Spenden**, **Credits** und **Copyright**. Die Kopfzeile zeigt den vollständigen Pfad, zum Beispiel `Control Center > Tools & Diagnostics > About ARGVUS > System & Hardware`.
+**Über ARGVUS** befindet sich in **Tools & Diagnostics → Über ARGVUS** (suche `about`, `hardware` oder `firmware`, oder führe `argvus control-center about` aus). Es hat fünf Registerkarten, die mit `Tab`/`Shift+Tab`, `←`/`→` oder `h`/`l` gewechselt werden: **System & Hardware**, **Über**, **Spenden**, **Credits** und **Copyright**. Die Kopfzeile zeigt den vollständigen Pfad, zum Beispiel `Tools & Diagnostics > About ARGVUS > System & Hardware`.
 
 **System & Hardware** ist schreibgeschützt und gruppiert die Fakten dieser Maschine in drei Abschnitte, wobei die Werte in einer Spalte ausgerichtet sind:
 

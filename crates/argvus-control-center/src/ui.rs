@@ -2,7 +2,7 @@
 use argvus_control_center_core::config::AppConfig;
 use argvus_control_center_core::navigation::HomeCardId;
 use argvus_i18n::tr;
-use argvus_tui::chrome::{Header, draw_footer, draw_header, draw_help, draw_too_small};
+use argvus_tui::chrome::{draw_control_center_header, draw_footer, draw_help, draw_too_small};
 use argvus_tui::scroll::thumb_position;
 use argvus_tui::text::ellipsize;
 use argvus_tui::{MIN_HEIGHT, MIN_WIDTH};
@@ -146,16 +146,7 @@ fn draw_home(app: &mut App, frame: &mut Frame) {
     Constraint::Length(1),
   ])
   .split(inner);
-  draw_header(
-    frame,
-    rows[0],
-    &app.theme,
-    Header {
-      title: tr(app.lang, "control_center.argvus_control_center"),
-      version: None,
-      version_label: "",
-    },
-  );
+  draw_control_center_header(frame, rows[0], &app.theme, "", None);
   frame.render_widget(
     Paragraph::new(Line::from(Span::styled(
       tr(app.lang, "control_center.home_subtitle"),

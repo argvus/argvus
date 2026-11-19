@@ -266,23 +266,22 @@ impl App {
 pub fn draw(app: &mut App, frame: &mut Frame) {
   let area = frame.area();
   let title = format!(
-    "{} > {} > {}",
-    tr(app.lang, "control_center.argvus_control_center"),
+    "{} > {}",
     tr(app.lang, "control_center.card_tools"),
     tr(app.lang, "control_center.welcome_title")
   );
-  let block = Block::default()
-    .borders(Borders::ALL)
-    .title(tr(app.lang, "control_center.welcome_title"))
-    .style(
-      Style::default()
-        .fg(app.theme.foreground)
-        .bg(app.theme.background),
-    );
+  let block = Block::default().borders(Borders::ALL).style(
+    Style::default()
+      .fg(app.theme.foreground)
+      .bg(app.theme.background),
+  );
   let inner = block.inner(area);
+  let header_height = inner.height.min(2);
+  let rows = Layout::vertical([Constraint::Length(header_height), Constraint::Min(0)]).split(inner);
+  let inner = rows[1];
   frame.render_widget(block, area);
+  argvus_tui::chrome::draw_control_center_header(frame, rows[0], &app.theme, &title, None);
   if app.welcome.intro {
-    frame.render_widget(Paragraph::new(title).wrap(Wrap { trim: true }), inner);
     let height = inner.height.saturating_sub(5).min(10);
     let width = inner.width.min(height.saturating_mul(2));
     let logo_area = ratatui::layout::Rect::new(
@@ -339,17 +338,15 @@ pub fn draw(app: &mut App, frame: &mut Frame) {
     return;
   }
   let rows = Layout::vertical([
-    Constraint::Length(2),
     Constraint::Length(3),
     Constraint::Min(1),
     Constraint::Length(3),
     Constraint::Length(3),
   ])
   .split(inner);
-  frame.render_widget(Paragraph::new(title).wrap(Wrap { trim: true }), rows[0]);
   frame.render_widget(
     Paragraph::new(tr(app.lang, "control_center.welcome_intro")).wrap(Wrap { trim: true }),
-    rows[1],
+    rows[0],
   );
   let items: Vec<ListItem<'static>> = app
     .welcome
@@ -377,7 +374,7 @@ pub fn draw(app: &mut App, frame: &mut Frame) {
     List::new(items)
       .highlight_style(Style::default().fg(app.theme.accent))
       .highlight_symbol("> "),
-    rows[2],
+    rows[1],
     &mut ListState::default().with_selected(Some(app.welcome.selected)),
   );
   let message = if app.welcome.error {
@@ -389,11 +386,11 @@ pub fn draw(app: &mut App, frame: &mut Frame) {
   };
   frame.render_widget(
     Paragraph::new(tr(app.lang, message)).wrap(Wrap { trim: true }),
-    rows[3],
+    rows[2],
   );
   frame.render_widget(
     Paragraph::new(tr(app.lang, "control_center.welcome_keys")).wrap(Wrap { trim: true }),
-    rows[4],
+    rows[3],
   );
   if !app.welcome.progress.opened {
     app.welcome.progress.opened = true;

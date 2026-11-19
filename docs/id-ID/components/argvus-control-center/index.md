@@ -59,7 +59,7 @@ Pohon pengaturan utama saat ini meliputi:
 
 Beberapa di antaranya adalah halaman penuh dan beberapa lagi merupakan subhalaman yang dicapai melalui pencarian atau ringkasan domain. Daftar pastinya ditentukan oleh penyedia ARGVUS yang diinstal.
 
-Setiap halaman menunjukkan jalurnya di header, misalnya `Control Center > Hardware & Connectivity > Audio`. Jalurnya dimulai dengan kartu Beranda yang mencantumkan halaman tersebut, sehingga halaman yang sama terbaca sama dari Beranda, dari pencarian, dan dari CLI. Root dan nama kartu diterjemahkan: antarmuka Portugis menunjukkan `Central de Controle > Hardware e conectividade > Áudio`.
+Judul **ARGVUS Control Center** tetap di atas. Jalur navigasi dimulai dari kartu Beranda pada baris tersendiri di bawahnya. `Hardware & Connectivity > Audio`
 
 ## Untuk apa setiap area
 
@@ -263,7 +263,7 @@ Grup memiliki daftar dan halaman editnya sendiri, termasuk manajemen anggota dan
 
 ### Tentang ARGVUS
 
-**Tentang ARGVUS** ada di **Alat & Diagnostik → Tentang ARGVUS** (cari `about`, `hardware` atau `firmware`, atau jalankan `argvus control-center about`). Ini memiliki lima tab, diganti dengan `Tab`/`Shift+Tab`, `←`/`→` atau `h`/`l`: **Sistem & Perangkat Keras**, **Tentang**, **Sumbang**, **Kredit** dan **Hak Cipta**. Header menunjukkan path lengkap, misalnya `Control Center > Tools & Diagnostics > About ARGVUS > System & Hardware`.
+**Tentang ARGVUS** ada di **Alat & Diagnostik → Tentang ARGVUS** (cari `about`, `hardware` atau `firmware`, atau jalankan `argvus control-center about`). Ini memiliki lima tab, diganti dengan `Tab`/`Shift+Tab`, `←`/`→` atau `h`/`l`: **Sistem & Perangkat Keras**, **Tentang**, **Sumbang**, **Kredit** dan **Hak Cipta**. Header menunjukkan path lengkap, misalnya `Tools & Diagnostics > About ARGVUS > System & Hardware`.
 
 **Sistem & Perangkat Keras** bersifat hanya baca dan mengelompokkan fakta mesin ini dalam tiga bagian, dengan nilai yang disejajarkan dalam satu kolom:
 

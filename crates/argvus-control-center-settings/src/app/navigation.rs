@@ -9,22 +9,20 @@ impl App {
   }
 
   pub fn breadcrumb(&self) -> String {
-    let root = root_label(self.lang);
     // Every Home card owns a root segment, so a page's breadcrumb follows the
     // card it is listed under instead of the location it had before. The card
     // names come from `HomeCardId`, the same source the Home and search use.
-    let category_root = |label: &str| format!("{root} > {label}");
-    let desktop_input_root = category_root(HomeCardId::DesktopInput.label(self.lang));
-    let appearance_root = category_root(HomeCardId::Appearance.label(self.lang));
+    let desktop_input_root = HomeCardId::DesktopInput.label(self.lang);
+    let appearance_root = HomeCardId::Appearance.label(self.lang);
     // Fonts is reached from Appearance > Desktop Style.
     let fonts_root = format!(
       "{appearance_root} > {}",
       tr(self.lang, "control_center.desktop_style")
     );
-    let tools_root = category_root(HomeCardId::Tools.label(self.lang));
-    let system_root = category_root(HomeCardId::System.label(self.lang));
+    let tools_root = HomeCardId::Tools.label(self.lang);
+    let system_root = HomeCardId::System.label(self.lang);
     let language_root = format!(
-      "{root} > {} > {}",
+      "{} > {}",
       HomeCardId::Preferences.label(self.lang),
       tr(self.lang, "control_center.language_region")
     );
@@ -32,9 +30,9 @@ impl App {
       "{system_root} > {}",
       tr(self.lang, "control_center.users_groups")
     );
-    let preferences_root = category_root(HomeCardId::Preferences.label(self.lang));
+    let preferences_root = HomeCardId::Preferences.label(self.lang);
     match self.page() {
-      Page::Main => root.to_string(),
+      Page::Main => String::new(),
       Page::DefaultApps => format!(
         "{preferences_root} > {}",
         tr(self.lang, "control_center.default_apps")

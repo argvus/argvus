@@ -61,7 +61,7 @@ description: 配置 ARGVUS 桌面的持久部分。
 
 其中一些是完整页面，一些是通过搜索或域摘要访问的子页面。确切列表由已安装的 ARGVUS 提供程序确定。
 
-每个页面在标题中显示其路径，例如 `Control Center > Hardware & Connectivity > Audio`。路径以列出该页面的首页卡片开始，因此无论从首页、搜索还是 CLI 访问，同一页面显示相同。根目录和卡片名称已翻译：葡萄牙语界面中显示 `Central de Controle > Hardware e conectividade > Áudio`。
+**ARGVUS Control Center** 固定在顶部。导航路径在下方单独一行显示，从首页卡片开始。 `Hardware & Connectivity > Audio`
 
 ## 每个区域的用途
 
@@ -283,7 +283,7 @@ Keys ›           the keyring, on its own page, with the search at the top
 
 ### 关于 ARGVUS
 
-**关于 ARGVUS** 位于 **工具与诊断 → 关于 ARGVUS**（搜索 `about`、`hardware` 或 `firmware`，或运行 `argvus control-center about`）。它有五个选项卡，可通过 `Tab`/`Shift+Tab`、`←`/`→` 或 `h`/`l` 切换：**系统与硬件**、**关于**、**捐赠**、**致谢** 和 **版权**。标题显示完整路径，例如 `Control Center > Tools & Diagnostics > About ARGVUS > System & Hardware`。
+**关于 ARGVUS** 位于 **工具与诊断 → 关于 ARGVUS**（搜索 `about`、`hardware` 或 `firmware`，或运行 `argvus control-center about`）。它有五个选项卡，可通过 `Tab`/`Shift+Tab`、`←`/`→` 或 `h`/`l` 切换：**系统与硬件**、**关于**、**捐赠**、**致谢** 和 **版权**。标题显示完整路径，例如 `Tools & Diagnostics > About ARGVUS > System & Hardware`。
 
 **系统与硬件** 为只读，并将此机器的信息分为三个部分，数值在一列中对齐：
 

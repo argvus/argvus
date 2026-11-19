@@ -60,7 +60,7 @@ El árbol principal de configuraciones actualmente incluye:
 
 Algunas de estas son páginas completas y otras son subpáginas a las que se accede mediante búsqueda o un resumen de dominio. La lista exacta está determinada por los proveedores de ARGVUS instalados.
 
-Cada página muestra su ruta en el encabezado, por ejemplo `Control Center > Hardware & Connectivity > Audio`. La ruta comienza con la tarjeta de Inicio que lista la página, por lo que la misma página se lee igual desde Inicio, desde la búsqueda y desde la CLI. La raíz y los nombres de las tarjetas están traducidos: la interfaz en portugués muestra `Central de Controle > Hardware e conectividade > Áudio`.
+**ARGVUS Control Center** permanece arriba. La ruta de navegación empieza por la tarjeta de inicio y aparece en una línea aparte debajo. `Hardware & Connectivity > Audio`
 
 ## Para qué sirve cada área
 
@@ -281,7 +281,7 @@ Los grupos tienen su propia lista y páginas de edición, incluyendo la gestión
 
 ### Acerca de ARGVUS
 
-**Acerca de ARGVUS** se encuentra en **Herramientas y Diagnósticos → Acerca de ARGVUS** (busque `about`, `hardware` o `firmware`, o ejecute `argvus control-center about`). Tiene cinco pestañas, que se cambian con `Tab`/`Shift+Tab`, `←`/`→` o `h`/`l`: **Sistema y Hardware**, **Acerca de**, **Donar**, **Créditos** y **Derechos de Autor**. El encabezado muestra la ruta completa, por ejemplo `Control Center > Tools & Diagnostics > About ARGVUS > System & Hardware`.
+**Acerca de ARGVUS** se encuentra en **Herramientas y Diagnósticos → Acerca de ARGVUS** (busque `about`, `hardware` o `firmware`, o ejecute `argvus control-center about`). Tiene cinco pestañas, que se cambian con `Tab`/`Shift+Tab`, `←`/`→` o `h`/`l`: **Sistema y Hardware**, **Acerca de**, **Donar**, **Créditos** y **Derechos de Autor**. El encabezado muestra la ruta completa, por ejemplo `Tools & Diagnostics > About ARGVUS > System & Hardware`.
 
 **Sistema y Hardware** es de solo lectura y agrupa los datos de esta máquina en tres secciones, con los valores alineados en una columna:
 

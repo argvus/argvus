@@ -59,7 +59,7 @@ Ana ayarlar ağacı şu anda şunları içerir:
 
 Bunlardan bazıları tam sayfalar, bazıları ise arama veya alan adı özeti yoluyla ulaşılan alt sayfalardır. Tam liste, kurulu ARGVUS sağlayıcıları tarafından belirlenir.
 
-Her sayfanın yolu başlıkta gösterilir; örneğin `Control Center > Hardware & Connectivity > Audio`. Yol, sayfayı listeleyen Ana Sayfa kartıyla başlar; dolayısıyla aynı sayfa Ana Sayfadan, aramadan ve CLI'den aynı şekilde okunur. Kök ve kart adları çevrilir: Portekizce arayüzde `Central de Controle > Hardware e conectividade > Áudio` gösterilir.
+**ARGVUS Control Center** üstte sabit kalır. Gezinme yolu altında ayrı bir satırda görünür ve ana sayfa kartıyla başlar. `Hardware & Connectivity > Audio`
 
 ## Her alan ne işe yarar?
 
@@ -263,7 +263,7 @@ Grupların, üye yönetimi ve grup silme dahil olmak üzere kendi liste ve düze
 
 ### ARGVUS Hakkında
 
-**ARGVUS Hakkında** **Araçlar ve Tanılama → ARGVUS Hakkında** bölümündedir (`about`, `hardware` veya `firmware`'yu arayın veya `argvus control-center about`'yu çalıştırın). `Tab`/`Shift+Tab`, `←`/`→` veya `h`/`l` ile değiştirilen beş sekmesi vardır: **Sistem ve Donanım**, **Hakkında**, **Bağış**, **Krediler** ve **Telif Hakkı**. Başlık tam yolu gösterir; örneğin `Control Center > Tools & Diagnostics > About ARGVUS > System & Hardware`.
+**ARGVUS Hakkında** **Araçlar ve Tanılama → ARGVUS Hakkında** bölümündedir (`about`, `hardware` veya `firmware`'yu arayın veya `argvus control-center about`'yu çalıştırın). `Tab`/`Shift+Tab`, `←`/`→` veya `h`/`l` ile değiştirilen beş sekmesi vardır: **Sistem ve Donanım**, **Hakkında**, **Bağış**, **Krediler** ve **Telif Hakkı**. Başlık tam yolu gösterir; örneğin `Tools & Diagnostics > About ARGVUS > System & Hardware`.
 
 **Sistem ve Donanım** salt okunurdur ve bu makinenin gerçeklerini, değerler tek bir sütunda hizalanacak şekilde üç bölümde gruplandırır:
 
