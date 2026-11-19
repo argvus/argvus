@@ -59,6 +59,7 @@ private_commands! {
   TaskbarCalendar => "taskbar-calendar" => "taskbar-calendar",
   LayoutModeMenu => "layout-mode-menu" => "layout-mode-selector",
   Keybindings => "keybindings" => "keybindings",
+  AiAgents => "ai-agents" => "ai-agents",
   EmojiPicker => "emoji-picker" => "emoji-picker",
   ThemeSelector => "theme-selector" => "theme-selector",
   WindowModeMenu => "window-mode-menu" => "window-mode-menu",

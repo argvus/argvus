@@ -168,6 +168,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "argvus-ai-agents"
+version = "0.1.0"
+dependencies = [
+ "argvus-config",
+ "argvus-i18n-core",
+ "argvus-theme-core",
+ "argvus-theme-selector",
+ "gtk4",
+ "gtk4-layer-shell",
+ "image",
+ "resvg",
+ "serde_json",
+]
+
+[[package]]
 name = "argvus-calculator"
 version = "0.1.0"
 dependencies = [

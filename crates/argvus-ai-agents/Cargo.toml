@@ -1,0 +1,17 @@
+[package]
+name = "argvus-ai-agents"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+argvus-config.workspace = true
+argvus-i18n.workspace = true
+argvus-theme-core.workspace = true
+argvus-theme-selector = { path = "../argvus-theme-selector" }
+gtk.workspace = true
+gtk4-layer-shell.workspace = true
+serde_json.workspace = true
+resvg.workspace = true
+image.workspace = true

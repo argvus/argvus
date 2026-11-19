@@ -60,6 +60,7 @@ members = [
   "crates/argvus-theme-core",
   "crates/argvus-theme-selector",
   "crates/argvus-keybindings",
+  "crates/argvus-ai-agents",
   "crates/argvus-emoji",
   "crates/argvus-time-core",
   "crates/argvus-time-ui",

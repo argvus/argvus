@@ -21,6 +21,7 @@ ARGVUS_GTK_COMMANDS=(
 	theme-selector
 	layout-mode-selector
 	keybindings
+	ai-agents
 	emoji-picker
 )
 
@@ -69,6 +70,7 @@ arch_build_argvus_workspace() {
 		-p argvus-taskbar-calendar \
 		-p argvus-window-mode-menu \
 		-p argvus-keybindings \
+		-p argvus-ai-agents \
 		-p argvus-emoji \
 		-p argvus-theme-selector \
 		-p argvus-accounts \
