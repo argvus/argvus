@@ -16,7 +16,6 @@ pub fn choose(projects: &[String], prompt: &str) -> Result<Option<String>, gtk::
     .iter()
     .enumerate()
     .map(|(index, path)| Choice {
-      swatch: None,
       icon: "folder-symbolic",
       title: Path::new(path)
         .file_name()

@@ -1,4 +1,9 @@
 {
+  "accent.cancel": "キャンセル",
+  "accent.select": "選択",
+  "accent.hex": "16進数の色",
+  "accent.hue": "色相",
+  "accent.saturation_value": "彩度と明度",
   "picker.search": "オプションを検索",
   "picker.no_results": "一致する項目がありません。",
   "picker.apply": "適用",

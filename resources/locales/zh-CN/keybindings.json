@@ -1,4 +1,5 @@
 {
+  "keybindings.action.accent": "打开强调色选择器",
   "title": "ARGVUS Keybindings",
   "search": "搜索",
   "disabled": "已禁用",

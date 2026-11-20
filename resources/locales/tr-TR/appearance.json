@@ -1,4 +1,9 @@
 {
+  "accent.cancel": "İptal",
+  "accent.select": "Seç",
+  "accent.hex": "Onaltılık renk",
+  "accent.hue": "Renk tonu",
+  "accent.saturation_value": "Doygunluk ve değer",
   "picker.search": "Seçenekleri ara",
   "picker.no_results": "Sonuç bulunamadı.",
   "picker.apply": "Uygula",

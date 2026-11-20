@@ -1,4 +1,9 @@
 {
+  "accent.cancel": "Отмена",
+  "accent.select": "Выбрать",
+  "accent.hex": "Шестнадцатеричный цвет",
+  "accent.hue": "Тон",
+  "accent.saturation_value": "Насыщенность и яркость",
   "picker.search": "Поиск параметров",
   "picker.no_results": "Нет совпадений.",
   "picker.apply": "Применить",

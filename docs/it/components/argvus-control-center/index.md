@@ -595,3 +595,5 @@ Quickshell: `launcher/Theme.qml` · Rofi: `launcher/theme.rasi`
 `/launcher/show_icons`: `true` / `false`.
 
 `/launcher/selected_category`: `""` (All), `applications`, `windows`, `settings`, `actions`, `projects`, `ssh`, `files`, `help`.
+
+- `Super + Shift + A` · Apri il selettore del colore di accento · `argvus config accent`

@@ -34,7 +34,6 @@ pub fn run(arguments: &[OsString]) -> Outcome {
   let rows: Vec<_> = names
     .iter()
     .map(|name| Choice {
-      swatch: None,
       icon,
       title: name,
       detail: "",

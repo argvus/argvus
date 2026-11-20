@@ -20,20 +20,6 @@ use std::io::Write;
 use std::path::PathBuf;
 use std::process::{Command, ExitCode, Stdio};
 
-/// The picker entries in menu order: the translation key of each name and its
-/// color.
-const CHOICES: [(&str, &str); 9] = [
-  ("accent.color.blue", "#3590bd"),
-  ("accent.color.slate_blue", "#7391a5"),
-  ("accent.color.brown", "#996548"),
-  ("accent.color.green", "#17d174"),
-  ("accent.color.magenta", "#cb17d1"),
-  ("accent.color.red", "#d1174f"),
-  ("accent.color.yellow", "#d1ce17"),
-  ("accent.color.purple", "#9617d1"),
-  ("accent.color.silver", "#595959"),
-];
-
 /// Why a change did not apply.
 enum Failure {
   /// The requested value is not a `#RRGGBB` color.
@@ -60,7 +46,7 @@ pub fn run(arguments: &[String]) -> ExitCode {
   };
   let requested = match arguments.first() {
     Some(first) => first.clone(),
-    None => match pick() {
+    None => match pick(&paths) {
       Ok(Some(choice)) => choice,
       Ok(None) => return ExitCode::SUCCESS,
       Err(error) => {
@@ -110,13 +96,19 @@ pub fn run(arguments: &[String]) -> ExitCode {
   }
 }
 
-/// Sends the canonical palette to the GTK picker and resolves its original index.
-fn pick() -> Result<Option<String>, String> {
+/// Opens the picker with the current effective color.
+fn pick(paths: &SessionPaths) -> Result<Option<String>, String> {
   let picker = env::current_exe()
     .ok()
     .filter(|path| path.file_name().is_some_and(|name| name == "argvus"))
     .unwrap_or_else(|| PathBuf::from("argvus"));
-  let palette = serde_json::to_vec(&CHOICES).map_err(|error| error.to_string())?;
+  let store = ConfigStore::from_environment().ok();
+  let current = accent::state_accent(
+    &crate::theme_build::theme_paths(paths),
+    &paths.config_home.join("argvus/data"),
+    accent::canonical_accent(store.as_ref()),
+  );
+  let initial = serde_json::to_vec(&current).map_err(|error| error.to_string())?;
   let mut child = Command::new(picker)
     .args(["appearance-picker", "accent"])
     .stdin(Stdio::piped())
@@ -127,7 +119,7 @@ fn pick() -> Result<Option<String>, String> {
     .stdin
     .take()
     .ok_or_else(|| "missing picker stdin".to_owned())
-    .and_then(|mut input| input.write_all(&palette).map_err(|error| error.to_string()));
+    .and_then(|mut input| input.write_all(&initial).map_err(|error| error.to_string()));
   let output = child
     .wait_with_output()
     .map_err(|error| error.to_string())?;
@@ -136,20 +128,17 @@ fn pick() -> Result<Option<String>, String> {
     return Err(output.status.to_string());
   }
   let selection = std::str::from_utf8(&output.stdout).map_err(|error| error.to_string())?;
-  selected_color(selection).map(|color| color.map(str::to_owned))
+  selected_color(selection)
 }
 
-fn selected_color(selection: &str) -> Result<Option<&'static str>, String> {
+fn selected_color(selection: &str) -> Result<Option<String>, String> {
   let selection = selection.trim();
   if selection.is_empty() {
     return Ok(None);
   }
-  selection
-    .parse::<usize>()
-    .ok()
-    .and_then(|index| CHOICES.get(index))
-    .map(|(_, color)| Some(*color))
-    .ok_or_else(|| "invalid palette index".to_owned())
+  accent::normalize(selection)
+    .map(|accent| Some(accent.color))
+    .ok_or_else(|| "invalid accent color from picker".to_owned())
 }
 
 /// Sends the notification of a color change. A missing notification daemon is
@@ -292,25 +281,18 @@ fn report_result(result: std::io::Result<()>) {
 
 #[cfg(test)]
 mod tests {
-  use super::{CHOICES, selected_color};
+  use super::selected_color;
 
   #[test]
-  fn picker_index_yields_its_color() {
-    assert_eq!(selected_color("0\n"), Ok(Some("#3590bd")));
-    assert_eq!(selected_color("8\n"), Ok(Some("#595959")));
-    assert!(selected_color("9").is_err());
+  fn accepts_custom_color_but_rejects_non_colors() {
+    assert_eq!(selected_color("#12ab9f\n"), Ok(Some("#12AB9F".into())));
+    assert!(selected_color("#abc").is_err());
+    assert!(selected_color("--theme-default").is_err());
   }
 
   #[test]
   fn closed_picker_yields_nothing() {
     assert_eq!(selected_color(""), Ok(None));
     assert_eq!(selected_color("\n"), Ok(None));
-  }
-
-  #[test]
-  fn every_choice_is_a_valid_color() {
-    for (_, color) in CHOICES {
-      assert!(crate::accent::normalize(color).is_some(), "{color}");
-    }
   }
 }

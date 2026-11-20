@@ -1,4 +1,9 @@
 {
+  "accent.cancel": "إلغاء",
+  "accent.select": "اختيار",
+  "accent.hex": "لون سداسي عشري",
+  "accent.hue": "درجة اللون",
+  "accent.saturation_value": "التشبع والقيمة",
   "picker.search": "البحث عن خيارات",
   "picker.no_results": "لا توجد نتائج.",
   "picker.apply": "تطبيق",

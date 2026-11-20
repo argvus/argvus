@@ -3,7 +3,7 @@
 use std::{ffi::OsString, io, process::ExitCode};
 
 use argvus_i18n::{Lang, tr};
-use argvus_theme_core::color::Color;
+use argvus_theme_selector::accent_picker;
 use argvus_theme_selector::picker::{self, Choice, SearchPicker};
 use serde::{Deserialize, de::DeserializeOwned};
 
@@ -28,7 +28,15 @@ pub fn run(args: &[OsString]) -> Outcome {
   let lang = Lang::for_domain(&locale, "appearance");
   match args {
     [mode] if mode == "brightness" => brightness(&locale, lang, read_input()?),
-    [mode] if mode == "accent" => accent(&locale, lang, read_input()?),
+    [mode] if mode == "accent" => {
+      let initial: String = read_input()?;
+      if let Some(color) = accent_picker::choose(&locale, lang, &initial)
+        .map_err(|error| Failure::new(format!("GTK: {error}")))?
+      {
+        println!("{color}");
+      }
+      Ok(ExitCode::SUCCESS)
+    }
     _ => Err(Failure::new(
       "usage: argvus appearance-picker brightness|accent",
     )),
@@ -105,7 +113,6 @@ fn brightness(locale: &str, lang: Lang, status: BrightnessStatus) -> Outcome {
       title: label,
       detail: "",
       shortcut: "",
-      swatch: None,
     })
     .collect();
   if let Some(index) = show(
@@ -117,31 +124,6 @@ fn brightness(locale: &str, lang: Lang, status: BrightnessStatus) -> Outcome {
     &rows,
   )? {
     println!("{}", actions[index].0);
-  }
-  Ok(ExitCode::SUCCESS)
-}
-
-fn accent(locale: &str, lang: Lang, palette: Vec<(String, String)>) -> Outcome {
-  let rows: Vec<_> = palette
-    .iter()
-    .map(|(key, hex)| Choice {
-      icon: "color-select-symbolic",
-      title: tr(lang, key),
-      detail: hex,
-      shortcut: "",
-      swatch: Color::parse(hex),
-    })
-    .collect();
-  let title = tr(lang, "accent.title");
-  if let Some(index) = show(
-    locale,
-    lang,
-    "argvus-accent",
-    title,
-    tr(lang, "picker.no_results"),
-    &rows,
-  )? {
-    println!("{index}");
   }
   Ok(ExitCode::SUCCESS)
 }

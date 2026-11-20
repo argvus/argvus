@@ -1,4 +1,9 @@
 {
+  "accent.cancel": "취소",
+  "accent.select": "선택",
+  "accent.hex": "16진수 색상",
+  "accent.hue": "색조",
+  "accent.saturation_value": "채도와 명도",
   "picker.search": "옵션 검색",
   "picker.no_results": "일치하는 항목이 없습니다.",
   "picker.apply": "적용",

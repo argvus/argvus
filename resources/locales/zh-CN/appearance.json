@@ -1,4 +1,9 @@
 {
+  "accent.cancel": "取消",
+  "accent.select": "选择",
+  "accent.hex": "十六进制颜色",
+  "accent.hue": "色相",
+  "accent.saturation_value": "饱和度和明度",
   "picker.search": "搜索选项",
   "picker.no_results": "没有匹配项。",
   "picker.apply": "应用",

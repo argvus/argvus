@@ -1,4 +1,5 @@
 //! Shared visual selector components.
+pub mod accent_picker;
 pub mod mode_ui;
 pub mod model;
 pub mod picker;

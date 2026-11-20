@@ -1,4 +1,9 @@
 {
+  "accent.cancel": "منسوخ کریں",
+  "accent.select": "منتخب کریں",
+  "accent.hex": "ہیکس رنگ",
+  "accent.hue": "رنگت",
+  "accent.saturation_value": "سیرابی اور قدر",
   "picker.search": "اختیارات تلاش کریں",
   "picker.no_results": "کوئی مماثلت نہیں ملی۔",
   "picker.apply": "لاگو کریں",

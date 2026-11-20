@@ -22,6 +22,10 @@ fn defaults() -> Vec<Binding> {
 }
 
 pub fn binding_description(lang: Lang, binding: &Binding) -> Option<String> {
+  if binding.id == "appearance.accent" {
+    let shortcuts = Lang::for_domain(&lang.locale(), "keybindings");
+    return Some(shortcuts.tr(&binding.description_key));
+  }
   let portuguese = lang.locale().starts_with("pt");
   if let Some(number) = binding.id.strip_prefix("workspace.switch.") {
     return Some(if portuguese {

@@ -1,4 +1,5 @@
 {
+  "keybindings.action.accent": "Open accent color picker",
   "title": "ARGVUS Keybindings",
   "search": "Search",
   "disabled": "Disabled",

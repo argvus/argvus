@@ -1,4 +1,9 @@
 {
+  "accent.cancel": "रद्द करें",
+  "accent.select": "चुनें",
+  "accent.hex": "हेक्स रंग",
+  "accent.hue": "रंगत",
+  "accent.saturation_value": "संतृप्ति और मान",
   "picker.search": "विकल्प खोजें",
   "picker.no_results": "कोई परिणाम नहीं।",
   "picker.apply": "लागू करें",

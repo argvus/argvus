@@ -286,5 +286,5 @@ Configura ricerca: Preferiti, Mostra file recenti, Indicizza nomi dei file, Cart
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
 
 - `Super + Shift + B` / `argvus brightness-switch` · GTK 4 · ±5%, ±10%, 10%, 25%, 50%, 75%, 90%, 100% · Night Light
-- `argvus config accent` · GTK 4 · #RRGGBB
+- `Super + Shift + A` / `argvus config accent` · **ARGVUS Colore accento** · GTK 4 · Colore esadecimale (`#RRGGBB`) · Tonalità · Saturazione e valore
 - **Cerca opzioni** · `↑` `↓` · `Enter` (Applica) · `Esc`

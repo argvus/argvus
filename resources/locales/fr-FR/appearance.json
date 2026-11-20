@@ -1,4 +1,9 @@
 {
+  "accent.cancel": "Annuler",
+  "accent.select": "Sélectionner",
+  "accent.hex": "Couleur hexadécimale",
+  "accent.hue": "Teinte",
+  "accent.saturation_value": "Saturation et valeur",
   "picker.search": "Rechercher une option",
   "picker.no_results": "Aucun résultat.",
   "picker.apply": "Appliquer",

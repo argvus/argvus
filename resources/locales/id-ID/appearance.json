@@ -1,4 +1,9 @@
 {
+  "accent.cancel": "Batal",
+  "accent.select": "Pilih",
+  "accent.hex": "Warna heksadesimal",
+  "accent.hue": "Rona",
+  "accent.saturation_value": "Saturasi dan nilai",
   "picker.search": "Cari opsi",
   "picker.no_results": "Tidak ada hasil.",
   "picker.apply": "Terapkan",

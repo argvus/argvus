@@ -1,4 +1,9 @@
 {
+  "accent.cancel": "বাতিল",
+  "accent.select": "নির্বাচন",
+  "accent.hex": "হেক্স রং",
+  "accent.hue": "রঙের আভা",
+  "accent.saturation_value": "স্যাচুরেশন ও মান",
   "picker.search": "বিকল্প খুঁজুন",
   "picker.no_results": "কোনো মিল নেই।",
   "picker.apply": "প্রয়োগ করুন",

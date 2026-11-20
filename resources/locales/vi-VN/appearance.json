@@ -1,4 +1,9 @@
 {
+  "accent.cancel": "Hủy",
+  "accent.select": "Chọn",
+  "accent.hex": "Màu thập lục phân",
+  "accent.hue": "Sắc độ",
+  "accent.saturation_value": "Độ bão hòa và độ sáng",
   "picker.search": "Tìm tùy chọn",
   "picker.no_results": "Không có kết quả.",
   "picker.apply": "Áp dụng",

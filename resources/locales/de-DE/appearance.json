@@ -1,4 +1,9 @@
 {
+  "accent.cancel": "Abbrechen",
+  "accent.select": "Auswählen",
+  "accent.hex": "Hex-Farbe",
+  "accent.hue": "Farbton",
+  "accent.saturation_value": "Sättigung und Helligkeit",
   "picker.search": "Optionen suchen",
   "picker.no_results": "Keine Treffer.",
   "picker.apply": "Anwenden",

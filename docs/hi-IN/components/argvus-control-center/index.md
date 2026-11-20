@@ -657,3 +657,5 @@ Quickshell: `launcher/Theme.qml` · Rofi: `launcher/theme.rasi`
 `/launcher/show_icons`: `true` / `false`.
 
 `/launcher/selected_category`: `""` (All), `applications`, `windows`, `settings`, `actions`, `projects`, `ssh`, `files`, `help`.
+
+- `Super + Shift + A` · एक्सेंट रंग चयनकर्ता खोलें · `argvus config accent`
