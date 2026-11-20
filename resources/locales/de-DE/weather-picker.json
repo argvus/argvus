@@ -7,5 +7,8 @@
   "minutes": "vor {count} Min.",
   "hours": "vor {count} Std.",
   "days": "vor {count} Tg.",
-  "temperature_unit": "Temperatureinheit"
+  "temperature_unit": "Temperatureinheit",
+  "locations": "Orte",
+  "actions": "Aktionen",
+  "tabs": "Tabs"
 }

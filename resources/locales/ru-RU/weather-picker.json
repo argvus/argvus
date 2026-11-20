@@ -7,5 +7,8 @@
   "minutes": "{count} мин назад",
   "hours": "{count} ч назад",
   "days": "{count} дн назад",
-  "temperature_unit": "Единица измерения температуры"
+  "temperature_unit": "Единица измерения температуры",
+  "locations": "Места",
+  "actions": "Действия",
+  "tabs": "Вкладки"
 }

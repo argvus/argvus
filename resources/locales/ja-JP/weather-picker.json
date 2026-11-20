@@ -7,5 +7,8 @@
   "minutes": "{count}分前",
   "hours": "{count}時間前",
   "days": "{count}日前",
-  "temperature_unit": "温度の単位"
+  "temperature_unit": "温度の単位",
+  "locations": "場所",
+  "actions": "操作",
+  "tabs": "タブ"
 }

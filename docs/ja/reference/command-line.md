@@ -167,6 +167,6 @@ Lifecycle を開いている間は、すべてのモニターでデスクトッ�
 
 **ARGVUS ロックまでの時間** · `argvus idle-timeout` · `Super + Shift + L` · `↑` `↓` (移動) · `Enter` (選択) · `Esc` (閉じる)
 
-**ARGVUS 天気** · `argvus weather-location` · `Super + Shift + W` · `/` 検索 · `A` 自動（IPによる） · `Delete` 履歴を消去 · `Esc` 閉じる
+**ARGVUS 天気** · `argvus weather-location` · `Super + Shift + W` · `Tab` · `↑` `↓` · `Enter` · `/` 検索 · `A` 自動（IPによる） · `Delete` 履歴を消去 · `Esc` 閉じる
 
-**温度の単位** · °C / °F
+**操作** → **温度の単位** · `Enter` · °C ↔ °F

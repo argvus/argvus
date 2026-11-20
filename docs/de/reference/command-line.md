@@ -169,6 +169,6 @@ Die Ecken übernehmen die Rundung aus dem Control Center oder der Modusauswahl.
 
 **ARGVUS Sperrzeit** · `argvus idle-timeout` · `Super + Shift + L` · `↑` `↓` (Navigieren) · `Enter` (Auswählen) · `Esc` (Schließen)
 
-**ARGVUS Wetter** · `argvus weather-location` · `Super + Shift + W` · `/` Suchen · `A` Automatisch (nach IP) · `Delete` Letzte Orte löschen · `Esc` Schließen
+**ARGVUS Wetter** · `argvus weather-location` · `Super + Shift + W` · `Tab` · `↑` `↓` · `Enter` · `/` Suchen · `A` Automatisch (nach IP) · `Delete` Letzte Orte löschen · `Esc` Schließen
 
-**Temperatureinheit** · °C / °F
+**Aktionen** → **Temperatureinheit** · `Enter` · °C ↔ °F

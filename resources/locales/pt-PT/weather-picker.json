@@ -7,5 +7,8 @@
   "minutes": "há {count} min",
   "hours": "há {count} h",
   "days": "há {count} d",
-  "temperature_unit": "Unidade de temperatura"
+  "temperature_unit": "Unidade de temperatura",
+  "locations": "Locais",
+  "actions": "Ações",
+  "tabs": "Separadores"
 }

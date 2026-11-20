@@ -7,5 +7,8 @@
   "minutes": "{count} মিনিট আগে",
   "hours": "{count} ঘণ্টা আগে",
   "days": "{count} দিন আগে",
-  "temperature_unit": "তাপমাত্রার একক"
+  "temperature_unit": "তাপমাত্রার একক",
+  "locations": "স্থান",
+  "actions": "কার্যক্রম",
+  "tabs": "ট্যাব"
 }

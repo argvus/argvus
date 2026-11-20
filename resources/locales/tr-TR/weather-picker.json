@@ -7,5 +7,8 @@
   "minutes": "{count} dk önce",
   "hours": "{count} sa önce",
   "days": "{count} gün önce",
-  "temperature_unit": "Sıcaklık birimi"
+  "temperature_unit": "Sıcaklık birimi",
+  "locations": "Konumlar",
+  "actions": "Eylemler",
+  "tabs": "Sekmeler"
 }

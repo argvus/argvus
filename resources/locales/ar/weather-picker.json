@@ -7,5 +7,8 @@
   "minutes": "منذ {count} د",
   "hours": "منذ {count} س",
   "days": "منذ {count} يوم",
-  "temperature_unit": "وحدة درجة الحرارة"
+  "temperature_unit": "وحدة درجة الحرارة",
+  "locations": "المواقع",
+  "actions": "الإجراءات",
+  "tabs": "علامات التبويب"
 }

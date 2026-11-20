@@ -7,5 +7,8 @@
   "minutes": "{count} phút trước",
   "hours": "{count} giờ trước",
   "days": "{count} ngày trước",
-  "temperature_unit": "Đơn vị nhiệt độ"
+  "temperature_unit": "Đơn vị nhiệt độ",
+  "locations": "Địa điểm",
+  "actions": "Thao tác",
+  "tabs": "Thẻ"
 }

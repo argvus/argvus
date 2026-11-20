@@ -7,5 +7,8 @@
   "minutes": "{count} मिनट पहले",
   "hours": "{count} घंटे पहले",
   "days": "{count} दिन पहले",
-  "temperature_unit": "तापमान की इकाई"
+  "temperature_unit": "तापमान की इकाई",
+  "locations": "स्थान",
+  "actions": "कार्रवाइयाँ",
+  "tabs": "टैब"
 }

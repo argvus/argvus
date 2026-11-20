@@ -7,5 +7,8 @@
   "minutes": "{count}분 전",
   "hours": "{count}시간 전",
   "days": "{count}일 전",
-  "temperature_unit": "온도 단위"
+  "temperature_unit": "온도 단위",
+  "locations": "장소",
+  "actions": "작업",
+  "tabs": "탭"
 }

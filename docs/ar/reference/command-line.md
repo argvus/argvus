@@ -168,6 +168,6 @@ argvus setup --copy <app> --dry-run
 
 **ARGVUS مهلة القفل** · `argvus idle-timeout` · `Super + Shift + L` · `↑` `↓` (التنقل) · `Enter` (اختيار) · `Esc` (إغلاق)
 
-**ARGVUS الطقس** · `argvus weather-location` · `Super + Shift + W` · `/` بحث · `A` Automatic (by IP) · `Delete` مسح المواقع الأخيرة · `Esc` إغلاق
+**ARGVUS الطقس** · `argvus weather-location` · `Super + Shift + W` · `Tab` · `↑` `↓` · `Enter` · `/` بحث · `A` Automatic (by IP) · `Delete` مسح المواقع الأخيرة · `Esc` إغلاق
 
-**وحدة درجة الحرارة** · °C / °F
+**الإجراءات** → **وحدة درجة الحرارة** · `Enter` · °C ↔ °F

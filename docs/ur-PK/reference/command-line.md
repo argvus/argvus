@@ -153,6 +153,6 @@ Lifecycle کھلا ہو تو تمام مانیٹروں پر ڈیسک ٹاپ کے
 
 **ARGVUS لاک کی مہلت** · `argvus idle-timeout` · `Super + Shift + L` · `↑` `↓` (نیویگیٹ کریں) · `Enter` (منتخب کریں) · `Esc` (بند کریں)
 
-**ARGVUS موسم** · `argvus weather-location` · `Super + Shift + W` · `/` تلاش کریں · `A` خودکار (جی پی ایچ000) · `Delete` حالیہ مقامات صاف کریں · `Esc` بند کریں
+**ARGVUS موسم** · `argvus weather-location` · `Super + Shift + W` · `Tab` · `↑` `↓` · `Enter` · `/` تلاش کریں · `A` خودکار (جی پی ایچ000) · `Delete` حالیہ مقامات صاف کریں · `Esc` بند کریں
 
-**درجہ حرارت کی اکائی** · °C / °F
+**کارروائیاں** → **درجہ حرارت کی اکائی** · `Enter` · °C ↔ °F

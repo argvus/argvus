@@ -7,5 +7,8 @@
   "minutes": "{count} منٹ پہلے",
   "hours": "{count} گھنٹے پہلے",
   "days": "{count} دن پہلے",
-  "temperature_unit": "درجہ حرارت کی اکائی"
+  "temperature_unit": "درجہ حرارت کی اکائی",
+  "locations": "مقامات",
+  "actions": "کارروائیاں",
+  "tabs": "ٹیب"
 }

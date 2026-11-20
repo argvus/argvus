@@ -224,6 +224,11 @@ fn apply_theme(window: &gtk::Window, locale: &str) {
      .argvus-picker .accent-editor button:disabled {{ opacity: .5; }}
      .argvus-picker .accent-editor drawingarea:focus-visible, .argvus-picker .accent-editor button:focus-visible, .argvus-picker .accent-editor entry:focus-within {{ outline: 2px solid {accent}; outline-offset: 1px; }}
      .argvus-picker .accent-editor entry.error {{ border-color: #e06666; }}
+     .argvus-picker .weather-browser {{ background: alpha({bg}, .68); border-radius: {radius}px; }}
+     .argvus-picker .weather-tabs {{ border-right: 1px solid alpha({fg}, .22); }}
+     .argvus-picker .weather-tabs:dir(rtl) {{ border-right: 0; border-left: 1px solid alpha({fg}, .22); }}
+     .argvus-picker .weather-tabs row {{ border-color: transparent; border-bottom-color: alpha({fg}, .14); }}
+     .argvus-picker .weather-tabs row:selected {{ background: alpha({accent}, .21); border-color: transparent; }}
      .argvus-picker .clipboard-picker button {{ border-radius: {radius}px; }}
      .argvus-picker .clipboard-picker button:focus-visible {{ outline: 2px solid {accent}; outline-offset: 1px; }}
      .argvus-picker scrollbar slider {{ border-radius: {radius}px; }}

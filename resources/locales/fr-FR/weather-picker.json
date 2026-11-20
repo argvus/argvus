@@ -7,5 +7,8 @@
   "minutes": "il y a {count} min",
   "hours": "il y a {count} h",
   "days": "il y a {count} j",
-  "temperature_unit": "Unité de température"
+  "temperature_unit": "Unité de température",
+  "locations": "Lieux",
+  "actions": "Actions",
+  "tabs": "Onglets"
 }

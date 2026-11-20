@@ -168,6 +168,6 @@ Các góc của bảng dùng độ bo góc được đặt trong Trung tâm đi�
 
 **ARGVUS Thời gian chờ khóa** · `argvus idle-timeout` · `Super + Shift + L` · `↑` `↓` (Điều hướng) · `Enter` (Chọn) · `Esc` (Đóng)
 
-**ARGVUS Comment** · `argvus weather-location` · `Super + Shift + W` · `/` Tìm kiếm · `A` Tự động · `Delete` Xóa vị trí gần đây · `Esc` Đóng
+**ARGVUS Comment** · `argvus weather-location` · `Super + Shift + W` · `Tab` · `↑` `↓` · `Enter` · `/` Tìm kiếm · `A` Tự động · `Delete` Xóa vị trí gần đây · `Esc` Đóng
 
-**Đơn vị nhiệt độ** · °C / °F
+**Thao tác** → **Đơn vị nhiệt độ** · `Enter` · °C ↔ °F

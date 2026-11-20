@@ -19,7 +19,7 @@ use serde_json::Value;
 
 use crate::exec::{Failure, Outcome};
 
-#[derive(Clone, Deserialize, Serialize)]
+#[derive(Clone, Deserialize, PartialEq, Eq, Serialize)]
 struct Place {
   id: Option<u64>,
   name: String,
@@ -252,20 +252,31 @@ pub fn run(args: &[OsString]) -> Outcome {
   Ok(ExitCode::SUCCESS)
 }
 
+#[derive(Clone, PartialEq, Eq)]
+enum Row {
+  City(Place),
+  Automatic,
+  Temperature,
+  Clear,
+  Cancel,
+  Confirm,
+}
+
 struct Picker {
   files: Files,
   lang: Lang,
   list: gtk::ListBox,
+  actions: gtk::ListBox,
+  stack: gtk::Stack,
   entry: gtk::SearchEntry,
   message: gtk::Label,
-  clear: gtk::Button,
-  auto: gtk::Button,
   window: gtk::Window,
   done: glib::MainLoop,
-  rows: RefCell<Vec<Place>>,
-  recent_count: gtk::Label,
-  confirmation: gtk::Box,
-  cancel: gtk::Button,
+  rows: RefCell<Vec<Row>>,
+  action_rows: RefCell<Vec<Row>>,
+  has_recent: Cell<bool>,
+  confirming: Cell<bool>,
+  fahrenheit: Cell<bool>,
   generation: Cell<u64>,
   detecting: Cell<bool>,
   debounce: RefCell<Option<glib::SourceId>>,
@@ -273,11 +284,16 @@ struct Picker {
 
 impl Picker {
   fn fill(&self, places: Vec<Place>) {
-    while let Some(child) = self.list.first_child() {
-      self.list.remove(&child);
+    let list = &self.list;
+    let rows = &self.rows;
+    let selected = self.selected(list);
+    let restore_focus = self.focus_in(list);
+    while let Some(child) = list.first_child() {
+      list.remove(&child);
     }
     let key = Lang::for_domain(&self.lang.locale(), "weather-picker");
-    for place in &places {
+    let mut entries = Vec::new();
+    for place in places {
       let age = place
         .used
         .map(|used| {
@@ -292,25 +308,102 @@ impl Picker {
           key.tr_args(unit, [("count", count.to_string())])
         })
         .unwrap_or_default();
-      self.list.append(&picker::row(
-        "mark-location-symbolic",
+      list.append(&picker::row(
+        "find-location-symbolic",
         &place.name,
         "",
         &age,
       ));
+      entries.push(Row::City(place));
     }
-    self.list.select_row(self.list.row_at_index(0).as_ref());
-    self.rows.replace(places);
+    self.finish_render(list, rows, entries, selected, restore_focus);
+  }
+
+  fn selected(&self, list: &gtk::ListBox) -> Option<Row> {
+    self.row_at(list, &list.selected_row()?)
+  }
+
+  fn row_at(&self, list: &gtk::ListBox, row: &gtk::ListBoxRow) -> Option<Row> {
+    let rows = if list == &self.list {
+      &self.rows
+    } else {
+      &self.action_rows
+    };
+    rows.borrow().get(row.index() as usize).cloned()
+  }
+
+  fn focus_in(&self, widget: &impl IsA<gtk::Widget>) -> bool {
+    gtk::prelude::GtkWindowExt::focus(&self.window)
+      .is_some_and(|focus| &focus == widget.upcast_ref() || focus.is_ancestor(widget))
+  }
+
+  fn render_actions(&self, preferred: Option<Row>) {
+    let list = &self.actions;
+    let selected = preferred.or_else(|| self.selected(list));
+    let restore_focus = self.focus_in(list);
+    while let Some(child) = list.first_child() {
+      list.remove(&child);
+    }
+    let key = Lang::for_domain(&self.lang.locale(), "weather-picker");
+    let hints = Lang::for_domain(&self.lang.locale(), "clipboard");
+    let mut rows = Vec::new();
+    let mut append = |row, icon, title: &str, detail: &str| {
+      list.append(&picker::row(icon, title, "", detail));
+      rows.push(row);
+    };
+    if self.confirming.get() {
+      append(
+        Row::Cancel,
+        "process-stop-symbolic",
+        &hints.tr("cancel"),
+        "",
+      );
+      append(Row::Confirm, "edit-clear-symbolic", &key.tr("clear"), "");
+    } else {
+      append(
+        Row::Automatic,
+        "find-location-symbolic",
+        &self.lang.tr("weather.location.auto"),
+        "A",
+      );
+      append(
+        Row::Temperature,
+        "open-menu-symbolic",
+        &key.tr("temperature_unit"),
+        if self.fahrenheit.get() { "°F" } else { "°C" },
+      );
+      if self.has_recent.get() {
+        append(Row::Clear, "edit-clear-symbolic", &key.tr("clear"), "Del");
+      }
+    }
+    self.finish_render(list, &self.action_rows, rows, selected, restore_focus);
+  }
+
+  fn finish_render(
+    &self,
+    list: &gtk::ListBox,
+    model: &RefCell<Vec<Row>>,
+    rows: Vec<Row>,
+    selected: Option<Row>,
+    restore_focus: bool,
+  ) {
+    let index = selected
+      .and_then(|selected| rows.iter().position(|row| *row == selected))
+      .unwrap_or(0);
+    model.replace(rows);
+    if let Some(row) = list.row_at_index(index as i32) {
+      list.select_row(Some(&row));
+      if restore_focus {
+        row.grab_focus();
+      }
+    }
   }
 
   fn recent(&self) {
     let lang = Lang::for_domain(&self.lang.locale(), "weather-picker");
     match self.files.recent() {
       Ok(places) => {
-        self
-          .recent_count
-          .set_label(&Lang::for_domain(&self.lang.locale(), "weather-picker").tr("recent"));
-        self.clear.set_sensitive(!places.is_empty());
+        self.has_recent.set(!places.is_empty());
         let message = if places.is_empty() {
           lang.tr("empty")
         } else {
@@ -356,7 +449,7 @@ impl Picker {
         .to_lowercase();
       glib::MainContext::default().spawn_local(async move {
         let result = gio::spawn_blocking(move || search(&query, &language)).await;
-        if state.generation.get() != generation {
+        if state.generation.get() != generation || state.confirming.get() {
           return;
         }
         match result {
@@ -378,13 +471,37 @@ impl Picker {
     self.debounce.replace(Some(timer));
   }
 
-  fn select(&self, row: &gtk::ListBoxRow) {
-    if self.detecting.get() || self.confirmation.is_visible() {
+  fn activate(self: &Rc<Self>, row: Row) {
+    if self.detecting.get() {
       return;
     }
-    let Some(place) = self.rows.borrow().get(row.index() as usize).cloned() else {
-      return;
+    match row {
+      Row::Cancel => self.finish_clear(false),
+      Row::Confirm => self.finish_clear(true),
+      Row::City(place) => self.select_city(place),
+      Row::Automatic => self.automatic(),
+      Row::Temperature => self.toggle_temperature(),
+      Row::Clear => self.clear_recent(),
+    }
+  }
+
+  fn toggle_temperature(&self) {
+    let fahrenheit = !self.fahrenheit.get();
+    let value = if fahrenheit {
+      b"fahrenheit\n".as_slice()
+    } else {
+      b"celsius\n".as_slice()
     };
+    match write_atomic(&self.files.temperature_unit, value) {
+      Ok(()) => {
+        self.fahrenheit.set(fahrenheit);
+        self.render_actions(Some(Row::Temperature));
+      }
+      Err(error) => self.error(error),
+    }
+  }
+
+  fn select_city(&self, place: Place) {
     if let Err(error) = self
       .files
       .remember(place.clone())
@@ -398,16 +515,14 @@ impl Picker {
   }
 
   fn automatic(self: &Rc<Self>) {
-    if self.confirmation.is_visible() || self.detecting.replace(true) {
+    if self.confirming.get() || self.detecting.replace(true) {
       return;
     }
-    self.auto.set_sensitive(false);
     self.message.set_label(&self.lang.tr("weather.loading"));
     let state = self.clone();
     glib::MainContext::default().spawn_local(async move {
       let result = gio::spawn_blocking(detect).await;
       state.detecting.set(false);
-      state.auto.set_sensitive(true);
       match result {
         Ok(Ok(city)) => match state.files.save("", None) {
           Ok(()) => {
@@ -422,31 +537,39 @@ impl Picker {
     });
   }
 
-  fn clear_recent(self: &Rc<Self>) {
-    if !self.clear.is_sensitive() {
+  fn clear_recent(&self) {
+    if !self.has_recent.get() || self.confirming.get() || self.detecting.get() {
       return;
     }
-    if self.confirmation.is_visible() || self.detecting.get() {
-      return;
+    self.confirming.set(true);
+    self.stack.set_visible_child_name("actions");
+    self
+      .message
+      .set_label(&Lang::for_domain(&self.lang.locale(), "weather-picker").tr("confirm"));
+    self.render_actions(Some(Row::Cancel));
+    if let Some(row) = self.actions.selected_row() {
+      row.grab_focus();
     }
-    self.confirmation.set_visible(true);
-    self.cancel.grab_focus();
   }
 
-  fn finish_clear(&self, accept: bool) {
-    self.confirmation.set_visible(false);
-    self.clear.grab_focus();
-    if !accept {
-      return;
+  fn finish_clear(self: &Rc<Self>, accept: bool) {
+    if accept {
+      if let Err(error) = write_atomic(&self.files.recent, b"[]\n") {
+        self.error(error);
+        return;
+      }
+      self.has_recent.set(false);
     }
-    if let Err(error) = write_atomic(&self.files.recent, b"[]\n") {
-      self.error(error);
-      return;
-    }
-    if self.entry.text().is_empty() {
+    self.confirming.set(false);
+    self.message.set_label("");
+    if self.entry.text().trim().is_empty() {
       self.recent();
     } else {
-      self.entry.set_text("");
+      self.changed();
+    }
+    self.render_actions(Some(if accept { Row::Automatic } else { Row::Clear }));
+    if let Some(row) = self.actions.selected_row() {
+      row.grab_focus();
     }
   }
 }
@@ -462,52 +585,50 @@ fn show(files: Files, locale: &str, lang: Lang) -> Result<(), Failure> {
   let title = lang.tr("weather.notification.title");
   let window = picker::window("argvus-weather", &format!("ARGVUS {title}"), locale);
   let panel = picker::panel(&window, &title);
-  panel.add_css_class("clipboard-picker");
+  panel.add_css_class("weather-picker");
   let entry = gtk::SearchEntry::builder()
     .placeholder_text(lang.tr("weather.location.prompt"))
     .build();
   entry.add_css_class("argvus-search");
-  panel.append(&entry);
-  let actions = gtk::Box::new(gtk::Orientation::Horizontal, 12);
-  let auto = gtk::Button::with_label(&lang.tr("weather.location.auto"));
-  auto.set_hexpand(true);
-  let recent_count = gtk::Label::new(None);
-  let clear = gtk::Button::with_label(&strings.tr("clear"));
-  actions.append(&auto);
-  actions.append(&recent_count);
-  actions.append(&clear);
-  panel.append(&actions);
-  let unit_row = gtk::Box::new(gtk::Orientation::Horizontal, 12);
-  let unit_label = gtk::Label::new(Some(&strings.tr("temperature_unit")));
-  let unit = gtk::DropDown::from_strings(&["°C", "°F"]);
-  unit.update_relation(&[gtk::accessible::Relation::LabelledBy(&[
-    unit_label.upcast_ref()
-  ])]);
-  unit.set_selected(u32::from(
-    fs::read_to_string(&files.temperature_unit).is_ok_and(|value| value.trim() == "fahrenheit"),
-  ));
-  unit_row.append(&unit_label);
-  unit_row.append(&unit);
-  panel.append(&unit_row);
+  let stack = gtk::Stack::new();
+  stack.set_vexpand(true);
+  stack.set_hexpand(true);
+  let browser = gtk::Box::new(gtk::Orientation::Horizontal, 16);
+  browser.add_css_class("weather-browser");
+  browser.set_vexpand(true);
+  let tabs = gtk::ListBox::new();
+  tabs.add_css_class("weather-tabs");
+  tabs.set_activate_on_single_click(true);
+  for (icon, key) in [
+    ("find-location-symbolic", "locations"),
+    ("open-menu-symbolic", "actions"),
+  ] {
+    tabs.append(&picker::row(icon, &strings.tr(key), "", ""));
+  }
+  tabs.select_row(tabs.row_at_index(0).as_ref());
+  browser.append(&tabs);
+  browser.append(&stack);
+  panel.append(&browser);
+  let locations = gtk::Box::new(gtk::Orientation::Vertical, 12);
+  locations.append(&entry);
+  let fahrenheit =
+    fs::read_to_string(&files.temperature_unit).is_ok_and(|value| value.trim() == "fahrenheit");
   let list = gtk::ListBox::new();
-  panel.append(&picker::scroll(&list));
-  list.set_activate_on_single_click(false);
+  locations.append(&picker::scroll(&list));
+  stack.add_titled(&locations, Some("locations"), &strings.tr("locations"));
+  let actions = gtk::ListBox::new();
+  stack.add_titled(
+    &picker::scroll(&actions),
+    Some("actions"),
+    &strings.tr("actions"),
+  );
   let message = gtk::Label::new(None);
   message.set_wrap(true);
   panel.append(&message);
-  let confirmation = gtk::Box::new(gtk::Orientation::Horizontal, 8);
-  let prompt = gtk::Label::new(Some(&strings.tr("confirm")));
-  prompt.set_wrap(true);
-  let cancel = gtk::Button::with_label(&hints.tr("cancel"));
-  let confirm = gtk::Button::with_label(&strings.tr("clear"));
-  confirmation.append(&prompt);
-  confirmation.append(&cancel);
-  confirmation.append(&confirm);
-  confirmation.set_visible(false);
-  panel.append(&confirmation);
   picker::footer(
     &panel,
     &[
+      ("Tab", &strings.tr("tabs")),
       ("↑ ↓", &hints.tr("navigate")),
       (
         "Enter",
@@ -524,42 +645,20 @@ fn show(files: Files, locale: &str, lang: Lang) -> Result<(), Failure> {
     files,
     lang,
     list,
+    actions,
+    stack,
     entry,
     message,
-    clear,
-    auto,
     window,
     done: glib::MainLoop::new(None, false),
     rows: RefCell::new(Vec::new()),
-    recent_count,
-    confirmation,
-    cancel,
+    action_rows: RefCell::new(Vec::new()),
+    has_recent: Cell::new(false),
+    confirming: Cell::new(false),
+    fahrenheit: Cell::new(fahrenheit),
     generation: Cell::new(0),
     detecting: Cell::new(false),
     debounce: RefCell::new(None),
-  });
-  let weak = Rc::downgrade(&state);
-  let saved_unit = Cell::new(unit.selected());
-  unit.connect_selected_notify(move |unit| {
-    let Some(state) = weak.upgrade() else {
-      return;
-    };
-    let selected = unit.selected();
-    if selected == saved_unit.get() {
-      return;
-    }
-    let value = if selected == 1 {
-      "fahrenheit\n"
-    } else {
-      "celsius\n"
-    };
-    match write_atomic(&state.files.temperature_unit, value.as_bytes()) {
-      Ok(()) => saved_unit.set(selected),
-      Err(error) => {
-        unit.set_selected(saved_unit.get());
-        state.error(error);
-      }
-    }
   });
   let weak = Rc::downgrade(&state);
   state.entry.connect_changed(move |_| {
@@ -567,34 +666,40 @@ fn show(files: Files, locale: &str, lang: Lang) -> Result<(), Failure> {
       state.changed();
     }
   });
+  for list in [&state.list, &state.actions] {
+    let weak = Rc::downgrade(&state);
+    list.connect_row_activated(move |list, row| {
+      if let Some(state) = weak.upgrade()
+        && let Some(action) = state.row_at(list, row)
+      {
+        state.activate(action);
+      }
+    });
+  }
   let weak = Rc::downgrade(&state);
-  state.list.connect_row_activated(move |_, row| {
-    if let Some(state) = weak.upgrade() {
-      state.select(row);
-    }
-  });
-  let weak = Rc::downgrade(&state);
-  state.auto.connect_clicked(move |_| {
-    if let Some(state) = weak.upgrade() {
-      state.automatic();
-    }
-  });
-  let weak = Rc::downgrade(&state);
-  state.clear.connect_clicked(move |_| {
-    if let Some(state) = weak.upgrade() {
-      state.clear_recent();
-    }
-  });
-  let weak = Rc::downgrade(&state);
-  state.cancel.connect_clicked(move |_| {
-    if let Some(state) = weak.upgrade() {
-      state.finish_clear(false);
-    }
-  });
-  let weak = Rc::downgrade(&state);
-  confirm.connect_clicked(move |_| {
-    if let Some(state) = weak.upgrade() {
-      state.finish_clear(true);
+  tabs.connect_row_selected(move |_, row| {
+    if let Some(state) = weak.upgrade()
+      && let Some(row) = row
+    {
+      let page = if row.index() == 0 {
+        "locations"
+      } else {
+        "actions"
+      };
+      state.stack.set_visible_child_name(page);
+      if page == "locations" && state.confirming.get() {
+        state.finish_clear(false);
+      }
+      let list = if page == "locations" {
+        &state.list
+      } else {
+        &state.actions
+      };
+      if let Some(row) = list.selected_row() {
+        row.grab_focus();
+      } else {
+        state.entry.grab_focus();
+      }
     }
   });
   let done = state.done.clone();
@@ -609,29 +714,39 @@ fn show(files: Files, locale: &str, lang: Lang) -> Result<(), Failure> {
     let Some(state) = weak.upgrade() else {
       return glib::Propagation::Proceed;
     };
-    if state.confirmation.is_visible() {
+    let in_entry = state.focus_in(&state.entry);
+    let list = if state.stack.visible_child_name().as_deref() == Some("actions") {
+      &state.actions
+    } else {
+      &state.list
+    };
+    if matches!(key, gdk::Key::Tab | gdk::Key::ISO_Left_Tab)
+      && !mods.intersects(
+        gdk::ModifierType::CONTROL_MASK
+          | gdk::ModifierType::ALT_MASK
+          | gdk::ModifierType::SUPER_MASK,
+      )
+    {
+      let index = i32::from(list == &state.list);
+      tabs.select_row(tabs.row_at_index(index).as_ref());
+      return glib::Propagation::Stop;
+    }
+    if state.confirming.get() {
       if key == gdk::Key::Escape {
         state.finish_clear(false);
         return glib::Propagation::Stop;
       }
-      return glib::Propagation::Proceed;
-    }
-    let focus = gtk::prelude::GtkWindowExt::focus(&state.window);
-    let in_entry = focus.as_ref().is_some_and(|focus| {
-      focus == state.entry.upcast_ref::<gtk::Widget>() || focus.is_ancestor(&state.entry)
-    });
-    let on_button = focus
-      .as_ref()
-      .is_some_and(|focus| focus.is::<gtk::Button>());
-    let in_unit = focus
-      .as_ref()
-      .is_some_and(|focus| focus == unit.upcast_ref::<gtk::Widget>() || focus.is_ancestor(&unit));
-    if in_unit && key != gdk::Key::Escape {
-      return glib::Propagation::Proceed;
+      if !matches!(
+        key,
+        gdk::Key::Up | gdk::Key::Down | gdk::Key::Return | gdk::Key::KP_Enter
+      ) {
+        return glib::Propagation::Stop;
+      }
     }
     match key {
       gdk::Key::Escape => state.done.quit(),
       gdk::Key::slash if !in_entry => {
+        tabs.select_row(tabs.row_at_index(0).as_ref());
         state.entry.grab_focus();
       }
       gdk::Key::a | gdk::Key::A
@@ -644,20 +759,22 @@ fn show(files: Files, locale: &str, lang: Lang) -> Result<(), Failure> {
       {
         state.automatic()
       }
-      gdk::Key::Delete if !in_entry => state.clear_recent(),
-      gdk::Key::Return | gdk::Key::KP_Enter if !on_button => {
-        if let Some(row) = state.list.selected_row() {
-          state.select(&row);
+      gdk::Key::Delete if !in_entry => {
+        if state.has_recent.get() && !state.detecting.get() {
+          tabs.select_row(tabs.row_at_index(1).as_ref());
+          state.clear_recent();
+        }
+      }
+      gdk::Key::Return | gdk::Key::KP_Enter => {
+        if let Some(row) = state.selected(list) {
+          state.activate(row);
         }
       }
       gdk::Key::Up | gdk::Key::Down => {
         let step = if key == gdk::Key::Up { -1 } else { 1 };
-        let index = state
-          .list
-          .selected_row()
-          .map_or(0, |row| row.index() + step);
-        if let Some(row) = state.list.row_at_index(index) {
-          state.list.select_row(Some(&row));
+        let index = list.selected_row().map_or(0, |row| row.index() + step);
+        if let Some(row) = list.row_at_index(index) {
+          list.select_row(Some(&row));
           row.grab_focus();
         }
       }
@@ -667,9 +784,13 @@ fn show(files: Files, locale: &str, lang: Lang) -> Result<(), Failure> {
   });
   state.window.add_controller(keys);
   state.recent();
+  state.render_actions(None);
   state.window.present();
   if let Some(row) = state.list.selected_row() {
     row.grab_focus();
+  }
+  if state.list.selected_row().is_none() {
+    state.entry.grab_focus();
   }
   state.done.run();
   state.window.destroy();

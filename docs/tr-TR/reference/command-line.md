@@ -170,6 +170,6 @@ Panel köşeleri, Denetim Merkezi veya mod seçicide ayarlanan yuvarlaklığı k
 
 **ARGVUS Kilit zaman aşımı** · `argvus idle-timeout` · `Super + Shift + L` · `↑` `↓` (Gezin) · `Enter` (Seç) · `Esc` (Kapat)
 
-**ARGVUS Hava** · `argvus weather-location` · `Super + Shift + W` · `/` Ara · `A` Otomatik (by IP) · `Delete` Son konumları temizle · `Esc` Kapat
+**ARGVUS Hava** · `argvus weather-location` · `Super + Shift + W` · `Tab` · `↑` `↓` · `Enter` · `/` Ara · `A` Otomatik (by IP) · `Delete` Son konumları temizle · `Esc` Kapat
 
-**Sıcaklık birimi** · °C / °F
+**Eylemler** → **Sıcaklık birimi** · `Enter` · °C ↔ °F

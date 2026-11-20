@@ -167,6 +167,6 @@ Gli angoli del pannello seguono l’arrotondamento impostato nel Centro di contr
 
 **ARGVUS Tempo di blocco** · `argvus idle-timeout` · `Super + Shift + L` · `↑` `↓` (Naviga) · `Enter` (Seleziona) · `Esc` (Chiudi)
 
-**ARGVUS Tempo atmosferico** · `argvus weather-location` · `Super + Shift + W` · `/` Cerca · `A` Automatico (tramite IP) · `Delete` Cancella recenti · `Esc` Chiudi
+**ARGVUS Tempo atmosferico** · `argvus weather-location` · `Super + Shift + W` · `Tab` · `↑` `↓` · `Enter` · `/` Cerca · `A` Automatico (tramite IP) · `Delete` Cancella recenti · `Esc` Chiudi
 
-**Unità di temperatura** · °C / °F
+**Azioni** → **Unità di temperatura** · `Enter` · °C ↔ °F

@@ -174,6 +174,6 @@ Use **Clear history** or press **Delete** in the list, then confirm. Clearing th
 
 **ARGVUS Lock Timeout** · `argvus idle-timeout` · `Super + Shift + L` · `↑` `↓` (Navigate) · `Enter` (Select) · `Esc` (Close)
 
-**ARGVUS Weather** · `argvus weather-location` · `Super + Shift + W` · `/` Search · `A` Automatic (by IP) · `Delete` Clear recent · `Esc` Close
+**ARGVUS Weather** · `argvus weather-location` · `Super + Shift + W` · `Tab` · `↑` `↓` · `Enter` · `/` Search · `A` Automatic (by IP) · `Delete` Clear recent · `Esc` Close
 
-**Temperature unit** · °C / °F
+**Actions** → **Temperature unit** · `Enter` · °C ↔ °F
