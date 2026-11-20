@@ -83,7 +83,7 @@ The Control Center accepts legacy page flags as its first argument and maps them
 
 These run packaged scripts and are used by the Hyprland configuration:
 
-`scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `keep-awake`, `hypr-power-menu`.
+`scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `brightness-switch`, `toggle-mode`, `keep-awake`, `hypr-power-menu`.
 
 A script in the user's configuration overrides the packaged one. Lookup order: the user's config copy, then the ARGVUS data copy, then the state copy, then the generated copy, and only then the packaged file under `/usr/share/argvus`.
 
@@ -173,3 +173,5 @@ Use **Clear history** or press **Delete** in the list, then confirm. Clearing th
 **ARGVUS Clipboard** · `argvus clipboard` · `Super + H` · `↑` `↓` (Navigate) · `/` (Search) · `Enter` (Copy) · `Delete` (Clear history) · `Esc` (Close)
 
 **ARGVUS Lock Timeout** · `argvus idle-timeout` · `Super + Shift + L` · `↑` `↓` (Navigate) · `Enter` (Select) · `Esc` (Close)
+
+**ARGVUS Weather** · `argvus weather-location` · `Super + Shift + W` · `/` Search · `A` Automatic (by IP) · `Delete` Clear recent · `Esc` Close

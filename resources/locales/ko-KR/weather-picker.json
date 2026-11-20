@@ -1,0 +1,10 @@
+{
+  "recent": "최근 위치",
+  "clear": "최근 기록 지우기",
+  "confirm": "최근 위치를 지울까요?",
+  "empty": "최근 위치가 없습니다.",
+  "no_results": "도시를 찾을 수 없습니다.",
+  "minutes": "{count}분 전",
+  "hours": "{count}시간 전",
+  "days": "{count}일 전"
+}

@@ -111,7 +111,6 @@ script_routes! {
   HyprScreenshot => "hypr-screenshot" => "hyprland/sh/hypr-screenshot.sh",
   SpacesSwitch => "spaces-switch" => "hyprland/sh/spaces-switch.sh",
   ToggleSidebar => "toggle-sidebar" => "control-panel/sh/toggle-sidebar.sh",
-  WeatherLocation => "weather-location" => "control-panel/sh/weather-location.sh",
   BrightnessSwitch => "brightness-switch" => "appearance/sh/brightness-switch.sh",
   ToggleMode => "toggle-mode" => "appearance/sh/toggle-mode.sh",
   IdleTimeout => "idle-timeout" => "power/sh/idle-timeout.sh",

@@ -1,0 +1,10 @@
+{
+  "recent": "Son konumlar",
+  "clear": "Son konumları temizle",
+  "confirm": "Son konumlar temizlensin mi?",
+  "empty": "Son konum yok.",
+  "no_results": "Şehir bulunamadı.",
+  "minutes": "{count} dk önce",
+  "hours": "{count} sa önce",
+  "days": "{count} gün önce"
+}

@@ -82,7 +82,7 @@ El Centro de control acepta indicadores de páginas heredadas como primer argume
 
 Estos ejecutan scripts empaquetados y son usados por la configuración de Hyprland:
 
-`scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `keep-awake`, `hypr-power-menu`.
+`scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `brightness-switch`, `toggle-mode`, `keep-awake`, `hypr-power-menu`.
 
 Un script en la configuración del usuario sobrescribe el empaquetado. Orden de búsqueda: la copia de la configuración del usuario, luego la copia de los datos ARGVUS, luego la copia del estado, luego la copia generada, y solo entonces el archivo empaquetado bajo `/usr/share/argvus`.
 
@@ -166,3 +166,5 @@ Las esquinas del panel siguen el redondeo configurado en el Centro de control o 
 **ARGVUS Portapapeles** · `argvus clipboard` · `Super + H` · `↑` `↓` (Navegar) · `/` (Buscar) · `Enter` (Copiar) · `Delete` (Borrar historial) · `Esc` (Cerrar)
 
 **ARGVUS Tiempo de bloqueo** · `argvus idle-timeout` · `Super + Shift + L` · `↑` `↓` (Navegar) · `Enter` (Seleccionar) · `Esc` (Cerrar)
+
+**ARGVUS Clima** · `argvus weather-location` · `Super + Shift + W` · `/` Buscar · `A` Automático (por IP) · `Delete` Borrar recientes · `Esc` Cerrar

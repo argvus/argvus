@@ -20,6 +20,7 @@ mod paths;
 mod script;
 mod setup;
 mod usage;
+mod weather;
 mod welcome;
 
 use std::ffi::OsString;

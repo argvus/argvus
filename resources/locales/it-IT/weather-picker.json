@@ -1,0 +1,10 @@
+{
+  "recent": "Luoghi recenti",
+  "clear": "Cancella recenti",
+  "confirm": "Cancellare i luoghi recenti?",
+  "empty": "Nessun luogo recente.",
+  "no_results": "Nessuna città trovata.",
+  "minutes": "{count} min fa",
+  "hours": "{count} h fa",
+  "days": "{count} g fa"
+}

@@ -82,7 +82,7 @@ Il Centro di controllo accetta i flag di pagina legacy come primo argomento e li
 
 Questi eseguono script pacchettizzati e sono utilizzati dalla configurazione di Hyprland:
 
-`scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `keep-awake`, `hypr-power-menu`.
+`scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `brightness-switch`, `toggle-mode`, `keep-awake`, `hypr-power-menu`.
 
 Uno script nella configurazione dell'utente sostituisce quello pacchettizzato. Ordine di ricerca: la copia della configurazione dell'utente, poi la copia dei dati ARGVUS, poi la copia dello stato, poi la copia generata, e solo allora il file pacchettizzato sotto `/usr/share/argvus`.
 
@@ -166,3 +166,5 @@ Gli angoli del pannello seguono l’arrotondamento impostato nel Centro di contr
 **ARGVUS Appunti** · `argvus clipboard` · `Super + H` · `↑` `↓` (Naviga) · `/` (Cerca) · `Enter` (Copia) · `Delete` (Cancella cronologia) · `Esc` (Chiudi)
 
 **ARGVUS Tempo di blocco** · `argvus idle-timeout` · `Super + Shift + L` · `↑` `↓` (Naviga) · `Enter` (Seleziona) · `Esc` (Chiudi)
+
+**ARGVUS Tempo atmosferico** · `argvus weather-location` · `Super + Shift + W` · `/` Cerca · `A` Automatico (tramite IP) · `Delete` Cancella recenti · `Esc` Chiudi

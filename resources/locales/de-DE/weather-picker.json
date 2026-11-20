@@ -1,0 +1,10 @@
+{
+  "recent": "Letzte Orte",
+  "clear": "Letzte Orte löschen",
+  "confirm": "Letzte Orte löschen?",
+  "empty": "Keine letzten Orte.",
+  "no_results": "Keine Städte gefunden.",
+  "minutes": "vor {count} Min.",
+  "hours": "vor {count} Std.",
+  "days": "vor {count} Tg."
+}

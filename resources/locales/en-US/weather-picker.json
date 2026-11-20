@@ -1,0 +1,10 @@
+{
+  "recent": "Recent locations",
+  "clear": "Clear recent",
+  "confirm": "Clear recent locations?",
+  "empty": "No recent locations.",
+  "no_results": "No cities found.",
+  "minutes": "{count} min ago",
+  "hours": "{count} h ago",
+  "days": "{count} d ago"
+}

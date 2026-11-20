@@ -81,7 +81,7 @@ description: أمر argvus وأوامره الفرعية والأعلام الم
 
 تعمل هذه البرامج النصية المجمعة ويتم استخدامها بواسطة تكوين Hyprland:
 
-`ARGVUS Keybindings-hypr`، `ARGVUS Keybindings-launcher`، `scratchpad`، `hypr-screenshot`، `spaces-switch`، `emoji-picker`، `toggle-sidebar`، `weather-location`، `brightness-switch`، `toggle-mode`، `keep-awake`، `hypr-power-menu`.
+`ARGVUS Keybindings-hypr`، `ARGVUS Keybindings-launcher`، `scratchpad`، `hypr-screenshot`، `spaces-switch`، `emoji-picker`، `toggle-sidebar`، `brightness-switch`، `toggle-mode`، `keep-awake`، `hypr-power-menu`.
 
 يتجاوز البرنامج النصي الموجود في تكوين المستخدم البرنامج النصي المعبأ. ترتيب البحث: نسخة تكوين المستخدم، ثم نسخة بيانات ARGVUS، ثم نسخة الحالة، ثم النسخة التي تم إنشاؤها، وبعد ذلك فقط الملف المعبأ تحت `/usr/share/argvus`.
 
@@ -167,3 +167,5 @@ argvus setup --copy <app> --dry-run
 **ARGVUS الحافظة** · `argvus clipboard` · `Super + H` · `↑` `↓` (التنقل) · `/` (بحث) · `Enter` (نسخ) · `Delete` (مسح السجل) · `Esc` (إغلاق)
 
 **ARGVUS مهلة القفل** · `argvus idle-timeout` · `Super + Shift + L` · `↑` `↓` (التنقل) · `Enter` (اختيار) · `Esc` (إغلاق)
+
+**ARGVUS الطقس** · `argvus weather-location` · `Super + Shift + W` · `/` بحث · `A` Automatic (by IP) · `Delete` مسح المواقع الأخيرة · `Esc` إغلاق

@@ -82,7 +82,7 @@ description: argvusコマンド、そのサブコマンド、キー割り当て�
 
 これらはパッケージ化されたスクリプトを実行し、Hyprland の設定で使用されます:
 
-`ARGVUS Keybindings-hypr`、`ARGVUS Keybindings-launcher`、`scratchpad`、`hypr-screenshot`、`spaces-switch`、`emoji-picker`、`toggle-sidebar`、`weather-location`、`brightness-switch`、`toggle-mode`、`keep-awake`、`hypr-power-menu`。
+`ARGVUS Keybindings-hypr`、`ARGVUS Keybindings-launcher`、`scratchpad`、`hypr-screenshot`、`spaces-switch`、`emoji-picker`、`toggle-sidebar`、`brightness-switch`、`toggle-mode`、`keep-awake`、`hypr-power-menu`。
 
 ユーザーの設定にあるスクリプトは、パッケージ化されたものを上書きします。検索の順序は、hyprland. 検索順序: ユーザーの設定コピー、次に ARGVUS データコピー、次にステートコピー、次に生成されたコピー、そして最後に  `hyprland.lua` `/usr/share/argvus` の下にあるパッケージ化ファイルです。
 
@@ -166,3 +166,5 @@ Lifecycle を開いている間は、すべてのモニターでデスクトッ�
 **ARGVUS クリップボード** · `argvus clipboard` · `Super + H` · `↑` `↓` (移動) · `/` (検索) · `Enter` (コピー) · `Delete` (履歴を消去) · `Esc` (閉じる)
 
 **ARGVUS ロックまでの時間** · `argvus idle-timeout` · `Super + Shift + L` · `↑` `↓` (移動) · `Enter` (選択) · `Esc` (閉じる)
+
+**ARGVUS 天気** · `argvus weather-location` · `Super + Shift + W` · `/` 検索 · `A` 自動（IPによる） · `Delete` 履歴を消去 · `Esc` 閉じる

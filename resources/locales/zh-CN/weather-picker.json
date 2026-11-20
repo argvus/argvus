@@ -1,0 +1,10 @@
+{
+  "recent": "最近位置",
+  "clear": "清除最近位置",
+  "confirm": "清除最近位置？",
+  "empty": "没有最近位置。",
+  "no_results": "未找到城市。",
+  "minutes": "{count} 分钟前",
+  "hours": "{count} 小时前",
+  "days": "{count} 天前"
+}

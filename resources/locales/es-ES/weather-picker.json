@@ -1,0 +1,10 @@
+{
+  "recent": "Ubicaciones recientes",
+  "clear": "Borrar recientes",
+  "confirm": "¿Borrar las ubicaciones recientes?",
+  "empty": "No hay ubicaciones recientes.",
+  "no_results": "No se encontraron ciudades.",
+  "minutes": "hace {count} min",
+  "hours": "hace {count} h",
+  "days": "hace {count} d"
+}

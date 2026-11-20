@@ -82,7 +82,7 @@ Das Kontrollzentrum akzeptiert Legacy-Seitenflags als erstes Argument und ordnet
 
 Diese führen verpackte Skripte aus und werden von der Hyprland-Konfiguration verwendet:
 
-`scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `keep-awake`, `hypr-power-menu`.
+`scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `brightness-switch`, `toggle-mode`, `keep-awake`, `hypr-power-menu`.
 
 Ein Skript in der Benutzerkonfiguration überschreibt das verpackte Skript. Suchreihenfolge: die Kopie der Benutzerkonfiguration, dann die ARGVUS-Datenkopie, dann die Statuskopie, dann die generierte Kopie, und erst danach die verpackte Datei unter `/usr/share/argvus`.
 
@@ -168,3 +168,5 @@ Die Ecken übernehmen die Rundung aus dem Control Center oder der Modusauswahl.
 **ARGVUS Zwischenablage** · `argvus clipboard` · `Super + H` · `↑` `↓` (Navigieren) · `/` (Suchen) · `Enter` (Kopieren) · `Delete` (Verlauf löschen) · `Esc` (Schließen)
 
 **ARGVUS Sperrzeit** · `argvus idle-timeout` · `Super + Shift + L` · `↑` `↓` (Navigieren) · `Enter` (Auswählen) · `Esc` (Schließen)
+
+**ARGVUS Wetter** · `argvus weather-location` · `Super + Shift + W` · `/` Suchen · `A` Automatisch (nach IP) · `Delete` Letzte Orte löschen · `Esc` Schließen

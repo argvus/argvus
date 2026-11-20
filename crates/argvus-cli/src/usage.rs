@@ -37,11 +37,13 @@ Commands:
 
   argvus idle-timeout [status|60|300|600|900|1800|0|--apply-static]
 
+  argvus weather-location [status|--auto|LOCATION]
+
 Hyprland script commands (used by the Hyprland configuration):
   argvus scratchpad | hypr-screenshot
   argvus windows service | bar | list --json | position top|bottom
   argvus windows minimize | restore | activate | maximize | close ADDRESS
-  argvus spaces-switch | emoji-picker | toggle-sidebar | weather-location
+  argvus spaces-switch | emoji-picker | toggle-sidebar
   argvus keybindings | theme-selector | theme-switch | layout-mode-menu | brightness-switch | toggle-mode
   argvus keep-awake | lock | effects-toggle
 

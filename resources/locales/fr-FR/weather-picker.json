@@ -1,0 +1,10 @@
+{
+  "recent": "Lieux récents",
+  "clear": "Effacer les lieux récents",
+  "confirm": "Effacer les lieux récents ?",
+  "empty": "Aucun lieu récent.",
+  "no_results": "Aucune ville trouvée.",
+  "minutes": "il y a {count} min",
+  "hours": "il y a {count} h",
+  "days": "il y a {count} j"
+}

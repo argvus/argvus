@@ -72,7 +72,7 @@ description: argvus کمانڈ، اس کی ذیلی کمانڈ، کی بائنڈ
 
 ## ﺯﮉﻧﺎﻤﮐ ﭧﭘﺮﮑﺳﺍ
 
-یہ پیکڈ اسکرپٹس چلاتے ہیں اور ہائپرلینڈ کنفیگریشن کے ذریعہ استعمال ہوتے ہیں: system  --hostname  locale  --keyboard-layout  apps  --apps  apps  --keyboard-layout  locale  --hostname  system `ARGVUS Keybindings-hypr `, ` ARGVUS Keybindings-launcher `, ` scratchpad `, ` hypr-screenshot `, ` spaces-switch `, ` toggle-sidebar `, ` weather-location `, ` brightness-switch `, ` toggle-mode `, ` keep-awake `, ` hypr-power-menu`.
+یہ پیکڈ اسکرپٹس چلاتے ہیں اور ہائپرلینڈ کنفیگریشن کے ذریعہ استعمال ہوتے ہیں: system  --hostname  locale  --keyboard-layout  apps  --apps  apps  --keyboard-layout  locale  --hostname  system `ARGVUS Keybindings-hypr `, ` ARGVUS Keybindings-launcher `, ` scratchpad `, ` hypr-screenshot `, ` spaces-switch `, ` toggle-sidebar `, ` brightness-switch `, ` toggle-mode `, ` keep-awake `, ` hypr-power-menu`.
 
 صارف کی ترتیب میں ایک اسکرپٹ پیک شدہ کو اوور رائیڈ کرتا ہے۔ تلاش کی ترتیب: صارف کی کنفیگریشن کاپی، پھر ARGVUS ڈیٹا کاپی، پھر اسٹیٹ کاپی، پھر جنریٹڈ کاپی، اور صرف اس کے بعد `/usr/share/argvus` کے تحت پیک کردہ فائل۔## مثالیں۔
 
@@ -152,3 +152,5 @@ Lifecycle کھلا ہو تو تمام مانیٹروں پر ڈیسک ٹاپ کے
 **ARGVUS کلپ بورڈ** · `argvus clipboard` · `Super + H` · `↑` `↓` (نیویگیٹ کریں) · `/` (تلاش کریں) · `Enter` (کاپی کریں) · `Delete` (تاریخ صاف کریں) · `Esc` (بند کریں)
 
 **ARGVUS لاک کی مہلت** · `argvus idle-timeout` · `Super + Shift + L` · `↑` `↓` (نیویگیٹ کریں) · `Enter` (منتخب کریں) · `Esc` (بند کریں)
+
+**ARGVUS موسم** · `argvus weather-location` · `Super + Shift + W` · `/` تلاش کریں · `A` خودکار (جی پی ایچ000) · `Delete` حالیہ مقامات صاف کریں · `Esc` بند کریں

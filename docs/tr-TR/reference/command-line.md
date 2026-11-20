@@ -169,3 +169,5 @@ Panel köşeleri, Denetim Merkezi veya mod seçicide ayarlanan yuvarlaklığı k
 **ARGVUS Pano** · `argvus clipboard` · `Super + H` · `↑` `↓` (Gezin) · `/` (Ara) · `Enter` (Kopyala) · `Delete` (Geçmişi temizle) · `Esc` (Kapat)
 
 **ARGVUS Kilit zaman aşımı** · `argvus idle-timeout` · `Super + Shift + L` · `↑` `↓` (Gezin) · `Enter` (Seç) · `Esc` (Kapat)
+
+**ARGVUS Hava** · `argvus weather-location` · `Super + Shift + W` · `/` Ara · `A` Otomatik (by IP) · `Delete` Son konumları temizle · `Esc` Kapat

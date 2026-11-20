@@ -1,0 +1,10 @@
+{
+  "recent": "Vị trí gần đây",
+  "clear": "Xóa vị trí gần đây",
+  "confirm": "Xóa các vị trí gần đây?",
+  "empty": "Không có vị trí gần đây.",
+  "no_results": "Không tìm thấy thành phố.",
+  "minutes": "{count} phút trước",
+  "hours": "{count} giờ trước",
+  "days": "{count} ngày trước"
+}

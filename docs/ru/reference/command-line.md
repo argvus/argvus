@@ -82,7 +82,7 @@ description: Команда argvus, её подкоманды, флаги, ис�
 
 Эти упакованные скрипты запускаются и используются конфигурацией Hyprland:
 
-`scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `keep-awake`, `hypr-power-menu`.
+`scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `brightness-switch`, `toggle-mode`, `keep-awake`, `hypr-power-menu`.
 
 Скрипт в конфигурации пользователя переопределяет упакованный. Порядок поиска: копия конфигурации пользователя, затем копия данных ARGVUS, затем копия состояния, затем сгенерированная копия, и только потом упакованный файл под `/usr/share/argvus`.
 
@@ -166,3 +166,5 @@ ARGVUS Lifecycle использует действующий радиус скр
 **ARGVUS Буфер обмена** · `argvus clipboard` · `Super + H` · `↑` `↓` (Навигация) · `/` (Поиск) · `Enter` (Копировать) · `Delete` (Очистить историю) · `Esc` (Закрыть)
 
 **ARGVUS Время до блокировки** · `argvus idle-timeout` · `Super + Shift + L` · `↑` `↓` (Навигация) · `Enter` (Выбрать) · `Esc` (Закрыть)
+
+**ARGVUS Погода** · `argvus weather-location` · `Super + Shift + W` · `/` Поиск · `A` Автоматический (по IP) · `Delete` Очистить историю · `Esc` Закрыть

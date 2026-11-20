@@ -1,0 +1,10 @@
+{
+  "recent": "最近の場所",
+  "clear": "履歴を消去",
+  "confirm": "最近の場所を消去しますか？",
+  "empty": "最近の場所はありません。",
+  "no_results": "都市が見つかりませんでした。",
+  "minutes": "{count}分前",
+  "hours": "{count}時間前",
+  "days": "{count}日前"
+}
