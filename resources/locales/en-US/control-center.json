@@ -1070,6 +1070,7 @@
   "control_center.taskbar_battery": "Battery",
   "control_center.taskbar_tray": "System tray (background application icons)",
   "control_center.taskbar_removable_devices": "Removable devices",
+  "control_center.taskbar_clipboard": "Clipboard",
   "control_center.taskbar_recording": "Screen recording",
   "control_center.taskbar_audio_input": "Audio input",
   "control_center.taskbar_audio_output": "Audio output",

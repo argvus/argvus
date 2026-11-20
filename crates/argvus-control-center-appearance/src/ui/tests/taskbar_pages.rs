@@ -268,6 +268,23 @@ fn ai_agents_module_is_localized_and_edits_only_the_taskbar_draft() {
 }
 
 #[test]
+fn clipboard_module_changes_only_the_draft_until_apply() {
+  let mut application = draft_app(AppearancePage::TaskbarModules);
+  assert!(
+    labels(&application)
+      .iter()
+      .any(|label| label == "Clipboard")
+  );
+  assert!(application.state.taskbar_modules.clipboard);
+  application.activate(Item::TaskbarModule(TaskbarModule::Clipboard));
+  assert!(!application.surface_draft().unwrap().modules.clipboard);
+  assert!(application.state.taskbar_modules.clipboard);
+  assert!(application.has_pending_changes());
+  application.activate(Item::TaskbarModule(TaskbarModule::Clipboard));
+  assert!(!application.has_pending_changes());
+}
+
+#[test]
 fn update_status_options_follow_the_taskbar_draft() {
   let mut application = draft_app(AppearancePage::TaskbarModules);
   assert!(application.surface_draft().unwrap().modules.update_status);

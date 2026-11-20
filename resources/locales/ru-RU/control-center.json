@@ -1070,6 +1070,7 @@
   "control_center.taskbar_battery": "Батарея",
   "control_center.taskbar_tray": "Панель задач (значки фоновых приложений)",
   "control_center.taskbar_removable_devices": "Съемные устройства",
+  "control_center.taskbar_clipboard": "Буфер обмена",
   "control_center.taskbar_recording": "Запись экрана",
   "control_center.taskbar_audio_input": "Аудиовход",
   "control_center.taskbar_audio_output": "Аудиовыход",

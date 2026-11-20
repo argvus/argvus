@@ -670,3 +670,5 @@ Quickshell: `launcher/Theme.qml` · Rofi: `launcher/theme.rasi`
 `/launcher/selected_category`: `""` (All), `applications`, `windows`, `settings`, `actions`, `projects`, `ssh`, `files`, `help`.
 
 - `Super + Shift + A` · فتح منتقي لون التمييز · `argvus config accent`
+
+الحافظة مفعّلة افتراضيًا ويمكن فتحها من مجموعة الأدوات في شريط المهام. لإيقاف تسجيل النصوص والصور، ألغِ تحديد الخيار في Control Center → Appearance → Taskbar → Icons → Optional modules واختر Apply. تختفي الأيقونة ويتعذر فتح السجل حتى إعادة التفعيل. تبقى العناصر المحفوظة.

@@ -593,3 +593,5 @@ Quickshell: `launcher/Theme.qml` · Rofi: `launcher/theme.rasi`
 `/launcher/selected_category`: `""` (All), `applications`, `windows`, `settings`, `actions`, `projects`, `ssh`, `files`, `help`.
 
 - `Super + Shift + A` · 강조 색상 선택기 열기 · `argvus config accent`
+
+클립보드는 기본적으로 활성화되어 있으며 작업 표시줄의 유틸리티 그룹에서 열 수 있습니다. 텍스트와 이미지 기록을 중지하려면 Control Center → Appearance → Taskbar → Icons → Optional modules에서 항목을 해제하고 Apply를 선택하세요. 아이콘이 사라지고 다시 활성화할 때까지 기록을 열 수 없습니다. 저장된 항목은 유지됩니다.

@@ -1,5 +1,6 @@
 {
   "title": "Portapapeles",
+  "disabled": "El portapapeles está desactivado en los ajustes de la barra de tareas.",
   "search": "Buscar en el historial…",
   "loading": "Cargando historial…",
   "empty": "El historial del portapapeles está vacío.",

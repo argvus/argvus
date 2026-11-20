@@ -1070,6 +1070,7 @@
   "control_center.taskbar_battery": "バッテリー",
   "control_center.taskbar_tray": "システム トレイ (バックグラウンド アプリケーション アイコン)",
   "control_center.taskbar_removable_devices": "リムーバブルデバイス",
+  "control_center.taskbar_clipboard": "クリップボード",
   "control_center.taskbar_recording": "画面録画",
   "control_center.taskbar_audio_input": "音声入力",
   "control_center.taskbar_audio_output": "音声出力",

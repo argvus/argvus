@@ -1070,6 +1070,7 @@
   "control_center.taskbar_battery": "बैटरी",
   "control_center.taskbar_tray": "सिस्टम ट्रे (बैकग्राउंड एप्लिकेशन आइकन)",
   "control_center.taskbar_removable_devices": "हटाने योग्य उपकरण",
+  "control_center.taskbar_clipboard": "क्लिपबोर्ड",
   "control_center.taskbar_recording": "स्क्रीन रिकॉर्डिंग",
   "control_center.taskbar_audio_input": "ऑडियो इनपुट",
   "control_center.taskbar_audio_output": "ऑडियो आउटपुट",

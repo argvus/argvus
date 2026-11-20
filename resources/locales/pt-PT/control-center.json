@@ -1070,6 +1070,7 @@
   "control_center.taskbar_battery": "Bateria",
   "control_center.taskbar_tray": "Bandeja do sistema (icones de aplicação de fundo)",
   "control_center.taskbar_removable_devices": "Dispositivos removíveis",
+  "control_center.taskbar_clipboard": "Área de transferência",
   "control_center.taskbar_recording": "Gravação de tela",
   "control_center.taskbar_audio_input": "Entrada de áudio",
   "control_center.taskbar_audio_output": "Saída de áudio",

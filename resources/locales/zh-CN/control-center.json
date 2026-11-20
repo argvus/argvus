@@ -1070,6 +1070,7 @@
   "control_center.taskbar_battery": "电池",
   "control_center.taskbar_tray": "系统托盘（后台应用程序图标）",
   "control_center.taskbar_removable_devices": "可移动设备",
+  "control_center.taskbar_clipboard": "剪贴板",
   "control_center.taskbar_recording": "屏幕录制",
   "control_center.taskbar_audio_input": "音频输入",
   "control_center.taskbar_audio_output": "音频输出",

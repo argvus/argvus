@@ -347,9 +347,19 @@ pub fn run(args: &[OsString]) -> Outcome {
   if !args.is_empty() {
     return Err(Failure::new("usage: argvus clipboard"));
   }
-  gtk::init().map_err(|error| Failure::new(format!("GTK: {error}")))?;
   let locale = argvus_i18n::user_locale();
   let lang = Lang::for_domain(&locale, "clipboard");
+  let config = argvus_config_core::ConfigStore::from_environment()
+    .and_then(|store| store.load_effective())
+    .map_err(Failure::new)?;
+  if config
+    .get("/taskbar/icons/clipboard_enabled")
+    .and_then(serde_json::Value::as_bool)
+    == Some(false)
+  {
+    return Err(Failure::new(tr(lang, "disabled")));
+  }
+  gtk::init().map_err(|error| Failure::new(format!("GTK: {error}")))?;
   gtk::Widget::set_default_direction(match lang.direction() {
     TextDirection::LeftToRight => gtk::TextDirection::Ltr,
     TextDirection::RightToLeft => gtk::TextDirection::Rtl,

@@ -275,6 +275,7 @@ fn default_taskbar(document: &mut ConfigDocument) {
   for widget in [
     "network",
     "update_status",
+    "clipboard",
     "power_profile",
     "keyboard_layout",
     "memory",

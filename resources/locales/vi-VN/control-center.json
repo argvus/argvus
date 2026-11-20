@@ -1070,6 +1070,7 @@
   "control_center.taskbar_battery": "Pin",
   "control_center.taskbar_tray": "Khay hệ thống ( biểu tượng ứng dụng mặt sau)",
   "control_center.taskbar_removable_devices": "Thiết bị gỡ bỏ được",
+  "control_center.taskbar_clipboard": "Bảng tạm",
   "control_center.taskbar_recording": "Thu màn hình",
   "control_center.taskbar_audio_input": "Nhập âm thanh",
   "control_center.taskbar_audio_output": "Xuất âm thanh",

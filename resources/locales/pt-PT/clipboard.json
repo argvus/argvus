@@ -1,5 +1,6 @@
 {
   "title": "Área de transferência",
+  "disabled": "A área de transferência está desativada nas definições da barra de tarefas.",
   "search": "Pesquisar no histórico…",
   "loading": "A carregar o histórico…",
   "empty": "O histórico da área de transferência está vazio.",

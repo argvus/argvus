@@ -1,5 +1,6 @@
 {
   "title": "Zwischenablage",
+  "disabled": "Die Zwischenablage ist in den Einstellungen der Taskleiste deaktiviert.",
   "search": "Verlauf durchsuchen…",
   "loading": "Verlauf wird geladen…",
   "empty": "Die Zwischenablage ist leer.",

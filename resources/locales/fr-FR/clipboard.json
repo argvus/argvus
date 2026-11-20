@@ -1,5 +1,6 @@
 {
   "title": "Presse-papiers",
+  "disabled": "Le presse-papiers est désactivé dans les paramètres de la barre des tâches.",
   "search": "Rechercher dans l’historique…",
   "loading": "Chargement de l’historique…",
   "empty": "L’historique du presse-papiers est vide.",

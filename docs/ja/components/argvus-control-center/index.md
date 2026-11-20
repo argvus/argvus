@@ -602,3 +602,5 @@ Quickshell: `launcher/Theme.qml` · Rofi: `launcher/theme.rasi`
 `/launcher/selected_category`: `""` (All), `applications`, `windows`, `settings`, `actions`, `projects`, `ssh`, `files`, `help`.
 
 - `Super + Shift + A` · アクセントカラーの選択画面を開く · `argvus config accent`
+
+クリップボードは既定で有効で、タスクバーのユーティリティグループから開けます。テキストと画像の記録を停止するには、Control Center → Appearance → Taskbar → Icons → Optional modules で項目のチェックを外し、Apply を選択します。アイコンが非表示になり、再度有効にするまで履歴を開けません。保存済みの項目は保持されます。

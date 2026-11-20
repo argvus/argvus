@@ -1070,6 +1070,7 @@
   "control_center.taskbar_battery": "Battery",
   "control_center.taskbar_tray": "Sistem tepsisi (Uygulama ikonları)",
   "control_center.taskbar_removable_devices": "Yeniden taşınma cihazları",
+  "control_center.taskbar_clipboard": "Pano",
   "control_center.taskbar_recording": "Ekran Kaydı",
   "control_center.taskbar_audio_input": "Ses girişi",
   "control_center.taskbar_audio_output": "Ses çıktı",

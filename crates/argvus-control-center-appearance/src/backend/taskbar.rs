@@ -137,7 +137,27 @@ pub fn apply_taskbar_icons_and_format(
     Value::String(time_format.value().into()),
   );
   persist_taskbar_patch(patch)?;
+  sync_clipboard_watchers()?;
   run_script(&script("taskbar-widgets-mode.sh"), &["apply"])
+}
+
+/// Applies the saved Clipboard preference to the two capture services.
+fn sync_clipboard_watchers() -> Result<(), String> {
+  let output = SystemProcessRunner
+    .run(
+      &ProcessRequest::new("argvus")
+        .arg("sessionctl")
+        .arg("sync-clipboard"),
+    )
+    .map_err(|error| error.to_string())?;
+  if output.status != Some(0) {
+    let stderr = terminal_text(&String::from_utf8_lossy(&output.stderr));
+    return Err(format!(
+      "failed to apply Clipboard capture settings: {}",
+      stderr.trim()
+    ));
+  }
+  Ok(())
 }
 
 /// Restarts the taskbar (Waybar) process so it re-parses its generated

@@ -1,5 +1,6 @@
 {
   "title": "Clipboard",
+  "disabled": "Clipboard is disabled in the taskbar settings.",
   "search": "Search clipboard history…",
   "loading": "Loading history…",
   "empty": "Clipboard history is empty.",

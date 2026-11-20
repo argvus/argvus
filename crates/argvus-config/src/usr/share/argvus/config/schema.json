@@ -177,6 +177,7 @@
             "battery_enabled": { "type": "boolean" },
             "tray_enabled": { "type": "boolean" },
             "ai_agents_enabled": { "type": "boolean" },
+            "clipboard_enabled": { "type": "boolean" },
             "notifications_enabled": { "type": "boolean" },
             "removable_devices_enabled": { "type": "boolean" },
             "recording_enabled": { "type": "boolean" },

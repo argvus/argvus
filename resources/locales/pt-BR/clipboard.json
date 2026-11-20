@@ -1,5 +1,6 @@
 {
   "title": "Clipboard",
+  "disabled": "O Clipboard está desativado nas configurações da barra de tarefas.",
   "search": "Buscar no histórico…",
   "loading": "Carregando histórico…",
   "empty": "O histórico da área de transferência está vazio.",

@@ -1070,6 +1070,7 @@
   "control_center.taskbar_battery": "Baterai",
   "control_center.taskbar_tray": "Baki sistem (ikon aplikasi latar belakang)",
   "control_center.taskbar_removable_devices": "Perangkat yang dapat dilepas",
+  "control_center.taskbar_clipboard": "Papan klip",
   "control_center.taskbar_recording": "Rekaman layar",
   "control_center.taskbar_audio_input": "Masukan audio",
   "control_center.taskbar_audio_output": "Keluaran audio",

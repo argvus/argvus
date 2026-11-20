@@ -1,5 +1,6 @@
 {
   "title": "Bảng tạm",
+  "disabled": "Bảng tạm đã bị tắt trong cài đặt thanh tác vụ.",
   "search": "Tìm trong lịch sử…",
   "loading": "Đang tải lịch sử…",
   "empty": "Lịch sử bảng tạm trống.",

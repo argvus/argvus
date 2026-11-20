@@ -598,3 +598,5 @@ Quickshell: `launcher/Theme.qml` · Rofi: `launcher/theme.rasi`
 `/launcher/selected_category`: `""` (All), `applications`, `windows`, `settings`, `actions`, `projects`, `ssh`, `files`, `help`.
 
 - `Super + Shift + A` · نمایاں رنگ کا انتخاب کھولیں · `argvus config accent`
+
+کلپ بورڈ پہلے سے فعال ہوتا ہے اور ٹاسک بار کے افادیتی گروپ سے کھلتا ہے۔ متن اور تصاویر کی ریکارڈنگ روکنے کے لیے Control Center → Appearance → Taskbar → Icons → Optional modules میں اختیار کو غیر منتخب کریں اور Apply منتخب کریں۔ آئیکن چھپ جائے گا اور دوبارہ فعال کرنے تک تاریخچہ نہیں کھلے گا۔ محفوظ اندراجات برقرار رہیں گے۔

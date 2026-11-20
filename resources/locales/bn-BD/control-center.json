@@ -1070,6 +1070,7 @@
   "control_center.taskbar_battery": "ব্যাটারি",
   "control_center.taskbar_tray": "সিস্টেম ট্রে (background অ্যাপ্লিকেশন আইকন)",
   "control_center.taskbar_removable_devices": "অপসারণযোগ্য ডিভাইস",
+  "control_center.taskbar_clipboard": "ক্লিপবোর্ড",
   "control_center.taskbar_recording": "স্ক্রিন-কাস্ট রেকর্ড করা হচ্ছে",
   "control_center.taskbar_audio_input": "অডিও ইনপুট",
   "control_center.taskbar_audio_output": "অডিও আউটপুট",

@@ -1,5 +1,6 @@
 {
   "title": "Papan klip",
+  "disabled": "Papan klip dinonaktifkan di pengaturan bilah tugas.",
   "search": "Cari dalam riwayat…",
   "loading": "Memuat riwayat…",
   "empty": "Riwayat papan klip kosong.",

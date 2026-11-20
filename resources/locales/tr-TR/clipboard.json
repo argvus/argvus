@@ -1,5 +1,6 @@
 {
   "title": "Pano",
+  "disabled": "Pano görev çubuğu ayarlarında devre dışı.",
   "search": "Pano geçmişinde ara…",
   "loading": "Geçmiş yükleniyor…",
   "empty": "Pano geçmişi boş.",

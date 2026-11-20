@@ -1070,6 +1070,7 @@
   "control_center.taskbar_battery": "Batteria",
   "control_center.taskbar_tray": "Barra delle applicazioni (icone delle applicazioni in background)",
   "control_center.taskbar_removable_devices": "Dispositivi rimovibili",
+  "control_center.taskbar_clipboard": "Appunti",
   "control_center.taskbar_recording": "Registrazione dello schermo",
   "control_center.taskbar_audio_input": "Ingresso audio",
   "control_center.taskbar_audio_output": "Uscita audio",

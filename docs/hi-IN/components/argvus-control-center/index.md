@@ -659,3 +659,5 @@ Quickshell: `launcher/Theme.qml` · Rofi: `launcher/theme.rasi`
 `/launcher/selected_category`: `""` (All), `applications`, `windows`, `settings`, `actions`, `projects`, `ssh`, `files`, `help`.
 
 - `Super + Shift + A` · एक्सेंट रंग चयनकर्ता खोलें · `argvus config accent`
+
+क्लिपबोर्ड डिफ़ॉल्ट रूप से चालू रहता है और टास्कबार के उपयोगिता समूह से खुलता है। टेक्स्ट और चित्रों की रिकॉर्डिंग रोकने के लिए Control Center → Appearance → Taskbar → Icons → Optional modules में विकल्प हटाएँ और Apply चुनें। आइकन छिप जाएगा और दोबारा चालू करने तक इतिहास नहीं खुलेगा। सहेजी गई प्रविष्टियाँ बनी रहेंगी।

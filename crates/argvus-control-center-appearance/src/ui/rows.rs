@@ -281,6 +281,7 @@ fn taskbar_module_icon(module: TaskbarModule) -> &'static str {
     TaskbarModule::Battery => icons::BATTERY,
     TaskbarModule::Tray | TaskbarModule::Notifications => icons::WIDGET,
     TaskbarModule::RemovableDevices => icons::STORAGE,
+    TaskbarModule::Clipboard => "\u{f014c}",
     TaskbarModule::Recording | TaskbarModule::AudioInput => icons::MICROPHONE,
     TaskbarModule::Bluetooth => icons::BLUETOOTH,
     TaskbarModule::AudioOutput => icons::AUDIO,

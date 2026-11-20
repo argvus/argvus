@@ -68,6 +68,7 @@ pub enum TaskbarModule {
   AiAgents,
   Notifications,
   RemovableDevices,
+  Clipboard,
   Recording,
   Bluetooth,
   AudioInput,
@@ -76,7 +77,7 @@ pub enum TaskbarModule {
 }
 
 impl TaskbarModule {
-  pub const ALL: [Self; 24] = [
+  pub const ALL: [Self; 25] = [
     Self::AudioPlayer,
     Self::Focus,
     Self::Launcher,
@@ -96,6 +97,7 @@ impl TaskbarModule {
     Self::AiAgents,
     Self::Notifications,
     Self::RemovableDevices,
+    Self::Clipboard,
     Self::Recording,
     Self::Bluetooth,
     Self::AudioInput,
@@ -125,6 +127,7 @@ impl TaskbarModule {
       Self::AiAgents => "ai_agents",
       Self::Notifications => "notifications",
       Self::RemovableDevices => "removable_devices",
+      Self::Clipboard => "clipboard",
       Self::Recording => "recording",
       Self::Bluetooth => "bluetooth",
       Self::AudioInput => "audio_input",
@@ -155,6 +158,7 @@ impl TaskbarModule {
       Self::AiAgents => "control_center.taskbar_ai_agents",
       Self::Notifications => "control_center.notifications",
       Self::RemovableDevices => "control_center.taskbar_removable_devices",
+      Self::Clipboard => "control_center.taskbar_clipboard",
       Self::Recording => "control_center.taskbar_recording",
       Self::Bluetooth => "control_center.bluetooth",
       Self::AudioInput => "control_center.taskbar_audio_input",
@@ -188,6 +192,7 @@ pub struct TaskbarModules {
   pub ai_agents: bool,
   pub notifications: bool,
   pub removable_devices: bool,
+  pub clipboard: bool,
   pub recording: bool,
   pub bluetooth: bool,
   pub audio_input: bool,
@@ -219,6 +224,7 @@ impl Default for TaskbarModules {
       ai_agents: true,
       notifications: true,
       removable_devices: true,
+      clipboard: true,
       recording: true,
       bluetooth: true,
       audio_input: true,
@@ -250,6 +256,7 @@ impl TaskbarModules {
       TaskbarModule::AiAgents => self.ai_agents,
       TaskbarModule::Notifications => self.notifications,
       TaskbarModule::RemovableDevices => self.removable_devices,
+      TaskbarModule::Clipboard => self.clipboard,
       TaskbarModule::Recording => self.recording,
       TaskbarModule::Bluetooth => self.bluetooth,
       TaskbarModule::AudioInput => self.audio_input,
@@ -279,6 +286,7 @@ impl TaskbarModules {
       TaskbarModule::AiAgents => self.ai_agents = enabled,
       TaskbarModule::Notifications => self.notifications = enabled,
       TaskbarModule::RemovableDevices => self.removable_devices = enabled,
+      TaskbarModule::Clipboard => self.clipboard = enabled,
       TaskbarModule::Recording => self.recording = enabled,
       TaskbarModule::Bluetooth => self.bluetooth = enabled,
       TaskbarModule::AudioInput => self.audio_input = enabled,

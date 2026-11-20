@@ -1070,6 +1070,7 @@
   "control_center.taskbar_battery": "배터리",
   "control_center.taskbar_tray": "시스템 트레이(백그라운드 응용 프로그램 아이콘)",
   "control_center.taskbar_removable_devices": "이동식 장치",
+  "control_center.taskbar_clipboard": "클립보드",
   "control_center.taskbar_recording": "화면 녹화",
   "control_center.taskbar_audio_input": "오디오 입력",
   "control_center.taskbar_audio_output": "오디오 출력",
