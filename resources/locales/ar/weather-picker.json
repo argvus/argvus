@@ -6,5 +6,6 @@
   "no_results": "لم يتم العثور على مدن.",
   "minutes": "منذ {count} د",
   "hours": "منذ {count} س",
-  "days": "منذ {count} يوم"
+  "days": "منذ {count} يوم",
+  "temperature_unit": "وحدة درجة الحرارة"
 }

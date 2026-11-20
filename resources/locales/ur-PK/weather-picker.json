@@ -6,5 +6,6 @@
   "no_results": "کوئی شہر نہیں ملا۔",
   "minutes": "{count} منٹ پہلے",
   "hours": "{count} گھنٹے پہلے",
-  "days": "{count} دن پہلے"
+  "days": "{count} دن پہلے",
+  "temperature_unit": "درجہ حرارت کی اکائی"
 }

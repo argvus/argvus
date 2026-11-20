@@ -152,3 +152,5 @@ Lifecycle খোলা থাকলে সব মনিটরে ডেস্ক
 **ARGVUS লকের সময়সীমা** · `argvus idle-timeout` · `Super + Shift + L` · `↑` `↓` (নেভিগেট করুন) · `Enter` (নির্বাচন) · `Esc` (বন্ধ করুন)
 
 **ARGVUS আবহাওয়া** · `argvus weather-location` · `Super + Shift + W` · `/` খুঁজুন · `A` স্বয়ংক্রিয় · `Delete` সাম্প্রতিক স্থান মুছুন · `Esc` বন্ধ করুন
+
+**তাপমাত্রার একক** · °C / °F

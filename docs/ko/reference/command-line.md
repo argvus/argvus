@@ -168,3 +168,5 @@ Lifecycle이 열려 있는 동안 모든 모니터에서 바탕 화면 클릭과
 **ARGVUS 잠금 대기 시간** · `argvus idle-timeout` · `Super + Shift + L` · `↑` `↓` (이동) · `Enter` (선택) · `Esc` (닫기)
 
 **ARGVUS 날씨** · `argvus weather-location` · `Super + Shift + W` · `/` 검색 · `A` 자동(IP별) · `Delete` 최근 기록 지우기 · `Esc` 닫기
+
+**온도 단위** · °C / °F

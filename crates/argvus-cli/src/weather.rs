@@ -30,6 +30,7 @@ struct Place {
 struct Files {
   location: PathBuf,
   recent: PathBuf,
+  temperature_unit: PathBuf,
 }
 
 impl Files {
@@ -40,6 +41,7 @@ impl Files {
     Ok(Self {
       location: data.join(".weather-location"),
       recent: data.join("weather-recent.json"),
+      temperature_unit: data.join(".weather-temperature-unit"),
     })
   }
 
@@ -475,6 +477,18 @@ fn show(files: Files, locale: &str, lang: Lang) -> Result<(), Failure> {
   actions.append(&recent_count);
   actions.append(&clear);
   panel.append(&actions);
+  let unit_row = gtk::Box::new(gtk::Orientation::Horizontal, 12);
+  let unit_label = gtk::Label::new(Some(&strings.tr("temperature_unit")));
+  let unit = gtk::DropDown::from_strings(&["°C", "°F"]);
+  unit.update_relation(&[gtk::accessible::Relation::LabelledBy(&[
+    unit_label.upcast_ref()
+  ])]);
+  unit.set_selected(u32::from(
+    fs::read_to_string(&files.temperature_unit).is_ok_and(|value| value.trim() == "fahrenheit"),
+  ));
+  unit_row.append(&unit_label);
+  unit_row.append(&unit);
+  panel.append(&unit_row);
   let list = gtk::ListBox::new();
   panel.append(&picker::scroll(&list));
   list.set_activate_on_single_click(false);
@@ -523,6 +537,29 @@ fn show(files: Files, locale: &str, lang: Lang) -> Result<(), Failure> {
     generation: Cell::new(0),
     detecting: Cell::new(false),
     debounce: RefCell::new(None),
+  });
+  let weak = Rc::downgrade(&state);
+  let saved_unit = Cell::new(unit.selected());
+  unit.connect_selected_notify(move |unit| {
+    let Some(state) = weak.upgrade() else {
+      return;
+    };
+    let selected = unit.selected();
+    if selected == saved_unit.get() {
+      return;
+    }
+    let value = if selected == 1 {
+      "fahrenheit\n"
+    } else {
+      "celsius\n"
+    };
+    match write_atomic(&state.files.temperature_unit, value.as_bytes()) {
+      Ok(()) => saved_unit.set(selected),
+      Err(error) => {
+        unit.set_selected(saved_unit.get());
+        state.error(error);
+      }
+    }
   });
   let weak = Rc::downgrade(&state);
   state.entry.connect_changed(move |_| {
@@ -586,6 +623,12 @@ fn show(files: Files, locale: &str, lang: Lang) -> Result<(), Failure> {
     let on_button = focus
       .as_ref()
       .is_some_and(|focus| focus.is::<gtk::Button>());
+    let in_unit = focus
+      .as_ref()
+      .is_some_and(|focus| focus == unit.upcast_ref::<gtk::Widget>() || focus.is_ancestor(&unit));
+    if in_unit && key != gdk::Key::Escape {
+      return glib::Propagation::Proceed;
+    }
     match key {
       gdk::Key::Escape => state.done.quit(),
       gdk::Key::slash if !in_entry => {

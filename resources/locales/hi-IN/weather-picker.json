@@ -6,5 +6,6 @@
   "no_results": "कोई शहर नहीं मिला।",
   "minutes": "{count} मिनट पहले",
   "hours": "{count} घंटे पहले",
-  "days": "{count} दिन पहले"
+  "days": "{count} दिन पहले",
+  "temperature_unit": "तापमान की इकाई"
 }

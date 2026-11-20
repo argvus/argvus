@@ -168,3 +168,5 @@ ARGVUS Lifecycle использует действующий радиус скр
 **ARGVUS Время до блокировки** · `argvus idle-timeout` · `Super + Shift + L` · `↑` `↓` (Навигация) · `Enter` (Выбрать) · `Esc` (Закрыть)
 
 **ARGVUS Погода** · `argvus weather-location` · `Super + Shift + W` · `/` Поиск · `A` Автоматический (по IP) · `Delete` Очистить историю · `Esc` Закрыть
+
+**Единица измерения температуры** · °C / °F

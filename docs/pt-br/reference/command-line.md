@@ -175,3 +175,5 @@ Use **Limpar histórico** ou pressione **Delete** na lista e confirme. A limpeza
 **ARGVUS Tempo de bloqueio** · `argvus idle-timeout` · `Super + Shift + L` · `↑` `↓` (Navegar) · `Enter` (Selecionar) · `Esc` (Fechar)
 
 **ARGVUS Clima** · `argvus weather-location` · `Super + Shift + W` · `/` Buscar · `A` Automático (por IP) · `Delete` Limpar recentes · `Esc` Fechar
+
+**Unidade de temperatura** · °C / °F

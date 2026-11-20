@@ -6,5 +6,6 @@
   "no_results": "都市が見つかりませんでした。",
   "minutes": "{count}分前",
   "hours": "{count}時間前",
-  "days": "{count}日前"
+  "days": "{count}日前",
+  "temperature_unit": "温度の単位"
 }

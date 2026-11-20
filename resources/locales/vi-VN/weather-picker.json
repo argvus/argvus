@@ -6,5 +6,6 @@
   "no_results": "Không tìm thấy thành phố.",
   "minutes": "{count} phút trước",
   "hours": "{count} giờ trước",
-  "days": "{count} ngày trước"
+  "days": "{count} ngày trước",
+  "temperature_unit": "Đơn vị nhiệt độ"
 }

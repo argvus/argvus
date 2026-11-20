@@ -6,5 +6,6 @@
   "no_results": "No se encontraron ciudades.",
   "minutes": "hace {count} min",
   "hours": "hace {count} h",
-  "days": "hace {count} d"
+  "days": "hace {count} d",
+  "temperature_unit": "Unidad de temperatura"
 }

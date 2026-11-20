@@ -169,3 +169,5 @@ Sudut panel mengikuti pengaturan pembulatan di Pusat Kontrol atau pemilih mode.
 **ARGVUS Waktu tunggu penguncian** · `argvus idle-timeout` · `Super + Shift + L` · `↑` `↓` (Navigasi) · `Enter` (Pilih) · `Esc` (Tutup)
 
 **ARGVUS Cuaca** · `argvus weather-location` · `Super + Shift + W` · `/` Cari · `A` Otomatis (oleh IP) · `Delete` Hapus lokasi terbaru · `Esc` Tutup
+
+**Satuan suhu** · °C / °F

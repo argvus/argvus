@@ -6,5 +6,6 @@
   "no_results": "No cities found.",
   "minutes": "{count} min ago",
   "hours": "{count} h ago",
-  "days": "{count} d ago"
+  "days": "{count} d ago",
+  "temperature_unit": "Temperature unit"
 }

@@ -6,5 +6,6 @@
   "no_results": "কোনো শহর পাওয়া যায়নি।",
   "minutes": "{count} মিনিট আগে",
   "hours": "{count} ঘণ্টা আগে",
-  "days": "{count} দিন আগে"
+  "days": "{count} দিন আগে",
+  "temperature_unit": "তাপমাত্রার একক"
 }

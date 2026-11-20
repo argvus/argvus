@@ -168,3 +168,5 @@ Las esquinas del panel siguen el redondeo configurado en el Centro de control o 
 **ARGVUS Tiempo de bloqueo** · `argvus idle-timeout` · `Super + Shift + L` · `↑` `↓` (Navegar) · `Enter` (Seleccionar) · `Esc` (Cerrar)
 
 **ARGVUS Clima** · `argvus weather-location` · `Super + Shift + W` · `/` Buscar · `A` Automático (por IP) · `Delete` Borrar recientes · `Esc` Cerrar
+
+**Unidad de temperatura** · °C / °F

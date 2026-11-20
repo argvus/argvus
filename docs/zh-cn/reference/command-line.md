@@ -168,3 +168,5 @@ Lifecycle 打开时，会阻止所有显示器上的桌面点击和滚动，并�
 **ARGVUS 锁屏等待时间** · `argvus idle-timeout` · `Super + Shift + L` · `↑` `↓` (导航) · `Enter` (选择) · `Esc` (关闭)
 
 **ARGVUS 天气** · `argvus weather-location` · `Super + Shift + W` · `/` 搜索 · `A` 自动（通过 IP） · `Delete` 清除最近位置 · `Esc` 关闭
+
+**温度单位** · °C / °F

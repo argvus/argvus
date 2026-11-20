@@ -6,5 +6,6 @@
   "no_results": "Города не найдены.",
   "minutes": "{count} мин назад",
   "hours": "{count} ч назад",
-  "days": "{count} дн назад"
+  "days": "{count} дн назад",
+  "temperature_unit": "Единица измерения температуры"
 }

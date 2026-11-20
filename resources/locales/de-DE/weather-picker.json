@@ -6,5 +6,6 @@
   "no_results": "Keine Städte gefunden.",
   "minutes": "vor {count} Min.",
   "hours": "vor {count} Std.",
-  "days": "vor {count} Tg."
+  "days": "vor {count} Tg.",
+  "temperature_unit": "Temperatureinheit"
 }

@@ -6,5 +6,6 @@
   "no_results": "Tidak ada kota yang ditemukan.",
   "minutes": "{count} mnt lalu",
   "hours": "{count} jam lalu",
-  "days": "{count} hari lalu"
+  "days": "{count} hari lalu",
+  "temperature_unit": "Satuan suhu"
 }

@@ -170,3 +170,5 @@ Les coins du panneau suivent l’arrondi défini dans le centre de contrôle ou 
 **ARGVUS Délai de verrouillage** · `argvus idle-timeout` · `Super + Shift + L` · `↑` `↓` (Naviguer) · `Enter` (Sélectionner) · `Esc` (Fermer)
 
 **ARGVUS Météo** · `argvus weather-location` · `Super + Shift + W` · `/` Rechercher · `A` Automatique (par IP) · `Delete` Effacer les lieux récents · `Esc` Fermer
+
+**Unité de température** · °C / °F
