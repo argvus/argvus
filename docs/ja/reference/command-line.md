@@ -84,7 +84,7 @@ description: argvusコマンド、そのサブコマンド、キー割り当て�
 
 `ARGVUS Keybindings-hypr`、`ARGVUS Keybindings-launcher`、`scratchpad`、`hypr-screenshot`、`spaces-switch`、`emoji-picker`、`toggle-sidebar`、`weather-location`、`brightness-switch`、`toggle-mode`、`idle-timeout`、`keep-awake`、`hypr-power-menu`。
 
-ユーザーの設定にあるスクリプトは、パッケージ化されたものを上書きします。検索の順序は、hyprland.lua 内の `_config_path` と同じです: ユーザーの設定コピー、次に ARGVUS データコピー、次にステートコピー、次に生成されたコピー、そして最後に  `hyprland.lua` `/usr/share/argvus` の下にあるパッケージ化ファイルです。
+ユーザーの設定にあるスクリプトは、パッケージ化されたものを上書きします。検索の順序は、hyprland. 検索順序: ユーザーの設定コピー、次に ARGVUS データコピー、次にステートコピー、次に生成されたコピー、そして最後に  `hyprland.lua` `/usr/share/argvus` の下にあるパッケージ化ファイルです。
 
 ## ARGVUS Emoji
 
@@ -162,3 +162,5 @@ Lifecycle を開いている間は、すべてのモニターでデスクトッ�
 `↑ / ↓` 移動 · `Tab` パネル切替 · `/` 検索 · `Esc` 閉じる
 
 パネルの角の丸みは、コントロールセンターまたはモードセレクターの設定に従います。
+
+**ARGVUS クリップボード** · `argvus clipboard` · `Super + H` · `↑` `↓` (移動) · `/` (検索) · `Enter` (コピー) · `Delete` (履歴を消去) · `Esc` (閉じる)

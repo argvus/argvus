@@ -74,7 +74,7 @@ description: argvus کمانڈ، اس کی ذیلی کمانڈ، کی بائنڈ
 
 یہ پیکڈ اسکرپٹس چلاتے ہیں اور ہائپرلینڈ کنفیگریشن کے ذریعہ استعمال ہوتے ہیں: system  --hostname  locale  --keyboard-layout  apps  --apps  apps  --keyboard-layout  locale  --hostname  system `ARGVUS Keybindings-hypr `, ` ARGVUS Keybindings-launcher `, ` scratchpad `, ` hypr-screenshot `, ` spaces-switch `, ` toggle-sidebar `, ` weather-location `, ` brightness-switch `, ` toggle-mode `, ` idle-timeout `, ` keep-awake `, ` hypr-power-menu`.
 
-صارف کی ترتیب میں ایک اسکرپٹ پیک شدہ کو اوور رائیڈ کرتا ہے۔ تلاش کا آرڈر `_config_path ` میں ` hyprland.lua ` جیسا ہی ہے: صارف کی کنفیگریشن کاپی، پھر ARGVUS ڈیٹا کاپی، پھر اسٹیٹ کاپی، پھر جنریٹڈ کاپی، اور صرف اس کے بعد `/usr/share/argvus` کے تحت پیک کردہ فائل۔## مثالیں۔
+صارف کی ترتیب میں ایک اسکرپٹ پیک شدہ کو اوور رائیڈ کرتا ہے۔ تلاش کی ترتیب: صارف کی کنفیگریشن کاپی، پھر ARGVUS ڈیٹا کاپی، پھر اسٹیٹ کاپی، پھر جنریٹڈ کاپی، اور صرف اس کے بعد `/usr/share/argvus` کے تحت پیک کردہ فائل۔## مثالیں۔
 
 ```sh
 argvus control-center displays
@@ -148,3 +148,5 @@ Lifecycle کھلا ہو تو تمام مانیٹروں پر ڈیسک ٹاپ کے
 `↑ / ↓` نیویگیٹ کریں · `Tab` پینل بدلیں · `/` تلاش · `Esc` بند کریں
 
 پینل کے کونے کنٹرول سینٹر یا موڈ سلیکٹر میں مقرر کردہ گولائی کے مطابق ہوتے ہیں۔
+
+**ARGVUS کلپ بورڈ** · `argvus clipboard` · `Super + H` · `↑` `↓` (نیویگیٹ کریں) · `/` (تلاش کریں) · `Enter` (کاپی کریں) · `Delete` (تاریخ صاف کریں) · `Esc` (بند کریں)

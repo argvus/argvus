@@ -83,7 +83,6 @@
   "keybindings.action.color_picker": "颜色选择器",
   "keybindings.action.emoji_picker": "ARGVUS Emoji",
   "keybindings.action.clipboard": "剪贴板历史记录",
-  "keybindings.action.clipboard_clear": "清除剪贴板历史记录",
   "keybindings.action.dpms": "关闭/打开显示器（不暂停系统）",
   "keybindings.action.sidebar": "打开/关闭通知侧边栏",
   "keybindings.action.taskbar_toggle": "切换导航栏顶部",

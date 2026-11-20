@@ -1,0 +1,22 @@
+{
+  "title": "Appunti",
+  "search": "Cerca nella cronologia…",
+  "loading": "Caricamento della cronologia…",
+  "empty": "La cronologia degli appunti è vuota.",
+  "no_matches": "Nessuna voce corrispondente.",
+  "navigate": "Naviga",
+  "copy": "Copia",
+  "search_hint": "Cerca",
+  "close": "Chiudi",
+  "clear": "Cancella cronologia",
+  "cancel": "Annulla",
+  "confirm_clear": "Cancellare tutte le voci salvate?",
+  "kind.text": "Testo",
+  "kind.link": "Collegamento",
+  "kind.image": "Immagine",
+  "kind.binary": "Binario",
+  "empty_description": "Descrizione vuota",
+  "error.read": "Impossibile leggere la cronologia.",
+  "error.copy": "Impossibile copiare la voce selezionata.",
+  "error.clear": "Impossibile cancellare la cronologia."
+}

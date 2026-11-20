@@ -83,7 +83,6 @@
   "keybindings.action.color_picker": "Bộ chọn màu",
   "keybindings.action.emoji_picker": "ARGVUS Emoji",
   "keybindings.action.clipboard": "Lịch sử bảng nhớ tạm",
-  "keybindings.action.clipboard_clear": "Xóa lịch sử bảng tạm",
   "keybindings.action.dpms": "Tắt/bật màn hình (không tạm dừng hệ thống)",
   "keybindings.action.sidebar": "Mở/Đóng thanh bên thông báo",
   "keybindings.action.taskbar_toggle": "Chuyển đổi phần trên cùng của Waybar",

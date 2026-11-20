@@ -83,7 +83,6 @@
   "keybindings.action.color_picker": "Sélecteur de couleurs",
   "keybindings.action.emoji_picker": "ARGVUS Emoji",
   "keybindings.action.clipboard": "Historique du Presse-papiers",
-  "keybindings.action.clipboard_clear": "Effacer l'historique du presse-papiers",
   "keybindings.action.dpms": "Éteindre/allumer le moniteur (pas suspendre le système)",
   "keybindings.action.sidebar": "Barre latérale de notification Ouvrir/Fermer",
   "keybindings.action.taskbar_toggle": "Basculer vers le haut de la Waybar",

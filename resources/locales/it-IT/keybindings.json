@@ -83,7 +83,6 @@
   "keybindings.action.color_picker": "Selettore colore",
   "keybindings.action.emoji_picker": "ARGVUS Emoji",
   "keybindings.action.clipboard": "Cronologia degli appunti",
-  "keybindings.action.clipboard_clear": "Cancella la cronologia degli appunti",
   "keybindings.action.dpms": "Spegne/accende il monitor (non sospende il sistema)",
   "keybindings.action.sidebar": "Apri/Chiudi la barra laterale delle notifiche",
   "keybindings.action.taskbar_toggle": "Attiva/disattiva la parte superiore della barra di navigazione",

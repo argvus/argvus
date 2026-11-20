@@ -83,7 +83,6 @@
   "keybindings.action.color_picker": "カラーピッカー",
   "keybindings.action.emoji_picker": "ARGVUS Emoji",
   "keybindings.action.clipboard": "クリップボード履歴",
-  "keybindings.action.clipboard_clear": "クリップボード履歴をクリア",
   "keybindings.action.dpms": "モニターをオフ/オンにします (システムを一時停止しない)",
   "keybindings.action.sidebar": "通知サイドバーの開閉",
   "keybindings.action.taskbar_toggle": "ウェイバーのトップを切り替え",

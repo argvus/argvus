@@ -1,0 +1,22 @@
+{
+  "title": "Papan klip",
+  "search": "Cari dalam riwayat…",
+  "loading": "Memuat riwayat…",
+  "empty": "Riwayat papan klip kosong.",
+  "no_matches": "Tidak ada entri yang cocok.",
+  "navigate": "Navigasi",
+  "copy": "Salin",
+  "search_hint": "Cari",
+  "close": "Tutup",
+  "clear": "Hapus riwayat",
+  "cancel": "Batal",
+  "confirm_clear": "Hapus semua entri tersimpan?",
+  "kind.text": "Teks",
+  "kind.link": "Tautan",
+  "kind.image": "Gambar",
+  "kind.binary": "Biner",
+  "empty_description": "Deskripsi kosong",
+  "error.read": "Riwayat tidak dapat dibaca.",
+  "error.copy": "Entri yang dipilih tidak dapat disalin.",
+  "error.clear": "Riwayat tidak dapat dihapus."
+}

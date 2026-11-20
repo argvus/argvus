@@ -7,6 +7,7 @@
 
 mod appearance_picker;
 mod apps;
+mod clipboard;
 mod commands;
 mod control_center;
 mod copy;

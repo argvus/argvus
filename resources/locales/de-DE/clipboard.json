@@ -1,0 +1,22 @@
+{
+  "title": "Zwischenablage",
+  "search": "Verlauf durchsuchen…",
+  "loading": "Verlauf wird geladen…",
+  "empty": "Die Zwischenablage ist leer.",
+  "no_matches": "Keine passenden Einträge.",
+  "navigate": "Navigieren",
+  "copy": "Kopieren",
+  "search_hint": "Suchen",
+  "close": "Schließen",
+  "clear": "Verlauf löschen",
+  "cancel": "Abbrechen",
+  "confirm_clear": "Alle gespeicherten Einträge löschen?",
+  "kind.text": "Text",
+  "kind.link": "Link",
+  "kind.image": "Bild",
+  "kind.binary": "Binärdaten",
+  "empty_description": "Leere Beschreibung",
+  "error.read": "Der Verlauf konnte nicht gelesen werden.",
+  "error.copy": "Der Eintrag konnte nicht kopiert werden.",
+  "error.clear": "Der Verlauf konnte nicht gelöscht werden."
+}

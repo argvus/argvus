@@ -84,7 +84,7 @@ description: argvus 명령어, 그 하위 명령어들, 키 바인딩을 위해 
 
 `scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
 
-사용자의 구성에 있는 스크립트는 패키지화된 스크립트를 덮어씁니다. 조회 순서는 hyprland.lua의 `_config_path`와 동일합니다: 사용자의 구성 복사본, 그 다음 ARGVUS 데이터 복사본, 그 다음 상태 복사본, 그 다음 생성된 복사본, 그 이후에야  `hyprland.lua` `/usr/share/argvus` 아래의 패키지 파일이 적용됩니다.
+사용자의 구성에 있는 스크립트는 패키지화된 스크립트를 덮어씁니다. 조회 순서는 hyprland. 검색 순서: 사용자의 구성 복사본, 그 다음 ARGVUS 데이터 복사본, 그 다음 상태 복사본, 그 다음 생성된 복사본, 그 이후에야  `hyprland.lua` `/usr/share/argvus` 아래의 패키지 파일이 적용됩니다.
 
 ## ARGVUS Emoji
 
@@ -162,3 +162,5 @@ Lifecycle이 열려 있는 동안 모든 모니터에서 바탕 화면 클릭과
 `↑ / ↓` 이동 · `Tab` 패널 전환 · `/` 찾다 · `Esc` 닫기
 
 패널 모서리는 제어 센터 또는 모드 선택기의 모서리 둥글기 설정을 따릅니다.
+
+**ARGVUS 클립보드** · `argvus clipboard` · `Super + H` · `↑` `↓` (이동) · `/` (검색) · `Enter` (복사) · `Delete` (기록 지우기) · `Esc` (닫기)

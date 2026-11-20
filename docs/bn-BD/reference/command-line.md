@@ -72,7 +72,7 @@ description: আরগভাস কমান্ড, এর সাবকমান
 
 এই রান প্যাকেজ স্ক্রিপ্ট এবং Hyprland কনফিগারেশন দ্বারা ব্যবহৃত হয়:`ARGVUS Keybindings-hypr `, ` ARGVUS Keybindings-launcher `, ` scratchpad `, ` hypr-screenshot `, ` spaces-switch `, ` toggle-sidebar `, ` weather-location `, ` brightness-switch `, ` toggle-mode `, ` idle-timeout `, ` keep-awake `, ` hypr-power-menu`.
 
-ব্যবহারকারীর কনফিগারেশনের একটি স্ক্রিপ্ট প্যাকেজ করাকে ওভাররাইড করে। লুকআপ অর্ডারটি hyprland.lua-তে `_config_path `-এর মতোই: ব্যবহারকারীর কনফিগারেশন কপি, তারপর ARGVUS ডেটা কপি, তারপর স্টেট কপি, তারপর জেনারেট করা কপি এবং শুধুমাত্র তারপর  ` hyprland.lua ` `/usr/share/argvus` এর অধীনে প্যাকেজ করা ফাইল।## উদাহরণ
+ব্যবহারকারীর কনফিগারেশনের একটি স্ক্রিপ্ট প্যাকেজ করাকে ওভাররাইড করে। লুকআপ অর্ডারটি hyprland. লুকআপের ক্রম: ব্যবহারকারীর কনফিগারেশন কপি, তারপর ARGVUS ডেটা কপি, তারপর স্টেট কপি, তারপর জেনারেট করা কপি এবং শুধুমাত্র তারপর  ` hyprland.lua ` `/usr/share/argvus` এর অধীনে প্যাকেজ করা ফাইল।## উদাহরণ
 
 ```sh
 argvus control-center displays
@@ -146,3 +146,5 @@ Lifecycle খোলা থাকলে সব মনিটরে ডেস্ক
 `↑ / ↓` চলাচল · `Tab` প্যানেল বদলান · `/` অনুসন্ধান · `Esc` বন্ধ করুন
 
 প্যানেলের কোণ কন্ট্রোল সেন্টার বা মোড নির্বাচকে সেট করা গোলাকৃতি অনুসরণ করে।
+
+**ARGVUS ক্লিপবোর্ড** · `argvus clipboard` · `Super + H` · `↑` `↓` (নেভিগেট করুন) · `/` (খুঁজুন) · `Enter` (কপি করুন) · `Delete` (ইতিহাস মুছুন) · `Esc` (বন্ধ করুন)

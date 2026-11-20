@@ -53,7 +53,6 @@
   "session_volume_down": "XF86AudioLowerVolume",
   "session_volume_up": "XF86AudioRaiseVolume",
   "system_clipboard": "SUPER + H",
-  "system_clipboard_clear": "SUPER + SHIFT + H",
   "system_color_picker": "SUPER + P",
   "system_control_center": "SUPER + ALT + C",
   "system_emoji_picker": "SUPER + period",

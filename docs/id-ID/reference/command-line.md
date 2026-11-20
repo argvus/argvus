@@ -83,7 +83,7 @@ Ini menjalankan skrip yang dikemas dan digunakan oleh konfigurasi Hyprland:
 
 `scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
 
-Skrip dalam konfigurasi pengguna akan menggantikan skrip yang dipaketkan. Urutan pencariannya sama dengan `_config_path` di `hyprland.lua`: salinan konfigurasi pengguna, lalu salinan data ARGVUS, lalu salinan status, lalu salinan yang dihasilkan, dan baru kemudian file paket di bawah `/usr/share/argvus`.
+Skrip dalam konfigurasi pengguna akan menggantikan skrip yang dipaketkan. Urutan pencarian: salinan konfigurasi pengguna, lalu salinan data ARGVUS, lalu salinan status, lalu salinan yang dihasilkan, dan baru kemudian file paket di bawah `/usr/share/argvus`.
 
 ## ARGVUS Emoji
 
@@ -163,3 +163,5 @@ Saat Lifecycle terbuka, klik dan gulir desktop diblokir pada semua monitor, dan 
 `↑ / ↓` Navigasi · `Tab` Ganti panel · `/` Cari · `Esc` Tutup
 
 Sudut panel mengikuti pengaturan pembulatan di Pusat Kontrol atau pemilih mode.
+
+**ARGVUS Papan klip** · `argvus clipboard` · `Super + H` · `↑` `↓` (Navigasi) · `/` (Cari) · `Enter` (Salin) · `Delete` (Hapus riwayat) · `Esc` (Tutup)

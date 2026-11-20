@@ -1,0 +1,22 @@
+{
+  "title": "Área de transferência",
+  "search": "Pesquisar no histórico…",
+  "loading": "A carregar o histórico…",
+  "empty": "O histórico da área de transferência está vazio.",
+  "no_matches": "Nenhum registo encontrado.",
+  "navigate": "Navegar",
+  "copy": "Copiar",
+  "search_hint": "Pesquisar",
+  "close": "Fechar",
+  "clear": "Limpar histórico",
+  "cancel": "Cancelar",
+  "confirm_clear": "Limpar todos os registos guardados?",
+  "kind.text": "Texto",
+  "kind.link": "Ligação",
+  "kind.image": "Imagem",
+  "kind.binary": "Binário",
+  "empty_description": "Descrição vazia",
+  "error.read": "Não foi possível ler o histórico.",
+  "error.copy": "Não foi possível copiar o registo selecionado.",
+  "error.clear": "Não foi possível limpar o histórico."
+}

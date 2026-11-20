@@ -1,0 +1,22 @@
+{
+  "title": "Bảng tạm",
+  "search": "Tìm trong lịch sử…",
+  "loading": "Đang tải lịch sử…",
+  "empty": "Lịch sử bảng tạm trống.",
+  "no_matches": "Không có mục phù hợp.",
+  "navigate": "Điều hướng",
+  "copy": "Sao chép",
+  "search_hint": "Tìm kiếm",
+  "close": "Đóng",
+  "clear": "Xóa lịch sử",
+  "cancel": "Hủy",
+  "confirm_clear": "Xóa tất cả mục đã lưu?",
+  "kind.text": "Văn bản",
+  "kind.link": "Liên kết",
+  "kind.image": "Hình ảnh",
+  "kind.binary": "Nhị phân",
+  "empty_description": "Mô tả trống",
+  "error.read": "Không thể đọc lịch sử.",
+  "error.copy": "Không thể sao chép mục đã chọn.",
+  "error.clear": "Không thể xóa lịch sử."
+}

@@ -224,6 +224,8 @@ fn apply_theme(window: &gtk::Window, locale: &str) {
      .argvus-picker .accent-editor button:disabled {{ opacity: .5; }}
      .argvus-picker .accent-editor drawingarea:focus-visible, .argvus-picker .accent-editor button:focus-visible, .argvus-picker .accent-editor entry:focus-within {{ outline: 2px solid {accent}; outline-offset: 1px; }}
      .argvus-picker .accent-editor entry.error {{ border-color: #e06666; }}
+     .argvus-picker .clipboard-picker button {{ border-radius: {radius}px; }}
+     .argvus-picker .clipboard-picker button:focus-visible {{ outline: 2px solid {accent}; outline-offset: 1px; }}
      .argvus-picker scrollbar slider {{ border-radius: {radius}px; }}
      {search_style}"
   ));

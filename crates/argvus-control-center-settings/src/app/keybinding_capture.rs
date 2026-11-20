@@ -299,7 +299,6 @@ pub(super) fn keybinding_section(lang: Lang, binding: &keybindings::Binding) -> 
         id,
           "system.keybindings"
           | "system.clipboard"
-          | "system.clipboard_clear"
           | "system.color_picker"
           | "system.emoji_picker"
           | "system.control_center"
@@ -350,7 +349,6 @@ pub(super) fn keybinding_section_order(binding: &keybindings::Binding) -> usize 
       binding.id.as_str(),
       "system.keybindings"
         | "system.clipboard"
-        | "system.clipboard_clear"
         | "system.color_picker"
         | "system.emoji_picker"
         | "system.control_center"

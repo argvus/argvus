@@ -1,0 +1,22 @@
+{
+  "title": "Portapapeles",
+  "search": "Buscar en el historial…",
+  "loading": "Cargando historial…",
+  "empty": "El historial del portapapeles está vacío.",
+  "no_matches": "No hay registros coincidentes.",
+  "navigate": "Navegar",
+  "copy": "Copiar",
+  "search_hint": "Buscar",
+  "close": "Cerrar",
+  "clear": "Borrar historial",
+  "cancel": "Cancelar",
+  "confirm_clear": "¿Borrar todos los registros guardados?",
+  "kind.text": "Texto",
+  "kind.link": "Enlace",
+  "kind.image": "Imagen",
+  "kind.binary": "Binario",
+  "empty_description": "Descripción vacía",
+  "error.read": "No se pudo leer el historial.",
+  "error.copy": "No se pudo copiar el registro seleccionado.",
+  "error.clear": "No se pudo borrar el historial."
+}

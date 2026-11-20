@@ -1,0 +1,22 @@
+{
+  "title": "Presse-papiers",
+  "search": "Rechercher dans l’historique…",
+  "loading": "Chargement de l’historique…",
+  "empty": "L’historique du presse-papiers est vide.",
+  "no_matches": "Aucune entrée correspondante.",
+  "navigate": "Naviguer",
+  "copy": "Copier",
+  "search_hint": "Rechercher",
+  "close": "Fermer",
+  "clear": "Effacer l’historique",
+  "cancel": "Annuler",
+  "confirm_clear": "Effacer toutes les entrées enregistrées ?",
+  "kind.text": "Texte",
+  "kind.link": "Lien",
+  "kind.image": "Image",
+  "kind.binary": "Binaire",
+  "empty_description": "Description vide",
+  "error.read": "Impossible de lire l’historique.",
+  "error.copy": "Impossible de copier l’entrée sélectionnée.",
+  "error.clear": "Impossible d’effacer l’historique."
+}

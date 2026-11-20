@@ -83,7 +83,6 @@
   "keybindings.action.color_picker": "কালার পিকার",
   "keybindings.action.emoji_picker": "ARGVUS Emoji",
   "keybindings.action.clipboard": "ক্লিপবোর্ড ইতিহাস",
-  "keybindings.action.clipboard_clear": "ক্লিপবোর্ড ইতিহাস সাফ করুন",
   "keybindings.action.dpms": "মনিটর বন্ধ/অন করুন (সিস্টেম সাসপেন্ড না)",
   "keybindings.action.sidebar": "বিজ্ঞপ্তি সাইডবার খুলুন/বন্ধ করুন",
   "keybindings.action.taskbar_toggle": "টগল ওয়েবার টপ",

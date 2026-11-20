@@ -32,7 +32,7 @@ Commands:
   argvus config | theme | i18n | accounts | firewall
   argvus taskbar-calendar | removable-devices | notifications | focus | clock | calculator | du | window-mode-menu
   argvus networkctl | bluetoothctl | displayctl | widget-telemetry-toggle
-  argvus launcher | projects | snippets | ssh | keys | gpg | git
+  argvus launcher | projects | snippets | ssh | clipboard | keys | gpg | git
   argvus tui-terminal | sensors | app-profiles-yazi-keymap | game-snake | terminal
 
 Hyprland script commands (used by the Hyprland configuration):

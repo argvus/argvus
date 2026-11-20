@@ -1,0 +1,22 @@
+{
+  "title": "クリップボード",
+  "search": "履歴を検索…",
+  "loading": "履歴を読み込み中…",
+  "empty": "クリップボードの履歴は空です。",
+  "no_matches": "一致する項目がありません。",
+  "navigate": "移動",
+  "copy": "コピー",
+  "search_hint": "検索",
+  "close": "閉じる",
+  "clear": "履歴を消去",
+  "cancel": "キャンセル",
+  "confirm_clear": "保存済みの履歴をすべて消去しますか？",
+  "kind.text": "テキスト",
+  "kind.link": "リンク",
+  "kind.image": "画像",
+  "kind.binary": "バイナリ",
+  "empty_description": "説明なし",
+  "error.read": "履歴を読み込めませんでした。",
+  "error.copy": "選択した項目をコピーできませんでした。",
+  "error.clear": "履歴を消去できませんでした。"
+}

@@ -83,7 +83,6 @@
   "keybindings.action.color_picker": "Seletor de cores (Color Picker)",
   "keybindings.action.emoji_picker": "ARGVUS Emoji",
   "keybindings.action.clipboard": "Histórico no Clipboard",
-  "keybindings.action.clipboard_clear": "Apagar histórico do Clipboard",
   "keybindings.action.dpms": "Desligar/Ligar monitor (não é suspender)",
   "keybindings.action.sidebar": "Abre/Fecha sidebar de notificações",
   "keybindings.action.taskbar_toggle": "Oculta/Mostra Waybar top",

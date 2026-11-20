@@ -1,0 +1,22 @@
+{
+  "title": "Clipboard",
+  "search": "Buscar no histórico…",
+  "loading": "Carregando histórico…",
+  "empty": "O histórico da área de transferência está vazio.",
+  "no_matches": "Nenhum registro encontrado.",
+  "navigate": "Navegar",
+  "copy": "Copiar",
+  "search_hint": "Buscar",
+  "close": "Fechar",
+  "clear": "Limpar histórico",
+  "cancel": "Cancelar",
+  "confirm_clear": "Limpar todos os registros salvos?",
+  "kind.text": "Texto",
+  "kind.link": "Link",
+  "kind.image": "Imagem",
+  "kind.binary": "Binário",
+  "empty_description": "Descrição vazia",
+  "error.read": "Não foi possível ler o histórico.",
+  "error.copy": "Não foi possível copiar o registro selecionado.",
+  "error.clear": "Não foi possível limpar o histórico."
+}

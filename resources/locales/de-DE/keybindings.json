@@ -83,7 +83,6 @@
   "keybindings.action.color_picker": "Farbauswahl",
   "keybindings.action.emoji_picker": "ARGVUS Emoji",
   "keybindings.action.clipboard": "Verlauf der Zwischenablage",
-  "keybindings.action.clipboard_clear": "Verlauf der Zwischenablage löschen",
   "keybindings.action.dpms": "Monitor aus-/einschalten (System nicht in den Ruhezustand versetzen)",
   "keybindings.action.sidebar": "Benachrichtigungsseitenleiste öffnen/schließen",
   "keybindings.action.taskbar_toggle": "Waybar oben umschalten",

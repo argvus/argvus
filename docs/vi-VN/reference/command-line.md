@@ -83,7 +83,7 @@ Các tập lệnh này chạy các tập lệnh đóng gói và được cấu h
 
 `scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
 
-Một tập lệnh trong cấu hình của người dùng sẽ ghi đè tập lệnh được đóng gói. Thứ tự tra cứu giống như `_config_path` trong `hyprland.lua`: bản sao cấu hình của người dùng, sau đó là bản sao dữ liệu ARGVUS, sau đó là bản sao trạng thái, sau đó là bản sao được tạo và chỉ sau đó là tệp được đóng gói trong `/usr/share/argvus`.
+Một tập lệnh trong cấu hình của người dùng sẽ ghi đè tập lệnh được đóng gói. Thứ tự tra cứu: bản sao cấu hình của người dùng, sau đó là bản sao dữ liệu ARGVUS, sau đó là bản sao trạng thái, sau đó là bản sao được tạo và chỉ sau đó là tệp được đóng gói trong `/usr/share/argvus`.
 
 ## ARGVUS Emoji
 
@@ -163,3 +163,5 @@ Khi Lifecycle mở, thao tác nhấp và cuộn trên màn hình nền bị ch�
 `↑ / ↓` Di chuyển · `Tab` Đổi bảng · `/` Tìm kiếm · `Esc` Đóng
 
 Các góc của bảng dùng độ bo góc được đặt trong Trung tâm điều khiển hoặc bộ chọn chế độ.
+
+**ARGVUS Bảng tạm** · `argvus clipboard` · `Super + H` · `↑` `↓` (Điều hướng) · `/` (Tìm kiếm) · `Enter` (Sao chép) · `Delete` (Xóa lịch sử) · `Esc` (Đóng)

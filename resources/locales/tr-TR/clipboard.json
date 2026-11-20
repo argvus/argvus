@@ -1,0 +1,22 @@
+{
+  "title": "Pano",
+  "search": "Pano geçmişinde ara…",
+  "loading": "Geçmiş yükleniyor…",
+  "empty": "Pano geçmişi boş.",
+  "no_matches": "Eşleşen kayıt yok.",
+  "navigate": "Gezin",
+  "copy": "Kopyala",
+  "search_hint": "Ara",
+  "close": "Kapat",
+  "clear": "Geçmişi temizle",
+  "cancel": "İptal",
+  "confirm_clear": "Kaydedilen tüm pano kayıtları silinsin mi?",
+  "kind.text": "Metin",
+  "kind.link": "Bağlantı",
+  "kind.image": "Resim",
+  "kind.binary": "İkili veri",
+  "empty_description": "Boş açıklama",
+  "error.read": "Geçmiş okunamadı.",
+  "error.copy": "Seçilen kayıt kopyalanamadı.",
+  "error.clear": "Geçmiş temizlenemedi."
+}

@@ -1,0 +1,22 @@
+{
+  "title": "Clipboard",
+  "search": "Search clipboard history…",
+  "loading": "Loading history…",
+  "empty": "Clipboard history is empty.",
+  "no_matches": "No matching entries.",
+  "navigate": "Navigate",
+  "copy": "Copy",
+  "search_hint": "Search",
+  "close": "Close",
+  "clear": "Clear history",
+  "cancel": "Cancel",
+  "confirm_clear": "Clear all saved clipboard entries?",
+  "kind.text": "Text",
+  "kind.link": "Link",
+  "kind.image": "Image",
+  "kind.binary": "Binary",
+  "empty_description": "Empty description",
+  "error.read": "Could not read clipboard history.",
+  "error.copy": "Could not copy the selected entry.",
+  "error.clear": "Could not clear clipboard history."
+}

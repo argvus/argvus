@@ -84,7 +84,7 @@ Ces scripts emballés sont exécutés et utilisés par la configuration de Hyprl
 
 `scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
 
-Un script dans la configuration de l'utilisateur remplace celui emballé. L'ordre de recherche est le même que `_config_path` dans `hyprland.lua` : la copie de la configuration de l'utilisateur, puis la copie des données ARGVUS, puis la copie d'état, puis la copie générée, et seulement ensuite le fichier emballé sous `/usr/share/argvus`.
+Un script dans la configuration de l'utilisateur remplace celui emballé. L'ordre de recherche est le même que `argvus` : la copie de la configuration de l'utilisateur, puis la copie des données ARGVUS, puis la copie d'état, puis la copie générée, et seulement ensuite le fichier emballé sous `/usr/share/argvus`.
 
 ## ARGVUS Emoji
 
@@ -164,3 +164,5 @@ Lorsque Lifecycle est ouvert, il bloque les clics et le défilement sur tous les
 `↑ / ↓` Naviguer · `Tab` Changer de panneau · `/` Recherche · `Esc` Fermer
 
 Les coins du panneau suivent l’arrondi défini dans le centre de contrôle ou le sélecteur de mode.
+
+**ARGVUS Presse-papiers** · `argvus clipboard` · `Super + H` · `↑` `↓` (Naviguer) · `/` (Rechercher) · `Enter` (Copier) · `Delete` (Effacer l’historique) · `Esc` (Fermer)

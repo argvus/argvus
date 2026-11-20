@@ -83,7 +83,7 @@ description: أمر argvus وأوامره الفرعية والأعلام الم
 
 `ARGVUS Keybindings-hypr`، `ARGVUS Keybindings-launcher`، `scratchpad`، `hypr-screenshot`، `spaces-switch`، `emoji-picker`، `toggle-sidebar`، `weather-location`، `brightness-switch`، `toggle-mode`، `idle-timeout`، `keep-awake`، `hypr-power-menu`.
 
-يتجاوز البرنامج النصي الموجود في تكوين المستخدم البرنامج النصي المعبأ. ترتيب البحث هو نفسه `_config_path` في `hyprland.lua`: نسخة تكوين المستخدم، ثم نسخة بيانات ARGVUS، ثم نسخة الحالة، ثم النسخة التي تم إنشاؤها، وبعد ذلك فقط الملف المعبأ تحت `/usr/share/argvus`.
+يتجاوز البرنامج النصي الموجود في تكوين المستخدم البرنامج النصي المعبأ. ترتيب البحث: نسخة تكوين المستخدم، ثم نسخة بيانات ARGVUS، ثم نسخة الحالة، ثم النسخة التي تم إنشاؤها، وبعد ذلك فقط الملف المعبأ تحت `/usr/share/argvus`.
 
 ## ARGVUS Emoji
 
@@ -163,3 +163,5 @@ argvus setup --copy <app> --dry-run
 `↑ / ↓` تنقّل · `Tab` بدّل اللوحة · `/` البحث · `Esc` إغلاق
 
 تتبع زوايا اللوحة إعداد تدوير الحواف المحدد في مركز التحكم أو محدد الوضع.
+
+**ARGVUS الحافظة** · `argvus clipboard` · `Super + H` · `↑` `↓` (التنقل) · `/` (بحث) · `Enter` (نسخ) · `Delete` (مسح السجل) · `Esc` (إغلاق)

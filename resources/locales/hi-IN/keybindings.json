@@ -83,7 +83,6 @@
   "keybindings.action.color_picker": "रंग चुनने वाला",
   "keybindings.action.emoji_picker": "ARGVUS Emoji",
   "keybindings.action.clipboard": "क्लिपबोर्ड इतिहास",
-  "keybindings.action.clipboard_clear": "क्लिपबोर्ड इतिहास साफ़ करें",
   "keybindings.action.dpms": "मॉनिटर को बंद/चालू करें (सिस्टम को निलंबित नहीं करें)",
   "keybindings.action.sidebar": "अधिसूचना साइडबार खोलें/बंद करें",
   "keybindings.action.taskbar_toggle": "वेबार को शीर्ष पर टॉगल करें",

@@ -22,7 +22,10 @@ fn defaults() -> Vec<Binding> {
 }
 
 pub fn binding_description(lang: Lang, binding: &Binding) -> Option<String> {
-  if binding.id == "appearance.accent" {
+  if matches!(
+    binding.id.as_str(),
+    "appearance.accent" | "system.clipboard"
+  ) {
     let shortcuts = Lang::for_domain(&lang.locale(), "keybindings");
     return Some(shortcuts.tr(&binding.description_key));
   }
@@ -194,8 +197,6 @@ pub fn binding_description(lang: Lang, binding: &Binding) -> Option<String> {
       "Seletor de projetos e TUI de git (argvus git)",
     ),
     "system.keybindings" => ("ARGVUS Keybindings", "ARGVUS Keybindings"),
-    "system.clipboard" => ("Clipboard History", "Histórico no Clipboard"),
-    "system.clipboard_clear" => ("Clear Clipboard History", "Apagar histórico do Clipboard"),
     "system.color_picker" => ("Color Picker", "Seletor de cores (Color Picker)"),
     "system.emoji_picker" => ("Emoji Picker", "Emoji Picker"),
     "system.control_center" => (

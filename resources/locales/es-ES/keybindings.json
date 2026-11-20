@@ -83,7 +83,6 @@
   "keybindings.action.color_picker": "Selector de color",
   "keybindings.action.emoji_picker": "ARGVUS Emoji",
   "keybindings.action.clipboard": "Historial del portapapeles",
-  "keybindings.action.clipboard_clear": "Borrar historial del portapapeles",
   "keybindings.action.dpms": "Apagar/encender el monitor (no suspender el sistema)",
   "keybindings.action.sidebar": "Abrir/Cerrar barra lateral de notificaciones",
   "keybindings.action.taskbar_toggle": "Alternar barra de ruta superior",

@@ -83,7 +83,6 @@
   "keybindings.action.color_picker": "Renk Seçici",
   "keybindings.action.emoji_picker": "ARGVUS Emoji",
   "keybindings.action.clipboard": "Pano Geçmişi",
-  "keybindings.action.clipboard_clear": "Pano Geçmişini Temizle",
   "keybindings.action.dpms": "Monitörü kapatıp açın (sistemi askıya almayın)",
   "keybindings.action.sidebar": "Bildirim kenar çubuğunu aç/kapat",
   "keybindings.action.taskbar_toggle": "Waybar'ın üst kısmını değiştir",

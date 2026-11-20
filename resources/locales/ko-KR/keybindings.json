@@ -83,7 +83,6 @@
   "keybindings.action.color_picker": "색상 선택기",
   "keybindings.action.emoji_picker": "ARGVUS Emoji",
   "keybindings.action.clipboard": "클립보드 기록",
-  "keybindings.action.clipboard_clear": "클립보드 기록 지우기",
   "keybindings.action.dpms": "모니터 끄기/켜기(시스템 일시 중지 아님)",
   "keybindings.action.sidebar": "알림 사이드바 열기/닫기",
   "keybindings.action.taskbar_toggle": "Waybar 상단 전환",

@@ -1,0 +1,22 @@
+{
+  "title": "剪贴板",
+  "search": "搜索剪贴板历史…",
+  "loading": "正在加载历史记录…",
+  "empty": "剪贴板历史为空。",
+  "no_matches": "没有匹配的记录。",
+  "navigate": "导航",
+  "copy": "复制",
+  "search_hint": "搜索",
+  "close": "关闭",
+  "clear": "清除历史记录",
+  "cancel": "取消",
+  "confirm_clear": "清除所有已保存的剪贴板记录吗？",
+  "kind.text": "文本",
+  "kind.link": "链接",
+  "kind.image": "图像",
+  "kind.binary": "二进制",
+  "empty_description": "描述为空",
+  "error.read": "无法读取历史记录。",
+  "error.copy": "无法复制所选记录。",
+  "error.clear": "无法清除历史记录。"
+}
