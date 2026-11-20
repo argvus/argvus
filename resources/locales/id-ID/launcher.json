@@ -137,6 +137,5 @@
   "universal.ssh": "SSH",
   "universal.shortcuts": "Pintasan papan ketik dan bantuan kontekstual",
   "universal.cli_help": "argvus launcher — Peluncur dan Pencarian",
-  "universal.rasi_unsupported": "Peluncur ini tidak mendukung konfigurasi Rasi. Gunakan argvus control-center launcher",
   "universal.argument_unsupported": "Argumen peluncur tidak didukung. Lihat argvus launcher --help"
 }

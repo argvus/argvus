@@ -9,7 +9,6 @@
   "menu.logout": "लॉग आउट",
   "menu.reboot": "रिबूट",
   "menu.shutdown": "शट डाउन",
-  "menu.launcher_missing": "Rofi मेनू लॉन्चर नहीं मिला।.",
   "menu.unsupported_launcher": "Unsupported मेन्यू लॉन्चर: {launcher}",
   "idle.timeout.title": "लॉक होने का समय",
   "idle.timeout.one_minute": "1 मिनट",

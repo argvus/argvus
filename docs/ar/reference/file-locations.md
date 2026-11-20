@@ -24,7 +24,6 @@ description: ملفات وأدلة ARGVUS الهامة المثبتة.
 - `$XDG_CONFIG_HOME/argvus/data/generated/terminal/` — التشكيلات الطرفية المتوقعة.
 - `$XDG_CONFIG_HOME/argvus/data/generated/qt6ct/` - لوحة Qt6ct المتوقعة.
 - `$XDG_CONFIG_HOME/argvus/data/generated/gtk/` - ملفات سمات GTK المتوقعة.
-- `$XDG_CONFIG_HOME/argvus/data/rofi/` - نسخ المستخدم من تكوين Rofi وموضوعاته ووضعه. يقوم ARGVUS بإنشاء كل نسخة عند تغيير الملف لأول مرة؛ تتم قراءة الملفات التي لم تتغير من `/usr/share/argvus/launcher/config/`.
 - `$XDG_CONFIG_HOME/argvus/data/generated/removable-devices/theme.css` - ورقة أنماط الأجهزة القابلة للإزالة المتوقعة.
 - `$XDG_CONFIG_HOME/argvus/data/focus/settings.json`، `$XDG_DATA_HOME/argvus/focus/history.json`، `$XDG_STATE_HOME/argvus/focus/session.json` - إعدادات التركيز ARGVUS وسجل الجلسة ونقطة تفتيش الجلسة الحالية.
 - `$XDG_RUNTIME_DIR/argvus/focus/status.json` - حالة التركيز ARGVUS سريعة الزوال التي يستهلكها شريط المهام؛ تتم إزالته عند خروج التركيز.

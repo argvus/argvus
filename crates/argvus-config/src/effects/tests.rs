@@ -1,60 +1,9 @@
 use super::commands::{all_effects_status, master_switch, toggle_target};
 use super::css_text::{
-  apply_border_transparency, delete_range, imported_build_theme, insert_after, launcher_background,
-  opacity_factor, set_define, solid_over,
+  apply_border_transparency, delete_range, insert_after, opacity_factor, set_define, solid_over,
 };
 use super::effect_settings::is_leading_zero;
 use super::*;
-
-#[test]
-fn launcher_background_takes_the_build_colour_with_the_given_opacity() {
-  let build_theme = "* {\n    th-bg:            rgba(247, 247, 247, 96%);\n}\n";
-  assert_eq!(
-    launcher_background(build_theme, 0.5),
-    "rgba(247, 247, 247, 50%)"
-  );
-  // Transparency disabled: the same colour, opaque.
-  assert_eq!(
-    launcher_background(build_theme, 1.0),
-    "rgba(247, 247, 247, 100%)"
-  );
-}
-
-#[test]
-fn launcher_background_reads_an_rgb_build_colour() {
-  let build_theme = "    th-bg:            rgb(40, 42, 54);\n";
-  assert_eq!(
-    launcher_background(build_theme, 0.88),
-    "rgba(40, 42, 54, 88%)"
-  );
-}
-
-#[test]
-fn launcher_background_keeps_the_build_value_without_a_readable_colour() {
-  assert_eq!(launcher_background("", 0.5), "@th-bg");
-  assert_eq!(
-    launcher_background("    th-bg:            @other;\n", 0.5),
-    "@th-bg"
-  );
-}
-
-#[test]
-fn imported_build_theme_resolves_absolute_and_relative_imports() {
-  let theme = Path::new("/home/user/.config/argvus/data/rofi/theme.rasi");
-  let absolute = "@import \"/build/current/launcher/theme.rasi\"\n";
-  assert_eq!(
-    imported_build_theme(theme, absolute),
-    Some(PathBuf::from("/build/current/launcher/theme.rasi"))
-  );
-  let relative = "@import \"../generated/theme/current/launcher/theme.rasi\"\n";
-  assert_eq!(
-    imported_build_theme(theme, relative),
-    Some(PathBuf::from(
-      "/home/user/.config/argvus/data/rofi/../generated/theme/current/launcher/theme.rasi"
-    ))
-  );
-  assert_eq!(imported_build_theme(theme, "* {}\n"), None);
-}
 
 #[test]
 fn each_settings_table_names_its_master_switch() {

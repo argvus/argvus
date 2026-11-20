@@ -9,7 +9,6 @@
   "menu.logout": "Выйти",
   "menu.reboot": "Перезагрузить",
   "menu.shutdown": "Неисправность",
-  "menu.launcher_missing": "Панель запуска меню Rofi не найдена.",
   "menu.unsupported_launcher": "Неподдерживаемый модуль запуска меню: {launcher}.",
   "idle.timeout.title": "Время до блокировки",
   "idle.timeout.one_minute": "1 минута",

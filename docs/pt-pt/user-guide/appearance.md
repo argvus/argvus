@@ -3,7 +3,7 @@ title: Aparência
 description: Configure a linguagem visual compartilhada do ARGVUS.
 ---
 
-O sistema de aparência aplica um estado comum ao Hyprland, GTK, Qt, Waybar, Quickshell, Rofi, Dunst, Hyprlock e aplicações ARGVUS.
+O sistema de aparência aplica um estado comum ao Hyprland, GTK, Qt, Waybar, Quickshell, Dunst, Hyprlock e aplicações ARGVUS.
 
 ## Famílias de tema
 

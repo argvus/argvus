@@ -9,7 +9,6 @@
   "menu.logout": "Log Out",
   "menu.reboot": "Reboot",
   "menu.shutdown": "Shut Down",
-  "menu.launcher_missing": "Rofi menu launcher not found.",
   "menu.unsupported_launcher": "Unsupported menu launcher: {launcher}",
   "idle.timeout.title": "Lock Timeout",
   "idle.timeout.one_minute": "1 minute",

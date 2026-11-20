@@ -24,7 +24,6 @@ description: File dan direktori ARGVUS penting yang diinstal.
 - `$XDG_CONFIG_HOME/argvus/data/generated/terminal/` — profil terminal yang diproyeksikan.
 - `$XDG_CONFIG_HOME/argvus/data/generated/qt6ct/` — palet Qt6ct yang diproyeksikan.
 - `$XDG_CONFIG_HOME/argvus/data/generated/gtk/` — file tema GTK yang diproyeksikan.
-- `$XDG_CONFIG_HOME/argvus/data/rofi/` — salinan pengguna dari konfigurasi, tema, dan mode Rofi. ARGVUS membuat setiap salinan saat pertama kali mengubah file; file yang tidak diubah dibaca dari `/usr/share/argvus/launcher/config/`.
 - `$XDG_CONFIG_HOME/argvus/data/generated/removable-devices/theme.css` — proyeksi stylesheet perangkat yang dapat dilepas.
 - `$XDG_CONFIG_HOME/argvus/data/focus/settings.json`, `$XDG_DATA_HOME/argvus/focus/history.json`, `$XDG_STATE_HOME/argvus/focus/session.json` — Pengaturan Fokus ARGVUS, riwayat sesi, dan pos pemeriksaan sesi saat ini.
 - `$XDG_RUNTIME_DIR/argvus/focus/status.json` — status Fokus ARGVUS sementara yang digunakan oleh bilah tugas; dihapus saat Fokus keluar.

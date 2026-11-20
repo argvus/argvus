@@ -55,7 +55,7 @@ argvus --control-center
 
 ## ARGVUS 设置存储在哪里？
 
-用户拥有的配置存储在 `$XDG_CONFIG_HOME/argvus`（通常为 `~/.config/argvus`）下。规范的逻辑配置保存在那里，而为 Hyprland、Waybar 和遥测小部件、GTK、Qt6ct、Quickshell、Dunst、Hyprlock、Yazi、Superfile、终端、字体、效果、日历、输入、键盘、电源和可移动设备生成的派生消费文件则位于 `~/.config/argvus/data/generated/` 下。该树仅由 `argvus-config` 写入，并从规范配置中重建；`argvus-appearance` 提交外观更改，然后只协调无法自行读取规范配置的外部消费者。Rofi 是例外：`argvus launcher` 打包其配置和主题，用户编辑的副本则存在于 `~/.config/argvus/data/rofi/` 下。
+用户拥有的配置存储在 `$XDG_CONFIG_HOME/argvus`（通常为 `~/.config/argvus`）下。规范的逻辑配置保存在那里，而为 Hyprland、Waybar 和遥测小部件、GTK、Qt6ct、Quickshell、Dunst、Hyprlock、Yazi、Superfile、终端、字体、效果、日历、输入、键盘、电源和可移动设备生成的派生消费文件则位于 `~/.config/argvus/data/generated/` 下。该树仅由 `argvus-config` 写入，并从规范配置中重建；`argvus-appearance` 提交外观更改，然后只协调无法自行读取规范配置的外部消费者。
 
 不要将生成的文件作为永久配置方法进行编辑。请使用控制中心或你希望自定义的组件的文档化本地覆盖路径。请参阅[配置文件](/docs/reference/configuration-files/)以及[配置与状态](/docs/developer-guide/architecture/configuration-and-state/)。
 

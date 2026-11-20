@@ -593,7 +593,7 @@ Control Center পরীক্ষার ডেটাবেস `$XDG_CACHE_HOME/a
 
 `$XDG_CONFIG_HOME/argvus/config/launcher.json` → `$XDG_CACHE_HOME/argvus/launcher/index.json`
 
-Quickshell: `launcher/Theme.qml` · Rofi: `launcher/theme.rasi`
+Quickshell: `launcher/Theme.qml`
 
 `--config` / Rasi: অনুসন্ধান সেট করুন → `argvus control-center launcher`.
 

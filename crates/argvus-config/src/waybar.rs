@@ -1,4 +1,4 @@
-//! The Waybar and rofi layout of a theme switch.
+//! The Waybar layout of a theme switch.
 //!
 //! Each theme class has its own outer margins and corner radii, and the taskbar
 //! border follows the class too. The managed copies of the Waybar files are
@@ -146,7 +146,6 @@ struct Layout {
   taskbar_window_radius: &'static str,
   telemetry_margin: u32,
   telemetry_radius: &'static str,
-  rofi_radii: [&'static str; 2],
 }
 
 const COMPACT: Layout = Layout {
@@ -155,7 +154,6 @@ const COMPACT: Layout = Layout {
   taskbar_window_radius: "0px",
   telemetry_margin: 0,
   telemetry_radius: "0px",
-  rofi_radii: ["0px", "0px"],
 };
 
 const DEFAULT: Layout = Layout {
@@ -164,7 +162,6 @@ const DEFAULT: Layout = Layout {
   taskbar_window_radius: "4px",
   telemetry_margin: 16,
   telemetry_radius: "8px",
-  rofi_radii: ["6px", "5px"],
 };
 
 fn layout_for(theme: &str) -> &'static Layout {
@@ -202,7 +199,6 @@ pub fn apply_layout(paths: &SessionPaths, theme: &str) -> io::Result<()> {
   );
   let taskbar_css = live(paths, "taskbar/config/argvus-taskbar.css");
   let telemetry_css = live(paths, "widget-telemetry/config/argvus-widget-telemetry.css");
-  let rofi_css = live(paths, "launcher/config/theme.rasi");
 
   if let Some(path) = &taskbar_json {
     edit_text(path, |text| {
@@ -255,26 +251,6 @@ pub fn apply_layout(paths: &SessionPaths, theme: &str) -> io::Result<()> {
         "window#waybar {",
         Declaration::Radius,
         layout.telemetry_radius,
-      )
-    })?;
-  }
-  if let Some(path) = &rofi_css {
-    edit_text(path, |text| {
-      let text = css_edit::set_declaration_in_blocks(
-        text,
-        if text.contains("menu-card {") {
-          "menu-card {"
-        } else {
-          "window {"
-        },
-        Declaration::Radius,
-        layout.rofi_radii[0],
-      );
-      css_edit::set_declaration_in_blocks(
-        &text,
-        "element selected.normal {",
-        Declaration::Radius,
-        layout.rofi_radii[1],
       )
     })?;
   }

@@ -9,7 +9,6 @@
   "menu.logout": "ログアウト",
   "menu.reboot": "リブート",
   "menu.shutdown": "シャットダウン",
-  "menu.launcher_missing": "Rofi メニュー ランチャーが見つかりません。",
   "menu.unsupported_launcher": "サポートされていないメニュー ランチャー: {launcher}",
   "idle.timeout.title": "ロックまでの時間",
   "idle.timeout.one_minute": "1分",

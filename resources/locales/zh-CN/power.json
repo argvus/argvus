@@ -9,7 +9,6 @@
   "menu.logout": "退出",
   "menu.reboot": "重新启动",
   "menu.shutdown": "关闭",
-  "menu.launcher_missing": "未找到 Rofi 菜单启动器。",
   "menu.unsupported_launcher": "不支持的菜单启动器：{launcher}",
   "idle.timeout.title": "锁屏等待时间",
   "idle.timeout.one_minute": "1分钟",

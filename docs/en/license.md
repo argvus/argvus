@@ -15,4 +15,4 @@ The full license text ships with every repository and is available at [argvus/ar
 
 ## Third-party components
 
-ARGVUS packages and themes depend on third-party software (Hyprland, Waybar, Rofi, and others) distributed under their own licenses. Refer to each upstream project for its specific terms.
+ARGVUS packages and themes depend on third-party software (Hyprland, Waybar, and others) distributed under their own licenses. Refer to each upstream project for its specific terms.

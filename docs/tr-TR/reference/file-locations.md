@@ -24,7 +24,6 @@ description: Önemli yüklü ARGVUS dosyaları ve dizinleri.
 - `$XDG_CONFIG_HOME/argvus/data/generated/terminal/` — öngörülen terminal profilleri.
 - `$XDG_CONFIG_HOME/argvus/data/generated/qt6ct/` — yansıtılan Qt6ct paleti.
 - `$XDG_CONFIG_HOME/argvus/data/generated/gtk/` — öngörülen GTK tema dosyaları.
-- `$XDG_CONFIG_HOME/argvus/data/rofi/` — Rofi yapılandırmasının, temalarının ve modunun kullanıcı kopyaları. ARGVUS, dosyayı ilk değiştirdiğinde her kopyayı oluşturur; değiştirilmemiş dosyalar `/usr/share/argvus/launcher/config/`'dan okunur.
 - `$XDG_CONFIG_HOME/argvus/data/generated/removable-devices/theme.css` — öngörülen çıkarılabilir aygıtlar stil sayfası.
 - `$XDG_CONFIG_HOME/argvus/data/focus/settings.json`, `$XDG_DATA_HOME/argvus/focus/history.json`, `$XDG_STATE_HOME/argvus/focus/session.json` — ARGVUS Odak ayarları, oturum geçmişi ve mevcut oturum kontrol noktası.
 - `$XDG_RUNTIME_DIR/argvus/focus/status.json` — görev çubuğu tarafından tüketilen geçici ARGVUS Odak durumu; Focus çıktığında kaldırılır.

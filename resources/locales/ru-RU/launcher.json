@@ -137,6 +137,5 @@
   "universal.ssh": "SSH",
   "universal.shortcuts": "Сочетания клавиш и контекстная справка",
   "universal.cli_help": "argvus launcher — Запуск и поиск",
-  "universal.rasi_unsupported": "Этот запускатель не поддерживает настройки Rasi. Используйте argvus control-center launcher",
   "universal.argument_unsupported": "Неподдерживаемый аргумент. См. argvus launcher --help"
 }

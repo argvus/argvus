@@ -78,11 +78,6 @@ pub fn run(paths: &SessionPaths, theme: &str, runtime: bool, live: bool) -> i32 
     eprintln!("argvus-config: theme effects profile: {error}");
     status = 1;
   }
-  // Rofi takes its background from its own theme file, which the effects step
-  // at the end of the switch used to write seconds after the build changed.
-  // Writing it now, once the theme is committed, keeps a launcher opened during
-  // the rest of the switch from showing the previous theme's background.
-  crate::effects::apply_launcher();
   // The consumers that read the build directly change now; the files the
   // others read are written below and reloaded when the switch ends.
   if live && !wallpaper.is_empty() {
@@ -242,7 +237,7 @@ fn apply_canonical_theme(theme: &str, wallpaper: &str, profile: Option<&Path>) -
   }
 }
 
-/// The Waybar stylesheets and the rofi theme of the switch: each imports its
+/// The Waybar stylesheets of the switch: each imports its
 /// colours from the build.
 fn apply_waybar(paths: &SessionPaths, theme: &str, refresh_bars: bool, fonts: &Fonts) {
   // A running bar reloads its stylesheet on every write. Restoring the packaged
@@ -281,7 +276,6 @@ fn apply_waybar(paths: &SessionPaths, theme: &str, refresh_bars: bool, fonts: &F
 
   let taskbar_css = path_or_empty(paths, "taskbar/config/argvus-taskbar.css");
   let telemetry_css = path_or_empty(paths, "widget-telemetry/config/argvus-widget-telemetry.css");
-  let taskbar_json = path_or_empty(paths, "taskbar/config/argvus-taskbar.jsonc");
   for css in [&taskbar_css, &telemetry_css] {
     set_target_in_file(css, Target::WaybarModeImport, "./mode.css");
   }
@@ -316,31 +310,6 @@ fn apply_waybar(paths: &SessionPaths, theme: &str, refresh_bars: bool, fonts: &F
   );
   let _ = waybar::write_font_block(&taskbar_css, &taskbar_block);
   let _ = waybar::write_font_block(&telemetry_css, &telemetry_block);
-
-  let rofi_config = path_or_empty(paths, "launcher/config/config.rasi");
-  let rofi_theme_file = path_or_empty(paths, "launcher/config/theme.rasi");
-  let rofi_mode = path_or_empty(paths, "launcher/config/mode.rasi");
-  set_target_in_file(
-    &taskbar_json,
-    Target::WaybarRofiDrun,
-    &rofi_config.display().to_string(),
-  );
-  set_target_in_file(
-    &rofi_config,
-    Target::RofiTheme,
-    &rofi_theme_file.display().to_string(),
-  );
-  set_target_in_file(&rofi_config, Target::RofiFont, &fonts.apps);
-  set_target_in_file(
-    &rofi_theme_file,
-    Target::RofiImportTheme,
-    &build.join("launcher/theme.rasi").display().to_string(),
-  );
-  set_target_in_file(
-    &rofi_theme_file,
-    Target::RofiImportMode,
-    &rofi_mode.display().to_string(),
-  );
 }
 
 /// Writes the taskbar height and border chosen in the Control Center back into

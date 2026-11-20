@@ -31,7 +31,6 @@ pub fn config_path(paths: &SessionPaths, relative: &str) -> Option<PathBuf> {
 pub fn ensure_user_copy(paths: &SessionPaths, relative: &str) -> io::Result<PathBuf> {
   let user = paths.user_config(relative);
   if exists_or_link(&user) {
-    migrate_launcher_surface(paths, relative, &user)?;
     return Ok(user);
   }
   let legacy = legacy_relative(relative);
@@ -154,30 +153,6 @@ fn copy_tree(source: &Path, target: &Path) -> io::Result<()> {
     }
   }
   Ok(())
-}
-
-/// Upgrade the bundled launcher layout without replacing palette or user declarations.
-fn migrate_launcher_surface(paths: &SessionPaths, relative: &str, user: &Path) -> io::Result<()> {
-  if relative != "launcher/config/theme.rasi" || user.is_symlink() {
-    return Ok(());
-  }
-  let text = fs::read_to_string(user)?;
-  if text.contains("menu-card {") || !text.contains("/* Author: William C. Canin */") {
-    return Ok(());
-  }
-  let packaged = fs::read_to_string(paths.system_config(relative))?;
-  let Some(start) = packaged.find("window {") else {
-    return Ok(());
-  };
-  let Some(end) = packaged.find("menu-card {") else {
-    return Ok(());
-  };
-  let Some(position) = text.find("window {") else {
-    return Ok(());
-  };
-  let mut upgraded = text.clone();
-  upgraded.replace_range(position..position + "window {".len(), &format!("{}menu-card {{\n  orientation: vertical;\n  expand: false;\n  width: 50%;\n  children: [ mainbox ];", &packaged[start..end]));
-  crate::text_edit::replace_file(user, &upgraded)
 }
 
 #[cfg(test)]

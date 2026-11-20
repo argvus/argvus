@@ -24,7 +24,6 @@ description: Các tệp và thư mục ARGVUS đã cài đặt quan trọng.
 - `$XDG_CONFIG_HOME/argvus/data/generated/terminal/` — cấu hình thiết bị đầu cuối dự kiến.
 - `$XDG_CONFIG_HOME/argvus/data/generated/qt6ct/` — bảng màu Qt6ct dự kiến.
 - `$XDG_CONFIG_HOME/argvus/data/generated/gtk/` — tệp chủ đề GTK dự kiến.
-- `$XDG_CONFIG_HOME/argvus/data/rofi/` — bản sao của người dùng về cấu hình, chủ đề và chế độ Rofi. ARGVUS tạo từng bản sao khi nó thay đổi tệp lần đầu tiên; các tệp không thay đổi được đọc từ `/usr/share/argvus/launcher/config/`.
 - `$XDG_CONFIG_HOME/argvus/data/generated/removable-devices/theme.css` — biểu định kiểu dự kiến ​​cho thiết bị di động.
 - `$XDG_CONFIG_HOME/argvus/data/focus/settings.json`, `$XDG_DATA_HOME/argvus/focus/history.json`, `$XDG_STATE_HOME/argvus/focus/session.json` — Cài đặt tiêu điểm ARGVUS, lịch sử phiên và điểm kiểm tra phiên hiện tại.
 - `$XDG_RUNTIME_DIR/argvus/focus/status.json` — trạng thái ARGVUS Focus tạm thời được thanh tác vụ sử dụng; bị xóa khi Focus thoát.

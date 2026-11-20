@@ -10,7 +10,7 @@ file konsumen adalah proyeksi `config.json`, termasuk Hyprland, GTK, Qt6ct,
 Waybar, Quickshell, Dunst, Hyprlock, taskbar Waybar dan widget-telemetri
 profil, pohon konfigurasi Yazi dan Superfile, terminal dan profil Qt
 pohon, blok yang dikelola font, dan stylesheet perangkat yang dapat dilepas. Komponen
-selesaikan penggantian pengguna secara eksplisit, lalu hasilkan keluaran, lalu paket default. Rofi bukan proyeksi: `argvus-launcher` memiliki filenya, dan pengguna menyalin langsung di bawah `data/rofi/`.
+selesaikan penggantian pengguna secara eksplisit, lalu hasilkan keluaran, lalu paket default.
 Proyeksi tema/muat ulang normal tidak pernah mempromosikan file yang dihasilkan atau dikemas
 menjadi penggantian pengguna. Dokumentasi dan alat harus mengidentifikasi sumber logis
 alih-alih meminta pengguna untuk mengedit keluaran yang dihasilkan.

@@ -45,7 +45,7 @@ pub(super) fn session_prepare() -> ExitCode {
   ExitCode::from(status.clamp(0, 255) as u8)
 }
 
-/// Synchronizes the Rofi, btop and yazi files without reloading anything.
+/// Synchronizes the managed Dunst menu and the btop and yazi files without reloading anything.
 /// Session preparation uses it; errors are ignored, as the shell ignored them.
 pub(super) fn session_sync_config() -> ExitCode {
   let Some(paths) = session_paths::SessionPaths::from_environment() else {

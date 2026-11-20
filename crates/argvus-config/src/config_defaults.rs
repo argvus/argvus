@@ -350,6 +350,12 @@ fn default_applications(document: &mut ConfigDocument) {
   let default_apps = default_apps
     .as_object_mut()
     .expect("default_apps is object");
+  // The previous ARGVUS default already opened the native launcher in Hyprland.
+  if let Some(launcher) = default_apps.get_mut("launcher")
+    && launcher.as_str() == Some("rofi")
+  {
+    *launcher = Value::String("argvus".into());
+  }
   for (category, application) in [
     ("terminal", "argvus-terminal"),
     ("file_manager", "spf"),

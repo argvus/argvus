@@ -15,4 +15,4 @@ O texto completo da licença acompanha cada repositório e está disponível em 
 
 ## Componentes de terceiros
 
-Os pacotes e temas do ARGVUS dependem de software de terceiros (Hyprland, Waybar, Rofi e outros) distribuídos sob suas próprias licenças. Consulte cada projeto upstream para seus termos específicos.
+Os pacotes e temas do ARGVUS dependem de software de terceiros (Hyprland, Waybar e outros) distribuídos sob suas próprias licenças. Consulte cada projeto upstream para seus termos específicos.

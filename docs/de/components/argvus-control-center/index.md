@@ -586,7 +586,7 @@ Das Control Center speichert seine Prüfdatenbank unter `$XDG_CACHE_HOME/argvus/
 
 ## Starter und Suche
 
-Der Hauptstarter verwendet Quickshell/QML mit einer lokalen Rust-Suche für Apps, Fenster, Einstellungen, Aktionen, Projekte, SSH-Ziele, Dateien und Tastenkürzel. Die Indizierung ist zunächst deaktiviert; Ordner müssen ausdrücklich ausgewählt werden. Nur Namen und Pfade werden indiziert, keine Dokumentinhalte. Zuletzt verwendete Dateien stammen aus dem XDG-Verzeichnis. Versteckte Dateien sind standardmäßig ausgeschlossen; Verzeichnis-Symlinks werden nicht verfolgt. Spezialisierte Rofi-Menüs bleiben verfügbar. Unter Launcher and Search lässt sich die Sortierung auf A–Z oder zuletzt geöffnet setzen; zuletzt geöffnet ist die Standardeinstellung. „Jetzt geöffnet“ ist standardmäßig deaktiviert. Aktivieren Sie die Option unter Control Center > Preferences > Launcher and Search, um bei leerer Suche offene Fenster anzuzeigen. Dort können Sie auch den App-Nutzungsverlauf löschen.
+Der Hauptstarter verwendet Quickshell/QML mit einer lokalen Rust-Suche für Apps, Fenster, Einstellungen, Aktionen, Projekte, SSH-Ziele, Dateien und Tastenkürzel. Die Indizierung ist zunächst deaktiviert; Ordner müssen ausdrücklich ausgewählt werden. Nur Namen und Pfade werden indiziert, keine Dokumentinhalte. Zuletzt verwendete Dateien stammen aus dem XDG-Verzeichnis. Versteckte Dateien sind standardmäßig ausgeschlossen; Verzeichnis-Symlinks werden nicht verfolgt. Unter Launcher and Search lässt sich die Sortierung auf A–Z oder zuletzt geöffnet setzen; zuletzt geöffnet ist die Standardeinstellung. „Jetzt geöffnet“ ist standardmäßig deaktiviert. Aktivieren Sie die Option unter Control Center > Preferences > Launcher and Search, um bei leerer Suche offene Fenster anzuzeigen. Dort können Sie auch den App-Nutzungsverlauf löschen.
 
 `argvus launcher` · `argvus control-center launcher`
 
@@ -601,7 +601,7 @@ Der Hauptstarter verwendet Quickshell/QML mit einer lokalen Rust-Suche für Apps
 
 `$XDG_CONFIG_HOME/argvus/config/launcher.json` → `$XDG_CACHE_HOME/argvus/launcher/index.json`
 
-Quickshell: `launcher/Theme.qml` · Rofi: `launcher/theme.rasi`
+Quickshell: `launcher/Theme.qml`
 
 `--config` / Rasi: Suche konfigurieren → `argvus control-center launcher`.
 

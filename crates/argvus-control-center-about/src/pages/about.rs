@@ -101,7 +101,7 @@ pub fn groups() -> [Group; 4] {
       modules: &[
         Module {
           name: "argvus-launcher",
-          key: "control_center.about_rofi_launcher_menus_and_themes",
+          key: "control_center.launcher_search",
         },
         Module {
           name: "argvus-control-panel",

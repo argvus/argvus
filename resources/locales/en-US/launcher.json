@@ -137,6 +137,5 @@
   "universal.ssh": "SSH",
   "universal.shortcuts": "Keyboard shortcuts and contextual help",
   "universal.cli_help": "argvus launcher — Launcher and Search",
-  "universal.rasi_unsupported": "Rasi configuration is not supported by this launcher. Use argvus control-center launcher",
   "universal.argument_unsupported": "Unsupported launcher argument. See argvus launcher --help"
 }

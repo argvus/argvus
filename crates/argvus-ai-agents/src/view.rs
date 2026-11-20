@@ -6,7 +6,11 @@ use gtk4_layer_shell::{Edge, KeyboardMode, Layer, LayerShell};
 
 use crate::{Agent, matching, move_selection, style};
 
-pub(super) fn select(agents: Vec<Agent>, i18n: &I18n) -> Result<Option<&'static str>, ExitCode> {
+pub(super) fn select(
+  agents: Vec<Agent>,
+  i18n: &I18n,
+  uninstall: bool,
+) -> Result<Option<&'static str>, ExitCode> {
   let app = gtk::Application::builder()
     .application_id("sh.argvus.AiAgents")
     .flags(gio::ApplicationFlags::NON_UNIQUE)
@@ -16,7 +20,7 @@ pub(super) fn select(agents: Vec<Agent>, i18n: &I18n) -> Result<Option<&'static 
   app.connect_activate({
     let agents = Rc::new(agents);
     let selected = selected.clone();
-    move |app| open(app, agents.clone(), &i18n, selected.clone())
+    move |app| open(app, agents.clone(), &i18n, uninstall, selected.clone())
   });
   if app.run_with_args::<&str>(&[]) == glib::ExitCode::SUCCESS {
     Ok(selected.get())
@@ -29,8 +33,14 @@ fn open(
   app: &gtk::Application,
   agents: Rc<Vec<Agent>>,
   i18n: &I18n,
+  uninstall: bool,
   result: Rc<Cell<Option<&'static str>>>,
 ) {
+  let title = i18n.tr(if uninstall {
+    "uninstall_title"
+  } else {
+    "title"
+  });
   let rtl = i18n.direction() == TextDirection::RightToLeft;
   gtk::Widget::set_default_direction(if rtl {
     gtk::TextDirection::Rtl
@@ -39,7 +49,7 @@ fn open(
   });
   let window = gtk::ApplicationWindow::builder()
     .application(app)
-    .title(format!("ARGVUS {}", i18n.tr("title")))
+    .title(format!("ARGVUS {title}"))
     .default_width(1120)
     .default_height(650)
     .decorated(false)
@@ -71,10 +81,12 @@ fn open(
   brand.set_valign(gtk::Align::Center);
   header.append(&brand);
   let heading = gtk::Box::new(gtk::Orientation::Vertical, 4);
-  let title = label(&i18n.tr("title"));
+  let title = label(&title);
   title.add_css_class("heading");
   heading.append(&title);
-  heading.append(&label(&i18n.tr("selector.subtitle")));
+  if !uninstall {
+    heading.append(&label(&i18n.tr("selector.subtitle")));
+  }
   header.append(&heading);
   panel.append(&header);
 
@@ -123,7 +135,11 @@ fn open(
 
   let footer = gtk::Box::new(gtk::Orientation::Horizontal, 10);
   footer.add_css_class("footer");
-  let hints = label(&i18n.tr("selector.keys"));
+  let hints = label(&if uninstall {
+    "↑ ↓ ← →   Enter   Esc".to_owned()
+  } else {
+    i18n.tr("selector.keys")
+  });
   hints.set_wrap(true);
   hints.set_hexpand(true);
   footer.append(&hints);

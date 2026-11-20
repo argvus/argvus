@@ -72,10 +72,18 @@ fn main() -> ExitCode {
   let [flag, ids @ ..] = arguments.as_slice() else {
     return ExitCode::from(2);
   };
-  if flag != "--selector"
-    || ids
-      .iter()
-      .any(|id| !CATALOG.iter().any(|entry| entry.0 == id))
+  if flag == "--error" {
+    return match ids {
+      [message] => dialog(message, None).map_or_else(|code| code, |_| ExitCode::SUCCESS),
+      _ => ExitCode::from(2),
+    };
+  }
+  let uninstall = flag == "--uninstall";
+  if (flag != "--selector" && !uninstall)
+    || ids.iter().any(|id| {
+      !CATALOG.iter().any(|entry| entry.0 == id)
+        || (uninstall && !matches!(id.as_str(), "hermes" | "cursor" | "kimi"))
+    })
   {
     return ExitCode::from(2);
   }
@@ -105,8 +113,30 @@ fn main() -> ExitCode {
       }
     })
     .collect();
-  match view::select(agents, &i18n) {
-    Ok(Some(id)) => match Command::new("argvus-ai").args(["launch", id]).spawn() {
+  match view::select(agents, &i18n, uninstall) {
+    Ok(Some(id)) if uninstall => {
+      let prompt = format!("{}: {id}", i18n.tr("uninstall_title"));
+      match dialog(
+        &prompt,
+        Some((&i18n.tr("confirm_uninstall"), &i18n.tr("cancel"))),
+      ) {
+        Ok(true) => Command::new("argvus-ai")
+          .args(["uninstall", id])
+          .env("ARGVUS_AI_GRAPHICAL", "1")
+          .status()
+          .ok()
+          .and_then(|status| status.code())
+          .and_then(|code| u8::try_from(code).ok())
+          .map_or(ExitCode::FAILURE, ExitCode::from),
+        Ok(false) => ExitCode::SUCCESS,
+        Err(code) => code,
+      }
+    }
+    Ok(Some(id)) => match Command::new("argvus-ai")
+      .args(["launch", id])
+      .env("ARGVUS_AI_GRAPHICAL", "1")
+      .spawn()
+    {
       Ok(_) => ExitCode::SUCCESS,
       Err(error) => {
         eprintln!("{} ({error})", i18n.tr("terminal_error"));
@@ -116,6 +146,30 @@ fn main() -> ExitCode {
     Ok(None) => ExitCode::SUCCESS,
     Err(code) => code,
   }
+}
+
+fn dialog(message: &str, confirmation: Option<(&str, &str)>) -> Result<bool, ExitCode> {
+  gtk::init().map_err(|error| {
+    eprintln!("{error}");
+    ExitCode::FAILURE
+  })?;
+  let dialog = gtk::AlertDialog::builder()
+    .message(message)
+    .modal(true)
+    .build();
+  let Some((confirm, cancel)) = confirmation else {
+    glib::MainContext::default()
+      .block_on(dialog.choose_future(gtk::Window::NONE))
+      .ok();
+    return Ok(false);
+  };
+  dialog.set_buttons(&[cancel, confirm]);
+  dialog.set_cancel_button(0);
+  dialog.set_default_button(0);
+  Ok(matches!(
+    glib::MainContext::default().block_on(dialog.choose_future(gtk::Window::NONE)),
+    Ok(1)
+  ))
 }
 
 #[cfg(test)]

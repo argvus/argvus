@@ -9,7 +9,6 @@
   "menu.logout": "Đăng xuất",
   "menu.reboot": "Khởi động lại",
   "menu.shutdown": "Đóng cửa",
-  "menu.launcher_missing": "Không tìm thấy bệ phóng thực đơnRofi.",
   "menu.unsupported_launcher": "Súng phóng thanh không được hỗ trợ:{launcher}",
   "idle.timeout.title": "Thời gian chờ khóa",
   "idle.timeout.one_minute": "1 phút",

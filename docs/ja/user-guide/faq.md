@@ -55,7 +55,7 @@ argvus --control-center
 
 ## ARGVUSの設定はどこに保存されていますか？
 
-ユーザー所有の設定は`$XDG_CONFIG_HOME/argvus`（通常は`~/.config/argvus`）の下に保存されます。標準的な論理設定はそこに保持され、一方でHyprland、Waybar、テレメトリウィジェット、GTK、Qt6ct、Quickshell、Dunst、Hyprlock、Yazi、Superfile、端末、フォント、エフェクト、カレンダー、入力、キーボード、電源およびリムーバブルデバイス用の派生消費者ファイルは`~/.config/argvus/data/generated/`の下に存在します。そのツリーは`argvus-config`によってのみ書き込まれ、標準設定から再構築されます；`argvus-appearance`は外観の変更をコミットしてから、標準設定を自分で読み取れない外部消費者のみを調整します。例外はRofiです：`argvus launcher`がその設定とテーマをパッケージ化し、ユーザーが編集したコピーは`~/.config/argvus/data/rofi/`の下に存在します。
+ユーザー所有の設定は`$XDG_CONFIG_HOME/argvus`（通常は`~/.config/argvus`）の下に保存されます。標準的な論理設定はそこに保持され、一方でHyprland、Waybar、テレメトリウィジェット、GTK、Qt6ct、Quickshell、Dunst、Hyprlock、Yazi、Superfile、端末、フォント、エフェクト、カレンダー、入力、キーボード、電源およびリムーバブルデバイス用の派生消費者ファイルは`~/.config/argvus/data/generated/`の下に存在します。そのツリーは`argvus-config`によってのみ書き込まれ、標準設定から再構築されます；`argvus-appearance`は外観の変更をコミットしてから、標準設定を自分で読み取れない外部消費者のみを調整します。
 
 生成されたファイルを恒久的な設定方法として編集しないでください。カスタマイズしたいコンポーネントについては、コントロールセンターまたは文書化されたネイティブオーバーライドパスを使用してください。[configuration files](/docs/reference/configuration-files/)および[configuration and state](/docs/developer-guide/architecture/configuration-and-state/)を参照してください。
 

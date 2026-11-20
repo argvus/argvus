@@ -630,7 +630,7 @@ Control Center denetim veritabanını `$XDG_CACHE_HOME/argvus/control-center/che
 
 ## Başlatıcı ve Arama
 
-Ana başlatıcı Quickshell/QML ve yerel Rust arama motoruyla uygulama, pencere, ayar, eylem, proje, SSH sunucusu, dosya ve kısayol arar. Dizinleme başlangıçta kapalıdır; klasörleri açıkça seçin. Yalnızca adlar ve yollar dizinlenir, belge içerikleri okunmaz. Son dosyalar XDG kaydına bağlıdır. Gizli dosyalar varsayılan olarak dışlanır ve dizin sembolik bağlantıları izlenmez. Özel Rofi menüleri kullanılabilir. Launcher and Search bölümünde A–Z veya Son açılanlar sıralamasını seçin; varsayılan Son açılanlardır. **Şu anda açık** varsayılan olarak kapalıdır. Arama boşken mevcut pencereleri göstermek için Control Center > Preferences > Launcher and Search bölümünden açın. Uygulama kullanım geçmişini aynı sayfadan temizleyebilirsiniz.
+Ana başlatıcı Quickshell/QML ve yerel Rust arama motoruyla uygulama, pencere, ayar, eylem, proje, SSH sunucusu, dosya ve kısayol arar. Dizinleme başlangıçta kapalıdır; klasörleri açıkça seçin. Yalnızca adlar ve yollar dizinlenir, belge içerikleri okunmaz. Son dosyalar XDG kaydına bağlıdır. Gizli dosyalar varsayılan olarak dışlanır ve dizin sembolik bağlantıları izlenmez. Launcher and Search bölümünde A–Z veya Son açılanlar sıralamasını seçin; varsayılan Son açılanlardır. **Şu anda açık** varsayılan olarak kapalıdır. Arama boşken mevcut pencereleri göstermek için Control Center > Preferences > Launcher and Search bölümünden açın. Uygulama kullanım geçmişini aynı sayfadan temizleyebilirsiniz.
 
 `argvus launcher` · `argvus control-center launcher`
 
@@ -645,7 +645,7 @@ Ana başlatıcı Quickshell/QML ve yerel Rust arama motoruyla uygulama, pencere,
 
 `$XDG_CONFIG_HOME/argvus/config/launcher.json` → `$XDG_CACHE_HOME/argvus/launcher/index.json`
 
-Quickshell: `launcher/Theme.qml` · Rofi: `launcher/theme.rasi`
+Quickshell: `launcher/Theme.qml`
 
 `--config` / Rasi: Aramayı yapılandır → `argvus control-center launcher`.
 

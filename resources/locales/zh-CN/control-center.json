@@ -1255,7 +1255,6 @@
   "control_center.about_wayland_portals_dbus_and_integration_preferences": "Wayland 门户、DBus 和集成首选项。",
   "control_center.about_master_package_command_and_shared_runtime": "命令、进程内子命令、GTK 4 个帮助程序和共享运行时。",
   "control_center.about_shell_and_desktop": "外壳和桌面",
-  "control_center.about_rofi_launcher_menus_and_themes": "Rofi 启动器、菜单和主题。",
   "control_center.about_quickshell_sidebar_control_panel_and_its_themes": "Quickshell 侧边栏控制面板及其主题。",
   "control_center.about_themes_fonts_wallpapers_and_visual_integration": "主题、字体、壁纸和视觉集成。",
   "control_center.about_calendar_and_taskbar_popup_integration": "日历和任务栏弹出集成。",

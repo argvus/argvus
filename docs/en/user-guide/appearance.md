@@ -3,7 +3,7 @@ title: Appearance
 description: Configure the visual language shared by ARGVUS components.
 ---
 
-The appearance system applies one theme state to Hyprland, GTK, Qt, Waybar, Quickshell, Rofi, Dunst, Hyprlock and ARGVUS applications.
+The appearance system applies one theme state to Hyprland, GTK, Qt, Waybar, Quickshell, Dunst, Hyprlock and ARGVUS applications.
 
 ## Theme families
 

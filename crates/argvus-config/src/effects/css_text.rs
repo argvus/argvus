@@ -1,53 +1,9 @@
-//! Line-based edits of the CSS and Rasi files the surfaces read: color parsing, `@define-color` values and marked blocks.
+//! Line-based edits of the CSS files the surfaces read: color parsing, `@define-color` values and marked blocks.
 
 use super::*;
 
 pub(super) fn opacity_factor(transparency: u32) -> String {
   format!("{:.2}", 1.0 - f64::from(transparency) / 100.0)
-}
-
-/// The build file the Rofi theme imports first (`@import "…/launcher/theme.rasi"`).
-/// A relative import is resolved against the theme file's directory, as Rofi
-/// resolves it.
-pub(super) fn imported_build_theme(theme: &Path, text: &str) -> Option<PathBuf> {
-  let import = text.lines().find_map(|line| {
-    line
-      .strip_prefix("@import \"")
-      .and_then(|rest| rest.split('"').next())
-  })?;
-  let import = Path::new(import);
-  if import.is_absolute() {
-    Some(import.to_path_buf())
-  } else {
-    theme.parent().map(|directory| directory.join(import))
-  }
-}
-
-/// The `bg` value of the Rofi theme: the build's `th-bg` colour with `opacity`
-/// (0.0 to 1.0) as a whole percentage. A build without a readable `th-bg` keeps
-/// the build's own value, `@th-bg`.
-pub(super) fn launcher_background(build_theme: &str, opacity: f64) -> String {
-  let color = build_theme
-    .lines()
-    .find_map(|line| {
-      let rest = line.trim_start().strip_prefix("th-bg:")?.trim_start();
-      rest.strip_suffix(';')
-    })
-    .unwrap_or_default();
-  let channels: Vec<&str> = color
-    .trim_start_matches("rgba")
-    .trim_start_matches("rgb")
-    .trim_matches(['(', ')'])
-    .split(',')
-    .map(|channel| channel.trim().trim_end_matches('%'))
-    .collect();
-  match channels.as_slice() {
-    [red, green, blue] | [red, green, blue, _] => {
-      let alpha = (opacity * 100.0).round() as i64;
-      format!("rgba({red}, {green}, {blue}, {alpha}%)")
-    }
-    _ => "@th-bg".to_string(),
-  }
 }
 
 /// Every `@define-color` line of the theme files imported by a Waybar stylesheet,

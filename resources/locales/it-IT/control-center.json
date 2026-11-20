@@ -1255,7 +1255,6 @@
   "control_center.about_wayland_portals_dbus_and_integration_preferences": "Portali Wayland, DBus e preferenze di integrazione.",
   "control_center.about_master_package_command_and_shared_runtime": "Comando, sottocomandi in-process, helper GTK 4 e runtime condiviso.",
   "control_center.about_shell_and_desktop": "Shell e desktop",
-  "control_center.about_rofi_launcher_menus_and_themes": "Launcher, menu e temi Rofi.",
   "control_center.about_quickshell_sidebar_control_panel_and_its_themes": "Pannello di controllo della barra laterale Quickshell e suoi temi.",
   "control_center.about_themes_fonts_wallpapers_and_visual_integration": "Temi, caratteri, sfondi e integrazione visiva.",
   "control_center.about_calendar_and_taskbar_popup_integration": "Integrazione popup del calendario e della barra delle applicazioni.",

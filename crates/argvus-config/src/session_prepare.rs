@@ -75,8 +75,7 @@ pub fn prepare(paths: &SessionPaths, commands_dir: &Path, cache_home: &Path) -> 
   let run_spaces = data.join(".active-theme").is_file() || data.join(".spaces").is_file();
   let run_borders = data.join(".active-theme").is_file() || data.join(".borders").is_file();
   // The two scripts write disjoint files with `--apply-static`: spaces edits
-  // the bars' JSONC margins and the effective geometry, borders the bars' CSS
-  // and the Rofi theme. Running them side by side halves this step.
+  // the bars' JSONC margins and the effective geometry, borders the bars' CSS.
   std::thread::scope(|scope| {
     if run_spaces {
       scope.spawn(|| {
@@ -274,8 +273,6 @@ fn fingerprint_roots(paths: &SessionPaths, theme: &str) -> Vec<PathBuf> {
     system("taskbar/config/argvus-taskbar.css"),
     system("widget-telemetry/config/argvus-widget-telemetry.jsonc"),
     system("widget-telemetry/config/argvus-widget-telemetry.css"),
-    system("launcher/config/config.rasi"),
-    system("launcher/config/theme.rasi"),
     theme_paths.system_themes().join(family),
     theme_paths.user_themes.join(family),
     theme_paths.registry(),
@@ -342,8 +339,6 @@ pub(crate) fn theme_materialized(paths: &SessionPaths, theme: &str) -> bool {
     "taskbar/config/argvus-taskbar.css",
     "widget-telemetry/config/argvus-widget-telemetry.jsonc",
     "widget-telemetry/config/argvus-widget-telemetry.css",
-    "launcher/config/config.rasi",
-    "launcher/config/theme.rasi",
     "appearance/config/waybar/mode.css",
   ];
   for relative in required {

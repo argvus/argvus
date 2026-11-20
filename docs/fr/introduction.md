@@ -53,7 +53,7 @@ Voir [Matériel](/docs/user-guide/hardware/), [Confidentialité et sécurité](/
 
 ## État d'apparence partagé
 
-Les préférences de thème, d'accent, de fond d'écran, de police et d'effets sont stockées sous forme d'état logique dans `$XDG_CONFIG_HOME/argvus` (normalement `~/.config/argvus`). `argvus-config` est le seul composant qui écrit dans `data/generated/`, où il projette les fichiers consommateurs pour Hyprland, GTK, Qt6ct, Waybar, Quickshell, Dunst, les notifications, l'écran de verrouillage, Yazi, Superfile et les terminaux. Rofi fait exception : `argvus launcher` emballe sa configuration et ses thèmes en fichiers simples, et les copies modifiées par l'utilisateur vivent sous `data/rofi/`. Les assistants d'apparence enregistrent le changement d'état puis réconcilient les applications externes ; ils n'écrivent jamais l'arborescence générée.
+Les préférences de thème, d'accent, de fond d'écran, de police et d'effets sont stockées sous forme d'état logique dans `$XDG_CONFIG_HOME/argvus` (normalement `~/.config/argvus`). `argvus-config` est le seul composant qui écrit dans `data/generated/`, où il projette les fichiers consommateurs pour Hyprland, GTK, Qt6ct, Waybar, Quickshell, Dunst, les notifications, l'écran de verrouillage, Yazi, Superfile et les terminaux. Les assistants d'apparence enregistrent le changement d'état puis réconcilient les applications externes ; ils n'écrivent jamais l'arborescence générée.
 
 Le répertoire généré n'est pas la source de vérité. Voir [Appearance](/docs/user-guide/appearance/) et [configuration and state](/docs/developer-guide/architecture/configuration-and-state/).
 

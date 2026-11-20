@@ -24,7 +24,6 @@ description: Важные установленные файлы и катало�
 - `$XDG_CONFIG_HOME/argvus/data/generated/terminal/` — проецируемые профили терминала.
 - `$XDG_CONFIG_HOME/argvus/data/generated/qt6ct/` — проектируемая палитра Qt6ct.  
 - `$XDG_CONFIG_HOME/argvus/data/generated/gtk/` — проектируемые файлы темы GTK.  
-- `$XDG_CONFIG_HOME/argvus/data/rofi/` — пользовательские копии конфигурации Rofi, тем и режима. ARGVUS создаёт каждую копию при первом изменении файла; неизменённые файлы читаются из `/usr/share/argvus/launcher/config/`.  
 - `$XDG_CONFIG_HOME/argvus/data/generated/removable-devices/theme.css` — проектируемый стиль для съёмных устройств.  
 - `$XDG_CONFIG_HOME/argvus/data/focus/settings.json`, `$XDG_DATA_HOME/argvus/focus/history.json`, `$XDG_STATE_HOME/argvus/focus/session.json` — настройки ARGVUS Focus, история сеансов и контрольная точка текущего сеанса.  
 - `$XDG_RUNTIME_DIR/argvus/focus/status.json` — эфемерный статус ARGVUS Focus, используемый панелью задач; удаляется при выходе Focus.

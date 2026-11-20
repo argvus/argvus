@@ -10,7 +10,7 @@ tệp người tiêu dùng là hình chiếu của `config.json`, bao gồm Hypr
 Waybar, Quickshell, Dunst, Hyprlock, thanh tác vụ Waybar và phép đo từ xa widget
 profile, cây cấu hình Yazi và Superfile, thiết bị đầu cuối và hồ sơ Qt
 cây, các khối được quản lý phông chữ và biểu định kiểu thiết bị di động. Linh kiện
-giải quyết các ghi đè rõ ràng của người dùng, sau đó tạo đầu ra, sau đó mặc định gói. Rofi không phải là một phép chiếu: `argvus-launcher` sở hữu các tệp của nó và người dùng sao chép trực tiếp dưới `data/rofi/`.
+giải quyết các ghi đè rõ ràng của người dùng, sau đó tạo đầu ra, sau đó mặc định gói.
 Trình chiếu chủ đề/tải lại thông thường không bao giờ quảng bá các tệp được tạo hoặc đóng gói
 thành phần ghi đè của người dùng. Tài liệu và công cụ phải xác định nguồn hợp lý
 thay vì yêu cầu người dùng chỉnh sửa kết quả đã tạo.

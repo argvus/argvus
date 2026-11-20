@@ -1255,7 +1255,6 @@
   "control_center.about_wayland_portals_dbus_and_integration_preferences": "Wayland ポータル、DBus および統合設定。",
   "control_center.about_master_package_command_and_shared_runtime": "コマンド、インプロセス サブコマンド、GTK 4 ヘルパー、および共有ランタイム。",
   "control_center.about_shell_and_desktop": "シェルとデスクトップ",
-  "control_center.about_rofi_launcher_menus_and_themes": "Rofi ランチャー、メニュー、テーマ。",
   "control_center.about_quickshell_sidebar_control_panel_and_its_themes": "Quickshell サイドバー コントロール パネルとそのテーマ。",
   "control_center.about_themes_fonts_wallpapers_and_visual_integration": "テーマ、フォント、壁紙、視覚的な統合。",
   "control_center.about_calendar_and_taskbar_popup_integration": "カレンダーとタスクバーのポップアップの統合。",

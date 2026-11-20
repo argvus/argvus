@@ -2,7 +2,7 @@
 title: Erscheinung
 description: Konfigurieren Sie die visuelle Sprache, die von ARGVUS-Komponenten geteilt wird.
 ---
-Das Erscheinungssystem wendet einen Themenzustand auf Hyprland, GTK, Qt, Waybar, Quickshell, Rofi, Dunst, Hyprlock und ARGVUS-Anwendungen an.
+Das Erscheinungssystem wendet einen Themenzustand auf Hyprland, GTK, Qt, Waybar, Quickshell, Dunst, Hyprlock und ARGVUS-Anwendungen an.
 
 ## Themenfamilien
 

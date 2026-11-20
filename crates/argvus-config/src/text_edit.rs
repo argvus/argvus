@@ -101,14 +101,6 @@ pub fn jsonc_height(text: &str) -> Option<u32> {
 /// one pattern and one line template; the first match on each line is replaced.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Target {
-  /// `@theme "…theme.rasi"` in the Rofi config.
-  RofiTheme,
-  /// `font: "…";` in the Rofi config (only the value is replaced).
-  RofiFont,
-  /// `@import "…/themes/…/theme.rasi"` in the Rofi theme.
-  RofiImportTheme,
-  /// `@import "…mode.rasi"` in the Rofi theme.
-  RofiImportMode,
   /// The `monitor` line of hyprpaper.conf.
   HyprpaperMonitor,
   /// The `path` line of hyprpaper.conf.
@@ -127,18 +119,12 @@ pub enum Target {
   /// The theme `@import` of the telemetry style (`…/widget-telemetry-theme.css`
   /// or `…/widget-telemetry/theme.css`); the value is the whole path.
   WaybarTelemetryThemeImport,
-  /// `rofi -config … -show drun` in the Waybar configuration.
-  WaybarRofiDrun,
 }
 
 impl Target {
   /// Parses the name used on the command line.
   pub fn parse(name: &str) -> Option<Self> {
     match name {
-      "rofi-theme" => Some(Self::RofiTheme),
-      "rofi-font" => Some(Self::RofiFont),
-      "rofi-import-theme" => Some(Self::RofiImportTheme),
-      "rofi-import-mode" => Some(Self::RofiImportMode),
       "hyprpaper-monitor" => Some(Self::HyprpaperMonitor),
       "hyprpaper-path" => Some(Self::HyprpaperPath),
       "qt6ct-color-scheme" => Some(Self::Qt6ctColorScheme),
@@ -147,17 +133,12 @@ impl Target {
       "waybar-mode-import" => Some(Self::WaybarModeImport),
       "waybar-theme-import" => Some(Self::WaybarThemeImport),
       "waybar-telemetry-theme-import" => Some(Self::WaybarTelemetryThemeImport),
-      "waybar-rofi-drun" => Some(Self::WaybarRofiDrun),
       _ => None,
     }
   }
 
   fn pattern(self) -> &'static str {
     match self {
-      Self::RofiTheme => r#"^@theme ".*theme.rasi"$"#,
-      Self::RofiFont => r#"font: ".*";"#,
-      Self::RofiImportTheme => r#"^@import ".*/theme\.rasi"$"#,
-      Self::RofiImportMode => r#"^@import ".*mode.rasi"$"#,
       Self::HyprpaperMonitor => r"^[[:space:]]*monitor[[:space:]]*=.*$",
       Self::HyprpaperPath => r"^[[:space:]]*path[[:space:]]*=.*$",
       Self::Qt6ctColorScheme => r"^color_scheme_path=.*",
@@ -170,16 +151,11 @@ impl Target {
       Self::WaybarTelemetryThemeImport => {
         r#"@import url\("[^"]*widget-telemetry[-/]theme\.css"\);"#
       }
-      Self::WaybarRofiDrun => r"rofi -config [^ ]* -show drun",
     }
   }
 
   fn template(self, value: &str) -> String {
     match self {
-      Self::RofiTheme | Self::RofiImportTheme | Self::RofiImportMode => {
-        format!("@{} \"{value}\"", self.keyword())
-      }
-      Self::RofiFont => format!("font: \"{value}\";"),
       Self::HyprpaperMonitor => format!("  monitor = {value}"),
       Self::HyprpaperPath => format!("  path =  {value}"),
       Self::Qt6ctColorScheme => format!("color_scheme_path={value}"),
@@ -188,14 +164,6 @@ impl Target {
       Self::WaybarModeImport | Self::WaybarThemeImport | Self::WaybarTelemetryThemeImport => {
         format!(r#"@import url("{value}");"#)
       }
-      Self::WaybarRofiDrun => format!("rofi -config {value} -show drun"),
-    }
-  }
-
-  fn keyword(self) -> &'static str {
-    match self {
-      Self::RofiTheme => "theme",
-      _ => "import",
     }
   }
 }
@@ -352,15 +320,6 @@ mod tests {
 
   #[test]
   fn targets_replace_only_their_lines() {
-    let rofi = "@import \"x\"\n@theme \"old/theme.rasi\"\nfont: \"Old 9\";\n";
-    assert_eq!(
-      set_target(rofi, Target::RofiTheme, "/new/theme.rasi"),
-      "@import \"x\"\n@theme \"/new/theme.rasi\"\nfont: \"Old 9\";\n"
-    );
-    assert_eq!(
-      set_target(rofi, Target::RofiFont, "Inter 11"),
-      "@import \"x\"\n@theme \"old/theme.rasi\"\nfont: \"Inter 11\";\n"
-    );
     let hypr = "wallpaper {\n  monitor = DP-1\n  path = /old.jxl\n}\n";
     assert_eq!(
       set_target(hypr, Target::HyprpaperPath, "~/new.jxl"),
@@ -421,23 +380,6 @@ mod tests {
         "./themes/x/widget-telemetry-theme.css"
       ),
       "@import url(\"./themes/x/widget-telemetry-theme.css\");\n"
-    );
-    let rofi = set_target(
-      "@import \"/u/rofi/themes/old/theme.rasi\"\n@import \"/u/rofi/mode.rasi\"\n",
-      Target::RofiImportTheme,
-      &format!("{build}/launcher/theme.rasi"),
-    );
-    assert_eq!(
-      rofi,
-      format!("@import \"{build}/launcher/theme.rasi\"\n@import \"/u/rofi/mode.rasi\"\n")
-    );
-    assert_eq!(
-      set_target(
-        "\"exec\": \"rofi -config /old/config.rasi -show drun\"\n",
-        Target::WaybarRofiDrun,
-        "/new/config.rasi"
-      ),
-      "\"exec\": \"rofi -config /new/config.rasi -show drun\"\n"
     );
   }
 

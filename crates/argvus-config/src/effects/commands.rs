@@ -241,7 +241,6 @@ impl Effects {
           self.config_set_value("/effects/transparency_launchers_value", transparency_value);
         }
         self.request_config_reload().map_err(|_| 1)?;
-        self.apply_launcher_surface().map_err(|_| 1)?;
         println!("{transparency_value}");
         Ok(())
       }

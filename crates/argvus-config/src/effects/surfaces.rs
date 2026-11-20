@@ -1,8 +1,8 @@
 //! Rewrites each surface that consumes the effects: Waybar, widget telemetry, launcher, dunst, calendar, superfile and hyprlock.
 
 use super::css_text::{
-  apply_border_transparency, delete_range, ensure_waybar_namespace, imported_build_theme,
-  insert_after, launcher_background, opacity_factor, replace_in_lines, set_define,
+  apply_border_transparency, delete_range, ensure_waybar_namespace, insert_after, opacity_factor,
+  replace_in_lines, set_define,
 };
 use super::*;
 
@@ -131,37 +131,6 @@ impl Effects {
       self.effect_enabled("widget-telemetry.transparency") != "disabled",
     );
     fs::write(&css, text)
-  }
-
-  pub(super) fn apply_launcher_surface(&self) -> io::Result<()> {
-    let Some(theme) = self
-      .live("launcher/config/theme.rasi")
-      .filter(|path| path.is_file())
-    else {
-      return Ok(());
-    };
-    // Without transparency the launcher is opaque. With it, the alpha is the
-    // inverse of the transparency, rounded as the shell rounded it: the opacity
-    // is printed with two decimals first.
-    let opacity: f64 = if self.effect_enabled("launchers.transparency") == "disabled" {
-      1.0
-    } else {
-      opacity_factor(self.effect_value("launchers.transparency"))
-        .parse()
-        .unwrap_or(1.0)
-    };
-    // The colour always comes from the build the theme file imports, so every
-    // theme, official or the user's own, gets its own background in both modes.
-    let text = fs::read_to_string(&theme)?;
-    let build_theme = imported_build_theme(&theme, &text)
-      .and_then(|path| fs::read_to_string(path).ok())
-      .unwrap_or_default();
-    let background = launcher_background(&build_theme, opacity);
-    let rules = [Rule::literal(
-      r"^[[:space:]]*bg:[[:space:]].*;",
-      format!("    bg:               {background};"),
-    )];
-    edit_file(Some(&theme), |text| apply_rules(text, &rules))
   }
 
   pub(super) fn apply_dunst_surface(&self, status: &str) -> io::Result<()> {
@@ -295,7 +264,6 @@ impl Effects {
   pub(super) fn apply_surfaces(&self, transparency: &str, animations: &str) -> io::Result<()> {
     self.apply_taskbar_surface(animations)?;
     self.apply_widget_telemetry_surface()?;
-    self.apply_launcher_surface()?;
     self.apply_dunst_surface(transparency)?;
     self.apply_calendar_surface(transparency)?;
     self.apply_superfile_surface(transparency)?;
@@ -357,22 +325,6 @@ impl Effects {
         .status();
     }
     signal_kitty();
-  }
-}
-
-/// Writes the launcher background of the current build into the user's Rofi
-/// theme. Rofi reads its background from that file, not from the build, so a
-/// theme switch calls this as soon as the build is active: a launcher opened
-/// while the rest of the switch runs then shows the new theme. Failures are
-/// reported on stderr; the full `apply` at the end of the switch writes the
-/// file again.
-pub(crate) fn apply_launcher() {
-  let Some(effects) = Effects::from_environment() else {
-    eprintln!("argvus-config: cannot resolve the configuration directory");
-    return;
-  };
-  if let Err(error) = effects.apply_launcher_surface() {
-    eprintln!("argvus-config: launcher effects: {error}");
   }
 }
 

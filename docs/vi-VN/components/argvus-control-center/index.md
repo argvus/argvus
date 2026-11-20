@@ -637,7 +637,7 @@ Control Center lưu cơ sở dữ liệu kiểm tra tại `$XDG_CACHE_HOME/argvu
 
 ## Trình khởi chạy và tìm kiếm
 
-Trình khởi chạy chính dùng Quickshell/QML và công cụ Rust cục bộ để tìm ứng dụng, cửa sổ, cài đặt, thao tác, dự án, máy chủ SSH, tệp và phím tắt. Lập chỉ mục ban đầu bị tắt; cần chọn thư mục rõ ràng. Chỉ tên và đường dẫn được lập chỉ mục, không đọc nội dung tài liệu. Tệp gần đây dựa vào bản ghi XDG. Tệp ẩn bị loại trừ mặc định và không đi theo liên kết tượng trưng của thư mục. Các menu Rofi chuyên dụng vẫn có sẵn. Trong Launcher and Search, chọn thứ tự A–Z hoặc Mở gần đây; Mở gần đây là mặc định. **Đang mở** mặc định bị tắt. Bật tùy chọn này trong Control Center > Preferences > Launcher and Search để hiển thị các cửa sổ hiện tại khi ô tìm kiếm trống. Bạn cũng có thể xóa lịch sử sử dụng ứng dụng tại trang đó.
+Trình khởi chạy chính dùng Quickshell/QML và công cụ Rust cục bộ để tìm ứng dụng, cửa sổ, cài đặt, thao tác, dự án, máy chủ SSH, tệp và phím tắt. Lập chỉ mục ban đầu bị tắt; cần chọn thư mục rõ ràng. Chỉ tên và đường dẫn được lập chỉ mục, không đọc nội dung tài liệu. Tệp gần đây dựa vào bản ghi XDG. Tệp ẩn bị loại trừ mặc định và không đi theo liên kết tượng trưng của thư mục. Trong Launcher and Search, chọn thứ tự A–Z hoặc Mở gần đây; Mở gần đây là mặc định. **Đang mở** mặc định bị tắt. Bật tùy chọn này trong Control Center > Preferences > Launcher and Search để hiển thị các cửa sổ hiện tại khi ô tìm kiếm trống. Bạn cũng có thể xóa lịch sử sử dụng ứng dụng tại trang đó.
 
 `argvus launcher` · `argvus control-center launcher`
 
@@ -652,7 +652,7 @@ Trình khởi chạy chính dùng Quickshell/QML và công cụ Rust cục bộ 
 
 `$XDG_CONFIG_HOME/argvus/config/launcher.json` → `$XDG_CACHE_HOME/argvus/launcher/index.json`
 
-Quickshell: `launcher/Theme.qml` · Rofi: `launcher/theme.rasi`
+Quickshell: `launcher/Theme.qml`
 
 `--config` / Rasi: Cấu hình tìm kiếm → `argvus control-center launcher`.
 

@@ -2,7 +2,7 @@
 title: 外观
 description: 配置 ARGVUS 组件共享的视觉语言。
 ---
-外观系统将一个主题状态应用于 Hyprland、GTK、Qt、Waybar、Quickshell、Rofi、Dunst、Hyprlock 和 ARGVUS 应用程序。
+外观系统将一个主题状态应用于 Hyprland、GTK、Qt、Waybar、Quickshell、Dunst、Hyprlock 和 ARGVUS 应用程序。
 
 ## 主题系列
 

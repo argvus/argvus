@@ -568,7 +568,7 @@ Control Center는 확인용 데이터베이스를 `$XDG_CACHE_HOME/argvus/contro
 
 ## 실행기 및 검색
 
-기본 실행기는 Quickshell/QML과 로컬 Rust 검색 엔진으로 앱, 창, 설정, 작업, 프로젝트, SSH 호스트, 파일, 단축키를 검색합니다. 색인은 기본적으로 꺼져 있으며 폴더를 명시적으로 선택해야 합니다. 이름과 경로만 색인하고 문서 내용은 읽지 않습니다. 최근 파일은 XDG 기록에 따릅니다. 숨김 파일은 기본적으로 제외하며 디렉터리 심볼릭 링크를 따라가지 않습니다. 전용 Rofi 메뉴도 계속 사용할 수 있습니다. Launcher and Search에서 A–Z 또는 최근 열림 순서를 선택할 수 있으며, 기본값은 최근 열림입니다. **현재 열림**은 기본적으로 꺼져 있습니다. 검색어가 비어 있을 때 현재 창을 표시하려면 Control Center > Preferences > Launcher and Search에서 켜세요. 같은 페이지에서 앱 사용 기록을 지울 수 있습니다.
+기본 실행기는 Quickshell/QML과 로컬 Rust 검색 엔진으로 앱, 창, 설정, 작업, 프로젝트, SSH 호스트, 파일, 단축키를 검색합니다. 색인은 기본적으로 꺼져 있으며 폴더를 명시적으로 선택해야 합니다. 이름과 경로만 색인하고 문서 내용은 읽지 않습니다. 최근 파일은 XDG 기록에 따릅니다. 숨김 파일은 기본적으로 제외하며 디렉터리 심볼릭 링크를 따라가지 않습니다. Launcher and Search에서 A–Z 또는 최근 열림 순서를 선택할 수 있으며, 기본값은 최근 열림입니다. **현재 열림**은 기본적으로 꺼져 있습니다. 검색어가 비어 있을 때 현재 창을 표시하려면 Control Center > Preferences > Launcher and Search에서 켜세요. 같은 페이지에서 앱 사용 기록을 지울 수 있습니다.
 
 `argvus launcher` · `argvus control-center launcher`
 
@@ -583,7 +583,7 @@ Control Center는 확인용 데이터베이스를 `$XDG_CACHE_HOME/argvus/contro
 
 `$XDG_CONFIG_HOME/argvus/config/launcher.json` → `$XDG_CACHE_HOME/argvus/launcher/index.json`
 
-Quickshell: `launcher/Theme.qml` · Rofi: `launcher/theme.rasi`
+Quickshell: `launcher/Theme.qml`
 
 `--config` / Rasi: 검색 설정 → `argvus control-center launcher`.
 

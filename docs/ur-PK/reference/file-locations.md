@@ -24,7 +24,6 @@ description: اہم انسٹال کردہ ARGVUS فائلیں اور ڈائری�
 - `$XDG_CONFIG_HOME/argvus/data/generated/terminal/` — متوقع ٹرمینل پروفائلز۔
 - `$XDG_CONFIG_HOME/argvus/data/generated/qt6ct/` — پیش کردہ Qt6ct پیلیٹ۔
 - `$XDG_CONFIG_HOME/argvus/data/generated/gtk/` - متوقع GTK تھیم فائلیں۔
-- `$XDG_CONFIG_HOME/argvus/data/rofi/` — Rofi کنفیگریشن، تھیمز اور موڈ کی صارف کی کاپیاں۔ ARGVUS ہر ایک کاپی تخلیق کرتا ہے جب وہ پہلی بار فائل کو تبدیل کرتا ہے۔ غیر تبدیل شدہ فائلوں کو `/usr/share/argvus/launcher/config/` سے پڑھا جاتا ہے۔
 - `$XDG_CONFIG_HOME/argvus/data/generated/removable-devices/theme.css` — متوقع ہٹنے کے قابل آلات کی اسٹائل شیٹ۔
 - `$XDG_CONFIG_HOME/argvus/data/focus/settings.json`, `$XDG_DATA_HOME/argvus/focus/history.json`, `$XDG_STATE_HOME/argvus/focus/session.json` — ARGVUS فوکس کی ترتیبات، سیشن کی سرگزشت اور موجودہ سیشن چیک پوائنٹ۔
 - `$XDG_RUNTIME_DIR/argvus/focus/status.json` — ٹاسک بار کے ذریعے استعمال ہونے والی عارضی ARGVUS فوکس کی حیثیت؛ فوکس ختم ہونے پر ہٹا دیا گیا۔

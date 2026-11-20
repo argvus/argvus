@@ -24,7 +24,6 @@ description: 重要なインストール済みのARGVUSファイルとディレ�
 - `$XDG_CONFIG_HOME/argvus/data/generated/terminal/` — ターミナルプロファイルを投影しました。
 - `$XDG_CONFIG_HOME/argvus/data/generated/qt6ct/` — 予測された Qt6ct パレット。
 - `$XDG_CONFIG_HOME/argvus/data/generated/gtk/` — 予測された GTK テーマファイル。
-- `$XDG_CONFIG_HOME/argvus/data/rofi/` — Rofi の設定、テーマ、モードのユーザーコピー。ARGVUS はファイルを最初に変更するときに各コピーを作成する；変更されていないファイルは `/usr/share/argvus/launcher/config/` から読み込まれる。
 - `$XDG_CONFIG_HOME/argvus/data/generated/removable-devices/theme.css` — 予測されたリムーバブルデバイス用スタイルシート。
 - `$XDG_CONFIG_HOME/argvus/data/focus/settings.json`、`$XDG_DATA_HOME/argvus/focus/history.json`、`$XDG_STATE_HOME/argvus/focus/session.json` — ARGVUS の Focus 設定、セッション履歴、現在のセッションチェックポイント。
 - `$XDG_RUNTIME_DIR/argvus/focus/status.json` — タスクバーで消費される一時的な ARGVUS Focus ステータス；Focus が終了すると削除される。

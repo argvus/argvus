@@ -2,7 +2,7 @@
 title: 외모
 description: ARGVUS 구성 요소가 공유하는 시각적 언어를 구성하십시오.
 ---
-외관 시스템은 하나의 테마 상태를 Hyprland, GTK, Qt, Waybar, Quickshell, Rofi, Dunst, Hyprlock 및 ARGVUS 응용 프로그램에 적용합니다.
+외관 시스템은 하나의 테마 상태를 Hyprland, GTK, Qt, Waybar, Quickshell, Dunst, Hyprlock 및 ARGVUS 응용 프로그램에 적용합니다.
 
 ## 테마 계열
 

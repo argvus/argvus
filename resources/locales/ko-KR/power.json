@@ -9,7 +9,6 @@
   "menu.logout": "로그아웃",
   "menu.reboot": "재부팅",
   "menu.shutdown": "종료",
-  "menu.launcher_missing": "Rofi 메뉴 실행 프로그램을 찾을 수 없습니다.",
   "menu.unsupported_launcher": "지원되지 않는 메뉴 런처: {launcher}",
   "idle.timeout.title": "잠금 대기 시간",
   "idle.timeout.one_minute": "1분",

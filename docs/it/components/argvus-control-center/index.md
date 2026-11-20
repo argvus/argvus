@@ -572,7 +572,7 @@ Il Control Center conserva il database di controllo in `$XDG_CACHE_HOME/argvus/c
 
 ## Lanciatore e ricerca
 
-Il lanciatore principale usa Quickshell/QML con un motore locale Rust per applicazioni, finestre, impostazioni, azioni, progetti, host SSH, file e scorciatoie. L’indicizzazione è inizialmente disattivata e richiede cartelle scelte esplicitamente. Indicizza solo nomi e percorsi, mai il contenuto. I file recenti dipendono dal registro XDG. I file nascosti sono esclusi per impostazione predefinita e i collegamenti simbolici alle cartelle non vengono seguiti. I menu Rofi specializzati restano disponibili. In Launcher and Search puoi scegliere l’ordine A–Z o Aperte di recente; Aperte di recente è l’impostazione predefinita. **Aperte ora** è disattivato per impostazione predefinita; attivalo in Control Center > Preferences > Launcher and Search per mostrare le finestre correnti quando la ricerca è vuota. Dalla stessa pagina puoi cancellare la cronologia di utilizzo.
+Il lanciatore principale usa Quickshell/QML con un motore locale Rust per applicazioni, finestre, impostazioni, azioni, progetti, host SSH, file e scorciatoie. L’indicizzazione è inizialmente disattivata e richiede cartelle scelte esplicitamente. Indicizza solo nomi e percorsi, mai il contenuto. I file recenti dipendono dal registro XDG. I file nascosti sono esclusi per impostazione predefinita e i collegamenti simbolici alle cartelle non vengono seguiti. In Launcher and Search puoi scegliere l’ordine A–Z o Aperte di recente; Aperte di recente è l’impostazione predefinita. **Aperte ora** è disattivato per impostazione predefinita; attivalo in Control Center > Preferences > Launcher and Search per mostrare le finestre correnti quando la ricerca è vuota. Dalla stessa pagina puoi cancellare la cronologia di utilizzo.
 
 `argvus launcher` · `argvus control-center launcher`
 
@@ -587,7 +587,7 @@ Il lanciatore principale usa Quickshell/QML con un motore locale Rust per applic
 
 `$XDG_CONFIG_HOME/argvus/config/launcher.json` → `$XDG_CACHE_HOME/argvus/launcher/index.json`
 
-Quickshell: `launcher/Theme.qml` · Rofi: `launcher/theme.rasi`
+Quickshell: `launcher/Theme.qml`
 
 `--config` / Rasi: Configura ricerca → `argvus control-center launcher`.
 

@@ -9,7 +9,6 @@
   "menu.logout": "Finalizar la sesión",
   "menu.reboot": "Reiniciar",
   "menu.shutdown": "Cerrar",
-  "menu.launcher_missing": "No se encontró el iniciador de menú Rofi.",
   "menu.unsupported_launcher": "Lanzador de menú no compatible: {launcher}",
   "idle.timeout.title": "Tiempo de bloqueo",
   "idle.timeout.one_minute": "1 minuto",

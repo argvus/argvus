@@ -137,6 +137,5 @@
   "universal.ssh": "SSH",
   "universal.shortcuts": "Klavye kısayolları ve bağlamsal yardım",
   "universal.cli_help": "argvus launcher — Başlatıcı ve Arama",
-  "universal.rasi_unsupported": "Bu başlatıcı Rasi yapılandırmasını desteklemiyor. Şunu kullanın: argvus control-center launcher",
   "universal.argument_unsupported": "Desteklenmeyen başlatıcı argümanı. Bkz. argvus launcher --help"
 }

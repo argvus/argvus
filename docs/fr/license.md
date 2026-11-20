@@ -14,4 +14,4 @@ Le texte complet de la licence est fourni avec chaque dépôt et est disponible 
 
 ## Composants tiers
 
-Les packages et thèmes ARGVUS dépendent de logiciels tiers (Hyprland, Waybar, Rofi et autres) distribués sous leurs propres licences. Référez-vous à chaque projet en amont pour connaître ses conditions spécifiques.
+Les packages et thèmes ARGVUS dépendent de logiciels tiers (Hyprland, Waybar et autres) distribués sous leurs propres licences. Référez-vous à chaque projet en amont pour connaître ses conditions spécifiques.

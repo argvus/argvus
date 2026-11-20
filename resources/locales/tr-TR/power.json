@@ -9,7 +9,6 @@
   "menu.logout": "Log Out",
   "menu.reboot": "Reboot",
   "menu.shutdown": "Shut Down",
-  "menu.launcher_missing": "Rofi menü başlatıcı bulunamadı.",
   "menu.unsupported_launcher": "Desteksiz menü başlatıcısı: {launcher}",
   "idle.timeout.title": "Kilit zaman aşımı",
   "idle.timeout.one_minute": "1 dakika",

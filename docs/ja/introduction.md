@@ -53,7 +53,7 @@ taskbar · control panel · notifications · wallpaper · idle · clipboard
 
 ## 共有表示状態
 
-テーマ、アクセント、壁紙、フォント、およびエフェクトの設定は、`$XDG_CONFIG_HOME/argvus`（通常は`~/.config/argvus`）の下に論理状態として保存されます。`argvus-config`は`data/generated/`に書き込む唯一のコンポーネントであり、Hyprland、GTK、Qt6ct、Waybar、Quickshell、Dunst、通知、ロック画面、Yazi、Superfile、ターミナル用のユーザーファイルを投影します。例外はRofiで、`argvus launcher`は設定やテーマをプレーンファイルとしてパッケージ化し、ユーザーが編集したコピーは`data/rofi/`の下に保存されます。外観ヘルパーは状態の変更をコミットした後に外部アプリケーションを調整しますが、生成されたツリーに書き込むことはありません。
+テーマ、アクセント、壁紙、フォント、およびエフェクトの設定は、`$XDG_CONFIG_HOME/argvus`（通常は`~/.config/argvus`）の下に論理状態として保存されます。`argvus-config`は`data/generated/`に書き込む唯一のコンポーネントであり、Hyprland、GTK、Qt6ct、Waybar、Quickshell、Dunst、通知、ロック画面、Yazi、Superfile、ターミナル用のユーザーファイルを投影します。外観ヘルパーは状態の変更をコミットした後に外部アプリケーションを調整しますが、生成されたツリーに書き込むことはありません。
 
 生成されたディレクトリは事実のソースではありません。[Appearance](/docs/user-guide/appearance/)および[configuration and state](/docs/developer-guide/architecture/configuration-and-state/)を参照してください。
 

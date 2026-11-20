@@ -682,7 +682,7 @@ O Control Center mantém a base de consulta de atualizações em `$XDG_CACHE_HOM
 
 ## Launcher e Pesquisa
 
-O launcher principal usa Quickshell/QML com um motor local de busca em Rust. Pesquisa aplicativos, janelas abertas, configurações, ações, projetos, hosts SSH, arquivos e atalhos. A indexação começa desativada; escolha as pastas explicitamente. Somente nomes e caminhos são indexados, nunca o conteúdo dos documentos. Arquivos recentes dependem do registro XDG. Arquivos ocultos são excluídos por padrão e links simbólicos de diretórios não são seguidos. Os menus especializados do Rofi continuam disponíveis. Em Launcher and Search, escolha a ordem A–Z ou Abertos recentemente; Abertos recentemente é o padrão. **Open now** vem desativado; ative em Control Center > Preferences > Launcher and Search para mostrar as janelas atuais quando a busca estiver vazia. O histórico de uso pode ser apagado nessa mesma página.
+O launcher principal usa Quickshell/QML com um motor local de busca em Rust. Pesquisa aplicativos, janelas abertas, configurações, ações, projetos, hosts SSH, arquivos e atalhos. A indexação começa desativada; escolha as pastas explicitamente. Somente nomes e caminhos são indexados, nunca o conteúdo dos documentos. Arquivos recentes dependem do registro XDG. Arquivos ocultos são excluídos por padrão e links simbólicos de diretórios não são seguidos. Em Launcher and Search, escolha a ordem A–Z ou Abertos recentemente; Abertos recentemente é o padrão. **Open now** vem desativado; ative em Control Center > Preferences > Launcher and Search para mostrar as janelas atuais quando a busca estiver vazia. O histórico de uso pode ser apagado nessa mesma página.
 
 `argvus launcher` · `argvus control-center launcher`
 
@@ -697,7 +697,7 @@ O launcher principal usa Quickshell/QML com um motor local de busca em Rust. Pes
 
 `$XDG_CONFIG_HOME/argvus/config/launcher.json` → `$XDG_CACHE_HOME/argvus/launcher/index.json`
 
-Quickshell: `launcher/Theme.qml` · Rofi: `launcher/theme.rasi`
+Quickshell: `launcher/Theme.qml`
 
 `--config` / Rasi: Configurar pesquisa → `argvus control-center launcher`.
 

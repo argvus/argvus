@@ -317,7 +317,6 @@ impl FontSettings {
         gsettings_set("org.gnome.desktop.interface", "font-name", &value)?;
         gsettings_set("org.gnome.desktop.interface", "document-font-name", &value)?;
         self.write_gtk_settings()?;
-        self.write_rofi_settings()?;
       }
       FontTarget::Terminal => {
         gsettings_set(
@@ -431,33 +430,6 @@ impl FontSettings {
       paths::argvus_data_home().join("gtk-4.0"),
     ] {
       replace_ini_setting(&directory.join("settings.ini"), "gtk-font-name", &value)?;
-    }
-    Ok(())
-  }
-
-  fn write_rofi_settings(&self) -> Result<(), String> {
-    let system = paths::system_config_root().join("launcher/config/theme.rasi");
-    let user_theme = paths::argvus_data_home().join("rofi/theme.rasi");
-    let theme = if user_theme.exists() {
-      user_theme
-    } else {
-      system
-    };
-    let font = escape(&self.get(FontTarget::Apps).value());
-    let generated = paths::argvus_data_home().join("generated/rofi/config.rasi");
-    write_file(
-      &generated,
-      &format!(
-        "@theme \"{}\"\n\nconfiguration {{\n    font: \"{font}\";\n    show-icons: false;\n    sort: true;\n    case-sensitive: false;\n}}\n",
-        escape(&theme.display().to_string())
-      ),
-    )?;
-    let user = paths::argvus_data_home().join("rofi/config.rasi");
-    if user.exists() {
-      write_managed_block(
-        &user,
-        &format!("configuration {{\n    font: \"{font}\";\n}}\n"),
-      )?;
     }
     Ok(())
   }

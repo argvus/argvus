@@ -649,7 +649,7 @@ Control Center जाँच डेटाबेस `$XDG_CACHE_HOME/argvus/contro
 
 `$XDG_CONFIG_HOME/argvus/config/launcher.json` → `$XDG_CACHE_HOME/argvus/launcher/index.json`
 
-Quickshell: `launcher/Theme.qml` · Rofi: `launcher/theme.rasi`
+Quickshell: `launcher/Theme.qml`
 
 `--config` / Rasi: खोज सेट करें → `argvus control-center launcher`.
 

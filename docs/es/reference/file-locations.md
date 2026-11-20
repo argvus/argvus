@@ -24,7 +24,6 @@ description: Archivos y directorios importantes de ARGVUS instalados.
 - `$XDG_CONFIG_HOME/argvus/data/generated/terminal/` — perfiles de terminal proyectados.
 - `$XDG_CONFIG_HOME/argvus/data/generated/qt6ct/` — paleta Qt6ct proyectada.
 - `$XDG_CONFIG_HOME/argvus/data/generated/gtk/` — archivos de tema GTK proyectados.
-- `$XDG_CONFIG_HOME/argvus/data/rofi/` — copias de usuario de la configuración de Rofi, los temas y el modo. ARGVUS crea cada copia cuando cambia el archivo por primera vez; los archivos sin cambios se leen desde `/usr/share/argvus/launcher/config/`.
 - `$XDG_CONFIG_HOME/argvus/data/generated/removable-devices/theme.css` — hoja de estilos proyectada para dispositivos extraíbles.
 - `$XDG_CONFIG_HOME/argvus/data/focus/settings.json`, `$XDG_DATA_HOME/argvus/focus/history.json`, `$XDG_STATE_HOME/argvus/focus/session.json` — configuraciones de ARGVUS Focus, historial de sesiones y punto de control de la sesión actual.
 - `$XDG_RUNTIME_DIR/argvus/focus/status.json` — estado efímero de ARGVUS Focus consumido por la barra de tareas; se elimina cuando Focus se cierra.

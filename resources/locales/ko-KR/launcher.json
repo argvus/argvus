@@ -137,6 +137,5 @@
   "universal.ssh": "SSH",
   "universal.shortcuts": "키보드 단축키 및 상황별 도움말",
   "universal.cli_help": "argvus launcher — 실행기 및 검색",
-  "universal.rasi_unsupported": "이 실행기는 Rasi 설정을 지원하지 않습니다. 다음을 사용하세요: argvus control-center launcher",
   "universal.argument_unsupported": "지원하지 않는 실행기 인수입니다. 참고: argvus launcher --help"
 }

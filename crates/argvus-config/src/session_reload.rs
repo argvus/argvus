@@ -1,5 +1,5 @@
 //! Runtime half of a configuration reload: the file synchronization that keeps
-//! Rofi, btop and yazi aligned with the active theme, then the compositor
+//! btop and yazi aligned with the active theme, then the compositor
 //! reload.
 //!
 //! This replaces the reload that the session scripts used to run. The scripts it still
@@ -8,7 +8,7 @@
 
 use crate::accent::DEFAULT_THEME;
 use crate::json_pointers;
-use crate::session_paths::{SessionPaths, font_default_value};
+use crate::session_paths::SessionPaths;
 use crate::session_timing::timed;
 use std::fs;
 use std::io;
@@ -142,75 +142,59 @@ fn restart_hyprland_service() -> Result<Option<String>, String> {
   }
 }
 
-/// Brings the Rofi, btop and yazi files in line with the active theme. Used by
+/// Brings the Dunst menu and the btop and yazi files in line with the active theme. Used by
 /// the reload and by session preparation. Returns the yazi directory that
 /// later children must read, when there is one.
 pub fn sync_user_files(context: &ReloadContext<'_>) -> Option<PathBuf> {
   let paths = context.paths;
-  let _ = sync_rofi(paths);
+  if let Err(error) = migrate_notification_menu(paths) {
+    eprintln!("argvus-config: cannot migrate Dunst menu: {error}");
+  }
   let theme = active_theme(paths);
   sync_btop(&theme);
   sync_yazi(paths, &theme)
 }
 
-/// Writes the Rofi font into the user's Rofi config, copying the packaged one
-/// first when the user has none.
-fn sync_rofi(paths: &SessionPaths) -> io::Result<()> {
-  let relative = "launcher/config/config.rasi";
-  let config = paths.read_config(relative);
-  let packaged = paths.system_config(relative);
-  if !config.is_file() && packaged.is_file() {
-    if let Some(parent) = config.parent() {
-      fs::create_dir_all(parent)?;
-    }
-    fs::copy(&packaged, &config)?;
-  }
-  if !config.is_file() {
+/// Updates the old packaged menu command in the managed Dunst configuration.
+fn migrate_notification_menu(paths: &SessionPaths) -> io::Result<()> {
+  let path = paths.read_config("notifications/config/dunstrc");
+  if !(path.starts_with(&paths.data_home) || path.starts_with(paths.config_home.join("argvus")))
+    || path.is_symlink()
+    || !path.is_file()
+  {
     return Ok(());
   }
-  let font_line = format!("    font: \"{}\";", font_default_value(paths));
-  let text = fs::read_to_string(&config)?;
-  write_atomically(&config, &apply_rofi_font(&text, &font_line))
-}
-
-/// Replaces the font line of an existing Rofi config, or inserts one after
-/// each `configuration {` line when there is none. Every line is kept.
-pub fn apply_rofi_font(text: &str, font_line: &str) -> String {
-  let has_font = text
-    .lines()
-    .any(|line| line.trim_start().starts_with("font:"));
-  let mut output = String::new();
-  for line in text.lines() {
-    if has_font {
-      if line.trim_start().starts_with("font:") {
-        output.push_str(font_line);
-      } else {
-        output.push_str(line);
-      }
-      output.push('\n');
-      continue;
-    }
-    output.push_str(line);
-    output.push('\n');
-    if is_configuration_open(line) {
-      output.push_str(font_line);
-      output.push('\n');
-    }
+  let original = fs::read_to_string(&path)?;
+  let updated = notification_menu_config(&original);
+  if updated != original {
+    crate::text_edit::replace_file(&path, &updated)?;
+    // At login Dunst will read the updated file when it starts.
+    let _ = Command::new("dunstctl")
+      .arg("reload")
+      .arg(&path)
+      .stdout(Stdio::null())
+      .stderr(Stdio::null())
+      .status();
   }
-  output
+  Ok(())
 }
 
-fn is_configuration_open(line: &str) -> bool {
-  line
-    .trim_start()
-    .strip_prefix("configuration")
-    .is_some_and(|rest| rest.trim_start().starts_with('{'))
-}
-
-fn write_atomically(path: &Path, contents: &str) -> io::Result<()> {
-  let temporary = path.with_extension(format!("tmp.{}", std::process::id()));
-  fs::write(&temporary, contents)?;
-  fs::rename(&temporary, path)
+fn notification_menu_config(contents: &str) -> String {
+  contents
+    .split_inclusive('\n')
+    .map(|line| {
+      if line.split_once('=').is_some_and(|(key, value)| {
+        key.trim() == "dmenu" && value.trim() == "/usr/bin/rofi -dmenu -p dunst"
+      }) {
+        line.replace(
+          "/usr/bin/rofi -dmenu -p dunst",
+          "/usr/bin/argvus notification-action-picker",
+        )
+      } else {
+        line.to_owned()
+      }
+    })
+    .collect()
 }
 
 /// Asks `argvus system-monitor` to apply the theme. Its errors are ignored.
@@ -363,21 +347,13 @@ mod tests {
   use super::*;
 
   #[test]
-  fn rofi_font_replaces_the_existing_line() {
-    let text = "configuration {\n    font: \"Old 9\";\n}\n";
-    assert_eq!(
-      apply_rofi_font(text, "    font: \"New 11\";"),
-      "configuration {\n    font: \"New 11\";\n}\n"
-    );
-  }
-
-  #[test]
-  fn rofi_font_is_inserted_after_configuration_when_missing() {
-    let text = "configuration {\n    show-icons: true;\n}\n";
-    assert_eq!(
-      apply_rofi_font(text, "    font: \"New 11\";"),
-      "configuration {\n    font: \"New 11\";\n    show-icons: true;\n}\n"
-    );
+  fn migrates_only_the_packaged_notification_menu() {
+    let original = "    dmenu = /usr/bin/rofi -dmenu -p dunst\r\n";
+    let expected = "    dmenu = /usr/bin/argvus notification-action-picker\r\n";
+    assert_eq!(notification_menu_config(original), expected);
+    assert_eq!(notification_menu_config(expected), expected);
+    let custom = "dmenu = bemenu -p notifications";
+    assert_eq!(notification_menu_config(custom), custom);
   }
 
   #[test]

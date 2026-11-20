@@ -137,6 +137,5 @@
   "universal.ssh": "SSH",
   "universal.shortcuts": "Phím tắt và trợ giúp theo ngữ cảnh",
   "universal.cli_help": "argvus launcher — Trình khởi chạy và tìm kiếm",
-  "universal.rasi_unsupported": "Trình khởi chạy không hỗ trợ cấu hình Rasi. Hãy dùng argvus control-center launcher",
   "universal.argument_unsupported": "Đối số không được hỗ trợ. Xem argvus launcher --help"
 }

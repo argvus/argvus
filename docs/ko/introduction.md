@@ -53,7 +53,7 @@ taskbar · control panel · notifications · wallpaper · idle · clipboard
 
 ## 공유된 외형 상태
 
-테마, 액센트, 배경화면, 글꼴 및 효과 설정은 논리적 상태로 `$XDG_CONFIG_HOME/argvus`(보통 `~/.config/argvus`)에 저장됩니다. `argvus-config`는 `data/generated/`를 쓰는 유일한 구성 요소이며, 여기서 Hyprland, GTK, Qt6ct, Waybar, Quickshell, Dunst, 알림, 잠금 화면, Yazi, Superfile 및 터미널의 사용자 파일을 생성합니다. Rofi는 예외입니다: `argvus launcher`는 구성 및 테마를 일반 파일로 패키징하며, 사용자가 편집한 복사본은 `data/rofi/`에 저장됩니다. 외관 도우미는 상태 변경을 커밋한 후 외부 애플리케이션과 조정하며, 생성된 트리를 직접 쓰지 않습니다.
+테마, 액센트, 배경화면, 글꼴 및 효과 설정은 논리적 상태로 `$XDG_CONFIG_HOME/argvus`(보통 `~/.config/argvus`)에 저장됩니다. `argvus-config`는 `data/generated/`를 쓰는 유일한 구성 요소이며, 여기서 Hyprland, GTK, Qt6ct, Waybar, Quickshell, Dunst, 알림, 잠금 화면, Yazi, Superfile 및 터미널의 사용자 파일을 생성합니다. 외관 도우미는 상태 변경을 커밋한 후 외부 애플리케이션과 조정하며, 생성된 트리를 직접 쓰지 않습니다.
 
 생성된 디렉터리는 진실의 출처가 아닙니다. [Appearance](/docs/user-guide/appearance/) 및 [configuration and state](/docs/developer-guide/architecture/configuration-and-state/)를 참조하세요.
 

@@ -220,8 +220,7 @@ pub(super) fn read_layout_status() -> LayoutStatus {
 /// Switches the Sticky/Spaced layout mode without changing the active theme.
 ///
 /// Delegates to `layout-mode-switch.sh`, the same entry point the
-/// `SUPER + Shift + M` Rofi picker uses, so the Control Center and the Rofi
-/// menu always apply the mode through a single implementation.
+/// `SUPER + Shift + M` picker uses.
 ///
 /// # Errors
 ///

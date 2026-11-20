@@ -24,7 +24,6 @@ description: महत्वपूर्ण स्थापित ARGVUS फ़�
 - `$XDG_CONFIG_HOME/argvus/data/generated/terminal/` - अनुमानित टर्मिनल प्रोफाइल।
 - `$XDG_CONFIG_HOME/argvus/data/generated/qt6ct/` - प्रक्षेपित Qt6ct पैलेट।
 - `$XDG_CONFIG_HOME/argvus/data/generated/gtk/` - अनुमानित GTK थीम फ़ाइलें।
-- `$XDG_CONFIG_HOME/argvus/data/rofi/` - Rofi कॉन्फ़िगरेशन, थीम और मोड की उपयोगकर्ता प्रतियां। ARGVUS प्रत्येक प्रतिलिपि तब बनाता है जब वह पहली बार फ़ाइल बदलता है; अपरिवर्तित फ़ाइलें `/usr/share/argvus/launcher/config/` से पढ़ी जाती हैं।
 - `$XDG_CONFIG_HOME/argvus/data/generated/removable-devices/theme.css` - अनुमानित हटाने योग्य डिवाइस स्टाइलशीट।
 - `$XDG_CONFIG_HOME/argvus/data/focus/settings.json`, `$XDG_DATA_HOME/argvus/focus/history.json`, `$XDG_STATE_HOME/argvus/focus/session.json` - ARGVUS फोकस सेटिंग्स, सत्र इतिहास और वर्तमान-सत्र चेकपॉइंट।
 - `$XDG_RUNTIME_DIR/argvus/focus/status.json` - टास्कबार द्वारा उपभोग की जाने वाली क्षणिक ARGVUS फोकस स्थिति; फोकस बाहर निकलने पर हटा दिया जाता है।

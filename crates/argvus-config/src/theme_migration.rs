@@ -14,9 +14,8 @@ use std::path::PathBuf;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 /// The per-theme directories of the user data, relative to it.
-const LEGACY_DIRECTORIES: [&str; 14] = [
+const LEGACY_DIRECTORIES: [&str; 13] = [
   "waybar/themes",
-  "rofi/themes",
   "hypr/themes",
   "tui/themes",
   "quickshell/argvus-control-panel/themes",
@@ -85,6 +84,7 @@ mod tests {
     fs::write(&copy, "edited").unwrap();
     fs::write(paths.data_home.join("waybar/argvus-taskbar.css"), "kept").unwrap();
 
+    fs::create_dir_all(paths.data_home.join("rofi/themes/x")).unwrap();
     let backup = migrate(&paths).unwrap().expect("something moved");
     assert!(!copy.exists());
     assert_eq!(
@@ -93,7 +93,6 @@ mod tests {
     );
     assert!(paths.data_home.join("waybar/argvus-taskbar.css").is_file());
 
-    fs::create_dir_all(paths.data_home.join("rofi/themes/x")).unwrap();
     assert_eq!(migrate(&paths).unwrap(), None, "runs once");
     assert!(paths.data_home.join("rofi/themes/x").is_dir());
     let _ = fs::remove_dir_all(root);

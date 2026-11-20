@@ -53,7 +53,7 @@ taskbar · control panel · notifications · wallpaper · idle · clipboard
 
 ## 共享外观状态
 
-主题、字体、壁纸、字体和效果偏好作为逻辑状态存储在 `$XDG_CONFIG_HOME/argvus` 下（通常为 `~/.config/argvus`）。`argvus-config` 是唯一写入 `data/generated/` 的组件，它在其中为 Hyprland、GTK、Qt6ct、Waybar、Quickshell、Dunst、通知、锁屏、Yazi、Superfile 和终端投射消费者文件。Rofi 是例外：`argvus launcher` 将其配置和主题打包为普通文件，并且用户编辑的副本位于 `data/rofi/` 下。外观辅助程序提交状态更改，然后协调外部应用程序；它们从不写入生成的树。
+主题、字体、壁纸、字体和效果偏好作为逻辑状态存储在 `$XDG_CONFIG_HOME/argvus` 下（通常为 `~/.config/argvus`）。`argvus-config` 是唯一写入 `data/generated/` 的组件，它在其中为 Hyprland、GTK、Qt6ct、Waybar、Quickshell、Dunst、通知、锁屏、Yazi、Superfile 和终端投射消费者文件。外观辅助程序提交状态更改，然后协调外部应用程序；它们从不写入生成的树。
 
 生成的目录不是事实来源。请参阅 [Appearance](/docs/user-guide/appearance/) 和 [configuration and state](/docs/developer-guide/architecture/configuration-and-state/)。
 

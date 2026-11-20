@@ -588,7 +588,7 @@ Control Center جانچ کا ڈیٹابیس `$XDG_CACHE_HOME/argvus/control-cent
 
 `$XDG_CONFIG_HOME/argvus/config/launcher.json` → `$XDG_CACHE_HOME/argvus/launcher/index.json`
 
-Quickshell: `launcher/Theme.qml` · Rofi: `launcher/theme.rasi`
+Quickshell: `launcher/Theme.qml`
 
 `--config` / Rasi: تلاش ترتیب دیں → `argvus control-center launcher`.
 

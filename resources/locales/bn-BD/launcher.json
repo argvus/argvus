@@ -137,6 +137,5 @@
   "universal.ssh": "SSH",
   "universal.shortcuts": "কীবোর্ড শর্টকাট ও প্রাসঙ্গিক সহায়তা",
   "universal.cli_help": "argvus launcher — লঞ্চার ও অনুসন্ধান",
-  "universal.rasi_unsupported": "এই লঞ্চার Rasi কনফিগারেশন সমর্থন করে না। ব্যবহার করুন argvus control-center launcher",
   "universal.argument_unsupported": "লঞ্চারের আর্গুমেন্ট সমর্থিত নয়। দেখুন argvus launcher --help"
 }

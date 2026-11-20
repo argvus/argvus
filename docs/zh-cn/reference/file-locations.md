@@ -24,7 +24,6 @@ description: 重要的已安装 ARGVUS 文件和目录。
 - `$XDG_CONFIG_HOME/argvus/data/generated/terminal/` — 投影终端配置文件。
 - `$XDG_CONFIG_HOME/argvus/data/generated/qt6ct/` — 预期的 Qt6ct 调色板。
 - `$XDG_CONFIG_HOME/argvus/data/generated/gtk/` — 预期的 GTK 主题文件。
-- `$XDG_CONFIG_HOME/argvus/data/rofi/` — 用户的 Rofi 配置、主题和模式副本。当文件首次被修改时，ARGVUS 创建每个副本；未修改的文件从 `/usr/share/argvus/launcher/config/` 读取。
 - `$XDG_CONFIG_HOME/argvus/data/generated/removable-devices/theme.css` — 预期的可移动设备样式表。
 - `$XDG_CONFIG_HOME/argvus/data/focus/settings.json`, `$XDG_DATA_HOME/argvus/focus/history.json`, `$XDG_STATE_HOME/argvus/focus/session.json` — ARGVUS Focus 设置、会话历史和当前会话检查点。
 - `$XDG_RUNTIME_DIR/argvus/focus/status.json` — 临时的 ARGVUS Focus 状态，由任务栏使用；在 Focus 退出时移除。

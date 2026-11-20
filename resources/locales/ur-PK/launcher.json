@@ -137,6 +137,5 @@
   "universal.ssh": "SSH",
   "universal.shortcuts": "کی بورڈ شارٹ کٹس اور متعلقہ مدد",
   "universal.cli_help": "argvus launcher — لانچر اور تلاش",
-  "universal.rasi_unsupported": "یہ لانچر Rasi ترتیبات کی حمایت نہیں کرتا۔ استعمال کریں argvus control-center launcher",
   "universal.argument_unsupported": "لانچر کا غیر معاون آرگومنٹ۔ دیکھیں argvus launcher --help"
 }

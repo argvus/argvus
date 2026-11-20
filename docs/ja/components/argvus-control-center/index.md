@@ -577,7 +577,7 @@ Control Center の確認用データベースは `$XDG_CACHE_HOME/argvus/control
 
 ## ランチャーと検索
 
-メインランチャーは Quickshell/QML とローカルの Rust 検索エンジンを使用し、アプリ、ウィンドウ、設定、操作、プロジェクト、SSH ホスト、ファイル、ショートカットを検索します。索引化は初期状態で無効で、対象フォルダーの明示的な選択が必要です。名前とパスのみを索引化し、文書の内容は読み取りません。最近のファイルは XDG の履歴に依存します。隠しファイルは標準で除外し、ディレクトリーのシンボリックリンクはたどりません。専用の Rofi メニューも引き続き利用できます。 Launcher and Search で A–Z または最近開いた順を選択できます。既定は最近開いた順です。**現在開いている**は既定でオフです。空の検索で現在のウィンドウを表示するには、Control Center > Preferences > Launcher and Search で有効にしてください。同じページからアプリの使用履歴を消去できます。
+メインランチャーは Quickshell/QML とローカルの Rust 検索エンジンを使用し、アプリ、ウィンドウ、設定、操作、プロジェクト、SSH ホスト、ファイル、ショートカットを検索します。索引化は初期状態で無効で、対象フォルダーの明示的な選択が必要です。名前とパスのみを索引化し、文書の内容は読み取りません。最近のファイルは XDG の履歴に依存します。隠しファイルは標準で除外し、ディレクトリーのシンボリックリンクはたどりません。既定は最近開いた順です。**現在開いている**は既定でオフです。空の検索で現在のウィンドウを表示するには、Control Center > Preferences > Launcher and Search で有効にしてください。同じページからアプリの使用履歴を消去できます。
 
 `argvus launcher` · `argvus control-center launcher`
 
@@ -592,7 +592,7 @@ Control Center の確認用データベースは `$XDG_CACHE_HOME/argvus/control
 
 `$XDG_CONFIG_HOME/argvus/config/launcher.json` → `$XDG_CACHE_HOME/argvus/launcher/index.json`
 
-Quickshell: `launcher/Theme.qml` · Rofi: `launcher/theme.rasi`
+Quickshell: `launcher/Theme.qml`
 
 `--config` / Rasi: 検索を設定 → `argvus control-center launcher`.
 

@@ -9,7 +9,6 @@
   "menu.logout": "Keluar",
   "menu.reboot": "Reboot",
   "menu.shutdown": "Matikan",
-  "menu.launcher_missing": "Peluncur menu [PH000] tidak ditemukan.",
   "menu.unsupported_launcher": "Peluncur menu tidak didukung: {launcher}",
   "idle.timeout.title": "Waktu tunggu penguncian",
   "idle.timeout.one_minute": "1 menit",

@@ -137,6 +137,5 @@
   "universal.ssh": "SSH",
   "universal.shortcuts": "اختصارات لوحة المفاتيح والمساعدة السياقية",
   "universal.cli_help": "argvus launcher — المشغّل والبحث",
-  "universal.rasi_unsupported": "لا يدعم هذا المشغّل إعدادات Rasi. استخدم argvus control-center launcher",
   "universal.argument_unsupported": "وسيط غير مدعوم. راجع argvus launcher --help"
 }

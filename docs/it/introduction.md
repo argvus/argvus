@@ -53,7 +53,7 @@ Vedi [Hardware](/docs/user-guide/hardware/), [Privacy e sicurezza](/docs/user-gu
 
 ## Stato condiviso dell'aspetto
 
-Preferenze di tema, accento, sfondo, font ed effetti sono memorizzate come stato logico sotto `$XDG_CONFIG_HOME/argvus` (normalmente `~/.config/argvus`). `argvus-config` è l'unico componente che scrive su `data/generated/`, dove proietta i file dei consumatori per Hyprland, GTK, Qt6ct, Waybar, Quickshell, Dunst, notifiche, la schermata di blocco, Yazi, Superfile e terminali. Rofi è l'eccezione: `argvus launcher` distribuisce la sua configurazione e i temi come file semplici, e le copie modificate dall'utente risiedono sotto `data/rofi/`. Gli strumenti di supporto all'aspetto confermano il cambiamento di stato e poi riconciliano le applicazioni esterne; non scrivono mai l'albero generato.
+Preferenze di tema, accento, sfondo, font ed effetti sono memorizzate come stato logico sotto `$XDG_CONFIG_HOME/argvus` (normalmente `~/.config/argvus`). `argvus-config` è l'unico componente che scrive su `data/generated/`, dove proietta i file dei consumatori per Hyprland, GTK, Qt6ct, Waybar, Quickshell, Dunst, notifiche, la schermata di blocco, Yazi, Superfile e terminali. Gli strumenti di supporto all'aspetto confermano il cambiamento di stato e poi riconciliano le applicazioni esterne; non scrivono mai l'albero generato.
 
 La directory generata non è la fonte della verità. Vedi [Appearance](/docs/user-guide/appearance/) e [configuration and state](/docs/developer-guide/architecture/configuration-and-state/).
 

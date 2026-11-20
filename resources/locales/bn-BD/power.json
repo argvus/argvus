@@ -9,7 +9,6 @@
   "menu.logout": "প্রস্থান করুন",
   "menu.reboot": "পুনরারম্ভ",
   "menu.shutdown": "বন্ধ করুন",
-  "menu.launcher_missing": "Rofi লঞ্চার পাওয়া যায়নি।",
   "menu.unsupported_launcher": "অসমর্থিত মেনু লঞ্চার: {launcher}",
   "idle.timeout.title": "লকের সময়সীমা",
   "idle.timeout.one_minute": "১ মিনিট",

@@ -53,7 +53,7 @@ Siehe [Hardware](/docs/user-guide/hardware/), [Datenschutz und Sicherheit](/docs
 
 ## Gemeinsamer Erscheinungszustand
 
-Thema, Akzent, Hintergrundbild, Schriftart und Effekteinstellungen werden als logischer Zustand unter `$XDG_CONFIG_HOME/argvus` gespeichert (normalerweise `~/.config/argvus`). `argvus-config` ist die einzige Komponente, die `data/generated/` schreibt, wo es Verbraucherdateien für Hyprland, GTK, Qt6ct, Waybar, Quickshell, Dunst, Benachrichtigungen, den Sperrbildschirm, Yazi, Superfile und Terminals projiziert. Rofi ist die Ausnahme: `argvus launcher` paketiert seine Konfiguration und Themen als einfache Dateien, und die vom Benutzer bearbeiteten Kopien liegen unter `data/rofi/`. Erscheinungshilfen bestätigen die Zustandsänderung und stimmen dann externe Anwendungen ab; sie schreiben nie den erzeugten Baum.
+Thema, Akzent, Hintergrundbild, Schriftart und Effekteinstellungen werden als logischer Zustand unter `$XDG_CONFIG_HOME/argvus` gespeichert (normalerweise `~/.config/argvus`). `argvus-config` ist die einzige Komponente, die `data/generated/` schreibt, wo es Verbraucherdateien für Hyprland, GTK, Qt6ct, Waybar, Quickshell, Dunst, Benachrichtigungen, den Sperrbildschirm, Yazi, Superfile und Terminals projiziert. Erscheinungshilfen bestätigen die Zustandsänderung und stimmen dann externe Anwendungen ab; sie schreiben nie den erzeugten Baum.
 
 Das erzeugte Verzeichnis ist nicht die Quelle der Wahrheit. Siehe [Appearance](/docs/user-guide/appearance/) und [Konfiguration und Zustand](/docs/developer-guide/architecture/configuration-and-state/).
 

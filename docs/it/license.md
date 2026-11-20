@@ -14,4 +14,4 @@ Il testo completo della licenza è incluso in ogni repository ed è disponibile 
 
 ## Componenti di terze parti
 
-I pacchetti e i temi di ARGVUS dipendono da software di terze parti (Hyprland, Waybar, Rofi e altri) distribuiti sotto le loro licenze. Consulta ciascun progetto upstream per i termini specifici.
+I pacchetti e i temi di ARGVUS dipendono da software di terze parti (Hyprland, Waybar e altri) distribuiti sotto le loro licenze. Consulta ciascun progetto upstream per i termini specifici.

@@ -23,7 +23,6 @@ description: 중요한 설치된 ARGVUS 파일 및 디렉터리.
 - `$XDG_CONFIG_HOME/argvus/data/generated/terminal/` — 터미널 프로파일을 예측했습니다.
 - `$XDG_CONFIG_HOME/argvus/data/generated/qt6ct/` — 예상 Qt6ct 팔레트. 
 - `$XDG_CONFIG_HOME/argvus/data/generated/gtk/` — 예상 GTK 테마 파일. 
-- `$XDG_CONFIG_HOME/argvus/data/rofi/` — Rofi 설정, 테마 및 모드의 사용자 복사본. ARGVUS는 파일을 처음 변경할 때 각 복사본을 생성하며, 변경되지 않은 파일은 `/usr/share/argvus/launcher/config/`에서 읽음. 
 - `$XDG_CONFIG_HOME/argvus/data/generated/removable-devices/theme.css` — 예상 이동식 장치 스타일시트. 
 - `$XDG_CONFIG_HOME/argvus/data/focus/settings.json`, `$XDG_DATA_HOME/argvus/focus/history.json`, `$XDG_STATE_HOME/argvus/focus/session.json` — ARGVUS Focus 설정, 세션 기록 및 현재 세션 체크포인트. 
 - `$XDG_RUNTIME_DIR/argvus/focus/status.json` — 작업 표시줄에서 사용되는 일시적 ARGVUS Focus 상태; Focus 종료 시 제거됨.

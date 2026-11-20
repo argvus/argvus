@@ -11,7 +11,7 @@ Qt6ct, Waybar, QuickShell, Dunst, Hyprlock, os perfis de taskbar e
 widget-telemetry do Waybar, as árvores de configuração do Yazi e do Superfile, as
 árvores de perfis de terminal e de Qt, os blocos gerenciados de fonte e a folha de
 estilo de dispositivos removíveis. Overrides explícitos do utilizador têm
-precedência, depois vêm as projeções geradas e então os defaults do pacote. O Rofi não é uma projeção: o `argvus-launcher` é dono dos ficheiros, e as cópias do utilizador ficam em `data/rofi/`. A
+precedência, depois vêm as projeções geradas e então os defaults do pacote. A
 projeção normal de tema/reload nunca promove ficheiros gerados ou empacotados para
 override do utilizador.
 

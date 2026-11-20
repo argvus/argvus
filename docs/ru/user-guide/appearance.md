@@ -2,7 +2,7 @@
 title: Внешность
 description: Настройте визуальный язык, общий для компонентов ARGVUS.
 ---
-Система внешнего вида применяет одно состояние темы к Hyprland, GTK, Qt, Waybar, Quickshell, Rofi, Dunst, Hyprlock и приложениям ARGVUS.
+Система внешнего вида применяет одно состояние темы к Hyprland, GTK, Qt, Waybar, Quickshell, Dunst, Hyprlock и приложениям ARGVUS.
 
 ## Семейства тем
 

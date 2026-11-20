@@ -137,6 +137,5 @@
   "universal.ssh": "SSH",
   "universal.shortcuts": "键盘快捷键和上下文帮助",
   "universal.cli_help": "argvus launcher — 启动器与搜索",
-  "universal.rasi_unsupported": "此启动器不支持 Rasi 配置。请使用 argvus control-center launcher",
   "universal.argument_unsupported": "不支持此启动器参数。请参阅 argvus launcher --help"
 }

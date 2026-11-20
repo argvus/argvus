@@ -137,6 +137,5 @@
   "universal.ssh": "SSH",
   "universal.shortcuts": "キーボードショートカットと状況別ヘルプ",
   "universal.cli_help": "argvus launcher — ランチャーと検索",
-  "universal.rasi_unsupported": "このランチャーは Rasi 設定に対応していません。使用するコマンド: argvus control-center launcher",
   "universal.argument_unsupported": "未対応の引数です。参照: argvus launcher --help"
 }

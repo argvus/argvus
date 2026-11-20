@@ -9,7 +9,6 @@
   "menu.logout": "Log Out",
   "menu.reboot": "Reboot",
   "menu.shutdown": "إخرس",
-  "menu.launcher_missing": "Rofiمطلق قائمة الطعام لم يعثر عليه.",
   "menu.unsupported_launcher": "Unsupported menu launcher: {launcher}",
   "idle.timeout.title": "مهلة القفل",
   "idle.timeout.one_minute": "دقيقة واحدة",

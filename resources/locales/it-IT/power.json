@@ -9,7 +9,6 @@
   "menu.logout": "Esci",
   "menu.reboot": "Riavviare",
   "menu.shutdown": "Fermare",
-  "menu.launcher_missing": "Avvio menu Rofi non trovato.",
   "menu.unsupported_launcher": "Avvio menu non supportato: {launcher}",
   "idle.timeout.title": "Tempo di blocco",
   "idle.timeout.one_minute": "1 minuto",

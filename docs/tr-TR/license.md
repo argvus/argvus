@@ -15,4 +15,4 @@ Tam lisans metni her depoyla birlikte gelir ve şu adreste mevcuttur: [argvus/ar
 
 ## Üçüncü taraf bileşenler
 
-ARGVUS paketleri ve temaları, kendi lisansları altında dağıtılan üçüncü taraf yazılımlara (Hyprland, Waybar, Rofi ve diğerleri) bağlıdır. Özel koşulları için her bir üst projeye bakın.
+ARGVUS paketleri ve temaları, kendi lisansları altında dağıtılan üçüncü taraf yazılımlara (Hyprland, Waybar ve diğerleri) bağlıdır. Özel koşulları için her bir üst projeye bakın.

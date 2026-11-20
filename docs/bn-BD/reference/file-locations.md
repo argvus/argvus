@@ -24,7 +24,6 @@ description: গুরুত্বপূর্ণ ইনস্টল করা A
 - `$XDG_CONFIG_HOME/argvus/data/generated/terminal/` — প্রক্ষিপ্ত টার্মিনাল প্রোফাইল।
 - `$XDG_CONFIG_HOME/argvus/data/generated/qt6ct/` — প্রক্ষিপ্ত Qt6ct প্যালেট।
 - `$XDG_CONFIG_HOME/argvus/data/generated/gtk/` — প্রক্ষিপ্ত GTK থিম ফাইল।
-- `$XDG_CONFIG_HOME/argvus/data/rofi/` — Rofi কনফিগারেশন, থিম এবং মোডের ব্যবহারকারীর কপি। ARGVUS প্রতিটি কপি তৈরি করে যখন এটি প্রথম ফাইল পরিবর্তন করে; অপরিবর্তিত ফাইলগুলি `/usr/share/argvus/launcher/config/` থেকে পড়া হয়।
 - `$XDG_CONFIG_HOME/argvus/data/generated/removable-devices/theme.css` — প্রক্ষিপ্ত অপসারণযোগ্য-ডিভাইস স্টাইলশীট।
 - `$XDG_CONFIG_HOME/argvus/data/focus/settings.json`, `$XDG_DATA_HOME/argvus/focus/history.json`, `$XDG_STATE_HOME/argvus/focus/session.json` — ARGVUS ফোকাস সেটিংস, সেশন ইতিহাস এবং বর্তমান-সেশন চেকপয়েন্ট৷
 - `$XDG_RUNTIME_DIR/argvus/focus/status.json` — টাস্কবার দ্বারা ক্ষয়প্রাপ্ত ক্ষণস্থায়ী ARGVUS ফোকাস স্থিতি; ফোকাস প্রস্থান করার সময় সরানো হয়।

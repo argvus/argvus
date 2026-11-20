@@ -9,7 +9,6 @@
   "menu.logout": "Sair",
   "menu.reboot": "Reiniciar",
   "menu.shutdown": "Desligar",
-  "menu.launcher_missing": "O lançador de menus Rofi não foi encontrado.",
   "menu.unsupported_launcher": "Lançador de menus não suportado: {launcher}",
   "idle.timeout.title": "Tempo de bloqueio",
   "idle.timeout.one_minute": "1 minuto",

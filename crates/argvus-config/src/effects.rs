@@ -7,7 +7,7 @@
 //! Rust home of the former `effects-toggle.sh`; `argvus effects-toggle` runs
 //! `effects`.
 
-use crate::accent::{Rule, apply_rules, edit_file};
+use crate::accent::{Rule, apply_rules};
 use crate::json_pointers;
 use crate::session_paths::SessionPaths;
 use crate::user_copy;
@@ -28,7 +28,6 @@ mod surfaces;
 use commands::{effects_status, raw_text};
 use css_text::read_first_line;
 pub use effect_settings::settings_valid;
-pub(crate) use surfaces::apply_launcher;
 
 /// Every surface that owns a transparency switch.
 const TRANSPARENCY_SURFACES: [&str; 6] = [

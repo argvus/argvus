@@ -637,7 +637,7 @@ Control Center menyimpan basis data pemeriksaan di `$XDG_CACHE_HOME/argvus/contr
 
 ## Peluncur dan Pencarian
 
-Peluncur utama memakai Quickshell/QML dan mesin Rust lokal untuk aplikasi, jendela, pengaturan, tindakan, proyek, host SSH, berkas, dan pintasan. Pengindeksan awalnya nonaktif; pilih folder secara eksplisit. Hanya nama dan jalur yang diindeks, bukan isi dokumen. Berkas terbaru bergantung pada catatan XDG. Berkas tersembunyi dikecualikan secara bawaan dan symlink direktori tidak diikuti. Menu khusus Rofi tetap tersedia. Di Launcher and Search, pilih urutan A–Z atau Baru dibuka; Baru dibuka menjadi pilihan bawaan. **Sedang dibuka** nonaktif secara default; aktifkan di Control Center > Preferences > Launcher and Search untuk menampilkan jendela saat ini ketika kueri kosong. Riwayat penggunaan aplikasi dapat dihapus dari halaman yang sama.
+Peluncur utama memakai Quickshell/QML dan mesin Rust lokal untuk aplikasi, jendela, pengaturan, tindakan, proyek, host SSH, berkas, dan pintasan. Pengindeksan awalnya nonaktif; pilih folder secara eksplisit. Hanya nama dan jalur yang diindeks, bukan isi dokumen. Berkas terbaru bergantung pada catatan XDG. Berkas tersembunyi dikecualikan secara bawaan dan symlink direktori tidak diikuti. Di Launcher and Search, pilih urutan A–Z atau Baru dibuka; Baru dibuka menjadi pilihan bawaan. **Sedang dibuka** nonaktif secara default; aktifkan di Control Center > Preferences > Launcher and Search untuk menampilkan jendela saat ini ketika kueri kosong. Riwayat penggunaan aplikasi dapat dihapus dari halaman yang sama.
 
 `argvus launcher` · `argvus control-center launcher`
 
@@ -652,7 +652,7 @@ Peluncur utama memakai Quickshell/QML dan mesin Rust lokal untuk aplikasi, jende
 
 `$XDG_CONFIG_HOME/argvus/config/launcher.json` → `$XDG_CACHE_HOME/argvus/launcher/index.json`
 
-Quickshell: `launcher/Theme.qml` · Rofi: `launcher/theme.rasi`
+Quickshell: `launcher/Theme.qml`
 
 `--config` / Rasi: Atur pencarian → `argvus control-center launcher`.
 

@@ -10,7 +10,7 @@ tüketici dosyası, Hyprland, GTK, Qt6ct dahil olmak üzere `config.json`'nun bi
 Waybar, Quickshell, Dunst, Hyprlock, Waybar görev çubuğu ve widget telemetrisi
 profilleri, Yazi ve Superfile yapılandırma ağaçları, terminal ve Qt profili
 ağaçlar, yazı tipi yönetimli bloklar ve çıkarılabilir cihazlar stil sayfası. Bileşenler
-açık kullanıcı geçersiz kılmalarını çözümleyin, ardından çıktıyı oluşturun ve ardından paket varsayılanlarını çözün. Rofi bir projeksiyon değildir: `argvus-launcher`, dosyalarının sahibidir ve kullanıcı, `data/rofi/` altında canlı olarak kopyalar.
+açık kullanıcı geçersiz kılmalarını çözümleyin, ardından çıktıyı oluşturun ve ardından paket varsayılanlarını çözün.
 Normal tema/yeniden yükleme projeksiyonu hiçbir zaman oluşturulan veya paketlenmiş dosyaları desteklemez
 bir kullanıcı geçersiz kılma işlemine. Dokümantasyon ve araçlar mantıksal kaynağı tanımlamalıdır
 kullanıcılardan oluşturulan çıktıyı düzenlemelerini istemek yerine.

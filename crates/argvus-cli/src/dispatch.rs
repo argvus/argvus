@@ -59,6 +59,7 @@ pub fn run(arguments: &[OsString]) -> Outcome {
     "weather-location" => crate::weather::run(rest),
     "idle-timeout" if rest.is_empty() => crate::lock_timeout::run(),
     "appearance-picker" => crate::appearance_picker::run(rest),
+    "notification-action-picker" => crate::launcher_picker::notification_actions(rest),
     "launcher-picker" => crate::launcher_picker::run(rest),
     "launcher-engine" => Ok(argvus_launcher_core::run_command(owned_arguments(rest)?)),
     "projects" => Ok(argvus_projects::run_command(owned_arguments(rest)?)),
