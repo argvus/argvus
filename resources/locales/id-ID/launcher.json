@@ -1,4 +1,8 @@
 {
+  "project.picker_title": "Proyek",
+  "project.picker_search": "Cari berdasarkan nama atau jalur",
+  "project.picker_empty": "Tambahkan proyek di Pusat Kontrol.",
+  "project.picker_no_results": "Tidak ada proyek yang cocok.",
   "error.project_metadata_write": "Tak bisa menyiapkan label area kerja projek: {reason}",
   "project.workspace_label": "Projek: {name}",
   "search.application": "Cari aplikasi",

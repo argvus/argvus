@@ -42,3 +42,5 @@ Opening a project regenerates `$XDG_RUNTIME_DIR/argvus/project-workspaces.json` 
 `argvus projects list --resolved` → `argvus launcher`
 
 The main launcher uses Quickshell/QML with a local Rust search engine. It searches applications, open windows, settings, actions, projects, SSH hosts, files and shortcuts. File indexing starts disabled; select folders explicitly. Only names and paths are indexed, never document contents. Recent files depend on the XDG recent-file registry. Hidden files are excluded by default, and directory symlinks are not followed. Specialized Rofi menus remain available.
+
+`Super + O` opens the GTK 4 picker. **Search by name or path**. `↑` / `↓` · `Enter` · `Esc`

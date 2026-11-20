@@ -3,13 +3,13 @@ title: Çıkarılabilir cihazlar
 description: ARGVUS'tan çıkarılabilir depolamayı bağlayın ve yönetin.
 ---
 
-`argvus-removable-devices`, UDisks2'yi izler ve ARGVUS Görev Çubuğu depolama modülünü ve cihaz menüsünü sağlar. Menü ayrıca Rofi tarzı ayrı bir arayüz olarak da mevcuttur, böylece aynı cihaz eylemleri görev çubuğundan veya başlatıcı iş akışından kullanılabilir.
+`argvus-removable-devices`, UDisks2'yi izler ve ARGVUS Görev Çubuğu depolama modülünü ve cihaz menüsünü sağlar.
 
 Kullanılabilir eylemler şunlardır: `open`, `mount`, `unmount`, `eject`, `poweroff`, `lock`, `unlock` ve `copy`. `list`, `watch` ve `menu` komutları, entegrasyonlar için ilgili durumu, görev çubuğu akışını ve menü arayüzlerini ortaya çıkarır.
 
 ## Görev çubuğu menüsü
 
-`"mode": "gui"` (sistem varsayılanı) ile görev çubuğu depolama simgesine tıklandığında, takvim açılır penceresi gibi ARGVUS Görev Çubuğuna eklenen bir GTK menüsü açılır: görev çubuğu ekranın üst kısmındayken çubuğun altında ve görev çubuğu altta olduğunda çubuğun üstünde. Her aygıt satırında yalnızca durumunun izin verdiği eylemleri içeren bir eylem alt menüsü bulunur.
+Görev çubuğu depolama simgesine tıklandığında, takvim açılır penceresi gibi ARGVUS Görev Çubuğuna eklenen bir GTK menüsü açılır: görev çubuğu ekranın üst kısmındayken çubuğun altında ve görev çubuğu altta olduğunda çubuğun üstünde. Her aygıt satırında yalnızca durumunun izin verdiği eylemleri içeren bir eylem alt menüsü bulunur.
 - **İşaretçi:** Bir aygıt satırının üzerine gelindiğinde veya tıklandığında alt menüsü açılır. İşaretçi menünün kenarlarını geçerken veya menülerden ayrılırken alt menü açık kalır ve yalnızca işaretçi orada kısa bir süre durduktan sonra başka bir satırı takip eder, dolayısıyla alt menüye giden çapraz yol onu kapatmaz. Her iki menünün dışına yapılan bir tıklama açılır pencereyi kapatır.
 - **Klavye:** `Up`/`Down` bir satır seçin, `Right`, `Enter` veya `Space` alt menüyü açın (veya **Yenile**/**Çık** komutunu çalıştırın), `Enter` veya `Space` seçilen eylemi çalıştırır, `Left` veya `Escape` cihaz listesine geri döner ve `Escape` orada açılır pencereyi kapatır.
 
@@ -26,3 +26,5 @@ Arayüz, $XDG_CONFIG_HOME/locale.conf'daki `LANG` kullanıcı dilini kullanır v
 ## Paylaşılan dil katalogları
 
 Arayüz, on dilin tümü için paylaşılan  `$XDG_CONFIG_HOME/locale.conf` `argvus-i18n` kataloglarını kullanır. Metinler ana çalışma alanındaki `resources/locales/<locale>/removable-devices.json`'da saklanır ve `argvus` tarafından yüklenir. İngilizce geri dönüştür; yeni diller artık yerel iki dilli bir sözlüğe ihtiyaç duymuyor.
+
+`Super + Shift + D` ortalanmış GTK 4 menüsünü açar. `↑` / `↓` · `Tab` · `Enter` · `Esc`

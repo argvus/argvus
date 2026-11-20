@@ -7,6 +7,7 @@ authors.workspace = true
 description.workspace = true
 
 [dependencies]
+argvus-theme-selector = { path = "../argvus-theme-selector" }
 argvus-i18n.workspace = true
 zbus = { version = "5", features = ["tokio"] }
 zvariant = "5"

@@ -1,4 +1,8 @@
 {
+  "project.picker_title": "Proyectos",
+  "project.picker_search": "Buscar por nombre o ruta",
+  "project.picker_empty": "Añade un proyecto en el Centro de control.",
+  "project.picker_no_results": "No hay proyectos coincidentes.",
   "error.project_metadata_write": "No se pudieron preparar las etiquetas del espacio de trabajo del proyecto: {reason}",
   "project.workspace_label": "Proyecto: {name}",
   "search.application": "Aplicación de búsqueda",

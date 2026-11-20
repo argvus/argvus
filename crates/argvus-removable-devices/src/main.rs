@@ -4,8 +4,8 @@ mod device;
 mod filesystem;
 mod gui;
 mod i18n;
-mod menu;
 mod monitor;
+mod picker;
 mod process;
 mod renderer;
 mod text;
@@ -17,7 +17,6 @@ use std::io::Write;
 use actions::{ActionKind, Actions};
 use config::Config;
 use device::{Device, build_devices};
-use menu::Menu;
 use monitor::Monitor;
 use renderer::Renderer;
 use udisks::UdisksClient;
@@ -209,23 +208,11 @@ async fn main() {
     "menu" => {
       let devs = snapshot(&cfg).await;
       match fixed_x.zip(fixed_y) {
-        Some(pos) => {
-          if cfg.mode == "gui" {
-            gui::run(&cfg, &devs, &config_path, pos, bar_bottom)
-          } else {
-            Menu::new(&cfg).run(&devs).await
-          }
-        }
-        // No anchor position (keybind / CLI launch, e.g.
-        // SUPER+SHIFT+D): GUI mode can only open anchored to a
-        // waybar click, so fall back to the rofi/dmenu menu.
-        None => Menu::new(&cfg).run(&devs).await,
+        Some(pos) => gui::run(&cfg, &devs, &config_path, pos, bar_bottom),
+        None => picker::run(&cfg, devs, false),
       }
     }
-    "devices" => {
-      let devs = snapshot(&cfg).await;
-      Menu::new(&cfg).run_devices(&devs).await
-    }
+    "devices" => picker::run(&cfg, snapshot(&cfg).await, true),
     _ => run_action(&cfg, &cmd, &token).await,
   };
   if code == -1 {

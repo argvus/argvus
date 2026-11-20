@@ -22,15 +22,16 @@ use gtk::glib;
 use gtk::prelude::*;
 use gtk4_layer_shell::{Edge, KeyboardMode, Layer, LayerShell};
 
-use crate::actions::{ActionKind, Actions};
+#[cfg(test)]
+use crate::actions::ActionKind;
+use crate::actions::Actions;
 use crate::config::Config;
 use crate::device::Device;
 use crate::i18n;
 use crate::process;
 use crate::snapshot;
-use crate::text;
 
-mod entries;
+pub(crate) mod entries;
 mod input;
 mod menu_widgets;
 mod placement;

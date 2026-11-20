@@ -3,13 +3,13 @@ title: Thiết bị có thể tháo rời
 description: Gắn kết và quản lý bộ lưu trữ di động từ ARGVUS.
 ---
 
-`argvus-removable-devices` theo dõi UDisks2 và cung cấp mô-đun lưu trữ Thanh tác vụ ARGVUS cũng như menu thiết bị của nó. Menu này cũng có sẵn dưới dạng giao diện kiểu Rofi riêng biệt, do đó, các hành động tương tự của thiết bị có thể được sử dụng từ thanh tác vụ hoặc từ quy trình làm việc của trình khởi chạy.
+`argvus-removable-devices` theo dõi UDisks2 và cung cấp mô-đun lưu trữ Thanh tác vụ ARGVUS cũng như menu thiết bị của nó.
 
 Các hành động khả dụng là `open`, `mount`, `unmount`, `eject`, `poweroff`, `lock`, `unlock` và `copy`. Các lệnh `list`, `watch` và `menu` hiển thị trạng thái tương ứng, luồng thanh tác vụ và giao diện menu để tích hợp.
 
 ## Trình đơn thanh tác vụ
 
-Với `"mode": "gui"` (mặc định của hệ thống), một cú nhấp chuột vào biểu tượng lưu trữ trên thanh tác vụ sẽ mở ra menu GTK được gắn vào Thanh tác vụ ARGVUS, giống như cửa sổ bật lên lịch: bên dưới thanh khi thanh tác vụ ở trên cùng của màn hình và bên trên nó khi thanh tác vụ ở dưới cùng. Mỗi hàng thiết bị có một menu con hành động chỉ có những hành động mà trạng thái của nó cho phép.
+Một cú nhấp chuột vào biểu tượng lưu trữ trên thanh tác vụ sẽ mở ra menu GTK được gắn vào Thanh tác vụ ARGVUS, giống như cửa sổ bật lên lịch: bên dưới thanh khi thanh tác vụ ở trên cùng của màn hình và bên trên nó khi thanh tác vụ ở dưới cùng. Mỗi hàng thiết bị có một menu con hành động chỉ có những hành động mà trạng thái của nó cho phép.
 - **Con trỏ:** di chuột hoặc nhấp vào hàng thiết bị sẽ mở menu con của thiết bị đó. Menu con vẫn mở trong khi con trỏ đi qua các cạnh menu hoặc rời khỏi menu và nó chỉ đi theo một hàng khác sau khi con trỏ dừng ở đó một thời gian ngắn, do đó đường chéo đến menu con không đóng nó. Một cú nhấp chuột bên ngoài cả hai menu sẽ đóng cửa sổ bật lên.
 - **Bàn phím:** `Up`/`Down` chọn một hàng, `Right`, `Enter` hoặc `Space` mở menu con (hoặc chạy **Làm mới**/**Quit**), `Enter` hoặc `Space` chạy hành động đã chọn, `Left` hoặc `Escape` quay lại danh sách thiết bị và `Escape` sẽ đóng cửa sổ bật lên.
 
@@ -26,3 +26,5 @@ Giao diện sử dụng ngôn ngữ người dùng từ `LANG` trong `$XDG_CONFI
 ## Danh mục ngôn ngữ được chia sẻ
 
 Giao diện sử dụng danh mục `argvus-i18n` được chia sẻ cho tất cả mười ngôn ngữ. Văn bản được lưu trữ trong `resources/locales/<locale>/removable-devices.json` trong không gian làm việc chính và được cài đặt bởi `argvus`. Tiếng Anh là dự phòng; ngôn ngữ mới không còn yêu cầu từ điển song ngữ địa phương nữa.
+
+`Super + Shift + D` mở menu GTK 4 ở giữa màn hình. `↑` / `↓` · `Tab` · `Enter` · `Esc`

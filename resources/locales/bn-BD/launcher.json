@@ -1,4 +1,8 @@
 {
+  "project.picker_title": "প্রকল্প",
+  "project.picker_search": "নাম বা পাথ দিয়ে খুঁজুন",
+  "project.picker_empty": "কন্ট্রোল সেন্টারে একটি প্রকল্প যোগ করুন।",
+  "project.picker_no_results": "কোনো মিলে যাওয়া প্রকল্প নেই।",
   "error.project_metadata_write": "প্রজেক্টর লেবেল প্রস্তুত করতে ব্যর্থ: {reason}",
   "project.workspace_label": "প্রজেক্ট: {name}",
   "search.application": "অ্যাপ্লিকেশন অনুসন্ধান করুন",

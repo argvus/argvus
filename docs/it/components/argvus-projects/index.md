@@ -35,3 +35,5 @@ Aprire un progetto rigenera `$XDG_RUNTIME_DIR/argvus/project-workspaces.json` in
 `argvus projects list --resolved` → `argvus launcher`
 
 Il lanciatore principale usa Quickshell/QML con un motore locale Rust per applicazioni, finestre, impostazioni, azioni, progetti, host SSH, file e scorciatoie. L’indicizzazione è inizialmente disattivata e richiede cartelle scelte esplicitamente. Indicizza solo nomi e percorsi, mai il contenuto. I file recenti dipendono dal registro XDG. I file nascosti sono esclusi per impostazione predefinita e i collegamenti simbolici alle cartelle non vengono seguiti. I menu Rofi specializzati restano disponibili.
+
+`Super + O` apre il selettore GTK 4. **Cerca per nome o percorso**. `↑` / `↓` · `Enter` · `Esc`

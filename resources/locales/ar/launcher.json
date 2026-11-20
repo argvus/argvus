@@ -1,4 +1,8 @@
 {
+  "project.picker_title": "المشاريع",
+  "project.picker_search": "البحث بالاسم أو المسار",
+  "project.picker_empty": "أضف مشروعًا في مركز التحكم.",
+  "project.picker_no_results": "لا توجد مشاريع مطابقة.",
   "error.project_metadata_write": "Can not prepare project workspace labels: {reason}",
   "project.workspace_label": "Project: {name}",
   "search.application": "طلب البحث",

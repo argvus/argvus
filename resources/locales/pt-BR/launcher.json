@@ -1,4 +1,8 @@
 {
+  "project.picker_title": "Projetos",
+  "project.picker_search": "Buscar por nome ou caminho",
+  "project.picker_empty": "Adicione um projeto no Control Center.",
+  "project.picker_no_results": "Nenhum projeto encontrado.",
   "error.project_metadata_write": "Não foi possível preparar os rótulos dos projetos: {reason}",
   "project.workspace_label": "Projeto: {name}",
   "search.application": "Pesquisar aplicação",

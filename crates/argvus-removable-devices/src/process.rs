@@ -29,38 +29,6 @@ pub fn fork_exec(command: &str) -> i32 {
   }
 }
 
-// Run a command, feeding `input` lines to its stdin, capturing stdout+stderr.
-// Returns Some((stdout, stderr)) on success (exit code 0), None otherwise.
-pub fn run_capture(command: &str, input: &[String]) -> Option<(String, String)> {
-  let mut child = Command::new("/bin/sh")
-    .arg("-c")
-    .arg(command)
-    .stdin(Stdio::piped())
-    .stdout(Stdio::piped())
-    .stderr(Stdio::piped())
-    .spawn()
-    .ok()?;
-  {
-    let mut stdin = child.stdin.take()?;
-    for line in input {
-      if stdin.write_all(line.as_bytes()).is_err() {
-        break;
-      }
-      if stdin.write_all(b"\n").is_err() {
-        break;
-      }
-    }
-  }
-  let output = child.wait_with_output().ok()?;
-  if !output.status.success() {
-    return None;
-  }
-  Some((
-    String::from_utf8_lossy(&output.stdout).into_owned(),
-    String::from_utf8_lossy(&output.stderr).into_owned(),
-  ))
-}
-
 /// Runs `command` through `/bin/sh -c` with `input` as its whole stdin, written
 /// exactly as given, and waits for it to exit.
 ///

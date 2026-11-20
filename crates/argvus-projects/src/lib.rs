@@ -11,15 +11,15 @@
 
 mod config;
 mod messages;
+mod picker;
 mod taskbar;
 
 use argvus_projects_core::projects::{self, MAX_PROJECTS};
 use messages::{Stream, print_launcher, report_error};
 use std::env;
 use std::fs;
-use std::io::Write;
 use std::path::PathBuf;
-use std::process::{Command, ExitCode, Stdio};
+use std::process::{Command, ExitCode};
 
 /// Runs one command of this crate. `arguments` are the words after the command
 /// name. The `argvus` dispatcher and the binary both call this function.
@@ -169,51 +169,16 @@ fn list() -> ExitCode {
 
 /// The picker: a list of the projects; prints nothing when it is cancelled.
 fn pick_chosen(prompt: &str) -> Result<Option<String>, ExitCode> {
-  let list = collect_projects();
-  if list.is_empty() {
-    report_error(&messages::text("error.no_projects", &[]));
-    return Err(ExitCode::from(1));
-  }
-  let labels: Vec<String> = list
-    .iter()
-    .enumerate()
-    .map(|(index, path)| {
-      format!(
-        "{}  [SUPER + CTRL + {}]",
-        projects::picker_label(index + 1, path),
-        index + 1
-      )
-    })
-    .collect();
-  let config = config::read_path("launcher/config/config.rasi");
-  let mut child = match Command::new("rofi")
-    .arg("-config")
-    .arg(config)
-    .args(["-dmenu", "-i", "-format", "i", "-p", prompt])
-    .stdin(Stdio::piped())
-    .stdout(Stdio::piped())
-    .spawn()
-  {
-    Ok(child) => child,
-    Err(_) => return Ok(None),
-  };
-  if let Some(mut stdin) = child.stdin.take() {
-    let _ = stdin.write_all(labels.join("\n").as_bytes());
-  }
-  let Ok(output) = child.wait_with_output() else {
-    return Ok(None);
-  };
-  if !output.status.success() {
-    return Ok(None);
-  }
-  let index: Option<usize> = String::from_utf8_lossy(&output.stdout).trim().parse().ok();
-  Ok(index.and_then(|index| list.get(index).cloned()))
+  picker::choose(&collect_projects(), prompt).map_err(|error| {
+    report_error(&error.to_string());
+    ExitCode::from(1)
+  })
 }
 
 fn pick_command(arguments: &[String]) -> ExitCode {
   let prompt = match arguments.first() {
     Some(prompt) => prompt.clone(),
-    None => messages::text("search.project", &[]),
+    None => String::new(),
   };
   match pick_chosen(&prompt) {
     Ok(Some(path)) => {
@@ -227,8 +192,7 @@ fn pick_command(arguments: &[String]) -> ExitCode {
 
 /// The shortcut: pick a project and open it.
 fn switch() -> ExitCode {
-  let prompt = messages::text("search.project", &[]);
-  match pick_chosen(&prompt) {
+  match pick_chosen("") {
     Ok(Some(path)) => open_path(&path),
     Ok(None) => ExitCode::SUCCESS,
     Err(code) => code,

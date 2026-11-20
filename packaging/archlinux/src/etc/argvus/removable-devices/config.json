@@ -29,13 +29,6 @@
   // "file_manager_command": "...",     // e.g. "nautilus", "spf" or "yazi"
   "copy_command": "wl-copy",
   "unlock_command": "kitty -e",   // prefix used to open a terminal for the LUKS passphrase
-  "mode": "gui",                  // gui = GTK menu attached to the taskbar on click | rofi = dmenu-style list
-  "menu": "rofi",                 // rofi | wofi | dmenu (only used when mode = rofi)
-  // rofi mode auto-resolves the ARGVUS theme (-config <argvus>/launcher/config/config.rasi),
-  // uses the "-p" value as a base prompt, and navigates devices -> actions with
-  // arrows (Right = open submenu, Esc/Left in the submenu = go back).
-  "menu_flags": "-dmenu -i -p Storage",
-
   // Tokens for "format" and "tooltip_format":
   //   {icon} {name} {block} {fs} {capacity} {used} {free} {mount} {vendor}
   //   {model} {state}   (state = "Encrypted · Locked" / "Read-only", ...)

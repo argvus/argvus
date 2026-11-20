@@ -1,4 +1,8 @@
 {
+  "project.picker_title": "منصوبے",
+  "project.picker_search": "نام یا راستے سے تلاش کریں",
+  "project.picker_empty": "کنٹرول سینٹر میں ایک منصوبہ شامل کریں۔",
+  "project.picker_no_results": "کوئی مماثل منصوبہ نہیں ملا۔",
   "error.project_metadata_write": "منصوبے کے کام کے لیبل تیار نہیں ہو سکے: {reason}",
   "project.workspace_label": "پروجیکٹ: {name}",
   "search.application": "تلاش اطلاقیے",

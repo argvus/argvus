@@ -759,7 +759,10 @@ version = "0.1.0"
 name = "argvus-projects"
 version = "0.1.0"
 dependencies = [
+ "argvus-i18n-core",
  "argvus-projects-core",
+ "argvus-theme-selector",
+ "gtk4",
  "serde_json",
 ]
 
@@ -772,6 +775,7 @@ name = "argvus-removable-devices"
 version = "0.1.0"
 dependencies = [
  "argvus-i18n-core",
+ "argvus-theme-selector",
  "futures-lite",
  "gtk4",
  "gtk4-layer-shell",

@@ -1,4 +1,8 @@
 {
+  "project.picker_title": "Projets",
+  "project.picker_search": "Rechercher par nom ou chemin",
+  "project.picker_empty": "Ajoutez un projet dans le centre de contrôle.",
+  "project.picker_no_results": "Aucun projet correspondant.",
   "error.project_metadata_write": "Impossible de préparer les étiquettes de l'espace de travail du projet : {reason}",
   "project.workspace_label": "Projet : {name}",
   "search.application": "Rechercher une application",

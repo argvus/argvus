@@ -1,4 +1,8 @@
 {
+  "project.picker_title": "Dự án",
+  "project.picker_search": "Tìm theo tên hoặc đường dẫn",
+  "project.picker_empty": "Thêm dự án trong Trung tâm điều khiển.",
+  "project.picker_no_results": "Không có dự án phù hợp.",
   "error.project_metadata_write": "Không thể chuẩn bị nhãn vùng làm việc của dự án:{reason}",
   "project.workspace_label": "Dự án: {name}",
   "search.application": "Ứng dụng tìm kiếm",

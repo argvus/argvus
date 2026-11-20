@@ -1,4 +1,8 @@
 {
+  "project.picker_title": "Projekte",
+  "project.picker_search": "Nach Name oder Pfad suchen",
+  "project.picker_empty": "Fügen Sie im Kontrollzentrum ein Projekt hinzu.",
+  "project.picker_no_results": "Keine passenden Projekte.",
   "error.project_metadata_write": "Projektarbeitsbereichsbezeichnungen konnten nicht vorbereitet werden: {reason}",
   "project.workspace_label": "Projekt: {name}",
   "search.application": "Suchanwendung",

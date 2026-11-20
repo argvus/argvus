@@ -35,3 +35,5 @@ argvus projects pick [PROMPT]      print the path picked from the list, for othe
 `argvus projects list --resolved` → `argvus launcher`
 
 기본 실행기는 Quickshell/QML과 로컬 Rust 검색 엔진으로 앱, 창, 설정, 작업, 프로젝트, SSH 호스트, 파일, 단축키를 검색합니다. 색인은 기본적으로 꺼져 있으며 폴더를 명시적으로 선택해야 합니다. 이름과 경로만 색인하고 문서 내용은 읽지 않습니다. 최근 파일은 XDG 기록에 따릅니다. 숨김 파일은 기본적으로 제외하며 디렉터리 심볼릭 링크를 따라가지 않습니다. 전용 Rofi 메뉴도 계속 사용할 수 있습니다.
+
+`Super + O`  키로 GTK 4 선택기를 엽니다. **이름 또는 경로로 검색**. `↑` / `↓` · `Enter` · `Esc`

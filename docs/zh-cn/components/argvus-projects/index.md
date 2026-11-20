@@ -35,3 +35,5 @@ argvus projects pick [PROMPT]      print the path picked from the list, for othe
 `argvus projects list --resolved` → `argvus launcher`
 
 主启动器采用 Quickshell/QML 和本地 Rust 搜索引擎，可查找应用、窗口、设置、操作、项目、SSH 主机、文件和快捷键。文件索引默认关闭，需明确选择文件夹。仅索引名称和路径，不读取文档内容。最近文件来自 XDG 记录。默认排除隐藏文件，不跟随目录符号链接。专用 Rofi 菜单继续可用。
+
+`Super + O` 打开 GTK 4 选择器。 **按名称或路径搜索**. `↑` / `↓` · `Enter` · `Esc`

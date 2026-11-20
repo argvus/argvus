@@ -2,13 +2,13 @@
 title: 可移动设备
 description: 从 ARGVUS 挂载和管理可移动存储。
 ---
-`argvus-removable-devices` 监控 UDisks2 并提供 ARGVUS 任务栏存储模块及其设备菜单。该菜单也可作为独立的 Rofi 风格界面使用，因此可以从任务栏或启动器工作流中执行相同的设备操作。
+`argvus-removable-devices` 监控 UDisks2 并提供 ARGVUS 任务栏存储模块及其设备菜单。
 
 可用的操作有 `open`、`mount`、`unmount`、`eject`、`poweroff`、`lock`、`unlock` 和 `copy`。`list`、`watch` 和 `menu` 命令用于暴露相应的状态、任务栏流和菜单接口以便集成。
 
 ## 任务栏菜单
 
-使用 `"mode": "gui"`（系统默认），点击任务栏存储图标会打开一个附加到 ARGVUS 任务栏的 GTK 菜单，就像日历弹出窗口一样：当任务栏在屏幕顶部时，菜单显示在条的下方；当任务栏在屏幕底部时，菜单显示在条的上方。每个设备行都有一个操作子菜单，仅显示该设备状态允许的操作。
+点击任务栏存储图标会打开一个附加到 ARGVUS 任务栏的 GTK 菜单，就像日历弹出窗口一样：当任务栏在屏幕顶部时，菜单显示在条的下方；当任务栏在屏幕底部时，菜单显示在条的上方。每个设备行都有一个操作子菜单，仅显示该设备状态允许的操作。
 
 - **指针操作:** 将指针悬停或点击设备行会打开其子菜单。当指针穿过菜单边缘或离开菜单时，子菜单仍会保持打开状态，且只有当指针在另一行短暂停留后才会跟随，所以对角线移动到子菜单不会关闭它。点击两个菜单之外的区域会关闭弹出窗口。
 - **键盘操作:** `Up`/`Down` 选择一行，`Right`、`Enter` 或 `Space` 打开子菜单（或运行 **刷新**/**退出**），`Enter` 或 `Space` 执行选定操作，`Left` 或 `Escape` 返回设备列表，`Escape` 则关闭弹出窗口。
@@ -26,3 +26,5 @@ description: 从 ARGVUS 挂载和管理可移动存储。
 ## 共享语言目录
 
 界面使用适用于所有十种语言的共享  `$XDG_CONFIG_HOME/locale.conf` `argvus-i18n` 目录。文本存储在主工作区的 `resources/locales/<locale>/removable-devices.json` 中，并由 `argvus` 安装。英语是回退语言；新语言不再需要本地双语词典。
+
+`Super + Shift + D` 打开居中的 GTK 4 菜单。 `↑` / `↓` · `Tab` · `Enter` · `Esc`

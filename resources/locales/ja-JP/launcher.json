@@ -1,4 +1,8 @@
 {
+  "project.picker_title": "プロジェクト",
+  "project.picker_search": "名前またはパスで検索",
+  "project.picker_empty": "コントロールセンターでプロジェクトを追加してください。",
+  "project.picker_no_results": "一致するプロジェクトがありません。",
   "error.project_metadata_write": "プロジェクト ワークスペース ラベルを準備できませんでした: {reason}",
   "project.workspace_label": "プロジェクト: {name}",
   "search.application": "検索アプリケーション",

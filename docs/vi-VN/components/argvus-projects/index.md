@@ -42,3 +42,5 @@ Việc mở một dự án sẽ tái tạo nguyên tử `$XDG_RUNTIME_DIR/argvus
 `argvus projects list --resolved` → `argvus launcher`
 
 Trình khởi chạy chính dùng Quickshell/QML và công cụ Rust cục bộ để tìm ứng dụng, cửa sổ, cài đặt, thao tác, dự án, máy chủ SSH, tệp và phím tắt. Lập chỉ mục ban đầu bị tắt; cần chọn thư mục rõ ràng. Chỉ tên và đường dẫn được lập chỉ mục, không đọc nội dung tài liệu. Tệp gần đây dựa vào bản ghi XDG. Tệp ẩn bị loại trừ mặc định và không đi theo liên kết tượng trưng của thư mục. Các menu Rofi chuyên dụng vẫn có sẵn.
+
+`Super + O` mở bộ chọn GTK 4. **Tìm theo tên hoặc đường dẫn**. `↑` / `↓` · `Enter` · `Esc`

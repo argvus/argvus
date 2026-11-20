@@ -1,4 +1,8 @@
 {
+  "project.picker_title": "项目",
+  "project.picker_search": "按名称或路径搜索",
+  "project.picker_empty": "请在控制中心添加项目。",
+  "project.picker_no_results": "没有匹配的项目。",
   "error.project_metadata_write": "无法准备项目工作区标签：{reason}",
   "project.workspace_label": "项目：{name}",
   "search.application": "搜索应用程序",

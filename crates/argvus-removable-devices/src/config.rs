@@ -21,9 +21,6 @@ pub struct Config {
   pub file_manager_command: String,
   pub copy_command: String,
   pub unlock_command: String,
-  pub mode: String,
-  pub menu: String,
-  pub menu_flags: String,
   pub icons_mounted: String,
   pub icons_unmounted: String,
   pub icons_encrypted: String,
@@ -51,9 +48,6 @@ impl Default for Config {
       file_manager_command: String::new(),
       copy_command: "wl-copy".to_string(),
       unlock_command: "kitty -e".to_string(),
-      mode: "rofi".to_string(),
-      menu: "rofi".to_string(),
-      menu_flags: "-dmenu -i -p Storage".to_string(),
       icons_mounted: "\u{f02ca}".to_string(),
       icons_unmounted: "\u{f02ca}".to_string(),
       icons_encrypted: "\u{f0341}".to_string(),
@@ -218,15 +212,6 @@ fn apply_json(cfg: &mut Config, j: &serde_json::Value) {
   }
   if let Some(v) = get_str!("unlock_command") {
     cfg.unlock_command = v;
-  }
-  if let Some(v) = get_str!("mode") {
-    cfg.mode = v;
-  }
-  if let Some(v) = get_str!("menu") {
-    cfg.menu = v;
-  }
-  if let Some(v) = get_str!("menu_flags") {
-    cfg.menu_flags = v;
   }
   if let Some(icons) = obj.get("icons").and_then(|v| v.as_object()) {
     let icon_get = |key: &str| icons.get(key).and_then(|v| v.as_str()).map(String::from);
@@ -394,13 +379,11 @@ mod tests {
   }
 
   #[test]
-  fn mode_parsed_from_json() {
+  fn legacy_menu_options_do_not_affect_other_settings() {
     let mut cfg = Config::default();
     let v: serde_json::Value =
       serde_json::from_str("{\"mode\": \"gui\", \"show_notification\": false}").unwrap();
     apply_json(&mut cfg, &v);
-    assert_eq!(cfg.mode, "gui");
     assert!(!cfg.show_notification);
-    assert_eq!(Config::default().mode, "rofi");
   }
 }

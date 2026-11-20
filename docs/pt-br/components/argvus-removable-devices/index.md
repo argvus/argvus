@@ -3,13 +3,13 @@ title: Dispositivos removíveis
 description: Monte e gerencie armazenamento removível.
 ---
 
-`argvus-removable-devices` monitora UDisks2 e fornece o módulo de armazenamento da ARGVUS Taskbar e o menu dos dispositivos. O menu também está disponível como uma interface separada no estilo Rofi, permitindo usar as mesmas ações pela taskbar ou por um fluxo de launcher.
+`argvus-removable-devices` monitora UDisks2 e fornece o módulo de armazenamento da ARGVUS Taskbar e o menu dos dispositivos.
 
 As ações disponíveis são `open`, `mount`, `unmount`, `eject`, `poweroff`, `lock`, `unlock` e `copy`. Os comandos `list`, `watch` e `menu` expõem respectivamente as interfaces de status, fluxo da taskbar e menu para integrações.
 
 ## Menu da taskbar
 
-Com `"mode": "gui"` (o padrão do sistema), um clique no ícone de armazenamento da taskbar abre um menu GTK preso à ARGVUS Taskbar, como o popup do calendário: abaixo da barra quando a taskbar está no topo da tela, e acima dela quando a taskbar está embaixo. Cada linha de dispositivo tem um submenu de ações só com as ações que o estado dele permite.
+Um clique no ícone de armazenamento da taskbar abre um menu GTK preso à ARGVUS Taskbar, como o popup do calendário: abaixo da barra quando a taskbar está no topo da tela, e acima dela quando a taskbar está embaixo. Cada linha de dispositivo tem um submenu de ações só com as ações que o estado dele permite.
 - **Ponteiro:** passar o ponteiro ou clicar numa linha de dispositivo abre o submenu dela. O submenu continua aberto enquanto o ponteiro atravessa as bordas do menu ou sai dos menus, e só segue outra linha depois que o ponteiro para nela por um instante, então um caminho na diagonal até o submenu não o fecha. Um clique fora dos dois menus fecha o popup.
 - **Teclado:** `Up`/`Down` selecionam uma linha, `Right`, `Enter` ou `Space` abrem o submenu (ou executam **Atualizar**/**Sair**), `Enter` ou `Space` executam a ação selecionada, `Left` ou `Escape` voltam para a lista de dispositivos, e `Escape` nela fecha o popup.
 
@@ -19,10 +19,14 @@ A ação padrão de abrir arquivos segue o gerenciador de arquivos selecionado n
 
 A configuração do sistema é `/etc/argvus/removable-devices/config.json`. A projeção gerenciada por usuário fica em `~/.config/argvus/data/removable-devices/config.json`, com um `theme.css` correspondente no mesmo diretório. Esse stylesheet também é projetado em `~/.config/argvus/data/generated/removable-devices/theme.css` a partir do tema, accent e modo canônicos, com fallback de família/variante para temas sem um asset dedicado, então uma troca de tema mantém o módulo consistente sem nenhum passo manual. Os caminhos antigos do componente são apenas fontes de migração; a configuração do usuário sobrescreve os padrões do sistema.
 
-Configurações úteis incluem ocultar o módulo quando não há dispositivos (`hide_when_empty`), mostrar nomes e capacidades, ordenar dispositivos, controlar notificações, escolher o backend do menu e definir ícones de estado. A folha de estilos dele é renderizada a partir do tema ativo do ARGVUS (`removable-devices/theme.css` do build do tema) e copiada para o `theme.css` do painel a cada troca de tema ou de destaque.
+Configurações úteis incluem ocultar o módulo quando não há dispositivos (`hide_when_empty`), mostrar nomes e capacidades, ordenar dispositivos, controlar notificações e definir ícones de estado. A folha de estilos dele é renderizada a partir do tema ativo do ARGVUS (`removable-devices/theme.css` do build do tema) e copiada para o `theme.css` do painel a cada troca de tema ou de destaque.
 
 A interface usa o idioma do usuário definido por `LANG` em `$XDG_CONFIG_HOME/locale.conf`, com inglês como padrão para usuários sem configuração. Variáveis de locale herdadas não selecionam o idioma da interface.
 
 ## Catálogos compartilhados
 
 A interface usa os catálogos de `argvus-i18n` nos dez idiomas. Os textos ficam em `resources/locales/<locale>/removable-devices.json` no workspace principal e são instalados por `argvus`. O inglês é o fallback; novos idiomas não exigem dicionário bilíngue local.
+
+`Super + Shift + D` abre o menu GTK 4 centralizado. `↑` / `↓` · `Tab` · `Enter` · `Esc`
+
+Os dispositivos ficam no painel esquerdo e as ações disponíveis no painel direito. Use `Tab` para alternar entre os painéis. No painel de ações, `U` desmonta, `P` desliga e `C` copia o caminho de montagem quando a ação estiver disponível. A lista é atualizada ao conectar ou remover dispositivos. Os campos antigos `mode`, `menu` e `menu_flags` são ignorados.

@@ -56,7 +56,7 @@ power, display, network, notifications and themes — all packaged for Arch Linu
 
 `argvus` is the master package and the only package built from this repository. It installs the
 command, its in-process subcommands and the shared runtime, the Control Center with integrated ARGVUS Welcome (terminal
-applications), the GTK 4 helpers for the taskbar calendar, removable devices and visual theme selection, the loading
+applications), the GTK 4 interfaces for project selection, the taskbar calendar, removable devices and visual theme selection, the loading
 overlay, the ARGVUS Focus and ARGVUS Clock applications, the Disk Usage Analyzer helper, and
 the login greeter (built from `crates/argvus-greeter`). Every component package
 depends on it, so no install order is required.

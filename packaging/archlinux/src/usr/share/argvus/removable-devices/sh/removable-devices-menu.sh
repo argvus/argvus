@@ -43,8 +43,7 @@ if [ "${1:-}" = "--root" ] && [ "$#" -ge 3 ]; then
 fi
 
 # Compatibility fallback for Waybar versions without event-coordinate support.
-# The pinned coordinates are only honored in gui mode; rofi mode positions
-# itself and ignores them.
+# The coordinates anchor the GTK menu to the taskbar.
 
 pos="$(hyprctl cursorpos -j 2>/dev/null || true)"
 x="$(printf '%s' "$pos" | sed -n 's/.*"x": *\(-\{0,1\}[0-9][0-9]*\).*/\1/p' || true)"

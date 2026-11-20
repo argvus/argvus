@@ -78,21 +78,3 @@ pub fn set_array(pointer: &str, entries: &[String]) -> bool {
     .map(|status| status.success())
     .unwrap_or(false)
 }
-
-/// The file a reader sees for a packaged config path, through `argvus config`.
-/// The packaged file is used when that fails.
-pub fn read_path(relative: &str) -> String {
-  let output = config_command()
-    .args(["read-path", relative])
-    .stderr(Stdio::null())
-    .output();
-  match output {
-    Ok(output) if output.status.success() => String::from_utf8_lossy(&output.stdout)
-      .trim_end()
-      .to_string(),
-    _ => {
-      let system = env::var("ARGVUS_SYSTEM_CONFIG").unwrap_or_else(|_| "/usr/share/argvus".into());
-      format!("{system}/{relative}")
-    }
-  }
-}

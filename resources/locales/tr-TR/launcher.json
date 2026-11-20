@@ -1,4 +1,8 @@
 {
+  "project.picker_title": "Projeler",
+  "project.picker_search": "Ada veya yola göre ara",
+  "project.picker_empty": "Denetim Merkezi’nde bir proje ekleyin.",
+  "project.picker_no_results": "Eşleşen proje yok.",
   "error.project_metadata_write": "Proje çalışma alanı etiketleri hazırlayamaz: {reason}",
   "project.workspace_label": "Project: {name}",
   "search.application": "Arama uygulaması",

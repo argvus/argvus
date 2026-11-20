@@ -1,4 +1,8 @@
 {
+  "project.picker_title": "प्रोजेक्ट",
+  "project.picker_search": "नाम या पथ से खोजें",
+  "project.picker_empty": "कंट्रोल सेंटर में एक प्रोजेक्ट जोड़ें।",
+  "project.picker_no_results": "कोई मेल खाता प्रोजेक्ट नहीं मिला।",
   "error.project_metadata_write": "परियोजना कार्यक्षेत्र लेबल तैयार नहीं कर सका: {reason}",
   "project.workspace_label": "परियोजना: {name}",
   "search.application": "खोज अनुप्रयोग",

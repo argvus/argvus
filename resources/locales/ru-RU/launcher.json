@@ -1,4 +1,8 @@
 {
+  "project.picker_title": "Проекты",
+  "project.picker_search": "Поиск по имени или пути",
+  "project.picker_empty": "Добавьте проект в Центре управления.",
+  "project.picker_no_results": "Подходящих проектов нет.",
   "error.project_metadata_write": "Не удалось подготовить метки рабочей области проекта: {reason}.",
   "project.workspace_label": "Проект: {name}",
   "search.application": "Поиск приложения",

@@ -1,14 +1,14 @@
 //! Menu rows built from the devices: titles, state words, action labels and tooltips.
 
-use super::*;
+use crate::{actions::ActionKind, device::Device, i18n, text};
 
-pub(super) struct DeviceEntry {
-  pub(super) kind: ActionKind,
-  pub(super) device: Device,
+pub(crate) struct DeviceEntry {
+  pub(crate) kind: ActionKind,
+  pub(crate) device: Device,
 }
 
-// Mirror the action set offered by the rofi mode, filtered by device state.
-pub(super) fn device_entries(d: &Device) -> Vec<DeviceEntry> {
+// Both GTK menus use the same device capabilities.
+pub(crate) fn device_entries(d: &Device) -> Vec<DeviceEntry> {
   let can_mount = !(d.mounted || (d.encrypted && d.locked));
   let mut out = Vec::new();
   if !d.encrypted || !d.locked {
@@ -62,7 +62,7 @@ pub(super) fn device_entries(d: &Device) -> Vec<DeviceEntry> {
   out
 }
 
-pub(super) fn action_label(kind: ActionKind) -> &'static str {
+pub(crate) fn action_label(kind: ActionKind) -> &'static str {
   let key = match kind {
     ActionKind::Open => "device.open",
     ActionKind::Mount => "device.mount",
@@ -76,7 +76,7 @@ pub(super) fn action_label(kind: ActionKind) -> &'static str {
   i18n::tr(key)
 }
 
-pub(super) fn action_tooltip(kind: ActionKind) -> &'static str {
+pub(crate) fn action_tooltip(kind: ActionKind) -> &'static str {
   let key = match kind {
     ActionKind::Open => "device.open_in_the_configured_file_manager",
     ActionKind::Mount => "device.mount_this_device",
@@ -90,7 +90,7 @@ pub(super) fn action_tooltip(kind: ActionKind) -> &'static str {
   i18n::tr(key)
 }
 
-pub(super) fn device_title(d: &Device) -> String {
+pub(crate) fn device_title(d: &Device) -> String {
   let key = state_words(d.encrypted && d.locked, d.mounted);
   let state = i18n::tr(key);
   if d.capacity > 0 {
@@ -100,7 +100,7 @@ pub(super) fn device_title(d: &Device) -> String {
   }
 }
 
-pub(super) fn state_words(locked: bool, mounted: bool) -> &'static str {
+pub(crate) fn state_words(locked: bool, mounted: bool) -> &'static str {
   if locked {
     "device.locked"
   } else if mounted {

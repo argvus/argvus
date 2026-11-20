@@ -1,4 +1,8 @@
 {
+  "project.picker_title": "Projects",
+  "project.picker_search": "Search by name or path",
+  "project.picker_empty": "Add a project in the Control Center.",
+  "project.picker_no_results": "No matching projects.",
   "error.project_metadata_write": "Could not prepare project workspace labels: {reason}",
   "project.workspace_label": "Project: {name}",
   "search.application": "Search application",

@@ -6,7 +6,7 @@ use crate::filesystem;
 use crate::text;
 use crate::udisks::{Enumerated, RawBlock, RawDrive};
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct Device {
   pub object_path: String,
   pub drive_path: String,
