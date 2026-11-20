@@ -1,4 +1,9 @@
 {
+  "idle.timeout.reload_error": "Waktu tunggu tersimpan, tetapi tidak dapat diterapkan.",
+  "idle.timeout.save_error": "Waktu tunggu penguncian tidak dapat disimpan.",
+  "idle.timeout.read_error": "Waktu tunggu penguncian tidak dapat dibaca.",
+  "idle.timeout.applying": "Menerapkan…",
+  "idle.timeout.select": "Pilih",
   "menu.lock": "Kunci",
   "menu.suspend": "Suspensi",
   "menu.logout": "Keluar",
@@ -6,7 +11,7 @@
   "menu.shutdown": "Matikan",
   "menu.launcher_missing": "Peluncur menu [PH000] tidak ditemukan.",
   "menu.unsupported_launcher": "Peluncur menu tidak didukung: {launcher}",
-  "idle.timeout.title": "Kunci waktu",
+  "idle.timeout.title": "Waktu tunggu penguncian",
   "idle.timeout.one_minute": "1 menit",
   "idle.timeout.minutes": "{count} menit",
   "idle.timeout.never": "Tidak pernah",

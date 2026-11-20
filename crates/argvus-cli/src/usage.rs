@@ -35,13 +35,15 @@ Commands:
   argvus launcher | projects | snippets | ssh | clipboard | keys | gpg | git
   argvus tui-terminal | sensors | app-profiles-yazi-keymap | game-snake | terminal
 
+  argvus idle-timeout [status|60|300|600|900|1800|0|--apply-static]
+
 Hyprland script commands (used by the Hyprland configuration):
   argvus scratchpad | hypr-screenshot
   argvus windows service | bar | list --json | position top|bottom
   argvus windows minimize | restore | activate | maximize | close ADDRESS
   argvus spaces-switch | emoji-picker | toggle-sidebar | weather-location
   argvus keybindings | theme-selector | theme-switch | layout-mode-menu | brightness-switch | toggle-mode
-  argvus idle-timeout | keep-awake | lock | effects-toggle
+  argvus keep-awake | lock | effects-toggle
 
 Aliases:
   argvus setup | system-monitor | control-center | terminal | spf | yazi | about | calendar | game-snake | focus | clock | calculator | default-apps | removable-devices | displays | version

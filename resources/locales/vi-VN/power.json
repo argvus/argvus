@@ -1,4 +1,9 @@
 {
+  "idle.timeout.reload_error": "Đã lưu thời gian chờ nhưng không thể áp dụng.",
+  "idle.timeout.save_error": "Không thể lưu thời gian chờ khóa.",
+  "idle.timeout.read_error": "Không thể đọc thời gian chờ khóa.",
+  "idle.timeout.applying": "Đang áp dụng…",
+  "idle.timeout.select": "Chọn",
   "menu.lock": "Khoá",
   "menu.suspend": "Ngưng",
   "menu.logout": "Đăng xuất",
@@ -6,7 +11,7 @@
   "menu.shutdown": "Đóng cửa",
   "menu.launcher_missing": "Không tìm thấy bệ phóng thực đơnRofi.",
   "menu.unsupported_launcher": "Súng phóng thanh không được hỗ trợ:{launcher}",
-  "idle.timeout.title": "Thời hạn khoá",
+  "idle.timeout.title": "Thời gian chờ khóa",
   "idle.timeout.one_minute": "1 phút",
   "idle.timeout.minutes": "{count} phút",
   "idle.timeout.never": "Không bao giờ",

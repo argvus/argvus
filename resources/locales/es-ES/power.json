@@ -1,4 +1,9 @@
 {
+  "idle.timeout.reload_error": "El tiempo se guardó, pero no se pudo aplicar.",
+  "idle.timeout.save_error": "No se pudo guardar el tiempo de bloqueo.",
+  "idle.timeout.read_error": "No se pudo leer el tiempo de bloqueo.",
+  "idle.timeout.applying": "Aplicando…",
+  "idle.timeout.select": "Seleccionar",
   "menu.lock": "Cerrar",
   "menu.suspend": "Suspender",
   "menu.logout": "Finalizar la sesión",
@@ -6,7 +11,7 @@
   "menu.shutdown": "Cerrar",
   "menu.launcher_missing": "No se encontró el iniciador de menú Rofi.",
   "menu.unsupported_launcher": "Lanzador de menú no compatible: {launcher}",
-  "idle.timeout.title": "Tiempo de espera de bloqueo",
+  "idle.timeout.title": "Tiempo de bloqueo",
   "idle.timeout.one_minute": "1 minuto",
   "idle.timeout.minutes": "minutos {count}",
   "idle.timeout.never": "Nunca",

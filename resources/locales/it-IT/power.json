@@ -1,4 +1,9 @@
 {
+  "idle.timeout.reload_error": "Il tempo è stato salvato, ma non è stato possibile applicarlo.",
+  "idle.timeout.save_error": "Impossibile salvare il tempo di blocco.",
+  "idle.timeout.read_error": "Impossibile leggere il tempo di blocco.",
+  "idle.timeout.applying": "Applicazione…",
+  "idle.timeout.select": "Seleziona",
   "menu.lock": "Serratura",
   "menu.suspend": "Sospendere",
   "menu.logout": "Esci",
@@ -6,7 +11,7 @@
   "menu.shutdown": "Fermare",
   "menu.launcher_missing": "Avvio menu Rofi non trovato.",
   "menu.unsupported_launcher": "Avvio menu non supportato: {launcher}",
-  "idle.timeout.title": "Blocca il timeout",
+  "idle.timeout.title": "Tempo di blocco",
   "idle.timeout.one_minute": "1 minuto",
   "idle.timeout.minutes": "{count} minuti",
   "idle.timeout.never": "Mai",

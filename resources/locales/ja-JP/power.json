@@ -1,4 +1,9 @@
 {
+  "idle.timeout.reload_error": "時間を保存しましたが、適用できませんでした。",
+  "idle.timeout.save_error": "ロックまでの時間を保存できませんでした。",
+  "idle.timeout.read_error": "ロックまでの時間を読み込めませんでした。",
+  "idle.timeout.applying": "適用中…",
+  "idle.timeout.select": "選択",
   "menu.lock": "ロック",
   "menu.suspend": "つるす",
   "menu.logout": "ログアウト",
@@ -6,7 +11,7 @@
   "menu.shutdown": "シャットダウン",
   "menu.launcher_missing": "Rofi メニュー ランチャーが見つかりません。",
   "menu.unsupported_launcher": "サポートされていないメニュー ランチャー: {launcher}",
-  "idle.timeout.title": "ロックタイムアウト",
+  "idle.timeout.title": "ロックまでの時間",
   "idle.timeout.one_minute": "1分",
   "idle.timeout.minutes": "{count}分",
   "idle.timeout.never": "一度もない",

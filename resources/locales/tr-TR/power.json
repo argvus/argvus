@@ -1,4 +1,9 @@
 {
+  "idle.timeout.reload_error": "Zaman aşımı kaydedildi ancak uygulanamadı.",
+  "idle.timeout.save_error": "Kilit zaman aşımı kaydedilemedi.",
+  "idle.timeout.read_error": "Kilit zaman aşımı okunamadı.",
+  "idle.timeout.applying": "Uygulanıyor…",
+  "idle.timeout.select": "Seç",
   "menu.lock": "Lock",
   "menu.suspend": "Suspend",
   "menu.logout": "Log Out",
@@ -6,7 +11,7 @@
   "menu.shutdown": "Shut Down",
   "menu.launcher_missing": "Rofi menü başlatıcı bulunamadı.",
   "menu.unsupported_launcher": "Desteksiz menü başlatıcısı: {launcher}",
-  "idle.timeout.title": "Lock timeout",
+  "idle.timeout.title": "Kilit zaman aşımı",
   "idle.timeout.one_minute": "1 dakika",
   "idle.timeout.minutes": "{count} dakika",
   "idle.timeout.never": "Never",

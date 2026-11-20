@@ -1,4 +1,9 @@
 {
+  "idle.timeout.reload_error": "The timeout was saved, but could not be applied.",
+  "idle.timeout.save_error": "Could not save the lock timeout.",
+  "idle.timeout.read_error": "Could not read the lock timeout.",
+  "idle.timeout.applying": "Applying…",
+  "idle.timeout.select": "Select",
   "menu.lock": "Lock",
   "menu.suspend": "Suspend",
   "menu.logout": "Log Out",
@@ -6,7 +11,7 @@
   "menu.shutdown": "Shut Down",
   "menu.launcher_missing": "Rofi menu launcher not found.",
   "menu.unsupported_launcher": "Unsupported menu launcher: {launcher}",
-  "idle.timeout.title": "Lock timeout",
+  "idle.timeout.title": "Lock Timeout",
   "idle.timeout.one_minute": "1 minute",
   "idle.timeout.minutes": "{count} minutes",
   "idle.timeout.never": "Never",

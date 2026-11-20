@@ -1,4 +1,9 @@
 {
+  "idle.timeout.reload_error": "समय सहेजा गया, लेकिन लागू नहीं हो सका।",
+  "idle.timeout.save_error": "लॉक होने का समय सहेजा नहीं जा सका।",
+  "idle.timeout.read_error": "लॉक होने का समय पढ़ा नहीं जा सका।",
+  "idle.timeout.applying": "लागू हो रहा है…",
+  "idle.timeout.select": "चुनें",
   "menu.lock": "लॉक",
   "menu.suspend": "निलंबित",
   "menu.logout": "लॉग आउट",
@@ -6,7 +11,7 @@
   "menu.shutdown": "शट डाउन",
   "menu.launcher_missing": "Rofi मेनू लॉन्चर नहीं मिला।.",
   "menu.unsupported_launcher": "Unsupported मेन्यू लॉन्चर: {launcher}",
-  "idle.timeout.title": "लॉक टाइमआउट",
+  "idle.timeout.title": "लॉक होने का समय",
   "idle.timeout.one_minute": "1 मिनट",
   "idle.timeout.minutes": "{count} मिनट",
   "idle.timeout.never": "कभी नहीं",

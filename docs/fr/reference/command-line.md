@@ -82,7 +82,7 @@ Le centre de contrôle accepte les anciens indicateurs de page comme premier arg
 
 Ces scripts emballés sont exécutés et utilisés par la configuration de Hyprland :
 
-`scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
+`scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `keep-awake`, `hypr-power-menu`.
 
 Un script dans la configuration de l'utilisateur remplace celui emballé. L'ordre de recherche est le même que `argvus` : la copie de la configuration de l'utilisateur, puis la copie des données ARGVUS, puis la copie d'état, puis la copie générée, et seulement ensuite le fichier emballé sous `/usr/share/argvus`.
 
@@ -166,3 +166,5 @@ Lorsque Lifecycle est ouvert, il bloque les clics et le défilement sur tous les
 Les coins du panneau suivent l’arrondi défini dans le centre de contrôle ou le sélecteur de mode.
 
 **ARGVUS Presse-papiers** · `argvus clipboard` · `Super + H` · `↑` `↓` (Naviguer) · `/` (Rechercher) · `Enter` (Copier) · `Delete` (Effacer l’historique) · `Esc` (Fermer)
+
+**ARGVUS Délai de verrouillage** · `argvus idle-timeout` · `Super + Shift + L` · `↑` `↓` (Naviguer) · `Enter` (Sélectionner) · `Esc` (Fermer)

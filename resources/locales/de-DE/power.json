@@ -1,4 +1,9 @@
 {
+  "idle.timeout.reload_error": "Die Sperrzeit wurde gespeichert, konnte aber nicht angewendet werden.",
+  "idle.timeout.save_error": "Die Sperrzeit konnte nicht gespeichert werden.",
+  "idle.timeout.read_error": "Die Sperrzeit konnte nicht gelesen werden.",
+  "idle.timeout.applying": "Wird angewendet…",
+  "idle.timeout.select": "Auswählen",
   "menu.lock": "Sperren",
   "menu.suspend": "Aussetzen",
   "menu.logout": "Abmelden",
@@ -6,7 +11,7 @@
   "menu.shutdown": "Abschalten",
   "menu.launcher_missing": "Rofi-Menüstarter nicht gefunden.",
   "menu.unsupported_launcher": "Nicht unterstützter Menüstarter: {launcher}",
-  "idle.timeout.title": "Sperrzeitüberschreitung",
+  "idle.timeout.title": "Sperrzeit",
   "idle.timeout.one_minute": "1 Minute",
   "idle.timeout.minutes": "{count} Minuten",
   "idle.timeout.never": "Niemals",

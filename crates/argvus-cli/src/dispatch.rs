@@ -56,6 +56,7 @@ pub fn run(arguments: &[OsString]) -> Outcome {
     "sensors" => Ok(argvus_sensors::run_command(owned_arguments(rest)?)),
     "--terminal" | "terminal" => Ok(argvus_terminal::run_command(owned_arguments(rest)?)),
     "clipboard" => crate::clipboard::run(rest),
+    "idle-timeout" if rest.is_empty() => crate::lock_timeout::run(),
     "appearance-picker" => crate::appearance_picker::run(rest),
     "launcher-picker" => crate::launcher_picker::run(rest),
     "launcher-engine" => Ok(argvus_launcher_core::run_command(owned_arguments(rest)?)),

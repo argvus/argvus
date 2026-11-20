@@ -83,7 +83,7 @@ O Centro de Controle aceita flags de página antigas como primeiro argumento e a
 
 Estes executam scripts empacotados e são usados pela configuração do Hyprland:
 
-`scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`.
+`scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `weather-location`, `brightness-switch`, `toggle-mode`, `keep-awake`, `hypr-power-menu`.
 
 Um script na configuração do utilizador substitui o empacotado. Ordem de pesquisa: a cópia da configuração do utilizador, depois a cópia de dados do ARGVUS, depois a cópia de estado, depois a cópia gerada, e só então o ficheiro empacotado em `/usr/share/argvus`.
 
@@ -171,3 +171,5 @@ Os cantos do painel seguem o arredondamento definido no Centro de Controlo ou no
 Use **Limpar histórico** ou pressione **Delete** na lista e confirme. A limpeza preserva a seleção atual da área de transferência.
 
 **ARGVUS Área de transferência** · `argvus clipboard` · `Super + H` · `↑` `↓` (Navegar) · `/` (Pesquisar) · `Enter` (Copiar) · `Delete` (Limpar histórico) · `Esc` (Fechar)
+
+**ARGVUS Tempo de bloqueio** · `argvus idle-timeout` · `Super + Shift + L` · `↑` `↓` (Navegar) · `Enter` (Selecionar) · `Esc` (Fechar)

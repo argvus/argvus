@@ -1,4 +1,9 @@
 {
+  "idle.timeout.reload_error": "Время сохранено, но применить его не удалось.",
+  "idle.timeout.save_error": "Не удалось сохранить время до блокировки.",
+  "idle.timeout.read_error": "Не удалось прочитать время до блокировки.",
+  "idle.timeout.applying": "Применение…",
+  "idle.timeout.select": "Выбрать",
   "menu.lock": "Замок",
   "menu.suspend": "Приостановить",
   "menu.logout": "Выйти",
@@ -6,7 +11,7 @@
   "menu.shutdown": "Неисправность",
   "menu.launcher_missing": "Панель запуска меню Rofi не найдена.",
   "menu.unsupported_launcher": "Неподдерживаемый модуль запуска меню: {launcher}.",
-  "idle.timeout.title": "Тайм-аут блокировки",
+  "idle.timeout.title": "Время до блокировки",
   "idle.timeout.one_minute": "1 минута",
   "idle.timeout.minutes": "{count} минут",
   "idle.timeout.never": "Никогда",

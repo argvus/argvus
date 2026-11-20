@@ -1,4 +1,9 @@
 {
+  "idle.timeout.reload_error": "时间已保存，但无法应用。",
+  "idle.timeout.save_error": "无法保存锁屏等待时间。",
+  "idle.timeout.read_error": "无法读取锁屏等待时间。",
+  "idle.timeout.applying": "正在应用…",
+  "idle.timeout.select": "选择",
   "menu.lock": "锁",
   "menu.suspend": "暂停",
   "menu.logout": "退出",
@@ -6,7 +11,7 @@
   "menu.shutdown": "关闭",
   "menu.launcher_missing": "未找到 Rofi 菜单启动器。",
   "menu.unsupported_launcher": "不支持的菜单启动器：{launcher}",
-  "idle.timeout.title": "锁定超时",
+  "idle.timeout.title": "锁屏等待时间",
   "idle.timeout.one_minute": "1分钟",
   "idle.timeout.minutes": "{count} 分钟",
   "idle.timeout.never": "绝不",

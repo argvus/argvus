@@ -1,4 +1,9 @@
 {
+  "idle.timeout.reload_error": "সময়সীমা সংরক্ষিত হয়েছে, তবে প্রয়োগ করা যায়নি।",
+  "idle.timeout.save_error": "লকের সময়সীমা সংরক্ষণ করা যায়নি।",
+  "idle.timeout.read_error": "লকের সময়সীমা পড়া যায়নি।",
+  "idle.timeout.applying": "প্রয়োগ হচ্ছে…",
+  "idle.timeout.select": "নির্বাচন",
   "menu.lock": "লক",
   "menu.suspend": "স্থগিত করুন",
   "menu.logout": "প্রস্থান করুন",
@@ -6,7 +11,7 @@
   "menu.shutdown": "বন্ধ করুন",
   "menu.launcher_missing": "Rofi লঞ্চার পাওয়া যায়নি।",
   "menu.unsupported_launcher": "অসমর্থিত মেনু লঞ্চার: {launcher}",
-  "idle.timeout.title": "লক করার সময়সীমা",
+  "idle.timeout.title": "লকের সময়সীমা",
   "idle.timeout.one_minute": "১ মিনিট",
   "idle.timeout.minutes": "{count} মিনিট",
   "idle.timeout.never": "কখনো নয়",

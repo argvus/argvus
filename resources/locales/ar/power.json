@@ -1,4 +1,9 @@
 {
+  "idle.timeout.reload_error": "حُفظت المهلة لكن تعذر تطبيقها.",
+  "idle.timeout.save_error": "تعذر حفظ مهلة القفل.",
+  "idle.timeout.read_error": "تعذرت قراءة مهلة القفل.",
+  "idle.timeout.applying": "جارٍ التطبيق…",
+  "idle.timeout.select": "اختيار",
   "menu.lock": "قفل",
   "menu.suspend": "موجز",
   "menu.logout": "Log Out",
@@ -6,7 +11,7 @@
   "menu.shutdown": "إخرس",
   "menu.launcher_missing": "Rofiمطلق قائمة الطعام لم يعثر عليه.",
   "menu.unsupported_launcher": "Unsupported menu launcher: {launcher}",
-  "idle.timeout.title": "وقت القفل",
+  "idle.timeout.title": "مهلة القفل",
   "idle.timeout.one_minute": "دقيقة واحدة",
   "idle.timeout.minutes": "{count}دقائق",
   "idle.timeout.never": "أبداً",

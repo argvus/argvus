@@ -1,4 +1,9 @@
 {
+  "idle.timeout.reload_error": "Le délai a été enregistré, mais n’a pas pu être appliqué.",
+  "idle.timeout.save_error": "Impossible d’enregistrer le délai de verrouillage.",
+  "idle.timeout.read_error": "Impossible de lire le délai de verrouillage.",
+  "idle.timeout.applying": "Application…",
+  "idle.timeout.select": "Sélectionner",
   "menu.lock": "Verrouillage",
   "menu.suspend": "Suspendre",
   "menu.logout": "Se déconnecter",

@@ -81,7 +81,7 @@ Kontrol Merkezi, eski sayfa bayraklarını ilk argüman olarak kabul eder ve bun
 
 Bunlar paketlenmiş komut dosyalarını çalıştırır ve Hyprland yapılandırması tarafından kullanılır:
 
-`scratchpad`, `hypr-screenshot` weather-location  toggle-sidebar  emoji-picker  `spaces-switch` ,  `emoji-picker`  `toggle-sidebar`  `weather-location`  `brightness-switch`, `toggle-mode`, `idle-timeout`, `keep-awake`, `hypr-power-menu`, brightness-switch, toggle-mode, idle-timeout, keep-awake, hypr-power-menu.
+`scratchpad`, `hypr-screenshot` weather-location  toggle-sidebar  emoji-picker  `spaces-switch` ,  `emoji-picker`  `toggle-sidebar`  `weather-location`  `brightness-switch`, `toggle-mode`, `keep-awake`, `hypr-power-menu`, brightness-switch, toggle-mode, idle-timeout, keep-awake, hypr-power-menu.
 
 Kullanıcının yapılandırmasındaki bir komut dosyası, paketlenmiş olanı geçersiz kılar. Arama sırası, hyprland. Arama sırası: kullanıcının yapılandırma kopyası, ardından ARGVUS veri kopyası, ardından durum kopyası, ardından oluşturulan kopya ve ancak bundan sonra  `hyprland.lua` `/usr/share/argvus` altında paketlenmiş dosya.
 
@@ -167,3 +167,5 @@ Lifecycle açıkken tüm monitörlerde masaüstü tıklamaları ve kaydırma eng
 Panel köşeleri, Denetim Merkezi veya mod seçicide ayarlanan yuvarlaklığı kullanır.
 
 **ARGVUS Pano** · `argvus clipboard` · `Super + H` · `↑` `↓` (Gezin) · `/` (Ara) · `Enter` (Kopyala) · `Delete` (Geçmişi temizle) · `Esc` (Kapat)
+
+**ARGVUS Kilit zaman aşımı** · `argvus idle-timeout` · `Super + Shift + L` · `↑` `↓` (Gezin) · `Enter` (Seç) · `Esc` (Kapat)
