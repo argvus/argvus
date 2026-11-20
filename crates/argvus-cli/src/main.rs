@@ -12,6 +12,7 @@ mod copy;
 mod dispatch;
 mod exec;
 mod focus_status;
+mod launcher_picker;
 mod paths;
 mod script;
 mod setup;

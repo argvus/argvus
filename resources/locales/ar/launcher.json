@@ -1,4 +1,8 @@
 {
+  "picker.snippets": "المقتطفات",
+  "picker.no_results": "لا توجد نتائج.",
+  "error.picker_open": "تعذّر فتح أداة الاختيار.",
+  "error.snippet_focus": "النافذة الأصلية غير متاحة أو فقدت التركيز.",
   "project.picker_title": "المشاريع",
   "project.picker_search": "البحث بالاسم أو المسار",
   "project.picker_empty": "أضف مشروعًا في مركز التحكم.",

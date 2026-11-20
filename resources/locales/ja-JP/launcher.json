@@ -1,4 +1,8 @@
 {
+  "picker.snippets": "スニペット",
+  "picker.no_results": "一致する項目がありません。",
+  "error.picker_open": "選択画面を開けませんでした。",
+  "error.snippet_focus": "元のウィンドウが利用できないか、フォーカスを失いました。",
   "project.picker_title": "プロジェクト",
   "project.picker_search": "名前またはパスで検索",
   "project.picker_empty": "コントロールセンターでプロジェクトを追加してください。",

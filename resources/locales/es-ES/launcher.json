@@ -1,4 +1,8 @@
 {
+  "picker.snippets": "Fragmentos",
+  "picker.no_results": "Sin resultados.",
+  "error.picker_open": "No se pudo abrir el selector.",
+  "error.snippet_focus": "La ventana original no está disponible o ha perdido el foco.",
   "project.picker_title": "Proyectos",
   "project.picker_search": "Buscar por nombre o ruta",
   "project.picker_empty": "Añade un proyecto en el Centro de control.",

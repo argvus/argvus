@@ -1,4 +1,8 @@
 {
+  "picker.snippets": "Cuplikan",
+  "picker.no_results": "Tidak ada hasil.",
+  "error.picker_open": "Pemilih tidak dapat dibuka.",
+  "error.snippet_focus": "Jendela asal tidak tersedia atau kehilangan fokus.",
   "project.picker_title": "Proyek",
   "project.picker_search": "Cari berdasarkan nama atau jalur",
   "project.picker_empty": "Tambahkan proyek di Pusat Kontrol.",

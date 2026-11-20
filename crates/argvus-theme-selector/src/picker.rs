@@ -246,6 +246,135 @@ fn panel_geometry(document: &ConfigDocument) -> (u64, u64) {
   (radius, border)
 }
 
+/// A searchable row. Its position is returned when the user activates it.
+pub struct Choice<'a> {
+  pub icon: &'a str,
+  pub title: &'a str,
+  pub detail: &'a str,
+  pub shortcut: &'a str,
+}
+
+/// Localized labels and Wayland identity of a searchable picker.
+pub struct SearchPicker<'a> {
+  pub namespace: &'a str,
+  pub title: &'a str,
+  pub prompt: &'a str,
+  pub empty: &'a str,
+  pub no_results: &'a str,
+  pub activate: &'a str,
+}
+
+/// Opens a picker and returns the original index of the selected row.
+pub fn choose(
+  locale: &str,
+  direction: argvus_i18n::TextDirection,
+  options: SearchPicker<'_>,
+  rows: &[Choice<'_>],
+) -> Result<Option<usize>, gtk::glib::BoolError> {
+  use gtk::{gdk, glib};
+  use std::{cell::RefCell, rc::Rc};
+
+  gtk::init()?;
+  gtk::Widget::set_default_direction(match direction {
+    argvus_i18n::TextDirection::RightToLeft => gtk::TextDirection::Rtl,
+    argvus_i18n::TextDirection::LeftToRight => gtk::TextDirection::Ltr,
+  });
+  let window = window(options.namespace, options.title, locale);
+  let panel = panel(&window, options.title);
+  let search = gtk::SearchEntry::builder()
+    .placeholder_text(options.prompt)
+    .build();
+  search.add_css_class("argvus-search");
+  search.set_sensitive(!rows.is_empty());
+  panel.append(&search);
+  let list = gtk::ListBox::new();
+  let empty = gtk::Label::new(Some(if rows.is_empty() {
+    options.empty
+  } else {
+    options.no_results
+  }));
+  empty.set_wrap(true);
+  list.set_placeholder(Some(&empty));
+  panel.append(&scroll(&list));
+  footer(
+    &panel,
+    &[("↑ ↓", ""), ("Enter", options.activate), ("Esc", "")],
+  );
+
+  for entry in rows {
+    list.append(&row(entry.icon, entry.title, entry.detail, entry.shortcut));
+  }
+  let query = Rc::new(RefCell::new(String::new()));
+  let filter_query = query.clone();
+  let filter_paths: Vec<_> = rows
+    .iter()
+    .map(|entry| format!("{}\n{}", entry.title, entry.detail).to_lowercase())
+    .collect();
+  list.set_filter_func(move |row| {
+    filter_paths[row.index() as usize].contains(filter_query.borrow().as_str())
+  });
+  let select_first = |list: &gtk::ListBox| {
+    let first = (0..)
+      .map_while(|index| list.row_at_index(index))
+      .find(gtk::prelude::WidgetExt::is_child_visible);
+    list.select_row(first.as_ref());
+  };
+  select_first(&list);
+  let filtered_list = list.clone();
+  search.connect_changed(move |entry| {
+    *query.borrow_mut() = entry.text().trim().to_lowercase();
+    filtered_list.invalidate_filter();
+    select_first(&filtered_list);
+  });
+
+  let result = Rc::new(RefCell::new(None));
+  let chosen = result.clone();
+  let main_loop = glib::MainLoop::new(None, false);
+  let finish = main_loop.clone();
+  list.connect_row_activated(move |_, row| {
+    *chosen.borrow_mut() = usize::try_from(row.index()).ok();
+    finish.quit();
+  });
+  let finish = main_loop.clone();
+  window.connect_close_request(move |_| {
+    finish.quit();
+    glib::Propagation::Stop
+  });
+  let keys = gtk::EventControllerKey::new();
+  keys.set_propagation_phase(gtk::PropagationPhase::Capture);
+  let finish = main_loop.clone();
+  keys.connect_key_pressed(move |_, key, _, _| {
+    match key {
+      gdk::Key::Escape => finish.quit(),
+      gdk::Key::Return | gdk::Key::KP_Enter => {
+        if let Some(row) = list.selected_row() {
+          list.emit_by_name::<()>("row-activated", &[&row]);
+        }
+      }
+      gdk::Key::Up | gdk::Key::Down => {
+        let step = if key == gdk::Key::Up { -1 } else { 1 };
+        let mut index = list.selected_row().map_or(-1, |row| row.index()) + step;
+        while let Some(row) = list.row_at_index(index) {
+          if row.is_child_visible() {
+            list.select_row(Some(&row));
+            row.grab_focus();
+            break;
+          }
+          index += step;
+        }
+      }
+      _ => return glib::Propagation::Proceed,
+    }
+    glib::Propagation::Stop
+  });
+  window.add_controller(keys);
+  window.present();
+  search.grab_focus();
+  main_loop.run();
+  window.destroy();
+  Ok(result.take())
+}
+
 #[cfg(test)]
 mod tests {
   use super::*;

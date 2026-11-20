@@ -1,4 +1,8 @@
 {
+  "picker.snippets": "Metin parçaları",
+  "picker.no_results": "Sonuç bulunamadı.",
+  "error.picker_open": "Seçici açılamadı.",
+  "error.snippet_focus": "İlk pencere kullanılamıyor veya odağını kaybetti.",
   "project.picker_title": "Projeler",
   "project.picker_search": "Ada veya yola göre ara",
   "project.picker_empty": "Denetim Merkezi’nde bir proje ekleyin.",

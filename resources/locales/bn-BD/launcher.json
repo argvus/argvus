@@ -1,4 +1,8 @@
 {
+  "picker.snippets": "স্নিপেট",
+  "picker.no_results": "কোনো মিল পাওয়া যায়নি।",
+  "error.picker_open": "নির্বাচক খোলা যায়নি।",
+  "error.snippet_focus": "মূল উইন্ডোটি উপলব্ধ নেই বা ফোকাস হারিয়েছে।",
   "project.picker_title": "প্রকল্প",
   "project.picker_search": "নাম বা পাথ দিয়ে খুঁজুন",
   "project.picker_empty": "কন্ট্রোল সেন্টারে একটি প্রকল্প যোগ করুন।",

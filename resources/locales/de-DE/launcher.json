@@ -1,4 +1,8 @@
 {
+  "picker.snippets": "Textbausteine",
+  "picker.no_results": "Keine Treffer.",
+  "error.picker_open": "Die Auswahl konnte nicht geöffnet werden.",
+  "error.snippet_focus": "Das ursprüngliche Fenster ist nicht verfügbar oder hat den Fokus verloren.",
   "project.picker_title": "Projekte",
   "project.picker_search": "Nach Name oder Pfad suchen",
   "project.picker_empty": "Fügen Sie im Kontrollzentrum ein Projekt hinzu.",

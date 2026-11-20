@@ -1,4 +1,8 @@
 {
+  "picker.snippets": "متنی ٹکڑے",
+  "picker.no_results": "کوئی نتیجہ نہیں ملا۔",
+  "error.picker_open": "انتخاب کھولا نہیں جا سکا۔",
+  "error.snippet_focus": "اصل ونڈو دستیاب نہیں یا اس کا فوکس ختم ہو گیا ہے۔",
   "project.picker_title": "منصوبے",
   "project.picker_search": "نام یا راستے سے تلاش کریں",
   "project.picker_empty": "کنٹرول سینٹر میں ایک منصوبہ شامل کریں۔",

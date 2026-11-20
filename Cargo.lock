@@ -211,6 +211,7 @@ dependencies = [
  "argvus-system-monitor",
  "argvus-terminal",
  "argvus-theme-core",
+ "argvus-theme-selector",
  "argvus-time-core",
  "argvus-tui-terminal",
  "argvus-welcome",

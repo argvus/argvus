@@ -1,4 +1,8 @@
 {
+  "picker.snippets": "스니펫",
+  "picker.no_results": "일치하는 항목이 없습니다.",
+  "error.picker_open": "선택기를 열 수 없습니다.",
+  "error.snippet_focus": "원래 창을 사용할 수 없거나 포커스를 잃었습니다.",
   "project.picker_title": "프로젝트",
   "project.picker_search": "이름 또는 경로로 검색",
   "project.picker_empty": "제어 센터에서 프로젝트를 추가하세요.",

@@ -1,4 +1,8 @@
 {
+  "picker.snippets": "Extraits",
+  "picker.no_results": "Aucun résultat.",
+  "error.picker_open": "Impossible d’ouvrir le sélecteur.",
+  "error.snippet_focus": "La fenêtre d’origine est indisponible ou a perdu le focus.",
   "project.picker_title": "Projets",
   "project.picker_search": "Rechercher par nom ou chemin",
   "project.picker_empty": "Ajoutez un projet dans le centre de contrôle.",

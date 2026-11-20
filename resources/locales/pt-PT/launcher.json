@@ -1,4 +1,8 @@
 {
+  "picker.snippets": "Trechos",
+  "picker.no_results": "Sem resultados.",
+  "error.picker_open": "Não foi possível abrir o seletor.",
+  "error.snippet_focus": "A janela de origem está indisponível ou deixou de ter o foco.",
   "project.picker_title": "Projetos",
   "project.picker_search": "Pesquisar por nome ou caminho",
   "project.picker_empty": "Adicione um projeto no Centro de Controlo.",

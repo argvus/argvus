@@ -14,6 +14,7 @@ name = "argvus"
 path = "src/main.rs"
 
 [dependencies]
+argvus-theme-selector = { path = "../argvus-theme-selector" }
 argvus-session-actions = { path = "../argvus-session-actions" }
 argvus-launcher-core.workspace = true
 argvus-config.workspace = true

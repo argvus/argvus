@@ -64,8 +64,9 @@ not register their usage will not appear in that source.
 
 ## Entry points and compatibility
 
-`argvus launcher` toggles one Quickshell instance by IPC. Specialized Rofi menus
-remain unchanged. The default launcher setting is `argvus`; the historical `rofi`
+`argvus launcher` toggles one Quickshell instance by IPC. The SSH and Snippets scripts call the shared GTK 4 picker using the internal
+`argvus launcher-picker` route. The route reads a JSON array of names and prints
+the original zero-based index on selection. The default launcher setting is `argvus`; the historical `rofi`
 value still selects the ARGVUS launcher in Hyprland. Other custom launchers retain
 `<program> --show drun`. The main launcher rejects Rasi `--config` and other
 legacy Rofi arguments with exit status 2.

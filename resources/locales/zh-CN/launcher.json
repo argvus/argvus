@@ -1,4 +1,8 @@
 {
+  "picker.snippets": "片段",
+  "picker.no_results": "没有匹配项。",
+  "error.picker_open": "无法打开选择器。",
+  "error.snippet_focus": "原窗口不可用或已失去焦点。",
   "project.picker_title": "项目",
   "project.picker_search": "按名称或路径搜索",
   "project.picker_empty": "请在控制中心添加项目。",

@@ -1,4 +1,8 @@
 {
+  "picker.snippets": "Фрагменты",
+  "picker.no_results": "Нет совпадений.",
+  "error.picker_open": "Не удалось открыть окно выбора.",
+  "error.snippet_focus": "Исходное окно недоступно или потеряло фокус.",
   "project.picker_title": "Проекты",
   "project.picker_search": "Поиск по имени или пути",
   "project.picker_empty": "Добавьте проект в Центре управления.",

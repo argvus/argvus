@@ -1,4 +1,8 @@
 {
+  "picker.snippets": "Đoạn văn bản",
+  "picker.no_results": "Không có kết quả.",
+  "error.picker_open": "Không thể mở bộ chọn.",
+  "error.snippet_focus": "Cửa sổ ban đầu không khả dụng hoặc đã mất tiêu điểm.",
   "project.picker_title": "Dự án",
   "project.picker_search": "Tìm theo tên hoặc đường dẫn",
   "project.picker_empty": "Thêm dự án trong Trung tâm điều khiển.",

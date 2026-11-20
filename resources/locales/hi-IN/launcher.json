@@ -1,4 +1,8 @@
 {
+  "picker.snippets": "स्निपेट",
+  "picker.no_results": "कोई परिणाम नहीं।",
+  "error.picker_open": "चयनकर्ता नहीं खुल सका।",
+  "error.snippet_focus": "मूल विंडो उपलब्ध नहीं है या फ़ोकस खो चुकी है।",
   "project.picker_title": "प्रोजेक्ट",
   "project.picker_search": "नाम या पथ से खोजें",
   "project.picker_empty": "कंट्रोल सेंटर में एक प्रोजेक्ट जोड़ें।",
