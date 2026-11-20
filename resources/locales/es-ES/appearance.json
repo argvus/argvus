@@ -11,6 +11,7 @@
   "brightness.night_light_active": "Luz nocturna: activada — alternar",
   "brightness.night_light_toggle": "Alternar luz nocturna",
   "accent.title": "Color de acento",
+  "accent.description": "Cambia el color de énfasis de todo el entorno ARGVUS.",
   "accent.color.blue": "Azul",
   "accent.color.slate_blue": "Azul pizarra",
   "accent.color.brown": "Marrón",

@@ -11,6 +11,7 @@
   "brightness.night_light_active": "الإضاءة الليلية مفعّلة — تبديل",
   "brightness.night_light_toggle": "تبديل الإضاءة الليلية",
   "accent.title": "اللون الراقص",
+  "accent.description": "غيّر لون التمييز في بيئة ARGVUS بأكملها.",
   "accent.color.blue": "الأزرق",
   "accent.color.slate_blue": "Slate Blue",
   "accent.color.brown": "براون",

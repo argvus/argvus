@@ -11,6 +11,7 @@
   "brightness.night_light_active": "夜間モードはオン — 切り替え",
   "brightness.night_light_toggle": "夜間モードを切り替える",
   "accent.title": "アクセントカラー",
+  "accent.description": "ARGVUS 環境全体のアクセントカラーを変更します。",
   "accent.color.blue": "青",
   "accent.color.slate_blue": "スレートブルー",
   "accent.color.brown": "茶色",

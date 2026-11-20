@@ -11,6 +11,7 @@
   "brightness.night_light_active": "Éclairage nocturne activé — basculer",
   "brightness.night_light_toggle": "Basculer l’éclairage nocturne",
   "accent.title": "Couleur d'accentuation",
+  "accent.description": "Changez la couleur d’accentuation de tout l’environnement ARGVUS.",
   "accent.color.blue": "Bleu",
   "accent.color.slate_blue": "Bleu Ardoise",
   "accent.color.brown": "Brun",

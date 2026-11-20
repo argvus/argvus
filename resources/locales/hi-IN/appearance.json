@@ -11,6 +11,7 @@
   "brightness.night_light_active": "नाइट लाइट चालू है — बदलें",
   "brightness.night_light_toggle": "नाइट लाइट चालू या बंद करें",
   "accent.title": "रंग",
+  "accent.description": "पूरे ARGVUS परिवेश का एक्सेंट रंग बदलें।",
   "accent.color.blue": "नीला",
   "accent.color.slate_blue": "स्लेट ब्लू",
   "accent.color.brown": "भूरा",

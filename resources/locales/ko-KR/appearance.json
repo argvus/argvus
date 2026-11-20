@@ -11,6 +11,7 @@
   "brightness.night_light_active": "야간 모드 켜짐 — 전환",
   "brightness.night_light_toggle": "야간 모드 전환",
   "accent.title": "악센트 색상",
+  "accent.description": "ARGVUS 환경 전체의 강조 색상을 변경합니다.",
   "accent.color.blue": "파란색",
   "accent.color.slate_blue": "슬레이트 블루",
   "accent.color.brown": "갈색",

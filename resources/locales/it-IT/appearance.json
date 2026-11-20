@@ -11,6 +11,7 @@
   "brightness.night_light_active": "Luce notturna attiva — cambia stato",
   "brightness.night_light_toggle": "Attiva o disattiva la luce notturna",
   "accent.title": "Colore accento",
+  "accent.description": "Cambia il colore di accento dell’intero ambiente ARGVUS.",
   "accent.color.blue": "Blu",
   "accent.color.slate_blue": "Blu ardesia",
   "accent.color.brown": "Marrone",

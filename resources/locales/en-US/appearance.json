@@ -11,6 +11,7 @@
   "brightness.night_light_active": "Night Light: on — toggle",
   "brightness.night_light_toggle": "Toggle Night Light",
   "accent.title": "Accent Color",
+  "accent.description": "Change the accent color of the entire ARGVUS environment.",
   "accent.color.blue": "Blue",
   "accent.color.slate_blue": "Slate Blue",
   "accent.color.brown": "Brown",

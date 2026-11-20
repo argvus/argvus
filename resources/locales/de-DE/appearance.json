@@ -11,6 +11,7 @@
   "brightness.night_light_active": "Nachtlicht: an — umschalten",
   "brightness.night_light_toggle": "Nachtlicht umschalten",
   "accent.title": "Akzentfarbe",
+  "accent.description": "Ändern Sie die Akzentfarbe der gesamten ARGVUS-Umgebung.",
   "accent.color.blue": "Blau",
   "accent.color.slate_blue": "Schieferblau",
   "accent.color.brown": "Braun",

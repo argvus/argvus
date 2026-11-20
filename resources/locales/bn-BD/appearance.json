@@ -11,6 +11,7 @@
   "brightness.night_light_active": "নাইট লাইট চালু — পরিবর্তন করুন",
   "brightness.night_light_toggle": "নাইট লাইট চালু বা বন্ধ করুন",
   "accent.title": "বিল্ট-ইন রং",
+  "accent.description": "সমগ্র ARGVUS পরিবেশের অ্যাকসেন্ট রং পরিবর্তন করুন।",
   "accent.color.blue": "নীল",
   "accent.color.slate_blue": "হালকা নীল",
   "accent.color.brown": "ব্রাউন",

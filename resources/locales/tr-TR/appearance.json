@@ -11,6 +11,7 @@
   "brightness.night_light_active": "Gece Işığı açık — değiştir",
   "brightness.night_light_toggle": "Gece Işığını değiştir",
   "accent.title": "Acent renk",
+  "accent.description": "Tüm ARGVUS ortamının vurgu rengini değiştirin.",
   "accent.color.blue": "Blue",
   "accent.color.slate_blue": "Slate Blue",
   "accent.color.brown": "Brown",

@@ -11,6 +11,7 @@
   "brightness.night_light_active": "夜间模式已开启 — 切换",
   "brightness.night_light_toggle": "切换夜间模式",
   "accent.title": "强调色",
+  "accent.description": "更改整个 ARGVUS 环境的强调色。",
   "accent.color.blue": "蓝色的",
   "accent.color.slate_blue": "石板蓝",
   "accent.color.brown": "棕色的",

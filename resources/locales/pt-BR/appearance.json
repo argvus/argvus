@@ -11,6 +11,7 @@
   "brightness.night_light_active": "Night Light: ligado — alternar",
   "brightness.night_light_toggle": "Alternar Night Light",
   "accent.title": "Cor de destaque",
+  "accent.description": "Altere a cor de destaque de todo o ambiente ARGVUS.",
   "accent.color.blue": "Azul",
   "accent.color.slate_blue": "Azul ardósia",
   "accent.color.brown": "Marrom",

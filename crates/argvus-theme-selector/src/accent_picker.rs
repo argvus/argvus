@@ -234,11 +234,18 @@ pub fn choose(locale: &str, lang: Lang, initial: &str) -> Result<Option<String>,
   let title = tr(lang, "accent.title");
   let window = crate::picker::window("argvus-accent", &format!("ARGVUS {title}"), locale);
   window.set_default_size(
-    window.default_width().min(460),
-    window.default_height().min(455),
+    window.default_width().min(680),
+    window.default_height().min(505),
   );
   let panel = crate::picker::panel(&window, title);
   panel.add_css_class("accent-editor");
+
+  let description = gtk::Label::new(Some(tr(lang, "accent.description")));
+  description.add_css_class("detail");
+  description.set_xalign(0.0);
+  description.set_wrap(true);
+  description.set_wrap_mode(gtk::pango::WrapMode::WordChar);
+  panel.append(&description);
 
   let color = parse(initial).unwrap_or_else(|| Color::opaque(53, 144, 189));
   let state = Rc::new(Cell::new(Hsv::from_color(color, 0.0)));

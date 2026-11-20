@@ -11,6 +11,7 @@
   "brightness.night_light_active": "Cahaya malam aktif — alihkan",
   "brightness.night_light_toggle": "Alihkan cahaya malam",
   "accent.title": "Warna aksen",
+  "accent.description": "Ubah warna aksen untuk seluruh lingkungan ARGVUS.",
   "accent.color.blue": "Biru",
   "accent.color.slate_blue": "Slate Blue",
   "accent.color.brown": "Brown",
