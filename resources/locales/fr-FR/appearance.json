@@ -1,4 +1,10 @@
 {
+  "picker.search": "Rechercher une option",
+  "picker.no_results": "Aucun résultat.",
+  "picker.apply": "Appliquer",
+  "brightness.controls_unavailable": "La luminosité et l’éclairage nocturne sont indisponibles.",
+  "brightness.night_light_active": "Éclairage nocturne activé — basculer",
+  "brightness.night_light_toggle": "Basculer l’éclairage nocturne",
   "accent.title": "Couleur d'accentuation",
   "accent.color.blue": "Bleu",
   "accent.color.slate_blue": "Bleu Ardoise",

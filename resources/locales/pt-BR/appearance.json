@@ -1,4 +1,10 @@
 {
+  "picker.search": "Buscar opções",
+  "picker.no_results": "Nenhum resultado.",
+  "picker.apply": "Aplicar",
+  "brightness.controls_unavailable": "Brilho e Night Light indisponíveis.",
+  "brightness.night_light_active": "Night Light: ligado — alternar",
+  "brightness.night_light_toggle": "Alternar Night Light",
   "accent.title": "Cor de destaque",
   "accent.color.blue": "Azul",
   "accent.color.slate_blue": "Azul ardósia",

@@ -1,4 +1,10 @@
 {
+  "picker.search": "Cari opsi",
+  "picker.no_results": "Tidak ada hasil.",
+  "picker.apply": "Terapkan",
+  "brightness.controls_unavailable": "Kecerahan dan cahaya malam tidak tersedia.",
+  "brightness.night_light_active": "Cahaya malam aktif — alihkan",
+  "brightness.night_light_toggle": "Alihkan cahaya malam",
   "accent.title": "Warna aksen",
   "accent.color.blue": "Biru",
   "accent.color.slate_blue": "Slate Blue",

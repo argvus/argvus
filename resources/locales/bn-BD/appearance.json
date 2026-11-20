@@ -1,4 +1,10 @@
 {
+  "picker.search": "বিকল্প খুঁজুন",
+  "picker.no_results": "কোনো মিল নেই।",
+  "picker.apply": "প্রয়োগ করুন",
+  "brightness.controls_unavailable": "উজ্জ্বলতা ও নাইট লাইট উপলব্ধ নয়।",
+  "brightness.night_light_active": "নাইট লাইট চালু — পরিবর্তন করুন",
+  "brightness.night_light_toggle": "নাইট লাইট চালু বা বন্ধ করুন",
   "accent.title": "বিল্ট-ইন রং",
   "accent.color.blue": "নীল",
   "accent.color.slate_blue": "হালকা নীল",

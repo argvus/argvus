@@ -86,10 +86,19 @@ pub fn scroll(list: &gtk::ListBox) -> gtk::ScrolledWindow {
 }
 
 pub fn row(icon: &str, title: &str, detail: &str, shortcut: &str) -> gtk::ListBoxRow {
-  let content = gtk::Box::new(gtk::Orientation::Horizontal, 12);
   let icon = gtk::Image::from_icon_name(icon);
   icon.add_css_class("row-icon");
-  content.append(&icon);
+  row_with_leading(&icon, title, detail, shortcut)
+}
+
+fn row_with_leading(
+  leading: &impl IsA<gtk::Widget>,
+  title: &str,
+  detail: &str,
+  shortcut: &str,
+) -> gtk::ListBoxRow {
+  let content = gtk::Box::new(gtk::Orientation::Horizontal, 12);
+  content.append(leading);
   let labels = gtk::Box::new(gtk::Orientation::Vertical, 3);
   labels.set_hexpand(true);
   for (text, class) in [(title, "row-title"), (detail, "detail")] {
@@ -252,6 +261,7 @@ pub struct Choice<'a> {
   pub title: &'a str,
   pub detail: &'a str,
   pub shortcut: &'a str,
+  pub swatch: Option<argvus_theme_core::color::Color>,
 }
 
 /// Localized labels and Wayland identity of a searchable picker.
@@ -302,7 +312,26 @@ pub fn choose(
   );
 
   for entry in rows {
-    list.append(&row(entry.icon, entry.title, entry.detail, entry.shortcut));
+    let item = if let Some(color) = entry.swatch {
+      let swatch = gtk::DrawingArea::builder()
+        .content_width(20)
+        .content_height(20)
+        .valign(gtk::Align::Center)
+        .build();
+      swatch.set_draw_func(move |_, cr, width, height| {
+        cr.set_source_rgb(
+          f64::from(color.red) / 255.0,
+          f64::from(color.green) / 255.0,
+          f64::from(color.blue) / 255.0,
+        );
+        cr.rectangle(1.0, 1.0, f64::from(width - 2), f64::from(height - 2));
+        let _ = cr.fill();
+      });
+      row_with_leading(&swatch, entry.title, entry.detail, entry.shortcut)
+    } else {
+      row(entry.icon, entry.title, entry.detail, entry.shortcut)
+    };
+    list.append(&item);
   }
   let query = Rc::new(RefCell::new(String::new()));
   let filter_query = query.clone();

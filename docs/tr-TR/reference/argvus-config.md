@@ -423,3 +423,7 @@ Sonraki/önceki yalnızca odaklanılan monitördeki mevcut çalışma alanların
 Aramayı yapılandır: Favoriler, Son dosyaları göster, Dosya adlarını dizine ekle, Dizinlenen klasör, Hariç tutulan klasör, Dizinlemeyi duraklat, Gizli dosyaları dahil et, Animasyonları azalt.
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
+
+- `Super + Shift + B` / `argvus brightness-switch` · GTK 4 · ±5%, ±10%, 10%, 25%, 50%, 75%, 90%, 100% · Night Light
+- `argvus config accent` · GTK 4 · #RRGGBB
+- **Seçenekleri ara** · `↑` `↓` · `Enter` (Uygula) · `Esc`

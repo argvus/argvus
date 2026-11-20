@@ -1,4 +1,10 @@
 {
+  "picker.search": "Optionen suchen",
+  "picker.no_results": "Keine Treffer.",
+  "picker.apply": "Anwenden",
+  "brightness.controls_unavailable": "Helligkeit und Nachtlicht sind nicht verfügbar.",
+  "brightness.night_light_active": "Nachtlicht: an — umschalten",
+  "brightness.night_light_toggle": "Nachtlicht umschalten",
   "accent.title": "Akzentfarbe",
   "accent.color.blue": "Blau",
   "accent.color.slate_blue": "Schieferblau",

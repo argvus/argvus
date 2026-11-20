@@ -5,6 +5,7 @@
 //! dispatcher replaces its own process with the target, so arguments, stdio,
 //! signals and the exit status pass through unchanged.
 
+mod appearance_picker;
 mod apps;
 mod commands;
 mod control_center;

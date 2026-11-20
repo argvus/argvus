@@ -287,3 +287,7 @@ Vorwärts/rückwärts durchläuft nur vorhandene Arbeitsbereiche des fokussierte
 Suche konfigurieren: Favoriten, Zuletzt verwendete Dateien anzeigen, Dateinamen indizieren, Indizierter Ordner, Ausgeschlossener Ordner, Indizierung pausieren, Versteckte Dateien einschließen, Animationen reduzieren.
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
+
+- `Super + Shift + B` / `argvus brightness-switch` · GTK 4 · ±5%, ±10%, 10%, 25%, 50%, 75%, 90%, 100% · Night Light
+- `argvus config accent` · GTK 4 · #RRGGBB
+- **Optionen suchen** · `↑` `↓` · `Enter` (Anwenden) · `Esc`

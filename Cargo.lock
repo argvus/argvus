@@ -219,6 +219,7 @@ dependencies = [
  "argvus-widget-telemetry-toggle",
  "chrono",
  "libc",
+ "serde",
  "serde_json",
  "tempfile",
 ]

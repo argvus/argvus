@@ -1,4 +1,10 @@
 {
+  "picker.search": "Поиск параметров",
+  "picker.no_results": "Нет совпадений.",
+  "picker.apply": "Применить",
+  "brightness.controls_unavailable": "Яркость и ночной свет недоступны.",
+  "brightness.night_light_active": "Ночной свет включён — переключить",
+  "brightness.night_light_toggle": "Переключить ночной свет",
   "accent.title": "Акцентный цвет",
   "accent.color.blue": "Синий",
   "accent.color.slate_blue": "Шиферно-синий",

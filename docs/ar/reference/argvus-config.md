@@ -418,3 +418,7 @@ argvus config window-mode toggle
 إعداد البحث: المفضلة, إظهار الملفات الحديثة, فهرسة أسماء الملفات, مجلد مفهرس, مجلد مستبعد, إيقاف الفهرسة مؤقتًا, تضمين الملفات المخفية, تقليل الرسوم المتحركة.
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
+
+- `Super + Shift + B` / `argvus brightness-switch` · GTK 4 · ±5%, ±10%, 10%, 25%, 50%, 75%, 90%, 100% · Night Light
+- `argvus config accent` · GTK 4 · #RRGGBB
+- **البحث عن خيارات** · `↑` `↓` · `Enter` (تطبيق) · `Esc`

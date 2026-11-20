@@ -442,3 +442,7 @@ argvus config window-mode toggle
 खोज सेट करें: पसंदीदा, हाल की फ़ाइलें दिखाएँ, फ़ाइल नाम अनुक्रमित करें, अनुक्रमित फ़ोल्डर, बाहर रखा फ़ोल्डर, अनुक्रमण रोकें, छिपी फ़ाइलें शामिल करें, एनिमेशन कम करें.
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
+
+- `Super + Shift + B` / `argvus brightness-switch` · GTK 4 · ±5%, ±10%, 10%, 25%, 50%, 75%, 90%, 100% · Night Light
+- `argvus config accent` · GTK 4 · #RRGGBB
+- **विकल्प खोजें** · `↑` `↓` · `Enter` (लागू करें) · `Esc`

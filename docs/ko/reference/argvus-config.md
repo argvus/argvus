@@ -289,3 +289,7 @@ argvus config window-mode toggle
 검색 설정: 즐겨찾기, 최근 파일 표시, 파일 이름 색인, 색인 폴더, 제외 폴더, 색인 일시 중지, 숨김 파일 포함, 애니메이션 줄이기.
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
+
+- `Super + Shift + B` / `argvus brightness-switch` · GTK 4 · ±5%, ±10%, 10%, 25%, 50%, 75%, 90%, 100% · Night Light
+- `argvus config accent` · GTK 4 · #RRGGBB
+- **옵션 검색** · `↑` `↓` · `Enter` (적용) · `Esc`

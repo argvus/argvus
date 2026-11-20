@@ -1,4 +1,10 @@
 {
+  "picker.search": "विकल्प खोजें",
+  "picker.no_results": "कोई परिणाम नहीं।",
+  "picker.apply": "लागू करें",
+  "brightness.controls_unavailable": "चमक और नाइट लाइट उपलब्ध नहीं हैं।",
+  "brightness.night_light_active": "नाइट लाइट चालू है — बदलें",
+  "brightness.night_light_toggle": "नाइट लाइट चालू या बंद करें",
   "accent.title": "रंग",
   "accent.color.blue": "नीला",
   "accent.color.slate_blue": "स्लेट ब्लू",

@@ -1,4 +1,10 @@
 {
+  "picker.search": "Pesquisar opções",
+  "picker.no_results": "Sem resultados.",
+  "picker.apply": "Aplicar",
+  "brightness.controls_unavailable": "O brilho e a luz noturna estão indisponíveis.",
+  "brightness.night_light_active": "Luz noturna: ligada — alternar",
+  "brightness.night_light_toggle": "Alternar a luz noturna",
   "accent.title": "Cor do sotaque",
   "accent.color.blue": "Azul",
   "accent.color.slate_blue": "Azul Ardósia",

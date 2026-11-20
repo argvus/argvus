@@ -1,4 +1,10 @@
 {
+  "picker.search": "オプションを検索",
+  "picker.no_results": "一致する項目がありません。",
+  "picker.apply": "適用",
+  "brightness.controls_unavailable": "明るさ調整と夜間モードは利用できません。",
+  "brightness.night_light_active": "夜間モードはオン — 切り替え",
+  "brightness.night_light_toggle": "夜間モードを切り替える",
   "accent.title": "アクセントカラー",
   "accent.color.blue": "青",
   "accent.color.slate_blue": "スレートブルー",

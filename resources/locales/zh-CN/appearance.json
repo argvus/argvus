@@ -1,4 +1,10 @@
 {
+  "picker.search": "搜索选项",
+  "picker.no_results": "没有匹配项。",
+  "picker.apply": "应用",
+  "brightness.controls_unavailable": "亮度调节和夜间模式不可用。",
+  "brightness.night_light_active": "夜间模式已开启 — 切换",
+  "brightness.night_light_toggle": "切换夜间模式",
   "accent.title": "强调色",
   "accent.color.blue": "蓝色的",
   "accent.color.slate_blue": "石板蓝",

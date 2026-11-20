@@ -284,3 +284,7 @@ Successivo/precedente scorre solo gli spazi esistenti del monitor attivo: prima 
 Configura ricerca: Preferiti, Mostra file recenti, Indicizza nomi dei file, Cartella indicizzata, Cartella esclusa, Sospendi indicizzazione, Includi file nascosti, Riduci animazioni.
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
+
+- `Super + Shift + B` / `argvus brightness-switch` · GTK 4 · ±5%, ±10%, 10%, 25%, 50%, 75%, 90%, 100% · Night Light
+- `argvus config accent` · GTK 4 · #RRGGBB
+- **Cerca opzioni** · `↑` `↓` · `Enter` (Applica) · `Esc`

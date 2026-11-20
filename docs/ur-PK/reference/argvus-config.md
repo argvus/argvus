@@ -397,3 +397,7 @@ argvus config window-mode toggle
 تلاش ترتیب دیں: پسندیدہ, حالیہ فائلیں دکھائیں, فائل ناموں کی اشاریہ سازی, اشاریہ شدہ فولڈر, خارج شدہ فولڈر, اشاریہ سازی روکیں, پوشیدہ فائلیں شامل کریں, حرکت پذیری کم کریں.
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
+
+- `Super + Shift + B` / `argvus brightness-switch` · GTK 4 · ±5%, ±10%, 10%, 25%, 50%, 75%, 90%, 100% · Night Light
+- `argvus config accent` · GTK 4 · #RRGGBB
+- **اختیارات تلاش کریں** · `↑` `↓` · `Enter` (لاگو کریں) · `Esc`

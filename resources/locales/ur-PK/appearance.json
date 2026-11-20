@@ -1,4 +1,10 @@
 {
+  "picker.search": "اختیارات تلاش کریں",
+  "picker.no_results": "کوئی مماثلت نہیں ملی۔",
+  "picker.apply": "لاگو کریں",
+  "brightness.controls_unavailable": "چمک اور نائٹ لائٹ دستیاب نہیں ہیں۔",
+  "brightness.night_light_active": "نائٹ لائٹ آن ہے — تبدیل کریں",
+  "brightness.night_light_toggle": "نائٹ لائٹ آن یا آف کریں",
   "accent.title": "رنگ",
   "accent.color.blue": "نیلا",
   "accent.color.slate_blue": "سلیلے رنگ",

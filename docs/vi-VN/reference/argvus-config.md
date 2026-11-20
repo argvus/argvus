@@ -421,3 +421,7 @@ Trước/sau chỉ duyệt vòng các không gian hiện có trên màn hình đ
 Cấu hình tìm kiếm: Yêu thích, Hiển thị tệp gần đây, Lập chỉ mục tên tệp, Thư mục được lập chỉ mục, Thư mục bị loại trừ, Tạm dừng lập chỉ mục, Bao gồm tệp ẩn, Giảm hoạt ảnh.
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
+
+- `Super + Shift + B` / `argvus brightness-switch` · GTK 4 · ±5%, ±10%, 10%, 25%, 50%, 75%, 90%, 100% · Night Light
+- `argvus config accent` · GTK 4 · #RRGGBB
+- **Tìm tùy chọn** · `↑` `↓` · `Enter` (Áp dụng) · `Esc`

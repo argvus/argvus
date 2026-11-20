@@ -1,4 +1,10 @@
 {
+  "picker.search": "Cerca opzioni",
+  "picker.no_results": "Nessun risultato.",
+  "picker.apply": "Applica",
+  "brightness.controls_unavailable": "Luminosità e luce notturna non disponibili.",
+  "brightness.night_light_active": "Luce notturna attiva — cambia stato",
+  "brightness.night_light_toggle": "Attiva o disattiva la luce notturna",
   "accent.title": "Colore accento",
   "accent.color.blue": "Blu",
   "accent.color.slate_blue": "Blu ardesia",

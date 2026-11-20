@@ -441,3 +441,7 @@ Seguinte/anterior percorre os workspaces existentes apenas no monitor em foco: p
 Configurar pesquisa: Favoritos, Mostrar ficheiros recentes, Indexar nomes de ficheiros, Pasta indexada, Pasta excluída, Pausar indexação, Incluir ficheiros ocultos, Reduzir animações.
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
+
+- `Super + Shift + B` / `argvus brightness-switch` · GTK 4 · ±5%, ±10%, 10%, 25%, 50%, 75%, 90%, 100% · Night Light
+- `argvus config accent` · GTK 4 · #RRGGBB
+- **Pesquisar opções** · `↑` `↓` · `Enter` (Aplicar) · `Esc`

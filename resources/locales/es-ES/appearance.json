@@ -1,4 +1,10 @@
 {
+  "picker.search": "Buscar opciones",
+  "picker.no_results": "Sin resultados.",
+  "picker.apply": "Aplicar",
+  "brightness.controls_unavailable": "El brillo y la luz nocturna no están disponibles.",
+  "brightness.night_light_active": "Luz nocturna: activada — alternar",
+  "brightness.night_light_toggle": "Alternar luz nocturna",
   "accent.title": "Color de acento",
   "accent.color.blue": "Azul",
   "accent.color.slate_blue": "Azul pizarra",

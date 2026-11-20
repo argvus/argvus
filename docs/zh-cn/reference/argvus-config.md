@@ -289,3 +289,7 @@ argvus config window-mode toggle
 配置搜索: 收藏, 显示最近文件, 索引文件名, 索引文件夹, 排除文件夹, 暂停索引, 包含隐藏文件, 减少动画.
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
+
+- `Super + Shift + B` / `argvus brightness-switch` · GTK 4 · ±5%, ±10%, 10%, 25%, 50%, 75%, 90%, 100% · Night Light
+- `argvus config accent` · GTK 4 · #RRGGBB
+- **搜索选项** · `↑` `↓` · `Enter` (应用) · `Esc`

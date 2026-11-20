@@ -423,3 +423,7 @@ Berikutnya/sebelumnya berputar hanya pada ruang kerja yang ada di monitor terfok
 Atur pencarian: Favorit, Tampilkan berkas terbaru, Indeks nama berkas, Folder terindeks, Folder dikecualikan, Jeda pengindeksan, Sertakan berkas tersembunyi, Kurangi animasi.
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
+
+- `Super + Shift + B` / `argvus brightness-switch` · GTK 4 · ±5%, ±10%, 10%, 25%, 50%, 75%, 90%, 100% · Night Light
+- `argvus config accent` · GTK 4 · #RRGGBB
+- **Cari opsi** · `↑` `↓` · `Enter` (Terapkan) · `Esc`

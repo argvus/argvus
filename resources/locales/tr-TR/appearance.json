@@ -1,4 +1,10 @@
 {
+  "picker.search": "Seçenekleri ara",
+  "picker.no_results": "Sonuç bulunamadı.",
+  "picker.apply": "Uygula",
+  "brightness.controls_unavailable": "Parlaklık ve Gece Işığı kullanılamıyor.",
+  "brightness.night_light_active": "Gece Işığı açık — değiştir",
+  "brightness.night_light_toggle": "Gece Işığını değiştir",
   "accent.title": "Acent renk",
   "accent.color.blue": "Blue",
   "accent.color.slate_blue": "Slate Blue",

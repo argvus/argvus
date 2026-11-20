@@ -1,4 +1,10 @@
 {
+  "picker.search": "Tìm tùy chọn",
+  "picker.no_results": "Không có kết quả.",
+  "picker.apply": "Áp dụng",
+  "brightness.controls_unavailable": "Không thể điều chỉnh độ sáng hoặc dùng ánh sáng ban đêm.",
+  "brightness.night_light_active": "Ánh sáng ban đêm đang bật — chuyển đổi",
+  "brightness.night_light_toggle": "Bật hoặc tắt ánh sáng ban đêm",
   "accent.title": "Màu triều đại",
   "accent.color.blue": "Xanh nước biển",
   "accent.color.slate_blue": "Xanh xám",

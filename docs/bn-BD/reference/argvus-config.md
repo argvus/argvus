@@ -397,3 +397,7 @@ argvus config window-mode toggle
 অনুসন্ধান সেট করুন: প্রিয়, সাম্প্রতিক ফাইল দেখান, ফাইলের নাম সূচিবদ্ধ করুন, সূচিবদ্ধ ফোল্ডার, বাদ দেওয়া ফোল্ডার, সূচিকরণ থামান, লুকানো ফাইল অন্তর্ভুক্ত করুন, অ্যানিমেশন কমান.
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
+
+- `Super + Shift + B` / `argvus brightness-switch` · GTK 4 · ±5%, ±10%, 10%, 25%, 50%, 75%, 90%, 100% · Night Light
+- `argvus config accent` · GTK 4 · #RRGGBB
+- **বিকল্প খুঁজুন** · `↑` `↓` · `Enter` (প্রয়োগ করুন) · `Esc`

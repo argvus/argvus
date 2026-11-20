@@ -1,4 +1,10 @@
 {
+  "picker.search": "البحث عن خيارات",
+  "picker.no_results": "لا توجد نتائج.",
+  "picker.apply": "تطبيق",
+  "brightness.controls_unavailable": "السطوع والإضاءة الليلية غير متاحين.",
+  "brightness.night_light_active": "الإضاءة الليلية مفعّلة — تبديل",
+  "brightness.night_light_toggle": "تبديل الإضاءة الليلية",
   "accent.title": "اللون الراقص",
   "accent.color.blue": "الأزرق",
   "accent.color.slate_blue": "Slate Blue",

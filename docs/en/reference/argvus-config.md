@@ -435,3 +435,7 @@ Next/previous cycles existing numeric workspaces, then named workspaces and proj
 Configure search: Favorites, Show recent files, Index file names, Indexed folder, Excluded folder, Pause indexing, Include hidden files, Reduce animations.
 
 `argvus launcher-engine serve`: JSON Lines. `argvus control-center --search-catalog`: JSON. `argvus control-center --search-id ID`. `argvus projects list --resolved`.
+
+- `Super + Shift + B` / `argvus brightness-switch` · GTK 4 · ±5%, ±10%, 10%, 25%, 50%, 75%, 90%, 100% · Night Light
+- `argvus config accent` · GTK 4 · #RRGGBB
+- **Search options** · `↑` `↓` · `Enter` (Apply) · `Esc`
