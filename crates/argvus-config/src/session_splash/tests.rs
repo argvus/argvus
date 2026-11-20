@@ -255,12 +255,16 @@ fn stop_does_not_signal_a_pid_that_is_not_the_splash() {
 fn stop_escalates_to_sigkill_when_sigterm_is_ignored() {
   let runtime = test_runtime("sigkill");
   let environment = environment_under(&runtime);
-  let mut child = spawn_named(
-    &runtime,
-    "/bin/sh",
-    "splash-test",
-    &["-c", "trap '' TERM; sleep 60"],
-  );
+  // Wait for the final executable: it inherits the ignored SIGTERM from the
+  // shell, and exec keeps the same PID without leaving a second child behind.
+  let mut child = Command::new("/bin/sh")
+    .args(["-c", "trap '' TERM; exec /bin/sleep 60"])
+    .stdin(Stdio::null())
+    .stdout(Stdio::null())
+    .stderr(Stdio::null())
+    .spawn()
+    .expect("spawn SIGTERM-ignoring test process");
+  wait_for_exec(child.id(), "sleep");
   write_recorded_pid(&environment, Owner::Transition, child.id());
 
   stop_named(&environment, Owner::Transition, "splash-test");
