@@ -82,7 +82,9 @@ pub fn build_devices(
 
   let mut devices: Vec<Device> = Vec::with_capacity(raw.blocks.len());
 
-  for block in &raw.blocks {
+  let mut blocks: Vec<_> = raw.blocks.iter().collect();
+  blocks.sort_by(|left, right| left.object_path.cmp(&right.object_path));
+  for block in blocks {
     if !is_candidate_block(block) {
       continue;
     }
@@ -219,7 +221,11 @@ fn record_mount_time(device: &Device, mount_time: &mut HashMap<String, i64>) -> 
 /// mounted devices first, the most recently mounted on top.
 fn sort_devices(devices: &mut [Device], mode: &str) {
   devices.sort_by(|left, right| match mode {
-    "name" => left.name.to_lowercase().cmp(&right.name.to_lowercase()),
+    "name" => left
+      .name
+      .to_lowercase()
+      .cmp(&right.name.to_lowercase())
+      .then_with(|| left.object_path.cmp(&right.object_path)),
     "size" => {
       if left.capacity != right.capacity {
         return right.capacity.cmp(&left.capacity);
@@ -248,4 +254,45 @@ fn now_epoch() -> i64 {
     .duration_since(std::time::UNIX_EPOCH)
     .map(|elapsed| elapsed.as_secs() as i64)
     .unwrap_or(0)
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  #[test]
+  fn device_order_is_stable_across_enumerations() {
+    let mut raw = Enumerated {
+      drives: vec![RawDrive {
+        object_path: "/drive".into(),
+        removable: true,
+        ..RawDrive::default()
+      }],
+      blocks: ["/dev/sdb1", "/dev/sda1"]
+        .into_iter()
+        .map(|path| RawBlock {
+          object_path: path.into(),
+          drive: "/drive".into(),
+          device: path.into(),
+          id_label: "Storage".into(),
+          has_filesystem: true,
+          ..RawBlock::default()
+        })
+        .collect(),
+    };
+    for mode in ["mount_time", "insertion", "name", "size"] {
+      let config = Config {
+        sort: mode.into(),
+        ..Config::default()
+      };
+      let mut mount_time = HashMap::new();
+      let mut insertion = HashMap::new();
+      let mut next = 0;
+      let first = build_devices(&raw, &config, &mut mount_time, &mut insertion, &mut next);
+      raw.blocks.reverse();
+      let second = build_devices(&raw, &config, &mut mount_time, &mut insertion, &mut next);
+      assert_eq!(first.len(), 2);
+      assert_eq!(first, second, "sort mode {mode}");
+    }
+  }
 }

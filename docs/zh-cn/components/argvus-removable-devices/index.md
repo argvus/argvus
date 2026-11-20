@@ -28,3 +28,5 @@ description: 从 ARGVUS 挂载和管理可移动存储。
 界面使用适用于所有十种语言的共享  `$XDG_CONFIG_HOME/locale.conf` `argvus-i18n` 目录。文本存储在主工作区的 `resources/locales/<locale>/removable-devices.json` 中，并由 `argvus` 安装。英语是回退语言；新语言不再需要本地双语词典。
 
 `Super + Shift + D` 打开居中的 GTK 4 菜单。 `↑` / `↓` · `Tab` · `Enter` · `Esc`
+
+按 `Tab` 切换到操作列表时，设备保持选中。返回设备列表时，只清除操作的选中状态。

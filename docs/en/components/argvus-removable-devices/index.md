@@ -31,3 +31,5 @@ The interface uses the shared `argvus-i18n` catalogs for all ten languages. Text
 `Super + Shift + D` opens the centered GTK 4 menu. `↑` / `↓` · `Tab` · `Enter` · `Esc`
 
 The left pane lists devices and the right pane shows available actions. Press `Tab` to switch panes. In the action pane, `U` unmounts, `P` powers off and `C` copies the mount path when available. The menu refreshes as devices are added or removed. The old `mode`, `menu` and `menu_flags` settings are ignored.
+
+Pressing `Tab` to move to the actions keeps the device selected. Returning to the device list clears only the action selection.

@@ -28,3 +28,5 @@ description: ARGVUSからリムーバブルストレージをマウントして�
 インターフェースは、10言語すべてに対して共有 `$XDG_CONFIG_HOME/locale.conf` `argvus-i18n`カタログを使用します。テキストはマスター作業スペースの`resources/locales/<locale>/removable-devices.json`に保存され、`argvus`によってインストールされます。英語がフォールバックであり、新しい言語ではもはやローカルの二言語辞書は必要ありません。
 
 `Super + Shift + D` で画面中央に GTK 4 メニューを開きます。 `↑` / `↓` · `Tab` · `Enter` · `Esc`
+
+`Tab` で操作一覧に移動しても、デバイスの選択は維持されます。デバイス一覧に戻ると、操作の選択だけが解除されます。

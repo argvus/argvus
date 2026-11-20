@@ -27,3 +27,5 @@ description: ARGVUS에서 이동식 저장 장치를 마운트하고 관리합�
 인터페이스는 모든 10개 언어에 대해 공유  `$XDG_CONFIG_HOME/locale.conf` `argvus-i18n` 카탈로그를 사용합니다. 텍스트는 마스터 작업 공간의 `resources/locales/<locale>/removable-devices.json`에 저장되며 `argvus`에 의해 설치됩니다. 영어가 기본 언어이며, 새로운 언어는 더 이상 로컬 이중 언어 사전을 필요로 하지 않습니다.
 
 `Super + Shift + D`  키로 화면 중앙에 GTK 4 메뉴를 엽니다. `↑` / `↓` · `Tab` · `Enter` · `Esc`
+
+`Tab`으로 작업 목록으로 이동해도 장치는 선택된 상태로 유지됩니다. 장치 목록으로 돌아오면 작업 선택만 해제됩니다.

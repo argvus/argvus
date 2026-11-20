@@ -28,3 +28,5 @@ Antarmuka menggunakan bahasa pengguna dari `LANG` di `$XDG_CONFIG_HOME/locale.co
 Antarmukanya menggunakan katalog `argvus-i18n` bersama untuk sepuluh bahasa. Teks disimpan di `resources/locales/<locale>/removable-devices.json` di ruang kerja master dan diinstal oleh `argvus`. Bahasa Inggris adalah penggantinya; bahasa baru tidak lagi memerlukan kamus bilingual lokal.
 
 `Super + Shift + D` membuka menu GTK 4 di tengah layar. `↑` / `↓` · `Tab` · `Enter` · `Esc`
+
+Saat berpindah ke daftar tindakan dengan `Tab`, perangkat tetap terpilih. Saat kembali ke daftar perangkat, hanya pilihan tindakan yang dihapus.

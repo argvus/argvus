@@ -10,6 +10,7 @@ use argvus_theme_selector::picker;
 use gtk::{gdk, glib, prelude::*};
 
 use crate::{
+  SnapshotHistory,
   actions::{ActionKind, Actions},
   config::Config,
   device::Device,
@@ -77,7 +78,11 @@ impl StoragePicker {
           .action_list
           .select_row(self.action_list.row_at_index(action_index as i32).as_ref());
       }
-      self.focus_actions();
+      if self.action_list.row_at_index(0).is_some() {
+        self.focus_actions();
+      } else {
+        self.focus_devices();
+      }
     } else {
       self.focus_devices();
     }
@@ -121,14 +126,15 @@ impl StoragePicker {
       ));
       actions.push(entry.kind);
     }
-    self
-      .action_list
-      .select_row(self.action_list.row_at_index(0).as_ref());
   }
 
   fn focus_actions(&self) {
-    if let Some(row) = self.action_list.selected_row() {
-      self.set_active_column(true);
+    let row = self
+      .action_list
+      .selected_row()
+      .or_else(|| self.action_list.row_at_index(0));
+    if let Some(row) = row {
+      self.action_list.select_row(Some(&row));
       row.grab_focus();
     }
   }
@@ -142,15 +148,8 @@ impl StoragePicker {
 
   fn set_active_column(&self, in_actions: bool) {
     self.in_actions.set(in_actions);
-    for (list, inactive) in [
-      (&self.device_list, in_actions),
-      (&self.action_list, !in_actions),
-    ] {
-      if inactive {
-        list.add_css_class("inactive-selection");
-      } else {
-        list.remove_css_class("inactive-selection");
-      }
+    if !in_actions {
+      self.action_list.unselect_all();
     }
   }
 
@@ -193,7 +192,7 @@ impl StoragePicker {
     });
   }
 
-  fn refresh(self: &Rc<Self>) -> glib::JoinHandle<()> {
+  fn refresh(self: &Rc<Self>, mut history: SnapshotHistory) -> glib::JoinHandle<()> {
     let weak = Rc::downgrade(self);
     let runtime = self.runtime.clone();
     let config = self.config.clone();
@@ -201,9 +200,16 @@ impl StoragePicker {
       loop {
         glib::timeout_future(Duration::from_secs(1)).await;
         let cfg = config.clone();
-        let Ok(devices) = runtime.spawn(async move { snapshot(&cfg).await }).await else {
+        let Ok((devices, updated_history)) = runtime
+          .spawn(async move {
+            let devices = history.read(&cfg).await;
+            (devices, history)
+          })
+          .await
+        else {
           break;
         };
+        history = updated_history;
         let Some(state) = weak.upgrade() else { break };
         if !state.busy.get() && *state.devices.borrow() != devices {
           state.rebuild(devices);
@@ -213,7 +219,12 @@ impl StoragePicker {
   }
 }
 
-pub fn run(config: &Config, devices: Vec<Device>, open_only: bool) -> i32 {
+pub(super) fn run(
+  config: &Config,
+  devices: Vec<Device>,
+  open_only: bool,
+  history: SnapshotHistory,
+) -> i32 {
   if let Err(error) = gtk::init() {
     eprintln!("argvus-removable-devices: {error}");
     process::notify(
@@ -284,7 +295,7 @@ pub fn run(config: &Config, devices: Vec<Device>, open_only: bool) -> i32 {
   connect(&window, &state);
   state.rebuild(devices);
   window.present();
-  let refresh = state.refresh();
+  let refresh = state.refresh(history);
   state.main_loop.run();
   refresh.abort();
   window.destroy();

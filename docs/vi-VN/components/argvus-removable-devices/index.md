@@ -28,3 +28,5 @@ Giao diện sử dụng ngôn ngữ người dùng từ `LANG` trong `$XDG_CONFI
 Giao diện sử dụng danh mục `argvus-i18n` được chia sẻ cho tất cả mười ngôn ngữ. Văn bản được lưu trữ trong `resources/locales/<locale>/removable-devices.json` trong không gian làm việc chính và được cài đặt bởi `argvus`. Tiếng Anh là dự phòng; ngôn ngữ mới không còn yêu cầu từ điển song ngữ địa phương nữa.
 
 `Super + Shift + D` mở menu GTK 4 ở giữa màn hình. `↑` / `↓` · `Tab` · `Enter` · `Esc`
+
+Khi nhấn `Tab` để chuyển sang danh sách thao tác, thiết bị vẫn được chọn. Khi quay lại danh sách thiết bị, chỉ lựa chọn thao tác bị xóa.

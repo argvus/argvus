@@ -27,3 +27,5 @@ Die Schnittstelle verwendet die Benutzersprache aus `LANG` in `$XDG_CONFIG_HOME/
 Die Schnittstelle verwendet die geteilten `argvus-i18n`-Kataloge für alle zehn Sprachen. Texte werden in `resources/locales/<locale>/removable-devices.json` im Master-Arbeitsbereich gespeichert und von `argvus` installiert. Englisch ist die Ausweichsprache; neue Sprachen erfordern nicht mehr unbedingt ein lokales zweisprachiges Wörterbuch.
 
 `Super + Shift + D` öffnet das zentrierte GTK-4-Menü. `↑` / `↓` · `Tab` · `Enter` · `Esc`
+
+Beim Wechsel zu den Aktionen mit `Tab` bleibt das Gerät ausgewählt. Beim Wechsel zurück zur Geräteliste wird nur die Aktionsauswahl aufgehoben.

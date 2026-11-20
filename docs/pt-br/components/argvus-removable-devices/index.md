@@ -30,3 +30,5 @@ A interface usa os catálogos de `argvus-i18n` nos dez idiomas. Os textos ficam 
 `Super + Shift + D` abre o menu GTK 4 centralizado. `↑` / `↓` · `Tab` · `Enter` · `Esc`
 
 Os dispositivos ficam no painel esquerdo e as ações disponíveis no painel direito. Use `Tab` para alternar entre os painéis. No painel de ações, `U` desmonta, `P` desliga e `C` copia o caminho de montagem quando a ação estiver disponível. A lista é atualizada ao conectar ou remover dispositivos. Os campos antigos `mode`, `menu` e `menu_flags` são ignorados.
+
+Ao passar para as ações com `Tab`, o dispositivo continua selecionado. Ao voltar à lista de dispositivos, apenas a seleção da ação é removida.

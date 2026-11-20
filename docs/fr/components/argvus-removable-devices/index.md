@@ -27,3 +27,5 @@ L'interface utilise la langue de l'utilisateur à partir de `LANG` dans `$XDG_CO
 L'interface utilise les catalogues partagés `argvus-i18n` pour les dix langues. Les textes sont stockés dans `resources/locales/<locale>/removable-devices.json` dans l'espace de travail principal et installés par `argvus`. L'anglais est la langue de secours ; les nouvelles langues ne nécessitent plus de dictionnaire bilingue local.
 
 `Super + Shift + D` ouvre le menu GTK 4 centré. `↑` / `↓` · `Tab` · `Enter` · `Esc`
+
+Avec `Tab`, le périphérique reste sélectionné quand le focus passe aux actions. Le retour à la liste des périphériques efface uniquement la sélection de l’action.

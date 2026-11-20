@@ -29,16 +29,32 @@ fn print_usage(out: &mut dyn Write) {
 }
 
 pub(crate) async fn snapshot(cfg: &Config) -> Vec<Device> {
-  let mut client = UdisksClient::new();
-  if !client.connect().await {
-    eprintln!("argvus-removable-devices: {}", client.last_error());
-    return Vec::new();
+  SnapshotHistory::default().read(cfg).await
+}
+
+#[derive(Default)]
+struct SnapshotHistory {
+  mount_time: HashMap<String, i64>,
+  insertion_seq: HashMap<String, u64>,
+  next_insertion: u64,
+}
+
+impl SnapshotHistory {
+  async fn read(&mut self, cfg: &Config) -> Vec<Device> {
+    let mut client = UdisksClient::new();
+    if !client.connect().await {
+      eprintln!("argvus-removable-devices: {}", client.last_error());
+      return Vec::new();
+    }
+    let raw = client.enumerate().await;
+    build_devices(
+      &raw,
+      cfg,
+      &mut self.mount_time,
+      &mut self.insertion_seq,
+      &mut self.next_insertion,
+    )
   }
-  let raw = client.enumerate().await;
-  let mut mt: HashMap<String, i64> = HashMap::new();
-  let mut seq: HashMap<String, u64> = HashMap::new();
-  let mut next = 0u64;
-  build_devices(&raw, cfg, &mut mt, &mut seq, &mut next)
 }
 
 fn pick<'a>(devs: &'a [Device], token: &str) -> Option<&'a Device> {
@@ -206,13 +222,18 @@ async fn main() {
     "once" => run_watch(&cfg, true).await,
     "list" => run_list(&snapshot(&cfg).await),
     "menu" => {
-      let devs = snapshot(&cfg).await;
+      let mut history = SnapshotHistory::default();
+      let devs = history.read(&cfg).await;
       match fixed_x.zip(fixed_y) {
         Some(pos) => gui::run(&cfg, &devs, &config_path, pos, bar_bottom),
-        None => picker::run(&cfg, devs, false),
+        None => picker::run(&cfg, devs, false, history),
       }
     }
-    "devices" => picker::run(&cfg, snapshot(&cfg).await, true),
+    "devices" => {
+      let mut history = SnapshotHistory::default();
+      let devices = history.read(&cfg).await;
+      picker::run(&cfg, devices, true, history)
+    }
     _ => run_action(&cfg, &cmd, &token).await,
   };
   if code == -1 {

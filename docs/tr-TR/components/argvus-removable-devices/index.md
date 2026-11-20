@@ -28,3 +28,5 @@ Arayüz, $XDG_CONFIG_HOME/locale.conf'daki `LANG` kullanıcı dilini kullanır v
 Arayüz, on dilin tümü için paylaşılan  `$XDG_CONFIG_HOME/locale.conf` `argvus-i18n` kataloglarını kullanır. Metinler ana çalışma alanındaki `resources/locales/<locale>/removable-devices.json`'da saklanır ve `argvus` tarafından yüklenir. İngilizce geri dönüştür; yeni diller artık yerel iki dilli bir sözlüğe ihtiyaç duymuyor.
 
 `Super + Shift + D` ortalanmış GTK 4 menüsünü açar. `↑` / `↓` · `Tab` · `Enter` · `Esc`
+
+`Tab` ile işlemlere geçildiğinde aygıt seçili kalır. Aygıt listesine dönüldüğünde yalnızca işlem seçimi kaldırılır.
