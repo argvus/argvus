@@ -136,7 +136,7 @@
   "control_center.border": "边界",
   "control_center.bottom": "底部",
   "control_center.browser_font": "浏览器字体",
-  "control_center.built_on_desktop_technologies": "基于 Arch Linux、Hyprland、Wayland、Quickshell、Rust、Lua、GTK 4、ratatui、Waybar、Rofi、greetd、CSS 和 shell 脚本以及使此桌面成为可能的免费库和工具构建。",
+  "control_center.built_on_desktop_technologies": "基于 Arch Linux、Hyprland、Wayland、Quickshell、Rust、Lua、GTK 4、ratatui、Waybar、greetd、CSS 和 shell 脚本以及使此桌面成为可能的免费库和工具构建。",
   "control_center.cache": "缓存",
   "control_center.cancel": "取消",
   "control_center.cancel_f8378f": "[ 取消 ]",

@@ -136,7 +136,7 @@
   "control_center.border": "Confine",
   "control_center.bottom": "Metter il fondo a",
   "control_center.browser_font": "Carattere del browser",
-  "control_center.built_on_desktop_technologies": "Costruito su Arch Linux, Hyprland, Wayland, Quickshell, Rust, Lua, GTK 4, ratatui, Waybar, Rofi, greet, CSS e script di shell, nonché le librerie e gli strumenti gratuiti che rendono possibile questo desktop.",
+  "control_center.built_on_desktop_technologies": "Costruito su Arch Linux, Hyprland, Wayland, Quickshell, Rust, Lua, GTK 4, ratatui, Waybar, greet, CSS e script di shell, nonché le librerie e gli strumenti gratuiti che rendono possibile questo desktop.",
   "control_center.cache": "Cache",
   "control_center.cancel": "Annulla",
   "control_center.cancel_f8378f": "[Annulla]",

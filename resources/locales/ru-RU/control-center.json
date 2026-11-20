@@ -136,7 +136,7 @@
   "control_center.border": "Граница",
   "control_center.bottom": "Нижний",
   "control_center.browser_font": "Шрифт браузера",
-  "control_center.built_on_desktop_technologies": "Создан на базе Arch Linux, Hyprland, Wayland, Quickshell, Rust, Lua, GTK 4, ratatui, Waybar, Rofi, Greeting, CSS и сценариев оболочки, а также бесплатных библиотек и инструментов, которые делают этот рабочий стол возможным.",
+  "control_center.built_on_desktop_technologies": "Создан на базе Arch Linux, Hyprland, Wayland, Quickshell, Rust, Lua, GTK 4, ratatui, Waybar, Greeting, CSS и сценариев оболочки, а также бесплатных библиотек и инструментов, которые делают этот рабочий стол возможным.",
   "control_center.cache": "Кэш",
   "control_center.cancel": "Отмена",
   "control_center.cancel_f8378f": "[ Отмена ]",

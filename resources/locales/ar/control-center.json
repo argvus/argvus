@@ -136,7 +136,7 @@
   "control_center.border": "الحدود",
   "control_center.bottom": "الجزء السفلي",
   "control_center.browser_font": "Browser Font",
-  "control_center.built_on_desktop_technologies": "Built on Arch Linux, Hyprland, Wayland, Quickshell, Rust, Lua, GTK 4, ratatui, Waybar, Rofi, welcomed, CSS and shell scripts, and the free Library and tools that make this officetop possible.",
+  "control_center.built_on_desktop_technologies": "Built on Arch Linux, Hyprland, Wayland, Quickshell, Rust, Lua, GTK 4, ratatui, Waybar, welcomed, CSS and shell scripts, and the free Library and tools that make this officetop possible.",
   "control_center.cache": "Cache",
   "control_center.cancel": "إلغاء",
   "control_center.cancel_f8378f": "[لغاء]",

@@ -136,7 +136,7 @@
   "control_center.border": "Batas",
   "control_center.bottom": "Dasar",
   "control_center.browser_font": "Fonta Peramban",
-  "control_center.built_on_desktop_technologies": "Dibangun di Arch Linux, Hyprland, Wayland, Quickshell, Rust, Lua, GTK 4, ratui, Waybar, Rofi, Greetd, CSS dan skrip shell, dan perpustakaan bebas dan alat-alat yang membuat desktop ini mungkin.",
+  "control_center.built_on_desktop_technologies": "Dibangun di Arch Linux, Hyprland, Wayland, Quickshell, Rust, Lua, GTK 4, ratui, Waybar, Greetd, CSS dan skrip shell, dan perpustakaan bebas dan alat-alat yang membuat desktop ini mungkin.",
   "control_center.cache": "Cache",
   "control_center.cancel": "Batal",
   "control_center.cancel_f8378f": "[Batal]",
