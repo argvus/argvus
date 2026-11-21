@@ -44,6 +44,7 @@ description: 官方 ARGVUS 主题目录、默认高亮颜色，以及如何选�
 | 矩阵 | `argvus-theme-matrix` | `#82FB9C` |
 | Monokai 暗 | `argvus-theme-monokai-dark` | `#78DCE8` |
 |雾女士 | `argvus-theme-lady-mist` | `#354B78` |
+| Amélie Dark | `argvus-theme-amelie-dark` | `#FAA2CA` |
 
 ## 亮色主题
 

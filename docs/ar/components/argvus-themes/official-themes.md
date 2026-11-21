@@ -45,6 +45,7 @@ description: كتالوج سمات ARGVUS الرسمي وألوان التميي
 | مصفوفة | `argvus-theme-matrix` | `#82FB9C` |
 | مونوكاي دارك | `argvus-theme-monokai-dark` | `#78DCE8` |
 | سيدة ميست | `argvus-theme-lady-mist` | `#354B78` |
+| Amélie Dark | `argvus-theme-amelie-dark` | `#FAA2CA` |
 
 ## المواضيع الخفيفة
 

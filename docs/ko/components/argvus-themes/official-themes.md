@@ -44,6 +44,7 @@ description: 공식 ARGVUS 테마 카탈로그, 기본 하이라이트 색상, �
 | 매트릭스 | `argvus-theme-matrix` | `#82FB9C` |
 | 모노카이 다크 | `argvus-theme-monokai-dark` | `#78DCE8` |
 | 레이디 미스트 | `argvus-theme-lady-mist` | `#354B78` |
+| Amélie Dark | `argvus-theme-amelie-dark` | `#FAA2CA` |
 
 ## 라이트 테마
 

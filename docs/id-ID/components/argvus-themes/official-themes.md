@@ -45,6 +45,7 @@ Untuk beralih mode, buka **Pusat Kontrol → Tampilan → Mode** dan pilih **Sti
 | Matriks | `argvus-theme-matrix` | `#82FB9C` |
 | Monokai Gelap | `argvus-theme-monokai-dark` | `#78DCE8` |
 | Nyonya Kabut | `argvus-theme-lady-mist` | `#354B78` |
+| Amélie Dark | `argvus-theme-amelie-dark` | `#FAA2CA` |
 
 ## Tema ringan
 

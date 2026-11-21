@@ -45,6 +45,7 @@ description: आधिकारिक ARGVUS थीम कैटलॉग, ड�
 | मैट्रिक्स | `argvus-theme-matrix` | `#82FB9C` |
 | मोनोकाई डार्क | `argvus-theme-monokai-dark` | `#78DCE8` |
 | लेडी मिस्ट | `argvus-theme-lady-mist` | `#354B78` |
+| Amélie Dark | `argvus-theme-amelie-dark` | `#FAA2CA` |
 
 ## हल्के विषय
 

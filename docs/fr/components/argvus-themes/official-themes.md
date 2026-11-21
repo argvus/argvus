@@ -44,6 +44,7 @@ Pour changer le mode, ouvrez **Centre de contrôle → Apparence → Mode** et c
 | Matrice | `argvus-theme-matrix` | `#82FB9C` |
 | Monokai Sombre | `argvus-theme-monokai-dark` | `#78DCE8` |
 | Dame Brume | `argvus-theme-lady-mist` | `#354B78` |
+| Amélie Dark | `argvus-theme-amelie-dark` | `#FAA2CA` |
 
 ## Thèmes clairs
 

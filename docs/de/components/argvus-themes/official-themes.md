@@ -44,6 +44,7 @@ Um den Modus zu wechseln, öffnen Sie **Systemsteuerung → Erscheinungsbild →
 | Matrix | `argvus-theme-matrix` | `#82FB9C` |
 | Monokai Dark | `argvus-theme-monokai-dark` | `#78DCE8` |
 | Lady Mist | `argvus-theme-lady-mist` | `#354B78` |
+| Amélie Dark | `argvus-theme-amelie-dark` | `#FAA2CA` |
 
 ## Helle Themen
 

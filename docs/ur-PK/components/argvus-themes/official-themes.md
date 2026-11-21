@@ -45,6 +45,7 @@ description: سرکاری ARGVUS تھیم کیٹلاگ، ڈیفالٹ ہائی �
 | میٹرکس | `argvus-theme-matrix ` | `#82FB9C` |
 | مونوکائی ڈارک | `argvus-theme-monokai-dark ` | `#78DCE8` |
 | لیڈی مسٹ | `argvus-theme-lady-mist ` | `#354B78` |
+| Amélie Dark | `argvus-theme-amelie-dark` | `#FAA2CA` |
 
 ## ہلکے تھیمز
 

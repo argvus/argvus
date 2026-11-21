@@ -45,6 +45,7 @@ Modu değiştirmek için **Kontrol Merkezi → Görünüm → Mod**'u açın ve 
 | Matris | `argvus-theme-matrix` | `#82FB9C` |
 | Monokai Koyu | `argvus-theme-monokai-dark` | `#78DCE8` |
 | Bayan Sis | `argvus-theme-lady-mist` | `#354B78` |
+| Amélie Dark | `argvus-theme-amelie-dark` | `#FAA2CA` |
 
 ## Işık temaları
 

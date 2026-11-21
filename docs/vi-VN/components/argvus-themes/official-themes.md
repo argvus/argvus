@@ -45,6 +45,7 @@ Mỗi chủ đề hoạt động ở hai chế độ. Chế độ này độc l�
 | Ma trận | `argvus-theme-matrix` | `#82FB9C` |
 | Monokai bóng tối | `argvus-theme-monokai-dark` | `#78DCE8` |
 | Cô Sương | `argvus-theme-lady-mist` | `#354B78` |
+| Amélie Dark | `argvus-theme-amelie-dark` | `#FAA2CA` |
 
 ## Chủ đề nhẹ nhàng
 

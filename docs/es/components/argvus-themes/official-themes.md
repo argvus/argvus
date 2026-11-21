@@ -44,6 +44,7 @@ Para cambiar el modo, abre **Centro de Control → Apariencia → Modo** y elige
 | Matriz | `argvus-theme-matrix` | `#82FB9C` |
 | Monokai Oscuro | `argvus-theme-monokai-dark` | `#78DCE8` |
 | Señora Niebla | `argvus-theme-lady-mist` | `#354B78` |
+| Amélie Dark | `argvus-theme-amelie-dark` | `#FAA2CA` |
 
 ## Temas claros
 

@@ -45,6 +45,7 @@ description: অফিসিয়াল ARGVUS থিম ক্যাটাল�
 | ম্যাট্রিক্স | `argvus-theme-matrix ` | `#82FB9C` |
 | মনোকাই অন্ধকার | `argvus-theme-monokai-dark ` | `#78DCE8` |
 | লেডি মিস্ট | `argvus-theme-lady-mist ` | `#354B78` |
+| Amélie Dark | `argvus-theme-amelie-dark` | `#FAA2CA` |
 
 ## হালকা থিম
 

@@ -44,6 +44,7 @@ description: 公式のARGVUSテーマカタログ、デフォルトのハイラ�
 | マトリックス | `argvus-theme-matrix` | `#82FB9C` |
 | モノカイダーク | `argvus-theme-monokai-dark` | `#78DCE8` |
 | レディミスト | `argvus-theme-lady-mist` | `#354B78` |
+| Amélie Dark | `argvus-theme-amelie-dark` | `#FAA2CA` |
 
 ## ライトテーマ
 
