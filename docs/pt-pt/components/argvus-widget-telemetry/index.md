@@ -34,3 +34,5 @@ ficheiro passa a decidir. Só uma primeira linha `enabled` inicia o widget. Os f
 existe.
 
 Os rótulos da telemetria são compactos nos dez idiomas disponíveis. Identificadores como CPU, GPU, IP, DE, WM e Kernel mantêm seu sentido técnico. O tempo ligado é lido de `/proc/uptime` e exibido com unidades abreviadas (por exemplo, `1d 12h 49m`), sem expandir palavras conforme o idioma do sistema. Nomes de hardware e outros valores dos provedores ainda podem afetar a largura do widget.
+
+A secção de processos é atualizada a cada segundo e apresenta os cinco processos com a maior soma das percentagens de CPU recente e memória residente.

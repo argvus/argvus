@@ -34,3 +34,5 @@ Geçerli dosya okunduğunda `desktop-telemetry-state` ve `sysinfo-state` dosyala
 kayıp.
 
 Telemetri etiketleri desteklenen on dilin tamamında kompakttır. CPU, GPU, IP, DE, WM ve Kernel gibi teknik tanımlayıcılar teknik anlamlarını korur. Çalışma süresi `/proc/uptime`'dan okunur ve kısaltılmış birimlerle gösterilir (örneğin `1d 12h 49m`); artık sistem yerel ayarından tam sözcüklere dönüşmüyor. Donanım modeli adları ve diğer sağlayıcı değerleri widget genişliğini hâlâ etkileyebilir.
+
+Süreç listesi her saniye güncellenir ve yakın zamandaki CPU kullanımı ile yerleşik bellek yüzdelerinin toplamı en yüksek beş süreci gösterir.

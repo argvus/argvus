@@ -23,3 +23,5 @@ Die `argvus-widget-telemetry.service`-Benutzereinheit startet mit der Sitzung nu
 Sobald der Schalter `$XDG_CACHE_HOME/argvus/waybar/widget-telemetry-state` geschrieben hat, entscheidet diese Datei stattdessen. Nur eine erste Zeile von `enabled` startet das Widget. Die älteren Dateien `desktop-telemetry-state` und `sysinfo-state` werden weiterhin gelesen, wenn die aktuelle Datei fehlt.
 
 Telemetry-Bezeichnungen sind in allen zehn unterstützten Sprachen kompakt. Technische Bezeichner wie CPU, GPU, IP, DE, WM und Kernel behalten ihre technische Bedeutung. Die Betriebszeit wird aus `/proc/uptime` ausgelesen und mit abgekürzten Einheiten angezeigt (zum Beispiel `1d 12h 49m`); sie wird nicht mehr in vollständige Wörter aus der Systemsprache erweitert. Hardwaremodellnamen und andere Anbieterwerte können weiterhin die Breite des Widgets beeinflussen.
+
+Die Prozessliste wird jede Sekunde aktualisiert und zeigt die fünf Prozesse mit der höchsten Summe aus aktueller CPU-Auslastung und residentem Speicheranteil.

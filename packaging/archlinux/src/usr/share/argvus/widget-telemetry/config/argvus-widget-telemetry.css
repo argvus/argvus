@@ -86,11 +86,6 @@ window#waybar {
   margin-bottom: 6px;
 }
 
-/* ── Processes ------------------------------------------ */
-#custom-top-processes {
-  font-size: 10px;
-}
-
 #network.disconnected {
   color: @th-disconnected;
 }

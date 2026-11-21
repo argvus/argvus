@@ -34,3 +34,5 @@ File `desktop-telemetry-state` dan `sysinfo-state` masih dibaca ketika file saat
 hilang.
 
 Label telemetri ringkas dalam sepuluh bahasa yang didukung. Pengidentifikasi teknis seperti CPU, GPU, IP, DE, WM dan Kernel tetap mempertahankan arti teknisnya. Uptime dibaca dari `/proc/uptime` dan ditampilkan dengan satuan yang disingkat (misalnya `1d 12h 49m`); itu tidak lagi diperluas menjadi kata-kata lengkap dari lokal sistem. Nama model perangkat keras dan nilai penyedia lainnya masih dapat memengaruhi lebar widget.
+
+Daftar diperbarui setiap detik dan menampilkan lima proses dengan jumlah persentase penggunaan CPU terkini dan memori residen tertinggi.

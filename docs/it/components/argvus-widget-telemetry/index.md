@@ -23,3 +23,5 @@ L'unità utente `argvus-widget-telemetry.service` si avvia con la sessione solo 
 Una volta che l'interruttore ha scritto `$XDG_CACHE_HOME/argvus/waybar/widget-telemetry-state`, quel file decide invece. Solo una prima riga di `enabled` avvia il widget. I vecchi file `desktop-telemetry-state` e `sysinfo-state` vengono ancora letti quando il file corrente è mancante.
 
 Le etichette di telemetria sono compatte in tutte e dieci le lingue supportate. Gli identificatori tecnici come CPU, GPU, IP, DE, WM e Kernel mantengono il loro significato tecnico. Il tempo di attività viene letto da `/proc/uptime` e mostrato con unità abbreviate (per esempio `1d 12h 49m`); non si espande più in parole complete secondo la lingua di sistema. I nomi dei modelli hardware e altri valori del provider possono ancora influenzare la larghezza del widget.
+
+La sezione dei processi si aggiorna ogni secondo e mostra i cinque processi con la somma più alta delle percentuali di CPU recente e memoria residente.

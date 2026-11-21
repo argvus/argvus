@@ -128,7 +128,7 @@
     "custom/top-processes": {
       "exec": "argvus widget-telemetry block processes",
       "return-type": "json",
-      "interval": 10,
+      "interval": 1,
       "tooltip": false,
       "signal": 13,
       "hide-empty-text": true,

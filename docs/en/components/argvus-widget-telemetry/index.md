@@ -34,3 +34,5 @@ decides instead. Only a first line of `enabled` starts the widget. The older
 missing.
 
 Telemetry labels are compact in all ten supported languages. Technical identifiers such as CPU, GPU, IP, DE, WM and Kernel keep their technical meaning. Uptime is read from `/proc/uptime` and shown with abbreviated units (for example `1d 12h 49m`); it no longer expands into full words from the system locale. Hardware model names and other provider values can still affect the widget width.
+
+Processes refreshes every second and shows the five processes with the highest sum of recent CPU and resident memory percentages.

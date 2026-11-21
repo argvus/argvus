@@ -34,3 +34,5 @@ Các tệp `desktop-telemetry-state` và `sysinfo-state` vẫn được đọc k
 thiếu.
 
 Nhãn từ xa được thu gọn bằng tất cả mười ngôn ngữ được hỗ trợ. Các mã định danh kỹ thuật như CPU, GPU, IP, DE, WM và Kernel vẫn giữ nguyên ý nghĩa kỹ thuật của chúng. Thời gian hoạt động được đọc từ `/proc/uptime` và hiển thị bằng đơn vị viết tắt (ví dụ `1d 12h 49m`); nó không còn mở rộng thành các từ đầy đủ từ ngôn ngữ hệ thống. Tên mẫu phần cứng và các giá trị khác của nhà cung cấp vẫn có thể ảnh hưởng đến độ rộng của tiện ích.
+
+Danh sách cập nhật mỗi giây và hiển thị năm tiến trình có tổng tỷ lệ sử dụng CPU gần đây và tỷ lệ bộ nhớ thường trú cao nhất.
