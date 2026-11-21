@@ -2,7 +2,7 @@ use std::{cell::Cell, process::ExitCode, rc::Rc};
 
 use argvus_i18n::{I18n, TextDirection};
 use gtk::{gdk, gio, glib, prelude::*};
-use gtk4_layer_shell::{Edge, KeyboardMode, Layer, LayerShell};
+use gtk4_layer_shell::{KeyboardMode, Layer, LayerShell};
 
 use crate::{Agent, matching, move_selection, style};
 
@@ -60,20 +60,12 @@ fn open(
     window.set_layer(Layer::Overlay);
     window.set_keyboard_mode(KeyboardMode::Exclusive);
     window.set_exclusive_zone(-1);
-    for edge in [Edge::Top, Edge::Bottom, Edge::Left, Edge::Right] {
-      window.set_anchor(edge, true);
-    }
   }
   window.add_css_class("ai-agents");
   style::apply_theme(&window, i18n.locale());
   let panel = gtk::Box::new(gtk::Orientation::Vertical, 14);
   panel.add_css_class("panel");
-  panel.set_halign(gtk::Align::Center);
-  panel.set_valign(gtk::Align::Center);
-  let surface = gtk::Overlay::new();
-  surface.set_child(Some(&gtk::Box::new(gtk::Orientation::Vertical, 0)));
-  surface.add_overlay(&panel);
-  window.set_child(Some(&surface));
+  window.set_child(Some(&panel));
 
   let header = gtk::Box::new(gtk::Orientation::Horizontal, 14);
   let brand = gtk::Label::new(Some("ARGVUS"));
