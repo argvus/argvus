@@ -92,6 +92,10 @@ Widget Telemetry configures the system-information widget's sessions and transpa
 
 Fonts is reached from **Appearance > Desktop Style > Fonts**. It lets you select a family and size for the taskbar, telemetry/system information, Control Panel, ARGVUS system interface, applications, terminal and browser. It also exposes font rendering settings such as antialiasing, hinting, subpixel mode and DPI. The default primary family is IBM Plex Mono; individual targets can be changed independently and restored from the Fonts page.
 
+Taskbar font size applies immediately. Size 13 preserves the individual icon sizes.
+
+**Size** (8–32): `←` / `→`, `−` / `+` → **Apply** · `Enter` → `8–32` → `Enter`.
+
 ### Default applications
 
 Default applications selects installed programs for roles such as terminal, file manager, text editor, terminal editor, browser, image viewer, PDF viewer, video player, audio player, archive tool and launcher. The selection is saved by ARGVUS and may update standard XDG associations. TUI file managers use the selected terminal editor when opening text files; graphical text editors remain the default for desktop file associations.

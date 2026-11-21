@@ -85,6 +85,10 @@ Widget Telemetri mengonfigurasi sesi dan transparansi widget informasi sistem.
 
 ### FontFont dapat diperoleh dari **Penampilan > Gaya Desktop > Font**. Ini memungkinkan Anda memilih kelompok dan ukuran untuk bilah tugas, telemetri/informasi sistem, Panel Kontrol, antarmuka sistem ARGVUS, aplikasi, terminal, dan browser. Ini juga memperlihatkan pengaturan rendering font seperti antialiasing, petunjuk, mode subpiksel, dan DPI. Keluarga utama default adalah IBM Plex Mono; target individual dapat diubah secara independen dan dipulihkan dari halaman Font.
 
+Ukuran font bilah tugas langsung diterapkan. Nilai 13 mempertahankan ukuran dasar setiap ikon.
+
+**Ukuran** (8–32): `←` / `→`, `−` / `+` → **Terapkan** · `Enter` → `8–32` → `Enter`.
+
 ### Aplikasi bawaan
 
 Aplikasi default memilih program yang diinstal untuk peran seperti terminal, pengelola file, editor teks, editor terminal, browser, penampil gambar, penampil PDF, pemutar video, pemutar audio, alat arsip, dan peluncur. Pilihan disimpan oleh ARGVUS dan dapat memperbarui asosiasi XDG standar. Manajer file TUI menggunakan editor terminal yang dipilih saat membuka file teks; editor teks grafis tetap menjadi default untuk asosiasi file desktop.

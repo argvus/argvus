@@ -85,6 +85,10 @@ Widget Telemetry định cấu hình các phiên và tính minh bạch của ti�
 
 ### Phông chữPhông chữ được lấy từ **Giao diện > Kiểu màn hình > Phông chữ**. Nó cho phép bạn chọn dòng và kích thước cho thanh tác vụ, thông tin đo từ xa/hệ thống, Bảng điều khiển, giao diện hệ thống ARGVUS, ứng dụng, thiết bị đầu cuối và trình duyệt. Nó cũng hiển thị các cài đặt kết xuất phông chữ như khử răng cưa, gợi ý, chế độ pixel phụ và HDR. Họ chính mặc định là IBM Plex Mono; các mục tiêu riêng lẻ có thể được thay đổi và khôi phục độc lập từ trang Phông chữ.
 
+Cỡ chữ của thanh tác vụ được áp dụng ngay. Giá trị 13 giữ nguyên kích thước cơ sở của từng biểu tượng.
+
+**Cỡ** (8–32): `←` / `→`, `−` / `+` → **Áp dụng** · `Enter` → `8–32` → `Enter`.
+
 ### Ứng dụng mặc định
 
 Các ứng dụng mặc định chọn các chương trình đã cài đặt cho các vai trò như thiết bị đầu cuối, trình quản lý tệp, trình soạn thảo văn bản, trình chỉnh sửa thiết bị đầu cuối, trình duyệt, trình xem hình ảnh, trình xem PDF, trình phát video, trình phát âm thanh, công cụ lưu trữ và trình khởi chạy. Lựa chọn được ARGVUS lưu và có thể cập nhật các liên kết XDG tiêu chuẩn. Trình quản lý tệp TUI sử dụng trình chỉnh sửa thiết bị đầu cuối đã chọn khi mở tệp văn bản; trình soạn thảo văn bản đồ họa vẫn là mặc định cho các liên kết tệp trên máy tính để bàn.

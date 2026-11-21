@@ -90,6 +90,10 @@ La telemetría de widgets configura las sesiones y la transparencia del widget d
 
 Se accede a Fuentes desde **Apariencia > Estilo del escritorio > Fuentes**. Permite seleccionar una familia y tamaño para la barra de tareas, telemetría/información del sistema, Panel de Control, interfaz del sistema ARGVUS, aplicaciones, terminal y navegador. También expone configuraciones de renderizado de fuentes como suavizado de bordes, hinting, modo subpíxel y DPI. La familia primaria predeterminada es IBM Plex Mono; los objetivos individuales se pueden cambiar de manera independiente y restaurarse desde la página de Fuentes.
 
+El tamaño de letra de la barra de tareas se aplica al instante. El valor 13 conserva los tamaños individuales de los iconos.
+
+**Tamaño** (8–32): `←` / `→`, `−` / `+` → **Aplicar** · `Enter` → `8–32` → `Enter`.
+
 ### Aplicaciones predeterminadas
 
 Las aplicaciones predeterminadas seleccionan programas instalados para funciones como terminal, gestor de archivos, editor de texto, editor de terminal, navegador, visor de imágenes, visor de PDF, reproductor de video, reproductor de audio, herramienta de archivos comprimidos y lanzador. La selección es guardada por ARGVUS y puede actualizar las asociaciones estándar de XDG. Los gestores de archivos TUI utilizan el editor de terminal seleccionado al abrir archivos de texto; los editores de texto gráficos siguen siendo los predeterminados para las asociaciones de archivos de escritorio.

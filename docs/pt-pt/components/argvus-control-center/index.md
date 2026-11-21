@@ -92,6 +92,10 @@ O Widget Telemetry configura as sessões e a transparência do widget de informa
 
 Fontes fica em **Aparência > Estilo do desktop > Fontes**. A página permite selecionar família e tamanho para taskbar, telemetria/informações do sistema, Control Panel, interface do sistema ARGVUS, aplicações, terminal e navegador. Também expõe definições de renderização como antialiasing, hinting, modo subpixel e DPI. A família principal padrão é IBM Plex Mono; cada alvo pode ser alterado independentemente e restaurado pela página Fontes.
 
+O tamanho da letra da barra de tarefas é aplicado de imediato. O valor 13 preserva os tamanhos individuais dos ícones.
+
+**Tamanho** (8–32): `←` / `→`, `−` / `+` → **Aplicar** · `Enter` → `8–32` → `Enter`.
+
 ### Aplicações padrão
 
 Aplicações padrão seleciona programas instalados para funções como terminal, gestor de ficheiros, editor de texto, editor do terminal, navegador, visualizador de imagens, visualizador de PDF, reprodutor de vídeo, reprodutor de áudio, ferramenta de ficheiros compactados e launcher. A seleção é salva pelo ARGVUS e pode atualizar associações XDG padrão. Gestores de ficheiros TUI usam o editor do terminal selecionado ao abrir ficheiros de texto; as associações de ficheiros do ambiente de trabalho continuam usando o editor gráfico.

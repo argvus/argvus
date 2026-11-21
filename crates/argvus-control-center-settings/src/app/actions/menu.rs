@@ -147,6 +147,7 @@ impl App {
         self.navigation.push(Page::SettingSelector(setting));
         self.select_current();
       }
+      Item::ApplyFontSize => self.apply_font_size(self.pending_size),
       Item::FontSize => {
         self.admin.editor = Some(Editor::new(
           tr(self.lang, "control_center.font_size").into(),
@@ -659,7 +660,9 @@ impl App {
   /// of a list, the layout in use...), or on its first row.
   pub fn select_current(&mut self) {
     let rows = self.rows();
-    let current = if self.page() == Page::KeyboardLayout {
+    let current = if matches!(self.page(), Page::FontSelector(_)) {
+      Some(Item::FontSize)
+    } else if self.page() == Page::KeyboardLayout {
       let active_layout = self.keyboard_info.x11_layout.clone();
       self
         .keyboard_layouts

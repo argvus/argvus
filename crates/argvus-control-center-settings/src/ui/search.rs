@@ -62,7 +62,7 @@ pub fn draw(frame: &mut Frame, area: Rect, app: &App) {
   } else if let Page::FontSelector(_) = app.page() {
     Line::from(Span::styled(
       format!(
-        "{}: {}",
+        "−/+  {}: {}  (8–32)",
         tr(app.lang, "control_center.size"),
         app.pending_size
       ),

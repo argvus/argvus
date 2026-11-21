@@ -85,6 +85,10 @@ Widget Telemetrisi, sistem bilgisi widget'ının oturumlarını ve şeffaflığ�
 
 ### Yazı tipleriYazı tiplerine **Görünüm > Masaüstü Stili > Yazı Tipleri**'nden erişilir. Görev çubuğu, telemetri/sistem bilgileri, Kontrol Paneli, ARGVUS sistem arayüzü, uygulamalar, terminal ve tarayıcı için bir aile ve boyut seçmenizi sağlar. Ayrıca kenar yumuşatma, ipucu, alt piksel modu ve DPI gibi yazı tipi oluşturma ayarlarını da ortaya çıkarır. Varsayılan birincil aile IBM Plex Mono'dur; bireysel hedefler bağımsız olarak değiştirilebilir ve Yazı Tipleri sayfasından geri yüklenebilir.
 
+Görev çubuğu yazı tipi boyutu hemen uygulanır. 13 değeri her simgenin temel boyutunu korur.
+
+**Boyut Boyutu** (8–32): `←` / `→`, `−` / `+` → **Başvuru** · `Enter` → `8–32` → `Enter`.
+
 ### Varsayılan uygulamalar
 
 Varsayılan uygulamalar, terminal, dosya yöneticisi, metin düzenleyici, terminal düzenleyici, tarayıcı, resim görüntüleyici, PDF görüntüleyici, video oynatıcı, ses oynatıcı, arşiv aracı ve başlatıcı gibi roller için yüklü programları seçer. Seçim ARGVUS tarafından kaydedilir ve standart XDG ilişkilendirmelerini güncelleyebilir. TUI dosya yöneticileri, metin dosyalarını açarken seçilen terminal düzenleyiciyi kullanır; grafiksel metin düzenleyicileri masaüstü dosya ilişkilendirmeleri için varsayılan olarak kalır.

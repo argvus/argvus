@@ -41,11 +41,14 @@ impl App {
         Err(error) => self.fail(error),
       },
       PendingAction::ResetFont(target) => match self.fonts.reset_font(target) {
-        Ok(()) => self.success(format!(
-          "{} → {}",
-          font_target_label(self.lang, target),
-          tr(self.lang, "control_center.argvus_default")
-        )),
+        Ok(()) => {
+          self.pending_size = self.fonts.get(target).size;
+          self.success(format!(
+            "{} → {}",
+            font_target_label(self.lang, target),
+            tr(self.lang, "control_center.argvus_default")
+          ));
+        }
         Err(error) => self.fail(error),
       },
       PendingAction::ResetFontSetting(setting) => match self.fonts.reset_setting(setting) {

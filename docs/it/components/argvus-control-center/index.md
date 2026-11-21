@@ -90,6 +90,10 @@ La Telemetria dei Widget configura le sessioni e la trasparenza del widget delle
 
 A Caratteri si accede da **Aspetto > Stile Desktop > Caratteri**. Permette di selezionare una famiglia e una dimensione per la barra delle applicazioni, la telemetria/informazioni di sistema, il Pannello di Controllo, l'interfaccia di sistema ARGVUS, le applicazioni, il terminale e il browser. Espone anche le impostazioni di rendering dei caratteri come antialiasing, hinting, modalità subpixel e DPI. La famiglia primaria predefinita è IBM Plex Mono; i singoli obiettivi possono essere modificati indipendentemente e ripristinati dalla pagina Caratteri.
 
+La dimensione del carattere della barra delle applicazioni si applica subito. Il valore 13 conserva le dimensioni delle singole icone.
+
+**Dimensione** (8–32): `←` / `→`, `−` / `+` → **Applica** · `Enter` → `8–32` → `Enter`.
+
 ### Applicazioni predefinite
 
 Le applicazioni predefinite selezionano i programmi installati per ruoli come terminale, file manager, editor di testo, editor da terminale, browser, visualizzatore di immagini, visualizzatore PDF, lettore video, lettore audio, strumento per archivi e launcher. La selezione viene salvata da ARGVUS e può aggiornare le associazioni XDG standard. I file manager TUI usano l'editor da terminale selezionato quando si aprono file di testo; gli editor di testo grafici rimangono predefiniti per le associazioni di file del desktop.

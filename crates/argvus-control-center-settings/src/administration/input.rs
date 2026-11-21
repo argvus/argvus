@@ -136,7 +136,7 @@ impl App {
         ),
         EditTarget::Group => self.admin.group["name"] = json!(value),
         EditTarget::FontSize => match value.trim().parse::<u16>() {
-          Ok(size) if (8..=32).contains(&size) => self.pending_size = size,
+          Ok(size) if (8..=32).contains(&size) => self.apply_font_size(size),
           _ => self.fail(format!(
             "{}: 8–32",
             tr(self.lang, "control_center.font_size")

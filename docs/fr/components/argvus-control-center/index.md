@@ -90,6 +90,10 @@ La télémétrie des widgets configure les sessions et la transparence du widget
 
 Les polices sont accessibles depuis **Apparence > Style du bureau > Polices**. Elles permettent de sélectionner une famille et une taille pour la barre des tâches, la télémétrie/informations système, le Panneau de configuration, l'interface système ARGVUS, les applications, le terminal et le navigateur. Elles exposent également les paramètres de rendu des polices tels que l'anticrénelage, l'infobulle des glyphes, le mode sous-pixel et le DPI. La famille principale par défaut est IBM Plex Mono ; les cibles individuelles peuvent être modifiées indépendamment et restaurées depuis la page Polices.
 
+La taille de police de la barre des tâches s’applique immédiatement. La valeur 13 conserve la taille propre à chaque icône.
+
+**Taille** (8–32): `←` / `→`, `−` / `+` → **Appliquer** · `Enter` → `8–32` → `Enter`.
+
 ### Applications par défaut
 
 Les applications par défaut sélectionnent les programmes installés pour des rôles tels que le terminal, le gestionnaire de fichiers, l'éditeur de texte, l'éditeur de terminal, le navigateur, le visualiseur d'images, le visualiseur de PDF, le lecteur vidéo, le lecteur audio, l'outil d'archives et le lanceur. La sélection est enregistrée par ARGVUS et peut mettre à jour les associations standard XDG. Les gestionnaires de fichiers TUI utilisent l'éditeur de terminal sélectionné lors de l'ouverture de fichiers texte ; les éditeurs de texte graphiques restent les applications par défaut pour les associations de fichiers sur le bureau.

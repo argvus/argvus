@@ -311,6 +311,8 @@ impl FontSettings {
           .is_file()
         {
           self.write_waybar_settings()?;
+        } else if target == FontTarget::Taskbar {
+          run_checked("argvus", &["sessionctl", "bars-presentation"])?;
         }
       }
       FontTarget::ControlPanel => {}

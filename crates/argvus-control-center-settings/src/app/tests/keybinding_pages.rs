@@ -19,6 +19,9 @@ fn font_size_is_a_value_row_with_arrows_and_shortcuts() {
   );
   press(&mut app, KeyCode::Right);
   assert_eq!(app.pending_size, 14);
+  if app.fonts.get(FontTarget::Apps).size != 14 {
+    assert_eq!(app.rows()[1].id(), Some(&Item::ApplyFontSize));
+  }
   press(&mut app, KeyCode::Left);
   press(&mut app, KeyCode::Char('-'));
   assert_eq!(app.pending_size, 12);

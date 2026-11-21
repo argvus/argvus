@@ -386,6 +386,9 @@ impl App {
     if initial == Page::CustomShortcut {
       app.open_custom_shortcut(None);
     }
+    if let Page::FontSelector(target) = initial {
+      app.pending_size = app.fonts.get(target).size;
+    }
     if initial != Page::Main {
       app.select_current();
     }
@@ -397,8 +400,33 @@ impl App {
 
   pub fn adjust_size(&mut self, delta: i16) {
     if matches!(self.page(), Page::FontSelector(_)) && !self.searching {
-      self.pending_size = (self.pending_size as i16 + delta).clamp(8, 32) as u16;
+      self.set_font_size((self.pending_size as i16 + delta).clamp(8, 32) as u16);
     }
+  }
+
+  pub(crate) fn set_font_size(&mut self, size: u16) {
+    if self.page() == Page::FontSelector(FontTarget::Taskbar) {
+      self.apply_font_size(size);
+    } else {
+      self.pending_size = size;
+    }
+  }
+
+  pub(crate) fn apply_font_size(&mut self, size: u16) {
+    if let Page::FontSelector(target) = self.page() {
+      let current = self.fonts.get(target);
+      if current.size != size {
+        let font = FontEntry {
+          family: current.family.clone(),
+          style: current.style.clone(),
+        };
+        if let Err(error) = self.fonts.apply_font(target, &font, size) {
+          self.fail(error);
+          return;
+        }
+      }
+    }
+    self.pending_size = size;
   }
 
   pub fn resize(&mut self, width: u16, height: u16) {

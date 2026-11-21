@@ -90,6 +90,10 @@ Die Widget-Telemetrie konfiguriert die Sitzungen und die Transparenz des Systemi
 
 Schriften werden über **Erscheinungsbild > Desktop-Stil > Schriften** erreicht. Es ermöglicht Ihnen, eine Familie und Größe für die Taskleiste, Telemetrie/Systeminformationen, die Systemsteuerung, die ARGVUS-Systemoberfläche, Anwendungen, das Terminal und den Browser auszuwählen. Es bietet auch Einstellungen zur Schriftwiedergabe wie Kantenglättung, Hinting, Subpixel-Modus und DPI. Die standardmäßige primäre Familie ist IBM Plex Mono; einzelne Ziele können unabhängig voneinander geändert und von der Schriften-Seite aus wiederhergestellt werden.
 
+Die Schriftgröße der Taskleiste wird sofort übernommen. Der Wert 13 erhält die individuelle Größe jedes Symbols.
+
+**Größe** (8–32): `←` / `→`, `−` / `+` → **Anwenden** · `Enter` → `8–32` → `Enter`.
+
 ### Standardanwendungen
 
 Standardanwendungen wählen installierte Programme für Rollen wie Terminal, Dateimanager, Texteditor, Terminaleditor, Browser, Bildbetrachter, PDF-Betrachter, Videoplayer, Audioplayer, Archivwerkzeug und Launcher aus. Die Auswahl wird von ARGVUS gespeichert und kann die standardmäßigen XDG-Zuordnungen aktualisieren. TUI-Dateimanager verwenden den ausgewählten Terminaleditor beim Öffnen von Textdateien; grafische Texteditoren bleiben die Standardanwendung für Desktop-Dateizuordnungen.

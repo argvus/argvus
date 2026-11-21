@@ -47,6 +47,7 @@ pub enum Item {
   FontTarget(FontTarget),
   FontSetting(SettingKind),
   FontSize,
+  ApplyFontSize,
   /// Index into the system font list.
   Font(usize),
   /// Index into the options of the open rendering setting.

@@ -224,8 +224,18 @@ impl App {
         Some(1),
       )
       .icon(icons::FONT_SIZE),
-      Row::separator(),
     ];
+    if self.pending_size != current.size {
+      rows.push(
+        Row::action(Item::ApplyFontSize, self.label("control_center.apply")).detail(format!(
+          "{} · {} → {}",
+          current.display_name(),
+          current.size,
+          self.pending_size
+        )),
+      );
+    }
+    rows.push(Row::separator());
     let fonts: Vec<Row<Item>> = self
       .system_fonts
       .iter()
