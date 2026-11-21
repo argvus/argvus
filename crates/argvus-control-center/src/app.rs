@@ -326,7 +326,7 @@ impl App {
 
   // Pass one language to every page; tests can avoid the real user preference.
   pub(crate) fn with_lang(initial: InitialRoute, lang: Lang) -> Self {
-    let theme = Theme::load();
+    let theme = Theme::load_for_control_center();
     let route = initial.route();
     let page = initial.settings_page();
     #[cfg(feature = "about")]
@@ -542,7 +542,7 @@ impl App {
   /// captured at startup.
   pub fn refresh_theme(&mut self) {
     self.theme_stamp = Theme::active_stamp();
-    let theme = Theme::load();
+    let theme = Theme::load_for_control_center();
     self.theme = theme.clone();
     self.settings.set_theme(&theme);
     self.config.set_theme(&theme);

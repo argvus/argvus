@@ -68,6 +68,7 @@ pub struct Loader {
   current_build: PathBuf,
   active_name_override: Option<String>,
   accent_override: Option<Rgba>,
+  control_center: bool,
 }
 
 impl Loader {
@@ -94,7 +95,13 @@ impl Loader {
       current_build: argvus_data_home().join("generated/theme/current"),
       active_name_override: None,
       accent_override: None,
+      control_center: false,
     }
+  }
+
+  pub fn for_control_center(mut self) -> Self {
+    self.control_center = true;
+    self
   }
 
   /// Creates a loader whose active theme comes from a validated external
@@ -146,27 +153,34 @@ impl Loader {
       Source::File(self.resource_dir.join("style.css")),
       Source::File(self.resource_dir.join("theme.css")),
     ];
-    if let Some(build) = self.active_build_palette(&active) {
+    if let Some(build) = self.active_build_palette(&active, "tui/theme.css") {
       sources.push(Source::File(build));
-    } else if let Some(rendered) = self.rendered_palette(&active) {
+    } else if let Some(rendered) = self.rendered_palette(&active, "tui") {
       sources.push(Source::Text(rendered));
+    }
+    if self.control_center {
+      if let Some(build) = self.active_build_palette(&active, "control-center/theme.css") {
+        sources.push(Source::File(build));
+      } else if let Some(rendered) = self.rendered_palette(&active, "control-center") {
+        sources.push(Source::Text(rendered));
+      }
     }
     sources
   }
 
   /// The TUI palette of the theme build, when the active theme is the user's
   /// own (not one chosen for another account) and the build was rendered for it.
-  fn active_build_palette(&self, active: &str) -> Option<PathBuf> {
+  fn active_build_palette(&self, active: &str, output: &str) -> Option<PathBuf> {
     if self.active_name_override.is_some() {
       return None;
     }
-    argvus_theme_core::build::current_file_for(&self.current_build, active, "tui/theme.css")
+    argvus_theme_core::build::current_file_for(&self.current_build, active, output)
   }
 
   /// The TUI palette rendered from the theme's manifest, for a theme without a
   /// build. A theme chosen for another account (the greeter) is looked up among
   /// the official themes only, because that account's own themes are private.
-  fn rendered_palette(&self, active: &str) -> Option<String> {
+  fn rendered_palette(&self, active: &str, consumer: &str) -> Option<String> {
     let mut paths = argvus_theme_core::paths::ThemePaths::from_environment().unwrap_or_else(|| {
       argvus_theme_core::paths::ThemePaths {
         system_root: system_config(),
@@ -177,7 +191,7 @@ impl Loader {
     if self.active_name_override.is_some() {
       paths.user_themes = PathBuf::new();
     }
-    argvus_theme_core::render::render_file(&paths, active, None, "tui").ok()
+    argvus_theme_core::render::render_file(&paths, active, None, consumer).ok()
   }
 
   /// What identifies the palette on disk: a different stamp means `sources`

@@ -37,6 +37,11 @@ impl Theme {
     resolver::resolve(&loader::Loader::new())
   }
 
+  /// Loads the shared palette and any Control Center-specific colors.
+  pub fn load_for_control_center() -> Self {
+    resolver::resolve(&loader::Loader::new().for_control_center())
+  }
+
   /// The identity of the user's active palette: when it changes, `load`
   /// returns other colours (another theme, layout or accent).
   pub fn active_stamp() -> loader::ThemeStamp {

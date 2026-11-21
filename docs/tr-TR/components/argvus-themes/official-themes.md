@@ -64,6 +64,7 @@ Modu değiştirmek için **Kontrol Merkezi → Görünüm → Mod**'u açın ve 
 | Celadon Light | `argvus-theme-celadon-light` | `#286347` |
 | Iris Light | `argvus-theme-iris-light` | `#6240A2` |
 | Foundry Light | `argvus-theme-foundry-light` | `#783D2A` |
+| Amélie Light | `argvus-theme-amelie-light` | `#FAA2CA` |
 
 ## Yerleşik temalar
 

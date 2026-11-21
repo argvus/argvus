@@ -63,6 +63,7 @@ description: 官方 ARGVUS 主题目录、默认高亮颜色，以及如何选�
 | Celadon Light | `argvus-theme-celadon-light` | `#286347` |
 | Iris Light | `argvus-theme-iris-light` | `#6240A2` |
 | Foundry Light | `argvus-theme-foundry-light` | `#783D2A` |
+| Amélie Light | `argvus-theme-amelie-light` | `#FAA2CA` |
 
 ## 内置主题
 

@@ -67,7 +67,7 @@ pub fn resolve(loader: &Loader) -> Theme {
     tab_active: color(accent),
     tab_inactive: color(muted),
     selected_background: color(accent),
-    selected_foreground: color(selected_foreground),
+    selected_foreground: color(get(&palette, "argvus_selected_fg", selected_foreground)),
     border: color(border),
     border_active: color(focus),
     muted: color(muted),

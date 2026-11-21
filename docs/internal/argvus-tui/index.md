@@ -13,6 +13,10 @@ the user site.
 - `crates/argvus-i18n-core`: language detection and the catalogs used by the TUI texts.
 
 The Control Center, which is the main consumer, is `crates/argvus-control-center*`.
+It loads the shared TUI palette, then overlays colors from the optional
+`control-center` theme consumer. Theme authors can use that consumer to style
+the Control Center independently of other TUIs. The Control Center reads the
+active build first and renders the consumer from the installed theme as a fallback.
 
 
 ARGVUS TUI is a Terminal User Interface framework that provides consistent, keyboard-first UI components for text-based ARGVUS applications and tools.

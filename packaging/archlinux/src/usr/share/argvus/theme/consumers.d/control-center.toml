@@ -1,0 +1,3 @@
+id = "control-center"
+template = "control-center/theme-template/theme.css"
+output = "control-center/theme.css"

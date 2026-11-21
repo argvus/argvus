@@ -63,6 +63,7 @@ description: 공식 ARGVUS 테마 카탈로그, 기본 하이라이트 색상, �
 | Celadon Light | `argvus-theme-celadon-light` | `#286347` |
 | Iris Light | `argvus-theme-iris-light` | `#6240A2` |
 | Foundry Light | `argvus-theme-foundry-light` | `#783D2A` |
+| Amélie Light | `argvus-theme-amelie-light` | `#FAA2CA` |
 
 ## 내장 테마
 
