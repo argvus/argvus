@@ -66,7 +66,7 @@ Wobble은 기본적으로 비활성화되어 있습니다. 그 ARGVUS 기본값�
 
 ## 시각적 테마 선택기
 
-**ARGVUS Theme Selector** (`argvus theme-selector`), 인수 없는 `argvus theme-switch` 또는 `SUPER + Shift + T`로 엽니다. 독립 GTK 오버레이가 활성 모니터에 중앙 미리 보기와 이웃 카드를 표시합니다. 검색과 모두/어두움/밝음 필터를 사용할 수 있습니다. 화살표, 마우스 휠 또는 옆 카드로 탐색하고 Enter로 적용하며 Escape로 닫습니다. 탐색만으로 바탕 화면이 바뀌지 않습니다. 시스템 및 사용자 테마는 기존 카탈로그를 사용합니다. 유효한 `preview` 이미지가 우선하며, 없으면 배경과 팔레트로 예시 화면을 구성합니다. 앱별 설정을 정확히 재현하지는 않습니다. 기존 적용 절차는 Sticky/Spaced를 유지하며 오류 시 재시도할 수 있습니다. JXL 썸네일에는 `libjxl`의 `djxl`이 필요합니다. XDG 캐시 경로는 `argvus/theme-selector/v2`입니다.
+**ARGVUS Theme Selector** (`argvus theme-selector`), 인수 없는 `argvus theme-switch` 또는 `SUPER + Shift + T`로 엽니다. 독립 GTK 오버레이가 활성 모니터에 포커스가 있는 검색 필드와 중앙 미리 보기, 이웃 카드를 표시합니다. 검색과 모두/어두움/밝음 필터를 사용할 수 있습니다. 화살표, 마우스 휠 또는 옆 카드로 탐색하고 Enter로 적용하며 Escape로 닫습니다. 탐색만으로 바탕 화면이 바뀌지 않습니다. 시스템 및 사용자 테마는 기존 카탈로그를 사용합니다. 유효한 `preview` 이미지가 우선하며, 없으면 배경과 팔레트로 예시 화면을 구성합니다. 앱별 설정을 정확히 재현하지는 않습니다. 기존 적용 절차는 Sticky/Spaced를 유지하며 오류 시 재시도할 수 있습니다. JXL 썸네일에는 `libjxl`의 `djxl`이 필요합니다. XDG 캐시 경로는 `argvus/theme-selector/v2`입니다.
 
 검색 필드에서 현재 키보드 배열의 악센트 문자를 입력할 수 있습니다. 검색 필드에 포커스가 있을 때 왼쪽 및 오른쪽 화살표로 필터링된 결과를 탐색할 수 있습니다.
 

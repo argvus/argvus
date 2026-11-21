@@ -521,17 +521,17 @@ pub fn open(app: &gtk::Application, i18n: Arc<I18n>) {
   );
 }
 
-pub fn focus_carousel(window: &gtk::Window) {
-  if let Some(carousel) = window
+pub fn focus_search(window: &gtk::Window) {
+  if let Some(search) = window
     .child()
     .and_downcast::<gtk::Overlay>()
     .and_then(|overlay| overlay.child())
     .and_then(|content| content.first_child())
     .and_then(|heading| heading.next_sibling())
-    .and_then(|controls| controls.next_sibling())
-    && let Some(drawing) = carousel.first_child()
+    .and_then(|controls| controls.first_child())
+    .and_downcast::<gtk::SearchEntry>()
   {
-    drawing.grab_focus();
+    search.grab_focus();
   }
 }
 
@@ -861,7 +861,7 @@ fn poll_events(
               }
             }
             window.present();
-            gtk::prelude::GtkWindowExt::set_focus(&window, Some(&drawing));
+            search.grab_focus();
           }
           Event::Catalog(Ok(loaded)) => {
             provider.load_from_string(&crate::render::css(

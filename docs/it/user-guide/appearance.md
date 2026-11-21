@@ -67,6 +67,8 @@ Questo richiede Hyprland **0.57.0 o più recente**, imposto dalla dipendenza del
 
 Apri **ARGVUS Theme Selector** (`argvus theme-selector`), `argvus theme-switch` senza argomenti o `SUPER + Shift + T`. Il selettore GTK indipendente appare sul monitor attivo con anteprima centrale e schede vicine. Cerca o filtra Tutti/Scuri/Chiari; naviga con frecce, rotella o schede laterali. Invio o Applica tema conferma; Escape o Chiudi annulla. Sfogliare non modifica il desktop. I temi di sistema e personali usano il catalogo esistente. Un’immagine `preview` valida ha precedenza; altrimenti sfondo e tavolozza compongono un desktop illustrativo, senza riprodurre esattamente le personalizzazioni delle applicazioni. La transazione conserva Sticky/Spaced. Gli errori consentono di riprovare. Le miniature JXL richiedono `djxl` di `libjxl`; la cache XDG contiene `argvus/theme-selector/v2`.
 
+Il campo di ricerca riceve il focus all’apertura del selettore.
+
 Il campo di ricerca supporta gli accenti della disposizione di tastiera attiva. Quando il campo ha il focus, le frecce sinistra e destra scorrono i risultati filtrati.
 
 All’apertura del selettore, il focus iniziale è sulla navigazione del carosello. Premi `/` per attivare o lasciare la ricerca; digitando con la ricerca attiva si filtrano i temi. **Personalizzato** mostra i temi installati dall’utente; **Scuro** e **Chiaro** mostrano i temi di sistema delle rispettive categorie. La riga di ricerca ha la stessa larghezza dell’anteprima centrale. Sticky usa angoli retti ovunque; Spaced mantiene gli angoli arrotondati. Lo stile compatto monospazio segue le utility desktop ARGVUS.

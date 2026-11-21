@@ -66,7 +66,7 @@ Wobble 默认情况下是禁用的。其 ARGVUS 默认值为：刚度 `100`、�
 
 ## 可视化主题选择器
 
-使用 **ARGVUS Theme Selector** (`argvus theme-selector`)、不带参数的 `argvus theme-switch` 或 `SUPER + Shift + T` 打开。独立 GTK 浮层在当前显示器显示中央预览和相邻卡片。支持搜索和全部/深色/浅色筛选。使用方向键、滚轮或侧边卡片浏览，Enter 应用，Escape 关闭。浏览不会改变桌面。系统和用户主题共用现有目录。优先显示有效的 `preview` 图片；否则用壁纸和配色绘制示意桌面，不保证准确呈现各应用的自定义设置。沿用现有应用事务，保留 Sticky/Spaced，失败后可以重试。JXL 缩略图需要 `libjxl` 中的 `djxl`；XDG 缓存路径为 `argvus/theme-selector/v2`。
+使用 **ARGVUS Theme Selector** (`argvus theme-selector`)、不带参数的 `argvus theme-switch` 或 `SUPER + Shift + T` 打开。独立 GTK 浮层在当前显示器显示已获得焦点的搜索框、中央预览和相邻卡片。支持搜索和全部/深色/浅色筛选。使用方向键、滚轮或侧边卡片浏览，Enter 应用，Escape 关闭。浏览不会改变桌面。系统和用户主题共用现有目录。优先显示有效的 `preview` 图片；否则用壁纸和配色绘制示意桌面，不保证准确呈现各应用的自定义设置。沿用现有应用事务，保留 Sticky/Spaced，失败后可以重试。JXL 缩略图需要 `libjxl` 中的 `djxl`；XDG 缓存路径为 `argvus/theme-selector/v2`。
 
 搜索框支持使用当前键盘布局输入带重音的字符。搜索框获得焦点时，可用左右方向键浏览筛选结果。
 
