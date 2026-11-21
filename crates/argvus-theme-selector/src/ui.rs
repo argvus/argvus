@@ -355,7 +355,7 @@ pub fn open(app: &gtk::Application, i18n: Arc<I18n>) {
       refresh();
     }
   });
-  search.connect_search_changed({
+  search.connect_text_notify({
     let refilter = refilter.clone();
     move |_| refilter()
   });
@@ -710,6 +710,19 @@ fn connect_keys(
   busy: &Rc<Cell<bool>>,
   navigate: &Rc<dyn Fn(isize)>,
 ) {
+  let composing = Rc::new(Cell::new(false));
+  if let Some(text) = search.delegate().and_downcast::<gtk::Text>() {
+    // Compose dead keys locally because the Wayland input context drops them on this layer surface.
+    text.set_im_module(Some("gtk-im-context-simple"));
+    text.connect_local("preedit-changed", false, {
+      let composing = composing.clone();
+      move |values| {
+        composing.set(values[1].get::<&str>().is_ok_and(|text| !text.is_empty()));
+        None
+      }
+    });
+  }
+
   let keys = gtk::EventControllerKey::new();
   keys.set_propagation_phase(gtk::PropagationPhase::Capture);
   keys.connect_key_pressed({
@@ -721,40 +734,38 @@ fn connect_keys(
       search.clone(),
       drawing.clone(),
     );
-    move |_, key, _, _| {
+    move |_, key, _, modifiers| {
       if busy.get() {
         return glib::Propagation::Stop;
       }
+      let focus = weak
+        .upgrade()
+        .and_then(|window| gtk::prelude::GtkWindowExt::focus(&window));
+      let search_focused = focus
+        .as_ref()
+        .is_some_and(|focus| *focus == search || focus.is_ancestor(&search));
+      if search_focused && composing.get() {
+        return glib::Propagation::Proceed;
+      }
+      let plain_key = (modifiers & gtk::accelerator_get_default_mod_mask()).is_empty();
       if key == gdk::Key::Escape {
         if let Some(window) = weak.upgrade() {
           window.close();
         }
       } else if key == gdk::Key::slash || key == gdk::Key::KP_Divide {
-        if weak
-          .upgrade()
-          .and_then(|window| gtk::prelude::GtkWindowExt::focus(&window))
-          .is_some_and(|focus| focus == search || focus.is_ancestor(&search))
-        {
+        if search_focused {
           drawing.grab_focus();
         } else {
           search.grab_focus();
         }
-      } else if weak
-        .upgrade()
-        .and_then(|window| gtk::prelude::GtkWindowExt::focus(&window))
-        .is_some_and(|focus| focus == search || focus.is_ancestor(&search))
-      {
-        return glib::Propagation::Proceed;
-      } else if key == gdk::Key::Left {
+      } else if key == gdk::Key::Left && (!search_focused || plain_key) {
         navigate(-1);
-      } else if key == gdk::Key::Right {
+      } else if key == gdk::Key::Right && (!search_focused || plain_key) {
         navigate(1);
+      } else if search_focused {
+        return glib::Propagation::Proceed;
       } else if key == gdk::Key::Return || key == gdk::Key::KP_Enter {
-        if weak
-          .upgrade()
-          .and_then(|window| gtk::prelude::GtkWindowExt::focus(&window))
-          .is_some_and(|focus| focus.is::<gtk::Button>() || focus.is::<gtk::DropDown>())
-        {
+        if focus.is_some_and(|focus| focus.is::<gtk::Button>() || focus.is::<gtk::DropDown>()) {
           return glib::Propagation::Proceed;
         }
         if apply.is_sensitive() {
