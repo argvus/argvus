@@ -12,8 +12,8 @@ fn taskbar_page_lists_height_and_border_after_the_spaces() {
   assert!(spaces.is_some() && height > spaces && border > height);
   assert_eq!(
     application.surface_draft().unwrap().height,
-    28,
-    "the default height is 28"
+    24,
+    "the default height is 24"
   );
   assert_eq!(application.state.waybar_bottom, 2);
 }

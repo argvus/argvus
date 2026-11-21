@@ -8,6 +8,9 @@ use super::*;
 
 impl Effects {
   pub(super) fn apply_taskbar_surface(&self, animations: &str) -> io::Result<()> {
+    if self.paths.has_shared_bars() {
+      return Ok(());
+    }
     let css = self.live("taskbar/config/argvus-taskbar.css");
     ensure_waybar_namespace(
       self.live("taskbar/config/argvus-taskbar.jsonc").as_deref(),
@@ -86,6 +89,9 @@ impl Effects {
   }
 
   pub(super) fn apply_widget_telemetry_surface(&self) -> io::Result<()> {
+    if self.paths.has_shared_bars() {
+      return Ok(());
+    }
     let css = self.live("widget-telemetry/config/argvus-widget-telemetry.css");
     ensure_waybar_namespace(
       self

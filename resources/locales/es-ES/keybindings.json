@@ -85,7 +85,7 @@
   "keybindings.action.clipboard": "Historial del portapapeles",
   "keybindings.action.dpms": "Apagar/encender el monitor (no suspender el sistema)",
   "keybindings.action.sidebar": "Abrir/Cerrar barra lateral de notificaciones",
-  "keybindings.action.taskbar_toggle": "Alternar barra de ruta superior",
+  "keybindings.action.taskbar_toggle": "Mostrar u ocultar la barra de tareas",
   "keybindings.action.weather": "Configurar la ubicación del clima",
   "keybindings.action.waybar_top": "Mover la barra principal a la parte superior",
   "keybindings.action.waybar_bottom": "Mover la barra principal hacia la parte inferior",

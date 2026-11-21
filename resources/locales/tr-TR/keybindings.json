@@ -85,7 +85,7 @@
   "keybindings.action.clipboard": "Pano Geçmişi",
   "keybindings.action.dpms": "Monitörü kapatıp açın (sistemi askıya almayın)",
   "keybindings.action.sidebar": "Bildirim kenar çubuğunu aç/kapat",
-  "keybindings.action.taskbar_toggle": "Waybar'ın üst kısmını değiştir",
+  "keybindings.action.taskbar_toggle": "Görev çubuğunu göster veya gizle",
   "keybindings.action.weather": "Hava durumu konumunu yapılandırın",
   "keybindings.action.waybar_top": "Ana çubuğu en üste taşıyın",
   "keybindings.action.waybar_bottom": "Ana çubuğu aşağıya doğru hareket ettirin",

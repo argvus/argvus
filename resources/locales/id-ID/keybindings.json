@@ -85,7 +85,7 @@
   "keybindings.action.clipboard": "Riwayat Papan Klip",
   "keybindings.action.dpms": "Mematikan/menghidupkan monitor (bukan menangguhkan sistem)",
   "keybindings.action.sidebar": "Buka/Tutup sidebar notifikasi",
-  "keybindings.action.taskbar_toggle": "Alihkan Waybar ke atas",
+  "keybindings.action.taskbar_toggle": "Tampilkan atau sembunyikan bilah tugas",
   "keybindings.action.weather": "Konfigurasikan lokasi cuaca",
   "keybindings.action.waybar_top": "Pindahkan bilah utama ke atas",
   "keybindings.action.waybar_bottom": "Pindahkan bilah utama ke bawah",

@@ -91,15 +91,14 @@ pub(super) fn session_restart(components: &[String]) -> ExitCode {
       return ExitCode::from(1);
     }
   };
-  let units = match session_units::units_for(&names, || {
-    session_units::telemetry_enabled(&cache, session_units::configured_telemetry_default)
-  }) {
-    Ok(units) => units,
-    Err(unknown) => {
-      eprintln!("argvus-config: unknown session component: {}", unknown.0);
-      return ExitCode::from(64);
-    }
-  };
+  let units =
+    match session_units::units_for(&names, || session_units::current_telemetry_enabled(&cache)) {
+      Ok(units) => units,
+      Err(unknown) => {
+        eprintln!("argvus-config: unknown session component: {}", unknown.0);
+        return ExitCode::from(64);
+      }
+    };
   if units.is_empty() {
     return ExitCode::SUCCESS;
   }

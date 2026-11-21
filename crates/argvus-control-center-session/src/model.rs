@@ -115,11 +115,19 @@ pub fn manifest() -> Vec<Component> {
       true,
     ),
     component(
-      "waybar",
-      "Waybar",
+      "taskbar",
+      "Taskbar",
       "Barra de status",
-      vec!["waybar"],
-      None,
+      vec![],
+      Some("argvus-taskbar.service"),
+      false,
+    ),
+    component(
+      "widget-telemetry",
+      "Widget Telemetry",
+      "Painel de telemetria",
+      vec![],
+      Some("argvus-widget-telemetry.service"),
       false,
     ),
     component(

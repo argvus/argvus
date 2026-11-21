@@ -1,6 +1,6 @@
 ---
 title: 위젯 원격 측정
-description: Waybar 텔레메트리 블록과 argvus widget-telemetry를 통한 토글.
+description: Quickshell 텔레메트리 블록과 argvus widget-telemetry를 통한 토글.
 ---
 텔레메트리 위젯은 작업 표시줄에 표시되는 시스템 정보입니다(헤더, 키, 시스템, CPU 및 GPU, 메모리, 저장소, 프로세스, 네트워크 및 개발자 대시보드). 이것은 `argvus` 패키지 내에서 프로세스 내에 있으며, 셸 수집기는 없습니다.
 

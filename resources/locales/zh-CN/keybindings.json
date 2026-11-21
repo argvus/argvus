@@ -85,7 +85,7 @@
   "keybindings.action.clipboard": "剪贴板历史记录",
   "keybindings.action.dpms": "关闭/打开显示器（不暂停系统）",
   "keybindings.action.sidebar": "打开/关闭通知侧边栏",
-  "keybindings.action.taskbar_toggle": "切换导航栏顶部",
+  "keybindings.action.taskbar_toggle": "显示或隐藏任务栏",
   "keybindings.action.weather": "配置天气位置",
   "keybindings.action.waybar_top": "将主栏移至顶部",
   "keybindings.action.waybar_bottom": "将主栏移动到底部",

@@ -69,6 +69,11 @@ impl SessionPaths {
     self.data_home.join(legacy_relative(relative))
   }
 
+  /// Whether the installed taskbar payload provides the shared Quickshell shell.
+  pub(crate) fn has_shared_bars(&self) -> bool {
+    self.system_config("taskbar/quickshell/shell.qml").is_file()
+  }
+
   /// The packaged copy of a file (`paths_system_config`).
   pub fn system_config(&self, relative: &str) -> PathBuf {
     self.system_config.join(relative)

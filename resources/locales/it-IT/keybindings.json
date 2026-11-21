@@ -85,7 +85,7 @@
   "keybindings.action.clipboard": "Cronologia degli appunti",
   "keybindings.action.dpms": "Spegne/accende il monitor (non sospende il sistema)",
   "keybindings.action.sidebar": "Apri/Chiudi la barra laterale delle notifiche",
-  "keybindings.action.taskbar_toggle": "Attiva/disattiva la parte superiore della barra di navigazione",
+  "keybindings.action.taskbar_toggle": "Mostra o nascondi la barra delle applicazioni",
   "keybindings.action.weather": "Configura la posizione meteo",
   "keybindings.action.waybar_top": "Sposta la barra principale in alto",
   "keybindings.action.waybar_bottom": "Sposta la barra principale in basso",

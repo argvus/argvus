@@ -1,6 +1,6 @@
 ---
 title: Widget telemetrisi
-description: Waybar telemetri blokları ve argvus widget-telemetry aracılığıyla bunların arasında geçiş yapılması.
+description: Quickshell telemetri blokları ve argvus widget-telemetry aracılığıyla bunların arasında geçiş yapılması.
 ---
 
 Telemetri widget'ı, görev çubuğunda gösterilen sistem bilgileridir (başlık, tuşlar, sistem, CPU)

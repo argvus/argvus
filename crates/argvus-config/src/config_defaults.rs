@@ -332,12 +332,15 @@ fn default_taskbar(document: &mut ConfigDocument) {
   time
     .entry("format")
     .or_insert_with(|| Value::String("24h".into()));
-  // An unset height or border follows the packaged taskbar and the theme class.
+  // Older configurations may use null for the height. Keep explicit user choices.
   let shape = taskbar
     .entry("shape")
     .or_insert_with(|| Value::Object(Map::new()));
   let shape = shape.as_object_mut().expect("taskbar.shape is object");
-  shape.entry("height").or_insert(Value::Null);
+  let height = shape.entry("height").or_insert(Value::from(24));
+  if height.is_null() {
+    *height = Value::from(24);
+  }
   shape.entry("border_width").or_insert(Value::Null);
 }
 

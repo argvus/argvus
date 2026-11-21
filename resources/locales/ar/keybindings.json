@@ -85,7 +85,7 @@
   "keybindings.action.clipboard": "تاريخ الحافظة",
   "keybindings.action.dpms": "إيقاف تشغيل/تشغيل الشاشة (وليس تعليق النظام)",
   "keybindings.action.sidebar": "فتح/إغلاق الشريط الجانبي للإشعارات",
-  "keybindings.action.taskbar_toggle": "تبديل أعلى شريط الطريق",
+  "keybindings.action.taskbar_toggle": "إظهار شريط المهام أو إخفاؤه",
   "keybindings.action.weather": "تكوين موقع الطقس",
   "keybindings.action.waybar_top": "حرك الشريط الرئيسي إلى الأعلى",
   "keybindings.action.waybar_bottom": "حرك الشريط الرئيسي إلى الأسفل",

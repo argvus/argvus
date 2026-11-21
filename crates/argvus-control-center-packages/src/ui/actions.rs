@@ -526,18 +526,11 @@ pub(super) fn action_changes_updates(action: &Action) -> bool {
   !matches!(action, Action::CleanCache(_) | Action::ApplyMirrors(_))
 }
 
-/// Matches `custom/update-status.signal` in the taskbar's packaged config.
-/// Signal Waybar itself: the service's main process can be a shell supervisor.
+/// Refreshes the packages indicator in the shared bars shell.
 pub(super) fn taskbar_update_request() -> ProcessRequest {
-  // SAFETY: geteuid has no arguments or memory-safety preconditions.
-  let uid = unsafe { libc::geteuid() };
-  ProcessRequest::new("pkill")
-    .arg("--signal")
-    .arg("RTMIN+10")
-    .arg("--euid")
-    .arg(uid.to_string())
-    .arg("--exact")
-    .arg("waybar")
+  ["sessionctl", "bars-ipc", "taskbar", "refreshUpdates"]
+    .into_iter()
+    .fold(ProcessRequest::new("argvus"), ProcessRequest::arg)
     .timeout(std::time::Duration::from_secs(5))
 }
 

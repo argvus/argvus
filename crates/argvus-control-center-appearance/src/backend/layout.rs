@@ -159,6 +159,16 @@ pub(super) fn apply_canonical_taskbar(state: &mut AppearanceState) {
       .and_then(|values| values.get(key))
       .and_then(Value::as_bool)
   };
+  if let Some(expanded) = taskbar
+    .pointer("/icons/utilities/expanded")
+    .and_then(Value::as_bool)
+  {
+    state.taskbar_utility_group = if expanded {
+      TaskbarUtilityGroupMode::AlwaysExpanded
+    } else {
+      TaskbarUtilityGroupMode::Auto
+    };
+  }
   state.taskbar_launcher_custom_icon_path = icons
     .and_then(|values| values.get("launcher_custom_icon_path"))
     .and_then(Value::as_str)

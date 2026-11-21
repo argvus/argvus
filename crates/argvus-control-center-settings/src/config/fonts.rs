@@ -305,7 +305,14 @@ impl FontSettings {
   /// without storing the state or refreshing the running programs.
   fn write_target(&self, target: FontTarget) -> Result<(), String> {
     match target {
-      FontTarget::Taskbar | FontTarget::Sysinfo => self.write_waybar_settings()?,
+      FontTarget::Taskbar | FontTarget::Sysinfo => {
+        if !paths::system_config_root()
+          .join("taskbar/quickshell/shell.qml")
+          .is_file()
+        {
+          self.write_waybar_settings()?;
+        }
+      }
       FontTarget::ControlPanel => {}
       FontTarget::System => gsettings_set(
         "org.gnome.desktop.wm.preferences",

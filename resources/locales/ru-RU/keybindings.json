@@ -85,7 +85,7 @@
   "keybindings.action.clipboard": "История буфера обмена",
   "keybindings.action.dpms": "Включение и выключение монитора (не приостанавливать работу системы)",
   "keybindings.action.sidebar": "Открытие/закрытие боковой панели уведомлений.",
-  "keybindings.action.taskbar_toggle": "Переключить верхнюю часть панели навигации",
+  "keybindings.action.taskbar_toggle": "Показать или скрыть панель задач",
   "keybindings.action.weather": "Настройка местоположения погоды",
   "keybindings.action.waybar_top": "Переместите основную панель вверх.",
   "keybindings.action.waybar_bottom": "Переместите основную панель вниз.",

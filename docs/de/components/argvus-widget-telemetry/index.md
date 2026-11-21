@@ -1,6 +1,6 @@
 ---
 title: Widget-Telemetrie
-description: Die Waybar-Telemetrie-Blöcke und deren Umschaltung über das argvus Widget-Telemetrie.
+description: Die Quickshell-Telemetrie-Blöcke und deren Umschaltung über das argvus Widget-Telemetrie.
 ---
 Das Telemetrie-Widget ist die Systeminformation, die in der Taskleiste angezeigt wird (Header, Tasten, System, CPU und GPU, Speicher, Speicherplatz, Prozesse, Netzwerk und das Entwickler-Dashboard). Es befindet sich im Prozess im `argvus`-Paket: Es gibt keine Shell-Sammler.
 

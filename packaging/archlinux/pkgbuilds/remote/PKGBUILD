@@ -40,7 +40,6 @@ depends=(
 	'argvus-hyprland'
 	'argvus-launcher'
 	'argvus-taskbar'
-	'argvus-waybar'
 )
 
 # Packages that this one replaces. The split packages argvus-gtk and argvus-greeter

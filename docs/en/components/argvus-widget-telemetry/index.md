@@ -1,6 +1,6 @@
 ---
 title: Widget telemetry
-description: The Waybar telemetry blocks and their toggle, through argvus widget-telemetry.
+description: The Quickshell telemetry blocks and their toggle, through argvus widget-telemetry.
 ---
 
 The telemetry widget is the system information shown in the taskbar (header, keys, system, CPU

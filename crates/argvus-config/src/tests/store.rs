@@ -448,6 +448,9 @@ fn apply_theme_restores_exported_profile_but_keeps_the_active_mode() {
     lock_path: config_directory.join(LOCK_FILE),
   };
   store.ensure().unwrap();
+  store
+    .modify(|doc| doc.set("/taskbar/shape/height", Value::from(36)))
+    .unwrap();
   store.apply_layout_variant("spaced").unwrap();
 
   let mut sections = BTreeMap::new();
@@ -475,7 +478,7 @@ fn apply_theme_restores_exported_profile_but_keeps_the_active_mode() {
   );
   sections.insert(
     "taskbar".into(),
-    serde_json::json!({ "workspaces": { "presentation": "app-icons" } }),
+    serde_json::json!({ "shape": { "height": 28 }, "workspaces": { "presentation": "app-icons" } }),
   );
   let profile = ConfigDocument {
     schema_version: CURRENT_SCHEMA_VERSION,
@@ -491,6 +494,10 @@ fn apply_theme_restores_exported_profile_but_keeps_the_active_mode() {
     )
     .unwrap();
   let document = store.load().unwrap();
+  assert_eq!(
+    document.get("/taskbar/shape/height"),
+    Some(&Value::from(36))
+  );
   assert_eq!(
     document.get("/layout/variant").and_then(Value::as_str),
     Some("spaced")
@@ -546,6 +553,10 @@ fn apply_theme_restores_exported_profile_but_keeps_the_active_mode() {
     )
     .unwrap();
   let document = store.load().unwrap();
+  assert_eq!(
+    document.get("/taskbar/shape/height"),
+    Some(&Value::from(36))
+  );
   assert_eq!(
     document
       .get("/layout/window/gaps_in")

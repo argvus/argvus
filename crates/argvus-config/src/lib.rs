@@ -801,6 +801,11 @@ impl ConfigStore {
         .unwrap_or("sticky")
         .to_owned();
 
+      let taskbar_height = document
+        .get(json_pointers::TASKBAR_SHAPE_HEIGHT)
+        .and_then(Value::as_u64)
+        .unwrap_or(24);
+
       // Keep the final taskbar edge while resetting geometry to the mode defaults.
       let mode_position = preserve_mode_geometry
         .then(|| document.get("/layout/taskbar/position").cloned())
@@ -832,6 +837,10 @@ impl ConfigStore {
         }
       }
 
+      document.set(
+        json_pointers::TASKBAR_SHAPE_HEIGHT,
+        Value::from(taskbar_height),
+      )?;
       if let Some(position) = mode_position {
         document.set("/layout/taskbar/position", position)?;
       }

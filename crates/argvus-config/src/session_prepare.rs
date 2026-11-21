@@ -278,6 +278,10 @@ fn fingerprint_roots(paths: &SessionPaths, theme: &str) -> Vec<PathBuf> {
     theme_paths.registry(),
     theme_paths.layouts(),
   ];
+  if paths.has_shared_bars() {
+    roots.push(system("taskbar/quickshell"));
+    roots.push(system("taskbar/sh/bars-presentation.sh"));
+  }
   if let Ok(consumers) =
     argvus_theme_core::registry::load(&theme_paths.system_root, &theme_paths.registry())
   {
@@ -341,9 +345,11 @@ pub(crate) fn theme_materialized(paths: &SessionPaths, theme: &str) -> bool {
     "widget-telemetry/config/argvus-widget-telemetry.css",
     "appearance/config/waybar/mode.css",
   ];
-  for relative in required {
-    if paths.system_config(relative).is_file() && !paths.user_config(relative).is_file() {
-      return false;
+  if !paths.has_shared_bars() {
+    for relative in required {
+      if paths.system_config(relative).is_file() && !paths.user_config(relative).is_file() {
+        return false;
+      }
     }
   }
   paths.user_config("gtk-4.0/settings.ini").is_file()

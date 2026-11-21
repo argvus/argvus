@@ -1,6 +1,6 @@
 ---
 title: 小部件遥测
-description: Waybar 的遥测模块及其切换，通过 argvus widget-telemetry。
+description: Quickshell 的遥测模块及其切换，通过 argvus widget-telemetry。
 ---
 遥测小部件是显示在任务栏中的系统信息（标题、键、系统、CPU 和 GPU、内存、存储、进程、网络和开发者仪表板）。它位于 `argvus` 包中：没有外壳收集器。
 

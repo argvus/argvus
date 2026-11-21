@@ -85,7 +85,7 @@
   "keybindings.action.clipboard": "クリップボード履歴",
   "keybindings.action.dpms": "モニターをオフ/オンにします (システムを一時停止しない)",
   "keybindings.action.sidebar": "通知サイドバーの開閉",
-  "keybindings.action.taskbar_toggle": "ウェイバーのトップを切り替え",
+  "keybindings.action.taskbar_toggle": "タスクバーの表示を切り替える",
   "keybindings.action.weather": "天気予報の位置を設定する",
   "keybindings.action.waybar_top": "メインバーを一番上に移動します",
   "keybindings.action.waybar_bottom": "メインバーを一番下に移動します",

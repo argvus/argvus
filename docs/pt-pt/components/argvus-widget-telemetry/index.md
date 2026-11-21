@@ -1,6 +1,6 @@
 ---
 title: Telemetria do widget
-description: Os blocos de telemetria da Waybar e a sua alternância, pelo argvus widget-telemetry.
+description: Os blocos de telemetria da Quickshell e a sua alternância, pelo argvus widget-telemetry.
 ---
 
 O widget de telemetria é a informação do sistema mostrada na taskbar (cabeçalho, teclas, sistema,

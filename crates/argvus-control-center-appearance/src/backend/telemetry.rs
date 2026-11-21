@@ -9,7 +9,7 @@ pub(super) fn telemetry_state() -> bool {
       .arg("ARGVUS_MACHINE_OUTPUT=1")
       .arg("argvus")
       .arg("widget-telemetry-toggle")
-      .arg("status")
+      .arg("master-status")
       .timeout(Duration::from_secs(3)),
   ) && output.status.is_none_or(|status| status == 0)
   {

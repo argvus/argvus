@@ -1,5 +1,6 @@
 use super::model::{self, Registry};
 use super::*;
+use crate::ConfigStore;
 use std::fs::{self, OpenOptions};
 use std::os::unix::fs::DirBuilderExt;
 use std::os::unix::net::UnixListener;
@@ -146,11 +147,17 @@ impl Service {
         .ok_or_else(|| invalid("compositor gaps unavailable"))?,
     )?;
     if bar_mapped()? {
-      match fs::read(runtime_path("bar.json")?) {
-        Ok(bytes) => gaps = layout::compensate_secondary(gaps, &serde_json::from_slice(&bytes)?),
-        Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
-        Err(error) => return Err(error.into()),
-      }
+      let document = ConfigStore::from_environment()?.load_effective()?;
+      let primary_bottom = document
+        .get("/layout/taskbar/position")
+        .and_then(Value::as_str)
+        == Some("bottom");
+      let secondary = json!({
+        "position": if primary_bottom { "top" } else { "bottom" },
+        "margin-top": document.get("/layout/taskbar/margin_bottom"),
+        "margin-bottom": document.get("/layout/taskbar/margin_top"),
+      });
+      gaps = layout::compensate_secondary(gaps, &secondary);
     }
     let border = query("getoption general:border_size")?["int"]
       .as_i64()

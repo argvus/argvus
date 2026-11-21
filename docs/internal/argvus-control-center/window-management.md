@@ -2,7 +2,7 @@
 
 The implementation extends the global `/hyprland/window_mode` preference. There
 is no second mode setting. `argvus-config::windows` implements the in-process
-`argvus windows` command, its session service, the secondary Waybar supervisor,
+`argvus windows` command, its session service, the shared Quickshell window bar,
 and directional taskbar positioning.
 
 ## Ownership and transitions
@@ -34,23 +34,19 @@ validated window addresses; workspace names are escaped as Lua bytes, never
 passed through a shell. Visible failures show a translated notification and
 retain technical details in logs.
 
-`argvus windows bar` supervises its own Waybar child, dormant in Tile unless
-recovery is pending. `argvus-windows.service` and `argvus-window-bar.service`
-belong to the session target; their process groups are stopped with the session.
-The bar runner recreates only its own surface for mode/position/geometry changes.
-`position top|bottom` projects the canonical geometry and restarts the principal
-bar when necessary; `--persist` skips the runtime restart. The legacy spacing
-script delegates position changes and resets, while keeping its other geometry
-operations. The Control Center and directional shortcuts use the Rust route.
+`argvus windows bar` activates `argvus-window-bar.service`. The Floating surface in
+`argvus-bars.service` is unloaded in Tile unless recovery is pending. The session
+target manages both the backend and the surface units. `position top|bottom`
+projects canonical geometry and refreshes the shared shell in place.
+`--persist` skips the live publication. The spacing script delegates position
+changes and resets. The Control Center and directional shortcuts use the same
+Rust route.
 
-The native `hyprland/argvus-windows` module is compiled into argvus-waybar using
-its existing pinned upstream source and patches. A worker reads the snapshot
-stream; GTK work stays on the main thread. It creates one button per window,
-filters by the current workspace of each output (or its open special workspace),
-collapses hidden group tabs and minimized groups, keeps minimized windows
-associated with their original workspace/output, and sends actions
-as argument arrays. Unknown or broken application icons fall back to a symbol
-without invoking GTK's fatal missing-image path.
+The Quickshell window module consumes the snapshot stream and maintains buttons
+keyed by window address. The backend filters windows by output and workspace,
+collapses hidden group entries, and retains minimized windows on their original
+workspace and output. The frontend sends argument arrays and uses a fallback icon
+when the app ID has no matching icon.
 
 ## Decorations and packaging
 
@@ -77,7 +73,7 @@ Implemented and verified:
 - Scoped configuration/CLI/settings/appearance Rust tests and strict scoped
   Clippy; Rust formatting. Release dispatcher builds include the service.
 - Hyprbars compilation and loading against installed 0.57.0 headers, and native
-  Waybar compilation with all existing ARGVUS patches plus the new module.
+  Quickshell with the ARGVUS window surface.
 - Real pointer clicks on minimize, maximize, close and the recovery-bar entry
   inside an isolated nested compositor, including correct window targeting.
 - Real-window minimization/restoration, geometry/maximization, service restart,
@@ -88,8 +84,8 @@ Implemented and verified:
   across transient decoration/layout refreshes; Lua regressions cover pending
   application rules and transient floating-state changes.
 - Opt-in regression `tests/test_window_controls.py` in argvus-hyprland launches
-  its own compositor/services/Waybar and removes its process groups afterward.
-  Provide `ARGVUS_TEST_ARGVUS`, `ARGVUS_TEST_HYPRBARS`, `ARGVUS_TEST_WAYBAR`, and a
+  its own compositor, services and Quickshell shell and removes its process groups afterward.
+  Provide `ARGVUS_TEST_ARGVUS`, `ARGVUS_TEST_HYPRBARS`, Quickshell 0.3.2 or newer, and a
   parent Wayland display. The ordinary test run skips it without built artifacts.
 - Theme rendering across official themes/layouts, i18n parity/validation,
   package metadata and staged payloads, unit syntax and documentation references.
@@ -130,6 +126,6 @@ live focus and recovery state: a visible active window minimizes in Floating;
 an inactive window activates, and a minimized window restores and activates.
 Explicit `activate` and `restore` keep their existing non-toggling semantics.
 The frontend sends only the address, avoiding decisions from stale snapshots.
-The nested Hyprland regression exercises native Waybar pointer clicks through
-activate, minimize and restore, including cursor preservation. Its parent
+The nested regression can exercise pointer clicks for activate, minimize and
+restore with the optional `ARGVUS_TEST_POINTER` driver. Its parent
 pointer is disabled to isolate synthetic input from the running desktop.

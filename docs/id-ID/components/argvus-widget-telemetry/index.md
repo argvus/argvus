@@ -1,6 +1,6 @@
 ---
 title: Telemetri widget
-description: Blok telemetri Waybar dan peralihannya, melalui telemetri widget argvus.
+description: Blok telemetri Quickshell dan peralihannya, melalui telemetri widget argvus.
 ---
 
 Widget telemetri adalah informasi sistem yang ditampilkan di taskbar (header, kunci, sistem, CPU

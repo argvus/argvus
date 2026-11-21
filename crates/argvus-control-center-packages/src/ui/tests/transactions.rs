@@ -27,21 +27,12 @@ fn package_changes_refresh_the_taskbar_for_official_and_aur_transactions() {
 }
 
 #[test]
-fn taskbar_update_signal_targets_only_waybar_of_the_current_user() {
+fn taskbar_update_targets_the_shared_bars_shell() {
   let request = actions::taskbar_update_request();
-  // SAFETY: geteuid has no arguments or memory-safety preconditions.
-  let uid = unsafe { libc::geteuid() };
-  assert_eq!(request.program, "pkill");
+  assert_eq!(request.program, "argvus");
   assert_eq!(
     request.args,
-    [
-      "--signal",
-      "RTMIN+10",
-      "--euid",
-      &uid.to_string(),
-      "--exact",
-      "waybar"
-    ]
+    ["sessionctl", "bars-ipc", "taskbar", "refreshUpdates"]
   );
   assert_eq!(request.timeout, Some(std::time::Duration::from_secs(5)));
 }

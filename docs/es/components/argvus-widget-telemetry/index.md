@@ -1,6 +1,6 @@
 ---
 title: Telemetría de widget
-description: Los bloques de telemetría de Waybar y su alternancia, a través del widget-telemetry de argvus.
+description: Los bloques de telemetría de Quickshell y su alternancia, a través del widget-telemetry de argvus.
 ---
 El widget de telemetría es la información del sistema que se muestra en la barra de tareas (encabezado, claves, sistema, CPU y GPU, memoria, almacenamiento, procesos, red y el panel de desarrollador). Está en proceso en el paquete `argvus`: no hay recolectores de shell.
 

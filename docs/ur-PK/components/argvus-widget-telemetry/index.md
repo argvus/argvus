@@ -1,6 +1,6 @@
 ---
 title: ویجیٹ ٹیلی میٹری
-description: Waybar ٹیلی میٹری بلاکس اور ان کا ٹوگل، argvus widget-telemetry کے ذریعے۔
+description: Quickshell ٹیلی میٹری بلاکس اور ان کا ٹوگل، argvus widget-telemetry کے ذریعے۔
 ---
 
 ٹیلی میٹری ویجیٹ سسٹم کی معلومات ہے جو ٹاسک بار میں دکھائی گئی ہے (ہیڈر، کیز، سسٹم، سی پی یو

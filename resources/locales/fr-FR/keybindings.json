@@ -85,7 +85,7 @@
   "keybindings.action.clipboard": "Historique du Presse-papiers",
   "keybindings.action.dpms": "Éteindre/allumer le moniteur (pas suspendre le système)",
   "keybindings.action.sidebar": "Barre latérale de notification Ouvrir/Fermer",
-  "keybindings.action.taskbar_toggle": "Basculer vers le haut de la Waybar",
+  "keybindings.action.taskbar_toggle": "Afficher ou masquer la barre des tâches",
   "keybindings.action.weather": "Configurer l'emplacement météo",
   "keybindings.action.waybar_top": "Déplacer la barre principale vers le haut",
   "keybindings.action.waybar_bottom": "Déplacez la barre principale vers le bas",

@@ -90,9 +90,11 @@ pub fn run(paths: &SessionPaths, theme: &str, runtime: bool, live: bool) -> i32 
     theme_surfaces::current_user_id(),
   );
 
-  timed("theme.taskbar", || {
-    apply_waybar(paths, theme, !runtime || layout_changed, &fonts)
-  });
+  if !paths.has_shared_bars() {
+    timed("theme.taskbar", || {
+      apply_waybar(paths, theme, !runtime || layout_changed, &fonts)
+    });
+  }
   timed("theme.qt", || apply_qt6ct(paths));
   if let Err(key) = timed("theme.files", || {
     theme_files::write_build_copies(paths, theme, &fonts, &icon.current)

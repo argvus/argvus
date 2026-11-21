@@ -1,6 +1,6 @@
 //! Taskbar position, shape, icons, date and time formats, and reloading it with the apply overlay.
 
-use super::commands::{read_first, run_script, script};
+use super::commands::read_first;
 use super::themes::active_theme_file;
 use super::*;
 
@@ -102,10 +102,7 @@ pub(super) fn run_taskbar_config(arguments: &[&str]) -> Result<(), String> {
   Ok(())
 }
 
-/// Persists the taskbar icon/date/time preferences to the canonical document
-/// and re-derives the Waybar config from them. It does not reload
-/// `argvus-config.service` nor restart the taskbar: the `Apply` of the taskbar
-/// surface restarts it once, under the splash, when any of them changed.
+/// Persists taskbar view preferences and updates the Clipboard capture services.
 pub fn apply_taskbar_icons_and_format(
   modules: &TaskbarModules,
   workspace_presentation: TaskbarWorkspacePresentation,
@@ -137,8 +134,7 @@ pub fn apply_taskbar_icons_and_format(
     Value::String(time_format.value().into()),
   );
   persist_taskbar_patch(patch)?;
-  sync_clipboard_watchers()?;
-  run_script(&script("taskbar-widgets-mode.sh"), &["apply"])
+  sync_clipboard_watchers()
 }
 
 /// Applies the saved Clipboard preference to the two capture services.
@@ -160,21 +156,13 @@ fn sync_clipboard_watchers() -> Result<(), String> {
   Ok(())
 }
 
-/// Restarts the taskbar (Waybar) process so it re-parses its generated
-/// JSONC from scratch. `argvus-sessionctl reload` is not sufficient here: it
-/// only reload-or-restarts `argvus-config.service` and never touches
-/// `argvus-taskbar.service` (confirmed in `de/argvus-session`'s
-/// `argvus-sessionctl`/`test-session-reload.py`). A full restart is also the
-/// only way Waybar re-reads anything beyond CSS — `reload_style_on_change`
-/// only watches the stylesheet, and the SIGUSR1 binding in Hyprland merely
-/// toggles bar visibility, not a config reload.
+/// Publishes the current preferences for the live shared shell.
 pub fn reload_taskbar() -> Result<(), String> {
   let output = SystemProcessRunner
     .run(
       &ProcessRequest::new("argvus")
         .arg("sessionctl")
-        .arg("restart")
-        .arg("taskbar"),
+        .arg("bars-presentation"),
     )
     .map_err(|error| error.to_string())?;
   if output.status.is_none_or(|status| status != 0) {
@@ -182,7 +170,7 @@ pub fn reload_taskbar() -> Result<(), String> {
       .trim()
       .to_string();
     return Err(if stderr.is_empty() {
-      "argvus-sessionctl restart taskbar falhou".into()
+      "argvus-sessionctl bars-presentation falhou".into()
     } else {
       stderr
     });

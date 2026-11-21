@@ -85,7 +85,7 @@
   "keybindings.action.clipboard": "클립보드 기록",
   "keybindings.action.dpms": "모니터 끄기/켜기(시스템 일시 중지 아님)",
   "keybindings.action.sidebar": "알림 사이드바 열기/닫기",
-  "keybindings.action.taskbar_toggle": "Waybar 상단 전환",
+  "keybindings.action.taskbar_toggle": "작업 표시줄 표시 또는 숨기기",
   "keybindings.action.weather": "날씨 위치 구성",
   "keybindings.action.waybar_top": "메인바를 위로 이동",
   "keybindings.action.waybar_bottom": "메인바를 하단으로 이동",

@@ -53,11 +53,22 @@ pub(super) fn run(arguments: Vec<String>) -> Result<(), Box<dyn std::error::Erro
       }
       _ => return Err("usage: argvus config session-splash start|stop".into()),
     },
+    "bars-config" => {
+      let document = store.load_effective()?;
+      let settings: serde_json::Map<String, Value> =
+        ["appearance", "layout", "effects", "fonts", "taskbar"]
+          .iter()
+          .filter_map(|section| {
+            document
+              .get(&format!("/{section}"))
+              .cloned()
+              .map(|value| ((*section).to_string(), value))
+          })
+          .collect();
+      println!("{}", serde_json::to_string(&settings)?);
+    }
     "session-telemetry" => {
-      let enabled = session_units::telemetry_enabled(
-        &cache_home()?,
-        session_units::configured_telemetry_default,
-      );
+      let enabled = session_units::current_telemetry_enabled(&cache_home()?);
       println!("{}", if enabled { "enabled" } else { "disabled" });
     }
     "audio" => crate::audio::run(&store, &arguments[1..])?,

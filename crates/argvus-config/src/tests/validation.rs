@@ -197,10 +197,13 @@ fn taskbar_position_accepts_only_horizontal_edges() {
 }
 
 #[test]
-fn taskbar_shape_defaults_to_null_and_accepts_only_offered_sizes() {
+fn taskbar_defaults_to_24_pixels_and_accepts_only_offered_sizes() {
   let mut document = ConfigDocument::default();
   apply_defaults(&mut document).unwrap();
-  assert_eq!(document.get("/taskbar/shape/height"), Some(&Value::Null));
+  assert_eq!(
+    document.get("/taskbar/shape/height"),
+    Some(&Value::from(24))
+  );
   assert_eq!(
     document.get("/taskbar/shape/border_width"),
     Some(&Value::Null)

@@ -37,7 +37,7 @@ power, display, network, notifications and themes — all packaged for Arch Linu
 
 - **Session** — Login through `greetd` with the ARGVUS greeter, session startup and systemd user services
 - **Hyprland** — Wayland compositor configured in Lua, with tiling, workspaces, monitors and keybindings
-- **Taskbar** — Waybar-based taskbar with the ARGVUS patched Waybar binary
+- **Taskbar** — Quickshell taskbar sharing its process with the telemetry and Floating bars
 - **Control panel** — Quickshell panel for quick system controls and widgets
 - **Control Center** — Terminal settings application for appearance, apps, displays, locale, users and more
 - **ARGVUS Welcome** — Resumable setup flow integrated into the Control Center, with a checklist and sequential settings pages
@@ -66,7 +66,7 @@ depends on it, so no install order is required.
 | Session lifecycle, login and startup | `argvus-session`, `argvus greeter` (in `argvus`), `argvus-boot-splash` |
 | Hyprland configuration and scripts | `argvus-hyprland` |
 | Quickshell control panel | `argvus-control-panel` |
-| Taskbar, Waybar and widgets | `argvus-taskbar`, `argvus-waybar`, `argvus widget-telemetry` |
+| Taskbar and widgets | `argvus-taskbar`, `argvus widget-telemetry` |
 | Settings application | `argvus control-center` (in `argvus`) |
 | First-setup guide | `argvus welcome` (in `argvus`; first automatic opening is tracked in per-user progress) |
 | Launcher and lock screen | `argvus-launcher`, `argvus-lock` |
@@ -106,7 +106,7 @@ argvus --setup --copy <app>   # copy packaged defaults for explicit customizatio
 `argvus theme-selector` (also `SUPER + Shift + T` or `argvus theme-switch` without an ID) opens **ARGVUS Theme Selector**, an independent preview carousel focused on theme navigation. Press `/` to focus or unfocus search; typing filters themes while the search field is focused. Filters include all themes, system Dark/Light themes and user-installed Custom themes. Sticky uses square corners and Spaced uses rounded corners. Browsing does not apply a theme; Enter or **Apply theme** confirms.
 
 Twenty-three theme families, each available in the Sticky and Spaced layouts,
-with a shared accent-color system that unifies GTK, terminals, rofi, Waybar and
+with a shared accent-color system that unifies GTK, terminals, rofi, Quickshell and
 Hyprland. Change the accent color from the Highlight color control in the Control Panel or Control Center.
 
 | Dark                  | Light              |

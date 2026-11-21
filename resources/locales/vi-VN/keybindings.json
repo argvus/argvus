@@ -85,7 +85,7 @@
   "keybindings.action.clipboard": "Lịch sử bảng nhớ tạm",
   "keybindings.action.dpms": "Tắt/bật màn hình (không tạm dừng hệ thống)",
   "keybindings.action.sidebar": "Mở/Đóng thanh bên thông báo",
-  "keybindings.action.taskbar_toggle": "Chuyển đổi phần trên cùng của Waybar",
+  "keybindings.action.taskbar_toggle": "Hiện hoặc ẩn thanh tác vụ",
   "keybindings.action.weather": "Cấu hình vị trí thời tiết",
   "keybindings.action.waybar_top": "Di chuyển thanh chính lên trên cùng",
   "keybindings.action.waybar_bottom": "Di chuyển thanh chính xuống dưới cùng",

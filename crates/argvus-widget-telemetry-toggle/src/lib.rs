@@ -1,12 +1,8 @@
-//! `argvus-widget-telemetry-toggle`: switches the telemetry blocks of the Waybar
-//! widget on and off, stores their order, and moves the scroll window. It edits
-//! the Waybar JSONC, keeps its state in the ARGVUS cache and data directories,
-//! and restarts the widget service through systemd.
+//! Preferences and block scrolling for the ARGVUS telemetry surface.
 
 use argvus_runtime::messages;
 use argvus_runtime::process::{program_exists, read_text, run_quiet};
 use argvus_widget_telemetry_core::blocks::{self, BLOCK_NAMES, Blocks};
-use argvus_widget_telemetry_core::jsonc;
 use argvus_widget_telemetry_core::scroll::{self, Layout};
 use std::env;
 use std::fs;
@@ -15,8 +11,6 @@ use std::process::{Command, ExitCode, Stdio};
 
 /// The name the usage message shows for this command.
 const PROGRAM: &str = "argvus-widget-telemetry-toggle";
-/// Realtime signal the Waybar modules listen to for a scroll refresh.
-const SCROLL_SIGNAL: u32 = 13;
 /// The order of the block states in `apply-state`, as the Control Panel sends them.
 const APPLY_ORDER: [&str; 8] = [
   "system",
@@ -28,9 +22,6 @@ const APPLY_ORDER: [&str; 8] = [
   "keys",
   "dev_dashboard",
 ];
-/// The Waybar configuration, relative to the ARGVUS configuration.
-const CONFIG_RELATIVE: &str = "widget-telemetry/config/argvus-widget-telemetry.jsonc";
-
 /// Runs one command of this crate. `arguments` are the words after the command
 /// name. The `argvus` dispatcher and the binary both call this function.
 pub fn run_command(arguments: Vec<String>) -> ExitCode {
@@ -46,6 +37,11 @@ pub fn run_command(arguments: Vec<String>) -> ExitCode {
     "on" => on(),
     "off" => off(),
     "status" => status(),
+    "migrate-master" => migrate_master(),
+    "master-status" => {
+      print_state(&master_state_value());
+      ExitCode::SUCCESS
+    }
     "toggle" => toggle(),
     "blocks" => blocks_command(rest),
     _ => usage(),
@@ -118,25 +114,6 @@ fn scroll_file() -> PathBuf {
   cache_home().join("waybar/widget-telemetry-scroll")
 }
 
-/// The packaged or user Waybar configuration, as the readers see it.
-fn config_file() -> PathBuf {
-  let output = Command::new("argvus")
-    .args(["config", "read-path", CONFIG_RELATIVE])
-    .stderr(Stdio::null())
-    .output();
-  match output {
-    Ok(output) if output.status.success() => PathBuf::from(
-      String::from_utf8_lossy(&output.stdout)
-        .trim_end()
-        .to_string(),
-    ),
-    _ => {
-      let system = env::var("ARGVUS_SYSTEM_CONFIG").unwrap_or_else(|_| "/usr/share/argvus".into());
-      PathBuf::from(system).join(CONFIG_RELATIVE)
-    }
-  }
-}
-
 // -- Files and programs --------------------------------------------------------
 
 /// Writes a file through a temporary file in the same directory, so the file
@@ -156,28 +133,28 @@ fn write_atomic(path: &Path, content: &str) -> bool {
 }
 
 /// Runs `argvus config get POINTER` and returns its text, or empty on failure.
-fn config_get(pointer: &str) -> String {
-  let output = Command::new("argvus")
-    .args(["config", "get", pointer, "--effective", "--raw"])
-    .stderr(Stdio::null())
-    .output();
-  match output {
-    Ok(output) if output.status.success() => String::from_utf8_lossy(&output.stdout)
-      .trim_end_matches('\n')
-      .to_string(),
-    _ => String::new(),
+fn config_get(pointer: &str, effective: bool) -> String {
+  let mut command = Command::new("argvus");
+  command.args(["config", "get", pointer, "--raw"]);
+  if effective {
+    command.arg("--effective");
   }
+  command
+    .stderr(Stdio::null())
+    .output()
+    .ok()
+    .filter(|output| output.status.success())
+    .map(|output| String::from_utf8_lossy(&output.stdout).trim().to_string())
+    .unwrap_or_default()
 }
-
-// -- Master switch -------------------------------------------------------------
 
 /// The master switch in argvus-config, when `argvus` is installed and the value
 /// is one the switch knows.
-fn canonical_master_state() -> Option<&'static str> {
+fn canonical_master_state(effective: bool) -> Option<&'static str> {
   if !program_exists("argvus") {
     return None;
   }
-  match config_get("/effects/widget_telemetry_enabled").as_str() {
+  match config_get("/effects/widget_telemetry_enabled", effective).as_str() {
     "true" | "enabled" => Some("enabled"),
     "false" | "disabled" => Some("disabled"),
     _ => None,
@@ -205,36 +182,43 @@ fn set_canonical_master(enabled: bool) -> bool {
   true
 }
 
-/// The master state as the first state file or the canonical value gives it.
-/// Without any, the widget counts as enabled only when its service runs.
-fn master_state_value() -> String {
-  if let Some(state) = canonical_master_state() {
-    return state.to_string();
-  }
+fn legacy_master_state() -> Option<&'static str> {
   let mut candidates = vec![state_file()];
   candidates.extend(legacy_state_files());
-  for path in candidates {
-    if path.is_file() {
-      return read_text(&path)
-        .unwrap_or_default()
-        .trim_end_matches('\n')
-        .to_string();
+  candidates.into_iter().find_map(|path| {
+    let contents = fs::read_to_string(path).ok()?;
+    match contents.lines().next() {
+      Some("enabled") => Some("enabled"),
+      Some("disabled") => Some("disabled"),
+      _ => None,
     }
+  })
+}
+
+fn master_state_value() -> String {
+  canonical_master_state(false)
+    .or_else(legacy_master_state)
+    .or_else(|| canonical_master_state(true))
+    .unwrap_or("enabled")
+    .to_string()
+}
+
+fn migrate_master() -> ExitCode {
+  if canonical_master_state(false).is_some() {
+    return ExitCode::SUCCESS;
   }
-  if program_exists("systemctl")
-    && run_quiet(
-      "systemctl",
-      &[
-        "--user",
-        "is-active",
-        "--quiet",
-        "argvus-widget-telemetry.service",
-      ],
-    )
-  {
-    return "enabled".to_string();
+  let Some(state) = legacy_master_state() else {
+    return ExitCode::SUCCESS;
+  };
+  let value = if state == "enabled" { "true" } else { "false" };
+  if run_quiet(
+    "argvus",
+    &["config", "set", "/effects/widget_telemetry_enabled", value],
+  ) {
+    ExitCode::SUCCESS
+  } else {
+    ExitCode::FAILURE
   }
-  "disabled".to_string()
 }
 
 fn any_block_enabled(blocks: &Blocks) -> bool {
@@ -249,37 +233,23 @@ fn effective_state(blocks: &Blocks) -> &'static str {
   }
 }
 
-fn stop_widget() {
-  if program_exists("systemctl") {
-    let _ = run_quiet(
-      "systemctl",
-      &["--user", "stop", "argvus-widget-telemetry.service"],
-    );
-  }
-}
-
-/// Restarts the widget when it should run, and stops it otherwise.
-fn sync_widget_service(blocks: &Blocks) {
-  if master_state_value() == "enabled" && any_block_enabled(blocks) {
-    if program_exists("systemctl") {
-      let _ = run_quiet(
-        "systemctl",
-        &["--user", "restart", "argvus-widget-telemetry.service"],
-      );
-    }
+fn sync_widget_service(blocks: &Blocks) -> bool {
+  let verb = if effective_state(blocks) == "enabled" {
+    "restart"
   } else {
-    stop_widget();
-  }
+    "stop"
+  };
+  run_quiet(
+    "systemctl",
+    &["--user", verb, "argvus-widget-telemetry.service"],
+  )
 }
 
 fn refresh_widget() {
-  if program_exists("systemctl") {
-    let signal = format!("--signal=RTMIN+{SCROLL_SIGNAL}");
-    let _ = run_quiet(
-      "systemctl",
-      &["--user", "kill", &signal, "argvus-widget-telemetry.service"],
-    );
-  }
+  let _ = run_quiet(
+    "argvus",
+    &["sessionctl", "bars-ipc", "telemetry", "refresh"],
+  );
 }
 
 fn load_blocks() -> Blocks {
@@ -289,26 +259,25 @@ fn load_blocks() -> Blocks {
 // -- Commands ------------------------------------------------------------------
 
 fn on() -> ExitCode {
-  let _ = fs::create_dir_all(state_file().parent().unwrap_or(Path::new(".")));
-  let _ = set_canonical_master(true);
-  let _ = write_atomic(&state_file(), "enabled\n");
-  reset_scroll();
-  let blocks = load_blocks();
-  sync_widget_service(&blocks);
-  print_state(effective_state(&blocks));
-  ExitCode::SUCCESS
+  set_master(true)
 }
 
 fn off() -> ExitCode {
-  let _ = fs::create_dir_all(state_file().parent().unwrap_or(Path::new(".")));
-  let _ = set_canonical_master(false);
-  let _ = write_atomic(&state_file(), "disabled\n");
-  stop_widget();
-  if env::var("ARGVUS_MACHINE_OUTPUT").as_deref() == Ok("1") {
-    println!("disabled");
-  } else {
-    println!("{}", messages::text("state.disabled", &[]));
+  set_master(false)
+}
+
+fn set_master(enabled: bool) -> ExitCode {
+  if !set_canonical_master(enabled) {
+    return ExitCode::FAILURE;
   }
+  if enabled {
+    reset_scroll();
+  }
+  let blocks = load_blocks();
+  if !sync_widget_service(&blocks) {
+    return ExitCode::FAILURE;
+  }
+  print_state(effective_state(&blocks));
   ExitCode::SUCCESS
 }
 
@@ -349,10 +318,10 @@ fn blocks_command(arguments: &[String]) -> ExitCode {
       blocks_status();
       ExitCode::SUCCESS
     }
-    "apply" => match apply_blocks() {
-      Ok(()) => ExitCode::SUCCESS,
-      Err(()) => ExitCode::from(1),
-    },
+    "apply" => {
+      refresh_widget();
+      ExitCode::SUCCESS
+    }
     "set" => set_block(
       arguments.get(1).map(String::as_str).unwrap_or(""),
       arguments.get(2).map(String::as_str).unwrap_or(""),
@@ -405,9 +374,10 @@ fn set_block(block: &str, value: &str) -> ExitCode {
       )
     })
     .collect();
-  write_atomic(&blocks_file(), &blocks::render(&order, &states));
-  reset_scroll();
-  apply_blocks_or_fail()
+  if !write_atomic(&blocks_file(), &blocks::render(&order, &states)) {
+    return ExitCode::FAILURE;
+  }
+  apply_block_change()
 }
 
 /// `apply-state MASTER SYSTEM CPU_GPU MEMORY STORAGE PROCESSES NETWORK KEYS
@@ -436,60 +406,25 @@ fn apply_state(arguments: &[String]) -> ExitCode {
   if !blocks::valid_order(order) {
     return ExitCode::from(2);
   }
-  let _ = fs::create_dir_all(state_file().parent().unwrap_or(Path::new(".")));
-  // The widget restart below applies the state, so the configuration is only
-  // written (and reloaded) when the master switch changes.
-  if canonical_master_state() != Some(master.as_str()) {
-    let _ = set_canonical_master(master == "enabled");
+  if master_state_value() != *master && !set_canonical_master(master == "enabled") {
+    return ExitCode::FAILURE;
   }
-  let _ = write_atomic(&state_file(), &format!("{master}\n"));
-  // The Control Panel sends the states in this order, and the file keeps it.
   let block_states: Vec<(&str, bool)> = APPLY_ORDER.iter().copied().zip(parsed).collect();
-  write_atomic(
+  if !write_atomic(
     &blocks_file(),
     &blocks::render_in_order(order, &block_states),
-  );
+  ) {
+    return ExitCode::FAILURE;
+  }
+  apply_block_change()
+}
+
+fn apply_block_change() -> ExitCode {
   reset_scroll();
-  let blocks = load_blocks();
-  if apply_blocks().is_err() {
-    return ExitCode::from(1);
-  }
-  sync_widget_service(&blocks);
-  ExitCode::SUCCESS
-}
-
-fn apply_blocks_or_fail() -> ExitCode {
-  match apply_blocks() {
-    Ok(()) => {
-      let blocks = load_blocks();
-      sync_widget_service(&blocks);
-      ExitCode::SUCCESS
-    }
-    Err(()) => ExitCode::from(1),
-  }
-}
-
-/// Edits the Waybar configuration so the blocks show as their state says.
-fn apply_blocks() -> Result<(), ()> {
-  let config = config_file();
-  let Some(text) = read_text(&config) else {
-    eprintln!(
-      "missing widget telemetry configuration: {}",
-      config.display()
-    );
-    return Err(());
-  };
-  let blocks = load_blocks();
-  let order: Vec<String> = blocks.order();
-  let states: Vec<(&str, bool)> = BLOCK_NAMES
-    .iter()
-    .map(|name| (*name, blocks.enabled(name)))
-    .collect();
-  let edited = jsonc::apply_all(&text, &states, &order);
-  if write_atomic(&config, &edited) {
-    Ok(())
+  if sync_widget_service(&load_blocks()) {
+    ExitCode::SUCCESS
   } else {
-    Err(())
+    ExitCode::FAILURE
   }
 }
 

@@ -1,6 +1,6 @@
 ---
 title: Widget đo từ xa
-description: Khối đo từ xa Waybar và chuyển đổi chúng, thông qua phép đo từ xa tiện ích argvus.
+description: Khối đo từ xa Quickshell và chuyển đổi chúng, thông qua phép đo từ xa tiện ích argvus.
 ---
 
 Tiện ích đo từ xa là thông tin hệ thống được hiển thị trên thanh tác vụ (tiêu đề, phím, hệ thống, CPU

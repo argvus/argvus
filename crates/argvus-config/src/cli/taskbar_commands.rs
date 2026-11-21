@@ -154,7 +154,14 @@ pub(super) fn taskbar_shape(arguments: &[String]) -> ExitCode {
     eprintln!("argvus-config: cannot resolve the configuration directory");
     return ExitCode::from(1);
   };
-  let shape = waybar::taskbar_shape(&paths);
+  let shape = if paths.has_shared_bars() {
+    ConfigStore::from_environment()
+      .and_then(|store| store.load_effective())
+      .map(|document| waybar::TaskbarShape::chosen(&document))
+      .unwrap_or_else(|_| waybar::taskbar_shape(&paths))
+  } else {
+    waybar::taskbar_shape(&paths)
+  };
   let show = |value: Option<u32>| value.map(|value| value.to_string()).unwrap_or_default();
   println!("height={}", show(shape.height));
   println!("border={}", show(shape.border_width));
@@ -178,6 +185,9 @@ pub(super) fn taskbar_setting(
   {
     eprintln!("argvus-config: taskbar: {error}");
     return ExitCode::from(1);
+  }
+  if paths.has_shared_bars() {
+    return ExitCode::SUCCESS;
   }
   match edit(&paths) {
     Ok(()) => ExitCode::SUCCESS,

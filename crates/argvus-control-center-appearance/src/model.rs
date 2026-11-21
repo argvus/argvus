@@ -568,7 +568,7 @@ impl Default for AppearanceState {
       control_panel_cards: ControlPanelCards::default(),
       control_panel_order: ControlPanelCard::ALL.to_vec(),
       waybar_pos: TaskbarPosition::Top,
-      taskbar_height: 28,
+      taskbar_height: 24,
       taskbar_border_enabled: true,
       taskbar_border_thickness: 1,
       taskbar_utility_group: TaskbarUtilityGroupMode::AlwaysExpanded,

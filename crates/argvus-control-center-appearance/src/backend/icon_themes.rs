@@ -80,7 +80,6 @@ pub(super) fn persist_launcher_icon_canonical(path: &Path) -> Result<(), String>
   if !status.success() {
     return Err("argvus config rejected the launcher icon settings".into());
   }
-  run_script(&script("taskbar-widgets-mode.sh"), &["apply"])?;
   reload_taskbar()
 }
 

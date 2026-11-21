@@ -85,7 +85,7 @@
   "keybindings.action.clipboard": "کلپ بورڈ کی تاریخ",
   "keybindings.action.dpms": "مانیٹر کو آف/آن کریں (سسٹم کو معطل نہ کریں)",
   "keybindings.action.sidebar": "نوٹیفکیشن سائڈبار کھولیں/بند کریں۔",
-  "keybindings.action.taskbar_toggle": "وے بار ٹاپ کو ٹوگل کریں۔",
+  "keybindings.action.taskbar_toggle": "ٹاسک بار دکھائیں یا چھپائیں",
   "keybindings.action.weather": "موسم کی جگہ کو ترتیب دیں۔",
   "keybindings.action.waybar_top": "مین بار کو اوپر کی طرف لے جائیں۔",
   "keybindings.action.waybar_bottom": "مین بار کو نیچے کی طرف لے جائیں۔",

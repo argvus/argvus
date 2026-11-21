@@ -70,6 +70,23 @@ pub fn units_for(
   Ok(units)
 }
 
+/// Uses the widget's own effective state, including its enabled block count.
+pub(super) fn current_telemetry_enabled(cache_home: &Path) -> bool {
+  if let Ok(output) = std::process::Command::new("argvus")
+    .env("ARGVUS_MACHINE_OUTPUT", "1")
+    .args(["widget-telemetry", "toggle", "status"])
+    .output()
+    && output.status.success()
+  {
+    match String::from_utf8_lossy(&output.stdout).trim() {
+      "enabled" => return true,
+      "disabled" => return false,
+      _ => {}
+    }
+  }
+  telemetry_enabled(cache_home, configured_telemetry_default)
+}
+
 /// Whether the waybar widget telemetry is enabled.
 ///
 /// The current state file wins. Without it, the legacy desktop state file is

@@ -5,11 +5,6 @@ output = "widget-telemetry/theme.css"
 # It reads the build directly, so it reloads as soon as the build is active.
 reload_stage = "build"
 
-# Waybar reloads its CSS when the stylesheet that imports the build is rewritten.
-[reload]
-kind = "rewrite"
-path = "argvus/data/waybar/argvus-widget-telemetry.css"
-
 # Defaults for the tokens the template reads; a theme that defines one wins.
 [palette]
 telemetry_background = "@bg"
