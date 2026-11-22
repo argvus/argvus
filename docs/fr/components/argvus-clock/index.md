@@ -68,3 +68,7 @@ Les fichiers sont écrits de manière atomique ; un fichier qui ne peut pas êtr
 Le calendrier de la barre des tâches, ARGVUS Focus, ARGVUS Horloge et le Panneau de configuration sont mutuellement exclusifs : ouvrir l’un ferme les autres.
 
 Le texte suit Applications Font dans Control Center → Appearance → Desktop Style → Fonts. Les applications GTK héritent de gtk-font-name ; les tailles des nombres et titres sont conservées. Le lanceur lit apps_family généré et suit les modifications.
+
+## Morphing Tooltips
+
+`argvus clock --tooltip`

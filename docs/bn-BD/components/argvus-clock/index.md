@@ -69,3 +69,7 @@ ARGVUS ফোকাস, ARGVUS ঘড়ি এবং কন্ট্রোল �
 টাস্কবার ক্যালেন্ডার, ARGVUS ফোকাস, ARGVUS ঘড়ি এবং কন্ট্রোল প্যানেল পারস্পরিক একচেটিয়া: একটি খোলার ফলে অন্যটি বন্ধ হয়ে যায়।
 
 অ্যাপের লেখা Control Center → Appearance → Desktop Style → Fonts-এর Applications Font অনুসরণ করে। GTK অ্যাপ gtk-font-name ব্যবহার করে; সংখ্যা ও শিরোনামের আকার অপরিবর্তিত থাকে। লঞ্চার তৈরি apps_family পড়ে ও পরিবর্তন দেখে।
+
+## Morphing Tooltips
+
+`argvus clock --tooltip`

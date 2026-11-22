@@ -68,3 +68,7 @@ ARGVUS Focus、ARGVUS Clock、そしてコントロールパネルは同じ画�
 タスクバーのカレンダー、ARGVUS フォーカス、ARGVUS クロック、およびコントロールパネルは相互に排他的です：1 つを開くと、他のものは閉じられます。
 
 アプリの文字は Control Center → Appearance → Desktop Style → Fonts の Applications Font に従います。GTK は gtk-font-name を継承し、数字や見出しのサイズは保持します。ランチャーは生成された apps_family を読み変更を監視します。
+
+## Morphing Tooltips
+
+`argvus clock --tooltip`

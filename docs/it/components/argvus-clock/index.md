@@ -68,3 +68,7 @@ I file vengono scritti in modo atomico; un file che non può essere letto viene 
 Il calendario della barra delle applicazioni, ARGVUS Focus, ARGVUS Clock e il Pannello di Controllo si escludono a vicenda: aprirne uno chiude gli altri.
 
 Il testo segue Applications Font in Control Center → Appearance → Desktop Style → Fonts. Le applicazioni GTK ereditano gtk-font-name; le dimensioni di numeri e titoli restano. Il launcher legge apps_family generato e segue le modifiche.
+
+## Morphing Tooltips
+
+`argvus clock --tooltip`

@@ -69,3 +69,7 @@ Dosyalar atomik olarak yazılır; okunamayan bir dosya `<name>.corrupt-<time>` o
 Görev çubuğu takvimi, ARGVUS Focus, ARGVUS Saati ve Kontrol Paneli birbirini dışlar: birinin açılması diğerlerini kapatır.
 
 Uygulama metni Control Center → Appearance → Desktop Style → Fonts içindeki Applications Font ayarını izler. GTK gtk-font-name değerini devralır; sayı ve başlık boyutları korunur. Başlatıcı üretilen apps_family değerini okur ve değişiklikleri izler.
+
+## Morphing Tooltips
+
+`argvus clock --tooltip`

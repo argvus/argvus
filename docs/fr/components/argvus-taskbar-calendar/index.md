@@ -71,3 +71,7 @@ L'interface utilise les catalogues partagés `argvus-i18n` pour les dix langues.
 Le texte suit Applications Font dans Control Center → Appearance → Desktop Style → Fonts. Les applications GTK héritent de gtk-font-name ; les tailles des nombres et titres sont conservées. Le lanceur lit apps_family généré et suit les modifications.
 
 `appearance.font_family` → `gtk-font-name`.
+
+## Morphing Tooltips
+
+`argvus taskbar-calendar tooltip`

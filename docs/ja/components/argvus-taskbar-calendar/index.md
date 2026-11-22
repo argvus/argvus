@@ -70,3 +70,7 @@ argvus taskbar-calendar service
 アプリの文字は Control Center → Appearance → Desktop Style → Fonts の Applications Font に従います。GTK は gtk-font-name を継承し、数字や見出しのサイズは保持します。ランチャーは生成された apps_family を読み変更を監視します。
 
 `appearance.font_family` → `gtk-font-name`.
+
+## Morphing Tooltips
+
+`argvus taskbar-calendar tooltip`

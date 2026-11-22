@@ -89,3 +89,7 @@ Antarmukanya menggunakan katalog `argvus-i18n` bersama untuk sepuluh bahasa. Tek
 Teks aplikasi mengikuti Applications Font di Control Center → Appearance → Desktop Style → Fonts. GTK mewarisi gtk-font-name; ukuran angka dan judul dipertahankan. Peluncur membaca apps_family yang dihasilkan dan memantau perubahan.
 
 `appearance.font_family` → `gtk-font-name`.
+
+## Morphing Tooltips
+
+`argvus taskbar-calendar tooltip`

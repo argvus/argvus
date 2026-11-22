@@ -90,3 +90,7 @@ argvus taskbar-calendar service
 ایپ کا متن Control Center → Appearance → Desktop Style → Fonts کے Applications Font کی پیروی کرتا ہے۔ GTK ایپس gtk-font-name لیتی ہیں؛ اعداد اور عنوان کے سائز برقرار رہتے ہیں۔ لانچر تیار شدہ apps_family پڑھتا اور تبدیلیاں دیکھتا ہے۔
 
 `appearance.font_family` → `gtk-font-name`.
+
+## Morphing Tooltips
+
+`argvus taskbar-calendar tooltip`

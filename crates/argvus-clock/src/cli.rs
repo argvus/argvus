@@ -25,6 +25,9 @@ pub struct Cli {
   /// starting with the session).
   #[arg(long, conflicts_with = "toggle")]
   pub background: bool,
+  /// Print the next alarm and current countdown without opening the window.
+  #[arg(long, exclusive = true)]
+  pub tooltip: bool,
   /// Hide the window if it is visible, show it otherwise (taskbar clock).
   #[arg(long)]
   pub toggle: bool,

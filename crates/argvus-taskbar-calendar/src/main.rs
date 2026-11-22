@@ -75,6 +75,8 @@ enum Command {
   },
   Sync,
   Status,
+  /// Print today’s events without opening the calendar.
+  Tooltip,
   Service,
 }
 
@@ -116,6 +118,22 @@ fn main() -> Result<()> {
       config::Settings::default()
     }
   };
+  if matches!(cli.command, Some(Command::Tooltip)) {
+    if config::load_events_enabled(&paths, &settings) && paths.database.is_file() {
+      let now = chrono::Local::now();
+      let db = storage::Database::open(&paths.database)?;
+      for event in db.events_for_day(&chrono::Local, now.date_naive())? {
+        let title = event.title.replace(['\r', '\n'], " ");
+        if event.all_day {
+          println!("{title}");
+        } else {
+          let start = event.start.with_timezone(&chrono::Local);
+          println!("{}  {title}", start.format("%H:%M"));
+        }
+      }
+    }
+    return Ok(());
+  }
   storage::Database::open(&paths.database)?.purge_expired_local_single_events(chrono::Utc::now())?;
 
   match cli.command {
@@ -176,6 +194,7 @@ fn main() -> Result<()> {
     Some(Command::Export { output }) => app::export_file(&paths, output)?,
     Some(Command::Sync) => app::sync_once(&paths, &settings)?,
     Some(Command::Status) => app::status(&paths)?,
+    Some(Command::Tooltip) => unreachable!("tooltip is handled before popup setup"),
     Some(Command::Service) => {
       service::run_service(paths)?;
     }

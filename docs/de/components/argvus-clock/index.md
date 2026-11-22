@@ -65,3 +65,7 @@ Dateien werden atomar geschrieben; eine Datei, die nicht gelesen werden kann, wi
 Der Kalender in der Taskleiste, ARGVUS Focus, ARGVUS Clock und die Systemsteuerung schließen sich gegenseitig aus: Das Öffnen eines Elements schließt die anderen.
 
 Anwendungstexte folgen Applications Font unter Control Center → Appearance → Desktop Style → Fonts. GTK-Anwendungen erben gtk-font-name; Größen für Zahlen und Überschriften bleiben erhalten. Der Launcher liest das erzeugte apps_family und verfolgt Änderungen.
+
+## Morphing Tooltips
+
+`argvus clock --tooltip`

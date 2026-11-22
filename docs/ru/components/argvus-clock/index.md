@@ -68,3 +68,7 @@ argvus clock --background        # run without a window, to keep alarms active
 Календарь на панели задач, ARGVUS Focus, ARGVUS Clock и Панель управления являются взаимоисключающими: открытие одного закрывает другие.
 
 Текст приложений использует Applications Font в Control Center → Appearance → Desktop Style → Fonts. GTK наследует gtk-font-name; размеры цифр и заголовков сохраняются. Лаунчер читает сгенерированный apps_family и отслеживает изменения.
+
+## Morphing Tooltips
+
+`argvus clock --tooltip`

@@ -69,3 +69,7 @@ ARGVUS फोकस, ARGVUS क्लॉक और कंट्रोल पै�
 टास्कबार कैलेंडर, ARGVUS फोकस, ARGVUS क्लॉक और कंट्रोल पैनल परस्पर अनन्य हैं: एक को खोलने से दूसरे बंद हो जाते हैं।
 
 ऐप का पाठ Control Center → Appearance → Desktop Style → Fonts के Applications Font का उपयोग करता है। GTK ऐप gtk-font-name लेते हैं; संख्या और शीर्षक के आकार बने रहते हैं। लॉन्चर जनित apps_family पढ़ता है और बदलाव देखता है।
+
+## Morphing Tooltips
+
+`argvus clock --tooltip`

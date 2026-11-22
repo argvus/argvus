@@ -116,7 +116,6 @@ pub fn run() -> glib::ExitCode {
     let state = Rc::clone(&state);
     move |application| {
       let app = ClockApp::new(application);
-      app.install();
       let _ = state.set(app);
     }
   });
@@ -131,6 +130,7 @@ pub fn run() -> glib::ExitCode {
     let state = Rc::clone(&state);
     move |_| {
       if let Some(app) = state.get() {
+        app.install_if_needed();
         app.present(None, None);
       }
     }
@@ -211,7 +211,10 @@ impl ClockApp {
     })
   }
 
-  fn install(self: &Rc<Self>) {
+  fn install_if_needed(self: &Rc<Self>) {
+    if self.window.get().is_some() {
+      return;
+    }
     let _ = self.theme.set(ThemeStyle::install(APP_CSS));
     self.install_actions();
     let window = ClockWindow::build(self);
@@ -313,6 +316,22 @@ impl ClockApp {
         return glib::ExitCode::FAILURE;
       }
     };
+    if cli.tooltip {
+      use glib::translate::ToGlibPtr;
+      let message = std::ffi::CString::new(self.tooltip().replace('\0', ""))
+        .expect("embedded NUL bytes were removed");
+      // GIO forwards this to the requesting process, including remote invocations.
+      // SAFETY: The format is fixed and both C strings live through the call.
+      unsafe {
+        gio::ffi::g_application_command_line_print(
+          command_line.to_glib_none().0,
+          c"%s".as_ptr(),
+          message.as_ptr(),
+        );
+      }
+      return glib::ExitCode::SUCCESS;
+    }
+    self.install_if_needed();
     let page = cli.page.map(Page::from);
     self.launched.set(true);
     if cli.background {
@@ -329,6 +348,57 @@ impl ClockApp {
     self.schedule_heartbeat();
     self.quit_if_idle();
     glib::ExitCode::SUCCESS
+  }
+
+  fn tooltip(&self) -> String {
+    let mut lines = Vec::new();
+    let alarms = self.alarms();
+    let zone = chrono::Local;
+    let today = chrono::Local::now().date_naive();
+    let mut upcoming: Vec<_> = alarms
+      .alarms()
+      .iter()
+      .filter_map(|alarm| {
+        alarm
+          .trigger(&zone)
+          .map(|trigger| (trigger.at, &alarm.label))
+      })
+      .collect();
+    upcoming.sort_by_key(|(at, _)| *at);
+    if !upcoming.is_empty() {
+      lines.push(self.texts.tr("page.alarms"));
+    }
+    for (at, label) in upcoming.into_iter().take(3) {
+      let local = at.with_timezone(&zone);
+      let time = self.local_time(at);
+      let when = if local.date_naive() == today {
+        time
+      } else {
+        format!(
+          "{} {time}",
+          self
+            .calendar
+            .weekday_short(chrono::Datelike::weekday(&local))
+        )
+      };
+      let label = label.replace(['\r', '\n'], " ");
+      lines.push(format!("{when} {label}").trim_end().to_owned());
+    }
+    let now = Ticks::now().boottime;
+    if let Some(countdown) = self.timer().countdown() {
+      let remaining = countdown.remaining(now);
+      if !remaining.is_zero() {
+        lines.push(format!(
+          "{}: {}",
+          self.texts.tr("page.timer"),
+          argvus_time_core::duration::format_remaining(remaining)
+        ));
+      }
+    }
+    if lines.is_empty() {
+      lines.push(self.texts.tr("clock.no_alarm"));
+    }
+    lines.join("\n")
   }
 
   // Heartbeat: alarms, timer, ring limits and the displayed time.
@@ -867,7 +937,9 @@ impl ClockApp {
     if self.settings_save.borrow_mut().take().is_some() {
       self.save_settings();
     }
-    self.save_timers();
+    if self.launched.get() {
+      self.save_timers();
+    }
     self.sound.stop();
   }
 

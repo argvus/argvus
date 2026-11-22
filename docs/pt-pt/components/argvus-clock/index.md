@@ -70,3 +70,7 @@ Os ficheiros são gravados de forma atômica; um ficheiro ilegível é renomeado
 O calendário da taskbar, ARGVUS Focus, ARGVUS Clock e Control Panel são exclusivos entre si: abrir um fecha os demais.
 
 Os textos das aplicações seguem Applications Font em Control Center → Appearance → Desktop Style → Fonts. As aplicações GTK herdam gtk-font-name; os tamanhos específicos de números e títulos são mantidos. O lançador lê apps_family gerado e acompanha alterações.
+
+## Morphing Tooltips
+
+`argvus clock --tooltip`

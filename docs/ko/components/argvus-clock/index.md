@@ -68,3 +68,7 @@ ARGVUS Focus, ARGVUS 시계 및 제어판은 동일한 화면 가장자리를 �
 태스크바 달력, ARGVUS 포커스, ARGVUS 시계 및 제어판은 상호 배타적입니다: 하나를 열면 다른 것은 닫힙니다.
 
 앱 텍스트는 Control Center → Appearance → Desktop Style → Fonts의 Applications Font를 따릅니다. GTK는 gtk-font-name을 상속하며 숫자와 제목 크기는 유지합니다. 런처는 생성된 apps_family를 읽고 변경을 감시합니다.
+
+## Morphing Tooltips
+
+`argvus clock --tooltip`

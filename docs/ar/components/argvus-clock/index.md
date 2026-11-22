@@ -69,3 +69,7 @@ argvus clock --background        # run without a window, to keep alarms active
 تقويم شريط المهام وتركيز ARGVUS وساعة ARGVUS ولوحة التحكم يتعارضان: فتح أحدهما يغلق الآخر.
 
 يتبع نص التطبيقات Applications Font في Control Center → Appearance → Desktop Style → Fonts. ترث تطبيقات GTK قيمة gtk-font-name مع الحفاظ على أحجام الأرقام والعناوين. يقرأ المشغّل apps_family المولّد ويتابع التغييرات.
+
+## Morphing Tooltips
+
+`argvus clock --tooltip`

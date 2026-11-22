@@ -13,13 +13,11 @@ fn render(status: &Status) -> String {
     _ => ("󰅛 ", "disconnected", "waybar.disconnected"),
   };
   let mut tooltip = text_in("network", key, &[]);
-  let detail = if status.ssid.is_empty() {
-    &status.iface
-  } else {
-    &status.ssid
-  };
-  if !detail.is_empty() {
-    tooltip.push_str(&format!(" — {detail}"));
+  for detail in [&status.iface, &status.ssid, &status.ip] {
+    if !detail.is_empty() {
+      tooltip.push('\n');
+      tooltip.push_str(detail);
+    }
   }
   if class == "limited" {
     tooltip.push_str(&format!(
