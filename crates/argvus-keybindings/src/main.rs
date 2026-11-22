@@ -442,7 +442,7 @@ fn open(app: &gtk::Application, i18n: &I18n) {
   refresh();
   install_keyboard(&window, &search, &sidebar, &compact, &list);
   window.present();
-  focus_list(&list);
+  search.grab_focus();
 }
 
 struct Shortcut {
