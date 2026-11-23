@@ -9,7 +9,6 @@ use argvus_control_center_core::config::AppConfig;
 use argvus_i18n::tr;
 use argvus_tui::{
   action_buttons::{ActionButton, draw_aligned_transparent},
-  components::{StatusKind, StatusMessage, draw_status},
   icons,
   menu::{MenuStyle, Row, draw_menu},
 };
@@ -133,7 +132,7 @@ impl AppearanceApp {
   }
 
   /// Footer shortcuts of the Icons page, drawn on the right.
-  fn icon_hints(&self) -> String {
+  pub(super) fn icon_hints(&self) -> String {
     let label = |key: &str| tr(self.lang, key);
     [
       ("↑/↓", label("control_center.hint.navigate")),
@@ -221,39 +220,6 @@ impl AppearanceApp {
       selected,
       &self.theme,
       Alignment::Left,
-    );
-  }
-
-  /// Draws the Icons footer under the body: the status on the left, the
-  /// shortcuts on the right. `body` is the area `shell` returned.
-  pub(super) fn draw_icons_footer(&self, frame: &mut Frame, body: Rect) {
-    let footer = Rect::new(body.x, body.y + body.height, body.width, 2);
-    let status_row = Rect::new(
-      footer.x.saturating_add(1),
-      footer.y,
-      footer.width.saturating_sub(2),
-      1,
-    );
-    let hints_row = Rect::new(status_row.x, footer.y + 1, status_row.width, 1);
-
-    if self.status_loading {
-      draw_status(
-        frame,
-        status_row,
-        &self.theme,
-        &StatusMessage {
-          kind: StatusKind::Info,
-          text: tr(self.lang, "control_center.loading_appearance").into(),
-        },
-      );
-    } else if let Some(message) = &self.status {
-      draw_status(frame, status_row, &self.theme, message);
-    }
-    frame.render_widget(
-      Paragraph::new(self.icon_hints())
-        .alignment(Alignment::Right)
-        .style(Style::new().fg(self.theme.muted)),
-      hints_row,
     );
   }
 }

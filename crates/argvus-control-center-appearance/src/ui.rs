@@ -35,7 +35,6 @@ use argvus_tui::{
   confirm::{ConfirmDialog, ConfirmOutcome, ConfirmState, draw_confirm},
   hints::{HintContext, confirm_hints, hints},
   menu::{MenuEvent, MenuState, MenuStyle, Row, RowKind, draw_menu},
-  page::{shell, status},
 };
 use crossterm::event::KeyCode;
 use ratatui::{

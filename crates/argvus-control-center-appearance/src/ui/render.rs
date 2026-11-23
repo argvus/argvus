@@ -73,20 +73,27 @@ impl AppearanceApp {
   pub fn draw(&mut self, frame: &mut Frame) {
     let rows = self.rows();
     self.menu.normalize(&rows);
-    // The Icons page draws its own footer (status left, shortcuts right).
     let icons_page = self.page == AppearancePage::Icons;
     let hints = if icons_page {
-      String::new()
+      self.icon_hints()
     } else {
       self.hints(&rows)
     };
-    let area = shell(
+    let loading = self.status_loading.then(|| StatusMessage {
+      kind: StatusKind::Info,
+      text: tr(self.lang, "control_center.loading_appearance").into(),
+    });
+    let area = argvus_tui::page::shell_with_status(
       frame,
       frame.area(),
       &self.theme,
       self.lang,
       &self.breadcrumb(),
       &hints,
+      argvus_tui::page::PageStatus {
+        message: loading.as_ref().or(self.status.as_ref()),
+        admin_required: false,
+      },
     );
     match self.page {
       AppearancePage::AccentEdit => self.draw_accent_editor(frame, area),
@@ -108,24 +115,6 @@ impl AppearanceApp {
     }
     if let Some((confirmation, state)) = &self.confirm {
       self.draw_confirmation(frame, area, *confirmation, state);
-    }
-    if icons_page {
-      self.draw_icons_footer(frame, area);
-      return;
-    }
-    if let Some(message) = &self.status {
-      status(frame, area, &self.theme, message);
-    }
-    if self.status_loading {
-      status(
-        frame,
-        area,
-        &self.theme,
-        &StatusMessage {
-          kind: StatusKind::Info,
-          text: tr(self.lang, "control_center.loading_appearance").into(),
-        },
-      );
     }
   }
 
