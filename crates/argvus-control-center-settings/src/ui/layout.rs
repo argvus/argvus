@@ -14,7 +14,11 @@ pub fn areas(area: Rect) -> Areas {
     vertical: 1,
   });
   let rows = Layout::vertical([
-    Constraint::Length(2),
+    Constraint::Length(if argvus_tui::chrome::compact_control_center_header() {
+      1
+    } else {
+      2
+    }),
     Constraint::Min(1),
     Constraint::Length(1),
     Constraint::Length(1),

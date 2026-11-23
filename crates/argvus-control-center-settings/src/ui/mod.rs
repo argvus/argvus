@@ -38,7 +38,7 @@ pub fn draw_in(app: &mut App, frame: &mut Frame, area: ratatui::layout::Rect) {
     )
     .render(area, frame.buffer_mut());
 
-  if app.too_small() {
+  if app.too_small() && !argvus_tui::chrome::compact_control_center_header() {
     draw_too_small(app, frame, area);
     return;
   }

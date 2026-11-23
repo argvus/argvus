@@ -38,14 +38,35 @@ pub fn draw(app: &mut App, frame: &mut Frame) {
   }
 
   let search_available = app.has_global_search();
-  let content = if search_available && app.route != Route::Home {
-    let [field, content] =
-      Layout::vertical([Constraint::Length(3), Constraint::Min(0)]).areas(area);
-    draw_search(app, frame, field);
+  let compact = search_available && app.route != Route::Home;
+  let content = if compact {
+    let [header, content] =
+      Layout::vertical([Constraint::Length(7), Constraint::Min(0)]).areas(area);
+    frame.render_widget(
+      Block::bordered()
+        .border_style(Style::new().fg(app.theme.border_active))
+        .bg(app.theme.background),
+      header,
+    );
+    let inner = header.inner(Margin::new(1, 1));
+    let [title, subtitle, field] = Layout::vertical([
+      Constraint::Length(1),
+      Constraint::Length(1),
+      Constraint::Length(3),
+    ])
+    .areas(inner);
+    draw_control_center_header(frame, title, &app.theme, "", None);
+    frame.render_widget(
+      Paragraph::new(tr(app.lang, "control_center.home_subtitle"))
+        .style(Style::new().fg(app.theme.muted)),
+      subtitle.inner(Margin::new(1, 0)),
+    );
+    draw_search(app, frame, field.inner(Margin::new(1, 0)));
     content
   } else {
     area
   };
+  argvus_tui::chrome::set_compact_control_center_header(compact);
   argvus_tui::chrome::set_control_center_search_hint(
     search_available.then(|| format!("/ {}", tr(app.lang, "control_center.search_2c43ee"))),
   );
@@ -95,6 +116,7 @@ pub fn draw(app: &mut App, frame: &mut Frame) {
     Route::Hyprland => crate::hyprland::draw_in(app, frame, content),
   }
   argvus_tui::chrome::set_control_center_search_hint(None);
+  argvus_tui::chrome::set_compact_control_center_header(false);
   if app.welcome.active && app.route != Route::Welcome {
     let hint = tr(app.lang, "control_center.welcome_active_hint")
       .replace("{step}", &(app.welcome.selected + 1).to_string())
@@ -636,6 +658,25 @@ mod tests {
         .collect();
       assert!(!text.contains("/ Search"));
     }
+  }
+
+  #[cfg(feature = "appearance")]
+  #[test]
+  fn taskbar_header_precedes_search_and_content() {
+    use ratatui::{Terminal, backend::TestBackend};
+    let mut app = App::with_lang(InitialRoute::Home, argvus_i18n::Lang::for_locale("en-US"));
+    app.open_search_route("appearance/taskbar");
+    let mut terminal = Terminal::new(TestBackend::new(100, 32)).unwrap();
+    terminal.draw(|frame| draw(&mut app, frame)).unwrap();
+    let buffer = terminal.backend().buffer();
+    let lines: Vec<String> = (0..32)
+      .map(|y| (0..100).map(|x| buffer[(x, y)].symbol()).collect())
+      .collect();
+    let row = |text: &str| lines.iter().position(|line| line.contains(text)).unwrap();
+    assert!(row("Control Center") < row("System settings and desktop management"));
+    assert!(row("System settings and desktop management") < row("Search:"));
+    assert!(row("Search:") < row("Appearance > Taskbar"));
+    assert!(row("Appearance > Taskbar") < row("Transparency"));
   }
 
   #[test]

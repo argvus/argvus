@@ -15,6 +15,18 @@ pub fn set_control_center_search_hint(hint: Option<String>) {
   CONTROL_CENTER_SEARCH_HINT.with(|current| *current.borrow_mut() = hint);
 }
 
+thread_local! {
+  static COMPACT_CONTROL_CENTER_HEADER: std::cell::Cell<bool> = const { std::cell::Cell::new(false) };
+}
+
+pub fn set_compact_control_center_header(compact: bool) {
+  COMPACT_CONTROL_CENTER_HEADER.with(|value| value.set(compact));
+}
+
+pub fn compact_control_center_header() -> bool {
+  COMPACT_CONTROL_CENTER_HEADER.with(|value| value.get())
+}
+
 pub struct Header<'a> {
   pub title: &'a str,
   pub version: Option<&'a str>,
@@ -96,6 +108,15 @@ pub fn draw_control_center_header(
   breadcrumb: &str,
   version: Option<(&str, &str)>,
 ) {
+  if compact_control_center_header() {
+    if !breadcrumb.is_empty() {
+      frame.render_widget(
+        Paragraph::new(breadcrumb).style(Style::new().fg(theme.foreground).bg(theme.surface)),
+        area,
+      );
+    }
+    return;
+  }
   let rows = Layout::vertical([Constraint::Length(1), Constraint::Min(0)]).split(area);
   let title = rows[0].inner(Margin::new(1, 0));
   let version = version.map(|(label, value)| format!("{label} {value}"));
