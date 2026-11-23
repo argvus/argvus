@@ -27,13 +27,17 @@ impl BootApp {
     let area = frame.area();
     let rows = self.rows();
     self.menu.normalize(&rows);
-    let body = shell(
+    let body = argvus_tui::page::shell_with_status(
       frame,
       area,
       &self.theme,
       self.lang,
       &self.breadcrumb(),
       &self.footer_hints(&rows),
+      argvus_tui::page::PageStatus {
+        message: self.status.as_ref(),
+        admin_required: false,
+      },
     );
     let body = argvus_tui::page::admin_warning(
       frame,
@@ -65,7 +69,7 @@ impl BootApp {
     &self,
     frame: &mut Frame,
     area: ratatui::layout::Rect,
-    body: ratatui::layout::Rect,
+    _body: ratatui::layout::Rect,
   ) {
     if let Some(input) = &self.timeout_input {
       let width = if self.input_mode == Some(InputMode::GrubCmdline) {
@@ -117,9 +121,6 @@ impl BootApp {
         },
         &self.confirmation,
       );
-    }
-    if let Some(status_message) = &self.status {
-      status(frame, body, &self.theme, status_message);
     }
     if self.transaction_open
       && let Some(output) = self.transaction_live.as_ref().map(|live| live.output())

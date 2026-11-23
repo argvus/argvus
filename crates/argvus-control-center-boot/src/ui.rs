@@ -21,7 +21,6 @@ use argvus_tui::{
   hints::{HintContext, confirm_hints, hints},
   icons,
   menu::{MenuEvent, MenuState, MenuStyle, Row, draw_menu},
-  page::{shell, status},
   text,
 };
 use crossterm::event::KeyCode;

@@ -17,7 +17,7 @@ use argvus_tui::components::{
   draw_confirmation,
 };
 use argvus_tui::icons;
-use argvus_tui::page::{list, shell, status};
+use argvus_tui::page::list;
 use crossterm::event::KeyCode;
 use ratatui::Frame;
 use ratatui::layout::{Alignment, Constraint, Layout, Rect};

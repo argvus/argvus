@@ -46,7 +46,7 @@ use argvus_tui::{
   hints::{HintContext, confirm_hints, hints},
   icons,
   menu::{MenuEvent, MenuState, MenuStyle, Row, draw_menu},
-  page::{shell, status},
+  page::status,
   text_editor::{EditorOutcome, TextEditor},
 };
 use crossterm::event::{KeyCode, KeyEvent};

@@ -12,7 +12,7 @@ use argvus_i18n::{Lang, tr};
 use argvus_theme::Theme;
 use argvus_tui::{
   components::{StatusKind, StatusMessage},
-  page::{list, readonly, shell, status},
+  page::{list, readonly},
 };
 use crossterm::event::KeyCode;
 use ratatui::Frame;
@@ -328,13 +328,17 @@ impl ConfigApp {
 
   pub fn draw(&self, frame: &mut Frame) {
     let area = frame.area();
-    let body = shell(
+    let body = argvus_tui::page::shell_with_status(
       frame,
       area,
       &self.theme,
       self.lang,
       &self.breadcrumb(),
       self.footer_hints(),
+      argvus_tui::page::PageStatus {
+        message: self.status.as_ref(),
+        admin_required: false,
+      },
     );
     let body = argvus_tui::page::admin_warning(frame, body, &self.theme, self.lang, true);
     let split = Layout::vertical([Constraint::Length(1), Constraint::Min(1)]).split(body);
@@ -355,9 +359,6 @@ impl ConfigApp {
       &rows,
       self.selected.min(rows.len().saturating_sub(1)),
     );
-    if let Some(status_message) = &self.status {
-      status(frame, body, &self.theme, status_message);
-    }
   }
 }
 

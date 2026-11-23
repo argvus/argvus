@@ -74,13 +74,17 @@ impl ServicesApp {
 
   pub fn draw(&mut self, frame: &mut Frame) {
     let area = frame.area();
-    let body = shell(
+    let body = argvus_tui::page::shell_with_status(
       frame,
       area,
       &self.theme,
       self.lang,
       &self.breadcrumb(),
       &self.footer_hints(),
+      argvus_tui::page::PageStatus {
+        message: self.status.as_ref(),
+        admin_required: false,
+      },
     );
     let body = argvus_tui::page::admin_warning(
       frame,
@@ -232,9 +236,6 @@ impl ServicesApp {
   /// Status line, loading indicator and the confirmation, shared by the
   /// menu pages.
   pub(super) fn draw_overlays(&self, frame: &mut Frame, area: Rect, body: Rect) {
-    if let Some(s) = &self.status {
-      status(frame, body, &self.theme, s)
-    }
     if self.job.is_some() {
       status(
         frame,

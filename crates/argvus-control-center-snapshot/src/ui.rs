@@ -14,7 +14,7 @@ use argvus_theme::Theme;
 use argvus_tui::{
   components::{StatusKind, StatusMessage, draw_status},
   confirm::{ConfirmDialog, ConfirmOutcome, ConfirmState, draw_confirm},
-  page::{Selection, list, readonly, shell},
+  page::{Selection, list, readonly},
   text_editor::{EditorOutcome, TextEditor},
 };
 use crossterm::event::{KeyCode, KeyEvent};

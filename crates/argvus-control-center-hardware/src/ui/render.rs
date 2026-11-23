@@ -49,13 +49,17 @@ impl HardwareApp {
       )
     };
 
-    let body = shell(
+    let body = argvus_tui::page::shell_with_status(
       frame,
       area,
       &self.theme,
       self.lang,
       &self.breadcrumb(),
       hints,
+      argvus_tui::page::PageStatus {
+        message: self.status.as_ref(),
+        admin_required: false,
+      },
     );
     let body = argvus_tui::page::admin_warning(
       frame,
@@ -127,10 +131,6 @@ impl HardwareApp {
           confirm_selected: self.confirmation.confirm_selected,
         },
       );
-    }
-
-    if let Some(message) = &self.status {
-      status(frame, body, &self.theme, message);
     }
   }
 }

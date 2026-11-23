@@ -41,13 +41,17 @@ impl SnapshotApp {
       self.clamp_diff_scroll();
     }
     let hint = self.help_text();
-    let body = shell(
+    let body = argvus_tui::page::shell_with_status(
       frame,
       frame.area(),
       &self.theme,
       self.lang,
       &self.breadcrumb(),
       hint,
+      argvus_tui::page::PageStatus {
+        message: self.status.as_ref(),
+        admin_required: false,
+      },
     );
     let body = argvus_tui::page::admin_warning(frame, body, &self.theme, self.lang, true);
     let experimental_notice = StatusMessage {
@@ -114,14 +118,6 @@ impl SnapshotApp {
           .as_ref()
           .map(|cache| cache.lines.as_slice())
           .unwrap_or_default(),
-      );
-    }
-    if let Some(status) = &self.status {
-      draw_status(
-        frame,
-        Rect::new(body.x, body.bottom().saturating_sub(1), body.width, 1),
-        &self.theme,
-        status,
       );
     }
     if let Some(editor) = &self.editor {

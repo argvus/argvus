@@ -361,13 +361,13 @@ fn draw_user_page(app: &mut App, frame: &mut Frame, area: Rect) {
   } else {
     Paragraph::new(tr(app.lang, "control_center.ready")).style(Style::default().fg(app.theme.muted))
   };
-  frame.render_widget(status, footer[0]);
+  frame.render_widget(status, footer[1]);
 
   // Navigation footer, always the last line of the screen.
   let nav = Paragraph::new(tr(app.lang, "control_center.user_page_keys"))
     .alignment(Alignment::Right)
     .style(Style::default().fg(app.theme.muted));
-  frame.render_widget(nav, footer[1]);
+  frame.render_widget(nav, footer[0]);
 
   // Popups/Dialogs
   if app.hostname_editing {

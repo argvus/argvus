@@ -346,7 +346,7 @@ fn administrative_pages_show_warning_without_hiding_actions_or_footer() {
           .unwrap_or_else(|| panic!("missing warning: {page:?} {locale}"));
         assert!(warning < height as usize - 2);
         assert!(
-          lines[height as usize - 2].contains("Esc"),
+          lines[height as usize - 3].contains("Esc"),
           "footer lost: {page:?} {lines:?}"
         );
         assert!(!lines.join("").contains("control_center."));

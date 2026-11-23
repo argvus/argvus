@@ -23,8 +23,8 @@ pub fn areas(area: Rect) -> Areas {
   Areas {
     header: rows[0],
     body: rows[1],
-    message: rows[2],
-    footer: rows[3],
+    message: rows[3],
+    footer: rows[2],
   }
 }
 

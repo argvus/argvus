@@ -82,13 +82,17 @@ impl NetworkApp {
     let area = f.area();
     let rows = self.rows();
     self.menu.normalize(&rows);
-    let body = shell(
+    let body = argvus_tui::page::shell_with_status(
       f,
       area,
       &self.theme,
       self.lang,
       &self.breadcrumb(),
       &self.footer_hints(&rows),
+      argvus_tui::page::PageStatus {
+        message: self.status.as_ref(),
+        admin_required: false,
+      },
     );
     let body = argvus_tui::page::admin_warning(
       f,
@@ -190,9 +194,6 @@ impl NetworkApp {
         &self.theme,
         tr(self.lang, "control_center.enter_apply_esc_cancel"),
       );
-    }
-    if let Some(status_message) = &self.status {
-      status(f, body, &self.theme, status_message);
     }
     if self.job.is_some() {
       status(

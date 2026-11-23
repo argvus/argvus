@@ -65,19 +65,11 @@ pub fn shell_with_status(
   let status_height = message.map_or(0, |message| {
     crate::components::status_line_count(message, inner.width).min(usize::from(inner.height)) as u16
   });
-  let warning = admin_required.then(|| StatusMessage {
-    kind: crate::components::StatusKind::Warning,
-    text: tr(lang, "control_center.admin_privileges_required").to_owned(),
-  });
-  let warning_height = warning.as_ref().map_or(0, |warning| {
-    crate::components::status_line_count(warning, inner.width).min(usize::from(inner.height)) as u16
-  });
   let rows = Layout::vertical([
     Constraint::Length(2),
     Constraint::Min(1),
     Constraint::Length(2),
     Constraint::Length(status_height),
-    Constraint::Length(warning_height),
   ])
   .split(inner);
   draw_control_center_header(frame, rows[0], theme, breadcrumb, None);
@@ -85,10 +77,7 @@ pub fn shell_with_status(
   if let Some(message) = message {
     crate::components::draw_status(frame, rows[3], theme, message);
   }
-  if let Some(warning) = &warning {
-    crate::components::draw_status(frame, rows[4], theme, warning);
-  }
-  rows[1]
+  admin_warning(frame, rows[1], theme, lang, admin_required)
 }
 
 /// Reserves the bottom of a page's body for a persistent administration notice.
@@ -108,20 +97,20 @@ pub fn admin_warning(
     kind: crate::components::StatusKind::Warning,
     text: tr(lang, "control_center.admin_privileges_required").to_owned(),
   };
-  let height =
-    crate::components::status_line_count(&message, body.width).min(usize::from(body.height)) as u16;
+  let height = crate::components::status_line_count(&message, body.width.saturating_sub(2))
+    .saturating_add(2)
+    .min(usize::from(body.height)) as u16;
   let content = Rect::new(
     body.x,
     body.y,
     body.width,
     body.height.saturating_sub(height),
   );
-  crate::components::draw_status(
-    frame,
-    Rect::new(body.x, content.bottom(), body.width, height),
-    theme,
-    &message,
-  );
+  let warning_area = Rect::new(body.x, content.bottom(), body.width, height);
+  let block = Block::bordered().border_style(Style::new().fg(theme.border_active));
+  let inner = block.inner(warning_area);
+  frame.render_widget(block, warning_area);
+  crate::components::draw_status(frame, inner, theme, &message);
   content
 }
 
@@ -343,10 +332,10 @@ mod tests {
           .unwrap();
         assert!(warning < footer);
         let rendered = lines[warning..footer].join("");
-        assert!(rendered.contains("root"));
+        assert!(!rendered.contains('…'));
         assert!(!rendered.contains("control_center."));
         assert_eq!(
-          terminal.backend().buffer()[(1, warning as u16)].fg,
+          terminal.backend().buffer()[(2, warning as u16)].fg,
           theme.warning
         );
       }

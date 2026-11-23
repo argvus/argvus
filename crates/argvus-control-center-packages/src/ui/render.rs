@@ -124,9 +124,14 @@ impl PackagesApp {
       &self.terminal_footer(&rows),
       argvus_tui::page::PageStatus {
         message: self.status.as_ref(),
-        admin_required,
+        admin_required: false,
       },
     );
+    let body = if has_action_bar(self.page) {
+      body
+    } else {
+      argvus_tui::page::admin_warning(f, body, &self.theme, self.lang, admin_required)
+    };
     if filters_while_typing(self.page) {
       self.draw_filtered_list(f, body, &rows);
     } else {
@@ -156,12 +161,13 @@ impl PackagesApp {
   /// this screen.
   pub(super) fn draw_filtered_list(&mut self, f: &mut Frame, area: Rect, rows: &[Row<Item>]) {
     let has_action_bar = has_action_bar(self.page);
-    let [search, list, bar] = Layout::vertical([
+    let [search, content, bar] = Layout::vertical([
       Constraint::Length(3),
       Constraint::Min(3),
       Constraint::Length(if has_action_bar { 3 } else { 0 }),
     ])
     .areas(area);
+    let list = argvus_tui::page::admin_warning(f, content, &self.theme, self.lang, has_action_bar);
     self.draw_search_box(f, search);
     let title = if has_action_bar {
       "control_center.updates"

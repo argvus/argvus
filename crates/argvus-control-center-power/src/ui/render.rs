@@ -11,7 +11,7 @@ impl PowerApp {
     {
       lines.push(self.capabilities_line());
     }
-    let shell_body = shell(
+    let shell_body = argvus_tui::page::shell_with_status(
       frame,
       area,
       &self.theme,
@@ -25,9 +25,11 @@ impl PowerApp {
         self.lang,
         "control_center.navigate_tab_actions_enter_list_r_refresh_esc_back_help",
       ),
+      argvus_tui::page::PageStatus {
+        message: self.status.as_ref(),
+        admin_required: false,
+      },
     );
-    let shell_body =
-      argvus_tui::page::admin_warning(frame, shell_body, &self.theme, self.lang, true);
     let buttons: Vec<ActionButton> = self
       .buttons()
       .into_iter()
@@ -41,6 +43,7 @@ impl PowerApp {
       let split = Layout::vertical([Constraint::Min(1), Constraint::Length(3)]).split(shell_body);
       (split[0], Some(split[1]))
     };
+    let body = argvus_tui::page::admin_warning(frame, body, &self.theme, self.lang, true);
     let list_selection = if self.job.is_some() {
       usize::MAX
     } else {
@@ -60,9 +63,6 @@ impl PowerApp {
       frame.render_widget(block, action_area);
       let focus = self.actions.cursor().unwrap_or(usize::MAX);
       draw_aligned_transparent(frame, inner, &buttons, focus, &self.theme, Alignment::Left);
-    }
-    if let Some(s) = &self.status {
-      status(frame, body, &self.theme, s);
     }
     if let Some(pending) = &self.pending {
       let action = match pending {
