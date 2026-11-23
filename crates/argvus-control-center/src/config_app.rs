@@ -327,7 +327,10 @@ impl ConfigApp {
   }
 
   pub fn draw(&self, frame: &mut Frame) {
-    let area = frame.area();
+    self.draw_in(frame, frame.area());
+  }
+
+  pub fn draw_in(&self, frame: &mut Frame, area: ratatui::layout::Rect) {
     let body = argvus_tui::page::shell_with_status(
       frame,
       area,

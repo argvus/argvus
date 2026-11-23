@@ -16,34 +16,12 @@ impl BluetoothApp {
     }
   }
 
-  pub fn draw(&self, f: &mut Frame) {
-    // Bluetooth is listed under the Hardware card, so its path starts there.
-    let page = match self.page {
-      BluetoothPage::Home => tr(self.lang, "control_center.bluetooth"),
-      BluetoothPage::State => tr(self.lang, "control_center.bluetooth_state"),
-      BluetoothPage::Devices => tr(self.lang, "control_center.bluetooth_devices"),
-      BluetoothPage::Pair => tr(self.lang, "control_center.bluetooth_pair"),
-    };
-    let breadcrumb = join(&[HomeCardId::Hardware.label(self.lang), page]);
-    let area = shell(
-      f,
-      f.area(),
-      &self.theme,
-      self.lang,
-      &breadcrumb,
-      self.footer_hints(),
-    );
-    let buttons = self.buttons();
-    let raw_buttons: Vec<Button> = buttons.iter().map(|(_, button)| button.clone()).collect();
-    let (body, button_area) = if raw_buttons.is_empty() {
-      (area, None)
-    } else {
-      let button_height = argvus_tui::buttons::height(&raw_buttons, area.width).min(area.height);
-      let split =
-        Layout::vertical([Constraint::Min(1), Constraint::Length(button_height)]).split(area);
-      (split[0], Some(split[1]))
-    };
-    let rows: Vec<String> = match self.page {
+  pub fn blocks_global_search(&self) -> bool {
+    self.confirm_remove.is_some() || self.prompt.is_some()
+  }
+
+  pub fn search_rows(&self, page: BluetoothPage) -> Vec<String> {
+    match page {
       BluetoothPage::Home => vec![
         tr(self.lang, "control_center.state").into(),
         tr(self.lang, "control_center.devices").into(),
@@ -103,7 +81,41 @@ impl BluetoothApp {
           )
         })
         .collect(),
+    }
+  }
+
+  pub fn draw(&self, f: &mut Frame) {
+    self.draw_in(f, f.area());
+  }
+
+  pub fn draw_in(&self, f: &mut Frame, area: ratatui::layout::Rect) {
+    // Bluetooth is listed under the Hardware card, so its path starts there.
+    let page = match self.page {
+      BluetoothPage::Home => tr(self.lang, "control_center.bluetooth"),
+      BluetoothPage::State => tr(self.lang, "control_center.bluetooth_state"),
+      BluetoothPage::Devices => tr(self.lang, "control_center.bluetooth_devices"),
+      BluetoothPage::Pair => tr(self.lang, "control_center.bluetooth_pair"),
     };
+    let breadcrumb = join(&[HomeCardId::Hardware.label(self.lang), page]);
+    let area = shell(
+      f,
+      area,
+      &self.theme,
+      self.lang,
+      &breadcrumb,
+      self.footer_hints(),
+    );
+    let buttons = self.buttons();
+    let raw_buttons: Vec<Button> = buttons.iter().map(|(_, button)| button.clone()).collect();
+    let (body, button_area) = if raw_buttons.is_empty() {
+      (area, None)
+    } else {
+      let button_height = argvus_tui::buttons::height(&raw_buttons, area.width).min(area.height);
+      let split =
+        Layout::vertical([Constraint::Min(1), Constraint::Length(button_height)]).split(area);
+      (split[0], Some(split[1]))
+    };
+    let rows = self.search_rows(self.page);
     list(
       f,
       body,
@@ -135,7 +147,7 @@ impl BluetoothApp {
     if self.confirm_remove.is_some() {
       draw_confirmation(
         f,
-        f.area(),
+        area,
         &self.theme,
         ConfirmationDialog {
           title: tr(self.lang, "control_center.remove_device"),

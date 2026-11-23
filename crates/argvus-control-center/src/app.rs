@@ -265,6 +265,7 @@ pub struct App {
   /// An exit request was refused while an operation still needed its result.
   pub quit_blocked: bool,
   /// Current dimensions used by responsive layouts.
+  pub search_area: ratatui::layout::Rect,
   pub width: u16,
   /// Current height used by responsive layouts.
   pub height: u16,
@@ -300,10 +301,15 @@ pub struct App {
   pub appearance: AppearanceApp,
   /// Capabilities detected once and shared by optional domains.
   pub capabilities: Capabilities,
-  /// Single registry used by Home global search.
+  /// Registry shared by the global field on every page.
   pub search_registry: SearchRegistry,
+  #[cfg(feature = "system")]
+  pub search_accounts: argvus_control_center_settings::administration::Administration,
   /// Text entered in the global search field.
   pub search_query: String,
+  pub search_notice: Option<String>,
+  #[cfg(feature = "system")]
+  pending_search_account: Option<String>,
   /// Indicates whether keyboard events should go to the search editor.
   pub search_active: bool,
   /// Selected result index, independent of the Home index.
@@ -470,6 +476,7 @@ impl App {
       quit: false,
       quit_blocked: false,
       welcome: crate::welcome::Welcome::with_bluetooth(capabilities.has_bluetooth),
+      search_area: Default::default(),
       width: 80,
       height: 24,
       #[cfg(feature = "hardware")]
@@ -504,7 +511,14 @@ impl App {
       appearance,
       capabilities,
       search_registry,
+      #[cfg(feature = "system")]
+      search_accounts: argvus_control_center_settings::administration::Administration::new(
+        Page::Main,
+      ),
       search_query: String::new(),
+      search_notice: None,
+      #[cfg(feature = "system")]
+      pending_search_account: None,
       search_active: false,
       search_selected: 0,
       search_result_ids: Vec::new(),
@@ -664,6 +678,9 @@ impl App {
   /// help (decision D10 of `docs/ux-audit.md`). `Ctrl+C` requests exit unless
   /// the Packages terminal owns the input; pending operations block exit.
   pub fn captures_text(&self) -> bool {
+    if self.search_active {
+      return true;
+    }
     match self.route {
       Route::Home => self.search_active,
       Route::Launcher => self.launcher.captures_text(),
@@ -916,6 +933,7 @@ mod tests {
   }
 
   #[test]
+  #[cfg(feature = "full")]
   fn home_category_navigation_moves_between_category_items() {
     // Categories: Desktop Shell (first card) › Language & Region › Appearance
     // › ... The Desktop Shell card lists its items first, so the first item of

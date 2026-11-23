@@ -9,6 +9,10 @@ impl App {
   }
 
   pub fn breadcrumb(&self) -> String {
+    self.breadcrumb_for(self.page())
+  }
+
+  pub fn breadcrumb_for(&self, page: Page) -> String {
     // Every Home card owns a root segment, so a page's breadcrumb follows the
     // card it is listed under instead of the location it had before. The card
     // names come from `HomeCardId`, the same source the Home and search use.
@@ -31,7 +35,7 @@ impl App {
       tr(self.lang, "control_center.users_groups")
     );
     let preferences_root = HomeCardId::Preferences.label(self.lang);
-    match self.page() {
+    match page {
       Page::Main => String::new(),
       Page::DefaultApps => format!(
         "{preferences_root} > {}",
@@ -113,7 +117,7 @@ impl App {
         tr(self.lang, "control_center.hyprland_windows"),
         tr(
           self.lang,
-          if self.page() == Page::WindowRules {
+          if page == Page::WindowRules {
             "control_center.hyprland_windows_rules"
           } else {
             "control_center.hyprland_windows_mode"

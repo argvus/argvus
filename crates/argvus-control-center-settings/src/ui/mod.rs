@@ -23,7 +23,10 @@ use crate::item::Item;
 use crate::navigation::Page;
 
 pub fn draw(app: &mut App, frame: &mut Frame) {
-  let area = frame.area();
+  draw_in(app, frame, frame.area());
+}
+
+pub fn draw_in(app: &mut App, frame: &mut Frame, area: ratatui::layout::Rect) {
   app.resize(area.width, area.height);
   Block::new()
     .borders(Borders::ALL)

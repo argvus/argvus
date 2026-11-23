@@ -23,6 +23,7 @@ pub fn draw(app: &mut App, frame: &mut Frame) {
     app.lang.direction() == argvus_i18n::TextDirection::RightToLeft,
   );
   let area = frame.area();
+  app.search_area = Rect::default();
   app.resize(area.width, area.height);
   if area.width < MIN_WIDTH || area.height < MIN_HEIGHT {
     draw_too_small(
@@ -36,47 +37,64 @@ pub fn draw(app: &mut App, frame: &mut Frame) {
     return;
   }
 
+  let search_available = app.has_global_search();
+  let content = if search_available && app.route != Route::Home {
+    let [field, content] =
+      Layout::vertical([Constraint::Length(3), Constraint::Min(0)]).areas(area);
+    draw_search(app, frame, field);
+    content
+  } else {
+    area
+  };
+  argvus_tui::chrome::set_control_center_search_hint(
+    search_available.then(|| format!("/ {}", tr(app.lang, "control_center.search_2c43ee"))),
+  );
   match app.route {
-    Route::Welcome => crate::welcome::draw(app, frame),
+    Route::Welcome => crate::welcome::draw_in(app, frame, content),
     Route::Home => draw_home(app, frame),
-    Route::AppSettings => app.settings_hub.draw(frame, app.lang, &app.theme),
-    Route::Config => app.config.draw(frame),
-    Route::Launcher => app.launcher.draw(frame, app.lang, &app.theme),
-    Route::Settings => argvus_control_center_settings::ui::draw(&mut app.settings, frame),
+    Route::AppSettings => app
+      .settings_hub
+      .draw_in(frame, app.lang, &app.theme, content),
+    Route::Config => app.config.draw_in(frame, content),
+    Route::Launcher => app.launcher.draw_in(frame, app.lang, &app.theme, content),
+    Route::Settings => {
+      argvus_control_center_settings::ui::draw_in(&mut app.settings, frame, content)
+    }
     #[cfg(feature = "about")]
-    Route::About => argvus_control_center_about::ui::draw(&mut app.about, frame),
+    Route::About => argvus_control_center_about::ui::draw_in(&mut app.about, frame, content),
     #[cfg(feature = "hardware")]
-    Route::Hardware => app.hardware.draw(frame),
+    Route::Hardware => app.hardware.draw_in(frame, content),
     #[cfg(feature = "services")]
-    Route::Services => app.services.draw(frame),
+    Route::Services => app.services.draw_in(frame, content),
     #[cfg(feature = "dev-services")]
-    Route::DevServices => app.dev_services.draw(frame),
+    Route::DevServices => app.dev_services.draw_in(frame, content),
     #[cfg(feature = "network")]
-    Route::Network => app.network.draw(frame),
+    Route::Network => app.network.draw_in(frame, content),
     #[cfg(feature = "audio")]
-    Route::Audio => app.audio.draw(frame),
+    Route::Audio => app.audio.draw_in(frame, content),
     #[cfg(feature = "bluetooth")]
-    Route::Bluetooth => app.bluetooth.draw(frame),
+    Route::Bluetooth => app.bluetooth.draw_in(frame, content),
     #[cfg(feature = "boot")]
-    Route::Boot => app.boot.draw(frame),
+    Route::Boot => app.boot.draw_in(frame, content),
     #[cfg(feature = "packages")]
-    Route::Packages => app.packages.draw(frame),
+    Route::Packages => app.packages.draw_in(frame, content),
     #[cfg(feature = "storage")]
-    Route::Storage => app.storage.draw(frame),
+    Route::Storage => app.storage.draw_in(frame, content),
     #[cfg(feature = "snapshot")]
-    Route::Snapshot => app.snapshot.draw(frame),
+    Route::Snapshot => app.snapshot.draw_in(frame, content),
     #[cfg(feature = "diagnostics")]
-    Route::Diagnostics => app.diagnostics.draw(frame),
+    Route::Diagnostics => app.diagnostics.draw_in(frame, content),
     #[cfg(feature = "power")]
-    Route::Power => app.power.draw(frame),
+    Route::Power => app.power.draw_in(frame, content),
     #[cfg(feature = "session")]
-    Route::Session => app.session.draw(frame),
+    Route::Session => app.session.draw_in(frame, content),
     #[cfg(feature = "displays")]
-    Route::Displays => app.displays.draw(frame),
+    Route::Displays => app.displays.draw_in(frame, content),
     #[cfg(feature = "appearance")]
-    Route::Appearance => app.appearance.draw(frame),
-    Route::Hyprland => crate::hyprland::draw(app, frame),
+    Route::Appearance => app.appearance.draw_in(frame, content),
+    Route::Hyprland => crate::hyprland::draw_in(app, frame, content),
   }
+  argvus_tui::chrome::set_control_center_search_hint(None);
   if app.welcome.active && app.route != Route::Welcome {
     let hint = tr(app.lang, "control_center.welcome_active_hint")
       .replace("{step}", &(app.welcome.selected + 1).to_string())
@@ -107,6 +125,10 @@ pub fn draw(app: &mut App, frame: &mut Frame) {
       ),
       Rect::new(area.x, area.bottom().saturating_sub(1), area.width, 1),
     );
+  }
+  if search_available && app.route != Route::Home && app.search_active {
+    frame.render_widget(ratatui::widgets::Clear, content);
+    draw_results(app, frame, content);
   }
   if app.help {
     draw_help(
@@ -156,54 +178,7 @@ fn draw_home(app: &mut App, frame: &mut Frame) {
   );
   draw_search(app, frame, rows[2]);
   if app.search_active && !app.search_query.is_empty() {
-    let mut lines: Vec<Line<'static>> = vec![Line::from(Span::styled(
-      format!("  {}", tr(app.lang, "control_center.search_results")),
-      Style::new()
-        .fg(app.theme.accent)
-        .add_modifier(Modifier::BOLD),
-    ))];
-    if app.search_result_ids.is_empty() {
-      lines.push(Line::from(Span::styled(
-        format!("  {}", tr(app.lang, "control_center.search_no_results")),
-        Style::new().fg(app.theme.muted),
-      )));
-    } else {
-      for (index, id) in app.search_result_ids.iter().enumerate() {
-        if let Some(entry) = app
-          .search_registry
-          .entries()
-          .iter()
-          .find(|entry| &entry.id == id)
-        {
-          let is_selected = index == app.search_selected;
-          let label = format!(
-            "{} > {}",
-            search_category(app.lang, &entry.category),
-            entry.title
-          );
-          let style = if is_selected {
-            Style::new()
-              .fg(app.theme.selected_foreground)
-              .bg(app.theme.selected_background)
-              .add_modifier(Modifier::BOLD)
-          } else {
-            Style::new().fg(app.theme.foreground)
-          };
-          lines.push(
-            Line::from(Span::styled(
-              format!(
-                " {} {}",
-                if is_selected { ">" } else { " " },
-                ellipsize(&label, rows[3].width.saturating_sub(6) as usize)
-              ),
-              style,
-            ))
-            .style(style),
-          );
-        }
-      }
-    }
-    frame.render_widget(Paragraph::new(lines), rows[3].inner(Margin::new(2, 1)));
+    draw_results(app, frame, rows[3]);
   } else {
     draw_home_grid(app, frame, rows[3]);
   }
@@ -499,7 +474,71 @@ fn draw_home_card(app: &App, frame: &mut Frame, area: Rect, card: &HomeCard) {
   }
 }
 
-fn draw_search(app: &App, frame: &mut Frame, area: ratatui::layout::Rect) {
+fn draw_results(app: &App, frame: &mut Frame, area: Rect) {
+  let mut lines: Vec<Line<'static>> = vec![Line::from(Span::styled(
+    format!("  {}", tr(app.lang, "control_center.search_results")),
+    Style::new()
+      .fg(app.theme.accent)
+      .add_modifier(Modifier::BOLD),
+  ))];
+  if let Some(message) = &app.search_notice {
+    lines.push(Line::from(message.clone()));
+  }
+  if app.search_result_ids.is_empty() {
+    lines.push(Line::from(Span::styled(
+      format!("  {}", tr(app.lang, "control_center.search_no_results")),
+      Style::new().fg(app.theme.muted),
+    )));
+  } else {
+    for (index, id) in app.search_result_ids.iter().enumerate().skip(
+      app
+        .search_selected
+        .saturating_sub(usize::from(area.height.saturating_sub(4))),
+    ) {
+      if let Some(entry) = app
+        .search_registry
+        .entries()
+        .iter()
+        .find(|entry| &entry.id == id)
+      {
+        let is_selected = index == app.search_selected;
+        let parent = search_category(app.lang, &entry.category);
+        let label = if parent.is_empty() || parent == entry.title {
+          entry.title.clone()
+        } else {
+          format!("{parent} > {}", entry.title)
+        };
+        let style = if is_selected {
+          Style::new()
+            .fg(app.theme.selected_foreground)
+            .bg(app.theme.selected_background)
+            .add_modifier(Modifier::BOLD)
+        } else {
+          Style::new().fg(app.theme.foreground)
+        };
+        lines.push(
+          Line::from(Span::styled(
+            format!(
+              " {} {}",
+              if is_selected { ">" } else { " " },
+              ellipsize(&label, area.width.saturating_sub(6) as usize)
+            ),
+            style,
+          ))
+          .style(style),
+        );
+      }
+    }
+  }
+  frame.render_widget(Paragraph::new(lines), area.inner(Margin::new(2, 1)));
+}
+
+fn draw_search(app: &mut App, frame: &mut Frame, area: ratatui::layout::Rect) {
+  app.search_area = if app.route == Route::Home {
+    area.inner(Margin::new(1, 0))
+  } else {
+    area
+  };
   let value = &app.search_query;
   let style = if app.search_active {
     Style::new()
@@ -508,7 +547,7 @@ fn draw_search(app: &App, frame: &mut Frame, area: ratatui::layout::Rect) {
   } else {
     Style::new().fg(app.theme.muted).bg(app.theme.background)
   };
-  let width = area.width.saturating_sub(4) as usize;
+  let width = app.search_area.width.saturating_sub(2) as usize;
   let prefix = format!("{}: ", tr(app.lang, "control_center.search_2c43ee"));
   let prefix_width = argvus_tui::text::display_width(&prefix);
   let cursor_width = usize::from(app.search_active && app.search_cursor_visible);
@@ -542,7 +581,7 @@ fn draw_search(app: &App, frame: &mut Frame, area: ratatui::layout::Rect) {
         app.theme.border
       })),
     ),
-    area.inner(Margin::new(1, 0)),
+    app.search_area,
   );
 }
 
@@ -576,6 +615,50 @@ fn search_category(lang: argvus_i18n::Lang, category: &str) -> String {
 
 #[cfg(test)]
 mod tests {
+  #[test]
+  fn welcome_and_about_use_the_full_area_without_search() {
+    use ratatui::{Terminal, backend::TestBackend};
+    let mut routes = vec![InitialRoute::Welcome];
+    #[cfg(feature = "about")]
+    routes.push(InitialRoute::About(argvus_control_center_about::Tab::About));
+    for route in routes {
+      let mut app = App::with_lang(route, argvus_i18n::Lang::for_locale("en-US"));
+      let mut terminal = Terminal::new(TestBackend::new(100, 32)).unwrap();
+      terminal.draw(|frame| draw(&mut app, frame)).unwrap();
+      assert!(app.search_area.is_empty());
+      assert!(!app.can_focus_search());
+      let text: String = terminal
+        .backend()
+        .buffer()
+        .content
+        .iter()
+        .map(|cell| cell.symbol())
+        .collect();
+      assert!(!text.contains("/ Search"));
+    }
+  }
+
+  #[test]
+  fn search_hint_is_present_on_home_and_inner_pages() {
+    use ratatui::{Terminal, backend::TestBackend};
+    for route in [
+      InitialRoute::Home,
+      InitialRoute::Settings(argvus_control_center_settings::Page::UsersGroups),
+    ] {
+      let mut app = App::with_lang(route, argvus_i18n::Lang::for_locale("en-US"));
+      let mut terminal = Terminal::new(TestBackend::new(100, 32)).unwrap();
+      terminal.draw(|frame| draw(&mut app, frame)).unwrap();
+      let text: String = terminal
+        .backend()
+        .buffer()
+        .content
+        .iter()
+        .map(|cell| cell.symbol())
+        .collect();
+      assert!(text.contains("/ Search"));
+    }
+  }
+
   #[test]
   fn last_home_scroll_is_the_first_row_from_which_the_rest_fits() {
     // Rows of 6, 6, 4 and 4 lines in 10 visible lines: rows 2 and 3 fit together.
@@ -670,7 +753,7 @@ mod tests {
       .map(|cell| cell.symbol())
       .collect::<String>();
     assert!(text.contains("wifi"));
-    assert!(text.contains("Wi-Fi"));
+    assert_eq!(text.contains("Wi-Fi"), cfg!(feature = "network"));
     assert!(text.contains("▌"));
   }
 

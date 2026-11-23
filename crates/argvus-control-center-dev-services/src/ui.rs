@@ -153,7 +153,7 @@ impl DevServicesApp {
   }
 
   /// Builds the read-only rows of the three sections this page reports.
-  fn rows(&self) -> Vec<String> {
+  pub fn rows(&self) -> Vec<String> {
     let mut rows = Vec::new();
     rows.push(format!(
       "{} {} ({})",
@@ -226,7 +226,10 @@ impl DevServicesApp {
   }
 
   pub fn draw(&mut self, frame: &mut Frame) {
-    let area = frame.area();
+    self.draw_in(frame, frame.area());
+  }
+
+  pub fn draw_in(&mut self, frame: &mut Frame, area: ratatui::layout::Rect) {
     let body = shell(
       frame,
       area,

@@ -4,6 +4,11 @@ description: Konfigurieren Sie die persistenten Teile Ihres ARGVUS-Desktops.
 ---
 Das Kontrollzentrum ist ARGVUS' Tastatur-zuerst Einstellungsanwendung. Verwenden Sie es, wenn Sie den Desktop konfigurieren möchten, anstatt eine einmalige Aktion auszuführen.
 
+Mit Ctrl+F im Control Center, außer auf Über und ARGVUS Welcome suchen, mit ↑ und ↓ ein Ziel auswählen und mit Enter öffnen. Die Fußzeile zeigt `/ Suchen`. Auf Seiten mit lokalem Filter öffnet `/` diesen Filter und Ctrl+F die globale Suche.
+
+- `style` → `Erscheinungsbild > Anwendungsstil`, `Erscheinungsbild > Desktop-Stil`
+- `shell` / `Shell` / `SHELL` → `Systemadministration > Benutzer und Gruppen > Benutzer > ana`
+
 
 In **Sitzung** stehen die Aktionen für Komponenten, Autostart und Protokolle unter der Liste. `Tab` wechselt den Fokus, `←/→` wählen eine Schaltfläche und `Enter` führt sie aus. Statusmeldungen stehen in Sitzung, Speicher und Audio unter der Navigation.
 
@@ -45,7 +50,7 @@ Wenn das Raster mehr Einträge hat, als auf den Bildschirm passen, erscheint am 
 
 ## Eine Einstellung finden
 
-Der Startbildschirm registriert Einstellungen nach Titel, Kategorie, Kennung und Schlüsselwörtern. Die Suche ist akzentunempfindlich und akzeptiert praktische Begriffe wie `theme`, `wallpaper`, `shortcut`, `mouse`, `monitor`, `network`, `user` und `DPI`. Exakte Titelübereinstimmungen werden zuerst angezeigt, gefolgt von einem Titelfortsatz, jedem Wort des Titels oder der Kategorie, das den eingegebenen Text enthält, und schließlich Schlüsselwortübereinstimmungen — so kann das Eingeben eines beliebigen Teils eines Wortes (nicht nur seines Anfangs) trotzdem das Ziel finden.
+Die Suche findet Seiten anhand von Titeln, Navigationspfaden, Feldnamen, Optionen und Stichwörtern. Die Suche ist akzentunempfindlich und akzeptiert praktische Begriffe wie `theme`, `wallpaper`, `shortcut`, `mouse`, `monitor`, `network`, `user` und `DPI`. Exakte Titelübereinstimmungen werden zuerst angezeigt, gefolgt von einem Titelfortsatz, jedem Wort des Titels oder der Kategorie, das den eingegebenen Text enthält, und schließlich Schlüsselwortübereinstimmungen — so kann das Eingeben eines beliebigen Teils eines Wortes (nicht nur seines Anfangs) trotzdem das Ziel finden.
 
 Das sichtbare Menü ist fähigkeitsbewusst. Eine Route kann fehlen, wenn ihr Anbieter nicht installiert ist, die Hardware nicht verfügbar ist oder die aktuelle Sitzung die erforderliche Fähigkeit nicht bereitstellen kann. Die Suche ist daher auch ein nützliches Mittel, um zu entdecken, was diese Installation konfigurieren kann.
 

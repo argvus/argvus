@@ -117,7 +117,10 @@ fn home_global_search_updates_live_and_clears_before_canceling() {
   handle(&mut app, press(KeyCode::Char('f')));
   assert!(app.search_active);
   assert_eq!(app.search_query, "wif");
-  assert!(app.search_result_ids.iter().any(|id| id == "network.wifi"));
+  assert_eq!(
+    app.search_result_ids.iter().any(|id| id == "network.wifi"),
+    cfg!(feature = "network")
+  );
   handle(&mut app, press(KeyCode::Esc));
   assert!(app.search_active);
   assert!(app.search_query.is_empty());
@@ -195,6 +198,10 @@ fn global_language_search_opens_the_preferences_language_page() {
 #[test]
 fn clicking_home_search_field_focuses_global_search() {
   let mut app = App::new(InitialRoute::Home);
+  let mut terminal = ratatui::Terminal::new(ratatui::backend::TestBackend::new(90, 32)).unwrap();
+  terminal
+    .draw(|frame| crate::ui::draw(&mut app, frame))
+    .unwrap();
   handle(
     &mut app,
     Event::Mouse(crossterm::event::MouseEvent {
@@ -639,4 +646,42 @@ fn package_search_shortcut_and_paste_edit_the_top_bar() {
     "Esc must preserve the query in Search: {text}"
   );
   assert!(!app.help);
+}
+
+#[cfg(feature = "appearance")]
+#[test]
+fn global_search_from_an_inner_page_opens_both_styles_and_cancels_in_place() {
+  let mut app = App::with_lang(InitialRoute::Home, argvus_i18n::Lang::for_locale("en-US"));
+  app.route = Route::AppSettings;
+  let focus = Event::Key(KeyEvent::new(KeyCode::Char('f'), KeyModifiers::CONTROL));
+  handle(&mut app, focus.clone());
+  handle(&mut app, Event::Paste("STYLE".into()));
+  for id in ["appearance.application_style", "appearance.desktop_style"] {
+    assert!(app.search_result_ids.iter().any(|result| result == id));
+  }
+  handle(&mut app, press(KeyCode::Esc));
+  handle(&mut app, press(KeyCode::Esc));
+  assert_eq!(app.route, Route::AppSettings);
+  assert!(!app.search_active);
+  handle(&mut app, focus);
+  handle(&mut app, Event::Paste("Application Style".into()));
+  handle(&mut app, press(KeyCode::Enter));
+  assert_eq!(app.route, Route::Appearance);
+  assert_eq!(
+    app.appearance.page,
+    argvus_control_center_appearance::AppearancePage::ApplicationStyle
+  );
+}
+
+#[test]
+fn slash_search_keeps_existing_local_filters() {
+  let mut app = App::new(InitialRoute::Home);
+  app.route = Route::AppSettings;
+  handle(&mut app, press(KeyCode::Char('/')));
+  assert!(app.search_active);
+  app.clear_global_search();
+  app.open_settings(argvus_control_center_settings::Page::TimeZone);
+  handle(&mut app, press(KeyCode::Char('/')));
+  assert!(app.settings.searching);
+  assert!(!app.search_active);
 }

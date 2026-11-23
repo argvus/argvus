@@ -16,10 +16,23 @@ impl StorageApp {
     }
   }
 
+  /// Reads this destination's visible labels from the current snapshot.
+  pub fn search_content(&mut self, page: StoragePage) -> (String, Vec<String>) {
+    let previous = std::mem::replace(&mut self.page, page);
+    let path = self.breadcrumb();
+    let words = self.rows();
+    self.page = previous;
+    (path, words)
+  }
+
   pub fn draw(&mut self, frame: &mut Frame) {
+    self.draw_in(frame, frame.area());
+  }
+
+  pub fn draw_in(&mut self, frame: &mut Frame, area: ratatui::layout::Rect) {
     let body = argvus_tui::page::shell_with_status(
       frame,
-      frame.area(),
+      area,
       &self.theme,
       self.lang,
       &self.breadcrumb(),

@@ -356,6 +356,18 @@ impl AppearanceApp {
     rows
   }
 
+  /// Search labels use the same rows and translated path as the visible page.
+  pub fn search_content(&self) -> (String, Vec<String>) {
+    (
+      self.breadcrumb(),
+      self
+        .page_rows()
+        .into_iter()
+        .map(|row| row.label().to_owned())
+        .collect(),
+    )
+  }
+
   /// Rows of the page without the trailing `Apply` group.
   pub(super) fn page_rows(&self) -> Vec<Row<Item>> {
     match self.page {

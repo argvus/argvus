@@ -72,8 +72,27 @@ impl ServicesApp {
     }
   }
 
+  pub fn search_content(&mut self, page: ServicePage) -> (String, Vec<String>) {
+    let previous = std::mem::replace(&mut self.page, page);
+    let words = if page == ServicePage::Home {
+      self.home_rows()
+    } else {
+      self
+        .menu_rows()
+        .into_iter()
+        .map(|row| row.label().to_owned())
+        .collect()
+    };
+    let path = self.breadcrumb();
+    self.page = previous;
+    (path, words)
+  }
+
   pub fn draw(&mut self, frame: &mut Frame) {
-    let area = frame.area();
+    self.draw_in(frame, frame.area());
+  }
+
+  pub fn draw_in(&mut self, frame: &mut Frame, area: ratatui::layout::Rect) {
     let loading = self.job.as_ref().map(|_| StatusMessage {
       kind: StatusKind::Info,
       text: tr(self.lang, "control_center.loading_services").into(),

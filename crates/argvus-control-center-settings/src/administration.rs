@@ -377,6 +377,27 @@ impl Administration {
     self.accounts["users"].is_array()
   }
 
+  pub fn searchable_users(&self) -> Vec<String> {
+    self
+      .users(false)
+      .iter()
+      .map(|user| text(user, "user"))
+      .collect()
+  }
+
+  pub fn select_search_user(&mut self, snapshot: &Self, name: &str) -> bool {
+    if let Some(user) = snapshot
+      .users(false)
+      .into_iter()
+      .find(|user| user["user"] == name)
+    {
+      self.accounts = snapshot.accounts.clone();
+      self.user = user;
+      return true;
+    }
+    false
+  }
+
   pub(crate) fn users(&self, include_system: bool) -> Vec<Value> {
     self.accounts["users"]
       .as_array()

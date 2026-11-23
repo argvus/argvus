@@ -30,8 +30,31 @@ impl SessionApp {
     }
   }
 
+  /// Reads this destination's visible labels from the current snapshot.
+  pub fn search_content(&mut self, page: SessionPage) -> (String, Vec<String>) {
+    let previous = std::mem::replace(&mut self.page, page);
+    let path = self.breadcrumb();
+    let words = match self.page {
+      SessionPage::Home => self.home_rows(),
+      SessionPage::Components => self.component_rows(),
+      SessionPage::Autostart => self.autostart_rows(),
+      SessionPage::Diagnostics => self.diagnostics_rows(),
+      SessionPage::Logs => self.log_rows(),
+      SessionPage::LogDetail(index) => self
+        .log_detail_lines(index)
+        .into_iter()
+        .map(|line| line.to_string())
+        .collect(),
+    };
+    self.page = previous;
+    (path, words)
+  }
+
   pub fn draw(&mut self, frame: &mut Frame) {
-    let area = frame.area();
+    self.draw_in(frame, frame.area());
+  }
+
+  pub fn draw_in(&mut self, frame: &mut Frame, area: ratatui::layout::Rect) {
     let body = argvus_tui::page::shell_with_status(
       frame,
       area,

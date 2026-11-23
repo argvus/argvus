@@ -70,7 +70,15 @@ impl AppearanceApp {
   }
 
   /// Renders the current page with the semantic theme.
+  pub fn blocks_global_search(&self) -> bool {
+    self.confirm.is_some()
+  }
+
   pub fn draw(&mut self, frame: &mut Frame) {
+    self.draw_in(frame, frame.area());
+  }
+
+  pub fn draw_in(&mut self, frame: &mut Frame, area: ratatui::layout::Rect) {
     let rows = self.rows();
     self.menu.normalize(&rows);
     let icons_page = self.page == AppearancePage::Icons;
@@ -85,7 +93,7 @@ impl AppearanceApp {
     });
     let area = argvus_tui::page::shell_with_status(
       frame,
-      frame.area(),
+      area,
       &self.theme,
       self.lang,
       &self.breadcrumb(),

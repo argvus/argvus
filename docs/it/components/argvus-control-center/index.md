@@ -4,6 +4,11 @@ description: Configura le parti persistenti del tuo desktop ARGVUS.
 ---
 Il Centro di Controllo è l'applicazione per le impostazioni di ARGVUS pensata principalmente per l'uso da tastiera. Usalo quando vuoi configurare il desktop piuttosto che eseguire un'azione una tantum.
 
+Premi Ctrl+F per cercare nelle schermate del Control Center, tranne Informazioni e ARGVUS Welcome. Seleziona con ↑ e ↓ e apri con Invio. Il piè di pagina mostra `/ Cerca`. Nelle pagine con filtro locale, `/` apre il filtro e Ctrl+F apre la ricerca globale.
+
+- `style` → `Aspetto > Stile dell'applicazione`, `Aspetto > Stile del desktop`
+- `shell` / `Shell` / `SHELL` → `Amministrazione del sistema > Utenti e gruppi > Utenti > ana`
+
 
 In **Sessione**, le azioni di componenti, avvio automatico e registri si trovano sotto la lista. Usa `Tab` per cambiare il focus, `←/→` per scegliere un pulsante e `Enter` per eseguirlo. Lo stato appare sotto la navigazione in Sessione, Archiviazione e Audio.
 
@@ -45,7 +50,7 @@ Quando la griglia contiene più voci di quante ne possano entrare nello schermo,
 
 ## Trovare un'impostazione
 
-La schermata principale registra le impostazioni per titolo, categoria, identificatore e parole chiave. La ricerca non distingue gli accenti e accetta termini pratici come `theme`, `wallpaper`, `shortcut`, `mouse`, `monitor`, `network`, `user` e `DPI`. Le corrispondenze esatte del titolo sono classificate per prime, seguite da un prefisso del titolo, qualsiasi parola del titolo o della categoria che contenga il testo digitato, e infine le corrispondenze delle parole chiave — quindi digitare qualsiasi parte di una parola (non solo l'inizio) può comunque trovare la destinazione.
+La ricerca trova le pagine per titolo, percorso di navigazione, nome dei campi, opzioni e parole chiave. La ricerca non distingue gli accenti e accetta termini pratici come `theme`, `wallpaper`, `shortcut`, `mouse`, `monitor`, `network`, `user` e `DPI`. Le corrispondenze esatte del titolo sono classificate per prime, seguite da un prefisso del titolo, qualsiasi parola del titolo o della categoria che contenga il testo digitato, e infine le corrispondenze delle parole chiave — quindi digitare qualsiasi parte di una parola (non solo l'inizio) può comunque trovare la destinazione.
 
 Il menu visibile è consapevole delle capacità. Una rotta può essere assente quando il suo provider non è installato, quando l'hardware non è disponibile o quando la sessione corrente non può fornire la capacità richiesta. La ricerca è quindi anche un modo utile per scoprire cosa questa installazione può configurare.
 

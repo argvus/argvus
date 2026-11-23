@@ -80,3 +80,18 @@ fn subpage_edits_are_drafts_until_save() {
   );
   assert!(!app.admin.busy());
 }
+
+#[test]
+fn searchable_accounts_follow_the_user_list_and_open_by_name() {
+  let mut snapshot = app(Page::UserList).admin;
+  snapshot.accounts["users"]
+    .as_array_mut()
+    .unwrap()
+    .push(json!({"user":"bob","uid":1001}));
+  assert_eq!(snapshot.searchable_users(), ["alice", "bob"]);
+  let mut target = Administration::new(Page::Main);
+  assert!(target.select_search_user(&snapshot, "bob"));
+  assert_eq!(target.user["user"], "bob");
+  assert!(!target.select_search_user(&snapshot, "root"));
+  assert!(!target.select_search_user(&snapshot, "removed"));
+}

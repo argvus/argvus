@@ -4,6 +4,11 @@ description: Configure las partes persistentes de su escritorio ARGVUS.
 ---
 El Centro de Control es la aplicación de configuración de ARGVUS diseñada para usar principalmente con el teclado. Úsalo cuando quieras configurar el escritorio en lugar de realizar una acción única.
 
+Pulsa Ctrl+F para buscar en Control Center, excepto en Acerca de y ARGVUS Welcome. Selecciona el destino con ↑ y ↓ y ábrelo con Enter. El pie muestra `/ Buscar`. En páginas con filtro local, `/` abre ese filtro y Ctrl+F abre la búsqueda global.
+
+- `style` → `Apariencia > Estilo de aplicación`, `Apariencia > Estilo de escritorio`
+- `shell` / `Shell` / `SHELL` → `Administración del sistema > Usuarios y grupos > Usuarios > ana`
+
 
 En **Sesión**, Componentes, Inicio automático y Registros muestran sus acciones debajo de la lista. Usa `Tab` para cambiar el foco, `←/→` para elegir un botón y `Enter` para ejecutarlo. El estado aparece debajo de la navegación en Sesión, Almacenamiento y Audio.
 
@@ -45,7 +50,7 @@ Cuando la cuadrícula tiene más entradas de las que caben en la pantalla, apare
 
 ## Encontrando una configuración
 
-La pantalla de inicio registra las configuraciones por título, categoría, identificador y palabras clave. La búsqueda no distingue entre mayúsculas y minúsculas y acepta términos prácticos como `theme`, `wallpaper`, `shortcut`, `mouse`, `monitor`, `network`, `user` y `DPI`. Las coincidencias exactas de título se clasifican primero, seguidas de un prefijo de título, cualquier palabra del título o de la categoría que contenga el texto escrito, y finalmente las coincidencias de palabras clave; por lo que escribir cualquier parte de una palabra (no solo su inicio) aún puede encontrar el destino.
+La búsqueda encuentra páginas por título, ruta de navegación, etiquetas de campos, opciones y palabras clave. La búsqueda no distingue entre mayúsculas y minúsculas y acepta términos prácticos como `theme`, `wallpaper`, `shortcut`, `mouse`, `monitor`, `network`, `user` y `DPI`. Las coincidencias exactas de título se clasifican primero, seguidas de un prefijo de título, cualquier palabra del título o de la categoría que contenga el texto escrito, y finalmente las coincidencias de palabras clave; por lo que escribir cualquier parte de una palabra (no solo su inicio) aún puede encontrar el destino.
 
 El menú visible es consciente de las capacidades. Una ruta puede estar ausente cuando su proveedor no está instalado, cuando el hardware no está disponible o cuando la sesión actual no puede proporcionar la capacidad requerida. Por lo tanto, la búsqueda también es una forma útil de descubrir lo que esta instalación puede configurar.
 

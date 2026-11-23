@@ -4,6 +4,11 @@ description: Configurez les parties persistantes de votre bureau ARGVUS.
 ---
 Le Centre de Contrôle est l'application de paramètres axée sur le clavier d'ARGVUS. Utilisez-le lorsque vous souhaitez configurer le bureau plutôt que d'effectuer une action ponctuelle.
 
+Appuyez sur Ctrl+F pour rechercher dans Control Center, sauf À propos et ARGVUS Welcome. Sélectionnez la destination avec ↑ et ↓ puis appuyez sur Entrée. Le pied de page affiche `/ Rechercher`. Dans les pages avec un filtre local, `/` ouvre ce filtre et Ctrl+F ouvre la recherche globale.
+
+- `style` → `Apparence > Style d'application`, `Apparence > Style de bureau`
+- `shell` / `Shell` / `SHELL` → `Administration système > Utilisateurs et groupes > Utilisateurs > ana`
+
 
 Dans **Session**, les actions des composants, du démarrage automatique et des journaux figurent sous la liste. Utilisez `Tab` pour changer de zone, `←/→` pour choisir un bouton et `Enter` pour l’exécuter. Les messages d’état apparaissent sous la navigation dans Session, Stockage et Audio.
 
@@ -45,7 +50,7 @@ Lorsque la grille contient plus d'entrées que ce que l'écran peut afficher, un
 
 ## Trouver un paramètre
 
-L'écran d'accueil enregistre les paramètres par titre, catégorie, identifiant et mots-clés. La recherche est insensible aux accents et accepte des termes pratiques tels que `theme`, `wallpaper`, `shortcut`, `mouse`, `monitor`, `network`, `user` et `DPI`. Les correspondances exactes du titre sont classées en premier, suivies d'un préfixe de titre, de tout mot du titre ou de la catégorie contenant le texte saisi, et enfin des correspondances de mots-clés — taper une partie d'un mot (pas seulement son début) peut donc toujours permettre de trouver la destination.
+La recherche trouve les pages par titre, chemin de navigation, libellé de champ, option ou mot-clé. La recherche est insensible aux accents et accepte des termes pratiques tels que `theme`, `wallpaper`, `shortcut`, `mouse`, `monitor`, `network`, `user` et `DPI`. Les correspondances exactes du titre sont classées en premier, suivies d'un préfixe de titre, de tout mot du titre ou de la catégorie contenant le texte saisi, et enfin des correspondances de mots-clés — taper une partie d'un mot (pas seulement son début) peut donc toujours permettre de trouver la destination.
 
 Le menu visible est conscient des capacités. Un itinéraire peut être absent lorsque son fournisseur n'est pas installé, lorsque le matériel n'est pas disponible ou lorsque la session en cours ne peut pas fournir la capacité requise. La recherche est donc également un moyen utile de découvrir ce que cette installation peut configurer.
 

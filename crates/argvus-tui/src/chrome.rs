@@ -6,6 +6,15 @@ use ratatui::style::{Modifier, Style, Stylize};
 use ratatui::text::{Line, Span};
 use ratatui::widgets::{Block, Borders, Clear, Paragraph, Widget, Wrap};
 
+thread_local! {
+  static CONTROL_CENTER_SEARCH_HINT: std::cell::RefCell<Option<String>> = const { std::cell::RefCell::new(None) };
+}
+
+/// Sets the global search hint for Control Center footer rendering.
+pub fn set_control_center_search_hint(hint: Option<String>) {
+  CONTROL_CENTER_SEARCH_HINT.with(|current| *current.borrow_mut() = hint);
+}
+
 pub struct Header<'a> {
   pub title: &'a str,
   pub version: Option<&'a str>,
@@ -225,6 +234,18 @@ pub fn draw_footer(
       rows[0].inner(Margin::new(1, 0)),
     );
   }
+  let hints = CONTROL_CENTER_SEARCH_HINT.with(|hint| match hint.borrow().as_deref() {
+    Some(search) if !hints.contains(search) => {
+      let width = usize::from(rows[1].width.saturating_sub(2));
+      let available = width.saturating_sub(crate::text::display_width(search) + 3);
+      if available == 0 {
+        search.to_owned()
+      } else {
+        format!("{}   {search}", crate::text::ellipsize(hints, available))
+      }
+    }
+    _ => hints.to_owned(),
+  });
   frame.render_widget(
     Paragraph::new(hints)
       .alignment(Alignment::Right)

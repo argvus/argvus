@@ -42,10 +42,27 @@ impl DiagnosticsApp {
     }
   }
 
+  /// Reads this destination's visible labels from the current snapshot.
+  pub fn search_content(&mut self, page: DiagnosticPage) -> (String, Vec<String>) {
+    let previous = std::mem::replace(&mut self.page, page);
+    let path = self.breadcrumb();
+    let words = match self.page {
+      DiagnosticPage::Home => self.dashboard_rows(),
+      DiagnosticPage::Summary => self.summary_rows(),
+      _ => self.category_rows(),
+    };
+    self.page = previous;
+    (path, words)
+  }
+
   pub fn draw(&mut self, frame: &mut Frame) {
+    self.draw_in(frame, frame.area());
+  }
+
+  pub fn draw_in(&mut self, frame: &mut Frame, area: ratatui::layout::Rect) {
     let body = shell(
       frame,
-      frame.area(),
+      area,
       &self.theme,
       self.lang,
       &self.breadcrumb(),

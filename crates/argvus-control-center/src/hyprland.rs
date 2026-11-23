@@ -252,7 +252,7 @@ pub fn handle(app: &mut App, key: KeyCode) -> bool {
   false
 }
 
-fn activate(app: &mut App, item: Item) {
+pub(crate) fn activate(app: &mut App, item: Item) {
   match item {
     Item::Shortcuts => {
       app.return_route = Route::Hyprland;
@@ -294,6 +294,10 @@ pub(crate) fn open_appearance_page(app: &mut App, page: AppearancePage) {
 
 /// Renders the current Hyprland view.
 pub fn draw(app: &mut App, frame: &mut Frame) {
+  draw_in(app, frame, frame.area());
+}
+
+pub fn draw_in(app: &mut App, frame: &mut Frame, area: ratatui::layout::Rect) {
   let rows = match app.hyprland.view {
     View::List => rows(app),
     View::Windows => windows_rows(app),
@@ -302,7 +306,7 @@ pub fn draw(app: &mut App, frame: &mut Frame) {
   let footer_text = footer(app, &rows);
   let area = shell(
     frame,
-    frame.area(),
+    area,
     &app.theme,
     app.lang,
     &breadcrumb(app),

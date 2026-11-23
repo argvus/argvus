@@ -380,10 +380,14 @@ impl LauncherPage {
     )
   }
   pub fn draw(&self, frame: &mut Frame, lang: Lang, theme: &Theme) {
+    self.draw_in(frame, lang, theme, frame.area());
+  }
+
+  pub fn draw_in(&self, frame: &mut Frame, lang: Lang, theme: &Theme, area: ratatui::layout::Rect) {
     let breadcrumb = Self::breadcrumb(lang);
     let body = shell(
       frame,
-      frame.area(),
+      area,
       theme,
       lang,
       &breadcrumb,

@@ -172,8 +172,28 @@ impl DisplaysApp {
     )
   }
 
+  /// Reads this destination's visible labels from the current snapshot.
+  pub fn search_content(&mut self, page: DisplayPage) -> (String, Vec<String>) {
+    let previous = std::mem::replace(&mut self.page, page);
+    let path = self.breadcrumb();
+    let words = self
+      .rows()
+      .into_iter()
+      .map(|row| row.label().to_string())
+      .collect();
+    self.page = previous;
+    (path, words)
+  }
+
+  pub fn blocks_global_search(&self) -> bool {
+    self.confirm.is_some()
+  }
+
   pub fn draw(&mut self, frame: &mut Frame) {
-    let area = frame.area();
+    self.draw_in(frame, frame.area());
+  }
+
+  pub fn draw_in(&mut self, frame: &mut Frame, area: ratatui::layout::Rect) {
     let rows = self.rows();
     self.menu.normalize(&rows);
     let body = shell(

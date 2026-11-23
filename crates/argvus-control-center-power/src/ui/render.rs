@@ -3,8 +3,15 @@
 use super::*;
 
 impl PowerApp {
+  pub fn blocks_global_search(&self) -> bool {
+    self.picker.is_some()
+  }
+
   pub fn draw(&mut self, frame: &mut Frame) {
-    let area = frame.area();
+    self.draw_in(frame, frame.area());
+  }
+
+  pub fn draw_in(&mut self, frame: &mut Frame, area: ratatui::layout::Rect) {
     let mut lines = self.rows();
     if let Some(state) = &self.state
       && state.is_laptop

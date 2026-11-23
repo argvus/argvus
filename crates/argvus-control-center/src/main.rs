@@ -106,6 +106,10 @@ fn main() -> Result<()> {
       event::handle(&mut app, crossterm::event::read()?);
       dirty = true;
     }
+    #[cfg(feature = "system")]
+    if app.poll_search_accounts() {
+      dirty = true;
+    }
     if app.settings.expire_status() {
       dirty = true;
     }

@@ -5,6 +5,11 @@ description: ARGVUS masaüstünüzün kalıcı bölümlerini yapılandırın.
 
 Kontrol Merkezi, ARGVUS'un klavye öncelikli ayarlar uygulamasıdır. Tek seferlik bir işlem gerçekleştirmek yerine masaüstünü yapılandırmak istediğinizde bunu kullanın.
 
+Hakkında ve ARGVUS Welcome dışındaki sayfalarda aramak için Ctrl+F tuşlarına basın. ↑ ve ↓ ile hedefi seçip Enter ile açın. Alt menüde `/ Ara` gösterilir. Yerel filtreli sayfalarda `/` filtreyi, Ctrl+F genel aramayı açar.
+
+- `style` → `Görünüm görünümü > Uygulama Style`, `Görünüm görünümü > Masaüstü Style Style`
+- `shell` / `Shell` / `SHELL` → `Sistem Yönetimi > Kullanıcılar ve Gruplar > Kullanıcılar > ana`
+
 
 **Session** içindeki Components, Autostart ve Logs sayfalarında işlemler listenin altındadır. Odağı `Tab` ile değiştirin, düğmeyi `←/→` ile seçin ve `Enter` ile çalıştırın. Session, Storage ve Audio durum mesajları gezinme çubuğunun altındadır.
 
@@ -44,7 +49,7 @@ Izgarada ekrana sığmayacak kadar fazla giriş olduğunda, aşağıda daha fazl
 
 ## Bir ayar bulma
 
-Ana ekran, ayarları başlığa, kategoriye, tanımlayıcıya ve anahtar sözcüklere göre kaydeder. Arama, vurguya duyarlı değildir ve `theme`, `wallpaper`, `shortcut`, `mouse`, `monitor`, `network` gibi pratik terimleri kabul eder. `user` ve `DPI`. Tam başlık eşleşmeleri ilk olarak sıralanır, ardından bir başlık öneki, yazılan metni içeren başlık veya kategorideki herhangi bir kelime ve son olarak anahtar kelime eşleşmeleri gelir; böylece bir kelimenin herhangi bir bölümünü (yalnızca başlangıcını değil) yazarak yine de hedefi bulabilirsiniz.
+Sayfaları başlık, gezinme yolu, alan adı, seçenek veya anahtar sözcükle arayabilirsiniz. Arama, vurguya duyarlı değildir ve `theme`, `wallpaper`, `shortcut`, `mouse`, `monitor`, `network` gibi pratik terimleri kabul eder. `user` ve `DPI`. Tam başlık eşleşmeleri ilk olarak sıralanır, ardından bir başlık öneki, yazılan metni içeren başlık veya kategorideki herhangi bir kelime ve son olarak anahtar kelime eşleşmeleri gelir; böylece bir kelimenin herhangi bir bölümünü (yalnızca başlangıcını değil) yazarak yine de hedefi bulabilirsiniz.
 
 Görünür menü yeteneklere duyarlıdır. Sağlayıcısı kurulu olmadığında, donanım mevcut olmadığında veya mevcut oturum gerekli yeteneği sağlayamadığında bir rota eksik olabilir. Bu nedenle arama, bu kurulumun neyi yapılandırabileceğini keşfetmenin de yararlı bir yoludur.
 

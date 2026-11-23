@@ -5,6 +5,11 @@ description: Định cấu hình các phần liên tục của màn hình ARGVUS
 
 Trung tâm điều khiển là ứng dụng cài đặt bàn phím đầu tiên của ARGVUS. Sử dụng nó khi bạn muốn định cấu hình máy tính để bàn thay vì thực hiện hành động một lần.
 
+Nhấn Ctrl+F để tìm kiếm trong Control Center trừ trang Giới thiệu và ARGVUS Welcome. Dùng ↑ và ↓ để chọn kết quả rồi nhấn Enter để mở. Chân trang hiển thị `/ Tìm kiếm`. Trên trang có bộ lọc cục bộ, `/` mở bộ lọc và Ctrl+F mở tìm kiếm toàn cục.
+
+- `style` → `Diện mạo > Kiểu ứng dụng`, `Diện mạo > Name`
+- `shell` / `Shell` / `SHELL` → `Quản lý hệ thống > Người dùng và nhóm > Người dùng > ana`
+
 
 Trong **Session**, các hành động của Components, Autostart và Logs nằm dưới danh sách. Dùng `Tab` để đổi vùng chọn, `←/→` để chọn nút và `Enter` để thực hiện. Thông báo trạng thái của Session, Storage và Audio nằm dưới thanh điều hướng.
 
@@ -44,7 +49,7 @@ Khi lưới có nhiều mục hơn mức vừa với màn hình, một thanh cu�
 
 ## Tìm cài đặt
 
-Màn hình chính đăng ký cài đặt theo tiêu đề, danh mục, mã định danh và từ khóa. Tìm kiếm không phân biệt trọng âm và chấp nhận các thuật ngữ thực tế như `theme`, `wallpaper`, `shortcut`, `mouse`, `monitor`, `network`, `user` và `DPI`. Tiêu đề trùng khớp chính xác được xếp hạng đầu tiên, theo sau là tiền tố tiêu đề, bất kỳ từ nào trong tiêu đề hoặc danh mục có chứa văn bản đã nhập và cuối cùng là từ khóa khớp — vì vậy, việc nhập bất kỳ phần nào của từ (không chỉ phần đầu của từ đó) vẫn có thể tìm thấy đích.
+Tìm trang theo tiêu đề, đường dẫn điều hướng, tên trường, tùy chọn và từ khóa. Tìm kiếm không phân biệt trọng âm và chấp nhận các thuật ngữ thực tế như `theme`, `wallpaper`, `shortcut`, `mouse`, `monitor`, `network`, `user` và `DPI`. Tiêu đề trùng khớp chính xác được xếp hạng đầu tiên, theo sau là tiền tố tiêu đề, bất kỳ từ nào trong tiêu đề hoặc danh mục có chứa văn bản đã nhập và cuối cùng là từ khóa khớp — vì vậy, việc nhập bất kỳ phần nào của từ (không chỉ phần đầu của từ đó) vẫn có thể tìm thấy đích.
 
 Menu hiển thị nhận biết khả năng. Một tuyến có thể vắng mặt khi nhà cung cấp nó chưa được cài đặt, khi phần cứng không có sẵn hoặc khi phiên hiện tại không thể cung cấp khả năng cần thiết. Do đó, tìm kiếm cũng là một cách hữu ích để khám phá cài đặt này có thể cấu hình những gì.
 

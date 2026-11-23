@@ -172,6 +172,14 @@ the user systemd units, and the Wayland session entry
 `/usr/share/wayland-sessions/argvus.desktop`. The greeter that `greetd` starts is
 the login greeter that this repository installs as part of the `argvus` package.
 
+## Control Center search destinations
+
+When adding a settings page, register its search destination with the same Cargo feature as its navigation entry. Give it a stable ID and route. The launcher consumes the JSON from `--search-catalog` and opens destinations with `--search-id`.
+
+Inside the Control Center, use the page's translated breadcrumb and row labels to index the terms shown on screen. Include labels for controls that depend on a provider when those controls should be discoverable before the first visit. Opening a result should go through the page's normal initialization. Account results use a session-local snapshot and resolve the selected account by name before opening it.
+
+Exercise the search from another page. Check the result path, the loaded page, keyboard focus after cancellation, and the build with the feature disabled.
+
 ## Release flow
 
 The Arch Linux packages are built from `packaging/archlinux/pkgbuilds/remote/PKGBUILD` in this

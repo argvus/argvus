@@ -105,6 +105,10 @@ pub fn handle(app: &mut App, event: Event) {
 
 fn handle_inner(app: &mut App, event: Event) {
   if let Event::Paste(text) = event {
+    if app.search_active {
+      app.update_global_search(format!("{}{text}", app.search_query));
+      return;
+    }
     if app.route == Route::Launcher {
       app.launcher.paste(&text);
     }
@@ -154,10 +158,39 @@ fn handle_inner(app: &mut App, event: Event) {
     argvus_control_center_settings::event::handle(&mut app.settings, Event::Key(key));
     return;
   }
-  if app.route == Route::Settings && app.settings.admin.busy() {
+  if app.route == Route::Settings && app.settings.admin.busy() && !app.search_active {
     return;
   }
-  if app.route == Route::Home && app.search_active {
+  if key.code == KeyCode::Char('f')
+    && key.modifiers == KeyModifiers::CONTROL
+    && app.can_focus_search()
+  {
+    app.begin_global_search();
+    return;
+  }
+  let local_search = match app.route {
+    Route::Settings => true,
+    #[cfg(feature = "network")]
+    Route::Network => true,
+    #[cfg(feature = "services")]
+    Route::Services => true,
+    #[cfg(feature = "packages")]
+    Route::Packages => true,
+    #[cfg(feature = "appearance")]
+    Route::Appearance => {
+      app.appearance.page == argvus_control_center_appearance::AppearancePage::Icons
+    }
+    _ => false,
+  };
+  if key.code == KeyCode::Char('/')
+    && key.modifiers.is_empty()
+    && !local_search
+    && app.can_focus_search()
+  {
+    app.begin_global_search();
+    return;
+  }
+  if app.search_active {
     match key.code {
       KeyCode::Esc if app.search_query.is_empty() => app.clear_global_search(),
       KeyCode::Esc => app.update_global_search(String::new()),
@@ -350,13 +383,10 @@ fn handle_inner(app: &mut App, event: Event) {
 }
 
 fn handle_mouse(app: &mut App, mouse: crossterm::event::MouseEvent) {
-  if app.route != Route::Home || !matches!(mouse.kind, MouseEventKind::Down(MouseButton::Left)) {
+  if !matches!(mouse.kind, MouseEventKind::Down(MouseButton::Left)) || !app.can_focus_search() {
     return;
   }
-  // Home layout: outer border + one header row, then the three-row search field.
-  let search_top = 2u16;
-  let search_bottom = search_top.saturating_add(3);
-  if mouse.row >= search_top && mouse.row < search_bottom {
+  if app.search_area.contains((mouse.column, mouse.row).into()) {
     app.begin_global_search();
   }
 }

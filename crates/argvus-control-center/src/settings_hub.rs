@@ -51,9 +51,13 @@ impl SettingsHub {
 
   /// Draws the hub inside the standard shell of the Control Center.
   pub fn draw(&self, frame: &mut Frame, lang: Lang, theme: &Theme) {
+    self.draw_in(frame, lang, theme, frame.area());
+  }
+
+  pub fn draw_in(&self, frame: &mut Frame, lang: Lang, theme: &Theme, area: ratatui::layout::Rect) {
     let body = shell(
       frame,
-      frame.area(),
+      area,
       theme,
       lang,
       tr(lang, "control_center.settings"),

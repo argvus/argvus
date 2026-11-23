@@ -34,7 +34,13 @@ impl TerminalGuard {
     }
     let backend = IconScaleBackend::new(CrosstermBackend::new(stdout));
     match Terminal::new(backend) {
-      Ok(terminal) => Ok(Self { terminal }),
+      Ok(mut terminal) => {
+        if let Err(error) = terminal.hide_cursor() {
+          restore();
+          return Err(error);
+        }
+        Ok(Self { terminal })
+      }
       Err(error) => {
         restore();
         Err(error)

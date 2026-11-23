@@ -78,8 +78,28 @@ impl NetworkApp {
 
   /// Renders the page: the single menu list, then the text fields, the
   /// confirmation and the status.
+  /// Reads this destination's visible labels from the current snapshot.
+  pub fn search_content(&mut self, page: NetworkPage) -> (String, Vec<String>) {
+    let previous = std::mem::replace(&mut self.page, page);
+    let path = self.breadcrumb();
+    let words = self
+      .rows()
+      .into_iter()
+      .map(|row| row.label().to_string())
+      .collect();
+    self.page = previous;
+    (path, words)
+  }
+
+  pub fn blocks_global_search(&self) -> bool {
+    self.confirm_forget || self.editor_confirm.is_some()
+  }
+
   pub fn draw(&mut self, f: &mut Frame) {
-    let area = f.area();
+    self.draw_in(f, f.area());
+  }
+
+  pub fn draw_in(&mut self, f: &mut Frame, area: ratatui::layout::Rect) {
     let rows = self.rows();
     self.menu.normalize(&rows);
     let loading = self.job.as_ref().map(|_| StatusMessage {

@@ -17,8 +17,20 @@ impl HardwareApp {
     }
   }
 
+  /// Reads this destination's visible labels from the current snapshot.
+  pub fn search_content(&mut self, page: HardwarePage) -> (String, Vec<String>) {
+    let previous = std::mem::replace(&mut self.page, page);
+    let path = self.breadcrumb();
+    let words = self.rows();
+    self.page = previous;
+    (path, words)
+  }
+
   pub fn draw(&mut self, frame: &mut Frame) {
-    let area = frame.area();
+    self.draw_in(frame, frame.area());
+  }
+
+  pub fn draw_in(&mut self, frame: &mut Frame, area: ratatui::layout::Rect) {
     let hints = if self.on_buttons {
       tr(
         self.lang,

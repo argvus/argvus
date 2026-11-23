@@ -709,6 +709,7 @@ mod tests {
 
   #[test]
   /// The cards follow the approved order of the layout.
+  #[cfg(feature = "full")]
   fn cards_follow_the_approved_order() {
     let titles: Vec<&str> = home_rows(english(), everything())
       .iter()

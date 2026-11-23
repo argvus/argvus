@@ -7,6 +7,7 @@ mod backend;
 mod blur;
 mod icons;
 mod model;
+pub mod search;
 mod shadow;
 mod ui;
 mod user_themes;

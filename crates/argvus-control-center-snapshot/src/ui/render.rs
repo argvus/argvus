@@ -31,7 +31,19 @@ impl SnapshotApp {
     }
   }
 
+  pub fn blocks_global_search(&self) -> bool {
+    self.confirmation.is_some()
+  }
+
+  pub fn search_content(&self) -> (String, Vec<String>) {
+    (self.breadcrumb(), self.rows().as_ref().clone())
+  }
+
   pub fn draw(&mut self, frame: &mut Frame) {
+    self.draw_in(frame, frame.area());
+  }
+
+  pub fn draw_in(&mut self, frame: &mut Frame, area: ratatui::layout::Rect) {
     if self
       .rows_cache
       .get_mut()
@@ -43,7 +55,7 @@ impl SnapshotApp {
     let hint = self.help_text();
     let body = argvus_tui::page::shell_with_status(
       frame,
-      frame.area(),
+      area,
       &self.theme,
       self.lang,
       &self.breadcrumb(),
@@ -121,12 +133,7 @@ impl SnapshotApp {
       );
     }
     if let Some(editor) = &self.editor {
-      editor.draw(
-        frame,
-        frame.area(),
-        &self.theme,
-        label(self.lang, "editor_help"),
-      );
+      editor.draw(frame, area, &self.theme, label(self.lang, "editor_help"));
     }
     if let Some((confirmation, action)) = &self.confirmation {
       let (message, danger) = match action {
@@ -182,7 +189,7 @@ impl SnapshotApp {
       };
       draw_confirm(
         frame,
-        frame.area(),
+        area,
         &self.theme,
         ConfirmDialog {
           title: label(self.lang, "title"),

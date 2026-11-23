@@ -49,7 +49,10 @@ impl App {
 
   /// Rows of the current page, in display order.
   pub fn rows(&self) -> Vec<Row<Item>> {
-    let page = self.page();
+    self.rows_for(self.page())
+  }
+
+  pub fn rows_for(&self, page: Page) -> Vec<Row<Item>> {
     if crate::administration::is_page(page) {
       let rows = self.admin.rows(page, self.lang, &self.search);
       // Group create and edit are for administrators only; everyone else

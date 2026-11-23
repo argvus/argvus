@@ -15,8 +15,12 @@ use crate::app::{App, Tab};
 use crate::pages::Doc;
 
 pub fn draw(app: &mut App, frame: &mut Frame) {
+  draw_in(app, frame, frame.area());
+}
+
+pub fn draw_in(app: &mut App, frame: &mut Frame, area: ratatui::layout::Rect) {
   app.ensure_loaded();
-  let area = frame.area();
+
   if app.too_small() {
     draw_too_small(app, frame, area);
     return;

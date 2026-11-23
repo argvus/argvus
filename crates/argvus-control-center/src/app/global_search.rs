@@ -1,9 +1,52 @@
-//! Global search on the Home: typing, moving through the results and opening the route of the chosen entry.
+//! Control Center search: typing, moving through the results and opening the route of the chosen entry.
 
 use super::*;
 
 impl App {
+  pub fn has_global_search(&self) -> bool {
+    match self.route {
+      Route::Welcome => false,
+      #[cfg(feature = "about")]
+      Route::About => false,
+      _ => true,
+    }
+  }
+
+  pub fn can_focus_search(&self) -> bool {
+    let modal = match self.route {
+      #[cfg(feature = "appearance")]
+      Route::Appearance => self.appearance.blocks_global_search(),
+      #[cfg(feature = "displays")]
+      Route::Displays => self.displays.blocks_global_search(),
+      #[cfg(feature = "network")]
+      Route::Network => self.network.blocks_global_search(),
+      #[cfg(feature = "bluetooth")]
+      Route::Bluetooth => self.bluetooth.blocks_global_search(),
+      #[cfg(feature = "snapshot")]
+      Route::Snapshot => self.snapshot.blocks_global_search(),
+      #[cfg(feature = "packages")]
+      Route::Packages => self.packages.blocks_global_search(),
+      #[cfg(feature = "power")]
+      Route::Power => self.power.blocks_global_search(),
+      _ => false,
+    };
+    self.has_global_search()
+      && !modal
+      && !self.help
+      && !self.captures_text()
+      && !(self.route == Route::Settings
+        && (self.settings.admin.busy()
+          || self.settings.confirm.is_some()
+          || self.settings.task_open
+          || self.settings.error_modal.is_some()
+          || self.settings.has_keybinding_conflict()))
+  }
+
   pub fn begin_global_search(&mut self) {
+    self.search_notice = None;
+    self.refresh_search_catalog();
+    #[cfg(feature = "system")]
+    self.search_accounts.load(false);
     self.search_active = true;
     self.search_cursor_visible = true;
     self.search_cursor_last_blink = Instant::now();
@@ -12,7 +55,194 @@ impl App {
     self.search_result_ids.clear();
   }
 
+  fn index_page(&mut self, route: &str, (path, words): (String, Vec<String>)) {
+    if let Some(entry) = self.search_registry.entry_for_route_mut(route) {
+      if let Some((parent, _)) = path.rsplit_once(" > ") {
+        entry.category = parent.to_string();
+      }
+      entry.keywords.push(path);
+      entry.keywords.extend(words);
+    }
+  }
+
+  fn refresh_search_catalog(&mut self) {
+    self.search_registry = build_search_registry(self.lang);
+    #[cfg(feature = "audio")]
+    for &(route, page) in search_catalog::AUDIO_PAGES {
+      let content = self.audio.search_content(page);
+      self.index_page(route, content);
+    }
+    #[cfg(feature = "hardware")]
+    for &(route, page) in search_catalog::HARDWARE_PAGES {
+      let content = self.hardware.search_content(page);
+      self.index_page(route, content);
+    }
+    #[cfg(feature = "boot")]
+    for &(route, page) in search_catalog::BOOT_PAGES {
+      let content = self.boot.search_content(page);
+      self.index_page(route, content);
+    }
+    #[cfg(feature = "network")]
+    for &(route, page) in search_catalog::NETWORK_PAGES {
+      let content = self.network.search_content(page);
+      self.index_page(route, content);
+    }
+    #[cfg(feature = "storage")]
+    for &(route, page) in search_catalog::STORAGE_PAGES {
+      let content = self.storage.search_content(page);
+      self.index_page(route, content);
+    }
+    #[cfg(feature = "displays")]
+    for &(route, page) in search_catalog::DISPLAYS_PAGES {
+      let content = self.displays.search_content(page);
+      self.index_page(route, content);
+    }
+    #[cfg(feature = "packages")]
+    for &(route, page) in search_catalog::PACKAGES_PAGES {
+      let content = self.packages.search_content(page);
+      self.index_page(route, content);
+    }
+    #[cfg(feature = "diagnostics")]
+    for &(route, page) in search_catalog::DIAGNOSTICS_PAGES {
+      let content = self.diagnostics.search_content(page);
+      self.index_page(route, content);
+    }
+    #[cfg(feature = "session")]
+    for &(route, page) in search_catalog::SESSION_PAGES {
+      let content = self.session.search_content(page);
+      self.index_page(route, content);
+    }
+    #[cfg(feature = "bluetooth")]
+    for &(route, page) in search_catalog::BLUETOOTH_PAGES {
+      if let Some(entry) = self.search_registry.entry_for_route_mut(route) {
+        entry.keywords.extend(self.bluetooth.search_rows(page));
+      }
+    }
+    #[cfg(feature = "services")]
+    for &(route, page) in search_catalog::SERVICES_PAGES {
+      let content = self.services.search_content(page);
+      self.index_page(route, content);
+    }
+    #[cfg(feature = "snapshot")]
+    self.index_page("snapshot/home", self.snapshot.search_content());
+    #[cfg(feature = "about")]
+    for &(route, tab) in search_catalog::ABOUT_TABS {
+      let original = std::mem::replace(&mut self.about.active_tab, tab);
+      let words = self
+        .about
+        .current_doc()
+        .lines
+        .iter()
+        .map(ToString::to_string)
+        .collect();
+      self.about.active_tab = original;
+      let path = format!(
+        "{} > {} > {}",
+        argvus_control_center_core::navigation::HomeCardId::Tools.label(self.lang),
+        tr(self.lang, "control_center.about_argvus"),
+        tab.label(self.lang)
+      );
+      self.index_page(route, (path, words));
+    }
+    #[cfg(feature = "dev-services")]
+    self.index_page(
+      "dev-services/home",
+      (self.dev_services.breadcrumb(), self.dev_services.rows()),
+    );
+    for &(route, page) in search_catalog::SETTINGS_PAGES {
+      if self
+        .search_registry
+        .entries()
+        .iter()
+        .any(|entry| entry.route == route)
+      {
+        let path = self.settings.breadcrumb_for(page);
+        let words = self
+          .settings
+          .rows_for(page)
+          .into_iter()
+          .map(|row| row.label().to_owned())
+          .collect();
+        self.index_page(route, (path, words));
+      }
+    }
+    #[cfg(feature = "system")]
+    self.index_search_accounts();
+  }
+
+  #[cfg(feature = "system")]
+  fn index_search_accounts(&mut self) {
+    self.search_registry.remove_account_entries();
+
+    let category = format!(
+      "{} > {} > {}",
+      argvus_control_center_core::navigation::HomeCardId::System.label(self.lang),
+      tr(self.lang, "control_center.users_groups"),
+      tr(self.lang, "control_center.users")
+    );
+    let keywords: Vec<String> = [self.lang, Lang::for_locale("en-US")]
+      .into_iter()
+      .flat_map(|lang| {
+        self
+          .search_accounts
+          .rows(Page::User, lang, "")
+          .into_iter()
+          .map(|row| row.label().to_owned())
+      })
+      .collect();
+    for name in self.search_accounts.searchable_users() {
+      let _ = self.search_registry.register(SearchEntry {
+        id: format!("account:{name}"),
+        category: category.clone(),
+        title: name.clone(),
+        keywords: keywords.clone(),
+        route: format!("account/{name}"),
+      });
+    }
+    if self.search_active {
+      self.update_global_search(self.search_query.clone());
+    }
+  }
+
+  #[cfg(feature = "system")]
+  pub fn poll_search_accounts(&mut self) -> bool {
+    let Some(result) = self.search_accounts.poll() else {
+      return false;
+    };
+    if !self.search_active {
+      return false;
+    }
+    let pending = self.pending_search_account.take();
+    let selected = self.search_result_ids.get(self.search_selected).cloned();
+    self.index_search_accounts();
+    if let Some(id) = selected
+      && let Some(index) = self
+        .search_result_ids
+        .iter()
+        .position(|candidate| *candidate == id)
+    {
+      self.search_selected = index;
+    }
+    if let Some(name) = pending {
+      if result.is_ok() && self.search_accounts.searchable_users().contains(&name) {
+        self.clear_global_search();
+        self.open_search_route(&format!("account/{name}"));
+      } else {
+        self.search_notice = Some(format!(
+          "{}: {name}",
+          tr(self.lang, "control_center.entry_not_found")
+        ));
+      }
+    }
+    true
+  }
+
   pub fn update_global_search(&mut self, query: String) {
+    self.search_notice = None;
+    #[cfg(feature = "system")]
+    {
+      self.pending_search_account = None;
+    }
     self.search_query = query;
     self.search_selected = 0;
     self.search_result_ids = self
@@ -35,6 +265,11 @@ impl App {
   }
 
   pub fn clear_global_search(&mut self) {
+    self.search_notice = None;
+    #[cfg(feature = "system")]
+    {
+      self.pending_search_account = None;
+    }
     self.search_active = false;
     self.search_cursor_visible = false;
     self.search_query.clear();
@@ -64,15 +299,200 @@ impl App {
     else {
       return;
     };
+    #[cfg(feature = "system")]
+    if let Some(name) = route.strip_prefix("account/") {
+      self.pending_search_account = Some(name.to_owned());
+      self.search_accounts.load(false);
+      return;
+    }
     self.clear_global_search();
     self.open_search_route(&route);
   }
 
   pub fn open_search_route(&mut self, route: &str) {
+    #[cfg(feature = "appearance")]
+    if let Some((_, page)) = search_catalog::APPEARANCE_PAGES
+      .iter()
+      .find(|(target, _)| *target == route)
+    {
+      if page.is_animations()
+        || matches!(
+          page,
+          AppearancePage::Animations
+            | AppearancePage::AnimationsCustomCurves
+            | AppearancePage::Blur
+            | AppearancePage::Borders
+            | AppearancePage::GeneralBorders
+            | AppearancePage::EdgeThickness
+            | AppearancePage::BordersShadow
+            | AppearancePage::WindowSpacesInner
+            | AppearancePage::WindowSpacesOuter
+        )
+      {
+        crate::hyprland::open_appearance_page(self, *page);
+      } else {
+        self.return_route = Route::Home;
+        self.open_appearance_page(*page);
+      }
+      return;
+    }
+    if let Some((_, page)) = search_catalog::SETTINGS_PAGES
+      .iter()
+      .find(|(target, _)| *target == route)
+    {
+      self.return_route = Route::Home;
+      let parents: &[Page] = match page {
+        Page::AppSelector(_) => &[Page::DefaultApps],
+        Page::FontSelector(_) | Page::SettingSelector(_) => &[Page::Fonts],
+        Page::Users | Page::Groups => &[Page::UsersGroups],
+        Page::UserList => &[Page::UsersGroups, Page::Users],
+        Page::GroupList => &[Page::UsersGroups, Page::Groups],
+        Page::KeyboardVariant | Page::ConsoleKeymap => &[Page::LocaleRegion, Page::Keyboard],
+        _ => &[],
+      };
+      if let Some((root, rest)) = parents.split_first() {
+        self.open_settings(*root);
+        for &ancestor in rest {
+          self.settings.navigation.push(ancestor);
+        }
+        self.settings.navigation.push(*page);
+        self.settings.select_current();
+        self.settings.enter_page(*page);
+      } else {
+        self.open_settings(*page);
+      }
+      return;
+    }
+    #[cfg(feature = "audio")]
+    if let Some((_, page)) = search_catalog::AUDIO_PAGES
+      .iter()
+      .find(|(target, _)| *target == route)
+    {
+      self.open_audio_page(*page);
+      return;
+    }
+    #[cfg(feature = "hardware")]
+    if let Some((_, page)) = search_catalog::HARDWARE_PAGES
+      .iter()
+      .find(|(target, _)| *target == route)
+    {
+      self.open_hardware_page(*page);
+      return;
+    }
+    #[cfg(feature = "boot")]
+    if let Some((_, page)) = search_catalog::BOOT_PAGES
+      .iter()
+      .find(|(target, _)| *target == route)
+    {
+      self.open_boot_page(*page);
+      return;
+    }
+    #[cfg(feature = "network")]
+    if let Some((_, page)) = search_catalog::NETWORK_PAGES
+      .iter()
+      .find(|(target, _)| *target == route)
+    {
+      self.open_network_page(*page);
+      return;
+    }
+    #[cfg(feature = "storage")]
+    if let Some((_, page)) = search_catalog::STORAGE_PAGES
+      .iter()
+      .find(|(target, _)| *target == route)
+    {
+      self.open_storage_page(*page);
+      return;
+    }
+    #[cfg(feature = "displays")]
+    if let Some((_, page)) = search_catalog::DISPLAYS_PAGES
+      .iter()
+      .find(|(target, _)| *target == route)
+    {
+      self.open_displays_page(*page);
+      return;
+    }
+    #[cfg(feature = "packages")]
+    if let Some((_, page)) = search_catalog::PACKAGES_PAGES
+      .iter()
+      .find(|(target, _)| *target == route)
+    {
+      self.open_packages_page(*page);
+      return;
+    }
+    #[cfg(feature = "diagnostics")]
+    if let Some((_, page)) = search_catalog::DIAGNOSTICS_PAGES
+      .iter()
+      .find(|(target, _)| *target == route)
+    {
+      self.open_diagnostics_page(*page);
+      return;
+    }
+    #[cfg(feature = "session")]
+    if let Some((_, page)) = search_catalog::SESSION_PAGES
+      .iter()
+      .find(|(target, _)| *target == route)
+    {
+      self.open_session_page(*page);
+      return;
+    }
+    #[cfg(feature = "about")]
+    if let Some((_, tab)) = search_catalog::ABOUT_TABS
+      .iter()
+      .find(|(target, _)| *target == route)
+    {
+      self.about.active_tab = *tab;
+      self.route = Route::About;
+      return;
+    }
+    #[cfg(feature = "bluetooth")]
+    if let Some((_, page)) = search_catalog::BLUETOOTH_PAGES
+      .iter()
+      .find(|(target, _)| *target == route)
+    {
+      self.open_bluetooth_page(*page);
+      return;
+    }
+    #[cfg(feature = "services")]
+    if let Some((_, page)) = search_catalog::SERVICES_PAGES
+      .iter()
+      .find(|(target, _)| *target == route)
+    {
+      self.open_services_page(*page);
+      return;
+    }
     let Some((domain, page)) = route.split_once('/') else {
       return;
     };
     match (domain, page) {
+      #[cfg(feature = "system")]
+      ("account", name)
+        if self
+          .settings
+          .admin
+          .select_search_user(&self.search_accounts, name) =>
+      {
+        self.return_route = Route::Home;
+        self.open_settings(Page::UsersGroups);
+        for page in [Page::Users, Page::UserList, Page::User] {
+          self.settings.navigation.push(page);
+        }
+        self.settings.select_current();
+      }
+      #[cfg(feature = "appearance")]
+      ("appearance", "application_style") => {
+        self.open_appearance_page(AppearancePage::ApplicationStyle)
+      }
+      #[cfg(feature = "appearance")]
+      ("appearance", "desktop_style") => self.open_appearance_page(AppearancePage::Desktop),
+      ("hyprland", "home") => self.open_destination(crate::home::HomeDestination::Hyprland),
+      ("hyprland", "info") => {
+        self.route = Route::Hyprland;
+        crate::hyprland::activate(self, crate::hyprland::Item::Info);
+      }
+      ("control-center", "settings") => {
+        self.open_destination(crate::home::HomeDestination::Settings)
+      }
+      ("control-center", "style") => self.route = Route::Config,
       ("launcher", "settings") => self.open_launcher(),
       #[cfg(feature = "appearance")]
       ("hyprland", "animations-windows") => crate::hyprland::open_appearance_page(
@@ -116,94 +536,19 @@ impl App {
         self.about.active_tab = Tab::System;
         self.route = Route::About;
       }
-      #[cfg(feature = "hardware")]
-      ("hardware", "summary") => self.open_hardware_page(HardwarePage::Summary),
-      #[cfg(feature = "hardware")]
-      ("hardware", "home") => self.open_hardware_page(HardwarePage::Home),
-      #[cfg(feature = "hardware")]
-      ("hardware", "cpu") => self.open_hardware_page(HardwarePage::Cpu),
-      #[cfg(feature = "hardware")]
-      ("hardware", "gpu") => self.open_hardware_page(HardwarePage::Gpu),
-      #[cfg(feature = "hardware")]
-      ("hardware", "memory") => self.open_hardware_page(HardwarePage::Memory),
-      #[cfg(feature = "hardware")]
-      ("hardware", "power") => self.open_hardware_page(HardwarePage::Power),
-      #[cfg(feature = "hardware")]
-      ("hardware", "devices") => self.open_hardware_page(HardwarePage::Devices),
-      #[cfg(feature = "services")]
-      ("services", "system") => self.open_services_page(ServicePage::System),
-      #[cfg(feature = "services")]
-      ("services", "home") => self.open_services_page(ServicePage::Home),
-      #[cfg(feature = "services")]
-      ("services", "user") => self.open_services_page(ServicePage::User),
-      #[cfg(feature = "services")]
-      ("services", "failed") => self.open_services_page(ServicePage::Failed),
-      #[cfg(feature = "services")]
-      ("services", "logs") => self.open_services_page(ServicePage::Logs),
+
       #[cfg(feature = "dev-services")]
       ("dev-services", "home") => {
         self.route = Route::DevServices;
         self.dev_services.reload();
       }
-      #[cfg(feature = "network")]
-      ("network", "status") => self.open_network_page(NetworkPage::Status),
-      #[cfg(feature = "network")]
-      ("network", "home") => self.open_network_page(NetworkPage::Home),
-      #[cfg(feature = "network")]
-      ("network", "interfaces") => self.open_network_page(NetworkPage::Interfaces),
-      #[cfg(feature = "network")]
-      ("network", "wifi") => self.open_network_page(NetworkPage::Wifi),
-      #[cfg(feature = "network")]
-      ("network", "ethernet") => self.open_network_page(NetworkPage::Ethernet),
-      #[cfg(feature = "network")]
-      ("network", "vpn") => self.open_network_page(NetworkPage::Vpn),
-      #[cfg(feature = "network")]
-      ("network", "dns") => self.open_network_page(NetworkPage::Dns),
-      #[cfg(feature = "network")]
-      ("network", "proxy") => self.open_network_page(NetworkPage::Proxy),
-      #[cfg(feature = "network")]
-      ("network", "connections") => self.open_network_page(NetworkPage::Connections),
-      #[cfg(feature = "network")]
-      ("network", "activate") => self.open_network_page(NetworkPage::Activate),
-      #[cfg(feature = "network")]
-      ("network", "add") => self.open_network_page(NetworkPage::AddConnection),
-      #[cfg(feature = "audio")]
-      ("audio", "summary") => self.open_audio_page(AudioPage::Summary),
-      #[cfg(feature = "audio")]
-      ("audio", "home") => self.open_audio_page(AudioPage::Home),
-      #[cfg(feature = "audio")]
-      ("audio", "output") => self.open_audio_page(AudioPage::Output),
-      #[cfg(feature = "audio")]
-      ("audio", "input") => self.open_audio_page(AudioPage::Input),
-      #[cfg(feature = "audio")]
-      ("audio", "devices") => self.open_audio_page(AudioPage::Devices),
-      #[cfg(feature = "bluetooth")]
-      ("bluetooth", "state") => self.open_bluetooth_page(BluetoothPage::State),
-      #[cfg(feature = "bluetooth")]
-      ("bluetooth", "home") => self.open_bluetooth_page(BluetoothPage::Home),
-      #[cfg(feature = "bluetooth")]
-      ("bluetooth", "devices") => self.open_bluetooth_page(BluetoothPage::Devices),
-      #[cfg(feature = "bluetooth")]
-      ("bluetooth", "pair") => self.open_bluetooth_page(BluetoothPage::Pair),
-      #[cfg(feature = "boot")]
-      ("boot", "summary") => self.open_boot_page(BootPage::Summary),
-      #[cfg(feature = "boot")]
-      ("boot", "home") => self.open_boot_page(BootPage::Home),
-      #[cfg(feature = "boot")]
-      ("boot", "kernel") => self.open_boot_page(BootPage::Kernel),
-      #[cfg(feature = "boot")]
-      ("boot", "bootloader") => self.open_boot_page(BootPage::Bootloader),
-      #[cfg(feature = "boot")]
-      ("boot", "initramfs") => self.open_boot_page(BootPage::Initramfs),
-      #[cfg(feature = "boot")]
-      ("boot", "plymouth") => self.open_boot_page(BootPage::Plymouth),
+
       #[cfg(feature = "packages")]
       ("packages", "search") => self.open_packages_page(PackagesPage::Task(
         PackageSource::Official,
         PackageTask::Install,
       )),
-      #[cfg(feature = "packages")]
-      ("packages", "home") => self.open_packages_page(PackagesPage::Home),
+
       #[cfg(feature = "packages")]
       ("packages", "official") => {
         self.open_packages_page(PackagesPage::Source(PackageSource::Official))
@@ -218,10 +563,7 @@ impl App {
         PackageSource::Official,
         PackageTask::Update,
       )),
-      #[cfg(feature = "packages")]
-      ("packages", "orphans") => self.open_packages_page(PackagesPage::Orphans),
-      #[cfg(feature = "packages")]
-      ("packages", "cache") => self.open_packages_page(PackagesPage::Cache),
+
       #[cfg(feature = "packages")]
       ("packages", "aur") => {
         self.open_packages_page(PackagesPage::Task(PackageSource::Aur, PackageTask::Install))
@@ -230,76 +572,15 @@ impl App {
       ("packages", "aur-remove") => {
         self.open_packages_page(PackagesPage::Task(PackageSource::Aur, PackageTask::Remove))
       }
-      #[cfg(feature = "packages")]
-      ("packages", "repositories") => self.open_packages_page(PackagesPage::Repositories),
-      #[cfg(feature = "packages")]
-      ("packages", "repositories-add") => self.open_packages_page(PackagesPage::RepositoryAdd),
-      #[cfg(feature = "packages")]
-      ("packages", "repositories-list") => self.open_packages_page(PackagesPage::RepositoryList),
+
       #[cfg(feature = "packages")]
       ("packages", "aur-updates") => {
         self.open_packages_page(PackagesPage::Task(PackageSource::Aur, PackageTask::Update))
       }
-      #[cfg(feature = "packages")]
-      ("packages", "history") => self.open_packages_page(PackagesPage::History),
-      #[cfg(feature = "packages")]
-      ("packages", "downgrade") => self.open_packages_page(PackagesPage::Downgrade),
-      #[cfg(feature = "packages")]
-      ("packages", "mirrors") => self.open_packages_page(PackagesPage::Mirrors),
-      #[cfg(feature = "storage")]
-      ("storage", "summary") => self.open_storage_page(StoragePage::Summary),
+
       #[cfg(feature = "snapshot")]
       ("snapshot", "home") => self.open_snapshot(),
-      #[cfg(feature = "storage")]
-      ("storage", "home") => self.open_storage_page(StoragePage::Home),
-      #[cfg(feature = "storage")]
-      ("storage", "disks") => self.open_storage_page(StoragePage::Disks),
-      #[cfg(feature = "storage")]
-      ("storage", "partitions") => self.open_storage_page(StoragePage::Partitions),
-      #[cfg(feature = "storage")]
-      ("storage", "filesystems") => self.open_storage_page(StoragePage::Filesystems),
-      #[cfg(feature = "storage")]
-      ("storage", "mounts") => self.open_storage_page(StoragePage::Mounts),
-      #[cfg(feature = "storage")]
-      ("storage", "smart") => self.open_storage_page(StoragePage::Smart),
-      #[cfg(feature = "storage")]
-      ("storage", "usage") => self.open_storage_page(StoragePage::Usage),
-      #[cfg(feature = "diagnostics")]
-      ("diagnostics", "summary") => self.open_diagnostics_page(DiagnosticPage::Summary),
-      #[cfg(feature = "diagnostics")]
-      ("diagnostics", "home") => self.open_diagnostics_page(DiagnosticPage::Home),
-      #[cfg(feature = "diagnostics")]
-      ("diagnostics", "services") => self.open_diagnostics_page(DiagnosticPage::Services),
-      #[cfg(feature = "diagnostics")]
-      ("diagnostics", "boot") => self.open_diagnostics_page(DiagnosticPage::Boot),
-      #[cfg(feature = "diagnostics")]
-      ("diagnostics", "graphics") => self.open_diagnostics_page(DiagnosticPage::Graphics),
-      #[cfg(feature = "diagnostics")]
-      ("diagnostics", "network") => self.open_diagnostics_page(DiagnosticPage::Network),
-      #[cfg(feature = "diagnostics")]
-      ("diagnostics", "audio") => self.open_diagnostics_page(DiagnosticPage::Audio),
-      #[cfg(feature = "diagnostics")]
-      ("diagnostics", "bluetooth") => self.open_diagnostics_page(DiagnosticPage::Bluetooth),
-      #[cfg(feature = "diagnostics")]
-      ("diagnostics", "storage") => self.open_diagnostics_page(DiagnosticPage::Storage),
-      #[cfg(feature = "diagnostics")]
-      ("diagnostics", "packages") => self.open_diagnostics_page(DiagnosticPage::Packages),
-      #[cfg(feature = "diagnostics")]
-      ("diagnostics", "argvus") => self.open_diagnostics_page(DiagnosticPage::Argvus),
-      #[cfg(feature = "session")]
-      ("session", "summary") => self.open_session_page(SessionPage::Home),
-      #[cfg(feature = "session")]
-      ("session", "components") => self.open_session_page(SessionPage::Components),
-      #[cfg(feature = "session")]
-      ("session", "autostart") => self.open_session_page(SessionPage::Autostart),
-      #[cfg(feature = "session")]
-      ("session", "diagnostics") => self.open_session_page(SessionPage::Diagnostics),
-      #[cfg(feature = "session")]
-      ("session", "logs") => self.open_session_page(SessionPage::Logs),
-      #[cfg(feature = "displays")]
-      ("displays", "summary") => self.open_displays_page(DisplayPage::Home),
-      #[cfg(feature = "displays")]
-      ("displays", "night-light") => self.open_displays_page(DisplayPage::NightLight),
+
       #[cfg(feature = "appearance")]
       ("appearance", "summary") => self.open_appearance_page(AppearancePage::Home),
       #[cfg(feature = "appearance")]

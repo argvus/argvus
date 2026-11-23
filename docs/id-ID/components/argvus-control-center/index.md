@@ -5,6 +5,11 @@ description: Konfigurasikan bagian persisten desktop ARGVUS Anda.
 
 Pusat Kontrol adalah aplikasi pengaturan keyboard pertama ARGVUS. Gunakan saat Anda ingin mengonfigurasi desktop daripada melakukan tindakan satu kali saja.
 
+Tekan Ctrl+F untuk mencari di Control Center kecuali halaman Tentang dan ARGVUS Welcome. Pilih tujuan dengan ↑ dan ↓ lalu tekan Enter. Bagian bawah menampilkan `/ Cari`. Pada halaman dengan filter lokal, `/` membuka filter dan Ctrl+F membuka pencarian global.
+
+- `style` → `Penampilan > Gaya Aplikasi`, `Penampilan > Gaya Desktop`
+- `shell` / `Shell` / `SHELL` → `Administrasi Sistem > Pengguna & Grup > Pengguna > ana`
+
 
 Di **Session**, tindakan Components, Autostart, dan Logs berada di bawah daftar. Gunakan `Tab` untuk mengganti fokus, `←/→` untuk memilih tombol, dan `Enter` untuk menjalankannya. Pesan status Session, Storage, dan Audio berada di bawah navigasi.
 
@@ -44,7 +49,7 @@ Ketika kisi memiliki lebih banyak entri daripada yang muat di layar, bilah gulir
 
 ## Menemukan pengaturan
 
-Layar beranda mendaftarkan pengaturan berdasarkan judul, kategori, pengidentifikasi, dan kata kunci. Penelusuran tidak peka terhadap aksen dan menerima istilah praktis seperti `theme`, `wallpaper`, `shortcut`, `mouse`, `monitor`, `network`, `user` dan `DPI`. Pencocokan judul yang tepat diberi peringkat pertama, diikuti dengan awalan judul, kata apa pun dari judul atau kategori yang berisi teks yang diketik, dan terakhir pencocokan kata kunci — sehingga mengetik bagian mana pun dari sebuah kata (tidak hanya bagian awalnya) masih dapat menemukan tujuannya.
+Pencarian menemukan halaman berdasarkan judul, jalur navigasi, nama kolom, opsi, dan kata kunci. Penelusuran tidak peka terhadap aksen dan menerima istilah praktis seperti `theme`, `wallpaper`, `shortcut`, `mouse`, `monitor`, `network`, `user` dan `DPI`. Pencocokan judul yang tepat diberi peringkat pertama, diikuti dengan awalan judul, kata apa pun dari judul atau kategori yang berisi teks yang diketik, dan terakhir pencocokan kata kunci — sehingga mengetik bagian mana pun dari sebuah kata (tidak hanya bagian awalnya) masih dapat menemukan tujuannya.
 
 Menu yang terlihat sadar akan kemampuan. Sebuah rute bisa hilang ketika penyedianya tidak diinstal, ketika perangkat keras tidak tersedia, atau ketika sesi saat ini tidak dapat memberikan kemampuan yang diperlukan. Oleh karena itu, pencarian juga merupakan cara yang berguna untuk menemukan apa yang dapat dikonfigurasi oleh instalasi ini.
 

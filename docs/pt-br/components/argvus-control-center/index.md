@@ -5,6 +5,11 @@ description: Configure as partes persistentes do seu desktop ARGVUS.
 
 O Control Center é o aplicativo de configurações do ARGVUS, com navegação orientada ao teclado. Use-o quando quiser configurar o desktop, e não apenas executar uma ação pontual.
 
+Pressione Ctrl+F para pesquisar nas telas do Control Center, exceto Sobre e ARGVUS Welcome. Use ↑ e ↓ para selecionar o destino e Enter para abri-lo. O rodapé mostra `/ Pesquisa`. Nas telas com filtro local, `/` abre esse filtro e Ctrl+F abre a pesquisa global.
+
+- `style` → `Aparência > Estilo dos aplicativos`, `Aparência > Estilo do desktop`
+- `shell` / `Shell` / `SHELL` → `Administração do sistema > Usuários e grupos > Usuários > ana`
+
 
 Em **Sessão**, Componentes, Inicialização automática e Logs apresentam suas ações na caixa **Ações** abaixo da lista. Use `Tab` para alternar o foco, `←/→` para escolher um botão e `Enter` para executá-lo. As mensagens de status aparecem abaixo do rodapé de navegação em Sessão, Armazenamento e Áudio.
 
@@ -47,7 +52,7 @@ Quando a grade tem mais itens do que cabem na tela, uma barra de rolagem aparece
 
 ## Encontrando uma configuração
 
-A tela inicial registra configurações por título, categoria, identificador e palavras-chave. A busca ignora acentos e aceita termos práticos como `theme`, `wallpaper`, `shortcut`, `mouse`, `monitor`, `network`, `user` e `DPI`. Correspondências exatas de título aparecem primeiro, seguidas por prefixo do título, por qualquer palavra do título ou categoria que contenha o texto digitado e, por fim, por palavras-chave — ou seja, digitar qualquer trecho de uma palavra (não só o início) ainda encontra o destino.
+A pesquisa encontra telas pelo título, caminho de navegação, nome dos campos, opções e palavras-chave. A busca ignora acentos e aceita termos práticos como `theme`, `wallpaper`, `shortcut`, `mouse`, `monitor`, `network`, `user` e `DPI`. Correspondências exatas de título aparecem primeiro, seguidas por prefixo do título, por qualquer palavra do título ou categoria que contenha o texto digitado e, por fim, por palavras-chave — ou seja, digitar qualquer trecho de uma palavra (não só o início) ainda encontra o destino.
 
 O menu visível reconhece as capacidades disponíveis. Uma rota pode não aparecer quando seu provider não está instalado, quando o hardware não está disponível ou quando a sessão atual não oferece a capacidade necessária. Por isso, a busca também é uma forma de descobrir o que esta instalação pode configurar.
 

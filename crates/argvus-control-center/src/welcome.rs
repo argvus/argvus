@@ -263,8 +263,12 @@ impl App {
   }
 }
 
+#[cfg(test)]
 pub fn draw(app: &mut App, frame: &mut Frame) {
-  let area = frame.area();
+  draw_in(app, frame, frame.area());
+}
+
+pub fn draw_in(app: &mut App, frame: &mut Frame, area: ratatui::layout::Rect) {
   let title = format!(
     "{} > {}",
     tr(app.lang, "control_center.card_tools"),

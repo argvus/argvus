@@ -5,6 +5,11 @@ description: Configure the persistent parts of your ARGVUS desktop.
 
 The Control Center is ARGVUS's keyboard-first settings application. Use it when you want to configure the desktop rather than perform a one-time action.
 
+Press Ctrl+F to search throughout Control Center except About and ARGVUS Welcome. Use ↑ and ↓ to select a destination and Enter to open it. The footer shows `/ Search`. On pages with a local filter, `/` opens that filter and Ctrl+F opens global search.
+
+- `style` → `Appearance > Application Style`, `Appearance > Desktop Style`
+- `shell` / `Shell` / `SHELL` → `System Administration > Users & Groups > Users > ana`
+
 
 In **Session**, Components, Autostart and Logs place their actions in the **Actions** box below the list. Use `Tab` to switch focus, `←/→` to choose a button and `Enter` to run it. Status messages appear below the navigation footer in Session, Storage and Audio.
 
@@ -47,7 +52,7 @@ When the grid has more entries than fit on screen, a scrollbar appears along the
 
 ## Finding a setting
 
-The home screen registers settings by title, category, identifier and keywords. Search is accent-insensitive and accepts practical terms such as `theme`, `wallpaper`, `shortcut`, `mouse`, `monitor`, `network`, `user` and `DPI`. Exact title matches are ranked first, followed by a title prefix, any word of the title or category that contains the typed text, and finally keyword matches — so typing any part of a word (not only its start) can still find the destination.
+Search matches page titles, navigation paths, field labels, options and keywords. Search is accent-insensitive and accepts practical terms such as `theme`, `wallpaper`, `shortcut`, `mouse`, `monitor`, `network`, `user` and `DPI`. Exact title matches are ranked first, followed by a title prefix, any word of the title or category that contains the typed text, and finally keyword matches — so typing any part of a word (not only its start) can still find the destination.
 
 The visible menu is capability-aware. A route can be absent when its provider is not installed, when the hardware is not available, or when the current session cannot provide the required capability. Search is therefore also a useful way to discover what this installation can configure.
 
