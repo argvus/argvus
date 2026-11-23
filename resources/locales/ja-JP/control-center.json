@@ -1154,7 +1154,7 @@
   "control_center.update": "更新",
   "control_center.update_package": "アップデートパッケージ",
   "control_center.updates": "アップデート",
-  "control_center.upgrade_all": "すべてアップグレードする",
+  "control_center.upgrade_all": "更新",
   "control_center.url": "URL:",
   "control_center.usage": "使用法：",
   "control_center.usage_by_filesystem": "ファイルシステム別の使用法",

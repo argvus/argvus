@@ -396,8 +396,8 @@ impl PackagesApp {
     rows
   }
 
-  /// The action bar of the Update lists: Upgrade all (enabled with pending
-  /// updates), and Refresh database on the Official list only, since the
+  /// The action bar of the Update lists: Upgrade (enabled with pending
+  /// updates), and Refresh on the Official list only, since the
   /// AUR helper refreshes its own metadata.
   pub(super) fn update_action_rows(&self) -> Vec<Row<Item>> {
     let has_updates = !self.visible_updates().is_empty();
@@ -420,7 +420,7 @@ impl PackagesApp {
       .enabled(has_updates),
       Row::action(
         Item::RefreshDatabase,
-        tr(self.lang, "control_center.refresh_database"),
+        tr(self.lang, "control_center.refresh"),
       )
       .icon(icons::SYNC),
     ]

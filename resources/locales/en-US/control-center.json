@@ -1154,7 +1154,7 @@
   "control_center.update": "Update",
   "control_center.update_package": "Update package",
   "control_center.updates": "Updates",
-  "control_center.upgrade_all": "Upgrade all",
+  "control_center.upgrade_all": "Upgrade",
   "control_center.url": "URL:",
   "control_center.usage": "Usage:",
   "control_center.usage_by_filesystem": "USAGE BY FILESYSTEM",

@@ -684,7 +684,7 @@ O tema aparece em **Custom themes**; `r` atualiza a página aberta. Aplique outr
 
 É necessário um único tema schema 2 em `src/usr/share/argvus/themes/<id>/`, com ID correspondente. Inclua as imagens no tema ou em `src/usr/share/`. Os scripts não são executados. Submódulos e Git LFS não são suportados. Instale `git` e `openssh` para SSH. Destino: `$XDG_DATA_HOME/argvus/themes/<id>`. Os pacotes oficiais usam pacman.
 
-Ao abrir **Pacotes → Repositórios oficiais → Atualizar**, incluindo pelo indicador da taskbar, a página consulta e lista automaticamente as atualizações em segundo plano com `checkupdates`, a mesma ferramenta da taskbar. Não é necessário usar **Refresh database** primeiro. A consulta usa uma base separada e não exige privilégios administrativos. Sem `checkupdates` instalado, a página consulta a base local do pacman.
+Ao abrir **Pacotes → Repositórios oficiais → Atualizar**, incluindo pelo indicador da taskbar, a página consulta e lista automaticamente as atualizações em segundo plano com `checkupdates`, a mesma ferramenta da taskbar. Não é necessário usar **Refresh** primeiro. A consulta usa uma base separada e não exige privilégios administrativos. Sem `checkupdates` instalado, a página consulta a base local do pacman.
 
 Ao terminar uma operação de pacotes no Control Center (incluindo atualizações oficiais e AUR), a taskbar consulta automaticamente as atualizações restantes, sem reiniciar. A consulta também ocorre após falhas, pois alguns pacotes podem já ter sido alterados. A verificação a cada hora continua ativa; operações fora do Control Center são detetadas por essa verificação periódica.
 

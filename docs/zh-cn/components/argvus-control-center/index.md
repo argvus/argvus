@@ -567,7 +567,7 @@ argvus theme uninstall NAME
 
 仓库必须在 `src/usr/share/argvus/themes/<id>/` 中包含且仅包含一个 schema 2 主题，ID 与目录一致。图片必须提交到主题目录或 `src/usr/share/` 中。不执行脚本，不支持子模块或 Git LFS。需要 `git`，SSH 还需要 `openssh`。目标目录为 `$XDG_DATA_HOME/argvus/themes/<id>`。官方软件包仍由 pacman 管理。
 
-打开 **Packages → Official Repositories → Update** 时（包括通过任务栏指示器），页面会像任务栏一样使用 `checkupdates` 在后台自动检查并列出更新，无需先点击 **Refresh database**。检查使用独立数据库，不需要管理员权限。如果未安装 `checkupdates`，则使用 pacman 的本地数据库。
+打开 **Packages → Official Repositories → Update** 时（包括通过任务栏指示器），页面会像任务栏一样使用 `checkupdates` 在后台自动检查并列出更新，无需先点击 **Refresh**。检查使用独立数据库，不需要管理员权限。如果未安装 `checkupdates`，则使用 pacman 的本地数据库。
 
 Control Center 中的软件包操作结束后（包括官方仓库和 AUR 升级），任务栏会自动检查剩余更新，无需重启。失败后也会检查，因为部分软件包可能已发生变化。每小时检查仍然启用，用于检测 Control Center 之外的操作。
 

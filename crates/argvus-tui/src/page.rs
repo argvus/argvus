@@ -68,7 +68,7 @@ pub fn shell_with_status(
   let rows = Layout::vertical([
     Constraint::Length(2),
     Constraint::Min(1),
-    Constraint::Length(2),
+    Constraint::Length(1),
     Constraint::Length(status_height),
   ])
   .split(inner);
@@ -76,6 +76,11 @@ pub fn shell_with_status(
   draw_footer(frame, rows[2], theme, None, hints);
   if let Some(message) = message {
     crate::components::draw_status(frame, rows[3], theme, message);
+    for y in rows[3].y..rows[3].bottom() {
+      for x in rows[3].x..rows[3].right() {
+        frame.buffer_mut()[(x, y)].set_bg(theme.background);
+      }
+    }
   }
   admin_warning(frame, rows[1], theme, lang, admin_required)
 }
@@ -90,6 +95,28 @@ pub fn admin_warning(
   lang: Lang,
   required: bool,
 ) -> Rect {
+  admin_warning_at(frame, body, theme, lang, required, false)
+}
+
+/// Reserves the top of a page's body for the administration notice.
+pub fn admin_warning_top(
+  frame: &mut Frame,
+  body: Rect,
+  theme: &Theme,
+  lang: Lang,
+  required: bool,
+) -> Rect {
+  admin_warning_at(frame, body, theme, lang, required, true)
+}
+
+fn admin_warning_at(
+  frame: &mut Frame,
+  body: Rect,
+  theme: &Theme,
+  lang: Lang,
+  required: bool,
+  at_top: bool,
+) -> Rect {
   if !required || body.is_empty() {
     return body;
   }
@@ -102,11 +129,16 @@ pub fn admin_warning(
     .min(usize::from(body.height)) as u16;
   let content = Rect::new(
     body.x,
-    body.y,
+    if at_top {
+      body.y.saturating_add(height)
+    } else {
+      body.y
+    },
     body.width,
     body.height.saturating_sub(height),
   );
-  let warning_area = Rect::new(body.x, content.bottom(), body.width, height);
+  let warning_y = if at_top { body.y } else { content.bottom() };
+  let warning_area = Rect::new(body.x, warning_y, body.width, height);
   let block = Block::bordered().border_style(Style::new().fg(theme.border_active));
   let inner = block.inner(warning_area);
   frame.render_widget(block, warning_area);

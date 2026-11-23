@@ -1154,7 +1154,7 @@
   "control_center.update": "更新",
   "control_center.update_package": "更新包",
   "control_center.updates": "更新",
-  "control_center.upgrade_all": "全部升级",
+  "control_center.upgrade_all": "更新",
   "control_center.url": "网址：",
   "control_center.usage": "用法：",
   "control_center.usage_by_filesystem": "按文件系统使用",

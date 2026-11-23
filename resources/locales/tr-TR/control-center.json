@@ -1154,7 +1154,7 @@
   "control_center.update": "Update",
   "control_center.update_package": "Güncelleme paketi",
   "control_center.updates": "Updates",
-  "control_center.upgrade_all": "Tüm Yükseltmelere Yükseltin",
+  "control_center.upgrade_all": "Update",
   "control_center.url": "URL:",
   "control_center.usage": "Kullanım:",
   "control_center.usage_by_filesystem": "USAGE BY",

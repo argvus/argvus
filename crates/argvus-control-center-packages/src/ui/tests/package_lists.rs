@@ -10,8 +10,10 @@ fn updates_show_the_filter_on_top_and_the_action_bar_below() {
   let text = screen(&mut app, 90, 25);
   assert!(text.contains("Search:"), "{text}");
   assert!(text.contains("Actions"), "{text}");
-  assert!(text.contains("Upgrade all"), "{text}");
-  assert!(text.contains("Refresh database"), "{text}");
+  assert!(text.contains("Upgrade"), "{text}");
+  assert!(!text.contains("Upgrade all"), "{text}");
+  assert!(text.contains("Refresh"), "{text}");
+  assert!(!text.contains("Refresh database"), "{text}");
   assert!(text.contains("linux"), "{text}");
   assert!(
     !app
@@ -19,6 +21,33 @@ fn updates_show_the_filter_on_top_and_the_action_bar_below() {
       .iter()
       .any(|row| row.id() == Some(&Item::UpgradeAll))
   );
+}
+
+#[test]
+fn update_status_has_its_own_line_below_navigation() {
+  let mut app = app();
+  app.page = OFFICIAL_UPDATE;
+  app.status = Some(StatusMessage {
+    kind: StatusKind::Success,
+    text: "Packages refreshed".into(),
+  });
+  let mut terminal = Terminal::new(TestBackend::new(90, 25)).unwrap();
+  terminal.draw(|frame| app.draw(frame)).unwrap();
+  let buffer = terminal.backend().buffer();
+  let lines: Vec<String> = (0..25)
+    .map(|y| (0..90).map(|x| buffer[(x, y)].symbol()).collect())
+    .collect();
+  let status = lines
+    .iter()
+    .position(|line| line.contains("Packages refreshed"))
+    .unwrap();
+  let navigation = lines
+    .iter()
+    .position(|line| line.contains("Esc Back"))
+    .unwrap();
+  assert!(status > navigation);
+  assert_eq!(buffer[(1, status as u16)].bg, app.theme.background);
+  assert_eq!(buffer[(1, navigation as u16)].bg, app.theme.surface);
 }
 
 #[test]

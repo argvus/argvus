@@ -351,8 +351,8 @@ não tem mais `Button`, `ActionButton`, `on_buttons` nem linhas `[ ... ]`.
 | Busca / AUR / detalhes | **`[ Install ]`** | `install_selected` (plano → confirmado; AUR só confirmado) | Action `Instalar` (`Reinstalar` quando instalado) na seção Ações da página do pacote (D4) | `Enter` | migrado |
 | Atualizações | Pacote | `UpgradePackage` (confirmado) | Action por item (como hoje) | `Enter` | migrado |
 | Atualizações | **`[ Update ]`** | `UpgradePackage` do selecionado | Sem linha própria. **Equivalente: Enter na linha do item** (pacote) (D5) | `Enter` | migrado |
-| Atualizações | **`[ Upgrade all ]`** | `begin_plan(Upgrade)` → confirmação | Botão `Atualizar tudo` na barra `Ações` sob a lista, como em Fuso horário (2026-10-24); desabilitado e pulado pelas setas sem atualizações visíveis | `←/→`, `Enter` | migrado |
-| Atualizações | **`[ Refresh database ]`** | `RefreshDatabase` (confirmado) | Botão `Atualizar banco` na barra `Ações` sob a lista (2026-10-24) | `←/→`, `Enter` | migrado |
+| Atualizações | **`[ Upgrade ]`** | `begin_plan(Upgrade)` → confirmação | Botão `Atualizar tudo` na barra `Ações` sob a lista, como em Fuso horário (2026-10-24); desabilitado e pulado pelas setas sem atualizações visíveis | `←/→`, `Enter` | migrado |
+| Atualizações | **`[ Refresh ]`** | `RefreshDatabase` (confirmado) | Botão `Atualizar banco` na barra `Ações` sob a lista (2026-10-24) | `←/→`, `Enter` | migrado |
 | Órfãos | **`[ Select ]`** | `toggle_multi` (marca múltiplos) | Toggle por item, coluna `[x]` (D31) | `Space` | migrado |
 | Órfãos | **`[ Remove ]`** | Remove marcados, ou o selecionado sem marcas (plano → confirmado) | Destructive `Remover marcados (N)` na Zona de perigo, desabilitada sem marcas; o pacote sozinho sai pela página dele | `Enter` | migrado |
 | Cache | Lista de arquivos | Navegável, Enter sem efeito | Resumo (Info) + Submenu `Arquivos em cache`, página só de rolagem (D32) | `Enter` | migrado |

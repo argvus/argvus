@@ -1154,7 +1154,7 @@
   "control_center.update": "업데이트",
   "control_center.update_package": "패키지 업데이트",
   "control_center.updates": "업데이트",
-  "control_center.upgrade_all": "모두 업그레이드",
+  "control_center.upgrade_all": "업데이트",
   "control_center.url": "URL:",
   "control_center.usage": "용법:",
   "control_center.usage_by_filesystem": "파일 시스템별 사용량",

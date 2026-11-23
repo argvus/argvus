@@ -127,8 +127,8 @@ impl PackagesApp {
         admin_required: false,
       },
     );
-    let body = if has_action_bar(self.page) {
-      body
+    let body = if filters_while_typing(self.page) {
+      argvus_tui::page::admin_warning_top(f, body, &self.theme, self.lang, admin_required)
     } else {
       argvus_tui::page::admin_warning(f, body, &self.theme, self.lang, admin_required)
     };
@@ -161,13 +161,12 @@ impl PackagesApp {
   /// this screen.
   pub(super) fn draw_filtered_list(&mut self, f: &mut Frame, area: Rect, rows: &[Row<Item>]) {
     let has_action_bar = has_action_bar(self.page);
-    let [search, content, bar] = Layout::vertical([
+    let [search, list, bar] = Layout::vertical([
       Constraint::Length(3),
       Constraint::Min(3),
       Constraint::Length(if has_action_bar { 3 } else { 0 }),
     ])
     .areas(area);
-    let list = argvus_tui::page::admin_warning(f, content, &self.theme, self.lang, has_action_bar);
     self.draw_search_box(f, search);
     let title = if has_action_bar {
       "control_center.updates"
@@ -242,11 +241,14 @@ impl PackagesApp {
     let rows = self.update_action_rows();
     let block = Block::bordered()
       .border_style(Style::new().fg(self.theme.border_active))
-      .title(format!(
-        "{} · {}",
-        tr(self.lang, "control_center.actions"),
-        tr(self.lang, "control_center.actions_hint")
-      ));
+      .title(
+        ratatui::text::Line::from(format!(
+          "{} · {}",
+          tr(self.lang, "control_center.actions"),
+          tr(self.lang, "control_center.actions_hint")
+        ))
+        .style(Style::new().fg(self.theme.foreground)),
+      );
     let inner = block.inner(area);
     f.render_widget(block, area);
     let buttons: Vec<ActionButton> = rows
