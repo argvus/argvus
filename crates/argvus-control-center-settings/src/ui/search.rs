@@ -72,7 +72,7 @@ pub fn draw(frame: &mut Frame, area: Rect, app: &App) {
     Line::default()
   };
   frame.render_widget(
-    Paragraph::new(line).style(Style::new().bg(app.theme.surface)),
+    Paragraph::new(line).style(Style::new().bg(app.theme.background)),
     area,
   );
 }

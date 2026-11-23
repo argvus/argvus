@@ -16,7 +16,7 @@ use argvus_tui::components::{
   ConfirmationDialog, ConfirmationOutcome, ConfirmationState, StatusKind, StatusMessage,
   draw_confirmation,
 };
-use argvus_tui::page::{list, readonly, shell, status};
+use argvus_tui::page::{list, readonly};
 use crossterm::event::KeyCode;
 use ratatui::Frame;
 use ratatui::layout::{Constraint, Layout, Rect};
@@ -394,6 +394,48 @@ mod tests {
       .map(|cell| cell.symbol())
       .collect::<String>();
     assert!(text.contains("waybar") && (text.contains("Restart") || text.contains("Reiniciar")));
+  }
+
+  #[test]
+  fn session_actions_and_status_are_ordered() {
+    for page in [
+      SessionPage::Components,
+      SessionPage::Autostart,
+      SessionPage::Logs,
+    ] {
+      for (width, height) in [(80, 24), (110, 30)] {
+        let mut app = SessionApp::new(Lang::for_locale("en-US"), Theme::load());
+        app.page = page;
+        app.status = Some(StatusMessage {
+          kind: StatusKind::Success,
+          text: "status marker".into(),
+        });
+        let mut terminal =
+          ratatui::Terminal::new(ratatui::backend::TestBackend::new(width, height)).unwrap();
+        terminal.draw(|frame| app.draw(frame)).unwrap();
+        let buffer = terminal.backend().buffer();
+        let lines: Vec<String> = buffer
+          .content
+          .chunks(width as usize)
+          .map(|row| row.iter().map(|cell| cell.symbol()).collect())
+          .collect();
+        let actions = lines
+          .iter()
+          .position(|line| line.contains("Actions"))
+          .unwrap();
+        let status = lines
+          .iter()
+          .position(|line| line.contains("status marker"))
+          .unwrap();
+        assert!(actions < status);
+        assert_eq!(buffer[(1, status as u16)].bg, app.theme.background);
+        assert_eq!(status, height as usize - 2);
+        app.handle(KeyCode::Tab);
+        assert!(app.on_buttons);
+        app.handle(KeyCode::Down);
+        assert!(!app.on_buttons);
+      }
+    }
   }
 
   #[test]

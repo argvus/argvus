@@ -53,7 +53,7 @@ impl SnapshotApp {
         admin_required: false,
       },
     );
-    let body = argvus_tui::page::admin_warning(frame, body, &self.theme, self.lang, true);
+    let body = argvus_tui::page::admin_warning_top(frame, body, &self.theme, self.lang, true);
     let experimental_notice = StatusMessage {
       kind: StatusKind::Info,
       text: label(self.lang, "experimental_notice").into(),

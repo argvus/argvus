@@ -4,6 +4,9 @@ description: Configura le parti persistenti del tuo desktop ARGVUS.
 ---
 Il Centro di Controllo è l'applicazione per le impostazioni di ARGVUS pensata principalmente per l'uso da tastiera. Usalo quando vuoi configurare il desktop piuttosto che eseguire un'azione una tantum.
 
+
+In **Sessione**, le azioni di componenti, avvio automatico e registri si trovano sotto la lista. Usa `Tab` per cambiare il focus, `←/→` per scegliere un pulsante e `Enter` per eseguirlo. Lo stato appare sotto la navigazione in Sessione, Archiviazione e Audio.
+
 ## Centro di Controllo e Pannello di Controllo
 
 | Usa… | Per… |
@@ -485,6 +488,8 @@ L'output della transazione viene sanificato e limitato. Il display mantiene fino
 
 L'inventario di avvio legge il kernel Arch `pkgbase` per individuare le immagini del kernel, i file initramfs e i preset mkinitcpio mentre visualizza separatamente la release del kernel. Gli array letterali di mkinitcpio vengono letti senza includere le parentesi o eseguire la configurazione.
 
+In **Boot > Initramfs**, premi `Tab` per selezionare la rigenerazione e `Enter` per aprire la conferma.
+
 Le modifiche di alimentazione per il coperchio, il pulsante di accensione e la modalità di mantenimento attivo vengono salvate nella configurazione canonica solo dopo che l'azione di runtime ha avuto successo. Annullare l'autorizzazione lascia intatto il valore precedentemente salvato. Quando nessun logind drop-in di ARGVUS fornisce un valore, viene letta come fallback la configurazione principale di logind.
 
 Dopo il fallimento di una modifica di retention, la pagina rilegge le impostazioni correnti prima di mostrarne nuovamente i valori. La selezione della configurazione inizia dalla prima voce.
@@ -605,3 +610,5 @@ Quickshell: `launcher/Theme.qml`
 - `Super + Shift + A` · Apri il selettore del colore di accento · `argvus config accent`
 
 Gli Appunti sono attivi per impostazione predefinita e si aprono dal gruppo delle utilità della barra delle applicazioni. Per interrompere la registrazione di testo e immagini, deseleziona la voce in Control Center → Appearance → Taskbar → Icons → Optional modules e scegli Apply. L’icona scompare e la cronologia resta inaccessibile fino alla riattivazione. Le voci salvate vengono conservate.
+
+Il firewall mantiene impostazioni e regole in una bozza. Salva scrive entrambe e riavvia il servizio. Annulla scarta la bozza. Riavvia applica i file salvati.

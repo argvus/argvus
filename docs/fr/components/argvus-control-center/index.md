@@ -4,6 +4,9 @@ description: Configurez les parties persistantes de votre bureau ARGVUS.
 ---
 Le Centre de Contrôle est l'application de paramètres axée sur le clavier d'ARGVUS. Utilisez-le lorsque vous souhaitez configurer le bureau plutôt que d'effectuer une action ponctuelle.
 
+
+Dans **Session**, les actions des composants, du démarrage automatique et des journaux figurent sous la liste. Utilisez `Tab` pour changer de zone, `←/→` pour choisir un bouton et `Enter` pour l’exécuter. Les messages d’état apparaissent sous la navigation dans Session, Stockage et Audio.
+
 ## Centre de Contrôle et Panneau de Configuration
 
 | Utiliser… | Pour… |
@@ -485,6 +488,8 @@ La sortie des transactions est assainie et limitée. L'affichage conserve jusqu'
 
 La lecture de l'inventaire de démarrage utilise le noyau Arch `pkgbase` pour localiser les images du noyau, les fichiers initramfs et les préréglages mkinitcpio tout en affichant la version du noyau séparément. Les tableaux littéraux mkinitcpio sont lus sans inclure leurs parenthèses ni exécuter la configuration.
 
+Dans **Boot > Initramfs**, utilisez `Tab` pour sélectionner la régénération et `Enter` pour ouvrir la confirmation.
+
 Les modifications d'alimentation pour le couvercle, le bouton d'alimentation et le maintien en veille sont enregistrées dans la configuration canonique uniquement après que l'action d'exécution réussit. L'annulation de l'autorisation laisse la valeur précédemment enregistrée intacte. Lorsqu'aucun module complémentaire logind ARGVUS ne fournit de valeur, la configuration principale de logind est lue comme solution de rechange.
 
 Après qu'un changement de rétention échoue, la page relit les paramètres actuels avant de montrer à nouveau leurs valeurs. La sélection de la configuration commence à la première entrée.
@@ -607,3 +612,5 @@ Quickshell: `launcher/Theme.qml`
 - `Super + Shift + A` · Ouvrir le sélecteur de couleur d’accentuation · `argvus config accent`
 
 Le Presse-papiers est activé par défaut et s’ouvre depuis le groupe des utilitaires de la barre des tâches. Pour arrêter la capture de texte et d’images, décochez cette option dans Control Center → Appearance → Taskbar → Icons → Optional modules, puis sélectionnez Apply. L’icône disparaît et l’historique reste inaccessible jusqu’à la réactivation. Les entrées enregistrées sont conservées.
+
+Dans le pare-feu, les réglages et les règles restent en brouillon. Enregistrer écrit les deux et redémarre le service. Annuler abandonne le brouillon. Redémarrer applique les fichiers enregistrés.

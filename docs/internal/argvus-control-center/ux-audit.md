@@ -242,10 +242,8 @@ linhas no mesmo cursor (`selected - rows.len()`), desenhados com
 | Grupo | **`[ Delete group ]`** | `delete-group` → confirmação | Destructive na Zona de perigo, confirmação com estilo de perigo | `Enter` | migrado |
 | Firewall | Serviço (Ativo/Parado), Iniciar no boot | Linhas que já pediam confirmação | Linha de estado `Serviço · Ativo/Parado` (Enter alterna, confirmado) + Toggle `Iniciar no boot` (confirmado), na seção Serviço (D23) | `Enter` | migrado |
 | Firewall | Configuração (`y`/`n` → `[x]`) | Alterna no rascunho | Toggle (rascunho); nível de proteção = Value com passo; demais = Value | `Space`/`Enter`, `←→` | migrado |
-| Firewall | **`[ Save configuration ]`** | `save-config` → confirmação | `draft_actions` no fim da seção Configuração | `Enter` | migrado |
-| Firewall | **`[ Add iptables rules ]`** | Editor de regras → confirmação | Action na seção Regras (abre o editor) | `Enter` | migrado |
-| Firewall | **`[ Apply saved rules ]`** | `restart` → confirmação | Action confirmada na seção Regras, fora da Zona de perigo; a confirmação avisa que o firewall será reiniciado (D18) | `Enter` | migrado |
-| Firewall | **`[ Cancel ]`** (Danger) | `admin.load(true)`: descarta rascunho recarregando | Action `Cancelar alterações` logo após Salvar (recarrega e permanece, D2) | `Enter` | migrado |
+| Firewall | Add iptables rules | Editor → rascunho | Linha após os campos de configuração | `Enter` | migrado |
+| Firewall | Save, Cancel, Restart | Salvar e reiniciar, descartar rascunho ou reiniciar com arquivos salvos | Barra Actions abaixo da lista | `Tab`, `←/→`, `Enter` | migrado |
 | Páginas com rascunho (Usuário, Criar usuário, Senha, Grupo, Criar grupo, Firewall, Locales) | `Esc` | Saía em silêncio (o rascunho ficava na memória ou se perdia) | `Esc`/`←` pede confirmação (Descartar/Cancelar, foco em Cancelar); descartar volta ao estado carregado; subpáginas do mesmo rascunho não perguntam | `Esc` | migrado |
 | Página Usuário / Grupo | Recarregar (snapshot) | Trocava o rascunho pelo snapshot | Rascunho com alterações é mantido (D15) | `r` | migrado |
 | Editor de administração | Texto multilinha | Salva | Mantido | `Ctrl+S`, `Esc` | migrado |

@@ -61,7 +61,7 @@ impl HardwareApp {
         admin_required: false,
       },
     );
-    let body = argvus_tui::page::admin_warning(
+    let body = argvus_tui::page::admin_warning_top(
       frame,
       body,
       &self.theme,

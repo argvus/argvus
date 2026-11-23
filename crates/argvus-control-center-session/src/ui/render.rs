@@ -32,13 +32,17 @@ impl SessionApp {
 
   pub fn draw(&mut self, frame: &mut Frame) {
     let area = frame.area();
-    let body = shell(
+    let body = argvus_tui::page::shell_with_status(
       frame,
       area,
       &self.theme,
       self.lang,
       &self.breadcrumb(),
       self.footer_hints(),
+      argvus_tui::page::PageStatus {
+        message: self.status.as_ref(),
+        admin_required: false,
+      },
     );
     let lines = match self.page {
       SessionPage::Home => self.home_rows(),
@@ -58,7 +62,9 @@ impl SessionApp {
     let (body, button_area) = if raw_buttons.is_empty() {
       (body, None)
     } else {
-      let button_height = argvus_tui::buttons::height(&raw_buttons, body.width).min(body.height);
+      let button_height = (argvus_tui::buttons::height(&raw_buttons, body.width.saturating_sub(2))
+        + 2)
+        .min(body.height);
       let split =
         Layout::vertical([Constraint::Min(1), Constraint::Length(button_height)]).split(body);
       (split[0], Some(split[1]))
@@ -75,10 +81,30 @@ impl SessionApp {
       } else {
         usize::MAX
       };
-      argvus_tui::buttons::draw(frame, button_area, &raw_buttons, focus, &self.theme);
-    }
-    if let Some(s) = &self.status {
-      status(frame, area, &self.theme, s);
+      let block = ratatui::widgets::Block::bordered()
+        .border_style(ratatui::style::Style::new().fg(self.theme.border_active))
+        .title(
+          Line::from(format!(
+            "{} · {}",
+            tr(self.lang, "control_center.actions"),
+            tr(self.lang, "control_center.actions_hint")
+          ))
+          .style(ratatui::style::Style::new().fg(self.theme.foreground)),
+        );
+      let inner = block.inner(button_area);
+      frame.render_widget(block, button_area);
+      let buttons: Vec<_> = raw_buttons
+        .iter()
+        .map(|button| argvus_tui::action_buttons::ActionButton::secondary("", &button.label, ""))
+        .collect();
+      argvus_tui::action_buttons::draw_aligned_transparent(
+        frame,
+        inner,
+        &buttons,
+        focus,
+        &self.theme,
+        ratatui::layout::Alignment::Left,
+      );
     }
     if let Some(pending) = &self.pending {
       self.draw_pending(frame, area, pending);

@@ -10,11 +10,11 @@ use argvus_control_center_core::{
 use argvus_i18n::{Lang, tr};
 use argvus_theme::Theme;
 use argvus_tui::{
-  components::{StatusKind, StatusMessage, draw_status},
-  page::{Selection, list, readonly, shell},
+  components::{StatusKind, StatusMessage},
+  page::{Selection, list, readonly},
 };
 use crossterm::event::KeyCode;
-use ratatui::{Frame, layout::Rect, text::Line};
+use ratatui::{Frame, text::Line};
 
 mod jobs;
 mod render;
@@ -511,6 +511,33 @@ mod tests {
     app.snapshot = snapshot;
     app.job = None;
     app
+  }
+
+  #[test]
+  fn status_appears_below_footer_without_surface_background() {
+    let mut app = test_app(StorageSnapshot::default());
+    app.status = Some(StatusMessage {
+      kind: StatusKind::Success,
+      text: "status marker".into(),
+    });
+    for (width, height) in [(80, 24), (110, 30)] {
+      let mut terminal =
+        ratatui::Terminal::new(ratatui::backend::TestBackend::new(width, height)).unwrap();
+      terminal.draw(|frame| app.draw(frame)).unwrap();
+      let buffer = terminal.backend().buffer();
+      let lines: Vec<String> = buffer
+        .content
+        .chunks(width as usize)
+        .map(|row| row.iter().map(|cell| cell.symbol()).collect())
+        .collect();
+      let status = lines
+        .iter()
+        .position(|line| line.contains("status marker"))
+        .unwrap();
+      assert_eq!(status, height as usize - 2);
+      assert_eq!(buffer[(1, status as u16)].bg, app.theme.background);
+      assert!(lines[status - 1].contains("Esc"));
+    }
   }
 
   fn sample_snapshot() -> StorageSnapshot {

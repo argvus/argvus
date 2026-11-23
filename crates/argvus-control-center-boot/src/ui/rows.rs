@@ -243,7 +243,7 @@ impl BootApp {
     rows
   }
 
-  /// Presets and, in the Danger zone, the regeneration of every image.
+  /// Presets available for inspection.
   pub(super) fn initramfs_rows(&self) -> Vec<Row<Item>> {
     let lang = self.lang;
     let mut rows = Vec::new();
@@ -257,14 +257,6 @@ impl BootApp {
           .map(|(index, preset)| Row::submenu(Item::Preset(index), preset.clone())),
       );
     }
-    rows.push(Row::section(tr(lang, "control_center.danger_zone")));
-    rows.push(
-      Row::destructive(
-        Item::RegenerateInitramfs,
-        tr(lang, "control_center.regenerate_all_initramfs_images"),
-      )
-      .icon(icons::SYNC),
-    );
     rows
   }
 

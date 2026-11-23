@@ -164,7 +164,9 @@ fn handle_regular_key(app: &mut App, key: KeyEvent) {
     match key.code {
       // On the list, `←/→` reach the bar instead of toggling the row under the
       // cursor; with Apply dimmed there is nothing to focus and they do nothing.
-      KeyCode::Left | KeyCode::Char('h') | KeyCode::Right | KeyCode::Char('l') => {
+      KeyCode::Left | KeyCode::Char('h') | KeyCode::Right | KeyCode::Char('l')
+        if focused || page != Page::Firewall =>
+      {
         let backwards = matches!(key.code, KeyCode::Left | KeyCode::Char('h'));
         if focused {
           app.move_action(backwards);

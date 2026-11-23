@@ -82,6 +82,18 @@ impl NetworkApp {
     let area = f.area();
     let rows = self.rows();
     self.menu.normalize(&rows);
+    let loading = self.job.as_ref().map(|_| StatusMessage {
+      kind: StatusKind::Info,
+      text: tr(
+        self.lang,
+        if self.scan {
+          "control_center.scanning_for_networks"
+        } else {
+          "control_center.refreshing_network"
+        },
+      )
+      .into(),
+    });
     let body = argvus_tui::page::shell_with_status(
       f,
       area,
@@ -90,11 +102,11 @@ impl NetworkApp {
       &self.breadcrumb(),
       &self.footer_hints(&rows),
       argvus_tui::page::PageStatus {
-        message: self.status.as_ref(),
+        message: loading.as_ref().or(self.status.as_ref()),
         admin_required: false,
       },
     );
-    let body = argvus_tui::page::admin_warning(
+    let body = argvus_tui::page::admin_warning_top(
       f,
       body,
       &self.theme,
@@ -193,25 +205,6 @@ impl NetworkApp {
         area,
         &self.theme,
         tr(self.lang, "control_center.enter_apply_esc_cancel"),
-      );
-    }
-    if self.job.is_some() {
-      status(
-        f,
-        body,
-        &self.theme,
-        &StatusMessage {
-          kind: StatusKind::Info,
-          text: tr(
-            self.lang,
-            if self.scan {
-              "control_center.scanning_for_networks"
-            } else {
-              "control_center.refreshing_network"
-            },
-          )
-          .into(),
-        },
       );
     }
   }

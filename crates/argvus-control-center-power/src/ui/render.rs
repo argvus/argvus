@@ -30,6 +30,8 @@ impl PowerApp {
         admin_required: false,
       },
     );
+    let shell_body =
+      argvus_tui::page::admin_warning_top(frame, shell_body, &self.theme, self.lang, true);
     let buttons: Vec<ActionButton> = self
       .buttons()
       .into_iter()
@@ -43,7 +45,6 @@ impl PowerApp {
       let split = Layout::vertical([Constraint::Min(1), Constraint::Length(3)]).split(shell_body);
       (split[0], Some(split[1]))
     };
-    let body = argvus_tui::page::admin_warning(frame, body, &self.theme, self.lang, true);
     let list_selection = if self.job.is_some() {
       usize::MAX
     } else {
@@ -54,11 +55,14 @@ impl PowerApp {
       let block = Block::default()
         .borders(Borders::ALL)
         .border_style(Style::new().fg(self.theme.border_active))
-        .title(format!(
-          "{} · {}",
-          tr(self.lang, "control_center.actions"),
-          tr(self.lang, "control_center.actions_hint")
-        ));
+        .title(
+          ratatui::text::Line::from(format!(
+            "{} · {}",
+            tr(self.lang, "control_center.actions"),
+            tr(self.lang, "control_center.actions_hint")
+          ))
+          .style(Style::new().fg(self.theme.foreground)),
+        );
       let inner = block.inner(action_area);
       frame.render_widget(block, action_area);
       let focus = self.actions.cursor().unwrap_or(usize::MAX);

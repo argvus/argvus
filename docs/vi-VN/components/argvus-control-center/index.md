@@ -5,6 +5,9 @@ description: Định cấu hình các phần liên tục của màn hình ARGVUS
 
 Trung tâm điều khiển là ứng dụng cài đặt bàn phím đầu tiên của ARGVUS. Sử dụng nó khi bạn muốn định cấu hình máy tính để bàn thay vì thực hiện hành động một lần.
 
+
+Trong **Session**, các hành động của Components, Autostart và Logs nằm dưới danh sách. Dùng `Tab` để đổi vùng chọn, `←/→` để chọn nút và `Enter` để thực hiện. Thông báo trạng thái của Session, Storage và Audio nằm dưới thanh điều hướng.
+
 ## Trung tâm điều khiển và Bảng điều khiển
 
 | Sử dụng… | Vì… |
@@ -546,6 +549,8 @@ Tìm kiếm gói và tải trang sẽ loại bỏ kết quả từ trang hoặc 
 
 Kiểm kê khởi động đọc hạt nhân Arch `pkgbase` để định vị hình ảnh hạt nhân, tệp initramfs và cài đặt trước mkinitcpio trong khi hiển thị bản phát hành hạt nhân riêng biệt. Mảng mkinitcpio theo nghĩa đen được đọc mà không bao gồm dấu ngoặc đơn hoặc thực thi cấu hình.
 
+Trong **Boot > Initramfs**, nhấn `Tab` để chọn nút tạo lại và `Enter` để mở hộp xác nhận.
+
 Các thay đổi về nguồn điện cho nắp, nút nguồn và chế độ giữ nguyên chỉ được lưu vào cấu hình chuẩn sau khi hành động trong thời gian chạy thành công. Việc hủy ủy quyền sẽ giữ nguyên giá trị đã lưu trước đó. Khi không có phần đăng nhập ARGVUS nào cung cấp giá trị, cấu hình logind chính sẽ được đọc dưới dạng dự phòng.
 
 Sau khi thay đổi lưu giữ không thành công, trang sẽ đọc lại cài đặt hiện tại trước khi hiển thị lại giá trị của chúng. Lựa chọn cấu hình bắt đầu ở mục đầu tiên.
@@ -670,3 +675,5 @@ Quickshell: `launcher/Theme.qml`
 - `Super + Shift + A` · Mở bộ chọn màu nhấn · `argvus config accent`
 
 Bảng tạm được bật mặc định và mở từ nhóm tiện ích trên thanh tác vụ. Để dừng ghi lại văn bản và hình ảnh, bỏ chọn mục này trong Control Center → Appearance → Taskbar → Icons → Optional modules rồi chọn Apply. Biểu tượng sẽ ẩn và chỉ có thể mở lại lịch sử sau khi bật lại. Các mục đã lưu vẫn được giữ.
+
+Các thay đổi cấu hình và quy tắc tường lửa nằm trong bản nháp. Lưu ghi cả hai và khởi động lại dịch vụ. Hủy bỏ bản nháp. Khởi động lại áp dụng các tệp đã lưu.

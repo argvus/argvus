@@ -114,7 +114,12 @@ impl Administration {
 
   /// Whether the firewall configuration differs from the saved one.
   pub(crate) fn firewall_draft_changed(&self) -> bool {
-    !self.firewall.is_null() && self.config != self.firewall["config"]
+    !self.firewall.is_null()
+      && (self.config != self.firewall["config"]
+        || self
+          .rules_draft
+          .as_deref()
+          .is_some_and(|rules| self.firewall["rules"].as_str() != Some(rules)))
   }
 
   /// Drops the unsaved changes of `page`, back to the loaded state.
@@ -132,7 +137,10 @@ impl Administration {
           self.group["original"] = original;
         }
       }
-      Page::Firewall => self.config = self.firewall["config"].clone(),
+      Page::Firewall => {
+        self.config = self.firewall["config"].clone();
+        self.rules_draft = None;
+      }
       Page::CreateGroup => self.group = json!({"name":""}),
       Page::CreateUser => {
         // A discarded form starts again empty, with the default shell.

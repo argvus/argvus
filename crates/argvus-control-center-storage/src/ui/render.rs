@@ -17,7 +17,7 @@ impl StorageApp {
   }
 
   pub fn draw(&mut self, frame: &mut Frame) {
-    let body = shell(
+    let body = argvus_tui::page::shell_with_status(
       frame,
       frame.area(),
       &self.theme,
@@ -27,6 +27,10 @@ impl StorageApp {
         tr(self.lang, "control_center.scroll_r_refresh_esc_back_help")
       } else {
         tr(self.lang, "control_center.r_refresh_esc_back_help")
+      },
+      argvus_tui::page::PageStatus {
+        message: self.status.as_ref(),
+        admin_required: false,
       },
     );
     let rows = self.rows();
@@ -52,14 +56,6 @@ impl StorageApp {
         &self.theme,
         &rows,
         self.selection.index.min(rows.len().saturating_sub(1)),
-      );
-    }
-    if let Some(status) = &self.status {
-      draw_status(
-        frame,
-        Rect::new(body.x, body.bottom().saturating_sub(1), body.width, 1),
-        &self.theme,
-        status,
       );
     }
   }

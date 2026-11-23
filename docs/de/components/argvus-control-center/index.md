@@ -4,6 +4,9 @@ description: Konfigurieren Sie die persistenten Teile Ihres ARGVUS-Desktops.
 ---
 Das Kontrollzentrum ist ARGVUS' Tastatur-zuerst Einstellungsanwendung. Verwenden Sie es, wenn Sie den Desktop konfigurieren möchten, anstatt eine einmalige Aktion auszuführen.
 
+
+In **Sitzung** stehen die Aktionen für Komponenten, Autostart und Protokolle unter der Liste. `Tab` wechselt den Fokus, `←/→` wählen eine Schaltfläche und `Enter` führt sie aus. Statusmeldungen stehen in Sitzung, Speicher und Audio unter der Navigation.
+
 ## Kontrollzentrum und Systemsteuerung
 
 | Verwenden… | Für… |
@@ -496,6 +499,8 @@ Transaktionsausgaben werden bereinigt und begrenzt. Die Anzeige behält bis zu 1
 
 Das Boot-Inventory liest den Arch-Kernel `pkgbase`, um Kernel-Images, Initramfs-Dateien und mkinitcpio-Presets zu finden, während die Kernel-Version separat angezeigt wird. Literal-mkinitcpio-Arrays werden gelesen, ohne ihre Klammern einzuschließen oder die Konfiguration auszuführen.
 
+Unter **Boot > Initramfs** wählen Sie mit `Tab` die Aktion zum Neuerstellen und öffnen mit `Enter` die Bestätigung.
+
 Änderungen der Energieeinstellungen für Deckel, Netzschalter und Aktiv-Halten werden nur dann in der kanonischen Konfiguration gespeichert, nachdem die Laufzeitaktion erfolgreich war. Das Abbrechen der Autorisierung lässt den zuvor gespeicherten Wert unverändert. Wenn kein ARGVUS logind-Drop-in einen Wert bereitstellt, wird die Hauptlogind-Konfiguration als Fallback gelesen.
 
 Nachdem eine Änderung der Aufbewahrung fehlschlägt, liest die Seite die aktuellen Einstellungen erneut, bevor ihre Werte wieder angezeigt werden. Die Konfigurationsauswahl beginnt beim ersten Eintrag.
@@ -619,3 +624,5 @@ Quickshell: `launcher/Theme.qml`
 - `Super + Shift + A` · Akzentfarbauswahl öffnen · `argvus config accent`
 
 Die Zwischenablage ist standardmäßig aktiv und lässt sich über die Dienstprogrammgruppe der Taskleiste öffnen. Um keine Texte und Bilder mehr zu erfassen, deaktivieren Sie die Option unter Control Center → Appearance → Taskbar → Icons → Optional modules und wählen Sie Apply. Das Symbol verschwindet und der Verlauf ist bis zur erneuten Aktivierung gesperrt. Gespeicherte Einträge bleiben erhalten.
+
+Die Firewall hält Einstellungen und Regeln als Entwurf. Speichern schreibt beides und startet den Dienst neu. Abbrechen verwirft den Entwurf. Neustart wendet die gespeicherten Dateien an.

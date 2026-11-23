@@ -125,15 +125,7 @@ impl App {
         EditTarget::Config(key) => self.admin.config[&key] = json!(value),
         EditTarget::User(key) => self.admin.user[&key] = json!(value),
         EditTarget::Password(index) => self.admin.passwords[index] = value,
-        EditTarget::Rules => self.admin_confirm(
-          true,
-          json!({"action":"save-rules", "original":self.admin.firewall["rules"], "rules":value}),
-          tr(
-            self.lang,
-            "control_center.save_rules_fw_this_script_will_run_as_root_when_applying_the_firewall",
-          )
-          .into(),
-        ),
+        EditTarget::Rules => self.admin.rules_draft = Some(value),
         EditTarget::Group => self.admin.group["name"] = json!(value),
         EditTarget::FontSize => match value.trim().parse::<u16>() {
           Ok(size) if (8..=32).contains(&size) => self.apply_font_size(size),

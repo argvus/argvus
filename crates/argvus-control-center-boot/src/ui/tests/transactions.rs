@@ -27,20 +27,23 @@ fn systemd_entry_default_goes_through_the_confirmation() {
 fn confirmation_starts_on_cancel_and_n_cancels() {
   let mut app = app();
   app.page = BootPage::Initramfs;
-  press(&mut app, Item::RegenerateInitramfs);
+  app.handle(KeyCode::Tab);
+  app.handle(KeyCode::Enter);
   assert!(app.pending.is_some());
   assert!(!app.confirmation.is_confirm_focused());
   assert_eq!(app.footer_hints(&app.rows()), confirm_hints(app.lang));
   app.handle(KeyCode::Char('n'));
   assert!(app.pending.is_none());
   assert!(app.action.is_none());
-  press(&mut app, Item::RegenerateInitramfs);
+  app.handle(KeyCode::Tab);
+  app.handle(KeyCode::Enter);
   app.handle(KeyCode::Char('k'));
   assert!(app.confirmation.is_confirm_focused());
   app.handle(KeyCode::Esc);
   assert!(app.pending.is_none());
   // A new confirmation starts on Cancel again.
-  press(&mut app, Item::RegenerateInitramfs);
+  app.handle(KeyCode::Tab);
+  app.handle(KeyCode::Enter);
   assert!(!app.confirmation.is_confirm_focused());
 }
 
@@ -73,7 +76,8 @@ fn boot_changes_wait_for_a_running_snapshot_but_pages_open() {
   app.snapshot.initramfs.presets = vec!["linux.preset".into()];
   app.page = BootPage::Initramfs;
   running_job(&mut app);
-  press(&mut app, Item::RegenerateInitramfs);
+  app.handle(KeyCode::Tab);
+  assert!(app.actions.cursor().is_none());
   assert!(app.pending.is_none());
   press(&mut app, Item::Preset(0));
   assert_eq!(app.page, BootPage::InitramfsDetail(0));

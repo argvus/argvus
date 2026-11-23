@@ -5,6 +5,9 @@ description: Konfigurasikan bagian persisten desktop ARGVUS Anda.
 
 Pusat Kontrol adalah aplikasi pengaturan keyboard pertama ARGVUS. Gunakan saat Anda ingin mengonfigurasi desktop daripada melakukan tindakan satu kali saja.
 
+
+Di **Session**, tindakan Components, Autostart, dan Logs berada di bawah daftar. Gunakan `Tab` untuk mengganti fokus, `←/→` untuk memilih tombol, dan `Enter` untuk menjalankannya. Pesan status Session, Storage, dan Audio berada di bawah navigasi.
+
 ## Pusat Kontrol dan Panel Kontrol
 
 | Gunakan… | Untuk… |
@@ -546,6 +549,8 @@ Output transaksi dibersihkan dan dibatasi. Layar mempertahankan hingga 10.000 ba
 
 Inventaris boot membaca kernel Arch `pkgbase` untuk menemukan image kernel, file initramfs, dan preset mkinitcpio sambil menampilkan rilis kernel secara terpisah. Array mkinitcpio literal dibaca tanpa menyertakan tanda kurung atau menjalankan konfigurasi.
 
+Di **Boot > Initramfs**, tekan `Tab` untuk memilih tombol regenerasi dan `Enter` untuk membuka konfirmasi.
+
 Perubahan daya untuk penutup, tombol daya, dan tetap terjaga disimpan ke konfigurasi kanonik hanya setelah tindakan runtime berhasil. Membatalkan otorisasi akan membuat nilai yang disimpan sebelumnya tetap utuh. Ketika tidak ada drop-in login ARGVUS yang memberikan nilai, konfigurasi logind utama dibaca sebagai fallback.
 
 Setelah perubahan retensi gagal, halaman akan membaca ulang pengaturan saat ini sebelum menampilkan nilainya lagi. Pemilihan konfigurasi dimulai pada entri pertama.
@@ -670,3 +675,5 @@ Quickshell: `launcher/Theme.qml`
 - `Super + Shift + A` · Buka pemilih warna aksen · `argvus config accent`
 
 Papan klip aktif secara default dan dapat dibuka dari grup utilitas di bilah tugas. Untuk berhenti merekam teks dan gambar, hapus centang pada opsi di Control Center → Appearance → Taskbar → Icons → Optional modules lalu pilih Apply. Ikon akan disembunyikan dan riwayat tidak bisa dibuka hingga opsi diaktifkan kembali. Entri yang tersimpan tetap tersedia.
+
+Setelan dan aturan firewall disimpan sebagai draf. Simpan menulis keduanya dan memulai ulang layanan. Batal membuang draf. Mulai ulang menerapkan berkas yang tersimpan.

@@ -67,26 +67,25 @@ fn firewall_rows_are_toggles_values_and_a_protection_level_step() {
 }
 
 #[test]
-fn firewall_actions_are_rows_in_their_sections() {
+fn firewall_actions_are_in_the_bottom_bar() {
   let mut app = app(Page::Firewall);
   app.admin.firewall = json!({"active":false,"enabled":false});
   app.admin.config = json!({});
   let rows = app
     .admin
     .rows(Page::Firewall, Lang::for_locale("pt-BR"), "");
-  let sections = rows.iter().filter(|row| row.is_section()).count();
-  assert_eq!(sections, 3, "Service, Configuration and Rules");
   let position = |item: Item| rows.iter().position(|row| row.id() == Some(&item)).unwrap();
-  assert!(position(Item::FirewallField(FIREWALL_FIELDS.len() - 1)) < position(Item::SaveFirewall));
+  assert!(position(Item::FirewallField(FIREWALL_FIELDS.len() - 1)) < position(Item::AddRules));
+  for item in [Item::SaveFirewall, Item::DiscardFirewall, Item::ApplyRules] {
+    assert!(!rows.iter().any(|row| row.id() == Some(&item)));
+  }
   assert_eq!(
-    position(Item::SaveFirewall) + 1,
-    position(Item::DiscardFirewall)
-  );
-  assert!(position(Item::DiscardFirewall) < position(Item::AddRules));
-  assert_eq!(position(Item::AddRules) + 1, position(Item::ApplyRules));
-  assert_eq!(
-    rows[position(Item::SaveFirewall)].label(),
-    "Salvar Configuração"
+    app
+      .action_rows()
+      .iter()
+      .filter_map(|row| row.id().copied())
+      .collect::<Vec<_>>(),
+    [Item::SaveFirewall, Item::DiscardFirewall, Item::ApplyRules],
   );
   assert_eq!(
     rows[position(Item::FirewallBoot)].kind(),
@@ -109,7 +108,10 @@ fn firewall_rows_route_to_confirm_editor_reload_and_cancel_like_before() {
   assert!(app.admin.pending.is_some());
   app.cancel_modal();
   app.admin_activate(Item::AddRules);
-  assert_eq!(app.admin.editor.take().unwrap().target, EditTarget::Rules);
+  assert_eq!(app.admin.editor.as_ref().unwrap().target, EditTarget::Rules);
+  app.admin_input(KeyEvent::new(KeyCode::Char('s'), KeyModifiers::CONTROL));
+  assert!(app.admin.rules_draft.is_some());
+  assert!(app.admin.pending.is_none());
   app.admin_activate(Item::ApplyRules);
   assert!(app.admin.pending.is_some());
   let Some(PendingAction::Administration { message, .. }) = app.confirm.clone() else {
@@ -127,10 +129,8 @@ fn firewall_rows_route_to_confirm_editor_reload_and_cancel_like_before() {
   );
   app.cancel_modal();
   app.admin_activate(Item::DiscardFirewall);
-  assert!(
-    app.admin.busy(),
-    "Cancel changes reloads the saved configuration"
-  );
+  assert_eq!(app.admin.config, app.admin.firewall["config"]);
+  assert!(app.admin.rules_draft.is_none());
 }
 
 #[test]
@@ -150,7 +150,7 @@ fn group_firewall_create_and_password_drafts_ask_before_leaving() {
   firewall.admin.config = json!({"ALLOW_SSH":"y"});
   let save = |app: &App| {
     app
-      .rows()
+      .action_rows()
       .into_iter()
       .find(|row| row.id() == Some(&Item::SaveFirewall))
       .unwrap()

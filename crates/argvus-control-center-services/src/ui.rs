@@ -21,7 +21,7 @@ use argvus_tui::components::{
 use argvus_tui::filter_search::{filter_line, search_box, titled_block};
 use argvus_tui::hints::{HintContext, hints};
 use argvus_tui::menu::{MenuEvent, MenuState, MenuStyle, Row, draw_menu};
-use argvus_tui::page::{list, status};
+use argvus_tui::page::list;
 use crossterm::event::KeyCode;
 use ratatui::{
   Frame,

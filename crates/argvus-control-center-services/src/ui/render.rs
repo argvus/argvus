@@ -74,6 +74,10 @@ impl ServicesApp {
 
   pub fn draw(&mut self, frame: &mut Frame) {
     let area = frame.area();
+    let loading = self.job.as_ref().map(|_| StatusMessage {
+      kind: StatusKind::Info,
+      text: tr(self.lang, "control_center.loading_services").into(),
+    });
     let body = argvus_tui::page::shell_with_status(
       frame,
       area,
@@ -82,11 +86,11 @@ impl ServicesApp {
       &self.breadcrumb(),
       &self.footer_hints(),
       argvus_tui::page::PageStatus {
-        message: self.status.as_ref(),
+        message: loading.as_ref().or(self.status.as_ref()),
         admin_required: false,
       },
     );
-    let body = argvus_tui::page::admin_warning(
+    let body = argvus_tui::page::admin_warning_top(
       frame,
       body,
       &self.theme,
@@ -235,18 +239,7 @@ impl ServicesApp {
 
   /// Status line, loading indicator and the confirmation, shared by the
   /// menu pages.
-  pub(super) fn draw_overlays(&self, frame: &mut Frame, area: Rect, body: Rect) {
-    if self.job.is_some() {
-      status(
-        frame,
-        body,
-        &self.theme,
-        &StatusMessage {
-          kind: StatusKind::Info,
-          text: tr(self.lang, "control_center.loading_services").into(),
-        },
-      );
-    }
+  pub(super) fn draw_overlays(&self, frame: &mut Frame, area: Rect, _body: Rect) {
     if let Some(Pending::Action(a, u, _)) = &self.pending {
       self.draw_pending(frame, area, a, u)
     }

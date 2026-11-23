@@ -6,9 +6,7 @@ pub mod popup;
 pub mod search;
 
 use argvus_control_center_core::config::AppConfig;
-use argvus_tui::action_buttons::{
-  ActionButton, draw_aligned as draw_action_buttons, draw_aligned_transparent,
-};
+use argvus_tui::action_buttons::{ActionButton, draw_aligned_transparent};
 use argvus_tui::menu::{MenuStyle, Row, RowKind, draw_menu};
 use argvus_tui::scroll::thumb_position;
 use ratatui::Frame;
@@ -48,7 +46,7 @@ pub fn draw(app: &mut App, frame: &mut Frame) {
   }
 
   let mut areas = layout::areas(area);
-  areas.body = argvus_tui::page::admin_warning(
+  areas.body = argvus_tui::page::admin_warning_top(
     frame,
     areas.body,
     &app.theme,
@@ -169,6 +167,7 @@ fn list_title_key(page: Page) -> &'static str {
   match page {
     Page::CustomShortcut => "control_center.shortcut_create_title",
     Page::DefaultApps => "control_center.default_apps",
+    Page::Firewall => "control_center.configuration",
     Page::TimeZone => "control_center.time_zone",
     Page::SystemLocales => "control_center.system_locales",
     Page::SshKeys => "control_center.ssh_keys",
@@ -192,11 +191,14 @@ fn draw_action_bar(app: &App, frame: &mut Frame, area: Rect, actions: &[Row<Item
     .borders(Borders::ALL)
     .border_type(ratatui::widgets::BorderType::Plain)
     .border_style(Style::new().fg(app.theme.border_active))
-    .title(format!(
-      "{} · {}",
-      tr(app.lang, "control_center.actions"),
-      tr(app.lang, "control_center.actions_hint")
-    ));
+    .title(
+      Line::from(format!(
+        "{} · {}",
+        tr(app.lang, "control_center.actions"),
+        tr(app.lang, "control_center.actions_hint")
+      ))
+      .style(Style::new().fg(app.theme.foreground)),
+    );
   let inner = block.inner(area);
   frame.render_widget(block, area);
 
@@ -237,19 +239,16 @@ fn draw_user_page(app: &mut App, frame: &mut Frame, area: Rect) {
   });
 
   let sections = Layout::vertical([Constraint::Min(0), Constraint::Length(2)]).split(inner);
-  let body = argvus_tui::page::admin_warning(
+  let header_and_body =
+    Layout::vertical([Constraint::Length(3), Constraint::Min(0)]).split(sections[0]);
+  let body = argvus_tui::page::admin_warning_top(
     frame,
-    sections[0],
+    header_and_body[1],
     &app.theme,
     app.lang,
     app.page().requires_admin(),
   );
-  let chunks = Layout::vertical([
-    Constraint::Length(3),
-    Constraint::Min(0),
-    Constraint::Length(4),
-  ])
-  .split(body);
+  let chunks = Layout::vertical([Constraint::Min(0), Constraint::Length(3)]).split(body);
   let footer = Layout::vertical([Constraint::Length(1), Constraint::Length(1)]).split(sections[1]);
 
   // Title
@@ -266,7 +265,7 @@ fn draw_user_page(app: &mut App, frame: &mut Frame, area: Rect) {
         .border_type(ratatui::widgets::BorderType::Plain)
         .border_style(Style::new().fg(app.theme.border_active)),
     );
-  frame.render_widget(title, chunks[0]);
+  frame.render_widget(title, header_and_body[0]);
 
   // The rows before the "Actions" section are the info block; the rows
   // after it are the buttons below. Both come from the same single list.
@@ -277,21 +276,21 @@ fn draw_user_page(app: &mut App, frame: &mut Frame, area: Rect) {
     .unwrap_or(all_rows.len());
   let (info_rows, action_rows) = all_rows.split_at(actions_at);
 
-  app.set_viewport(chunks[1].height as usize);
-  frame.render_widget(Clear, chunks[1]);
+  app.set_viewport(chunks[0].height as usize);
+  frame.render_widget(Clear, chunks[0]);
 
   let menu_block = Block::default()
     .borders(Borders::ALL)
     .border_type(ratatui::widgets::BorderType::Plain)
     .border_style(Style::new().fg(app.theme.border_active))
     .title(tr(app.lang, "control_center.user_info"));
-  frame.render_widget(menu_block, chunks[1]);
+  frame.render_widget(menu_block, chunks[0]);
 
   let menu_inner = Rect {
-    x: chunks[1].x + 1,
-    y: chunks[1].y + 1,
-    width: chunks[1].width.saturating_sub(2),
-    height: chunks[1].height.saturating_sub(2),
+    x: chunks[0].x + 1,
+    y: chunks[0].y + 1,
+    width: chunks[0].width.saturating_sub(2),
+    height: chunks[0].height.saturating_sub(2),
   };
 
   draw_menu(
@@ -326,28 +325,31 @@ fn draw_user_page(app: &mut App, frame: &mut Frame, area: Rect) {
     .borders(Borders::ALL)
     .border_type(ratatui::widgets::BorderType::Plain)
     .border_style(Style::new().fg(app.theme.border_active))
-    .title(format!(
-      "{} · {}",
-      tr(app.lang, "control_center.actions"),
-      tr(app.lang, "control_center.actions_hint")
-    ));
-  frame.render_widget(buttons_block, chunks[2]);
+    .title(
+      Line::from(format!(
+        "{} · {}",
+        tr(app.lang, "control_center.actions"),
+        tr(app.lang, "control_center.actions_hint")
+      ))
+      .style(Style::new().fg(app.theme.foreground)),
+    );
+  frame.render_widget(buttons_block, chunks[1]);
 
   // The buttons fill the block's inside; the bar wraps them to its width.
   let inner_buttons = Rect {
-    x: chunks[2].x + 1,
-    y: chunks[2].y + 1,
-    width: chunks[2].width.saturating_sub(2),
-    height: chunks[2].height.saturating_sub(2),
+    x: chunks[1].x + 1,
+    y: chunks[1].y + 1,
+    width: chunks[1].width.saturating_sub(2),
+    height: chunks[1].height.saturating_sub(2),
   };
 
-  draw_action_buttons(
+  draw_aligned_transparent(
     frame,
     inner_buttons,
     &buttons,
     selected_button,
     &app.theme,
-    Alignment::Center,
+    Alignment::Left,
   );
 
   // Status
@@ -361,12 +363,16 @@ fn draw_user_page(app: &mut App, frame: &mut Frame, area: Rect) {
   } else {
     Paragraph::new(tr(app.lang, "control_center.ready")).style(Style::default().fg(app.theme.muted))
   };
-  frame.render_widget(status, footer[1]);
+  if app.status.is_some() {
+    search::draw(frame, footer[1], app);
+  } else {
+    frame.render_widget(status, footer[1]);
+  }
 
   // Navigation footer, always the last line of the screen.
   let nav = Paragraph::new(tr(app.lang, "control_center.user_page_keys"))
     .alignment(Alignment::Right)
-    .style(Style::default().fg(app.theme.muted));
+    .style(Style::default().fg(app.theme.muted).bg(app.theme.surface));
   frame.render_widget(nav, footer[0]);
 
   // Popups/Dialogs

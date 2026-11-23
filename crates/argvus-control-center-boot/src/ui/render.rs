@@ -3,6 +3,7 @@
 use super::actions::action_message;
 use super::input::input_tail;
 use super::*;
+use ratatui::layout::{Alignment, Constraint, Layout};
 
 impl BootApp {
   /// The footer derived from the selected row.
@@ -39,7 +40,7 @@ impl BootApp {
         admin_required: false,
       },
     );
-    let body = argvus_tui::page::admin_warning(
+    let body = argvus_tui::page::admin_warning_top(
       frame,
       body,
       &self.theme,
@@ -49,6 +50,49 @@ impl BootApp {
         BootPage::Home | BootPage::Summary | BootPage::Kernel
       ),
     );
+    let body = if self.page == BootPage::Initramfs {
+      let [list, actions] =
+        Layout::vertical([Constraint::Min(0), Constraint::Length(3)]).areas(body);
+      let block = Block::bordered()
+        .border_style(Style::new().fg(self.theme.border_active))
+        .title(
+          Line::from(format!(
+            "{} · {}",
+            tr(self.lang, "control_center.actions"),
+            tr(self.lang, "control_center.actions_hint")
+          ))
+          .style(Style::new().fg(self.theme.foreground)),
+        );
+      let inner = block.inner(actions);
+      frame.render_widget(block, actions);
+      let label = tr(self.lang, "control_center.regenerate");
+      let icon = if AppConfig::icons_enabled() {
+        icons::SYNC
+      } else {
+        ""
+      };
+      let button = if self.busy() {
+        ActionButton::secondary(icon, label, "")
+      } else {
+        ActionButton::danger(icon, label, "")
+      };
+      let selected = if self.busy() {
+        usize::MAX
+      } else {
+        self.actions.cursor().unwrap_or(usize::MAX)
+      };
+      draw_aligned_transparent(
+        frame,
+        inner,
+        &[button],
+        selected,
+        &self.theme,
+        Alignment::Left,
+      );
+      list
+    } else {
+      body
+    };
     self.list_height = body.height;
     draw_menu(
       frame,

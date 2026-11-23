@@ -493,6 +493,7 @@ impl App {
         | Page::SystemLocales
         | Page::SshKeys
         | Page::CustomShortcut
+        | Page::Firewall
     )
   }
 
@@ -501,13 +502,26 @@ impl App {
   pub(crate) fn search_on_top(&self) -> bool {
     // The GPG key list and the shortcuts list have no action bar, but their
     // search still sits on top, like the pages that have one.
-    (self.has_action_bar() && self.page() != Page::CustomShortcut)
+    (self.has_action_bar() && !matches!(self.page(), Page::CustomShortcut | Page::Firewall))
       || matches!(self.page(), Page::GpgKeyList | Page::AllShortcuts)
   }
 
   /// The action bar of the current page; empty for pages without one.
   pub(crate) fn action_rows(&self) -> Vec<Row<Item>> {
     match self.page() {
+      Page::Firewall => {
+        let ready = self.admin.has_loaded_data(Page::Firewall) && !self.admin.busy();
+        vec![
+          Row::action(Item::SaveFirewall, tr(self.lang, "control_center.save"))
+            .enabled(ready && self.admin.firewall_draft_changed()),
+          Row::action(
+            Item::DiscardFirewall,
+            tr(self.lang, "control_center.cancel"),
+          )
+          .enabled(ready && self.admin.firewall_draft_changed()),
+          Row::action(Item::ApplyRules, tr(self.lang, "control_center.restart")).enabled(ready),
+        ]
+      }
       Page::CustomShortcut => self.custom_shortcut_action_rows(),
       Page::DefaultApps => self.default_apps_action_rows(),
       Page::KeyboardLayout => self.keyboard_action_rows(),

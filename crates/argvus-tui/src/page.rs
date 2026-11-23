@@ -82,7 +82,7 @@ pub fn shell_with_status(
       }
     }
   }
-  admin_warning(frame, rows[1], theme, lang, admin_required)
+  admin_warning_top(frame, rows[1], theme, lang, admin_required)
 }
 
 /// Reserves the bottom of a page's body for a persistent administration notice.

@@ -25,13 +25,17 @@ impl AudioApp {
 
   pub fn draw(&self, frame: &mut Frame) {
     let area = frame.area();
-    let body = shell(
+    let body = argvus_tui::page::shell_with_status(
       frame,
       area,
       &self.theme,
       self.lang,
       &self.breadcrumb(),
       self.footer_hints(),
+      argvus_tui::page::PageStatus {
+        message: self.status.as_ref(),
+        admin_required: false,
+      },
     );
     let rows = self.rows();
     if matches!(self.page, AudioPage::Summary | AudioPage::Devices) {
@@ -76,9 +80,6 @@ impl AudioApp {
           confirm_selected: self.confirmation.confirm_selected,
         },
       );
-    }
-    if let Some(status_message) = &self.status {
-      status(frame, body, &self.theme, status_message);
     }
   }
 

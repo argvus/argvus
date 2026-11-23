@@ -186,6 +186,7 @@ pub struct Administration {
   firewall: Value,
   pub(crate) accounts: Value,
   config: Value,
+  rules_draft: Option<String>,
   pub(crate) user: Value,
   group: Value,
   passwords: [String; 3],
@@ -218,6 +219,7 @@ impl Administration {
       firewall: Value::Null,
       accounts: Value::Null,
       config: Value::Null,
+      rules_draft: None,
       user: Value::Null,
       group: Value::Null,
       passwords: Default::default(),
@@ -246,7 +248,7 @@ impl Administration {
   }
 
   /// Reports whether the snapshot needed to render `page` has already been loaded.
-  fn has_loaded_data(&self, page: Page) -> bool {
+  pub(crate) fn has_loaded_data(&self, page: Page) -> bool {
     match page {
       Page::Firewall => !self.firewall.is_null(),
       _ => self.is_loaded(),
@@ -303,8 +305,12 @@ impl Administration {
     let done = result.map(|(firewall, value)| {
       self.completed = Some(self.operation.clone());
       if firewall {
-        if matches!(self.operation.as_str(), "snapshot" | "save-config") {
+        if matches!(
+          self.operation.as_str(),
+          "snapshot" | "save-config" | "save-and-restart"
+        ) {
           self.config = value["config"].clone();
+          self.rules_draft = None;
         }
         self.firewall = value;
       } else {

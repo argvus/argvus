@@ -267,15 +267,18 @@ fn timeout_is_disabled_with_the_reason_for_an_unknown_bootloader() {
 }
 
 #[test]
-fn initramfs_regenerates_from_the_danger_zone() {
+fn initramfs_regenerates_from_the_actions_bar() {
   let mut app = app();
   app.snapshot.initramfs.presets = vec!["linux.preset".into()];
   app.page = BootPage::Initramfs;
   let rows = app.rows();
-  assert_eq!(ids(&rows), [Item::Preset(0), Item::RegenerateInitramfs]);
-  assert!(rows[rows.len() - 2].is_section());
-  assert_eq!(rows.last().unwrap().kind(), RowKind::Destructive);
-  press(&mut app, Item::RegenerateInitramfs);
+  assert_eq!(ids(&rows), [Item::Preset(0)]);
+  let rendered = screen(&mut app, 100, 24);
+  assert!(rendered.find("[WARN]").unwrap() < rendered.find("linux.preset").unwrap());
+  assert!(rendered.find("linux.preset").unwrap() < rendered.find("Actions").unwrap());
+  assert!(rendered.contains("Regenerate"));
+  app.handle(KeyCode::Tab);
+  app.handle(KeyCode::Enter);
   assert!(matches!(
     app.pending,
     Some(Pending::Action(BootAction::Initramfs))
@@ -350,4 +353,17 @@ fn boot_pages_have_no_button_bar() {
   let text = screen(&mut app, 90, 25);
   assert!(!text.contains("[ "), "{text}");
   assert!(text.contains(tr(app.lang, "control_center.kernel_command_line")));
+}
+
+#[test]
+fn initramfs_regenerate_can_receive_focus_without_presets() {
+  let mut app = app();
+  app.page = BootPage::Initramfs;
+  app.snapshot.initramfs.presets.clear();
+  app.handle(KeyCode::Tab);
+  app.handle(KeyCode::Enter);
+  assert!(matches!(
+    app.pending,
+    Some(Pending::Action(BootAction::Initramfs))
+  ));
 }

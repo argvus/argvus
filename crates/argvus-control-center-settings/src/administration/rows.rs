@@ -420,23 +420,9 @@ impl Administration {
           }
         }),
     );
-    rows.extend(self.draft_rows(
-      Item::SaveFirewall,
-      label("control_center.save_configuration"),
-      self.firewall_draft_changed(),
-      lang,
-    ));
-    rows.extend([
-      Row::action(
-        Item::DiscardFirewall,
-        label("control_center.discard_config_changes"),
-      )
-      .icon(icons::CANCEL),
-      Row::section(label("control_center.section_rules")),
+    rows.push(
       Row::action(Item::AddRules, label("control_center.add_iptables_rules")).icon(icons::SCRIPT),
-      Row::action(Item::ApplyRules, label("control_center.apply_saved_rules"))
-        .icon(icons::SHIELD_REFRESH),
-    ]);
+    );
     rows
   }
 

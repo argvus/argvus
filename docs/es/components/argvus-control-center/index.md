@@ -4,6 +4,9 @@ description: Configure las partes persistentes de su escritorio ARGVUS.
 ---
 El Centro de Control es la aplicación de configuración de ARGVUS diseñada para usar principalmente con el teclado. Úsalo cuando quieras configurar el escritorio en lugar de realizar una acción única.
 
+
+En **Sesión**, Componentes, Inicio automático y Registros muestran sus acciones debajo de la lista. Usa `Tab` para cambiar el foco, `←/→` para elegir un botón y `Enter` para ejecutarlo. El estado aparece debajo de la navegación en Sesión, Almacenamiento y Audio.
+
 ## Centro de Control y Panel de Control
 
 | Usar… | Para… |
@@ -483,6 +486,8 @@ La salida de la transacción se sanitiza y se limita. La pantalla retiene hasta 
 
 La lectura del inventario de arranque utiliza el kernel `pkgbase` de Arch para localizar imágenes de kernel, archivos initramfs y preajustes de mkinitcpio mientras se muestra la versión del kernel por separado. Se leen arrays literales de mkinitcpio sin incluir sus paréntesis ni ejecutar la configuración.
 
+En **Boot > Initramfs**, pulsa `Tab` para enfocar la acción de regenerar y `Enter` para abrir la confirmación.
+
 Los cambios de energía para la tapa, el botón de encendido y mantener activo se guardan en la configuración canónica solo después de que la acción en tiempo de ejecución tenga éxito. Cancelar la autorización conserva el valor guardado previamente intacto. Cuando ningún drop-in de logind de ARGVUS proporciona un valor, se lee la configuración principal de logind como respaldo.
 
 Después de que un cambio de retención falla, la página vuelve a leer la configuración actual antes de mostrar sus valores nuevamente. La selección de configuración comienza en la primera entrada.
@@ -605,3 +610,5 @@ Quickshell: `launcher/Theme.qml`
 - `Super + Shift + A` · Abrir el selector de color de énfasis · `argvus config accent`
 
 El Portapapeles está activado por defecto y se abre desde el grupo de utilidades de la barra de tareas. Para dejar de registrar texto e imágenes, desmarca la opción en Control Center → Appearance → Taskbar → Icons → Optional modules y selecciona Apply. El icono se oculta y el historial queda bloqueado hasta reactivar la opción. Se conservan las entradas guardadas.
+
+En **Firewall**, los ajustes y las reglas se editan en un borrador. Guardar aplica ambos cambios y reinicia el servicio. Cancelar descarta el borrador. Reiniciar aplica los archivos guardados.

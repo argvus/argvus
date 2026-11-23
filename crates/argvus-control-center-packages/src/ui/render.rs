@@ -127,11 +127,7 @@ impl PackagesApp {
         admin_required: false,
       },
     );
-    let body = if filters_while_typing(self.page) {
-      argvus_tui::page::admin_warning_top(f, body, &self.theme, self.lang, admin_required)
-    } else {
-      argvus_tui::page::admin_warning(f, body, &self.theme, self.lang, admin_required)
-    };
+    let body = argvus_tui::page::admin_warning_top(f, body, &self.theme, self.lang, admin_required);
     if filters_while_typing(self.page) {
       self.draw_filtered_list(f, body, &rows);
     } else {

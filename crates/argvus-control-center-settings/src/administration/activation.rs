@@ -92,7 +92,8 @@ impl App {
   fn activate_firewall_row(&mut self, item: Item) {
     let lang = self.lang;
     match item {
-      Item::LoadFirewall | Item::DiscardFirewall => self.admin.load(true),
+      Item::LoadFirewall => self.admin.load(true),
+      Item::DiscardFirewall => self.admin.discard_draft(Page::Firewall),
       Item::FirewallService | Item::FirewallBoot => {
         let value = if item == Item::FirewallService {
           json!({"action": if self.admin.firewall["active"] == true { "stop" } else { "start" }})
@@ -128,17 +129,25 @@ impl App {
         }
       }
       Item::SaveFirewall => {
-        let value = json!({"action":"save-config", "original":self.admin.firewall["config_text"], "config":self.admin.config});
+        let value = json!({"action":"save-and-restart", "original":self.admin.firewall["config_text"], "config":self.admin.config, "original_rules":self.admin.firewall["rules"], "rules":self.admin.rules_draft});
         self.admin_confirm(
           true,
           value,
-          format!("{}?", tr(lang, "control_center.save_configuration")),
+          tr(
+            lang,
+            "control_center.save_rules_fw_this_script_will_run_as_root_when_applying_the_firewall",
+          )
+          .into(),
         );
       }
       Item::AddRules => {
         self.admin.editor = Some(Editor::new(
           tr(lang, "control_center.add_iptables_rules").into(),
-          text(&self.admin.firewall, "rules"),
+          self
+            .admin
+            .rules_draft
+            .clone()
+            .unwrap_or_else(|| text(&self.admin.firewall, "rules")),
           EditTarget::Rules,
           true,
         ));
@@ -149,7 +158,7 @@ impl App {
           json!({"action":"restart"}),
           format!(
             "{}?\n{}",
-            tr(lang, "control_center.apply_saved_rules"),
+            tr(lang, "control_center.restart"),
             tr(lang, "control_center.apply_saved_rules_description")
           ),
         );

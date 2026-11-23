@@ -79,6 +79,33 @@ impl BootApp {
       }
       return false;
     }
+    if self.page == BootPage::Initramfs {
+      if self.busy() {
+        self.actions.focus_list();
+      }
+      match key {
+        KeyCode::Tab | KeyCode::BackTab => {
+          if !self.busy() {
+            self.actions.toggle(&[0]);
+          }
+          return false;
+        }
+        KeyCode::Enter if self.actions.cursor().is_some() => {
+          self.actions.focus_list();
+          self.activate(Item::RegenerateInitramfs);
+          return false;
+        }
+        KeyCode::Left | KeyCode::Right if self.actions.cursor().is_some() => return false,
+        KeyCode::Up
+        | KeyCode::Down
+        | KeyCode::Char('j' | 'k')
+        | KeyCode::PageUp
+        | KeyCode::PageDown
+        | KeyCode::Home
+        | KeyCode::End => self.actions.focus_list(),
+        _ => {}
+      }
+    }
     let rows = self.rows();
     match key {
       // Tab only switches tabs or panes; Boot has none.

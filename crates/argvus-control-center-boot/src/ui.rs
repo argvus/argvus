@@ -15,6 +15,7 @@ use argvus_control_center_core::{
 use argvus_i18n::{Lang, tr};
 use argvus_theme::Theme;
 use argvus_tui::{
+  action_buttons::{ActionButton, ActionFocus, draw_aligned_transparent},
   chrome,
   components::{StatusKind, StatusMessage},
   confirm::{ConfirmDialog, ConfirmOutcome, ConfirmState, draw_confirm},
@@ -132,6 +133,7 @@ pub struct BootApp {
   menu: MenuState,
   /// Body height during the last draw, used as the PgUp/PgDn distance.
   list_height: u16,
+  actions: ActionFocus,
   snapshot: BootSnapshot,
   job: Option<JobHandle<Result<BootSnapshot, String>>>,
   action: Option<JobHandle<(ActionResult, String)>>,
@@ -166,6 +168,7 @@ impl BootApp {
       page: BootPage::Home,
       menu: MenuState::default(),
       list_height: 0,
+      actions: ActionFocus::default(),
       snapshot: Default::default(),
       job: None,
       action: None,
@@ -203,6 +206,7 @@ impl BootApp {
 
   /// Opens `page` with the cursor on its first selectable row.
   fn go(&mut self, page: BootPage) {
+    self.actions.focus_list();
     self.page = page;
     self.menu = MenuState::default();
   }

@@ -17,7 +17,7 @@ use argvus_tui::{
     ConfirmationDialog, ConfirmationOutcome, ConfirmationState, StatusKind, StatusMessage,
     draw_confirmation,
   },
-  page::{Selection, list, readonly, shell, status},
+  page::{Selection, list, readonly},
 };
 use crossterm::event::KeyCode;
 use ratatui::{

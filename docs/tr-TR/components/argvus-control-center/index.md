@@ -5,6 +5,9 @@ description: ARGVUS masaüstünüzün kalıcı bölümlerini yapılandırın.
 
 Kontrol Merkezi, ARGVUS'un klavye öncelikli ayarlar uygulamasıdır. Tek seferlik bir işlem gerçekleştirmek yerine masaüstünü yapılandırmak istediğinizde bunu kullanın.
 
+
+**Session** içindeki Components, Autostart ve Logs sayfalarında işlemler listenin altındadır. Odağı `Tab` ile değiştirin, düğmeyi `←/→` ile seçin ve `Enter` ile çalıştırın. Session, Storage ve Audio durum mesajları gezinme çubuğunun altındadır.
+
 ## Kontrol Merkezi ve Kontrol Paneli
 
 | Kullan… | İçin… |
@@ -539,6 +542,8 @@ Paket aramaları ve sayfa yüklemeleri, daha önceki bir sayfa veya sorgunun son
 
 Önyükleme envanteri, çekirdek sürümünü ayrı olarak görüntülerken çekirdek görüntülerini, initramfs dosyalarını ve mkinitcpio ön ayarlarını bulmak için Arch çekirdeği `pkgbase`'yu okur. Değişmez mkinitcpio dizileri, parantezleri eklemeden veya yapılandırmayı yürütmeden okunur.
 
+**Boot > Initramfs** sayfasında yeniden oluşturma düğmesine `Tab` ile geçin ve onayı `Enter` ile açın.
+
 Kapak, güç düğmesi ve uyanık tutma için yapılan güç değişiklikleri, yalnızca çalışma zamanı eylemi başarılı olduktan sonra standart yapılandırmaya kaydedilir. Yetkilendirmenin iptal edilmesi, daha önce kaydedilen değere dokunulmadan kalır. Hiçbir ARGVUS oturum açma girişi bir değer sağlamadığında, ana oturum açma yapılandırması bir geri dönüş olarak okunur.
 
 Saklama değişikliği başarısız olduktan sonra sayfa, değerlerini tekrar göstermeden önce mevcut ayarları yeniden okur. Yapılandırma seçimi ilk girişte başlar.
@@ -663,3 +668,5 @@ Quickshell: `launcher/Theme.qml`
 - `Super + Shift + A` · Vurgu rengi seçicisini aç · `argvus config accent`
 
 Pano varsayılan olarak etkindir ve görev çubuğunun yardımcı araçlar grubundan açılır. Metin ve görüntü kaydını durdurmak için Control Center → Appearance → Taskbar → Icons → Optional modules bölümündeki seçeneğin işaretini kaldırıp Apply seçin. Simge gizlenir ve seçenek yeniden açılana kadar geçmişe erişilemez. Kayıtlı öğeler korunur.
+
+Güvenlik duvarı ayarları ve kuralları taslakta tutulur. Kaydet ikisini de yazar ve hizmeti yeniden başlatır. İptal taslağı atar. Yeniden başlat kayıtlı dosyaları uygular.

@@ -22,7 +22,9 @@ impl SessionApp {
           self.activate_button();
           return false;
         }
-        KeyCode::Up | KeyCode::Char('k') | KeyCode::Down | KeyCode::Char('j') => return false,
+        KeyCode::Up | KeyCode::Char('k') | KeyCode::Down | KeyCode::Char('j') => {
+          self.on_buttons = false;
+        }
         _ => {}
       }
     }

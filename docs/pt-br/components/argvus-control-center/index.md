@@ -5,6 +5,9 @@ description: Configure as partes persistentes do seu desktop ARGVUS.
 
 O Control Center é o aplicativo de configurações do ARGVUS, com navegação orientada ao teclado. Use-o quando quiser configurar o desktop, e não apenas executar uma ação pontual.
 
+
+Em **Sessão**, Componentes, Inicialização automática e Logs apresentam suas ações na caixa **Ações** abaixo da lista. Use `Tab` para alternar o foco, `←/→` para escolher um botão e `Enter` para executá-lo. As mensagens de status aparecem abaixo do rodapé de navegação em Sessão, Armazenamento e Áudio.
+
 ## Control Center e Control Panel
 
 | Use… | Para… |
@@ -222,7 +225,7 @@ Este cartão lista Idioma (o idioma da interface do ARGVUS), Localidade regional
 
 **Localidade regional**, na mesma seção, salva `LANG` e controla os formatos regionais e o idioma de aplicativos de terceiros. O locale de sistema correspondente precisa estar gerado.
 
-**Locales do sistema** altera `/etc/locale.gen` e executa `locale-gen`, portanto a aplicação exige autorização de administrador. Um aviso permanente **[WARN]** acima do rodapé identifica as telas com configurações administrativas. O mesmo aviso abrange fuso horário, data/hora, hostname, mapa de teclado do console, edição de contas e grupos, firewall, serviços do sistema, governador da CPU, perfis e políticas de energia, configuração de boot, operações de pacotes, snapshots e alterações protegidas de rede. Preferências pessoais, serviços do usuário e páginas somente de leitura não recebem esse aviso. O aviso é informativo; a autorização só é solicitada quando uma ação precisa dela.
+**Locales do sistema** altera `/etc/locale.gen` e executa `locale-gen`, portanto a aplicação exige autorização de administrador. Um aviso permanente **[WARN]** no topo da tela identifica as telas com configurações administrativas. O mesmo aviso abrange fuso horário, data/hora, hostname, mapa de teclado do console, edição de contas e grupos, firewall, serviços do sistema, governador da CPU, perfis e políticas de energia, configuração de boot, operações de pacotes, snapshots e alterações protegidas de rede. Preferências pessoais, serviços do usuário e páginas somente de leitura não recebem esse aviso. O aviso é informativo; a autorização só é solicitada quando uma ação precisa dela.
 
 ### Hardware e displays
 
@@ -581,6 +584,8 @@ A saída de transações é sanitizada e limitada. A exibição mantém até 10.
 
 O inventário de boot lê o `pkgbase` do kernel Arch para localizar imagens, initramfs e presets do mkinitcpio, exibindo separadamente o release do kernel. Arrays literais do mkinitcpio são lidos sem incluir os parênteses nem executar a configuração.
 
+Em **Boot > Initramfs**, use `Tab` para focar **Regenerar** na barra de ações e `Enter` para abrir a confirmação.
+
 Alterações de tampa, botão de energia e manter acordado são salvas na configuração canônica somente após a aplicação em execução ter sucesso. Cancelar a autorização mantém o valor salvo anterior. Quando o drop-in do logind do ARGVUS não fornece um valor, a configuração principal do logind é usada como fallback.
 
 Se uma alteração de retenção falhar, a página relê as configurações atuais antes de exibir os valores novamente. A seleção de configuração começa na primeira entrada.
@@ -715,3 +720,5 @@ Quickshell: `launcher/Theme.qml`
 - `Super + Shift + A` · Abre o seletor de cor de destaque · `argvus config accent`
 
 O Clipboard vem ativado por padrão e abre pelo grupo de utilidades da barra de tarefas. Para parar a captura de texto e imagens, desmarque Clipboard em Control Center → Appearance → Taskbar → Icons → Optional modules e selecione Apply. O ícone some e o acesso ao histórico fica bloqueado. Reative a opção para acessar as entradas já salvas.
+
+O **Firewall** mantém as alterações de configuração e regras em um rascunho. **Salvar** grava ambas e reinicia o serviço. **Cancelar** descarta o rascunho. **Reiniciar** aplica os arquivos salvos. Use `Tab` para focar a barra de ações.
