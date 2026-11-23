@@ -68,10 +68,6 @@ pub(super) enum Item {
   EditAccent,
   ResetAccent,
   // Terminal, Launcher
-  TerminalTransparency,
-  TerminalTransparencyValue,
-  LauncherTransparency,
-  LauncherTransparencyValue,
   /// The value row of an effect editor page.
   EffectValue,
   /// "Enable" on the Animations page (entry point from Hyprland). Like every
@@ -188,12 +184,7 @@ impl Item {
       Self::Collection(_) | Self::WallpaperMode(_) => icons::IMAGE,
       Self::EditAccent => icons::EDIT,
       Self::ResetAccent => icons::RESTORE,
-      Self::TerminalTransparency
-      | Self::TerminalTransparencyValue
-      | Self::LauncherTransparency
-      | Self::LauncherTransparencyValue
-      | Self::TaskbarTransparency
-      | Self::SurfaceTransparency => icons::OPACITY,
+      Self::TaskbarTransparency | Self::SurfaceTransparency => icons::OPACITY,
       Self::WobbleEnabled | Self::WobbleDefaults => icons::ANIMATION,
       Self::Animations
       | Self::AnimationsCustomCurves
@@ -427,8 +418,9 @@ impl AppearanceApp {
       // Unreachable page kept until the Phase 4 cleanup; its entries never
       // had an action, so they are read-only.
       AppearancePage::Transparency => self.transparency_page_rows(),
-      AppearancePage::Terminal => self.terminal_page_rows(),
-      AppearancePage::Launchers => self.launchers_page_rows(),
+      AppearancePage::Terminal | AppearancePage::Launchers => {
+        vec![self.submenu(Item::SurfaceTransparency, "control_center.transparency")]
+      }
       // Entered directly from the Hyprland category (crate principal). The
       // switch and every Hyprland blur parameter edit the draft; `Apply`
       // (added by `rows`) writes them in one step.
@@ -653,38 +645,6 @@ impl AppearanceApp {
       )
     }))
     .collect()
-  }
-
-  fn terminal_page_rows(&self) -> Vec<Row<Item>> {
-    vec![
-      self.toggle_row(
-        Item::TerminalTransparency,
-        "control_center.transparency",
-        self.state.terminal_transparency_enabled,
-      ),
-      self
-        .submenu(
-          Item::TerminalTransparencyValue,
-          "control_center.transparency",
-        )
-        .detail(percent(self.state.terminal_transparency)),
-    ]
-  }
-
-  fn launchers_page_rows(&self) -> Vec<Row<Item>> {
-    vec![
-      self.toggle_row(
-        Item::LauncherTransparency,
-        "control_center.transparency",
-        self.state.launcher_transparency_enabled,
-      ),
-      self
-        .submenu(
-          Item::LauncherTransparencyValue,
-          "control_center.transparency",
-        )
-        .detail(percent(self.state.launcher_transparency)),
-    ]
   }
 
   fn blur_page_rows(&self) -> Vec<Row<Item>> {

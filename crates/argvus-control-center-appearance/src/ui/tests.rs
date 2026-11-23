@@ -112,7 +112,7 @@ fn home_has_categories_and_spacing_is_nested() {
   assert_eq!(app(AppearancePage::ControlPanel).page_rows().len(), 3);
   // Blur: the "Enable" switch, the "Values" heading and the seven parameters.
   assert_eq!(app(AppearancePage::Blur).page_rows().len(), 9);
-  assert_eq!(app(AppearancePage::Terminal).page_rows().len(), 2);
+  assert_eq!(draft_app(AppearancePage::Terminal).page_rows().len(), 1);
 }
 
 #[test]

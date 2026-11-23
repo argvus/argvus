@@ -177,6 +177,9 @@ impl AppearanceApp {
 
   /// Whether this page edits a draft that is applied with the `Apply` row.
   pub(super) fn is_draft_page(page: AppearancePage) -> bool {
+    if matches!(page, AppearancePage::Terminal | AppearancePage::Launchers) {
+      return false;
+    }
     page == AppearancePage::Blur
       || page == AppearancePage::BordersShadow
       || page.is_animations()
@@ -199,6 +202,8 @@ impl AppearanceApp {
       | AppearancePage::TaskbarBorderThickness => Some(EffectSurface::Taskbar),
       AppearancePage::WidgetTelemetry => Some(EffectSurface::WidgetTelemetry),
       AppearancePage::ControlPanel => Some(EffectSurface::ControlPanel),
+      AppearancePage::Terminal => Some(EffectSurface::Terminal),
+      AppearancePage::Launchers => Some(EffectSurface::Launchers),
       AppearancePage::SurfaceSection { surface, .. } => Some(surface),
       _ => None,
     }
@@ -279,37 +284,32 @@ impl AppearanceApp {
     // for the duration of the apply + refresh round trip.
     let current = self.make_surface_draft(draft.surface);
     let recreate = recreates_surface(&draft, &current);
-    self.apply(
-      tr(self.lang, "control_center.surface_settings_applied").into(),
-      move || {
-        // A surface that is recreated gets the splash before the first write;
-        // it comes down when the guard drops after the last step, failed or
-        // not, so no change is visible before it.
-        let _overlay = backend::ApplyOverlay::start_if(recreate);
-        match draft.surface {
-          EffectSurface::Taskbar => apply_taskbar_draft(&draft, recreate),
-          EffectSurface::WidgetTelemetry => {
-            apply_draft_effects(&draft)?;
-            if !recreate {
-              return Ok(());
-            }
-            backend::apply_widget_telemetry(
-              draft.widget_enabled,
-              &draft.widget_blocks,
-              &draft.widget_order,
-            )
+    let message = match draft.surface {
+      EffectSurface::Terminal | EffectSurface::Launchers => "control_center.transparency_applied",
+      _ => "control_center.surface_settings_applied",
+    };
+    self.apply(tr(self.lang, message).into(), move || {
+      // A surface that is recreated gets the splash before the first write;
+      // it comes down when the guard drops after the last step, failed or
+      // not, so no change is visible before it.
+      let _overlay = backend::ApplyOverlay::start_if(recreate);
+      match draft.surface {
+        EffectSurface::Taskbar => apply_taskbar_draft(&draft, recreate),
+        EffectSurface::WidgetTelemetry => {
+          apply_draft_effects(&draft)?;
+          if !recreate {
+            return Ok(());
           }
-          EffectSurface::ControlPanel => apply_control_panel_draft(&draft, &current),
-          EffectSurface::Terminal | EffectSurface::Launchers => backend::apply_surface_effects(
-            draft.surface,
-            draft.transparency_enabled,
-            draft.transparency,
-            true,
-            0,
-          ),
+          backend::apply_widget_telemetry(
+            draft.widget_enabled,
+            &draft.widget_blocks,
+            &draft.widget_order,
+          )
         }
-      },
-    );
+        EffectSurface::ControlPanel => apply_control_panel_draft(&draft, &current),
+        EffectSurface::Terminal | EffectSurface::Launchers => apply_draft_effects(&draft),
+      }
+    });
   }
 
   pub(super) fn edit_draft(&mut self, edit: impl FnOnce(&mut SurfaceDraft)) {

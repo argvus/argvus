@@ -126,6 +126,83 @@ fn draft_pages_end_with_an_apply_row_enabled_only_with_changes() {
 }
 
 #[test]
+fn application_transparency_submenus_keep_the_shared_draft() {
+  for (parent, surface, label) in [
+    (
+      AppearancePage::Terminal,
+      EffectSurface::Terminal,
+      "Terminal",
+    ),
+    (
+      AppearancePage::Launchers,
+      EffectSurface::Launchers,
+      "Launcher",
+    ),
+  ] {
+    let page = AppearancePage::SurfaceSection {
+      surface,
+      section: SurfaceSection::Transparency,
+    };
+    let mut application = draft_app(parent);
+    let now = std::time::Instant::now();
+    application.refreshed.extend([(parent, now), (page, now)]);
+
+    assert_eq!(application.rows().len(), 1);
+    select(&mut application, Item::SurfaceTransparency);
+    application.handle(KeyCode::Enter);
+    assert_eq!(application.page, page);
+    assert_eq!(
+      application.breadcrumb(),
+      format!("Appearance > Application Style > {label} > Transparency")
+    );
+    let saved = application.surface_draft().unwrap().transparency;
+
+    select(&mut application, Item::SectionEnabled);
+    application.handle(KeyCode::Enter);
+    assert!(!application.surface_draft().unwrap().transparency_enabled);
+    assert_eq!(application.page_rows().len(), 2);
+    assert!(application.has_pending_changes());
+    assert!(application.action.is_none());
+
+    application.handle(KeyCode::Enter);
+    assert!(!application.has_pending_changes());
+    assert_eq!(application.surface_draft().unwrap().transparency, saved);
+
+    select(&mut application, Item::SectionValue);
+    application.handle(if saved == 100 {
+      KeyCode::Left
+    } else {
+      KeyCode::Right
+    });
+    assert!(application.has_pending_changes());
+    assert_eq!(application.page, page);
+    assert!(application.action.is_none());
+    application.handle(KeyCode::Enter);
+    let exact = if saved == 37 { 42 } else { 37 };
+    for digit in exact.to_string().chars() {
+      application.handle(KeyCode::Char(digit));
+    }
+    application.handle(KeyCode::Enter);
+    assert_eq!(application.page, page);
+    assert_eq!(application.surface_draft().unwrap().transparency, exact);
+    assert_eq!(selected(&application), Some(Item::SectionValue));
+    application.handle(KeyCode::End);
+    assert_eq!(selected(&application), Some(Item::Apply));
+
+    application.handle(KeyCode::Esc);
+    assert_eq!(application.page, parent);
+    assert_eq!(application.rows().len(), 1);
+    assert!(application.has_pending_changes());
+    application.handle(KeyCode::Esc);
+    assert_eq!(application.page, parent);
+    assert!(matches!(
+      application.confirm,
+      Some((Confirmation::DiscardDraft, _))
+    ));
+  }
+}
+
+#[test]
 fn apply_row_runs_the_same_apply_and_keeps_the_page() {
   let mut application = draft_app(AppearancePage::TaskbarTime);
   select(&mut application, Item::Seconds);

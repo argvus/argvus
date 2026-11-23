@@ -79,12 +79,6 @@ impl AppearanceApp {
       Item::ResetAccent => self.apply(tr(self.lang, "control_center.accent_reset").into(), || {
         backend::set_accent("--theme-default")
       }),
-      Item::TerminalTransparency => self.apply_transparency_toggle(EffectSurface::Terminal),
-      Item::TerminalTransparencyValue => self.go(AppearancePage::TerminalTransparency),
-      Item::LauncherTransparency => self.apply_transparency_toggle(EffectSurface::Launchers),
-      Item::LauncherTransparencyValue => self.go(AppearancePage::TransparencySurface {
-        surface: EffectSurface::Launchers,
-      }),
       Item::EffectValue | Item::SectionValue => self.open_prompt(PromptGoal::DraftValue),
       Item::BlurField(field) => self.open_prompt(PromptGoal::BlurValue(field)),
       Item::Apply if self.page == AppearancePage::Blur => self.apply_blur_changes(),
@@ -210,9 +204,7 @@ impl AppearanceApp {
         draft.control_panel_cards.set(card, enabled);
       }),
       Item::SectionEnabled => {
-        if matches!(self.page, AppearancePage::SurfaceSection { .. }) {
-          self.edit_draft(|draft| draft.transparency_enabled = !draft.transparency_enabled);
-        }
+        self.edit_draft(|draft| draft.transparency_enabled = !draft.transparency_enabled);
       }
     }
   }
@@ -245,9 +237,7 @@ impl AppearanceApp {
 
   /// Edits the percentage of the open transparency section draft.
   pub(super) fn adjust_section_value(&mut self, edit: impl FnOnce(&mut i32)) {
-    if matches!(self.page, AppearancePage::SurfaceSection { .. }) {
-      self.edit_draft(|draft| edit(&mut draft.transparency));
-    }
+    self.edit_draft(|draft| edit(&mut draft.transparency));
   }
 
   /// Moves the focused Widget Telemetry block one position up or down in the
@@ -365,8 +355,7 @@ impl AppearanceApp {
     true
   }
 
-  /// Opens a section of the current surface (Widget Telemetry or Control
-  /// Panel), keeping its draft.
+  /// Opens a section of the current surface, keeping its draft.
   pub(super) fn open_section(&mut self, section: SurfaceSection) {
     if let Some(surface) = Self::surface_for_page(self.page) {
       self.go(AppearancePage::SurfaceSection { surface, section });
@@ -406,26 +395,6 @@ impl AppearanceApp {
     self.apply(
       tr(self.lang, "control_center.layout_mode_applied").into(),
       move || backend::set_layout_mode(variant),
-    );
-  }
-
-  /// Flips the Terminal or Launcher transparency immediately, keeping its
-  /// stored percentage.
-  pub(super) fn apply_transparency_toggle(&mut self, surface: EffectSurface) {
-    let (enabled, transparency) = if surface == EffectSurface::Terminal {
-      (
-        !self.state.terminal_transparency_enabled,
-        self.state.terminal_transparency,
-      )
-    } else {
-      (
-        !self.state.launcher_transparency_enabled,
-        self.state.launcher_transparency,
-      )
-    };
-    self.apply(
-      tr(self.lang, "control_center.transparency_applied").into(),
-      move || backend::apply_surface_effects(surface, enabled, transparency, true, 0),
     );
   }
 }

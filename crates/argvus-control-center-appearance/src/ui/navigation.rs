@@ -106,7 +106,11 @@ impl AppearanceApp {
     }
     matches!(
       self.page,
-      AppearancePage::Taskbar | AppearancePage::WidgetTelemetry | AppearancePage::ControlPanel
+      AppearancePage::Taskbar
+        | AppearancePage::WidgetTelemetry
+        | AppearancePage::ControlPanel
+        | AppearancePage::Terminal
+        | AppearancePage::Launchers
     ) && self.surface_draft_has_changes()
   }
 
@@ -276,6 +280,14 @@ impl AppearanceApp {
       "{root} > {}",
       tr(self.lang, "control_center.application_style")
     );
+    let terminal_root = format!(
+      "{style_root} > {}",
+      tr(self.lang, "control_center.terminal")
+    );
+    let launcher_root = format!(
+      "{style_root} > {}",
+      tr(self.lang, "control_center.launcher")
+    );
     match page {
       AppearancePage::Home => root.into(),
       AppearancePage::Desktop => desktop_root,
@@ -345,19 +357,12 @@ impl AppearanceApp {
       // Entered directly from the Hyprland category (crate principal); no
       // intermediate "Effects" level in this crate anymore.
       AppearancePage::Blur => format!("{hyprland_root} > {}", tr(self.lang, "control_center.blur")),
-      AppearancePage::Terminal => format!(
-        "{style_root} > {}",
-        tr(self.lang, "control_center.terminal")
-      ),
+      AppearancePage::Terminal => terminal_root,
       AppearancePage::TerminalTransparency => format!(
-        "{style_root} > {} > {}",
-        tr(self.lang, "control_center.terminal"),
+        "{terminal_root} > {}",
         tr(self.lang, "control_center.transparency")
       ),
-      AppearancePage::Launchers => format!(
-        "{style_root} > {}",
-        tr(self.lang, "control_center.launcher")
-      ),
+      AppearancePage::Launchers => launcher_root,
       AppearancePage::TransparencySurface { surface } => format!(
         "{root} > {} > {} > {}",
         tr(self.lang, "control_center.effects"),
@@ -433,17 +438,13 @@ impl AppearanceApp {
         tr(self.lang, "control_center.icons"),
         tr(self.lang, "control_center.launcher")
       ),
-      // `surface` is always Taskbar/ControlPanel/WidgetTelemetry here:
-      // `surface_for_page()` only maps those three pages to a surface, and
-      // `open_section()` requires the current page to already resolve to one
-      // before constructing `SurfaceSection`, so Terminal/Launchers never
-      // reach this arm.
       AppearancePage::SurfaceSection { surface, section } => {
         let surface_root = match surface {
           EffectSurface::Taskbar => taskbar_root.as_str(),
           EffectSurface::ControlPanel => control_panel_root.as_str(),
           EffectSurface::WidgetTelemetry => widget_telemetry_root.as_str(),
-          EffectSurface::Terminal | EffectSurface::Launchers => root,
+          EffectSurface::Terminal => terminal_root.as_str(),
+          EffectSurface::Launchers => launcher_root.as_str(),
         };
         format!(
           "{surface_root} > {}",
