@@ -136,7 +136,7 @@
   "control_center.border": "Border",
   "control_center.bottom": "Bottom",
   "control_center.browser_font": "Browser Font",
-  "control_center.built_on_desktop_technologies": "Built on Arch Linux, Hyprland, Wayland, Quickshell, Rust, Lua, GTK 4, ratatui, Waybar, greetd, CSS and shell scripts, and the free libraries and tools that make this desktop possible.",
+  "control_center.built_on_desktop_technologies": "Built on Arch Linux, Hyprland, Wayland, Quickshell, Rust, Lua, GTK 4, ratatui, greetd, CSS and shell scripts, and the free libraries and tools that make this desktop possible.",
   "control_center.cache": "Cache",
   "control_center.cancel": "Cancel",
   "control_center.cancel_f8378f": "[ Cancel ]",

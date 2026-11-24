@@ -136,7 +136,7 @@
   "control_center.border": "국경",
   "control_center.bottom": "맨 아래",
   "control_center.browser_font": "브라우저 글꼴",
-  "control_center.built_on_desktop_technologies": "Arch Linux, Hyprland, Wayland, Quickshell, Rust, Lua, GTK 4, ratatui, Waybar, Greetingd, CSS 및 쉘 스크립트와 이 데스크탑을 가능하게 하는 무료 라이브러리 및 도구를 기반으로 구축되었습니다.",
+  "control_center.built_on_desktop_technologies": "Arch Linux, Hyprland, Wayland, Quickshell, Rust, Lua, GTK 4, ratatui, Greetingd, CSS 및 쉘 스크립트와 이 데스크탑을 가능하게 하는 무료 라이브러리 및 도구를 기반으로 구축되었습니다.",
   "control_center.cache": "은닉처",
   "control_center.cancel": "취소",
   "control_center.cancel_f8378f": "[ 취소 ]",

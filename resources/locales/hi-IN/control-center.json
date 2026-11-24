@@ -136,7 +136,7 @@
   "control_center.border": "सीमा",
   "control_center.bottom": "नीचे",
   "control_center.browser_font": "ब्राउज़र फ़ॉन्ट",
-  "control_center.built_on_desktop_technologies": "आर्क लिनक्स, Hyprland, Wayland, Quickshell, Rust, Lua, GTK 4, ratatui, Waybar, greetd, CSS और शैल लिपियों, और मुफ्त पुस्तकालयों और उपकरण जो इस डेस्कटॉप को संभव बनाते हैं।.",
+  "control_center.built_on_desktop_technologies": "आर्क लिनक्स, Hyprland, Wayland, Quickshell, Rust, Lua, GTK 4, ratatui, greetd, CSS और शैल लिपियों, और मुफ्त पुस्तकालयों और उपकरण जो इस डेस्कटॉप को संभव बनाते हैं।.",
   "control_center.cache": "कैश",
   "control_center.cancel": "रद्द करना",
   "control_center.cancel_f8378f": "[ रद्द करना]",

@@ -136,7 +136,7 @@
   "control_center.border": "Sınır Sınır Sınırı",
   "control_center.bottom": "Alt",
   "control_center.browser_font": "Browser Font",
-  "control_center.built_on_desktop_technologies": "Arch Linux'ta inşa edilmiştir, Hyprland, Quickshell, Rust, Lua, GTK 4, ratatui, Waybar, CSS ve kabuk senaryoları, bu masaüstü mümkün kılan ücretsiz kütüphaneler ve araçlar.",
+  "control_center.built_on_desktop_technologies": "Arch Linux'ta inşa edilmiştir, Hyprland, Quickshell, Rust, Lua, GTK 4, ratatui, CSS ve kabuk senaryoları, bu masaüstü mümkün kılan ücretsiz kütüphaneler ve araçlar.",
   "control_center.cache": "Önbellek",
   "control_center.cancel": "Cancel",
   "control_center.cancel_f8378f": "[ Cancel ]",

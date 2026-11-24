@@ -136,7 +136,7 @@
   "control_center.border": "সীমানা",
   "control_center.bottom": "নীচে",
   "control_center.browser_font": "ব্রাউজার ফন্ট",
-  "control_center.built_on_desktop_technologies": "সংরক্ষিত লিনাক্সে Hyprland'%s' Wayland'%s' Quickshell'%s' Rust; লুকা, GTK ৪, ইঁদুরি, Waybar'%s'  স্বাগতম, CSS এবং শেল স্ক্রিপ্ট, এবং মুক্ত লাইব্রেরি এবং টুল যা এই ডেস্কটপকে সম্ভব করতে পারে।",
+  "control_center.built_on_desktop_technologies": "সংরক্ষিত লিনাক্সে Hyprland'%s' Wayland'%s' Quickshell'%s' Rust; লুকা, GTK ৪, ইঁদুরি, স্বাগতম, CSS এবং শেল স্ক্রিপ্ট, এবং মুক্ত লাইব্রেরি এবং টুল যা এই ডেস্কটপকে সম্ভব করতে পারে।",
   "control_center.cache": "ক্যাশে",
   "control_center.cancel": "বাতিল",
   "control_center.cancel_f8378f": "[ চাপা ]",

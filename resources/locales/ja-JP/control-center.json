@@ -136,7 +136,7 @@
   "control_center.border": "国境",
   "control_center.bottom": "底",
   "control_center.browser_font": "ブラウザのフォント",
-  "control_center.built_on_desktop_technologies": "Arch Linux、Hyprland、Wayland、Quickshell、Rust、Lua、GTK 4、ratatui、Waybar、greeted、CSS、シェル スクリプト、およびこのデスクトップを可能にする無料のライブラリとツールに基づいて構築されています。",
+  "control_center.built_on_desktop_technologies": "Arch Linux、Hyprland、Wayland、Quickshell、Rust、Lua、GTK 4、ratatui、greeted、CSS、シェル スクリプト、およびこのデスクトップを可能にする無料のライブラリとツールに基づいて構築されています。",
   "control_center.cache": "キャッシュ",
   "control_center.cancel": "キャンセル",
   "control_center.cancel_f8378f": "[ キャンセル ]",
