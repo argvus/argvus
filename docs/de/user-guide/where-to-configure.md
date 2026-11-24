@@ -13,15 +13,15 @@ Für eine geführte Übersicht der wichtigsten Desktop-Bereiche öffnen Sie **AR
 | Das Hintergrundbild ändern | **Control Center → Erscheinungsbild → Hintergrundbilder** |
 | Visuelle Effekte aktivieren oder deaktivieren | **Control Center → Erscheinungsbild → Effekte**, **Control Center → Erscheinungsbild → Launcher**, **Control Center → Konfiguration**, **Taskleiste**, **Widget-Telemetrie** oder **Systemsteuerung** |
 | Position, Höhe, Rahmen oder Gruppierung der Taskleiste ändern | **Control Center → Erscheinungsbild → Taskleiste → Position**, **Höhe**, **Rahmen** und **Symbole** |
-| Taskleiste mit JSONC oder CSS anpassen | [Waybar und Taskleisten-Overrides](/docs/argvus-waybar/) | 
-| Fensterabstände oder -ränder ändern | **Systemsteuerung → Desktop & Eingabe → Hyprland → Fenster → Bereiche** und **Ränder** | 
-| Fensterschatten ändern | **Systemsteuerung → Desktop & Eingabe → Hyprland → Ränder → Schatten** | 
-| Sichtbare Bedienfeldkarten auswählen | **Systemsteuerung → Erscheinungsbild → Bedienfeld** | 
-| Tastenkombinationen ändern | **Systemsteuerung → Sprache & Region → Tastenkombinationen** | 
-| Eine erweiterte Hyprland-Regel, Monitoreinstellung oder neue Tastenkombination hinzufügen | [Hyprland-Overrides](/docs/argvus-hyprland/hyprland-overrides/) | 
-| Maus- oder Touchpad-Verhalten ändern | **Systemsteuerung → Sprache & Region → Maus & Touchpad** | 
-| Schriftarten ändern | **Systemsteuerung → Schriftarten** | 
-| Standardanwendungen auswählen | **Systemsteuerung → Standardanwendungen** | 
+| Taskleiste mit JSONC oder CSS anpassen | [Taskbar und Taskleisten-Overrides](/docs/argvus-taskbar/) |
+| Fensterabstände oder -ränder ändern | **Systemsteuerung → Desktop & Eingabe → Hyprland → Fenster → Bereiche** und **Ränder** |
+| Fensterschatten ändern | **Systemsteuerung → Desktop & Eingabe → Hyprland → Ränder → Schatten** |
+| Sichtbare Bedienfeldkarten auswählen | **Systemsteuerung → Erscheinungsbild → Bedienfeld** |
+| Tastenkombinationen ändern | **Systemsteuerung → Sprache & Region → Tastenkombinationen** |
+| Eine erweiterte Hyprland-Regel, Monitoreinstellung oder neue Tastenkombination hinzufügen | [Hyprland-Overrides](/docs/argvus-hyprland/hyprland-overrides/) |
+| Maus- oder Touchpad-Verhalten ändern | **Systemsteuerung → Sprache & Region → Maus & Touchpad** |
+| Schriftarten ändern | **Systemsteuerung → Schriftarten** |
+| Standardanwendungen auswählen | **Systemsteuerung → Standardanwendungen** |
 | Anzeigeeinstellungen ändern | **Systemsteuerung → Anzeigen** oder die Kartenanzeige im Bedienfeld |
 | Überprüfen oder Ändern von Netzwerkverbindungen | Systemsteuerung Netzwerkkarte; permanente Netzwerkkonfiguration wird von den installierten Netzwerktools bereitgestellt |
 | Lautstärke schnell ändern oder stumm schalten | Systemsteuerung Lautstärkekarte oder die Medientasten |

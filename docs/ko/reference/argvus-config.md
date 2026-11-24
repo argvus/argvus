@@ -73,7 +73,7 @@ argvus sessionctl apply-config
 
 ### 재로드 대상
 
-`argvus config session-plan`는 변경된 섹션의 대상과 함께 리로드에 응답하고, `argvus sessionctl`는 그것들만 실행합니다. 스플래시는 대상이 표면을 재생성할 때만 리로드를 포함합니다: Waybar 바 또는 화면으로 다시 이동하는 제어판은 모든 창을 이동시킵니다. 나머지는 모두 제자리에서 리로드됩니다.
+`argvus config session-plan`는 변경된 섹션의 대상과 함께 리로드에 응답하고, `argvus sessionctl`는 그것들만 실행합니다. 스플래시는 대상이 표면을 재생성할 때만 리로드를 포함합니다: Taskbar 바 또는 화면으로 다시 이동하는 제어판은 모든 창을 이동시킵니다. 나머지는 모두 제자리에서 리로드됩니다.
 
 | 변경 | 대상 | 스플래시 |
 | --- | --- | --- |
@@ -104,8 +104,8 @@ argvus sessionctl apply-config
 | --- | --- |
 | Hyprland | 테마 프로필을 포함한 `generated/hypr/`, `spaces-effective.conf`, `borders-effective.conf`, `hypridle.conf` 및 `monitors.lua` |
 | 레이아웃/효과 | `generated/effects/`, `generated/spaces.conf`, `generated/borders.conf` |
-| Waybar | `generated/waybar/`, `argvus-taskbar.css` 및 `argvus-widget-telemetry.{jsonc,css}` 포함 |
-| Widget 텔레메트리 테마 | `generated/widget-telemetry/` 및 `generated/waybar/widget-telemetry-themes/` |
+| Taskbar | `generated/taskbar/`, `argvus-taskbar.css` 및 `argvus-widget-telemetry.{jsonc,css}` 포함 |
+| Widget 텔레메트리 테마 | `generated/widget-telemetry/` 및 `generated/taskbar/widget-telemetry-themes/` |
 | QuickShell | `generated/quickshell/` |
 | 알림 | `generated/notifications/` 및 `dunstrc` |
 | 잠금 화면 | `generated/hypr/hyprlock.conf` 및 Hyprtoolkit 테마 프로필 |
@@ -113,17 +113,17 @@ argvus sessionctl apply-config
 | 야지 | `generated/yazi/` |
 | 슈퍼파일 | `generated/superfile/` |
 | 터미널 및 Qt 프로필 | `generated/terminal/`, `generated/qt6ct/` |
-| 글꼴 | `generated/fonts.conf` 및 Waybar 스타일시트에서 관리되는 글꼴 블록 |
+| 글꼴 | `generated/fonts.conf` 및 Taskbar 스타일시트에서 관리되는 글꼴 블록 |
 | 이동식 장치 | `generated/removable-devices/theme.css` |
 | 배경화면 | `generated/hypr/hyprpaper.conf` 및 `data/hypr/hyprpaper.conf` |
 | 제어판 및 기본값 | `data/control-panel/`, `data/control-center/defaults.json` |
 | 캘린더, 입력, 키보드, 전원 | 캘린더 TOML, 입력 프래그먼트, 키보드 상태, 깨어있기 표시기 |
 
 테마 레이어는 생성된 루트 외부에서도 반영됩니다:
-`data/waybar/argvus-taskbar.{jsonc,css}`,
-`data/waybar/argvus-widget-telemetry.{jsonc,css}`, `data/foot/`,
+`data/taskbar/argvus-taskbar.{jsonc,css}`,
+`data/taskbar/argvus-widget-telemetry.{jsonc,css}`, `data/foot/`,
 `data/qt6ct/`, `data/hypr/hyprtoolkit.conf` 및
-`data/hypr/application-style.conf`. 외관 섹션이 변경되면 이러한 복사본은 패키지된 기본값으로 대체되며, 프로젝터는 그 후에 자신이 관리하는 블록만 다시 작성합니다 — Waybar 스타일시트의 폰트 블록과
+`data/hypr/application-style.conf`. 외관 섹션이 변경되면 이러한 복사본은 패키지된 기본값으로 대체되며, 프로젝터는 그 후에 자신이 관리하는 블록만 다시 작성합니다 — Taskbar 스타일시트의 폰트 블록과
 텔레메트리 프로파일의 `ARGVUS_TELEMETRY_*` 블록 — 따라서 표시기 밖의 텍스트는 테마 전환 후 유지되지 않습니다. `fonts.targets`와
 `control_panel.widget_telemetry_blocks`는 표준으로 유지됩니다: 제어 센터는
 `argvus-config`를 통해 이를 지속하며 이러한 파일을 스스로 작성하지 않습니다.
@@ -136,7 +136,7 @@ Hyprland 간격 및 테두리 설정도 동일한 경계를 따릅니다. argvus
 
 논리적 ARGVUS 경로는 `argvus config paths`에 의해서도 해결됩니다. 레거시 `paths.sh` 파일은 호환성 함수만 노출하며, 네이티브 오버라이드, 사용자 데이터, 생성된 데이터 및 시스템 폴백은 Rust 경로 모델에서 해결됩니다.
 
-`audio`는 기본 출력 싱크를 변경하고 결과를 `/audio`에 한 단계로 기록합니다: `argvus config audio volume <N|+N|-N> [--limit PERCENT]`와 `argvus config audio mute <on|off|toggle>`. PipeWire가 이미 값을 가지고 있기 때문에 구성을 다시 로드하지 않고 스토어를 씁니다. Waybar 볼륨 모듈, Hyprland 미디어 키 및 제어판에서 이를 사용하므로 `argvus config project`, 싱크에 `/audio`를 투영하는 기능은 이전 볼륨을 복원하지 않습니다. 100%를 초과하는 볼륨(Hyprland 키는 최대 150%를 허용)은 100으로 저장됩니다.
+`audio`는 기본 출력 싱크를 변경하고 결과를 `/audio`에 한 단계로 기록합니다: `argvus config audio volume <N|+N|-N> [--limit PERCENT]`와 `argvus config audio mute <on|off|toggle>`. PipeWire가 이미 값을 가지고 있기 때문에 구성을 다시 로드하지 않고 스토어를 씁니다. Taskbar 볼륨 모듈, Hyprland 미디어 키 및 제어판에서 이를 사용하므로 `argvus config project`, 싱크에 `/audio`를 투영하는 기능은 이전 볼륨을 복원하지 않습니다. 100%를 초과하는 볼륨(Hyprland 키는 최대 150%를 허용)은 100으로 저장됩니다.
 
 `patch`는 키가 JSON 포인터인 JSON 객체를 하나의 잠긴 읽기-수정-쓰기 작업으로 적용합니다. `apply-theme`는 동등한 원자적 테마 트랜잭션을 수행하고 테마의 선택적 모양 프로필이나 패키지된 기본값에서 관리되는 모양 섹션을 교체합니다. 변형 명령은 `NextUserConfig`를 구축하고, `EffectiveConfig`를 해결하며, 모든 프로젝터를 준비하고, 그 다음에만 정규 JSON을 게시합니다. 운영 `.config-transaction.json` 마커는 데이터와 JSON 게시 사이에 충돌이 발생한 후 이전 구성을 `argvus config recover`가 다시 투사할 수 있게 합니다. 테마 기본값은 각 테마의 매니페스트(`themes/<theme>/theme.toml`)에서 선언됩니다: 기본 강조(`palette.accent`), GTK 색 구성표, 그리고 배경화면. CSS, Lua, Rasi 및 Qt 파일은 테마 빌드로 렌더링됩니다.
 
@@ -164,7 +164,7 @@ argvus config import --scope appearance appearance.json
 
 제어판은 카드 순서와 가시성을 위해 `control_panel.cards`를 사용하고, 패널 마스터 스위치에는 `control_panel.enabled`를 사용합니다. `control-panel/cards.json` 및 `state/control-panel` 파일은 호환성 투영으로 보관됩니다. 따라서 제어판에서 이루어진 변경 사항은 `desktop` 내보내기 범위의 일부가 됩니다.
 
-글꼴 환경 설정은 작업 표시줄, 원격 측정, 제어판, 시스템, 애플리케이션, 터미널 및 브라우저 대상의 글꼴 패밀리, 스타일 및 크기에 대해 `fonts.targets`를 사용합니다. `fonts.rendering`는 안티앨리어싱, 힌팅, 서브픽셀 순서 및 DPI 환경 설정을 저장합니다. `fonts.conf`, 즉 fontconfig 규칙, 데스크톱 설정 및 Waybar 스타일시트 내 관리되는 글꼴 블록은 투영입니다: 제어 센터는 `/fonts/targets/*`에서 `argvus-config`까지 유지하며, 프로젝터는 자신의 구분된 블록만 재작성합니다.
+글꼴 환경 설정은 작업 표시줄, 원격 측정, 제어판, 시스템, 애플리케이션, 터미널 및 브라우저 대상의 글꼴 패밀리, 스타일 및 크기에 대해 `fonts.targets`를 사용합니다. `fonts.rendering`는 안티앨리어싱, 힌팅, 서브픽셀 순서 및 DPI 환경 설정을 저장합니다. `fonts.conf`, 즉 fontconfig 규칙, 데스크톱 설정 및 Taskbar 스타일시트 내 관리되는 글꼴 블록은 투영입니다: 제어 센터는 `/fonts/targets/*`에서 `argvus-config`까지 유지하며, 프로젝터는 자신의 구분된 블록만 재작성합니다.
 
 Hyprland 환경설정은 단축키에 `keyboard_shortcuts`, 마우스 및 터치패드 설정에 `hyprland.input`, XKB 레이아웃, 변형 및 옵션에 `hyprland.keyboard`을 사용합니다. 매니페스트 바인딩 ID는 안정적인 `config_key`에 매핑됩니다(예: `window.close` → `close_window` 및 `window.drag_mouse` → `drag_window__floating_window_only`). 디스플레이 환경설정은 `displays.monitors`, `displays.workspaces`, `displays.primary_monitor`을 사용합니다. `data/generated/` 아래의 네이티브 TOML 파일과 생성된 Lua 파일은 Hyprland에서 사용하는 투영으로 남아 있습니다.
 
@@ -260,13 +260,13 @@ argvus config window-mode toggle
 
 플로팅 모드는 일반 애플리케이션 창에 **최소화**, **최대화 / 복원**, **닫기**가 있는 ARGVUS 제목 표시줄을 추가합니다. 제목 표시줄을 더블 클릭하면 최대화가 전환됩니다. 추가 장식은 타일 모드와 전체 화면 모드에서는 숨겨집니다. 자체 컨트롤을 그리는 애플리케이션은 두 개의 바를 모두 표시할 수 있으며, 통일된 ARGVUS 컨트롤은 의도된 것입니다.
 
-두 번째 Waybar는 모든 모니터에서 나타나며, 기본 작업 표시줄과 반대쪽 가장자리에 위치합니다. 이 바에는 해당 모니터의 현재 작업 공간에 속한 창만 나열되며, 그 작업 공간에서 최소화된 창도 포함됩니다. 열려 있는 특별 작업 공간이 우선합니다. 고정된 창은 계속 표시되며, 숨겨진 그룹 탭은 추가 항목을 만들지 않고, 최소화된 그룹은 하나의 복원 항목을 갖습니다. 애플리케이션 내 탭은 별도로 나열되지 않습니다. 최소화된 항목은 원래 모니터/작업 공간 연결을 유지합니다. 비활성 창을 클릭하면 활성화되고, 활성 창을 클릭하면 최소화되며, 최소화된 창을 클릭하면 복원됩니다; 해당 컨텍스트 메뉴에는 복원, 최소화, 최대화/복원 및 닫기가 제공됩니다. 알 수 없는 애플리케이션 아이콘은 창 기호로 대체됩니다. 항목을 활성화하거나 복원하면 포인터 위치가 유지됩니다. 보조 바는 기본 CSS(색상, 글꼴, 테두리 및 둥글기)를 적용하며, 높이와 반대쪽 가장자리에 대칭된 여백을 가집니다.
+두 번째 Taskbar는 모든 모니터에서 나타나며, 기본 작업 표시줄과 반대쪽 가장자리에 위치합니다. 이 바에는 해당 모니터의 현재 작업 공간에 속한 창만 나열되며, 그 작업 공간에서 최소화된 창도 포함됩니다. 열려 있는 특별 작업 공간이 우선합니다. 고정된 창은 계속 표시되며, 숨겨진 그룹 탭은 추가 항목을 만들지 않고, 최소화된 그룹은 하나의 복원 항목을 갖습니다. 애플리케이션 내 탭은 별도로 나열되지 않습니다. 최소화된 항목은 원래 모니터/작업 공간 연결을 유지합니다. 비활성 창을 클릭하면 활성화되고, 활성 창을 클릭하면 최소화되며, 최소화된 창을 클릭하면 복원됩니다; 해당 컨텍스트 메뉴에는 복원, 최소화, 최대화/복원 및 닫기가 제공됩니다. 알 수 없는 애플리케이션 아이콘은 창 기호로 대체됩니다. 항목을 활성화하거나 복원하면 포인터 위치가 유지됩니다. 보조 바는 기본 CSS(색상, 글꼴, 테두리 및 둥글기)를 적용하며, 높이와 반대쪽 가장자리에 대칭된 여백을 가집니다.
 
 `SUPER + Alt + Up`는 메인 바를 상단에, 창 바를 하단에 배치합니다. `SUPER + Alt + Down`는 그 반대로 배치합니다. 방향을 반복하면 위치가 변경되지 않습니다. 타일에는 메인 바만 있습니다. 타일로 돌아가면 창 바를 제거하기 전에 최소화된 모든 창이 복원되고, 이후 원래의 타일/플로팅 정책이 유지됩니다.
 
 최소화는 예약된 `special:argvus-minimized` 작업 공간을 사용합니다. 해당 작업 공간을 수동으로 사용하지 마십시오. `argvus windows service` 프로세스는 컴포지터 인스턴스별 런타임 레지스트리의 `$XDG_RUNTIME_DIR/argvus` 아래에 신원, 원래 작업 공간/모니터, 기하학, 전체 화면/최대화 상태 및 고정 상태를 기록합니다. 기록은 서비스 재시작이나 설정 다시 불러오기 후에도 남아 있지만, 컴포지터 세션 간에는 공유되지 않습니다. 창을 닫으면 해당 기록이 삭제됩니다. 모니터가 사라지면 복원은 사용 가능한 출력으로 수행됩니다. 복구 바가 없거나 실패하면 새로운 최소화가 방지됩니다; 복원 실패 시 기록과 복구 바는 유지됩니다.
 
-세션은 `argvus-windows.service`와 `argvus-window-bar.service`를 소유합니다. 후자는 그 Waybar 자식을 Tile 상태에서 비활성으로 유지합니다. hyprbars 플러그인은 `argvus-hyprland`에 의해 번들로 제공되며, x86_64 아키텍처에서 Hyprland 0.57.0 ABI용으로 빌드되었습니다; 사용자의 홈 디렉터리에서는 컴파일되지 않았습니다. 컴포지터 ABI 업데이트 시 플러그인을 재빌드하십시오. 명령어: `argvus windows list --json`, `watch --json`, `position top|bottom`, `restore-all`, `minimize|restore|activate|maximize|close ADDRESS`. 창 주소는 리스트에서 가져옵니다. `position top --persist`는 메인 바를 재시작하지 않고도 환경설정을 저장/프로젝트합니다. 구성 및 런타임 오류 세부 사항은 저널에 기록되며, 눈에 보이는 동작 실패는 번역된 알림으로 표시됩니다.
+세션은 `argvus-windows.service`와 `argvus-window-bar.service`를 소유합니다. 후자는 그 Taskbar 자식을 Tile 상태에서 비활성으로 유지합니다. hyprbars 플러그인은 `argvus-hyprland`에 의해 번들로 제공되며, x86_64 아키텍처에서 Hyprland 0.57.0 ABI용으로 빌드되었습니다; 사용자의 홈 디렉터리에서는 컴파일되지 않았습니다. 컴포지터 ABI 업데이트 시 플러그인을 재빌드하십시오. 명령어: `argvus windows list --json`, `watch --json`, `position top|bottom`, `restore-all`, `minimize|restore|activate|maximize|close ADDRESS`. 창 주소는 리스트에서 가져옵니다. `position top --persist`는 메인 바를 재시작하지 않고도 환경설정을 저장/프로젝트합니다. 구성 및 런타임 오류 세부 사항은 저널에 기록되며, 눈에 보이는 동작 실패는 번역된 알림으로 표시됩니다.
 
 **Spaced + Floating** 모드에서, 창은 외부 간격과 두 바가 예약한 영역을 존중합니다. 경계에는 테두리와 제목이 포함되며, 제목은 같은 창 테두리 안에 위치합니다. ARGVUS 제어를 통해 최대화하면 이 영역이 여백과 함께 채워지고, 복원하면 이전 지오메트리를 복구하며, 서비스 재시작 이후에도 마찬가지입니다. 전체 화면은 여전히 전체 출력 영역을 사용합니다. 플로팅 창은 겹칠 수 있으며, 타일링 내부 간격은 창을 분리하지 않습니다.
 

@@ -13,6 +13,7 @@ use crate::effects::{effects_state_home, theme_effects_path};
 use crate::icons;
 use crate::session_paths::SessionPaths;
 use crate::session_timing::timed;
+use crate::taskbar;
 use crate::text_edit::{self, Target};
 use crate::theme_build;
 use crate::theme_files::{self, Fonts, on_path, run_quiet};
@@ -20,7 +21,6 @@ use crate::theme_finish::{self, Finish};
 use crate::theme_resolve;
 use crate::theme_surfaces;
 use crate::user_copy;
-use crate::waybar;
 use argvus_theme_core::paths::ThemePaths;
 use std::env;
 use std::fs;
@@ -92,7 +92,7 @@ pub fn run(paths: &SessionPaths, theme: &str, runtime: bool, live: bool) -> i32 
 
   if !paths.has_shared_bars() {
     timed("theme.taskbar", || {
-      apply_waybar(paths, theme, !runtime || layout_changed, &fonts)
+      apply_taskbar(paths, theme, !runtime || layout_changed, &fonts)
     });
   }
   timed("theme.qt", || apply_qt6ct(paths));
@@ -156,7 +156,7 @@ fn replace_theme_effects_profile(
   fs::rename(temporary, effects_file)
 }
 
-/// Applies spacing and borders before returning; Waybar remains owned by the
+/// Applies spacing and borders before returning; Taskbar remains owned by the
 /// session reload plan, which can restart it only when its geometry changed.
 fn finish_transition(paths: &SessionPaths, mut status: i32, runtime: bool) -> i32 {
   if !runtime || env::var_os("HYPRLAND_INSTANCE_SIGNATURE").is_some() {
@@ -181,7 +181,7 @@ fn apply_geometry_helper(script: &Path) -> bool {
   Command::new("sh")
     .arg(script)
     .arg("--apply")
-    .env("ARGVUS_SKIP_WAYBAR_RESTART", "1")
+    .env("ARGVUS_SKIP_TASKBAR_RESTART", "1")
     .stdout(Stdio::null())
     .stderr(Stdio::null())
     .status()
@@ -239,9 +239,9 @@ fn apply_canonical_theme(theme: &str, wallpaper: &str, profile: Option<&Path>) -
   }
 }
 
-/// The Waybar stylesheets of the switch: each imports its
+/// The Taskbar stylesheets of the switch: each imports its
 /// colours from the build.
-fn apply_waybar(paths: &SessionPaths, theme: &str, refresh_bars: bool, fonts: &Fonts) {
+fn apply_taskbar(paths: &SessionPaths, theme: &str, refresh_bars: bool, fonts: &Fonts) {
   // A running bar reloads its stylesheet on every write. Restoring the packaged
   // copy first would show the packaged theme for a moment, so a running switch
   // rebuilds the files only when the bars restart anyway or a file is missing.
@@ -252,7 +252,7 @@ fn apply_waybar(paths: &SessionPaths, theme: &str, refresh_bars: bool, fonts: &F
     "widget-telemetry/config/argvus-widget-telemetry.css",
   ] {
     if refresh_bars || !paths.user_config(relative).is_file() {
-      let _ = waybar::refresh_managed(paths, relative);
+      let _ = taskbar::refresh_managed(paths, relative);
     }
   }
   let snapshot = ConfigStore::from_environment()
@@ -279,20 +279,20 @@ fn apply_waybar(paths: &SessionPaths, theme: &str, refresh_bars: bool, fonts: &F
   let taskbar_css = path_or_empty(paths, "taskbar/config/argvus-taskbar.css");
   let telemetry_css = path_or_empty(paths, "widget-telemetry/config/argvus-widget-telemetry.css");
   for css in [&taskbar_css, &telemetry_css] {
-    set_target_in_file(css, Target::WaybarModeImport, "./mode.css");
+    set_target_in_file(css, Target::TaskbarModeImport, "./mode.css");
   }
 
-  let _ = waybar::apply_layout(paths, theme);
+  let _ = taskbar::apply_layout(paths, theme);
   apply_chosen_taskbar_shape(paths);
   let build = theme_build::theme_paths(paths).current();
   set_target_in_file(
     &taskbar_css,
-    Target::WaybarThemeImport,
+    Target::TaskbarThemeImport,
     &build.join("taskbar/theme.css").display().to_string(),
   );
   set_target_in_file(
     &telemetry_css,
-    Target::WaybarTelemetryThemeImport,
+    Target::TaskbarTelemetryThemeImport,
     &build
       .join("widget-telemetry/theme.css")
       .display()
@@ -310,8 +310,8 @@ fn apply_waybar(paths: &SessionPaths, theme: &str, refresh_bars: bool, fonts: &F
     "* {{\n  font-family: \"{}\", \"Symbols Nerd Font Mono\", monospace;\n  font-size: {}px;\n}}",
     fonts.sysinfo_family, fonts.sysinfo_size
   );
-  let _ = waybar::write_font_block(&taskbar_css, &taskbar_block);
-  let _ = waybar::write_font_block(&telemetry_css, &telemetry_block);
+  let _ = taskbar::write_font_block(&taskbar_css, &taskbar_block);
+  let _ = taskbar::write_font_block(&telemetry_css, &telemetry_block);
 }
 
 /// Writes the taskbar height and border chosen in the Control Center back into
@@ -320,9 +320,11 @@ fn apply_waybar(paths: &SessionPaths, theme: &str, refresh_bars: bool, fonts: &F
 fn apply_chosen_taskbar_shape(paths: &SessionPaths) {
   let result = ConfigStore::at(&paths.config_home)
     .load_effective()
-    .map(|document| waybar::TaskbarShape::chosen(&document))
+    .map(|document| taskbar::TaskbarShape::chosen(&document))
     .map_err(|error| error.to_string())
-    .and_then(|shape| waybar::apply_taskbar_shape(paths, shape).map_err(|error| error.to_string()));
+    .and_then(|shape| {
+      taskbar::apply_taskbar_shape(paths, shape).map_err(|error| error.to_string())
+    });
   if let Err(error) = result {
     eprintln!("argvus-config: taskbar shape: {error}");
   }

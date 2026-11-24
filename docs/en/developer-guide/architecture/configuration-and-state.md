@@ -7,7 +7,7 @@ The normal user root is `$XDG_CONFIG_HOME/argvus` (usually `~/.config/argvus`). 
 
 `argvus-config` is the only writer below `generated/`. Every ARGVUS-owned
 consumer file is a projection of `config.json`, including Hyprland, GTK, Qt6ct,
-Waybar, Quickshell, Dunst, Hyprlock, the Waybar taskbar and widget-telemetry
+Taskbar, Quickshell, Dunst, Hyprlock, the Taskbar taskbar and widget-telemetry
 profiles, the Yazi and Superfile configuration trees, the terminal and Qt profile
 trees, the font managed blocks and the removable-devices stylesheet. Components
 resolve explicit user overrides, then generated output, then package defaults.
@@ -107,7 +107,7 @@ migration input. Anything a component still writes at runtime — a cache, a nat
 config file under `$XDG_CONFIG_HOME/<app>`, a greeter state file — is an adapter
 target and must not be read back as configuration.
 
-Projection covers consumers for Hyprland, GTK/Qt, Waybar, Quickshell, terminals, notifications, lock screen and native applications. Hyprland reads active and inactive border colors from the selected theme; an explicit `appearance.accent_custom=true` is the only case that overrides the active/group border with the user accent. Theme switching reapplies these values through the compositor reload so it cannot retain the previous theme's colors. If the user configuration is recreated, effects default to animations enabled. Deleting `generated/` and running `argvus config apply` recreates it byte-for-byte from `config.json`; editing generated files directly is not durable.
+Projection covers consumers for Hyprland, GTK/Qt, Taskbar, Quickshell, terminals, notifications, lock screen and native applications. Hyprland reads active and inactive border colors from the selected theme; an explicit `appearance.accent_custom=true` is the only case that overrides the active/group border with the user accent. Theme switching reapplies these values through the compositor reload so it cannot retain the previous theme's colors. If the user configuration is recreated, effects default to animations enabled. Deleting `generated/` and running `argvus config apply` recreates it byte-for-byte from `config.json`; editing generated files directly is not durable.
 Runtime diagnosis must identify the complete execution tuple: binary path,
 version/revision, asset root, config root, data root, generated root, internal
 root and projection manifest. `status --verbose` exposes this tuple and

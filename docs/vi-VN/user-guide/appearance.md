@@ -3,7 +3,7 @@ title: Ngoại hình
 description: Định cấu hình ngôn ngữ hình ảnh được chia sẻ bởi các thành phần ARGVUS.
 ---
 
-Hệ thống giao diện áp dụng một trạng thái chủ đề cho các ứng dụng Hyprland, GTK, Qt, Waybar, Quickshell, Dunst, Hyprlock và ARGVUS.
+Hệ thống giao diện áp dụng một trạng thái chủ đề cho các ứng dụng Hyprland, GTK, Qt, Taskbar, Quickshell, Dunst, Hyprlock và ARGVUS.
 
 ## Nhóm chủ đề
 

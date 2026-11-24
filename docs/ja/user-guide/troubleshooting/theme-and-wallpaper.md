@@ -19,7 +19,7 @@ argvus sessionctl reload
 cat "${XDG_CONFIG_HOME:-$HOME/.config}/argvus/data/generated/theme/current/build.toml"
 argvus config theme-runtime consumers
 ```
-すべてのテーマ付きファイルはビルドから来ます：インストールされていないテーマ（ `theme.toml` `/usr/share/argvus/themes/` または `~/.local/share/argvus/themes/` の下に theme.toml がない場合）やレンダーできないテーマは拒否され、前のテーマが維持されます。`argvus theme check DIRECTORY` は各レンダーエラーのテンプレートと行を表示します。Waybar バーは JSONC の `reload_style_on_change` がある場合にのみ色をリロードします。スイッチが固まっているように見える場合は、それがまだ実行中かどうかを確認してください；それは `theme-switch.active` に、ロックの横に記録されます:
+すべてのテーマ付きファイルはビルドから来ます：インストールされていないテーマ（ `theme.toml` `/usr/share/argvus/themes/` または `~/.local/share/argvus/themes/` の下に theme.toml がない場合）やレンダーできないテーマは拒否され、前のテーマが維持されます。`argvus theme check DIRECTORY` は各レンダーエラーのテンプレートと行を表示します。Taskbar バーは JSONC の `reload_style_on_change` がある場合にのみ色をリロードします。スイッチが固まっているように見える場合は、それがまだ実行中かどうかを確認してください；それは `theme-switch.active` に、ロックの横に記録されます:
 
 ```sh
 cat "${XDG_CACHE_HOME:-$HOME/.cache}/argvus/theme-switch.active"

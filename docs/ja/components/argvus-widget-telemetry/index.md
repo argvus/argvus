@@ -20,7 +20,7 @@ GPUの温度は、GPUのPCIデバイスに対応しています。NVIDIAの独�
 
 `argvus-widget-telemetry.service`ユーザーユニットは、ウィジェットが有効になっている場合のみセッション開始時に起動します。マスタースイッチは`effects.widget_telemetry_enabled`で、設定でデフォルトで有効になっているため、新しいアカウントはログイン時にウィジェットを起動します。
 
-トグルが `$XDG_CACHE_HOME/argvus/waybar/widget-telemetry-state` を書き込むと、そのファイルが代わりに決定します。`enabled` の最初の行だけがウィジェットを開始します。古い `desktop-telemetry-state` および `sysinfo-state` ファイルは、現在のファイルが存在しない場合でも引き続き読み込まれます。
+トグルが `$XDG_CACHE_HOME/argvus/taskbar/widget-telemetry-state` を書き込むと、そのファイルが代わりに決定します。`enabled` の最初の行だけがウィジェットを開始します。古い `desktop-telemetry-state` および `sysinfo-state` ファイルは、現在のファイルが存在しない場合でも引き続き読み込まれます。
 
 テレメトリラベルは、サポートされている10言語すべてでコンパクトです。CPU、GPU、IP、DE、WM、Kernel のような技術的識別子は、技術的意味を保持します。稼働時間は `/proc/uptime` から読み取られ、略語の単位で表示されます（例えば `1d 12h 49m`）；システムロケールから全文字に展開されることはありません。ハードウェアモデル名やその他のプロバイダーの値は、ウィジェットの幅に影響を与えることがあります。
 

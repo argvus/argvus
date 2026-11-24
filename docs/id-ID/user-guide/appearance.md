@@ -3,7 +3,7 @@ title: Penampilan
 description: Konfigurasikan bahasa visual yang digunakan bersama oleh komponen ARGVUS.
 ---
 
-Sistem tampilan menerapkan satu status tema pada aplikasi Hyprland, GTK, Qt, Waybar, Quickshell, Dunst, Hyprlock, dan ARGVUS.
+Sistem tampilan menerapkan satu status tema pada aplikasi Hyprland, GTK, Qt, Taskbar, Quickshell, Dunst, Hyprlock, dan ARGVUS.
 
 ## Tema keluarga
 

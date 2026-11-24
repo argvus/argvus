@@ -19,7 +19,7 @@ argvus sessionctl reload
 cat "${XDG_CONFIG_HOME:-$HOME/.config}/argvus/data/generated/theme/current/build.toml"
 argvus config theme-runtime consumers
 ```
-모든 테마 파일은 빌드에서 나옵니다: 설치되지 않은 테마( `theme.toml` `/usr/share/argvus/themes/` 또는 `~/.local/share/argvus/themes/` 아래에 theme.toml이 없음) 또는 렌더링되지 않는 테마는 거부되며, 이전 테마가 유지됩니다. `argvus theme check DIRECTORY`는 각 렌더 오류의 템플릿과 줄을 보여줍니다. Waybar 바는 JSONC의 `reload_style_on_change`이 있어야만 색상을 다시 불러옵니다. 스위치가 멈춘 것처럼 보이면, 여전히 실행 중인지 확인하세요; 자체적으로 `theme-switch.active`에 기록되며, 잠금 옆에 있습니다:
+모든 테마 파일은 빌드에서 나옵니다: 설치되지 않은 테마( `theme.toml` `/usr/share/argvus/themes/` 또는 `~/.local/share/argvus/themes/` 아래에 theme.toml이 없음) 또는 렌더링되지 않는 테마는 거부되며, 이전 테마가 유지됩니다. `argvus theme check DIRECTORY`는 각 렌더 오류의 템플릿과 줄을 보여줍니다. Taskbar 바는 JSONC의 `reload_style_on_change`이 있어야만 색상을 다시 불러옵니다. 스위치가 멈춘 것처럼 보이면, 여전히 실행 중인지 확인하세요; 자체적으로 `theme-switch.active`에 기록되며, 잠금 옆에 있습니다:
 
 ```sh
 cat "${XDG_CACHE_HOME:-$HOME/.cache}/argvus/theme-switch.active"

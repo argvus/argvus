@@ -19,7 +19,7 @@ argvus sessionctl reload
 cat "${XDG_CONFIG_HOME:-$HOME/.config}/argvus/data/generated/theme/current/build.toml"
 argvus config theme-runtime consumers
 ```
-每个主题文件都来自构建：未安装的主题（在  `theme.toml` `/usr/share/argvus/themes/` 或 `~/.local/share/argvus/themes/` 下没有 theme.toml）或无法渲染的主题将被拒绝，并且保持以前的主题。`argvus theme check DIRECTORY` 显示每个渲染错误的模板和行。Waybar 工具栏仅在其 JSONC 中有 `reload_style_on_change` 时才会重新加载颜色。如果切换似乎卡住，请检查它是否仍在运行；它会在 `theme-switch.active` 中记录自己，以及它的锁：
+每个主题文件都来自构建：未安装的主题（在  `theme.toml` `/usr/share/argvus/themes/` 或 `~/.local/share/argvus/themes/` 下没有 theme.toml）或无法渲染的主题将被拒绝，并且保持以前的主题。`argvus theme check DIRECTORY` 显示每个渲染错误的模板和行。Taskbar 工具栏仅在其 JSONC 中有 `reload_style_on_change` 时才会重新加载颜色。如果切换似乎卡住，请检查它是否仍在运行；它会在 `theme-switch.active` 中记录自己，以及它的锁：
 
 ```sh
 cat "${XDG_CACHE_HOME:-$HOME/.cache}/argvus/theme-switch.active"

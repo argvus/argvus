@@ -15,10 +15,10 @@ description: اہم انسٹال کردہ ARGVUS فائلیں اور ڈائری�
 - `/etc/argvus/removable-devices/config.json` — ہٹنے کے قابل اسٹوریج کے لیے سسٹم ڈیفالٹس۔
 - `$XDG_CONFIG_HOME/argvus/config.json` - کینونیکل پورٹیبل ترجیحات۔
 - `$XDG_CONFIG_HOME/argvus/data/` — نظم شدہ اجزاء کا ڈیٹا، بیک اپ، تالے اور تیار کردہ آؤٹ پٹ۔
-- `$XDG_CONFIG_HOME/waybar/argvus-taskbar.{jsonc,css}` - اختیاری مکمل مقامی Waybar ٹاسک بار کو اوور رائیڈ کرتا ہے۔
+- `$XDG_CONFIG_HOME/taskbar/argvus-taskbar.{jsonc,css}` - اختیاری مکمل مقامی Taskbar ٹاسک بار کو اوور رائیڈ کرتا ہے۔
 - `$XDG_CONFIG_HOME/argvus/data/taskbar/argvus-taskbar.{jsonc,css}` — منظم ARGVUS ٹاسک بار کاپیاں۔
-- `$XDG_CONFIG_HOME/argvus/data/generated/waybar/` — تیار کردہ Waybar پروفائلز، بشمول `argvus-taskbar.css` اور `argvus-widget-telemetry.{jsonc,css}`؛ یہ اوپر کی کاپیوں پر فوقیت رکھتے ہیں۔
-- `$XDG_CONFIG_HOME/argvus/data/generated/waybar/argvus-widget-telemetry.{jsonc,css}` — `data/waybar/` کے تحت بھی آئینہ دار ہے، جو ظاہری شکل میں تبدیلی پر پیکڈ ڈیفالٹ سے بدل دیا جاتا ہے اور پھر اس کے `ARGVUS_TELEMETRY_*` اور فونٹ بلاکس کو دوبارہ لکھا جاتا ہے۔
+- `$XDG_CONFIG_HOME/argvus/data/generated/taskbar/` — تیار کردہ Taskbar پروفائلز، بشمول `argvus-taskbar.css` اور `argvus-widget-telemetry.{jsonc,css}`؛ یہ اوپر کی کاپیوں پر فوقیت رکھتے ہیں۔
+- `$XDG_CONFIG_HOME/argvus/data/generated/taskbar/argvus-widget-telemetry.{jsonc,css}` — `data/taskbar/` کے تحت بھی آئینہ دار ہے، جو ظاہری شکل میں تبدیلی پر پیکڈ ڈیفالٹ سے بدل دیا جاتا ہے اور پھر اس کے `ARGVUS_TELEMETRY_*` اور فونٹ بلاکس کو دوبارہ لکھا جاتا ہے۔
 - `$XDG_CONFIG_HOME/argvus/data/generated/yazi/` — پیش کردہ یازی کنفیگریشن ٹری، تھیمز کے لیے مختلف قسم سے آگاہ فال بیک کے ساتھ جو یازی ذائقہ نہیں بھیجتے ہیں۔
 - `$XDG_CONFIG_HOME/argvus/data/generated/superfile/` - پیش کردہ سپر فائل تھیم سیٹ۔
 - `$XDG_CONFIG_HOME/argvus/data/generated/terminal/` — متوقع ٹرمینل پروفائلز۔

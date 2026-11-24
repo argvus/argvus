@@ -100,7 +100,7 @@ plano commitado, por exemplo durante o startup da sessão.
 
 O `argvus config session-plan` responde ao reload com os alvos das seções que
 mudaram, e o `argvus sessionctl` executa só esses. O splash cobre um reload
-apenas quando um alvo recria uma superfície: uma barra da Waybar ou o Control
+apenas quando um alvo recria uma superfície: uma barra da Taskbar ou o Control
 Panel voltando à tela desloca todas as janelas. Todo o resto recarrega no lugar.
 
 | Mudança | Alvos | Splash |
@@ -152,8 +152,8 @@ aparência nunca são chamados pelo projetor e jamais podem escrever em
 | --- | --- |
 | Hyprland | `generated/hypr/`, incluindo perfis de tema, `spaces-effective.conf`, `borders-effective.conf`, `hypridle.conf` e `monitors.lua` |
 | Layout/efeitos | `generated/effects/`, `generated/spaces.conf`, `generated/borders.conf` |
-| Waybar | `generated/waybar/`, incluindo `argvus-taskbar.css` e `argvus-widget-telemetry.{jsonc,css}` |
-| Temas de widget-telemetry | `generated/widget-telemetry/` e `generated/waybar/widget-telemetry-themes/` |
+| Taskbar | `generated/taskbar/`, incluindo `argvus-taskbar.css` e `argvus-widget-telemetry.{jsonc,css}` |
+| Temas de widget-telemetry | `generated/widget-telemetry/` e `generated/taskbar/widget-telemetry-themes/` |
 | QuickShell | `generated/quickshell/` |
 | Notificações | `generated/notifications/` e `dunstrc` |
 | Lock screen | `generated/hypr/hyprlock.conf` e os perfis de tema do Hyprtoolkit |
@@ -161,18 +161,18 @@ aparência nunca são chamados pelo projetor e jamais podem escrever em
 | Yazi | `generated/yazi/` |
 | Superarquivo | `generated/superfile/` |
 | Perfis de terminal e Qt | `generated/terminal/`, `generated/qt6ct/` |
-| Fontes | `generated/fonts.conf` e os blocos de fonte gerenciados nos stylesheets do Waybar |
+| Fontes | `generated/fonts.conf` e os blocos de fonte gerenciados nos stylesheets do Taskbar |
 | Dispositivos removíveis | `generated/removable-devices/theme.css` |
 | Wallpaper | `generated/hypr/hyprpaper.conf` e `data/hypr/hyprpaper.conf` |
 | Control Panel e defaults | `data/control-panel/`, `data/control-center/defaults.json` |
 | Calendário, input, teclado, energia | TOML do calendário, fragmento de input, estado do teclado, marcador keep-awake |
 
 A camada de tema também é espelhada fora da raiz generated:
-`data/waybar/argvus-taskbar.{jsonc,css}`,
-`data/waybar/argvus-widget-telemetry.{jsonc,css}`, `data/foot/`, `data/qt6ct/`, `data/hypr/hyprtoolkit.conf` e
+`data/taskbar/argvus-taskbar.{jsonc,css}`,
+`data/taskbar/argvus-widget-telemetry.{jsonc,css}`, `data/foot/`, `data/qt6ct/`, `data/hypr/hyprtoolkit.conf` e
 `data/hypr/application-style.conf`. Essas cópias são substituídas pelos defaults
 empacotados quando a seção de aparência muda, e o projetor então reescreve apenas
-seus blocos gerenciados delimitados — o bloco de fonte nos stylesheets do Waybar
+seus blocos gerenciados delimitados — o bloco de fonte nos stylesheets do Taskbar
 e os blocos `ARGVUS_TELEMETRY_*` no perfil de telemetria — então texto fora dos
 marcadores não sobrevive a uma troca de tema. `fonts.targets` e
 `control_panel.widget_telemetry_blocks` continuam canônicos: o Control Center os
@@ -205,7 +205,7 @@ arquivo legado `paths.sh` apenas expõe funções de compatibilidade; overrides
 nativos, dados do usuário, dados gerados e fallback de sistema são resolvidos
 pelo modelo de paths Rust.
 
-`audio` altera o sink de saída padrão e grava o resultado em `/audio` em um único passo: `argvus config audio volume <N|+N|-N> [--limit PERCENT]` e `argvus config audio mute <on|off|toggle>`. Ele escreve no store sem recarregar a configuração, porque o PipeWire já está no valor. O módulo de volume da Waybar, as teclas de mídia do Hyprland e o Control Panel o usam, então `argvus config project`, que projeta `/audio` no sink, nunca restaura um volume antigo. Um volume acima de 100% (as teclas do Hyprland permitem até 150%) é gravado como 100.
+`audio` altera o sink de saída padrão e grava o resultado em `/audio` em um único passo: `argvus config audio volume <N|+N|-N> [--limit PERCENT]` e `argvus config audio mute <on|off|toggle>`. Ele escreve no store sem recarregar a configuração, porque o PipeWire já está no valor. O módulo de volume da Taskbar, as teclas de mídia do Hyprland e o Control Panel o usam, então `argvus config project`, que projeta `/audio` no sink, nunca restaura um volume antigo. Um volume acima de 100% (as teclas do Hyprland permitem até 150%) é gravado como 100.
 
 `patch` aplica um objeto JSON cujas chaves são JSON pointers em uma única
 operação protegida por lock. `apply-theme` executa a transação atômica do tema
@@ -255,7 +255,7 @@ O Control Center lê os valores canônicos de aparência ao abrir uma página de
 
 O Control Panel usa `control_panel.cards` para a ordem e a visibilidade dos cards, e `control_panel.enabled` para o interruptor geral do painel. Os arquivos `control-panel/cards.json` e `state/control-panel` continuam sendo mantidos como projeções de compatibilidade. Assim, as alterações feitas no Control Panel fazem parte do escopo de exportação `desktop`.
 
-As preferências de fontes usam `fonts.targets` para família, estilo e tamanho dos alvos taskbar, telemetry, Control Panel, sistema, aplicativos, terminal e navegador. `fonts.rendering` armazena antialiasing, hinting, ordem de subpixel e DPI. `fonts.conf`, a regra do fontconfig, as configurações do desktop e os blocos de fonte gerenciados dentro dos stylesheets do Waybar são projeções: o Control Center persiste `/fonts/targets/*` através do `argvus-config`, e o projetor reescreve apenas o bloco delimitado.
+As preferências de fontes usam `fonts.targets` para família, estilo e tamanho dos alvos taskbar, telemetry, Control Panel, sistema, aplicativos, terminal e navegador. `fonts.rendering` armazena antialiasing, hinting, ordem de subpixel e DPI. `fonts.conf`, a regra do fontconfig, as configurações do desktop e os blocos de fonte gerenciados dentro dos stylesheets do Taskbar são projeções: o Control Center persiste `/fonts/targets/*` através do `argvus-config`, e o projetor reescreve apenas o bloco delimitado.
 
 As preferências do Hyprland usam `keyboard_shortcuts` para atalhos, `hyprland.input` para mouse e touchpad e `hyprland.keyboard` para layout, variante e opções XKB. O ID do binding é mapeado para uma `config_key` estável (por exemplo `window.close` → `close_window` e `window.drag_mouse` → `drag_window__floating_window_only`). As preferências de monitores usam `displays.monitors`, `displays.workspaces` e `displays.primary_monitor`. Os arquivos TOML nativos e Lua gerados em `data/generated/` continuam sendo projeções consumidas pelo Hyprland.
 
@@ -410,13 +410,13 @@ argvus config window-mode toggle
 
 O modo flutuante adiciona uma barra de título ARGVUS com **Minimizar**, **Maximizar / Restaurar** e **Fechar** às janelas normais de aplicativos. O clique duplo na barra alterna a maximização. A decoração adicional fica oculta em mosaico e tela cheia. Aplicativos que desenham seus próprios controles podem exibir as duas barras; os controles ARGVUS uniformes são intencionais.
 
-Uma segunda Waybar aparece em cada monitor, na borda oposta à taskbar principal. Ela lista apenas as janelas do workspace atual daquele monitor, incluindo as minimizadas desse workspace. Um workspace especial aberto tem prioridade. Janelas fixadas permanecem visíveis; abas ocultas de grupos não criam entradas extras, e um grupo minimizado tem uma entrada de recuperação. Abas internas dos aplicativos não são enumeradas separadamente. As minimizadas mantêm a associação ao monitor e workspace originais. Clique em uma janela sem foco para ativá-la, na janela ativa para minimizá-la ou em uma minimizada para restaurá-la; o menu de contexto oferece restaurar, minimizar, maximizar/restaurar e fechar. Ícones de aplicativos desconhecidos usam um símbolo de janela. A ativação e a restauração pela lista preservam a posição do ponteiro. A barra secundária usa o CSS efetivo da principal (cores, fontes, borda e arredondamento), com altura e margens espelhadas na borda oposta.
+Uma segunda Taskbar aparece em cada monitor, na borda oposta à taskbar principal. Ela lista apenas as janelas do workspace atual daquele monitor, incluindo as minimizadas desse workspace. Um workspace especial aberto tem prioridade. Janelas fixadas permanecem visíveis; abas ocultas de grupos não criam entradas extras, e um grupo minimizado tem uma entrada de recuperação. Abas internas dos aplicativos não são enumeradas separadamente. As minimizadas mantêm a associação ao monitor e workspace originais. Clique em uma janela sem foco para ativá-la, na janela ativa para minimizá-la ou em uma minimizada para restaurá-la; o menu de contexto oferece restaurar, minimizar, maximizar/restaurar e fechar. Ícones de aplicativos desconhecidos usam um símbolo de janela. A ativação e a restauração pela lista preservam a posição do ponteiro. A barra secundária usa o CSS efetivo da principal (cores, fontes, borda e arredondamento), com altura e margens espelhadas na borda oposta.
 
 `SUPER + Alt + seta para cima` coloca a barra principal no topo e a barra de janelas no rodapé. `SUPER + Alt + seta para baixo` faz o inverso. Repetir a direção mantém as posições. Em mosaico existe apenas a barra principal. Voltar ao mosaico restaura todas as minimizadas antes de remover a barra de janelas e então preserva a política original de janelas tiled/flutuantes.
 
 A minimização usa o workspace reservado `special:argvus-minimized`. Não use esse workspace manualmente. O processo `argvus windows service` registra identidade, workspace/monitor de origem, geometria, tela cheia/maximização e fixação em um registro de runtime separado por instância do compositor, em `$XDG_RUNTIME_DIR/argvus`. Os registros sobrevivem ao reinício do serviço ou reload da configuração, mas não atravessam sessões do compositor. Fechar uma janela remove seu registro. Se um monitor desaparecer, a restauração usa uma saída disponível. Uma barra de recuperação ausente ou com falha impede novas minimizações; falhas de restauração preservam o registro e a barra de recuperação.
 
-A sessão gerencia `argvus-windows.service` e `argvus-window-bar.service`. O segundo mantém sua Waybar inativa em mosaico. O plugin hyprbars é distribuído por `argvus-hyprland`, compilado para a ABI do Hyprland 0.57.0 em x86_64; não é compilado no diretório pessoal do usuário. Recompile o plugin ao atualizar a ABI do compositor.
+A sessão gerencia `argvus-windows.service` e `argvus-window-bar.service`. O segundo mantém sua Taskbar inativa em mosaico. O plugin hyprbars é distribuído por `argvus-hyprland`, compilado para a ABI do Hyprland 0.57.0 em x86_64; não é compilado no diretório pessoal do usuário. Recompile o plugin ao atualizar a ABI do compositor.
 
 Comandos: `argvus windows list --json`, `watch --json`, `position top|bottom`, `restore-all` e `minimize|restore|activate|maximize|close ADDRESS`. Os endereços das janelas vêm da listagem. `position top --persist` salva/projeta a preferência sem reiniciar a barra principal. Detalhes de erros vão para o journal; falhas de ações visíveis também exibem uma notificação traduzida.
 

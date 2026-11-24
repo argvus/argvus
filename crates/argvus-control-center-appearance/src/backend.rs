@@ -57,7 +57,7 @@ use layout::{
   LayoutStatus, apply_canonical_layout, apply_canonical_taskbar, parse_borders_status,
   parse_spacing_status, parse_taskbar_shape, read_layout_status,
 };
-pub use layout::{set_border, set_layout_mode, set_rounded, set_spacing, set_waybar_position};
+pub use layout::{set_border, set_layout_mode, set_rounded, set_spacing, set_taskbar_position};
 pub use taskbar::{
   ApplyOverlay, apply_taskbar_icons_and_format, reload_taskbar, set_taskbar_shape,
   set_taskbar_utility_group,
@@ -354,14 +354,14 @@ mod tests {
   fn status_parsers_ignore_unknown_keys() {
     let mut state = AppearanceState::default();
     parse_spacing_status(
-      "waybar_pos=top\nwaybar_top=16\nwaybar_left=14\nwaybar_right=14\nwaybar_bottom=0\ngaps_in=8\ngaps_out_top=8\ngaps_out_left=10\ngaps_out_right=10\ngaps_out_bottom=8\nfuture_property=123\n",
+      "taskbar_pos=top\ntaskbar_top=16\ntaskbar_left=14\ntaskbar_right=14\ntaskbar_bottom=0\ngaps_in=8\ngaps_out_top=8\ngaps_out_left=10\ngaps_out_right=10\ngaps_out_bottom=8\nfuture_property=123\n",
       &mut state,
     );
     parse_borders_status(
       "rounded=1\nrounding=4\nthickness=1\nfuture_property=123\n",
       &mut state,
     );
-    assert_eq!(state.waybar_top, 16);
+    assert_eq!(state.taskbar_top, 16);
     assert_eq!(state.gaps_out_left, 10);
     assert!(state.rounded);
     assert_eq!(state.rounding, 4);

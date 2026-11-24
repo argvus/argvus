@@ -28,7 +28,7 @@ Le chemin du répertoire canonique détermine l'identité stable d'un espace de 
 
 Les espaces de travail ouverts avant la mise à jour conservent leurs fenêtres existantes et leurs noms natifs. L'ouverture d'un projet après la mise à jour utilise sa nouvelle identité dérivée du chemin ; fermez les anciennes fenêtres de projet lorsque cela est pratique. Aucune association ou déplacement automatique n'est tenté car un ancien nom n'identifie pas le répertoire de manière fiable. En cas de noms de répertoires en double, utilisez le sélecteur, un numéro ou le chemin canonique complet plutôt qu'un nom ambigu.
 
-L'ouverture d'un projet régénère `$XDG_RUNTIME_DIR/argvus/project-workspaces.json` de manière atomique à partir de la liste de projets configurée et des traductions. Il s'agit des métadonnées de session pour les étiquettes et infobulles des espaces de travail, et non de la configuration ; ne l'éditez pas. Rouvrez un projet après avoir modifié la liste ou la langue pour actualiser ses étiquettes. Mettez à jour à la fois `argvus` et `argvus-waybar`, ainsi que la configuration `argvus-taskbar`, pour cette intégration.
+L'ouverture d'un projet régénère `$XDG_RUNTIME_DIR/argvus/project-workspaces.json` de manière atomique à partir de la liste de projets configurée et des traductions. Il s'agit des métadonnées de session pour les étiquettes et infobulles des espaces de travail, et non de la configuration ; ne l'éditez pas. Rouvrez un projet après avoir modifié la liste ou la langue pour actualiser ses étiquettes. Mettez à jour à la fois `argvus` et `argvus-taskbar`, ainsi que la configuration `argvus-taskbar`, pour cette intégration.
 
 ## Projets
 

@@ -7,15 +7,15 @@ use serde_json::Value;
 /// Gap between the bar and the popup, in pixels.
 pub const POPUP_GAP_Y: i32 = 4;
 /// Layer namespaces that identify the horizontal bar. The ARGVUS taskbar runs
-/// Waybar with the `argvus-taskbar` namespace; plain Waybar uses `waybar`.
-pub const WAYBAR_LAYER_NAMESPACES: [&str; 2] = ["argvus-taskbar", "waybar"];
+/// Taskbar with the `argvus-taskbar` namespace; plain Taskbar uses `taskbar`.
+pub const TASKBAR_LAYER_NAMESPACES: [&str; 2] = ["argvus-taskbar", "taskbar"];
 
 /// `(x, y, width, height)` in desktop coordinates.
 pub type PopupBounds = (i32, i32, i32, i32);
 /// `(x, y, width, height, reserved_top)` of a monitor.
 pub type MonitorGeometry = (i32, i32, i32, i32, i32);
 
-/// Where the user clicked, as captured by the Waybar launcher.
+/// Where the user clicked, as captured by the Taskbar launcher.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct PopupAnchor {
   pub x: i32,
@@ -49,7 +49,7 @@ pub struct PopupSize {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct WaybarGeometry {
+pub struct TaskbarGeometry {
   pub top: i32,
   pub right: i32,
   pub bottom: i32,
@@ -87,29 +87,29 @@ pub fn popup_position(anchor: Option<PopupAnchor>, size: PopupSize) -> PopupPosi
     .or_else(PopupAnchor::at_pointer)
     .unwrap_or(PopupAnchor::at(0, 0));
   let monitor = current_monitor_geometry(anchor.x, anchor.y).unwrap_or((0, 0, 1920, 1080, 0));
-  let waybar = current_waybar_geometry(anchor.x, anchor.y, monitor);
-  resolve_position(anchor, monitor, waybar, size)
+  let taskbar = current_taskbar_geometry(anchor.x, anchor.y, monitor);
+  resolve_position(anchor, monitor, taskbar, size)
 }
 
 /// The pure part of [`popup_position`].
 pub fn resolve_position(
   anchor: PopupAnchor,
   monitor: MonitorGeometry,
-  waybar: Option<WaybarGeometry>,
+  taskbar: Option<TaskbarGeometry>,
   size: PopupSize,
 ) -> PopupPosition {
   let (origin_x, origin_y, width, height, reserved_top) = monitor;
-  let bar_bottom = waybar
+  let bar_bottom = taskbar
     .map(|geometry| geometry.bottom)
     .or(anchor.bar_bottom)
     .unwrap_or(origin_y + reserved_top);
-  let bar_right = waybar
+  let bar_right = taskbar
     .map(|geometry| geometry.right)
     .or(anchor.bar_right)
     .unwrap_or(origin_x + width);
   let (popup_x, popup_y) = popup_origin(bar_right, bar_bottom, monitor, size);
-  let above = waybar.is_some_and(|bar| bar.top - origin_y > height / 2);
-  let margin_bottom = waybar
+  let above = taskbar.is_some_and(|bar| bar.top - origin_y > height / 2);
+  let margin_bottom = taskbar
     .filter(|_| above)
     .map_or(0, |bar| (origin_y + height - bar.top + POPUP_GAP_Y).max(0));
 
@@ -132,22 +132,22 @@ pub fn resolve_position(
   }
 }
 
-pub fn current_waybar_geometry(
+pub fn current_taskbar_geometry(
   pointer_x: i32,
   pointer_y: i32,
   monitor: MonitorGeometry,
-) -> Option<WaybarGeometry> {
+) -> Option<TaskbarGeometry> {
   let outputs = hyprctl_json(&["layers", "-j"])?;
-  select_waybar(&outputs, pointer_x, pointer_y, monitor)
+  select_taskbar(&outputs, pointer_x, pointer_y, monitor)
 }
 
 /// The horizontal bar closest to the click on the click's monitor.
-pub fn select_waybar(
+pub fn select_taskbar(
   outputs: &Value,
   pointer_x: i32,
   pointer_y: i32,
   monitor: MonitorGeometry,
-) -> Option<WaybarGeometry> {
+) -> Option<TaskbarGeometry> {
   let (mx, my, mw, mh, _) = monitor;
   outputs
     .as_object()?
@@ -162,13 +162,13 @@ pub fn select_waybar(
       let y = layer.get("y")?.as_i64()? as i32;
       let w = layer.get("w")?.as_i64()? as i32;
       let h = layer.get("h")?.as_i64()? as i32;
-      let horizontal = WAYBAR_LAYER_NAMESPACES.contains(&namespace) && w > h.saturating_mul(4);
+      let horizontal = TASKBAR_LAYER_NAMESPACES.contains(&namespace) && w > h.saturating_mul(4);
       let same_monitor = x >= mx && x < mx + mw && y >= my && y < my + mh;
       let distance = i64::from(pointer_x.clamp(x, x + w) - pointer_x).abs()
         + i64::from(pointer_y.clamp(y, y + h) - pointer_y).abs();
       (horizontal && same_monitor).then_some((
         distance,
-        WaybarGeometry {
+        TaskbarGeometry {
           top: y,
           right: x.checked_add(w)?,
           bottom: y.checked_add(h)?,
@@ -247,16 +247,16 @@ mod tests {
   }
 
   #[test]
-  fn popup_right_edge_follows_waybar_not_click_position() {
+  fn popup_right_edge_follows_taskbar_not_click_position() {
     let layers = serde_json::json!({"HDMI-A-1": {"levels": {"1": [
-      {"namespace":"waybar", "x":18, "y":18, "w":1884, "h":28},
-      {"namespace":"waybar", "x":18, "y":64, "w":384, "h":998}
+      {"namespace":"taskbar", "x":18, "y":18, "w":1884, "h":28},
+      {"namespace":"taskbar", "x":18, "y":64, "w":384, "h":998}
     ]}}});
     for y in [0, 7, 17, 18, 30, 45, 46] {
-      let bar = select_waybar(&layers, 1600, y, MONITOR).unwrap();
+      let bar = select_taskbar(&layers, 1600, y, MONITOR).unwrap();
       assert_eq!(
         bar,
-        WaybarGeometry {
+        TaskbarGeometry {
           top: 18,
           right: 1902,
           bottom: 46
@@ -275,10 +275,10 @@ mod tests {
       {"namespace":"argvus-taskbar", "x":18, "y":18, "w":1884, "h":28},
       {"namespace":"argvus-widget-telemetry", "x":18, "y":64, "w":384, "h":998}
     ]}}});
-    let bar = select_waybar(&top, 1600, 30, MONITOR).unwrap();
+    let bar = select_taskbar(&top, 1600, 30, MONITOR).unwrap();
     assert_eq!(
       bar,
-      WaybarGeometry {
+      TaskbarGeometry {
         top: 18,
         right: 1902,
         bottom: 46
@@ -288,18 +288,18 @@ mod tests {
     let bottom = serde_json::json!({"HDMI-A-1": {"levels": {"1": [
       {"namespace":"argvus-taskbar", "x":18, "y":1034, "w":1884, "h":28}
     ]}}});
-    let bar = select_waybar(&bottom, 1600, 1040, (0, 0, 1920, 1080, 0)).unwrap();
+    let bar = select_taskbar(&bottom, 1600, 1040, (0, 0, 1920, 1080, 0)).unwrap();
     assert_eq!((bar.top, bar.right, bar.bottom), (1034, 1902, 1062));
   }
 
   #[test]
   fn bottom_bar_is_found_even_with_surface_local_click_coordinates() {
     let layers = serde_json::json!({"HDMI-A-1": {"levels": {"1": [
-      {"namespace":"waybar", "x":0, "y":1050, "w":1920, "h":28},
-      {"namespace":"waybar", "x":0, "y":0, "w":384, "h":1050}
+      {"namespace":"taskbar", "x":0, "y":1050, "w":1920, "h":28},
+      {"namespace":"taskbar", "x":0, "y":0, "w":384, "h":1050}
     ]}}});
     for y in [7, 1050, 1077] {
-      let bar = select_waybar(&layers, 1600, y, (0, 0, 1920, 1080, 0)).unwrap();
+      let bar = select_taskbar(&layers, 1600, y, (0, 0, 1920, 1080, 0)).unwrap();
       assert_eq!((bar.top, bar.right), (1050, 1920));
     }
   }
@@ -307,7 +307,7 @@ mod tests {
   #[test]
   fn top_bar_gives_a_popup_below_it_and_a_bottom_bar_one_above_it() {
     let anchor = PopupAnchor::at(1600, 30);
-    let top = WaybarGeometry {
+    let top = TaskbarGeometry {
       top: 18,
       right: 1902,
       bottom: 46,
@@ -320,7 +320,7 @@ mod tests {
     );
     assert_eq!(below.bounds, (1504, 50, 398, 520));
 
-    let bottom = WaybarGeometry {
+    let bottom = TaskbarGeometry {
       top: 1034,
       right: 1902,
       bottom: 1062,

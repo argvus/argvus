@@ -25,7 +25,7 @@
   "usage.stop": "dừng lại, dừng lại đi. Mục tiêu",
   "usage.restart": "khởi chạy lại mục tiêu phiên chạyARGVUS",
   "usage.reload": "nạp lại cấu hình lại được và khởi động lại dịch vụ bị ảnh hưởng",
-  "usage.restart_items": "khởi chạy lại < items\\: khởi chạy lại nhóm thành phần: waybar, pax, dunst, control-panel, ...",
+  "usage.restart_items": "khởi chạy lại < items\\: khởi chạy lại nhóm thành phần: taskbar, pax, dunst, control-panel, ...",
   "usage.status": "name",
   "usage.logs": "nhật ký đơn vị người dùng",
   "usage.widget_telemetry": "thanh công cụ",

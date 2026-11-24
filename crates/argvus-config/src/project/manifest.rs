@@ -60,7 +60,7 @@ pub(super) fn manifest_field_changed(
 /// What the runtime half of a reload does for the changed sections. Only
 /// `taskbar`, `widget_telemetry` and `control_panel` recreate a surface (and
 /// show the splash); `consumers` reloads the themed consumers in place (the
-/// Waybar stylesheets, the Control Panel, Hyprland colours, Dunst, btop and
+/// Taskbar stylesheets, the Control Panel, Hyprland colours, Dunst, btop and
 /// kitty) and `wallpaper` goes through hyprpaper's IPC.
 pub(super) fn reload_targets(
   changed_sections: &[&str],

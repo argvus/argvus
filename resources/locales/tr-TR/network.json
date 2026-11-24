@@ -1,6 +1,6 @@
 {
   "cli.usage": "Kullanım: {command} [status|toggle|enable|disable|manager|wifi statüsü|wifi devre dışı bırak]",
-  "bluetooth_usage": "Kullanım: {command} [status| kullanılabilir|waybar|enable|disable|toggle|manager]",
+  "bluetooth_usage": "Kullanım: {command} [status| kullanılabilir|taskbar|enable|disable|toggle|manager]",
   "message.available_no": "NetworkManager Yok",
   "message.connected": "Connected",
   "message.disconnected": "Ayrıştırma",
@@ -19,13 +19,13 @@
   "bluetoothctl_missing": "bluetoothctl bulunamadı",
   "bluetooth.power_failed": "Bluetooth {target}'i çeviremez",
   "blueman_missing": "Seçmeli Blueman yöneticisi yüklenmez",
-  "waybar.no_iface": "Hiçbir ağ arayüzü bulunamadı",
-  "waybar.network": "Ağ Ağı Ağı",
-  "waybar.disconnected": "Ayrıştırma",
-  "waybar.connected": "Connected",
-  "waybar.limited": "Sınırlı bağlantı",
-  "waybar.no_internet": "İnternet erişimi yok",
-  "waybar.reconnecting": "Yeniden bağlantı kurmak",
-  "waybar.state": "Devlet Devleti",
-  "waybar.command_failed": "Komut başarısız oldu: {command}"
+  "taskbar.no_iface": "Hiçbir ağ arayüzü bulunamadı",
+  "taskbar.network": "Ağ Ağı Ağı",
+  "taskbar.disconnected": "Ayrıştırma",
+  "taskbar.connected": "Connected",
+  "taskbar.limited": "Sınırlı bağlantı",
+  "taskbar.no_internet": "İnternet erişimi yok",
+  "taskbar.reconnecting": "Yeniden bağlantı kurmak",
+  "taskbar.state": "Devlet Devleti",
+  "taskbar.command_failed": "Komut başarısız oldu: {command}"
 }

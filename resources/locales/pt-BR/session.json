@@ -25,7 +25,7 @@
   "usage.stop": "  stop                para argvus-session.target e graphical-session.target",
   "usage.restart": "  restart             reinicia o target da sessão ARGVUS",
   "usage.reload": "  reload              reaplica a configuração mutável e reinicia os serviços afetados",
-  "usage.restart_items": "  restart <items...>  reinicia grupos de componentes: waybar, wallpaper, dunst, control-panel, ...",
+  "usage.restart_items": "  restart <items...>  reinicia grupos de componentes: taskbar, wallpaper, dunst, control-panel, ...",
   "usage.status": "  status              mostra o estado do target e dos serviços",
   "usage.logs": "  logs [argumentos do journal] mostra os logs das unidades de usuário do ARGVUS",
   "usage.widget_telemetry": "  widget-telemetry <comando>",

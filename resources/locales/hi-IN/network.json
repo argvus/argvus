@@ -19,13 +19,13 @@
   "bluetoothctl_missing": "bluetoothctl पाया नहीं गया था",
   "bluetooth.power_failed": "नहीं बदल सकता Bluetooth {target}",
   "blueman_missing": "वैकल्पिक ब्लूमैन प्रबंधक स्थापित नहीं है",
-  "waybar.no_iface": "कोई नेटवर्क इंटरफेस नहीं मिला",
-  "waybar.network": "नेटवर्क",
-  "waybar.disconnected": "डिस्कनेक्ट",
-  "waybar.connected": "कनेक्ट",
-  "waybar.limited": "सीमित कनेक्टिविटी",
-  "waybar.no_internet": "इंटरनेट एक्सेस",
-  "waybar.reconnecting": "जोड़ना",
-  "waybar.state": "राज्य",
-  "waybar.command_failed": "कमान विफल: {command}"
+  "taskbar.no_iface": "कोई नेटवर्क इंटरफेस नहीं मिला",
+  "taskbar.network": "नेटवर्क",
+  "taskbar.disconnected": "डिस्कनेक्ट",
+  "taskbar.connected": "कनेक्ट",
+  "taskbar.limited": "सीमित कनेक्टिविटी",
+  "taskbar.no_internet": "इंटरनेट एक्सेस",
+  "taskbar.reconnecting": "जोड़ना",
+  "taskbar.state": "राज्य",
+  "taskbar.command_failed": "कमान विफल: {command}"
 }

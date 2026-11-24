@@ -15,10 +15,10 @@ description: महत्वपूर्ण स्थापित ARGVUS फ़�
 - `/etc/argvus/removable-devices/config.json` - हटाने योग्य भंडारण के लिए सिस्टम डिफ़ॉल्ट।
 - `$XDG_CONFIG_HOME/argvus/config.json` — विहित पोर्टेबल प्राथमिकताएँ।
 - `$XDG_CONFIG_HOME/argvus/data/` - प्रबंधित घटक डेटा, बैकअप, लॉक और जेनरेटेड आउटपुट।
-- `$XDG_CONFIG_HOME/waybar/argvus-taskbar.{jsonc,css}` - वैकल्पिक पूर्ण देशी वेबार टास्कबार ओवरराइड।
+- `$XDG_CONFIG_HOME/taskbar/argvus-taskbar.{jsonc,css}` - वैकल्पिक पूर्ण देशी वेबार टास्कबार ओवरराइड।
 - `$XDG_CONFIG_HOME/argvus/data/taskbar/argvus-taskbar.{jsonc,css}` - प्रबंधित ARGVUS टास्कबार प्रतियां।
-- `$XDG_CONFIG_HOME/argvus/data/generated/waybar/` - `argvus-taskbar.css` और `argvus-widget-telemetry.{jsonc,css}` सहित जेनरेटेड वेबार प्रोफाइल; इन्हें उपरोक्त प्रतियों पर प्राथमिकता दी जाती है।
-- `$XDG_CONFIG_HOME/argvus/data/generated/waybar/argvus-widget-telemetry.{jsonc,css}` - `data/waybar/` के अंतर्गत भी प्रतिबिंबित होता है, जिसे उपस्थिति परिवर्तन पर पैक किए गए डिफ़ॉल्ट से बदल दिया जाता है और फिर इसके `ARGVUS_TELEMETRY_*` और फ़ॉन्ट ब्लॉक को फिर से लिखा जाता है।
+- `$XDG_CONFIG_HOME/argvus/data/generated/taskbar/` - `argvus-taskbar.css` और `argvus-widget-telemetry.{jsonc,css}` सहित जेनरेटेड वेबार प्रोफाइल; इन्हें उपरोक्त प्रतियों पर प्राथमिकता दी जाती है।
+- `$XDG_CONFIG_HOME/argvus/data/generated/taskbar/argvus-widget-telemetry.{jsonc,css}` - `data/taskbar/` के अंतर्गत भी प्रतिबिंबित होता है, जिसे उपस्थिति परिवर्तन पर पैक किए गए डिफ़ॉल्ट से बदल दिया जाता है और फिर इसके `ARGVUS_TELEMETRY_*` और फ़ॉन्ट ब्लॉक को फिर से लिखा जाता है।
 - `$XDG_CONFIG_HOME/argvus/data/generated/yazi/` - याज़ी कॉन्फ़िगरेशन ट्री का अनुमान लगाया गया है, उन विषयों के लिए वैरिएंट-अवेयर फॉलबैक के साथ, जिनमें कोई याज़ी स्वाद नहीं है।
 - `$XDG_CONFIG_HOME/argvus/data/generated/superfile/` - अनुमानित सुपरफाइल थीम सेट।
 - `$XDG_CONFIG_HOME/argvus/data/generated/terminal/` - अनुमानित टर्मिनल प्रोफाइल।

@@ -1,6 +1,6 @@
 {
   "cli.usage": "Verwendung: {command} [Status|Umschalten|Aktivieren|Deaktivieren|Manager|WLAN-Status|WLAN-Umschalten|WLAN aktivieren|WLAN deaktivieren]",
-  "bluetooth_usage": "Verwendung: {command} [Status|verfügbar|waybar|enable|disable|toggle|manager]",
+  "bluetooth_usage": "Verwendung: {command} [Status|verfügbar|taskbar|enable|disable|toggle|manager]",
   "message.available_no": "NetworkManager nicht verfügbar",
   "message.connected": "Verbunden",
   "message.disconnected": "Getrennt",
@@ -19,13 +19,13 @@
   "bluetoothctl_missing": "Bluetoothctl wurde nicht gefunden",
   "bluetooth.power_failed": "Bluetooth {target} konnte nicht gedreht werden",
   "blueman_missing": "Der optionale Blueman-Manager ist nicht installiert",
-  "waybar.no_iface": "Keine Netzwerkschnittstelle gefunden",
-  "waybar.network": "Netzwerk",
-  "waybar.disconnected": "Getrennt",
-  "waybar.connected": "Verbunden",
-  "waybar.limited": "Begrenzte Konnektivität",
-  "waybar.no_internet": "Kein Internetzugang",
-  "waybar.reconnecting": "Wieder verbinden",
-  "waybar.state": "Zustand",
-  "waybar.command_failed": "Befehl fehlgeschlagen: {command}"
+  "taskbar.no_iface": "Keine Netzwerkschnittstelle gefunden",
+  "taskbar.network": "Netzwerk",
+  "taskbar.disconnected": "Getrennt",
+  "taskbar.connected": "Verbunden",
+  "taskbar.limited": "Begrenzte Konnektivität",
+  "taskbar.no_internet": "Kein Internetzugang",
+  "taskbar.reconnecting": "Wieder verbinden",
+  "taskbar.state": "Zustand",
+  "taskbar.command_failed": "Befehl fehlgeschlagen: {command}"
 }

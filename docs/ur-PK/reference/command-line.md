@@ -31,7 +31,7 @@ description: argvus کمانڈ، اس کی ذیلی کمانڈ، کی بائنڈ
 | `argvus taskbar-calendar [args]` | GTK 4 ایپلیکیشن | ` toggle` پر ڈیفالٹس۔ |
 | `argvus removable-devices [args]` | GTK 4 ایپلیکیشن | ` menu` پر ڈیفالٹس۔ |
 | `argvus focus [--toggle] [--start\|--pause] [--x X --y Y] [--bar-bottom PX --bar-right PX]` | GTK 4 ایپلیکیشن | ARGVUS فوکس پاپ اپ۔ فی سیشن ایک مثال۔ |
-| `argvus focus status --waybar [--follow]` | عمل میں | فوکس ٹاسک بار کے اشارے کو Waybar JSON کے طور پر خارج کرتا ہے۔ `--follow` GTK لوڈ کیے بغیر تبدیلیاں کرتا ہے۔ |
+| `argvus focus status --taskbar [--follow]` | عمل میں | فوکس ٹاسک بار کے اشارے کو Taskbar JSON کے طور پر خارج کرتا ہے۔ `--follow` GTK لوڈ کیے بغیر تبدیلیاں کرتا ہے۔ |
 | `argvus clock [--toggle] [--background] [--page PAGE] [--x X --y Y] [--bar-bottom PX --bar-right PX]` | GTK 4 ایپلیکیشن | ARGVUS کلاک پاپ اپ۔ فی سیشن ایک مثال؛ `--background` بغیر کسی پاپ اپ کے الارم کو متحرک رکھتا ہے۔ |
 | `argvus loading-theme ...` | پیک شدہ ` splash ` `/usr/lib/argvus/loading-theme/splash` پر | براہ راست سیشن دوبارہ لوڈ ہونے کا اوورلے؛ ایک تھیم سوئچ اسے استعمال نہیں کرتا ہے۔ |
 | `argvus session `, ` start `, ` tty `, ` sessionctl` | پرائیویٹ ایگزیکیوٹیبلز | سیشن انٹری پوائنٹس اور سیشن کنٹرولر۔ |

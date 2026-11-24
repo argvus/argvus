@@ -30,7 +30,7 @@ Esegui `argvus --help` per l'elenco installato con la tua versione. I sottocoman
 | `argvus du` | Helper (applicazione terminale) | Apre l'ARGVUS Disk Usage Analyzer in una finestra dedicata di Kitty ed esegue ncdu. |
 | `argvus network ...` | In lavorazione | Stato e controlli di NetworkManager (`networkctl` viene mantenuto come alias). |
 | `argvus bluetooth ...` | In lavorazione | Stato e controlli del Bluetooth (`bluetoothctl` viene mantenuto come alias). |
-| `argvus widget-telemetry block ...` | In lavorazione | Il blocco di telemetria di Waybar. Questo è il percorso principale della barra. |
+| `argvus widget-telemetry block ...` | In lavorazione | Il blocco di telemetria di Taskbar. Questo è il percorso principale della barra. |
 | `argvus widget-telemetry toggle ...` | In lavorazione | Attiva e disattiva i blocchi di telemetria, e ne gestisce l'ordine. |
 | `argvus game-snake` | Eseguibile privato | Il gioco del serpente nel terminale, dal progetto indipendente `argvus-game-snake`, un pacchetto opzionale. Fuori da un terminale ne apre uno. |
 | `argvus control-center [page]` | Helper (applicazione da terminale) | Apre il Centro di Controllo o mette a fuoco la finestra già aperta. |
@@ -38,7 +38,7 @@ Esegui `argvus --help` per l'elenco installato con la tua versione. I sottocoman
 | `argvus taskbar-calendar [args]` | Applicazione GTK 4 | Predefinito su `toggle`. |
 | `argvus removable-devices [args]` | Applicazione GTK 4 | Predefinito su `menu`. |
 | `argvus focus [--toggle] [--start\|--pause] [--x X --y Y] [--bar-bottom PX --bar-right PX]` | Applicazione GTK 4 | Popup di focus ARGVUS. Un'istanza per sessione. |
-| `argvus focus status --waybar [--follow]` | In lavorazione | Emette l'indicatore della barra delle applicazioni Focus come JSON di Waybar; `--follow` trasmette le modifiche senza caricare GTK. |
+| `argvus focus status --taskbar [--follow]` | In lavorazione | Emette l'indicatore della barra delle applicazioni Focus come JSON di Taskbar; `--follow` trasmette le modifiche senza caricare GTK. |
 | `argvus clock [--toggle] [--background] [--page PAGE] [--x X --y Y] [--bar-bottom PX --bar-right PX]` | Applicazione GTK 4 | Popup dell'orologio ARGVUS. Un'istanza per sessione; `--background` mantiene gli allarmi attivi senza un popup. |
 | `argvus loading-theme ...` | Pacchettizzato `splash` a `/usr/lib/argvus/loading-theme/splash` | Il sovrapposizione dei ricaricamenti diretti della sessione; un cambio tema non lo utilizza. |
 | `argvus session`, `start`, `tty`, `sessionctl` | Eseguibili privati | Punti di ingresso della sessione e controllore della sessione. |

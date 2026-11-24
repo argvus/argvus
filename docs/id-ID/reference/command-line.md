@@ -31,14 +31,14 @@ Jalankan `argvus --help` untuk daftar yang diinstal dengan versi Anda. Sub-perin
 | `argvus du` | Pembantu (aplikasi terminal) | Membuka ARGVUS Disk Usage Analyzer di jendela Kitty khusus dan menjalankan ncdu. |
 | `argvus network ...` | Dalam proses | Status dan kontrol NetworkManager (`networkctl` disimpan sebagai alias). |
 | `argvus bluetooth ...` | Dalam proses | Status dan kontrol Bluetooth (`bluetoothctl` disimpan sebagai alias). |
-| `argvus widget-telemetry block ...` | Dalam proses | Blok telemetri Waybar. Ini adalah jalur panas bar. || `argvus widget-telemetry toggle ...` | Dalam proses | Mengaktifkan dan menonaktifkan blok telemetri, serta urutannya. |
+| `argvus widget-telemetry block ...` | Dalam proses | Blok telemetri Taskbar. Ini adalah jalur panas bar. || `argvus widget-telemetry toggle ...` | Dalam proses | Mengaktifkan dan menonaktifkan blok telemetri, serta urutannya. |
 | `argvus game-snake` | Eksekusi pribadi | Game terminal Snake, dari proyek independen `argvus-game-snake`, merupakan paket opsional. Di luar terminal, ia membukanya. |
 | `argvus control-center [page]` | Pembantu (aplikasi terminal) | Membuka Pusat Kontrol, atau memfokuskan jendela yang sudah terbuka. |
 | `argvus welcome [--if-needed]` | Operator → Pusat Kontrol | Membuka halaman Selamat Datang yang terintegrasi di Pusat Kontrol. `--if-needed` dibuka satu kali kecuali kemajuan per pengguna mencatat bahwa Selamat Datang telah ditampilkan, diselesaikan, atau ditutup. |
 | `argvus taskbar-calendar [args]` | Aplikasi GTK 4 | Defaultnya adalah `toggle`. |
 | `argvus removable-devices [args]` | Aplikasi GTK 4 | Defaultnya adalah `menu`. |
 | `argvus focus [--toggle] [--start\|--pause] [--x X --y Y] [--bar-bottom PX --bar-right PX]` | Aplikasi GTK 4 | Munculan Fokus ARGVUS. Satu contoh per sesi. |
-| `argvus focus status --waybar [--follow]` | Dalam proses | Memancarkan indikator bilah tugas Fokus sebagai Waybar JSON; `--follow` mengalirkan perubahan tanpa memuat GTK. |
+| `argvus focus status --taskbar [--follow]` | Dalam proses | Memancarkan indikator bilah tugas Fokus sebagai Taskbar JSON; `--follow` mengalirkan perubahan tanpa memuat GTK. |
 | `argvus clock [--toggle] [--background] [--page PAGE] [--x X --y Y] [--bar-bottom PX --bar-right PX]` | Aplikasi GTK 4 | Munculan Jam ARGVUS. Satu contoh per sesi; `--background` menjaga alarm tetap aktif tanpa popup. |
 | `argvus loading-theme ...` | Dikemas `splash` di `/usr/lib/argvus/loading-theme/splash` | Hamparan isi ulang sesi langsung; saklar tema tidak menggunakannya. |
 | `argvus session`, `start`, `tty`, `sessionctl` | Eksekusi pribadi | Titik masuk sesi dan pengontrol sesi. |

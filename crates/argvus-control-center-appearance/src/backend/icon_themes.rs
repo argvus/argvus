@@ -62,7 +62,7 @@ pub fn set_icon_theme(name: &str) -> Result<(), String> {
 }
 
 /// Persists the taskbar launcher's custom icon path to the canonical
-/// document and re-derives the generated Waybar config from it, restarting
+/// document and re-derives the generated Taskbar config from it, restarting
 /// the taskbar so the new icon appears immediately. Unlike the Enable
 /// toggle (see `apply_taskbar_icons_and_format`), picking a custom icon is
 /// an immediate action, not part of the Taskbar > Icons draft/Apply cycle —

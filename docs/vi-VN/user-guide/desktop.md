@@ -3,7 +3,7 @@ title: Máy tính để bàn
 description: Hiểu bề mặt máy tính để bàn ARGVUS.
 ---
 
-Vỏ máy tính để bàn bao gồm Hyprland, thanh tác vụ Waybar đã được vá, Bảng điều khiển Quickshell và các tiện ích đo từ xa tùy chọn. Hyprland sở hữu cửa sổ và không gian làm việc; thanh tác vụ thông báo không gian làm việc/cửa sổ và trạng thái hệ thống; Bảng điều khiển cung cấp các hành động nhanh chóng; thông báo và ứng dụng xuất hiện dọc theo các bề mặt này.
+Vỏ máy tính để bàn bao gồm Hyprland, thanh tác vụ Taskbar đã được vá, Bảng điều khiển Quickshell và các tiện ích đo từ xa tùy chọn. Hyprland sở hữu cửa sổ và không gian làm việc; thanh tác vụ thông báo không gian làm việc/cửa sổ và trạng thái hệ thống; Bảng điều khiển cung cấp các hành động nhanh chóng; thông báo và ứng dụng xuất hiện dọc theo các bề mặt này.
 
 Cấu hình nằm trong [Trung tâm điều khiển](/docs/components/argvus-control-center/), trong khi các tác vụ thường xuyên nằm trong Bảng điều khiển. Bắt đầu với [Cấu hình đầu tiên](/docs/user-guide/getting-started/) nếu đây là phiên đầu tiên của bạn.
 

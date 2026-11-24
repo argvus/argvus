@@ -1,12 +1,12 @@
 //! The running desktop takes a new theme without restarting anything.
 //!
 //! Each consumer says in the theme registry (`theme/consumers.d`) how it picks
-//! up a new build: a rewrite of the stylesheet Waybar watches, a signal, or a
+//! up a new build: a rewrite of the stylesheet Taskbar watches, a signal, or a
 //! command. Hyprland's colours are evaluated in place, and the wallpaper goes
 //! through hyprpaper's IPC. The compositor reloads its configuration only when
 //! the switch changed something else it reads: the Sticky/Spaced layout, the
 //! per-theme effects or the projected state. A layout change also restarts the
-//! two Waybar bars, whose margins are layer-shell settings. A surface whose
+//! two Taskbar bars, whose margins are layer-shell settings. A surface whose
 //! consumer is not registered is restarted, and Hyprland reloads when its own
 //! consumer is missing, so a partly upgraded desktop still takes the theme.
 
@@ -24,7 +24,7 @@ const HOOK_WAIT_LIMIT: Duration = Duration::from_secs(5);
 const POLL_INTERVAL: Duration = Duration::from_millis(20);
 
 /// The first line of a stylesheet that imports the build; a new value makes
-/// Waybar's `reload_style_on_change` re-read the style.
+/// Taskbar's `reload_style_on_change` re-read the style.
 const BUILD_MARKER_PREFIX: &str = "/* argvus theme build: ";
 
 /// The bars whose margins live in their JSONC: a layout change restarts them.

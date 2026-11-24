@@ -10,8 +10,8 @@ argvus focus --toggle     # hide the popup if it is visible, show it otherwise
 argvus focus --toggle --x 1600 --y 30  # open next to a taskbar click position
 argvus focus --start      # start or resume the current phase without opening the window
 argvus focus --pause      # pause the running phase
-argvus focus status --waybar         # print one Waybar JSON status and exit
-argvus focus status --waybar --follow  # stream status changes for Waybar
+argvus focus status --taskbar         # print one Taskbar JSON status and exit
+argvus focus status --taskbar --follow  # stream status changes for Taskbar
 ```
 
 In der Titelleiste steht `ARGVUS` in der Akzentfarbe neben `Focus`.
@@ -39,10 +39,10 @@ Jede abgeschlossene Fokussitzung wird mit Start, Ende und verbrachter Zeit aufge
 
 ## Fenster, Hintergrund und Suspendieren
 
-- Das Schließen des Fensters während eines Zyklus versteckt es nur: Die Sitzung läuft weiter und benachrichtigt Sie, wenn die Phase endet. Ohne laufenden Vorgang beendet das Schließen das Programm.  
-- Wird das System während einer laufenden Phase in den Ruhezustand versetzt, wird die Phase zum Zeitpunkt des Ruhezustands pausiert, und eine Nachricht zeigt an, wie lange das System geschlafen hat. Schlafen wird nicht als Fokuszeit gezählt.  
-- Die Sitzung wird bei jeder Änderung und alle 30 Sekunden gespeichert. Wird ARGVUS Focus während einer Phase geschlossen (Abmeldung, Absturz, **Ctrl+Q**), wird sie beim nächsten Öffnen an dieser Stelle pausiert wieder angezeigt; sie gibt niemals vor, dass der Timer weiterlief, während er keine Benachrichtigung abgeben konnte.  
-- Die Zeiten werden nach der Systemstart-Uhr gemessen, sodass eine Änderung der Wanduhr oder der Zeitzone eine Phase weder verkürzt noch verlängert.  
+- Das Schließen des Fensters während eines Zyklus versteckt es nur: Die Sitzung läuft weiter und benachrichtigt Sie, wenn die Phase endet. Ohne laufenden Vorgang beendet das Schließen das Programm.
+- Wird das System während einer laufenden Phase in den Ruhezustand versetzt, wird die Phase zum Zeitpunkt des Ruhezustands pausiert, und eine Nachricht zeigt an, wie lange das System geschlafen hat. Schlafen wird nicht als Fokuszeit gezählt.
+- Die Sitzung wird bei jeder Änderung und alle 30 Sekunden gespeichert. Wird ARGVUS Focus während einer Phase geschlossen (Abmeldung, Absturz, **Ctrl+Q**), wird sie beim nächsten Öffnen an dieser Stelle pausiert wieder angezeigt; sie gibt niemals vor, dass der Timer weiterlief, während er keine Benachrichtigung abgeben konnte.
+- Die Zeiten werden nach der Systemstart-Uhr gemessen, sodass eine Änderung der Wanduhr oder der Zeitzone eine Phase weder verkürzt noch verlängert.
 
 ## Pfade
 

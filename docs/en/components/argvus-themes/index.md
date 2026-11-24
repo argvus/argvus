@@ -3,7 +3,7 @@ title: Themes
 description: Install, select, customize, import and export ARGVUS themes.
 ---
 
-A theme in ARGVUS sets the colors, surfaces, wallpaper defaults and layout geometry used across the desktop: Hyprland, Waybar, the Control Panel, the taskbar, the lock screen, notifications and ARGVUS applications. This guide covers everything you need to work with themes as a user.
+A theme in ARGVUS sets the colors, surfaces, wallpaper defaults and layout geometry used across the desktop: Hyprland, Taskbar, the Control Panel, the taskbar, the lock screen, notifications and ARGVUS applications. This guide covers everything you need to work with themes as a user.
 
 ## What is included in a theme
 

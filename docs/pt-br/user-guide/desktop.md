@@ -3,7 +3,7 @@ title: Área de trabalho
 description: Entenda as superfícies do desktop ARGVUS.
 ---
 
-O shell é composto por Hyprland, Waybar, Control Panel Quickshell e widgets opcionais. O Hyprland possui janelas e áreas de trabalho; a taskbar comunica o estado de áreas/janelas e do sistema; o Control Panel oferece ações rápidas; notificações e aplicativos aparecem junto a essas superfícies.
+O shell é composto por Hyprland, Taskbar, Control Panel Quickshell e widgets opcionais. O Hyprland possui janelas e áreas de trabalho; a taskbar comunica o estado de áreas/janelas e do sistema; o Control Panel oferece ações rápidas; notificações e aplicativos aparecem junto a essas superfícies.
 
 A configuração fica no [Control Center](/pt/docs/components/argvus-control-center/), enquanto as ações frequentes ficam no Control Panel. Comece pela [Primeira configuração](/pt/docs/user-guide/getting-started/) se esta for sua primeira sessão.
 

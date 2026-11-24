@@ -152,8 +152,8 @@ argvus sessionctl apply-config
 | --- | --- |
 | هايبرلاند | `generated/hypr/`، بما في ذلك ملفات تعريف السمات، `spaces-effective.conf`، `borders-effective.conf`، `hypridle.conf` و`monitors.lua` |
 | التخطيط/التأثيرات | `generated/effects/`، `generated/spaces.conf`، `generated/borders.conf` |
-| شريط الطريق | `generated/waybar/`، بما في ذلك `argvus-taskbar.css` و`argvus-widget-telemetry.{jsonc,css}` |
-| موضوعات القطعة القياس عن بعد | `generated/widget-telemetry/` و`generated/waybar/widget-telemetry-themes/` |
+| شريط الطريق | `generated/taskbar/`، بما في ذلك `argvus-taskbar.css` و`argvus-widget-telemetry.{jsonc,css}` |
+| موضوعات القطعة القياس عن بعد | `generated/widget-telemetry/` و`generated/taskbar/widget-telemetry-themes/` |
 | كويكشيل | `generated/quickshell/` |
 | الإخطارات | `generated/notifications/` و`dunstrc` |
 | قفل الشاشة | `generated/hypr/hyprlock.conf` وملفات تعريف سمات Hyprtoolkit || جتك | `generated/gtk/` |
@@ -166,12 +166,12 @@ argvus sessionctl apply-config
 | لوحة التحكم والافتراضيات | `data/control-panel/`, `data/control-center/defaults.json` || ﺎًﻈﻘﻴﺘﺴﻣ ءﺎﻘﺒﻟﺍ ﺔﻣﻼ﻿ﻋ ،ﺢﻴﺗﺎﻔﻤﻟﺍ ﺔﺣﻮﻟ ﺔﻟﺎﺣ ،ﻝﺎﺧﺩﻹ﻿ﺍ ءﺰﺟ ،TOML ﻢﻳﻮﻘﺗ | ﺔﻗﺎﻄﻟﺍ ،ﺢﻴ
 
                                   :ﺪﻟﻮُﻤﻟﺍ ﺭﺬﺠﻟﺍ ﺝﺭﺎﺧ ﻉﻮﺿﻮﻤﻟﺍ ﺔﻘﺒﻃ ﺲﻜﻋ ﺎًﻀﻳﺃ ﻢﺘﻳ
-`data/waybar/argvus-taskbar.{jsonc,css}`،
-`data/waybar/argvus-widget-telemetry.{jsonc,css}`، `data/foot/`،
+`data/taskbar/argvus-taskbar.{jsonc,css}`،
+`data/taskbar/argvus-widget-telemetry.{jsonc,css}`، `data/foot/`،
 `data/qt6ct/`، `data/hypr/hyprtoolkit.conf` ﻭ
 `data/hypr/application-style.conf`. ﺓﻮﺒﻌﻟﺍ ﻦﻣ ﺦﺴﻨﻟﺍ ﻚﻠﺗ ﻝﺪﺒﺘﺴُﺗ
   ﺔﺑﺎﺘﻜﻟﺍ ﺓﺩﺎﻋﺈﺑ ﺽﺮﻌﻟﺍ ﺯﺎﻬﺟ ﻡﻮﻘﻳ ﻢﺛ ،ﺮﻬﻈﻤﻟﺍ ﻢﺴﻗ ﺮﻴﻐﺘﻳ ﺎﻣﺪﻨﻋ ﺔﻴﺿﺍﺮﺘﻓﻻ﻿ﺍ ﺕﺍﺩﺍﺪﻋﻹ﻿ﺍ
-فقط الكتل المُدارة المحددة - كتلة الخط في أوراق أنماط Waybar وكتل `ARGVUS_TELEMETRY_*` في ملف تعريف القياس عن بعد - لذلك النص خارجالعلامات لا تنجو من تبديل السمة. `fonts.targets` و
+فقط الكتل المُدارة المحددة - كتلة الخط في أوراق أنماط Taskbar وكتل `ARGVUS_TELEMETRY_*` في ملف تعريف القياس عن بعد - لذلك النص خارجالعلامات لا تنجو من تبديل السمة. `fonts.targets` و
 يظل `control_panel.widget_telemetry_blocks` أساسيًا: مركز التحكميستمر بها من خلال `argvus-config` ولا يكتب هذه الملفات بنفسه أبدًا.
 
 يعد اختيار كتلة القياس عن بعد لعنصر واجهة المستخدم أمرًا أساسيًا في
@@ -199,7 +199,7 @@ data/generated/spaces-efficiency.conf وdata/generated/borders-efficiency.conf
 يعرض ملف `paths.sh` وظائف التوافق فقط؛ التجاوزات الأصلية، المستخدم
 يتم حل البيانات والبيانات التي تم إنشاؤها والنظام الاحتياطي من خلال نموذج مسار Rust.
 
-يقوم `audio` بتغيير مصدر الإخراج الافتراضي ويسجل النتيجة في `/audio` في خطوة واحدة: `argvus config audio volume <N|+N|-N> [--limit PERCENT]` و`argvus config audio mute <on|off|toggle>`. يقوم بكتابة المخزن دون إعادة تحميل التكوين، لأن قيمة PipeWire موجودة بالفعل. تستخدمها وحدة حجم Waybar ومفاتيح وسائط Hyprland ولوحة التحكم، لذا فإن `argvus config project`، الذي يعرض `/audio` على الحوض، لا يستعيد أبدًا حجمًا قديمًا. يتم تخزين الحجم الذي يزيد عن 100% (تسمح مفاتيح Hyprland بما يصل إلى 150%) على أنه 100.
+يقوم `audio` بتغيير مصدر الإخراج الافتراضي ويسجل النتيجة في `/audio` في خطوة واحدة: `argvus config audio volume <N|+N|-N> [--limit PERCENT]` و`argvus config audio mute <on|off|toggle>`. يقوم بكتابة المخزن دون إعادة تحميل التكوين، لأن قيمة PipeWire موجودة بالفعل. تستخدمها وحدة حجم Taskbar ومفاتيح وسائط Hyprland ولوحة التحكم، لذا فإن `argvus config project`، الذي يعرض `/audio` على الحوض، لا يستعيد أبدًا حجمًا قديمًا. يتم تخزين الحجم الذي يزيد عن 100% (تسمح مفاتيح Hyprland بما يصل إلى 150%) على أنه 100.
 
 يطبق `patch` كائن JSON الذي تكون مفاتيحه عبارة عن مؤشرات JSON في كائن مقفل
 عملية القراءة والتعديل والكتابة. `apply-theme` ينفذ الذرة المكافئة
@@ -249,7 +249,7 @@ argvus config import --scope appearance appearance.json
 
 تستخدم لوحة التحكم `control_panel.cards` لطلب البطاقة وإمكانية رؤيتها، و`control_panel.enabled` للمفتاح الرئيسي للوحة. ويتم الاحتفاظ بملفات `control-panel/cards.json` و`state/control-panel` كإسقاطات توافق. وبالتالي فإن التغييرات التي تم إجراؤها في لوحة التحكم تعد جزءًا من نطاق التصدير `desktop`.
 
-تستخدم تفضيلات الخط `fonts.targets` لعائلة ونمط وحجم شريط المهام والقياس عن بعد ولوحة التحكم والنظام والتطبيقات والمحطة الطرفية وأهداف المتصفح. يقوم `fonts.rendering` بتخزين الحواف والتلميحات وترتيب البكسل الفرعي وتفضيلات DPI. `fonts.conf` وقاعدة تكوين الخط وإعدادات سطح المكتب وكتل الخطوط المُدارة داخل أوراق أنماط Waybar هي إسقاطات: يستمر مركز التحكم في `/fonts/targets/*` حتى `argvus-config`، ويعيد جهاز العرض كتابة الكتلة المحددة الخاصة به فقط.
+تستخدم تفضيلات الخط `fonts.targets` لعائلة ونمط وحجم شريط المهام والقياس عن بعد ولوحة التحكم والنظام والتطبيقات والمحطة الطرفية وأهداف المتصفح. يقوم `fonts.rendering` بتخزين الحواف والتلميحات وترتيب البكسل الفرعي وتفضيلات DPI. `fonts.conf` وقاعدة تكوين الخط وإعدادات سطح المكتب وكتل الخطوط المُدارة داخل أوراق أنماط Taskbar هي إسقاطات: يستمر مركز التحكم في `/fonts/targets/*` حتى `argvus-config`، ويعيد جهاز العرض كتابة الكتلة المحددة الخاصة به فقط.
 
 تستخدم تفضيلات Hyprland `keyboard_shortcuts` للاختصارات، و`hyprland.input` لإعدادات الماوس ولوحة اللمس، و`hyprland.keyboard` لتخطيط XKB ومتغيره وخياراته. يتم تعيين معرف ربط البيان إلى `config_key` المستقر (على سبيل المثال `window.close` → `close_window` و`window.drag_mouse` → `drag_window__floating_window_only`). تستخدم تفضيلات العرض `displays.monitors`، و`displays.workspaces`، و`displays.primary_monitor`. تظل ملفات TOML الأصلية وملفات Lua التي تم إنشاؤها ضمن `data/generated/` إسقاطات تستهلكها Hyprland. يتم تمكين كل محول `effects` بشكل افتراضي (الرسوم المتحركة، والتمويه، والقياس عن بعد لعنصر واجهة المستخدم وكل سطح شفاف)، على الأجهزة الافتراضية وجلسات الطاقة المنخفضة أيضًا؛ ظل النافذة (`shadow_enabled`) والتمايل (`wobble_enabled`) افتراضيًا على إيقاف التشغيل. تستخدم تفضيلات التأثير `effects` لمفتاح الرسوم المتحركة الرئيسي (`animations`، المطبق على `hyprland.lua` من `hypr/state.lua` المتوقع، بشكل مستقل عن مفتاح التأثيرات، وهو `blur_global_enabled` بالإضافة إلى `transparency_<surface>_enabled` من `taskbar`، و`control-panel`، و`widget-telemetry`، و`terminal`، و`launchers`، ويتم قراءته على أنه ممكّن عند تمكين أي منها؛ `argvus effects-toggle animations|effects` تبديلها)، مفتاح التمويه العالمي (`blur_global_enabled`)، معلمات Hyprland التمويه (`blur_size`، `blur_passes`، `blur_brightness`، `blur_noise`، `blur_contrast`، `blur_vibrancy`، `blur_vibrancy_darkness`)، ظل النافذة (`shadow_enabled`، `shadow_sharp`، `shadow_color`، `shadow_range`، `shadow_render_power`، `shadow_offset_x`، `shadow_offset_y`، `shadow_scale`)، قيم الرسوم المتحركة (`animation_<leaf>_speed`، `_curve`، `_style`، `_popin` و`_enabled` لكل رسم متحرك، بالإضافة إلى `animation_bezier_x1` إلى `animation_bezier_y2` و`animation_spring_mass` و`animation_spring_stiffness` و`animation_spring_dampening` للتخصيص المنحنيات) وقيم الشفافية لكل سطح. التأثيرات مملوكة للموضوع، وليست مملوكة للمتغير: يستخدم Sticky وSpaced نفس إسقاط تأثيرات `<theme>.conf` بينما تختلف توقعات التخطيط الخاصة بهما. تشتمل الأسطح حاليًا على `taskbar` و`control-panel` و`widget-telemetry`؛ قيم الشفافية هي نسب مئوية من `0` إلى `100` (مركز التحكم وأسطح المشغل الافتراضية هي `15`، والأسطح الأخرى هي `50`)، ومعلمات التمويه هي أرقام ضمن النطاقات المعلنة في `schema.json`، والحالات الممكنة هي قيم منطقية. يتم التحقق من صحة قيم الرسوم المتحركة بواسطة `argvus-config` أيضًا: السرعات هي أرقام من `1` إلى `10` (مسموح بالأرقام العشرية)، والنسب المئوية المنبثقة هي أرقام صحيحة من `1` إلى `100`، ويجب أن تكون المنحنيات أسماء من الرسوم المتحركة الصفحة، يجب أن تكون الأنماط عبارة عن أسماء من صفحة الرسوم المتحركة وقبولها بواسطة صفحة الرسوم المتحركة الخاصة (على سبيل المثال، تم رفض `popin` لـ `animation_workspace_in_style`، ويتم قبول `gnomed` فقط لفتح النافذة وإغلاقها، ويتم رفض متغيرات الشريحة على النافذة وأوراق الطبقة)، وتبقى نقاط Bézier Y بين `-1` و`2`، ويوزع النطاق Hyprland 0.56.2 ومعلمات المنحنى الأخرى ضمن نطاقاتها الموثقة. لم يعد `layers` و`switching` موجودين، لذا فإن التكوينات المحفوظة قبل إزالتها تفقد مفاتيح `animation_layers_enabled` و`animation_layers_speed` و`animation_layers_curve` و`animation_switching_*` عند تحميلها. يتم إسقاط الأنماط خارج المجموعة الحالية ويتم تثبيت نقاط Bézier Y خارج `-1` إلى `2`، بحيث تنطبق الإعدادات الافتراضية المجمعة مرة أخرى على كل ما تمت إزالته.
 
@@ -395,7 +395,7 @@ argvus config window-mode toggle
 
 يستخدم التصغير مساحة العمل المحجوزة `special:argvus-minimized`. لا تستخدم مساحة العمل هذه يدويًا. تسجل عملية `argvus windows service` الهوية ومساحة العمل/الشاشة الأصلية والشكل الهندسي وملء الشاشة/التكبير وحالة الدبوس في سجل وقت تشغيل خاص بمثيل المركبة ضمن `$XDG_RUNTIME_DIR/argvus`. تستمر السجلات في البقاء بعد إعادة تشغيل الخدمة أو إعادة تحميل التكوين، ولكنها لا تتقاطع مع جلسات عمل المُركب. يؤدي إغلاق النافذة إلى إزالة السجل الخاص بها. إذا اختفت الشاشة، فإن عملية الاستعادة تستخدم المخرجات المتوفرة. يمنع شريط الاسترداد المفقود أو الفاشل إجراء عمليات تصغير جديدة؛ تحتفظ عملية الاستعادة الفاشلة بشريط السجل والاسترداد.
 
-تمتلك الجلسة `argvus-windows.service` و`argvus-window-bar.service`. هذا الأخير يبقي طفل Waybar الخاص به خاملًا في Tile. تم تجميع البرنامج المساعد hyprbars بواسطة `argvus-hyprland`، المصمم لـ Hyprland 0.57.0 ABI على x86_64؛ لم يتم تجميعه في الدليل الرئيسي للمستخدم. أعد بناء المكوّن الإضافي باستخدام تحديث ABI للمركب.
+تمتلك الجلسة `argvus-windows.service` و`argvus-window-bar.service`. هذا الأخير يبقي طفل Taskbar الخاص به خاملًا في Tile. تم تجميع البرنامج المساعد hyprbars بواسطة `argvus-hyprland`، المصمم لـ Hyprland 0.57.0 ABI على x86_64؛ لم يتم تجميعه في الدليل الرئيسي للمستخدم. أعد بناء المكوّن الإضافي باستخدام تحديث ABI للمركب.
 
 الأوامر: `argvus windows list --json`، و`watch --json`، و`position top|bottom`، و`restore-all`، و`minimize|restore|activate|maximize|close ADDRESS`. عناوين النافذة تأتي من القائمة. يقوم `position top --persist` بتخزين/عرض التفضيلات دون إعادة تشغيل الشريط الرئيسي. تتم كتابة تفاصيل أخطاء التكوين ووقت التشغيل إلى المجلة؛ تُظهر حالات فشل الإجراء المرئي أيضًا إشعارًا مترجمًا. في **المتباعدة + العائمة**، تحترم النوافذ الفجوات الخارجية والمناطق المحجوزة بواسطة كلا الشريطين. تتضمن الحدود الحد والعنوان الموجود داخل حدود النافذة نفسها. يؤدي تعظيم عناصر تحكم ARGVUS إلى ملء هذه المنطقة بالهوامش؛ تعمل عملية الاستعادة على استعادة الشكل الهندسي السابق، بما في ذلك بعد إعادة تشغيل الخدمة. لا يزال ملء الشاشة يستخدم الإخراج بالكامل. قد تتداخل النوافذ العائمة؛ تبليط الفجوات الداخلية لا يفصل بينهما.
 

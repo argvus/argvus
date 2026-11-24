@@ -1,4 +1,4 @@
-//! Event driven Waybar output. Monitor text is a wakeup, never a state protocol.
+//! Event driven Taskbar output. Monitor text is a wakeup, never a state protocol.
 use argvus_network_core::status::Status;
 use argvus_runtime::messages::text_in;
 use std::io::{self, BufRead, Write};
@@ -8,9 +8,9 @@ use std::time::Duration;
 
 fn render(status: &Status) -> String {
   let (icon, class, key) = match status.status {
-    "connected" => ("󰱓 ", "connected", "waybar.connected"),
-    "limited" => ("󰍸 ", "limited", "waybar.limited"),
-    _ => ("󰅛 ", "disconnected", "waybar.disconnected"),
+    "connected" => ("󰱓 ", "connected", "taskbar.connected"),
+    "limited" => ("󰍸 ", "limited", "taskbar.limited"),
+    _ => ("󰅛 ", "disconnected", "taskbar.disconnected"),
   };
   let mut tooltip = text_in("network", key, &[]);
   for detail in [&status.iface, &status.ssid, &status.ip] {
@@ -22,7 +22,7 @@ fn render(status: &Status) -> String {
   if class == "limited" {
     tooltip.push_str(&format!(
       " — {}",
-      text_in("network", "waybar.no_internet", &[])
+      text_in("network", "taskbar.no_internet", &[])
     ));
   }
   serde_json::json!({"text": icon, "class": class, "tooltip": tooltip}).to_string()
@@ -73,7 +73,7 @@ pub(super) fn run(follow: bool) -> ExitCode {
     let mut output = render(&super::networkctl::gather_status());
     let mut closed = false;
     loop {
-      // Cached heartbeat detects Waybar closing its pipe even on an idle network.
+      // Cached heartbeat detects Taskbar closing its pipe even on an idle network.
       if emit(&output).is_err() {
         closed = true;
         break;

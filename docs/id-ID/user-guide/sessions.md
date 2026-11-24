@@ -14,7 +14,7 @@ Diagnostik yang berguna:
 ```sh
 argvus sessionctl status
 argvus sessionctl logs
-argvus sessionctl restart waybar
+argvus sessionctl restart taskbar
 ```
 
 Lihat pengembang [runtime lifecycle](/docs/developer-guide/architecture/runtime-lifecycle/) untuk kepemilikan layanan.

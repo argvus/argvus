@@ -91,9 +91,9 @@ pub struct Labels {
   pub awaiting: String,
 }
 
-/// One line for the Waybar `custom` module with `return-type: json`.
+/// One line for the Taskbar `custom` module with `return-type: json`.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
-pub struct WaybarOutput {
+pub struct TaskbarOutput {
   pub text: String,
   pub tooltip: String,
   /// CSS class: `focus`, `short-break` or `long-break` while running or
@@ -103,12 +103,12 @@ pub struct WaybarOutput {
 
 /// Renders the indicator. `status` is `None` when ARGVUS Focus is not
 /// running (or the file is stale).
-pub fn render_waybar(
+pub fn render_taskbar(
   status: Option<&FocusStatus>,
   now: DateTime<Utc>,
   labels: &Labels,
-) -> WaybarOutput {
-  let idle = |tooltip: &str| WaybarOutput {
+) -> TaskbarOutput {
+  let idle = |tooltip: &str| TaskbarOutput {
     text: ICON.to_owned(),
     tooltip: tooltip.to_owned(),
     class: vec!["idle".to_owned()],
@@ -130,7 +130,7 @@ pub fn render_waybar(
         .and_then(|end| (end - now).to_std().ok())
         .unwrap_or_default();
       let time = format_remaining(left);
-      WaybarOutput {
+      TaskbarOutput {
         text: format!("{ICON} {time}"),
         tooltip: format!("{phase_label} · {time}"),
         class: vec![phase_class.to_owned()],
@@ -139,7 +139,7 @@ pub fn render_waybar(
     State::Paused => {
       let left = std::time::Duration::from_millis(status.remaining_ms.unwrap_or_default());
       let time = format_remaining(left);
-      WaybarOutput {
+      TaskbarOutput {
         text: format!("{ICON} {time}"),
         tooltip: format!("{phase_label} ({}) · {time}", labels.paused),
         class: vec![phase_class.to_owned(), "paused".to_owned()],
@@ -214,7 +214,7 @@ mod tests {
       ends_at: Some(at(1_121)),
       ..running_status(1)
     };
-    let output = render_waybar(Some(&status), at(0), &labels());
+    let output = render_taskbar(Some(&status), at(0), &labels());
     assert_eq!(output.text, format!("{ICON} 18:41"));
     assert_eq!(output.tooltip, "Focus · 18:41");
     assert_eq!(output.class, ["focus"]);
@@ -224,7 +224,7 @@ mod tests {
       ..status
     };
     assert_eq!(
-      render_waybar(Some(&break_status), at(0), &labels()).class,
+      render_taskbar(Some(&break_status), at(0), &labels()).class,
       ["long-break"]
     );
   }
@@ -236,7 +236,7 @@ mod tests {
       ..running_status(1)
     };
     assert_eq!(
-      render_waybar(Some(&status), at(0), &labels()).text,
+      render_taskbar(Some(&status), at(0), &labels()).text,
       format!("{ICON} 00:00")
     );
   }
@@ -249,7 +249,7 @@ mod tests {
       remaining_ms: Some(90_500),
       ..running_status(1)
     };
-    let output = render_waybar(Some(&status), at(0), &labels());
+    let output = render_taskbar(Some(&status), at(0), &labels());
     assert_eq!(output.text, format!("{ICON} 01:31"));
     assert_eq!(output.class, ["focus", "paused"]);
     assert!(output.tooltip.contains("paused"));
@@ -270,12 +270,12 @@ mod tests {
         ..running_status(1)
       }),
     ] {
-      let output = render_waybar(status.as_ref(), at(0), &labels());
+      let output = render_taskbar(status.as_ref(), at(0), &labels());
       assert_eq!(output.text, ICON);
       assert_eq!(output.class, ["idle"]);
     }
     assert_eq!(
-      render_waybar(
+      render_taskbar(
         Some(&FocusStatus {
           state: State::Awaiting,
           ends_at: None,

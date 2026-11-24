@@ -14,7 +14,7 @@ Untuk tinjauan terpandu pada area desktop utama, buka **ARGVUS Welcome** dengan 
 | Ubah wallpaper | **Pusat Kontrol → Tampilan → Wallpaper** |
 | Mengaktifkan atau menonaktifkan efek visual | **Pusat Kontrol → Tampilan → Efek**, **Pusat Kontrol → Tampilan → Peluncur**, **Pusat Kontrol → Konfigurasi**, **Bilah Tugas**, **Telemetri Widget** atau **Panel Kontrol** |
 | Ubah posisi bilah tugas, tinggi, batas, atau pengelompokan utilitas | **Pusat Kontrol → Tampilan → Bilah Tugas → Posisi**, **Tinggi**, **Batas** dan **Ikon** |
-| Sesuaikan bilah tugas JSONC atau CSS | [Penggantian waybar dan taskbar](/docs/argvus-waybar/) |
+| Sesuaikan bilah tugas JSONC atau CSS | [Penggantian taskbar dan taskbar](/docs/argvus-taskbar/) |
 | Ubah celah atau batas jendela | **Pusat Kontrol → Desktop & Input → Hyprland → Windows → Spasi** dan **Perbatasan** |
 | Ubah bayangan jendela | **Pusat Kontrol → Desktop & Input → Hyprland → Perbatasan → Bayangan** |
 | Pilih kartu Panel Kontrol yang terlihat | **Pusat Kontrol → Tampilan → Panel Kontrol** |

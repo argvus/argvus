@@ -13,6 +13,6 @@ description: Запустите и управляйте графической �
 ```sh
 argvus sessionctl status
 argvus sessionctl logs
-argvus sessionctl restart waybar
+argvus sessionctl restart taskbar
 ```
 Обратитесь к разработчику [runtime lifecycle](/docs/developer-guide/architecture/runtime-lifecycle/) для владения сервисом.

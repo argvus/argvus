@@ -3,17 +3,17 @@ title: सेवाएँ
 description: ARGVUS सिस्टम और उपयोगकर्ता सेवाएँ।
 ---
 
-. Common user services include 
+. Common user services include
 
-, 
+,
 
-, 
+,
 
-, 
+,
 
-, 
+,
 
-, 
+,
 
 , `argvus-session.target`, clipboard services and `argvus-taskbar.service`.
 
@@ -79,7 +79,7 @@ argvus sessionctl logs                # Display session logs
 
 ```sh
 # Desktop surfaces
-argvus sessionctl restart waybar
+argvus sessionctl restart taskbar
 argvus sessionctl restart wallpaper
 argvus sessionctl restart shell
 

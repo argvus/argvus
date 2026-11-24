@@ -4,7 +4,7 @@ description: Установите, настройте и используйте 
 ---
 ARGVUS — это модульная среда рабочего стола Hyprland и Wayland для Arch Linux. Начните с [installation](/docs/getting-started/installation/), затем выберите функцию из руководства пользователя.
 
-Рабочий стол объединяет сессию Hyprland, панель задач Waybar, панель управления Quickshell, нативные приложения и системные службы. [Architecture guide](/docs/developer-guide/architecture/overview/) объясняет, как эти компоненты работают вместе.
+Рабочий стол объединяет сессию Hyprland, панель задач Taskbar, панель управления Quickshell, нативные приложения и системные службы. [Architecture guide](/docs/developer-guide/architecture/overview/) объясняет, как эти компоненты работают вместе.
 
 ## Общие точки входа
 

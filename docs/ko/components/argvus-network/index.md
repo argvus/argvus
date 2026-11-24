@@ -2,7 +2,7 @@
 title: 네트워킹 및 블루투스
 description: ARGVUS를 통해 NetworkManager와 Bluetooth를 관리합니다.
 ---
-`argvus network` 하위 명령어는 NetworkManager를 보고하고 제어하며, `argvus bluetooth`는 블루투스 어댑터 상태와 사용 가능성을 보고하고 제어합니다. 두 명령어는 `argvus` 내부에서 프로세스로 실행되며, `networkctl`와 `bluetoothctl`는 그대로 별칭으로 남아 있습니다. 제어판과 Waybar는 이 명령어들을 호출합니다.
+`argvus network` 하위 명령어는 NetworkManager를 보고하고 제어하며, `argvus bluetooth`는 블루투스 어댑터 상태와 사용 가능성을 보고하고 제어합니다. 두 명령어는 `argvus` 내부에서 프로세스로 실행되며, `networkctl`와 `bluetoothctl`는 그대로 별칭으로 남아 있습니다. 제어판과 Taskbar는 이 명령어들을 호출합니다.
 
 설치된 하위 명령어를 확인하려면 두 명령어 중 어느 쪽에서든 `--help`를 사용하십시오. 네트워크와 블루투스 UI 통합은 Blueman과 같은 선택적 고급 관리 기능과 별도로 동작합니다.
 

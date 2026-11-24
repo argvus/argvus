@@ -2,7 +2,7 @@
 //!
 //! `argvus-sessionctl` used to keep this table in a shell `case`. Here the
 //! table is data: each component name maps to the units that restart it, and
-//! the waybar telemetry state decides whether the optional telemetry unit is
+//! the taskbar telemetry state decides whether the optional telemetry unit is
 //! part of the taskbar restart.
 
 use std::fs;
@@ -23,7 +23,7 @@ pub struct UnknownComponent(pub String);
 ///
 /// Every name is checked before any unit is returned, so one unknown name
 /// means nothing is restarted. `telemetry_enabled` is consulted only when the
-/// `waybar` component is present.
+/// `taskbar` component is present.
 ///
 /// # Errors
 ///
@@ -35,14 +35,13 @@ pub fn units_for(
   let mut units = Vec::new();
   for component in components {
     match *component {
-      "waybar" | "waybars" => {
+      "taskbar" | "taskbars" => {
         units.push(TASKBAR_UNIT);
         if telemetry_enabled() {
           units.push(TELEMETRY_UNIT);
         }
       }
-      "waybar-taskbar" | "taskbar" => units.push(TASKBAR_UNIT),
-      "widget-telemetry" | "desktop-telemetry" | "telemetry" | "waybar-sysinfo" | "sysinfo" => {
+      "widget-telemetry" | "desktop-telemetry" | "telemetry" | "taskbar-sysinfo" | "sysinfo" => {
         units.push(TELEMETRY_UNIT)
       }
       "wallpaper" => units.push("argvus-wallpaper.service"),
@@ -87,7 +86,7 @@ pub(super) fn current_telemetry_enabled(cache_home: &Path) -> bool {
   telemetry_enabled(cache_home, configured_telemetry_default)
 }
 
-/// Whether the waybar widget telemetry is enabled.
+/// Whether the taskbar widget telemetry is enabled.
 ///
 /// The current state file wins. Without it, the legacy desktop state file is
 /// read, then the legacy sysinfo state file. Only a first line of `enabled`
@@ -95,11 +94,11 @@ pub(super) fn current_telemetry_enabled(cache_home: &Path) -> bool {
 /// a new account has no state file, and the systemd unit must follow the same
 /// master switch that the widget toggle reads.
 pub fn telemetry_enabled(cache_home: &Path, configured_default: impl FnOnce() -> bool) -> bool {
-  let waybar = cache_home.join("waybar");
+  let taskbar = cache_home.join("taskbar");
   let state_file = [
-    waybar.join("widget-telemetry-state"),
-    waybar.join("desktop-telemetry-state"),
-    waybar.join("sysinfo-state"),
+    taskbar.join("widget-telemetry-state"),
+    taskbar.join("desktop-telemetry-state"),
+    taskbar.join("sysinfo-state"),
   ]
   .into_iter()
   .find(|path| path.is_file());
@@ -139,24 +138,24 @@ mod tests {
   fn unique_cache(name: &str) -> PathBuf {
     let root = env::temp_dir().join(format!("argvus-units-{name}-{}", std::process::id()));
     let _ = fs::remove_dir_all(&root);
-    fs::create_dir_all(root.join("waybar")).expect("cache directory");
+    fs::create_dir_all(root.join("taskbar")).expect("cache directory");
     root
   }
 
   #[test]
-  fn waybar_adds_telemetry_only_when_enabled() {
+  fn taskbar_adds_telemetry_only_when_enabled() {
     assert_eq!(
-      units_for(&["waybar"], || true).expect("known component"),
+      units_for(&["taskbar"], || true).expect("known component"),
       vec![TASKBAR_UNIT, TELEMETRY_UNIT]
     );
     assert_eq!(
-      units_for(&["waybar"], || false).expect("known component"),
+      units_for(&["taskbar"], || false).expect("known component"),
       vec![TASKBAR_UNIT]
     );
   }
 
   #[test]
-  fn telemetry_is_not_consulted_without_waybar() {
+  fn telemetry_is_not_consulted_without_taskbar() {
     let units =
       units_for(&["wallpaper"], || panic!("must not be called")).expect("known component");
     assert_eq!(units, vec!["argvus-wallpaper.service"]);
@@ -174,7 +173,7 @@ mod tests {
   fn aliases_resolve_to_the_same_units() {
     assert_eq!(
       units_for(&["taskbar"], || false).expect("alias"),
-      units_for(&["waybar-taskbar"], || false).expect("alias")
+      units_for(&["taskbars"], || false).expect("alias")
     );
     assert_eq!(
       units_for(&["clipboard"], || false).expect("clipboard"),
@@ -194,18 +193,18 @@ mod tests {
   #[test]
   fn telemetry_state_follows_the_legacy_precedence() {
     let cache = unique_cache("precedence");
-    let waybar = cache.join("waybar");
+    let taskbar = cache.join("taskbar");
 
-    fs::write(waybar.join("sysinfo-state"), "enabled\n").expect("legacy state");
+    fs::write(taskbar.join("sysinfo-state"), "enabled\n").expect("legacy state");
     assert!(telemetry_enabled(&cache, || false));
 
-    fs::write(waybar.join("desktop-telemetry-state"), "disabled\n").expect("desktop state");
+    fs::write(taskbar.join("desktop-telemetry-state"), "disabled\n").expect("desktop state");
     assert!(
       !telemetry_enabled(&cache, || true),
       "desktop legacy overrides sysinfo"
     );
 
-    fs::write(waybar.join("widget-telemetry-state"), "enabled\n").expect("current state");
+    fs::write(taskbar.join("widget-telemetry-state"), "enabled\n").expect("current state");
     assert!(
       telemetry_enabled(&cache, || false),
       "current state overrides legacy"
@@ -216,7 +215,7 @@ mod tests {
   #[test]
   fn configured_default_applies_only_without_a_state_file() {
     let cache = unique_cache("default");
-    let waybar = cache.join("waybar");
+    let taskbar = cache.join("taskbar");
 
     assert!(
       telemetry_enabled(&cache, || true),
@@ -224,7 +223,7 @@ mod tests {
     );
     assert!(!telemetry_enabled(&cache, || false), "and the default off");
 
-    fs::write(waybar.join("widget-telemetry-state"), "disabled\n").expect("current state");
+    fs::write(taskbar.join("widget-telemetry-state"), "disabled\n").expect("current state");
     assert!(
       !telemetry_enabled(&cache, || true),
       "an explicit disabled state beats the default"
@@ -235,7 +234,7 @@ mod tests {
   #[test]
   fn state_file_skips_reading_the_configured_default() {
     let cache = unique_cache("skip-default");
-    fs::write(cache.join("waybar/widget-telemetry-state"), "enabled\n").expect("current state");
+    fs::write(cache.join("taskbar/widget-telemetry-state"), "enabled\n").expect("current state");
     assert!(telemetry_enabled(&cache, || panic!("must not be read")));
     let _ = fs::remove_dir_all(cache);
   }

@@ -2,7 +2,7 @@
 title: Desktop
 description: Verstehen Sie die ARGVUS-Desktop-Oberflächen.
 ---
-Die Desktop-Shell besteht aus Hyprland, der gepatchten Waybar-Taskleiste, einem Quickshell-Kontrollzentrum und optionalen Telemetrie-Widgets. Hyprland verwaltet Fenster und Arbeitsbereiche; die Taskleiste kommuniziert den Status von Arbeitsbereichen/Fenstern und System; das Kontrollzentrum bietet Schnellaktionen; Benachrichtigungen und Anwendungen erscheinen zusammen mit diesen Oberflächen.
+Die Desktop-Shell besteht aus Hyprland, der gepatchten Taskbar-Taskleiste, einem Quickshell-Kontrollzentrum und optionalen Telemetrie-Widgets. Hyprland verwaltet Fenster und Arbeitsbereiche; die Taskleiste kommuniziert den Status von Arbeitsbereichen/Fenstern und System; das Kontrollzentrum bietet Schnellaktionen; Benachrichtigungen und Anwendungen erscheinen zusammen mit diesen Oberflächen.
 
 Die Konfiguration befindet sich im [Control Center](/docs/components/argvus-control-center/), während häufige Aktionen im Kontrollzentrum leben. Beginnen Sie mit [First configuration](/docs/user-guide/getting-started/), wenn dies Ihre erste Sitzung ist.
 

@@ -21,17 +21,17 @@ ssid="$(value ssid)"
 case "$status" in
   connected)
     icon='󰱓 '
-    title="$(argvus_tr network waybar.connected)"
+    title="$(argvus_tr network taskbar.connected)"
     class=connected
     ;;
   limited)
     icon='󰍸 '
-    title="$(argvus_tr network waybar.limited)"
+    title="$(argvus_tr network taskbar.limited)"
     class=limited
     ;;
   *)
     icon='󰅛 '
-    title="$(argvus_tr network waybar.disconnected)"
+    title="$(argvus_tr network taskbar.disconnected)"
     class=disconnected
     ;;
 esac
@@ -39,7 +39,7 @@ esac
 details="$title"
 [ -n "$ssid" ] && details="$details — $ssid"
 [ -z "$ssid" ] && [ -n "$iface" ] && details="$details — $iface"
-[ "$status" = limited ] && details="$details — $(argvus_tr network waybar.no_internet)"
+[ "$status" = limited ] && details="$details — $(argvus_tr network taskbar.no_internet)"
 
 printf '{"text":"%s","class":"%s","tooltip":"%s"}\n' \
   "$(json_escape "$icon")" "$(json_escape "$class")" "$(json_escape "$details")"

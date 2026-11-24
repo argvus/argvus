@@ -67,7 +67,7 @@ Riavvia i singoli servizi senza influenzare l'intera sessione:
 
 ```sh
 # Desktop surfaces
-argvus sessionctl restart waybar
+argvus sessionctl restart taskbar
 argvus sessionctl restart wallpaper
 argvus sessionctl restart shell
 

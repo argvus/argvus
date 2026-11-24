@@ -14,7 +14,7 @@ description: بدء وإدارة جلسة ARGVUS الرسومية.
 ```sh
 argvus sessionctl status
 argvus sessionctl logs
-argvus sessionctl restart waybar
+argvus sessionctl restart taskbar
 ```
 
 راجع المطور [دورة حياة وقت التشغيل](/docs/developer-guide/architecture/runtime-lifecycle/) لمعرفة ملكية الخدمة.

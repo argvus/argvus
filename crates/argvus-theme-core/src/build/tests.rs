@@ -44,7 +44,7 @@ impl Fixture {
     fs::write(
       registry_dir.join("taskbar.toml"),
       "id = \"taskbar\"\ntemplate = \"taskbar/theme.css\"\noutput = \"taskbar/theme.css\"\n\
-       [reload]\nkind = \"rewrite\"\npath = \"argvus/data/waybar/argvus-taskbar.css\"\n",
+       [reload]\nkind = \"rewrite\"\npath = \"argvus/data/taskbar/argvus-taskbar.css\"\n",
     )
     .unwrap();
     fs::write(

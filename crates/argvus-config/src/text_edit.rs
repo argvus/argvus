@@ -59,7 +59,7 @@ pub fn set_setting(text: &str, key: &str, value: &str, layout: Layout) -> String
   }
 }
 
-/// Sets a waybar `"margin-<edge>"` value in a JSONC text. Comments and other
+/// Sets a taskbar `"margin-<edge>"` value in a JSONC text. Comments and other
 /// keys are left as they are. The first match on each line is replaced, as the
 /// `sed` edit did. `signed` allows a leading minus in the value being replaced.
 pub fn set_jsonc_margin(text: &str, edge: &str, value: u32, signed: bool) -> String {
@@ -82,7 +82,7 @@ pub fn set_jsonc_margin(text: &str, edge: &str, value: u32, signed: bool) -> Str
     .collect()
 }
 
-/// Sets the waybar `"height"` of a JSONC text. Only the first match is replaced,
+/// Sets the taskbar `"height"` of a JSONC text. Only the first match is replaced,
 /// as the taskbar file has a single height. Comments and other keys are kept.
 pub fn set_jsonc_height(text: &str, value: u32) -> String {
   let pattern = Regex::new(r#""height": [0-9]+"#).expect("valid pattern");
@@ -91,7 +91,7 @@ pub fn set_jsonc_height(text: &str, value: u32) -> String {
     .into_owned()
 }
 
-/// The waybar `"height"` of a JSONC text, if it has one.
+/// The taskbar `"height"` of a JSONC text, if it has one.
 pub fn jsonc_height(text: &str) -> Option<u32> {
   let pattern = Regex::new(r#""height": ([0-9]+)"#).expect("valid pattern");
   pattern.captures(text)?[1].parse().ok()
@@ -111,14 +111,14 @@ pub enum Target {
   Qt6ctCustomPalette,
   /// `name = …` in the native GTK settings file.
   NativeName,
-  /// `@import url("…/waybar/mode.css")` in the taskbar and telemetry styles.
-  WaybarModeImport,
+  /// `@import url("…/taskbar/mode.css")` in the taskbar and telemetry styles.
+  TaskbarModeImport,
   /// The theme `@import url("…/theme.css")` of the taskbar style; the value is
   /// the whole path.
-  WaybarThemeImport,
+  TaskbarThemeImport,
   /// The theme `@import` of the telemetry style (`…/widget-telemetry-theme.css`
   /// or `…/widget-telemetry/theme.css`); the value is the whole path.
-  WaybarTelemetryThemeImport,
+  TaskbarTelemetryThemeImport,
 }
 
 impl Target {
@@ -130,9 +130,9 @@ impl Target {
       "qt6ct-color-scheme" => Some(Self::Qt6ctColorScheme),
       "qt6ct-custom-palette" => Some(Self::Qt6ctCustomPalette),
       "native-name" => Some(Self::NativeName),
-      "waybar-mode-import" => Some(Self::WaybarModeImport),
-      "waybar-theme-import" => Some(Self::WaybarThemeImport),
-      "waybar-telemetry-theme-import" => Some(Self::WaybarTelemetryThemeImport),
+      "taskbar-mode-import" => Some(Self::TaskbarModeImport),
+      "taskbar-theme-import" => Some(Self::TaskbarThemeImport),
+      "taskbar-telemetry-theme-import" => Some(Self::TaskbarTelemetryThemeImport),
       _ => None,
     }
   }
@@ -144,11 +144,11 @@ impl Target {
       Self::Qt6ctColorScheme => r"^color_scheme_path=.*",
       Self::Qt6ctCustomPalette => r"^custom_palette=.*",
       Self::NativeName => r"^[[:space:]]*name[[:space:]]*=.*",
-      Self::WaybarModeImport => {
-        r#"@import url\("/usr/share/argvus/appearance/config/waybar/mode\.css"\);"#
+      Self::TaskbarModeImport => {
+        r#"@import url\("/usr/share/argvus/appearance/config/taskbar/mode\.css"\);"#
       }
-      Self::WaybarThemeImport => r#"@import url\("[^"]*/theme\.css"\);"#,
-      Self::WaybarTelemetryThemeImport => {
+      Self::TaskbarThemeImport => r#"@import url\("[^"]*/theme\.css"\);"#,
+      Self::TaskbarTelemetryThemeImport => {
         r#"@import url\("[^"]*widget-telemetry[-/]theme\.css"\);"#
       }
     }
@@ -161,7 +161,7 @@ impl Target {
       Self::Qt6ctColorScheme => format!("color_scheme_path={value}"),
       Self::Qt6ctCustomPalette => format!("custom_palette={value}"),
       Self::NativeName => format!("name = {value}"),
-      Self::WaybarModeImport | Self::WaybarThemeImport | Self::WaybarTelemetryThemeImport => {
+      Self::TaskbarModeImport | Self::TaskbarThemeImport | Self::TaskbarTelemetryThemeImport => {
         format!(r#"@import url("{value}");"#)
       }
     }
@@ -328,15 +328,15 @@ mod tests {
   }
 
   #[test]
-  fn waybar_and_native_targets_keep_the_rest_of_the_line_shape() {
+  fn taskbar_and_native_targets_keep_the_rest_of_the_line_shape() {
     assert_eq!(
       set_target("name = old.ini\n", Target::NativeName, "argvus-dark.ini"),
       "name = argvus-dark.ini\n"
     );
     assert_eq!(
       set_target(
-        "@import url(\"/usr/share/argvus/appearance/config/waybar/mode.css\");\n",
-        Target::WaybarModeImport,
+        "@import url(\"/usr/share/argvus/appearance/config/taskbar/mode.css\");\n",
+        Target::TaskbarModeImport,
         "./mode.css"
       ),
       "@import url(\"./mode.css\");\n"
@@ -344,7 +344,7 @@ mod tests {
     assert_eq!(
       set_target(
         "@import url(\"./themes/old/widget-telemetry-theme.css\");\n@import url(\"./themes/old/theme.css\");\n",
-        Target::WaybarTelemetryThemeImport,
+        Target::TaskbarTelemetryThemeImport,
         "./themes/github-light/widget-telemetry-theme.css"
       ),
       "@import url(\"./themes/github-light/widget-telemetry-theme.css\");\n@import url(\"./themes/old/theme.css\");\n"
@@ -353,7 +353,7 @@ mod tests {
     let build = "/data/generated/theme/current";
     let taskbar = set_target(
       "@import url(\"./themes/old/theme.css\");\n@import url(\"./mode.css\");\n",
-      Target::WaybarThemeImport,
+      Target::TaskbarThemeImport,
       &format!("{build}/taskbar/theme.css"),
     );
     assert_eq!(
@@ -363,20 +363,20 @@ mod tests {
     assert_eq!(
       set_target(
         &taskbar,
-        Target::WaybarThemeImport,
+        Target::TaskbarThemeImport,
         "./themes/sunset/theme.css"
       ),
       "@import url(\"./themes/sunset/theme.css\");\n@import url(\"./mode.css\");\n"
     );
     let telemetry = set_target(
       "@import url(\"./themes/old/widget-telemetry-theme.css\");\n",
-      Target::WaybarTelemetryThemeImport,
+      Target::TaskbarTelemetryThemeImport,
       &format!("{build}/widget-telemetry/theme.css"),
     );
     assert_eq!(
       set_target(
         &telemetry,
-        Target::WaybarTelemetryThemeImport,
+        Target::TaskbarTelemetryThemeImport,
         "./themes/x/widget-telemetry-theme.css"
       ),
       "@import url(\"./themes/x/widget-telemetry-theme.css\");\n"

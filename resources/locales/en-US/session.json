@@ -25,7 +25,7 @@
   "usage.stop": "  stop                stop argvus-session.target and graphical-session.target",
   "usage.restart": "  restart             restart the ARGVUS session target",
   "usage.reload": "  reload              re-apply mutable config and restart affected services",
-  "usage.restart_items": "  restart <items...>  restart component groups: waybar, wallpaper, dunst, control-panel, ...",
+  "usage.restart_items": "  restart <items...>  restart component groups: taskbar, wallpaper, dunst, control-panel, ...",
   "usage.status": "  status              show target and service status",
   "usage.logs": "  logs [journal args] show ARGVUS user-unit journal logs",
   "usage.widget_telemetry": "  widget-telemetry <command>",

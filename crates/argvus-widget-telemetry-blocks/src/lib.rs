@@ -1,7 +1,7 @@
-//! `argvus-widget-telemetry-block`: prints the text of one part of the Waybar
+//! `argvus-widget-telemetry-block`: prints the text of one part of the Taskbar
 //! telemetry widget. The widget's modules run it, and the taskbar runs its
 //! probes. Nothing is printed for a block that is outside the scroll window,
-//! except the JSON blocks, which print an empty text so Waybar clears them.
+//! except the JSON blocks, which print an empty text so Taskbar clears them.
 //!
 //! Usage:
 //!   argvus-widget-telemetry-block header BLOCK        the title of a block
@@ -91,7 +91,7 @@ fn keys() -> ExitCode {
   ExitCode::SUCCESS
 }
 
-/// The JSON text of a block for Waybar: the rendered text inside the window, and
+/// The JSON text of a block for Taskbar: the rendered text inside the window, and
 /// an empty text outside it.
 fn json_block(block: &str, render: fn() -> String) -> ExitCode {
   let text = if window::shows(block) {

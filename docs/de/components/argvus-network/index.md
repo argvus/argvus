@@ -2,7 +2,7 @@
 title: Netzwerk und Bluetooth
 description: Verwalten Sie NetworkManager und Bluetooth über ARGVUS.
 ---
-Der `argvus network`-Unterbefehl meldet und steuert NetworkManager, und `argvus bluetooth` meldet und steuert den Zustand und die Verfügbarkeit des Bluetooth-Adapters. Beide laufen im Prozess innerhalb von `argvus`; `networkctl` und `bluetoothctl` bleiben als Aliase bestehen. Das Kontrollpanel und Waybar rufen diese Befehle auf.
+Der `argvus network`-Unterbefehl meldet und steuert NetworkManager, und `argvus bluetooth` meldet und steuert den Zustand und die Verfügbarkeit des Bluetooth-Adapters. Beide laufen im Prozess innerhalb von `argvus`; `networkctl` und `bluetoothctl` bleiben als Aliase bestehen. Das Kontrollpanel und Taskbar rufen diese Befehle auf.
 
 Verwenden Sie `--help` bei einem der Befehle für die installierten Unterbefehle. Die Integration der Netzwerk- und Bluetooth-Benutzeroberfläche ist getrennt von optionalen erweiterten Managern wie Blueman.
 

@@ -1,6 +1,6 @@
 {
   "cli.usage": "Usage: {command} [status|toggle|enable|disable|manager|wifi status|wifi toggle|wifi enable|wifi disable]",
-  "bluetooth_usage": "Usage: {command} [status|available|waybar|enable|disable|toggle|manager]",
+  "bluetooth_usage": "Usage: {command} [status|available|taskbar|enable|disable|toggle|manager]",
   "message.available_no": "NetworkManager unavailable",
   "message.connected": "Connected",
   "message.disconnected": "Disconnected",
@@ -19,13 +19,13 @@
   "bluetoothctl_missing": "bluetoothctl was not found",
   "bluetooth.power_failed": "Could not turn Bluetooth {target}",
   "blueman_missing": "The optional Blueman manager is not installed",
-  "waybar.no_iface": "No network interface found",
-  "waybar.network": "Network",
-  "waybar.disconnected": "Disconnected",
-  "waybar.connected": "Connected",
-  "waybar.limited": "Limited connectivity",
-  "waybar.no_internet": "No Internet access",
-  "waybar.reconnecting": "Reconnecting",
-  "waybar.state": "State",
-  "waybar.command_failed": "Command failed: {command}"
+  "taskbar.no_iface": "No network interface found",
+  "taskbar.network": "Network",
+  "taskbar.disconnected": "Disconnected",
+  "taskbar.connected": "Connected",
+  "taskbar.limited": "Limited connectivity",
+  "taskbar.no_internet": "No Internet access",
+  "taskbar.reconnecting": "Reconnecting",
+  "taskbar.state": "State",
+  "taskbar.command_failed": "Command failed: {command}"
 }

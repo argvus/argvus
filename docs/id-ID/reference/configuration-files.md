@@ -12,9 +12,9 @@ description: Pengguna, sistem, paket-default, dan konfigurasi ARGVUS yang dihasi
 | Dihasilkan | `$XDG_CONFIG_HOME/argvus/data/generated/` | Proyeksi `config.json`, hanya ditulis oleh `argvus-config`. Jangan pernah mengedit, jangan pernah menyalin di tempat lain sebagai konfigurasi, dan jangan pernah membaca kembali sebagai sumber. |
 | Waktu proses | `$XDG_RUNTIME_DIR/` dan `$XDG_CACHE_HOME/` | Soket, kunci dan keadaan sementara. |
 
-Status tema aktif, aksen, wallpaper khusus, dan efek adalah status pengguna logis. Model logika terkelola didokumentasikan dalam [Konfigurasi kanonik](/docs/reference/argvus-config/). File Hyprland, GTK, Qt6ct, Waybar, Quickshell, Dunst, Hyprlock, Yazi, Superfile, terminal, font, dan perangkat yang dapat dilepas yang dihasilkan tidak boleh diperlakukan sebagai sumber kebenaran independen.
+Status tema aktif, aksen, wallpaper khusus, dan efek adalah status pengguna logis. Model logika terkelola didokumentasikan dalam [Konfigurasi kanonik](/docs/reference/argvus-config/). File Hyprland, GTK, Qt6ct, Taskbar, Quickshell, Dunst, Hyprlock, Yazi, Superfile, terminal, font, dan perangkat yang dapat dilepas yang dihasilkan tidak boleh diperlakukan sebagai sumber kebenaran independen.
 
-`argvus-config` juga mencerminkan lapisan tema ke `data/waybar/argvus-taskbar.{jsonc,css}` dan `data/waybar/argvus-widget-telemetry.{jsonc,css}`. Salinan tersebut diganti dari paket default dengan perubahan tampilan, kemudian blok terkelola yang dibatasi ditulis ulang, jadi perlakukan salinan tersebut sebagai file turunan, bukan sebagai file yang dikelola secara manual. Konfigurasi aplikasi asli di bawah `$XDG_CONFIG_HOME/<app>` berbeda: ini adalah target adaptor yang ditulis oleh orkestrator tampilan, tidak pernah oleh proyektor.
+`argvus-config` juga mencerminkan lapisan tema ke `data/taskbar/argvus-taskbar.{jsonc,css}` dan `data/taskbar/argvus-widget-telemetry.{jsonc,css}`. Salinan tersebut diganti dari paket default dengan perubahan tampilan, kemudian blok terkelola yang dibatasi ditulis ulang, jadi perlakukan salinan tersebut sebagai file turunan, bukan sebagai file yang dikelola secara manual. Konfigurasi aplikasi asli di bawah `$XDG_CONFIG_HOME/<app>` berbeda: ini adalah target adaptor yang ditulis oleh orkestrator tampilan, tidak pernah oleh proyektor.
 
 ## Pengecualian terhadap aturan penulis tunggal
 

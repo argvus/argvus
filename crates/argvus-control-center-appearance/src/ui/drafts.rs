@@ -3,12 +3,12 @@
 use super::*;
 
 /// Whether applying `draft` over the saved `current` values recreates the
-/// surface: restarts a Waybar bar or the Control Panel. Only then does the
+/// surface: restarts a Taskbar bar or the Control Panel. Only then does the
 /// `Apply` show the splash. Styles, borders, blur and transparency reload in
 /// place.
 pub(super) fn recreates_surface(draft: &SurfaceDraft, current: &SurfaceDraft) -> bool {
   match draft.surface {
-    // Waybar re-reads its JSONC only on a restart; the border is CSS.
+    // Taskbar re-reads its JSONC only on a restart; the border is CSS.
     EffectSurface::Taskbar => {
       draft.height != current.height
         || draft.utility_group != current.utility_group
@@ -44,7 +44,7 @@ pub(super) fn apply_draft_effects(draft: &SurfaceDraft) -> Result<(), String> {
 
 /// The taskbar part of `Apply`: the styles and effects first, which the bar
 /// reloads in place, then the utility group, height and icons, written to the
-/// JSONC that Waybar reads only when `recreate` restarts it once at the end.
+/// JSONC that Taskbar reads only when `recreate` restarts it once at the end.
 pub(super) fn apply_taskbar_draft(draft: &SurfaceDraft, recreate: bool) -> Result<(), String> {
   apply_draft_effects(draft)?;
   backend::set_taskbar_shape(draft.height, draft.border_enabled, draft.border_thickness)?;

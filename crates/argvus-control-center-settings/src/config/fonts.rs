@@ -310,7 +310,7 @@ impl FontSettings {
           .join("taskbar/quickshell/shell.qml")
           .is_file()
         {
-          self.write_waybar_settings()?;
+          self.write_taskbar_settings()?;
         } else if target == FontTarget::Taskbar {
           run_checked("argvus", &["sessionctl", "bars-presentation"])?;
         }
@@ -443,17 +443,17 @@ impl FontSettings {
     Ok(())
   }
 
-  fn write_waybar_settings(&self) -> Result<(), String> {
+  fn write_taskbar_settings(&self) -> Result<(), String> {
     let taskbar = self.get(FontTarget::Taskbar);
     let widget_telemetry = self.get(FontTarget::Sysinfo);
-    self.write_waybar_profile(
+    self.write_taskbar_profile(
       "argvus-taskbar.css",
       &format!(
         "* {{\n  font-family: \"{}\", \"Symbols Nerd Font Mono\", monospace;\n  font-size: {}px;\n}}\n\n#custom-icon-window,\n#network,\n#bluetooth,\n#custom-bluetooth,\n#custom-expand-icon,\n#custom-removable-devices,\n#custom-recording,\n#custom-search,\n#pulseaudio,\n#power-profiles-daemon,\n#custom-settings,\n#custom-power {{\n  font-family: \"Symbols Nerd Font Mono\";\n}}\n",
         escape(&taskbar.family), taskbar.size
       ),
     )?;
-    self.write_waybar_profile(
+    self.write_taskbar_profile(
       "argvus-widget-telemetry.css",
       &format!(
         "* {{\n  font-family: \"{}\", \"Symbols Nerd Font Mono\", monospace;\n  font-size: {}px;\n}}\n",
@@ -462,8 +462,8 @@ impl FontSettings {
     )
   }
 
-  fn write_waybar_profile(&self, name: &str, block: &str) -> Result<(), String> {
-    let user = paths::argvus_data_home().join("waybar").join(name);
+  fn write_taskbar_profile(&self, name: &str, block: &str) -> Result<(), String> {
+    let user = paths::argvus_data_home().join("taskbar").join(name);
     if user.exists() {
       return write_managed_block(&user, block);
     }
@@ -477,7 +477,7 @@ impl FontSettings {
       .join("config")
       .join(name);
     let generated = paths::argvus_data_home()
-      .join("generated/waybar")
+      .join("generated/taskbar")
       .join(name);
     write_file(
       &generated,

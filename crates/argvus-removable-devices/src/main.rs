@@ -80,7 +80,7 @@ async fn run_watch(cfg: &Config, once: bool) -> i32 {
     let result = renderer.render(devs);
     let mut stdout = std::io::stdout().lock();
     if stdout.write_all(result.json.as_bytes()).is_err() || stdout.write_all(b"\n").is_err() {
-      // waybar restarted the stream; leave quietly.
+      // taskbar restarted the stream; leave quietly.
       std::process::exit(0);
     }
     let _ = stdout.flush();
@@ -143,7 +143,7 @@ fn run_list(devs: &[Device]) -> i32 {
 async fn main() {
   i18n::init();
 
-  // Never die on a closed stdout (waybar restarting the stream).
+  // Never die on a closed stdout (taskbar restarting the stream).
   unsafe {
     libc::signal(libc::SIGPIPE, libc::SIG_IGN);
   }

@@ -13,6 +13,6 @@ description: ARGVUS 그래픽 세션을 시작하고 관리합니다.
 ```sh
 argvus sessionctl status
 argvus sessionctl logs
-argvus sessionctl restart waybar
+argvus sessionctl restart taskbar
 ```
 서비스 소유권에 대해서는 개발자 [runtime lifecycle](/docs/developer-guide/architecture/runtime-lifecycle/)를 참조하세요.

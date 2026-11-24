@@ -121,7 +121,7 @@ impl AppearanceApp {
         let position = position.value();
         self.apply(
           tr(self.lang, "control_center.taskbar_position_changed").into(),
-          move || backend::set_waybar_position(position),
+          move || backend::set_taskbar_position(position),
         );
       }
       Item::Spacing(goal) => self.open_prompt(goal),

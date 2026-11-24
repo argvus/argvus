@@ -19,13 +19,13 @@
   "bluetoothctl_missing": "BluetoothCTLが見つかりませんでした",
   "bluetooth.power_failed": "Bluetooth {target} を回転できませんでした",
   "blueman_missing": "オプションの Blueman マネージャーがインストールされていません",
-  "waybar.no_iface": "ネットワークインターフェースが見つかりません",
-  "waybar.network": "ネットワーク",
-  "waybar.disconnected": "切断されました",
-  "waybar.connected": "接続済み",
-  "waybar.limited": "接続が制限されている",
-  "waybar.no_internet": "インターネットにアクセスできない",
-  "waybar.reconnecting": "再接続中",
-  "waybar.state": "州",
-  "waybar.command_failed": "コマンドが失敗しました: {command}"
+  "taskbar.no_iface": "ネットワークインターフェースが見つかりません",
+  "taskbar.network": "ネットワーク",
+  "taskbar.disconnected": "切断されました",
+  "taskbar.connected": "接続済み",
+  "taskbar.limited": "接続が制限されている",
+  "taskbar.no_internet": "インターネットにアクセスできない",
+  "taskbar.reconnecting": "再接続中",
+  "taskbar.state": "州",
+  "taskbar.command_failed": "コマンドが失敗しました: {command}"
 }

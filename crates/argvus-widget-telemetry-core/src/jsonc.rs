@@ -1,4 +1,4 @@
-//! The edit of the Waybar JSONC. Each block is wrapped by `BEGIN`/`END` marker
+//! The edit of the Taskbar JSONC. Each block is wrapped by `BEGIN`/`END` marker
 //! comments; showing a block removes the `//` of its lines, hiding it adds one.
 //! The `modules-left` array is then rebuilt in the block order, with commas that
 //! keep the JSONC valid. These functions reproduce the sed and awk edits the

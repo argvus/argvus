@@ -22,7 +22,7 @@ compositor's floating dispatcher.
 `status --json` exposes `preferred`, nullable `applied`, `available`, `pending`
 and nullable technical `error`. Interfaces translate presentation and keep raw
 errors in diagnostics. A failed application must never be displayed as success.
-The taskbar's `--status` adapter emits Waybar text, tooltip and CSS class.
+The taskbar's `--status` adapter emits Taskbar text, tooltip and CSS class.
 
 ## Validation checkpoint
 

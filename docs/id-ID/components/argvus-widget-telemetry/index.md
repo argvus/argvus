@@ -28,7 +28,7 @@ Unit pengguna `argvus-widget-telemetry.service` memulai sesi hanya ketika widget
 diaktifkan. Sakelar utama adalah `effects.widget_telemetry_enabled` dalam konfigurasinya
 diaktifkan secara default, sehingga akun baru memulai widget saat login.
 
-Setelah sakelar menulis `$XDG_CACHE_HOME/argvus/waybar/widget-telemetry-state`, file itu
+Setelah sakelar menulis `$XDG_CACHE_HOME/argvus/taskbar/widget-telemetry-state`, file itu
 memutuskan sebagai gantinya. Hanya baris pertama `enabled` yang memulai widget. Semakin tua
 File `desktop-telemetry-state` dan `sysinfo-state` masih dibaca ketika file saat ini
 hilang.

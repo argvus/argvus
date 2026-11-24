@@ -400,12 +400,12 @@ pub(super) fn validate_taskbar(document: &ConfigDocument) -> ConfigResult<()> {
   validate_taskbar_shape(
     document.get(json_pointers::TASKBAR_SHAPE_HEIGHT),
     "height",
-    &waybar::TASKBAR_HEIGHTS,
+    &taskbar::TASKBAR_HEIGHTS,
   )?;
   validate_taskbar_shape(
     document.get(json_pointers::TASKBAR_SHAPE_BORDER_WIDTH),
     "border_width",
-    &waybar::TASKBAR_BORDER_WIDTHS,
+    &taskbar::TASKBAR_BORDER_WIDTHS,
   )
 }
 

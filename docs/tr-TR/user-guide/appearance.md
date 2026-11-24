@@ -3,7 +3,7 @@ title: Görünüm
 description: ARGVUS bileşenleri tarafından paylaşılan görsel dili yapılandırın.
 ---
 
-Görünüm sistemi Hyprland, GTK, Qt, Waybar, Quickshell, Dunst, Hyprlock ve ARGVUS uygulamalarına bir tema durumu uygular.
+Görünüm sistemi Hyprland, GTK, Qt, Taskbar, Quickshell, Dunst, Hyprlock ve ARGVUS uygulamalarına bir tema durumu uygular.
 
 ## Tema aileleri
 

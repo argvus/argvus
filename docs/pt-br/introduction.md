@@ -35,7 +35,7 @@ O pacote `argvus` fornece o dispatcher `/usr/bin/argvus` e o ponto de entrada pr
 
 ### Compositor e shell do desktop
 
-`argvus-hyprland` fornece configuração e keybindings Hyprland. `argvus-waybar` fornece o binário Waybar corrigido, enquanto `argvus-taskbar` possui configuração e ações da taskbar. `argvus-control-panel` fornece o painel Quickshell, e `argvus widget-telemetry` fornece widgets opcionais, em processo no `argvus`.
+`argvus-hyprland` fornece configuração e keybindings Hyprland. `argvus-taskbar` fornece o binário Taskbar corrigido, enquanto `argvus-taskbar` possui configuração e ações da taskbar. `argvus-control-panel` fornece o painel Quickshell, e `argvus widget-telemetry` fornece widgets opcionais, em processo no `argvus`.
 
 Veja [Desktop](/pt/docs/user-guide/desktop/) para uso e [superfícies do shell](/pt/docs/developer-guide/subsystems/shell-surfaces/) para ownership de implementação.
 
@@ -55,7 +55,7 @@ Veja [Hardware](/pt/docs/user-guide/hardware/), [Privacidade e segurança](/pt/d
 
 ## Estado compartilhado de aparência
 
-Preferências de tema, acento, wallpaper, fontes e efeitos ficam como estado lógico em `$XDG_CONFIG_HOME/argvus` (normalmente `~/.config/argvus`). O `argvus-config` é o único componente que escreve `data/generated/`, onde projeta arquivos consumidor para Hyprland, GTK, Qt6ct, Waybar, Quickshell, Dunst, notificações, lock screen, Yazi, Superfile e terminais. Os helpers de aparência confirmam a mudança de estado e então reconciliam aplicativos externos; eles nunca escrevem a árvore generated.
+Preferências de tema, acento, wallpaper, fontes e efeitos ficam como estado lógico em `$XDG_CONFIG_HOME/argvus` (normalmente `~/.config/argvus`). O `argvus-config` é o único componente que escreve `data/generated/`, onde projeta arquivos consumidor para Hyprland, GTK, Qt6ct, Taskbar, Quickshell, Dunst, notificações, lock screen, Yazi, Superfile e terminais. Os helpers de aparência confirmam a mudança de estado e então reconciliam aplicativos externos; eles nunca escrevem a árvore generated.
 
 O diretório gerado não é a fonte de verdade. Veja [Aparência](/pt/docs/user-guide/appearance/) e [configuração e estado](/pt/docs/developer-guide/architecture/configuration-and-state/).
 

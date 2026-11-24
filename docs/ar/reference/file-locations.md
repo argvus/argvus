@@ -15,10 +15,10 @@ description: ملفات وأدلة ARGVUS الهامة المثبتة.
 - `/etc/argvus/removable-devices/config.json` — إعدادات النظام الافتراضية للتخزين القابل للإزالة.
 - `$XDG_CONFIG_HOME/argvus/config.json` — التفضيلات المحمولة الأساسية.
 - `$XDG_CONFIG_HOME/argvus/data/` - بيانات المكونات المُدارة والنسخ الاحتياطية والأقفال والمخرجات التي تم إنشاؤها.
-- `$XDG_CONFIG_HOME/waybar/argvus-taskbar.{jsonc,css}` — تجاوزات شريط المهام الأصلية الكاملة الاختيارية لشريط الطريق.
+- `$XDG_CONFIG_HOME/taskbar/argvus-taskbar.{jsonc,css}` — تجاوزات شريط المهام الأصلية الكاملة الاختيارية لشريط الطريق.
 - `$XDG_CONFIG_HOME/argvus/data/taskbar/argvus-taskbar.{jsonc,css}` - نسخ شريط المهام ARGVUS المُدارة.
-- `$XDG_CONFIG_HOME/argvus/data/generated/waybar/` - ملفات تعريف شريط الطريق التي تم إنشاؤها، بما في ذلك `argvus-taskbar.css` و`argvus-widget-telemetry.{jsonc,css}`؛ هذه لها الأسبقية على النسخ أعلاه.
-- `$XDG_CONFIG_HOME/argvus/data/generated/waybar/argvus-widget-telemetry.{jsonc,css}` — تنعكس أيضًا تحت `data/waybar/`، والذي تم استبداله من الإعداد الافتراضي المعبأ عند تغيير المظهر ثم تمت إعادة كتابة `ARGVUS_TELEMETRY_*` وكتل الخطوط الخاصة به.
+- `$XDG_CONFIG_HOME/argvus/data/generated/taskbar/` - ملفات تعريف شريط الطريق التي تم إنشاؤها، بما في ذلك `argvus-taskbar.css` و`argvus-widget-telemetry.{jsonc,css}`؛ هذه لها الأسبقية على النسخ أعلاه.
+- `$XDG_CONFIG_HOME/argvus/data/generated/taskbar/argvus-widget-telemetry.{jsonc,css}` — تنعكس أيضًا تحت `data/taskbar/`، والذي تم استبداله من الإعداد الافتراضي المعبأ عند تغيير المظهر ثم تمت إعادة كتابة `ARGVUS_TELEMETRY_*` وكتل الخطوط الخاصة به.
 - `$XDG_CONFIG_HOME/argvus/data/generated/yazi/` — شجرة تكوينات Yazi المتوقعة، مع خيار احتياطي مدرك للمتغيرات للموضوعات التي لا تحمل أي نكهة Yazi.
 - `$XDG_CONFIG_HOME/argvus/data/generated/superfile/` - مجموعة سمات Superfile المتوقعة.
 - `$XDG_CONFIG_HOME/argvus/data/generated/terminal/` — التشكيلات الطرفية المتوقعة.

@@ -30,7 +30,7 @@ description: argvus 命令、它的子命令、为键绑定保留的标志，以
 | `argvus du` | 辅助（终端应用程序） | 在独立的 Kitty 窗口中打开 ARGVUS 磁盘使用分析器并运行 ncdu。|
 | `argvus network ...` | 进行中 | NetworkManager 状态和控制（`networkctl` 保留为别名）。|
 | `argvus bluetooth ...` | 进行中 | 蓝牙状态和控制（`bluetoothctl` 保留为别名）。|
-| `argvus widget-telemetry block ...` | 进行中 | Waybar 遥测模块。这是状态栏的关键路径。|
+| `argvus widget-telemetry block ...` | 进行中 | Taskbar 遥测模块。这是状态栏的关键路径。|
 | `argvus widget-telemetry toggle ...` | 进行中 | 切换遥测模块的开关及其顺序。|
 | `argvus game-snake` | 私有可执行文件 | 终端贪吃蛇游戏，来自独立的 `argvus-game-snake` 项目，可选安装包。在终端外运行时会打开一个终端。 |
 | `argvus control-center [page]` | 辅助程序（终端应用） | 打开控制中心，或聚焦已打开的窗口。 |
@@ -38,7 +38,7 @@ description: argvus 命令、它的子命令、为键绑定保留的标志，以
 | `argvus taskbar-calendar [args]` | GTK 4 应用 | 默认使用 `toggle`。 |
 | `argvus removable-devices [args]` | GTK 4 应用 | 默认使用 `menu`。 |
 | `argvus focus [--toggle] [--start\|--pause] [--x X --y Y] [--bar-bottom PX --bar-right PX]` | GTK 4 应用 | ARGVUS 聚焦弹出窗口。每个会话仅允许一个实例。 |
-| `argvus focus status --waybar [--follow]` | 处理中 | 以 Waybar JSON 的形式发出焦点任务栏指示器；`--follow` 在不加载 GTK 的情况下流式传输更改。 |
+| `argvus focus status --taskbar [--follow]` | 处理中 | 以 Taskbar JSON 的形式发出焦点任务栏指示器；`--follow` 在不加载 GTK 的情况下流式传输更改。 |
 | `argvus clock [--toggle] [--background] [--page PAGE] [--x X --y Y] [--bar-bottom PX --bar-right PX]` | GTK 4 应用程序 | ARGVUS 时钟弹出窗口。每个会话一个实例；`--background` 在没有弹出窗口的情况下保持闹钟活动。 |
 | `argvus loading-theme ...` | 打包的 `splash` 在 `/usr/lib/argvus/loading-theme/splash` | 直接会话重载的覆盖；主题切换不使用它。 |
 | `argvus session`, `start`, `tty`, `sessionctl` | 私有可执行文件 | 会话入口点和会话控制器。 |

@@ -2,7 +2,7 @@
 title: Сетевые технологии и Bluetooth
 description: Управляйте NetworkManager и Bluetooth через ARGVUS.
 ---
-Подкоманда `argvus network` сообщает и управляет NetworkManager, а `argvus bluetooth` сообщает и управляет состоянием и доступностью адаптера Bluetooth. Обе выполняются в процессе внутри `argvus`; `networkctl` и `bluetoothctl` остаются как псевдонимы. Панель управления и Waybar вызывают эти команды.
+Подкоманда `argvus network` сообщает и управляет NetworkManager, а `argvus bluetooth` сообщает и управляет состоянием и доступностью адаптера Bluetooth. Обе выполняются в процессе внутри `argvus`; `networkctl` и `bluetoothctl` остаются как псевдонимы. Панель управления и Taskbar вызывают эти команды.
 
 Используйте `--help` с любой из команд для установленных подкоманд. Интеграция сети и Bluetooth в пользовательский интерфейс отделена от дополнительных опциональных менеджеров, таких как Blueman.
 

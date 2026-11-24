@@ -3,7 +3,7 @@ title: Networking and Bluetooth
 description: Manage NetworkManager and Bluetooth through ARGVUS.
 ---
 
-The `argvus network` subcommand reports and controls NetworkManager, and `argvus bluetooth` reports and controls Bluetooth adapter state and availability. Both run in-process inside `argvus`; `networkctl` and `bluetoothctl` remain as aliases. The Control Panel and Waybar call these commands.
+The `argvus network` subcommand reports and controls NetworkManager, and `argvus bluetooth` reports and controls Bluetooth adapter state and availability. Both run in-process inside `argvus`; `networkctl` and `bluetoothctl` remain as aliases. The Control Panel and Taskbar call these commands.
 
 Use `--help` on either command for the installed subcommands. Network and Bluetooth UI integration is separate from optional advanced managers such as Blueman.
 
@@ -69,4 +69,4 @@ Bluetooth removal confirmation keeps the original device address even when the d
 
 Wi-Fi password, manual DNS and network search fields accept bracketed paste. Pasted controls and line breaks are omitted. Unsupported Ctrl-only or Alt-only character shortcuts do not insert letters. Editors accept printable AltGr events encoded as Ctrl+Alt; Ctrl+S saves only without Alt. The shared text editor keeps vertical navigation in visual columns and aligns horizontal scrolling for wide characters.
 
-The taskbar network indicator follows NetworkManager events using `argvus networkctl waybar --follow`, with an initial snapshot and automatic monitor reconnection. It no longer waits for a 10-second polling interval. Connected, limited Internet access and disconnected remain distinct states. Wi-Fi status reads cached access points without requesting a scan. `argvus networkctl waybar` emits a single Waybar JSON snapshot.
+The taskbar network indicator follows NetworkManager events using `argvus networkctl taskbar --follow`, with an initial snapshot and automatic monitor reconnection. It no longer waits for a 10-second polling interval. Connected, limited Internet access and disconnected remain distinct states. Wi-Fi status reads cached access points without requesting a scan. `argvus networkctl taskbar` emits a single Taskbar JSON snapshot.

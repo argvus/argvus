@@ -468,9 +468,9 @@ mod tests {
 
   #[test]
   fn matches_process_names_basename_only() {
-    assert!(matches_process("/usr/bin/waybar", "waybar"));
-    assert!(matches_process("waybar", "waybar"));
-    assert!(!matches_process("/usr/bin/waybar-cmd", "waybar"));
+    assert!(matches_process("/usr/bin/taskbar", "taskbar"));
+    assert!(matches_process("taskbar", "taskbar"));
+    assert!(!matches_process("/usr/bin/taskbar-cmd", "taskbar"));
   }
 
   #[test]

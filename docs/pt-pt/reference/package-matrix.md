@@ -13,7 +13,7 @@ description: Responsabilidades dos pacotes do ARGVUS.
 | `argvus-session` | Pontos de entrada da sessão e ciclo de vida do utilizador. |
 | `argvus-hyprland` | Configuração do Hyprland. |
 | `argvus-control-panel` | Painel de controle em Quickshell. |
-| `argvus-taskbar`, `argvus-waybar` | Configuração da Waybar e binário com patch. |
+| `argvus-taskbar` | Configuração da Taskbar e binário com patch. |
 | `argvus-branding` | Logo e recursos da marca. |
 | `argvus-appearance`, `argvus-wallpapers`, `argvus-fonts`, `argvus-icons` | Estado de aparência e recursos visuais. |
 | `argvus-display`, `argvus-power`, `argvus-notifications` | Provedores do desktop. |
@@ -35,4 +35,4 @@ O `argvus` declara `replaces`, `conflicts` e `provides` dos pacotes que absorveu
 
 Os pacotes removidos `argvus-pwvucontrol` e `argvus-snappy-switcher` não são fornecidos por nenhum pacote.
 
-Não há ordem de instalação entre os pacotes de componentes ARGVUS: `argvus` é o pacote mestre deles, e cada componente depende dele. Instalar `argvus` também instala o perfil `argvus-desktop`; `argvus-devtools` e `argvus-pentest` continuam opcionais. Estar nesta tabela não significa que um pacote é dono de toda a funcionalidade: por exemplo, a barra combina `argvus-waybar`, `argvus-taskbar`, `argvus-session` e os provedores de domínio.
+Não há ordem de instalação entre os pacotes de componentes ARGVUS: `argvus` é o pacote mestre deles, e cada componente depende dele. Instalar `argvus` também instala o perfil `argvus-desktop`; `argvus-devtools` e `argvus-pentest` continuam opcionais. Estar nesta tabela não significa que um pacote é dono de toda a funcionalidade: por exemplo, a barra combina `argvus-taskbar`, `argvus-session` e os provedores de domínio.

@@ -9,7 +9,7 @@
 //!
 //! [reload]
 //! kind = "rewrite"
-//! path = "argvus/data/waybar/argvus-taskbar.css"
+//! path = "argvus/data/taskbar/argvus-taskbar.css"
 //! ```
 //!
 //! `template` is relative to the system root, `output` to the build directory.
@@ -37,7 +37,7 @@ use std::path::{Path, PathBuf};
 pub enum Reload {
   /// The consumer reads the build the next time it starts.
   None,
-  /// Rewrite a watched file so the consumer reloads it (Waybar's
+  /// Rewrite a watched file so the consumer reloads it (Taskbar's
   /// `reload_style_on_change`). `path` is relative to the config home.
   Rewrite { path: String },
   /// Send a signal to every process with this name.
@@ -226,7 +226,7 @@ mod tests {
   fn parses_each_reload_kind() {
     let consumer = parse(
       "id = \"taskbar\"\ntemplate = \"taskbar/theme-template/theme.css\"\noutput = \"taskbar/theme.css\"\n\
-       [reload]\nkind = \"rewrite\"\npath = \"argvus/data/waybar/argvus-taskbar.css\"\n",
+       [reload]\nkind = \"rewrite\"\npath = \"argvus/data/taskbar/argvus-taskbar.css\"\n",
     )
     .unwrap();
     assert_eq!(

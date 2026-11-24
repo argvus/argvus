@@ -8,9 +8,9 @@
 
 use super::*;
 
-/// Layer namespaces of the taskbar. `argvus-taskbar` is the current Waybar
-/// instance name; `waybar` covers sessions still running an unnamed bar.
-const TASKBAR_LAYER_NAMESPACES: [&str; 2] = ["argvus-taskbar", "waybar"];
+/// Layer namespaces of the taskbar. `argvus-taskbar` is the current Taskbar
+/// instance name; `taskbar` covers sessions still running an unnamed bar.
+const TASKBAR_LAYER_NAMESPACES: [&str; 2] = ["argvus-taskbar", "taskbar"];
 
 /// The clicked monitor in desktop (layout) coordinates.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -239,8 +239,8 @@ mod tests {
   }
 
   #[test]
-  fn still_finds_an_unnamed_waybar_layer() {
-    let bar = select_taskbar(&layers("waybar", 18), 1500, 30, AREA);
+  fn still_finds_an_unnamed_taskbar_layer() {
+    let bar = select_taskbar(&layers("taskbar", 18), 1500, 30, AREA);
     assert_eq!(
       bar,
       Some(TaskbarGeometry {

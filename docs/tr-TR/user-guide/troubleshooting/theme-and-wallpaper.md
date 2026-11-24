@@ -33,7 +33,7 @@ cat "${XDG_CONFIG_HOME:-$HOME/.config}/argvus/data/generated/theme/current/build
 argvus config theme-runtime consumers
 ```
 
-Her temalı dosya derlemeden gelir: yüklü olmayan bir tema ( theme.toml  argvus config accent --apply  mode.css  data/generated/  `config.json`  `data/generated/`  `mode.css`  `argvus config accent --apply`  `theme.toml` `/usr/share/argvus/themes/` veya `~/.local/share/argvus/themes/` altında theme.toml yok) veya render edilmeyen bir tema reddedilir ve önceki tema kalır. `argvus theme check DIRECTORY`, her render hatasının şablonunu ve satırını gösterir. Bir Waybar çubuğu renklerini yalnızca JSONC içindeki `reload_style_on_change` ile yeniden yükler. Bir anahtar takılı gibi görünüyorsa, hâlâ çalışıp çalışmadığını kontrol edin; kendisini kilidi yanında, `theme-switch.active` içinde kaydeder:
+Her temalı dosya derlemeden gelir: yüklü olmayan bir tema ( theme.toml  argvus config accent --apply  mode.css  data/generated/  `config.json`  `data/generated/`  `mode.css`  `argvus config accent --apply`  `theme.toml` `/usr/share/argvus/themes/` veya `~/.local/share/argvus/themes/` altında theme.toml yok) veya render edilmeyen bir tema reddedilir ve önceki tema kalır. `argvus theme check DIRECTORY`, her render hatasının şablonunu ve satırını gösterir. Bir Taskbar çubuğu renklerini yalnızca JSONC içindeki `reload_style_on_change` ile yeniden yükler. Bir anahtar takılı gibi görünüyorsa, hâlâ çalışıp çalışmadığını kontrol edin; kendisini kilidi yanında, `theme-switch.active` içinde kaydeder:
 
 ```sh
 cat "${XDG_CACHE_HOME:-$HOME/.cache}/argvus/theme-switch.active"

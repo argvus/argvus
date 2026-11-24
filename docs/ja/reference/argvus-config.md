@@ -72,7 +72,7 @@ argvus sessionctl apply-config
 
 ### リロード対象
 
-`argvus config session-plan` は、変更されたセクションのターゲットでリロードに応答し、`argvus sessionctl` はそれらのみを実行します。スプラッシュは、ターゲットがサーフェスを再作成する場合にのみリロードをカバーします: Waybar バーまたは画面に戻るコントロールパネルはすべてのウィンドウをシフトさせます。それ以外のすべてはその場でリロードされます。
+`argvus config session-plan` は、変更されたセクションのターゲットでリロードに応答し、`argvus sessionctl` はそれらのみを実行します。スプラッシュは、ターゲットがサーフェスを再作成する場合にのみリロードをカバーします: Taskbar バーまたは画面に戻るコントロールパネルはすべてのウィンドウをシフトさせます。それ以外のすべてはその場でリロードされます。
 
 | 変更 | 対象 | スプラッシュ |
 | --- | --- | --- |
@@ -104,8 +104,8 @@ argvus sessionctl apply-config
 | --- | --- |
 | Hyprland | `generated/hypr/`（テーマプロファイルを含む）、`spaces-effective.conf`、`borders-effective.conf`、`hypridle.conf`、`monitors.lua` |
 | レイアウト/エフェクト | `generated/effects/`、`generated/spaces.conf`、`generated/borders.conf` |
-| Waybar | `generated/waybar/`、`argvus-taskbar.css` および `argvus-widget-telemetry.{jsonc,css}` を含む |
-| ウィジェットテレメトリテーマ | `generated/widget-telemetry/` および `generated/waybar/widget-telemetry-themes/` |
+| Taskbar | `generated/taskbar/`、`argvus-taskbar.css` および `argvus-widget-telemetry.{jsonc,css}` を含む |
+| ウィジェットテレメトリテーマ | `generated/widget-telemetry/` および `generated/taskbar/widget-telemetry-themes/` |
 | QuickShell | `generated/quickshell/` |
 | 通知 | `generated/notifications/` および `dunstrc` |
 | ロック画面 | `generated/hypr/hyprlock.conf` および Hyprtoolkit テーマプロファイル |
@@ -113,18 +113,18 @@ argvus sessionctl apply-config
 |ヤジ | `generated/yazi/` |
 |スーパーファイル | `generated/superfile/` |
 | ターミナルおよび Qt プロファイル | `generated/terminal/`、`generated/qt6ct/` |
-| フォント | `generated/fonts.conf` および Waybar スタイルシート内の管理されたフォントブロック |
+| フォント | `generated/fonts.conf` および Taskbar スタイルシート内の管理されたフォントブロック |
 | リムーバブルデバイス | `generated/removable-devices/theme.css` |
 | 壁紙 | `generated/hypr/hyprpaper.conf` および `data/hypr/hyprpaper.conf` |
 | コントロールパネルおよびデフォルト | `data/control-panel/`、`data/control-center/defaults.json` |
 | カレンダー、入力、キーボード、電源 | カレンダー TOML、入力フラグメント、キーボード状態、スリープ防止マーカー |
 
 テーマレイヤーは生成されたルートの外側にも反映されています：
-`data/waybar/argvus-taskbar.{jsonc,css}`,
-`data/waybar/argvus-widget-telemetry.{jsonc,css}`, `data/foot/`,
+`data/taskbar/argvus-taskbar.{jsonc,css}`,
+`data/taskbar/argvus-widget-telemetry.{jsonc,css}`, `data/foot/`,
 `data/qt6ct/`, `data/hypr/hyprtoolkit.conf` と
 `data/hypr/application-style.conf`。これらのコピーは、外観セクションが変更されるとパッケージ化されたデフォルトから置き換えられ、その後プロジェクターは
-自分の区切られた管理ブロックのみを書き換えます — Waybar スタイルシート内のフォントブロックと
+自分の区切られた管理ブロックのみを書き換えます — Taskbar スタイルシート内のフォントブロックと
 テレメトリプロファイル内の `ARGVUS_TELEMETRY_*` ブロック — したがってマーカー外のテキストはテーマスイッチでは保持されません。`fonts.targets` と
 `control_panel.widget_telemetry_blocks` は標準のままです：コントロールセンターは
 `argvus-config` を通してそれらを維持し、これらのファイル自体は決して書き込みません。
@@ -137,7 +137,7 @@ Hyprland のスペーシングおよびボーダーの設定も同じ境界に�
 
 論理的な ARGVUS パスも `argvus config paths` によって解決されます。従来の `paths.sh` ファイルは互換性関数のみを公開し、ネイティブのオーバーライド、ユーザーデータ、生成データ、システムフォールバックは Rust パスモデルによって解決されます。
 
-`audio` はデフォルトの出力先を変更し、その結果を `/audio` に1ステップで記録します：`argvus config audio volume <N|+N|-N> [--limit PERCENT]` と `argvus config audio mute <on|off|toggle>`。PipeWire にはすでに値があるため、設定を再読み込みせずにストアに書き込みます。Waybar のボリュームモジュール、Hyprland のメディアキー、コントロールパネルがこれを使用するため、`argvus config project` は、`/audio` をシンクに投影しても、以前のボリュームを復元することはありません。100%を超えるボリューム（Hyprland のキーでは最大150%まで）は100として保存されます。
+`audio` はデフォルトの出力先を変更し、その結果を `/audio` に1ステップで記録します：`argvus config audio volume <N|+N|-N> [--limit PERCENT]` と `argvus config audio mute <on|off|toggle>`。PipeWire にはすでに値があるため、設定を再読み込みせずにストアに書き込みます。Taskbar のボリュームモジュール、Hyprland のメディアキー、コントロールパネルがこれを使用するため、`argvus config project` は、`/audio` をシンクに投影しても、以前のボリュームを復元することはありません。100%を超えるボリューム（Hyprland のキーでは最大150%まで）は100として保存されます。
 
 `patch` は、1 回のロックされた読み取り-修正-書き込み操作で、そのキーが JSON ポインタである JSON オブジェクトを適用します。`apply-theme` は同等のアトミックなテーマトランザクションを実行し、テーマのオプションの外観プロファイルまたはパッケージ化されたデフォルトから管理される外観セクションを置き換えます。変更コマンドは `NextUserConfig` を構築し、`EffectiveConfig` を解決し、すべてのプロジェクターをステージングし、その後にのみ標準 JSON を公開します。運用上の `.config-transaction.json` マーカーにより、`argvus config recover` はデータと JSON の公開の間のクラッシュ後に前の構成を再投影できます。テーマのデフォルトは各テーマのマニフェスト（`themes/<theme>/theme.toml`）によって宣言されます：デフォルトのアクセント（`palette.accent`）、GTK カラースキームおよび壁紙です。CSS、Lua、Rasi および Qt ファイルは、そこからテーマビルドにレンダリングされます。
 
@@ -165,7 +165,7 @@ argvus config import --scope appearance appearance.json
 
 コントロールパネルは、カードの順序と表示に`control_panel.cards`を使用し、パネルのマスタースイッチには`control_panel.enabled`を使用します。`control-panel/cards.json`および`state/control-panel`ファイルは互換性のための投影として保持されます。したがって、コントロールパネルで行われた変更は`desktop`のエクスポート範囲の一部となります。
 
-フォントの設定は、タスクバー、テレメトリ、コントロールパネル、システム、アプリケーション、端末、およびブラウザのターゲットのフォントファミリー、スタイル、サイズに`fonts.targets`を使用します。`fonts.rendering`は、アンチエイリアス、ヒンティング、サブピクセル順序、DPIの設定を保存します。`fonts.conf`、フォント設定ルール、デスクトップ設定、およびWaybarのスタイルシート内の管理されたフォントブロックは投影です：コントロールセンターは`/fonts/targets/*`から`argvus-config`までを保持し、プロジェクターはその区切られたブロックのみを書き換えます。
+フォントの設定は、タスクバー、テレメトリ、コントロールパネル、システム、アプリケーション、端末、およびブラウザのターゲットのフォントファミリー、スタイル、サイズに`fonts.targets`を使用します。`fonts.rendering`は、アンチエイリアス、ヒンティング、サブピクセル順序、DPIの設定を保存します。`fonts.conf`、フォント設定ルール、デスクトップ設定、およびTaskbarのスタイルシート内の管理されたフォントブロックは投影です：コントロールセンターは`/fonts/targets/*`から`argvus-config`までを保持し、プロジェクターはその区切られたブロックのみを書き換えます。
 
 Hyprland の設定では、ショートカットに `keyboard_shortcuts`、マウスとタッチパッドの設定に `hyprland.input`、XKB レイアウト、バリアント、およびオプションに `hyprland.keyboard` を使用します。マニフェストのバインディング ID は安定した `config_key` にマッピングされます（例えば `window.close` → `close_window` および `window.drag_mouse` → `drag_window__floating_window_only`）。ディスプレイ設定では `displays.monitors`、`displays.workspaces`、および `displays.primary_monitor` を使用します。`data/generated/` 下のネイティブ TOML ファイルと生成された Lua ファイルは、Hyprland によって使用される投影のままです。
 
@@ -261,13 +261,13 @@ argvus config window-mode toggle
 
 フローティングモードでは、通常のアプリケーションウィンドウに **最小化**、**最大化 / 元に戻す**、および **閉じる** を持つ ARGVUS タイトルバーが追加されます。タイトルバーをダブルクリックすると最大化の切り替えが行われます。この追加装飾はタイル表示および全画面表示では非表示になります。自分でコントロールを描画するアプリケーションは両方のバーを表示する場合がありますが、ARGVUS の統一されたコントロールは意図的なものです。
 
-セカンドWaybarは、各モニターのメインタスクバーとは反対の端に表示されます。それぞれのモニターの現在のワークスペースに属するウィンドウのみを一覧表示し、そのワークスペースで最小化されたウィンドウも含まれます。オープンされている特別なワークスペースが優先されます。固定されたウィンドウは常に表示され、非表示のグループタブは追加エントリを作成せず、最小化されたグループは1つの復元エントリを持ちます。アプリケーション内のタブは個別に列挙されません。最小化されたエントリは元のモニター/ワークスペースの関連付けを保持します。非アクティブウィンドウをクリックするとアクティブ化され、アクティブウィンドウをクリックすると最小化され、最小化されたウィンドウをクリックすると復元されます。そのコンテキストメニューには復元、最小化、最大化/復元、閉じるが含まれます。未知のアプリケーションアイコンはウィンドウのシンボルにフォールバックします。エントリをアクティブ化または復元するとポインターの位置は保持されます。セカンダリバーは有効なプライマリCSS（色、フォント、境界線、角丸）を使用し、その高さと反対側の端でのマージンミラーを適用します。
+セカンドTaskbarは、各モニターのメインタスクバーとは反対の端に表示されます。それぞれのモニターの現在のワークスペースに属するウィンドウのみを一覧表示し、そのワークスペースで最小化されたウィンドウも含まれます。オープンされている特別なワークスペースが優先されます。固定されたウィンドウは常に表示され、非表示のグループタブは追加エントリを作成せず、最小化されたグループは1つの復元エントリを持ちます。アプリケーション内のタブは個別に列挙されません。最小化されたエントリは元のモニター/ワークスペースの関連付けを保持します。非アクティブウィンドウをクリックするとアクティブ化され、アクティブウィンドウをクリックすると最小化され、最小化されたウィンドウをクリックすると復元されます。そのコンテキストメニューには復元、最小化、最大化/復元、閉じるが含まれます。未知のアプリケーションアイコンはウィンドウのシンボルにフォールバックします。エントリをアクティブ化または復元するとポインターの位置は保持されます。セカンダリバーは有効なプライマリCSS（色、フォント、境界線、角丸）を使用し、その高さと反対側の端でのマージンミラーを適用します。
 
 `SUPER + Alt + Up`はメインバーを上に、ウィンドウバーを下に配置します。`SUPER + Alt + Down`はその逆を行います。同じ方向を繰り返すと、位置は変更されません。タイルにはメインバーのみがあります。タイルに戻ると、ウィンドウバーを削除する前にすべての最小化されたウィンドウを復元し、その後、元のタイル/フローティングのポリシーを保持します。
 
 最小化は予約済みの`special:argvus-minimized`ワークスペースを使用します。そのワークスペースを手動で使用しないでください。`argvus windows service`プロセスは、識別情報、元のワークスペース/モニター、ジオメトリ、フルスクリーン/最大化およびピン状態を、`$XDG_RUNTIME_DIR/argvus`の下にあるコンポジタインスタンス固有の実行時レジストリに記録します。記録はサービスの再起動や設定の再読み込みによっても保持されますが、コンポジタセッションを超えることはありません。ウィンドウを閉じると、その記録は削除されます。モニターが消えた場合、復元には利用可能な出力が使用されます。バーが存在しないか復元に失敗した場合、新しい最小化はできません。復元に失敗した場合、記録と復元バーは保持されます。
 
-セッションは`argvus-windows.service`と`argvus-window-bar.service`を所有します。後者はWaybarの子プロセスをTileで休止状態に保ちます。hyprbarsプラグインは`argvus-hyprland`で同梱されており、x86_64上のHyprland 0.57.0 ABI向けにビルドされています。ユーザーのホームディレクトリではコンパイルされていません。コンポジタのABIが更新された場合、プラグインを再ビルドしてください。コマンド: `argvus windows list --json`、`watch --json`、`position top|bottom`、`restore-all`、および `minimize|restore|activate|maximize|close ADDRESS`。ウィンドウアドレスはリストから取得されます。`position top --persist` はメインバーを再起動せずに設定を保存/適用します。構成および実行時のエラーの詳細はジャーナルに書き込まれます。表示されるアクションの失敗も翻訳された通知として表示されます。
+セッションは`argvus-windows.service`と`argvus-window-bar.service`を所有します。後者はTaskbarの子プロセスをTileで休止状態に保ちます。hyprbarsプラグインは`argvus-hyprland`で同梱されており、x86_64上のHyprland 0.57.0 ABI向けにビルドされています。ユーザーのホームディレクトリではコンパイルされていません。コンポジタのABIが更新された場合、プラグインを再ビルドしてください。コマンド: `argvus windows list --json`、`watch --json`、`position top|bottom`、`restore-all`、および `minimize|restore|activate|maximize|close ADDRESS`。ウィンドウアドレスはリストから取得されます。`position top --persist` はメインバーを再起動せずに設定を保存/適用します。構成および実行時のエラーの詳細はジャーナルに書き込まれます。表示されるアクションの失敗も翻訳された通知として表示されます。
 
 **Spaced + Floating** では、ウィンドウは外側のギャップと両方のバーによって確保された領域を尊重します。ボーダーとタイトルを含む境界は、同じウィンドウボーダー内に収まります。ARGVUS コントロールを使った最大化は、マージン付きでこの領域を埋めます。復元すると、サービス再起動後も以前のジオメトリを回復します。フルスクリーンは依然として出力全体を使用します。フローティングウィンドウは重なり合うことがあります; タイリングの内部ギャップはそれらを分離しません。
 

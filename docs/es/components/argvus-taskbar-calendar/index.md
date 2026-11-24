@@ -2,7 +2,7 @@
 title: Calendario
 description: Usa el calendario de la barra de tareas ARGVUS.
 ---
-`argvus-taskbar-calendar` es el calendario emergente de GTK4 abierto desde el módulo de fecha de Waybar o con:
+`argvus-taskbar-calendar` es el calendario emergente de GTK4 abierto desde el módulo de fecha de Taskbar o con:
 
 ```sh
 argvus --calendar
@@ -19,7 +19,7 @@ Cuando se abre desde el módulo de fecha de la barra de tareas, el popup se ancl
 
 ```bash
 argvus taskbar-calendar                 open the calendar
-argvus taskbar-calendar toggle          show or hide it (the Waybar date module uses this)
+argvus taskbar-calendar toggle          show or hide it (the Taskbar date module uses this)
 argvus taskbar-calendar show | hide
 argvus taskbar-calendar config          open the system configuration for editing (sudo)
 argvus taskbar-calendar config-path     print the configuration path

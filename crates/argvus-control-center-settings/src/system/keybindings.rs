@@ -119,7 +119,7 @@ pub fn binding_description(lang: Lang, binding: &Binding) -> Option<String> {
       "Open/Close notification sidebar",
       "Abre/Fecha sidebar de notificações",
     ),
-    "widget.taskbar_toggle" => ("Toggle Waybar top", "Oculta/Mostra Waybar top"),
+    "widget.taskbar_toggle" => ("Toggle Taskbar top", "Oculta/Mostra Taskbar top"),
     "appearance.wallpaper" => (
       "Open Control Center wallpapers",
       "Abre os wallpapers do Control Center",
@@ -152,7 +152,7 @@ pub fn binding_description(lang: Lang, binding: &Binding) -> Option<String> {
     ),
     "session.exit" => ("Exit system", "Sair do sistema"),
     "session.reload" => ("Reload Hyprland", "Recarregar Hyprland"),
-    "widget.waybar_top" | "widget.waybar_bottom" => (
+    "widget.taskbar_top" | "widget.taskbar_bottom" => (
       "Move taskbar to top/bottom",
       "Mover barra de tarefas para topo/inferior",
     ),

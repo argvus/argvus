@@ -5,7 +5,7 @@ description: Cài đặt, định cấu hình và sử dụng môi trường má
 
 ARGVUS là môi trường máy tính để bàn Hyprland và Wayland mô-đun dành cho Arch Linux. Bắt đầu với [cài đặt](/docs/getting-started/installation/), sau đó chọn một tính năng từ hướng dẫn sử dụng.
 
-Máy tính để bàn kết hợp phiên Hyprland, thanh tác vụ Waybar, bảng điều khiển Quickshell, các ứng dụng gốc và nhà cung cấp hệ thống. [Hướng dẫn kiến ​​trúc](/docs/developer-guide/architecture/overview/) giải thích cách các phần đó phối hợp với nhau.
+Máy tính để bàn kết hợp phiên Hyprland, thanh tác vụ Taskbar, bảng điều khiển Quickshell, các ứng dụng gốc và nhà cung cấp hệ thống. [Hướng dẫn kiến ​​trúc](/docs/developer-guide/architecture/overview/) giải thích cách các phần đó phối hợp với nhau.
 
 ## Điểm vào chung
 

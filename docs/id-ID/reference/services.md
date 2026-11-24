@@ -71,7 +71,7 @@ Mulai ulang layanan individual tanpa memengaruhi keseluruhan sesi:
 
 ```sh
 # Desktop surfaces
-argvus sessionctl restart waybar
+argvus sessionctl restart taskbar
 argvus sessionctl restart wallpaper
 argvus sessionctl restart shell
 

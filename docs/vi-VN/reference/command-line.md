@@ -31,14 +31,14 @@ Chạy `argvus --help` để biết danh sách được cài đặt cùng với 
 | `argvus du` | Người trợ giúp (ứng dụng đầu cuối) | Mở Trình phân tích sử dụng đĩa ARGVUS trong cửa sổ Kitty chuyên dụng và chạy ncdu. |
 | `argvus network ...` | Đang xử lý | Trạng thái và điều khiển của Trình quản lý mạng (`networkctl` được giữ dưới dạng bí danh). |
 | `argvus bluetooth ...` | Đang xử lý | Trạng thái và điều khiển Bluetooth (`bluetoothctl` được giữ làm bí danh). |
-| `argvus widget-telemetry block ...` | Đang xử lý | Khối đo từ xa Waybar. Đây là con đường hot của quán bar. || `argvus widget-telemetry toggle ...` | Đang xử lý | Bật và tắt các khối đo từ xa cũng như thứ tự của chúng. |
+| `argvus widget-telemetry block ...` | Đang xử lý | Khối đo từ xa Taskbar. Đây là con đường hot của quán bar. || `argvus widget-telemetry toggle ...` | Đang xử lý | Bật và tắt các khối đo từ xa cũng như thứ tự của chúng. |
 | `argvus game-snake` | Thực thi riêng tư | Trò chơi Snake cuối cùng, từ dự án `argvus-game-snake` độc lập, một gói tùy chọn. Bên ngoài một thiết bị đầu cuối, nó sẽ mở một thiết bị đầu cuối. |
 | `argvus control-center [page]` | Người trợ giúp (ứng dụng đầu cuối) | Mở Trung tâm điều khiển hoặc tập trung vào cửa sổ đã mở. |
 | `argvus welcome [--if-needed]` | Người điều phối → Trung tâm điều khiển | Mở trang Chào mừng tích hợp trong Trung tâm điều khiển. `--if-needed` mở một lần trừ khi tiến trình của mỗi người dùng ghi lại rằng Chào mừng đã được hiển thị, hoàn thành hoặc loại bỏ. |
 | `argvus taskbar-calendar [args]` | Ứng dụng GTK 4 | Mặc định là `toggle`. |
 | `argvus removable-devices [args]` | Ứng dụng GTK 4 | Mặc định là `menu`. |
 | `argvus focus [--toggle] [--start\|--pause] [--x X --y Y] [--bar-bottom PX --bar-right PX]` | Ứng dụng GTK 4 | Cửa sổ bật lên tiêu điểm ARGVUS. Một phiên bản mỗi phiên. |
-| `argvus focus status --waybar [--follow]` | Đang xử lý | Phát ra chỉ báo thanh tác vụ Focus dưới dạng Waybar JSON; Luồng `--follow` thay đổi mà không tải GTK. |
+| `argvus focus status --taskbar [--follow]` | Đang xử lý | Phát ra chỉ báo thanh tác vụ Focus dưới dạng Taskbar JSON; Luồng `--follow` thay đổi mà không tải GTK. |
 | `argvus clock [--toggle] [--background] [--page PAGE] [--x X --y Y] [--bar-bottom PX --bar-right PX]` | Ứng dụng GTK 4 | Cửa sổ bật lên Đồng hồ ARGVUS. Một phiên bản mỗi phiên; `--background` duy trì cảnh báo hoạt động mà không cần cửa sổ bật lên. |
 | `argvus loading-theme ...` | `splash` được đóng gói tại `/usr/lib/argvus/loading-theme/splash` | Lớp phủ tải lại phiên trực tiếp; một chuyển đổi chủ đề không sử dụng nó. |
 | `argvus session`, `start`, `tty`, `sessionctl` | Tệp thực thi riêng tư | Điểm vào phiên và bộ điều khiển phiên. |

@@ -51,7 +51,7 @@
   },
   {
     "category": "category.paths",
-    "keys": "$HOME/.config/argvus/data/<app>/  (hypr, waybar, quickshell, ...)",
+    "keys": "$HOME/.config/argvus/data/<app>/  (hypr, taskbar, quickshell, ...)",
     "description": "reference.11"
   },
   {
@@ -71,7 +71,7 @@
   },
   {
     "category": "category.paths",
-    "keys": "$HOME/.config/argvus/data/waybar/",
+    "keys": "$HOME/.config/argvus/data/taskbar/",
     "description": "reference.15"
   },
   {

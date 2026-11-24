@@ -6,7 +6,7 @@ description: 工作区整合后 ARGVUS 源代码库的职责。
 
 - workspace: `argvus`（调度器、进程内命令、GTK 4 辅助工具、共享 crates、`crates/argvus-greeter` 中的欢迎界面以及命令的数据）；
 - session 和 integration: `argvus-session`、`argvus-hyprland`、`argvus-portal`、`argvus-lock`、`argvus-boot-splash`，以及欢迎界面（`argvus-greeter`，由 `argvus/crates/argvus-greeter` 构建）；
-- workspace 外的 UI: 控制面板、任务栏（`argvus-taskbar`）、启动器和 Waybar；
+- workspace 外的 UI: 控制面板、任务栏（`argvus-taskbar`）、启动器和 Taskbar；
 - providers: 显示、电源、防火墙、通知；
 - 资源和打包: 外观、壁纸、字体、图标、配置文件。
 

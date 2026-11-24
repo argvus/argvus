@@ -35,7 +35,7 @@ Gói `argvus` cung cấp bộ điều phối `/usr/bin/argvus` và điểm vào 
 
 ### Bộ tổng hợp và vỏ máy tính để bàn
 
-`argvus-hyprland` cung cấp cấu hình và tổ hợp phím Hyprland. `argvus-waybar` cung cấp tệp nhị phân Waybar đã vá, trong khi `argvus-taskbar` sở hữu cấu hình và hành động của thanh tác vụ. `argvus-control-panel` cung cấp bảng điều khiển Quickshell và `argvus widget-telemetry` cung cấp các tiện ích hệ thống tùy chọn, đang được xử lý trong `argvus`.
+`argvus-hyprland` cung cấp cấu hình và tổ hợp phím Hyprland. `argvus-taskbar` cung cấp tệp nhị phân Taskbar đã vá, trong khi `argvus-taskbar` sở hữu cấu hình và hành động của thanh tác vụ. `argvus-control-panel` cung cấp bảng điều khiển Quickshell và `argvus widget-telemetry` cung cấp các tiện ích hệ thống tùy chọn, đang được xử lý trong `argvus`.
 
 Xem [Desktop](/docs/user-guide/desktop/) để biết cách sử dụng và [bề mặt vỏ](/docs/developer-guide/subsystems/shell-surfaces/) để biết quyền sở hữu triển khai.
 
@@ -55,7 +55,7 @@ Xem [Phần cứng](/docs/user-guide/hardware/), [Quyền riêng tư và bảo m
 
 ## Trạng thái hiển thị được chia sẻ
 
-Các tùy chọn chủ đề, giọng, hình nền, phông chữ và hiệu ứng được lưu trữ dưới dạng trạng thái logic trong `$XDG_CONFIG_HOME/argvus` (thường là `~/.config/argvus`). `argvus-config` là thành phần duy nhất ghi `data/generated/`, nơi nó chiếu các tệp người tiêu dùng cho Hyprland, GTK, Qt6ct, Waybar, Quickshell, Dunst, thông báo, màn hình khóa, Yazi, Superfile và thiết bị đầu cuối. Trình trợ giúp giao diện cam kết thay đổi trạng thái và sau đó điều chỉnh các ứng dụng bên ngoài; họ không bao giờ viết cây được tạo ra.Thư mục được tạo không phải là nguồn gốc của sự thật. Xem [Giao diện](/docs/user-guide/appearance/) và [cấu hình và trạng thái](/docs/developer-guide/architecture/configuration-and-state/).
+Các tùy chọn chủ đề, giọng, hình nền, phông chữ và hiệu ứng được lưu trữ dưới dạng trạng thái logic trong `$XDG_CONFIG_HOME/argvus` (thường là `~/.config/argvus`). `argvus-config` là thành phần duy nhất ghi `data/generated/`, nơi nó chiếu các tệp người tiêu dùng cho Hyprland, GTK, Qt6ct, Taskbar, Quickshell, Dunst, thông báo, màn hình khóa, Yazi, Superfile và thiết bị đầu cuối. Trình trợ giúp giao diện cam kết thay đổi trạng thái và sau đó điều chỉnh các ứng dụng bên ngoài; họ không bao giờ viết cây được tạo ra.Thư mục được tạo không phải là nguồn gốc của sự thật. Xem [Giao diện](/docs/user-guide/appearance/) và [cấu hình và trạng thái](/docs/developer-guide/architecture/configuration-and-state/).
 
 Hệ thống thị giác cũng kiểm soát bố cục. Chế độ dính nhỏ gọn và vuông vức; Chế độ giãn cách sử dụng các khoảng trống cửa sổ lớn hơn, các góc tròn và lề rộng hơn xung quanh thanh tác vụ và vỏ. Thanh tác vụ mặc định ở cạnh trên nhưng hỗ trợ vị trí trên/dưới thông qua trạng thái bố cục được chia sẻ. Các hiệu ứng kiểm soát độ trong suốt, độ mờ, bóng và hình ảnh động trên bề mặt bộ tổng hợp và màn hình nền.
 

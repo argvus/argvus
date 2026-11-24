@@ -3,7 +3,7 @@ title: المظهر
 description: قم بتكوين اللغة المرئية المشتركة بواسطة مكونات ARGVUS.
 ---
 
-يطبق نظام المظهر حالة سمة واحدة على تطبيقات Hyprland وGTK وQt وWaybar وQuickshell وRofi وDunst وHyprlock وARGVUS.
+يطبق نظام المظهر حالة سمة واحدة على تطبيقات Hyprland وGTK وQt وTaskbar وQuickshell وRofi وDunst وHyprlock وARGVUS.
 
 ## العائلات الموضوعية
 

@@ -67,10 +67,10 @@ mod tests {
   #[test]
   fn parses_journal_lines_and_sanitizes() {
     let entry = parse_line(
-      r#"{"__REALTIME_TIMESTAMP":"1700000000000000","_SYSTEMD_UNIT":"waybar.service","_PID":"1234","MESSAGE":"bad\u001b[31m text"}"#,
+      r#"{"__REALTIME_TIMESTAMP":"1700000000000000","_SYSTEMD_UNIT":"taskbar.service","_PID":"1234","MESSAGE":"bad\u001b[31m text"}"#,
     )
     .unwrap();
-    assert_eq!(entry.unit.as_deref(), Some("waybar.service"));
+    assert_eq!(entry.unit.as_deref(), Some("taskbar.service"));
     assert_eq!(entry.pid.as_deref(), Some("1234"));
     assert_eq!(entry.message.as_deref(), Some("bad text"));
     assert_eq!(entry.timestamp_micros, Some(1_700_000_000_000_000));

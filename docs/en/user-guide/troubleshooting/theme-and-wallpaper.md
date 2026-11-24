@@ -29,7 +29,7 @@ cat "${XDG_CONFIG_HOME:-$HOME/.config}/argvus/data/generated/theme/current/build
 argvus config theme-runtime consumers
 ```
 
-Every themed file comes from the build: a theme that is not installed (no `theme.toml` under `/usr/share/argvus/themes/` or `~/.local/share/argvus/themes/`) or does not render is refused, and the previous theme stays. `argvus theme check DIRECTORY` shows the template and line of each render error. A Waybar bar reloads its colours only with `reload_style_on_change` in its JSONC. If a switch seems stuck, check whether it is still running; it records itself in `theme-switch.active`, beside its lock:
+Every themed file comes from the build: a theme that is not installed (no `theme.toml` under `/usr/share/argvus/themes/` or `~/.local/share/argvus/themes/`) or does not render is refused, and the previous theme stays. `argvus theme check DIRECTORY` shows the template and line of each render error. A Taskbar bar reloads its colours only with `reload_style_on_change` in its JSONC. If a switch seems stuck, check whether it is still running; it records itself in `theme-switch.active`, beside its lock:
 
 ```sh
 cat "${XDG_CACHE_HOME:-$HOME/.cache}/argvus/theme-switch.active"

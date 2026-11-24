@@ -19,13 +19,13 @@
   "bluetoothctl_missing": "bluetoothctl n'a pas été trouvé",
   "bluetooth.power_failed": "Impossible de faire tourner Bluetooth {target}",
   "blueman_missing": "Le gestionnaire Blueman en option n'est pas installé",
-  "waybar.no_iface": "Aucune interface réseau trouvée",
-  "waybar.network": "Réseau",
-  "waybar.disconnected": "Déconnecté",
-  "waybar.connected": "Connecté",
-  "waybar.limited": "Connectivité limitée",
-  "waybar.no_internet": "Pas d'accès Internet",
-  "waybar.reconnecting": "Reconnexion",
-  "waybar.state": "État",
-  "waybar.command_failed": "Échec de la commande : {command}"
+  "taskbar.no_iface": "Aucune interface réseau trouvée",
+  "taskbar.network": "Réseau",
+  "taskbar.disconnected": "Déconnecté",
+  "taskbar.connected": "Connecté",
+  "taskbar.limited": "Connectivité limitée",
+  "taskbar.no_internet": "Pas d'accès Internet",
+  "taskbar.reconnecting": "Reconnexion",
+  "taskbar.state": "État",
+  "taskbar.command_failed": "Échec de la commande : {command}"
 }

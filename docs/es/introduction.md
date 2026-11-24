@@ -33,7 +33,7 @@ El paquete `argvus` proporciona el despachador `/usr/bin/argvus` y el punto de e
 
 ### Compositor y shell de escritorio
 
-`argvus-hyprland` suministra la configuración y los atajos de teclado de Hyprland. `argvus-waybar` suministra el binario de Waybar parcheado, mientras que `argvus-taskbar` posee la configuración de la barra de tareas y las acciones. `argvus-control-panel` suministra el panel Quickshell, y `argvus widget-telemetry` suministra widgets de sistema opcionales, en proceso en `argvus`.
+`argvus-hyprland` suministra la configuración y los atajos de teclado de Hyprland. `argvus-taskbar` suministra el binario de Taskbar parcheado, mientras que `argvus-taskbar` posee la configuración de la barra de tareas y las acciones. `argvus-control-panel` suministra el panel Quickshell, y `argvus widget-telemetry` suministra widgets de sistema opcionales, en proceso en `argvus`.
 
 Vea [Desktop](/docs/user-guide/desktop/) para el uso y [shell surfaces](/docs/developer-guide/subsystems/shell-surfaces/) para la propiedad de implementación.
 
@@ -53,7 +53,7 @@ Vea [Hardware](/docs/user-guide/hardware/), [Privacidad y seguridad](/docs/user-
 
 ## Estado de apariencia compartido
 
-Las preferencias de tema, acento, fondo de pantalla, fuente y efectos se almacenan como estado lógico bajo `$XDG_CONFIG_HOME/argvus` (normalmente `~/.config/argvus`). `argvus-config` es el único componente que escribe `data/generated/`, donde proyecta archivos de usuario para Hyprland, GTK, Qt6ct, Waybar, Quickshell, Dunst, notificaciones, la pantalla de bloqueo, Yazi, Superfile y terminales. Los ayudantes de apariencia confirman el cambio de estado y luego reconcilian las aplicaciones externas; nunca escriben el árbol generado.
+Las preferencias de tema, acento, fondo de pantalla, fuente y efectos se almacenan como estado lógico bajo `$XDG_CONFIG_HOME/argvus` (normalmente `~/.config/argvus`). `argvus-config` es el único componente que escribe `data/generated/`, donde proyecta archivos de usuario para Hyprland, GTK, Qt6ct, Taskbar, Quickshell, Dunst, notificaciones, la pantalla de bloqueo, Yazi, Superfile y terminales. Los ayudantes de apariencia confirman el cambio de estado y luego reconcilian las aplicaciones externas; nunca escriben el árbol generado.
 
 El directorio generado no es la fuente de verdad. Ver [Appearance](/docs/user-guide/appearance/) y [configuration and state](/docs/developer-guide/architecture/configuration-and-state/).
 

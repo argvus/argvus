@@ -19,7 +19,7 @@ Le modifiche ufficiali del tema applicano i valori di aspetto salvati e aggiorna
 cat "${XDG_CONFIG_HOME:-$HOME/.config}/argvus/data/generated/theme/current/build.toml"
 argvus config theme-runtime consumers
 ```
-Ogni file a tema proviene dalla build: un tema che non è installato (nessun `theme.toml` sotto `/usr/share/argvus/themes/` o `~/.local/share/argvus/themes/`) o non viene visualizzato viene rifiutato, e il tema precedente rimane. `argvus theme check DIRECTORY` mostra il template e la riga di ogni errore di visualizzazione. Una barra Waybar ricarica i suoi colori solo con `reload_style_on_change` nel suo JSONC. Se un interruttore sembra bloccato, controlla se è ancora in esecuzione; registra se stesso in `theme-switch.active`, accanto al suo lock:
+Ogni file a tema proviene dalla build: un tema che non è installato (nessun `theme.toml` sotto `/usr/share/argvus/themes/` o `~/.local/share/argvus/themes/`) o non viene visualizzato viene rifiutato, e il tema precedente rimane. `argvus theme check DIRECTORY` mostra il template e la riga di ogni errore di visualizzazione. Una barra Taskbar ricarica i suoi colori solo con `reload_style_on_change` nel suo JSONC. Se un interruttore sembra bloccato, controlla se è ancora in esecuzione; registra se stesso in `theme-switch.active`, accanto al suo lock:
 
 ```sh
 cat "${XDG_CACHE_HOME:-$HOME/.cache}/argvus/theme-switch.active"

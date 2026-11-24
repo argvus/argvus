@@ -15,10 +15,10 @@ description: File dan direktori ARGVUS penting yang diinstal.
 - `/etc/argvus/removable-devices/config.json` — default sistem untuk penyimpanan yang dapat dilepas.
 - `$XDG_CONFIG_HOME/argvus/config.json` — preferensi portabel kanonik.
 - `$XDG_CONFIG_HOME/argvus/data/` — data komponen yang dikelola, cadangan, kunci, dan keluaran yang dihasilkan.
-- `$XDG_CONFIG_HOME/waybar/argvus-taskbar.{jsonc,css}` — penggantian bilah tugas Waybar asli opsional yang lengkap.
+- `$XDG_CONFIG_HOME/taskbar/argvus-taskbar.{jsonc,css}` — penggantian bilah tugas Taskbar asli opsional yang lengkap.
 - `$XDG_CONFIG_HOME/argvus/data/taskbar/argvus-taskbar.{jsonc,css}` — salinan bilah tugas ARGVUS yang dikelola.
-- `$XDG_CONFIG_HOME/argvus/data/generated/waybar/` — menghasilkan profil Waybar, termasuk `argvus-taskbar.css` dan `argvus-widget-telemetry.{jsonc,css}`; ini lebih diutamakan daripada salinan di atas.
-- `$XDG_CONFIG_HOME/argvus/data/generated/waybar/argvus-widget-telemetry.{jsonc,css}` — juga dicerminkan di bawah `data/waybar/`, yang diganti dari paket default dengan perubahan tampilan dan kemudian `ARGVUS_TELEMETRY_*` dan blok fontnya ditulis ulang.
+- `$XDG_CONFIG_HOME/argvus/data/generated/taskbar/` — menghasilkan profil Taskbar, termasuk `argvus-taskbar.css` dan `argvus-widget-telemetry.{jsonc,css}`; ini lebih diutamakan daripada salinan di atas.
+- `$XDG_CONFIG_HOME/argvus/data/generated/taskbar/argvus-widget-telemetry.{jsonc,css}` — juga dicerminkan di bawah `data/taskbar/`, yang diganti dari paket default dengan perubahan tampilan dan kemudian `ARGVUS_TELEMETRY_*` dan blok fontnya ditulis ulang.
 - `$XDG_CONFIG_HOME/argvus/data/generated/yazi/` — proyeksi pohon konfigurasi Yazi, dengan fallback yang peka terhadap varian untuk tema yang tidak memberikan cita rasa Yazi.
 - `$XDG_CONFIG_HOME/argvus/data/generated/superfile/` — kumpulan tema Superfile yang diproyeksikan.
 - `$XDG_CONFIG_HOME/argvus/data/generated/terminal/` — profil terminal yang diproyeksikan.

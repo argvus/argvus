@@ -29,7 +29,7 @@ cat "${XDG_CONFIG_HOME:-$HOME/.config}/argvus/data/generated/theme/current/build
 argvus config theme-runtime consumers
 ```
 
-Setiap file bertema berasal dari build: tema yang tidak diinstal (tidak ada `theme.toml` di bawah `/usr/share/argvus/themes/` atau `~/.local/share/argvus/themes/`) atau tidak dirender akan ditolak, dan tema sebelumnya tetap ada. `argvus theme check DIRECTORY` menunjukkan templat dan baris dari setiap kesalahan render. Bilah Waybar memuat ulang warnanya hanya dengan `reload_style_on_change` di JSONC-nya. Jika saklar tampak macet, periksa apakah saklar masih berjalan; ia mencatat dirinya sendiri di `theme-switch.active`, di samping kuncinya:
+Setiap file bertema berasal dari build: tema yang tidak diinstal (tidak ada `theme.toml` di bawah `/usr/share/argvus/themes/` atau `~/.local/share/argvus/themes/`) atau tidak dirender akan ditolak, dan tema sebelumnya tetap ada. `argvus theme check DIRECTORY` menunjukkan templat dan baris dari setiap kesalahan render. Bilah Taskbar memuat ulang warnanya hanya dengan `reload_style_on_change` di JSONC-nya. Jika saklar tampak macet, periksa apakah saklar masih berjalan; ia mencatat dirinya sendiri di `theme-switch.active`, di samping kuncinya:
 
 ```sh
 cat "${XDG_CACHE_HOME:-$HOME/.cache}/argvus/theme-switch.active"

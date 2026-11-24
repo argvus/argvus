@@ -7,7 +7,7 @@ Normal kullanıcı kökü `$XDG_CONFIG_HOME/argvus`'dur (genellikle `~/.config/a
 
 `argvus-config`, `generated/`'nun altındaki tek yazardır. ARGVUS'a ait her
 tüketici dosyası, Hyprland, GTK, Qt6ct dahil olmak üzere `config.json`'nun bir projeksiyonudur.
-Waybar, Quickshell, Dunst, Hyprlock, Waybar görev çubuğu ve widget telemetrisi
+Taskbar, Quickshell, Dunst, Hyprlock, Taskbar görev çubuğu ve widget telemetrisi
 profilleri, Yazi ve Superfile yapılandırma ağaçları, terminal ve Qt profili
 ağaçlar, yazı tipi yönetimli bloklar ve çıkarılabilir cihazlar stil sayfası. Bileşenler
 açık kullanıcı geçersiz kılmalarını çözümleyin, ardından çıktıyı oluşturun ve ardından paket varsayılanlarını çözün.
@@ -106,7 +106,7 @@ geçiş girişi. Bir bileşenin çalışma zamanında yazdığı her şey (önbe
 Karşılama durumu dosyası olan `$XDG_CONFIG_HOME/<app>` altındaki config dosyası bir bağdaştırıcıdır
 hedeftir ve yapılandırma olarak tekrar okunmamalıdır.
 
-Projeksiyon, Hyprland, GTK/Qt, Waybar, Quickshell, terminaller, bildirimler, kilit ekranı ve yerel uygulamalara yönelik tüketicileri kapsar. Hyprland, seçilen temadaki etkin ve etkin olmayan kenarlık renklerini okur; açık bir `appearance.accent_custom=true`, aktif/grup sınırını kullanıcı aksanıyla geçersiz kılan tek durumdur. Tema değiştirme, bu değerleri derleyicinin yeniden yüklenmesi yoluyla yeniden uygular, böylece önceki temanın renkleri korunamaz. Kullanıcı yapılandırması yeniden oluşturulursa efektler varsayılan olarak animasyonların etkinleştirilmesine ayarlanır. `generated/`'nun silinmesi ve `argvus config apply`'nun çalıştırılması, onu `config.json`'dan bayt bayt yeniden oluşturur; oluşturulan dosyaları doğrudan düzenlemek dayanıklı değildir.
+Projeksiyon, Hyprland, GTK/Qt, Taskbar, Quickshell, terminaller, bildirimler, kilit ekranı ve yerel uygulamalara yönelik tüketicileri kapsar. Hyprland, seçilen temadaki etkin ve etkin olmayan kenarlık renklerini okur; açık bir `appearance.accent_custom=true`, aktif/grup sınırını kullanıcı aksanıyla geçersiz kılan tek durumdur. Tema değiştirme, bu değerleri derleyicinin yeniden yüklenmesi yoluyla yeniden uygular, böylece önceki temanın renkleri korunamaz. Kullanıcı yapılandırması yeniden oluşturulursa efektler varsayılan olarak animasyonların etkinleştirilmesine ayarlanır. `generated/`'nun silinmesi ve `argvus config apply`'nun çalıştırılması, onu `config.json`'dan bayt bayt yeniden oluşturur; oluşturulan dosyaları doğrudan düzenlemek dayanıklı değildir.
 Çalışma zamanı teşhisi, tam yürütme tuple'ını tanımlamalıdır: ikili yol,
 sürüm/revizyon, varlık kökü, yapılandırma kökü, veri kökü, oluşturulan kök, dahili
 kök ve projeksiyon manifestosu. `status --verbose` bu tanımlama grubunu ortaya çıkarır ve

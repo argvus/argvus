@@ -3,7 +3,7 @@ title: Takvimi
 description: ARGVUS görev çubuğu takvimini kullanın.
 ---
 
-`argvus-taskbar-calendar`, Waybar tarih modülünden veya aşağıdakilerle açılan GTK4 takvim açılır penceresidir:
+`argvus-taskbar-calendar`, Taskbar tarih modülünden veya aşağıdakilerle açılan GTK4 takvim açılır penceresidir:
 
 ```sh
 argvus --calendar
@@ -21,7 +21,7 @@ Görev çubuğu tarih modülünden açıldığında açılır pencere çubuğun 
 
 ```bash
 argvus taskbar-calendar                 open the calendar
-argvus taskbar-calendar toggle          show or hide it (the Waybar date module uses this)
+argvus taskbar-calendar toggle          show or hide it (the Taskbar date module uses this)
 argvus taskbar-calendar show | hide
 argvus taskbar-calendar config          open the system configuration for editing (sudo)
 argvus taskbar-calendar config-path     print the configuration path

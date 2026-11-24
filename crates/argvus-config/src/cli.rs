@@ -9,7 +9,7 @@ use crate::{
   theme_apply, theme_resolve, theme_transition, user_copy,
 };
 use crate::{ConfigError, ConfigResult};
-use crate::{accent, accent_switch, display, effects, monitor_state, waybar};
+use crate::{accent, accent_switch, display, effects, monitor_state, taskbar};
 use serde_json::{Map, Value};
 use std::env;
 use std::fs;
@@ -33,8 +33,8 @@ use session_commands::{
 };
 use store_commands::run;
 use taskbar_commands::{
-  css_block, jsonc_margin, setting, taskbar_border, taskbar_height, taskbar_shape, waybar_font,
-  waybar_layout, waybar_refresh,
+  css_block, jsonc_margin, setting, taskbar_border, taskbar_font, taskbar_height, taskbar_layout,
+  taskbar_refresh, taskbar_shape,
 };
 use theme_commands::{
   gtk_files, gtk_runtime, gtk_theme_name, theme_apply_command, theme_command, theme_file,
@@ -55,9 +55,9 @@ pub fn run_command(arguments: Vec<String>) -> ExitCode {
     "window-mode" => crate::window_mode::run(args),
     "effects" => ExitCode::from(effects::run(args) as u8),
     "gtk-theme-name" => gtk_theme_name(args),
-    "waybar-refresh" => waybar_refresh(args),
-    "waybar-layout" => waybar_layout(args),
-    "waybar-font" => waybar_font(args),
+    "taskbar-refresh" => taskbar_refresh(args),
+    "taskbar-layout" => taskbar_layout(args),
+    "taskbar-font" => taskbar_font(args),
     "accent" => accent_switch::run(args),
     "display" => ExitCode::from(display::run(args) as u8),
     "monitor-set" => monitor_set(args),

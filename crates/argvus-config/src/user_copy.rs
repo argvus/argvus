@@ -4,7 +4,7 @@
 //! copy first when it does not exist. The copy is taken from the first source
 //! that has the file, in this order: the component-shaped user copy, the flat
 //! pre-`data/` copy, the generated projection (moved, not copied), and the
-//! packaged file. The waybar stylesheets are special: a generated shim that only
+//! packaged file. The taskbar stylesheets are special: a generated shim that only
 //! imports the packaged stylesheet is retired, and the packaged stylesheet is
 //! copied instead, because the user copy is rewritten by every theme switch.
 
@@ -61,7 +61,7 @@ pub fn ensure_user_copy(paths: &SessionPaths, relative: &str) -> io::Result<Path
     }
   }
   if exists_or_link(&generated) {
-    if is_waybar_stylesheet(&legacy) && is_import_shim(&generated) {
+    if is_taskbar_stylesheet(&legacy) && is_import_shim(&generated) {
       let system = paths.system_config(relative);
       if system.is_file() {
         let retired = PathBuf::from(format!("{}.retired", generated.display()));
@@ -90,8 +90,8 @@ fn exists_or_link(path: &Path) -> bool {
   fs::symlink_metadata(path).is_ok()
 }
 
-fn is_waybar_stylesheet(legacy: &str) -> bool {
-  legacy.starts_with("waybar/") && legacy.ends_with(".css")
+fn is_taskbar_stylesheet(legacy: &str) -> bool {
+  legacy.starts_with("taskbar/") && legacy.ends_with(".css")
 }
 
 /// A generated stylesheet whose first line imports the packaged one. Such a
@@ -183,8 +183,8 @@ mod tests {
   fn existing_user_copy_is_returned_untouched() {
     let root = scratch("existing");
     let paths = paths_under(&root);
-    // The user copy uses the legacy name: taskbar/config is waybar/ on disk.
-    let user = root.join("config/argvus/data/waybar/argvus-taskbar.css");
+    // The user copy uses the legacy name: taskbar/config is taskbar/ on disk.
+    let user = root.join("config/argvus/data/taskbar/argvus-taskbar.css");
     write(&user, "user edit");
     write(
       &root.join("system/taskbar/config/argvus-taskbar.css"),
@@ -242,7 +242,7 @@ mod tests {
   }
 
   #[test]
-  fn waybar_import_shim_is_retired_and_the_packaged_css_is_used() {
+  fn taskbar_import_shim_is_retired_and_the_packaged_css_is_used() {
     let root = scratch("shim");
     let paths = paths_under(&root);
     let generated = root.join("config/argvus/data/generated/taskbar/config/argvus-taskbar.css");

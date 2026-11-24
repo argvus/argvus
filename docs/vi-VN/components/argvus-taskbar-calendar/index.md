@@ -3,7 +3,7 @@ title: Lịch
 description: Sử dụng lịch trên thanh tác vụ ARGVUS.
 ---
 
-`argvus-taskbar-calendar` là cửa sổ bật lên lịch GTK4 được mở từ mô-đun ngày Waybar hoặc bằng:
+`argvus-taskbar-calendar` là cửa sổ bật lên lịch GTK4 được mở từ mô-đun ngày Taskbar hoặc bằng:
 
 ```sh
 argvus --calendar
@@ -21,7 +21,7 @@ Khi được mở từ mô-đun ngày trên thanh tác vụ, cửa sổ bật l�
 
 ```bash
 argvus taskbar-calendar                 open the calendar
-argvus taskbar-calendar toggle          show or hide it (the Waybar date module uses this)
+argvus taskbar-calendar toggle          show or hide it (the Taskbar date module uses this)
 argvus taskbar-calendar show | hide
 argvus taskbar-calendar config          open the system configuration for editing (sudo)
 argvus taskbar-calendar config-path     print the configuration path

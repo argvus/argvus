@@ -29,7 +29,7 @@ cat "${XDG_CONFIG_HOME:-$HOME/.config}/argvus/data/generated/theme/current/build
 argvus config theme-runtime consumers
 ```
 
-Mọi tệp chủ đề đều đến từ bản dựng: chủ đề chưa được cài đặt (không có `theme.toml` trong `/usr/share/argvus/themes/` hoặc `~/.local/share/argvus/themes/`) hoặc không hiển thị sẽ bị từ chối và chủ đề trước đó vẫn giữ nguyên. `argvus theme check DIRECTORY` hiển thị mẫu và dòng của từng lỗi kết xuất. Thanh Waybar chỉ tải lại màu của nó bằng `reload_style_on_change` trong JSONC của nó. Nếu một công tắc có vẻ bị kẹt, hãy kiểm tra xem nó có còn chạy hay không; nó tự ghi lại trong `theme-switch.active`, bên cạnh khóa của nó:
+Mọi tệp chủ đề đều đến từ bản dựng: chủ đề chưa được cài đặt (không có `theme.toml` trong `/usr/share/argvus/themes/` hoặc `~/.local/share/argvus/themes/`) hoặc không hiển thị sẽ bị từ chối và chủ đề trước đó vẫn giữ nguyên. `argvus theme check DIRECTORY` hiển thị mẫu và dòng của từng lỗi kết xuất. Thanh Taskbar chỉ tải lại màu của nó bằng `reload_style_on_change` trong JSONC của nó. Nếu một công tắc có vẻ bị kẹt, hãy kiểm tra xem nó có còn chạy hay không; nó tự ghi lại trong `theme-switch.active`, bên cạnh khóa của nó:
 
 ```sh
 cat "${XDG_CACHE_HOME:-$HOME/.cache}/argvus/theme-switch.active"

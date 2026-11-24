@@ -28,7 +28,7 @@ GPU sıcaklıkları GPU'nun PCI cihazıyla eşleştirilir. NVIDIA'nın tescilli 
 etkinleştirildi. Ana anahtar konfigürasyonda `effects.widget_telemetry_enabled`'dur;
 varsayılan olarak etkin olduğundan yeni bir hesap, giriş sırasında widget'ı başlatır.
 
-Geçiş `$XDG_CACHE_HOME/argvus/waybar/widget-telemetry-state` yazdıktan sonra bu dosya
+Geçiş `$XDG_CACHE_HOME/argvus/taskbar/widget-telemetry-state` yazdıktan sonra bu dosya
 onun yerine karar verir. Widget'ı `enabled`'nun yalnızca ilk satırı başlatır. Daha yaşlı
 Geçerli dosya okunduğunda `desktop-telemetry-state` ve `sysinfo-state` dosyaları hala okunuyor
 kayıp.

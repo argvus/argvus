@@ -162,8 +162,8 @@ CLI प्रतिबद्धता के बाद एक केंद्र
 | --- | --- |
 | हाइप्रलैंड | `generated/hypr/`, थीम प्रोफाइल सहित, `spaces-effective.conf`, `borders-effective.conf`, `hypridle.conf` और `monitors.lua` |
 | लेआउट/प्रभाव | `generated/effects/`, `generated/spaces.conf`, `generated/borders.conf` |
-| वेबार | `generated/waybar/`, `argvus-taskbar.css` और `argvus-widget-telemetry.{jsonc,css}` सहित |
-| विजेट टेलीमेट्री थीम | `generated/widget-telemetry/` और `generated/waybar/widget-telemetry-themes/` |
+| वेबार | `generated/taskbar/`, `argvus-taskbar.css` और `argvus-widget-telemetry.{jsonc,css}` सहित |
+| विजेट टेलीमेट्री थीम | `generated/widget-telemetry/` और `generated/taskbar/widget-telemetry-themes/` |
 | क्विकशेल | `generated/quickshell/` |
 | सूचनाएं | `generated/notifications/` और `dunstrc` |
 | लॉक स्क्रीन | `generated/hypr/hyprlock.conf` और हाइपरटूलकिट थीम प्रोफाइल |
@@ -184,7 +184,7 @@ CLI प्रतिबद्धता के बाद एक केंद्र
 ,
 
 ,
- data/foot/  data/waybar/argvus-widget-telemetry.{jsonc,css}  `data/waybar/argvus-taskbar.{jsonc,css}`  `data/waybar/argvus-widget-telemetry.{jsonc,css}`  `data/foot/` `data/qt6ct/`, `data/hypr/hyprtoolkit.conf` और
+ data/foot/  data/taskbar/argvus-widget-telemetry.{jsonc,css}  `data/taskbar/argvus-taskbar.{jsonc,css}`  `data/taskbar/argvus-widget-telemetry.{jsonc,css}`  `data/foot/` `data/qt6ct/`, `data/hypr/hyprtoolkit.conf` और
 `data/hypr/application-style.conf`। उन प्रतियों को पैकेज्ड से बदल दिया जाता है
 जब उपस्थिति अनुभाग बदलता है तो डिफ़ॉल्ट होता है, और प्रोजेक्टर फिर से लिखता है
 केवल इसके सीमांकित प्रबंधित ब्लॉक - वेबार स्टाइलशीट में फ़ॉन्ट ब्लॉक और

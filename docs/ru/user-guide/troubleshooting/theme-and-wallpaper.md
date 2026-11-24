@@ -19,7 +19,7 @@ argvus sessionctl reload
 cat "${XDG_CONFIG_HOME:-$HOME/.config}/argvus/data/generated/theme/current/build.toml"
 argvus config theme-runtime consumers
 ```
-Каждый тематический файл поступает из сборки: тема, которая не установлена (нет `theme.toml` под `/usr/share/argvus/themes/` или `~/.local/share/argvus/themes/`) или не отображается, отклоняется, и предыдущая тема остаётся. `argvus theme check DIRECTORY` показывает шаблон и строку каждой ошибки рендеринга. Панель Waybar обновляет свои цвета только с `reload_style_on_change` в её JSONC. Если переключатель кажется зависшим, проверьте, всё ли ещё работает; он записывает себя в `theme-switch.active`, рядом с его блокировкой:
+Каждый тематический файл поступает из сборки: тема, которая не установлена (нет `theme.toml` под `/usr/share/argvus/themes/` или `~/.local/share/argvus/themes/`) или не отображается, отклоняется, и предыдущая тема остаётся. `argvus theme check DIRECTORY` показывает шаблон и строку каждой ошибки рендеринга. Панель Taskbar обновляет свои цвета только с `reload_style_on_change` в её JSONC. Если переключатель кажется зависшим, проверьте, всё ли ещё работает; он записывает себя в `theme-switch.active`, рядом с его блокировкой:
 
 ```sh
 cat "${XDG_CACHE_HOME:-$HOME/.cache}/argvus/theme-switch.active"

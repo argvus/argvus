@@ -34,7 +34,7 @@ taskbar · control panel · notifications · wallpaper · idle · clipboard
 
 ### کمپوزیٹر اور ڈیسک ٹاپ شیل
 
-`argvus-hyprland ` Hyprland کنفیگریشن اور کی بائنڈنگس فراہم کرتا ہے۔ ` argvus-waybar ` پیچ شدہ Waybar بائنری فراہم کرتا ہے، جبکہ ` argvus-taskbar ` ٹاسک بار کی ترتیب اور کارروائیوں کا مالک ہے۔ ` argvus-control-panel ` Quickshell پینل فراہم کرتا ہے، اور ` argvus widget-telemetry ` ` argvus` میں عمل کے دوران اختیاری سسٹم ویجٹ فراہم کرتا ہے۔
+`argvus-hyprland ` Hyprland کنفیگریشن اور کی بائنڈنگس فراہم کرتا ہے۔ ` argvus-taskbar ` پیچ شدہ Taskbar بائنری فراہم کرتا ہے، جبکہ ` argvus-taskbar ` ٹاسک بار کی ترتیب اور کارروائیوں کا مالک ہے۔ ` argvus-control-panel ` Quickshell پینل فراہم کرتا ہے، اور ` argvus widget-telemetry ` ` argvus` میں عمل کے دوران اختیاری سسٹم ویجٹ فراہم کرتا ہے۔
 
 
 ### ترتیبات اور ایپلیکیشنز

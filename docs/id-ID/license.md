@@ -15,4 +15,4 @@ Teks lisensi lengkap dikirimkan bersama setiap repositori dan tersedia di [argvu
 
 ## Komponen pihak ketiga
 
-Paket dan tema ARGVUS bergantung pada perangkat lunak pihak ketiga (Hyprland, Waybar, dan lainnya) yang didistribusikan di bawah lisensi mereka sendiri. Lihat setiap proyek hulu untuk mengetahui persyaratan spesifiknya.
+Paket dan tema ARGVUS bergantung pada perangkat lunak pihak ketiga (Hyprland, Taskbar, dan lainnya) yang didistribusikan di bawah lisensi mereka sendiri. Lihat setiap proyek hulu untuk mengetahui persyaratan spesifiknya.

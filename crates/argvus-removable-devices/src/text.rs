@@ -1,4 +1,4 @@
-//! Text helpers for the menu and the Waybar output: byte sizes and trimming.
+//! Text helpers for the menu and the Taskbar output: byte sizes and trimming.
 
 pub fn human_bytes(bytes: u64) -> String {
   const UNITS: [&str; 6] = ["B", "KB", "MB", "GB", "TB", "PB"];

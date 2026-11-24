@@ -14,7 +14,7 @@ description: एक ARGVUS ग्राफ़िकल सत्र प्रा
 ```sh
 argvus sessionctl status
 argvus sessionctl logs
-argvus sessionctl restart waybar
+argvus sessionctl restart taskbar
 ```
 
 सेवा स्वामित्व के लिए डेवलपर [रनटाइम जीवनचक्र](/docs/developer-guide/architecture/runtime-lifecycle/) को देखें।

@@ -3,7 +3,7 @@ title: Chủ đề
 description: Cài đặt, chọn, tùy chỉnh, nhập và xuất các chủ đề ARGVUS.
 ---
 
-Chủ đề trong ARGVUS đặt màu sắc, bề mặt, mặc định hình nền và hình học bố cục được sử dụng trên màn hình: Hyprland, Waybar, Control Panel, thanh tác vụ, màn hình khóa, thông báo và ứng dụng ARGVUS. Hướng dẫn này bao gồm mọi thứ bạn cần để làm việc với chủ đề với tư cách là người dùng.
+Chủ đề trong ARGVUS đặt màu sắc, bề mặt, mặc định hình nền và hình học bố cục được sử dụng trên màn hình: Hyprland, Taskbar, Control Panel, thanh tác vụ, màn hình khóa, thông báo và ứng dụng ARGVUS. Hướng dẫn này bao gồm mọi thứ bạn cần để làm việc với chủ đề với tư cách là người dùng.
 
 ## Những gì có trong một chủ đề
 

@@ -201,7 +201,7 @@ fn command_words(command: &str, arguments: &[OsString]) -> Result<Vec<String>, F
   )
 }
 
-/// `argvus widget-telemetry block|toggle ...`: the Waybar block and the toggle.
+/// `argvus widget-telemetry block|toggle ...`: the Taskbar block and the toggle.
 fn widget_telemetry(arguments: &[OsString]) -> Outcome {
   match arguments.first().and_then(|argument| argument.to_str()) {
     Some("block") => Ok(argvus_widget_telemetry_blocks::run_command(

@@ -33,7 +33,7 @@ Le package `argvus` fournit le dispatcher `/usr/bin/argvus` et le point d'entré
 
 ### Compositeur et shell de bureau
 
-`argvus-hyprland` fournit la configuration et les raccourcis clavier de Hyprland. `argvus-waybar` fournit le binaire Waybar patché, tandis que `argvus-taskbar` possède la configuration et les actions de la barre des tâches. `argvus-control-panel` fournit le panneau Quickshell, et `argvus widget-telemetry` fournit des widgets système optionnels, en cours dans `argvus`.
+`argvus-hyprland` fournit la configuration et les raccourcis clavier de Hyprland. `argvus-taskbar` fournit le binaire Taskbar patché, tandis que `argvus-taskbar` possède la configuration et les actions de la barre des tâches. `argvus-control-panel` fournit le panneau Quickshell, et `argvus widget-telemetry` fournit des widgets système optionnels, en cours dans `argvus`.
 
 Voir [Desktop](/docs/user-guide/desktop/) pour l'utilisation et [shell surfaces](/docs/developer-guide/subsystems/shell-surfaces/) pour la responsabilité de l'implémentation.
 
@@ -53,7 +53,7 @@ Voir [Matériel](/docs/user-guide/hardware/), [Confidentialité et sécurité](/
 
 ## État d'apparence partagé
 
-Les préférences de thème, d'accent, de fond d'écran, de police et d'effets sont stockées sous forme d'état logique dans `$XDG_CONFIG_HOME/argvus` (normalement `~/.config/argvus`). `argvus-config` est le seul composant qui écrit dans `data/generated/`, où il projette les fichiers consommateurs pour Hyprland, GTK, Qt6ct, Waybar, Quickshell, Dunst, les notifications, l'écran de verrouillage, Yazi, Superfile et les terminaux. Les assistants d'apparence enregistrent le changement d'état puis réconcilient les applications externes ; ils n'écrivent jamais l'arborescence générée.
+Les préférences de thème, d'accent, de fond d'écran, de police et d'effets sont stockées sous forme d'état logique dans `$XDG_CONFIG_HOME/argvus` (normalement `~/.config/argvus`). `argvus-config` est le seul composant qui écrit dans `data/generated/`, où il projette les fichiers consommateurs pour Hyprland, GTK, Qt6ct, Taskbar, Quickshell, Dunst, les notifications, l'écran de verrouillage, Yazi, Superfile et les terminaux. Les assistants d'apparence enregistrent le changement d'état puis réconcilient les applications externes ; ils n'écrivent jamais l'arborescence générée.
 
 Le répertoire généré n'est pas la source de vérité. Voir [Appearance](/docs/user-guide/appearance/) et [configuration and state](/docs/developer-guide/architecture/configuration-and-state/).
 

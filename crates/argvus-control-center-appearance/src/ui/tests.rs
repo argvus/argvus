@@ -368,12 +368,12 @@ fn space_keeps_activating_actions_submenus_choices_and_editors() {
 
   // Value without a step: Space opens its editor.
   let mut spaces = app(AppearancePage::TaskbarSpaces);
-  select(&mut spaces, Item::Spacing(PromptGoal::WaybarLeft));
+  select(&mut spaces, Item::Spacing(PromptGoal::TaskbarLeft));
   spaces.handle(KeyCode::Char(' '));
   assert_eq!(
     spaces.page,
     AppearancePage::Prompt {
-      goal: PromptGoal::WaybarLeft
+      goal: PromptGoal::TaskbarLeft
     }
   );
 

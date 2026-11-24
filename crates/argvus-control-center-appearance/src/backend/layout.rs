@@ -6,11 +6,11 @@ use super::*;
 pub(super) fn parse_spacing_status(output: &str, state: &mut AppearanceState) {
   for (key, value) in parse_pairs(output) {
     match key {
-      "waybar_pos" => state.waybar_pos = TaskbarPosition::from_value(value),
-      "waybar_top" => state.waybar_top = value.parse().unwrap_or(state.waybar_top),
-      "waybar_left" => state.waybar_left = value.parse().unwrap_or(state.waybar_left),
-      "waybar_right" => state.waybar_right = value.parse().unwrap_or(state.waybar_right),
-      "waybar_bottom" => state.waybar_bottom = value.parse().unwrap_or(state.waybar_bottom),
+      "taskbar_pos" => state.taskbar_pos = TaskbarPosition::from_value(value),
+      "taskbar_top" => state.taskbar_top = value.parse().unwrap_or(state.taskbar_top),
+      "taskbar_left" => state.taskbar_left = value.parse().unwrap_or(state.taskbar_left),
+      "taskbar_right" => state.taskbar_right = value.parse().unwrap_or(state.taskbar_right),
+      "taskbar_bottom" => state.taskbar_bottom = value.parse().unwrap_or(state.taskbar_bottom),
       "gaps_in" => state.gaps_in = value.parse().unwrap_or(state.gaps_in),
       "gaps_out_top" => state.gaps_out_top = value.parse().unwrap_or(state.gaps_out_top),
       "gaps_out_left" => state.gaps_out_left = value.parse().unwrap_or(state.gaps_out_left),
@@ -112,13 +112,13 @@ pub(super) fn apply_canonical_layout(state: &mut AppearanceState) {
     .and_then(|values| values.get("position"))
     .and_then(Value::as_str)
   {
-    state.waybar_pos = TaskbarPosition::from_value(value);
+    state.taskbar_pos = TaskbarPosition::from_value(value);
   }
   for (key, target) in [
-    ("margin_top", &mut state.waybar_top),
-    ("margin_left", &mut state.waybar_left),
-    ("margin_right", &mut state.waybar_right),
-    ("margin_bottom", &mut state.waybar_bottom),
+    ("margin_top", &mut state.taskbar_top),
+    ("margin_left", &mut state.taskbar_left),
+    ("margin_right", &mut state.taskbar_right),
+    ("margin_bottom", &mut state.taskbar_bottom),
   ] {
     if let Some(value) = integer(taskbar, key) {
       *target = value as i32;
@@ -241,7 +241,7 @@ pub fn set_layout_mode(variant: &str) -> Result<(), String> {
 }
 
 pub fn set_spacing(key: &str, value: &str) -> Result<(), String> {
-  if key == "waybar_pos" {
+  if key == "taskbar_pos" {
     return super::commands::run_argvus_route("windows", &["position", value], &[]);
   }
   if key.is_empty() || value.is_empty() {
@@ -265,11 +265,11 @@ pub fn set_spacing(key: &str, value: &str) -> Result<(), String> {
       }
       ""
     }
-    "waybar_top" => "/layout/taskbar/margin_top",
-    "waybar_left" => "/layout/taskbar/margin_left",
-    "waybar_right" => "/layout/taskbar/margin_right",
-    "waybar_bottom" => "/layout/taskbar/margin_bottom",
-    "waybar" => {
+    "taskbar_top" => "/layout/taskbar/margin_top",
+    "taskbar_left" => "/layout/taskbar/margin_left",
+    "taskbar_right" => "/layout/taskbar/margin_right",
+    "taskbar_bottom" => "/layout/taskbar/margin_bottom",
+    "taskbar" => {
       let number = number.ok_or_else(|| "invalid spaces value".to_string())?;
       for edge in ["top", "left", "right", "bottom"] {
         patch.insert(
@@ -291,11 +291,11 @@ pub fn set_spacing(key: &str, value: &str) -> Result<(), String> {
   Ok(())
 }
 
-pub fn set_waybar_position(position: &str) -> Result<(), String> {
+pub fn set_taskbar_position(position: &str) -> Result<(), String> {
   if position != "top" && position != "bottom" {
-    return Err("invalid waybar position".into());
+    return Err("invalid taskbar position".into());
   }
-  set_spacing("waybar_pos", position)
+  set_spacing("taskbar_pos", position)
 }
 
 pub fn set_border(key: &str, value: &str) -> Result<(), String> {

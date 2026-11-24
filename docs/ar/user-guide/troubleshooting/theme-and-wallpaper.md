@@ -29,7 +29,7 @@ cat "${XDG_CONFIG_HOME:-$HOME/.config}/argvus/data/generated/theme/current/build
 argvus config theme-runtime consumers
 ```
 
-يأتي كل ملف ذو سمة من الإصدار: يتم رفض السمة غير المثبتة (لا يوجد `theme.toml` ضمن `/usr/share/argvus/themes/` أو `~/.local/share/argvus/themes/`) أو التي لا يتم عرضها، ويبقى السمة السابقة. يعرض `argvus theme check DIRECTORY` القالب والسطر الخاص بكل خطأ في العرض. يقوم شريط Waybar بإعادة تحميل ألوانه فقط باستخدام `reload_style_on_change` في JSONC الخاص به. إذا بدا المفتاح عالقًا، فتحقق مما إذا كان لا يزال قيد التشغيل؛ يسجل نفسه في `theme-switch.active` بجانب قفله:
+يأتي كل ملف ذو سمة من الإصدار: يتم رفض السمة غير المثبتة (لا يوجد `theme.toml` ضمن `/usr/share/argvus/themes/` أو `~/.local/share/argvus/themes/`) أو التي لا يتم عرضها، ويبقى السمة السابقة. يعرض `argvus theme check DIRECTORY` القالب والسطر الخاص بكل خطأ في العرض. يقوم شريط Taskbar بإعادة تحميل ألوانه فقط باستخدام `reload_style_on_change` في JSONC الخاص به. إذا بدا المفتاح عالقًا، فتحقق مما إذا كان لا يزال قيد التشغيل؛ يسجل نفسه في `theme-switch.active` بجانب قفله:
 
 ```sh
 cat "${XDG_CACHE_HOME:-$HOME/.cache}/argvus/theme-switch.active"

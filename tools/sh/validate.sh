@@ -16,7 +16,7 @@ cd "$ROOT_DIR"
 # run before login and as root (greeter-setup).
 packaged_scripts=(
 	packaging/archlinux/src/usr/bin/argvus-terminal
-	packaging/archlinux/src/usr/lib/argvus/taskbar-calendar/waybar-launcher
+	packaging/archlinux/src/usr/lib/argvus/taskbar-calendar/taskbar-launcher
 	packaging/archlinux/src/usr/share/argvus/lib/i18n.sh
 	packaging/archlinux/src/usr/share/argvus/*/sh/*.sh
 	crates/argvus-greeter/packaging/greetd/argvus-greeter-session

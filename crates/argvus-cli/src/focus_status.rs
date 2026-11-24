@@ -1,4 +1,4 @@
-//! `argvus focus status --waybar [--follow]`: the taskbar indicator of ARGVUS
+//! `argvus focus status --taskbar [--follow]`: the taskbar indicator of ARGVUS
 //! Focus. It runs inside the dispatcher process, with no GTK, because the bar
 //! starts it once and keeps it running.
 //!
@@ -14,20 +14,20 @@ use std::time::Duration;
 
 use argvus_i18n::I18n;
 use argvus_time_core::focus_status::{
-  FocusStatus, Labels, State, WaybarOutput, render_waybar, status_path,
+  FocusStatus, Labels, State, TaskbarOutput, render_taskbar, status_path,
 };
 use chrono::Utc;
 
 use crate::exec::{Failure, Outcome};
 
 const IDLE_POLL: Duration = Duration::from_secs(2);
-const USAGE: &str = "Usage: argvus focus status --waybar [--follow]";
+const USAGE: &str = "Usage: argvus focus status --taskbar [--follow]";
 
 pub fn run(arguments: &[String]) -> Outcome {
-  let (mut waybar, mut follow) = (false, false);
+  let (mut taskbar, mut follow) = (false, false);
   for argument in arguments {
     match argument.as_str() {
-      "--waybar" => waybar = true,
+      "--taskbar" => taskbar = true,
       "--follow" => follow = true,
       other => {
         return Err(Failure::with_code(
@@ -37,7 +37,7 @@ pub fn run(arguments: &[String]) -> Outcome {
       }
     }
   }
-  if !waybar {
+  if !taskbar {
     return Err(Failure::with_code(USAGE.to_owned(), 2));
   }
 
@@ -48,7 +48,7 @@ pub fn run(arguments: &[String]) -> Outcome {
   loop {
     let status = path.as_deref().and_then(FocusStatus::load);
     let now = Utc::now();
-    let output = render_waybar(status.as_ref(), now, &labels);
+    let output = render_taskbar(status.as_ref(), now, &labels);
     let line = line(&output);
     if last.as_deref() != Some(line.as_str()) {
       // A closed pipe means the bar is gone: stop quietly.
@@ -67,7 +67,7 @@ pub fn run(arguments: &[String]) -> Outcome {
   }
 }
 
-fn line(output: &WaybarOutput) -> String {
+fn line(output: &TaskbarOutput) -> String {
   serde_json::to_string(output).unwrap_or_default()
 }
 
@@ -132,8 +132,8 @@ mod tests {
   }
 
   #[test]
-  fn requires_waybar_and_rejects_unknown_options() {
+  fn requires_taskbar_and_rejects_unknown_options() {
     assert!(run(&[]).is_err());
-    assert!(run(&["--waybar".to_owned(), "--bogus".to_owned()]).is_err());
+    assert!(run(&["--taskbar".to_owned(), "--bogus".to_owned()]).is_err());
   }
 }

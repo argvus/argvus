@@ -248,7 +248,7 @@ fn make_surface(
   window.set_monitor(Some(monitor));
   window.set_keyboard_mode(KeyboardMode::None);
   // Keep the surface in the compositor's full-output overlay area. Hyprland
-  // otherwise places a zero-zone overlay below the exclusive Waybar strip.
+  // otherwise places a zero-zone overlay below the exclusive Taskbar strip.
   window.set_exclusive_zone(-1);
   for edge in [Edge::Top, Edge::Bottom, Edge::Left, Edge::Right] {
     window.set_anchor(edge, true);

@@ -39,6 +39,7 @@ pub mod session_reload;
 pub mod session_splash;
 pub mod session_timing;
 pub mod session_units;
+pub mod taskbar;
 pub mod text_edit;
 pub mod theme_apply;
 pub mod theme_body;
@@ -51,7 +52,6 @@ pub mod theme_runtime;
 pub mod theme_surfaces;
 pub mod theme_transition;
 pub mod user_copy;
-pub mod waybar;
 pub mod window_mode;
 pub mod windows;
 

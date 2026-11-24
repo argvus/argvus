@@ -238,10 +238,10 @@ impl AppearanceApp {
   pub(super) fn prompt_label(&self, goal: PromptGoal) -> &'static str {
     match goal {
       PromptGoal::ExportProfile => "control_center.theme_profile_export_name",
-      PromptGoal::WaybarTop => "control_center.top",
-      PromptGoal::WaybarLeft => "control_center.left",
-      PromptGoal::WaybarRight => "control_center.right",
-      PromptGoal::WaybarBottom => "control_center.bottom",
+      PromptGoal::TaskbarTop => "control_center.top",
+      PromptGoal::TaskbarLeft => "control_center.left",
+      PromptGoal::TaskbarRight => "control_center.right",
+      PromptGoal::TaskbarBottom => "control_center.bottom",
       PromptGoal::GapsIn => "control_center.inner_gap",
       PromptGoal::GapsOutTop => "control_center.outer_gap_top",
       PromptGoal::GapsOutLeft => "control_center.outer_gap_left",

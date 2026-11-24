@@ -7,13 +7,13 @@ if [ "${1:-}" = "--surface" ] && [ "$#" -ge 3 ] && command -v jq >/dev/null 2>&1
   surface_y="$(printf '%s\n' "$3" | sed -n '/^-\{0,1\}[0-9][0-9]*$/p')"
   origin="$(
     hyprctl layers -j 2>/dev/null |
-      jq -r --arg output "${WAYBAR_OUTPUT_NAME:-}" '
+      jq -r --arg output "${TASKBAR_OUTPUT_NAME:-}" '
         [
           to_entries[]
           | select($output == "" or .key == $output)
           | .value.levels
           | to_entries[].value[]
-          | select((.namespace == "argvus-taskbar" or .namespace == "waybar") and .w > (.h * 4))
+          | select((.namespace == "argvus-taskbar" or .namespace == "taskbar") and .w > (.h * 4))
           | [.x, .y, .h]
         ]
         | first // empty
@@ -42,7 +42,7 @@ if [ "${1:-}" = "--root" ] && [ "$#" -ge 3 ]; then
   fi
 fi
 
-# Compatibility fallback for Waybar versions without event-coordinate support.
+# Compatibility fallback for Taskbar versions without event-coordinate support.
 # The coordinates anchor the GTK menu to the taskbar.
 
 pos="$(hyprctl cursorpos -j 2>/dev/null || true)"

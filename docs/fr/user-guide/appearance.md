@@ -2,7 +2,7 @@
 title: Apparence
 description: Configurer le langage visuel partagé par les composants ARGVUS.
 ---
-Le système d'apparence applique un état de thème unique à Hyprland, GTK, Qt, Waybar, Quickshell, Dunst, Hyprlock et aux applications ARGVUS.
+Le système d'apparence applique un état de thème unique à Hyprland, GTK, Qt, Taskbar, Quickshell, Dunst, Hyprlock et aux applications ARGVUS.
 
 ## Familles de thèmes
 

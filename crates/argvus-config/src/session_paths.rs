@@ -105,10 +105,10 @@ pub fn legacy_relative(relative: &str) -> String {
     return format!("hypr/{}", basename(relative));
   }
   if let Some(rest) = relative.strip_prefix("taskbar/config/") {
-    return format!("waybar/{rest}");
+    return format!("taskbar/{rest}");
   }
   if let Some(rest) = relative.strip_prefix("widget-telemetry/config/") {
-    return format!("waybar/{rest}");
+    return format!("taskbar/{rest}");
   }
   if let Some(rest) = relative.strip_prefix("removable-devices/config/") {
     return format!("removable-devices/{rest}");
@@ -203,7 +203,7 @@ mod tests {
     );
     assert_eq!(
       legacy_relative("taskbar/config/argvus-taskbar.css"),
-      "waybar/argvus-taskbar.css"
+      "taskbar/argvus-taskbar.css"
     );
     assert_eq!(
       legacy_relative("launcher/config/config.rasi"),

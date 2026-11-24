@@ -7,8 +7,8 @@ A raiz normal é `$XDG_CONFIG_HOME/argvus` (geralmente `~/.config/argvus`). As p
 
 `argvus-config` é o único escritor de `generated/`. Todo arquivo consumidor
 pertencente ao ARGVUS é uma projeção de `config.json`, incluindo Hyprland, GTK,
-Qt6ct, Waybar, QuickShell, Dunst, Hyprlock, os perfis de taskbar e
-widget-telemetry do Waybar, as árvores de configuração do Yazi e do Superfile, as
+Qt6ct, Taskbar, QuickShell, Dunst, Hyprlock, os perfis de taskbar e
+widget-telemetry do Taskbar, as árvores de configuração do Yazi e do Superfile, as
 árvores de perfis de terminal e de Qt, os blocos gerenciados de fonte e a folha de
 estilo de dispositivos removíveis. Overrides explícitos do usuário têm
 precedência, depois vêm as projeções geradas e então os defaults do pacote. A
@@ -107,7 +107,7 @@ cache, um arquivo nativo de configuração em `$XDG_CONFIG_HOME/<app>`, um arqui
 de estado do greeter — é alvo de adapter e não deve ser lido de volta como
 configuração.
 
-A projeção cobre os consumidores de Hyprland, GTK/Qt, Waybar, Quickshell, terminais, notificações, lock screen e aplicativos nativos. O Hyprland lê as cores das bordas ativa e inativa do tema selecionado; somente `appearance.accent_custom=true` substitui a borda ativa/do grupo pelo acento definido pelo usuário. A troca de tema reaplica esses valores no reload do compositor para que ele não retenha as cores do tema anterior. Quando a configuração do usuário é reconstruída, as animações ficam habilitadas por padrão. Apagar `generated/` e executar `argvus config apply` o recria byte a byte a partir do `config.json`; editar arquivos gerados diretamente não é durável.
+A projeção cobre os consumidores de Hyprland, GTK/Qt, Taskbar, Quickshell, terminais, notificações, lock screen e aplicativos nativos. O Hyprland lê as cores das bordas ativa e inativa do tema selecionado; somente `appearance.accent_custom=true` substitui a borda ativa/do grupo pelo acento definido pelo usuário. A troca de tema reaplica esses valores no reload do compositor para que ele não retenha as cores do tema anterior. Quando a configuração do usuário é reconstruída, as animações ficam habilitadas por padrão. Apagar `generated/` e executar `argvus config apply` o recria byte a byte a partir do `config.json`; editar arquivos gerados diretamente não é durável.
 O diagnóstico de runtime deve identificar o conjunto completo de execução:
 caminho e versão/revisão do binário, raiz de assets, config, data, arquivos
 gerados, raiz interna e manifesto de projeção. `status --verbose` exibe esse

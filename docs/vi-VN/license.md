@@ -15,4 +15,4 @@ Văn bản giấy phép đầy đủ được gửi kèm theo mọi kho lưu tr�
 
 ## Thành phần của bên thứ ba
 
-Các gói và chủ đề ARGVUS phụ thuộc vào phần mềm của bên thứ ba (Hyprland, Waybar và các phần mềm khác) được phân phối theo giấy phép của riêng họ. Tham khảo từng dự án thượng nguồn để biết các điều khoản cụ thể của nó.
+Các gói và chủ đề ARGVUS phụ thuộc vào phần mềm của bên thứ ba (Hyprland, Taskbar và các phần mềm khác) được phân phối theo giấy phép của riêng họ. Tham khảo từng dự án thượng nguồn để biết các điều khoản cụ thể của nó.

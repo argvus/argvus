@@ -15,10 +15,10 @@ description: Önemli yüklü ARGVUS dosyaları ve dizinleri.
 - `/etc/argvus/removable-devices/config.json` — çıkarılabilir depolama için sistem varsayılanları.
 - `$XDG_CONFIG_HOME/argvus/config.json` — standart taşınabilir tercihler.
 - `$XDG_CONFIG_HOME/argvus/data/` — yönetilen bileşen verileri, yedeklemeler, kilitler ve oluşturulan çıktı.
-- `$XDG_CONFIG_HOME/waybar/argvus-taskbar.{jsonc,css}` — isteğe bağlı eksiksiz yerel Waybar görev çubuğu geçersiz kılmaları.
+- `$XDG_CONFIG_HOME/taskbar/argvus-taskbar.{jsonc,css}` — isteğe bağlı eksiksiz yerel Taskbar görev çubuğu geçersiz kılmaları.
 - `$XDG_CONFIG_HOME/argvus/data/taskbar/argvus-taskbar.{jsonc,css}` — yönetilen ARGVUS görev çubuğu kopyaları.
-- `$XDG_CONFIG_HOME/argvus/data/generated/waybar/` — `argvus-taskbar.css` ve `argvus-widget-telemetry.{jsonc,css}` dahil olmak üzere oluşturulan Waybar profilleri; bunlar yukarıdaki kopyalara göre önceliklidir.
-- `$XDG_CONFIG_HOME/argvus/data/generated/waybar/argvus-widget-telemetry.{jsonc,css}` — aynı zamanda `data/waybar/` altında yansıtılır; bu, bir görünüm değişikliğinde paketlenmiş varsayılandan değiştirilir ve daha sonra `ARGVUS_TELEMETRY_*` ve yazı tipi blokları yeniden yazılır.
+- `$XDG_CONFIG_HOME/argvus/data/generated/taskbar/` — `argvus-taskbar.css` ve `argvus-widget-telemetry.{jsonc,css}` dahil olmak üzere oluşturulan Taskbar profilleri; bunlar yukarıdaki kopyalara göre önceliklidir.
+- `$XDG_CONFIG_HOME/argvus/data/generated/taskbar/argvus-widget-telemetry.{jsonc,css}` — aynı zamanda `data/taskbar/` altında yansıtılır; bu, bir görünüm değişikliğinde paketlenmiş varsayılandan değiştirilir ve daha sonra `ARGVUS_TELEMETRY_*` ve yazı tipi blokları yeniden yazılır.
 - `$XDG_CONFIG_HOME/argvus/data/generated/yazi/` — Yazi tadı sağlamayan temalar için değişkenlere duyarlı bir geri dönüş içeren öngörülen Yazi yapılandırma ağacı.
 - `$XDG_CONFIG_HOME/argvus/data/generated/superfile/` — öngörülen Superfile tema seti.
 - `$XDG_CONFIG_HOME/argvus/data/generated/terminal/` — öngörülen terminal profilleri.

@@ -20,7 +20,7 @@ GPU-Temperaturen werden einem PCI-Gerät der GPU zugeordnet. Proprietäre NVIDIA
 
 Die `argvus-widget-telemetry.service`-Benutzereinheit startet mit der Sitzung nur, wenn das Widget aktiviert ist. Der Hauptschalter ist `effects.widget_telemetry_enabled` in der Konfiguration, der standardmäßig aktiviert ist, sodass ein neues Konto das Widget beim Login startet.
 
-Sobald der Schalter `$XDG_CACHE_HOME/argvus/waybar/widget-telemetry-state` geschrieben hat, entscheidet diese Datei stattdessen. Nur eine erste Zeile von `enabled` startet das Widget. Die älteren Dateien `desktop-telemetry-state` und `sysinfo-state` werden weiterhin gelesen, wenn die aktuelle Datei fehlt.
+Sobald der Schalter `$XDG_CACHE_HOME/argvus/taskbar/widget-telemetry-state` geschrieben hat, entscheidet diese Datei stattdessen. Nur eine erste Zeile von `enabled` startet das Widget. Die älteren Dateien `desktop-telemetry-state` und `sysinfo-state` werden weiterhin gelesen, wenn die aktuelle Datei fehlt.
 
 Telemetry-Bezeichnungen sind in allen zehn unterstützten Sprachen kompakt. Technische Bezeichner wie CPU, GPU, IP, DE, WM und Kernel behalten ihre technische Bedeutung. Die Betriebszeit wird aus `/proc/uptime` ausgelesen und mit abgekürzten Einheiten angezeigt (zum Beispiel `1d 12h 49m`); sie wird nicht mehr in vollständige Wörter aus der Systemsprache erweitert. Hardwaremodellnamen und andere Anbieterwerte können weiterhin die Breite des Widgets beeinflussen.
 

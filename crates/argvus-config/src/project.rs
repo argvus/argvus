@@ -342,7 +342,7 @@ fn write_projections(
   // layout must be written last to be the value that survives the projection.
   project_layout(document, paths)?;
   if adapters_ran {
-    // The reset also cleared the waybar margins written from `.spaces`.
+    // The reset also cleared the taskbar margins written from `.spaces`.
     // Reapply them now that the layout is restored. `--apply-static` writes
     // only taskbar and geometry files; ARGVUS_NO_RUNTIME keeps it off the
     // compositor, as for every adapter.

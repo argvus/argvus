@@ -13,6 +13,6 @@ description: 启动并管理 ARGVUS 图形会话。
 ```sh
 argvus sessionctl status
 argvus sessionctl logs
-argvus sessionctl restart waybar
+argvus sessionctl restart taskbar
 ```
 请查看开发者 [runtime lifecycle](/docs/developer-guide/architecture/runtime-lifecycle/) 以了解服务所有权。

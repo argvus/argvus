@@ -19,13 +19,13 @@
   "bluetoothctl_missing": "bluetoothctl을 찾을 수 없습니다",
   "bluetooth.power_failed": "Bluetooth {target}를 돌릴 수 없습니다.",
   "blueman_missing": "옵션인 Blueman Manager가 설치되어 있지 않습니다.",
-  "waybar.no_iface": "네트워크 인터페이스를 찾을 수 없습니다.",
-  "waybar.network": "네트워크",
-  "waybar.disconnected": "연결이 끊김",
-  "waybar.connected": "연결됨",
-  "waybar.limited": "제한된 연결",
-  "waybar.no_internet": "인터넷 접속 불가",
-  "waybar.reconnecting": "다시 연결하는 중",
-  "waybar.state": "상태",
-  "waybar.command_failed": "명령 실패: {command}"
+  "taskbar.no_iface": "네트워크 인터페이스를 찾을 수 없습니다.",
+  "taskbar.network": "네트워크",
+  "taskbar.disconnected": "연결이 끊김",
+  "taskbar.connected": "연결됨",
+  "taskbar.limited": "제한된 연결",
+  "taskbar.no_internet": "인터넷 접속 불가",
+  "taskbar.reconnecting": "다시 연결하는 중",
+  "taskbar.state": "상태",
+  "taskbar.command_failed": "명령 실패: {command}"
 }

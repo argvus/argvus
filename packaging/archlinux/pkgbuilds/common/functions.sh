@@ -175,9 +175,9 @@ arch_package_argvus_gtk() {
 	install -Dm755 "$(arch_cargo_target_dir)/release/splash" \
 		"${pkgdir}/usr/lib/argvus/loading-theme/splash"
 
-	# Taskbar calendar: the Waybar launcher, its configuration and its user unit.
-	install -Dm755 "${source_root}/packaging/archlinux/src/usr/lib/argvus/taskbar-calendar/waybar-launcher" \
-		"${pkgdir}/usr/lib/argvus/taskbar-calendar/waybar-launcher"
+	# Taskbar calendar: the Taskbar launcher, its configuration and its user unit.
+	install -Dm755 "${source_root}/packaging/archlinux/src/usr/lib/argvus/taskbar-calendar/taskbar-launcher" \
+		"${pkgdir}/usr/lib/argvus/taskbar-calendar/taskbar-launcher"
 	install -Dm644 "${source_root}/packaging/archlinux/src/usr/lib/systemd/user/argvus-taskbar-calendar.service" \
 		"${pkgdir}/usr/lib/systemd/user/argvus-taskbar-calendar.service"
 	install -dm755 "${pkgdir}/etc/argvus/taskbar/calendar"

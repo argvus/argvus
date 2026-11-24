@@ -7,7 +7,7 @@ Root pengguna normal adalah `$XDG_CONFIG_HOME/argvus` (biasanya `~/.config/argvu
 
 `argvus-config` adalah satu-satunya penulis di bawah `generated/`. Setiap milik ARGVUS
 file konsumen adalah proyeksi `config.json`, termasuk Hyprland, GTK, Qt6ct,
-Waybar, Quickshell, Dunst, Hyprlock, taskbar Waybar dan widget-telemetri
+Taskbar, Quickshell, Dunst, Hyprlock, taskbar Taskbar dan widget-telemetri
 profil, pohon konfigurasi Yazi dan Superfile, terminal dan profil Qt
 pohon, blok yang dikelola font, dan stylesheet perangkat yang dapat dilepas. Komponen
 selesaikan penggantian pengguna secara eksplisit, lalu hasilkan keluaran, lalu paket default.
@@ -106,7 +106,7 @@ masukan migrasi. Apa pun yang masih ditulis oleh komponen saat runtime — cache
 file config di bawah `$XDG_CONFIG_HOME/<app>`, file status penyambut — adalah adaptor
 target dan tidak boleh dibaca kembali sebagai konfigurasi.
 
-Proyeksi mencakup konsumen untuk Hyprland, GTK/Qt, Waybar, Quickshell, terminal, notifikasi, layar kunci, dan aplikasi asli. Hyprland membaca warna batas aktif dan tidak aktif dari tema yang dipilih; `appearance.accent_custom=true` eksplisit adalah satu-satunya kasus yang mengesampingkan batas aktif/grup dengan aksen pengguna. Peralihan tema menerapkan kembali nilai-nilai ini melalui pemuatan ulang kompositor sehingga tidak dapat mempertahankan warna tema sebelumnya. Jika konfigurasi pengguna dibuat ulang, efek default ke animasi diaktifkan. Menghapus `generated/` dan menjalankan `argvus config apply` akan membuatnya kembali byte demi byte dari `config.json`; mengedit file yang dihasilkan secara langsung tidak tahan lama.
+Proyeksi mencakup konsumen untuk Hyprland, GTK/Qt, Taskbar, Quickshell, terminal, notifikasi, layar kunci, dan aplikasi asli. Hyprland membaca warna batas aktif dan tidak aktif dari tema yang dipilih; `appearance.accent_custom=true` eksplisit adalah satu-satunya kasus yang mengesampingkan batas aktif/grup dengan aksen pengguna. Peralihan tema menerapkan kembali nilai-nilai ini melalui pemuatan ulang kompositor sehingga tidak dapat mempertahankan warna tema sebelumnya. Jika konfigurasi pengguna dibuat ulang, efek default ke animasi diaktifkan. Menghapus `generated/` dan menjalankan `argvus config apply` akan membuatnya kembali byte demi byte dari `config.json`; mengedit file yang dihasilkan secara langsung tidak tahan lama.
 Diagnosis runtime harus mengidentifikasi tupel eksekusi lengkap: jalur biner,
 versi/revisi, root aset, root konfigurasi, root data, root yang dihasilkan, internal
 akar dan manifes proyeksi. `status --verbose` mengekspos tupel ini dan

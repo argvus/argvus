@@ -3,7 +3,7 @@ title: کیلنڈر
 description: ARGVUS ٹاسک بار کیلنڈر استعمال کریں۔
 ---
 
-`argvus-taskbar-calendar` GTK4 کیلنڈر پاپ اپ ہے جسے Waybar ڈیٹ ماڈیول سے یا اس کے ساتھ کھولا گیا ہے:
+`argvus-taskbar-calendar` GTK4 کیلنڈر پاپ اپ ہے جسے Taskbar ڈیٹ ماڈیول سے یا اس کے ساتھ کھولا گیا ہے:
 
 ```sh
 argvus --calendar
@@ -21,7 +21,7 @@ argvus taskbar-calendar status
 
 ```bash
 argvus taskbar-calendar                 open the calendar
-argvus taskbar-calendar toggle          show or hide it (the Waybar date module uses this)
+argvus taskbar-calendar toggle          show or hide it (the Taskbar date module uses this)
 argvus taskbar-calendar show | hide
 argvus taskbar-calendar config          open the system configuration for editing (sudo)
 argvus taskbar-calendar config-path     print the configuration path

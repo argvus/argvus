@@ -11,12 +11,12 @@ greeter or TTY
 
 Control Center -> argvus config (canonical state) -> argvus sessionctl reload
 argvus config   -> the only writer of data/generated/
-                   Hyprland / GTK / Qt6ct / Waybar / Quickshell / Dunst /
+                   Hyprland / GTK / Qt6ct / Taskbar / Quickshell / Dunst /
                    Hyprlock / Yazi / Superfile / terminal / fonts / removable-devices
 theme-switch / config accent -> argvus config (commit) -> external adapters
                    Qt6ct file / GTK settings.ini + gsettings / terminals /
                    system-monitor / foot / superfile / greeter
-Waybar          -> popups via immutable root coordinates; calendar resolves real horizontal Taskbar geometry
+Taskbar          -> popups via immutable root coordinates; calendar resolves real horizontal Taskbar geometry
 ```
 
 Các trang tính năng mô tả hành vi của người dùng; trang này ghi lại các ranh giới được sử dụng khi thay đổi mã.

@@ -11,9 +11,9 @@
   //
   // Comments are allowed and ignored.
 
-  "show_name": false,       // kept for compatibility; Waybar shows one compact icon
+  "show_name": false,       // kept for compatibility; Taskbar shows one compact icon
   "show_capacity": false,   // append used/total to the label
-  "hide_when_empty": true,  // hide the waybar module when no devices are present
+  "hide_when_empty": true,  // hide the taskbar module when no devices are present
   "show_hidden": false,     // show EFI/reserved partitions
   "show_notification": true, // notify when removable devices connect/disconnect and when a path is copied
   "max_devices": 0,         // 0 = unlimited; extra devices are shown as "+N"
@@ -35,7 +35,7 @@
   "tooltip_format": "{name}\n{state}\n{fs} · {capacity}\n{used} used · {free} free\n{mount}",
 
   // Symbols Nerd Font glyphs (icon_size is accepted for compatibility but
-  // unused in text mode — the waybar label is a normal text label).
+  // unused in text mode — the taskbar label is a normal text label).
   "icons": {
     "mounted": "󰕓",    // md-harddisk
     "unmounted": "󰕓",  // md-harddisk

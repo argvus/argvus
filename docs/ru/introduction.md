@@ -33,7 +33,7 @@ taskbar · control panel · notifications · wallpaper · idle · clipboard
 
 ### Композитор и оболочка рабочего стола
 
-`argvus-hyprland` поставляет конфигурацию Hyprland и привязки клавиш. `argvus-waybar` обеспечивает патченный бинарный файл Waybar, в то время как `argvus-taskbar` отвечает за конфигурацию панели задач и действия. `argvus-control-panel` поставляет панель Quickshell, а `argvus widget-telemetry` обеспечивает опциональные системные виджеты, работающие в процессе `argvus`.
+`argvus-hyprland` поставляет конфигурацию Hyprland и привязки клавиш. `argvus-taskbar` обеспечивает патченный бинарный файл Taskbar, в то время как `argvus-taskbar` отвечает за конфигурацию панели задач и действия. `argvus-control-panel` поставляет панель Quickshell, а `argvus widget-telemetry` обеспечивает опциональные системные виджеты, работающие в процессе `argvus`.
 
 См. [Desktop](/docs/user-guide/desktop/) для использования и [shell surfaces](/docs/developer-guide/subsystems/shell-surfaces/) для владения реализацией.
 
@@ -53,7 +53,7 @@ taskbar · control panel · notifications · wallpaper · idle · clipboard
 
 ## Общие состояния внешнего вида
 
-Темы, акценты, обои, шрифты и предпочтения эффектов сохраняются как логическое состояние под `$XDG_CONFIG_HOME/argvus` (обычно `~/.config/argvus`). `argvus-config` — это единственный компонент, который записывает `data/generated/`, где он проецирует пользовательские файлы для Hyprland, GTK, Qt6ct, Waybar, Quickshell, Dunst, уведомлений, экрана блокировки, Yazi, Superfile и терминалов. Помощники по внешнему виду фиксируют изменение состояния и затем согласовывают внешние приложения; они никогда не записывают сгенерированное дерево.
+Темы, акценты, обои, шрифты и предпочтения эффектов сохраняются как логическое состояние под `$XDG_CONFIG_HOME/argvus` (обычно `~/.config/argvus`). `argvus-config` — это единственный компонент, который записывает `data/generated/`, где он проецирует пользовательские файлы для Hyprland, GTK, Qt6ct, Taskbar, Quickshell, Dunst, уведомлений, экрана блокировки, Yazi, Superfile и терминалов. Помощники по внешнему виду фиксируют изменение состояния и затем согласовывают внешние приложения; они никогда не записывают сгенерированное дерево.
 
 Сгенерированный каталог не является источником истины. См. [Appearance](/docs/user-guide/appearance/) и [configuration and state](/docs/developer-guide/architecture/configuration-and-state/).
 

@@ -44,7 +44,7 @@ pub use argvus_taskbar_popup::PopupAnchor;
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct IpcMessage {
   pub command: IpcCommand,
-  /// Pointer position captured by the Waybar launcher, so the running UI can
+  /// Pointer position captured by the Taskbar launcher, so the running UI can
   /// select the correct monitor without re-reading the live cursor.
   pub position: Option<PopupAnchor>,
 }

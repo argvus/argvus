@@ -28,7 +28,7 @@ argvus widget-telemetry toggle ...        switches the blocks on and off, and th
 ممكّن. المفتاح الرئيسي هو `effects.widget_telemetry_enabled` في التكوين، وهو
 يتم تمكينه افتراضيًا، لذلك يبدأ الحساب الجديد الأداة عند تسجيل الدخول.
 
-بمجرد كتابة التبديل `$XDG_CACHE_HOME/argvus/waybar/widget-telemetry-state`، هذا الملف
+بمجرد كتابة التبديل `$XDG_CACHE_HOME/argvus/taskbar/widget-telemetry-state`، هذا الملف
 يقرر بدلا من ذلك. يبدأ السطر الأول فقط من `enabled` الأداة. الأكبر سنا
 تظل ملفات `desktop-telemetry-state` و`sysinfo-state` قابلة للقراءة عندما يكون الملف الحالي
 مفقود.

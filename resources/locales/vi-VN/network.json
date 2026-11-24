@@ -1,6 +1,6 @@
 {
   "cli.usage": "Sử dụng:{command} [statustoggles có thể thay đổi khả năng sử dụng hệ thống quản lý máy tính xách tay sẵn sàng]",
-  "bluetooth_usage": "Cách sử dụng:{command} [status bravailablewaybar khả năng xác định máy quản lý hủy diệt]",
+  "bluetooth_usage": "Cách sử dụng:{command} [status bravailabletaskbar khả năng xác định máy quản lý hủy diệt]",
   "message.available_no": "Không có",
   "message.connected": "Đã kết nối",
   "message.disconnected": "Ngắt kết nối",
@@ -19,13 +19,13 @@
   "bluetoothctl_missing": "xanh da trời",
   "bluetooth.power_failed": "Name {target}",
   "blueman_missing": "Trình quản lý Blueman đã chọn chưa cài đặt",
-  "waybar.no_iface": "Không tìm thấy giao diện mạng",
-  "waybar.network": "Mạng",
-  "waybar.disconnected": "Ngắt kết nối",
-  "waybar.connected": "Đã kết nối",
-  "waybar.limited": "Sự kết nối bị hạn chế",
-  "waybar.no_internet": "Không truy cập Internet",
-  "waybar.reconnecting": "Đang kết nối lại",
-  "waybar.state": "Tình trạng",
-  "waybar.command_failed": "Lệnh thất bại:{command}"
+  "taskbar.no_iface": "Không tìm thấy giao diện mạng",
+  "taskbar.network": "Mạng",
+  "taskbar.disconnected": "Ngắt kết nối",
+  "taskbar.connected": "Đã kết nối",
+  "taskbar.limited": "Sự kết nối bị hạn chế",
+  "taskbar.no_internet": "Không truy cập Internet",
+  "taskbar.reconnecting": "Đang kết nối lại",
+  "taskbar.state": "Tình trạng",
+  "taskbar.command_failed": "Lệnh thất bại:{command}"
 }

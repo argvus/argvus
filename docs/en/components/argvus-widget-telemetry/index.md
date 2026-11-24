@@ -28,7 +28,7 @@ The `argvus-widget-telemetry.service` user unit starts with the session only whe
 enabled. The master switch is `effects.widget_telemetry_enabled` in the configuration, which is
 enabled by default, so a new account starts the widget at login.
 
-Once the toggle has written `$XDG_CACHE_HOME/argvus/waybar/widget-telemetry-state`, that file
+Once the toggle has written `$XDG_CACHE_HOME/argvus/taskbar/widget-telemetry-state`, that file
 decides instead. Only a first line of `enabled` starts the widget. The older
 `desktop-telemetry-state` and `sysinfo-state` files are still read when the current file is
 missing.

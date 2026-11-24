@@ -146,7 +146,7 @@ pub fn legacy_relative(relative: &str) -> String {
     return format!("hypr/{basename}");
   }
   if relative.starts_with("taskbar/config/") || relative.starts_with("widget-telemetry/config/") {
-    return format!("waybar/{}", after_config_marker(relative));
+    return format!("taskbar/{}", after_config_marker(relative));
   }
   if relative.starts_with("removable-devices/config/") {
     return format!("removable-devices/{}", after_config_marker(relative));
@@ -252,10 +252,10 @@ mod tests {
   }
 
   #[test]
-  fn maps_taskbar_config_to_waybar() {
+  fn maps_taskbar_config_to_taskbar() {
     assert_eq!(
       legacy_relative("taskbar/config/modules/clock.jsonc"),
-      "waybar/modules/clock.jsonc"
+      "taskbar/modules/clock.jsonc"
     );
   }
 

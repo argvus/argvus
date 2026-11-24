@@ -277,9 +277,9 @@ fn run_lock_theme(paths: &SessionPaths) -> bool {
     .is_ok_and(|status| status.success())
 }
 
-/// The Waybar mode stylesheet, emptied by a theme switch.
+/// The Taskbar mode stylesheet, emptied by a theme switch.
 pub fn reset_mode_stylesheet(paths: &SessionPaths) -> io::Result<()> {
-  let Some(mode_css) = user_copy::config_path(paths, "appearance/config/waybar/mode.css") else {
+  let Some(mode_css) = user_copy::config_path(paths, "appearance/config/taskbar/mode.css") else {
     return Ok(());
   };
   if let Some(parent) = mode_css.parent() {

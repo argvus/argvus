@@ -28,7 +28,7 @@ Nhiệt độ GPU được khớp với thiết bị PCI của GPU. Các bài đ
 đã bật. Công tắc chính có cấu hình là `effects.widget_telemetry_enabled`.
 được bật theo mặc định, vì vậy tài khoản mới sẽ khởi động tiện ích khi đăng nhập.
 
-Khi nút chuyển đổi đã ghi `$XDG_CACHE_HOME/argvus/waybar/widget-telemetry-state`, tệp đó
+Khi nút chuyển đổi đã ghi `$XDG_CACHE_HOME/argvus/taskbar/widget-telemetry-state`, tệp đó
 quyết định thay thế. Chỉ một dòng đầu tiên của `enabled` khởi động tiện ích. Càng lớn tuổi
 Các tệp `desktop-telemetry-state` và `sysinfo-state` vẫn được đọc khi tệp hiện tại được
 thiếu.

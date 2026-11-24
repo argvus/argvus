@@ -73,7 +73,7 @@ argvus sessionctl apply-config
 
 ### 重载目标
 
-`argvus config session-plan` 对 reload 的回答包含了已更改部分的目标，而 `argvus sessionctl` 只运行这些目标。只有当目标重新创建一个表面时，splash 才会覆盖 reload：Waybar 栏或控制面板移回屏幕时会移动每个窗口。其他所有内容都在原地 reload。
+`argvus config session-plan` 对 reload 的回答包含了已更改部分的目标，而 `argvus sessionctl` 只运行这些目标。只有当目标重新创建一个表面时，splash 才会覆盖 reload：Taskbar 栏或控制面板移回屏幕时会移动每个窗口。其他所有内容都在原地 reload。
 
 | 变更 | 目标 | 启动画面 |
 | --- | --- | --- |
@@ -107,8 +107,8 @@ argvus sessionctl apply-config
 | --- | --- |
 | Hyprland | `generated/hypr/`，包括主题配置文件、`spaces-effective.conf`、`borders-effective.conf`、`hypridle.conf` 和 `monitors.lua` |
 | 布局/效果 | `generated/effects/`、`generated/spaces.conf`、`generated/borders.conf` |
-| Waybar | `generated/waybar/`，包括 `argvus-taskbar.css` 和 `argvus-widget-telemetry.{jsonc,css}` |
-| Widget 遥测主题 | `generated/widget-telemetry/` 和 `generated/waybar/widget-telemetry-themes/` |
+| Taskbar | `generated/taskbar/`，包括 `argvus-taskbar.css` 和 `argvus-widget-telemetry.{jsonc,css}` |
+| Widget 遥测主题 | `generated/widget-telemetry/` 和 `generated/taskbar/widget-telemetry-themes/` |
 | QuickShell | `generated/quickshell/` |
 | 通知 | `generated/notifications/` 和 `dunstrc` |
 | 锁屏 | `generated/hypr/hyprlock.conf` 以及 Hyprtoolkit 主题配置文件 |
@@ -116,17 +116,17 @@ argvus sessionctl apply-config
 |睚眦| `generated/yazi/` |
 |超级文件 | `generated/superfile/` |
 | 终端和 Qt 配置文件 | `generated/terminal/`, `generated/qt6ct/` |
-| 字体 | `generated/fonts.conf` 以及在 Waybar 样式表中管理的字体块 |
+| 字体 | `generated/fonts.conf` 以及在 Taskbar 样式表中管理的字体块 |
 | 可移动设备 | `generated/removable-devices/theme.css` |
 | 壁纸 | `generated/hypr/hyprpaper.conf` 和 `data/hypr/hyprpaper.conf` |
 | 控制面板和默认设置 | `data/control-panel/`, `data/control-center/defaults.json` |
 | 日历、输入、键盘、电源 | 日历 TOML、输入片段、键盘状态、防休眠标记 |
 
 主题层在生成的根之外也有镜像：
-`data/waybar/argvus-taskbar.{jsonc,css}`,
-`data/waybar/argvus-widget-telemetry.{jsonc,css}`, `data/foot/`,
+`data/taskbar/argvus-taskbar.{jsonc,css}`,
+`data/taskbar/argvus-widget-telemetry.{jsonc,css}`, `data/foot/`,
 `data/qt6ct/`, `data/hypr/hyprtoolkit.conf` 和
-`data/hypr/application-style.conf`。当外观部分发生变化时，这些副本会被打包的默认值替换，然后投影器只重写其分隔的管理块——Waybar 样式表中的字体块和遥测配置文件中的 `ARGVUS_TELEMETRY_*` 块——因此标记之外的文本不会在切换主题时保留。`fonts.targets` 和
+`data/hypr/application-style.conf`。当外观部分发生变化时，这些副本会被打包的默认值替换，然后投影器只重写其分隔的管理块——Taskbar 样式表中的字体块和遥测配置文件中的 `ARGVUS_TELEMETRY_*` 块——因此标记之外的文本不会在切换主题时保留。`fonts.targets` 和
 `control_panel.widget_telemetry_blocks` 保持为规范：控制中心通过 `argvus-config` 保留它们，并且自己从不写入这些文件。
 
 Widget 遥测块选择在 `/control_panel/widget_telemetry_blocks` 上是规范的，它是七个块名称的数组（`system`、`cpu_gpu`、`memory`、`storage`、`processes`、`network`、`keys`）。遗留的 `$XDG_STATE_HOME/argvus/widget-telemetry-blocks` 文件仅作为迁移回退读取，从不被写入。` and ` and blocks all 会以单次原子写入方式修改规范数组，而 `apply-state` 假设其调用者已经持久化了选择。
@@ -137,7 +137,7 @@ Accent 和 GTK 模式状态使用相同的 Rust 边界。使用 ` or ` or argvus
 
 逻辑 ARGVUS 路径也由 `argvus config paths` 解析。传统的 `paths.sh` 文件仅暴露兼容性函数；本地覆盖、用户数据、生成数据和系统回退由 Rust 路径模型解析。
 
-`audio` 在一步操作中更改默认输出接收器并将结果记录在 `/audio` 中：`argvus config audio volume <N|+N|-N> [--limit PERCENT]` 和 `argvus config audio mute <on|off|toggle>`。它在不重新加载配置的情况下写入存储，因为 PipeWire 已经具有该值。Waybar 音量模块、Hyprland 媒体按键和控制面板使用它，因此 `argvus config project`（将 `/audio` 投影到接收器上）从不恢复较旧的音量。超过 100% 的音量（Hyprland 按键允许最高 150%）会被存储为 100。
+`audio` 在一步操作中更改默认输出接收器并将结果记录在 `/audio` 中：`argvus config audio volume <N|+N|-N> [--limit PERCENT]` 和 `argvus config audio mute <on|off|toggle>`。它在不重新加载配置的情况下写入存储，因为 PipeWire 已经具有该值。Taskbar 音量模块、Hyprland 媒体按键和控制面板使用它，因此 `argvus config project`（将 `/audio` 投影到接收器上）从不恢复较旧的音量。超过 100% 的音量（Hyprland 按键允许最高 150%）会被存储为 100。
 
 `patch` 应用一个 JSON 对象，其键是 JSON 指针，在一次锁定的读-改-写操作中完成。`apply-theme` 执行等效的原子主题事务，并替换主题的可选外观配置文件或打包默认值中的托管外观部分。变更命令构建一个 `NextUserConfig`，解析一个 `EffectiveConfig`，暂存所有投影器，然后才发布规范 JSON。一个操作性的 `.config-transaction.json` 标记允许 `argvus config recover` 在数据与 JSON 发布之间发生崩溃后重新投影先前的配置。主题默认值由每个主题的清单声明（`themes/<theme>/theme.toml`）：默认强调色（`palette.accent`）、GTK 颜色方案和壁纸。CSS、Lua、Rasi 和 Qt 文件从其渲染到主题构建中。
 
@@ -165,7 +165,7 @@ argvus config import --scope appearance appearance.json
 
 控制面板使用 `control_panel.cards` 来管理卡片顺序和可见性，使用 `control_panel.enabled` 来管理面板主开关。它的 `control-panel/cards.json` 和 `state/control-panel` 文件被保留作为兼容性投影。因此，在控制面板中所做的更改是 `desktop` 导出范围的一部分。
 
-字体偏好使用 `fonts.targets` 来设置任务栏、遥测、控制面板、系统、应用程序、终端和浏览器目标的字体家族、样式和大小。`fonts.rendering` 存储抗锯齿、提示、子像素顺序和 DPI 偏好。`fonts.conf`、字体配置规则、桌面设置以及 Waybar 样式表中的管理字体块都是投影：控制中心通过 `/fonts/targets/*` 到 `argvus-config` 持久化，投影器仅重写其界定的块。
+字体偏好使用 `fonts.targets` 来设置任务栏、遥测、控制面板、系统、应用程序、终端和浏览器目标的字体家族、样式和大小。`fonts.rendering` 存储抗锯齿、提示、子像素顺序和 DPI 偏好。`fonts.conf`、字体配置规则、桌面设置以及 Taskbar 样式表中的管理字体块都是投影：控制中心通过 `/fonts/targets/*` 到 `argvus-config` 持久化，投影器仅重写其界定的块。
 
 Hyprland 首选项使用 `keyboard_shortcuts` 进行快捷键设置，`hyprland.input` 进行鼠标和触控板设置，`hyprland.keyboard` 进行 XKB 布局、变体和选项设置。清单绑定 ID 映射到一个稳定的 `config_key`（例如 `window.close` → `close_window` 和 `window.drag_mouse` → `drag_window__floating_window_only`）。显示首选项使用 `displays.monitors`、`displays.workspaces` 和 `displays.primary_monitor`。位于 `data/generated/` 下的原生 TOML 文件和生成的 Lua 文件仍然是 Hyprland 使用的投影。
 
@@ -260,13 +260,13 @@ argvus config window-mode toggle
 
 浮动模式为普通应用程序窗口添加了带有 **最小化**、**最大化 / 还原** 和 **关闭** 的 ARGVUS 标题栏。双击标题栏可切换最大化。在平铺和全屏模式下，附加的装饰会被隐藏。自绘控件的应用程序可能会同时显示两个工具栏；统一的 ARGVUS 控件是有意为之。
 
-每个显示器上都会出现第二个 Waybar，位于主任务栏的相对边缘。它只列出属于该显示器当前工作区的窗口，包括该工作区已最小化的窗口。已打开的特殊工作区具有优先权。固定窗口保持可见；隐藏的组标签不会产生额外条目，最小化的组只有一个恢复条目。应用程序内的标签不会单独列出。最小化的条目保持其原始的显示器/工作区关联。点击非活动窗口以激活它，点击活动窗口以最小化它，或点击已最小化的窗口以恢复它；其上下文菜单提供恢复、最小化、最大化/恢复和关闭选项。未知的应用图标会退回使用窗口符号。激活或恢复条目时会保留指针位置。辅助栏使用有效的主 CSS（颜色、字体、边框和圆角），其高度和在相对边缘的镜像边距也会同步。
+每个显示器上都会出现第二个 Taskbar，位于主任务栏的相对边缘。它只列出属于该显示器当前工作区的窗口，包括该工作区已最小化的窗口。已打开的特殊工作区具有优先权。固定窗口保持可见；隐藏的组标签不会产生额外条目，最小化的组只有一个恢复条目。应用程序内的标签不会单独列出。最小化的条目保持其原始的显示器/工作区关联。点击非活动窗口以激活它，点击活动窗口以最小化它，或点击已最小化的窗口以恢复它；其上下文菜单提供恢复、最小化、最大化/恢复和关闭选项。未知的应用图标会退回使用窗口符号。激活或恢复条目时会保留指针位置。辅助栏使用有效的主 CSS（颜色、字体、边框和圆角），其高度和在相对边缘的镜像边距也会同步。
 
 `SUPER + Alt + Up` 将主栏放在顶部，窗口栏放在底部。`SUPER + Alt + Down` 则相反。重复一个方向将保持位置不变。平铺模式只有主栏。返回到平铺模式会在移除窗口栏之前恢复所有最小化的窗口，然后保留原来的平铺/浮动策略。
 
 最小化使用保留的 `special:argvus-minimized` 工作区。不要手动使用该工作区。`argvus windows service` 进程在特定于合成器实例的运行时注册表中，在 `$XDG_RUNTIME_DIR/argvus` 下记录身份、原始工作区/显示器、几何形状、全屏/最大化和固定状态。记录在服务重启或配置重新加载后仍然存在，但不会跨合成器会话。关闭窗口会删除其记录。如果显示器消失，恢复将使用可用的输出。缺失或恢复条失败会阻止新的最小化；恢复失败会保留记录和恢复条。
 
-会话拥有 `argvus-windows.service` 和 `argvus-window-bar.service`。后者保持其 Waybar 子项在 Tile 中处于休眠状态。hyprbars 插件由 `argvus-hyprland` 打包，为 x86_64 上的 Hyprland 0.57.0 ABI 构建；它未在用户的主目录中编译。更新合成器 ABI 后重新构建该插件。命令：`argvus windows list --json`、`watch --json`、`position top|bottom`、`restore-all` 和 `minimize|restore|activate|maximize|close ADDRESS`。窗口地址来自列表。`position top --persist` 存储/投射偏好设置而无需重启主栏。配置和运行时错误详情会记录到日志中；可见的操作失败也会显示翻译后的通知。
+会话拥有 `argvus-windows.service` 和 `argvus-window-bar.service`。后者保持其 Taskbar 子项在 Tile 中处于休眠状态。hyprbars 插件由 `argvus-hyprland` 打包，为 x86_64 上的 Hyprland 0.57.0 ABI 构建；它未在用户的主目录中编译。更新合成器 ABI 后重新构建该插件。命令：`argvus windows list --json`、`watch --json`、`position top|bottom`、`restore-all` 和 `minimize|restore|activate|maximize|close ADDRESS`。窗口地址来自列表。`position top --persist` 存储/投射偏好设置而无需重启主栏。配置和运行时错误详情会记录到日志中；可见的操作失败也会显示翻译后的通知。
 
 在 **Spaced + Floating** 模式下，窗口会遵循外部间隙和两个栏位预留的区域。边界包括边框和标题，标题位于同一窗口边框内。通过 ARGVUS 控制最大化时，会用边距填充该区域；恢复时会拾回之前的几何状态，包括服务重启后。全屏模式仍使用整个输出区域。浮动窗口可能重叠；铺砖式内部间隙不会将它们分隔开。
 

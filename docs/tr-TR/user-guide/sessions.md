@@ -14,7 +14,7 @@ Faydalı teşhisler:
 ```sh
 argvus sessionctl status
 argvus sessionctl logs
-argvus sessionctl restart waybar
+argvus sessionctl restart taskbar
 ```
 
 Hizmet sahipliği için geliştiriciye [çalışma zamanı yaşam döngüsü](/docs/developer-guide/architecture/runtime-lifecycle/) bakın.

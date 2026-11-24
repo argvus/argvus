@@ -31,7 +31,7 @@ Execute `argvus --help` para ver a lista da sua versão instalada. Os subcomando
 | `argvus du` | Auxiliar (aplicativo de terminal) | Abre o ARGVUS Disk Usage Analyzer em uma janela Kitty dedicada e executa o ncdu. |
 | `argvus network ...` | Em processo | Estado e controles do NetworkManager (`networkctl` continua como alias). |
 | `argvus bluetooth ...` | Em processo | Estado e controles do Bluetooth (`bluetoothctl` continua como alias). |
-| `argvus widget-telemetry block ...` | Em processo | O bloco de telemetria da Waybar. É o caminho quente da barra. |
+| `argvus widget-telemetry block ...` | Em processo | O bloco de telemetria da Taskbar. É o caminho quente da barra. |
 | `argvus widget-telemetry toggle ...` | Em processo | Liga e desliga os blocos de telemetria, e a ordem deles. |
 | `argvus game-snake` | Executável privado | O jogo Snake no terminal, do projeto independente `argvus-game-snake`, um pacote opcional. Fora de um terminal, abre um. |
 | `argvus control-center [página]` | Auxiliar (aplicativo de terminal) | Abre o Centro de Controle, ou foca a janela que já está aberta. |
@@ -39,7 +39,7 @@ Execute `argvus --help` para ver a lista da sua versão instalada. Os subcomando
 | `argvus taskbar-calendar [args]` | Auxiliar GTK 4 | O padrão é `toggle`. |
 | `argvus removable-devices [args]` | Auxiliar GTK 4 | O padrão é `menu`. |
 | `argvus focus [--toggle] [--start\|--pause] [--x X --y Y] [--bar-bottom PX --bar-right PX]` | Aplicativo GTK 4 | Popup do ARGVUS Focus. Uma instância por sessão. |
-| `argvus focus status --waybar [--follow]` | Em processo | Emite o indicador da taskbar em JSON Waybar; `--follow` transmite mudanças sem carregar GTK. |
+| `argvus focus status --taskbar [--follow]` | Em processo | Emite o indicador da taskbar em JSON Taskbar; `--follow` transmite mudanças sem carregar GTK. |
 | `argvus clock [--toggle] [--background] [--page PÁGINA] [--x X --y Y] [--bar-bottom PX --bar-right PX]` | Aplicativo GTK 4 | Popup do ARGVUS Clock. Uma instância por sessão; `--background` mantém alarmes ativos sem popup. |
 | `argvus loading-theme ...` | `splash` empacotado em `/usr/lib/argvus/loading-theme/splash` | O overlay dos reloads diretos da sessão; a troca de tema não o usa. |
 | `argvus session`, `start`, `tty`, `sessionctl` | Executáveis privados | Pontos de entrada da sessão e o controlador da sessão. |

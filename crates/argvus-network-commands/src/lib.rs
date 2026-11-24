@@ -3,4 +3,4 @@
 pub mod bluetoothctl;
 pub mod networkctl;
 
-mod network_waybar;
+mod network_taskbar;

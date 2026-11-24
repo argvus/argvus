@@ -6,7 +6,7 @@ pub(super) fn opacity_factor(transparency: u32) -> String {
   format!("{:.2}", 1.0 - f64::from(transparency) / 100.0)
 }
 
-/// Every `@define-color` line of the theme files imported by a Waybar stylesheet,
+/// Every `@define-color` line of the theme files imported by a Taskbar stylesheet,
 /// so the opaque border colors can be derived from the theme palette.
 pub(super) fn imported_theme_text(css: &Path, text: &str) -> String {
   let parent = css.parent().unwrap_or(Path::new("."));
@@ -162,8 +162,8 @@ pub(super) fn delete_range(text: &str, start: &str, end: &str) -> String {
   output
 }
 
-/// Sets the `"name"` field of a Waybar JSONC file, or adds it after the first line.
-pub(super) fn ensure_waybar_namespace(path: Option<&Path>, namespace: &str) -> io::Result<()> {
+/// Sets the `"name"` field of a Taskbar JSONC file, or adds it after the first line.
+pub(super) fn ensure_taskbar_namespace(path: Option<&Path>, namespace: &str) -> io::Result<()> {
   let Some(path) = path.filter(|path| path.is_file()) else {
     return Ok(());
   };

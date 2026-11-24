@@ -24,7 +24,7 @@ pub fn run_command(program: &str, arguments: Vec<String>) -> ExitCode {
   match arguments.first().map(String::as_str).unwrap_or("status") {
     "status" => print_status(),
     "available" => print_available(),
-    "waybar" => print_waybar(),
+    "taskbar" => print_taskbar(),
     "enable" | "on" => set_power(true),
     "disable" | "off" => set_power(false),
     "toggle" => toggle(),
@@ -123,14 +123,14 @@ fn print_available() -> ExitCode {
   }
 }
 
-/// The Waybar module, or a failure when there is no adapter to show.
-fn print_waybar() -> ExitCode {
+/// The Taskbar module, or a failure when there is no adapter to show.
+fn print_taskbar() -> ExitCode {
   let state = summary();
   let labels = Labels {
     off: message("bluetooth.off", &[]),
     name: message("bluetooth.name", &[]),
   };
-  match bluetooth::waybar(&state, &labels) {
+  match bluetooth::taskbar(&state, &labels) {
     Some(json) => {
       println!("{json}");
       ExitCode::SUCCESS

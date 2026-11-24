@@ -1,4 +1,4 @@
-//! The text the Waybar modules print: the JSON of a custom module, and the
+//! The text the Taskbar modules print: the JSON of a custom module, and the
 //! progress bar of the usage blocks. The JSON escapes what the shell helpers
 //! left unescaped, so a value with a quote cannot break the module.
 

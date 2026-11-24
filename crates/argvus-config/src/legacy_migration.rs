@@ -97,11 +97,11 @@ pub(super) fn import_layout_state(
       "gaps_out_left" => "/layout/window/gaps_out_left",
       "gaps_out_right" => "/layout/window/gaps_out_right",
       "gaps_out_bottom" => "/layout/window/gaps_out_bottom",
-      "waybar_pos" => "/layout/taskbar/position",
-      "waybar_top" => "/layout/taskbar/margin_top",
-      "waybar_left" => "/layout/taskbar/margin_left",
-      "waybar_right" => "/layout/taskbar/margin_right",
-      "waybar_bottom" => "/layout/taskbar/margin_bottom",
+      "taskbar_pos" => "/layout/taskbar/position",
+      "taskbar_top" => "/layout/taskbar/margin_top",
+      "taskbar_left" => "/layout/taskbar/margin_left",
+      "taskbar_right" => "/layout/taskbar/margin_right",
+      "taskbar_bottom" => "/layout/taskbar/margin_bottom",
       _ => continue,
     };
     let parsed = if pointer.ends_with("position") {

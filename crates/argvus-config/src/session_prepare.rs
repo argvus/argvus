@@ -343,7 +343,7 @@ pub(crate) fn theme_materialized(paths: &SessionPaths, theme: &str) -> bool {
     "taskbar/config/argvus-taskbar.css",
     "widget-telemetry/config/argvus-widget-telemetry.jsonc",
     "widget-telemetry/config/argvus-widget-telemetry.css",
-    "appearance/config/waybar/mode.css",
+    "appearance/config/taskbar/mode.css",
   ];
   if !paths.has_shared_bars() {
     for relative in required {

@@ -19,13 +19,13 @@
   "bluetoothctl_missing": "bluetoothctl non è stato trovato",
   "bluetooth.power_failed": "Impossibile girare Bluetooth {target}",
   "blueman_missing": "Il gestore Blueman opzionale non è installato",
-  "waybar.no_iface": "Nessuna interfaccia di rete trovata",
-  "waybar.network": "Rete",
-  "waybar.disconnected": "Disconnesso",
-  "waybar.connected": "Collegato",
-  "waybar.limited": "Connettività limitata",
-  "waybar.no_internet": "Nessun accesso a Internet",
-  "waybar.reconnecting": "Riconnessione",
-  "waybar.state": "Stato",
-  "waybar.command_failed": "Comando non riuscito: {command}"
+  "taskbar.no_iface": "Nessuna interfaccia di rete trovata",
+  "taskbar.network": "Rete",
+  "taskbar.disconnected": "Disconnesso",
+  "taskbar.connected": "Collegato",
+  "taskbar.limited": "Connettività limitata",
+  "taskbar.no_internet": "Nessun accesso a Internet",
+  "taskbar.reconnecting": "Riconnessione",
+  "taskbar.state": "Stato",
+  "taskbar.command_failed": "Comando non riuscito: {command}"
 }

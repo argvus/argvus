@@ -20,7 +20,7 @@ Le temperature della GPU sono abbinate a un dispositivo PCI della GPU. Le lettur
 
 L'unità utente `argvus-widget-telemetry.service` si avvia con la sessione solo quando il widget è abilitato. Il master switch è `effects.widget_telemetry_enabled` nella configurazione, che è abilitato di default, quindi un nuovo account avvia il widget al login.
 
-Una volta che l'interruttore ha scritto `$XDG_CACHE_HOME/argvus/waybar/widget-telemetry-state`, quel file decide invece. Solo una prima riga di `enabled` avvia il widget. I vecchi file `desktop-telemetry-state` e `sysinfo-state` vengono ancora letti quando il file corrente è mancante.
+Una volta che l'interruttore ha scritto `$XDG_CACHE_HOME/argvus/taskbar/widget-telemetry-state`, quel file decide invece. Solo una prima riga di `enabled` avvia il widget. I vecchi file `desktop-telemetry-state` e `sysinfo-state` vengono ancora letti quando il file corrente è mancante.
 
 Le etichette di telemetria sono compatte in tutte e dieci le lingue supportate. Gli identificatori tecnici come CPU, GPU, IP, DE, WM e Kernel mantengono il loro significato tecnico. Il tempo di attività viene letto da `/proc/uptime` e mostrato con unità abbreviate (per esempio `1d 12h 49m`); non si espande più in parole complete secondo la lingua di sistema. I nomi dei modelli hardware e altri valori del provider possono ancora influenzare la larghezza del widget.
 

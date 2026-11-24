@@ -4,7 +4,7 @@
 //! open at the same place and close the same way:
 //!
 //! - [`geometry`]: where the popup goes. The click position comes from the
-//!   Waybar launcher (immutable root coordinates); the bar geometry and the
+//!   Taskbar launcher (immutable root coordinates); the bar geometry and the
 //!   monitor come from `hyprctl`. The popup sits [`geometry::POPUP_GAP_Y`]
 //!   pixels below a top bar or above a bottom bar, aligned to the bar's right
 //!   edge.

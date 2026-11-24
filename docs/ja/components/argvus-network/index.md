@@ -2,7 +2,7 @@
 title: ネットワーキングとBluetooth
 description: ARGVUSを通じてNetworkManagerとBluetoothを管理する。
 ---
-`argvus network` サブコマンドは NetworkManager のレポートと制御を行い、`argvus bluetooth` は Bluetooth アダプターの状態と利用可能性のレポートと制御を行います。両方とも `argvus` 内でプロセス内で実行されます；`networkctl` と `bluetoothctl` はエイリアスとして残ります。コントロールパネルと Waybar はこれらのコマンドを呼び出します。
+`argvus network` サブコマンドは NetworkManager のレポートと制御を行い、`argvus bluetooth` は Bluetooth アダプターの状態と利用可能性のレポートと制御を行います。両方とも `argvus` 内でプロセス内で実行されます；`networkctl` と `bluetoothctl` はエイリアスとして残ります。コントロールパネルと Taskbar はこれらのコマンドを呼び出します。
 
 いずれかのコマンドで `--help` を使用すると、インストールされているサブコマンドを確認できます。ネットワークおよび Bluetooth の UI 統合は、Blueman のような任意の高度なマネージャーとは別です。
 

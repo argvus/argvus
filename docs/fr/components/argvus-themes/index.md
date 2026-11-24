@@ -2,7 +2,7 @@
 title: Thèmes
 description: Installer, sélectionner, personnaliser, importer et exporter des thèmes ARGVUS.
 ---
-Un thème dans ARGVUS définit les couleurs, les surfaces, les fonds d'écran par défaut et la géométrie de la disposition utilisés sur le bureau : Hyprland, Waybar, le Panneau de Contrôle, la barre des tâches, l'écran de verrouillage, les notifications et les applications ARGVUS. Ce guide couvre tout ce dont vous avez besoin pour travailler avec les thèmes en tant qu'utilisateur.
+Un thème dans ARGVUS définit les couleurs, les surfaces, les fonds d'écran par défaut et la géométrie de la disposition utilisés sur le bureau : Hyprland, Taskbar, le Panneau de Contrôle, la barre des tâches, l'écran de verrouillage, les notifications et les applications ARGVUS. Ce guide couvre tout ce dont vous avez besoin pour travailler avec les thèmes en tant qu'utilisateur.
 
 ## Ce qui est inclus dans un thème
 

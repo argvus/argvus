@@ -13,7 +13,7 @@ description: tanggung jawab paket ARGVUS.
 | `argvus-session` | Titik masuk sesi dan siklus hidup pengguna. |
 | `argvus-hyprland` | Konfigurasi Hyprland. |
 | `argvus-control-panel` | Panel kontrol Quickshell. |
-| `argvus-taskbar`, `argvus-waybar` | Konfigurasi waybar dan biner yang ditambal. |
+| `argvus-taskbar` | Konfigurasi taskbar dan biner yang ditambal. |
 | `argvus-branding` | Aset logo dan tanda kata. |
 | `argvus-appearance`, `argvus-wallpapers`, `argvus-fonts`, `argvus-icons` | Keadaan penampilan dan aset visual. |
 | `argvus-display`, `argvus-power`, `argvus-notifications` | Penyedia desktop. |
@@ -35,4 +35,4 @@ description: tanggung jawab paket ARGVUS.
 
 Paket `argvus-pwvucontrol` dan `argvus-snappy-switcher` yang dihapus tidak disediakan oleh paket mana pun.
 
-Tidak diperlukan urutan instalasi di antara paket komponen ARGVUS: `argvus` adalah paket masternya, dan setiap komponen bergantung padanya. Menginstal `argvus` juga menginstal profil `argvus-desktop`; `argvus-devtools` dan `argvus-pentest` tetap ikut serta. Kehadiran sebuah paket dalam tabel ini tidak berarti paket tersebut memiliki seluruh fitur: misalnya, taskbar menggabungkan `argvus-waybar`, `argvus-taskbar`, `argvus-session` dan penyedia domain.
+Tidak diperlukan urutan instalasi di antara paket komponen ARGVUS: `argvus` adalah paket masternya, dan setiap komponen bergantung padanya. Menginstal `argvus` juga menginstal profil `argvus-desktop`; `argvus-devtools` dan `argvus-pentest` tetap ikut serta. Kehadiran sebuah paket dalam tabel ini tidak berarti paket tersebut memiliki seluruh fitur: misalnya, taskbar menggabungkan `argvus-taskbar`, `argvus-session` dan penyedia domain.

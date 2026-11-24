@@ -102,7 +102,7 @@ CLI কমিট করার পরে একটি কেন্দ্রীভ
 
 `argvus config session-plan` এর লক্ষ্যগুলির সাথে পুনরায় লোডের উত্তর দেয়
 যে বিভাগগুলি পরিবর্তিত হয়েছে, এবং `argvus sessionctl` শুধুমাত্র সেগুলি চালায়৷ স্প্ল্যাশ
-একটি পুনরায় লোড কভার করে যখন একটি লক্ষ্য একটি পৃষ্ঠ পুনরায় তৈরি করে: একটি Waybar বার বা
+একটি পুনরায় লোড কভার করে যখন একটি লক্ষ্য একটি পৃষ্ঠ পুনরায় তৈরি করে: একটি Taskbar বার বা
 কন্ট্রোল প্যানেল পর্দায় ফিরে যাওয়া প্রতিটি উইন্ডোকে স্থানান্তরিত করে। বাকি সব
 জায়গায় পুনরায় লোড হয়।
 
@@ -153,8 +153,8 @@ CLI কমিট করার পরে একটি কেন্দ্রীভ
 | --- | --- |
 | হাইপ্রল্যান্ড | `generated/hypr/`, থিম প্রোফাইল সহ, ` spaces-effective.conf `, ` borders-effective.conf `, ` hypridle.conf ` এবং ` monitors.lua` |
 | বিন্যাস/প্রভাব | `generated/effects/`, ` generated/spaces.conf `, ` generated/borders.conf` |
-| ওয়েবার | `generated/waybar/`, ` argvus-taskbar.css ` এবং ` argvus-widget-telemetry.{jsonc,css}` সহ |
-| উইজেট টেলিমেট্রি থিম | `generated/widget-telemetry/` এবং ` generated/waybar/widget-telemetry-themes/` |
+| ওয়েবার | `generated/taskbar/`, ` argvus-taskbar.css ` এবং ` argvus-widget-telemetry.{jsonc,css}` সহ |
+| উইজেট টেলিমেট্রি থিম | `generated/widget-telemetry/` এবং ` generated/taskbar/widget-telemetry-themes/` |
 | কুইকশেল | `generated/quickshell/` |
 | বিজ্ঞপ্তি | `generated/notifications/` এবং ` dunstrc` |
 | লক স্ক্রীন | `generated/hypr/hyprlock.conf` এবং Hyprtoolkit থিম প্রোফাইল |
@@ -169,8 +169,8 @@ CLI কমিট করার পরে একটি কেন্দ্রীভ
 | ক্যালেন্ডার, ইনপুট, কীবোর্ড, পাওয়ার | ক্যালেন্ডার TOML, ইনপুট খণ্ড, কীবোর্ড অবস্থা, জাগ্রত রাখুন মার্কার |
 
 থিম স্তরটি উৎপন্ন মূলের বাইরেও মিরর করা হয়েছে:
-`data/waybar/argvus-taskbar.{jsonc,css}`,
-`data/waybar/argvus-widget-telemetry.{jsonc,css}`, ` data/foot/`,
+`data/taskbar/argvus-taskbar.{jsonc,css}`,
+`data/taskbar/argvus-widget-telemetry.{jsonc,css}`, ` data/foot/`,
 `data/qt6ct/`, ` data/hypr/hyprtoolkit.conf` এবং
 `data/hypr/application-style.conf`. সেই কপিগুলি প্যাকেজ থেকে প্রতিস্থাপিত হয়
 ডিফল্ট যখন চেহারা বিভাগ পরিবর্তিত হয়, এবং প্রজেক্টর তারপর পুনরায় লেখা হয়

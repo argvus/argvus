@@ -26,7 +26,7 @@ use ipc::PopupAnchor;
   about = "Native Argvus calendar popup for Wayland"
 )]
 struct Cli {
-  /// Horizontal click position supplied by the Waybar launcher.
+  /// Horizontal click position supplied by the Taskbar launcher.
   #[arg(
     long,
     global = true,
@@ -36,7 +36,7 @@ struct Cli {
   )]
   x: Option<i32>,
 
-  /// Vertical click position supplied by the Waybar launcher.
+  /// Vertical click position supplied by the Taskbar launcher.
   #[arg(
     long,
     global = true,
@@ -46,11 +46,11 @@ struct Cli {
   )]
   y: Option<i32>,
 
-  /// Bottom edge of the Waybar surface in desktop coordinates.
+  /// Bottom edge of the Taskbar surface in desktop coordinates.
   #[arg(long, global = true, value_name = "PX", allow_hyphen_values = true)]
   bar_bottom: Option<i32>,
 
-  /// Right edge of the Waybar surface in desktop coordinates.
+  /// Right edge of the Taskbar surface in desktop coordinates.
   #[arg(long, global = true, value_name = "PX", allow_hyphen_values = true)]
   bar_right: Option<i32>,
 
@@ -87,7 +87,7 @@ fn main() -> Result<()> {
     &cli.command,
     None | Some(Command::Toggle) | Some(Command::Show)
   );
-  // The Waybar launcher supplies an immutable click position. Direct CLI
+  // The Taskbar launcher supplies an immutable click position. Direct CLI
   // calls retain the live-pointer fallback for backwards compatibility.
   let click_position = opens_popup
     .then(|| {

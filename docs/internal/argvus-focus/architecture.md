@@ -29,8 +29,8 @@ guards against reopening from the same click that dismissed it.
 `argvus_time_core::focus_status::FocusStatus` is atomically written to
 `$XDG_RUNTIME_DIR/argvus/focus/status.json` at state changes and removed on shutdown. It records
 the process ID, mode, phase and state; a running phase carries an absolute UTC `ends_at`, while a
-paused phase carries `remaining_ms`. The Waybar reader in `argvus-cli` handles
-`argvus focus status --waybar [--follow]` in-process, without starting GTK. It ignores a file
+paused phase carries `remaining_ms`. The Taskbar reader in `argvus-cli` handles
+`argvus focus status --taskbar [--follow]` in-process, without starting GTK. It ignores a file
 whose process no longer exists, emits one JSON line or streams only changed output, and renders
 the phase, remaining time and state for the `custom/focus` module.
 

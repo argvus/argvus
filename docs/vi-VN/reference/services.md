@@ -71,7 +71,7 @@ Khởi động lại các dịch vụ riêng lẻ mà không ảnh hưởng đ�
 
 ```sh
 # Desktop surfaces
-argvus sessionctl restart waybar
+argvus sessionctl restart taskbar
 argvus sessionctl restart wallpaper
 argvus sessionctl restart shell
 

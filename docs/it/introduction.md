@@ -33,7 +33,7 @@ Il pacchetto `argvus` fornisce il dispatcher `/usr/bin/argvus` e il punto di ing
 
 ### Compositore e shell del desktop
 
-`argvus-hyprland` fornisce la configurazione di Hyprland e le combinazioni di tasti. `argvus-waybar` fornisce il binario Waybar patchato, mentre `argvus-taskbar` possiede la configurazione della barra delle applicazioni e le azioni. `argvus-control-panel` fornisce il pannello Quickshell, e `argvus widget-telemetry` fornisce widget di sistema opzionali, in-process in `argvus`.
+`argvus-hyprland` fornisce la configurazione di Hyprland e le combinazioni di tasti. `argvus-taskbar` fornisce il binario Taskbar patchato, mentre `argvus-taskbar` possiede la configurazione della barra delle applicazioni e le azioni. `argvus-control-panel` fornisce il pannello Quickshell, e `argvus widget-telemetry` fornisce widget di sistema opzionali, in-process in `argvus`.
 
 Vedi [Desktop](/docs/user-guide/desktop/) per l'uso e [shell surfaces](/docs/developer-guide/subsystems/shell-surfaces/) per la proprietà dell'implementazione.
 
@@ -53,7 +53,7 @@ Vedi [Hardware](/docs/user-guide/hardware/), [Privacy e sicurezza](/docs/user-gu
 
 ## Stato condiviso dell'aspetto
 
-Preferenze di tema, accento, sfondo, font ed effetti sono memorizzate come stato logico sotto `$XDG_CONFIG_HOME/argvus` (normalmente `~/.config/argvus`). `argvus-config` è l'unico componente che scrive su `data/generated/`, dove proietta i file dei consumatori per Hyprland, GTK, Qt6ct, Waybar, Quickshell, Dunst, notifiche, la schermata di blocco, Yazi, Superfile e terminali. Gli strumenti di supporto all'aspetto confermano il cambiamento di stato e poi riconciliano le applicazioni esterne; non scrivono mai l'albero generato.
+Preferenze di tema, accento, sfondo, font ed effetti sono memorizzate come stato logico sotto `$XDG_CONFIG_HOME/argvus` (normalmente `~/.config/argvus`). `argvus-config` è l'unico componente che scrive su `data/generated/`, dove proietta i file dei consumatori per Hyprland, GTK, Qt6ct, Taskbar, Quickshell, Dunst, notifiche, la schermata di blocco, Yazi, Superfile e terminali. Gli strumenti di supporto all'aspetto confermano il cambiamento di stato e poi riconciliano le applicazioni esterne; non scrivono mai l'albero generato.
 
 La directory generata non è la fonte della verità. Vedi [Appearance](/docs/user-guide/appearance/) e [configuration and state](/docs/developer-guide/architecture/configuration-and-state/).
 

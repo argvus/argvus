@@ -1,6 +1,6 @@
 {
   "cli.usage": "Pemakaian: {command} [status 124; toggle = 124; aktifkan Python 124; non-aktifkan pengandar 144; status wifi = 124; wifi toggle = 124; wifi memungkinkan fungsi Gib124; wifi menonaktifkan]",
-  "bluetooth_usage": "Penggunaan: {command} [status 174; tersedia 124; waybar 14; aktifkan 124; non-aktifkan NG 124; toggle 126; manager]",
+  "bluetooth_usage": "Penggunaan: {command} [status 174; tersedia 124; taskbar 14; aktifkan 124; non-aktifkan NG 124; toggle 126; manager]",
   "message.available_no": "[PH000] tidak tersedia",
   "message.connected": "Terhubung",
   "message.disconnected": "Terputus",
@@ -19,13 +19,13 @@
   "bluetoothctl_missing": "bluetoothctl tidak ditemukan",
   "bluetooth.power_failed": "Tidak dapat mengubah Bluetooth {target}",
   "blueman_missing": "Manajer opsional Blueman tidak diinstal",
-  "waybar.no_iface": "Tak ditemukan antarmuka jaringan",
-  "waybar.network": "Jaringan",
-  "waybar.disconnected": "Terputus",
-  "waybar.connected": "Terhubung",
-  "waybar.limited": "Koneksi terbatas",
-  "waybar.no_internet": "Tak ada akses Internet",
-  "waybar.reconnecting": "Menyambung ulang",
-  "waybar.state": "Keadaan",
-  "waybar.command_failed": "Perintah gagal: {command}"
+  "taskbar.no_iface": "Tak ditemukan antarmuka jaringan",
+  "taskbar.network": "Jaringan",
+  "taskbar.disconnected": "Terputus",
+  "taskbar.connected": "Terhubung",
+  "taskbar.limited": "Koneksi terbatas",
+  "taskbar.no_internet": "Tak ada akses Internet",
+  "taskbar.reconnecting": "Menyambung ulang",
+  "taskbar.state": "Keadaan",
+  "taskbar.command_failed": "Perintah gagal: {command}"
 }

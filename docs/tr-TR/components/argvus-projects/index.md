@@ -35,7 +35,7 @@ Kurallı dizin yolu, kararlı bir çalışma alanı kimliğini belirler; liste s
 
 Güncellemeden önce açılan çalışma alanları mevcut pencerelerini ve yerel adlarını korur. Güncellemeden sonra bir projenin açılması, onun yeni yoldan türetilmiş kimliğini kullanır; Uygun olduğunda eski proje pencerelerini kapatın. Eski bir ad dizini güvenilir bir şekilde tanımlamadığından hiçbir otomatik ilişkilendirme veya taşıma girişiminde bulunulmaz. Yinelenen dizin adlarıyla, belirsiz bir ad yerine seçiciyi, bir sayıyı veya tam kurallı yolu kullanın.
 
-Bir projenin açılması, `$XDG_RUNTIME_DIR/argvus/project-workspaces.json`'yu yapılandırılmış proje listesinden ve çevirilerden atomik olarak yeniden oluşturur. Bu, yapılandırma değil, çalışma alanı etiketleri ve araç ipuçlarına ilişkin oturum meta verileridir; düzenlemeyin. Etiketlerini yenilemek için listeyi veya dili değiştirdikten sonra projeyi yeniden açın. Bu entegrasyon için hem `argvus` hem de `argvus-waybar`'nun yanı sıra `argvus-taskbar` yapılandırmasını güncelleyin.
+Bir projenin açılması, `$XDG_RUNTIME_DIR/argvus/project-workspaces.json`'yu yapılandırılmış proje listesinden ve çevirilerden atomik olarak yeniden oluşturur. Bu, yapılandırma değil, çalışma alanı etiketleri ve araç ipuçlarına ilişkin oturum meta verileridir; düzenlemeyin. Etiketlerini yenilemek için listeyi veya dili değiştirdikten sonra projeyi yeniden açın. Bu entegrasyon için hem `argvus` hem de `argvus-taskbar`'nun yanı sıra `argvus-taskbar` yapılandırmasını güncelleyin.
 
 ## Projeler
 

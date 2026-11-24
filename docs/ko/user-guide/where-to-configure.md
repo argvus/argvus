@@ -13,15 +13,15 @@ description: 일반적인 ARGVUS 설정을 찾기 위한 빠른 색인.
 | 배경화면 변경 | **Control Center → Appearance → Wallpapers** |
 | 시각 효과 켜기 또는 끄기 | **Control Center → Appearance → Effects**, **Control Center → Appearance → Launchers**, **Control Center → Configuration**, **Taskbar**, **Widget Telemetry** 또는 **Control Panel** |
 | 작업 표시줄 위치, 높이, 테두리 또는 유틸리티 그룹 변경 | **Control Center → Appearance → Taskbar → Position**, **Height**, **Border** 및 **Icons** |
-| 작업 표시줄 JSONC 또는 CSS 사용자화 | [Waybar 및 작업 표시줄 오버라이드](/docs/argvus-waybar/) | 
-| 창 간격 또는 테두리 변경 | **제어 센터 → 데스크탑 및 입력 → Hyprland → 창 → 공간** 및 **테두리** | 
-| 창 그림자 변경 | **제어 센터 → 데스크탑 및 입력 → Hyprland → 테두리 → 그림자** | 
-| 표시할 제어판 카드 선택 | **제어 센터 → 외관 → 제어판** | 
-| 키보드 단축키 변경 | **제어 센터 → 로케일 및 지역 → 키보드 단축키** | 
-| 고급 Hyprland 규칙, 모니터 설정 또는 새 키바인딩 추가 | [Hyprland 오버라이드](/docs/argvus-hyprland/hyprland-overrides/) | 
-| 마우스 또는 터치패드 동작 변경 | **제어 센터 → 로케일 및 지역 → 마우스 및 터치패드** | 
-| 글꼴 변경 | **제어 센터 → 글꼴** | 
-| 기본 애플리케이션 선택 | **제어 센터 → 기본 애플리케이션** | 
+| 작업 표시줄 JSONC 또는 CSS 사용자화 | [Taskbar 및 작업 표시줄 오버라이드](/docs/argvus-taskbar/) |
+| 창 간격 또는 테두리 변경 | **제어 센터 → 데스크탑 및 입력 → Hyprland → 창 → 공간** 및 **테두리** |
+| 창 그림자 변경 | **제어 센터 → 데스크탑 및 입력 → Hyprland → 테두리 → 그림자** |
+| 표시할 제어판 카드 선택 | **제어 센터 → 외관 → 제어판** |
+| 키보드 단축키 변경 | **제어 센터 → 로케일 및 지역 → 키보드 단축키** |
+| 고급 Hyprland 규칙, 모니터 설정 또는 새 키바인딩 추가 | [Hyprland 오버라이드](/docs/argvus-hyprland/hyprland-overrides/) |
+| 마우스 또는 터치패드 동작 변경 | **제어 센터 → 로케일 및 지역 → 마우스 및 터치패드** |
+| 글꼴 변경 | **제어 센터 → 글꼴** |
+| 기본 애플리케이션 선택 | **제어 센터 → 기본 애플리케이션** |
 | 디스플레이 설정 변경 | **제어 센터 → 디스플레이** 또는 제어판 디스플레이 카드 |
 | 네트워크 연결 확인 또는 변경 | 제어판 네트워크 카드; 설치된 네트워크 도구가 제공하는 영구 네트워크 설정 |
 | 볼륨 변경 또는 빠르게 음소거 | 제어판 볼륨 카드 또는 미디어 키 |

@@ -25,7 +25,7 @@
   "usage.stop": "停止停止argvus-session.target和graphical-session.target",
   "usage.restart": "restart 重新启动 ARGVUS 会话目标",
   "usage.reload": "重新加载重新应用可变配置并重新启动受影响的服务",
-  "usage.restart_items": "restart <items...> 重新启动组件组：waybar、壁纸、dunst、控制面板...",
+  "usage.restart_items": "restart <items...> 重新启动组件组：taskbar、壁纸、dunst、控制面板...",
   "usage.status": "status 显示目标和服务状态",
   "usage.logs": "logs [journal args] 显示 ARGVUS 用户单元日志日志",
   "usage.widget_telemetry": "小部件遥测<命令>",

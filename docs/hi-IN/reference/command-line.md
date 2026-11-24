@@ -33,7 +33,7 @@ description: argvus कमांड, इसके उपकमांड, की�
 | `argvus taskbar-calendar [args]` | जीटीके 4 एप्लीकेशन | डिफ़ॉल्ट रूप से `toggle` है। |
 | `argvus removable-devices [args]` | जीटीके 4 एप्लीकेशन | डिफ़ॉल्ट रूप से `menu`। |
 | `argvus focus [--toggle] [--start\|--pause] [--x X --y Y] [--bar-bottom PX --bar-right PX]` | जीटीके 4 एप्लीकेशन | ARGVUS फोकस पॉपअप। प्रति सत्र एक उदाहरण. |
-| `argvus focus status --waybar [--follow]` | प्रक्रिया में | फ़ोकस टास्कबार संकेतक को वेबार JSON के रूप में उत्सर्जित करता है; `--follow` स्ट्रीम GTK लोड किए बिना बदल जाती है। |
+| `argvus focus status --taskbar [--follow]` | प्रक्रिया में | फ़ोकस टास्कबार संकेतक को वेबार JSON के रूप में उत्सर्जित करता है; `--follow` स्ट्रीम GTK लोड किए बिना बदल जाती है। |
 | `argvus clock [--toggle] [--background] [--page PAGE] [--x X --y Y] [--bar-bottom PX --bar-right PX]` | जीटीके 4 एप्लीकेशन | ARGVUS क्लॉक पॉपअप। प्रति सत्र एक उदाहरण; `--background` बिना पॉपअप के अलार्म को सक्रिय रखता है। |
 | `argvus loading-theme ...` | /usr/lib/argvus/loading-theme/splash पर पैक किया गया `splash` | प्रत्यक्ष सत्र पुनः लोड का ओवरले; थीम स्विच इसका उपयोग नहीं करता है. |
 |  `/usr/lib/argvus/loading-theme/splash` `argvus session`, `start`, `tty`, `sessionctl` | निजी निष्पादनयोग्य | सत्र प्रवेश बिंदु और सत्र नियंत्रक। |

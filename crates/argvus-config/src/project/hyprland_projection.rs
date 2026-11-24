@@ -55,13 +55,13 @@ pub(super) fn project_layout(document: &ConfigDocument, paths: &ArgvusPaths) -> 
   if let Some(taskbar) = layout.get("taskbar").and_then(Value::as_object) {
     let mut lines = Vec::new();
     if let Some(value) = taskbar.get("position").and_then(Value::as_str) {
-      lines.push(format!("waybar_pos={value}"));
+      lines.push(format!("taskbar_pos={value}"));
     }
     for (config_key, runtime_key) in [
-      ("margin_top", "waybar_top"),
-      ("margin_left", "waybar_left"),
-      ("margin_right", "waybar_right"),
-      ("margin_bottom", "waybar_bottom"),
+      ("margin_top", "taskbar_top"),
+      ("margin_left", "taskbar_left"),
+      ("margin_right", "taskbar_right"),
+      ("margin_bottom", "taskbar_bottom"),
     ] {
       if let Some(value) = taskbar.get(config_key).and_then(Value::as_u64) {
         lines.push(format!("{runtime_key}={value}"));

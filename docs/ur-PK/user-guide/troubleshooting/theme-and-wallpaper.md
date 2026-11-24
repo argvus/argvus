@@ -29,7 +29,7 @@ cat "${XDG_CONFIG_HOME:-$HOME/.config}/argvus/data/generated/theme/current/build
 argvus config theme-runtime consumers
 ```
 
-ہر تھیم والی فائل بلڈ سے آتی ہے: ایک تھیم جو انسٹال نہیں ہے (`theme.toml ` `/usr/share/argvus/themes/` یا `~/.local/share/argvus/themes/` کے تحت کوئی theme.toml نہیں ہے) یا رینڈر نہیں کیا جاتا ہے، اور پچھلا تھیم برقرار رہتا ہے۔ ` argvus theme check DIRECTORY ` ہر رینڈر کی غلطی کی ٹیمپلیٹ اور لائن دکھاتا ہے۔ ایک Waybar بار اپنے JSONC میں صرف ` reload_style_on_change ` کے ساتھ اپنے رنگوں کو دوبارہ لوڈ کرتا ہے۔ اگر کوئی سوئچ پھنسا لگتا ہے، تو چیک کریں کہ آیا یہ اب بھی چل رہا ہے۔ یہ اپنے تالے کے ساتھ ` theme-switch.active` میں خود کو ریکارڈ کرتا ہے:
+ہر تھیم والی فائل بلڈ سے آتی ہے: ایک تھیم جو انسٹال نہیں ہے (`theme.toml ` `/usr/share/argvus/themes/` یا `~/.local/share/argvus/themes/` کے تحت کوئی theme.toml نہیں ہے) یا رینڈر نہیں کیا جاتا ہے، اور پچھلا تھیم برقرار رہتا ہے۔ ` argvus theme check DIRECTORY ` ہر رینڈر کی غلطی کی ٹیمپلیٹ اور لائن دکھاتا ہے۔ ایک Taskbar بار اپنے JSONC میں صرف ` reload_style_on_change ` کے ساتھ اپنے رنگوں کو دوبارہ لوڈ کرتا ہے۔ اگر کوئی سوئچ پھنسا لگتا ہے، تو چیک کریں کہ آیا یہ اب بھی چل رہا ہے۔ یہ اپنے تالے کے ساتھ ` theme-switch.active` میں خود کو ریکارڈ کرتا ہے:
 
 ```sh
 cat "${XDG_CACHE_HOME:-$HOME/.cache}/argvus/theme-switch.active"

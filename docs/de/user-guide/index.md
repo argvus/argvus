@@ -2,9 +2,9 @@
 title: Benutzerhandbuch
 description: Installieren, konfigurieren und verwenden Sie die ARGVUS-Desktopumgebung.
 ---
-ARGVUS ist eine modulare Hyprland- und Wayland-Desktopumgebung für Arch Linux. Beginnen Sie mit [installation](/docs/getting-started/installation/), und wählen Sie dann ein Feature aus dem Benutzerhandbuch. 
+ARGVUS ist eine modulare Hyprland- und Wayland-Desktopumgebung für Arch Linux. Beginnen Sie mit [installation](/docs/getting-started/installation/), und wählen Sie dann ein Feature aus dem Benutzerhandbuch.
 
-Der Desktop kombiniert eine Hyprland-Sitzung, eine Waybar-Taskleiste, ein Quickshell-Kontrollpanel, native Anwendungen und Systemanbieter. Der [architecture guide](/docs/developer-guide/architecture/overview/) erklärt, wie diese Komponenten zusammenarbeiten.
+Der Desktop kombiniert eine Hyprland-Sitzung, eine Taskbar-Taskleiste, ein Quickshell-Kontrollpanel, native Anwendungen und Systemanbieter. Der [architecture guide](/docs/developer-guide/architecture/overview/) erklärt, wie diese Komponenten zusammenarbeiten.
 
 ## Häufige Einstiegspunkte
 

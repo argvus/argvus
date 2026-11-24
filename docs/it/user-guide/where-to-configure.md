@@ -13,7 +13,7 @@ Per una guida alla revisione delle principali aree del desktop, apri **Benvenuto
 | Cambiare lo sfondo | **Centro di Controllo → Aspetto → Sfondi** |
 | Attivare o disattivare effetti visivi | **Centro di Controllo → Aspetto → Effetti**, **Centro di Controllo → Aspetto → Avviatori**, **Centro di Controllo → Configurazione**, **Barra delle applicazioni**, **Telemetry Widget** o **Pannello di Controllo** |
 | Cambiare posizione, altezza, bordo o raggruppamento delle utilità della barra delle applicazioni | **Centro di Controllo → Aspetto → Barra delle applicazioni → Posizione**, **Altezza**, **Bordo** e **Icone** |
-| Personalizzare la barra delle applicazioni JSONC o CSS | [Waybar e override della barra delle applicazioni](/docs/argvus-waybar/) |
+| Personalizzare la barra delle applicazioni JSONC o CSS | [Taskbar e override della barra delle applicazioni](/docs/argvus-taskbar/) |
 | Modificare gli spazi o i bordi delle finestre | **Pannello di Controllo → Desktop e Input → Hyprland → Finestre → Spazi** e **Bordi** |
 | Modificare l’ombra delle finestre | **Pannello di Controllo → Desktop e Input → Hyprland → Bordi → Ombra** |
 | Scegliere le schede visibili del Pannello di Controllo | **Pannello di Controllo → Aspetto → Pannello di Controllo** |

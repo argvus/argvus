@@ -35,7 +35,7 @@ Các dự án sử dụng không gian làm việc Hyprland có tên thông thư�
 
 Không gian làm việc được mở trước khi cập nhật sẽ giữ nguyên các cửa sổ và tên gốc hiện có của chúng. Mở một dự án sau khi cập nhật sẽ sử dụng danh tính bắt nguồn từ đường dẫn mới của nó; đóng các cửa sổ dự án cũ khi thuận tiện. Không có liên kết hoặc di chuyển tự động nào được thực hiện vì tên cũ không xác định được thư mục một cách đáng tin cậy. Với tên thư mục trùng lặp, hãy sử dụng bộ chọn, một số hoặc đường dẫn chuẩn đầy đủ thay vì một tên mơ hồ.
 
-Việc mở một dự án sẽ tái tạo nguyên tử `$XDG_RUNTIME_DIR/argvus/project-workspaces.json` từ danh sách dự án đã định cấu hình và các bản dịch. Đây là siêu dữ liệu phiên dành cho nhãn và chú giải công cụ của không gian làm việc, không phải cấu hình; không chỉnh sửa nó. Mở lại dự án sau khi thay đổi danh sách hoặc ngôn ngữ để làm mới nhãn của dự án. Cập nhật cả `argvus` và `argvus-waybar`, cùng với cấu hình `argvus-taskbar` cho sự tích hợp này.
+Việc mở một dự án sẽ tái tạo nguyên tử `$XDG_RUNTIME_DIR/argvus/project-workspaces.json` từ danh sách dự án đã định cấu hình và các bản dịch. Đây là siêu dữ liệu phiên dành cho nhãn và chú giải công cụ của không gian làm việc, không phải cấu hình; không chỉnh sửa nó. Mở lại dự án sau khi thay đổi danh sách hoặc ngôn ngữ để làm mới nhãn của dự án. Cập nhật cả `argvus` và `argvus-taskbar`, cùng với cấu hình `argvus-taskbar` cho sự tích hợp này.
 
 ## Dự án
 

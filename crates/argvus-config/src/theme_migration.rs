@@ -15,7 +15,7 @@ use std::time::{SystemTime, UNIX_EPOCH};
 
 /// The per-theme directories of the user data, relative to it.
 const LEGACY_DIRECTORIES: [&str; 13] = [
-  "waybar/themes",
+  "taskbar/themes",
   "hypr/themes",
   "tui/themes",
   "quickshell/argvus-control-panel/themes",
@@ -79,19 +79,19 @@ mod tests {
       data_home: root.join("config/argvus/data"),
       system_config: root.join("system"),
     };
-    let copy = paths.data_home.join("waybar/themes/sunset/theme.css");
+    let copy = paths.data_home.join("taskbar/themes/sunset/theme.css");
     fs::create_dir_all(copy.parent().unwrap()).unwrap();
     fs::write(&copy, "edited").unwrap();
-    fs::write(paths.data_home.join("waybar/argvus-taskbar.css"), "kept").unwrap();
+    fs::write(paths.data_home.join("taskbar/argvus-taskbar.css"), "kept").unwrap();
 
     fs::create_dir_all(paths.data_home.join("rofi/themes/x")).unwrap();
     let backup = migrate(&paths).unwrap().expect("something moved");
     assert!(!copy.exists());
     assert_eq!(
-      fs::read_to_string(backup.join("waybar/themes/sunset/theme.css")).unwrap(),
+      fs::read_to_string(backup.join("taskbar/themes/sunset/theme.css")).unwrap(),
       "edited"
     );
-    assert!(paths.data_home.join("waybar/argvus-taskbar.css").is_file());
+    assert!(paths.data_home.join("taskbar/argvus-taskbar.css").is_file());
 
     assert_eq!(migrate(&paths).unwrap(), None, "runs once");
     assert!(paths.data_home.join("rofi/themes/x").is_dir());

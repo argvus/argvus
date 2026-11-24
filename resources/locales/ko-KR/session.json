@@ -25,7 +25,7 @@
   "usage.stop": "중지 중지 argvus-session.target 및 graphic-session.target",
   "usage.restart": "다시 시작 ARGVUS 세션 대상 다시 시작",
   "usage.reload": "다시 로드 변경 가능한 구성을 다시 적용하고 영향을 받는 서비스를 다시 시작",
-  "usage.restart_items": "재시작 <items...> 구성요소 그룹 재시작: waybar, wallpaper, dunst, control-panel, ...",
+  "usage.restart_items": "재시작 <items...> 구성요소 그룹 재시작: taskbar, wallpaper, dunst, control-panel, ...",
   "usage.status": "상태 표시 대상 및 서비스 상태",
   "usage.logs": "로그 [저널 인수] ARGVUS 사용자 단위 저널 로그 표시",
   "usage.widget_telemetry": "위젯 원격 측정 <명령>",

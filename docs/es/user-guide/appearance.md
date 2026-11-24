@@ -2,7 +2,7 @@
 title: Apariencia
 description: Configure el lenguaje visual compartido por los componentes de ARGVUS.
 ---
-El sistema de apariencia aplica un estado de tema a Hyprland, GTK, Qt, Waybar, Quickshell, Dunst, Hyprlock y aplicaciones ARGVUS.
+El sistema de apariencia aplica un estado de tema a Hyprland, GTK, Qt, Taskbar, Quickshell, Dunst, Hyprlock y aplicaciones ARGVUS.
 
 ## Familias de temas
 
@@ -57,7 +57,7 @@ Abre **Escritorio y entrada → Hyprland → Animaciones → Ventanas** y usa lo
 ```sh
 argvus control-center hyprland animations windows
 ```
-El movimiento oscilante está desactivado por defecto. Sus valores predeterminados en ARGVUS son rigidez `100`, amortiguamiento `10`, masa `1`, intensidad `1` y resolución de malla `8`. La rigidez y la masa aceptan `0.0001–1000`, el amortiguamiento `0–1000`, la intensidad `0–2`, y la malla un número entero `2–32`. Una mayor resolución de malla aumenta el coste de renderizado. Usa las teclas de flecha para ajustar los valores o Enter para escribirlos. **Restaurar los valores predeterminados de Wobble** cambia el borrador; **Aplicar** guarda todas las ediciones pendientes de animación y recarga Hyprland una vez, sin reiniciar la sesión. Volver dentro de Animations mantiene el borrador compartido. 
+El movimiento oscilante está desactivado por defecto. Sus valores predeterminados en ARGVUS son rigidez `100`, amortiguamiento `10`, masa `1`, intensidad `1` y resolución de malla `8`. La rigidez y la masa aceptan `0.0001–1000`, el amortiguamiento `0–1000`, la intensidad `0–2`, y la malla un número entero `2–32`. Una mayor resolución de malla aumenta el coste de renderizado. Usa las teclas de flecha para ajustar los valores o Enter para escribirlos. **Restaurar los valores predeterminados de Wobble** cambia el borrador; **Aplicar** guarda todas las ediciones pendientes de animación y recarga Hyprland una vez, sin reiniciar la sesión. Volver dentro de Animations mantiene el borrador compartido.
 
 El interruptor global de Animations suprime Wobble mientras mantiene sus configuraciones individuales. Los valores canónicos se encuentran bajo `effects.wobble_*` en el estado ARGVUS; `hypr/state.lua` se genera y no debe editarse manualmente.
 

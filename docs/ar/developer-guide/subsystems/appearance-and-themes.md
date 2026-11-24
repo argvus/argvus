@@ -3,7 +3,7 @@ title: المظهر والموضوعات
 description: نشر حالة السمة عبر ARGVUS.
 ---
 
-يمتلك `argvus-appearance` السمة واللكنة وورق الحائط وحالة الخط *. يستهلك الأصول من `argvus-wallpapers` و`argvus-fonts` و`argvus-icons`، لكنه لا يُنشئ مخرجات السمة: كل ملف مستهلك مملوك لـ ARGVUS لـ Hyprland وGTK وQt وWaybar وQuickshell وDunst وHyprlock وYazi وSuperfile والمحطات الطرفية والتطبيقات الأصلية هو إسقاط مكتوب بواسطة `argvus-config` وحده، باستثناء Rofi: `argvus-launcher` يمتلك ملفاته، ويقوم `argvus-appearance` بتحرير نسخ المستخدم تحت `data/rofi/`.
+يمتلك `argvus-appearance` السمة واللكنة وورق الحائط وحالة الخط *. يستهلك الأصول من `argvus-wallpapers` و`argvus-fonts` و`argvus-icons`، لكنه لا يُنشئ مخرجات السمة: كل ملف مستهلك مملوك لـ ARGVUS لـ Hyprland وGTK وQt وTaskbar وQuickshell وDunst وHyprlock وYazi وSuperfile والمحطات الطرفية والتطبيقات الأصلية هو إسقاط مكتوب بواسطة `argvus-config` وحده، باستثناء Rofi: `argvus-launcher` يمتلك ملفاته، ويقوم `argvus-appearance` بتحرير نسخ المستخدم تحت `data/rofi/`.
 
 يعد مركز التحكم ولوحة التحكم بمثابة واجهات مستخدم؛ ولا هو المصدر الوحيد لحالة الموضوع.
 

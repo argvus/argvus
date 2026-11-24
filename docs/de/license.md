@@ -14,4 +14,4 @@ Der vollständige Lizenztext wird mit jedem Repository geliefert und ist verfüg
 
 ## Drittanbieter-Komponenten
 
-ARGVUS-Pakete und -Themen hängen von Software Dritter ab (Hyprland, Waybar und andere), die unter ihren eigenen Lizenzen verbreitet wird. Wenden Sie sich an jedes Upstream-Projekt, um die spezifischen Bedingungen zu erfahren.
+ARGVUS-Pakete und -Themen hängen von Software Dritter ab (Hyprland, Taskbar und andere), die unter ihren eigenen Lizenzen verbreitet wird. Wenden Sie sich an jedes Upstream-Projekt, um die spezifischen Bedingungen zu erfahren.

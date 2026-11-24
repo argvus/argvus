@@ -80,7 +80,7 @@ pub struct AppInit {
   pub paths: Paths,
   pub settings: Settings,
   pub command: PopupCommand,
-  /// Pointer position captured by the Waybar launcher before application
+  /// Pointer position captured by the Taskbar launcher before application
   /// startup, so later pointer movement cannot relocate the popup.
   pub fixed_position: Option<PopupAnchor>,
 }

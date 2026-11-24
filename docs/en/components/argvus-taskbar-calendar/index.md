@@ -3,7 +3,7 @@ title: Calendar
 description: Use the ARGVUS taskbar calendar.
 ---
 
-`argvus-taskbar-calendar` is the GTK4 calendar popup opened from the Waybar date module or with:
+`argvus-taskbar-calendar` is the GTK4 calendar popup opened from the Taskbar date module or with:
 
 ```sh
 argvus --calendar
@@ -21,7 +21,7 @@ When opened from the taskbar date module, the popup is anchored to the bar edge:
 
 ```bash
 argvus taskbar-calendar                 open the calendar
-argvus taskbar-calendar toggle          show or hide it (the Waybar date module uses this)
+argvus taskbar-calendar toggle          show or hide it (the Taskbar date module uses this)
 argvus taskbar-calendar show | hide
 argvus taskbar-calendar config          open the system configuration for editing (sudo)
 argvus taskbar-calendar config-path     print the configuration path

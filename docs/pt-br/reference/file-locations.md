@@ -15,10 +15,10 @@ description: Arquivos e diretórios instalados importantes.
 * `/etc/argvus/removable-devices/config.json` — padrões do sistema para armazenamento removível.
 * `$XDG_CONFIG_HOME/argvus/config.json` — preferências portáveis canônicas.
 * `$XDG_CONFIG_HOME/argvus/data/` — dados gerenciados, backups, locks e saídas geradas dos componentes.
-* `$XDG_CONFIG_HOME/waybar/argvus-taskbar.{jsonc,css}` — overrides nativos completos opcionais da taskbar Waybar.
+* `$XDG_CONFIG_HOME/taskbar/argvus-taskbar.{jsonc,css}` — overrides nativos completos opcionais da taskbar Taskbar.
 * `$XDG_CONFIG_HOME/argvus/data/taskbar/argvus-taskbar.{jsonc,css}` — cópias gerenciadas da taskbar pelo ARGVUS.
-* `$XDG_CONFIG_HOME/argvus/data/generated/waybar/` — perfis gerados da Waybar, incluindo `argvus-taskbar.css` e `argvus-widget-telemetry.{jsonc,css}`; estes têm precedência sobre as cópias acima.
-* `$XDG_CONFIG_HOME/argvus/data/generated/waybar/argvus-widget-telemetry.{jsonc,css}` — também espelhados em `data/waybar/`, que é substituído pelo default empacotado em uma mudança de aparência e depois tem seus blocos `ARGVUS_TELEMETRY_*` e de fonte reescritos.
+* `$XDG_CONFIG_HOME/argvus/data/generated/taskbar/` — perfis gerados da Taskbar, incluindo `argvus-taskbar.css` e `argvus-widget-telemetry.{jsonc,css}`; estes têm precedência sobre as cópias acima.
+* `$XDG_CONFIG_HOME/argvus/data/generated/taskbar/argvus-widget-telemetry.{jsonc,css}` — também espelhados em `data/taskbar/`, que é substituído pelo default empacotado em uma mudança de aparência e depois tem seus blocos `ARGVUS_TELEMETRY_*` e de fonte reescritos.
 * `$XDG_CONFIG_HOME/argvus/data/generated/yazi/` — árvore de configuração do Yazi projetada, com fallback consciente de variante para temas sem flavor Yazi.
 * `$XDG_CONFIG_HOME/argvus/data/generated/superfile/` — conjunto de temas do Superfile projetado.
 * `$XDG_CONFIG_HOME/argvus/data/generated/terminal/` — perfis de terminal projetados.

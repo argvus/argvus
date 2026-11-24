@@ -35,7 +35,7 @@ overridden with `ARGVUS_DATA_HOME`.
 ```
 
 The first file that exists wins. At each step the lookup also tries the legacy
-name of the file: for example, `taskbar/config/...` is found as `waybar/...`.
+name of the file: for example, `taskbar/config/...` is found as `taskbar/...`.
 
 ### Why it is not a copy
 
@@ -66,7 +66,7 @@ hyprland.lua
 argvus-session (systemd user session)
    ├── argvus-session-prepare.service   sessionctl prepare (section 3)
    ├── argvus-session-loading.service   loading overlay
-   ├── argvus-taskbar.service           taskbar (waybar)
+   ├── argvus-taskbar.service           taskbar (taskbar)
    ├── argvus-wallpaper.service         wallpaper
    ├── argvus-hypridle.service          idle and lock timeouts
    ├── argvus-dunst.service             notifications
@@ -147,7 +147,7 @@ paths_config("<app>/<file>")
    the script edits the user copy and the owning service is reloaded
 ```
 
-Waybar stylesheets are the exception: the packaged stylesheet is copied, because
+Taskbar stylesheets are the exception: the packaged stylesheet is copied, because
 the user copy is rewritten by every theme switch.
 
 This is what lets the **Highlight color** control spread the accent colour across
@@ -180,7 +180,7 @@ the desktop without the user editing anything by hand.
 
 1. The value is stored in `~/.config/argvus/data/.spaces`.
 2. `spaces-switch.sh --apply-static` computes the effective geometry and applies
-   the Waybar margins.
+   the Taskbar margins.
 
 Borders follow the same pattern with `.borders` and `borders-switch.sh`.
 

@@ -19,13 +19,13 @@
   "bluetoothctl_missing": "未找到 bluetoothctl",
   "bluetooth.power_failed": "无法转动 Bluetooth {target}",
   "blueman_missing": "未安装可选的 Blueman 管理器",
-  "waybar.no_iface": "找不到网络接口",
-  "waybar.network": "网络",
-  "waybar.disconnected": "已断开连接",
-  "waybar.connected": "已连接",
-  "waybar.limited": "连接有限",
-  "waybar.no_internet": "无法访问互联网",
-  "waybar.reconnecting": "重新连接",
-  "waybar.state": "状态",
-  "waybar.command_failed": "命令失败：{command}"
+  "taskbar.no_iface": "找不到网络接口",
+  "taskbar.network": "网络",
+  "taskbar.disconnected": "已断开连接",
+  "taskbar.connected": "已连接",
+  "taskbar.limited": "连接有限",
+  "taskbar.no_internet": "无法访问互联网",
+  "taskbar.reconnecting": "重新连接",
+  "taskbar.state": "状态",
+  "taskbar.command_failed": "命令失败：{command}"
 }

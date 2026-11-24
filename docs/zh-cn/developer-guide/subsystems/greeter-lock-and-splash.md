@@ -16,7 +16,7 @@ description: 将启动和身份验证的视觉效果分开。
 
 在诊断视觉问题时，这种区分很重要：缺少启动画面是 Plymouth/软件包问题，空白过渡是会话加载或合成器准备问题，而认证失败属于 greetd/PAM 问题，而不是桌面会话问题。
 
-主题切换不会显示覆盖层：正在运行的桌面会就地更改。直接会话重载会将所选主题显式传递给`/usr/lib/argvus/loading-theme/splash`。直接重载（`argvus sessionctl reload`，`SUPER + Shift + R`）仅在重新创建表面时显示会话启动画面：例如重新启动Waybar状态栏或控制面板，或回退的`full`方案。投影运行时不会显示它，并且那些就地重载的更改（Hyprland、主题使用者、壁纸、Dunst、polkit、hypridle）从不显示它；请参见[argvus-config](/docs/reference/argvus-config/)中的重载目标。控制中心本身保持相同的启动画面（`argvus config transition-overlay hold`），用于**应用**操作，该操作会重启状态栏或面板，因此它触发的重载不会启动第二个启动画面。它使用仅显示加载旋转器模式，因此其第一个映射的帧是 непрозрач的，并且它是通过`--detached`启动的：启动画面比短暂存在的`argvus config session-splash start`寿命更长。 session-splash start 是启动它的辅助程序，因为父进程终止信号会在该辅助程序退出时立即停止它。重新加载会在运行时阶段结束后停止 splash，无论哪条退出路径。splash 调色板仅作为备用。在源代码更改在运行会话中不可见时，请验证已安装的二进制文件和软件包内容。
+主题切换不会显示覆盖层：正在运行的桌面会就地更改。直接会话重载会将所选主题显式传递给`/usr/lib/argvus/loading-theme/splash`。直接重载（`argvus sessionctl reload`，`SUPER + Shift + R`）仅在重新创建表面时显示会话启动画面：例如重新启动Taskbar状态栏或控制面板，或回退的`full`方案。投影运行时不会显示它，并且那些就地重载的更改（Hyprland、主题使用者、壁纸、Dunst、polkit、hypridle）从不显示它；请参见[argvus-config](/docs/reference/argvus-config/)中的重载目标。控制中心本身保持相同的启动画面（`argvus config transition-overlay hold`），用于**应用**操作，该操作会重启状态栏或面板，因此它触发的重载不会启动第二个启动画面。它使用仅显示加载旋转器模式，因此其第一个映射的帧是 непрозрач的，并且它是通过`--detached`启动的：启动画面比短暂存在的`argvus config session-splash start`寿命更长。 session-splash start 是启动它的辅助程序，因为父进程终止信号会在该辅助程序退出时立即停止它。重新加载会在运行时阶段结束后停止 splash，无论哪条退出路径。splash 调色板仅作为备用。在源代码更改在运行会话中不可见时，请验证已安装的二进制文件和软件包内容。
 
 登录交接套接字使用内核对等凭据授权每个客户端。只有 root、辅助程序所有者以及通过 greetd 认证的账户可以发送控制命令。其他本地账户会被拒绝，即使套接字允许跨用户连接。已准备的 DRM 帧会保持绑定到其原始描述符。如果该非特权描述符无法获取主控权，辅助程序会在保持观察者开启的情况下重新打开相同的 GPU，然后在获取到的描述符上准备一个新的帧。它从不在描述符之间重用帧缓冲区。
 

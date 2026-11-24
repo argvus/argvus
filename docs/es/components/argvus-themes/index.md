@@ -2,7 +2,7 @@
 title: Temas
 description: Instala, selecciona, personaliza, importa y exporta temas de ARGVUS.
 ---
-Un tema en ARGVUS establece los colores, superficies, fondos de pantalla predeterminados y la geometría del diseño utilizada en todo el escritorio: Hyprland, Waybar, el Panel de Control, la barra de tareas, la pantalla de bloqueo, las notificaciones y las aplicaciones de ARGVUS. Esta guía cubre todo lo que necesitas para trabajar con temas como usuario.
+Un tema en ARGVUS establece los colores, superficies, fondos de pantalla predeterminados y la geometría del diseño utilizada en todo el escritorio: Hyprland, Taskbar, el Panel de Control, la barra de tareas, la pantalla de bloqueo, las notificaciones y las aplicaciones de ARGVUS. Esta guía cubre todo lo que necesitas para trabajar con temas como usuario.
 
 ## Qué se incluye en un tema
 

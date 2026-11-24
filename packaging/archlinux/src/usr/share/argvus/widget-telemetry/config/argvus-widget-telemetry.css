@@ -1,7 +1,7 @@
 @import url("../generated/theme/current/widget-telemetry/theme.css");
-@import url("/usr/share/argvus/appearance/config/waybar/mode.css");
+@import url("/usr/share/argvus/appearance/config/taskbar/mode.css");
 
-/*  Waybar — Painel vertical (Widget Telemetry)  */
+/*  Taskbar — Painel vertical (Widget Telemetry)  */
 
 @define-color th-window-bg-effective @th-window-bg-rgba;
 
@@ -16,7 +16,7 @@
 }
 
 /* -- Window default -------------------------------------- */
-window#waybar {
+window#taskbar {
   min-width: 380px;
   color: @th-foreground;
   border-radius: 0px;

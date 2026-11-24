@@ -3,7 +3,7 @@ title: ظاہری شکل
 description: ARGVUS اجزاء کے ذریعے اشتراک کردہ بصری زبان کو ترتیب دیں۔
 ---
 
-ظاہری شکل کا نظام Hyprland، GTK، Qt، Waybar، Quickshell، Rofi، Dunst، Hyprlock اور ARGVUS ایپلی کیشنز پر ایک تھیم سٹیٹ کا اطلاق کرتا ہے۔
+ظاہری شکل کا نظام Hyprland، GTK، Qt، Taskbar، Quickshell، Rofi، Dunst، Hyprlock اور ARGVUS ایپلی کیشنز پر ایک تھیم سٹیٹ کا اطلاق کرتا ہے۔
 
 ## تھیم فیملیز
 

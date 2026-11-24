@@ -1,9 +1,9 @@
-//! The Waybar layout of a theme switch.
+//! The Taskbar layout of a theme switch.
 //!
 //! Each theme class has its own outer margins and corner radii, and the taskbar
-//! border follows the class too. The managed copies of the Waybar files are
+//! border follows the class too. The managed copies of the Taskbar files are
 //! refreshed from the packaged ones first, and the font blocks are written last.
-//! Rust home of the Waybar section of the theme switch.
+//! Rust home of the Taskbar section of the theme switch.
 
 use crate::ConfigDocument;
 use crate::css_edit::{self, Declaration};
@@ -57,7 +57,7 @@ pub const TASKBAR_BORDER_WIDTHS: [u32; 4] = [0, 1, 2, 3];
 /// The blocks whose borders follow the taskbar border width: the taskbar window,
 /// the right group with the MPRIS player, and the MPRIS player's hover edge.
 const TASKBAR_BORDER_BLOCKS: [&str; 5] = [
-  "window#waybar {",
+  "window#taskbar {",
   "#right-0, #right-1, #right-2, #focus, #mpris, #custom-spotify-mpris {",
   "#right-0, #right-1, #right-2, #focus, #update-status, #mpris, #custom-spotify-mpris {",
   "#mpris,",
@@ -133,7 +133,7 @@ pub fn taskbar_shape(paths: &SessionPaths) -> TaskbarShape {
     height: read("taskbar/config/argvus-taskbar.jsonc")
       .and_then(|text| text_edit::jsonc_height(&text)),
     border_width: read("taskbar/config/argvus-taskbar.css")
-      .and_then(|text| css_edit::border_width_in_block(&text, "window#waybar {")),
+      .and_then(|text| css_edit::border_width_in_block(&text, "window#taskbar {")),
   }
 }
 
@@ -172,7 +172,7 @@ fn layout_for(theme: &str) -> &'static Layout {
   }
 }
 
-/// Copies the packaged Waybar file over its managed copy. A packaged file that
+/// Copies the packaged Taskbar file over its managed copy. A packaged file that
 /// does not exist leaves the managed copy as it is.
 pub fn refresh_managed(paths: &SessionPaths, relative: &str) -> io::Result<()> {
   let system = paths.system_config(relative);
@@ -217,7 +217,7 @@ pub fn apply_layout(paths: &SessionPaths, theme: &str) -> io::Result<()> {
   }
   if let Some(path) = &taskbar_css {
     let radii = [
-      ("window#waybar {", layout.taskbar_window_radius),
+      ("window#taskbar {", layout.taskbar_window_radius),
       ("#workspaces button", layout.taskbar_radii[0]),
       ("#workspaces button.active,", layout.taskbar_radii[1]),
       ("tooltip {", layout.taskbar_radii[2]),
@@ -241,14 +241,14 @@ pub fn apply_layout(paths: &SessionPaths, theme: &str) -> io::Result<()> {
       } else {
         "1px solid @th-decorate"
       };
-      css_edit::set_declaration_in_blocks(&text, "window#waybar {", Declaration::Border, border)
+      css_edit::set_declaration_in_blocks(&text, "window#taskbar {", Declaration::Border, border)
     })?;
   }
   if let Some(path) = &telemetry_css {
     edit_text(path, |text| {
       css_edit::set_declaration_in_blocks(
         text,
-        "window#waybar {",
+        "window#taskbar {",
         Declaration::Radius,
         layout.telemetry_radius,
       )
@@ -257,7 +257,7 @@ pub fn apply_layout(paths: &SessionPaths, theme: &str) -> io::Result<()> {
   Ok(())
 }
 
-/// Writes the font block of a Waybar stylesheet between its markers. The
+/// Writes the font block of a Taskbar stylesheet between its markers. The
 /// legacy markers are renamed, and a file without markers gets the block at its
 /// end. A missing file is skipped.
 pub fn write_font_block(path: &Path, block: &str) -> io::Result<()> {
@@ -385,14 +385,14 @@ mod tests {
 
   #[test]
   fn taskbar_border_width_reaches_every_bordered_block() {
-    let css = "window#waybar {\n  border: 1px solid @th-decorate;\n}\n\n#right-0, #right-1, #right-2, #focus, #mpris, #custom-spotify-mpris {\n  border: 1px solid @th-border-rights;\n}\n\n#mpris,\n#custom-spotify-mpris {\n  border: 1px solid @th-mpris-border;\n}\n\n#mpris:hover,\n#custom-spotify-mpris:hover {\n  border-bottom: 1px solid @th-decorate;\n}\n";
+    let css = "window#taskbar {\n  border: 1px solid @th-decorate;\n}\n\n#right-0, #right-1, #right-2, #focus, #mpris, #custom-spotify-mpris {\n  border: 1px solid @th-border-rights;\n}\n\n#mpris,\n#custom-spotify-mpris {\n  border: 1px solid @th-mpris-border;\n}\n\n#mpris:hover,\n#custom-spotify-mpris:hover {\n  border-bottom: 1px solid @th-decorate;\n}\n";
     let off = set_taskbar_border_width(css, 0);
     assert_eq!(off.matches("0px solid").count(), 4);
     assert_eq!(off.matches("border-bottom: 0px").count(), 1);
     let thick = set_taskbar_border_width(css, 3);
     assert_eq!(thick.matches("3px solid").count(), 4);
     assert_eq!(
-      css_edit::border_width_in_block(&thick, "window#waybar {"),
+      css_edit::border_width_in_block(&thick, "window#taskbar {"),
       Some(3)
     );
   }

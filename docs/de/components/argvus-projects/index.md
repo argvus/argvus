@@ -28,7 +28,7 @@ Der kanonische Verzeichnispfad bestimmt eine stabile Arbeitsbereichsidentität; 
 
 Arbeitsbereiche, die vor dem Update geöffnet wurden, behalten ihre vorhandenen Fenster und nativen Namen. Ein Projekt nach dem Update zu öffnen, verwendet dessen neue, pfadbasierte Identität; schließen Sie alte Projektfenster, wenn es Ihnen passt. Es wird keine automatische Zuordnung oder Verschiebung versucht, da ein alter Name das Verzeichnis nicht zuverlässig identifiziert. Bei doppelten Verzeichnisnamen verwenden Sie den Auswähler, eine Zahl oder den vollständigen kanonischen Pfad anstelle eines mehrdeutigen Namens.
 
-Das Öffnen eines Projekts erzeugt `$XDG_RUNTIME_DIR/argvus/project-workspaces.json` atomar aus der konfigurierten Projektliste und den Übersetzungen neu. Dies ist Sitzungs-Metadaten für Arbeitsbereichsbezeichnungen und Tooltips, nicht für die Konfiguration; bearbeiten Sie es nicht. Öffnen Sie ein Projekt nach einer Änderung der Liste oder Sprache erneut, um dessen Bezeichnungen zu aktualisieren. Aktualisieren Sie sowohl `argvus` als auch `argvus-waybar` sowie die `argvus-taskbar`-Konfiguration für diese Integration.
+Das Öffnen eines Projekts erzeugt `$XDG_RUNTIME_DIR/argvus/project-workspaces.json` atomar aus der konfigurierten Projektliste und den Übersetzungen neu. Dies ist Sitzungs-Metadaten für Arbeitsbereichsbezeichnungen und Tooltips, nicht für die Konfiguration; bearbeiten Sie es nicht. Öffnen Sie ein Projekt nach einer Änderung der Liste oder Sprache erneut, um dessen Bezeichnungen zu aktualisieren. Aktualisieren Sie sowohl `argvus` als auch `argvus-taskbar` sowie die `argvus-taskbar`-Konfiguration für diese Integration.
 
 ## Projekte
 

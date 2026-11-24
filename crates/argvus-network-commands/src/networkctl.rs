@@ -24,9 +24,9 @@ pub fn run_command(program: &str, arguments: Vec<String>) -> ExitCode {
   let rest = arguments.get(1).map(String::as_str);
   match arguments.first().map(String::as_str).unwrap_or("status") {
     "status" => print_status(),
-    "waybar" if arguments.len() == 1 => super::network_waybar::run(false),
-    "waybar" if arguments.len() == 2 && rest == Some("--follow") => {
-      super::network_waybar::run(true)
+    "taskbar" if arguments.len() == 1 => super::network_taskbar::run(false),
+    "taskbar" if arguments.len() == 2 && rest == Some("--follow") => {
+      super::network_taskbar::run(true)
     }
     "toggle" => toggle_networking(),
     "enable" | "on" => set_networking(true),

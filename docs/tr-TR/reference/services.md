@@ -71,7 +71,7 @@ Tüm oturumu etkilemeden bireysel hizmetleri yeniden başlatın:
 
 ```sh
 # Desktop surfaces
-argvus sessionctl restart waybar
+argvus sessionctl restart taskbar
 argvus sessionctl restart wallpaper
 argvus sessionctl restart shell
 

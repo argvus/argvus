@@ -2,7 +2,7 @@
 //!
 //! The state lives in argvus-config (`/effects/...`) and in a per-theme
 //! projection file for the values the store does not own. Applying a change
-//! rewrites the surfaces that consume it: the Waybar stylesheets, the launcher
+//! rewrites the surfaces that consume it: the Taskbar stylesheets, the launcher
 //! theme, dunst, the taskbar calendar, superfile and hyprlock. This is the
 //! Rust home of the former `effects-toggle.sh`; `argvus effects-toggle` runs
 //! `effects`.

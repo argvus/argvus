@@ -19,7 +19,7 @@ Les modifications de thème officielles appliquent leurs valeurs d'apparence enr
 cat "${XDG_CONFIG_HOME:-$HOME/.config}/argvus/data/generated/theme/current/build.toml"
 argvus config theme-runtime consumers
 ```
-Chaque fichier thématique provient de la compilation : un thème qui n'est pas installé (aucun `theme.toml` sous `/usr/share/argvus/themes/` ou `~/.local/share/argvus/themes/`) ou qui ne s'affiche pas est refusé, et le thème précédent reste. `argvus theme check DIRECTORY` montre le modèle et la ligne de chaque erreur de rendu. Une barre Waybar recharge ses couleurs uniquement avec `reload_style_on_change` dans son JSONC. Si un commutateur semble bloqué, vérifiez s'il fonctionne encore ; il s'enregistre dans `theme-switch.active`, à côté de son verrou :
+Chaque fichier thématique provient de la compilation : un thème qui n'est pas installé (aucun `theme.toml` sous `/usr/share/argvus/themes/` ou `~/.local/share/argvus/themes/`) ou qui ne s'affiche pas est refusé, et le thème précédent reste. `argvus theme check DIRECTORY` montre le modèle et la ligne de chaque erreur de rendu. Une barre Taskbar recharge ses couleurs uniquement avec `reload_style_on_change` dans son JSONC. Si un commutateur semble bloqué, vérifiez s'il fonctionne encore ; il s'enregistre dans `theme-switch.active`, à côté de son verrou :
 
 ```sh
 cat "${XDG_CACHE_HOME:-$HOME/.cache}/argvus/theme-switch.active"

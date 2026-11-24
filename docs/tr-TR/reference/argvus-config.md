@@ -153,8 +153,8 @@ yayınlanmadan önce:
 | --- | --- |
 | Hyprland | `generated/hypr/`, tema profilleri dahil, `spaces-effective.conf`, `borders-effective.conf`, `hypridle.conf` ve `monitors.lua` |
 | Düzen/efektler | `generated/effects/`, `generated/spaces.conf`, `generated/borders.conf` |
-| Yol Çubuğu | `generated/waybar/`, `argvus-taskbar.css` ve `argvus-widget-telemetry.{jsonc,css}` dahil |
-| Widget telemetri temaları | `generated/widget-telemetry/` ve `generated/waybar/widget-telemetry-themes/` |
+| Yol Çubuğu | `generated/taskbar/`, `argvus-taskbar.css` ve `argvus-widget-telemetry.{jsonc,css}` dahil |
+| Widget telemetri temaları | `generated/widget-telemetry/` ve `generated/taskbar/widget-telemetry-themes/` |
 | QuickShell | `generated/quickshell/` |
 | Bildirimler | `generated/notifications/` ve `dunstrc` |
 | Kilit ekranı | `generated/hypr/hyprlock.conf` ve Hyprtoolkit tema profilleri |
@@ -162,19 +162,19 @@ yayınlanmadan önce:
 | Yazı | `generated/yazi/` |
 | Süper dosya | `generated/superfile/` |
 | Terminal ve Qt profilleri | `generated/terminal/`, `generated/qt6ct/` |
-| Yazı Tipleri | `generated/fonts.conf` artı Waybar stil sayfalarında yönetilen yazı tipi blokları |
+| Yazı Tipleri | `generated/fonts.conf` artı Taskbar stil sayfalarında yönetilen yazı tipi blokları |
 | Çıkarılabilir cihazlar | `generated/removable-devices/theme.css` |
 | Duvar Kağıdı | `generated/hypr/hyprpaper.conf` ve `data/hypr/hyprpaper.conf` |
 | Denetim Masası ve varsayılanlar | `data/control-panel/`, `data/control-center/defaults.json` |
 | Takvim, giriş, klavye, güç | takvim TOML, giriş parçası, klavye durumu, uyanık tutma işaretçisi |
 
 Tema katmanı ayrıca oluşturulan kökün dışına da yansıtılır:
-`data/waybar/argvus-taskbar.{jsonc,css}`,
-`data/waybar/argvus-widget-telemetry.{jsonc,css}`, `data/foot/`,
+`data/taskbar/argvus-taskbar.{jsonc,css}`,
+`data/taskbar/argvus-widget-telemetry.{jsonc,css}`, `data/foot/`,
 `data/qt6ct/`, `data/hypr/hyprtoolkit.conf` ve
 `data/hypr/application-style.conf`. Bu kopyalar ambalajlı olarak değiştirilir
 görünüm bölümü değiştiğinde varsayılanlar olur ve projektör daha sonra yeniden yazar
-yalnızca sınırlandırılmış yönetilen blokları - Waybar stil sayfalarındaki yazı tipi bloğu ve
+yalnızca sınırlandırılmış yönetilen blokları - Taskbar stil sayfalarındaki yazı tipi bloğu ve
 telemetri profilindeki `ARGVUS_TELEMETRY_*` blokları — yani metin
 işaretçiler bir tema değişikliğinden sağ çıkamaz. `fonts.targets` ve
 `control_panel.widget_telemetry_blocks` standart olmaya devam ediyor: Kontrol Merkezibunları `argvus-config` aracılığıyla sürdürür ve bu dosyaları asla kendisi yazmaz.
@@ -204,7 +204,7 @@ Mantıksal ARGVUS yolları da `argvus config paths` tarafından çözümlenir. M
 `paths.sh` dosyası yalnızca uyumluluk işlevlerini gösterir; yerel geçersiz kılmalar, kullanıcı
 veriler, oluşturulan veriler ve sistem geri dönüşü Rust yol modeliyle çözümlenir.
 
-`audio`, varsayılan çıkış havuzunu değiştirir ve sonucu tek adımda `/audio`'ya kaydeder: `argvus config audio volume <N|+N|-N> [--limit PERCENT]` ve `argvus config audio mute <on|off|toggle>`. PipeWire zaten değere sahip olduğundan, yapılandırmayı yeniden yüklemeden depoya yazar. Waybar ses modülü, Hyprland medya anahtarları ve Kontrol Paneli bunu kullandığından, /audio'yu havuza yansıtan `argvus config project`, asla eski bir birimi geri yüklemez. %100'ün üzerindeki bir hacim (Hyprland tuşları %150'ye kadar izin verir) 100 olarak depolanır.
+`audio`, varsayılan çıkış havuzunu değiştirir ve sonucu tek adımda `/audio`'ya kaydeder: `argvus config audio volume <N|+N|-N> [--limit PERCENT]` ve `argvus config audio mute <on|off|toggle>`. PipeWire zaten değere sahip olduğundan, yapılandırmayı yeniden yüklemeden depoya yazar. Taskbar ses modülü, Hyprland medya anahtarları ve Kontrol Paneli bunu kullandığından, /audio'yu havuza yansıtan `argvus config project`, asla eski bir birimi geri yüklemez. %100'ün üzerindeki bir hacim (Hyprland tuşları %150'ye kadar izin verir) 100 olarak depolanır.
 
  `/audio` `patch`, anahtarları JSON işaretçileri olan bir JSON nesnesini kilitli bir durumda uygular
 okuma-değiştirme-yazma işlemi. `apply-theme` eşdeğer atomik işlemi gerçekleştirir
@@ -254,7 +254,7 @@ Kontrol Merkezi, Görünüm sayfasını açtığında kurallı görünüm değer
 
 Kontrol Paneli, kart sırası ve görünürlük için `control_panel.cards`'yu ve panel ana anahtarı için `control_panel.enabled`'yu kullanır. `control-panel/cards.json` ve `state/control-panel` dosyaları uyumluluk projeksiyonları olarak tutulur. Bu nedenle Kontrol Panelinde yapılan değişiklikler `desktop` dışa aktarma kapsamının bir parçasıdır.
 
-Yazı tipi tercihleri, görev çubuğu, telemetri, Denetim Masası, sistem, uygulamalar, terminal ve tarayıcı hedeflerinin ailesi, stili ve boyutu için `fonts.targets`'yu kullanır. `fonts.rendering` kenar yumuşatma, ipucu, alt piksel sırası ve DPI tercihlerini saklar. `fonts.conf`, fontconfig kuralı, masaüstü ayarları ve Waybar stil sayfaları içindeki yönetilen font blokları projeksiyonlardır: Kontrol Merkezi, `/fonts/targets/*`'yu `argvus-config`'ya kadar sürdürür ve projektör yalnızca kendi sınırlandırılmış bloğunu yeniden yazar.
+Yazı tipi tercihleri, görev çubuğu, telemetri, Denetim Masası, sistem, uygulamalar, terminal ve tarayıcı hedeflerinin ailesi, stili ve boyutu için `fonts.targets`'yu kullanır. `fonts.rendering` kenar yumuşatma, ipucu, alt piksel sırası ve DPI tercihlerini saklar. `fonts.conf`, fontconfig kuralı, masaüstü ayarları ve Taskbar stil sayfaları içindeki yönetilen font blokları projeksiyonlardır: Kontrol Merkezi, `/fonts/targets/*`'yu `argvus-config`'ya kadar sürdürür ve projektör yalnızca kendi sınırlandırılmış bloğunu yeniden yazar.
 
 Hyprland tercihleri, kısayollar için `keyboard_shortcuts`'yu, fare ve dokunmatik yüzey ayarları için `hyprland.input`'yu ve XKB düzeni, çeşidi ve seçenekleri için `hyprland.keyboard`'yu kullanır. Açık bağlama kimliği, kararlı bir `config_key` ile eşleşir (örneğin, `window.close` → `close_window` ve `window.drag_mouse` → `drag_window__floating_window_only`). Ekran tercihleri ​​`displays.monitors`, `displays.workspaces` ve `displays.primary_monitor`'yu kullanır. Yerel TOML dosyaları ve `data/generated/` kapsamında oluşturulan Lua dosyaları, Hyprland tarafından tüketilen projeksiyonlar olmaya devam ediyor.Her `effects` anahtarı, sanal makinelerde ve düşük güçlü oturumlarda da varsayılan olarak etkindir (animasyonlar, bulanıklaştırma, widget telemetrisi ve her şeffaflık yüzeyi); pencere gölgesi (`shadow_enabled`) ve yalpalama (`wobble_enabled`) varsayılan olarak kapalıdır. Efekt tercihleri, Animasyonlar ana anahtarı için `effects`'yu kullanır (`animations`, blur_global_enabled artı blur_global_enabled olan Efektler anahtarından bağımsız olarak yansıtılan hypr/state.lua'dan `hyprland.lua`'ya uygulanır)  transparency_<surface>_enabled  blur_global_enabled  `hypr/state.lua`  `blur_global_enabled`  `transparency_<surface>_enabled` `taskbar`, `control-panel`, `widget-telemetry`, `terminal` ve `launchers`'nun transparency_<surface>_enabled'su ve bunlardan herhangi biri etkinleştirildiğinde etkin olarak okunur; `argvus effects-toggle animations|effects` bunları değiştirir), genel bulanıklık anahtarı (`blur_global_enabled`), Hyprland bulanıklık parametreleri (`blur_size`, `blur_passes`, `blur_brightness`, `blur_noise`, `blur_contrast`, `blur_vibrancy`, `blur_vibrancy_darkness`), pencere gölgesi (`shadow_enabled`, `shadow_sharp`, `shadow_color`, `shadow_range`, `shadow_render_power`, `shadow_offset_x`, `shadow_offset_y`, `shadow_scale`), Animasyon değerleri (`animation_<leaf>_speed`, `_curve`, `_style`, Her animasyon için `_popin` ve `_enabled`, ayrıca özel animasyonlar için `animation_bezier_x1` - `animation_bezier_y2` ve `animation_spring_mass`, `animation_spring_stiffness` ve `animation_spring_dampening` eğriler) ve yüzey başına şeffaflık değerleri. Efektler değişkene ait değil, temaya aittir: Yapışkan ve Aralıklı aynı `<theme>.conf` efekt projeksiyonunu kullanırken düzen projeksiyonları farklıdır. Yüzeyler şu anda `taskbar`, `control-panel` ve `widget-telemetry`'yu içermektedir; şeffaflık değerleri `0` ila `100` arasındaki yüzdelerdir (Kontrol Merkezi ve başlatıcı yüzeyleri varsayılan olarak `15`'dur, diğerleri `50`'dur), bulanıklık parametreleri `schema.json`'da bildirilen aralıklar içindeki sayılardır ve etkin durumlar boolean'lardır. Animasyon değerleri `argvus-config` tarafından da doğrulanır: hızlar `1` ile `10` arasındaki sayılardır (ondalık sayılara izin verilir), açılır yüzdeler `1` ile `100` arasındaki tam sayılardır, eğriler Animasyonlar'daki adlar olmalıdır sayfasında, stiller Animasyonlar sayfasındaki adlar olmalı ve animasyonun kendi yaprağı tarafından kabul edilmelidir (örneğin, animation_workspace_in_style için `popin` reddedilir,  `animation_workspace_in_style` `gnomed` yalnızca pencere açma ve kapatma için kabul edilir ve pencere ve katman yapraklarında slayt çeşitleri reddedilir), Bézier Y noktaları arasında kalır `-1` ve `2`, Hyprland 0.56.2 aralığı ayrıştırır ve diğer eğri parametreleri belgelenen aralıklarında kalır. `layers` ve `switching` yaprakları artık mevcut olmadığından, kaldırılmadan önce kaydedilen yapılandırmalar, yüklendiklerinde `animation_layers_enabled`, `animation_layers_speed`, `animation_layers_curve` ve `animation_switching_*` anahtarlarını kaybeder. Geçerli kümenin dışındaki stiller çıkarılır ve `-1` ile `2` arasındaki Bézier Y noktaları sabitlenir, böylece paketlenen varsayılanlar, kaldırılanlara yeniden uygulanır.
 
@@ -400,7 +400,7 @@ Her monitörde ana görev çubuğunun karşısındaki kenarda ikinci bir Yol Çu
 
 Minimizasyon, ayrılmış `special:argvus-minimized` çalışma alanını kullanır. Bu çalışma alanını manuel olarak kullanmayın. `argvus windows service` işlemi, `$XDG_RUNTIME_DIR/argvus` altında birleştirici örneğine özgü çalışma zamanı kaydında kimliği, orijinal çalışma alanını/monitörü, geometriyi, tam ekranı/büyütmeyi ve pin durumunu kaydeder. Kayıtlar, hizmetin yeniden başlatılmasından veya yapılandırmanın yeniden yüklenmesinden sonra hayatta kalır, ancak derleyici oturumları arasında geçiş yapmaz. Bir pencerenin kapatılması kaydının kaldırılmasına neden olur. Bir monitör kaybolursa, geri yükleme mevcut bir çıkışı kullanır. Eksik veya arızalı bir kurtarma çubuğu, yeni en aza indirmeleri önler; başarısız restorasyon, kaydı ve kurtarma çubuğunu korur.
 
-Oturum, `argvus-windows.service` ve `argvus-window-bar.service`'ya sahiptir. İkincisi, Waybar çocuğunu Tile'da hareketsiz tutuyor. Hyprbars eklentisi, x86_64 üzerinde Hyprland 0.57.0 ABI için oluşturulmuş `argvus-hyprland` tarafından paketlenmiştir; kullanıcının ana dizininde derlenmez. Eklentiyi bir besteci ABI güncellemesiyle yeniden oluşturun.
+Oturum, `argvus-windows.service` ve `argvus-window-bar.service`'ya sahiptir. İkincisi, Taskbar çocuğunu Tile'da hareketsiz tutuyor. Hyprbars eklentisi, x86_64 üzerinde Hyprland 0.57.0 ABI için oluşturulmuş `argvus-hyprland` tarafından paketlenmiştir; kullanıcının ana dizininde derlenmez. Eklentiyi bir besteci ABI güncellemesiyle yeniden oluşturun.
 
 Komutlar: `argvus windows list --json`, `watch --json`, `position top|bottom`, `restore-all` ve `minimize|restore|activate|maximize|close ADDRESS`. Pencere adresleri listeden gelir. `position top --persist`, ana çubuğu yeniden başlatmadan tercihi saklar/yansıtır. Yapılandırma ve çalışma zamanı hatası ayrıntıları günlüğe yazılır; görünür eylem hataları da çevrilmiş bir bildirim gösterir.**Aralıklı + Yüzen** modunda pencereler dış boşluklara ve her iki çubuğun ayırdığı alanlara saygı gösterir. Sınırlar, aynı pencere kenarlığının içinde yer alan kenarlığı ve başlığı içerir. ARGVUS kontrolleri aracılığıyla maksimuma çıkarmak bu alanı kenar boşluklarıyla doldurur; geri yükleme, hizmetin yeniden başlatılması da dahil olmak üzere önceki geometriyi kurtarır. Tam ekran hala çıktının tamamını kullanıyor. Yüzen pencereler üst üste gelebilir; iç boşlukların döşenmesi onları ayırmaz.
 

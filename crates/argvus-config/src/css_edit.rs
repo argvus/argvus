@@ -1,7 +1,7 @@
 //! Structured edits of ARGVUS CSS: a declaration inside a named block.
 //!
 //! The theme scripts used `sed` ranges such as
-//! `/^window#waybar {/,/^}/s/border-radius: [0-9]*px;/border-radius: 0px;/`.
+//! `/^window#taskbar {/,/^}/s/border-radius: [0-9]*px;/border-radius: 0px;/`.
 //! Each one is a block (from a selector line to the next line that starts with
 //! `}`) and a single declaration rewritten inside it. This module names those
 //! two operations and implements them with the regex engine, so the patterns
@@ -181,11 +181,11 @@ fn edit_block_lines(
 mod tests {
   use super::*;
 
-  const CSS: &str = "window#waybar {\n  border: 1px solid red;\n  border-radius: 6px;\n}\n\nwindow#other {\n  border-radius: 9px;\n}\n";
+  const CSS: &str = "window#taskbar {\n  border: 1px solid red;\n  border-radius: 6px;\n}\n\nwindow#other {\n  border-radius: 9px;\n}\n";
 
   #[test]
   fn radius_changes_only_inside_the_named_block() {
-    let edited = set_declaration_in_blocks(CSS, "window#waybar {", Declaration::Radius, "0px");
+    let edited = set_declaration_in_blocks(CSS, "window#taskbar {", Declaration::Radius, "0px");
     assert!(edited.contains("  border-radius: 0px;\n}\n"));
     assert!(
       edited.contains("window#other {\n  border-radius: 9px;\n}"),
@@ -195,7 +195,7 @@ mod tests {
 
   #[test]
   fn border_replaces_the_whole_declaration_value() {
-    let edited = set_declaration_in_blocks(CSS, "window#waybar {", Declaration::Border, "none");
+    let edited = set_declaration_in_blocks(CSS, "window#taskbar {", Declaration::Border, "none");
     assert!(edited.contains("  border: none;\n"));
     assert!(
       edited.contains("  border-radius: 6px;"),
@@ -232,11 +232,11 @@ mod tests {
     assert_eq!(Declaration::parse("margin"), None);
   }
 
-  const TASKBAR: &str = "window#waybar {\n  border: 1px solid @th-decorate;\n}\n\n#mpris,\n#custom-spotify-mpris {\n  border: 1px solid @th-mpris-border;\n}\n\n#mpris:hover,\n#custom-spotify-mpris:hover {\n  border-bottom: 1px solid @th-decorate;\n}\n";
+  const TASKBAR: &str = "window#taskbar {\n  border: 1px solid @th-decorate;\n}\n\n#mpris,\n#custom-spotify-mpris {\n  border: 1px solid @th-mpris-border;\n}\n\n#mpris:hover,\n#custom-spotify-mpris:hover {\n  border-bottom: 1px solid @th-decorate;\n}\n";
 
   #[test]
   fn border_width_keeps_each_colour() {
-    let edited = set_border_width_in_blocks(TASKBAR, "window#waybar {", 3);
+    let edited = set_border_width_in_blocks(TASKBAR, "window#taskbar {", 3);
     assert!(edited.contains("  border: 3px solid @th-decorate;\n"));
     let edited = set_border_width_in_blocks(TASKBAR, "#mpris,", 2);
     assert!(edited.contains("  border: 2px solid @th-mpris-border;\n"));
@@ -254,20 +254,20 @@ mod tests {
 
   #[test]
   fn border_width_replaces_none_with_the_accent_colour() {
-    let text = "window#waybar {\n  border: none;\n}\n";
+    let text = "window#taskbar {\n  border: none;\n}\n";
     assert_eq!(
-      set_border_width_in_blocks(text, "window#waybar {", 1),
-      "window#waybar {\n  border: 1px solid @th-decorate;\n}\n"
+      set_border_width_in_blocks(text, "window#taskbar {", 1),
+      "window#taskbar {\n  border: 1px solid @th-decorate;\n}\n"
     );
   }
 
   #[test]
   fn border_width_is_read_from_the_taskbar_window() {
-    assert_eq!(border_width_in_block(TASKBAR, "window#waybar {"), Some(1));
-    let off = set_border_width_in_blocks(TASKBAR, "window#waybar {", 0);
-    assert_eq!(border_width_in_block(&off, "window#waybar {"), Some(0));
-    let none = "window#waybar {\n  border: none;\n}\n";
-    assert_eq!(border_width_in_block(none, "window#waybar {"), Some(0));
+    assert_eq!(border_width_in_block(TASKBAR, "window#taskbar {"), Some(1));
+    let off = set_border_width_in_blocks(TASKBAR, "window#taskbar {", 0);
+    assert_eq!(border_width_in_block(&off, "window#taskbar {"), Some(0));
+    let none = "window#taskbar {\n  border: none;\n}\n";
+    assert_eq!(border_width_in_block(none, "window#taskbar {"), Some(0));
     assert_eq!(border_width_in_block(TASKBAR, "nothing {"), None);
   }
 }

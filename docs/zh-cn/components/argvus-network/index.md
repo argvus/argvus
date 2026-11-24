@@ -2,7 +2,7 @@
 title: 网络与蓝牙
 description: 通过 ARGVUS 管理 NetworkManager 和蓝牙。
 ---
-`argvus network` 子命令用于报告和控制 NetworkManager，而 `argvus bluetooth` 用于报告和控制蓝牙适配器的状态和可用性。它们都在 `argvus` 内部进程中运行；`networkctl` 和 `bluetoothctl` 仍作为别名存在。控制面板和 Waybar 调用这些命令。
+`argvus network` 子命令用于报告和控制 NetworkManager，而 `argvus bluetooth` 用于报告和控制蓝牙适配器的状态和可用性。它们都在 `argvus` 内部进程中运行；`networkctl` 和 `bluetoothctl` 仍作为别名存在。控制面板和 Taskbar 调用这些命令。
 
 在任一命令上使用 `--help` 可查看已安装的子命令。网络和蓝牙的 UI 集成与可选的高级管理器（如 Blueman）是分开的。
 

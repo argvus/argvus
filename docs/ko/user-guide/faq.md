@@ -55,7 +55,7 @@ argvus --control-center
 
 ## ARGVUS 설정은 어디에 저장되나요?
 
-사용자 소유 구성은 `$XDG_CONFIG_HOME/argvus`(보통 `~/.config/argvus`) 아래에 저장됩니다. 표준 논리 구성은 그곳에 유지되며, Hyprland, Waybar 및 텔레메트리 위젯, GTK, Qt6ct, Quickshell, Dunst, Hyprlock, Yazi, Superfile, 터미널, 글꼴, 효과, 달력, 입력, 키보드, 전원 및 이동식 장치용 파생 소비자 파일은 `~/.config/argvus/data/generated/` 아래에 존재합니다. 해당 트리는 `argvus-config`에 의해서만 작성되며, 표준 구성에서 다시 빌드됩니다; `argvus-appearance`는 외관 변경 사항을 커밋하고, 자체적으로 표준 구성을 읽을 수 없는 외부 소비자만 조정합니다.
+사용자 소유 구성은 `$XDG_CONFIG_HOME/argvus`(보통 `~/.config/argvus`) 아래에 저장됩니다. 표준 논리 구성은 그곳에 유지되며, Hyprland, Taskbar 및 텔레메트리 위젯, GTK, Qt6ct, Quickshell, Dunst, Hyprlock, Yazi, Superfile, 터미널, 글꼴, 효과, 달력, 입력, 키보드, 전원 및 이동식 장치용 파생 소비자 파일은 `~/.config/argvus/data/generated/` 아래에 존재합니다. 해당 트리는 `argvus-config`에 의해서만 작성되며, 표준 구성에서 다시 빌드됩니다; `argvus-appearance`는 외관 변경 사항을 커밋하고, 자체적으로 표준 구성을 읽을 수 없는 외부 소비자만 조정합니다.
 
 생성된 파일을 영구 구성 방법으로 편집하지 마십시오. 사용자 지정하려는 구성요소에 대해서는 Control Center 또는 문서화된 기본 재정의 경로를 사용하십시오. [configuration files](/docs/reference/configuration-files/) 및 [configuration and state](/docs/developer-guide/architecture/configuration-and-state/)를 참조하십시오.
 

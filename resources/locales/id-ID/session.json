@@ -25,7 +25,7 @@
   "usage.stop": "stop stop stop argvus-session .target and graphical- session. target",
   "usage.restart": "jalankan ulang target sesi ARGVUS",
   "usage.reload": "reload ulang -applikasikan konfigurasi mutable dan restart layanan yang terpengaruh",
-  "usage.restart_items": "restart < item... > restart grup komponen: waybar, wallpaper, dunst, control- panel,...",
+  "usage.restart_items": "restart < item... > restart grup komponen: taskbar, wallpaper, dunst, control- panel,...",
   "usage.status": "status tampilkan status target dan layanan",
   "usage.logs": "log [journal args] show ARGVUS user- unit journal log",
   "usage.widget_telemetry": "widget -telemetri < perintah >",

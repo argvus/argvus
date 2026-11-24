@@ -1,9 +1,9 @@
 // =============================================================================
-//  Waybar — Painel vertical (Widget Telemetry)
+//  Taskbar — Painel vertical (Widget Telemetry)
 // =============================================================================
 {
     "name": "argvus-widget-telemetry",
-    // A theme switch rewrites the stylesheet; Waybar then reloads only the CSS.
+    // A theme switch rewrites the stylesheet; Taskbar then reloads only the CSS.
     "reload_style_on_change": true,
     "layer": "bottom",
     "position": "left",

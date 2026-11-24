@@ -19,7 +19,7 @@ Offizielle Themenänderungen wenden ihre gespeicherten Erscheinungswerte an und 
 cat "${XDG_CONFIG_HOME:-$HOME/.config}/argvus/data/generated/theme/current/build.toml"
 argvus config theme-runtime consumers
 ```
-Jede themenbezogene Datei stammt aus dem Build: Ein Theme, das nicht installiert ist (kein `theme.toml` unter `/usr/share/argvus/themes/` oder `~/.local/share/argvus/themes/`) oder nicht rendert, wird abgelehnt, und das vorherige Theme bleibt bestehen. `argvus theme check DIRECTORY` zeigt die Vorlage und die Zeile jedes Renderfehlers an. Eine Waybar-Leiste lädt ihre Farben nur mit `reload_style_on_change` in ihrem JSONC neu. Wenn ein Schalter scheinbar festhängt, prüfen Sie, ob er noch läuft; er zeichnet sich in `theme-switch.active` auf, neben seinem Sperrmechanismus:
+Jede themenbezogene Datei stammt aus dem Build: Ein Theme, das nicht installiert ist (kein `theme.toml` unter `/usr/share/argvus/themes/` oder `~/.local/share/argvus/themes/`) oder nicht rendert, wird abgelehnt, und das vorherige Theme bleibt bestehen. `argvus theme check DIRECTORY` zeigt die Vorlage und die Zeile jedes Renderfehlers an. Eine Taskbar-Leiste lädt ihre Farben nur mit `reload_style_on_change` in ihrem JSONC neu. Wenn ein Schalter scheinbar festhängt, prüfen Sie, ob er noch läuft; er zeichnet sich in `theme-switch.active` auf, neben seinem Sperrmechanismus:
 
 ```sh
 cat "${XDG_CACHE_HOME:-$HOME/.cache}/argvus/theme-switch.active"

@@ -19,7 +19,7 @@ Quando aberto pelo módulo de data da taskbar, o popup fica preso à borda da ba
 
 ```bash
 argvus taskbar-calendar                 abre o calendário
-argvus taskbar-calendar toggle          mostra ou oculta (o módulo de data da Waybar usa isto)
+argvus taskbar-calendar toggle          mostra ou oculta (o módulo de data da Taskbar usa isto)
 argvus taskbar-calendar show | hide
 argvus taskbar-calendar config          abre a configuração do sistema para edição (sudo)
 argvus taskbar-calendar config-path    mostra o caminho da configuração

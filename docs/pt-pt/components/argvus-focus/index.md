@@ -11,8 +11,8 @@ argvus focus --toggle     # oculta o popup se estiver visível, senão o mostra
 argvus focus --toggle --x 1600 --y 30  # abre junto à posição do clique na taskbar
 argvus focus --start      # inicia ou retoma a fase atual sem abrir a janela
 argvus focus --pause      # pausa a fase em andamento
-argvus focus status --waybar           # imprime um status JSON Waybar e encerra
-argvus focus status --waybar --follow  # transmite as mudanças de status para Waybar
+argvus focus status --taskbar           # imprime um status JSON Taskbar e encerra
+argvus focus status --taskbar --follow  # transmite as mudanças de status para Taskbar
 ```
 
 A barra de título apresenta a marca `ARGVUS` na cor de destaque, ao lado de `Focus`.

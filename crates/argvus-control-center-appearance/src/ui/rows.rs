@@ -285,10 +285,10 @@ fn taskbar_module_icon(module: TaskbarModule) -> &'static str {
 /// gap glyph.
 fn spacing_icon(goal: PromptGoal) -> Option<&'static str> {
   match goal {
-    PromptGoal::WaybarTop | PromptGoal::GapsOutTop => Some(icons::ARROW_UP),
-    PromptGoal::WaybarLeft | PromptGoal::GapsOutLeft => Some(icons::ARROW_LEFT),
-    PromptGoal::WaybarRight | PromptGoal::GapsOutRight => Some(icons::ARROW_RIGHT),
-    PromptGoal::WaybarBottom | PromptGoal::GapsOutBottom => Some(icons::ARROW_DOWN),
+    PromptGoal::TaskbarTop | PromptGoal::GapsOutTop => Some(icons::ARROW_UP),
+    PromptGoal::TaskbarLeft | PromptGoal::GapsOutLeft => Some(icons::ARROW_LEFT),
+    PromptGoal::TaskbarRight | PromptGoal::GapsOutRight => Some(icons::ARROW_RIGHT),
+    PromptGoal::TaskbarBottom | PromptGoal::GapsOutBottom => Some(icons::ARROW_DOWN),
     PromptGoal::GapsIn => Some(icons::GAP),
     PromptGoal::Rounding => Some(icons::ROUNDED),
     PromptGoal::Thickness => Some(icons::THICKNESS),
@@ -740,7 +740,7 @@ impl AppearanceApp {
         self.choice_row(
           Item::Position(position),
           self.label(key),
-          self.state.waybar_pos == position,
+          self.state.taskbar_pos == position,
         )
       })
       .collect()
@@ -748,10 +748,10 @@ impl AppearanceApp {
 
   fn taskbar_spaces_page_rows(&self) -> Vec<Row<Item>> {
     [
-      (PromptGoal::WaybarTop, self.state.waybar_top),
-      (PromptGoal::WaybarLeft, self.state.waybar_left),
-      (PromptGoal::WaybarRight, self.state.waybar_right),
-      (PromptGoal::WaybarBottom, self.state.waybar_bottom),
+      (PromptGoal::TaskbarTop, self.state.taskbar_top),
+      (PromptGoal::TaskbarLeft, self.state.taskbar_left),
+      (PromptGoal::TaskbarRight, self.state.taskbar_right),
+      (PromptGoal::TaskbarBottom, self.state.taskbar_bottom),
     ]
     .into_iter()
     .map(|(goal, value)| self.spacing_row(goal, value))

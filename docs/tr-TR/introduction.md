@@ -35,7 +35,7 @@ Kurulum ve başlatma için bkz. [Kurulum](/docs/getting-started/installation/) v
 
 ### Besteci ve masaüstü kabuğu
 
-`argvus-hyprland`, Hyprland yapılandırmasını ve tuş bağlamalarını sağlar. `argvus-waybar` yamalı Waybar ikili dosyasını sağlarken `argvus-taskbar` görev çubuğu yapılandırmasına ve eylemlerine sahiptir. `argvus-control-panel`, Quickshell panelini sağlar ve `argvus widget-telemetry`, `argvus`'da işlem sırasında isteğe bağlı sistem widget'larını sağlar.
+`argvus-hyprland`, Hyprland yapılandırmasını ve tuş bağlamalarını sağlar. `argvus-taskbar` yamalı Taskbar ikili dosyasını sağlarken `argvus-taskbar` görev çubuğu yapılandırmasına ve eylemlerine sahiptir. `argvus-control-panel`, Quickshell panelini sağlar ve `argvus widget-telemetry`, `argvus`'da işlem sırasında isteğe bağlı sistem widget'larını sağlar.
 
 Kullanım için [Masaüstü](/docs/user-guide/desktop/) ve uygulama sahipliği için [kabuk yüzeyleri](/docs/developer-guide/subsystems/shell-surfaces/) konusuna bakın.
 
@@ -55,7 +55,7 @@ Bkz. [Donanım](/docs/user-guide/hardware/), [Gizlilik ve güvenlik](/docs/user-
 
 ## Paylaşılan görünüm durumu
 
-Tema, vurgu, duvar kağıdı, yazı tipi ve efekt tercihleri `$XDG_CONFIG_HOME/argvus` (normalde `~/.config/argvus`) altında mantıksal durum olarak saklanır. `argvus-config`, Hyprland, GTK, Qt6ct, Waybar, Quickshell, Dunst, bildirimler, kilit ekranı, Yazi, Superfile ve terminaller için tüketici dosyalarını yansıttığı `data/generated/` yazan tek bileşendir. Görünüm yardımcıları durum değişikliğini gerçekleştirir ve ardından harici uygulamaları uzlaştırır; oluşturulan ağacı asla yazmazlar.Oluşturulan dizin gerçeğin kaynağı değildir. Bkz. [Görünüm](/docs/user-guide/appearance/) ve [yapılandırma ve durum](/docs/developer-guide/architecture/configuration-and-state/).
+Tema, vurgu, duvar kağıdı, yazı tipi ve efekt tercihleri `$XDG_CONFIG_HOME/argvus` (normalde `~/.config/argvus`) altında mantıksal durum olarak saklanır. `argvus-config`, Hyprland, GTK, Qt6ct, Taskbar, Quickshell, Dunst, bildirimler, kilit ekranı, Yazi, Superfile ve terminaller için tüketici dosyalarını yansıttığı `data/generated/` yazan tek bileşendir. Görünüm yardımcıları durum değişikliğini gerçekleştirir ve ardından harici uygulamaları uzlaştırır; oluşturulan ağacı asla yazmazlar.Oluşturulan dizin gerçeğin kaynağı değildir. Bkz. [Görünüm](/docs/user-guide/appearance/) ve [yapılandırma ve durum](/docs/developer-guide/architecture/configuration-and-state/).
 
 Görsel sistem aynı zamanda düzeni de kontrol eder. Yapışkan mod kompakt ve karedir; Aralıklı mod, daha büyük pencere boşlukları, yuvarlatılmış köşeler ve görev çubuğu ile kabuk çevresinde daha geniş kenar boşlukları kullanır. Görev çubuğu varsayılan olarak üst kenardadır ancak paylaşılan düzen durumu aracılığıyla üst/alt yerleşimi destekler. Efektler, besteci ve masaüstü yüzeylerindeki şeffaflığı, bulanıklığı, gölgeleri ve animasyonları kontrol eder.
 

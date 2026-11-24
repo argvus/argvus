@@ -34,7 +34,7 @@ taskbar · control panel · notifications · wallpaper · idle · clipboard
 
 ### المُركب وسطح المكتب
 
-يوفر `argvus-hyprland` تكوين Hyprland وربطات المفاتيح. يوفر `argvus-waybar` ثنائي Waybar المصحح، بينما يمتلك `argvus-taskbar` تكوين شريط المهام وإجراءاته. يوفر `argvus-control-panel` لوحة Quickshell، ويوفر `argvus widget-telemetry` عناصر واجهة مستخدم النظام الاختيارية، قيد التشغيل في `argvus`.
+يوفر `argvus-hyprland` تكوين Hyprland وربطات المفاتيح. يوفر `argvus-taskbar` ثنائي Taskbar المصحح، بينما يمتلك `argvus-taskbar` تكوين شريط المهام وإجراءاته. يوفر `argvus-control-panel` لوحة Quickshell، ويوفر `argvus widget-telemetry` عناصر واجهة مستخدم النظام الاختيارية، قيد التشغيل في `argvus`.
 
 
 ### الإعدادات والتطبيقات

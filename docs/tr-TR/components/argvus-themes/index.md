@@ -3,7 +3,7 @@ title: Temalar
 description: ARGVUS temalarını yükleyin, seçin, özelleştirin, içe ve dışa aktarın.
 ---
 
-ARGVUS'taki bir tema, masaüstünde kullanılan renkleri, yüzeyleri, duvar kağıdı varsayılanlarını ve düzen geometrisini ayarlar: Hyprland, Waybar, Kontrol Paneli, görev çubuğu, kilit ekranı, bildirimler ve ARGVUS uygulamaları. Bu kılavuz, kullanıcı olarak temalarla çalışmak için ihtiyacınız olan her şeyi kapsar.
+ARGVUS'taki bir tema, masaüstünde kullanılan renkleri, yüzeyleri, duvar kağıdı varsayılanlarını ve düzen geometrisini ayarlar: Hyprland, Taskbar, Kontrol Paneli, görev çubuğu, kilit ekranı, bildirimler ve ARGVUS uygulamaları. Bu kılavuz, kullanıcı olarak temalarla çalışmak için ihtiyacınız olan her şeyi kapsar.
 
 ## Bir temaya neler dahildir?
 

@@ -3,7 +3,7 @@ title: Kalender
 description: Gunakan kalender bilah tugas ARGVUS.
 ---
 
-`argvus-taskbar-calendar` adalah popup kalender GTK4 yang dibuka dari modul tanggal Waybar atau dengan:
+`argvus-taskbar-calendar` adalah popup kalender GTK4 yang dibuka dari modul tanggal Taskbar atau dengan:
 
 ```sh
 argvus --calendar
@@ -21,7 +21,7 @@ Saat dibuka dari modul tanggal bilah tugas, popup ditautkan ke tepi bilah: popup
 
 ```bash
 argvus taskbar-calendar                 open the calendar
-argvus taskbar-calendar toggle          show or hide it (the Waybar date module uses this)
+argvus taskbar-calendar toggle          show or hide it (the Taskbar date module uses this)
 argvus taskbar-calendar show | hide
 argvus taskbar-calendar config          open the system configuration for editing (sudo)
 argvus taskbar-calendar config-path     print the configuration path

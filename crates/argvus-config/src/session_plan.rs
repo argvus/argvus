@@ -68,7 +68,7 @@ mod tests {
   fn targets_are_the_enabled_entries_sorted() {
     let manifest = json!({
         "reload_targets": {
-            "waybar": true,
+            "taskbar": true,
             "hyprland": true,
             "polkit": false,
             "wallpaper": true
@@ -77,7 +77,11 @@ mod tests {
     });
     assert_eq!(
       decide_reload(&manifest),
-      ReloadDecision::Targets(vec!["hyprland".into(), "wallpaper".into(), "waybar".into()])
+      ReloadDecision::Targets(vec![
+        "hyprland".into(),
+        "taskbar".into(),
+        "wallpaper".into()
+      ])
     );
   }
 

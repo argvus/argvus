@@ -102,7 +102,7 @@ rencana ada, misalnya saat sesi dimulai.
 
 `argvus config session-plan` menjawab reload dengan target tersebut
 bagian yang berubah, dan `argvus sessionctl` hanya menjalankan bagian tersebut. Percikan
-mencakup pemuatan ulang hanya ketika target membuat ulang permukaan: bilah Waybar atau
+mencakup pemuatan ulang hanya ketika target membuat ulang permukaan: bilah Taskbar atau
 Panel Kontrol yang dipindahkan kembali ke layar akan menggeser setiap jendela. Segala sesuatu yang lain
 memuat ulang di tempatnya.
 
@@ -153,8 +153,8 @@ sebelum dipublikasikan:
 | --- | --- |
 | Hyprland | `generated/hypr/`, termasuk profil tema, `spaces-effective.conf`, `borders-effective.conf`, `hypridle.conf` dan `monitors.lua` |
 | Tata letak/efek | `generated/effects/`, `generated/spaces.conf`, `generated/borders.conf` |
-| Bilah Jalan | `generated/waybar/`, termasuk `argvus-taskbar.css` dan `argvus-widget-telemetry.{jsonc,css}` |
-| Tema telemetri widget | `generated/widget-telemetry/` dan `generated/waybar/widget-telemetry-themes/` |
+| Bilah Jalan | `generated/taskbar/`, termasuk `argvus-taskbar.css` dan `argvus-widget-telemetry.{jsonc,css}` |
+| Tema telemetri widget | `generated/widget-telemetry/` dan `generated/taskbar/widget-telemetry-themes/` |
 | QuickShell | `generated/quickshell/` |
 | Pemberitahuan | `generated/notifications/` dan `dunstrc` |
 | Layar kunci | `generated/hypr/hyprlock.conf` dan profil tema Hyprtoolkit |
@@ -162,19 +162,19 @@ sebelum dipublikasikan:
 | Yazi | `generated/yazi/` |
 | File Super | `generated/superfile/` |
 | Profil terminal dan Qt | `generated/terminal/`, `generated/qt6ct/` |
-| Font | `generated/fonts.conf` ditambah blok font terkelola di lembar gaya Waybar |
+| Font | `generated/fonts.conf` ditambah blok font terkelola di lembar gaya Taskbar |
 | Perangkat yang dapat dilepas | `generated/removable-devices/theme.css` |
 | kertas dinding | `generated/hypr/hyprpaper.conf` dan `data/hypr/hyprpaper.conf` |
 | Panel Kontrol dan default | `data/control-panel/`, `data/control-center/defaults.json` |
 | Kalender, masukan, keyboard, daya | TOML kalender, fragmen masukan, status keyboard, penanda tetap terjaga |
 
 Lapisan tema juga dicerminkan di luar root yang dihasilkan:
-`data/waybar/argvus-taskbar.{jsonc,css}`,
-`data/waybar/argvus-widget-telemetry.{jsonc,css}`, `data/foot/`,
+`data/taskbar/argvus-taskbar.{jsonc,css}`,
+`data/taskbar/argvus-widget-telemetry.{jsonc,css}`, `data/foot/`,
 `data/qt6ct/`, `data/hypr/hyprtoolkit.conf` dan
 `data/hypr/application-style.conf`. Salinan tersebut diganti dari kemasannya
 default bila bagian tampilan berubah, dan proyektor kemudian menulis ulang
-hanya blok terkelola yang dibatasi — blok font di lembar gaya Waybar dan
+hanya blok terkelola yang dibatasi — blok font di lembar gaya Taskbar dan
 blok `ARGVUS_TELEMETRY_*` di profil telemetri — jadi teks di luar
 penanda tidak dapat bertahan jika terjadi pergantian tema. `fonts.targets` dan
 `control_panel.widget_telemetry_blocks` tetap kanonik: Pusat Kontrolmenyimpannya melalui `argvus-config` dan tidak pernah menulis file ini sendiri.
@@ -204,7 +204,7 @@ Jalur ARGVUS logis juga diselesaikan oleh `argvus config paths`. Warisan
 File `paths.sh` hanya memperlihatkan fungsi kompatibilitas; penggantian asli, pengguna
 data, data yang dihasilkan, dan fallback sistem diselesaikan dengan model jalur Rust.
 
-`audio` mengubah wastafel keluaran default dan mencatat hasilnya di `/audio` dalam satu langkah: `argvus config audio volume <N|+N|-N> [--limit PERCENT]` dan `argvus config audio mute <on|off|toggle>`. Ia menulis penyimpanan tanpa memuat ulang konfigurasi, karena PipeWire sudah memiliki nilainya. Modul volume Waybar, tombol media Hyprland, dan Panel Kontrol menggunakannya, jadi `argvus config project`, yang memproyeksikan `/audio` ke wastafel, tidak pernah memulihkan volume lama. Volume di atas 100% (tombol Hyprland mengizinkan hingga 150%) disimpan sebagai 100.
+`audio` mengubah wastafel keluaran default dan mencatat hasilnya di `/audio` dalam satu langkah: `argvus config audio volume <N|+N|-N> [--limit PERCENT]` dan `argvus config audio mute <on|off|toggle>`. Ia menulis penyimpanan tanpa memuat ulang konfigurasi, karena PipeWire sudah memiliki nilainya. Modul volume Taskbar, tombol media Hyprland, dan Panel Kontrol menggunakannya, jadi `argvus config project`, yang memproyeksikan `/audio` ke wastafel, tidak pernah memulihkan volume lama. Volume di atas 100% (tombol Hyprland mengizinkan hingga 150%) disimpan sebagai 100.
 
 `patch` menerapkan objek JSON yang kuncinya merupakan penunjuk JSON dalam satu objek terkunci
 operasi baca-modifikasi-tulis. `apply-theme` melakukan atom yang setara
@@ -254,7 +254,7 @@ Pusat Kontrol membaca nilai tampilan kanonik saat membuka halaman Penampilan dan
 
 Panel Kontrol menggunakan `control_panel.cards` untuk urutan dan visibilitas kartu, dan `control_panel.enabled` untuk sakelar master panel. File `control-panel/cards.json` dan `state/control-panel` disimpan sebagai proyeksi kompatibilitas. Oleh karena itu, perubahan yang dilakukan di Panel Kontrol merupakan bagian dari cakupan ekspor `desktop`.
 
-Preferensi font menggunakan `fonts.targets` untuk kelompok, gaya, dan ukuran bilah tugas, telemetri, Panel Kontrol, sistem, aplikasi, terminal, dan target browser. `fonts.rendering` menyimpan antialiasing, petunjuk, urutan subpiksel, dan preferensi DPI. `fonts.conf`, aturan fontconfig, pengaturan desktop, dan blok font terkelola di dalam stylesheet Waybar adalah proyeksi: Pusat Kontrol tetap mempertahankan `/fonts/targets/*` hingga `argvus-config`, dan proyektor hanya menulis ulang blok yang dibatasi.
+Preferensi font menggunakan `fonts.targets` untuk kelompok, gaya, dan ukuran bilah tugas, telemetri, Panel Kontrol, sistem, aplikasi, terminal, dan target browser. `fonts.rendering` menyimpan antialiasing, petunjuk, urutan subpiksel, dan preferensi DPI. `fonts.conf`, aturan fontconfig, pengaturan desktop, dan blok font terkelola di dalam stylesheet Taskbar adalah proyeksi: Pusat Kontrol tetap mempertahankan `/fonts/targets/*` hingga `argvus-config`, dan proyektor hanya menulis ulang blok yang dibatasi.
 
 Preferensi Hyprland menggunakan `keyboard_shortcuts` untuk pintasan, `hyprland.input` untuk pengaturan mouse dan touchpad, dan `hyprland.keyboard` untuk tata letak, varian, dan opsi XKB. ID pengikatan manifes dipetakan ke `config_key` yang stabil (misalnya `window.close` → `close_window` dan `window.drag_mouse` → `drag_window__floating_window_only`). Preferensi tampilan menggunakan `displays.monitors`, `displays.workspaces`, dan `displays.primary_monitor`. File TOML asli dan file Lua yang dihasilkan di bawah `data/generated/` tetap menjadi proyeksi yang digunakan oleh Hyprland.Setiap sakelar `effects` secara default diaktifkan (animasi, blur, telemetri widget, dan setiap permukaan transparansi), pada mesin virtual dan sesi berdaya rendah juga; bayangan jendela (`shadow_enabled`) dan goyangan (`wobble_enabled`) default mati. Preferensi efek menggunakan `effects` untuk saklar master Animasi (`animations`, diterapkan pada `hyprland.lua` dari `hypr/state.lua` yang diproyeksikan, tidak bergantung pada saklar Efek, yaitu `blur_global_enabled` ditambah `transparency_<surface>_enabled` dari `taskbar`, `control-panel`, `widget-telemetry`, `terminal` dan `launchers`, dan dibaca sebagai diaktifkan ketika salah satunya diaktifkan; `argvus effects-toggle animations|effects` menggantinya), saklar blur global (`blur_global_enabled`), parameter blur Hyprland (`blur_size`, `blur_passes`, `blur_brightness`, `blur_noise`, `blur_contrast`, `blur_vibrancy`, `blur_vibrancy_darkness`), bayangan jendela (`shadow_enabled`, `shadow_sharp`, `shadow_color`, `shadow_range`, `shadow_render_power`, `shadow_offset_x`, `shadow_offset_y`, `shadow_scale`), nilai Animasi (`animation_<leaf>_speed`, `_curve`, `_style`, `_popin` dan `_enabled` untuk setiap animasi, ditambah `animation_bezier_x1` hingga `animation_bezier_y2` dan `animation_spring_mass`, `animation_spring_stiffness` dan `animation_spring_dampening` untuk kustom kurva) dan nilai transparansi per permukaan. Efek adalah milik tema, bukan milik varian: Sticky dan Spaced menggunakan proyeksi efek `<theme>.conf` yang sama, sedangkan proyeksi tata letaknya berbeda. Permukaan saat ini mencakup `taskbar`, `control-panel`, dan `widget-telemetry`; nilai transparansi adalah persentase dari `0` hingga `100` (Pusat Kontrol dan permukaan peluncur secara default adalah `15`, yang lainnya adalah `50`), parameter blur adalah angka dalam rentang yang dinyatakan dalam `schema.json`, dan status yang diaktifkan adalah boolean. Nilai animasi juga divalidasi oleh `argvus-config`: kecepatan adalah angka dari `1` hingga `10` (desimal diperbolehkan), persentase pop-in adalah bilangan bulat dari `1` hingga `100`, kurva harus berupa nama dari Animasi halaman, gaya harus berupa nama dari halaman Animasi dan diterima oleh daun animasi itu sendiri (misalnya `popin` ditolak untuk `animation_workspace_in_style`, `gnomed` diterima hanya untuk membuka dan menutup jendela, dan varian slide ditolak pada jendela dan lapisan keluar), titik Bézier Y tetap berada di antara `-1` dan `2`, rentang Hyprland 0.56.2 diurai, dan parameter kurva lainnya tetap berada dalam rentang yang didokumentasikan. Daun `layers` dan `switching` sudah tidak ada lagi, jadi konfigurasi yang disimpan sebelum penghapusannya akan kehilangan kunci `animation_layers_enabled`, `animation_layers_speed`, `animation_layers_curve`, dan `animation_switching_*` saat dimuat. Gaya di luar kumpulan saat ini dihilangkan dan titik Bézier Y di luar `-1` hingga `2` dijepit, sehingga paket default berlaku lagi untuk apa pun yang telah dihapus.
 
@@ -394,13 +394,13 @@ argvus config window-mode toggle
 
 Mode mengambang menambahkan bilah judul ARGVUS dengan **Minimalkan**, **Maksimalkan / Pulihkan**, dan **Tutup** ke jendela aplikasi normal. Mengklik dua kali bilah judul akan mengaktifkan maksimalisasi. Dekorasi tambahan disembunyikan di Tile dan layar penuh. Aplikasi yang menggambar kontrolnya sendiri dapat menampilkan kedua bilah; kontrol ARGVUS yang seragam memang disengaja.
 
-Waybar kedua muncul di setiap monitor, di tepi seberang taskbar utama. Ini hanya mencantumkan jendela milik ruang kerja monitor saat ini, termasuk jendela yang diperkecil dari ruang kerja tersebut. Ruang kerja khusus yang terbuka diutamakan. Jendela yang disematkan tetap terlihat; tab grup tersembunyi tidak membuat entri tambahan, dan grup yang diperkecil memiliki satu entri pemulihan. Tab di dalam aplikasi tidak dihitung secara terpisah. Entri yang diperkecil mempertahankan asosiasi monitor/ruang kerja aslinya. Klik jendela yang tidak aktif untuk mengaktifkannya, jendela aktif untuk memperkecilnya, atau jendela yang diperkecil untuk memulihkannya; menu konteksnya menawarkan pemulihan, perkecil, maksimalkan/pulihkan, dan tutup. Ikon aplikasi yang tidak dikenal kembali ke simbol jendela. Mengaktifkan atau memulihkan entri akan mempertahankan posisi penunjuk. Bilah sekunder menggunakan CSS primer yang efektif (warna, font, batas, dan pembulatan), dengan tinggi dan margin cermin di tepi yang berlawanan.
+Taskbar kedua muncul di setiap monitor, di tepi seberang taskbar utama. Ini hanya mencantumkan jendela milik ruang kerja monitor saat ini, termasuk jendela yang diperkecil dari ruang kerja tersebut. Ruang kerja khusus yang terbuka diutamakan. Jendela yang disematkan tetap terlihat; tab grup tersembunyi tidak membuat entri tambahan, dan grup yang diperkecil memiliki satu entri pemulihan. Tab di dalam aplikasi tidak dihitung secara terpisah. Entri yang diperkecil mempertahankan asosiasi monitor/ruang kerja aslinya. Klik jendela yang tidak aktif untuk mengaktifkannya, jendela aktif untuk memperkecilnya, atau jendela yang diperkecil untuk memulihkannya; menu konteksnya menawarkan pemulihan, perkecil, maksimalkan/pulihkan, dan tutup. Ikon aplikasi yang tidak dikenal kembali ke simbol jendela. Mengaktifkan atau memulihkan entri akan mempertahankan posisi penunjuk. Bilah sekunder menggunakan CSS primer yang efektif (warna, font, batas, dan pembulatan), dengan tinggi dan margin cermin di tepi yang berlawanan.
 
 `SUPER + Alt + Up` menempatkan bilah utama di bagian atas dan bilah jendela di bagian bawah. `SUPER + Alt + Down` melakukan sebaliknya. Mengulangi suatu arah membuat posisinya tidak berubah. Ubin hanya memiliki bilah utama. Kembali ke Ubin akan memulihkan semua jendela yang diperkecil sebelum menghapus bilah jendela, dan kemudian mempertahankan kebijakan ubin/mengambang yang asli.
 
 Minimalkan menggunakan ruang kerja `special:argvus-minimized` yang dicadangkan. Jangan gunakan ruang kerja itu secara manual. Proses `argvus windows service` mencatat identitas, ruang kerja/monitor asli, geometri, layar penuh/maksimalisasi, dan status pin dalam registri runtime khusus instance kompositor di bawah `$XDG_RUNTIME_DIR/argvus`. Catatan bertahan saat layanan dimulai ulang atau memuat ulang konfigurasi, tetapi tidak melintasi sesi kompositor. Menutup jendela akan menghapus catatannya. Jika monitor hilang, pemulihan menggunakan output yang tersedia. Bilah pemulihan yang hilang atau gagal mencegah minimalisasi baru; restorasi yang gagal mempertahankan catatan dan bilah pemulihan.
 
-Sesi ini memiliki `argvus-windows.service` dan `argvus-window-bar.service`. Yang terakhir membuat anak Waybarnya tidak aktif di Tile. Plugin hyprbars dibundel oleh `argvus-hyprland`, dibuat untuk Hyprland 0.57.0 ABI pada x86_64; itu tidak dikompilasi di direktori home pengguna. Bangun kembali plugin dengan pembaruan ABI kompositor.
+Sesi ini memiliki `argvus-windows.service` dan `argvus-window-bar.service`. Yang terakhir membuat anak Taskbarnya tidak aktif di Tile. Plugin hyprbars dibundel oleh `argvus-hyprland`, dibuat untuk Hyprland 0.57.0 ABI pada x86_64; itu tidak dikompilasi di direktori home pengguna. Bangun kembali plugin dengan pembaruan ABI kompositor.
 
 Perintah: `argvus windows list --json`, `watch --json`, `position top|bottom`, `restore-all`, dan `minimize|restore|activate|maximize|close ADDRESS`. Alamat jendela berasal dari daftar. `position top --persist` menyimpan/memproyeksikan preferensi tanpa memulai ulang bilah utama. Detail kesalahan konfigurasi dan runtime ditulis ke jurnal; kegagalan tindakan yang terlihat juga menampilkan pemberitahuan yang diterjemahkan.Dalam **Spaced + Floating**, jendela mengikuti celah luar dan area yang disediakan oleh kedua batang. Batasnya mencakup batas dan judul, yang berada di dalam batas jendela yang sama. Memaksimalkan melalui kontrol ARGVUS mengisi area ini dengan margin; memulihkan memulihkan geometri sebelumnya, termasuk setelah layanan dimulai ulang. Layar penuh masih menggunakan seluruh keluaran. Jendela mengambang mungkin tumpang tindih; celah bagian dalam ubin tidak memisahkannya.
 

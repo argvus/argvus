@@ -2,7 +2,7 @@
 title: カレンダー
 description: ARGVUS タスクバーのカレンダーを使用してください。
 ---
-`argvus-taskbar-calendar` は、Waybar の日付モジュールから、または次の方法で開かれる GTK4 カレンダーポップアップです:
+`argvus-taskbar-calendar` は、Taskbar の日付モジュールから、または次の方法で開かれる GTK4 カレンダーポップアップです:
 
 ```sh
 argvus --calendar
@@ -19,7 +19,7 @@ argvus taskbar-calendar status
 
 ```bash
 argvus taskbar-calendar                 open the calendar
-argvus taskbar-calendar toggle          show or hide it (the Waybar date module uses this)
+argvus taskbar-calendar toggle          show or hide it (the Taskbar date module uses this)
 argvus taskbar-calendar show | hide
 argvus taskbar-calendar config          open the system configuration for editing (sudo)
 argvus taskbar-calendar config-path     print the configuration path

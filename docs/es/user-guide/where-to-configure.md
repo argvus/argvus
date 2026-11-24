@@ -13,7 +13,7 @@ Para una revisión guiada de las principales áreas de escritorio, abre **ARGVUS
 | Cambiar el fondo de pantalla | **Centro de Control → Apariencia → Fondos de Pantalla** |
 | Activar o desactivar efectos visuales | **Centro de Control → Apariencia → Efectos**, **Centro de Control → Apariencia → Lanzadores**, **Centro de Control → Configuración**, **Barra de Tareas**, **Telemetría de Widgets** o **Panel de Control** |
 | Cambiar la posición de la barra de tareas, altura, bordes o agrupación de utilidades | **Centro de Control → Apariencia → Barra de Tareas → Posición**, **Altura**, **Borde** e **Iconos** |
-| Personalizar la barra de tareas JSONC o CSS | [Waybar y sobrescrituras de la barra de tareas](/docs/argvus-waybar/) |
+| Personalizar la barra de tareas JSONC o CSS | [Taskbar y sobrescrituras de la barra de tareas](/docs/argvus-taskbar/) |
 | Cambiar los espacios entre ventanas o los bordes | **Centro de Control → Escritorio y Entrada → Hyprland → Ventanas → Espacios** y **Bordes** |
 | Cambiar la sombra de la ventana | **Centro de Control → Escritorio y Entrada → Hyprland → Bordes → Sombra** |
 | Elegir las tarjetas visibles del Panel de Control | **Centro de Control → Apariencia → Panel de Control** |

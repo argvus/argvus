@@ -19,13 +19,13 @@
   "bluetoothctl_missing": "Bluetoothctl не найден",
   "bluetooth.power_failed": "Не удалось повернуть Bluetooth {target}",
   "blueman_missing": "Дополнительный менеджер Blueman не установлен.",
-  "waybar.no_iface": "Сетевой интерфейс не найден",
-  "waybar.network": "Сеть",
-  "waybar.disconnected": "Отключено",
-  "waybar.connected": "Подключено",
-  "waybar.limited": "Ограниченное подключение",
-  "waybar.no_internet": "Нет доступа в Интернет",
-  "waybar.reconnecting": "Повторное подключение",
-  "waybar.state": "Состояние",
-  "waybar.command_failed": "Не удалось выполнить команду: {command}."
+  "taskbar.no_iface": "Сетевой интерфейс не найден",
+  "taskbar.network": "Сеть",
+  "taskbar.disconnected": "Отключено",
+  "taskbar.connected": "Подключено",
+  "taskbar.limited": "Ограниченное подключение",
+  "taskbar.no_internet": "Нет доступа в Интернет",
+  "taskbar.reconnecting": "Повторное подключение",
+  "taskbar.state": "Состояние",
+  "taskbar.command_failed": "Не удалось выполнить команду: {command}."
 }

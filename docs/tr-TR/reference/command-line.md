@@ -31,14 +31,14 @@ Sürümünüzle birlikte yüklenen liste için `argvus --help` komutunu çalış
 | `argvus du` | Yardımcı (terminal uygulaması) | ARGVUS Disk Kullanım Analizcisini özel bir Kitty penceresinde açar ve ncdu'yu çalıştırır. |
 | `argvus network ...` | Süreçte | NetworkManager durumu ve kontrolleri (`networkctl` takma ad olarak tutulur). |
 | `argvus bluetooth ...` | Süreçte | Bluetooth durumu ve kontrolleri (`bluetoothctl` takma ad olarak tutulur). |
-| `argvus widget-telemetry block ...` | Süreçte | Waybar telemetri bloğu. Bu barın sıcak yoludur. || `argvus widget-telemetry toggle ...` | Süreçte | Telemetri bloklarını ve sıralarını açar, kapatır. |
+| `argvus widget-telemetry block ...` | Süreçte | Taskbar telemetri bloğu. Bu barın sıcak yoludur. || `argvus widget-telemetry toggle ...` | Süreçte | Telemetri bloklarını ve sıralarını açar, kapatır. |
 | `argvus game-snake` | Özel yürütülebilir dosya | Bağımsız `argvus-game-snake` projesinden terminal Snake oyunu, isteğe bağlı bir paket. Bir terminalin dışında bir tane açılır. |
 | `argvus control-center [page]` | Yardımcı (terminal uygulaması) | Kontrol Merkezini açar veya zaten açık olan pencereye odaklanır. |
 | `argvus welcome [--if-needed]` | Sevk Görevlisi → Kontrol Merkezi | Kontrol Merkezinde entegre Hoş Geldiniz sayfasını açar. `--if-needed`, Hoş Geldiniz'in zaten görüntülendiğini, tamamlandığını veya kapatıldığını kullanıcı başına ilerleme kaydetmediği sürece bir kez açılır. |
 | `argvus taskbar-calendar [args]` | GTK 4 uygulaması | Varsayılan olarak `toggle` şeklindedir. |
 | `argvus removable-devices [args]` | GTK 4 uygulaması | Varsayılan olarak `menu` şeklindedir. |
 | `argvus focus [--toggle] [--start\|--pause] [--x X --y Y] [--bar-bottom PX --bar-right PX]` | GTK 4 uygulaması | ARGVUS Odak açılır penceresi. Oturum başına bir örnek. |
-| `argvus focus status --waybar [--follow]` | Süreçte | Focus görev çubuğu göstergesini Waybar JSON olarak yayar; `--follow`, GTK yüklenmeden değişiklikleri aktarıyor. |
+| `argvus focus status --taskbar [--follow]` | Süreçte | Focus görev çubuğu göstergesini Taskbar JSON olarak yayar; `--follow`, GTK yüklenmeden değişiklikleri aktarıyor. |
 | `argvus clock [--toggle] [--background] [--page PAGE] [--x X --y Y] [--bar-bottom PX --bar-right PX]` | GTK 4 uygulaması | ARGVUS Saat açılır penceresi. Oturum başına bir örnek; `--background`, alarmları açılır pencere olmadan aktif tutar. |
 | `argvus loading-theme ...` | Paketlenmiş `splash`, `/usr/lib/argvus/loading-theme/splash`'da | Doğrudan oturum yeniden yüklemelerinin yer paylaşımı; bir tema anahtarı onu kullanmaz. |
 | `argvus session`, `start`, `tty`, `sessionctl` | Özel yürütülebilir dosyalar | Oturum giriş noktaları ve oturum denetleyicisi. |

@@ -35,7 +35,7 @@ Paket `argvus` menyediakan operator `/usr/bin/argvus` dan titik masuk paket utam
 
 ### Kompositor dan shell desktop
 
-`argvus-hyprland` memasok konfigurasi Hyprland dan pengikatan kunci. `argvus-waybar` memasok biner Waybar yang dipatch, sedangkan `argvus-taskbar` memiliki konfigurasi dan tindakan bilah tugas. `argvus-control-panel` memasok panel Quickshell, dan `argvus widget-telemetry` menyediakan widget sistem opsional, dalam proses di `argvus`.
+`argvus-hyprland` memasok konfigurasi Hyprland dan pengikatan kunci. `argvus-taskbar` memasok biner Taskbar yang dipatch, sedangkan `argvus-taskbar` memiliki konfigurasi dan tindakan bilah tugas. `argvus-control-panel` memasok panel Quickshell, dan `argvus widget-telemetry` menyediakan widget sistem opsional, dalam proses di `argvus`.
 
 Lihat [Desktop](/docs/user-guide/desktop/) untuk penggunaan dan [permukaan shell](/docs/developer-guide/subsystems/shell-surfaces/) untuk kepemilikan implementasi.
 
@@ -55,7 +55,7 @@ Lihat [Perangkat Keras](/docs/user-guide/hardware/), [Privasi dan keamanan](/doc
 
 ## Status penampilan bersama
 
-Preferensi tema, aksen, wallpaper, font dan efek disimpan sebagai keadaan logis di bawah `$XDG_CONFIG_HOME/argvus` (biasanya `~/.config/argvus`). `argvus-config` adalah satu-satunya komponen yang menulis `data/generated/`, yang memproyeksikan file konsumen untuk Hyprland, GTK, Qt6ct, Waybar, Quickshell, Dunst, notifikasi, layar kunci, Yazi, Superfile, dan terminal. Pembantu penampilan melakukan perubahan keadaan dan kemudian merekonsiliasi aplikasi eksternal; mereka tidak pernah menulis pohon yang dihasilkan.Direktori yang dihasilkan bukanlah sumber kebenaran. Lihat [Penampilan](/docs/user-guide/appearance/) dan [konfigurasi dan status](/docs/developer-guide/architecture/configuration-and-state/).
+Preferensi tema, aksen, wallpaper, font dan efek disimpan sebagai keadaan logis di bawah `$XDG_CONFIG_HOME/argvus` (biasanya `~/.config/argvus`). `argvus-config` adalah satu-satunya komponen yang menulis `data/generated/`, yang memproyeksikan file konsumen untuk Hyprland, GTK, Qt6ct, Taskbar, Quickshell, Dunst, notifikasi, layar kunci, Yazi, Superfile, dan terminal. Pembantu penampilan melakukan perubahan keadaan dan kemudian merekonsiliasi aplikasi eksternal; mereka tidak pernah menulis pohon yang dihasilkan.Direktori yang dihasilkan bukanlah sumber kebenaran. Lihat [Penampilan](/docs/user-guide/appearance/) dan [konfigurasi dan status](/docs/developer-guide/architecture/configuration-and-state/).
 
 Sistem visual juga mengontrol tata letak. Mode tempel kompak dan berbentuk persegi; Mode spasi menggunakan celah jendela yang lebih besar, sudut membulat, dan margin yang lebih lebar di sekitar bilah tugas dan shell. Bilah tugas defaultnya adalah tepi atas tetapi mendukung penempatan atas/bawah melalui status tata letak bersama. Efek mengontrol transparansi, keburaman, bayangan, dan animasi di seluruh kompositor dan permukaan desktop.
 

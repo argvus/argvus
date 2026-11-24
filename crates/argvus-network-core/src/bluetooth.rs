@@ -1,5 +1,5 @@
 //! The Bluetooth state from bluetoothctl: the adapter, its power, the connected
-//! devices, and the Waybar module built from them.
+//! devices, and the Taskbar module built from them.
 
 /// The state of the adapter as the command reports it.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -141,15 +141,15 @@ pub fn power_state(show: &str) -> String {
   adapter_value(show, "Powered").to_ascii_lowercase()
 }
 
-/// The labels the Waybar module shows when the adapter is off or has no name.
+/// The labels the Taskbar module shows when the adapter is off or has no name.
 pub struct Labels {
   pub off: String,
   pub name: String,
 }
 
-/// The Waybar JSON of the Bluetooth module, or `None` when there is no adapter
+/// The Taskbar JSON of the Bluetooth module, or `None` when there is no adapter
 /// to show.
-pub fn waybar(summary: &Summary, labels: &Labels) -> Option<String> {
+pub fn taskbar(summary: &Summary, labels: &Labels) -> Option<String> {
   if !summary.available {
     return None;
   }
@@ -198,7 +198,7 @@ pub fn status_field(output: &str, key: &str) -> Option<String> {
 mod tests {
   use super::{
     Labels, adapter_available, adapter_value, connected_devices, lists_controller, summarize,
-    waybar,
+    taskbar,
   };
 
   const SHOW: &str = "Controller 00:11:22:33:44:55 (public)\n\tPowered: yes\n\tAlias: laptop\n";
@@ -241,17 +241,17 @@ mod tests {
   }
 
   #[test]
-  fn waybar_shows_the_connection_count() {
+  fn taskbar_shows_the_connection_count() {
     let labels = Labels {
       off: "Bluetooth off".into(),
       name: "Bluetooth".into(),
     };
     let summary = summarize(SHOW, "Device AA:BB:CC:DD:EE:FF Mouse\n");
-    let json = waybar(&summary, &labels).unwrap();
+    let json = taskbar(&summary, &labels).unwrap();
     assert_eq!(
       json,
       "{\"text\":\"\u{f00af} 1\",\"tooltip\":\"Mouse\",\"class\":\"bluetooth-connected\"}"
     );
-    assert_eq!(waybar(&summarize("", ""), &labels), None);
+    assert_eq!(taskbar(&summarize("", ""), &labels), None);
   }
 }

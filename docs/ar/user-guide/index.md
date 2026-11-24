@@ -5,7 +5,7 @@ description: قم بتثبيت وتكوين واستخدام بيئة سطح ا�
 
 ARGVUS هي بيئة سطح مكتب معيارية Hyprland وWayland لنظام Arch Linux. ابدأ بـ [التثبيت](/docs/getting-started/installation/)، ثم اختر إحدى الميزات من دليل المستخدم.
 
-يجمع سطح المكتب بين جلسة Hyprland وشريط مهام Waybar ولوحة تحكم Quickshell والتطبيقات الأصلية وموفري النظام. يشرح [دليل الهندسة المعمارية](/docs/developer-guide/architecture/overview/) كيفية عمل هذه القطع معًا.
+يجمع سطح المكتب بين جلسة Hyprland وشريط مهام Taskbar ولوحة تحكم Quickshell والتطبيقات الأصلية وموفري النظام. يشرح [دليل الهندسة المعمارية](/docs/developer-guide/architecture/overview/) كيفية عمل هذه القطع معًا.
 
 ## نقاط الدخول المشتركة
 

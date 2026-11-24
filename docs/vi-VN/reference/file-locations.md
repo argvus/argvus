@@ -15,10 +15,10 @@ description: Các tệp và thư mục ARGVUS đã cài đặt quan trọng.
 - `/etc/argvus/removable-devices/config.json` — mặc định của hệ thống cho bộ lưu trữ di động.
 - `$XDG_CONFIG_HOME/argvus/config.json` — tùy chọn di động chuẩn.
 - `$XDG_CONFIG_HOME/argvus/data/` — quản lý dữ liệu thành phần, sao lưu, khóa và tạo đầu ra.
-- `$XDG_CONFIG_HOME/waybar/argvus-taskbar.{jsonc,css}` — ghi đè thanh tác vụ Waybar gốc hoàn chỉnh tùy chọn.
+- `$XDG_CONFIG_HOME/taskbar/argvus-taskbar.{jsonc,css}` — ghi đè thanh tác vụ Taskbar gốc hoàn chỉnh tùy chọn.
 - `$XDG_CONFIG_HOME/argvus/data/taskbar/argvus-taskbar.{jsonc,css}` — bản sao thanh tác vụ ARGVUS được quản lý.
-- `$XDG_CONFIG_HOME/argvus/data/generated/waybar/` — đã tạo các cấu hình Waybar, bao gồm `argvus-taskbar.css` và `argvus-widget-telemetry.{jsonc,css}`; những điều này được ưu tiên hơn các bản sao ở trên.
-- `$XDG_CONFIG_HOME/argvus/data/generated/waybar/argvus-widget-telemetry.{jsonc,css}` — cũng được phản chiếu trong `data/waybar/`, được thay thế từ mặc định đóng gói khi thay đổi hình thức và sau đó có `ARGVUS_TELEMETRY_*` và các khối phông chữ được viết lại.
+- `$XDG_CONFIG_HOME/argvus/data/generated/taskbar/` — đã tạo các cấu hình Taskbar, bao gồm `argvus-taskbar.css` và `argvus-widget-telemetry.{jsonc,css}`; những điều này được ưu tiên hơn các bản sao ở trên.
+- `$XDG_CONFIG_HOME/argvus/data/generated/taskbar/argvus-widget-telemetry.{jsonc,css}` — cũng được phản chiếu trong `data/taskbar/`, được thay thế từ mặc định đóng gói khi thay đổi hình thức và sau đó có `ARGVUS_TELEMETRY_*` và các khối phông chữ được viết lại.
 - `$XDG_CONFIG_HOME/argvus/data/generated/yazi/` — cây cấu hình Yazi dự kiến, với dự phòng nhận biết biến thể cho các chủ đề không mang hương vị Yazi.
 - `$XDG_CONFIG_HOME/argvus/data/generated/superfile/` — bộ chủ đề Superfile dự kiến.
 - `$XDG_CONFIG_HOME/argvus/data/generated/terminal/` — cấu hình thiết bị đầu cuối dự kiến.

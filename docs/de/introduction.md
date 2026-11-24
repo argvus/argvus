@@ -33,7 +33,7 @@ Das `argvus`-Paket stellt den `/usr/bin/argvus`-Dispatcher und den Hauptzugangsp
 
 ### Kompositor und Desktop-Shell
 
-`argvus-hyprland` liefert die Hyprland-Konfiguration und Tastenkombinationen. `argvus-waybar` liefert das gepatchte Waybar-Binärprogramm, während `argvus-taskbar` die Taskleiste-Konfiguration und Aktionen besitzt. `argvus-control-panel` liefert das Quickshell-Panel, und `argvus widget-telemetry` liefert optionale System-Widgets, im Prozess in `argvus`.
+`argvus-hyprland` liefert die Hyprland-Konfiguration und Tastenkombinationen. `argvus-taskbar` liefert das gepatchte Taskbar-Binärprogramm, während `argvus-taskbar` die Taskleiste-Konfiguration und Aktionen besitzt. `argvus-control-panel` liefert das Quickshell-Panel, und `argvus widget-telemetry` liefert optionale System-Widgets, im Prozess in `argvus`.
 
 Siehe [Desktop](/docs/user-guide/desktop/) für die Nutzung und [shell surfaces](/docs/developer-guide/subsystems/shell-surfaces/) für die Implementierungsverantwortung.
 
@@ -53,7 +53,7 @@ Siehe [Hardware](/docs/user-guide/hardware/), [Datenschutz und Sicherheit](/docs
 
 ## Gemeinsamer Erscheinungszustand
 
-Thema, Akzent, Hintergrundbild, Schriftart und Effekteinstellungen werden als logischer Zustand unter `$XDG_CONFIG_HOME/argvus` gespeichert (normalerweise `~/.config/argvus`). `argvus-config` ist die einzige Komponente, die `data/generated/` schreibt, wo es Verbraucherdateien für Hyprland, GTK, Qt6ct, Waybar, Quickshell, Dunst, Benachrichtigungen, den Sperrbildschirm, Yazi, Superfile und Terminals projiziert. Erscheinungshilfen bestätigen die Zustandsänderung und stimmen dann externe Anwendungen ab; sie schreiben nie den erzeugten Baum.
+Thema, Akzent, Hintergrundbild, Schriftart und Effekteinstellungen werden als logischer Zustand unter `$XDG_CONFIG_HOME/argvus` gespeichert (normalerweise `~/.config/argvus`). `argvus-config` ist die einzige Komponente, die `data/generated/` schreibt, wo es Verbraucherdateien für Hyprland, GTK, Qt6ct, Taskbar, Quickshell, Dunst, Benachrichtigungen, den Sperrbildschirm, Yazi, Superfile und Terminals projiziert. Erscheinungshilfen bestätigen die Zustandsänderung und stimmen dann externe Anwendungen ab; sie schreiben nie den erzeugten Baum.
 
 Das erzeugte Verzeichnis ist nicht die Quelle der Wahrheit. Siehe [Appearance](/docs/user-guide/appearance/) und [Konfiguration und Zustand](/docs/developer-guide/architecture/configuration-and-state/).
 

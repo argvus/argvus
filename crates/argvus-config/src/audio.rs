@@ -1,6 +1,6 @@
 //! Volume and mute of the default output sink.
 //!
-//! The Waybar volume module, the Hyprland media keys and the Control Panel all
+//! The Taskbar volume module, the Hyprland media keys and the Control Panel all
 //! change the volume. Each change is applied to PipeWire through `wpctl`, and
 //! the value PipeWire reports afterwards is recorded in the canonical store
 //! (`/audio/output_volume` and `/audio/output_muted`). Without the second step

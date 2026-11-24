@@ -381,7 +381,7 @@ mod tests {
     let mut app = SessionApp::new(Lang::for_locale("en-US"), Theme::load());
     app.page = SessionPage::Components;
     app.components = vec![
-      component("waybar", ComponentStatus::Running),
+      component("taskbar", ComponentStatus::Running),
       component("hypridle", ComponentStatus::Stopped),
     ];
     let mut terminal = ratatui::Terminal::new(ratatui::backend::TestBackend::new(110, 25)).unwrap();
@@ -393,7 +393,7 @@ mod tests {
       .iter()
       .map(|cell| cell.symbol())
       .collect::<String>();
-    assert!(text.contains("waybar") && (text.contains("Restart") || text.contains("Reiniciar")));
+    assert!(text.contains("taskbar") && (text.contains("Restart") || text.contains("Reiniciar")));
   }
 
   #[test]

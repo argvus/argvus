@@ -1,18 +1,18 @@
-//! Taskbar and Waybar subcommands: refresh, layout, font, shape, margins and CSS blocks.
+//! Taskbar and Taskbar subcommands: refresh, layout, font, shape, margins and CSS blocks.
 
 use super::*;
 
-/// `waybar-refresh RELATIVE`: copies the packaged Waybar file over its managed copy.
-pub(super) fn waybar_refresh(arguments: &[String]) -> ExitCode {
+/// `taskbar-refresh RELATIVE`: copies the packaged Taskbar file over its managed copy.
+pub(super) fn taskbar_refresh(arguments: &[String]) -> ExitCode {
   let [relative] = arguments else {
-    eprintln!("usage: argvus config waybar-refresh RELATIVE");
+    eprintln!("usage: argvus config taskbar-refresh RELATIVE");
     return ExitCode::from(64);
   };
   let Some(paths) = session_paths::SessionPaths::from_environment() else {
     eprintln!("argvus-config: cannot resolve the configuration directory");
     return ExitCode::from(1);
   };
-  match waybar::refresh_managed(&paths, relative) {
+  match taskbar::refresh_managed(&paths, relative) {
     Ok(()) => ExitCode::SUCCESS,
     Err(error) => {
       eprintln!("argvus-config: {relative}: {error}");
@@ -21,36 +21,36 @@ pub(super) fn waybar_refresh(arguments: &[String]) -> ExitCode {
   }
 }
 
-/// `waybar-layout THEME`: margins, corner radii and the taskbar border of the theme class.
-pub(super) fn waybar_layout(arguments: &[String]) -> ExitCode {
+/// `taskbar-layout THEME`: margins, corner radii and the taskbar border of the theme class.
+pub(super) fn taskbar_layout(arguments: &[String]) -> ExitCode {
   let [theme] = arguments else {
-    eprintln!("usage: argvus config waybar-layout THEME");
+    eprintln!("usage: argvus config taskbar-layout THEME");
     return ExitCode::from(64);
   };
   let Some(paths) = session_paths::SessionPaths::from_environment() else {
     eprintln!("argvus-config: cannot resolve the configuration directory");
     return ExitCode::from(1);
   };
-  match waybar::apply_layout(&paths, theme) {
+  match taskbar::apply_layout(&paths, theme) {
     Ok(()) => ExitCode::SUCCESS,
     Err(error) => {
-      eprintln!("argvus-config: waybar layout: {error}");
+      eprintln!("argvus-config: taskbar layout: {error}");
       ExitCode::from(1)
     }
   }
 }
 
-/// `waybar-font taskbar|telemetry BLOCK`: writes the font block of one Waybar stylesheet.
-pub(super) fn waybar_font(arguments: &[String]) -> ExitCode {
+/// `taskbar-font taskbar|telemetry BLOCK`: writes the font block of one Taskbar stylesheet.
+pub(super) fn taskbar_font(arguments: &[String]) -> ExitCode {
   let [target, block] = arguments else {
-    eprintln!("usage: argvus config waybar-font taskbar|telemetry BLOCK");
+    eprintln!("usage: argvus config taskbar-font taskbar|telemetry BLOCK");
     return ExitCode::from(64);
   };
   let relative = match target.as_str() {
     "taskbar" => "taskbar/config/argvus-taskbar.css",
     "telemetry" => "widget-telemetry/config/argvus-widget-telemetry.css",
     _ => {
-      eprintln!("argvus-config: unknown waybar stylesheet: {target}");
+      eprintln!("argvus-config: unknown taskbar stylesheet: {target}");
       return ExitCode::from(64);
     }
   };
@@ -61,7 +61,7 @@ pub(super) fn waybar_font(arguments: &[String]) -> ExitCode {
   let Some(path) = user_copy::config_path(&paths, relative) else {
     return ExitCode::SUCCESS;
   };
-  match waybar::write_font_block(&path, block) {
+  match taskbar::write_font_block(&path, block) {
     Ok(()) => ExitCode::SUCCESS,
     Err(error) => {
       eprintln!("argvus-config: {}: {error}", path.display());
@@ -70,7 +70,7 @@ pub(super) fn waybar_font(arguments: &[String]) -> ExitCode {
   }
 }
 
-/// Sets a waybar margin in a JSONC file: `jsonc-margin [--signed] FILE EDGE VALUE`.
+/// Sets a taskbar margin in a JSONC file: `jsonc-margin [--signed] FILE EDGE VALUE`.
 pub(super) fn jsonc_margin(arguments: &[String]) -> ExitCode {
   let (signed, rest) = match arguments.first().map(String::as_str) {
     Some("--signed") => (true, &arguments[1..]),
@@ -104,7 +104,7 @@ pub(super) fn jsonc_margin(arguments: &[String]) -> ExitCode {
 }
 
 /// `taskbar-height HEIGHT`: stores the taskbar height and sets it in the live
-/// taskbar. Only the heights in `waybar::TASKBAR_HEIGHTS` are accepted.
+/// taskbar. Only the heights in `taskbar::TASKBAR_HEIGHTS` are accepted.
 pub(super) fn taskbar_height(arguments: &[String]) -> ExitCode {
   let [value] = arguments else {
     eprintln!("usage: argvus config taskbar-height 24|28|32|36");
@@ -113,13 +113,13 @@ pub(super) fn taskbar_height(arguments: &[String]) -> ExitCode {
   let Some(value) = value
     .parse::<u32>()
     .ok()
-    .filter(|value| waybar::TASKBAR_HEIGHTS.contains(value))
+    .filter(|value| taskbar::TASKBAR_HEIGHTS.contains(value))
   else {
     eprintln!("argvus-config: taskbar height must be one of 24, 28, 32 or 36");
     return ExitCode::from(64);
   };
   taskbar_setting(json_pointers::TASKBAR_SHAPE_HEIGHT, value, |paths| {
-    waybar::set_taskbar_height(paths, value)
+    taskbar::set_taskbar_height(paths, value)
   })
 }
 
@@ -133,13 +133,13 @@ pub(super) fn taskbar_border(arguments: &[String]) -> ExitCode {
   let Some(value) = value
     .parse::<u32>()
     .ok()
-    .filter(|value| waybar::TASKBAR_BORDER_WIDTHS.contains(value))
+    .filter(|value| taskbar::TASKBAR_BORDER_WIDTHS.contains(value))
   else {
     eprintln!("argvus-config: taskbar border width must be 0 (off), 1, 2 or 3");
     return ExitCode::from(64);
   };
   taskbar_setting(json_pointers::TASKBAR_SHAPE_BORDER_WIDTH, value, |paths| {
-    waybar::set_taskbar_border(paths, value)
+    taskbar::set_taskbar_border(paths, value)
   })
 }
 
@@ -157,10 +157,10 @@ pub(super) fn taskbar_shape(arguments: &[String]) -> ExitCode {
   let shape = if paths.has_shared_bars() {
     ConfigStore::from_environment()
       .and_then(|store| store.load_effective())
-      .map(|document| waybar::TaskbarShape::chosen(&document))
-      .unwrap_or_else(|_| waybar::taskbar_shape(&paths))
+      .map(|document| taskbar::TaskbarShape::chosen(&document))
+      .unwrap_or_else(|_| taskbar::taskbar_shape(&paths))
   } else {
-    waybar::taskbar_shape(&paths)
+    taskbar::taskbar_shape(&paths)
   };
   let show = |value: Option<u32>| value.map(|value| value.to_string()).unwrap_or_default();
   println!("height={}", show(shape.height));
@@ -179,7 +179,7 @@ pub(super) fn taskbar_setting(
     return ExitCode::from(1);
   };
   // The canonical value is what a theme switch writes back after it refreshes
-  // the managed Waybar files, so it is stored before the live file is edited.
+  // the managed Taskbar files, so it is stored before the live file is edited.
   if let Err(error) =
     ConfigStore::from_environment().and_then(|store| store.update(pointer, Value::from(value)))
   {

@@ -14,7 +14,7 @@ Chẩn đoán hữu ích:
 ```sh
 argvus sessionctl status
 argvus sessionctl logs
-argvus sessionctl restart waybar
+argvus sessionctl restart taskbar
 ```
 
 Hãy liên hệ với nhà phát triển [vòng đời thời gian chạy](/docs/developer-guide/architecture/runtime-lifecycle/) để biết quyền sở hữu dịch vụ.

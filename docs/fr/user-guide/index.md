@@ -4,7 +4,7 @@ description: Installez, configurez et utilisez l'environnement de bureau ARGVUS.
 ---
 ARGVUS est un environnement de bureau modulaire Hyprland et Wayland pour Arch Linux. Commencez par [installation](/docs/getting-started/installation/), puis choisissez une fonctionnalité dans le guide de l'utilisateur.
 
-Le bureau combine une session Hyprland, une barre des tâches Waybar, un panneau de contrôle Quickshell, des applications natives et des fournisseurs de système. Le [guide d'architecture](/docs/developer-guide/architecture/overview/) explique comment ces éléments fonctionnent ensemble.
+Le bureau combine une session Hyprland, une barre des tâches Taskbar, un panneau de contrôle Quickshell, des applications natives et des fournisseurs de système. Le [guide d'architecture](/docs/developer-guide/architecture/overview/) explique comment ces éléments fonctionnent ensemble.
 
 ## Points d'entrée communs
 

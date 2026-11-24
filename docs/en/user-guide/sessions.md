@@ -14,7 +14,7 @@ Useful diagnostics:
 ```sh
 argvus sessionctl status
 argvus sessionctl logs
-argvus sessionctl restart waybar
+argvus sessionctl restart taskbar
 ```
 
 See the developer [runtime lifecycle](/docs/developer-guide/architecture/runtime-lifecycle/) for service ownership.

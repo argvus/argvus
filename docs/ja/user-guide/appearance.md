@@ -2,7 +2,7 @@
 title: 外見
 description: ARGVUSコンポーネントで共有されるビジュアル言語を設定してください。
 ---
-外観システムは、Hyprland、GTK、Qt、Waybar、Quickshell、Dunst、Hyprlock、ARGVUSアプリケーションに対して一つのテーマ状態を適用します。
+外観システムは、Hyprland、GTK、Qt、Taskbar、Quickshell、Dunst、Hyprlock、ARGVUSアプリケーションに対して一つのテーマ状態を適用します。
 
 ## テーマファミリー
 

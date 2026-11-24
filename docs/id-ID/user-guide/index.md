@@ -5,7 +5,7 @@ description: Instal, konfigurasikan, dan gunakan lingkungan desktop ARGVUS.
 
 ARGVUS adalah lingkungan desktop Hyprland dan Wayland modular untuk Arch Linux. Mulailah dengan [instalasi](/docs/getting-started/installation/), lalu pilih fitur dari panduan pengguna.
 
-Desktop menggabungkan sesi Hyprland, taskbar Waybar, panel kontrol Quickshell, aplikasi asli dan penyedia sistem. [Panduan arsitektur](/docs/developer-guide/architecture/overview/) menjelaskan bagaimana bagian-bagian tersebut bekerja sama.
+Desktop menggabungkan sesi Hyprland, taskbar Taskbar, panel kontrol Quickshell, aplikasi asli dan penyedia sistem. [Panduan arsitektur](/docs/developer-guide/architecture/overview/) menjelaskan bagaimana bagian-bagian tersebut bekerja sama.
 
 ## Titik masuk umum
 

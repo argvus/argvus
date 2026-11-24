@@ -13,7 +13,7 @@ description: ARGVUS package responsibilities.
 | `argvus-session` | Session entry points and user lifecycle. |
 | `argvus-hyprland` | Hyprland configuration. |
 | `argvus-control-panel` | Quickshell control panel. |
-| `argvus-taskbar`, `argvus-waybar` | Waybar configuration and patched binary. |
+| `argvus-taskbar` | Quickshell taskbar and its configuration. |
 | `argvus-branding` | Logo and wordmark assets. |
 | `argvus-appearance`, `argvus-wallpapers`, `argvus-fonts`, `argvus-icons` | Appearance state and visual assets. |
 | `argvus-display`, `argvus-power`, `argvus-notifications` | Desktop providers. |
@@ -35,4 +35,4 @@ description: ARGVUS package responsibilities.
 
 The removed packages `argvus-pwvucontrol` and `argvus-snappy-switcher` are not provided by any package.
 
-No install order is required among the ARGVUS component packages: `argvus` is their master package, and each component depends on it. Installing `argvus` also installs the `argvus-desktop` profile; `argvus-devtools` and `argvus-pentest` remain opt-in. A package's presence in this table does not mean it owns the whole feature: for example, the taskbar combines `argvus-waybar`, `argvus-taskbar`, `argvus-session` and domain providers.
+No install order is required among the ARGVUS component packages: `argvus` is their master package, and each component depends on it. Installing `argvus` also installs the `argvus-desktop` profile; `argvus-devtools` and `argvus-pentest` remain opt-in. A package's presence in this table does not mean it owns the whole feature: for example, the taskbar combines `argvus-taskbar`, `argvus-session` and domain providers.

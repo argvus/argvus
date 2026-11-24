@@ -95,14 +95,14 @@ fn state_home() -> PathBuf {
 
 /// The state file of the widget master switch.
 fn state_file() -> PathBuf {
-  cache_home().join("waybar/widget-telemetry-state")
+  cache_home().join("taskbar/widget-telemetry-state")
 }
 
 /// The state files of the earlier widget names, read when the new one is missing.
 fn legacy_state_files() -> [PathBuf; 2] {
   [
-    cache_home().join("waybar/desktop-telemetry-state"),
-    cache_home().join("waybar/sysinfo-state"),
+    cache_home().join("taskbar/desktop-telemetry-state"),
+    cache_home().join("taskbar/sysinfo-state"),
   ]
 }
 
@@ -111,7 +111,7 @@ fn blocks_file() -> PathBuf {
 }
 
 fn scroll_file() -> PathBuf {
-  cache_home().join("waybar/widget-telemetry-scroll")
+  cache_home().join("taskbar/widget-telemetry-scroll")
 }
 
 // -- Files and programs --------------------------------------------------------

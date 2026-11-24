@@ -12,5 +12,5 @@ description: Inicie e gerencie uma sessão ARGVUS.
 ```sh
 argvus sessionctl status
 argvus sessionctl logs
-argvus sessionctl restart waybar
+argvus sessionctl restart taskbar
 ```

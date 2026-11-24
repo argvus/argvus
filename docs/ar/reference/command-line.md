@@ -31,14 +31,14 @@ description: أمر argvus وأوامره الفرعية والأعلام الم
 | `argvus du` | مساعد (تطبيق المحطة) | يفتح ARGVUS Disk Use Analyzer في نافذة Kitty مخصصة ويقوم بتشغيل ncdu. |
 | `argvus network ...` | قيد المعالجة | حالة NetworkManager وعناصر التحكم (يتم الاحتفاظ بـ `networkctl` كاسم مستعار). |
 | `argvus bluetooth ...` | قيد المعالجة | حالة Bluetooth وعناصر التحكم (يتم الاحتفاظ بـ `bluetoothctl` كاسم مستعار). |
-| `argvus widget-telemetry block ...` | قيد المعالجة | كتلة القياس عن بعد Waybar. هذا هو المسار الساخن للشريط. || `argvus widget-telemetry toggle ...` | قيد المعالجة | يقوم بتشغيل وإيقاف كتل القياس عن بعد، وترتيبها. |
+| `argvus widget-telemetry block ...` | قيد المعالجة | كتلة القياس عن بعد Taskbar. هذا هو المسار الساخن للشريط. || `argvus widget-telemetry toggle ...` | قيد المعالجة | يقوم بتشغيل وإيقاف كتل القياس عن بعد، وترتيبها. |
 | `argvus game-snake` | خاص قابل للتنفيذ | لعبة Snake الطرفية، من مشروع `argvus-game-snake` المستقل، حزمة اختيارية. خارج المحطة يتم فتح واحدة. |
 | `argvus control-center [page]` | مساعد (تطبيق المحطة) | يفتح مركز التحكم، أو يركز على النافذة المفتوحة بالفعل. |
 | `argvus welcome [--if-needed]` | المرسل → مركز التحكم | يفتح صفحة الترحيب المدمجة في مركز التحكم. يتم فتح `--if-needed` مرة واحدة ما لم يتم تسجيل التقدم لكل مستخدم والذي تم بالفعل عرض الترحيب أو إكماله أو رفضه. |
 | `argvus taskbar-calendar [args]` | تطبيق GTK 4 | الإعدادات الافتراضية هي `toggle`. |
 | `argvus removable-devices [args]` | تطبيق GTK 4 | الإعدادات الافتراضية هي `menu`. |
 | `argvus focus [--toggle] [--start\|--pause] [--x X --y Y] [--bar-bottom PX --bar-right PX]` | تطبيق GTK 4 | ARGVUS التركيز المنبثق. مثيل واحد لكل جلسة. |
-| `argvus focus status --waybar [--follow]` | قيد المعالجة | يُصدر مؤشر شريط المهام Focus كـ Waybar JSON؛ يتغير تدفق `--follow` بدون تحميل GTK. |
+| `argvus focus status --taskbar [--follow]` | قيد المعالجة | يُصدر مؤشر شريط المهام Focus كـ Taskbar JSON؛ يتغير تدفق `--follow` بدون تحميل GTK. |
 | `argvus clock [--toggle] [--background] [--page PAGE] [--x X --y Y] [--bar-bottom PX --bar-right PX]` | تطبيق GTK 4 | ARGVUS الساعة المنبثقة. مثيل واحد لكل جلسة؛ `--background` يبقي التنبيهات نشطة بدون نافذة منبثقة. |
 | `argvus loading-theme ...` | معبأة `splash` في `/usr/lib/argvus/loading-theme/splash` | تراكب عمليات إعادة التحميل المباشرة للجلسة؛ لا يستخدمه مفتاح السمة. |
 | `argvus session`، `start`، `tty`، `sessionctl` | الملفات التنفيذية الخاصة | نقاط دخول الجلسة ووحدة التحكم بالجلسة. |

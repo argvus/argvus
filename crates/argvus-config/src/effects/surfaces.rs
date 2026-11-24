@@ -1,7 +1,7 @@
-//! Rewrites each surface that consumes the effects: Waybar, widget telemetry, launcher, dunst, calendar, superfile and hyprlock.
+//! Rewrites each surface that consumes the effects: Taskbar, widget telemetry, launcher, dunst, calendar, superfile and hyprlock.
 
 use super::css_text::{
-  apply_border_transparency, delete_range, ensure_waybar_namespace, insert_after, opacity_factor,
+  apply_border_transparency, delete_range, ensure_taskbar_namespace, insert_after, opacity_factor,
   replace_in_lines, set_define,
 };
 use super::*;
@@ -12,7 +12,7 @@ impl Effects {
       return Ok(());
     }
     let css = self.live("taskbar/config/argvus-taskbar.css");
-    ensure_waybar_namespace(
+    ensure_taskbar_namespace(
       self.live("taskbar/config/argvus-taskbar.jsonc").as_deref(),
       "argvus-taskbar",
     )?;
@@ -93,7 +93,7 @@ impl Effects {
       return Ok(());
     }
     let css = self.live("widget-telemetry/config/argvus-widget-telemetry.css");
-    ensure_waybar_namespace(
+    ensure_taskbar_namespace(
       self
         .live("widget-telemetry/config/argvus-widget-telemetry.jsonc")
         .as_deref(),
@@ -109,7 +109,7 @@ impl Effects {
     {
       text = insert_after(
         &text,
-        "/*  Waybar — Painel vertical",
+        "/*  Taskbar — Painel vertical",
         "@define-color th-window-bg-effective @th-window-bg-rgba;",
       );
       text = replace_in_lines(

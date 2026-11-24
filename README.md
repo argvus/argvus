@@ -200,7 +200,7 @@ sudo pacman -S blueman starship kooha nwg-look
 | argvus-session | [argvus/argvus-session](https://github.com/argvus/argvus-session) |
 | argvus-taskbar | [argvus/argvus-taskbar](https://github.com/argvus/argvus-taskbar) |
 | argvus-wallpapers | [argvus/argvus-wallpapers](https://github.com/argvus/argvus-wallpapers) |
-| argvus-waybar | [argvus/argvus-waybar](https://github.com/argvus/argvus-waybar) |
+| argvus-taskbar | [argvus/argvus-taskbar](https://github.com/argvus/argvus-taskbar) |
 | argvus-theme-*, for example | [argvus/argvus-theme-dracula](https://github.com/argvus/argvus-theme-dracula) |
 
 The Rust workspace, with the `argvus` command, the Control Center, the greeter source,

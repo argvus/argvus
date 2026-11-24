@@ -14,7 +14,7 @@ description: একটি ARGVUS গ্রাফিকাল সেশন শু
 ```sh
 argvus sessionctl status
 argvus sessionctl logs
-argvus sessionctl restart waybar
+argvus sessionctl restart taskbar
 ```
 
 পরিষেবার মালিকানার জন্য ডেভেলপার [রানটাইম লাইফসাইকেল](/docs/developer-guide/architecture/runtime-lifecycle/) দেখুন।

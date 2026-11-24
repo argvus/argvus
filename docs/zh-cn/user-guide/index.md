@@ -4,7 +4,7 @@ description: 安装、配置并使用ARGVUS桌面环境。
 ---
 ARGVUS 是一个为 Arch Linux 提供的模块化 Hyprland 和 Wayland 桌面环境。先从 [installation](/docs/getting-started/installation/) 开始，然后从用户指南中选择一个功能。
 
-该桌面环境结合了 Hyprland 会话、Waybar 任务栏、Quickshell 控制面板、本地应用程序和系统提供程序。[architecture guide](/docs/developer-guide/architecture/overview/) 解释了这些组件如何协同工作。
+该桌面环境结合了 Hyprland 会话、Taskbar 任务栏、Quickshell 控制面板、本地应用程序和系统提供程序。[architecture guide](/docs/developer-guide/architecture/overview/) 解释了这些组件如何协同工作。
 
 ## 常用入口点
 

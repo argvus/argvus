@@ -2,7 +2,7 @@
 title: Réseautage et Bluetooth
 description: Gérer NetworkManager et Bluetooth via ARGVUS.
 ---
-La sous-commande `argvus network` signale et contrôle NetworkManager, et `argvus bluetooth` signale et contrôle l'état et la disponibilité de l'adaptateur Bluetooth. Les deux s'exécutent en processus à l'intérieur de `argvus` ; `networkctl` et `bluetoothctl` restent comme alias. Le Panneau de configuration et Waybar appellent ces commandes.
+La sous-commande `argvus network` signale et contrôle NetworkManager, et `argvus bluetooth` signale et contrôle l'état et la disponibilité de l'adaptateur Bluetooth. Les deux s'exécutent en processus à l'intérieur de `argvus` ; `networkctl` et `bluetoothctl` restent comme alias. Le Panneau de configuration et Taskbar appellent ces commandes.
 
 Utilisez `--help` sur l'une ou l'autre commande pour les sous-commandes installées. L'intégration de l'interface utilisateur réseau et Bluetooth est séparée des gestionnaires avancés optionnels tels que Blueman.
 

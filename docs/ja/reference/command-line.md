@@ -30,7 +30,7 @@ description: argvusコマンド、そのサブコマンド、キー割り当て�
 | `argvus du` | ヘルパー（端末アプリケーション） | 専用のKittyウィンドウでARGVUSディスク使用量アナライザーを開き、ncduを実行します。 |
 | `argvus network ...` | 進行中 | NetworkManagerのステータスとコントロール（`networkctl`はエイリアスとして保持）。 |
 | `argvus bluetooth ...` | 進行中 | Bluetoothのステータスとコントロール（`bluetoothctl`はエイリアスとして保持）。 |
-| `argvus widget-telemetry block ...` | 進行中 | Waybarのテレメトリーブロック。これはバーのホットパスです。 |
+| `argvus widget-telemetry block ...` | 進行中 | Taskbarのテレメトリーブロック。これはバーのホットパスです。 |
 | `argvus widget-telemetry toggle ...` | 進行中 | テレメトリーブロックのオン・オフ切り替え、およびその順序。 |
 | `argvus game-snake` | プライベート実行可能ファイル | ターミナル用のスネークゲームで、独立した`argvus-game-snake`プロジェクトのオプションパッケージです。ターミナル外で実行するとターミナルを開きます。 |
 | `argvus control-center [page]` | ヘルパー（ターミナルアプリケーション） | コントロールセンターを開くか、すでに開いているウィンドウにフォーカスします。 |
@@ -38,7 +38,7 @@ description: argvusコマンド、そのサブコマンド、キー割り当て�
 | `argvus taskbar-calendar [args]` | GTK 4アプリケーション | デフォルトは`toggle`です。 |
 | `argvus removable-devices [args]` | GTK 4アプリケーション | デフォルトは`menu`です。 |
 | `argvus focus [--toggle] [--start\|--pause] [--x X --y Y] [--bar-bottom PX --bar-right PX]` | GTK 4アプリケーション | ARGVUSフォーカスポップアップ。セッションごとに1つのインスタンス。 |
-| `argvus focus status --waybar [--follow]` | 処理中 | FocusタスクバーインジケーターをWaybar JSONとして出力します; `--follow`はGTKを読み込まずに変更をストリームします。 |
+| `argvus focus status --taskbar [--follow]` | 処理中 | FocusタスクバーインジケーターをTaskbar JSONとして出力します; `--follow`はGTKを読み込まずに変更をストリームします。 |
 | `argvus clock [--toggle] [--background] [--page PAGE] [--x X --y Y] [--bar-bottom PX --bar-right PX]` | GTK 4アプリケーション | ARGVUS時計ポップアップ。各セッションにつき1つのインスタンス; `--background`はポップアップなしでアラームを有効にします。 |
 | `argvus loading-theme ...` | `splash`を`/usr/lib/argvus/loading-theme/splash`でパッケージ化 | 直接のセッションリロードのオーバーレイ; テーマ切り替えは使用しません。 |
 | `argvus session`, `start`, `tty`, `sessionctl` | プライベート実行ファイル | セッションのエントリーポイントおよびセッションコントローラー。 |

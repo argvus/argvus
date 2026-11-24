@@ -2,7 +2,7 @@
 title: 日历
 description: 使用 ARGVUS 任务栏日历。
 ---
-`argvus-taskbar-calendar` 是从 Waybar 日期模块或通过以下方式打开的 GTK4 日历弹出窗口：
+`argvus-taskbar-calendar` 是从 Taskbar 日期模块或通过以下方式打开的 GTK4 日历弹出窗口：
 
 ```sh
 argvus --calendar
@@ -19,7 +19,7 @@ argvus taskbar-calendar status
 
 ```bash
 argvus taskbar-calendar                 open the calendar
-argvus taskbar-calendar toggle          show or hide it (the Waybar date module uses this)
+argvus taskbar-calendar toggle          show or hide it (the Taskbar date module uses this)
 argvus taskbar-calendar show | hide
 argvus taskbar-calendar config          open the system configuration for editing (sudo)
 argvus taskbar-calendar config-path     print the configuration path
@@ -63,9 +63,9 @@ argvus taskbar-calendar service
 
 自动语言选择遵循用户的 `locale.conf`，默认为英语。明确的日历语言偏好仍然会覆盖自动选择。
 
-任务栏日历、ARGVUS Focus、ARGVUS 时钟和控制面板是互斥的：打开一个会关闭其他的。 
+任务栏日历、ARGVUS Focus、ARGVUS 时钟和控制面板是互斥的：打开一个会关闭其他的。
 
-日历读取失败会单独显示，而不是显示为空的议程。打开数据库、加载每日事件和加载每月指标会有不同的提示信息。再次选择某一天以重试。刷新失败时，仅保留之前加载的该天或该月的数据；其他查询的有效结果仍然可用。 
+日历读取失败会单独显示，而不是显示为空的议程。打开数据库、加载每日事件和加载每月指标会有不同的提示信息。再次选择某一天以重试。刷新失败时，仅保留之前加载的该天或该月的数据；其他查询的有效结果仍然可用。
 
 ## 共享语言目录
 

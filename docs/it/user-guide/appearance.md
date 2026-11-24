@@ -2,7 +2,7 @@
 title: Aspetto
 description: Configura il linguaggio visivo condiviso dai componenti ARGVUS.
 ---
-Il sistema di aspetto applica uno stato tema a Hyprland, GTK, Qt, Waybar, Quickshell, Dunst, Hyprlock e alle applicazioni ARGVUS.
+Il sistema di aspetto applica uno stato tema a Hyprland, GTK, Qt, Taskbar, Quickshell, Dunst, Hyprlock e alle applicazioni ARGVUS.
 
 ## Famiglie di temi
 

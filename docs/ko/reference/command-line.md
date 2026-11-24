@@ -30,7 +30,7 @@ description: argvus 명령어, 그 하위 명령어들, 키 바인딩을 위해 
 | `argvus du` | 도우미(터미널 애플리케이션) | 전용 Kitty 창에서 ARGVUS 디스크 사용량 분석기를 열고 ncdu를 실행합니다. |
 | `argvus network ...` | 진행 중 | NetworkManager 상태 및 제어(`networkctl`는 별칭으로 유지). |
 | `argvus bluetooth ...` | 진행 중 | Bluetooth 상태 및 제어(`bluetoothctl`는 별칭으로 유지). |
-| `argvus widget-telemetry block ...` | 진행 중 | Waybar 텔레메트리 블록. 이는 바(bar)의 주요 경로입니다. |
+| `argvus widget-telemetry block ...` | 진행 중 | Taskbar 텔레메트리 블록. 이는 바(bar)의 주요 경로입니다. |
 | `argvus widget-telemetry toggle ...` | 진행 중 | 텔레메트리 블록을 켜고 끄며, 순서를 변경합니다. |
 | `argvus game-snake` | 개인 실행 파일 | 독립 프로젝트 `argvus-game-snake`의 터미널 스네이크 게임으로, 선택적 패키지입니다. 터미널 외부에서 실행하면 하나가 열립니다. |
 | `argvus control-center [page]` | 도우미 (터미널 응용 프로그램) | 제어 센터를 열거나 이미 열려 있는 창에 포커스를 맞춥니다. |
@@ -38,7 +38,7 @@ description: argvus 명령어, 그 하위 명령어들, 키 바인딩을 위해 
 | `argvus taskbar-calendar [args]` | GTK 4 응용 프로그램 | 기본값은 `toggle`입니다. |
 | `argvus removable-devices [args]` | GTK 4 응용 프로그램 | 기본값은 `menu`입니다. |
 | `argvus focus [--toggle] [--start\|--pause] [--x X --y Y] [--bar-bottom PX --bar-right PX]` | GTK 4 응용 프로그램 | ARGVUS 포커스 팝업. 세션당 한 인스턴스. |
-| `argvus focus status --waybar [--follow]` | 진행 중 | Focus 작업 표시기(태스크바)를 Waybar JSON으로 내보냅니다; `--follow`는 GTK를 로드하지 않고 변경 사항을 스트리밍합니다. |
+| `argvus focus status --taskbar [--follow]` | 진행 중 | Focus 작업 표시기(태스크바)를 Taskbar JSON으로 내보냅니다; `--follow`는 GTK를 로드하지 않고 변경 사항을 스트리밍합니다. |
 | `argvus clock [--toggle] [--background] [--page PAGE] [--x X --y Y] [--bar-bottom PX --bar-right PX]` | GTK 4 애플리케이션 | ARGVUS 시계 팝업. 세션당 한 인스턴스; `--background`는 팝업 없이 알람을 활성 상태로 유지합니다. |
 | `argvus loading-theme ...` | `splash`를 `/usr/lib/argvus/loading-theme/splash`로 패키징 | 직접 세션 다시 로드의 오버레이; 테마 전환에는 사용하지 않습니다. |
 | `argvus session`, `start`, `tty`, `sessionctl` | 개인 실행 파일 | 세션 진입점 및 세션 컨트롤러. |

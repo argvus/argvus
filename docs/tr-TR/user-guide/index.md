@@ -5,7 +5,7 @@ description: ARGVUS masaüstü ortamını kurun, yapılandırın ve kullanın.
 
 ARGVUS, Arch Linux için modüler bir Hyprland ve Wayland masaüstü ortamıdır. [Kurulum](/docs/getting-started/installation/) ile başlayın, ardından kullanım kılavuzundan bir özellik seçin.
 
-Masaüstü, bir Hyprland oturumunu, bir Waybar görev çubuğunu, bir Quickshell kontrol panelini, yerel uygulamaları ve sistem sağlayıcılarını birleştirir. [Mimarlık kılavuzu](/docs/developer-guide/architecture/overview/) bu parçaların birlikte nasıl çalıştığını açıklıyor.
+Masaüstü, bir Hyprland oturumunu, bir Taskbar görev çubuğunu, bir Quickshell kontrol panelini, yerel uygulamaları ve sistem sağlayıcılarını birleştirir. [Mimarlık kılavuzu](/docs/developer-guide/architecture/overview/) bu parçaların birlikte nasıl çalıştığını açıklıyor.
 
 ## Ortak giriş noktaları
 

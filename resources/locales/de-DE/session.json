@@ -25,7 +25,7 @@
   "usage.stop": "Stopp Stopp argvus-session.target und Graphical-Session.target",
   "usage.restart": "restart Das ARGVUS-Sitzungsziel neu starten",
   "usage.reload": "Neu laden, veränderbare Konfiguration erneut anwenden und betroffene Dienste neu starten",
-  "usage.restart_items": "restart <Elemente...> Komponentengruppen neu starten: Waybar, Wallpaper, Dunst, Control-Panel, ...",
+  "usage.restart_items": "restart <Elemente...> Komponentengruppen neu starten: Taskbar, Wallpaper, Dunst, Control-Panel, ...",
   "usage.status": "Status zeigt Ziel- und Servicestatus an",
   "usage.logs": "Protokolle [Journalargumente] zeigen ARGVUS Journalprotokolle der Benutzereinheit an",
   "usage.widget_telemetry": "widget-telemetry <Befehl>",

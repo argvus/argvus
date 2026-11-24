@@ -13,7 +13,7 @@ description: مسؤوليات حزمة ARGVUS.
 | `argvus-session` | نقاط دخول الجلسة ودورة حياة المستخدم. |
 | `argvus-hyprland` | تكوين هايبرلاند |
 | `argvus-control-panel` | لوحة تحكم كويك شيل. |
-| `argvus-taskbar`, `argvus-waybar` | تكوين شريط الطريق والثنائي المصحح. |
+| `argvus-taskbar` | تكوين شريط الطريق والثنائي المصحح. |
 | `argvus-branding` | أصول الشعار والعلامة النصية. |
 | `argvus-appearance`، `argvus-wallpapers`، `argvus-fonts`، `argvus-icons` | حالة المظهر والأصول البصرية. |
 | `argvus-display`, `argvus-power`, `argvus-notifications` | مقدمي سطح المكتب. |
@@ -27,4 +27,4 @@ description: مسؤوليات حزمة ARGVUS.
 
 `argvus-config`، `argvus-i18n` (مع `argvus-language-en-us` و`argvus-language-pt-br`)، `argvus-keys`، `argvus-projects`، `argvus-terminal`، `argvus-system-monitor` و`argvus-network` و`argvus-widget-telemetry` و`argvus-du`. يحل `argvus` أيضًا محل `argvus-control-center`، و`argvus-taskbar-calendar`، و`argvus-loading-theme`، و`argvus-removable-devices`، والحزم المقسمة السابقة `argvus-gtk` و `argvus-greeter`، والذي لا يزال يوفره بحيث تستمر الحزم المعتمدة عليها في الحل. تم إنشاء مدير الحساب (`argvus accounts`) من `crates/argvus-accounts` وتم تثبيته كـ `/usr/lib/argvus/commands/accounts`، مع قاعدة polkit الخاصة به. تم إنشاء محلل استخدام القرص من `crates/argvus-du` وتم تثبيته كـ `/usr/lib/argvus/commands/argvus-du`. يظل `/usr/bin/argvus-terminal` مثبتًا كمشغل توافق لـ `argvus terminal`. لا تزال محطة Hyprland الافتراضية وكتالوج مركز التحكم والتطبيقات الافتراضية المحفوظة تسمي هذا الأمر.
 
-لا يتم توفير الحزم التي تمت إزالتها `argvus-pwvucontrol` و`argvus-snappy-switcher` بواسطة أي حزمة. لا يلزم وجود أمر تثبيت بين حزم مكونات ARGVUS: `argvus` هي الحزمة الرئيسية الخاصة بها، ويعتمد كل مكون عليها. يؤدي تثبيت `argvus` أيضًا إلى تثبيت ملف التعريف `argvus-desktop`؛ يظل `argvus-devtools` و`argvus-pentest` قيد الاشتراك. لا يعني وجود الحزمة في هذا الجدول أنها تمتلك الميزة بأكملها: على سبيل المثال، يجمع شريط المهام بين `argvus-waybar` و`argvus-taskbar` و`argvus-session` وموفري المجال.
+لا يتم توفير الحزم التي تمت إزالتها `argvus-pwvucontrol` و`argvus-snappy-switcher` بواسطة أي حزمة. لا يلزم وجود أمر تثبيت بين حزم مكونات ARGVUS: `argvus` هي الحزمة الرئيسية الخاصة بها، ويعتمد كل مكون عليها. يؤدي تثبيت `argvus` أيضًا إلى تثبيت ملف التعريف `argvus-desktop`؛ يظل `argvus-devtools` و`argvus-pentest` قيد الاشتراك. لا يعني وجود الحزمة في هذا الجدول أنها تمتلك الميزة بأكملها: على سبيل المثال، يجمع شريط المهام بين `argvus-taskbar` و`argvus-taskbar` و`argvus-session` وموفري المجال.

@@ -14,7 +14,7 @@ description: ایک ARGVUS گرافیکل سیشن شروع کریں اور اس
 ```sh
 argvus sessionctl status
 argvus sessionctl logs
-argvus sessionctl restart waybar
+argvus sessionctl restart taskbar
 ```
 
 سروس کی ملکیت کے لیے ڈیولپر [رن ٹائم لائف سائیکل](/docs/developer-guide/architecture/runtime-lifecycle/) دیکھیں۔

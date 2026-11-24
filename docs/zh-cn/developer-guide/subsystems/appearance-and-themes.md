@@ -2,7 +2,7 @@
 title: 外观与主题
 description: 主题状态在 ARGVUS 中的传播。
 ---
-`argvus-appearance` 拥有主题、配色、壁纸和字体*状态*。它使用来自 `argvus-wallpapers`、`argvus-fonts` 和 `argvus-icons` 的资源，但它不会生成主题输出：所有 ARGVUS 拥有的 Hyprland、GTK、Qt、Waybar、Quickshell、Dunst、Hyprlock、Yazi、Superfile、终端和本地应用的消费文件都是由 `argvus-config` 单独编写的投影，Rofi 除外：`argvus-launcher` 拥有其文件，`argvus-appearance` 在 `data/rofi/` 下编辑用户副本。
+`argvus-appearance` 拥有主题、配色、壁纸和字体*状态*。它使用来自 `argvus-wallpapers`、`argvus-fonts` 和 `argvus-icons` 的资源，但它不会生成主题输出：所有 ARGVUS 拥有的 Hyprland、GTK、Qt、Taskbar、Quickshell、Dunst、Hyprlock、Yazi、Superfile、终端和本地应用的消费文件都是由 `argvus-config` 单独编写的投影，Rofi 除外：`argvus-launcher` 拥有其文件，`argvus-appearance` 在 `data/rofi/` 下编辑用户副本。
 
 控制中心和控制面板是用户界面；两者都不是主题状态的唯一来源。
 
@@ -17,7 +17,7 @@ description: 主题状态在 ARGVUS 中的传播。
 `argvus-theme-core` 从数据中呈现主题，上述交易通过活动主题的构建来应用它们：
 
 - **活动主题的构建。** `argvus theme-switch` 渲染活动主题（包括布局和高亮颜色）并将 `generated/theme/current` 指向该构建。`argvus config accent` 使用新颜色再次渲染它，并在会话开始时重写从中复制的文件。此构建是必需的：每个主题文件都来自它。用户主题，无论是在控制中心导出还是导入，呈现方式相同。
-- **消费者读取构建。** 每个消费者从 `current` 获取其文件：Waybar 任务栏和遥测 `@import` 的构建样式表；rofi 的 `theme.rasi` 导入构建调色板；qt6ct 的 `color_scheme_path` 指向它；Hyprtoolkit、应用程序样式、Yazi、Superfile、日历缓存和可移动设备样式表从中复制；`hyprland.lua`、控制面板 `Theme.qml`、锁屏和 Dunst 读取它；kitty 包含它，`argvus system-monitor` 从中构建 btop 的主题；TUI 调色板将其用于用户自己的活动主题。没有其主题构建的读取器从清单中在内存中呈现：迎宾程序（仅限官方主题，因为它无法读取用户的主目录），`argvus terminal` 和 `argvus system-monitor` 用于另一个主题，以及第一次切换之前的会话。没有构建时，`hyprland.lua` 使用 ARGVUS Dark 颜色，控制面板使用其内置默认值。每主题 旧开关（`data/<app>/themes/`）的副本被移动一次到 `data/backups/theme-copies-<seconds>/`（`theme_migration`）。
+- **消费者读取构建。** 每个消费者从 `current` 获取其文件：Taskbar 任务栏和遥测 `@import` 的构建样式表；rofi 的 `theme.rasi` 导入构建调色板；qt6ct 的 `color_scheme_path` 指向它；Hyprtoolkit、应用程序样式、Yazi、Superfile、日历缓存和可移动设备样式表从中复制；`hyprland.lua`、控制面板 `Theme.qml`、锁屏和 Dunst 读取它；kitty 包含它，`argvus system-monitor` 从中构建 btop 的主题；TUI 调色板将其用于用户自己的活动主题。没有其主题构建的读取器从清单中在内存中呈现：迎宾程序（仅限官方主题，因为它无法读取用户的主目录），`argvus terminal` 和 `argvus system-monitor` 用于另一个主题，以及第一次切换之前的会话。没有构建时，`hyprland.lua` 使用 ARGVUS Dark 颜色，控制面板使用其内置默认值。每主题 旧开关（`data/<app>/themes/`）的副本被移动一次到 `data/backups/theme-copies-<seconds>/`（`theme_migration`）。
 - **重新加载。** 每个注册表项声明其运行的消费者如何重新加载（`rewrite`、`signal` 或 `command`；一个命令可以使用 `${ARGVUS_DATA_HOME}` 和 `${ARGVUS_CONFIG_HOME}`）以及何时（`reload_stage`）。这些栏会重写其样式表的第一行（`/* argvus theme build: <build> */`），其 `reload_style_on_change` 将其转化为样式重新加载而不重新创建栏；控制面板使用 `qs -c argvus-control-panel ipc call theme reload` 被调用；Hyprland 评估活动 `theme.lua` 的颜色（`argvus config theme-runtime hyprland`，用户的强调色在活动边框上）；Dunst 通过 `argvus notifications theme reload` 重新加载，当勿扰模式激活时会延迟重新加载，并在关闭 DND 时应用；btop 接收 SIGUSR2，kitty 接收 SIGUSR1。`argvus config theme-runtime consumers` 手动运行每次重新加载。控制中心在构建或活动时重新读取其调色板 主题更改。
 
 - **主题清单。** 一个主题是 `themes/<id>/theme.toml`，具有 `schema = 2`：`id`、`name`、`category`（`dark` 或 `light`），可选的 `wallpaper` 和 `preview`（相对于主题目录或绝对路径），`[name_i18n]`、`[palette]`，可选的 `[ansi]`（`color0` 到 `color15`），可选的 `[gtk] scheme` 和可选的 `[overrides]`。官方主题存放在 `/usr/share/argvus/themes/` 下，用户主题存放在 `$XDG_DATA_HOME/argvus/themes/` 下；官方主题优先于具有相同 ID 的用户主题，并且目录名称必须等于 ID。`argvus_theme_core::package` 为控制中心编写并检查用户主题：`derive_manifest` 从活动主题制作导出主题的清单（新的 `id`、`name`、`[name_i18n]`，有效的强调色作为 `palette.accent`，壁纸放在旁边），`check_theme_dir` 加载它并在两种布局中渲染每个使用者，`install_user_theme` 通过临时方式安装检查过的目录 目录和重命名，保留被替换的主题作为备份，直到成功。控制中心拒绝具有官方主题 ID 的归档，并将早期版本的 `profile.tar.gz` 配置文件一次性转换为主题，然后将它们移动到 `data/backups/theme-profiles-<seconds>/`。
@@ -32,5 +32,5 @@ description: 主题状态在 ARGVUS 中的传播。
 
 ## Wobble 集成决策
 
-Wobble 属于 Hyprland → 动画 → 窗口，并共享动画草稿。  
+Wobble 属于 Hyprland → 动画 → 窗口，并共享动画草稿。
 `effects.wobble_*` 是权威；`hypr/state.lua` 和 `decoration.wobble` 是其投影和消费者。组合动画设置命令保存一个原子补丁并请求一次重新加载。Hyprland 0.57.0 是最低依赖（选项 A）；对于包支持的安装，无需运行时版本检测。Wobble 默认关闭，因为在普通硬件上的渲染成本尚未测量。ARGVUS 网格的默认值是 8。版本 0.57.0 的源码将强度限制为 2，因此方案、CLI、UI 和 Lua 都使用该限制。

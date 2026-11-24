@@ -29,7 +29,7 @@ cat "${XDG_CONFIG_HOME:-$HOME/.config}/argvus/data/generated/theme/current/build
 argvus config theme-runtime consumers
 ```
 
-Todo arquivo de tema vem do build: um tema não instalado (sem `theme.toml` em `/usr/share/argvus/themes/` ou `~/.local/share/argvus/themes/`) ou que não renderiza é recusado, e o tema anterior continua. O `argvus theme check DIRETÓRIO` mostra o template e a linha de cada erro de renderização. Uma barra da Waybar só recarrega as cores com `reload_style_on_change` no JSONC dela. Se a troca parecer travada, verifique se ela ainda está em execução; ela se registra em `theme-switch.active`, ao lado do seu lock:
+Todo arquivo de tema vem do build: um tema não instalado (sem `theme.toml` em `/usr/share/argvus/themes/` ou `~/.local/share/argvus/themes/`) ou que não renderiza é recusado, e o tema anterior continua. O `argvus theme check DIRETÓRIO` mostra o template e a linha de cada erro de renderização. Uma barra da Taskbar só recarrega as cores com `reload_style_on_change` no JSONC dela. Se a troca parecer travada, verifique se ela ainda está em execução; ela se registra em `theme-switch.active`, ao lado do seu lock:
 
 ```sh
 cat "${XDG_CACHE_HOME:-$HOME/.cache}/argvus/theme-switch.active"

@@ -15,7 +15,7 @@ fn taskbar_page_lists_height_and_border_after_the_spaces() {
     24,
     "the default height is 24"
   );
-  assert_eq!(application.state.waybar_bottom, 2);
+  assert_eq!(application.state.taskbar_bottom, 2);
 }
 
 #[test]

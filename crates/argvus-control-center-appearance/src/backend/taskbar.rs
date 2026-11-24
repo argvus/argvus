@@ -18,7 +18,7 @@ pub fn set_taskbar_utility_group(mode: TaskbarUtilityGroupMode) -> Result<(), St
   persist_taskbar_patch(patch)
 }
 
-/// The loading splash shown while an `Apply` recreates a surface (a Waybar bar
+/// The loading splash shown while an `Apply` recreates a surface (a Taskbar bar
 /// or the Control Panel). It is up before the first write and stays until the
 /// guard is dropped after the last step, so no change is visible before it.
 /// Changes that reload in place (styles, blur, transparency) show no splash.

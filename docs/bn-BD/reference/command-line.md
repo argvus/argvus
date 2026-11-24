@@ -31,7 +31,7 @@ description: আরগভাস কমান্ড, এর সাবকমান
 | `argvus taskbar-calendar [args]` | GTK 4 আবেদন | ` toggle` এ ডিফল্ট। |
 | `argvus removable-devices [args]` | GTK 4 আবেদন | ` menu` এ ডিফল্ট। |
 | `argvus focus [--toggle] [--start\|--pause] [--x X --y Y] [--bar-bottom PX --bar-right PX]` | GTK 4 আবেদন | ARGVUS ফোকাস পপআপ। প্রতি সেশনে একটি উদাহরণ। |
-| `argvus focus status --waybar [--follow]` | প্রক্রিয়াধীন | ওয়েবার JSON হিসাবে ফোকাস টাস্কবার সূচক নির্গত করে; `--follow` GTK লোড না করেই স্ট্রিম পরিবর্তন করে। |
+| `argvus focus status --taskbar [--follow]` | প্রক্রিয়াধীন | ওয়েবার JSON হিসাবে ফোকাস টাস্কবার সূচক নির্গত করে; `--follow` GTK লোড না করেই স্ট্রিম পরিবর্তন করে। |
 | `argvus clock [--toggle] [--background] [--page PAGE] [--x X --y Y] [--bar-bottom PX --bar-right PX]` | GTK 4 আবেদন | ARGVUS ঘড়ি পপআপ। প্রতি সেশনে একটি উদাহরণ; `--background` পপআপ ছাড়াই অ্যালার্ম সক্রিয় রাখে। |
 | `argvus loading-theme ...` | /usr/lib/argvus/loading-theme/splash এ প্যাকেজ করা ` splash` | সরাসরি সেশন রিলোডের ওভারলে; একটি থিম সুইচ এটি ব্যবহার করে না। |
 |  `/usr/lib/argvus/loading-theme/splash ` ` argvus session `, ` start `, ` tty `, ` sessionctl` | প্রাইভেট এক্সিকিউটেবল | সেশন এন্ট্রি পয়েন্ট এবং সেশন কন্ট্রোলার। |

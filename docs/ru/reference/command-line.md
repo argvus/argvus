@@ -30,7 +30,7 @@ description: Команда argvus, её подкоманды, флаги, ис�
 | `argvus du` | Помощник (терминальное приложение) | Открывает ARGVUS Disk Usage Analyzer в отдельном окне Kitty и запускает ncdu. |
 | `argvus network ...` | В процессе | Статус и управление NetworkManager (`networkctl` сохранён как псевдоним). |
 | `argvus bluetooth ...` | В процессе | Статус и управление Bluetooth (`bluetoothctl` сохранён как псевдоним). |
-| `argvus widget-telemetry block ...` | В процессе | Блок телеметрии Waybar. Это горячая зона панели. |
+| `argvus widget-telemetry block ...` | В процессе | Блок телеметрии Taskbar. Это горячая зона панели. |
 | `argvus widget-telemetry toggle ...` | В процессе | Переключает блоки телеметрии и их порядок. |
 | `argvus game-snake` | Частное исполняемое | Игра «Змейка» в терминале из независимого проекта `argvus-game-snake`, опциональный пакет. За пределами терминала она открывает один. |
 | `argvus control-center [page]` | Помощник (терминальное приложение) | Открывает Центр управления или фокусирует окно, которое уже открыто. |
@@ -38,7 +38,7 @@ description: Команда argvus, её подкоманды, флаги, ис�
 | `argvus taskbar-calendar [args]` | Приложение GTK 4 | По умолчанию `toggle`. |
 | `argvus removable-devices [args]` | Приложение GTK 4 | По умолчанию `menu`. |
 | `argvus focus [--toggle] [--start\|--pause] [--x X --y Y] [--bar-bottom PX --bar-right PX]` | Приложение GTK 4 | Всплывающее окно фокуса ARGVUS. Один экземпляр за сессию. |
-| `argvus focus status --waybar [--follow]` | В процессе | Отправляет индикатор панели задач Focus в формате Waybar JSON; `--follow` транслирует изменения без загрузки GTK. |
+| `argvus focus status --taskbar [--follow]` | В процессе | Отправляет индикатор панели задач Focus в формате Taskbar JSON; `--follow` транслирует изменения без загрузки GTK. |
 | `argvus clock [--toggle] [--background] [--page PAGE] [--x X --y Y] [--bar-bottom PX --bar-right PX]` | Приложение GTK 4 | Всплывающее окно часов ARGVUS. Один экземпляр на сессию; `--background` сохраняет активность будильников без всплывающего окна. |
 | `argvus loading-theme ...` | Упакованный `splash` в `/usr/lib/argvus/loading-theme/splash` | Наложение прямых перезагрузок сессии; смена темы его не использует. |
 | `argvus session`, `start`, `tty`, `sessionctl` | Частные исполняемые файлы | Точки входа сессии и контроллер сессии. |

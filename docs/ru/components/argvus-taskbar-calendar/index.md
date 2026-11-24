@@ -2,7 +2,7 @@
 title: Календарь
 description: Используйте календарь панели задач ARGVUS.
 ---
-`argvus-taskbar-calendar` — это всплывающее окно календаря GTK4, открываемое из модуля даты Waybar или с помощью:
+`argvus-taskbar-calendar` — это всплывающее окно календаря GTK4, открываемое из модуля даты Taskbar или с помощью:
 
 ```sh
 argvus --calendar
@@ -19,7 +19,7 @@ argvus taskbar-calendar status
 
 ```bash
 argvus taskbar-calendar                 open the calendar
-argvus taskbar-calendar toggle          show or hide it (the Waybar date module uses this)
+argvus taskbar-calendar toggle          show or hide it (the Taskbar date module uses this)
 argvus taskbar-calendar show | hide
 argvus taskbar-calendar config          open the system configuration for editing (sudo)
 argvus taskbar-calendar config-path     print the configuration path

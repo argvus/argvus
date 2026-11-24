@@ -33,7 +33,7 @@ taskbar · control panel · notifications · wallpaper · idle · clipboard
 
 ### コンポジターとデスクトップシェル
 
-`argvus-hyprland` は Hyprland の設定とキーバインディングを提供します。`argvus-waybar` はパッチ済みの Waybar バイナリを提供し、`argvus-taskbar` はタスクバーの設定と操作を所有します。`argvus-control-panel` は Quickshell パネルを提供し、`argvus widget-telemetry` はオプションのシステムウィジェットを提供します（`argvus` 内でプロセス中）。
+`argvus-hyprland` は Hyprland の設定とキーバインディングを提供します。`argvus-taskbar` はパッチ済みの Taskbar バイナリを提供し、`argvus-taskbar` はタスクバーの設定と操作を所有します。`argvus-control-panel` は Quickshell パネルを提供し、`argvus widget-telemetry` はオプションのシステムウィジェットを提供します（`argvus` 内でプロセス中）。
 
 使用方法については [Desktop](/docs/user-guide/desktop/) を参照し、実装の所有については [shell surfaces](/docs/developer-guide/subsystems/shell-surfaces/) を参照してください。
 
@@ -53,7 +53,7 @@ taskbar · control panel · notifications · wallpaper · idle · clipboard
 
 ## 共有表示状態
 
-テーマ、アクセント、壁紙、フォント、およびエフェクトの設定は、`$XDG_CONFIG_HOME/argvus`（通常は`~/.config/argvus`）の下に論理状態として保存されます。`argvus-config`は`data/generated/`に書き込む唯一のコンポーネントであり、Hyprland、GTK、Qt6ct、Waybar、Quickshell、Dunst、通知、ロック画面、Yazi、Superfile、ターミナル用のユーザーファイルを投影します。外観ヘルパーは状態の変更をコミットした後に外部アプリケーションを調整しますが、生成されたツリーに書き込むことはありません。
+テーマ、アクセント、壁紙、フォント、およびエフェクトの設定は、`$XDG_CONFIG_HOME/argvus`（通常は`~/.config/argvus`）の下に論理状態として保存されます。`argvus-config`は`data/generated/`に書き込む唯一のコンポーネントであり、Hyprland、GTK、Qt6ct、Taskbar、Quickshell、Dunst、通知、ロック画面、Yazi、Superfile、ターミナル用のユーザーファイルを投影します。外観ヘルパーは状態の変更をコミットした後に外部アプリケーションを調整しますが、生成されたツリーに書き込むことはありません。
 
 生成されたディレクトリは事実のソースではありません。[Appearance](/docs/user-guide/appearance/)および[configuration and state](/docs/developer-guide/architecture/configuration-and-state/)を参照してください。
 

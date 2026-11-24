@@ -19,13 +19,13 @@
   "bluetoothctl_missing": "ব্লু-টুথ পাওয়া যায়নি",
   "bluetooth.power_failed": "ব্লু-টুথ আরম্ভ করতে ব্যর্থ {target}",
   "blueman_missing": "ঐচ্ছিক ব্লুম্যান ব্যবস্থাপক ইনস্টল করা নেই",
-  "waybar.no_iface": "নেটওয়ার্ক ইন্টারফেস পাওয়া যায়নি",
-  "waybar.network": "নেটওয়ার্ক",
-  "waybar.disconnected": "বিচ্ছিন্ন",
-  "waybar.connected": "পরিচিতির সাথে সংযোগ করা হয়েছে",
-  "waybar.limited": "সংযোগ অতিক্রান্ত হয়েছে",
-  "waybar.no_internet": "ইন্টারনেট ব্যবহার",
-  "waybar.reconnecting": "পুনরায় সংযোগ স্থাপন করা হচ্ছে",
-  "waybar.state": "অবস্থা",
-  "waybar.command_failed": "কমান্ড ব্যর্থ: {command}"
+  "taskbar.no_iface": "নেটওয়ার্ক ইন্টারফেস পাওয়া যায়নি",
+  "taskbar.network": "নেটওয়ার্ক",
+  "taskbar.disconnected": "বিচ্ছিন্ন",
+  "taskbar.connected": "পরিচিতির সাথে সংযোগ করা হয়েছে",
+  "taskbar.limited": "সংযোগ অতিক্রান্ত হয়েছে",
+  "taskbar.no_internet": "ইন্টারনেট ব্যবহার",
+  "taskbar.reconnecting": "পুনরায় সংযোগ স্থাপন করা হচ্ছে",
+  "taskbar.state": "অবস্থা",
+  "taskbar.command_failed": "কমান্ড ব্যর্থ: {command}"
 }

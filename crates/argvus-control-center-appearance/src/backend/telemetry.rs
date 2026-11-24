@@ -19,11 +19,13 @@ pub(super) fn telemetry_state() -> bool {
       _ => {}
     }
   }
-  let cache = cache_home().join("argvus").join("waybar");
+  let cache = cache_home().join("argvus");
+  let legacy = cache.join("taskbar");
   let candidates = [
-    cache.join("widget-telemetry-state"),
-    cache.join("desktop-telemetry-state"),
-    cache.join("sysinfo-state"),
+    cache.join("taskbar/widget-telemetry-state"),
+    legacy.join("widget-telemetry-state"),
+    legacy.join("desktop-telemetry-state"),
+    legacy.join("sysinfo-state"),
   ];
   for candidate in candidates {
     match read_first_or_default(&candidate).as_deref() {

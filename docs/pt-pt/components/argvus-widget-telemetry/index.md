@@ -28,7 +28,7 @@ A unit de utilizador `argvus-widget-telemetry.service` só inicia com a sessão 
 ativado. O interruptor mestre é `effects.widget_telemetry_enabled` na configuração, que vem
 ligado por padrão, então uma conta nova inicia o widget no login.
 
-Depois que a alternância grava `$XDG_CACHE_HOME/argvus/waybar/widget-telemetry-state`, esse
+Depois que a alternância grava `$XDG_CACHE_HOME/argvus/taskbar/widget-telemetry-state`, esse
 ficheiro passa a decidir. Só uma primeira linha `enabled` inicia o widget. Os ficheiros antigos
 `desktop-telemetry-state` e `sysinfo-state` continuam sendo lidos quando o ficheiro atual não
 existe.

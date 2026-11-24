@@ -31,7 +31,7 @@ Run `argvus --help` for the list installed with your version. The subcommands ar
 | `argvus du` | Helper (terminal application) | Opens the ARGVUS Disk Usage Analyzer in a dedicated Kitty window and runs ncdu. |
 | `argvus network ...` | In-process | NetworkManager status and controls (`networkctl` is kept as an alias). |
 | `argvus bluetooth ...` | In-process | Bluetooth status and controls (`bluetoothctl` is kept as an alias). |
-| `argvus widget-telemetry block ...` | In-process | The Waybar telemetry block. This is the hot path of the bar. |
+| `argvus widget-telemetry block ...` | In-process | The Taskbar telemetry block. This is the hot path of the bar. |
 | `argvus widget-telemetry toggle ...` | In-process | Switches the telemetry blocks on and off, and their order. |
 | `argvus game-snake` | Private executable | The terminal Snake game, from the independent `argvus-game-snake` project, an optional package. Outside a terminal it opens one. |
 | `argvus control-center [page]` | Helper (terminal application) | Opens the Control Center, or focuses the window that is already open. |
@@ -39,7 +39,7 @@ Run `argvus --help` for the list installed with your version. The subcommands ar
 | `argvus taskbar-calendar [args]` | GTK 4 application | Defaults to `toggle`. |
 | `argvus removable-devices [args]` | GTK 4 application | Defaults to `menu`. |
 | `argvus focus [--toggle] [--start\|--pause] [--x X --y Y] [--bar-bottom PX --bar-right PX]` | GTK 4 application | ARGVUS Focus popup. One instance per session. |
-| `argvus focus status --waybar [--follow]` | In-process | Emits the Focus taskbar indicator as Waybar JSON; `--follow` streams changes without loading GTK. |
+| `argvus focus status --taskbar [--follow]` | In-process | Emits the Focus taskbar indicator as Taskbar JSON; `--follow` streams changes without loading GTK. |
 | `argvus clock [--toggle] [--background] [--page PAGE] [--x X --y Y] [--bar-bottom PX --bar-right PX]` | GTK 4 application | ARGVUS Clock popup. One instance per session; `--background` keeps alarms active without a popup. |
 | `argvus loading-theme ...` | Packaged `splash` at `/usr/lib/argvus/loading-theme/splash` | The overlay of direct session reloads; a theme switch does not use it. |
 | `argvus session`, `start`, `tty`, `sessionctl` | Private executables | Session entry points and the session controller. |

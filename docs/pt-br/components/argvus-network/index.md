@@ -3,7 +3,7 @@ title: Rede e Bluetooth
 description: Gerencie NetworkManager e Bluetooth.
 ---
 
-O subcomando `argvus network` consulta e controla o NetworkManager, e `argvus bluetooth` consulta e controla o estado e a disponibilidade do adaptador Bluetooth. Os dois rodam em processo dentro do `argvus`; `networkctl` e `bluetoothctl` continuam como aliases. O Control Panel e a Waybar usam esses comandos. Consulte `--help` para os subcomandos instalados.
+O subcomando `argvus network` consulta e controla o NetworkManager, e `argvus bluetooth` consulta e controla o estado e a disponibilidade do adaptador Bluetooth. Os dois rodam em processo dentro do `argvus`; `networkctl` e `bluetoothctl` continuam como aliases. O Control Panel e a Taskbar usam esses comandos. Consulte `--help` para os subcomandos instalados.
 
 O Control Center separa o status de rede das páginas de configuração: **Network → Status** resume o estado atual, enquanto interfaces, Wi-Fi, Ethernet, VPN, DNS, proxy e firewall são rotas separadas quando os providers estão disponíveis. **Bluetooth → State**, **Devices** e **Pair** cobrem o estado do adaptador e as ações sobre dispositivos. Essas páginas executam ações pelos providers; a taskbar e o Control Panel oferecem a superfície de status/ações rápidas.
 
@@ -67,4 +67,4 @@ A confirmação de remoção Bluetooth mantém o endereço original do dispositi
 
 Os campos de senha Wi-Fi, DNS manual e busca de rede aceitam colagem pelo terminal. Controles e quebras de linha colados são omitidos. Atalhos de caracteres com apenas Ctrl ou Alt que não são suportados não inserem letras. Os editores aceitam caracteres imprimíveis de AltGr codificados como Ctrl+Alt; Ctrl+S salva apenas sem Alt. O editor compartilhado mantém a coluna visual na navegação vertical e alinha a rolagem horizontal de caracteres largos.
 
-O indicador de rede da taskbar acompanha os eventos do NetworkManager com `argvus networkctl waybar --follow`, com leitura inicial e reconexão automática do monitor. Ele não espera mais o intervalo de consulta de 10 segundos. Conectado, acesso limitado à internet e desconectado continuam sendo estados distintos. A consulta Wi-Fi usa os pontos de acesso em cache sem solicitar varredura. `argvus networkctl waybar` emite um único status JSON para Waybar.
+O indicador de rede da taskbar acompanha os eventos do NetworkManager com `argvus networkctl taskbar --follow`, com leitura inicial e reconexão automática do monitor. Ele não espera mais o intervalo de consulta de 10 segundos. Conectado, acesso limitado à internet e desconectado continuam sendo estados distintos. A consulta Wi-Fi usa os pontos de acesso em cache sem solicitar varredura. `argvus networkctl taskbar` emite um único status JSON para Taskbar.

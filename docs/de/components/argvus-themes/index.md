@@ -2,7 +2,7 @@
 title: Themen
 description: Installieren, auswählen, anpassen, importieren und exportieren Sie ARGVUS-Themes.
 ---
-Ein Thema in ARGVUS legt die Farben, Oberflächen, Standard-Hintergrundbilder und Layout-Geometrie fest, die auf dem gesamten Desktop verwendet werden: Hyprland, Waybar, das Kontrollpanel, die Taskleiste, der Sperrbildschirm, Benachrichtigungen und ARGVUS-Anwendungen. Dieses Handbuch behandelt alles, was Sie als Benutzer benötigen, um mit Themen zu arbeiten.
+Ein Thema in ARGVUS legt die Farben, Oberflächen, Standard-Hintergrundbilder und Layout-Geometrie fest, die auf dem gesamten Desktop verwendet werden: Hyprland, Taskbar, das Kontrollpanel, die Taskleiste, der Sperrbildschirm, Benachrichtigungen und ARGVUS-Anwendungen. Dieses Handbuch behandelt alles, was Sie als Benutzer benötigen, um mit Themen zu arbeiten.
 
 ## Was in einem Thema enthalten ist
 

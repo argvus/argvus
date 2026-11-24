@@ -3,7 +3,7 @@ title: Tema
 description: Instal, pilih, sesuaikan, impor dan ekspor tema ARGVUS.
 ---
 
-Tema di ARGVUS mengatur warna, permukaan, default wallpaper, dan geometri tata letak yang digunakan di seluruh desktop: Hyprland, Waybar, Panel Kontrol, bilah tugas, layar kunci, notifikasi, dan aplikasi ARGVUS. Panduan ini mencakup semua yang Anda perlukan untuk bekerja dengan tema sebagai pengguna.
+Tema di ARGVUS mengatur warna, permukaan, default wallpaper, dan geometri tata letak yang digunakan di seluruh desktop: Hyprland, Taskbar, Panel Kontrol, bilah tugas, layar kunci, notifikasi, dan aplikasi ARGVUS. Panduan ini mencakup semua yang Anda perlukan untuk bekerja dengan tema sebagai pengguna.
 
 ## Apa yang termasuk dalam sebuah tema
 

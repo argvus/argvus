@@ -14,4 +14,4 @@ El texto completo de la licencia se incluye con cada repositorio y está disponi
 
 ## Componentes de terceros
 
-Los paquetes y temas de ARGVUS dependen de software de terceros (Hyprland, Waybar y otros) distribuido bajo sus propias licencias. Consulta cada proyecto original para conocer sus términos específicos.
+Los paquetes y temas de ARGVUS dependen de software de terceros (Hyprland, Taskbar y otros) distribuido bajo sus propias licencias. Consulta cada proyecto original para conocer sus términos específicos.

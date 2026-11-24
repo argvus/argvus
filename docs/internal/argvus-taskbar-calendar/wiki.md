@@ -2,14 +2,14 @@
 
 Documentation of what each module and function does. The app is a native Wayland
 popup calendar (GTK4 + Relm4 + `gtk4-layer-shell`) that opens exactly where the
-user clicks in Waybar, stores events in SQLite and schedules desktop reminders.
+user clicks in Taskbar, stores events in SQLite and schedules desktop reminders.
 
 ## Entry point — `crates/main/src/main.rs`
 
 Parses the CLI with `clap` and dispatches each command.
 
 - `main()` — bootstraps logging, accepts the immutable `--x`/`--y` position
-  reconstructed from Waybar's original button event and layer-surface origin
+  reconstructed from Taskbar's original button event and layer-surface origin
   (with a live-pointer fallback for direct CLI calls), resolves paths and loads
   `Settings`, purges ended events, then
   dispatches the subcommand. `toggle`/`show` pass that position to a running
@@ -74,7 +74,7 @@ Single-instance control over a UNIX socket in the cache dir.
 
 - `IpcCommand::as_str` / `parse` — serialize/deserialize commands (`toggle`,
   `show`, `hide`, `reload-theme`, `reload-config`).
-- `IpcMessage` — a command plus the fixed click position supplied by the Waybar
+- `IpcMessage` — a command plus the fixed click position supplied by the Taskbar
   launcher, so the running UI does not re-read the cursor at present time.
 - `socket_path(paths)` — the socket location.
 - `notify(paths, message)` — connects to a running instance, writes the message
@@ -222,7 +222,7 @@ widget construction and the helpers.
 `app.rs`:
 
 - `run_ui(paths, settings, command, fixed_position)` — entry point. Pins the
-  popup to the click position supplied by the Waybar launcher, with an
+  popup to the click position supplied by the Taskbar launcher, with an
   in-process fallback read for direct CLI calls, before building the GTK app.
 - `AppModel::init` — creates the model, starts the theme watcher and the IPC
   listener, assembles the calendar, editor and settings views from `app/build.rs`

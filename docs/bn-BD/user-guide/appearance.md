@@ -3,7 +3,7 @@ title: চেহারা
 description: ARGVUS উপাদানগুলির দ্বারা ভাগ করা ভিজ্যুয়াল ভাষা কনফিগার করুন৷
 ---
 
-চেহারা সিস্টেম হাইপ্রল্যান্ড, GTK, Qt, Waybar, Quickshell, Dunst, Hyprlock এবং ARGVUS অ্যাপ্লিকেশনগুলিতে একটি থিম স্টেট প্রয়োগ করে।
+চেহারা সিস্টেম হাইপ্রল্যান্ড, GTK, Qt, Taskbar, Quickshell, Dunst, Hyprlock এবং ARGVUS অ্যাপ্লিকেশনগুলিতে একটি থিম স্টেট প্রয়োগ করে।
 
 ## থিম পরিবার
 

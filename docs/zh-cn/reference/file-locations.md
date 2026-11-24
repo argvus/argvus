@@ -15,10 +15,10 @@ description: 重要的已安装 ARGVUS 文件和目录。
 - `/etc/argvus/removable-devices/config.json` — 可移动存储的系统默认值。
 - `$XDG_CONFIG_HOME/argvus/config.json` — 标准便携式偏好设置。
 - `$XDG_CONFIG_HOME/argvus/data/` — 管理组件数据、备份、锁定和生成的输出。
-- `$XDG_CONFIG_HOME/waybar/argvus-taskbar.{jsonc,css}` — 可选的完整原生 Waybar 任务栏覆盖。
+- `$XDG_CONFIG_HOME/taskbar/argvus-taskbar.{jsonc,css}` — 可选的完整原生 Taskbar 任务栏覆盖。
 - `$XDG_CONFIG_HOME/argvus/data/taskbar/argvus-taskbar.{jsonc,css}` — 管理 ARGVUS 任务栏副本。
-- `$XDG_CONFIG_HOME/argvus/data/generated/waybar/` — 生成 Waybar 配置文件，包括 `argvus-taskbar.css` 和 `argvus-widget-telemetry.{jsonc,css}`；这些优先于上述副本。
-- `$XDG_CONFIG_HOME/argvus/data/generated/waybar/argvus-widget-telemetry.{jsonc,css}` — 也在 `data/waybar/` 下镜像，当外观发生变化时从打包的默认值替换，然后重写其 `ARGVUS_TELEMETRY_*` 和字体块。
+- `$XDG_CONFIG_HOME/argvus/data/generated/taskbar/` — 生成 Taskbar 配置文件，包括 `argvus-taskbar.css` 和 `argvus-widget-telemetry.{jsonc,css}`；这些优先于上述副本。
+- `$XDG_CONFIG_HOME/argvus/data/generated/taskbar/argvus-widget-telemetry.{jsonc,css}` — 也在 `data/taskbar/` 下镜像，当外观发生变化时从打包的默认值替换，然后重写其 `ARGVUS_TELEMETRY_*` 和字体块。
 - `$XDG_CONFIG_HOME/argvus/data/generated/yazi/` — 投影 Yazi 配置树，对于未提供 Yazi 版本的主题，提供支持变体的备用方案。
 - `$XDG_CONFIG_HOME/argvus/data/generated/superfile/` — 投影 Superfile 主题集。
 - `$XDG_CONFIG_HOME/argvus/data/generated/terminal/` — 投影终端配置文件。

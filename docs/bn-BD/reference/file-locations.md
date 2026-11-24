@@ -15,10 +15,10 @@ description: গুরুত্বপূর্ণ ইনস্টল করা A
 - `/etc/argvus/removable-devices/config.json` — অপসারণযোগ্য স্টোরেজের জন্য সিস্টেম ডিফল্ট।
 - `$XDG_CONFIG_HOME/argvus/config.json` — ক্যানোনিকাল পোর্টেবল পছন্দ।
 - `$XDG_CONFIG_HOME/argvus/data/` — পরিচালিত উপাদান ডেটা, ব্যাকআপ, লক এবং উৎপন্ন আউটপুট।
-- `$XDG_CONFIG_HOME/waybar/argvus-taskbar.{jsonc,css}` — ঐচ্ছিক সম্পূর্ণ নেটিভ ওয়েবার টাস্কবার ওভাররাইড করে।
+- `$XDG_CONFIG_HOME/taskbar/argvus-taskbar.{jsonc,css}` — ঐচ্ছিক সম্পূর্ণ নেটিভ ওয়েবার টাস্কবার ওভাররাইড করে।
 - `$XDG_CONFIG_HOME/argvus/data/taskbar/argvus-taskbar.{jsonc,css}` — পরিচালিত ARGVUS টাস্কবার কপি।
-- `$XDG_CONFIG_HOME/argvus/data/generated/waybar/` — জেনারেটেড ওয়েবার প্রোফাইল, `argvus-taskbar.css` এবং `argvus-widget-telemetry.{jsonc,css}` সহ; এগুলি উপরের কপিগুলির উপর প্রাধান্য পায়।
-- `$XDG_CONFIG_HOME/argvus/data/generated/waybar/argvus-widget-telemetry.{jsonc,css}` — এছাড়াও `data/waybar/` এর অধীনে মিরর করা হয়েছে, যা একটি উপস্থিতি পরিবর্তনে প্যাকেজ করা ডিফল্ট থেকে প্রতিস্থাপিত হয় এবং তারপরে এর `ARGVUS_TELEMETRY_*` এবং ফন্ট ব্লকগুলি পুনরায় লেখা হয়।
+- `$XDG_CONFIG_HOME/argvus/data/generated/taskbar/` — জেনারেটেড ওয়েবার প্রোফাইল, `argvus-taskbar.css` এবং `argvus-widget-telemetry.{jsonc,css}` সহ; এগুলি উপরের কপিগুলির উপর প্রাধান্য পায়।
+- `$XDG_CONFIG_HOME/argvus/data/generated/taskbar/argvus-widget-telemetry.{jsonc,css}` — এছাড়াও `data/taskbar/` এর অধীনে মিরর করা হয়েছে, যা একটি উপস্থিতি পরিবর্তনে প্যাকেজ করা ডিফল্ট থেকে প্রতিস্থাপিত হয় এবং তারপরে এর `ARGVUS_TELEMETRY_*` এবং ফন্ট ব্লকগুলি পুনরায় লেখা হয়।
 - `$XDG_CONFIG_HOME/argvus/data/generated/yazi/` — প্রজেক্টেড ইয়াজি কনফিগারেশন ট্রি, থিমগুলির জন্য একটি বৈকল্পিক-সচেতন ফলব্যাক সহ যা কোন ইয়াজি ফ্লেভার পাঠায় না।
 - `$XDG_CONFIG_HOME/argvus/data/generated/superfile/` — প্রক্ষিপ্ত সুপারফাইল থিম সেট।
 - `$XDG_CONFIG_HOME/argvus/data/generated/terminal/` — প্রক্ষিপ্ত টার্মিনাল প্রোফাইল।

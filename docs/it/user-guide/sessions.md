@@ -13,6 +13,6 @@ Diagnostica utile:
 ```sh
 argvus sessionctl status
 argvus sessionctl logs
-argvus sessionctl restart waybar
+argvus sessionctl restart taskbar
 ```
 Consulta lo sviluppatore [runtime lifecycle](/docs/developer-guide/architecture/runtime-lifecycle/) per la responsabilità del servizio.

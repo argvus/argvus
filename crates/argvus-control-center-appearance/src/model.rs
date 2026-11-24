@@ -273,10 +273,10 @@ impl EffectSurface {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum PromptGoal {
   ExportProfile,
-  WaybarTop,
-  WaybarLeft,
-  WaybarRight,
-  WaybarBottom,
+  TaskbarTop,
+  TaskbarLeft,
+  TaskbarRight,
+  TaskbarBottom,
   GapsIn,
   GapsOutTop,
   GapsOutLeft,
@@ -304,10 +304,10 @@ impl PromptGoal {
   pub fn key(self) -> &'static str {
     match self {
       Self::ExportProfile => "export_profile",
-      Self::WaybarTop => "waybar_top",
-      Self::WaybarLeft => "waybar_left",
-      Self::WaybarRight => "waybar_right",
-      Self::WaybarBottom => "waybar_bottom",
+      Self::TaskbarTop => "taskbar_top",
+      Self::TaskbarLeft => "taskbar_left",
+      Self::TaskbarRight => "taskbar_right",
+      Self::TaskbarBottom => "taskbar_bottom",
       Self::GapsIn => "gaps_in",
       Self::GapsOutTop => "gaps_out_top",
       Self::GapsOutLeft => "gaps_out_left",
@@ -487,8 +487,8 @@ pub struct AppearanceState {
   pub widget_telemetry_order: Vec<WidgetTelemetryBlock>,
   pub control_panel_cards: ControlPanelCards,
   pub control_panel_order: Vec<ControlPanelCard>,
-  pub waybar_pos: TaskbarPosition,
-  /// Taskbar height in pixels, one of `waybar::TASKBAR_HEIGHTS`.
+  pub taskbar_pos: TaskbarPosition,
+  /// Taskbar height in pixels, one of `taskbar::TASKBAR_HEIGHTS`.
   pub taskbar_height: u32,
   pub taskbar_border_enabled: bool,
   /// Taskbar border thickness in pixels, from 1 to 3.
@@ -500,10 +500,10 @@ pub struct AppearanceState {
   pub taskbar_date_format: TaskbarDateFormat,
   pub taskbar_time_seconds_enabled: bool,
   pub taskbar_time_format: TaskbarTimeFormat,
-  pub waybar_top: i32,
-  pub waybar_left: i32,
-  pub waybar_right: i32,
-  pub waybar_bottom: i32,
+  pub taskbar_top: i32,
+  pub taskbar_left: i32,
+  pub taskbar_right: i32,
+  pub taskbar_bottom: i32,
   pub gaps_in: i32,
   pub gaps_out_top: i32,
   pub gaps_out_left: i32,
@@ -567,7 +567,7 @@ impl Default for AppearanceState {
       widget_telemetry_order: WidgetTelemetryBlock::ALL.to_vec(),
       control_panel_cards: ControlPanelCards::default(),
       control_panel_order: ControlPanelCard::ALL.to_vec(),
-      waybar_pos: TaskbarPosition::Top,
+      taskbar_pos: TaskbarPosition::Top,
       taskbar_height: 24,
       taskbar_border_enabled: true,
       taskbar_border_thickness: 1,
@@ -578,10 +578,10 @@ impl Default for AppearanceState {
       taskbar_date_format: TaskbarDateFormat::WeekdayDayMonth,
       taskbar_time_seconds_enabled: false,
       taskbar_time_format: TaskbarTimeFormat::TwentyFourHour,
-      waybar_top: 0,
-      waybar_left: 0,
-      waybar_right: 0,
-      waybar_bottom: 2,
+      taskbar_top: 0,
+      taskbar_left: 0,
+      taskbar_right: 0,
+      taskbar_bottom: 2,
       gaps_in: 3,
       gaps_out_top: 1,
       gaps_out_left: 1,
@@ -655,8 +655,8 @@ mod tests {
   #[test]
   fn prompt_metadata_is_explicit() {
     assert_eq!(
-      (PromptGoal::WaybarTop.key(), PromptGoal::WaybarTop.range()),
-      ("waybar_top", (0, 100))
+      (PromptGoal::TaskbarTop.key(), PromptGoal::TaskbarTop.range()),
+      ("taskbar_top", (0, 100))
     );
     assert_eq!(
       (

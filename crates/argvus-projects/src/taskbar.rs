@@ -1,4 +1,4 @@
-//! Derived labels for the native Waybar workspace buttons; never project configuration.
+//! Derived labels for the native Taskbar workspace buttons; never project configuration.
 
 use crate::messages;
 use argvus_projects_core::projects;

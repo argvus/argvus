@@ -1,5 +1,5 @@
 {
-  // Merge these keys into the ARGVUS taskbar Waybar config.
+  // Merge these keys into the ARGVUS taskbar Taskbar config.
   // The Bluetooth module intentionally stays in group/right-2.
   "group/right-1": {
     "orientation": "inherit",
@@ -15,7 +15,7 @@
     ]
   },
   "custom/network": {
-    "exec": "argvus networkctl waybar --follow",
+    "exec": "argvus networkctl taskbar --follow",
     "return-type": "json",
     "format": "{}",
     "tooltip": true,
@@ -25,7 +25,7 @@
   },
   "custom/bluetooth": {
     "exec-if": "argvus bluetooth available",
-    "exec": "argvus bluetooth waybar",
+    "exec": "argvus bluetooth taskbar",
     "return-type": "json",
     "format": "{}",
     "hide-empty-text": true,

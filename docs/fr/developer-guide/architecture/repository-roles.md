@@ -6,7 +6,7 @@ Les dépôts sont regroupés par responsabilité plutôt que par page de navigat
 
 - workspace : `argvus` (dispatcher, commandes en cours d'exécution, assistants GTK 4, crates partagés, le greeter dans `crates/argvus-greeter` et les données des commandes) ;
 - session et intégration : `argvus-session`, `argvus-hyprland`, `argvus-portal`, `argvus-lock`, `argvus-boot-splash`, et le greeter (`argvus-greeter`, construit à partir de `argvus/crates/argvus-greeter`) ;
-- UI en dehors du workspace : Panneau de configuration, barre des tâches (`argvus-taskbar`), lanceur et Waybar ;
+- UI en dehors du workspace : Panneau de configuration, barre des tâches (`argvus-taskbar`), lanceur et Taskbar ;
 - fournisseurs : affichage, alimentation, pare-feu, notifications ;
 - ressources et packaging : apparence, fonds d'écran, polices, icônes, profils.
 

@@ -20,7 +20,7 @@ GPU 온도는 GPU의 PCI 장치에 맞춰집니다. NVIDIA 독점 읽기 값은 
 
 `argvus-widget-telemetry.service` 사용자 유닛은 위젯이 활성화되어 있을 때만 세션과 함께 시작됩니다. 마스터 스위치는 설정에서 `effects.widget_telemetry_enabled`이며, 기본값으로 활성화되어 있어 새 계정은 로그인 시 위젯을 시작합니다.
 
-토글이 `$XDG_CACHE_HOME/argvus/waybar/widget-telemetry-state`를 작성하면 그 파일이 대신 결정합니다. `enabled`의 첫 번째 줄만 위젯을 시작합니다. 이전 `desktop-telemetry-state` 및 `sysinfo-state` 파일은 현재 파일이 없을 때 여전히 읽힙니다.
+토글이 `$XDG_CACHE_HOME/argvus/taskbar/widget-telemetry-state`를 작성하면 그 파일이 대신 결정합니다. `enabled`의 첫 번째 줄만 위젯을 시작합니다. 이전 `desktop-telemetry-state` 및 `sysinfo-state` 파일은 현재 파일이 없을 때 여전히 읽힙니다.
 
 텔레메트리 레이블은 지원되는 모든 10개 언어에서 간결합니다. CPU, GPU, IP, DE, WM 및 커널과 같은 기술 식별자는 기술적 의미를 유지합니다. 가동 시간은 `/proc/uptime`에서 읽혀 축약 단위(예: `1d 12h 49m`)로 표시됩니다; 더 이상 시스템 로케일의 전체 단어로 확장되지 않습니다. 하드웨어 모델 이름 및 기타 제공자 값은 여전히 위젯 폭에 영향을 줄 수 있습니다.
 

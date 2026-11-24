@@ -143,7 +143,7 @@ fn ensure_leaves_only_config_and_data_at_the_configuration_root() {
   fs::create_dir_all(&config_directory).unwrap();
   for name in [
     "hypr",
-    "waybar",
+    "taskbar",
     "rofi",
     "dunst",
     "quickshell",
@@ -185,7 +185,7 @@ fn ensure_leaves_only_config_and_data_at_the_configuration_root() {
     "kitty",
     "generated",
     "control-center",
-    "waybar",
+    "taskbar",
     "state",
   ] {
     fs::create_dir_all(config_directory.join(name)).unwrap();
@@ -210,7 +210,7 @@ fn ensure_leaves_only_config_and_data_at_the_configuration_root() {
 
   // Directories and marker files keep their names one level deeper.
   assert_eq!(
-    fs::read(config_directory.join("data/waybar/marker")).unwrap(),
+    fs::read(config_directory.join("data/taskbar/marker")).unwrap(),
     b"managed"
   );
   assert_eq!(

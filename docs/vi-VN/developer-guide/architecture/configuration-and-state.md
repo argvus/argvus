@@ -7,7 +7,7 @@ Root người dùng bình thường là `$XDG_CONFIG_HOME/argvus` (thường là
 
 `argvus-config` là người viết duy nhất dưới `generated/`. Mọi thuộc sở hữu của ARGVUS
 tệp người tiêu dùng là hình chiếu của `config.json`, bao gồm Hyprland, GTK, Qt6ct,
-Waybar, Quickshell, Dunst, Hyprlock, thanh tác vụ Waybar và phép đo từ xa widget
+Taskbar, Quickshell, Dunst, Hyprlock, thanh tác vụ Taskbar và phép đo từ xa widget
 profile, cây cấu hình Yazi và Superfile, thiết bị đầu cuối và hồ sơ Qt
 cây, các khối được quản lý phông chữ và biểu định kiểu thiết bị di động. Linh kiện
 giải quyết các ghi đè rõ ràng của người dùng, sau đó tạo đầu ra, sau đó mặc định gói.
@@ -106,7 +106,7 @@ Một thuộc tính là chuẩn khi nó được đọc từ `config.json` và �
 config trong `$XDG_CONFIG_HOME/<app>`, tệp trạng thái lời chào - là một bộ chuyển đổi
 target và không được đọc lại dưới dạng cấu hình.
 
-Projection bao gồm người tiêu dùng Hyprland, GTK/Qt, Waybar, Quickshell, thiết bị đầu cuối, thông báo, màn hình khóa và ứng dụng gốc. Hyprland đọc các màu đường viền hoạt động và không hoạt động từ chủ đề đã chọn; `appearance.accent_custom=true` rõ ràng là trường hợp duy nhất ghi đè đường viền hoạt động/nhóm bằng giọng người dùng. Chuyển đổi chủ đề sẽ áp dụng lại các giá trị này thông qua tải lại bộ tổng hợp để nó không thể giữ lại màu của chủ đề trước đó. Nếu cấu hình người dùng được tạo lại, các hiệu ứng mặc định sẽ được bật. Xóa `generated/` và chạy `argvus config apply` sẽ tạo lại từng byte một từ `config.json`; chỉnh sửa trực tiếp các tập tin được tạo ra không bền.
+Projection bao gồm người tiêu dùng Hyprland, GTK/Qt, Taskbar, Quickshell, thiết bị đầu cuối, thông báo, màn hình khóa và ứng dụng gốc. Hyprland đọc các màu đường viền hoạt động và không hoạt động từ chủ đề đã chọn; `appearance.accent_custom=true` rõ ràng là trường hợp duy nhất ghi đè đường viền hoạt động/nhóm bằng giọng người dùng. Chuyển đổi chủ đề sẽ áp dụng lại các giá trị này thông qua tải lại bộ tổng hợp để nó không thể giữ lại màu của chủ đề trước đó. Nếu cấu hình người dùng được tạo lại, các hiệu ứng mặc định sẽ được bật. Xóa `generated/` và chạy `argvus config apply` sẽ tạo lại từng byte một từ `config.json`; chỉnh sửa trực tiếp các tập tin được tạo ra không bền.
 Chẩn đoán thời gian chạy phải xác định bộ thực thi hoàn chỉnh: đường dẫn nhị phân,
 phiên bản/bản sửa đổi, gốc tài sản, gốc cấu hình, gốc dữ liệu, gốc được tạo, nội bộ
 biểu hiện gốc và phép chiếu. `status --verbose` hiển thị bộ dữ liệu này và
