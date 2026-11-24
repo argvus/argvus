@@ -92,9 +92,6 @@ fn build(app: &gtk::Application, i18n: &I18n) -> Widgets {
   content.set_margin_bottom(24);
   content.set_margin_start(24);
   content.set_margin_end(24);
-  let heading = gtk::Label::new(Some(&i18n.tr("theme.select")));
-  heading.add_css_class("selector-heading");
-  content.append(&heading);
   let controls = gtk::Box::new(gtk::Orientation::Horizontal, 12);
   controls.set_halign(gtk::Align::Center);
   let search = gtk::SearchEntry::new();
