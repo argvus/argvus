@@ -183,7 +183,7 @@ fn icons_page_draws_search_actions_and_a_footer_with_status_left_and_shortcuts_r
 
   let screen = render(&mut application, 100, 30);
 
-  assert!(line_with(&screen, "Search:").contains("Search:"));
+  assert!(line_with(&screen, "Filter [Ctrl+F]:").contains("Filter [Ctrl+F]:"));
   assert!(line_with(&screen, "Actions").contains("Actions"));
   assert!(line_with(&screen, "Apply").contains("Apply"));
   assert!(line_with(&screen, "[OK] Icon theme applied").contains("[OK]"));

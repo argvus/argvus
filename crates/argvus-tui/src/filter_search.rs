@@ -41,8 +41,26 @@ pub fn filter_line(frame: &mut Frame, area: Rect, theme: &Theme, label: &str, va
   );
 }
 
-/// Draws a bordered `label: query` box. While `focused`, the border is
-/// highlighted and a cursor follows the text, because typed letters go to it.
+thread_local! {
+  static CURSOR_VISIBLE: std::cell::Cell<bool> = const { std::cell::Cell::new(true) };
+}
+
+/// Sets the cursor blink phase for local search fields.
+pub fn set_cursor_visible(visible: bool) {
+  CURSOR_VISIBLE.with(|cursor| cursor.set(visible));
+}
+
+/// Returns the cursor glyph for the current blink phase.
+pub fn cursor() -> &'static str {
+  CURSOR_VISIBLE.with(|visible| if visible.get() { "▌" } else { " " })
+}
+
+/// Label shared by local list filters, including the editable package query.
+pub fn filter_label(label: &str) -> String {
+  format!("{} {label} [Ctrl+F]: ", crate::icons::FILTER)
+}
+
+/// Draws a one-line local filter with a focus indicator and keyboard shortcut.
 pub fn search_box(
   frame: &mut Frame,
   area: Rect,
@@ -51,25 +69,29 @@ pub fn search_box(
   query: &str,
   focused: bool,
 ) {
-  let (border, cursor) = if focused {
-    (theme.border_active, "▌")
+  let border = if focused {
+    theme.border_active
   } else {
-    (theme.border, "")
+    theme.border
   };
   let line = Line::from(vec![
     Span::styled(
-      format!("{label}: "),
+      filter_label(label),
       Style::new().fg(theme.accent).add_modifier(Modifier::BOLD),
     ),
     Span::styled(
-      format!("{query}{cursor}"),
+      format!("{query}{}", if focused { cursor() } else { "" }),
       Style::new().fg(theme.foreground),
     ),
   ]);
   frame.render_widget(
     Paragraph::new(line)
       .style(Style::new().bg(theme.background))
-      .block(Block::bordered().border_style(Style::new().fg(border))),
+      .block(
+        Block::default()
+          .borders(ratatui::widgets::Borders::LEFT)
+          .border_style(Style::new().fg(border)),
+      ),
     area,
   );
 }

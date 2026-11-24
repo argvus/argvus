@@ -500,10 +500,7 @@ impl App {
   /// Whether the page's search is a box above the list, as on the home
   /// screen, instead of the bottom line.
   pub(crate) fn search_on_top(&self) -> bool {
-    // The GPG key list and the shortcuts list have no action bar, but their
-    // search still sits on top, like the pages that have one.
-    (self.has_action_bar() && !matches!(self.page(), Page::CustomShortcut | Page::Firewall))
-      || matches!(self.page(), Page::GpgKeyList | Page::AllShortcuts)
+    self.supports_filter()
   }
 
   /// The action bar of the current page; empty for pages without one.
@@ -645,6 +642,10 @@ impl App {
       page => self.admin.discard_draft(page),
     }
     self.navigation.back();
+  }
+
+  pub fn supports_filter(&self) -> bool {
+    is_searchable(self.page())
   }
 
   pub fn begin_search(&mut self) {

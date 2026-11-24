@@ -140,6 +140,27 @@ impl NetworkApp {
           | NetworkPage::AddConnection
       ),
     );
+    let body = if self.is_list_page() {
+      use ratatui::layout::{Constraint, Layout};
+      let [filter, _, list] = Layout::vertical([
+        Constraint::Length(1),
+        Constraint::Length(1),
+        Constraint::Min(0),
+      ])
+      .areas(body);
+      self.filter_area = filter;
+      argvus_tui::filter_search::search_box(
+        f,
+        filter,
+        &self.theme,
+        tr(self.lang, "control_center.filter"),
+        self.search.as_deref().unwrap_or_default(),
+        self.search.is_some(),
+      );
+      list
+    } else {
+      body
+    };
     self.list_height = body.height;
     draw_menu(
       f,

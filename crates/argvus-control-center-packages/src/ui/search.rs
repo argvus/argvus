@@ -3,6 +3,10 @@ use super::render::has_action_bar;
 use super::*;
 
 impl PackagesApp {
+  pub fn supports_filter(&self) -> bool {
+    super::render::filters_while_typing(self.page) && !self.destructive()
+  }
+
   pub(super) fn is_install_search(&self) -> bool {
     matches!(self.page, PackagesPage::Task(_, PackageTask::Install))
   }
@@ -22,7 +26,7 @@ impl PackagesApp {
     if self.destructive() {
       return matches!(key, KeyCode::Char(_) | KeyCode::Backspace | KeyCode::Delete);
     }
-    if key == KeyCode::Char('/') {
+    if !self.search_focused && key == KeyCode::Char('/') {
       self.focus_search();
       return true;
     }

@@ -22,6 +22,7 @@ pub fn draw(app: &mut App, frame: &mut Frame) {
   argvus_tui::menu::set_right_to_left(
     app.lang.direction() == argvus_i18n::TextDirection::RightToLeft,
   );
+  argvus_tui::filter_search::set_cursor_visible(app.search_cursor_visible);
   let area = frame.area();
   app.search_area = Rect::default();
   app.resize(area.width, area.height);
@@ -570,7 +571,7 @@ fn draw_search(app: &mut App, frame: &mut Frame, area: ratatui::layout::Rect) {
     Style::new().fg(app.theme.muted).bg(app.theme.background)
   };
   let width = app.search_area.width.saturating_sub(2) as usize;
-  let prefix = format!("{}: ", tr(app.lang, "control_center.search_2c43ee"));
+  let prefix = format!("[/] {}: ", tr(app.lang, "control_center.search_2c43ee"));
   let prefix_width = argvus_tui::text::display_width(&prefix);
   let cursor_width = usize::from(app.search_active && app.search_cursor_visible);
   let value_width = width.saturating_sub(prefix_width + cursor_width);

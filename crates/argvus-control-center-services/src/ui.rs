@@ -56,6 +56,7 @@ pub struct ServicesApp {
   units: Vec<Unit>,
   logs: Vec<JournalEntry>,
   search: String,
+  pub filter_area: ratatui::layout::Rect,
   searching: bool,
   job: Option<JobHandle<JobData>>,
   updates: Option<std::sync::mpsc::Receiver<Vec<Unit>>>,
@@ -110,6 +111,10 @@ impl UnitFilter {
   }
 }
 impl ServicesApp {
+  pub fn filter_focused(&self) -> bool {
+    self.searching
+  }
+
   /// Whether exiting could abandon an operation whose result is still pending.
   pub fn has_pending_action(&self) -> bool {
     self.action.is_some()
@@ -130,6 +135,7 @@ impl ServicesApp {
       units: vec![],
       logs: vec![],
       search: String::new(),
+      filter_area: Default::default(),
       searching: false,
       job: None,
       updates: None,
@@ -349,6 +355,14 @@ impl ServicesApp {
     self.refresh();
   }
   /// Whether the page is one of the unit lists (System, User, Failed).
+  pub fn blocks_global_search(&self) -> bool {
+    self.pending.is_some() || self.action.is_some()
+  }
+
+  pub fn supports_filter(&self) -> bool {
+    self.is_list_page() || self.page == ServicePage::Logs
+  }
+
   fn is_list_page(&self) -> bool {
     matches!(
       self.page,

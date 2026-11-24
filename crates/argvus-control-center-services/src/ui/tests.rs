@@ -121,7 +121,7 @@ fn services_list_uses_filter_search_and_block_layout() {
   }];
   let text = render_text(&mut app, 90, 25);
   assert!(text.contains("Filter:") && text.contains("All"));
-  assert!(text.contains("Search:"));
+  assert!(text.contains("Filter [Ctrl+F]:"));
   assert!(text.contains("Services:"));
   assert!(text.contains("alsa-restore.service"));
   assert!(text.contains("Active") && text.contains("Enabled"));
@@ -136,7 +136,7 @@ fn logs_page_uses_filter_search_and_block_layout() {
   app.page = ServicePage::Logs;
   let text = render_text(&mut app, 90, 25);
   assert!(text.contains("Filter:") && text.contains("Priority: 0-7"));
-  assert!(text.contains("Search:"));
+  assert!(text.contains("Filter [Ctrl+F]:"));
   assert!(text.contains("Logs:"));
 }
 

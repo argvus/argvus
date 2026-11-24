@@ -13,7 +13,20 @@ impl App {
   }
 
   pub fn can_focus_search(&self) -> bool {
+    #[cfg(feature = "packages")]
+    if self.route == Route::Packages
+      && self.packages.supports_filter()
+      && !self.packages.filter_focused()
+    {
+      return self.can_focus_search_from(true);
+    }
+    self.can_focus_search_from(false)
+  }
+
+  pub fn can_focus_search_from(&self, editing_filter: bool) -> bool {
     let modal = match self.route {
+      #[cfg(feature = "services")]
+      Route::Services => self.services.blocks_global_search(),
       #[cfg(feature = "appearance")]
       Route::Appearance => self.appearance.blocks_global_search(),
       #[cfg(feature = "displays")]
@@ -33,7 +46,7 @@ impl App {
     self.has_global_search()
       && !modal
       && !self.help
-      && !self.captures_text()
+      && (!self.captures_text() || editing_filter)
       && !(self.route == Route::Settings
         && (self.settings.admin.busy()
           || self.settings.confirm.is_some()
@@ -278,7 +291,7 @@ impl App {
   }
 
   pub fn poll_search_cursor(&mut self) -> bool {
-    if !self.search_active || self.search_cursor_last_blink.elapsed() < Duration::from_millis(500) {
+    if self.search_cursor_last_blink.elapsed() < Duration::from_millis(500) {
       return false;
     }
     self.search_cursor_visible = !self.search_cursor_visible;

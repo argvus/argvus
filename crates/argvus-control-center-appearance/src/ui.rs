@@ -194,11 +194,16 @@ pub struct AppearanceApp {
   /// Icons page: the search text, whether it is being typed, the unapplied
   /// theme choice (`None` means the configured theme) and the Actions focus.
   icon_search: String,
+  pub filter_area: ratatui::layout::Rect,
   icon_searching: bool,
   icon_draft: Option<String>,
   icon_actions: ActionFocus,
 }
 impl AppearanceApp {
+  pub fn filter_focused(&self) -> bool {
+    self.icon_searching
+  }
+
   /// Whether exiting could abandon an operation whose result is still pending.
   pub fn has_pending_action(&self) -> bool {
     self.action.is_some()
@@ -251,6 +256,7 @@ impl AppearanceApp {
       open_fonts: false,
       fonts_available: true,
       icon_search: String::new(),
+      filter_area: Default::default(),
       icon_searching: false,
       icon_draft: None,
       icon_actions: ActionFocus::default(),

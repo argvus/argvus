@@ -628,7 +628,10 @@ fn package_search_shortcut_and_paste_edit_the_top_bar() {
     PackageSource::Official,
     PackageTask::Install,
   )));
-  handle(&mut app, press(KeyCode::Char('/')));
+  handle(
+    &mut app,
+    Event::Key(KeyEvent::new(KeyCode::Char('f'), KeyModifiers::CONTROL)),
+  );
   handle(&mut app, Event::Paste("firefox".into()));
   handle(&mut app, press(KeyCode::Esc));
   assert_eq!(app.route, Route::Packages);
@@ -682,6 +685,40 @@ fn slash_search_keeps_existing_local_filters() {
   app.clear_global_search();
   app.open_settings(argvus_control_center_settings::Page::TimeZone);
   handle(&mut app, press(KeyCode::Char('/')));
+  assert!(app.search_active);
+  app.clear_global_search();
+  handle(
+    &mut app,
+    Event::Key(KeyEvent::new(KeyCode::Char('f'), KeyModifiers::CONTROL)),
+  );
   assert!(app.settings.searching);
   assert!(!app.search_active);
+}
+
+#[test]
+fn shortcuts_filter_survives_global_search_by_mouse() {
+  let mut app = App::new(InitialRoute::Home);
+  app.open_settings(argvus_control_center_settings::Page::AllShortcuts);
+  let mut terminal = ratatui::Terminal::new(ratatui::backend::TestBackend::new(90, 32)).unwrap();
+  terminal
+    .draw(|frame| crate::ui::draw(&mut app, frame))
+    .unwrap();
+  let click = |rect: ratatui::layout::Rect| {
+    Event::Mouse(crossterm::event::MouseEvent {
+      kind: MouseEventKind::Down(MouseButton::Left),
+      column: rect.x,
+      row: rect.y,
+      modifiers: KeyModifiers::NONE,
+    })
+  };
+  let local = click(app.settings.filter_area);
+  let global = click(app.search_area);
+  handle(&mut app, local);
+  handle(&mut app, press(KeyCode::Char('/')));
+  assert_eq!(app.settings.search, "/");
+  handle(&mut app, global);
+  assert!(app.search_active);
+  handle(&mut app, press(KeyCode::Esc));
+  assert!(!app.search_active);
+  assert_eq!(app.settings.search, "/");
 }

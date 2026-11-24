@@ -8,7 +8,7 @@ fn updates_show_the_filter_on_top_and_the_action_bar_below() {
   app.page = OFFICIAL_UPDATE;
   app.updates.push(update("linux"));
   let text = screen(&mut app, 90, 25);
-  assert!(text.contains("Search:"), "{text}");
+  assert!(text.contains("Filter [Ctrl+F]:"), "{text}");
   assert!(text.contains("Actions"), "{text}");
   assert!(text.contains("Upgrade"), "{text}");
   assert!(!text.contains("Upgrade all"), "{text}");
@@ -70,7 +70,15 @@ fn filtered_lists_show_the_search_box_on_top_and_the_results_block() {
     app.query = "l".into();
     app.handle(KeyCode::Char('/'));
     let text = screen(&mut app, 90, 25);
-    assert!(text.contains("Search: l▌"), "{page:?}\n{text}");
+    let label = if app.is_install_search() {
+      "Find package"
+    } else {
+      "Filter"
+    };
+    assert!(
+      text.contains(&format!("{label} [Ctrl+F]: l▌")),
+      "{page:?}\n{text}"
+    );
     assert!(text.contains("┌Results"), "{page:?}\n{text}");
     assert!(text.contains("linux"), "{page:?}\n{text}");
     assert!(!text.contains("Actions"), "{page:?}\n{text}");

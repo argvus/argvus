@@ -169,11 +169,7 @@ impl PackagesApp {
     }
     if let Some((_, editor)) = self.editor.as_mut() {
       editor.paste(text);
-    } else if self.search_focused
-      && self.pending.is_none()
-      && !self.destructive()
-      && filters_while_typing(self.page)
-    {
+    } else if self.pending.is_none() && !self.destructive() && filters_while_typing(self.page) {
       self.insert_search_text(text);
     }
   }

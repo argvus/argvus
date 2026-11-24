@@ -5,6 +5,10 @@ mod render;
 mod rows;
 
 impl NetworkApp {
+  pub fn filter_focused(&self) -> bool {
+    self.search.is_some()
+  }
+
   /// Includes editor tasks because saving and loading share the same job slot.
   pub fn has_pending_action(&self) -> bool {
     self.action.is_some() || self.editor_job.is_some()
@@ -74,6 +78,7 @@ pub struct NetworkApp {
   password: Option<String>,
   pending_wifi: Option<WifiNetwork>,
   dns_input: Option<String>,
+  pub filter_area: ratatui::layout::Rect,
   search: Option<String>,
   status: Option<StatusMessage>,
   scan: bool,
@@ -174,6 +179,7 @@ impl NetworkApp {
       password: None,
       pending_wifi: None,
       dns_input: None,
+      filter_area: Default::default(),
       search: None,
       status: None,
       scan: false,
@@ -333,7 +339,7 @@ impl NetworkApp {
     }
   }
   /// Whether the page is a list that accepts `/` to filter.
-  fn is_list_page(&self) -> bool {
+  pub fn is_list_page(&self) -> bool {
     matches!(
       self.page,
       NetworkPage::Interfaces

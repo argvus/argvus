@@ -17,7 +17,7 @@ use ratatui::{
   Frame,
   layout::{Alignment, Constraint, Layout, Rect},
   style::Style,
-  widgets::{Block, Borders, Paragraph},
+  widgets::{Block, Borders},
 };
 
 impl AppearanceApp {
@@ -138,7 +138,7 @@ impl AppearanceApp {
       ("↑/↓", label("control_center.hint.navigate")),
       ("←/→", label("control_center.actions")),
       ("Space", label("control_center.hint.select")),
-      ("/", label("control_center.hint.search")),
+      ("Ctrl+F", label("control_center.hint.search")),
       ("r", label("control_center.refresh")),
       ("Esc", label("control_center.hint.back")),
       ("?", label("control_center.hint.help")),
@@ -150,27 +150,22 @@ impl AppearanceApp {
   /// Draws the Icons body: the search box, the theme list and the Actions bar.
   pub(super) fn draw_icons(&mut self, frame: &mut Frame, area: Rect, rows: &[Row<Item>]) {
     let parts = Layout::vertical([
-      Constraint::Length(3),
+      Constraint::Length(1),
+      Constraint::Length(1),
       Constraint::Min(1),
       Constraint::Length(3),
     ])
     .split(area);
-    let (search_area, list_area, actions_area) = (parts[0], parts[1], parts[2]);
+    let (search_area, list_area, actions_area) = (parts[0], parts[2], parts[3]);
 
-    let search_block = Block::default()
-      .borders(Borders::ALL)
-      .border_style(Style::new().fg(self.theme.border_active));
-    let cursor = if self.icon_searching { "_" } else { "" };
-    let search_text = format!(
-      "{} {}{cursor}",
-      tr(self.lang, "control_center.search_field"),
-      self.icon_search
-    );
-    let search_inner = search_block.inner(search_area);
-    frame.render_widget(search_block, search_area);
-    frame.render_widget(
-      Paragraph::new(search_text).style(Style::new().fg(self.theme.foreground)),
-      search_inner,
+    self.filter_area = search_area;
+    argvus_tui::filter_search::search_box(
+      frame,
+      search_area,
+      &self.theme,
+      tr(self.lang, "control_center.filter"),
+      &self.icon_search,
+      self.icon_searching,
     );
 
     let list_block = Block::default()

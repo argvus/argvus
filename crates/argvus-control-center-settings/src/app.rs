@@ -131,6 +131,7 @@ pub struct App {
   fonts: FontSettings,
   system_fonts: Vec<FontEntry>,
   pub search: String,
+  pub filter_area: ratatui::layout::Rect,
   pub searching: bool,
   pub pending_size: u16,
   pub status: Option<Status>,
@@ -234,6 +235,10 @@ pub struct App {
 }
 
 impl App {
+  pub fn filter_focused(&self) -> bool {
+    self.searching
+  }
+
   /// Retain handles until mutations and their result processing have completed.
   pub fn has_pending_action(&self) -> bool {
     self.shortcut_job.is_some()
@@ -285,6 +290,7 @@ impl App {
       fonts: FontSettings::load(),
       system_fonts: Vec::new(),
       search: String::new(),
+      filter_area: Default::default(),
       searching: false,
       pending_size: 13,
       status: None,

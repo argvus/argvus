@@ -154,9 +154,10 @@ impl ServicesApp {
   pub(super) fn draw_list(&mut self, frame: &mut Frame, area: Rect, body: Rect) {
     let rows = self.list_rows();
     self.menu.normalize(&rows);
-    let [filter_area, search_area, units_area] = Layout::vertical([
+    let [filter_area, search_area, _, units_area] = Layout::vertical([
       Constraint::Length(1),
-      Constraint::Length(3),
+      Constraint::Length(1),
+      Constraint::Length(1),
       Constraint::Min(3),
     ])
     .areas(body);
@@ -167,11 +168,12 @@ impl ServicesApp {
       tr(self.lang, "control_center.filter"),
       self.filter.label(self.lang),
     );
+    self.filter_area = search_area;
     search_box(
       frame,
       search_area,
       &self.theme,
-      tr(self.lang, "control_center.search_2c43ee"),
+      tr(self.lang, "control_center.filter"),
       &self.search,
       self.searching,
     );
@@ -198,9 +200,10 @@ impl ServicesApp {
   /// unit and priority filters on the filter line, the search over the
   /// messages, then the entries in a `Logs:` block.
   pub(super) fn draw_logs(&mut self, frame: &mut Frame, area: Rect, body: Rect) {
-    let [filter_area, search_area, entries_area] = Layout::vertical([
+    let [filter_area, search_area, _, entries_area] = Layout::vertical([
       Constraint::Length(1),
-      Constraint::Length(3),
+      Constraint::Length(1),
+      Constraint::Length(1),
       Constraint::Min(3),
     ])
     .areas(body);
@@ -211,11 +214,12 @@ impl ServicesApp {
       tr(self.lang, "control_center.filter"),
       &self.logs_filter_summary(),
     );
+    self.filter_area = search_area;
     search_box(
       frame,
       search_area,
       &self.theme,
-      tr(self.lang, "control_center.search_2c43ee"),
+      tr(self.lang, "control_center.filter"),
       &self.log_search,
       self.searching,
     );

@@ -100,7 +100,12 @@ fn page_hints(context: &HintContext<'_>) -> Vec<Hint> {
     }
   }
   if context.search {
-    hints.push(hint("/", HintAction::Search));
+    let key = if crate::chrome::compact_control_center_header() {
+      "Ctrl+F"
+    } else {
+      "/"
+    };
+    hints.push(hint(key, HintAction::Search));
   }
   if context.refresh {
     hints.push(hint("r", HintAction::Refresh));

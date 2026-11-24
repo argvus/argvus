@@ -287,6 +287,7 @@ pub struct PackagesApp {
   details_parent: PackagesPage,
   details_origin: Option<Item>,
   query: String,
+  pub filter_area: ratatui::layout::Rect,
   search_focused: bool,
   query_cursor: usize,
   job: Option<JobHandle<Result<Loaded, String>>>,
@@ -331,6 +332,10 @@ pub struct PackagesApp {
 }
 
 impl PackagesApp {
+  pub fn filter_focused(&self) -> bool {
+    self.search_focused
+  }
+
   /// Whether exiting could abandon an operation whose result is still pending.
   pub fn has_pending_action(&self) -> bool {
     self.action.is_some()
@@ -399,6 +404,7 @@ impl PackagesApp {
       details_parent: PackagesPage::Task(PackageSource::Official, PackageTask::Install),
       details_origin: None,
       query: String::new(),
+      filter_area: Default::default(),
       search_focused: false,
       query_cursor: 0,
       job: None,

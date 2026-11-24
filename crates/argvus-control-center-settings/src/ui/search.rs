@@ -1,41 +1,23 @@
 //! Search interaction of the Settings pages.
 use ratatui::Frame;
 use ratatui::layout::Rect;
-use ratatui::style::{Modifier, Style};
+use ratatui::style::Style;
 use ratatui::text::{Line, Span};
-use ratatui::widgets::{Block, Paragraph};
+use ratatui::widgets::Paragraph;
 
 use crate::app::{App, StatusKind};
 use crate::i18n::tr;
 use crate::navigation::Page;
 
-/// The search box of a page with a top search (`App::search_on_top`): a
-/// bordered `Search:` line that is highlighted while the search is typed in.
+/// Draws the page filter directly above its list.
 pub fn draw_box(frame: &mut Frame, area: Rect, app: &App) {
-  let (border, cursor) = if app.searching {
-    (app.theme.border_active, "▌")
-  } else {
-    (app.theme.border, "")
-  };
-  let line = Line::from(vec![
-    Span::styled(
-      // The label key of the home search: the bare `control_center.search`
-      // value carries a `/` shortcut hint that does not belong in a label.
-      format!("{}: ", tr(app.lang, "control_center.search_2c43ee")),
-      Style::new()
-        .fg(app.theme.accent)
-        .add_modifier(Modifier::BOLD),
-    ),
-    Span::styled(
-      format!("{}{cursor}", app.search),
-      Style::new().fg(app.theme.foreground),
-    ),
-  ]);
-  frame.render_widget(
-    Paragraph::new(line)
-      .style(Style::new().bg(app.theme.background))
-      .block(Block::bordered().border_style(Style::new().fg(border))),
+  argvus_tui::filter_search::search_box(
+    frame,
     area,
+    &app.theme,
+    tr(app.lang, "control_center.filter"),
+    &app.search,
+    app.searching,
   );
 }
 

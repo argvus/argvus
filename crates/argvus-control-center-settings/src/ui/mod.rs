@@ -63,14 +63,19 @@ pub fn draw_in(app: &mut App, frame: &mut Frame, area: ratatui::layout::Rect) {
   let (search_area, body) = if app.search_on_top() {
     let split = Layout::default()
       .direction(Direction::Vertical)
-      .constraints([Constraint::Length(3), Constraint::Min(0)])
+      .constraints([
+        Constraint::Length(1),
+        Constraint::Length(1),
+        Constraint::Min(0),
+      ])
       .split(areas.body);
-    (Some(split[0]), split[1])
+    (Some(split[0]), split[2])
   } else {
     (None, areas.body)
   };
   frame.render_widget(Clear, areas.body);
   header::draw(frame, areas.header, app);
+  app.filter_area = search_area.unwrap_or_default();
   if let Some(search_area) = search_area {
     search::draw_box(frame, search_area, app);
   }

@@ -21,7 +21,15 @@ fn slash_focuses_search_on_every_filtered_page_without_opening_an_overlay() {
     assert!(app.input.is_none());
     assert!(app.input_mode.is_none());
     let text = screen(&mut app, 100, 30);
-    assert!(text.contains("Search: linux▌"), "{text}");
+    let label = if app.is_install_search() {
+      "Find package"
+    } else {
+      "Filter"
+    };
+    assert!(
+      text.contains(&format!("{label} [Ctrl+F]: linux▌")),
+      "{text}"
+    );
     assert!(
       !text.contains("Enter Apply"),
       "the old search overlay is gone: {text}"
@@ -165,7 +173,7 @@ fn search_edits_and_pastes_utf8_at_the_cursor_without_exceeding_the_byte_limit()
     "arrows edit Search rather than opening details"
   );
   app.query = "x".repeat(QUERY_MAX - 1);
-  app.handle(KeyCode::Char('/'));
+  app.handle(KeyCode::End);
   app.paste("é");
   assert_eq!(app.query.len(), QUERY_MAX - 1);
   app.paste("a");
@@ -173,7 +181,10 @@ fn search_edits_and_pastes_utf8_at_the_cursor_without_exceeding_the_byte_limit()
   app.paste("z");
   assert_eq!(app.query.len(), QUERY_MAX);
   let text = screen(&mut app, 60, 18);
-  assert!(text.contains("Search:") && text.contains('▌'), "{text}");
+  assert!(
+    text.contains("Filter [Ctrl+F]:") && text.contains('▌'),
+    "{text}"
+  );
 }
 
 #[test]
@@ -187,8 +198,8 @@ fn search_focus_and_help_render_without_raw_keys_in_both_languages() {
     let text = screen(&mut app, 100, 30);
     assert!(
       text.contains(&format!(
-        "{}: firefox▌",
-        tr(app.lang, "control_center.search_2c43ee")
+        "{} [Ctrl+F]: firefox▌",
+        tr(app.lang, "control_center.find_package")
       )),
       "{text}"
     );

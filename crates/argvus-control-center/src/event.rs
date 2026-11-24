@@ -161,33 +161,19 @@ fn handle_inner(app: &mut App, event: Event) {
   if app.route == Route::Settings && app.settings.admin.busy() && !app.search_active {
     return;
   }
-  if key.code == KeyCode::Char('f')
-    && key.modifiers == KeyModifiers::CONTROL
-    && app.can_focus_search()
-  {
-    app.begin_global_search();
+  let find = key.code == KeyCode::Char('f') && key.modifiers == KeyModifiers::CONTROL;
+  if find && (app.search_active || local_filter(app).1) {
     return;
   }
-  let local_search = match app.route {
-    Route::Settings => true,
-    #[cfg(feature = "network")]
-    Route::Network => true,
-    #[cfg(feature = "services")]
-    Route::Services => true,
-    #[cfg(feature = "packages")]
-    Route::Packages => true,
-    #[cfg(feature = "appearance")]
-    Route::Appearance => {
-      app.appearance.page == argvus_control_center_appearance::AppearancePage::Icons
+  let slash = key.code == KeyCode::Char('/') && key.modifiers.is_empty();
+  if !app.search_active && (find || slash) && app.can_focus_search() {
+    if find {
+      if !focus_filter(app) {
+        app.begin_global_search();
+      }
+    } else {
+      app.begin_global_search();
     }
-    _ => false,
-  };
-  if key.code == KeyCode::Char('/')
-    && key.modifiers.is_empty()
-    && !local_search
-    && app.can_focus_search()
-  {
-    app.begin_global_search();
     return;
   }
   if app.search_active {
@@ -382,12 +368,60 @@ fn handle_inner(app: &mut App, event: Event) {
   }
 }
 
+fn focus_filter(app: &mut App) -> bool {
+  match app.route {
+    Route::Settings if app.settings.supports_filter() => app.settings.begin_search(),
+    #[cfg(feature = "network")]
+    Route::Network if app.network.is_list_page() => {
+      app.network.handle(KeyCode::Char('/'));
+    }
+    #[cfg(feature = "services")]
+    Route::Services if app.services.supports_filter() => {
+      app.services.handle(KeyCode::Char('/'));
+    }
+    #[cfg(feature = "packages")]
+    Route::Packages if app.packages.supports_filter() => {
+      app.packages.handle(KeyCode::Char('/'));
+    }
+    #[cfg(feature = "appearance")]
+    Route::Appearance
+      if app.appearance.page == argvus_control_center_appearance::AppearancePage::Icons =>
+    {
+      app.appearance.handle(KeyCode::Char('/'));
+    }
+    _ => return false,
+  }
+  true
+}
+
+fn local_filter(app: &App) -> (ratatui::layout::Rect, bool) {
+  match app.route {
+    Route::Settings => (app.settings.filter_area, app.settings.filter_focused()),
+    #[cfg(feature = "network")]
+    Route::Network => (app.network.filter_area, app.network.filter_focused()),
+    #[cfg(feature = "services")]
+    Route::Services => (app.services.filter_area, app.services.filter_focused()),
+    #[cfg(feature = "appearance")]
+    Route::Appearance => (app.appearance.filter_area, app.appearance.filter_focused()),
+    #[cfg(feature = "packages")]
+    Route::Packages => (app.packages.filter_area, app.packages.filter_focused()),
+    _ => (Default::default(), false),
+  }
+}
+
 fn handle_mouse(app: &mut App, mouse: crossterm::event::MouseEvent) {
-  if !matches!(mouse.kind, MouseEventKind::Down(MouseButton::Left)) || !app.can_focus_search() {
+  if !matches!(mouse.kind, MouseEventKind::Down(MouseButton::Left)) {
     return;
   }
-  if app.search_area.contains((mouse.column, mouse.row).into()) {
+  let (filter, editing) = local_filter(app);
+  let point = (mouse.column, mouse.row).into();
+  if app.search_area.contains(point)
+    && !app.search_active
+    && (app.can_focus_search() || (editing && app.can_focus_search_from(true)))
+  {
     app.begin_global_search();
+  } else if filter.contains(point) && app.can_focus_search() {
+    focus_filter(app);
   }
 }
 

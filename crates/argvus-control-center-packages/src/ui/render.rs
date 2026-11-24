@@ -114,7 +114,11 @@ impl PackagesApp {
   }
 
   pub fn blocks_global_search(&self) -> bool {
-    self.terminal_focused() || self.transaction_open
+    self.terminal_focused()
+      || self.transaction_open
+      || self.pending.is_some()
+      || self.input.is_some()
+      || self.editor.is_some()
   }
 
   pub fn draw(&mut self, f: &mut Frame) {
@@ -178,12 +182,14 @@ impl PackagesApp {
   /// this screen.
   pub(super) fn draw_filtered_list(&mut self, f: &mut Frame, area: Rect, rows: &[Row<Item>]) {
     let has_action_bar = has_action_bar(self.page);
-    let [search, list, bar] = Layout::vertical([
-      Constraint::Length(3),
+    let [search, _, list, bar] = Layout::vertical([
+      Constraint::Length(1),
+      Constraint::Length(1),
       Constraint::Min(3),
       Constraint::Length(if has_action_bar { 3 } else { 0 }),
     ])
     .areas(area);
+    self.filter_area = search;
     self.draw_search_box(f, search);
     let title = if has_action_bar {
       "control_center.updates"
@@ -207,10 +213,10 @@ impl PackagesApp {
   /// The filter of a list: a bordered `Search:` line that shows the typed
   /// text and cursor, highlighted only while Search owns the input.
   pub(super) fn draw_search_box(&self, f: &mut Frame, area: Rect) {
-    let (border, cursor) = if self.search_focused && self.captures_text() {
-      (self.theme.border_active, "▌")
+    let border = if self.search_focused && self.captures_text() {
+      self.theme.border_active
     } else {
-      (self.theme.border, "")
+      self.theme.border
     };
     let (mut before, after) = if self.search_focused {
       self
@@ -220,7 +226,15 @@ impl PackagesApp {
     } else {
       (&self.query[..], "")
     };
-    let label = format!("{}: ", tr(self.lang, "control_center.search_2c43ee"));
+    let label = if self.is_install_search() {
+      format!(
+        "{} {} [Ctrl+F]: ",
+        argvus_tui::icons::SEARCH,
+        tr(self.lang, "control_center.find_package")
+      )
+    } else {
+      argvus_tui::filter_search::filter_label(tr(self.lang, "control_center.filter"))
+    };
     let available = usize::from(area.width.saturating_sub(2))
       .saturating_sub(argvus_tui::text::display_width(&label));
     if self.search_focused {
@@ -240,14 +254,25 @@ impl PackagesApp {
           .add_modifier(Modifier::BOLD),
       ),
       Span::styled(
-        format!("{before}{cursor}{after}"),
+        format!(
+          "{before}{}{after}",
+          if self.search_focused {
+            argvus_tui::filter_search::cursor()
+          } else {
+            ""
+          }
+        ),
         Style::new().fg(self.theme.foreground),
       ),
     ]);
     f.render_widget(
       Paragraph::new(line)
         .style(Style::new().bg(self.theme.background))
-        .block(Block::bordered().border_style(Style::new().fg(border))),
+        .block(
+          Block::default()
+            .borders(ratatui::widgets::Borders::LEFT)
+            .border_style(Style::new().fg(border)),
+        ),
       area,
     );
   }
