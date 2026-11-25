@@ -51,6 +51,8 @@ Jalankan `argvus --help` untuk daftar yang diinstal dengan versi Anda. Sub-perin
 | `argvus notifications`, `displayctl`, `taskbar-actions` | Eksekusi pribadi | Pemberitahuan, tampilan, dan tindakan bilah tugas. |
 | `argvus setup [options]` | Dalam proses | Menyalin paket default ke dalam konfigurasi pengguna. Lihat di bawah. |
 
+Indikator notifikasi memantau mode Jangan Ganggu Dunst dengan `argvus notifications taskbar --follow`. Jika pemantauan berbasis peristiwa tidak tersedia, bilah tugas menjalankan perintah status yang ada setiap dua detik.
+
 Argumen diteruskan tanpa perubahan, termasuk spasi dan nilai kosong. Input standar, output, kesalahan, sinyal, dan status keluar adalah milik perintah yang dijalankan. Nama yang tidak dikenal gagal dengan petunjuk untuk menjalankan `argvus --help`. Perintah yang berjalan dalam proses menolak argumen yang tidak valid UTF-8 (status keluar 2) alih-alih meneruskan nilai yang diubah; perintah yang menjalankan program terpisah menerima byte tidak berubah.
 
 ## Bendera dan alias

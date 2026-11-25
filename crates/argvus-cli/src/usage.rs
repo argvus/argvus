@@ -17,6 +17,7 @@ pub const TEXT: &str = r#"Usage:
   argvus --game-snake
   argvus --focus [argvus focus options]
   argvus focus status --taskbar [--follow]
+  argvus notifications taskbar --follow
   argvus --clock [argvus clock options]
   argvus --default-apps [control center Apps options]
   argvus --removable-devices [argvus removable-devices options]

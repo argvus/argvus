@@ -51,6 +51,8 @@ description: argvus 命令、它的子命令、为键绑定保留的标志，以
 | `argvus notifications`, `displayctl`, `taskbar-actions` | 私有可执行文件 | 通知、显示和任务栏操作。|
 | `argvus setup [options]` | 进程内 | 将打包的默认值复制到用户配置中。见下文。|
 
+通知指示器通过 `argvus notifications taskbar --follow` 跟踪 Dunst 的勿扰模式。无法监听事件时，任务栏每两秒运行一次原有的状态查询命令。
+
 参数将原样转发，包括空格和空值。标准输入、输出、错误、信号和退出状态属于运行的命令。未知名称会提示运行 `argvus --help`。进程内运行的命令会拒绝非有效 UTF-8 的参数（退出状态为 2），而不会传递修改过的值；运行单独程序的命令会接收未经更改的字节。
 
 ## 标志和别名

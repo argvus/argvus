@@ -51,6 +51,8 @@ Ejecute `argvus --help` para la lista instalada con su versión. Los subcomandos
 | `argvus notifications`, `displayctl`, `taskbar-actions` | Ejecutables privados | Notificaciones, acciones de pantalla y de la barra de tareas. |
 | `argvus setup [options]` | En proceso | Copia los valores predeterminados empaquetados en la configuración del usuario. Ver más abajo. |
 
+El indicador de notificaciones sigue el modo No molestar de Dunst con `argvus notifications taskbar --follow`. Si la monitorización por eventos no está disponible, la barra de tareas ejecuta el comando de estado existente cada dos segundos.
+
 Los argumentos se reenvían sin cambios, incluidos los espacios y los valores vacíos. La entrada estándar, la salida, el error, las señales y el estado de salida pertenecen al comando que se ejecuta. Un nombre desconocido falla con una sugerencia de ejecutar `argvus --help`. Un comando que se ejecuta en proceso rechaza un argumento que no es UTF-8 válido (estado de salida 2) en lugar de pasar un valor alterado; los comandos que ejecutan un programa separado reciben los bytes sin cambios.
 
 ## Banderas y alias

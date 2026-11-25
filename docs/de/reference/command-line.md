@@ -51,6 +51,8 @@ Führen Sie `argvus --help` aus, um die mit Ihrer Version installierten Unterbef
 | `argvus notifications`, `displayctl`, `taskbar-actions` | Private ausführbare Dateien | Benachrichtigungen, Anzeige- und Taskleistenaktionen. |
 | `argvus setup [options]` | Im Prozess | Kopiert verpackte Standardwerte in die Benutzerkonfiguration. Siehe unten. |
 
+Die Benachrichtigungsanzeige verfolgt den Nicht-stören-Modus von Dunst mit `argvus notifications taskbar --follow`. Ist die ereignisbasierte Überwachung nicht verfügbar, fragt die Taskleiste den Status alle zwei Sekunden mit dem bisherigen Befehl ab.
+
 Argumente werden unverändert weitergegeben, einschließlich Leerzeichen und leerer Werte. Standard-Eingabe, Ausgabe, Fehler, Signale und der Exit-Status gehören dem Befehl, der ausgeführt wird. Ein unbekannter Name schlägt mit einem Hinweis auf, `argvus --help` auszuführen. Ein Befehl, der im Prozess ausgeführt wird, verweigert ein Argument, das kein gültiges UTF-8 ist (Exit-Status 2), anstatt einen veränderten Wert weiterzugeben; Befehle, die ein separates Programm ausführen, erhalten die Bytes unverändert.
 
 ## Flags und Aliase

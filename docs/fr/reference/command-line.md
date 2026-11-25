@@ -51,6 +51,8 @@ Exécutez `argvus --help` pour la liste installée avec votre version. Les sous-
 | `argvus notifications`, `displayctl`, `taskbar-actions` | Exécutables privés | Notifications, affichage et actions sur la barre des tâches. |
 | `argvus setup [options]` | En processus | Copie les valeurs par défaut packagées dans la configuration utilisateur. Voir ci-dessous. |
 
+L’indicateur de notifications suit le mode Ne pas déranger de Dunst avec `argvus notifications taskbar --follow`. Si la surveillance par événements est indisponible, la barre des tâches interroge la commande d’état existante toutes les deux secondes.
+
 Les arguments sont transmis tels quels, y compris les espaces et les valeurs vides. L'entrée standard, la sortie, l'erreur, les signaux et le statut de sortie appartiennent à la commande qui s'exécute. Un nom inconnu échoue avec un indice pour exécuter `argvus --help`. Une commande qui s'exécute en processus refuse un argument qui n'est pas en UTF-8 valide (statut de sortie 2) au lieu de transmettre une valeur altérée ; les commandes qui exécutent un programme séparé reçoivent les octets inchangés.
 
 ## Options et alias

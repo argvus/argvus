@@ -16,6 +16,7 @@ mod exec;
 mod focus_status;
 mod launcher_picker;
 mod lock_timeout;
+mod notifications_taskbar;
 mod paths;
 mod script;
 mod setup;
