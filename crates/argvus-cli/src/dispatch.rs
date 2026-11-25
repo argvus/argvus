@@ -78,9 +78,7 @@ pub fn run(arguments: &[OsString]) -> Outcome {
     "widget-telemetry-toggle" => Ok(argvus_widget_telemetry_toggle::run_command(
       owned_arguments(rest)?,
     )),
-    "widget-telemetry-block" => Ok(argvus_widget_telemetry_blocks::run_command(
-      owned_arguments(rest)?,
-    )),
+    "widget-telemetry-block" => Ok(widget_telemetry_block(owned_arguments(rest)?)),
     "--spf" | "spf" | "--superfile" | "superfile" => apps::run_spf(rest),
     "--yazy" | "yazy" | "--yazi" | "yazi" => apps::run_yazi(rest),
     "--about" | "about" => control_center::run(with_leading("--about", rest)),
@@ -204,9 +202,7 @@ fn command_words(command: &str, arguments: &[OsString]) -> Result<Vec<String>, F
 /// `argvus widget-telemetry block|toggle ...`: the Taskbar block and the toggle.
 fn widget_telemetry(arguments: &[OsString]) -> Outcome {
   match arguments.first().and_then(|argument| argument.to_str()) {
-    Some("block") => Ok(argvus_widget_telemetry_blocks::run_command(
-      owned_arguments(&arguments[1..])?,
-    )),
+    Some("block") => Ok(widget_telemetry_block(owned_arguments(&arguments[1..])?)),
     Some("toggle") => Ok(argvus_widget_telemetry_toggle::run_command(
       owned_arguments(&arguments[1..])?,
     )),
@@ -268,6 +264,24 @@ fn legacy_power(arguments: &[OsString]) -> Outcome {
   argvus_session_actions::run(action, || {})
     .map(|_| ExitCode::SUCCESS)
     .map_err(|error| Failure::new(error.to_string()))
+}
+
+fn widget_telemetry_block(arguments: Vec<String>) -> ExitCode {
+  let translator = std::cell::OnceCell::new();
+  argvus_widget_telemetry_blocks::run_with_process_labels(arguments, |key| {
+    translator
+      .get_or_init(|| argvus_i18n::I18n::new("widget-telemetry").ok())
+      .as_ref()
+      .map_or_else(
+        || key.to_owned(),
+        |i18n| {
+          i18n
+            .tr_args(key, std::iter::empty::<(&str, &str)>())
+            .trim_end()
+            .to_owned()
+        },
+      )
+  })
 }
 
 #[cfg(test)]

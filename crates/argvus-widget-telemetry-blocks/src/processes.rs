@@ -4,7 +4,6 @@ use std::fs;
 use std::thread;
 use std::time::{Duration, Instant};
 
-use argvus_runtime::messages;
 use argvus_runtime::process::output;
 use argvus_widget_telemetry_core::processes::{Process, busiest, parse_ps, truncate_command};
 
@@ -14,13 +13,13 @@ const LISTED_PROCESSES: usize = 5;
 const COMMAND_WIDTH: usize = 20;
 
 /// The table of the block, one line per process, with the header first.
-pub fn table() -> String {
+pub fn table(translate: impl Fn(&str) -> String) -> String {
   let header = format!(
     "{:<7} {:<5} {:<5} {}",
-    messages::text("label.pid", &[]),
-    messages::text("label.cpu_percent", &[]),
-    messages::text("label.memory_percent", &[]),
-    messages::text("label.command", &[]),
+    translate("label.pid"),
+    translate("label.cpu_percent"),
+    translate("label.memory_percent"),
+    translate("label.command"),
   );
   let rows = busiest(sample(), LISTED_PROCESSES)
     .into_iter()

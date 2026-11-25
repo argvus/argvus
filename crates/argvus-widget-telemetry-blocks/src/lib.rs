@@ -36,6 +36,14 @@ const PROGRAM: &str = "argvus-widget-telemetry-block";
 /// Runs one command of this crate. `arguments` are the words after the command
 /// name. The `argvus` dispatcher and the binary both call this function.
 pub fn run_command(arguments: Vec<String>) -> ExitCode {
+  run_with_process_labels(arguments, |key| messages::text(key, &[]))
+}
+
+/// Runs a block using the caller’s translator for the process table columns.
+pub fn run_with_process_labels(
+  arguments: Vec<String>,
+  translate: impl Fn(&str) -> String,
+) -> ExitCode {
   let rest = &arguments[arguments.len().min(1)..];
   match arguments.first().map(String::as_str) {
     Some("header") => header(rest.first().map(String::as_str).unwrap_or("")),
@@ -46,7 +54,7 @@ pub fn run_command(arguments: Vec<String>) -> ExitCode {
     Some("cpu_gpu") => json_block("cpu_gpu", cpu_gpu::table),
     Some("memory") => json_block("memory", memory::table),
     Some("storage") => json_block("storage", storage::table),
-    Some("processes") => json_block("processes", processes::table),
+    Some("processes") => json_block("processes", || processes::table(translate)),
     Some("network") => json_block("network", network::text),
     Some("dev_dashboard") => json_block("dev_dashboard", dev_dashboard::text),
     _ => usage(),
@@ -68,10 +76,13 @@ fn usage() -> ExitCode {
 /// The title of a block. A header is hidden together with its block, and the
 /// arrows mark content scrolled out of view above or below the window.
 fn header(block: &str) -> ExitCode {
-  if !is_block(block) || !window::shows(block) {
+  if !is_block(block) {
     return ExitCode::SUCCESS;
   }
   let scroll = window::current();
+  if !scroll.visible.iter().any(|visible| visible == block) {
+    return ExitCode::SUCCESS;
+  }
   let mut label = messages::text(&format!("header.{block}"), &[]);
   if scroll.first.as_deref() == Some(block) && scroll.above {
     label.push_str(" ▲");
@@ -93,7 +104,7 @@ fn keys() -> ExitCode {
 
 /// The JSON text of a block for Taskbar: the rendered text inside the window, and
 /// an empty text outside it.
-fn json_block(block: &str, render: fn() -> String) -> ExitCode {
+fn json_block(block: &str, render: impl FnOnce() -> String) -> ExitCode {
   let text = if window::shows(block) {
     render()
   } else {
