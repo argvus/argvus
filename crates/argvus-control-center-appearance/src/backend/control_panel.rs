@@ -198,6 +198,22 @@ pub fn move_control_panel_card(card: ControlPanelCard, index: usize) -> Result<(
 /// mutable session component. This keeps rapid card toggles responsive while
 /// preserving the required immediate panel reload.
 pub fn reload_control_panel() -> Result<(), String> {
+  let bars_shell = format!(
+    "{}/taskbar/quickshell/shell.qml",
+    std::env::var("ARGVUS_SYSTEM_CONFIG").unwrap_or_else(|_| "/usr/share/argvus".into())
+  );
+  if let Ok(ipc_output) = SystemProcessRunner.run(
+    &ProcessRequest::new("qs")
+      .arg("-p")
+      .arg(&bars_shell)
+      .arg("ipc")
+      .arg("call")
+      .arg("sidebar")
+      .arg("reloadCards"),
+  ) && ipc_output.status.is_some_and(|status| status == 0)
+  {
+    return Ok(());
+  }
   let output = SystemProcessRunner
     .run(
       &ProcessRequest::new("argvus")

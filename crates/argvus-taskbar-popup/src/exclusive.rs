@@ -29,10 +29,14 @@ pub fn close_competing_surfaces(active: PopupApp, on_closed: impl FnOnce() + 'st
   if active != PopupApp::Calendar {
     commands.push(vec!["argvus", "taskbar-calendar", "hide"]);
   }
+  let bars_shell = format!(
+    "{}/taskbar/quickshell/shell.qml",
+    std::env::var("ARGVUS_SYSTEM_CONFIG").unwrap_or_else(|_| "/usr/share/argvus".into())
+  );
   commands.push(vec![
     "qs",
-    "-c",
-    "argvus-control-panel",
+    "-p",
+    &bars_shell,
     "ipc",
     "call",
     "sidebar",
