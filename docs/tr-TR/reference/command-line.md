@@ -53,6 +53,8 @@ Sürümünüzle birlikte yüklenen liste için `argvus --help` komutunu çalış
 
 Bildirim göstergesi, Dunst’un Rahatsız Etmeyin modunu `argvus notifications taskbar --follow` ile izler. Olay tabanlı izleme kullanılamadığında görev çubuğu mevcut durum komutunu iki saniyede bir çalıştırır.
 
+Kayıt göstergesi durum bilgisini `argvus hypr-screenshot status --taskbar --follow` komutundan alır. Olay izleme kullanılamadığında görev çubuğu mevcut durum komutunu saniyede bir çalıştırır.
+
 Bağımsız değişkenler, boşluklar ve boş değerler de dahil olmak üzere değiştirilmeden iletilir. Standart giriş, çıkış, hata, sinyaller ve çıkış durumu çalışan komuta aittir. Bilinmeyen bir ad, `argvus --help`'yu çalıştırmak için bir ipucu vererek başarısız oluyor. İşlem sırasında çalışan bir komut, değiştirilmiş bir değeri iletmek yerine geçerli UTF-8 olmayan bir bağımsız değişkeni (çıkış durumu 2) reddeder; Ayrı bir programı çalıştıran komutlar, baytları değişmeden alır.
 
 ## Bayraklar ve takma adlar

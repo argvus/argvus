@@ -53,6 +53,8 @@ Ejecute `argvus --help` para la lista instalada con su versión. Los subcomandos
 
 El indicador de notificaciones sigue el modo No molestar de Dunst con `argvus notifications taskbar --follow`. Si la monitorización por eventos no está disponible, la barra de tareas ejecuta el comando de estado existente cada dos segundos.
 
+El indicador de grabación recibe el estado de `argvus hypr-screenshot status --taskbar --follow`. Si la supervisión por eventos no está disponible, la barra de tareas ejecuta el comando de estado existente cada segundo.
+
 Los argumentos se reenvían sin cambios, incluidos los espacios y los valores vacíos. La entrada estándar, la salida, el error, las señales y el estado de salida pertenecen al comando que se ejecuta. Un nombre desconocido falla con una sugerencia de ejecutar `argvus --help`. Un comando que se ejecuta en proceso rechaza un argumento que no es UTF-8 válido (estado de salida 2) en lugar de pasar un valor alterado; los comandos que ejecutan un programa separado reciben los bytes sin cambios.
 
 ## Banderas y alias

@@ -54,6 +54,8 @@ Run `argvus --help` for the list installed with your version. The subcommands ar
 
 The notification indicator reads Do Not Disturb from Dunst using `argvus notifications taskbar --follow`. When event monitoring is unavailable, the taskbar uses the existing status command every two seconds.
 
+The recording indicator receives status from `argvus hypr-screenshot status --taskbar --follow`. When event monitoring is unavailable, the taskbar runs the existing status command once per second.
+
 Arguments are forwarded unchanged, including spaces and empty values. Standard input, output, error, signals and the exit status belong to the command that runs. An unknown name fails with a hint to run `argvus --help`. A command that runs in-process refuses an argument that is not valid UTF-8 (exit status 2) instead of passing an altered value on; commands that run a separate program receive the bytes unchanged.
 
 ## Flags and aliases

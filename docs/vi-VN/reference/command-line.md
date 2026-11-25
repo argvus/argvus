@@ -53,6 +53,8 @@ Chạy `argvus --help` để biết danh sách được cài đặt cùng với 
 
 Chỉ báo thông báo theo dõi chế độ Không làm phiền của Dunst bằng `argvus notifications taskbar --follow`. Khi không thể theo dõi sự kiện, thanh tác vụ chạy lệnh kiểm tra trạng thái hiện có mỗi hai giây.
 
+Chỉ báo ghi hình nhận trạng thái từ `argvus hypr-screenshot status --taskbar --follow`. Khi không thể theo dõi sự kiện, thanh tác vụ chạy lệnh trạng thái hiện có mỗi giây.
+
 Các đối số được chuyển tiếp không thay đổi, bao gồm khoảng trắng và giá trị trống. Đầu vào, đầu ra, lỗi, tín hiệu và trạng thái thoát tiêu chuẩn thuộc về lệnh chạy. Tên không xác định không thành công với gợi ý chạy `argvus --help`. Lệnh chạy trong quá trình sẽ từ chối một đối số không hợp lệ UTF-8 (trạng thái thoát 2) thay vì chuyển một giá trị đã thay đổi vào; các lệnh chạy một chương trình riêng biệt sẽ nhận được các byte không thay đổi.
 
 ## Cờ và bí danh

@@ -18,6 +18,7 @@ pub const TEXT: &str = r#"Usage:
   argvus --focus [argvus focus options]
   argvus focus status --taskbar [--follow]
   argvus notifications taskbar --follow
+  argvus hypr-screenshot status --taskbar --follow
   argvus --clock [argvus clock options]
   argvus --default-apps [control center Apps options]
   argvus --removable-devices [argvus removable-devices options]

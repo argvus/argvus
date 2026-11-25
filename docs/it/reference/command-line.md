@@ -53,6 +53,8 @@ Esegui `argvus --help` per l'elenco installato con la tua versione. I sottocoman
 
 L’indicatore delle notifiche segue la modalità Non disturbare di Dunst con `argvus notifications taskbar --follow`. Se il monitoraggio tramite eventi non è disponibile, la barra delle applicazioni usa il comando di stato esistente ogni due secondi.
 
+L’indicatore di registrazione riceve lo stato da `argvus hypr-screenshot status --taskbar --follow`. Se il monitoraggio degli eventi non è disponibile, la barra delle applicazioni esegue il comando di stato esistente ogni secondo.
+
 Gli argomenti vengono inoltrati senza modifiche, inclusi gli spazi e i valori vuoti. L'input standard, l'output, l'errore, i segnali e lo stato di uscita appartengono al comando che viene eseguito. Un nome sconosciuto fallisce mostrando un suggerimento per eseguire `argvus --help`. Un comando eseguito in-process rifiuta un argomento che non è valido UTF-8 (stato di uscita 2) invece di passare un valore alterato; i comandi che eseguono un programma separato ricevono i byte senza modifiche.
 
 ## Flag e alias

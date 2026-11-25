@@ -368,6 +368,29 @@ fn script_route_forwards_arguments_to_the_packaged_script() {
 }
 
 #[test]
+fn recorder_follow_keeps_custom_screenshot_routes() {
+  let sandbox = Sandbox::new("recorder");
+  let config_home = sandbox.root.join("config");
+  fs::create_dir_all(config_home.join("scripts/argvus")).expect("create user scripts");
+  write_executable(
+    &config_home.join("scripts/argvus/hypr-screenshot.sh"),
+    "for arg do printf '[%s]\\n' \"$arg\"; done\n",
+  );
+  for action in [
+    "--video-full-status",
+    "--video-full",
+    "--video-full-stop",
+    "--image-window",
+  ] {
+    let mut command = sandbox.command(&sandbox.tools_path(), &["hypr-screenshot", action]);
+    command.env("ARGVUS_CONFIG_HOME", &config_home);
+    let output = finish(command, "");
+    assert!(output.status.success());
+    assert_eq!(text(&output.stdout), format!("[{action}]"));
+  }
+}
+
+#[test]
 fn user_script_override_wins_over_the_packaged_script() {
   let sandbox = Sandbox::new("override");
   let system = sandbox.root.join("system");

@@ -18,6 +18,7 @@ mod launcher_picker;
 mod lock_timeout;
 mod notifications_taskbar;
 mod paths;
+mod recording_taskbar;
 mod script;
 mod setup;
 mod usage;
