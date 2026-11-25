@@ -42,9 +42,7 @@ pub fn load() -> PowerState {
     .and_then(|value| value.parse().ok())
     .or_else(hypridle::lock_minutes);
   let lock_supported = lock_minutes.is_some();
-  let keep_awake = canonical_value("/power/keep_awake")
-    .and_then(|value| value.parse().ok())
-    .unwrap_or_else(keep_awake_status);
+  let keep_awake = keep_awake_status();
   let can_suspend = systemctl_can("can-suspend");
   let can_hibernate = systemctl_can("can-hibernate");
   let is_laptop = detect_is_laptop();
@@ -161,21 +159,16 @@ pub fn apply_lock(minutes: u32) -> Result<(), String> {
 }
 
 pub fn set_keep_awake(enabled: bool) -> Result<(), String> {
-  set_keep_awake_using(enabled, &SystemProcessRunner, persist_canonical)
+  set_keep_awake_using(enabled, &SystemProcessRunner)
 }
-fn set_keep_awake_using(
-  enabled: bool,
-  runner: &impl ProcessRunner,
-  persist: impl FnOnce(&str, &str) -> Result<(), String>,
-) -> Result<(), String> {
+fn set_keep_awake_using(enabled: bool, runner: &impl ProcessRunner) -> Result<(), String> {
   let value = if enabled { "on" } else { "off" };
   let output = runner
     .run(&ProcessRequest::new("/usr/share/argvus/power/sh/keep-awake.sh").arg(value))
     .map_err(|error| error.to_string())?;
   (output.status == Some(0) && !output.timed_out && !output.cancelled)
     .then_some(())
-    .ok_or_else(|| terminal_text(String::from_utf8_lossy(&output.stderr).trim()).to_string())?;
-  persist("/power/keep_awake", if enabled { "true" } else { "false" })
+    .ok_or_else(|| terminal_text(String::from_utf8_lossy(&output.stderr).trim()).to_string())
 }
 
 fn canonical_value(pointer: &str) -> Option<String> {
@@ -410,7 +403,7 @@ HandlePowerKey=poweroff
   }
 
   #[test]
-  fn keep_awake_persists_only_after_success() {
+  fn keep_awake_propagates_action_failure() {
     struct Runner(bool);
     impl ProcessRunner for Runner {
       fn run(
@@ -426,15 +419,7 @@ HandlePowerKey=poweroff
         })
       }
     }
-    let writes = std::cell::Cell::new(0);
-    let persist = |pointer: &str, value: &str| {
-      assert_eq!((pointer, value), ("/power/keep_awake", "true"));
-      writes.set(writes.get() + 1);
-      Ok(())
-    };
-    assert!(set_keep_awake_using(true, &Runner(false), persist).is_err());
-    assert_eq!(writes.get(), 0);
-    set_keep_awake_using(true, &Runner(true), persist).unwrap();
-    assert_eq!(writes.get(), 1);
+    assert!(set_keep_awake_using(true, &Runner(false)).is_err());
+    set_keep_awake_using(true, &Runner(true)).unwrap();
   }
 }

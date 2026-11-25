@@ -86,7 +86,7 @@ description: Команда argvus, её подкоманды, флаги, ис�
 
 Эти упакованные скрипты запускаются и используются конфигурацией Hyprland:
 
-`scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `brightness-switch`, `toggle-mode`, `keep-awake`, `hypr-power-menu`.
+`scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `brightness-switch`, `toggle-mode`, `keep-awake [status|status-json|on|off|toggle]`, `hypr-power-menu`.
 
 Скрипт в конфигурации пользователя переопределяет упакованный. Порядок поиска: копия конфигурации пользователя, затем копия данных ARGVUS, затем копия состояния, затем сгенерированная копия, и только потом упакованный файл под `/usr/share/argvus`.
 

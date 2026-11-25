@@ -86,7 +86,7 @@ El Centro de control acepta indicadores de páginas heredadas como primer argume
 
 Estos ejecutan scripts empaquetados y son usados por la configuración de Hyprland:
 
-`scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `brightness-switch`, `toggle-mode`, `keep-awake`, `hypr-power-menu`.
+`scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `brightness-switch`, `toggle-mode`, `keep-awake [status|status-json|on|off|toggle]`, `hypr-power-menu`.
 
 Un script en la configuración del usuario sobrescribe el empaquetado. Orden de búsqueda: la copia de la configuración del usuario, luego la copia de los datos ARGVUS, luego la copia del estado, luego la copia generada, y solo entonces el archivo empaquetado bajo `/usr/share/argvus`.
 

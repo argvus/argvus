@@ -160,3 +160,5 @@ Lifecycle کھلا ہو تو تمام مانیٹروں پر ڈیسک ٹاپ کے
 **ARGVUS موسم** · `argvus weather-location` · `Super + Shift + W` · `Tab` · `↑` `↓` · `Enter` · `/` تلاش کریں · `A` خودکار (جی پی ایچ000) · `Delete` حالیہ مقامات صاف کریں · `Esc` بند کریں
 
 **کارروائیاں** → **درجہ حرارت کی اکائی** · `Enter` · °C ↔ °F
+
+`argvus keep-awake [status|status-json|on|off|toggle]`

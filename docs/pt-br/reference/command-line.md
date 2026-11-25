@@ -87,7 +87,7 @@ O Centro de Controle aceita flags de página antigas como primeiro argumento e a
 
 Estes executam scripts empacotados e são usados pela configuração do Hyprland:
 
-`scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `brightness-switch`, `toggle-mode`, `keep-awake`, `hypr-power-menu`.
+`scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `brightness-switch`, `toggle-mode`, `keep-awake [status|status-json|on|off|toggle]`, `hypr-power-menu`.
 
 Um script na configuração do usuário substitui o empacotado. Ordem de busca: a cópia da configuração do usuário, depois a cópia de dados do ARGVUS, depois a cópia de estado, depois a cópia gerada, e só então o arquivo empacotado em `/usr/share/argvus`.
 

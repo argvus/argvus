@@ -86,7 +86,7 @@ Das Kontrollzentrum akzeptiert Legacy-Seitenflags als erstes Argument und ordnet
 
 Diese führen verpackte Skripte aus und werden von der Hyprland-Konfiguration verwendet:
 
-`scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `brightness-switch`, `toggle-mode`, `keep-awake`, `hypr-power-menu`.
+`scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `brightness-switch`, `toggle-mode`, `keep-awake [status|status-json|on|off|toggle]`, `hypr-power-menu`.
 
 Ein Skript in der Benutzerkonfiguration überschreibt das verpackte Skript. Suchreihenfolge: die Kopie der Benutzerkonfiguration, dann die ARGVUS-Datenkopie, dann die Statuskopie, dann die generierte Kopie, und erst danach die verpackte Datei unter `/usr/share/argvus`.
 

@@ -85,7 +85,7 @@ Trung tâm điều khiển chấp nhận cờ trang cũ làm đối số đầu 
 
 Các tập lệnh này chạy các tập lệnh đóng gói và được cấu hình Hyprland sử dụng:
 
-`scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `brightness-switch`, `toggle-mode`, `keep-awake`, `hypr-power-menu`.
+`scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `brightness-switch`, `toggle-mode`, `keep-awake [status|status-json|on|off|toggle]`, `hypr-power-menu`.
 
 Một tập lệnh trong cấu hình của người dùng sẽ ghi đè tập lệnh được đóng gói. Thứ tự tra cứu: bản sao cấu hình của người dùng, sau đó là bản sao dữ liệu ARGVUS, sau đó là bản sao trạng thái, sau đó là bản sao được tạo và chỉ sau đó là tệp được đóng gói trong `/usr/share/argvus`.
 

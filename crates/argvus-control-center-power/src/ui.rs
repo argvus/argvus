@@ -279,9 +279,6 @@ impl PowerApp {
   }
 
   fn apply_keep_awake(&mut self, enabled: bool) {
-    if let Some(state) = &mut self.state {
-      state.keep_awake = enabled;
-    }
     let description = tr(
       self.lang,
       if enabled {

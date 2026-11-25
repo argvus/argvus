@@ -85,7 +85,7 @@ description: أمر argvus وأوامره الفرعية والأعلام الم
 
 تعمل هذه البرامج النصية المجمعة ويتم استخدامها بواسطة تكوين Hyprland:
 
-`ARGVUS Keybindings-hypr`، `ARGVUS Keybindings-launcher`، `scratchpad`، `hypr-screenshot`، `spaces-switch`، `emoji-picker`، `toggle-sidebar`، `brightness-switch`، `toggle-mode`، `keep-awake`، `hypr-power-menu`.
+`ARGVUS Keybindings-hypr`، `ARGVUS Keybindings-launcher`، `scratchpad`، `hypr-screenshot`، `spaces-switch`، `emoji-picker`، `toggle-sidebar`، `brightness-switch`، `toggle-mode`، `keep-awake [status|status-json|on|off|toggle]`، `hypr-power-menu`.
 
 يتجاوز البرنامج النصي الموجود في تكوين المستخدم البرنامج النصي المعبأ. ترتيب البحث: نسخة تكوين المستخدم، ثم نسخة بيانات ARGVUS، ثم نسخة الحالة، ثم النسخة التي تم إنشاؤها، وبعد ذلك فقط الملف المعبأ تحت `/usr/share/argvus`.
 

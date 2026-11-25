@@ -80,7 +80,7 @@ description: argvus कमांड, इसके उपकमांड, की�
 
 ये पैकेज्ड स्क्रिप्ट चलाते हैं और हाइप्रलैंड कॉन्फ़िगरेशन द्वारा उपयोग किए जाते हैं:
 
-`scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `brightness-switch`, `toggle-mode`, `keep-awake`, `hypr-power-menu`।
+`scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `brightness-switch`, `toggle-mode`, `keep-awake [status|status-json|on|off|toggle]`, `hypr-power-menu`।
 
 उपयोगकर्ता के कॉन्फ़िगरेशन में एक स्क्रिप्ट पैकेज्ड स्क्रिप्ट को ओवरराइड करती है। लुकअप ऑर्डर hyprland. खोज क्रम: उपयोगकर्ता की कॉन्फ़िगरेशन कॉपी, फिर ARGVUS डेटा कॉपी, फिर स्टेट कॉपी, फिर जेनरेट की गई कॉपी, और उसके बाद ही  `hyprland.lua` `/usr/share/argvus` के तहत पैक की गई फ़ाइल।
 

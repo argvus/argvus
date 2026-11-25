@@ -86,7 +86,7 @@ Le centre de contrôle accepte les anciens indicateurs de page comme premier arg
 
 Ces scripts emballés sont exécutés et utilisés par la configuration de Hyprland :
 
-`scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `brightness-switch`, `toggle-mode`, `keep-awake`, `hypr-power-menu`.
+`scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `brightness-switch`, `toggle-mode`, `keep-awake [status|status-json|on|off|toggle]`, `hypr-power-menu`.
 
 Un script dans la configuration de l'utilisateur remplace celui emballé. L'ordre de recherche est le même que `argvus` : la copie de la configuration de l'utilisateur, puis la copie des données ARGVUS, puis la copie d'état, puis la copie générée, et seulement ensuite le fichier emballé sous `/usr/share/argvus`.
 

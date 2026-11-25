@@ -158,3 +158,5 @@ Lifecycle খোলা থাকলে সব মনিটরে ডেস্ক
 **ARGVUS আবহাওয়া** · `argvus weather-location` · `Super + Shift + W` · `Tab` · `↑` `↓` · `Enter` · `/` খুঁজুন · `A` স্বয়ংক্রিয় · `Delete` সাম্প্রতিক স্থান মুছুন · `Esc` বন্ধ করুন
 
 **কার্যক্রম** → **তাপমাত্রার একক** · `Enter` · °C ↔ °F
+
+`argvus keep-awake [status|status-json|on|off|toggle]`

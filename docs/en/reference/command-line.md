@@ -87,7 +87,7 @@ The Control Center accepts legacy page flags as its first argument and maps them
 
 These run packaged scripts and are used by the Hyprland configuration:
 
-`scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `brightness-switch`, `toggle-mode`, `keep-awake`, `hypr-power-menu`.
+`scratchpad`, `hypr-screenshot`, `spaces-switch`, `toggle-sidebar`, `brightness-switch`, `toggle-mode`, `keep-awake [status|status-json|on|off|toggle]`, `hypr-power-menu`.
 
 A script in the user's configuration overrides the packaged one. Lookup order: the user's config copy, then the ARGVUS data copy, then the state copy, then the generated copy, and only then the packaged file under `/usr/share/argvus`.
 
