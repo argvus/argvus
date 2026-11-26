@@ -81,4 +81,4 @@ argvus taskbar-calendar service
 
 ## 任务栏预览
 
-Focus 默认内嵌在任务栏中。若要同时试用内嵌的 Clock 和 Calendar 面板，请使用 `ARGVUS_MORPHING_PREVIEW=1` 启动任务栏的 Quickshell 进程。未指定坐标的命令使用当前获得焦点的显示器。内嵌面板使用任务栏主题和应用偏好设置。未启用预览标志时，Clock 和 Calendar 继续使用各自的 GTK 窗口；当内嵌面板无法连接时，GTK 仍作为备用方案。
+Focus 默认内嵌在任务栏中。若要同时试用内嵌的 Clock 和 Calendar 面板，请使用 `ARGVUS_MORPHING_PREVIEW=1` 启动任务栏的 Quickshell 进程。未指定坐标的命令使用当前获得焦点的显示器。内嵌面板使用任务栏主题和应用偏好设置。未启用预览标志时，Clock 和 Calendar 继续使用各自的 GTK 窗口；当内嵌面板无法连接时，GTK 仍作为备用方案。 在预览模式下，将指针悬停在日期上会打开 Calendar Morphing 面板；点击日期可切换其显示状态。指针离开按钮和面板五秒后，面板会关闭。在 Sticky 模式下，元素使用直角，除非 Control Center 的全局圆角设置启用了圆角。

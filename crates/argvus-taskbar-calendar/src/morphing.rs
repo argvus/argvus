@@ -416,12 +416,18 @@ impl Session {
       .iter()
       .map(|error| self.i18n.text(*error))
       .collect();
+    let reminder_count = self
+      .events
+      .iter()
+      .map(|event| event.reminders.len())
+      .sum::<usize>();
     json!({
       "labels": labels(self.i18n), "rtl": self.language.is_rtl(),
       "title": self.i18n.month_title(self.month),
       "agenda": self.i18n.agenda_date(self.selected),
       "weekdays": weekday_labels(self.i18n.weekday_headers(), self.settings.week_start()),
       "days": days, "events": events, "events_enabled": self.enabled,
+      "event_count": self.events.len(), "reminder_count": reminder_count,
       "errors": errors, "daily_error": self.errors.iter().any(|error| *error != Text::MonthlyReadFailed),
       "can_add": self.enabled && drafts::can_create_event(self.selected),
       "settings": SettingsDraft::from_config(&self.settings, self.enabled),
