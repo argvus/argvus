@@ -63,4 +63,4 @@ Anwendungstexte folgen Applications Font unter Control Center → Appearance →
 
 ## Taskbar-Vorschau
 
-Focus ist standardmäßig in die Taskbar integriert. Um zusätzlich die integrierten Ansichten von Clock und Calendar auszuprobieren, den Quickshell-Prozess der Taskbar mit `ARGVUS_MORPHING_PREVIEW=1` starten. Ohne Koordinaten öffnen Befehle den Bereich auf dem fokussierten Bildschirm. Die integrierte Ansicht verwendet das Taskbar-Theme und die App-Einstellungen. Ohne das Vorschau-Flag verwenden Clock und Calendar weiterhin ihre GTK-Fenster, und GTK bleibt die Ausweichlösung, wenn eine integrierte Ansicht keine Verbindung herstellen kann.
+Focus und Clock sind standardmäßig in die Taskbar integriert. Bewege den Mauszeiger über die Uhrzeit, um Clock zu öffnen. Für den integrierten Calendar starte Quickshell für die Taskbar mit `ARGVUS_MORPHING_PREVIEW=1`. Die integrierten Ansichten übernehmen das Theme und die Anwendungseinstellungen. Befehle ohne Koordinaten verwenden den fokussierten Monitor. Schlägt die Verbindung fehl, öffnet sich das GTK-Fenster.

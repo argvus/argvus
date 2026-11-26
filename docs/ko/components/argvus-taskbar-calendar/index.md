@@ -76,4 +76,4 @@ argvus taskbar-calendar service
 
 ## 작업 표시줄 미리 보기
 
-Focus는 기본적으로 작업 표시줄에 내장됩니다. Clock과 Calendar의 내장 패널도 사용해 보려면 작업 표시줄의 Quickshell을 `ARGVUS_MORPHING_PREVIEW=1`로 시작하세요. 좌표가 없는 명령은 포커스된 모니터에서 열립니다. 내장 패널은 작업 표시줄 테마와 앱 설정을 따릅니다. 미리 보기 플래그가 없으면 Clock과 Calendar는 계속 GTK 창을 사용하며, 내장 패널이 연결할 수 없을 때 GTK가 대체 수단이 됩니다. 미리 보기 모드에서 날짜에 포인터를 올리면 Calendar Morphing 패널이 열리고, 날짜를 클릭하면 패널이 전환됩니다. 포인터가 버튼과 패널을 모두 벗어난 뒤 5초 후 닫힙니다. Sticky 모드에서는 Control Center의 전역 모서리 둥글기 설정이 적용되지 않는 한 요소 모서리가 직각입니다.
+Focus와 Clock은 기본적으로 작업 표시줄에 내장됩니다. 시간 위에 포인터를 올리면 Clock이 열립니다. 내장 Calendar를 사용해 보려면 작업 표시줄의 Quickshell을 `ARGVUS_MORPHING_PREVIEW=1`로 시작하세요. 패널은 작업 표시줄 테마와 앱 설정을 따릅니다. 좌표를 지정하지 않은 명령은 활성 모니터에서 실행됩니다. 연결에 실패하면 GTK 창이 열립니다. 미리 보기 모드에서 날짜에 포인터를 올리면 Calendar Morphing 패널이 열리고, 날짜를 클릭하면 패널이 전환됩니다. 포인터가 버튼과 패널을 모두 벗어난 뒤 5초 후 닫힙니다. Sticky 모드에서는 Control Center의 전역 모서리 둥글기 설정이 적용되지 않는 한 요소 모서리가 직각입니다.

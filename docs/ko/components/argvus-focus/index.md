@@ -63,4 +63,4 @@ ARGVUS Focus, ARGVUS Clock 및 제어판은 동일한 화면 가장자리를 공
 
 ## 작업 표시줄 미리 보기
 
-Focus는 기본적으로 작업 표시줄에 내장됩니다. Clock과 Calendar의 내장 패널도 사용해 보려면 작업 표시줄의 Quickshell을 `ARGVUS_MORPHING_PREVIEW=1`로 시작하세요. 좌표가 없는 명령은 포커스된 모니터에서 열립니다. 내장 패널은 작업 표시줄 테마와 앱 설정을 따릅니다. 미리 보기 플래그가 없으면 Clock과 Calendar는 계속 GTK 창을 사용하며, 내장 패널이 연결할 수 없을 때 GTK가 대체 수단이 됩니다.
+Focus와 Clock은 기본적으로 작업 표시줄에 내장됩니다. 시간 위에 포인터를 올리면 Clock이 열립니다. 내장 Calendar를 사용해 보려면 작업 표시줄의 Quickshell을 `ARGVUS_MORPHING_PREVIEW=1`로 시작하세요. 패널은 작업 표시줄 테마와 앱 설정을 따릅니다. 좌표를 지정하지 않은 명령은 활성 모니터에서 실행됩니다. 연결에 실패하면 GTK 창이 열립니다.

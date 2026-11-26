@@ -76,4 +76,4 @@ Uygulama metni Control Center → Appearance → Desktop Style → Fonts içinde
 
 ## Görev çubuğu önizlemesi
 
-Focus varsayılan olarak görev çubuğuna yerleşiktir. Yerleşik Clock ve Calendar panellerini de denemek için görev çubuğunun Quickshell sürecini `ARGVUS_MORPHING_PREVIEW=1` ile başlatın. Koordinat verilmeyen komutlar odaktaki monitörü kullanır. Yerleşik paneller görev çubuğu temasını ve uygulama ayarlarını izler. Önizleme bayrağı olmadan Clock ve Calendar GTK pencerelerini kullanmaya devam eder ve yerleşik panel bağlanamadığında GTK yedek olarak kalır.
+Focus ve Clock varsayılan olarak görev çubuğuna yerleşiktir. Clock’u açmak için işaretçiyi saatin üzerine getirin. Yerleşik Calendar’ı denemek için görev çubuğunun Quickshell sürecini `ARGVUS_MORPHING_PREVIEW=1` ile başlatın. Paneller görev çubuğu temasını ve uygulama tercihlerini kullanır. Koordinat verilmeyen komutlar etkin monitörü kullanır. Bağlantı başarısız olursa GTK penceresi açılır.

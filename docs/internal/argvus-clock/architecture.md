@@ -77,4 +77,4 @@ drivers; the card still renders.
 
 ## Embedded Taskbar panels
 
-The Taskbar preview attaches over the private `clock-morphing.sock` socket in the ARGVUS runtime directory. The adapter runs in the existing GApplication context and uses the same alarm book, timer, settings and ring queue. The ring card and notifications remain independent of the QML view. Alarm form submissions use the same persistence path as GTK.
+The embedded Taskbar Clock attaches over the private `clock-morphing.sock` socket in the ARGVUS runtime directory. The adapter runs in the existing GApplication context and uses the same alarm book, timer, settings and ring queue. The ring card and notifications remain independent of the QML view. Alarm form submissions use the same persistence path as GTK.

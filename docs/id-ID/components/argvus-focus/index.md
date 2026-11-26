@@ -63,4 +63,4 @@ Teks aplikasi mengikuti Applications Font di Control Center → Appearance → D
 
 ## Pratinjau bilah tugas
 
-Focus terintegrasi ke bilah tugas secara bawaan. Untuk mencoba panel Clock dan Calendar yang terintegrasi juga, jalankan Quickshell bilah tugas dengan `ARGVUS_MORPHING_PREVIEW=1`. Perintah tanpa koordinat memakai monitor yang sedang aktif. Panel terintegrasi mengikuti tema bilah tugas dan preferensi aplikasi. Tanpa flag pratinjau, Clock dan Calendar tetap memakai jendela GTK, dan GTK tetap menjadi cadangan saat panel terintegrasi tidak dapat terhubung.
+Focus dan Clock terintegrasi ke bilah tugas secara bawaan. Arahkan penunjuk ke waktu untuk membuka Clock. Untuk mencoba Calendar terintegrasi, jalankan Quickshell bilah tugas dengan `ARGVUS_MORPHING_PREVIEW=1`. Panel mengikuti tema bilah tugas dan preferensi aplikasi. Perintah tanpa koordinat menggunakan monitor aktif. Jika koneksi gagal, jendela GTK akan terbuka.

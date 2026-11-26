@@ -65,4 +65,4 @@ Application text follows Applications Font in Control Center → Appearance → 
 
 ## Taskbar preview
 
-Focus is embedded in the taskbar by default. To also try the embedded Clock and Calendar panels, start the Taskbar’s Quickshell process with `ARGVUS_MORPHING_PREVIEW=1`. Commands without coordinates use the focused monitor. Embedded panels use the Taskbar theme and application preferences. Without the preview flag, Clock and Calendar keep using their GTK windows, and GTK remains the fallback whenever an embedded panel cannot attach.
+Focus and Clock are embedded in the Taskbar by default. Hover over the time to open Clock. To try the embedded Calendar, start the Taskbar’s Quickshell process with `ARGVUS_MORPHING_PREVIEW=1`. Embedded panels use the Taskbar theme and app preferences. Commands without coordinates use the focused monitor. GTK remains available when an embedded panel cannot connect.
