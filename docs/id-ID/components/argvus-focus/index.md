@@ -60,3 +60,7 @@ Warnanya mengikuti tema ARGVUS aktif dan warna highlight (konsumen tema `time`).
 Kalender bilah tugas, Fokus ARGVUS, Jam ARGVUS, dan Panel Kontrol saling eksklusif: membuka satu akan menutup yang lain.
 
 Teks aplikasi mengikuti Applications Font di Control Center → Appearance → Desktop Style → Fonts. GTK mewarisi gtk-font-name; ukuran angka dan judul dipertahankan. Peluncur membaca apps_family yang dihasilkan dan memantau perubahan.
+
+## Pratinjau bilah tugas
+
+Focus terintegrasi ke bilah tugas secara bawaan. Untuk mencoba panel Clock dan Calendar yang terintegrasi juga, jalankan Quickshell bilah tugas dengan `ARGVUS_MORPHING_PREVIEW=1`. Perintah tanpa koordinat memakai monitor yang sedang aktif. Panel terintegrasi mengikuti tema bilah tugas dan preferensi aplikasi. Tanpa flag pratinjau, Clock dan Calendar tetap memakai jendela GTK, dan GTK tetap menjadi cadangan saat panel terintegrasi tidak dapat terhubung.

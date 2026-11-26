@@ -61,6 +61,8 @@ changes in the owning module repository.
 | `make set-permissions` | Makes the shell scripts executable. |
 | `make clean` | Removes `build/`. |
 
+Cargo runs each test from its crate directory. Resolve shipped test fixtures from that directory at runtime so the packaging cache can reuse test binaries across source extractions.
+
 `make help` also lists `make uninstall`, which has no target in this repository.
 
 `tools/sh/validate.sh` requires `bash`, `makepkg` and `shellcheck`. It runs

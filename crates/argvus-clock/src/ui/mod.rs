@@ -4,12 +4,14 @@
 
 mod alarm_editor;
 mod alarms_page;
+pub(crate) use alarms_page::repeat_text as alarm_repeat_text;
 mod clock_page;
 mod ring_window;
 mod settings_page;
 mod stopwatch_page;
 mod timer_page;
 mod world_page;
+pub(crate) use world_page::offset_text as world_offset_text;
 
 use std::cell::Cell;
 use std::rc::Rc;

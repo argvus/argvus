@@ -1,6 +1,8 @@
 //! Unix socket protocol that lets a new launch control the running popup (toggle, show, hide, reload).
 
-use std::io::{BufRead, BufReader, Write};
+use std::fs::{File, OpenOptions};
+use std::io::{self, BufRead, BufReader, Write};
+use std::os::unix::fs::FileTypeExt;
 use std::os::unix::net::{UnixListener, UnixStream};
 use std::path::PathBuf;
 use std::time::Duration;
@@ -118,36 +120,107 @@ pub fn notify(paths: &Paths, message: IpcMessage) -> bool {
   !response.is_empty()
 }
 
-/// Bind the IPC socket for this instance. Returns None when another
-/// instance is already running.
-pub fn listen(paths: &Paths) -> Option<UnixListener> {
-  let path = socket_path(paths);
-  if let Ok(listener) = UnixListener::bind(&path) {
-    return Some(listener);
-  }
-  // The socket file exists: either a live daemon or a stale file.
-  if UnixStream::connect(&path).is_ok() {
-    return None;
-  }
-  let _ = std::fs::remove_file(&path);
-  UnixListener::bind(&path).ok()
+/// Owns the legacy window socket across stale-file recovery and shutdown.
+pub struct WindowListener {
+  socket: UnixListener,
+  path: PathBuf,
+  _lock: File,
 }
 
-/// Serve commands from the IPC socket on a background thread, dispatching
-/// each received command to `on_command`.
-pub fn serve(listener: UnixListener, on_command: impl Fn(IpcMessage) + Send + 'static) {
-  std::thread::spawn(move || {
-    for stream in listener.incoming().flatten() {
-      let mut stream = stream;
-      let mut line = String::new();
-      if BufReader::new(&mut stream).read_line(&mut line).is_ok() {
-        if let Some(message) = IpcMessage::parse(&line) {
-          on_command(message);
+impl WindowListener {
+  fn incoming(&self) -> std::os::unix::net::Incoming<'_> {
+    self.socket.incoming()
+  }
+}
+
+impl Drop for WindowListener {
+  fn drop(&mut self) {
+    let _ = std::fs::remove_file(&self.path);
+  }
+}
+
+/// Bind the IPC socket for this instance. Returns None when another
+/// instance is already running.
+pub fn listen(paths: &Paths) -> Option<WindowListener> {
+  let path = socket_path(paths);
+  let lock = OpenOptions::new()
+    .create(true)
+    .truncate(false)
+    .write(true)
+    .open(path.with_extension("lock"))
+    .ok()?;
+  lock.try_lock().ok()?;
+  let socket = match UnixListener::bind(&path) {
+    Ok(listener) => listener,
+    Err(error) if error.kind() == io::ErrorKind::AddrInUse => {
+      if !path.symlink_metadata().ok()?.file_type().is_socket()
+        || !UnixStream::connect(&path)
+          .is_err_and(|error| error.kind() == io::ErrorKind::ConnectionRefused)
+      {
+        return None;
+      }
+      std::fs::remove_file(&path).ok()?;
+      UnixListener::bind(&path).ok()?
+    }
+    Err(_) => return None,
+  };
+  Some(WindowListener {
+    socket,
+    path,
+    _lock: lock,
+  })
+}
+
+/// Serve commands from the IPC socket on a background thread.
+pub fn serve(listener: WindowListener, on_command: impl Fn(IpcMessage) + Send + 'static) {
+  let _stop = serve_until(listener, move |message| {
+    on_command(message);
+    true
+  });
+}
+
+/// Returns a handle that stops the listener and releases its socket path.
+pub fn serve_until(
+  listener: WindowListener,
+  on_command: impl Fn(IpcMessage) -> bool + Send + 'static,
+) -> impl FnOnce() {
+  use std::sync::Arc;
+  use std::sync::atomic::{AtomicBool, Ordering};
+
+  let path = listener.path.clone();
+  let stopped = Arc::new(AtomicBool::new(false));
+  let worker = std::thread::spawn({
+    let stopped = Arc::clone(&stopped);
+    move || {
+      for stream in listener.incoming().flatten() {
+        if stopped.load(Ordering::Acquire) {
+          break;
         }
-        let _ = writeln!(stream, "ok");
+        let mut stream = stream;
+        let _ = stream.set_read_timeout(Some(Duration::from_millis(500)));
+        let _ = stream.set_write_timeout(Some(Duration::from_millis(500)));
+        let mut line = String::new();
+        use std::io::Read as _;
+        if BufReader::new(&mut stream)
+          .take(256)
+          .read_line(&mut line)
+          .is_ok()
+        {
+          if let Some(message) = IpcMessage::parse(&line)
+            && !on_command(message)
+          {
+            break;
+          }
+          let _ = writeln!(stream, "ok");
+        }
       }
     }
   });
+  move || {
+    stopped.store(true, Ordering::Release);
+    let _ = UnixStream::connect(path);
+    let _ = worker.join();
+  }
 }
 
 #[cfg(test)]

@@ -60,3 +60,7 @@ argvus focus status --taskbar --follow  # stream status changes for Taskbar
 تقويم شريط المهام وتركيز ARGVUS وساعة ARGVUS ولوحة التحكم يتعارضان: فتح أحدهما يغلق الآخر.
 
 يتبع نص التطبيقات Applications Font في Control Center → Appearance → Desktop Style → Fonts. ترث تطبيقات GTK قيمة gtk-font-name مع الحفاظ على أحجام الأرقام والعناوين. يقرأ المشغّل apps_family المولّد ويتابع التغييرات.
+
+## المعاينة في شريط المهام
+
+Focus مدمج في شريط المهام افتراضيًا. لتجربة الواجهات المدمجة لـ Clock وCalendar أيضًا، شغّل Quickshell الخاص بشريط المهام مع `ARGVUS_MORPHING_PREVIEW=1`. تُفتح الأوامر على الشاشة النشطة عند غياب الإحداثيات. يستخدم العرض المدمج سمة شريط المهام وإعدادات التطبيق. بدون علامة المعاينة، يظل Clock وCalendar يستخدمان نوافذ GTK، وتبقى GTK الخيار البديل عندما يتعذّر على الواجهة المدمجة الاتصال.

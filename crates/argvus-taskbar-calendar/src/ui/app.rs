@@ -34,10 +34,10 @@ use super::settings::{
 };
 
 mod build;
-mod drafts;
+pub(crate) mod drafts;
 mod form_widgets;
 mod popup;
-mod render;
+pub(crate) mod render;
 mod styling;
 
 pub(crate) use argvus_taskbar_popup::geometry::current_pointer_position;

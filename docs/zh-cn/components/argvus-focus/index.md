@@ -60,3 +60,7 @@ ARGVUS Focus、ARGVUS Clock 和控制面板共享相同的屏幕边缘。打开 
 任务栏日历、ARGVUS 焦点、ARGVUS 时钟和控制面板互斥：打开其中一个会关闭其他所有组件。
 
 应用文本使用 Control Center → Appearance → Desktop Style → Fonts 中的 Applications Font。GTK 应用继承 gtk-font-name，保留数字和标题的独立字号。启动器读取生成的 apps_family 并监听更改。
+
+## 任务栏预览
+
+Focus 默认内嵌在任务栏中。若要同时试用内嵌的 Clock 和 Calendar 面板，请使用 `ARGVUS_MORPHING_PREVIEW=1` 启动任务栏的 Quickshell 进程。未指定坐标的命令使用当前获得焦点的显示器。内嵌面板使用任务栏主题和应用偏好设置。未启用预览标志时，Clock 和 Calendar 继续使用各自的 GTK 窗口；当内嵌面板无法连接时，GTK 仍作为备用方案。

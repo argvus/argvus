@@ -74,3 +74,7 @@ Os textos das aplicações seguem Applications Font em Control Center → Appear
 ## Morphing Tooltips
 
 `argvus clock --tooltip`
+
+## Pré-visualização na barra de tarefas
+
+O Focus é integrado na barra de tarefas por predefinição. Para experimentar também os painéis integrados do Clock e Calendar, inicie o Quickshell da barra de tarefas com `ARGVUS_MORPHING_PREVIEW=1`. Os comandos sem coordenadas usam o monitor com foco. Os painéis integrados seguem o tema da barra e as preferências da aplicação. Sem a flag de pré-visualização, o Clock e o Calendar continuam a usar as janelas GTK, e o GTK continua a ser o recurso sempre que um painel integrado não consegue ligar-se.

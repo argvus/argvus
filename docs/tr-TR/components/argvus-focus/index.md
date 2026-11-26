@@ -60,3 +60,7 @@ Renkler etkin ARGVUS temasını takip eder ve rengi vurgular (tema tüketicisi `
 Görev çubuğu takvimi, ARGVUS Focus, ARGVUS Saati ve Kontrol Paneli birbirini dışlar: birinin açılması diğerlerini kapatır.
 
 Uygulama metni Control Center → Appearance → Desktop Style → Fonts içindeki Applications Font ayarını izler. GTK gtk-font-name değerini devralır; sayı ve başlık boyutları korunur. Başlatıcı üretilen apps_family değerini okur ve değişiklikleri izler.
+
+## Görev çubuğu önizlemesi
+
+Focus varsayılan olarak görev çubuğuna yerleşiktir. Yerleşik Clock ve Calendar panellerini de denemek için görev çubuğunun Quickshell sürecini `ARGVUS_MORPHING_PREVIEW=1` ile başlatın. Koordinat verilmeyen komutlar odaktaki monitörü kullanır. Yerleşik paneller görev çubuğu temasını ve uygulama ayarlarını izler. Önizleme bayrağı olmadan Clock ve Calendar GTK pencerelerini kullanmaya devam eder ve yerleşik panel bağlanamadığında GTK yedek olarak kalır.

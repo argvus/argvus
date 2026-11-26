@@ -60,3 +60,7 @@ Les couleurs suivent le thème actif ARGVUS et la couleur de surlignage (consomm
 Le calendrier de la barre des tâches, ARGVUS Focus, ARGVUS Clock et le Panneau de configuration sont mutuellement exclusifs : ouvrir l'un ferme les autres.
 
 Le texte suit Applications Font dans Control Center → Appearance → Desktop Style → Fonts. Les applications GTK héritent de gtk-font-name ; les tailles des nombres et titres sont conservées. Le lanceur lit apps_family généré et suit les modifications.
+
+## Aperçu dans la barre des tâches
+
+Focus est intégré à la barre des tâches par défaut. Pour essayer également les panneaux intégrés de Clock et Calendar, lancez Quickshell de la barre des tâches avec `ARGVUS_MORPHING_PREVIEW=1`. Les commandes sans coordonnées utilisent l’écran actif. Les panneaux intégrés suivent le thème de la barre et les préférences de l’application. Sans l’option d’aperçu, Clock et Calendar continuent d’utiliser leurs fenêtres GTK, et GTK reste la solution de secours lorsqu’un panneau intégré ne peut pas se connecter.

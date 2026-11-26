@@ -60,3 +60,7 @@ Die Farben folgen dem aktiven ARGVUS-Thema und der Hervorhebungsfarbe (Themenver
 Die Taskleisten-Kalender, ARGVUS Focus, ARGVUS-Uhr und das Kontrollfeld sind gegenseitig exklusiv: Das Öffnen eines Elements schließt die anderen.
 
 Anwendungstexte folgen Applications Font unter Control Center → Appearance → Desktop Style → Fonts. GTK-Anwendungen erben gtk-font-name; Größen für Zahlen und Überschriften bleiben erhalten. Der Launcher liest das erzeugte apps_family und verfolgt Änderungen.
+
+## Taskbar-Vorschau
+
+Focus ist standardmäßig in die Taskbar integriert. Um zusätzlich die integrierten Ansichten von Clock und Calendar auszuprobieren, den Quickshell-Prozess der Taskbar mit `ARGVUS_MORPHING_PREVIEW=1` starten. Ohne Koordinaten öffnen Befehle den Bereich auf dem fokussierten Bildschirm. Die integrierte Ansicht verwendet das Taskbar-Theme und die App-Einstellungen. Ohne das Vorschau-Flag verwenden Clock und Calendar weiterhin ihre GTK-Fenster, und GTK bleibt die Ausweichlösung, wenn eine integrierte Ansicht keine Verbindung herstellen kann.

@@ -849,6 +849,7 @@ dependencies = [
  "argvus-i18n-core",
  "argvus-taskbar-popup",
  "chrono",
+ "chrono-tz",
  "clap",
  "env_logger",
  "gtk4",
@@ -875,6 +876,7 @@ version = "0.1.0"
 dependencies = [
  "gtk4",
  "gtk4-layer-shell",
+ "serde",
  "serde_json",
 ]
 

@@ -6,7 +6,8 @@ use gtk::prelude::*;
 use crate::config::Settings;
 use crate::i18n::{I18n, Text};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
+#[serde(deny_unknown_fields)]
 pub struct SettingsDraft {
   pub font_family: String,
   pub font_size: u32,

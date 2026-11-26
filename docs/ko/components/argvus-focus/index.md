@@ -60,3 +60,7 @@ ARGVUS Focus, ARGVUS Clock 및 제어판은 동일한 화면 가장자리를 공
 작업 표시줄 달력, ARGVUS 집중, ARGVUS 시계 및 제어판은 상호 배타적입니다: 하나를 열면 다른 것들은 닫힙니다.
 
 앱 텍스트는 Control Center → Appearance → Desktop Style → Fonts의 Applications Font를 따릅니다. GTK는 gtk-font-name을 상속하며 숫자와 제목 크기는 유지합니다. 런처는 생성된 apps_family를 읽고 변경을 감시합니다.
+
+## 작업 표시줄 미리 보기
+
+Focus는 기본적으로 작업 표시줄에 내장됩니다. Clock과 Calendar의 내장 패널도 사용해 보려면 작업 표시줄의 Quickshell을 `ARGVUS_MORPHING_PREVIEW=1`로 시작하세요. 좌표가 없는 명령은 포커스된 모니터에서 열립니다. 내장 패널은 작업 표시줄 테마와 앱 설정을 따릅니다. 미리 보기 플래그가 없으면 Clock과 Calendar는 계속 GTK 창을 사용하며, 내장 패널이 연결할 수 없을 때 GTK가 대체 수단이 됩니다.

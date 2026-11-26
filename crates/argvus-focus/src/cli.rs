@@ -12,6 +12,8 @@ use clap::Parser;
   version
 )]
 pub struct Cli {
+  #[arg(long, hide = true, conflicts_with_all = ["toggle", "start", "pause", "x"])]
+  pub morphing_session: bool,
   /// Hide the window if it is visible, show it otherwise.
   #[arg(long)]
   pub toggle: bool,
@@ -69,6 +71,7 @@ mod tests {
     assert_eq!(
       parse(&[]).unwrap(),
       Cli {
+        morphing_session: false,
         toggle: false,
         start: false,
         pause: false,

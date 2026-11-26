@@ -91,3 +91,7 @@ Os textos dos aplicativos seguem Applications Font em Control Center → Appeara
 ## Morphing Tooltips
 
 `argvus taskbar-calendar tooltip`
+
+## Prévia na Taskbar
+
+O Focus é integrado à Taskbar por padrão. Para experimentar também os painéis integrados de Clock e Calendar, inicie o Quickshell da Taskbar com `ARGVUS_MORPHING_PREVIEW=1`. Comandos sem coordenadas usam o monitor em foco. Os painéis integrados usam o tema da Taskbar e as preferências do aplicativo. Sem a flag de prévia, Clock e Calendar continuam usando as janelas GTK, e o GTK permanece como fallback sempre que um painel integrado não conseguir conectar.

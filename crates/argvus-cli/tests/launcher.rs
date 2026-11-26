@@ -37,7 +37,7 @@ fn universal_session_isolates_failed_providers_and_keeps_query_sequences() {
   );
   // A provider failure must not prevent other sources from answering queries.
   executable(&commands.join("ssh"), "#!/bin/sh\nexit 1\n");
-  let catalogs = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../resources/locales");
+  let catalogs = Path::new("../../resources/locales");
   let diagnostics = root.join("launcher.stderr");
   let mut child = Command::new(env!("CARGO_BIN_EXE_argvus"))
     .args(["launcher-engine", "serve"])

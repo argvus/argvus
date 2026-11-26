@@ -32,6 +32,8 @@ use gtk::{gio, glib};
 use crate::cli::Cli;
 use crate::engine::{Engine, Event, PauseReason, SNAPSHOT_FILE_NAME, Snapshot, Status, View};
 use crate::history::{self, DaySummary, History};
+
+mod morphing;
 use crate::settings::{self, Settings};
 use crate::ui::{FocusWindow, Page};
 
@@ -84,6 +86,9 @@ pub struct FocusApp {
   theme: OnceCell<Rc<ThemeStyle>>,
   pending_presentations: Cell<usize>,
   window: OnceCell<FocusWindow>,
+  morphing_server: RefCell<Option<argvus_taskbar_popup::morphing::Server>>,
+  morphing_clients: Cell<usize>,
+  morphing_starting: Cell<bool>,
 }
 
 pub fn run() -> glib::ExitCode {
@@ -191,6 +196,9 @@ impl FocusApp {
       theme: OnceCell::new(),
       pending_presentations: Cell::new(0),
       window: OnceCell::new(),
+      morphing_server: RefCell::new(None),
+      morphing_clients: Cell::new(0),
+      morphing_starting: Cell::new(false),
     })
   }
 
@@ -265,6 +273,9 @@ impl FocusApp {
         return glib::ExitCode::FAILURE;
       }
     };
+    if cli.morphing_session {
+      return self.start_morphing();
+    }
     if cli.start {
       self.start();
     }
@@ -583,6 +594,7 @@ impl FocusApp {
   }
 
   fn shutdown(self: &Rc<Self>) {
+    self.morphing_server.borrow_mut().take();
     if self.settings_save.borrow_mut().take().is_some() {
       // The pending source dies with the main loop; write now instead.
       self.save_settings();
@@ -639,7 +651,10 @@ impl FocusApp {
   }
 
   fn quit_if_idle(self: &Rc<Self>) {
-    if self.pending_presentations.get() != 0 {
+    if self.pending_presentations.get() != 0
+      || self.morphing_clients.get() != 0
+      || self.morphing_starting.get()
+    {
       return;
     }
     let hidden = self

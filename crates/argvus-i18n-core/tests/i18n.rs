@@ -120,7 +120,7 @@ fn plural_fallback_uses_english_grammar_and_interpolation_is_single_pass() {
 
 #[test]
 fn shipped_catalogs_cover_all_eighteen_languages_and_plural_forms() {
-  let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../resources/locales");
+  let root = PathBuf::from("../../resources/locales");
   validate_catalogs(&root, None).unwrap_or_else(|errors| panic!("{}", errors.join("\n")));
   let locales = discover_locales(&root);
   for locale in [
@@ -181,7 +181,7 @@ fn locale_metadata_controls_text_direction() {
 
 #[test]
 fn shipped_translations_preserve_command_options_and_code_examples() {
-  let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../resources/locales");
+  let root = PathBuf::from("../../resources/locales");
   for entry in fs::read_dir(root.join("en-US")).unwrap() {
     let path = entry.unwrap().path();
     if path.extension().and_then(|value| value.to_str()) != Some("json")

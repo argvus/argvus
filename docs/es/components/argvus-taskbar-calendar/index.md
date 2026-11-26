@@ -74,3 +74,7 @@ Los textos siguen Applications Font en Control Center → Appearance → Desktop
 ## Morphing Tooltips
 
 `argvus taskbar-calendar tooltip`
+
+## Vista previa en la barra de tareas
+
+Focus está integrado en la barra de tareas de forma predeterminada. Para probar también los paneles integrados de Clock y Calendar, inicia Quickshell de la barra de tareas con `ARGVUS_MORPHING_PREVIEW=1`. Los comandos sin coordenadas usan la pantalla enfocada. Los paneles integrados usan el tema de la barra y las preferencias de la aplicación. Sin la opción de vista previa, Clock y Calendar siguen usando sus ventanas GTK, y GTK sigue siendo la alternativa cuando un panel integrado no puede conectarse.

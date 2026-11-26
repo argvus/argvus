@@ -24,11 +24,11 @@ where
   }
 }
 
-pub(super) fn can_create_event(date: NaiveDate) -> bool {
+pub(crate) fn can_create_event(date: NaiveDate) -> bool {
   date >= today()
 }
 
-pub(super) fn control_reminder_service(enabled: bool) {
+pub(crate) fn control_reminder_service(enabled: bool) {
   if enabled {
     let _ = Command::new("systemctl")
       .args(["--user", "reset-failed", "argvus-taskbar-calendar.service"])

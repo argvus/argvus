@@ -27,7 +27,13 @@ pub fn close_competing_surfaces(active: PopupApp, on_closed: impl FnOnce() + 'st
     }
   }
   if active != PopupApp::Calendar {
-    commands.push(vec!["argvus", "taskbar-calendar", "hide"]);
+    commands.push(vec![
+      "env",
+      "ARGVUS_TASKBAR_GTK=1",
+      "argvus",
+      "taskbar-calendar",
+      "hide",
+    ]);
   }
   let bars_shell = format!(
     "{}/taskbar/quickshell/shell.qml",

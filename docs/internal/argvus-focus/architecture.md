@@ -51,3 +51,7 @@ phase restores as `Paused(Restored)`; the countdown keeps the elapsed time of th
 Closing the window hides it while the engine is active (running, paused or waiting for the
 next phase); the process quits when the window is hidden and the engine is idle. `--start` and
 `--pause` act without showing the window.
+
+## Embedded Taskbar panels
+
+The embedded Taskbar panel attaches over `focus-morphing.sock` in the ARGVUS runtime directory. A connected frontend holds the GApplication while the panel is open. The adapter uses the existing session engine and history, and the independent Taskbar status stream continues publishing when the panel closes.

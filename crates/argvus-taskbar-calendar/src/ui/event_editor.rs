@@ -40,7 +40,8 @@ pub struct EditorDraft {
 
 /// Values read directly from the widgets when Save is clicked. Input signals
 /// are queued, so the model may otherwise still hold the previous keystroke.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
+#[serde(deny_unknown_fields)]
 pub struct EditorFormValues {
   pub title: String,
   pub location: String,

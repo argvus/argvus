@@ -296,12 +296,12 @@ mod tests {
   fn input_test_app() -> LoginApp {
     let (commands, _) = std::sync::mpsc::channel();
     let (_, events) = std::sync::mpsc::channel();
-    let catalog = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../resources/locales");
+    let catalog = Path::new("../../resources/locales");
     LoginApp::new(
       Config::default(),
       Vec::new(),
       Vec::new(),
-      Arc::new(I18n::from_locale(&catalog, "en-US", "greeter").unwrap()),
+      Arc::new(I18n::from_locale(catalog, "en-US", "greeter").unwrap()),
       commands,
       events,
     )

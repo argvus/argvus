@@ -73,3 +73,7 @@ argvus clock --background        # run without a window, to keep alarms active
 ## Morphing Tooltips
 
 `argvus clock --tooltip`
+
+## المعاينة في شريط المهام
+
+Focus مدمج في شريط المهام افتراضيًا. لتجربة الواجهات المدمجة لـ Clock وCalendar أيضًا، شغّل Quickshell الخاص بشريط المهام مع `ARGVUS_MORPHING_PREVIEW=1`. تُفتح الأوامر على الشاشة النشطة عند غياب الإحداثيات. يستخدم العرض المدمج سمة شريط المهام وإعدادات التطبيق. بدون علامة المعاينة، يظل Clock وCalendar يستخدمان نوافذ GTK، وتبقى GTK الخيار البديل عندما يتعذّر على الواجهة المدمجة الاتصال.

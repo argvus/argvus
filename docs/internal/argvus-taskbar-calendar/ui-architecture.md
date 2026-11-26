@@ -26,3 +26,9 @@ Moving to `iced` or Slint is not justified for the current goal. The desired beh
 `iced` or Slint could be reconsidered later if Argvus wants a broader shared shell-widget renderer across multiple official apps. That would be a product-level toolkit decision, not a calendar-specific fix.
 
 Session GTK applications inherit the Control Center Applications Font via gtk-font-name. Calculator, calendar, time popups and theme/layout selectors must not pin a font family. Calendar appearance.font_family is retained for config compatibility but no longer exposed or applied; appearance.font_size remains a local sizing control. Terminal, panel, taskbar and pre-login greeter retain their separate font targets.
+
+## Embedded Taskbar panels
+
+The embedded Taskbar preview uses `taskbar-calendar-morphing.sock` in the ARGVUS runtime directory. Its session owns the legacy popup socket while connected and reuses the GTK calendar’s independent day and month reads, editor save operation and reminder settings. The user unit continues scheduling reminders without a popup. The Calendar provides ICS actions and the same CLI status and sync reports.
+
+The embedded panel launches the native GTK file chooser in an auxiliary process. The Taskbar releases keyboard focus while it is open and takes focus again on its response. The chooser returns a local file URI. Import and export use the same Rust operations as the CLI. Timed exports use the recorded IANA time zone when it can represent the original instant.

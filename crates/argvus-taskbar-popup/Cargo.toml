@@ -12,6 +12,7 @@ homepage.workspace = true
 [dependencies]
 gtk.workspace = true
 gtk4-layer-shell.workspace = true
+serde.workspace = true
 serde_json.workspace = true
 
 [lib]

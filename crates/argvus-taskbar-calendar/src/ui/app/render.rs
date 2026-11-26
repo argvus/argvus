@@ -124,7 +124,7 @@ pub(super) fn render_model(
 }
 
 /// Independent results keep a failed monthly query from hiding valid daily events.
-pub(super) struct CalendarRead {
+pub(crate) struct CalendarRead {
   pub events: Result<Vec<CalendarEvent>, Text>,
   pub event_days: Result<HashSet<NaiveDate>, Text>,
 }
@@ -146,16 +146,27 @@ fn read_queries<Reader>(
   }
 }
 
-pub(super) fn load_day_and_month(
+pub(crate) fn load_day_and_month(
   paths: &Paths,
   selected: NaiveDate,
   month: NaiveDate,
+) -> CalendarRead {
+  load_calendar(paths, selected, month, true)
+}
+
+pub(crate) fn load_calendar(
+  paths: &Paths,
+  selected: NaiveDate,
+  month: NaiveDate,
+  purge_expired: bool,
 ) -> CalendarRead {
   read_queries(
     || Database::open(&paths.database).map_err(|_| Text::DatabaseReadFailed),
     |db| {
       // Preserve the existing expiry policy; its maintenance result is not a read result.
-      let _ = db.purge_expired_local_single_events(chrono::Utc::now());
+      if purge_expired {
+        let _ = db.purge_expired_local_single_events(chrono::Utc::now());
+      }
       db.events_for_day(&Local, selected)
         .map_err(|_| Text::DailyReadFailed)
     },
@@ -180,7 +191,7 @@ pub(super) fn load_day_and_month(
 }
 
 /// Retain last good values only for the same date/month, never under another heading.
-pub(super) fn apply_read(
+pub(crate) fn apply_read(
   loaded: CalendarRead,
   events: &mut Vec<CalendarEvent>,
   event_days: &mut HashSet<NaiveDate>,

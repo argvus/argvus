@@ -17,6 +17,7 @@ path = "src/main.rs"
 argvus-i18n.workspace = true
 argvus-taskbar-popup.workspace = true
 chrono = { version = "0.4.42", features = ["serde", "clock"] }
+chrono-tz.workspace = true
 clap = { version = "4.6.6", features = ["derive"] }
 env_logger = "0.11.8"
 gtk = { package = "gtk4", version = "0.11.4", features = ["v4_12"] }

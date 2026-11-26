@@ -72,3 +72,7 @@ Le texte suit Applications Font dans Control Center → Appearance → Desktop S
 ## Morphing Tooltips
 
 `argvus clock --tooltip`
+
+## Aperçu dans la barre des tâches
+
+Focus est intégré à la barre des tâches par défaut. Pour essayer également les panneaux intégrés de Clock et Calendar, lancez Quickshell de la barre des tâches avec `ARGVUS_MORPHING_PREVIEW=1`. Les commandes sans coordonnées utilisent l’écran actif. Les panneaux intégrés suivent le thème de la barre et les préférences de l’application. Sans l’option d’aperçu, Clock et Calendar continuent d’utiliser leurs fenêtres GTK, et GTK reste la solution de secours lorsqu’un panneau intégré ne peut pas se connecter.

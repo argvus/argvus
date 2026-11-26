@@ -60,3 +60,7 @@ I colori seguono il tema ARGVUS attivo e il colore di evidenziazione (consumator
 Il calendario della barra delle applicazioni, ARGVUS Focus, ARGVUS Clock e il Pannello di controllo sono mutuamente esclusivi: aprirne uno chiude gli altri.
 
 Il testo segue Applications Font in Control Center → Appearance → Desktop Style → Fonts. Le applicazioni GTK ereditano gtk-font-name; le dimensioni di numeri e titoli restano. Il launcher legge apps_family generato e segue le modifiche.
+
+## Anteprima nella barra delle applicazioni
+
+Focus è integrato nella barra delle applicazioni per impostazione predefinita. Per provare anche i pannelli integrati di Clock e Calendar, avvia Quickshell della barra delle applicazioni con `ARGVUS_MORPHING_PREVIEW=1`. I comandi senza coordinate usano il monitor attivo. I pannelli integrati seguono il tema della barra e le preferenze dell’app. Senza l’opzione di anteprima, Clock e Calendar continuano a usare le rispettive finestre GTK, e GTK resta la soluzione di riserva quando un pannello integrato non riesce a collegarsi.

@@ -138,6 +138,9 @@ impl I18n {
     };
     argvus_i18n::tr(self.language.0, key)
   }
+  pub fn extra(self, key: &str) -> &'static str {
+    argvus_i18n::tr(self.language.0, key)
+  }
   pub fn reminder_starts_in(self, minutes: i64) -> String {
     self.language.0.tr_plural("reminder.starts_in", minutes)
   }

@@ -52,6 +52,8 @@ power, display, network, notifications and themes — all packaged for Arch Linu
 - **Games** — Optional. Snake for the terminal (`argvus-game-snake`, an independent project), with a local high score list
 - **Languages** — English (en-US, canonical), Brazilian Portuguese, Spanish, French, Italian, German, Russian, Simplified Chinese, Japanese and Korean, managed by `argvus i18n`
 
+Focus uses the embedded panel in a matching Taskbar package by default. Clock and Taskbar Calendar can use the embedded preview with `ARGVUS_MORPHING_PREVIEW=1`. The GTK presentations remain the fallback.
+
 ## Modular Ecosystem
 
 `argvus` is the master package and the only package built from this repository. It installs the

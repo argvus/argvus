@@ -21,6 +21,8 @@ pub enum PageArg {
   version
 )]
 pub struct Cli {
+  #[arg(long, hide = true, exclusive = true)]
+  pub morphing_session: bool,
   /// Run without opening the window, to keep alarms active (used when
   /// starting with the session).
   #[arg(long, conflicts_with = "toggle")]

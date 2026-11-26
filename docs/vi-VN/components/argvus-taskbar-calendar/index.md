@@ -93,3 +93,7 @@ Văn bản ứng dụng theo Applications Font trong Control Center → Appearan
 ## Morphing Tooltips
 
 `argvus taskbar-calendar tooltip`
+
+## Xem trước trên thanh tác vụ
+
+Focus được tích hợp sẵn vào thanh tác vụ theo mặc định. Để thử cả các bảng Clock và Calendar tích hợp, hãy khởi chạy Quickshell của thanh tác vụ với `ARGVUS_MORPHING_PREVIEW=1`. Lệnh không có tọa độ sử dụng màn hình đang được lấy nét. Các bảng tích hợp dùng chủ đề thanh tác vụ và tùy chọn của ứng dụng. Không có cờ xem trước, Clock và Calendar tiếp tục dùng cửa sổ GTK, và GTK vẫn là phương án dự phòng khi bảng tích hợp không thể kết nối.

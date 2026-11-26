@@ -8,6 +8,7 @@ mod error;
 mod i18n;
 mod ical;
 mod ipc;
+mod morphing;
 mod reminders;
 mod service;
 mod storage;
@@ -26,6 +27,11 @@ use ipc::PopupAnchor;
   about = "Native Argvus calendar popup for Wayland"
 )]
 struct Cli {
+  #[arg(long, hide = true, exclusive = true)]
+  morphing_session: bool,
+
+  #[arg(long, hide = true, exclusive = true, value_enum)]
+  morphing_file: Option<morphing::FilePicker>,
   /// Horizontal click position supplied by the Taskbar launcher.
   #[arg(
     long,
@@ -83,10 +89,33 @@ enum Command {
 fn main() -> Result<()> {
   env_logger::init();
   let cli = Cli::parse();
-  let opens_popup = matches!(
-    &cli.command,
-    None | Some(Command::Toggle) | Some(Command::Show)
-  );
+  let opens_popup = !cli.morphing_session
+    && cli.morphing_file.is_none()
+    && matches!(
+      &cli.command,
+      None | Some(Command::Toggle) | Some(Command::Show)
+    );
+  if matches!(cli.command, Some(Command::Hide))
+    && argvus_taskbar_popup::morphing::hide("taskbar-calendar")
+  {
+    return Ok(());
+  }
+  let explicit_position = cli.x.zip(cli.y).map(|(x, y)| PopupAnchor {
+    x,
+    y,
+    bar_bottom: cli.bar_bottom,
+    bar_right: cli.bar_right,
+  });
+  if opens_popup
+    && argvus_taskbar_popup::morphing::present(
+      "taskbar-calendar",
+      !matches!(cli.command, Some(Command::Show)),
+      explicit_position,
+      "",
+    )
+  {
+    return Ok(());
+  }
   // The Taskbar launcher supplies an immutable click position. Direct CLI
   // calls retain the live-pointer fallback for backwards compatibility.
   let click_position = opens_popup
@@ -118,6 +147,12 @@ fn main() -> Result<()> {
       config::Settings::default()
     }
   };
+  if cli.morphing_session {
+    return morphing::run(paths, settings);
+  }
+  if let Some(picker) = cli.morphing_file {
+    return picker.run(&settings);
+  }
   if matches!(cli.command, Some(Command::Tooltip)) {
     if config::load_events_enabled(&paths, &settings) && paths.database.is_file() {
       let now = chrono::Local::now();

@@ -60,3 +60,7 @@ Màu sắc tuân theo chủ đề ARGVUS đang hoạt động và màu nổi b�
 Lịch trên thanh tác vụ, ARGVUS Focus, ARGVUS Clock và Control Panel loại trừ lẫn nhau: mở cái này sẽ đóng cái kia.
 
 Văn bản ứng dụng theo Applications Font trong Control Center → Appearance → Desktop Style → Fonts. GTK kế thừa gtk-font-name, giữ kích thước số và tiêu đề. Trình khởi chạy đọc apps_family được tạo và theo dõi thay đổi.
+
+## Xem trước trên thanh tác vụ
+
+Focus được tích hợp sẵn vào thanh tác vụ theo mặc định. Để thử cả các bảng Clock và Calendar tích hợp, hãy khởi chạy Quickshell của thanh tác vụ với `ARGVUS_MORPHING_PREVIEW=1`. Lệnh không có tọa độ sử dụng màn hình đang được lấy nét. Các bảng tích hợp dùng chủ đề thanh tác vụ và tùy chọn của ứng dụng. Không có cờ xem trước, Clock và Calendar tiếp tục dùng cửa sổ GTK, và GTK vẫn là phương án dự phòng khi bảng tích hợp không thể kết nối.

@@ -74,3 +74,7 @@ argvus taskbar-calendar service
 ## Morphing Tooltips
 
 `argvus taskbar-calendar tooltip`
+
+## タスクバーのプレビュー
+
+Focus は既定でタスクバーに組み込まれます。Clock と Calendar の組み込みパネルも試すには、タスクバーの Quickshell を `ARGVUS_MORPHING_PREVIEW=1` で起動します。座標を指定しないコマンドはフォーカス中のモニターで開きます。組み込みパネルはタスクバーのテーマとアプリ設定を使います。プレビューフラグがない場合、Clock と Calendar は引き続き GTK ウィンドウを使い、組み込みパネルが接続できないときは GTK がフォールバックになります。

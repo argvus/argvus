@@ -263,7 +263,7 @@ impl WorldPage {
 }
 
 /// "+3 h", "-1 h 30 min" or "same time" relative to the local zone.
-fn offset_text(app: &ClockApp, seconds: i32) -> String {
+pub(crate) fn offset_text(app: &ClockApp, seconds: i32) -> String {
   if seconds == 0 {
     return app.texts.tr("world.same_time");
   }

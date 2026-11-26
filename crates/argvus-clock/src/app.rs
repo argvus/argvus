@@ -39,6 +39,8 @@ use crate::timers::{self, Timer, TimersState};
 use crate::ui::{ClockWindow, Page, RingWindow};
 use crate::{alarms, autostart};
 
+mod morphing;
+
 pub const APP_ID: &str = "sh.argvus.Clock";
 const DOMAIN: &str = "clock";
 /// Wake slightly after the second changes, so the display never lags.
@@ -103,6 +105,9 @@ pub struct ClockApp {
   pending_presentations: Cell<usize>,
   window: OnceCell<ClockWindow>,
   ring_window: OnceCell<RingWindow>,
+  morphing_server: RefCell<Option<argvus_taskbar_popup::morphing::Server>>,
+  morphing_clients: Cell<usize>,
+  morphing_starting: Cell<bool>,
 }
 
 pub fn run() -> glib::ExitCode {
@@ -208,6 +213,9 @@ impl ClockApp {
       pending_presentations: Cell::new(0),
       window: OnceCell::new(),
       ring_window: OnceCell::new(),
+      morphing_server: RefCell::new(None),
+      morphing_clients: Cell::new(0),
+      morphing_starting: Cell::new(false),
     })
   }
 
@@ -332,6 +340,10 @@ impl ClockApp {
       return glib::ExitCode::SUCCESS;
     }
     self.install_if_needed();
+    if cli.morphing_session {
+      self.launched.set(true);
+      return self.start_morphing();
+    }
     let page = cli.page.map(Page::from);
     self.launched.set(true);
     if cli.background {
@@ -778,20 +790,36 @@ impl ClockApp {
   }
 
   pub fn save_alarm(self: &Rc<Self>, id: Option<AlarmId>, draft: AlarmDraft) {
-    {
-      let mut book = self.alarms.borrow_mut();
-      match id {
-        Some(id) => {
-          book.update(id, draft, Utc::now());
-        }
-        None => {
-          book.add(draft, Utc::now());
-        }
+    match self.store_alarm_draft(id, draft) {
+      Ok(()) => self.show_page(Page::Alarms),
+      Err(error) => self.set_notice(Notice::SaveFailed(error)),
+    }
+  }
+
+  fn store_alarm_draft(
+    self: &Rc<Self>,
+    id: Option<AlarmId>,
+    draft: AlarmDraft,
+  ) -> Result<(), String> {
+    let paths = self
+      .paths
+      .as_ref()
+      .ok_or_else(|| "storage_unavailable".to_string())?;
+    let mut book = self.alarms.borrow().clone();
+    match id {
+      Some(id) if !book.update(id, draft.clone(), Utc::now()) => {
+        return Err("alarm_missing".into());
+      }
+      Some(_) => {}
+      None => {
+        book.add(draft, Utc::now());
       }
     }
-    self.save_alarms();
-    self.show_page(Page::Alarms);
+    alarms::save(&paths.alarms, &book).map_err(|error| error.to_string())?;
+    *self.alarms.borrow_mut() = book;
+    self.refresh();
     self.schedule_heartbeat();
+    Ok(())
   }
 
   pub fn set_alarm_enabled(self: &Rc<Self>, id: AlarmId, enabled: bool) {
@@ -934,6 +962,7 @@ impl ClockApp {
   }
 
   fn shutdown(self: &Rc<Self>) {
+    self.morphing_server.borrow_mut().take();
     if self.settings_save.borrow_mut().take().is_some() {
       self.save_settings();
     }
@@ -1023,7 +1052,10 @@ impl ClockApp {
   }
 
   fn quit_if_idle(self: &Rc<Self>) {
-    if self.pending_presentations.get() != 0 {
+    if self.pending_presentations.get() != 0
+      || self.morphing_clients.get() != 0
+      || self.morphing_starting.get()
+    {
       return;
     }
     if !self.launched.get() {

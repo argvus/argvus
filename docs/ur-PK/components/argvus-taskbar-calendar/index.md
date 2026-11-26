@@ -94,3 +94,7 @@ argvus taskbar-calendar service
 ## Morphing Tooltips
 
 `argvus taskbar-calendar tooltip`
+
+## ٹاسک بار کا پیش منظر
+
+Focus بطور طے شدہ ٹاسک بار میں مربوط ہے۔ Clock اور Calendar کے مربوط پینل بھی آزمانے کے لیے ٹاسک بار کا Quickshell، `ARGVUS_MORPHING_PREVIEW=1` کے ساتھ شروع کریں۔ مقام دیے بغیر کمانڈ فوکس والے مانیٹر پر کھلتی ہے۔ مربوط پینل ٹاسک بار کی تھیم اور ایپ کی ترجیحات استعمال کرتے ہیں۔ پیش منظر فلیگ کے بغیر Clock اور Calendar اپنی GTK ونڈوز استعمال کرتے رہتے ہیں، اور مربوط پینل کے منسلک نہ ہو سکنے پر GTK متبادل رہتا ہے۔

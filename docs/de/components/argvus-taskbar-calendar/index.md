@@ -78,3 +78,7 @@ Anwendungstexte folgen Applications Font unter Control Center → Appearance →
 ## Morphing Tooltips
 
 `argvus taskbar-calendar tooltip`
+
+## Taskbar-Vorschau
+
+Focus ist standardmäßig in die Taskbar integriert. Um zusätzlich die integrierten Ansichten von Clock und Calendar auszuprobieren, den Quickshell-Prozess der Taskbar mit `ARGVUS_MORPHING_PREVIEW=1` starten. Ohne Koordinaten öffnen Befehle den Bereich auf dem fokussierten Bildschirm. Die integrierte Ansicht verwendet das Taskbar-Theme und die App-Einstellungen. Ohne das Vorschau-Flag verwenden Clock und Calendar weiterhin ihre GTK-Fenster, und GTK bleibt die Ausweichlösung, wenn eine integrierte Ansicht keine Verbindung herstellen kann.

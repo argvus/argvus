@@ -72,3 +72,7 @@ Il testo segue Applications Font in Control Center → Appearance → Desktop St
 ## Morphing Tooltips
 
 `argvus clock --tooltip`
+
+## Anteprima nella barra delle applicazioni
+
+Focus è integrato nella barra delle applicazioni per impostazione predefinita. Per provare anche i pannelli integrati di Clock e Calendar, avvia Quickshell della barra delle applicazioni con `ARGVUS_MORPHING_PREVIEW=1`. I comandi senza coordinate usano il monitor attivo. I pannelli integrati seguono il tema della barra e le preferenze dell’app. Senza l’opzione di anteprima, Clock e Calendar continuano a usare le rispettive finestre GTK, e GTK resta la soluzione di riserva quando un pannello integrato non riesce a collegarsi.

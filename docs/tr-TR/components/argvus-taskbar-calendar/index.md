@@ -93,3 +93,7 @@ Uygulama metni Control Center → Appearance → Desktop Style → Fonts içinde
 ## Morphing Tooltips
 
 `argvus taskbar-calendar tooltip`
+
+## Görev çubuğu önizlemesi
+
+Focus varsayılan olarak görev çubuğuna yerleşiktir. Yerleşik Clock ve Calendar panellerini de denemek için görev çubuğunun Quickshell sürecini `ARGVUS_MORPHING_PREVIEW=1` ile başlatın. Koordinat verilmeyen komutlar odaktaki monitörü kullanır. Yerleşik paneller görev çubuğu temasını ve uygulama ayarlarını izler. Önizleme bayrağı olmadan Clock ve Calendar GTK pencerelerini kullanmaya devam eder ve yerleşik panel bağlanamadığında GTK yedek olarak kalır.

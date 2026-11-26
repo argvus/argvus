@@ -16,8 +16,22 @@ fn main() -> gtk::glib::ExitCode {
   env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("warn")).init();
   // Parse here first, so `--help` and errors are printed by this process
   // even when another instance already runs and receives the arguments.
-  if let Err(error) = cli::Cli::parse_arguments(std::env::args_os().collect()) {
-    error.exit();
+  use clap::ValueEnum as _;
+
+  let cli =
+    cli::Cli::parse_arguments(std::env::args_os().collect()).unwrap_or_else(|error| error.exit());
+  let page = cli.page.and_then(|page| page.to_possible_value());
+  if !cli.morphing_session
+    && !cli.background
+    && !cli.tooltip
+    && argvus_taskbar_popup::morphing::present(
+      "clock",
+      cli.toggle,
+      cli.anchor(),
+      page.as_ref().map_or("", |page| page.get_name()),
+    )
+  {
+    return gtk::glib::ExitCode::SUCCESS;
   }
   app::run()
 }

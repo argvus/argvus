@@ -2,8 +2,10 @@
 
 use std::path::Path;
 
-use chrono::Local;
-use icalendar::{Alarm, Calendar as ICalendar, Component, Event, EventLike, Property};
+use chrono::{DateTime, Local, Utc};
+use icalendar::{
+  Alarm, Calendar as ICalendar, CalendarDateTime, Component, Event, EventLike, Property,
+};
 
 use crate::calendar::CalendarEvent;
 use crate::config::validate_export_path;
@@ -28,7 +30,9 @@ pub fn export_ics(events: &[CalendarEvent]) -> Result<String> {
         .starts(source.start.with_timezone(&Local).date_naive())
         .ends(source.end.with_timezone(&Local).date_naive());
     } else {
-      event.starts(source.start).ends(source.end);
+      event
+        .starts(export_time(source.start, source.timezone.as_deref()))
+        .ends(export_time(source.end, source.timezone.as_deref()));
     }
     if let Some(description) = &source.description {
       event.description(description);
@@ -51,6 +55,23 @@ pub fn export_ics(events: &[CalendarEvent]) -> Result<String> {
     calendar.push(event);
   }
   Ok(calendar.done().to_string())
+}
+
+fn export_time(instant: DateTime<Utc>, timezone: Option<&str>) -> CalendarDateTime {
+  if let Some(tzid) = timezone
+    && let Ok(zone) = tzid.parse::<chrono_tz::Tz>()
+  {
+    let zoned = CalendarDateTime::WithTimezone {
+      date_time: instant.with_timezone(&zone).naive_local(),
+      tzid: tzid.to_owned(),
+    };
+    // Use UTC when a repeated wall time would lose which occurrence was
+    // recorded. The exported event must retain its original instant.
+    if zoned.try_into_utc() == Some(instant) {
+      return zoned;
+    }
+  }
+  CalendarDateTime::Utc(instant)
 }
 
 #[cfg(test)]
@@ -104,5 +125,26 @@ mod tests {
           .collect::<Vec<_>>()
       );
     }
+  }
+  #[test]
+  fn timed_events_round_trip_tzid_recurrence_and_alarms() {
+    let fixture = concat!(
+      "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nBEGIN:VEVENT\r\n",
+      "UID:zoned@example.invalid\r\nSUMMARY:Coffee\r\n",
+      "DTSTART;TZID=Europe/Berlin:20261013T093000\r\n",
+      "DTEND;TZID=Europe/Berlin:20261013T103000\r\n",
+      "RRULE:FREQ=WEEKLY;COUNT=2\r\n",
+      "BEGIN:VALARM\r\nACTION:DISPLAY\r\nDESCRIPTION:Coffee\r\nTRIGGER:-PT10M\r\nEND:VALARM\r\n",
+      "END:VEVENT\r\nEND:VCALENDAR\r\n",
+    );
+    let original = parse_ics(fixture, 1).unwrap();
+    let output = export_ics(&original).unwrap();
+    assert!(output.contains("DTSTART;TZID=Europe/Berlin:20261013T093000"));
+    let reimported = parse_ics(&output, 1).unwrap();
+    assert_eq!(reimported[0].timezone.as_deref(), Some("Europe/Berlin"));
+    assert_eq!(reimported[0].start, original[0].start);
+    assert_eq!(reimported[0].end, original[0].end);
+    assert_eq!(reimported[0].recurrence, original[0].recurrence);
+    assert_eq!(reimported[0].reminders, original[0].reminders);
   }
 }

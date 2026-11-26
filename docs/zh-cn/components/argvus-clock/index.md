@@ -72,3 +72,7 @@ ARGVUS Focus、ARGVUS 时钟和控制面板共享同一个屏幕边缘。打开�
 ## Morphing Tooltips
 
 `argvus clock --tooltip`
+
+## 任务栏预览
+
+Focus 默认内嵌在任务栏中。若要同时试用内嵌的 Clock 和 Calendar 面板，请使用 `ARGVUS_MORPHING_PREVIEW=1` 启动任务栏的 Quickshell 进程。未指定坐标的命令使用当前获得焦点的显示器。内嵌面板使用任务栏主题和应用偏好设置。未启用预览标志时，Clock 和 Calendar 继续使用各自的 GTK 窗口；当内嵌面板无法连接时，GTK 仍作为备用方案。
