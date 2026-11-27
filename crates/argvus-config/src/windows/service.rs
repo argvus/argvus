@@ -231,21 +231,19 @@ impl Service {
       model::save_named(&self.maximized, "maximized.json")?;
       return Ok(());
     }
-    let document = crate::ConfigStore::from_environment()?.load_effective()?;
     let windows = clients()?;
     let window = windows
       .iter()
       .find(|window| window["address"] == target)
       .ok_or_else(|| invalid("window closed"))?;
-    if document.get("/layout/variant").and_then(Value::as_str) != Some("spaced")
-      || window["floating"] != true
-      || window["fullscreen"].as_i64().unwrap_or(0) != 0
-    {
+    if window["floating"] != true || window["fullscreen"].as_i64().unwrap_or(0) != 0 {
       return on_window(
         target,
         "hl.dispatch(hl.dsp.window.fullscreen({mode='maximized',action='toggle',window=w}))",
       );
     }
+    // Hyprland hides the additional title bar in its maximized fullscreen
+    // state. Keep floating windows decorated so the same button can restore.
     let outputs = monitors()?;
     let output = outputs
       .iter()

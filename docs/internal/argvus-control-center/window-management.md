@@ -99,13 +99,14 @@ Installation into the active desktop, package archive generation, physical
 monitor hotplug and a real logout/login remain outside the validation performed
 here. The nested tests exercise virtual monitors rather than physical hardware.
 
-## Spaced floating bounds
+## Floating maximization and bounds
 
 The service reads effective compositor gaps and border/title dimensions, then
-clamps floating windows to logical monitor bounds after accounting for both
+clamps floating windows in Spaced to logical monitor bounds after accounting for both
 bars, output scaling and rotation. True fullscreen is excluded. ARGVUS maximize
-in Spaced fits this rectangle without compositor fullscreen; original geometry
-is saved atomically in a separate `maximized.json` runtime registry for recovery
+fits this rectangle in both layouts without compositor fullscreen, keeping the
+title bar and its restore button accessible. Original geometry is saved
+atomically in a separate `maximized.json` runtime registry for recovery
 across service restarts. Preparing Tile restores that geometry before tiling.
 Targeted window operations temporarily enable `cursor.no_warps` in the same IPC
 evaluation and restore its prior value even on dispatcher errors. This also
