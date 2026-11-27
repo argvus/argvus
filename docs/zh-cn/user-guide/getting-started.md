@@ -9,7 +9,7 @@ description: 配置 ARGVUS 的实用首次启动路径。
 1. 阅读 [ 桌面概览 ](/docs/user-guide/desktop/)，以识别窗口、工作区、任务栏、控制面板和启动器。
 2. 打开 [ 控制中心 ](/docs/components/argvus-control-center/)，并在 **外观** 中选择主题、模式、强调色和壁纸。
 3. 如果默认的间距、边框或任务栏间距不适合你的屏幕，请调整 [ 窗口和布局 ](/docs/argvus-hyprland/windows-and-layout/)。
-4. 配置 [ 任务栏 ](/docs/argvus-panels/taskbar/)，并决定希望显示哪些控制面板卡片。
+4. 配置 [ 任务栏 ](/docs/argvus-shell/taskbar/)，并决定希望显示哪些控制面板卡片。
 5. 查看 [ 键盘快捷键 ](/docs/argvus-hyprland/keyboard-shortcuts/)，仅更改你实际使用的绑定。
 6. 通过相关设置页面配置 [ 鼠标和触控板 ](/docs/argvus-hyprland/input/)、显示器、网络和电源。
 

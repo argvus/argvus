@@ -33,7 +33,7 @@ Il pacchetto `argvus` fornisce il dispatcher `/usr/bin/argvus` e il punto di ing
 
 ### Compositore e shell del desktop
 
-`argvus-hyprland` fornisce la configurazione di Hyprland e le combinazioni di tasti. `argvus-panels` fornisce il binario Taskbar patchato, mentre `argvus-panels` possiede la configurazione della barra delle applicazioni e le azioni. `argvus-panels` fornisce il pannello Quickshell, e `argvus widget-telemetry` fornisce widget di sistema opzionali, in-process in `argvus`.
+`argvus-hyprland` fornisce la configurazione di Hyprland e le combinazioni di tasti. `argvus-shell` fornisce il binario Taskbar patchato, mentre `argvus-shell` possiede la configurazione della barra delle applicazioni e le azioni. `argvus-shell` fornisce il pannello Quickshell, e `argvus widget-telemetry` fornisce widget di sistema opzionali, in-process in `argvus`.
 
 Vedi [Desktop](/docs/user-guide/desktop/) per l'uso e [shell surfaces](/docs/developer-guide/subsystems/shell-surfaces/) per la proprietà dell'implementazione.
 
@@ -59,7 +59,7 @@ La directory generata non è la fonte della verità. Vedi [Appearance](/docs/use
 
 Il sistema visivo controlla anche il layout. La modalità Sticky è compatta e quadrata; la modalità Spaced utilizza spazi più ampi tra le finestre, angoli arrotondati e margini più larghi attorno alla barra delle applicazioni e alla shell. La barra delle applicazioni predefinita è sul bordo superiore, ma supporta il posizionamento in alto/ in basso tramite lo stato di layout condiviso. Gli effetti controllano trasparenza, sfocatura, ombre e animazioni attraverso il compositor e le superfici del desktop.
 
-Consulta la [tabella dei temi](/docs/user-guide/appearance/) per le famiglie e i colori attuali, [effetti](/docs/argvus-appearance/effects/) per il contratto degli effetti condivisi, e [taskbar](/docs/argvus-panels/taskbar/) per il posizionamento della barra e delle finestre.
+Consulta la [tabella dei temi](/docs/user-guide/appearance/) per le famiglie e i colori attuali, [effetti](/docs/argvus-appearance/effects/) per il contratto degli effetti condivisi, e [taskbar](/docs/argvus-shell/taskbar/) per il posizionamento della barra e delle finestre.
 
 ## Cosa è e cosa non è ARGVUS
 

@@ -548,7 +548,7 @@ Wi-Fi 비밀번호, 수동 DNS 및 네트워크 검색 필드에서는 대괄호
 
 세션은 `argvus-windows.service` 및 `argvus-window-bar.service`을 소유합니다. 후자는 Tile에서 Quickshell 자식을 휴면 상태로 유지합니다. hyprbars 플러그인은 `argvus-hyprland`에서 번들로 제공되며, x86_64 아키텍처에서 Hyprland 0.57.0 ABI용으로 빌드되었습니다; 사용자의 홈 디렉터리에서는 컴파일되지 않았습니다. 컴포지터 ABI 업데이트 시 플러그인을 재빌드하십시오. 명령어: `argvus windows list --json`, `watch --json`, `position top|bottom`, `restore-all`, `minimize|restore|activate|maximize|close ADDRESS`. 창 주소는 목록에서 가져옵니다. `position top --persist`는 메인 바를 재시작하지 않고도 환경 설정을 저장/프로젝트합니다. 구성 및 실행 오류 세부 사항은 저널에 기록되며, 보이는 작업 실패도 번역된 알림으로 표시됩니다.
 
-작업 표시줄과 원격 측정 위젯은 `argvus-panels.service`가 관리하는 Quickshell 프로세스의 독립된 표면입니다. 각 표면은 `argvus-taskbar.service`와 `argvus-widget-telemetry.service`로 제어합니다.
+작업 표시줄과 원격 측정 위젯은 `argvus-shell.service`가 관리하는 Quickshell 프로세스의 독립된 표면입니다. 각 표면은 `argvus-taskbar.service`와 `argvus-widget-telemetry.service`로 제어합니다.
 
 ## Windows 하위 메뉴 및 응용 프로그램 종료
 

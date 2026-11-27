@@ -81,7 +81,7 @@ impl App {
         match locale::restart_control_panel() {
           Ok(()) => self.success(tr(self.lang, "control_center.user_locale_applied").to_owned()),
           Err(error) => {
-            eprintln!("could not reload the Control Panel locale in argvus-panels: {error}");
+            eprintln!("could not reload the Control Panel locale in argvus-shell: {error}");
             self.fail(tr(self.lang, "control_center.control_panel_restart_failed"));
           }
         }
@@ -193,7 +193,7 @@ impl App {
         match locale::restart_control_panel() {
           Ok(()) => self.success(tr(self.lang, "control_center.user_locale_applied").to_owned()),
           Err(error) => {
-            eprintln!("could not reload the Control Panel locale in argvus-panels: {error}");
+            eprintln!("could not reload the Control Panel locale in argvus-shell: {error}");
             self.fail(tr(self.lang, "control_center.control_panel_restart_failed"));
           }
         }

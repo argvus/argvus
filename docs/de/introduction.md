@@ -33,7 +33,7 @@ Das `argvus`-Paket stellt den `/usr/bin/argvus`-Dispatcher und den Hauptzugangsp
 
 ### Kompositor und Desktop-Shell
 
-`argvus-hyprland` liefert die Hyprland-Konfiguration und Tastenkombinationen. `argvus-panels` liefert das gepatchte Taskbar-Binärprogramm, während `argvus-panels` die Taskleiste-Konfiguration und Aktionen besitzt. `argvus-panels` liefert das Quickshell-Panel, und `argvus widget-telemetry` liefert optionale System-Widgets, im Prozess in `argvus`.
+`argvus-hyprland` liefert die Hyprland-Konfiguration und Tastenkombinationen. `argvus-shell` liefert das gepatchte Taskbar-Binärprogramm, während `argvus-shell` die Taskleiste-Konfiguration und Aktionen besitzt. `argvus-shell` liefert das Quickshell-Panel, und `argvus widget-telemetry` liefert optionale System-Widgets, im Prozess in `argvus`.
 
 Siehe [Desktop](/docs/user-guide/desktop/) für die Nutzung und [shell surfaces](/docs/developer-guide/subsystems/shell-surfaces/) für die Implementierungsverantwortung.
 
@@ -59,7 +59,7 @@ Das erzeugte Verzeichnis ist nicht die Quelle der Wahrheit. Siehe [Appearance](/
 
 Das visuelle System steuert auch das Layout. Der Sticky-Modus ist kompakt und quadratisch; der Spaced-Modus verwendet größere Fensterabstände, abgerundete Ecken und breitere Ränder um die Taskleiste und die Shell. Die Taskleiste ist standardmäßig an der oberen Kante platziert, unterstützt aber die Platzierung oben/unten über den gemeinsamen Layout-Zustand. Effekte steuern Transparenz, Unschärfe, Schatten und Animationen über den Kompositor und die Desktop-Oberflächen hinweg.
 
-Siehe die [Thementabelle](/docs/user-guide/appearance/) für die aktuellen Familien und Farben, [Effekte](/docs/argvus-appearance/effects/) für den gemeinsamen Effektvertrag und [Taskleiste](/docs/argvus-panels/taskbar/) für die Platzierung von Leiste und Fenstern.
+Siehe die [Thementabelle](/docs/user-guide/appearance/) für die aktuellen Familien und Farben, [Effekte](/docs/argvus-appearance/effects/) für den gemeinsamen Effektvertrag und [Taskleiste](/docs/argvus-shell/taskbar/) für die Platzierung von Leiste und Fenstern.
 
 ## Was ARGVUS ist – und was nicht
 

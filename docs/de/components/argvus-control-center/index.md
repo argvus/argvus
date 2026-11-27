@@ -562,7 +562,7 @@ Die Minimierung verwendet den reservierten `special:argvus-minimized`-Arbeitsber
 
 Die Sitzung besitzt `argvus-windows.service` und `argvus-window-bar.service`. Letzterer hält sein Quickshell-Kind im Tile-Modus inaktiv. Das hyprbars-Plugin wird von `argvus-hyprland` mitgeliefert, gebaut für das Hyprland 0.57.0 ABI auf x86_64; es ist nicht im Home-Verzeichnis des Benutzers kompiliert. Baue das Plugin mit einem Compositor-ABI-Update neu.
 
-Taskleiste und Telemetrie sind unabhängige Oberflächen im Quickshell-Prozess von `argvus-panels.service`. Die Dienste `argvus-taskbar.service` und `argvus-widget-telemetry.service` steuern die einzelnen Oberflächen.
+Taskleiste und Telemetrie sind unabhängige Oberflächen im Quickshell-Prozess von `argvus-shell.service`. Die Dienste `argvus-taskbar.service` und `argvus-widget-telemetry.service` steuern die einzelnen Oberflächen.
 
 Befehle: `argvus windows list --json`, `watch --json`, `position top|bottom`, `restore-all` und `minimize|restore|activate|maximize|close ADDRESS`. Die Fensteradressen stammen aus der Liste. `position top --persist` speichert/projiziert die Präferenz, ohne die Hauptleiste neu zu starten. Konfigurations- und Laufzeitfehlerdetails werden im Journal geschrieben; sichtbare Aktionsfehler zeigen ebenfalls eine übersetzte Benachrichtigung an.
 

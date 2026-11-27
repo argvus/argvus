@@ -9,7 +9,7 @@ Nach der ersten grafischen Sitzung müssen Sie nicht jeden Teil von ARGVUS konfi
 1. Lesen Sie die [Desktop-Übersicht](/docs/user-guide/desktop/), um Fenster, Arbeitsbereiche, die Taskleiste, die Systemsteuerung und den Launcher zu identifizieren.
 2. Öffnen Sie das [Kontrollzentrum](/docs/components/argvus-control-center/) und wählen Sie ein Thema, einen Modus, eine Akzentfarbe und ein Hintergrundbild unter **Darstellung**.
 3. Passen Sie [Fenster und Layout](/docs/argvus-hyprland/windows-and-layout/) an, wenn die Standardabstände, -ränder oder die Taskleistenabstände nicht zu Ihrem Bildschirm passen.
-4. Konfigurieren Sie die [Taskleiste](/docs/argvus-panels/taskbar/) und entscheiden Sie, welche Systemsteuerungskarten sichtbar sein sollen.
+4. Konfigurieren Sie die [Taskleiste](/docs/argvus-shell/taskbar/) und entscheiden Sie, welche Systemsteuerungskarten sichtbar sein sollen.
 5. Überprüfen Sie [Tastenkombinationen](/docs/argvus-hyprland/keyboard-shortcuts/) und ändern Sie nur die Belegungen, die Sie tatsächlich nutzen.
 6. Konfigurieren Sie [Maus und Touchpad](/docs/argvus-hyprland/input/), Bildschirme, Netzwerk und Energieeinstellungen über die entsprechenden Einstellungsseiten.
 

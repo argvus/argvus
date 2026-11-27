@@ -12,7 +12,7 @@ description: Responsabilità del pacchetto ARGVUS.
 | `argvus-devtools`, `argvus-pentest` | Metapacchetti opzionali indipendenti per strumenti di sviluppo e auditing di sicurezza autorizzato. Il pacchetto principale non installa questi profili. |
 | `argvus-session` | Punti di ingresso della sessione e ciclo di vita dell'utente. |
 | `argvus-hyprland` | Configurazione di Hyprland. |
-| `argvus-panels` | ARGVUS Taskbar, Telemetry, Control Panel, Floating Window Bar, and Morphing surfaces. |
+| `argvus-shell` | ARGVUS Taskbar, Telemetry, Control Panel, Floating Window Bar, and Morphing surfaces. |
 | `argvus-branding` | Risorse di logo e marchio testuale. |
 | `argvus-appearance`, `argvus-wallpapers`, `argvus-fonts`, `argvus-icons` | Stato dell'aspetto e risorse visive. |
 | `argvus-display`, `argvus-power`, `argvus-notifications` | Provider del desktop. |
@@ -34,4 +34,4 @@ description: Responsabilità del pacchetto ARGVUS.
 
 I pacchetti rimossi `argvus-pwvucontrol` e `argvus-snappy-switcher` non sono forniti da nessun pacchetto.
 
-Non è richiesto un ordine di installazione tra i pacchetti componenti ARGVUS: `argvus` è il loro pacchetto principale, e ogni componente dipende da esso. L'installazione di `argvus` installa anche il profilo `argvus-desktop`; `argvus-devtools` e `argvus-pentest` rimangono opzionali. La presenza di un pacchetto in questa tabella non significa che possieda l'intera funzionalità: per esempio, la barra delle applicazioni combina `argvus-panels`, `argvus-session` e i provider di dominio.
+Non è richiesto un ordine di installazione tra i pacchetti componenti ARGVUS: `argvus` è il loro pacchetto principale, e ogni componente dipende da esso. L'installazione di `argvus` installa anche il profilo `argvus-desktop`; `argvus-devtools` e `argvus-pentest` rimangono opzionali. La presenza di un pacchetto in questa tabella non significa che possieda l'intera funzionalità: per esempio, la barra delle applicazioni combina `argvus-shell`, `argvus-session` e i provider di dominio.

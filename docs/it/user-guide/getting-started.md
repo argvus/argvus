@@ -9,7 +9,7 @@ Dopo la prima sessione grafica, non è necessario configurare ogni parte di ARGV
 1. Leggi la [panoramica del desktop](/docs/user-guide/desktop/) per identificare finestre, spazi di lavoro, la barra delle applicazioni, il Pannello di Controllo e il launcher.
 2. Apri il [Centro di Controllo](/docs/components/argvus-control-center/) e scegli un tema, una modalità, un accento e uno sfondo in **Aspetto**.
 3. Regola [finestre e layout](/docs/argvus-hyprland/windows-and-layout/) se gli spazi, i bordi o la spaziatura della barra delle applicazioni predefiniti non si adattano al tuo schermo.
-4. Configura la [barra delle applicazioni](/docs/argvus-panels/taskbar/) e decidi quali schede del Pannello di Controllo vuoi rendere visibili.
+4. Configura la [barra delle applicazioni](/docs/argvus-shell/taskbar/) e decidi quali schede del Pannello di Controllo vuoi rendere visibili.
 5. Rivedi le [scorciatoie da tastiera](/docs/argvus-hyprland/keyboard-shortcuts/) e modifica solo le combinazioni che usi effettivamente.
 6. Configura [mouse e touchpad](/docs/argvus-hyprland/input/), display, rete e alimentazione dalle relative pagine delle impostazioni.
 

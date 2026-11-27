@@ -7,8 +7,8 @@ La shell del desktop è composta da Hyprland, la barra delle applicazioni Taskba
 La configurazione si trova nel [Control Center](/docs/components/argvus-control-center/), mentre le azioni frequenti si trovano nel Pannello di Controllo. Inizia con [First configuration](/docs/user-guide/getting-started/) se questa è la tua prima sessione.
 
 - Pannello di Controllo
-- [Barra delle applicazioni](/docs/argvus-panels/taskbar/)
-- [Widget](/docs/argvus-panels/widgets/)
+- [Barra delle applicazioni](/docs/argvus-shell/taskbar/)
+- [Widget](/docs/argvus-shell/widgets/)
 - [Scorciatoie da tastiera](/docs/argvus-hyprland/keyboard-shortcuts/)
 - [Sovrascritture di Hyprland](/docs/argvus-hyprland/hyprland-overrides/)
 - [Finestre e layout](/docs/argvus-hyprland/windows-and-layout/)

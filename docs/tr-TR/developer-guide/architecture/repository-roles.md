@@ -7,7 +7,7 @@ Depolar, gezinme sayfasından ziyade sorumluluğa göre gruplandırılmıştır:
 
 - çalışma alanı: `argvus` (gönderici, süreç içi komutlar, GTK 4 yardımcıları, paylaşılan kasalar, `crates/argvus-greeter`'daki karşılayıcı ve komutların verileri);
 - oturum ve entegrasyon: `argvus-session`, `argvus-hyprland`, `argvus-portal`, `argvus-lock`, `argvus-boot-splash` ve karşılayıcı (`argvus-greeter`, `argvus/crates/argvus-greeter`);
-- Çalışma alanının dışındaki kullanıcı arayüzü: Denetim Masası, görev çubuğu (`argvus-panels`), başlatıcı ve Yol Çubuğu;
+- Çalışma alanının dışındaki kullanıcı arayüzü: Denetim Masası, görev çubuğu (`argvus-shell`), başlatıcı ve Yol Çubuğu;
 - sağlayıcılar: ekran, güç, güvenlik duvarı, bildirimler;
 - varlıklar ve paketleme: görünüm, duvar kağıtları, yazı tipleri, simgeler, profiller.
 

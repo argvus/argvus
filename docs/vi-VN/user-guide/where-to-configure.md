@@ -14,7 +14,7 @@ Sử dụng bảng này khi bạn biết bạn muốn thay đổi điều gì nh
 | Thay đổi hình nền | **Trung tâm điều khiển → Giao diện → Hình nền** |
 | Bật hoặc tắt hiệu ứng hình ảnh | **Trung tâm điều khiển → Giao diện → Hiệu ứng**, **Trung tâm điều khiển → Giao diện → Trình khởi chạy**, **Trung tâm điều khiển → Cấu hình**, **Thanh tác vụ**, **Từ xa tiện ích con** hoặc **Bảng điều khiển** |
 | Thay đổi vị trí, chiều cao, đường viền hoặc nhóm tiện ích của thanh tác vụ | **Trung tâm điều khiển → Giao diện → Thanh tác vụ → Vị trí**, **Chiều cao**, **Đường viền** và **Biểu tượng** |
-| Tùy chỉnh thanh tác vụ JSONC hoặc CSS | [Ghi đè thanh tác vụ và thanh điều khiển](/docs/argvus-panels/) |
+| Tùy chỉnh thanh tác vụ JSONC hoặc CSS | [Ghi đè thanh tác vụ và thanh điều khiển](/docs/argvus-shell/) |
 | Thay đổi khoảng trống hoặc đường viền cửa sổ | **Trung tâm điều khiển → Màn hình nền & Đầu vào → Hyprland → Windows → Không gian** và **Biên giới** |
 | Thay đổi bóng cửa sổ | **Trung tâm điều khiển → Màn hình nền & Đầu vào → Hyprland → Đường viền → Bóng** |
 | Chọn thẻ Control Panel hiển thị | **Trung tâm điều khiển → Giao diện → Bảng điều khiển** |

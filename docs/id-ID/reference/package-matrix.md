@@ -12,7 +12,7 @@ description: tanggung jawab paket ARGVUS.
 | `argvus-devtools`, `argvus-pentest` | Paket meta independen opsional untuk alat pengembangan dan audit keamanan resmi. Paket master tidak menginstal profil ini. |
 | `argvus-session` | Titik masuk sesi dan siklus hidup pengguna. |
 | `argvus-hyprland` | Konfigurasi Hyprland. |
-| `argvus-panels` | ARGVUS Taskbar, Telemetry, Control Panel, Floating Window Bar, and Morphing surfaces. |
+| `argvus-shell` | ARGVUS Taskbar, Telemetry, Control Panel, Floating Window Bar, and Morphing surfaces. |
 | `argvus-branding` | Aset logo dan tanda kata. |
 | `argvus-appearance`, `argvus-wallpapers`, `argvus-fonts`, `argvus-icons` | Keadaan penampilan dan aset visual. |
 | `argvus-display`, `argvus-power`, `argvus-notifications` | Penyedia desktop. |
@@ -34,4 +34,4 @@ description: tanggung jawab paket ARGVUS.
 
 Paket `argvus-pwvucontrol` dan `argvus-snappy-switcher` yang dihapus tidak disediakan oleh paket mana pun.
 
-Tidak diperlukan urutan instalasi di antara paket komponen ARGVUS: `argvus` adalah paket masternya, dan setiap komponen bergantung padanya. Menginstal `argvus` juga menginstal profil `argvus-desktop`; `argvus-devtools` dan `argvus-pentest` tetap ikut serta. Kehadiran sebuah paket dalam tabel ini tidak berarti paket tersebut memiliki seluruh fitur: misalnya, taskbar menggabungkan `argvus-panels`, `argvus-session` dan penyedia domain.
+Tidak diperlukan urutan instalasi di antara paket komponen ARGVUS: `argvus` adalah paket masternya, dan setiap komponen bergantung padanya. Menginstal `argvus` juga menginstal profil `argvus-desktop`; `argvus-devtools` dan `argvus-pentest` tetap ikut serta. Kehadiran sebuah paket dalam tabel ini tidak berarti paket tersebut memiliki seluruh fitur: misalnya, taskbar menggabungkan `argvus-shell`, `argvus-session` dan penyedia domain.

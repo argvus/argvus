@@ -33,7 +33,7 @@ taskbar · control panel · notifications · wallpaper · idle · clipboard
 
 ### コンポジターとデスクトップシェル
 
-`argvus-hyprland` は Hyprland の設定とキーバインディングを提供します。`argvus-panels` はパッチ済みの Taskbar バイナリを提供し、`argvus-panels` はタスクバーの設定と操作を所有します。`argvus-panels` は Quickshell パネルを提供し、`argvus widget-telemetry` はオプションのシステムウィジェットを提供します（`argvus` 内でプロセス中）。
+`argvus-hyprland` は Hyprland の設定とキーバインディングを提供します。`argvus-shell` はパッチ済みの Taskbar バイナリを提供し、`argvus-shell` はタスクバーの設定と操作を所有します。`argvus-shell` は Quickshell パネルを提供し、`argvus widget-telemetry` はオプションのシステムウィジェットを提供します（`argvus` 内でプロセス中）。
 
 使用方法については [Desktop](/docs/user-guide/desktop/) を参照し、実装の所有については [shell surfaces](/docs/developer-guide/subsystems/shell-surfaces/) を参照してください。
 
@@ -59,7 +59,7 @@ taskbar · control panel · notifications · wallpaper · idle · clipboard
 
 視覚システムはレイアウトも制御します。Stickyモードはコンパクトで四角形、Spacedモードはより大きなウィンドウ間隔、丸みを帯びた角、タスクバーやシェル周囲の広いマージンを使用します。タスクバーはデフォルトで上端にありますが、共有レイアウト状態を通じて上下への配置をサポートします。エフェクトはコンポジタとデスクトップ表面全体での透明度、ぼかし、影、アニメーションを制御します。
 
-現在のファミリーと色については [theme table](/docs/user-guide/appearance/) を、共有エフェクト契約については [effects](/docs/argvus-appearance/effects/) を、バーとウィンドウの配置については [taskbar](/docs/argvus-panels/taskbar/) を参照してください。
+現在のファミリーと色については [theme table](/docs/user-guide/appearance/) を、共有エフェクト契約については [effects](/docs/argvus-appearance/effects/) を、バーとウィンドウの配置については [taskbar](/docs/argvus-shell/taskbar/) を参照してください。
 
 ## ARGVUSとは何か、そして何ではないか
 

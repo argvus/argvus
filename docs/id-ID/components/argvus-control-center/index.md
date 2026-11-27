@@ -609,7 +609,7 @@ Minimalkan menggunakan ruang kerja `special:argvus-minimized` yang dicadangkan. 
 
 Sesi ini memiliki `argvus-windows.service` dan `argvus-window-bar.service`. Yang terakhir membuat anak Quickshellnya tidak aktif di Tile. Plugin hyprbars dibundel oleh `argvus-hyprland`, dibuat untuk Hyprland 0.57.0 ABI pada x86_64; itu tidak dikompilasi di direktori home pengguna. Bangun kembali plugin dengan pembaruan ABI kompositor.
 
-Bilah tugas dan widget telemetri adalah permukaan independen dalam proses Quickshell yang dikelola `argvus-panels.service`. Gunakan `argvus-taskbar.service` dan `argvus-widget-telemetry.service` untuk mengontrol masing-masing permukaan.
+Bilah tugas dan widget telemetri adalah permukaan independen dalam proses Quickshell yang dikelola `argvus-shell.service`. Gunakan `argvus-taskbar.service` dan `argvus-widget-telemetry.service` untuk mengontrol masing-masing permukaan.
 
 Perintah: `argvus windows list --json`, `watch --json`, `position top|bottom`, `restore-all`, dan `minimize|restore|activate|maximize|close ADDRESS`. Alamat jendela berasal dari daftar. `position top --persist` menyimpan/memproyeksikan preferensi tanpa memulai ulang bilah utama. Detail kesalahan konfigurasi dan runtime ditulis ke jurnal; kegagalan tindakan yang terlihat juga menampilkan pemberitahuan yang diterjemahkan.
 

@@ -13,7 +13,7 @@ Pour une révision guidée des principaux espaces de bureau, ouvrez **ARGVUS Wel
 | Changer le fond d’écran | **Centre de contrôle → Apparence → Fonds d’écran** |
 | Activer ou désactiver les effets visuels | **Centre de contrôle → Apparence → Effets**, **Centre de contrôle → Apparence → Lancements**, **Centre de contrôle → Configuration**, **Barre des tâches**, **Télémétrie des widgets** ou **Panneau de configuration** |
 | Changer la position, la hauteur, la bordure ou le regroupement des utilitaires de la barre des tâches | **Centre de contrôle → Apparence → Barre des tâches → Position**, **Hauteur**, **Bordure** et **Icônes** |
-| Personnaliser la barre des tâches JSONC ou CSS | [Taskbar et les remplacements de la barre des tâches](/docs/argvus-panels/) |
+| Personnaliser la barre des tâches JSONC ou CSS | [Taskbar et les remplacements de la barre des tâches](/docs/argvus-shell/) |
 | Modifier les espacements ou bordures des fenêtres | **Centre de contrôle → Bureau & Entrée → Hyprland → Fenêtres → Espaces** et **Bordures** |
 | Modifier l'ombre des fenêtres | **Centre de contrôle → Bureau & Entrée → Hyprland → Bordures → Ombre** |
 | Choisir les cartes du panneau de contrôle visibles | **Centre de contrôle → Apparence → Panneau de contrôle** |

@@ -36,7 +36,7 @@ pub fn close_competing_surfaces(active: PopupApp, on_closed: impl FnOnce() + 'st
     ]);
   }
   let bars_shell = format!(
-    "{}/panels/qml/shell.qml",
+    "{}/shell/qml/shell.qml",
     std::env::var("ARGVUS_SYSTEM_CONFIG").unwrap_or_else(|_| "/usr/share/argvus".into())
   );
   commands.push(vec![

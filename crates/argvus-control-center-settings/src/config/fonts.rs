@@ -307,7 +307,7 @@ impl FontSettings {
     match target {
       FontTarget::Taskbar | FontTarget::Sysinfo => {
         if !paths::system_config_root()
-          .join("panels/qml/shell.qml")
+          .join("shell/qml/shell.qml")
           .is_file()
         {
           self.write_taskbar_settings()?;

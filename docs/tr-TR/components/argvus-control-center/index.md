@@ -602,7 +602,7 @@ Minimizasyon, ayrılmış `special:argvus-minimized` çalışma alanını kullan
 
 Oturum, `argvus-windows.service` ve `argvus-window-bar.service`'ya sahiptir. İkincisi, Quickshell çocuğunu Tile'da hareketsiz tutuyor. Hyprbars eklentisi, x86_64 üzerinde Hyprland 0.57.0 ABI için oluşturulmuş `argvus-hyprland` tarafından paketlenmiştir; kullanıcının ana dizininde derlenmez. Eklentiyi bir besteci ABI güncellemesiyle yeniden oluşturun.
 
-Görev çubuğu ve telemetri bileşeni, `argvus-panels.service` tarafından yönetilen Quickshell sürecindeki bağımsız yüzeylerdir. Her yüzeyi `argvus-taskbar.service` ve `argvus-widget-telemetry.service` ile denetleyin.
+Görev çubuğu ve telemetri bileşeni, `argvus-shell.service` tarafından yönetilen Quickshell sürecindeki bağımsız yüzeylerdir. Her yüzeyi `argvus-taskbar.service` ve `argvus-widget-telemetry.service` ile denetleyin.
 
 Komutlar: `argvus windows list --json`, `watch --json`, `position top|bottom`, `restore-all` ve `minimize|restore|activate|maximize|close ADDRESS`. Pencere adresleri listeden gelir. `position top --persist`, ana çubuğu yeniden başlatmadan tercihi saklar/yansıtır. Yapılandırma ve çalışma zamanı hatası ayrıntıları günlüğe yazılır; görünür eylem hataları da çevrilmiş bir bildirim gösterir.
 

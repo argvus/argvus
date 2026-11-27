@@ -9,7 +9,7 @@ Después de la primera sesión gráfica, no necesitas configurar cada parte de A
 1. Lee la [visión general del escritorio](/docs/user-guide/desktop/) para identificar ventanas, espacios de trabajo, la barra de tareas, el Panel de Control y el lanzador.
 2. Abre el [Centro de Control](/docs/components/argvus-control-center/) y elige un tema, modo, acento y fondo de pantalla en **Apariencia**.
 3. Ajusta [ventanas y diseño](/docs/argvus-hyprland/windows-and-layout/) si los espacios predeterminados, bordes o el espaciado de la barra de tareas no se ajustan a tu pantalla.
-4. Configura la [barra de tareas](/docs/argvus-panels/taskbar/) y decide qué tarjetas del Panel de Control quieres visibles.
+4. Configura la [barra de tareas](/docs/argvus-shell/taskbar/) y decide qué tarjetas del Panel de Control quieres visibles.
 5. Revisa [atajos de teclado](/docs/argvus-hyprland/keyboard-shortcuts/) y cambia solo las combinaciones que realmente uses.
 6. Configura [ratón y panel táctil](/docs/argvus-hyprland/input/), pantallas, red y energía desde las páginas de configuración correspondientes.
 

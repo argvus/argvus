@@ -617,7 +617,7 @@ argvus control-center hyprland animations windows
 
 تمتلك الجلسة `argvus-windows.service` و`argvus-window-bar.service`. هذا الأخير يبقي طفل Quickshell الخاص به خاملًا في Tile. تم تجميع البرنامج الإضافي hyprbars بواسطة `argvus-hyprland`، المصمم لـ Hyprland 0.57.0 ABI على x86_64؛ لم يتم تجميعه في الدليل الرئيسي للمستخدم. أعد بناء المكوّن الإضافي باستخدام تحديث ABI للمركب.
 
-شريط المهام وأداة القياس عن بُعد سطحان مستقلان في عملية Quickshell التي تديرها `argvus-panels.service`. استخدم `argvus-taskbar.service` و`argvus-widget-telemetry.service` للتحكم في كل سطح.
+شريط المهام وأداة القياس عن بُعد سطحان مستقلان في عملية Quickshell التي تديرها `argvus-shell.service`. استخدم `argvus-taskbar.service` و`argvus-widget-telemetry.service` للتحكم في كل سطح.
 
 الأوامر: `argvus windows list --json`، و`watch --json`، و`position top|bottom`، و`restore-all`، و`minimize|restore|activate|maximize|close ADDRESS`. عناوين النافذة تأتي من القائمة. يقوم `position top --persist` بتخزين/عرض التفضيلات دون إعادة تشغيل الشريط الرئيسي. تتم كتابة تفاصيل أخطاء التكوين ووقت التشغيل إلى المجلة؛ تُظهر حالات فشل الإجراء المرئي أيضًا إشعارًا مترجمًا.
 

@@ -537,7 +537,7 @@ Wi-Fi پاس ورڈ، دستی DNS اور نیٹ ورک سرچ فیلڈز بری
 
 سیشن `argvus-windows.service ` اور ` argvus-window-bar.service ` کا مالک ہے۔ مؤخر الذکر اپنے Quickshell چائلڈ کو ٹائل میں غیر فعال رکھتا ہے۔ hyprbars پلگ ان ` argvus-hyprland` کے ذریعے بنڈل کیا گیا ہے، جو x86_64 پر Hyprland 0.57.0 ABI کے لیے بنایا گیا ہے۔ یہ صارف کی ہوم ڈائرکٹری میں مرتب نہیں ہے۔ کمپوزیٹر ABI اپ ڈیٹ کے ساتھ پلگ ان کو دوبارہ بنائیں۔
 
-ٹاسک بار اور ٹیلی میٹری ویجیٹ `argvus-panels.service` کے زیر انتظام Quickshell عمل کی الگ سطحیں ہیں۔ ہر سطح کو `argvus-taskbar.service` اور `argvus-widget-telemetry.service` سے کنٹرول کریں۔
+ٹاسک بار اور ٹیلی میٹری ویجیٹ `argvus-shell.service` کے زیر انتظام Quickshell عمل کی الگ سطحیں ہیں۔ ہر سطح کو `argvus-taskbar.service` اور `argvus-widget-telemetry.service` سے کنٹرول کریں۔
 
 کمانڈز: `argvus windows list --json `، ` watch --json `، ` position top|bottom `، ` restore-all `، اور ` minimize|restore|activate|maximize|close ADDRESS `۔ ونڈو کے پتے فہرست سے آتے ہیں۔ ` position top --persist` مین بار کو دوبارہ شروع کیے بغیر ترجیح کو اسٹور/پروجیکٹ کرتا ہے۔ کنفیگریشن اور رن ٹائم غلطی کی تفصیلات جرنل میں لکھی جاتی ہیں۔ مرئی کارروائی کی ناکامیاں بھی ترجمہ شدہ اطلاع دکھاتی ہیں۔
 

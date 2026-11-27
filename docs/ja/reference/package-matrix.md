@@ -12,7 +12,7 @@ description: ARGVUSパッケージの責任。
 | `argvus-devtools`, `argvus-pentest` | 開発ツールおよび認可されたセキュリティ監査用のオプション独立メタパッケージ。マスターパッケージはこれらのプロファイルをインストールしません。 |
 | `argvus-session` | セッションのエントリーポイントとユーザーライフサイクル。 |
 | `argvus-hyprland` | Hyprland設定。 |
-| `argvus-panels` | ARGVUS Taskbar, Telemetry, Control Panel, Floating Window Bar, and Morphing surfaces. |
+| `argvus-shell` | ARGVUS Taskbar, Telemetry, Control Panel, Floating Window Bar, and Morphing surfaces. |
 | `argvus-branding` | ロゴおよびワードマーク資産。 |
 | `argvus-appearance`, `argvus-wallpapers`, `argvus-fonts`, `argvus-icons` | 外観状態および視覚資産。 |
 | `argvus-display`, `argvus-power`, `argvus-notifications` | デスクトッププロバイダー。 |
@@ -34,4 +34,4 @@ description: ARGVUSパッケージの責任。
 
 削除されたパッケージ `argvus-pwvucontrol` および `argvus-snappy-switcher` は、どのパッケージによっても提供されていません。
 
-ARGVUS コンポーネントパッケージ間でのインストール順序は必要ありません：`argvus` がそれらのマスターパッケージであり、各コンポーネントはそれに依存します。`argvus` をインストールすると、`argvus-desktop` プロファイルもインストールされます；`argvus-devtools` および `argvus-pentest` はオプトインのままです。この表にパッケージが存在しているからといって、そのパッケージが機能全体を所有しているわけではありません：例えば、タスクバーは `argvus-panels`、`argvus-panels`、`argvus-session`、およびドメインプロバイダーを組み合わせています。
+ARGVUS コンポーネントパッケージ間でのインストール順序は必要ありません：`argvus` がそれらのマスターパッケージであり、各コンポーネントはそれに依存します。`argvus` をインストールすると、`argvus-desktop` プロファイルもインストールされます；`argvus-devtools` および `argvus-pentest` はオプトインのままです。この表にパッケージが存在しているからといって、そのパッケージが機能全体を所有しているわけではありません：例えば、タスクバーは `argvus-shell`、`argvus-shell`、`argvus-session`、およびドメインプロバイダーを組み合わせています。

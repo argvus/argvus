@@ -35,7 +35,7 @@ passed through a shell. Visible failures show a translated notification and
 retain technical details in logs.
 
 `argvus windows bar` activates `argvus-window-bar.service`. The Floating surface in
-`argvus-panels.service` is unloaded in Tile unless recovery is pending. The session
+`argvus-shell.service` is unloaded in Tile unless recovery is pending. The session
 target manages both the backend and the surface units. `position top|bottom`
 projects canonical geometry and refreshes the shared shell in place.
 `--persist` skips the live publication. The spacing script delegates position

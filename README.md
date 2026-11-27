@@ -67,7 +67,7 @@ depends on it, so no install order is required.
 |------|-----------------------|
 | Session lifecycle, login and startup | `argvus-session`, `argvus greeter` (in `argvus`), `argvus-boot-splash` |
 | Hyprland configuration and scripts | `argvus-hyprland` |
-| Quickshell panels (Taskbar, Telemetry, Control Panel and Floating Window Bar) | `argvus-panels`, `argvus widget-telemetry` |
+| Quickshell panels (Taskbar, Telemetry, Control Panel and Floating Window Bar) | `argvus-shell`, `argvus widget-telemetry` |
 | Settings application | `argvus control-center` (in `argvus`) |
 | First-setup guide | `argvus welcome` (in `argvus`; first automatic opening is tracked in per-user progress) |
 | Launcher and lock screen | `argvus-launcher`, `argvus-lock` |
@@ -185,7 +185,7 @@ sudo pacman -S blueman starship kooha nwg-look
 | argvus-appearance | [argvus/argvus-appearance](https://github.com/argvus/argvus-appearance) |
 | argvus-boot-splash | [argvus/argvus-boot-splash](https://github.com/argvus/argvus-boot-splash) |
 | argvus-branding | [argvus/argvus-branding](https://github.com/argvus/argvus-branding) |
-| argvus-panels | [argvus/argvus-panels](https://github.com/argvus/argvus-panels) |
+| argvus-shell | [argvus/argvus-shell](https://github.com/argvus/argvus-shell) |
 | argvus-display | [argvus/argvus-display](https://github.com/argvus/argvus-display) |
 | argvus-firewall | [argvus/argvus-firewall](https://github.com/argvus/argvus-firewall) |
 | argvus-fonts | [argvus/argvus-fonts](https://github.com/argvus/argvus-fonts) |

@@ -35,7 +35,7 @@ Kurulum ve başlatma için bkz. [Kurulum](/docs/getting-started/installation/) v
 
 ### Besteci ve masaüstü kabuğu
 
-`argvus-hyprland`, Hyprland yapılandırmasını ve tuş bağlamalarını sağlar. `argvus-panels` yamalı Taskbar ikili dosyasını sağlarken `argvus-panels` görev çubuğu yapılandırmasına ve eylemlerine sahiptir. `argvus-panels`, Quickshell panelini sağlar ve `argvus widget-telemetry`, `argvus`'da işlem sırasında isteğe bağlı sistem widget'larını sağlar.
+`argvus-hyprland`, Hyprland yapılandırmasını ve tuş bağlamalarını sağlar. `argvus-shell` yamalı Taskbar ikili dosyasını sağlarken `argvus-shell` görev çubuğu yapılandırmasına ve eylemlerine sahiptir. `argvus-shell`, Quickshell panelini sağlar ve `argvus widget-telemetry`, `argvus`'da işlem sırasında isteğe bağlı sistem widget'larını sağlar.
 
 Kullanım için [Masaüstü](/docs/user-guide/desktop/) ve uygulama sahipliği için [kabuk yüzeyleri](/docs/developer-guide/subsystems/shell-surfaces/) konusuna bakın.
 
@@ -59,7 +59,7 @@ Tema, vurgu, duvar kağıdı, yazı tipi ve efekt tercihleri `$XDG_CONFIG_HOME/a
 
 Görsel sistem aynı zamanda düzeni de kontrol eder. Yapışkan mod kompakt ve karedir; Aralıklı mod, daha büyük pencere boşlukları, yuvarlatılmış köşeler ve görev çubuğu ile kabuk çevresinde daha geniş kenar boşlukları kullanır. Görev çubuğu varsayılan olarak üst kenardadır ancak paylaşılan düzen durumu aracılığıyla üst/alt yerleşimi destekler. Efektler, besteci ve masaüstü yüzeylerindeki şeffaflığı, bulanıklığı, gölgeleri ve animasyonları kontrol eder.
 
-Mevcut aileler ve renkler için [tema tablosuna](/docs/user-guide/appearance/), paylaşılan efektler sözleşmesi için [efektlere](/docs/argvus-appearance/effects/) ve çubuk ve pencere yerleşimi için [görev çubuğuna](/docs/argvus-panels/taskbar/) bakın.
+Mevcut aileler ve renkler için [tema tablosuna](/docs/user-guide/appearance/), paylaşılan efektler sözleşmesi için [efektlere](/docs/argvus-appearance/effects/) ve çubuk ve pencere yerleşimi için [görev çubuğuna](/docs/argvus-shell/taskbar/) bakın.
 
 ## ARGVUS nedir ve ne değildir
 

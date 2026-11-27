@@ -552,7 +552,7 @@ La minimizzazione utilizza lo spazio di lavoro riservato `special:argvus-minimiz
 La sessione possiede `argvus-windows.service` e `argvus-window-bar.service`. Quest'ultimo mantiene il suo figlio Quickshell dormiente in Tile. Il plugin hyprbars è incluso da `argvus-hyprland`, costruito per l'ABI Hyprland 0.57.0 su x86_64; non è compilato nella directory home dell'utente. Ricompila il plugin con un aggiornamento dell'ABI del compositore.
 Comandi: `argvus windows list --json`, `watch --json`, `position top|bottom`, `restore-all` e `minimize|restore|activate|maximize|close ADDRESS`. Gli indirizzi delle finestre provengono dalla lista. `position top --persist` memorizza/proietta la preferenza senza riavviare la barra principale. I dettagli della configurazione e degli errori di runtime vengono scritti nel giornale; anche i fallimenti delle azioni visibili mostrano una notifica tradotta.
 
-La barra delle applicazioni e la telemetria sono superfici indipendenti del processo Quickshell gestito da `argvus-panels.service`. Usa `argvus-taskbar.service` e `argvus-widget-telemetry.service` per controllare ogni superficie.
+La barra delle applicazioni e la telemetria sono superfici indipendenti del processo Quickshell gestito da `argvus-shell.service`. Usa `argvus-taskbar.service` e `argvus-widget-telemetry.service` per controllare ogni superficie.
 
 ## Sottomenu Finestre e chiusura dell'applicazione
 

@@ -12,7 +12,7 @@ description: ARGVUS पैकेज जिम्मेदारियाँ।
 | `argvus-devtools`, `argvus-pentest` | विकास उपकरण और अधिकृत सुरक्षा ऑडिटिंग के लिए वैकल्पिक स्वतंत्र मेटापैकेज। मास्टर पैकेज़ इन प्रोफ़ाइलों को स्थापित नहीं करता है. |
 | `argvus-session` | सत्र प्रवेश बिंदु और उपयोगकर्ता जीवनचक्र। |
 | `argvus-hyprland` | हाइप्रलैंड विन्यास. |
-| `argvus-panels` | ARGVUS Taskbar, Telemetry, Control Panel, Floating Window Bar, and Morphing surfaces. |
+| `argvus-shell` | ARGVUS Taskbar, Telemetry, Control Panel, Floating Window Bar, and Morphing surfaces. |
 | `argvus-branding` | लोगो और वर्डमार्क संपत्ति. |
 | `argvus-appearance`, `argvus-wallpapers`, `argvus-fonts`, `argvus-icons` | उपस्थिति स्थिति और दृश्य संपत्ति। |
 | `argvus-display`, `argvus-power`, `argvus-notifications` | डेस्कटॉप प्रदाता. |
@@ -34,4 +34,4 @@ description: ARGVUS पैकेज जिम्मेदारियाँ।
 
 हटाए गए पैकेज `argvus-pwvucontrol` और `argvus-snappy-switcher` किसी भी पैकेज द्वारा प्रदान नहीं किए गए हैं।
 
-ARGVUS घटक पैकेजों के बीच किसी इंस्टाल ऑर्डर की आवश्यकता नहीं है: `argvus` उनका मास्टर पैकेज है, और प्रत्येक घटक इस पर निर्भर करता है। `argvus` इंस्टॉल करने से `argvus-desktop` प्रोफ़ाइल भी इंस्टॉल हो जाती है; `argvus-devtools` और `argvus-pentest` ऑप्ट-इन बने रहेंगे। इस तालिका में एक पैकेज की उपस्थिति का मतलब यह नहीं है कि यह पूरी सुविधा का मालिक है: उदाहरण के लिए, टास्कबार `argvus-panels`, `argvus-session` और डोमेन प्रदाताओं को जोड़ता है।
+ARGVUS घटक पैकेजों के बीच किसी इंस्टाल ऑर्डर की आवश्यकता नहीं है: `argvus` उनका मास्टर पैकेज है, और प्रत्येक घटक इस पर निर्भर करता है। `argvus` इंस्टॉल करने से `argvus-desktop` प्रोफ़ाइल भी इंस्टॉल हो जाती है; `argvus-devtools` और `argvus-pentest` ऑप्ट-इन बने रहेंगे। इस तालिका में एक पैकेज की उपस्थिति का मतलब यह नहीं है कि यह पूरी सुविधा का मालिक है: उदाहरण के लिए, टास्कबार `argvus-shell`, `argvus-session` और डोमेन प्रदाताओं को जोड़ता है।

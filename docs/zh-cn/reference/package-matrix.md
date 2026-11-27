@@ -12,7 +12,7 @@ description: ARGVUS 包的职责。
 | `argvus-devtools`, `argvus-pentest` | 可选的独立开发工具和授权安全审计元包。主包不安装这些配置。 |
 | `argvus-session` | 会话入口点和用户生命周期。 |
 | `argvus-hyprland` | Hyprland 配置。 |
-| `argvus-panels` | ARGVUS Taskbar, Telemetry, Control Panel, Floating Window Bar, and Morphing surfaces. |
+| `argvus-shell` | ARGVUS Taskbar, Telemetry, Control Panel, Floating Window Bar, and Morphing surfaces. |
 | `argvus-branding` | 标志和字标资源。 |
 | `argvus-appearance`, `argvus-wallpapers`, `argvus-fonts`, `argvus-icons` | 外观状态和视觉资源。 |
 | `argvus-display`, `argvus-power`, `argvus-notifications` | 桌面提供程序。 |
@@ -34,4 +34,4 @@ description: ARGVUS 包的职责。
 
 已移除的包 `argvus-pwvucontrol` 和 `argvus-snappy-switcher` 不属于任何包提供。
 
-ARGVUS 组件包之间不需要安装顺序：`argvus` 是它们的主包，每个组件都依赖它。安装 `argvus` 也会安装 `argvus-desktop` 配置文件；`argvus-devtools` 和 `argvus-pentest` 仍为自选。包在此表中的存在并不意味着它拥有整个功能：例如，任务栏结合了 `argvus-panels`、`argvus-panels`、`argvus-session` 和域提供者。
+ARGVUS 组件包之间不需要安装顺序：`argvus` 是它们的主包，每个组件都依赖它。安装 `argvus` 也会安装 `argvus-desktop` 配置文件；`argvus-devtools` 和 `argvus-pentest` 仍为自选。包在此表中的存在并不意味着它拥有整个功能：例如，任务栏结合了 `argvus-shell`、`argvus-shell`、`argvus-session` 和域提供者。

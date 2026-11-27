@@ -555,7 +555,7 @@ Wi-Fi パスワード、手動 DNS、およびネットワーク検索フィー�
 
 セッションは`argvus-windows.service`および`argvus-window-bar.service`を所有します。後者はTile内でQuickshellの子を休止状態に保ちます。hyprbarsプラグインは`argvus-hyprland`にバンドルされており、x86_64上のHyprland 0.57.0 ABI向けにビルドされています。ユーザーのホームディレクトリでコンパイルされているわけではありません。コンポジタABIの更新時にはプラグインを再ビルドしてください。コマンド: `argvus windows list --json`、`watch --json`、`position top|bottom`、`restore-all`、および`minimize|restore|activate|maximize|close ADDRESS`。ウィンドウアドレスはリストから取得されます。`position top --persist`は、メインバーを再起動せずに設定を保存/プロジェクトします。構成および実行時のエラーの詳細はジャーナルに書き込まれます。表示されるアクション失敗も翻訳された通知として表示されます。
 
-タスクバーとテレメトリは、`argvus-panels.service` が管理する Quickshell プロセス内の独立したサーフェスです。各サーフェスは `argvus-taskbar.service` と `argvus-widget-telemetry.service` で制御します。
+タスクバーとテレメトリは、`argvus-shell.service` が管理する Quickshell プロセス内の独立したサーフェスです。各サーフェスは `argvus-taskbar.service` と `argvus-widget-telemetry.service` で制御します。
 
 ## Windowsサブメニューとアプリケーションの終了
 

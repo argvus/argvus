@@ -609,7 +609,7 @@ Giảm thiểu sử dụng không gian làm việc `special:argvus-minimized` d�
 
 Phiên sở hữu `argvus-windows.service` và `argvus-window-bar.service`. Cái sau giữ con Quickshell của nó không hoạt động trong Ngói. Plugin hyprbars được đóng gói bởi `argvus-hyprland`, được xây dựng cho Hyprland 0.57.0 ABI trên x86_64; nó không được biên dịch trong thư mục chính của người dùng. Xây dựng lại plugin bằng bản cập nhật ABI tổng hợp.
 
-Thanh tác vụ và tiện ích đo từ xa là các bề mặt độc lập trong tiến trình Quickshell do `argvus-panels.service` quản lý. Dùng `argvus-taskbar.service` và `argvus-widget-telemetry.service` để điều khiển từng bề mặt.
+Thanh tác vụ và tiện ích đo từ xa là các bề mặt độc lập trong tiến trình Quickshell do `argvus-shell.service` quản lý. Dùng `argvus-taskbar.service` và `argvus-widget-telemetry.service` để điều khiển từng bề mặt.
 
 Các lệnh: `argvus windows list --json`, `watch --json`, `position top|bottom`, `restore-all` và `minimize|restore|activate|maximize|close ADDRESS`. Các địa chỉ cửa sổ đến từ danh sách. `position top --persist` lưu trữ/dự án tùy chọn mà không cần khởi động lại thanh chính. Chi tiết lỗi về cấu hình và thời gian chạy được ghi vào nhật ký; lỗi hành động hiển thị cũng hiển thị thông báo đã dịch.
 

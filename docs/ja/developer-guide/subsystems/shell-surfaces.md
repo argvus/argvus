@@ -2,6 +2,6 @@
 title: 貝殻の表面
 description: タスクバー、コントロールパネル、テレメトリの所有権。
 ---
-`argvus-panels` はパッチされた `Quickshell Taskbar` を提供します。`argvus-panels` はタスクバーの操作と UX を所有しています。タスクバーの JSONC と CSS は `config.json` の投影であり、`argvus-config` は `data/generated/taskbar/` の下にアクティブレイヤーを書き込み、`data/taskbar/` の下にミラーコピーを書き込みます。`argvus-panels` は Quickshell カードを所有しています。`argvus-panels` はオプションのテレメトリーバーとそのブロックのセマンティクスを所有しています。その JSONC と CSS は、外観変更時にパッケージ化されたデフォルトから `data/taskbar/` に書き込まれ、その後 `argvus-config` が区切られた `ARGVUS_TELEMETRY_*` とフォントブロックのみを書き換えます。`argvus-session` はそれらのユーザーサービスを所有しています。
+`argvus-shell` はパッチされた `Quickshell Taskbar` を提供します。`argvus-shell` はタスクバーの操作と UX を所有しています。タスクバーの JSONC と CSS は `config.json` の投影であり、`argvus-config` は `data/generated/taskbar/` の下にアクティブレイヤーを書き込み、`data/taskbar/` の下にミラーコピーを書き込みます。`argvus-shell` は Quickshell カードを所有しています。`argvus-shell` はオプションのテレメトリーバーとそのブロックのセマンティクスを所有しています。その JSONC と CSS は、外観変更時にパッケージ化されたデフォルトから `data/taskbar/` に書き込まれ、その後 `argvus-config` が区切られた `ARGVUS_TELEMETRY_*` とフォントブロックのみを書き換えます。`argvus-session` はそれらのユーザーサービスを所有しています。
 
 このランタイムモデルには、現在 `argvus-shell` パッケージや `argvus-shell.service` は存在しません。

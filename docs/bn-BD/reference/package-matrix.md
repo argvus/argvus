@@ -12,7 +12,7 @@ description: ARGVUS প্যাকেজ দায়িত্ব।
 | `argvus-devtools `, ` argvus-pentest` | উন্নয়ন সরঞ্জাম এবং অনুমোদিত নিরাপত্তা নিরীক্ষণের জন্য ঐচ্ছিক স্বাধীন মেটাপ্যাকেজ। মাস্টার প্যাকেজ এই প্রোফাইলগুলি ইনস্টল করে না। |
 | `argvus-session` | সেশন এন্ট্রি পয়েন্ট এবং ব্যবহারকারীর জীবনচক্র। |
 | `argvus-hyprland` | হাইপ্রল্যান্ড কনফিগারেশন। |
-| `argvus-panels` | ARGVUS Taskbar, Telemetry, Control Panel, Floating Window Bar, and Morphing surfaces. |
+| `argvus-shell` | ARGVUS Taskbar, Telemetry, Control Panel, Floating Window Bar, and Morphing surfaces. |
 | `argvus-taskbar `, ` argvus-taskbar` | ওয়েবার কনফিগারেশন এবং প্যাচড বাইনারি। |
 | `argvus-branding` | লোগো এবং ওয়ার্ডমার্ক সম্পদ। |
 | `argvus-appearance `, ` argvus-wallpapers `, ` argvus-fonts `, ` argvus-icons` | চেহারা রাষ্ট্র এবং চাক্ষুষ সম্পদ. |

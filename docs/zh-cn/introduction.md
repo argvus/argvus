@@ -33,7 +33,7 @@ taskbar · control panel · notifications · wallpaper · idle · clipboard
 
 ### 合成器和桌面外壳
 
-`argvus-hyprland` 提供 Hyprland 配置和键绑定。`argvus-panels` 提供修补过的 Taskbar 二进制文件，而 `argvus-panels` 拥有任务栏配置和动作。`argvus-panels` 提供 Quickshell 面板，`argvus widget-telemetry` 提供可选的系统小部件，这些小部件在 `argvus` 内部运行。
+`argvus-hyprland` 提供 Hyprland 配置和键绑定。`argvus-shell` 提供修补过的 Taskbar 二进制文件，而 `argvus-shell` 拥有任务栏配置和动作。`argvus-shell` 提供 Quickshell 面板，`argvus widget-telemetry` 提供可选的系统小部件，这些小部件在 `argvus` 内部运行。
 
 请参阅 [Desktop](/docs/user-guide/desktop/) 了解用法，以及 [shell surfaces](/docs/developer-guide/subsystems/shell-surfaces/) 了解实现所有权。
 
@@ -59,7 +59,7 @@ taskbar · control panel · notifications · wallpaper · idle · clipboard
 
 视觉系统还控制布局。粘性模式紧凑且方形；间距模式使用较大的窗口间隙、圆角以及任务栏和外壳周围更宽的边距。任务栏默认为顶部边缘，但通过共享布局状态支持顶部/底部放置。效果控制合成器和桌面表面的透明度、模糊、阴影和动画。
 
-请参阅[theme table](/docs/user-guide/appearance/)了解当前的主题系列和颜色，[effects](/docs/argvus-appearance/effects/)了解共享效果契约，以及[taskbar](/docs/argvus-panels/taskbar/)了解任务栏和窗口的放置。
+请参阅[theme table](/docs/user-guide/appearance/)了解当前的主题系列和颜色，[effects](/docs/argvus-appearance/effects/)了解共享效果契约，以及[taskbar](/docs/argvus-shell/taskbar/)了解任务栏和窗口的放置。
 
 ## ARGVUS 是什么——以及不是
 

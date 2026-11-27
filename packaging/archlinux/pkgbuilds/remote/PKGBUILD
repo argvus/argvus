@@ -30,7 +30,7 @@ depends=(
 	'argvus-firewall'
 	'argvus-appearance'
 	'argvus-branding'
-	'argvus-panels'
+	'argvus-shell'
 	'argvus-display'
 	'argvus-lock'
 	'argvus-notifications'
@@ -67,7 +67,7 @@ replaces=(
 conflicts=("${replaces[@]}")
 
 # argvus-gtk and argvus-greeter stay provided: packages that depend on them, such
-# as argvus-panels, are satisfied by this package.
+# as argvus-shell, are satisfied by this package.
 provides=(
 	'argvus-config'
 	'argvus-i18n'

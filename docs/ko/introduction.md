@@ -33,7 +33,7 @@ taskbar · control panel · notifications · wallpaper · idle · clipboard
 
 ### 컴포지터 및 데스크톱 셸
 
-`argvus-hyprland`는 Hyprland 구성과 키 바인딩을 제공합니다. `argvus-panels`는 패치된 Taskbar 바이너리를 제공하며, `argvus-panels`는 작업 표시줄 구성과 동작을 소유합니다. `argvus-panels`는 Quickshell 패널을 제공하며, `argvus widget-telemetry`는 선택적 시스템 위젯을 제공하고, 이는 `argvus`에서 프로세스 내에서 실행됩니다.
+`argvus-hyprland`는 Hyprland 구성과 키 바인딩을 제공합니다. `argvus-shell`는 패치된 Taskbar 바이너리를 제공하며, `argvus-shell`는 작업 표시줄 구성과 동작을 소유합니다. `argvus-shell`는 Quickshell 패널을 제공하며, `argvus widget-telemetry`는 선택적 시스템 위젯을 제공하고, 이는 `argvus`에서 프로세스 내에서 실행됩니다.
 
 사용법은 [Desktop](/docs/user-guide/desktop/)를 참조하고, 구현 소유권은 [shell surfaces](/docs/developer-guide/subsystems/shell-surfaces/)를 참조하십시오.
 
@@ -59,7 +59,7 @@ taskbar · control panel · notifications · wallpaper · idle · clipboard
 
 시각 시스템은 레이아웃도 제어합니다. 스티키 모드는 컴팩트하고 정사각형이며, 스페이스트 모드는 더 넓은 창 간격, 둥근 모서리, 작업 표시줄과 셸 주변의 더 넓은 여백을 사용합니다. 작업 표시줄은 기본적으로 상단에 위치하지만, 공유 레이아웃 상태를 통해 상하 배치도 지원합니다. 효과는 합성기와 데스크톱 표면 전반의 투명도, 블러, 그림자 및 애니메이션을 제어합니다.
 
-현재 패밀리와 색상은 [theme table](/docs/user-guide/appearance/)를, 공유 효과 계약은 [effects](/docs/argvus-appearance/effects/)를, 작업 표시줄 및 창 배치는 [taskbar](/docs/argvus-panels/taskbar/)를 참조하십시오.
+현재 패밀리와 색상은 [theme table](/docs/user-guide/appearance/)를, 공유 효과 계약은 [effects](/docs/argvus-appearance/effects/)를, 작업 표시줄 및 창 배치는 [taskbar](/docs/argvus-shell/taskbar/)를 참조하십시오.
 
 ## ARGVUS가 무엇이고 무엇이 아닌가
 

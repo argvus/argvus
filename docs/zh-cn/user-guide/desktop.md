@@ -7,8 +7,8 @@ description: 了解 ARGVUS 桌面表面。
 配置存放在 [Control Center](/docs/components/argvus-control-center/)，而常用操作存放在控制面板中。如果这是您的第一次会话，请从 [First configuration](/docs/user-guide/getting-started/) 开始。
 
 - 控制面板
-- [任务栏](/docs/argvus-panels/taskbar/)
-- [小部件](/docs/argvus-panels/widgets/)
+- [任务栏](/docs/argvus-shell/taskbar/)
+- [小部件](/docs/argvus-shell/widgets/)
 - [键盘快捷键](/docs/argvus-hyprland/keyboard-shortcuts/)
 - [Hyprland 覆盖 ](/docs/argvus-hyprland/hyprland-overrides/)
 - [Windows 和布局](/docs/argvus-hyprland/windows-and-layout/)

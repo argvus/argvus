@@ -3,4 +3,4 @@ title: Assets e pacotes
 description: Projetos de assets e packaging ARGVUS.
 ---
 
-`argvus-appearance` possui o estado de tema e accent, os orquestradores de tema e os adapters para consumidores externos. Os consumidores visuais gerados são do `argvus-config`. `argvus-branding` fornece o logo e wordmark do ARGVUS. `argvus-wallpapers`, `argvus-fonts` e `argvus-icons` fornecem assets. `argvus-app-profiles` fornece perfis de aplicações. `argvus-panels` empacota o binário Taskbar corrigido.
+`argvus-appearance` possui o estado de tema e accent, os orquestradores de tema e os adapters para consumidores externos. Os consumidores visuais gerados são do `argvus-config`. `argvus-branding` fornece o logo e wordmark do ARGVUS. `argvus-wallpapers`, `argvus-fonts` e `argvus-icons` fornecem assets. `argvus-app-profiles` fornece perfis de aplicações. `argvus-shell` empacota o binário Taskbar corrigido.

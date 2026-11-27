@@ -6,7 +6,7 @@ Die Repositories sind nach Verantwortungsbereich und nicht nach Navigationsseite
 
 - Arbeitsbereich: `argvus` (Dispatcher, In-Process-Kommandos, GTK 4-Helfer, gemeinsame Crates, der Greeter in `crates/argvus-greeter` und die Daten der Kommandos);
 - Sitzung und Integration: `argvus-session`, `argvus-hyprland`, `argvus-portal`, `argvus-lock`, `argvus-boot-splash` und der Greeter (`argvus-greeter`, gebaut aus `argvus/crates/argvus-greeter`);
-- UI außerhalb des Arbeitsbereichs: Systemsteuerung, Taskleiste (`argvus-panels`), Launcher und Taskbar;
+- UI außerhalb des Arbeitsbereichs: Systemsteuerung, Taskleiste (`argvus-shell`), Launcher und Taskbar;
 - Anbieter: Display, Stromversorgung, Firewall, Benachrichtigungen;
 - Assets und Verpackung: Erscheinungsbild, Hintergründe, Schriftarten, Symbole, Profile.
 

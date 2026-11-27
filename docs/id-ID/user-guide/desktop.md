@@ -8,8 +8,8 @@ Shell desktop terdiri dari Hyprland, taskbar Taskbar yang ditambal, Panel Kontro
 Konfigurasi ada di [Pusat Kontrol](/docs/components/argvus-control-center/), sementara tindakan yang sering dilakukan ada di Panel Kontrol. Mulailah dengan [Konfigurasi pertama](/docs/user-guide/getting-started/) jika ini adalah sesi pertama Anda.
 
 - Panel Kontrol
-- [Bilah Tugas](/docs/argvus-panels/taskbar/)
-- [Widget](/docs/argvus-panels/widgets/)
+- [Bilah Tugas](/docs/argvus-shell/taskbar/)
+- [Widget](/docs/argvus-shell/widgets/)
 - [Pintasan keyboard](/docs/argvus-hyprland/keyboard-shortcuts/)
 - [Penggantian Hyprland](/docs/argvus-hyprland/hyprland-overrides/)
 - [Windows dan tata letak](/docs/argvus-hyprland/windows-and-layout/)

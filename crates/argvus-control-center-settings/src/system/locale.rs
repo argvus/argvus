@@ -150,7 +150,7 @@ pub fn set_application_language(locale: &str) -> Result<(), UserLocaleError> {
 
 pub fn restart_control_panel() -> std::io::Result<()> {
   let active = argvus_control_center_core::process::command("systemctl")
-    .args(["--user", "is-active", "--quiet", "argvus-panels.service"])
+    .args(["--user", "is-active", "--quiet", "argvus-shell.service"])
     .stdin(Stdio::null())
     .output()?;
   if !active.status.success() {
@@ -159,7 +159,7 @@ pub fn restart_control_panel() -> std::io::Result<()> {
 
   let system_config =
     std::env::var("ARGVUS_SYSTEM_CONFIG").unwrap_or_else(|_| "/usr/share/argvus".to_owned());
-  let shell = format!("{system_config}/panels/qml/shell.qml");
+  let shell = format!("{system_config}/shell/qml/shell.qml");
   let output = argvus_control_center_core::process::command("qs")
     .args(["-p", &shell, "ipc", "call", "sidebar", "reloadLocale"])
     .stdin(Stdio::null())

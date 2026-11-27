@@ -604,7 +604,7 @@ $XDG_CONFIG_HOME/argvus/config/hyprland.json में विहित प्र
 
 सत्र `argvus-windows.service` और `argvus-window-bar.service` का स्वामी है। उत्तरार्द्ध अपने वेबार बच्चे को टाइल में निष्क्रिय रखता है। हाइपरबार्स प्लगइन को `argvus-hyprland` द्वारा बंडल किया गया है, जो x86_64 पर हाइपरलैंड 0.57.0 ABI के लिए बनाया गया है; यह उपयोगकर्ता की होम निर्देशिका में संकलित नहीं है। कंपोज़िटर एबीआई अपडेट के साथ प्लगइन का पुनर्निर्माण करें।
 
-टास्कबार और टेलीमेट्री विजेट `argvus-panels.service` के Quickshell प्रक्रम में स्वतंत्र सतहें हैं। प्रत्येक सतह को `argvus-taskbar.service` और `argvus-widget-telemetry.service` से नियंत्रित करें।
+टास्कबार और टेलीमेट्री विजेट `argvus-shell.service` के Quickshell प्रक्रम में स्वतंत्र सतहें हैं। प्रत्येक सतह को `argvus-taskbar.service` और `argvus-widget-telemetry.service` से नियंत्रित करें।
 
 कमांड: `argvus windows list --json`, `watch --json`, `position top|bottom`, `restore-all`, और `minimize|restore|activate|maximize|close ADDRESS`। विंडो पते सूची से आते हैं. `position top --persist` मुख्य बार को पुनरारंभ किए बिना प्राथमिकता को संग्रहीत/प्रोजेक्ट करता है। कॉन्फ़िगरेशन और रनटाइम त्रुटि विवरण जर्नल में लिखे गए हैं; दृश्यमान क्रिया विफलताएँ एक अनुवादित अधिसूचना भी दिखाती हैं।
 

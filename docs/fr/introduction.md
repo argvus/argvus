@@ -33,7 +33,7 @@ Le package `argvus` fournit le dispatcher `/usr/bin/argvus` et le point d'entré
 
 ### Compositeur et shell de bureau
 
-`argvus-hyprland` fournit la configuration et les raccourcis clavier de Hyprland. `argvus-panels` fournit le binaire Taskbar patché, tandis que `argvus-panels` possède la configuration et les actions de la barre des tâches. `argvus-panels` fournit le panneau Quickshell, et `argvus widget-telemetry` fournit des widgets système optionnels, en cours dans `argvus`.
+`argvus-hyprland` fournit la configuration et les raccourcis clavier de Hyprland. `argvus-shell` fournit le binaire Taskbar patché, tandis que `argvus-shell` possède la configuration et les actions de la barre des tâches. `argvus-shell` fournit le panneau Quickshell, et `argvus widget-telemetry` fournit des widgets système optionnels, en cours dans `argvus`.
 
 Voir [Desktop](/docs/user-guide/desktop/) pour l'utilisation et [shell surfaces](/docs/developer-guide/subsystems/shell-surfaces/) pour la responsabilité de l'implémentation.
 
@@ -59,7 +59,7 @@ Le répertoire généré n'est pas la source de vérité. Voir [Appearance](/doc
 
 Le système visuel contrôle également la disposition. Le mode Sticky est compact et carré ; le mode Spaced utilise des espaces de fenêtres plus larges, des coins arrondis et des marges plus larges autour de la barre des tâches et du shell. La barre des tâches est par défaut placée en haut mais supporte une position en haut/en bas grâce à l'état de disposition partagé. Les effets contrôlent la transparence, le flou, les ombres et les animations sur le compositeur et les surfaces du bureau.
 
-Consultez le [tableau des thèmes](/docs/user-guide/appearance/) pour les familles et couleurs actuelles, [effets](/docs/argvus-appearance/effects/) pour le contrat d'effets partagés, et [barre des tâches](/docs/argvus-panels/taskbar/) pour le placement des barres et des fenêtres.
+Consultez le [tableau des thèmes](/docs/user-guide/appearance/) pour les familles et couleurs actuelles, [effets](/docs/argvus-appearance/effects/) pour le contrat d'effets partagés, et [barre des tâches](/docs/argvus-shell/taskbar/) pour le placement des barres et des fenêtres.
 
 ## Ce qu'ARGVUS est - et n'est pas
 

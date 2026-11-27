@@ -34,7 +34,7 @@ taskbar · control panel · notifications · wallpaper · idle · clipboard
 
 ### المُركب وسطح المكتب
 
-يوفر `argvus-hyprland` تكوين Hyprland وربطات المفاتيح. يوفر `argvus-panels` ثنائي Taskbar المصحح، بينما يمتلك `argvus-panels` تكوين شريط المهام وإجراءاته. يوفر `argvus-panels` لوحة Quickshell، ويوفر `argvus widget-telemetry` عناصر واجهة مستخدم النظام الاختيارية، قيد التشغيل في `argvus`.
+يوفر `argvus-hyprland` تكوين Hyprland وربطات المفاتيح. يوفر `argvus-shell` ثنائي Taskbar المصحح، بينما يمتلك `argvus-shell` تكوين شريط المهام وإجراءاته. يوفر `argvus-shell` لوحة Quickshell، ويوفر `argvus widget-telemetry` عناصر واجهة مستخدم النظام الاختيارية، قيد التشغيل في `argvus`.
 
 
 ### الإعدادات والتطبيقات
@@ -54,7 +54,7 @@ taskbar · control panel · notifications · wallpaper · idle · clipboard
 
 يتحكم النظام البصري أيضًا في التخطيط. الوضع الثابت مضغوط ومربع. يستخدم الوضع المتباعد فجوات نافذة أكبر وزوايا مستديرة وهوامش أوسع حول شريط المهام والهيكل. يتم تعيين شريط المهام افتراضيًا على الحافة العلوية ولكنه يدعم الموضع العلوي/السفلي من خلال حالة التخطيط المشترك. تتحكم التأثيرات في الشفافية والتمويه والظلال والرسوم المتحركة عبر أسطح المُركب وسطح المكتب.
 
-راجع [جدول السمات] (/docs/user-guide/appearance/) للعائلات والألوان الحالية، و[التأثيرات] (/docs/argvus-appearance/effects/) لعقد التأثيرات المشتركة، و[شريط المهام] (/docs/argvus-panels/taskbar/) لوضع الشريط والنافذة.
+راجع [جدول السمات] (/docs/user-guide/appearance/) للعائلات والألوان الحالية، و[التأثيرات] (/docs/argvus-appearance/effects/) لعقد التأثيرات المشتركة، و[شريط المهام] (/docs/argvus-shell/taskbar/) لوضع الشريط والنافذة.
 
 ## ما هو ARGVUS وما هو ليس كذلك
 
@@ -75,7 +75,7 @@ ARGVUS هي طبقة بيئة سطح المكتب الموجودة أعلى نظ
                                                                           ﺮﻈﻧﺍ[                                                                     ﺕﺎﻘﻴﺒﻄﺘﻟﺍ](/docs/user-guide/applications/)                                                                             ﻭ[                                                                   ﺮﻣﺍﻭﻷ﻿ﺍ ﻊﺟﺮﻣ](/docs/reference/command-line/).
                                                                           ﺮﻈﻧﺍ[                                                                        ﺓﺰﻬﺟﻷ﻿ﺍ](/docs/user-guide/hardware/), [                                                               ﻥﺎﻣﻷ﻿ﺍﻭ ﺔﻴﺻﻮﺼﺨﻟﺍ](/docs/user-guide/privacy-and-security/)                                                                       ﺭﻮﻄﻤﻟﺍﻭ[                                                                   ﻥﻮﻜﻤﻟﺍ ﻊﺟﺮﻣ](/docs/developer-guide/).
                       ﺮﻈﻧﺍ .ﺕﺎﻣﻮﻠﻌﻤﻠﻟ ﻲﻘﻴﻘﺤﻟﺍ ﺭﺪﺼﻤﻟﺍ ﺲﻴﻟ ﻩﺅﺎﺸﻧﺇ ﻢﺗ ﻱﺬﻟﺍ ﻞﻴﻟﺪﻟﺍ[                                                                        ﺮﻬﻈﻤﻟﺍ](/docs/user-guide/appearance/)                                                                             ﻭ[                                                               ﺔﻟﺎﺤﻟﺍﻭ ﻦﻳﻮﻜﺘﻟﺍ](/docs/developer-guide/architecture/configuration-and-state/).
-                                                                      ﻰﻟﺇ ﺮﻈﻧﺍ[                                                                  ﻉﻮﺿﻮﻤﻟﺍ ﻝﻭﺪﺟ](/docs/user-guide/appearance/)                                                      ،ﺔﻴﻟﺎﺤﻟﺍ ﻥﺍﻮﻟﻷ﻿ﺍﻭ ﺕﻼ﻿ﺋﺎﻌﻠﻟ[                                                                       ﺕﺍﺮﻴﺛﺄﺗ](/docs/argvus-appearance/effects/)                                                    ﻭ ،ﺔﻛﺮﺘﺸﻤﻟﺍ ﺕﺍﺮﻴﺛﺄﺘﻟﺍ ﺪﻘﻌﻟ[                                                                   ﻡﺎﻬﻤﻟﺍ ﻂﻳﺮﺷ](/docs/argvus-panels/taskbar/)                                                          .ﺬﻓﺍﻮﻨﻟﺍﻭ ﺭﺎﺒﻟﺍ ﻊﺿﻮﻟ
+                                                                      ﻰﻟﺇ ﺮﻈﻧﺍ[                                                                  ﻉﻮﺿﻮﻤﻟﺍ ﻝﻭﺪﺟ](/docs/user-guide/appearance/)                                                      ،ﺔﻴﻟﺎﺤﻟﺍ ﻥﺍﻮﻟﻷ﻿ﺍﻭ ﺕﻼ﻿ﺋﺎﻌﻠﻟ[                                                                       ﺕﺍﺮﻴﺛﺄﺗ](/docs/argvus-appearance/effects/)                                                    ﻭ ،ﺔﻛﺮﺘﺸﻤﻟﺍ ﺕﺍﺮﻴﺛﺄﺘﻟﺍ ﺪﻘﻌﻟ[                                                                   ﻡﺎﻬﻤﻟﺍ ﻂﻳﺮﺷ](/docs/argvus-shell/taskbar/)                                                          .ﺬﻓﺍﻮﻨﻟﺍﻭ ﺭﺎﺒﻟﺍ ﻊﺿﻮﻟ
  ﺮﻈﻧﺍ ،ﻖﻄﻨﻟﺍ ﺕﻮﺻﻭ ﻞﻣﺎﻜﻟﺍ ﺡﺮﺸﻟﺍ ﻰﻠﻋ ﻝﻮﺼﺤﻠﻟ .ﻡﺪﺨﺘﺴﻤﻟﺍ ﻰﻠﻋ ﺰﻛﺮﻳ ﻱﺬﻟﺍ ﺐﺘﻜﻤﻟﺍ ﺢﻄﺳ ﻑ[                                                                     ARGVUS ﻦﻋ](/about/).
                                       ﺭﻮﻄﻤﻟﺍ ﻊﺟﺍﺭ ،ﺔﻣﺰﺤﻟﺍ ﺔﻴﻜﻠﻣﻭ ﺬﻴﻔﻨﺘﻟﺍ ﺩﻭﺪﺤﻟ[                                               ﺔﻳﺭﺎﻤﻌﻤﻟﺍ ﺔﺳﺪﻨﻬﻟﺍ ﻰﻠﻋ ﺔﻣﺎﻋ ﺓﺮﻈﻧ](/docs/developer-guide/architecture/overview/)                                                                             ﻭ[                                                                ﻉﺩﻮﺘﺴﻤﻟﺍ ﺭﺍﻭﺩﺃ](/docs/developer-guide/architecture/repository-roles/).
 - [                                                           ﺔﻌﺋﺎﺸﻟﺍ ﺔﻠﺌﺳﻷ﻿ﺍ ﺃﺮﻗﺍ](/docs/user-guide/faq/).

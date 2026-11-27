@@ -199,7 +199,7 @@ pub fn move_control_panel_card(card: ControlPanelCard, index: usize) -> Result<(
 /// preserving the required immediate panel reload.
 pub fn reload_control_panel() -> Result<(), String> {
   let bars_shell = format!(
-    "{}/panels/qml/shell.qml",
+    "{}/shell/qml/shell.qml",
     std::env::var("ARGVUS_SYSTEM_CONFIG").unwrap_or_else(|_| "/usr/share/argvus".into())
   );
   if let Ok(ipc_output) = SystemProcessRunner.run(
