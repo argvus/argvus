@@ -161,6 +161,21 @@ mod tests {
   }
 
   #[test]
+  fn sticky_window_is_clamped_inside_reserved_bars() {
+    let output = json!({"x":0,"y":0,"width":1920,"height":1080,"scale":1,"reserved":[0,40,0,40]});
+    let inherited = json!({"at":[0,40],"size":[1920,1000]});
+    assert_eq!(
+      geometry(&inherited, &output, [0; 4], 1, 28, false),
+      ([1, 69], [1918, 970])
+    );
+    let small = json!({"at":[100,150],"size":[700,500]});
+    assert_eq!(
+      geometry(&small, &output, [0; 4], 1, 28, false),
+      ([100, 150], [700, 500])
+    );
+  }
+
+  #[test]
   fn rotated_scaled_monitor_uses_logical_bounds() {
     let output = json!({"x":-900,"y":20,"width":1920,"height":1080,"scale":1.5,"transform":1,"reserved":[0,30,0,30]});
     assert_eq!(

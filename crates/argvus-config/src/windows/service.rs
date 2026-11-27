@@ -1,6 +1,7 @@
 use super::model::{self, Registry};
 use super::*;
 use crate::ConfigStore;
+use std::collections::HashSet;
 use std::fs::{self, OpenOptions};
 use std::os::unix::fs::DirBuilderExt;
 use std::os::unix::net::UnixListener;
@@ -82,6 +83,7 @@ struct Service {
   last_snapshot: String,
   labels: Value,
   suspended: bool,
+  bounded_windows: HashSet<String>,
 }
 
 impl Service {
@@ -112,11 +114,44 @@ impl Service {
     let mut windows = self.reconcile()?;
     let outputs = monitors()?;
     let document = crate::ConfigStore::from_environment()?.load_effective()?;
-    if document.get("/layout/variant").and_then(Value::as_str) == Some("spaced") && mode_applied() {
-      let changed = self.apply_spacing(&windows, &outputs)?;
-      if changed {
+    let floating_mode = mode_applied();
+    if floating_mode && bar_mapped()? {
+      let spaced = document.get("/layout/variant").and_then(Value::as_str) == Some("spaced");
+      // Sticky windows are bounded once after becoming floating, so later
+      // manual moves remain under the user's control.
+      let candidates: Vec<_> = windows
+        .iter()
+        .filter(|window| {
+          window["floating"] == true
+            && window["mapped"] == true
+            && (spaced
+              || window["address"]
+                .as_str()
+                .is_some_and(|address| !self.bounded_windows.contains(address)))
+        })
+        .cloned()
+        .collect();
+      if !candidates.is_empty() && self.apply_spacing(&candidates, &outputs)? {
         windows = clients()?;
       }
+      self.bounded_windows = windows
+        .iter()
+        .filter(|window| {
+          window["floating"] == true
+            && window["mapped"] == true
+            && window["hidden"] != true
+            && window["fullscreen"].as_i64().unwrap_or(0) == 0
+            && window["address"]
+              .as_str()
+              .is_some_and(|address| !self.registry.contains_key(address))
+            && outputs
+              .iter()
+              .any(|output| output["id"] == window["monitor"])
+        })
+        .filter_map(|window| window["address"].as_str().map(str::to_owned))
+        .collect();
+    } else if !floating_mode {
+      self.bounded_windows.clear();
     }
     let active = query("activewindow")?["address"].clone();
     let entries:Vec<_>=windows.iter().filter(|window|window["mapped"]==true).filter_map(|window| {
@@ -530,6 +565,7 @@ pub(super) fn run() -> ConfigResult<()> {
     last_snapshot: String::new(),
     labels: labels()?,
     suspended: false,
+    bounded_windows: HashSet::new(),
   };
   let mut last_floating = mode_applied();
   let mut refreshed = Instant::now() - Duration::from_secs(2);
@@ -547,6 +583,7 @@ pub(super) fn run() -> ConfigResult<()> {
       dirty = true;
       if let Some(target) = event.strip_prefix("closewindow>>") {
         let target = format!("0x{}", target.trim().trim_start_matches("0x"));
+        service.bounded_windows.remove(&target);
         if service.registry.remove(&target).is_some() {
           model::save(&service.registry)?;
         }
