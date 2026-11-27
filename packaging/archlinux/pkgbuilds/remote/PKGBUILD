@@ -30,7 +30,7 @@ depends=(
 	'argvus-firewall'
 	'argvus-appearance'
 	'argvus-branding'
-	'argvus-control-panel'
+	'argvus-panels'
 	'argvus-display'
 	'argvus-lock'
 	'argvus-notifications'
@@ -39,7 +39,7 @@ depends=(
 	'argvus-session'
 	'argvus-hyprland'
 	'argvus-launcher'
-	'argvus-taskbar'
+
 )
 
 # Packages that this one replaces. The split packages argvus-gtk and argvus-greeter
@@ -67,7 +67,7 @@ replaces=(
 conflicts=("${replaces[@]}")
 
 # argvus-gtk and argvus-greeter stay provided: packages that depend on them, such
-# as argvus-taskbar and argvus-control-panel, are satisfied by this package.
+# as argvus-panels, are satisfied by this package.
 provides=(
 	'argvus-config'
 	'argvus-i18n'

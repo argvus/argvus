@@ -548,7 +548,7 @@ Wi-Fi 密码、手动 DNS 和网络搜索字段支持带括号的粘贴。粘贴
 会话拥有 `argvus-windows.service` 和 `argvus-window-bar.service`。后者保持其 Quickshell 子项在 Tile 中处于休眠状态。hyprbars 插件由 `argvus-hyprland` 打包，为 x86_64 上的 Hyprland 0.57.0 ABI 构建；它未在用户的主目录中编译。更新合成器 ABI 后重新构建该插件。
 命令：`argvus windows list --json`、`watch --json`、`position top|bottom`、`restore-all` 和 `minimize|restore|activate|maximize|close ADDRESS`。窗口地址来自列表。`position top --persist` 在不重启主栏的情况下存储/应用偏好设置。配置和运行时的错误细节会写入日志；可见的操作失败也会显示翻译后的通知。
 
-任务栏和遥测组件是由 `argvus-bars.service` 管理的 Quickshell 进程中的独立界面。使用 `argvus-taskbar.service` 和 `argvus-widget-telemetry.service` 分别控制它们。
+任务栏和遥测组件是由 `argvus-panels.service` 管理的 Quickshell 进程中的独立界面。使用 `argvus-taskbar.service` 和 `argvus-widget-telemetry.service` 分别控制它们。
 
 ## 窗口子菜单和关闭应用程序
 

@@ -552,7 +552,7 @@ Wi-Fi পাসওয়ার্ড, ম্যানুয়াল DNS এব�
 
 সেশনের মালিক `argvus-windows.service ` এবং ` argvus-window-bar.service `। পরেরটি তার ওয়েবার শিশুটিকে টাইলে সুপ্ত রাখে। হাইপ্রবার প্লাগইনটি ` argvus-hyprland` দ্বারা বান্ডিল করা হয়েছে, যা x86_64-এ Hyprland 0.57.0 ABI-এর জন্য নির্মিত; এটি ব্যবহারকারীর হোম ডিরেক্টরিতে সংকলিত হয় না। একটি কম্পোজিটর ABI আপডেট দিয়ে প্লাগইনটি পুনর্নির্মাণ করুন।
 
-টাস্কবার ও টেলিমেট্রি উইজেট `argvus-bars.service` পরিচালিত Quickshell প্রক্রিয়ার স্বাধীন সারফেস। প্রতিটি সারফেস নিয়ন্ত্রণ করতে `argvus-taskbar.service` ও `argvus-widget-telemetry.service` ব্যবহার করুন।
+টাস্কবার ও টেলিমেট্রি উইজেট `argvus-panels.service` পরিচালিত Quickshell প্রক্রিয়ার স্বাধীন সারফেস। প্রতিটি সারফেস নিয়ন্ত্রণ করতে `argvus-taskbar.service` ও `argvus-widget-telemetry.service` ব্যবহার করুন।
 
 কমান্ড: `argvus windows list --json `, ` watch --json `, ` position top|bottom `, ` restore-all `, এবং ` minimize|restore|activate|maximize|close ADDRESS `। উইন্ডো ঠিকানা তালিকা থেকে আসা. ` position top --persist` প্রধান বার পুনরায় আরম্ভ না করেই পছন্দ সঞ্চয়/প্রজেক্ট করে। কনফিগারেশন এবং রানটাইম ত্রুটির বিবরণ জার্নালে লেখা হয়; দৃশ্যমান ক্রিয়া ব্যর্থতা একটি অনুবাদিত বিজ্ঞপ্তিও দেখায়।
 

@@ -12,8 +12,7 @@ description: Responsabilités du paquet ARGVUS.
 | `argvus-devtools`, `argvus-pentest` | Méta-paquets indépendants optionnels pour les outils de développement et l'audit de sécurité autorisé. Le paquet principal n'installe pas ces profils. |
 | `argvus-session` | Points d'entrée de session et cycle de vie de l'utilisateur. |
 | `argvus-hyprland` | Configuration de Hyprland. |
-| `argvus-control-panel` | Panneau de contrôle Quickshell. |
-| `argvus-taskbar` | Configuration de Taskbar et binaire patché. |
+| `argvus-panels` | ARGVUS Taskbar, Telemetry, Control Panel, Floating Window Bar, and Morphing surfaces. |
 | `argvus-branding` | Ressources de logo et de marque textuelle. |
 | `argvus-appearance`, `argvus-wallpapers`, `argvus-fonts`, `argvus-icons` | État d'apparence et ressources visuelles. |
 | `argvus-display`, `argvus-power`, `argvus-notifications` | Fournisseurs de bureau. |
@@ -35,4 +34,4 @@ description: Responsabilités du paquet ARGVUS.
 
 Les paquets supprimés `argvus-pwvucontrol` et `argvus-snappy-switcher` ne sont fournis par aucun paquet.
 
-Aucun ordre d'installation n'est requis parmi les paquets composants ARGVUS : `argvus` est leur paquet principal, et chaque composant en dépend. L'installation de `argvus` installe également le profil `argvus-desktop` ; `argvus-devtools` et `argvus-pentest` restent en option. La présence d'un paquet dans ce tableau ne signifie pas qu'il possède l'ensemble de la fonctionnalité : par exemple, la barre des tâches combine `argvus-taskbar`, `argvus-session` et les fournisseurs de domaine.
+Aucun ordre d'installation n'est requis parmi les paquets composants ARGVUS : `argvus` est leur paquet principal, et chaque composant en dépend. L'installation de `argvus` installe également le profil `argvus-desktop` ; `argvus-devtools` et `argvus-pentest` restent en option. La présence d'un paquet dans ce tableau ne signifie pas qu'il possède l'ensemble de la fonctionnalité : par exemple, la barre des tâches combine `argvus-panels`, `argvus-session` et les fournisseurs de domaine.

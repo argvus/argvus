@@ -35,7 +35,7 @@ The `argvus` package provides the `/usr/bin/argvus` dispatcher and the main pack
 
 ### Compositor and desktop shell
 
-`argvus-hyprland` supplies the Hyprland configuration and keybindings. `argvus-taskbar` supplies the Quickshell taskbar and its actions. `argvus-control-panel` supplies the Quickshell panel, and `argvus widget-telemetry` supplies optional system widgets, in-process in `argvus`.
+`argvus-hyprland` supplies the Hyprland configuration and keybindings. `argvus-panels` supplies the Quickshell taskbar and its actions. `argvus-panels` supplies the Quickshell panel, and `argvus widget-telemetry` supplies optional system widgets, in-process in `argvus`.
 
 See [Desktop](/docs/user-guide/desktop/) for usage and [shell surfaces](/docs/developer-guide/subsystems/shell-surfaces/) for implementation ownership.
 
@@ -61,7 +61,7 @@ The generated directory is not the source of truth. See [Appearance](/docs/user-
 
 The visual system also controls layout. Sticky mode is compact and square; Spaced mode uses larger window gaps, rounded corners and wider margins around the taskbar and shell. The taskbar defaults to the top edge but supports top/bottom placement through the shared layout state. Effects control transparency, blur, shadows and animations across the compositor and desktop surfaces.
 
-See the [theme table](/docs/user-guide/appearance/) for the current families and colors, [effects](/docs/argvus-appearance/effects/) for the shared effects contract, and [taskbar](/docs/argvus-taskbar/taskbar/) for bar and window placement.
+See the [theme table](/docs/user-guide/appearance/) for the current families and colors, [effects](/docs/argvus-appearance/effects/) for the shared effects contract, and [taskbar](/docs/argvus-panels/taskbar/) for bar and window placement.
 
 ## What ARGVUS is—and is not
 

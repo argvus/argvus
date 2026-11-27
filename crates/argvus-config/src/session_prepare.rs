@@ -279,8 +279,8 @@ fn fingerprint_roots(paths: &SessionPaths, theme: &str) -> Vec<PathBuf> {
     theme_paths.layouts(),
   ];
   if paths.has_shared_bars() {
-    roots.push(system("taskbar/quickshell"));
-    roots.push(system("taskbar/sh/bars-presentation.sh"));
+    roots.push(system("panels/qml"));
+    roots.push(system("panels/sh/shared/bars-presentation.sh"));
   }
   if let Ok(consumers) =
     argvus_theme_core::registry::load(&theme_paths.system_root, &theme_paths.registry())

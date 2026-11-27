@@ -12,8 +12,7 @@ description: Обязанности пакета ARGVUS.
 | `argvus-devtools`, `argvus-pentest` | Необязательные независимые метапакеты для инструментов разработки и уполномоченного аудита безопасности. Основной пакет не устанавливает эти профили. |
 | `argvus-session` | Точки входа сессии и жизненный цикл пользователя. |
 | `argvus-hyprland` | Конфигурация Hyprland. |
-| `argvus-control-panel` | Панель управления Quickshell. |
-| `argvus-taskbar` | Конфигурация Taskbar и исправленный бинарный файл. |
+| `argvus-panels` | ARGVUS Taskbar, Telemetry, Control Panel, Floating Window Bar, and Morphing surfaces. |
 | `argvus-branding` | Логотип и фирменные элементы. |
 | `argvus-appearance`, `argvus-wallpapers`, `argvus-fonts`, `argvus-icons` | Состояние внешнего вида и визуальные элементы. |
 | `argvus-display`, `argvus-power`, `argvus-notifications` | Провайдеры рабочего стола. |
@@ -35,4 +34,4 @@ description: Обязанности пакета ARGVUS.
 
 Удалённые пакеты `argvus-pwvucontrol` и `argvus-snappy-switcher` не предоставляются никаким пакетом.
 
-Очередность установки среди компонентов ARGVUS не требуется: `argvus` является их главным пакетом, и каждый компонент зависит от него. Установка `argvus` также устанавливает профиль `argvus-desktop`; `argvus-devtools` и `argvus-pentest` остаются по выбору пользователя. Наличие пакета в этой таблице не означает, что он владеет всей функцией: например, панель задач сочетает `argvus-taskbar`, `argvus-session` и провайдеров доменов.
+Очередность установки среди компонентов ARGVUS не требуется: `argvus` является их главным пакетом, и каждый компонент зависит от него. Установка `argvus` также устанавливает профиль `argvus-desktop`; `argvus-devtools` и `argvus-pentest` остаются по выбору пользователя. Наличие пакета в этой таблице не означает, что он владеет всей функцией: например, панель задач сочетает `argvus-panels`, `argvus-session` и провайдеров доменов.

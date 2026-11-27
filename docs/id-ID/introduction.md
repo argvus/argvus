@@ -35,7 +35,7 @@ Paket `argvus` menyediakan operator `/usr/bin/argvus` dan titik masuk paket utam
 
 ### Kompositor dan shell desktop
 
-`argvus-hyprland` memasok konfigurasi Hyprland dan pengikatan kunci. `argvus-taskbar` memasok biner Taskbar yang dipatch, sedangkan `argvus-taskbar` memiliki konfigurasi dan tindakan bilah tugas. `argvus-control-panel` memasok panel Quickshell, dan `argvus widget-telemetry` menyediakan widget sistem opsional, dalam proses di `argvus`.
+`argvus-hyprland` memasok konfigurasi Hyprland dan pengikatan kunci. `argvus-panels` memasok biner Taskbar yang dipatch, sedangkan `argvus-panels` memiliki konfigurasi dan tindakan bilah tugas. `argvus-panels` memasok panel Quickshell, dan `argvus widget-telemetry` menyediakan widget sistem opsional, dalam proses di `argvus`.
 
 Lihat [Desktop](/docs/user-guide/desktop/) untuk penggunaan dan [permukaan shell](/docs/developer-guide/subsystems/shell-surfaces/) untuk kepemilikan implementasi.
 
@@ -59,7 +59,7 @@ Preferensi tema, aksen, wallpaper, font dan efek disimpan sebagai keadaan logis 
 
 Sistem visual juga mengontrol tata letak. Mode tempel kompak dan berbentuk persegi; Mode spasi menggunakan celah jendela yang lebih besar, sudut membulat, dan margin yang lebih lebar di sekitar bilah tugas dan shell. Bilah tugas defaultnya adalah tepi atas tetapi mendukung penempatan atas/bawah melalui status tata letak bersama. Efek mengontrol transparansi, keburaman, bayangan, dan animasi di seluruh kompositor dan permukaan desktop.
 
-Lihat [tabel tema](/docs/user-guide/appearance/) untuk kelompok dan warna saat ini, [efek](/docs/argvus-appearance/effects/) untuk kontrak efek bersama, dan [bilah tugas](/docs/argvus-taskbar/taskbar/) untuk penempatan bilah dan jendela.
+Lihat [tabel tema](/docs/user-guide/appearance/) untuk kelompok dan warna saat ini, [efek](/docs/argvus-appearance/effects/) untuk kontrak efek bersama, dan [bilah tugas](/docs/argvus-panels/taskbar/) untuk penempatan bilah dan jendela.
 
 ## Apa itu ARGVUS—dan apa yang bukan
 

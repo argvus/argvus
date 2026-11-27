@@ -12,8 +12,7 @@ description: Trách nhiệm của gói ARGVUS.
 | `argvus-devtools`, `argvus-pentest` | Các siêu dữ liệu độc lập tùy chọn dành cho các công cụ phát triển và kiểm tra bảo mật được ủy quyền. Gói chính không cài đặt các cấu hình này. |
 | `argvus-session` | Điểm vào phiên và vòng đời của người dùng. |
 | `argvus-hyprland` | Cấu hình Hyprland. |
-| `argvus-control-panel` | Bảng điều khiển Quickshell. |
-| `argvus-taskbar` | Cấu hình Taskbar và nhị phân được vá. |
+| `argvus-panels` | ARGVUS Taskbar, Telemetry, Control Panel, Floating Window Bar, and Morphing surfaces. |
 | `argvus-branding` | Nội dung logo và wordmark. |
 | `argvus-appearance`, `argvus-wallpapers`, `argvus-fonts`, `argvus-icons` | Trạng thái ngoại hình và nội dung trực quan. |
 | `argvus-display`, `argvus-power`, `argvus-notifications` | Các nhà cung cấp máy tính để bàn. |
@@ -35,4 +34,4 @@ description: Trách nhiệm của gói ARGVUS.
 
 Các gói đã xóa `argvus-pwvucontrol` và `argvus-snappy-switcher` không được cung cấp bởi bất kỳ gói nào.
 
-Không yêu cầu thứ tự cài đặt trong số các gói thành phần ARGVUS: `argvus` là gói chính của chúng và mỗi thành phần đều phụ thuộc vào gói đó. Cài đặt `argvus` cũng cài đặt cấu hình `argvus-desktop`; `argvus-devtools` và `argvus-pentest` vẫn được chọn tham gia. Sự hiện diện của một gói trong bảng này không có nghĩa là nó sở hữu toàn bộ tính năng: ví dụ: thanh tác vụ kết hợp `argvus-taskbar`, `argvus-session` và các nhà cung cấp tên miền.
+Không yêu cầu thứ tự cài đặt trong số các gói thành phần ARGVUS: `argvus` là gói chính của chúng và mỗi thành phần đều phụ thuộc vào gói đó. Cài đặt `argvus` cũng cài đặt cấu hình `argvus-desktop`; `argvus-devtools` và `argvus-pentest` vẫn được chọn tham gia. Sự hiện diện của một gói trong bảng này không có nghĩa là nó sở hữu toàn bộ tính năng: ví dụ: thanh tác vụ kết hợp `argvus-panels`, `argvus-session` và các nhà cung cấp tên miền.

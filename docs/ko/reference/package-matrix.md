@@ -12,8 +12,7 @@ description: ARGVUS 패키지 책임.
 | `argvus-devtools`, `argvus-pentest` | 개발 도구 및 인증된 보안 감사용 선택적 독립 메타패키지입니다. 마스터 패키지는 이러한 프로필을 설치하지 않습니다. |
 | `argvus-session` | 세션 진입점 및 사용자 수명 주기. |
 | `argvus-hyprland` | Hyprland 구성. |
-| `argvus-control-panel` | Quickshell 제어판. |
-| `argvus-taskbar` | Taskbar 구성 및 패치된 바이너리. |
+| `argvus-panels` | ARGVUS Taskbar, Telemetry, Control Panel, Floating Window Bar, and Morphing surfaces. |
 | `argvus-branding` | 로고 및 워드마크 자산. |
 | `argvus-appearance`, `argvus-wallpapers`, `argvus-fonts`, `argvus-icons` | 외관 상태 및 시각적 자산. |
 | `argvus-display`, `argvus-power`, `argvus-notifications` | 데스크탑 제공자. |
@@ -35,4 +34,4 @@ description: ARGVUS 패키지 책임.
 
 제거된 패키지 `argvus-pwvucontrol` 및 `argvus-snappy-switcher`는 어떤 패키지에도 제공되지 않습니다.
 
-ARGVUS 구성 요소 패키지 간에는 설치 순서가 필요하지 않습니다: `argvus`가 이들의 마스터 패키지이며, 각 구성 요소는 이에 의존합니다. `argvus`를 설치하면 `argvus-desktop` 프로필도 함께 설치됩니다; `argvus-devtools` 및 `argvus-pentest`는 선택적으로 설치할 수 있습니다. 이 표에 패키지가 존재한다고 해서 해당 기능 전체를 소유한다는 의미는 아닙니다: 예를 들어, 작업 표시줄은 `argvus-taskbar`, `argvus-session` 및 도메인 제공자를 결합합니다.
+ARGVUS 구성 요소 패키지 간에는 설치 순서가 필요하지 않습니다: `argvus`가 이들의 마스터 패키지이며, 각 구성 요소는 이에 의존합니다. `argvus`를 설치하면 `argvus-desktop` 프로필도 함께 설치됩니다; `argvus-devtools` 및 `argvus-pentest`는 선택적으로 설치할 수 있습니다. 이 표에 패키지가 존재한다고 해서 해당 기능 전체를 소유한다는 의미는 아닙니다: 예를 들어, 작업 표시줄은 `argvus-panels`, `argvus-session` 및 도메인 제공자를 결합합니다.

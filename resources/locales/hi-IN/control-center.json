@@ -11,7 +11,7 @@
   "control_center.user_locale_not_generated": "यह स्थानीय उपलब्ध नहीं है। इसे पहले सिस्टम लोकल में सक्षम करें।.",
   "control_center.user_locale_save_failed": "आपकी भाषा वरीयता को नहीं बचा सकता। अपनी कॉन्फ़िगरेशन निर्देशिका तक पहुंच की जाँच करें।.",
   "control_center.user_locale_applied": "उपयोगकर्ता भाषा बचाया। नियंत्रण कक्ष को पुनरारंभ किया गया था; शेष सत्र में भाषा को लागू करने के लिए लॉग आउट और वापस करें।.",
-  "control_center.control_panel_restart_failed": "भाषा बचाया, लेकिन नियंत्रण कक्ष को पुनः आरंभ नहीं किया जा सकता है। अपने उपयोगकर्ता सत्र से Restart argvus-control-panel.service.",
+  "control_center.control_panel_restart_failed": "भाषा सहेजी गई, लेकिन कंट्रोल पैनल की भाषा अपडेट नहीं हो सकी। पैनल बंद करके फिर खोलें।",
   "control_center.welcome_next_blocked": "पूरा करने से पहले लंबित परिवर्तनों को लागू करें या छोड़ दें।.",
   "control_center.welcome_next": "[F6 अगला] - इस कदम की पुष्टि करें और जारी रखें",
   "control_center.welcome_title": "ARGVUS Welcome",

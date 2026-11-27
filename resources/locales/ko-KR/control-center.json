@@ -11,7 +11,7 @@
   "control_center.user_locale_not_generated": "이 로캘을 사용할 수 없습니다. 먼저 시스템 로캘에서 활성화하세요.",
   "control_center.user_locale_save_failed": "언어 기본 설정을 저장할 수 없습니다. 구성 디렉터리에 대한 액세스를 확인하세요.",
   "control_center.user_locale_applied": "사용자 언어가 저장되었습니다. 제어판이 다시 시작되었습니다. 로그아웃했다가 다시 로그인하여 나머지 세션에 언어를 적용하세요.",
-  "control_center.control_panel_restart_failed": "언어가 저장되었으나 제어판을 다시 시작할 수 없습니다. 사용자 세션에서 argvus-control-panel.service를 다시 시작하십시오.",
+  "control_center.control_panel_restart_failed": "언어가 저장되었지만 제어판 언어를 새로 고칠 수 없습니다. 패널을 닫았다가 다시 여세요.",
   "control_center.welcome_next_blocked": "완료하기 전에 보류 중인 변경 사항을 적용하거나 삭제하세요.",
   "control_center.welcome_next": "[ F6 다음 ] - 이 단계를 확인하고 계속하세요.",
   "control_center.welcome_title": "ARGVUS 환영합니다",

@@ -8,8 +8,8 @@ description: فهم أسطح سطح المكتب ARGVUS.
                                                               ﻲﻓ ﺩﻮﺟﻮﻣ ﻦﻳﻮﻜﺘﻟﺍ[                                                                   ﻢﻜﺤﺘﻟﺍ ﺰﻛﺮﻣ](/docs/components/argvus-control-center/)                        ـﺑ ﺃﺪﺑﺍ .ﻢﻜﺤﺘﻟﺍ ﺔﺣﻮﻟ ﻲﻓ ﺶﻴﻌﺗ ﺓﺭﺮﻜﺘﻤﻟﺍ ﺕﺍءﺍﺮﺟﻹ﻿ﺍ ﺎﻤﻨﻴﺑ ,[                                                                  ﻝﻭﻷ﻿ﺍ ﻦﻳﻮﻜﺘﻟﺍ](/docs/user-guide/getting-started/)                                                     .ﻰﻟﻭﻷ﻿ﺍ ﻚﺘﺴﻠﺟ ﻩﺬﻫ ﺖﻧﺎﻛ ﺍﺫﺇ
 
 - لوحة التحكم
-- [شريط المهام](/docs/argvus-taskbar/taskbar/)
-- [الحاجيات](/docs/argvus-taskbar/widgets/)
+- [شريط المهام](/docs/argvus-panels/taskbar/)
+- [الحاجيات](/docs/argvus-panels/widgets/)
 - [اختصارات لوحة المفاتيح](/docs/argvus-hyprland/keyboard-shortcuts/)
 - [تجاوزات هايبرلاند](/docs/argvus-hyprland/hyprland-overrides/)
 - [الويندوز والتخطيط](/docs/argvus-hyprland/windows-and-layout/)

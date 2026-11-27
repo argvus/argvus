@@ -11,7 +11,7 @@
   "control_center.user_locale_not_generated": "Questa lingua non è disponibile. Abilitalo prima nelle impostazioni locali del sistema.",
   "control_center.user_locale_save_failed": "Impossibile salvare la preferenza della lingua. Controlla l'accesso alla directory di configurazione.",
   "control_center.user_locale_applied": "Lingua utente salvata. Il Pannello di Controllo è stato riavviato; disconnettersi e rientrare per applicare la lingua al resto della sessione.",
-  "control_center.control_panel_restart_failed": "Lingua salvata, ma non è stato possibile riavviare il Pannello di controllo. Riavvia argvus-control-panel.service dalla sessione utente.",
+  "control_center.control_panel_restart_failed": "La lingua è stata salvata, ma non è stato possibile aggiornare la lingua del Pannello di controllo. Chiudi e riapri il pannello.",
   "control_center.welcome_next_blocked": "Applicare o eliminare le modifiche in sospeso prima del completamento.",
   "control_center.welcome_next": "[ F6 Avanti ]: conferma questo passaggio e continua",
   "control_center.welcome_title": "ARGVUS Benvenuto",

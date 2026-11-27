@@ -646,7 +646,7 @@ Minimization uses the reserved `special:argvus-minimized` workspace. Do not use 
 
 The session owns `argvus-windows.service` and `argvus-window-bar.service`. The latter keeps the Floating surface unloaded in Tile. The hyprbars plugin is bundled by `argvus-hyprland`, built for the Hyprland 0.57.0 ABI on x86_64; it is not compiled in the user's home directory. Rebuild the plugin with a compositor ABI update.
 
-Taskbar and Widget Telemetry are independent surfaces in the Quickshell process managed by `argvus-bars.service`. Use `argvus-taskbar.service` and `argvus-widget-telemetry.service` to control each surface.
+Taskbar and Widget Telemetry are independent surfaces in the Quickshell process managed by `argvus-panels.service`. Use `argvus-taskbar.service` and `argvus-widget-telemetry.service` to control each surface.
 
 Commands: `argvus windows list --json`, `watch --json`, `position top|bottom`, `restore-all`, and `minimize|restore|activate|maximize|close ADDRESS`. The window addresses come from the list. `position top --persist` stores/projects the preference without restarting the main bar. Configuration and runtime error details are written to the journal; visible action failures also show a translated notification.
 

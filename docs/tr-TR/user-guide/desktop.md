@@ -8,8 +8,8 @@ Masaüstü kabuğu Hyprland, yamalı Taskbar görev çubuğu, Quickshell Kontrol
 Yapılandırma [Kontrol Merkezinde](/docs/components/argvus-control-center/) bulunurken, sık yapılan eylemler Kontrol Panelinde bulunur. Bu ilk oturumunuzsa [İlk yapılandırma](/docs/user-guide/getting-started/) ile başlayın.
 
 - Kontrol Paneli
-- [Görev Çubuğu](/docs/argvus-taskbar/taskbar/)
-- [Widget'lar](/docs/argvus-taskbar/widgets/)
+- [Görev Çubuğu](/docs/argvus-panels/taskbar/)
+- [Widget'lar](/docs/argvus-panels/widgets/)
 - [Klavye kısayolları](/docs/argvus-hyprland/keyboard-shortcuts/)
 - [Hyprland geçersiz kılmaları](/docs/argvus-hyprland/hyprland-overrides/)
 - [Pencereler ve düzen](/docs/argvus-hyprland/windows-and-layout/)

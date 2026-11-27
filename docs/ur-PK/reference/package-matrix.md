@@ -12,7 +12,7 @@ description: ARGVUS پیکیج کی ذمہ داریاں۔
 | `argvus-devtools `, ` argvus-pentest` | ترقیاتی ٹولز اور مجاز سیکیورٹی آڈیٹنگ کے لیے اختیاری آزاد میٹا پیکجز۔ ماسٹر پیکیج ان پروفائلز کو انسٹال نہیں کرتا ہے۔ |
 | `argvus-session` | سیشن انٹری پوائنٹس اور صارف کا لائف سائیکل۔ |
 | `argvus-hyprland` | ہائپر لینڈ کنفیگریشن۔ |
-| `argvus-control-panel` | کوئیک شیل کنٹرول پینل۔ |
+| `argvus-panels` | ARGVUS Taskbar, Telemetry, Control Panel, Floating Window Bar, and Morphing surfaces. |
 | `argvus-taskbar `, ` argvus-taskbar` | وے بار کنفیگریشن اور پیچ شدہ بائنری۔ |
 | `argvus-branding` | لوگو اور ورڈ مارک کے اثاثے۔ |
 | `argvus-appearance `, ` argvus-wallpapers `, ` argvus-fonts `, ` argvus-icons` | ظاہری حالت اور بصری اثاثے۔ |

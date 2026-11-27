@@ -11,7 +11,7 @@
   "control_center.user_locale_not_generated": "Эта локаль недоступна. Сначала включите его в системных локалях.",
   "control_center.user_locale_save_failed": "Не удалось сохранить ваши языковые настройки. Проверьте доступ к каталогу конфигурации.",
   "control_center.user_locale_applied": "Язык пользователя сохранен. Панель управления была перезапущена; выйдите из системы и снова войдите, чтобы применить язык к остальной части сеанса.",
-  "control_center.control_panel_restart_failed": "Язык сохранен, но панель управления перезапустить не удалось. Перезапустите argvus-control-panel.service из пользовательского сеанса.",
+  "control_center.control_panel_restart_failed": "Язык сохранён, но не удалось обновить язык панели управления. Закройте панель и откройте её снова.",
   "control_center.welcome_next_blocked": "Примените или отмените ожидающие изменения перед завершением.",
   "control_center.welcome_next": "[ F6 Далее ] — подтвердите этот шаг и продолжите.",
   "control_center.welcome_title": "ARGVUS Добро пожаловать",

@@ -11,7 +11,7 @@
   "control_center.user_locale_not_generated": "اِس لئے یہ بہت ضروری ہے کہ ہم اِن چیزوں کے بارے میں سیکھیں ۔ اسے پہلے نظام مقامی باشندوں میں پیدا کرتا ہے۔.",
   "control_center.user_locale_save_failed": "اپنی زبان کو ترجیح دینے سے بچ نہیں سکے۔ آپ کی ادارت کے لیے چیک کریں.",
   "control_center.user_locale_applied": "کارن زبان نے محفوظ کیا۔ کنٹرول پینل کو دوبارہ تعمیر کیا گیا ؛ لاگ آؤٹ اور واپس سیشن کے باقی حصوں میں زبان کا اطلاق کرنے کے لئے.",
-  "control_center.control_panel_restart_failed": "زبان محفوظ ہو گئی لیکن کنٹرول پینل دوبارہ نہیں کیا جا سکا۔ دوبارہ شروع کریں %d.",
+  "control_center.control_panel_restart_failed": "زبان محفوظ ہوگئی، لیکن کنٹرول پینل کی زبان تازہ نہیں ہو سکی۔ پینل بند کرکے دوبارہ کھولیں۔",
   "control_center.welcome_next_blocked": "مکمل ہونے سے پہلے اطلاق یا ردّ عمل ۔.",
   "control_center.welcome_next": "[ فٹ‌نوٹ ]",
   "control_center.welcome_title": "اِس شمارے میں",

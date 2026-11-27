@@ -32,7 +32,7 @@ La ruta de directorio canónica determina una identidad estable del espacio de t
 
 Los espacios de trabajo abiertos antes de la actualización conservan sus ventanas existentes y nombres nativos. Abrir un proyecto después de la actualización utiliza su nueva identidad derivada de la ruta; cierre las ventanas de proyectos antiguos cuando sea conveniente. No se intenta ninguna asociación o movimiento automático porque un nombre antiguo no identifica de manera confiable al directorio. Con nombres de directorios duplicados, use el selector, un número o la ruta canónica completa en lugar de un nombre ambiguo.
 
-Abrir un proyecto regenera `$XDG_RUNTIME_DIR/argvus/project-workspaces.json` de manera atómica a partir de la lista de proyectos configurada y las traducciones. Esto es metadato de sesión para etiquetas y descripciones emergentes de espacios de trabajo, no configuración; no lo edite. Vuelva a abrir un proyecto después de cambiar la lista o el idioma para actualizar sus etiquetas. Actualice tanto `argvus` como `argvus-taskbar`, además de la configuración `argvus-taskbar`, para esta integración.
+Abrir un proyecto regenera `$XDG_RUNTIME_DIR/argvus/project-workspaces.json` de manera atómica a partir de la lista de proyectos configurada y las traducciones. Esto es metadato de sesión para etiquetas y descripciones emergentes de espacios de trabajo, no configuración; no lo edite. Vuelva a abrir un proyecto después de cambiar la lista o el idioma para actualizar sus etiquetas. Actualice tanto `argvus` como `argvus-panels`, además de la configuración `argvus-panels`, para esta integración.
 
 ## Proyectos
 

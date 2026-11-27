@@ -243,7 +243,7 @@ fn present_action(
   }
   let system_config =
     std::env::var("ARGVUS_SYSTEM_CONFIG").unwrap_or_else(|_| "/usr/share/argvus".into());
-  let shell = Path::new(&system_config).join("taskbar/quickshell/shell.qml");
+  let shell = Path::new(&system_config).join("panels/qml/shell.qml");
   if !shell.is_file() {
     return false;
   }

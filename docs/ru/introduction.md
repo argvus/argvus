@@ -33,7 +33,7 @@ taskbar · control panel · notifications · wallpaper · idle · clipboard
 
 ### Композитор и оболочка рабочего стола
 
-`argvus-hyprland` поставляет конфигурацию Hyprland и привязки клавиш. `argvus-taskbar` обеспечивает патченный бинарный файл Taskbar, в то время как `argvus-taskbar` отвечает за конфигурацию панели задач и действия. `argvus-control-panel` поставляет панель Quickshell, а `argvus widget-telemetry` обеспечивает опциональные системные виджеты, работающие в процессе `argvus`.
+`argvus-hyprland` поставляет конфигурацию Hyprland и привязки клавиш. `argvus-panels` обеспечивает патченный бинарный файл Taskbar, в то время как `argvus-panels` отвечает за конфигурацию панели задач и действия. `argvus-panels` поставляет панель Quickshell, а `argvus widget-telemetry` обеспечивает опциональные системные виджеты, работающие в процессе `argvus`.
 
 См. [Desktop](/docs/user-guide/desktop/) для использования и [shell surfaces](/docs/developer-guide/subsystems/shell-surfaces/) для владения реализацией.
 
@@ -59,7 +59,7 @@ taskbar · control panel · notifications · wallpaper · idle · clipboard
 
 Визуальная система также управляет расположением. Режим Sticky компактный и квадратный; режим Spaced использует большие промежутки между окнами, закругленные углы и более широкие поля вокруг панели задач и оболочки. Панель задач по умолчанию размещается на верхнем краю, но поддерживает размещение сверху/снизу через общий статус компоновки. Эффекты контролируют прозрачность, размытие, тени и анимацию на поверхностях композитора и рабочего стола.
 
-См. [theme table](/docs/user-guide/appearance/) для текущих семейств и цветов, [effects](/docs/argvus-appearance/effects/) для общего контракта эффектов и [taskbar](/docs/argvus-taskbar/taskbar/) для размещения панели и окон.
+См. [theme table](/docs/user-guide/appearance/) для текущих семейств и цветов, [effects](/docs/argvus-appearance/effects/) для общего контракта эффектов и [taskbar](/docs/argvus-panels/taskbar/) для размещения панели и окон.
 
 ## Что такое ARGVUS — и что это не
 

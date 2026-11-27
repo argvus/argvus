@@ -11,7 +11,7 @@
   "control_center.user_locale_not_generated": "Dieses Gebietsschema ist nicht verfügbar. Aktivieren Sie es zuerst in den Systemgebietsschemas.",
   "control_center.user_locale_save_failed": "Ihre Spracheinstellung konnte nicht gespeichert werden. Überprüfen Sie den Zugriff auf Ihr Konfigurationsverzeichnis.",
   "control_center.user_locale_applied": "Benutzersprache gespeichert. Die Systemsteuerung wurde neu gestartet; Melden Sie sich ab und wieder an, um die Sprache auf den Rest der Sitzung anzuwenden.",
-  "control_center.control_panel_restart_failed": "Sprache gespeichert, aber die Systemsteuerung konnte nicht neu gestartet werden. Starten Sie argvus-control-panel.service aus Ihrer Benutzersitzung neu.",
+  "control_center.control_panel_restart_failed": "Die Sprache wurde gespeichert, aber die Sprache des Control Panels konnte nicht aktualisiert werden. Schließen Sie das Panel und öffnen Sie es erneut.",
   "control_center.welcome_next_blocked": "Übernehmen oder verwerfen Sie ausstehende Änderungen, bevor Sie den Vorgang abschließen.",
   "control_center.welcome_next": "[ F6 Weiter ] – Bestätigen Sie diesen Schritt und fahren Sie fort",
   "control_center.welcome_title": "ARGVUS Willkommen",

@@ -11,7 +11,7 @@
   "control_center.user_locale_not_generated": "Ces paramètres régionaux ne sont pas disponibles. Activez-le d'abord dans les paramètres régionaux du système.",
   "control_center.user_locale_save_failed": "Impossible d'enregistrer votre préférence linguistique. Vérifiez l'accès à votre répertoire de configuration.",
   "control_center.user_locale_applied": "Langue utilisateur enregistrée. Le panneau de configuration a été redémarré ; déconnectez-vous et reconnectez-vous pour appliquer la langue au reste de la session.",
-  "control_center.control_panel_restart_failed": "Langue enregistrée, mais le panneau de configuration n'a pas pu être redémarré. Redémarrez argvus-control-panel.service à partir de votre session utilisateur.",
+  "control_center.control_panel_restart_failed": "La langue a été enregistrée, mais celle du panneau de contrôle n’a pas pu être actualisée. Fermez le panneau, puis rouvrez-le.",
   "control_center.welcome_next_blocked": "Appliquez ou annulez les modifications en attente avant de terminer.",
   "control_center.welcome_next": "[ F6 Next ] — Confirmez cette étape et continuez",
   "control_center.welcome_title": "ARGVUS Bienvenue",

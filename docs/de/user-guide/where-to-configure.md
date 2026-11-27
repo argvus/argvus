@@ -13,7 +13,7 @@ Für eine geführte Übersicht der wichtigsten Desktop-Bereiche öffnen Sie **AR
 | Das Hintergrundbild ändern | **Control Center → Erscheinungsbild → Hintergrundbilder** |
 | Visuelle Effekte aktivieren oder deaktivieren | **Control Center → Erscheinungsbild → Effekte**, **Control Center → Erscheinungsbild → Launcher**, **Control Center → Konfiguration**, **Taskleiste**, **Widget-Telemetrie** oder **Systemsteuerung** |
 | Position, Höhe, Rahmen oder Gruppierung der Taskleiste ändern | **Control Center → Erscheinungsbild → Taskleiste → Position**, **Höhe**, **Rahmen** und **Symbole** |
-| Taskleiste mit JSONC oder CSS anpassen | [Taskbar und Taskleisten-Overrides](/docs/argvus-taskbar/) |
+| Taskleiste mit JSONC oder CSS anpassen | [Taskbar und Taskleisten-Overrides](/docs/argvus-panels/) |
 | Fensterabstände oder -ränder ändern | **Systemsteuerung → Desktop & Eingabe → Hyprland → Fenster → Bereiche** und **Ränder** |
 | Fensterschatten ändern | **Systemsteuerung → Desktop & Eingabe → Hyprland → Ränder → Schatten** |
 | Sichtbare Bedienfeldkarten auswählen | **Systemsteuerung → Erscheinungsbild → Bedienfeld** |

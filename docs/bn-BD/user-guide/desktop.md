@@ -8,8 +8,8 @@ description: ARGVUS ডেস্কটপ সারফেস বুঝুন।
 কনফিগারেশন [কন্ট্রোল সেন্টার](/docs/components/argvus-control-center/) এ থাকে, যখন ঘন ঘন অ্যাকশন কন্ট্রোল প্যানেলে থাকে। এটি আপনার প্রথম সেশন হলে [প্রথম কনফিগারেশন](/docs/user-guide/getting-started/) দিয়ে শুরু করুন।
 
 - কন্ট্রোল প্যানেল
-- [টাস্কবার](/docs/argvus-taskbar/taskbar/)
-- [উইজেট](/docs/argvus-taskbar/widgets/)
+- [টাস্কবার](/docs/argvus-panels/taskbar/)
+- [উইজেট](/docs/argvus-panels/widgets/)
 - [কীবোর্ড শর্টকাট](/docs/argvus-hyprland/keyboard-shortcuts/)
 - [হাইপ্রল্যান্ড ওভাররাইড করে](/docs/argvus-hyprland/hyprland-overrides/)
 - [উইন্ডোজ এবং লেআউট](/docs/argvus-hyprland/windows-and-layout/)

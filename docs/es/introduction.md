@@ -33,7 +33,7 @@ El paquete `argvus` proporciona el despachador `/usr/bin/argvus` y el punto de e
 
 ### Compositor y shell de escritorio
 
-`argvus-hyprland` suministra la configuración y los atajos de teclado de Hyprland. `argvus-taskbar` suministra el binario de Taskbar parcheado, mientras que `argvus-taskbar` posee la configuración de la barra de tareas y las acciones. `argvus-control-panel` suministra el panel Quickshell, y `argvus widget-telemetry` suministra widgets de sistema opcionales, en proceso en `argvus`.
+`argvus-hyprland` suministra la configuración y los atajos de teclado de Hyprland. `argvus-panels` suministra el binario de Taskbar parcheado, mientras que `argvus-panels` posee la configuración de la barra de tareas y las acciones. `argvus-panels` suministra el panel Quickshell, y `argvus widget-telemetry` suministra widgets de sistema opcionales, en proceso en `argvus`.
 
 Vea [Desktop](/docs/user-guide/desktop/) para el uso y [shell surfaces](/docs/developer-guide/subsystems/shell-surfaces/) para la propiedad de implementación.
 
@@ -59,7 +59,7 @@ El directorio generado no es la fuente de verdad. Ver [Appearance](/docs/user-gu
 
 El sistema visual también controla la disposición. El modo pegajoso es compacto y cuadrado; el modo espaciado utiliza espacios más grandes en las ventanas, esquinas redondeadas y márgenes más amplios alrededor de la barra de tareas y el entorno de escritorio. La barra de tareas se coloca por defecto en el borde superior, pero admite colocación en la parte superior/inferior a través del estado de disposición compartido. Los efectos controlan la transparencia, el desenfoque, las sombras y las animaciones a través del compositor y las superficies del escritorio.
 
-Consulte la [tabla de temas](/docs/user-guide/appearance/) para las familias y colores actuales, [efectos](/docs/argvus-appearance/effects/) para el contrato de efectos compartido, y [barra de tareas](/docs/argvus-taskbar/taskbar/) para la colocación de barras y ventanas.
+Consulte la [tabla de temas](/docs/user-guide/appearance/) para las familias y colores actuales, [efectos](/docs/argvus-appearance/effects/) para el contrato de efectos compartido, y [barra de tareas](/docs/argvus-panels/taskbar/) para la colocación de barras y ventanas.
 
 ## Qué es —y qué no es— ARGVUS
 

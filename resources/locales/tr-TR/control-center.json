@@ -11,7 +11,7 @@
   "control_center.user_locale_not_generated": "Bu yerel mevcut değildir. İlk önce Sistem Locales'de kullanılabilir.",
   "control_center.user_locale_save_failed": "Dili tercihinizi kurtaramaz. konfigürasyon rehberinize erişim kontrol edin.",
   "control_center.user_locale_applied": "Kullanıcı dili kurtarıldı. Kontrol Panel yeniden başlatıldı; oturumun geri kalanına dili uygulamak için oturum açın ve geri dönün.",
-  "control_center.control_panel_restart_failed": "Dil kurtarıldı, ancak Kontrol Panel yeniden başlatılamadı. Restart argvus-control-panel.service from your user session.",
+  "control_center.control_panel_restart_failed": "Dil kaydedildi, ancak Kontrol Paneli dili yenilenemedi. Paneli kapatıp yeniden açın.",
   "control_center.welcome_next_blocked": "Tamamlamadan önce değişiklikleri bekleyen veya kartpostal uygulayın.",
   "control_center.welcome_next": "[ F6 Next ] – Bu adımı onaylayın ve devam edin",
   "control_center.welcome_title": "ARGVUS Welcome",

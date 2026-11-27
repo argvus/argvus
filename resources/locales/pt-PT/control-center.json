@@ -11,7 +11,7 @@
   "control_center.user_locale_not_generated": "Este local não está disponível. Active- o em Locales do Sistema primeiro.",
   "control_center.user_locale_save_failed": "Não foi possível salvar sua preferência de idioma. Verifique o acesso à sua pasta de configuração.",
   "control_center.user_locale_applied": "A linguagem do usuário foi salva. O Painel de Controle foi reiniciado; saia e volte para aplicar o idioma no resto da sessão.",
-  "control_center.control_panel_restart_failed": "A linguagem foi salva, mas o painel de controle não pôde ser reiniciado. Reinicie argvus-control-panel.service de sua sessão de usuário.",
+  "control_center.control_panel_restart_failed": "O idioma foi guardado, mas não foi possível atualizar o idioma do Painel de Controlo. Feche e volte a abrir o painel.",
   "control_center.welcome_next_blocked": "Aplicar ou descartar as alterações pendentes antes de completar.",
   "control_center.welcome_next": "[ F6 Seguinte ] — Confirmar esta etapa e continuar",
   "control_center.welcome_title": "ARGVUS Welcome",

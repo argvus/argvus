@@ -6,7 +6,7 @@ ARGVUS tiene cinco capas de tiempo de ejecución:
 
 1. puntos de entrada y despacho en `argvus`;
 2. ciclo de vida de la sesión en `argvus-session`;
-3. compositor y superficies de shell en `argvus-hyprland`, `argvus-taskbar` y `argvus-control-panel`;
+3. compositor y superficies de shell en `argvus-hyprland`, `argvus-panels` y `argvus-panels`;
 4. aplicaciones de usuario como el Centro de Control, calendario y monitor del sistema;
 5. proveedores y recursos para pantalla, red, energía, apariencia, cuentas y notificaciones.
 
@@ -18,11 +18,11 @@ El estado compartido conecta estas capas. `argvus-config` contiene el documento 
 | --- | --- | --- |
 | Puntos de entrada y despacho | Iniciar aplicaciones de escritorio y resolver perfiles ARGVUS. | `argvus`, `argvus-app-profiles` |
 | Ciclo de vida de la sesión | Preparar el entorno, lanzar Hyprland, sincronizar el entorno del servicio del usuario y el cierre de su propia sesión. | `argvus-session`, `argvus sessionctl` |
-| Compositor y shell | Definir el comportamiento de las ventanas y las superficies de escritorio visibles. | `argvus-hyprland`, `argvus-taskbar`, `argvus-control-panel` |
+| Compositor y shell | Definir el comportamiento de las ventanas y las superficies de escritorio visibles. | `argvus-hyprland`, `argvus-panels`, `argvus-panels` |
 | Configuración | Propietario de `config.json`, el modelo de rutas y todos los archivos de consumidor generados. | `argvus-config` |
 | Aplicaciones | Proporcionar configuraciones y flujos de trabajo de escritorio enfocados. | Centro de control, calendario, lanzador, monitor del sistema y dispositivos extraíbles |
 | Proveedores y recursos | Implementar operaciones de dominio y recursos visuales compartidos. | pantalla, red, energía, notificaciones, apariencia, fuentes y fondos de pantalla |
 
 El paquete `argvus` es el objetivo de instalación y coordinador, pero no es un runtime monolítico. Los paquetes enfocados conservan la propiedad de sus binarios, configuración y servicios. El gestor de sesiones los inicia en el momento apropiado de la sesión gráfica sin absorber su implementación.
 
-Esta distinción importa al depurar: un fallo de sesión pertenece primero a `argvus-session`; un fallo en la barra de tareas pertenece a `argvus-taskbar`; y un fallo en un tema o fondo de pantalla generado pertenece a la ruta de configuración de apariencia y sesión.
+Esta distinción importa al depurar: un fallo de sesión pertenece primero a `argvus-session`; un fallo en la barra de tareas pertenece a `argvus-panels`; y un fallo en un tema o fondo de pantalla generado pertenece a la ruta de configuración de apariencia y sesión.

@@ -7,8 +7,8 @@ description: Понимайте рабочие поверхности ARGVUS.
 Конфигурация находится в [Control Center](/docs/components/argvus-control-center/), а часто используемые действия — в панели управления. Начните с [First configuration](/docs/user-guide/getting-started/), если это ваша первая сессия.
 
 - Панель управления
-- [Панель задач](/docs/argvus-taskbar/taskbar/)
-- [Виджеты](/docs/argvus-taskbar/widgets/)
+- [Панель задач](/docs/argvus-panels/taskbar/)
+- [Виджеты](/docs/argvus-panels/widgets/)
 - [Сочетания клавиш](/docs/argvus-hyprland/keyboard-shortcuts/)
 - [Hyprland переопределяет ](/docs/argvus-hyprland/hyprland-overrides/)
 - [Окна и раскладка ](/docs/argvus-hyprland/windows-and-layout/)

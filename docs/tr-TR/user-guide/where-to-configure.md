@@ -14,7 +14,7 @@ Ana masaüstü alanlarının rehberli incelemesi için `argvus welcome` ile veya
 | Duvar kağıdını değiştirin | **Kontrol Merkezi → Görünüm → Duvar Kağıtları** |
 | Görsel efektleri etkinleştirin veya devre dışı bırakın | **Kontrol Merkezi → Görünüm → Efektler**, **Kontrol Merkezi → Görünüm → Başlatıcılar**, **Kontrol Merkezi → Yapılandırma**, **Görev Çubuğu**, **Widget Telemetrisi** veya **Kontrol Paneli** |
 | Görev çubuğu konumunu, yüksekliğini, kenarlığını veya yardımcı program gruplamasını değiştirin | **Kontrol Merkezi → Görünüm → Görev Çubuğu → Konum**, **Yükseklik**, **Kenarlık** ve **Simgeler** |
-| Görev çubuğunu JSONC veya CSS'yi özelleştirin | [Yol çubuğu ve görev çubuğu geçersiz kılmaları](/docs/argvus-taskbar/) |
+| Görev çubuğunu JSONC veya CSS'yi özelleştirin | [Yol çubuğu ve görev çubuğu geçersiz kılmaları](/docs/argvus-panels/) |
 | Pencere boşluklarını veya kenarlıklarını değiştirin | **Kontrol Merkezi → Masaüstü ve Giriş → Hyprland → Windows → Boşluklar** ve **Kenarlıklar** |
 | Pencere gölgesini değiştirme | **Kontrol Merkezi → Masaüstü ve Giriş → Hyprland → Kenarlıklar → Gölge** |
 | Görünür Kontrol Paneli kartlarını seçin | **Kontrol Merkezi → Görünüm → Kontrol Paneli** |

@@ -6,7 +6,7 @@ description: ワークスペース統合後のARGVUSソースリポジトリの�
 
 - workspace: `argvus`（ディスパッチャー、インプロセスコマンド、GTK 4ヘルパー、共有クレート、`crates/argvus-greeter`のグリーターおよびコマンドのデータ）;
 - sessionおよびintegration: `argvus-session`、`argvus-hyprland`、`argvus-portal`、`argvus-lock`、`argvus-boot-splash`、およびグリーター（`argvus-greeter`、`argvus/crates/argvus-greeter`からビルド）;
-- workspace外のUI: コントロールパネル、タスクバー（`argvus-taskbar`）、ランチャーおよびTaskbar;
+- workspace外のUI: コントロールパネル、タスクバー（`argvus-panels`）、ランチャーおよびTaskbar;
 - プロバイダー: ディスプレイ、電源、ファイアウォール、通知;
 - アセットおよびパッケージング: 外観、壁紙、フォント、アイコン、プロファイル。
 

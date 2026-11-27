@@ -149,8 +149,19 @@ pub fn set_application_language(locale: &str) -> Result<(), UserLocaleError> {
 }
 
 pub fn restart_control_panel() -> std::io::Result<()> {
-  let output = argvus_control_center_core::process::command("systemctl")
-    .args(["--user", "restart", "argvus-control-panel.service"])
+  let active = argvus_control_center_core::process::command("systemctl")
+    .args(["--user", "is-active", "--quiet", "argvus-panels.service"])
+    .stdin(Stdio::null())
+    .output()?;
+  if !active.status.success() {
+    return Ok(());
+  }
+
+  let system_config =
+    std::env::var("ARGVUS_SYSTEM_CONFIG").unwrap_or_else(|_| "/usr/share/argvus".to_owned());
+  let shell = format!("{system_config}/panels/qml/shell.qml");
+  let output = argvus_control_center_core::process::command("qs")
+    .args(["-p", &shell, "ipc", "call", "sidebar", "reloadLocale"])
     .stdin(Stdio::null())
     .output()?;
   if output.status.success() {
@@ -159,7 +170,7 @@ pub fn restart_control_panel() -> std::io::Result<()> {
 
   let message = String::from_utf8_lossy(&output.stderr).trim().to_owned();
   Err(std::io::Error::other(if message.is_empty() {
-    format!("systemctl exited with {}", output.status)
+    format!("qs exited with {}", output.status)
   } else {
     message
   }))

@@ -7,8 +7,8 @@ description: ARGVUSデスクトップの画面を理解する。
 設定は[Control Center](/docs/components/argvus-control-center/)にあり、頻繁に行う操作はコントロールパネルにあります。初めてのセッションの場合は[First configuration](/docs/user-guide/getting-started/)から始めてください。
 
 - コントロールパネル
-- [タスクバー](/docs/argvus-taskbar/taskbar/)
-- [ウィジェット](/docs/argvus-taskbar/widgets/)
+- [タスクバー](/docs/argvus-panels/taskbar/)
+- [ウィジェット](/docs/argvus-panels/widgets/)
 - [キーボードショートカット](/docs/argvus-hyprland/keyboard-shortcuts/)
 - [Hyprlandオーバーライド](/docs/argvus-hyprland/hyprland-overrides/)
 - [ウィンドウとレイアウト](/docs/argvus-hyprland/windows-and-layout/)

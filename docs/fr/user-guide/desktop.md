@@ -7,8 +7,8 @@ L'environnement de bureau est composé de Hyprland, de la barre des tâches Task
 La configuration se trouve dans le [Centre de contrôle](/docs/components/argvus-control-center/), tandis que les actions fréquentes se trouvent dans le panneau de contrôle. Commencez par [Première configuration](/docs/user-guide/getting-started/) si c'est votre première session.
 
 - Panneau de contrôle
-- [Barre des tâches](/docs/argvus-taskbar/taskbar/)
-- [Widgets](/docs/argvus-taskbar/widgets/)
+- [Barre des tâches](/docs/argvus-panels/taskbar/)
+- [Widgets](/docs/argvus-panels/widgets/)
 - [Raccourcis clavier](/docs/argvus-hyprland/keyboard-shortcuts/)
 - [Surcharges Hyprland](/docs/argvus-hyprland/hyprland-overrides/)
 - [Fenêtres et disposition](/docs/argvus-hyprland/windows-and-layout/)

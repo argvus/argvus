@@ -8,8 +8,8 @@ Vỏ máy tính để bàn bao gồm Hyprland, thanh tác vụ Taskbar đã đư
 Cấu hình nằm trong [Trung tâm điều khiển](/docs/components/argvus-control-center/), trong khi các tác vụ thường xuyên nằm trong Bảng điều khiển. Bắt đầu với [Cấu hình đầu tiên](/docs/user-guide/getting-started/) nếu đây là phiên đầu tiên của bạn.
 
 - Bảng điều khiển
-- [Thanh tác vụ](/docs/argvus-taskbar/taskbar/)
-- [Widget](/docs/argvus-taskbar/widgets/)
+- [Thanh tác vụ](/docs/argvus-panels/taskbar/)
+- [Widget](/docs/argvus-panels/widgets/)
 - [Phím tắt](/docs/argvus-hyprland/keyboard-shortcuts/)
 - [Ghi đè Hyprland](/docs/argvus-hyprland/hyprland-overrides/)
 - [Windows và bố cục](/docs/argvus-hyprland/windows-and-layout/)

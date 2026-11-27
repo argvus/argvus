@@ -10,7 +10,7 @@ Setelah sesi grafis pertama, Anda tidak perlu mengkonfigurasi setiap bagian ARGV
 1. Baca [ikhtisar desktop](/docs/user-guide/desktop/) untuk mengidentifikasi jendela, ruang kerja, bilah tugas, Panel Kontrol, dan peluncur.
 2. Buka [Pusat Kontrol](/docs/components/argvus-control-center/) dan pilih tema, mode, aksen, dan wallpaper di **Penampilan**.
 3. Sesuaikan [jendela dan tata letak](/docs/argvus-hyprland/windows-and-layout/) jika celah, batas, atau jarak bilah tugas default tidak sesuai dengan layar Anda.
-4. Konfigurasikan [taskbar](/docs/argvus-taskbar/taskbar/) dan tentukan kartu Panel Kontrol mana yang ingin Anda tampilkan.
+4. Konfigurasikan [taskbar](/docs/argvus-panels/taskbar/) dan tentukan kartu Panel Kontrol mana yang ingin Anda tampilkan.
 5. Tinjau [pintasan keyboard](/docs/argvus-hyprland/keyboard-shortcuts/) dan ubah hanya binding yang sebenarnya Anda gunakan.
 6. Konfigurasikan [mouse dan touchpad](/docs/argvus-hyprland/input/), tampilan, jaringan, dan daya dari halaman pengaturan yang relevan.
 

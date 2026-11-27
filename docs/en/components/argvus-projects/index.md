@@ -35,7 +35,7 @@ The canonical directory path determines a stable workspace identity; changing th
 
 Workspaces opened before the update keep their existing windows and native names. Opening a project after the update uses its new path-derived identity; close old project windows when convenient. No automatic association or movement is attempted because an old name does not identify the directory reliably. With duplicate directory names, use the picker, a number or the full canonical path rather than an ambiguous name.
 
-Opening a project regenerates `$XDG_RUNTIME_DIR/argvus/project-workspaces.json` atomically from the configured project list and translations. This is session metadata for workspace labels and tooltips, not configuration; do not edit it. Reopen a project after changing the list or language to refresh its labels. Update both `argvus` and `argvus-taskbar`, plus the `argvus-taskbar` configuration, for this integration.
+Opening a project regenerates `$XDG_RUNTIME_DIR/argvus/project-workspaces.json` atomically from the configured project list and translations. This is session metadata for workspace labels and tooltips, not configuration; do not edit it. Reopen a project after changing the list or language to refresh its labels. Update both `argvus` and `argvus-panels`, plus the `argvus-panels` configuration, for this integration.
 
 ## Projects
 

@@ -6,7 +6,7 @@ description: 작업 공간 통합 후 ARGVUS 소스 저장소의 책임.
 
 - workspace: `argvus` (디스패처, 인-프로세스 명령, GTK 4 도우미, 공유 크레이트, `crates/argvus-greeter`의 그리터 및 명령 데이터);
 - session 및 integration: `argvus-session`, `argvus-hyprland`, `argvus-portal`, `argvus-lock`, `argvus-boot-splash`, 그리고 그리터 (`argvus-greeter`, `argvus/crates/argvus-greeter`에서 빌드됨);
-- workspace 외부 UI: 제어판, 작업 표시줄 (`argvus-taskbar`), 런처 및 Taskbar;
+- workspace 외부 UI: 제어판, 작업 표시줄 (`argvus-panels`), 런처 및 Taskbar;
 - 프로바이더: 디스플레이, 전원, 방화벽, 알림;
 - 자산 및 패키징: 외관, 바탕화면, 글꼴, 아이콘, 프로필.
 

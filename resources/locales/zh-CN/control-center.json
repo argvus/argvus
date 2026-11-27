@@ -11,7 +11,7 @@
   "control_center.user_locale_not_generated": "该区域设置不可用。首先在系统区域设置中启用它。",
   "control_center.user_locale_save_failed": "无法保存您的语言首选项。检查对配置目录的访问。",
   "control_center.user_locale_applied": "已保存用户语言。控制面板已重新启动；注销并重新登录以将语言应用到会话的其余部分。",
-  "control_center.control_panel_restart_failed": "语言已保存，但控制面板无法重新启动。从您的用户会话中重新启动 argvus-control-panel.service。",
+  "control_center.control_panel_restart_failed": "语言已保存，但无法刷新控制面板的语言。请关闭并重新打开面板。",
   "control_center.welcome_next_blocked": "在完成之前应用或放弃待处理的更改。",
   "control_center.welcome_next": "[ F6 Next ] — 确认此步骤并继续",
   "control_center.welcome_title": "ARGVUS 欢迎您",

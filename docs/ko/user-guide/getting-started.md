@@ -9,7 +9,7 @@ description: ARGVUS를 구성하기 위한 실용적인 첫 부팅 경로.
 1. [desktop overview](/docs/user-guide/desktop/)를 읽고 창, 작업 공간, 작업 표시줄, 제어판 및 런처를 확인합니다.
 2. [Control Center](/docs/components/argvus-control-center/)를 열고 **모양(Appearance)**에서 테마, 모드, 강조 색상 및 배경 화면을 선택합니다.
 3. 기본 간격, 테두리 또는 작업 표시줄 간격이 화면에 맞지 않으면 [windows and layout](/docs/argvus-hyprland/windows-and-layout/)을 조정합니다.
-4. [taskbar](/docs/argvus-taskbar/taskbar/)를 설정하고 어느 제어판 카드를 표시할지 결정합니다.
+4. [taskbar](/docs/argvus-panels/taskbar/)를 설정하고 어느 제어판 카드를 표시할지 결정합니다.
 5. [keyboard shortcuts](/docs/argvus-hyprland/keyboard-shortcuts/)를 검토하고 실제로 사용하는 단축키만 변경합니다.
 6. [mouse and touchpad](/docs/argvus-hyprland/input/), 디스플레이, 네트워킹 및 전원 설정을 관련 설정 페이지에서 구성합니다.
 

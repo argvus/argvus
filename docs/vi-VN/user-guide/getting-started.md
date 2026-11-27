@@ -10,7 +10,7 @@ Sau phiên đồ họa đầu tiên, bạn không cần định cấu hình mọ
 1. Đọc [tổng quan về máy tính để bàn](/docs/user-guide/desktop/) để xác định các cửa sổ, không gian làm việc, thanh tác vụ, Bảng điều khiển và trình khởi chạy.
 2. Mở [Trung tâm điều khiển](/docs/components/argvus-control-center/) và chọn chủ đề, chế độ, điểm nhấn và hình nền trong **Giao diện**.
 3. Điều chỉnh [cửa sổ và bố cục](/docs/argvus-hyprland/windows-and-layout/) nếu các khoảng trống, đường viền hoặc khoảng cách thanh tác vụ mặc định không phù hợp với màn hình của bạn.
-4. Định cấu hình [thanh tác vụ](/docs/argvus-taskbar/taskbar/) và quyết định thẻ Bảng Điều khiển nào bạn muốn hiển thị.
+4. Định cấu hình [thanh tác vụ](/docs/argvus-panels/taskbar/) và quyết định thẻ Bảng Điều khiển nào bạn muốn hiển thị.
 5. Xem lại [phím tắt](/docs/argvus-hyprland/keyboard-shortcuts/) và chỉ thay đổi các liên kết mà bạn thực sự sử dụng.
 6. Định cấu hình [chuột và bàn di chuột](/docs/argvus-hyprland/input/), màn hình, kết nối mạng và nguồn từ các trang cài đặt liên quan.
 

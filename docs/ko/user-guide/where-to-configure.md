@@ -13,7 +13,7 @@ description: 일반적인 ARGVUS 설정을 찾기 위한 빠른 색인.
 | 배경화면 변경 | **Control Center → Appearance → Wallpapers** |
 | 시각 효과 켜기 또는 끄기 | **Control Center → Appearance → Effects**, **Control Center → Appearance → Launchers**, **Control Center → Configuration**, **Taskbar**, **Widget Telemetry** 또는 **Control Panel** |
 | 작업 표시줄 위치, 높이, 테두리 또는 유틸리티 그룹 변경 | **Control Center → Appearance → Taskbar → Position**, **Height**, **Border** 및 **Icons** |
-| 작업 표시줄 JSONC 또는 CSS 사용자화 | [Taskbar 및 작업 표시줄 오버라이드](/docs/argvus-taskbar/) |
+| 작업 표시줄 JSONC 또는 CSS 사용자화 | [Taskbar 및 작업 표시줄 오버라이드](/docs/argvus-panels/) |
 | 창 간격 또는 테두리 변경 | **제어 센터 → 데스크탑 및 입력 → Hyprland → 창 → 공간** 및 **테두리** |
 | 창 그림자 변경 | **제어 센터 → 데스크탑 및 입력 → Hyprland → 테두리 → 그림자** |
 | 표시할 제어판 카드 선택 | **제어 센터 → 외관 → 제어판** |

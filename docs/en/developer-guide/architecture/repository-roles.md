@@ -7,7 +7,7 @@ The repositories are grouped by responsibility rather than by navigation page:
 
 - workspace: `argvus` (dispatcher, in-process commands, GTK 4 helpers, shared crates, the greeter in `crates/argvus-greeter` and the data of the commands);
 - session and integration: `argvus-session`, `argvus-hyprland`, `argvus-portal`, `argvus-lock`, `argvus-boot-splash`, and the greeter (`argvus-greeter`, built from `argvus/crates/argvus-greeter`);
-- UI outside the workspace: Control Panel, taskbar (`argvus-taskbar`), launcher and Taskbar;
+- UI outside the workspace: Control Panel, taskbar (`argvus-panels`), launcher and Taskbar;
 - providers: display, power, firewall, notifications;
 - assets and packaging: appearance, wallpapers, fonts, icons, profiles.
 

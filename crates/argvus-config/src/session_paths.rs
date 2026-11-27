@@ -71,7 +71,7 @@ impl SessionPaths {
 
   /// Whether the installed taskbar payload provides the shared Quickshell shell.
   pub(crate) fn has_shared_bars(&self) -> bool {
-    self.system_config("taskbar/quickshell/shell.qml").is_file()
+    self.system_config("panels/qml/shell.qml").is_file()
   }
 
   /// The packaged copy of a file (`paths_system_config`).
@@ -123,7 +123,8 @@ pub fn legacy_relative(relative: &str) -> String {
     return format!("dunst/{rest}");
   }
   if let Some(rest) = relative.strip_prefix("control-panel/config/quickshell/") {
-    return format!("quickshell/{rest}");
+    let rest = rest.strip_prefix("argvus-control-panel/").unwrap_or(rest);
+    return format!("panels/qml/control-panel/{rest}");
   }
   if let Some(rest) = relative.strip_prefix("appearance/config/") {
     return rest.to_string();
@@ -210,8 +211,8 @@ mod tests {
       "rofi/config.rasi"
     );
     assert_eq!(
-      legacy_relative("control-panel/config/quickshell/Theme.qml"),
-      "quickshell/Theme.qml"
+      legacy_relative("control-panel/config/quickshell/argvus-control-panel/Theme.qml"),
+      "panels/qml/control-panel/Theme.qml"
     );
     assert_eq!(legacy_relative("appearance/config/tui/x.css"), "tui/x.css");
     assert_eq!(

@@ -8,8 +8,8 @@ description: ARGVUS डेस्कटॉप सतहों को समझे
 कॉन्फ़िगरेशन [नियंत्रण केंद्र](/docs/components/argvus-control-center/) में रहता है, जबकि लगातार क्रियाएं नियंत्रण कक्ष में रहती हैं। यदि यह आपका पहला सत्र है तो [प्रथम कॉन्फ़िगरेशन](/docs/user-guide/getting-started/) से प्रारंभ करें।
 
 - नियंत्रण कक्ष
-- [टास्कबार](/docs/argvus-taskbar/taskbar/)
-- [विजेट्स](/docs/argvus-taskbar/widgets/)
+- [टास्कबार](/docs/argvus-panels/taskbar/)
+- [विजेट्स](/docs/argvus-panels/widgets/)
 - [कीबोर्ड शॉर्टकट](/docs/argvus-hyprland/keyboard-shortcuts/)
 - [हाइपरलैंड ओवरराइड्स](/docs/argvus-hyprland/hyprland-overrides/)
 - [विंडोज़ और लेआउट](/docs/argvus-hyprland/windows-and-layout/)

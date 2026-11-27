@@ -11,7 +11,7 @@
   "control_center.user_locale_not_generated": "Locale ini tidak tersedia. Aktifkan dalam Locales Sistem pertama.",
   "control_center.user_locale_save_failed": "Tak bisa menyimpan preferensi bahasa Anda. Periksa akses ke direktori konfigurasi Anda.",
   "control_center.user_locale_applied": "Bahasa pengguna disimpan. Panel Kendali dijalankan ulang; log keluar dan kembali untuk menerapkan bahasa ke seluruh sesi.",
-  "control_center.control_panel_restart_failed": "Bahasa disimpan, tapi Panel Kendali tidak dapat dijalankan ulang. Restart argvus-control-panel .service dari sesi pengguna Anda.",
+  "control_center.control_panel_restart_failed": "Bahasa tersimpan, tetapi bahasa Control Panel tidak dapat diperbarui. Tutup panel lalu buka kembali.",
   "control_center.welcome_next_blocked": "Terapkan atau buang perubahan yang tertunda sebelum melengkapi.",
   "control_center.welcome_next": "[F6 Selanjutnya] - Konfirmasi langkah ini dan lanjutkan",
   "control_center.welcome_title": "[PH000]",

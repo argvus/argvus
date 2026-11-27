@@ -11,7 +11,7 @@
   "control_center.user_locale_not_generated": "このロケールは使用できません。まずシステム ロケールで有効にしてください。",
   "control_center.user_locale_save_failed": "言語設定を保存できませんでした。構成ディレクトリへのアクセスを確認します。",
   "control_center.user_locale_applied": "ユーザー言語が保存されました。コントロールパネルが再起動されました。ログアウトしてから再度ログインし、言語をセッションの残りの部分に適用します。",
-  "control_center.control_panel_restart_failed": "言語は保存されましたが、コントロール パネルを再起動できませんでした。ユーザーセッションからargvus-control-panel.serviceを再起動します。",
+  "control_center.control_panel_restart_failed": "言語は保存されましたが、コントロールパネルの言語を更新できませんでした。パネルを閉じて、もう一度開いてください。",
   "control_center.welcome_next_blocked": "完了する前に保留中の変更を適用または破棄します。",
   "control_center.welcome_next": "[ F6 次へ ] — このステップを確認して続行します",
   "control_center.welcome_title": "ARGVUS ようこそ",

@@ -11,7 +11,7 @@
   "control_center.user_locale_not_generated": "Không có địa phương này. Bật nó lên hệ thống cục bộ trước.",
   "control_center.user_locale_save_failed": "Không thể lưu sự ưu tiên ngôn ngữ. Kiểm tra truy cập vào thư mục cấu hình của bạn.",
   "control_center.user_locale_applied": "Lưu ngôn ngữ người dùng. Bảng điều khiển đã được khởi động lại; đăng xuất và trở lại để áp dụng ngôn ngữ cho phần còn lại của phiên chạy.",
-  "control_center.control_panel_restart_failed": "Ngôn ngữ đã lưu, nhưng không thể khởi chạy lại bảng điều khiển. Khởi động lạiargvus-control-panel. Dịch vụ từ phiên chạy người dùng.",
+  "control_center.control_panel_restart_failed": "Đã lưu ngôn ngữ nhưng không thể làm mới ngôn ngữ của Bảng điều khiển. Hãy đóng rồi mở lại bảng.",
   "control_center.welcome_next_blocked": "Áp dụng hoặc hủy bỏ các thay đổi đang chờ trước khi hoàn tất.",
   "control_center.welcome_next": "[ F6 tiếp theo ] - Xác nhận bước này và tiếp tục",
   "control_center.welcome_title": "ĐƯỢC RỒI",

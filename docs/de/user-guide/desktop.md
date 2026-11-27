@@ -7,8 +7,8 @@ Die Desktop-Shell besteht aus Hyprland, der gepatchten Taskbar-Taskleiste, einem
 Die Konfiguration befindet sich im [Control Center](/docs/components/argvus-control-center/), während häufige Aktionen im Kontrollzentrum leben. Beginnen Sie mit [First configuration](/docs/user-guide/getting-started/), wenn dies Ihre erste Sitzung ist.
 
 - Kontrollzentrum
-- [Taskleiste](/docs/argvus-taskbar/taskbar/)
-- [Widgets](/docs/argvus-taskbar/widgets/)
+- [Taskleiste](/docs/argvus-panels/taskbar/)
+- [Widgets](/docs/argvus-panels/widgets/)
 - [Tastenkürzel](/docs/argvus-hyprland/keyboard-shortcuts/)
 - [Hyprland-Überschreibungen](/docs/argvus-hyprland/hyprland-overrides/)
 - [Fenster und Layout](/docs/argvus-hyprland/windows-and-layout/)

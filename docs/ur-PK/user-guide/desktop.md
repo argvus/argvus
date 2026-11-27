@@ -8,8 +8,8 @@ description: ARGVUS ڈیسک ٹاپ سطحوں کو سمجھیں۔
 کنفیگریشن [کنٹرول سینٹر](/docs/components/argvus-control-center/) میں رہتی ہے، جبکہ متواتر کارروائیاں کنٹرول پینل میں رہتی ہیں۔ اگر یہ آپ کا پہلا سیشن ہے تو [پہلی ترتیب](/docs/user-guide/getting-started/) سے شروع کریں۔
 
 - کنٹرول پینل
-- [ٹاسک بار](/docs/argvus-taskbar/taskbar/)
-- [وجیٹس](/docs/argvus-taskbar/widgets/)
+- [ٹاسک بار](/docs/argvus-panels/taskbar/)
+- [وجیٹس](/docs/argvus-panels/widgets/)
 - [کی بورڈ شارٹ کٹس](/docs/argvus-hyprland/keyboard-shortcuts/)
 - [Hyprland ﺯﮉﯿﺋﺍﺭ ﺭﻭﻭﺍ](/docs/argvus-hyprland/hyprland-overrides/)
 - [ونڈوز اور لے آؤٹ](/docs/argvus-hyprland/windows-and-layout/)

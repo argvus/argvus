@@ -10,7 +10,7 @@ description: ARGVUS'u yapılandırmak için pratik bir ilk önyükleme yolu.
 1. Pencereleri, çalışma alanlarını, görev çubuğunu, Denetim Masasını ve başlatıcıyı tanımlamak için [masaüstüne genel bakış](/docs/user-guide/desktop/) bölümünü okuyun.
 2. [Kontrol Merkezini](/docs/components/argvus-control-center/) açın ve **Görünüm** bölümünden bir tema, mod, vurgu ve duvar kağıdı seçin.
 3. Varsayılan boşluklar, kenarlıklar veya görev çubuğu aralığı ekranınıza uymuyorsa [pencereler ve düzen](/docs/argvus-hyprland/windows-and-layout/) ayarını yapın.
-4. [Görev çubuğunu](/docs/argvus-taskbar/taskbar/) yapılandırın ve hangi Kontrol Paneli kartlarının görünür olmasını istediğinize karar verin.
+4. [Görev çubuğunu](/docs/argvus-panels/taskbar/) yapılandırın ve hangi Kontrol Paneli kartlarının görünür olmasını istediğinize karar verin.
 5. [Klavye kısayollarını](/docs/argvus-hyprland/keyboard-shortcuts/) inceleyin ve yalnızca gerçekten kullandığınız bağlamaları değiştirin.
 6. İlgili ayarlar sayfalarından [fare ve dokunmatik yüzeyi](/docs/argvus-hyprland/input/), ekranları, ağı ve gücü yapılandırın.
 

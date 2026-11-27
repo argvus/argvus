@@ -11,7 +11,7 @@
   "control_center.user_locale_not_generated": "Esta configuración regional no está disponible. Habilítelo primero en las configuraciones regionales del sistema.",
   "control_center.user_locale_save_failed": "No se pudo guardar su preferencia de idioma. Verifique el acceso a su directorio de configuración.",
   "control_center.user_locale_applied": "Idioma del usuario guardado. Se reinició el Panel de control; cierre sesión y vuelva a iniciarla para aplicar el idioma al resto de la sesión.",
-  "control_center.control_panel_restart_failed": "Idioma guardado, pero no se pudo reiniciar el Panel de control. Reinicie argvus-control-panel.service desde su sesión de usuario.",
+  "control_center.control_panel_restart_failed": "Se guardó el idioma, pero no se pudo actualizar el idioma del Panel de control. Cierre y vuelva a abrir el panel.",
   "control_center.welcome_next_blocked": "Aplique o descarte los cambios pendientes antes de completar.",
   "control_center.welcome_next": "[ F6 Siguiente ] — Confirma este paso y continúa",
   "control_center.welcome_title": "ARGVUS Bienvenido",

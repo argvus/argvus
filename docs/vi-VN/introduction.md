@@ -35,7 +35,7 @@ Gói `argvus` cung cấp bộ điều phối `/usr/bin/argvus` và điểm vào 
 
 ### Bộ tổng hợp và vỏ máy tính để bàn
 
-`argvus-hyprland` cung cấp cấu hình và tổ hợp phím Hyprland. `argvus-taskbar` cung cấp tệp nhị phân Taskbar đã vá, trong khi `argvus-taskbar` sở hữu cấu hình và hành động của thanh tác vụ. `argvus-control-panel` cung cấp bảng điều khiển Quickshell và `argvus widget-telemetry` cung cấp các tiện ích hệ thống tùy chọn, đang được xử lý trong `argvus`.
+`argvus-hyprland` cung cấp cấu hình và tổ hợp phím Hyprland. `argvus-panels` cung cấp tệp nhị phân Taskbar đã vá, trong khi `argvus-panels` sở hữu cấu hình và hành động của thanh tác vụ. `argvus-panels` cung cấp bảng điều khiển Quickshell và `argvus widget-telemetry` cung cấp các tiện ích hệ thống tùy chọn, đang được xử lý trong `argvus`.
 
 Xem [Desktop](/docs/user-guide/desktop/) để biết cách sử dụng và [bề mặt vỏ](/docs/developer-guide/subsystems/shell-surfaces/) để biết quyền sở hữu triển khai.
 
@@ -59,7 +59,7 @@ Các tùy chọn chủ đề, giọng, hình nền, phông chữ và hiệu ứn
 
 Hệ thống thị giác cũng kiểm soát bố cục. Chế độ dính nhỏ gọn và vuông vức; Chế độ giãn cách sử dụng các khoảng trống cửa sổ lớn hơn, các góc tròn và lề rộng hơn xung quanh thanh tác vụ và vỏ. Thanh tác vụ mặc định ở cạnh trên nhưng hỗ trợ vị trí trên/dưới thông qua trạng thái bố cục được chia sẻ. Các hiệu ứng kiểm soát độ trong suốt, độ mờ, bóng và hình ảnh động trên bề mặt bộ tổng hợp và màn hình nền.
 
-Xem [bảng chủ đề](/docs/user-guide/appearance/) để biết các dòng và màu hiện tại, [hiệu ứng](/docs/argvus-appearance/effects/) để biết hợp đồng hiệu ứng dùng chung và [thanh tác vụ](/docs/argvus-taskbar/taskbar/) để biết vị trí thanh và cửa sổ.
+Xem [bảng chủ đề](/docs/user-guide/appearance/) để biết các dòng và màu hiện tại, [hiệu ứng](/docs/argvus-appearance/effects/) để biết hợp đồng hiệu ứng dùng chung và [thanh tác vụ](/docs/argvus-panels/taskbar/) để biết vị trí thanh và cửa sổ.
 
 ## ARGVUS là gì—và không phải là gì
 

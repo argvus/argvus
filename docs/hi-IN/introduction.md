@@ -34,7 +34,7 @@ taskbar · control panel · notifications · wallpaper · idle · clipboard
 
 ### कंपोजिटर और डेस्कटॉप शेल
 
-`argvus-hyprland` हाइप्रलैंड कॉन्फ़िगरेशन और कीबाइंडिंग की आपूर्ति करता है। `argvus-taskbar` पैच किए गए वेबार बाइनरी की आपूर्ति करता है, जबकि `argvus-taskbar` टास्कबार कॉन्फ़िगरेशन और क्रियाओं का मालिक है। `argvus-control-panel` क्विकशेल पैनल की आपूर्ति करता है, और `argvus widget-telemetry` वैकल्पिक सिस्टम विजेट की आपूर्ति करता है, जो `argvus` में प्रक्रियाधीन है।
+`argvus-hyprland` हाइप्रलैंड कॉन्फ़िगरेशन और कीबाइंडिंग की आपूर्ति करता है। `argvus-panels` पैच किए गए वेबार बाइनरी की आपूर्ति करता है, जबकि `argvus-panels` टास्कबार कॉन्फ़िगरेशन और क्रियाओं का मालिक है। `argvus-panels` क्विकशेल पैनल की आपूर्ति करता है, और `argvus widget-telemetry` वैकल्पिक सिस्टम विजेट की आपूर्ति करता है, जो `argvus` में प्रक्रियाधीन है।
 
 
 ### सेटिंग्स और एप्लिकेशन
@@ -76,7 +76,7 @@ ARGVUS को प्रत्येक एप्लिकेशन को बद
 देखें[आवेदन](/docs/user-guide/applications/)और[कमांड संदर्भ](/docs/reference/command-line/).
 देखें[हार्डवेयर](/docs/user-guide/hardware/), [गोपनीयता और सुरक्षा](/docs/user-guide/privacy-and-security/)और डेवलपर[घटक संदर्भ](/docs/developer-guide/).
 सृजित निर्देशिका सत्य का स्रोत नहीं है। देखें [दिखावट](/docs/user-guide/appearance/)और [संरचना और स्थिति](/docs/developer-guide/architecture/configuration-and-state/).
-देखें [थीम तालिका](/docs/user-guide/appearance/)वर्तमान परिवारों और रंगों के लिए, [प्रभाव](/docs/argvus-appearance/effects/)साझा प्रभाव अनुबंध के लिए, और [टास्कबार](/docs/argvus-taskbar/taskbar/)बार और विंडो के स्थान के लिए।
+देखें [थीम तालिका](/docs/user-guide/appearance/)वर्तमान परिवारों और रंगों के लिए, [प्रभाव](/docs/argvus-appearance/effects/)साझा प्रभाव अनुबंध के लिए, और [टास्कबार](/docs/argvus-panels/taskbar/)बार और विंडो के स्थान के लिए।
 इस नाम में दो विचारों को मिलाया गया है। *ARGV*, *argument vector* से लिया गया है, जो उन तर्कों की सूची है जो एक प्रोग्राम प्राप्त करता है, और यह कमांड और शॉर्टकट के माध्यम से डेस्कटॉप चलाने के कीबोर्ड-प्रथम लक्ष्य को दर्शाता है। *US*, *User System* से लिया गया है, जो उपयोगकर्ता-केंद्रित डेस्कटॉप के लक्ष्य को दर्शाता है। पूरी व्याख्या और उच्चारण ऑडियो के लिए, देखें [ARGVUS के बारे में](/about/).
 सिंचाई की सीमाओं और पैकेज स्वामित्व के लिए, डेवलपर को देखें[वास्तुकला अवलोकन](/docs/developer-guide/architecture/overview/)और [भंडार भूमिकाएँ](/docs/developer-guide/architecture/repository-roles/).
 - [सामान्य प्रश्न पढ़ें](/docs/user-guide/faq/).

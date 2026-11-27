@@ -35,7 +35,7 @@ O pacote `argvus` fornece o dispatcher `/usr/bin/argvus` e o ponto de entrada pr
 
 ### Compositor e shell do desktop
 
-`argvus-hyprland` fornece configuração e keybindings Hyprland. `argvus-taskbar` fornece o binário Taskbar corrigido, enquanto `argvus-taskbar` possui configuração e ações da taskbar. `argvus-control-panel` fornece o painel Quickshell, e `argvus widget-telemetry` fornece widgets opcionais, em processo no `argvus`.
+`argvus-hyprland` fornece configuração e keybindings Hyprland. `argvus-panels` fornece o binário Taskbar corrigido, enquanto `argvus-panels` possui configuração e ações da taskbar. `argvus-panels` fornece o painel Quickshell, e `argvus widget-telemetry` fornece widgets opcionais, em processo no `argvus`.
 
 Veja [Desktop](/pt/docs/user-guide/desktop/) para uso e [superfícies do shell](/pt/docs/developer-guide/subsystems/shell-surfaces/) para ownership de implementação.
 
@@ -61,7 +61,7 @@ O diretório gerado não é a fonte de verdade. Veja [Aparência](/pt/docs/user-
 
 O sistema visual também controla o layout. Sticky é compacto e quadrado; Spaced usa gaps maiores, cantos arredondados e margens maiores ao redor da taskbar e do shell. A taskbar usa a borda superior por padrão, mas permite posicionamento no topo ou embaixo pelo estado compartilhado. Os efeitos controlam transparência, blur, sombras e animações do compositor e das superfícies do desktop.
 
-Veja a [tabela de temas](/pt/docs/user-guide/appearance/) para famílias e cores, [efeitos](/pt/docs/argvus-appearance/effects/) para o contrato compartilhado e [taskbar](/pt/docs/argvus-taskbar/taskbar/) para o posicionamento da barra e das janelas.
+Veja a [tabela de temas](/pt/docs/user-guide/appearance/) para famílias e cores, [efeitos](/pt/docs/argvus-appearance/effects/) para o contrato compartilhado e [taskbar](/pt/docs/argvus-panels/taskbar/) para o posicionamento da barra e das janelas.
 
 ## O que é — e o que não é — o ARGVUS
 

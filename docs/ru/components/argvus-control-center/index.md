@@ -548,7 +548,7 @@ argvus control-center hyprland animations windows
 
 Сеанс владеет `argvus-windows.service` и `argvus-window-bar.service`. Последний держит своего дочернего Quickshell в спящем состоянии в Tile. Плагин hyprbars включен `argvus-hyprland`, собран для ABI Hyprland 0.57.0 на x86_64; он не компилируется в домашнем каталоге пользователя. Пересоберите плагин при обновлении ABI композитора. Команды: `argvus windows list --json`, `watch --json`, `position top|bottom`, `restore-all` и `minimize|restore|activate|maximize|close ADDRESS`. Адреса окон берутся из списка. `position top --persist` сохраняет/проектирует предпочтение без перезапуска основной панели. Подробности конфигурации и ошибок выполнения записываются в журнал; видимые ошибки действий также отображают переведенное уведомление.
 
-Панель задач и виджет телеметрии — независимые поверхности процесса Quickshell под управлением `argvus-bars.service`. Для управления ими используйте `argvus-taskbar.service` и `argvus-widget-telemetry.service`.
+Панель задач и виджет телеметрии — независимые поверхности процесса Quickshell под управлением `argvus-panels.service`. Для управления ими используйте `argvus-taskbar.service` и `argvus-widget-telemetry.service`.
 
 ## Подменю Windows и закрытие приложения
 

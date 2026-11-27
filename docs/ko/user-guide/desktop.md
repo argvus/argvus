@@ -7,8 +7,8 @@ description: ARGVUS 데스크탑 표면을 이해하십시오.
 구성 설정은 [Control Center](/docs/components/argvus-control-center/)에 저장되며, 자주 사용하는 동작은 제어판에 있습니다. 세션이 처음이라면 [First configuration](/docs/user-guide/getting-started/)에서 시작하십시오.
 
 - 제어판
-- [작업 표시줄](/docs/argvus-taskbar/taskbar/)
-- [위젯](/docs/argvus-taskbar/widgets/)
+- [작업 표시줄](/docs/argvus-panels/taskbar/)
+- [위젯](/docs/argvus-panels/widgets/)
 - [키보드 단축키](/docs/argvus-hyprland/keyboard-shortcuts/)
 - [Hyprland 오버라이드](/docs/argvus-hyprland/hyprland-overrides/)
 - [창 및 레이아웃](/docs/argvus-hyprland/windows-and-layout/)

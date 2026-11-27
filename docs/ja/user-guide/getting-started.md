@@ -9,7 +9,7 @@ description: ARGVUSを構成するための実用的な初回起動パス。
 1. [デスクトップの概要](/docs/user-guide/desktop/)を読んで、ウィンドウ、ワークスペース、タスクバー、コントロールパネル、ランチャーを確認します。
 2. [コントロールセンター](/docs/components/argvus-control-center/)を開き、**外観**でテーマ、モード、アクセント、壁紙を選択します。
 3. デフォルトの隙間、境界線、タスクバーの間隔が画面に合わない場合は、[ウィンドウとレイアウト](/docs/argvus-hyprland/windows-and-layout/)を調整します。
-4. [タスクバー](/docs/argvus-taskbar/taskbar/)を設定し、表示したいコントロールパネルのカードを選択します。
+4. [タスクバー](/docs/argvus-panels/taskbar/)を設定し、表示したいコントロールパネルのカードを選択します。
 5. [キーボードショートカット](/docs/argvus-hyprland/keyboard-shortcuts/)を確認し、実際に使用するものだけを変更します。
 6. 関連する設定ページから[マウスとタッチパッド](/docs/argvus-hyprland/input/)、ディスプレイ、ネットワーク、電源を設定します。
 

@@ -7,7 +7,7 @@ Repositori dikelompokkan berdasarkan tanggung jawab, bukan berdasarkan halaman n
 
 - ruang kerja: `argvus` (pengirim, perintah dalam proses, pembantu GTK 4, peti bersama, penyambut di `crates/argvus-greeter` dan data perintah);
 - sesi dan integrasi: `argvus-session`, `argvus-hyprland`, `argvus-portal`, `argvus-lock`, `argvus-boot-splash`, dan penyambut (`argvus-greeter`, dibuat dari `argvus/crates/argvus-greeter`);
-- UI di luar ruang kerja: Panel Kontrol, bilah tugas (`argvus-taskbar`), peluncur dan Taskbar;
+- UI di luar ruang kerja: Panel Kontrol, bilah tugas (`argvus-panels`), peluncur dan Taskbar;
 - penyedia: tampilan, daya, firewall, notifikasi;
 - aset dan kemasan: tampilan, wallpaper, font, ikon, profil.
 

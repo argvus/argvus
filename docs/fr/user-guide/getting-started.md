@@ -9,7 +9,7 @@ Après la première session graphique, vous n'avez pas besoin de configurer chaq
 1. Lisez la [vue d'ensemble du bureau](/docs/user-guide/desktop/) pour identifier les fenêtres, les espaces de travail, la barre des tâches, le Panneau de configuration et le lanceur.
 2. Ouvrez le [Centre de contrôle](/docs/components/argvus-control-center/) et choisissez un thème, un mode, un accent et un fond d'écran dans **Apparence**.
 3. Ajustez [les fenêtres et la disposition](/docs/argvus-hyprland/windows-and-layout/) si les écarts, les bordures ou l'espacement de la barre des tâches par défaut ne conviennent pas à votre écran.
-4. Configurez la [barre des tâches](/docs/argvus-taskbar/taskbar/) et décidez quelles cartes du Panneau de configuration vous souhaitez visibles.
+4. Configurez la [barre des tâches](/docs/argvus-panels/taskbar/) et décidez quelles cartes du Panneau de configuration vous souhaitez visibles.
 5. Passez en revue les [raccourcis clavier](/docs/argvus-hyprland/keyboard-shortcuts/) et modifiez uniquement les assignations que vous utilisez réellement.
 6. Configurez la [souris et le pavé tactile](/docs/argvus-hyprland/input/), les écrans, le réseau et l'alimentation depuis les pages de paramètres pertinentes.
 

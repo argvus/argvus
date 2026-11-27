@@ -7,7 +7,7 @@ Các kho lưu trữ được nhóm theo trách nhiệm thay vì theo trang đi�
 
 - không gian làm việc: `argvus` (bộ điều phối, lệnh đang xử lý, trình trợ giúp GTK 4, thùng dùng chung, lời chào trong `crates/argvus-greeter` và dữ liệu của các lệnh);
 - phiên và tích hợp: `argvus-session`, `argvus-hyprland`, `argvus-portal`, `argvus-lock`, `argvus-boot-splash` và lời chào (`argvus-greeter`, được xây dựng từ `argvus/crates/argvus-greeter`);
-- Giao diện người dùng bên ngoài không gian làm việc: Bảng điều khiển, thanh tác vụ (`argvus-taskbar`), trình khởi chạy và Taskbar;
+- Giao diện người dùng bên ngoài không gian làm việc: Bảng điều khiển, thanh tác vụ (`argvus-panels`), trình khởi chạy và Taskbar;
 - nhà cung cấp: hiển thị, nguồn, tường lửa, thông báo;
 - nội dung và bao bì: hình thức, hình nền, phông chữ, biểu tượng, hồ sơ.
 

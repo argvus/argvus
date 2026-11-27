@@ -8,8 +8,8 @@ The desktop shell is composed of Hyprland, the Quickshell taskbar, a Quickshell 
 Configuration lives in the [Control Center](/docs/components/argvus-control-center/), while frequent actions live in the Control Panel. Start with [First configuration](/docs/user-guide/getting-started/) if this is your first session.
 
 - Control Panel
-- [Taskbar](/docs/argvus-taskbar/taskbar/)
-- [Widgets](/docs/argvus-taskbar/widgets/)
+- [Taskbar](/docs/argvus-panels/taskbar/)
+- [Widgets](/docs/argvus-panels/widgets/)
 - [Keyboard shortcuts](/docs/argvus-hyprland/keyboard-shortcuts/)
 - [Hyprland overrides](/docs/argvus-hyprland/hyprland-overrides/)
 - [Windows and layout](/docs/argvus-hyprland/windows-and-layout/)

@@ -161,7 +161,8 @@ pub fn legacy_relative(relative: &str) -> String {
     return format!("dunst/{}", after_config_marker(relative));
   }
   if let Some(rest) = relative.strip_prefix("control-panel/config/quickshell/") {
-    return format!("quickshell/{rest}");
+    let rest = rest.strip_prefix("argvus-control-panel/").unwrap_or(rest);
+    return format!("panels/qml/control-panel/{rest}");
   }
   if let Some(rest) = relative.strip_prefix("appearance/config/") {
     return rest.to_owned();

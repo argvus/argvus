@@ -35,7 +35,7 @@ Jalur direktori kanonik menentukan identitas ruang kerja yang stabil; mengubah u
 
 Ruang kerja yang dibuka sebelum pembaruan tetap mempertahankan jendela dan nama aslinya. Membuka proyek setelah pembaruan menggunakan identitas turunan jalur barunya; tutup jendela proyek lama jika memungkinkan. Tidak ada asosiasi atau perpindahan otomatis yang dilakukan karena nama lama tidak dapat mengidentifikasi direktori dengan andal. Dengan nama direktori duplikat, gunakan picker, nomor, atau jalur kanonik lengkap, bukan nama yang ambigu.
 
-Membuka proyek akan membuat ulang `$XDG_RUNTIME_DIR/argvus/project-workspaces.json` secara atom dari daftar proyek yang dikonfigurasi dan terjemahannya. Ini adalah metadata sesi untuk label ruang kerja dan keterangan alat, bukan konfigurasi; jangan mengeditnya. Buka kembali proyek setelah mengubah daftar atau bahasa untuk menyegarkan labelnya. Perbarui `argvus` dan `argvus-taskbar`, ditambah konfigurasi `argvus-taskbar`, untuk integrasi ini.
+Membuka proyek akan membuat ulang `$XDG_RUNTIME_DIR/argvus/project-workspaces.json` secara atom dari daftar proyek yang dikonfigurasi dan terjemahannya. Ini adalah metadata sesi untuk label ruang kerja dan keterangan alat, bukan konfigurasi; jangan mengeditnya. Buka kembali proyek setelah mengubah daftar atau bahasa untuk menyegarkan labelnya. Perbarui `argvus` dan `argvus-panels`, ditambah konfigurasi `argvus-panels`, untuk integrasi ini.
 
 ## Proyek
 

@@ -12,8 +12,7 @@ description: ARGVUS paketinin sorumlulukları.
 | `argvus-devtools`, `argvus-pentest` | Geliştirme araçları ve yetkili güvenlik denetimi için isteğe bağlı bağımsız meta paketler. Ana paket bu profilleri yüklemez. |
 | `argvus-session` | Oturum giriş noktaları ve kullanıcı yaşam döngüsü. |
 | `argvus-hyprland` | Hyprland yapılandırması. |
-| `argvus-control-panel` | Quickshell kontrol paneli. |
-| `argvus-taskbar` | Taskbar konfigürasyonu ve yamalı ikili. |
+| `argvus-panels` | ARGVUS Taskbar, Telemetry, Control Panel, Floating Window Bar, and Morphing surfaces. |
 | `argvus-branding` | Logo ve kelime işareti varlıkları. |
 | `argvus-appearance`, `argvus-wallpapers`, `argvus-fonts`, `argvus-icons` | Görünüm durumu ve görsel varlıklar. |
 | `argvus-display`, `argvus-power`, `argvus-notifications` | Masaüstü sağlayıcıları. |
@@ -35,4 +34,4 @@ description: ARGVUS paketinin sorumlulukları.
 
 Kaldırılan `argvus-pwvucontrol` ve `argvus-snappy-switcher` paketleri hiçbir paket tarafından sağlanmaz.
 
-ARGVUS bileşen paketleri arasında kurulum sırası gerekli değildir: `argvus` onların ana paketidir ve her bileşen ona bağlıdır. `argvus`'yu yüklemek aynı zamanda `argvus-desktop` profilini de yükler; `argvus-devtools` ve `argvus-pentest` tercihli olmaya devam ediyor. Bir paketin bu tabloda bulunması, özelliğin tamamına sahip olduğu anlamına gelmez: örneğin, görev çubuğu `argvus-taskbar`, `argvus-session` ve etki alanı sağlayıcılarını birleştirir.
+ARGVUS bileşen paketleri arasında kurulum sırası gerekli değildir: `argvus` onların ana paketidir ve her bileşen ona bağlıdır. `argvus`'yu yüklemek aynı zamanda `argvus-desktop` profilini de yükler; `argvus-devtools` ve `argvus-pentest` tercihli olmaya devam ediyor. Bir paketin bu tabloda bulunması, özelliğin tamamına sahip olduğu anlamına gelmez: örneğin, görev çubuğu `argvus-panels`, `argvus-session` ve etki alanı sağlayıcılarını birleştirir.

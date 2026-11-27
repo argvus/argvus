@@ -11,7 +11,7 @@
   "control_center.user_locale_not_generated": "هذا الموقع غير متاح أدخله في النظام المحلي أولاً.",
   "control_center.user_locale_save_failed": "لا يُمكنُ أَنْ يُوفّرَ تفضّلَ لغتكَ. تحقق من الوصول إلى دليل التشكيل الخاص بك.",
   "control_center.user_locale_applied": "تم إنقاذ لغة المستعمل وأُعيد تشكيل فريق الرقابة؛ واستُقطِع وعود إلى تطبيق هذه اللغة على بقية الدورة.",
-  "control_center.control_panel_restart_failed": "تم إنقاذ اللغة، ولكن لم يكن من الممكن إعادة تشكيل فريق المراقبة. أعيدي تشغيل دورة المستعمل.",
+  "control_center.control_panel_restart_failed": "تم حفظ اللغة، لكن تعذّر تحديث لغة لوحة التحكم. أغلق اللوحة ثم أعد فتحها.",
   "control_center.welcome_next_blocked": "Apply or discard pending changes before completion.",
   "control_center.welcome_next": "[F6 next] - Confirm this step and continue",
   "control_center.welcome_title": "ARGVUS Welcome",
