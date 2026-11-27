@@ -398,6 +398,10 @@ Taskbar kedua muncul di setiap monitor, di tepi seberang taskbar utama. Ini hany
 
 `SUPER + Alt + Up` menempatkan bilah utama di bagian atas dan bilah jendela di bagian bawah. `SUPER + Alt + Down` melakukan sebaliknya. Mengulangi suatu arah membuat posisinya tidak berubah. Ubin hanya memiliki bilah utama. Kembali ke Ubin akan memulihkan semua jendela yang diperkecil sebelum menghapus bilah jendela, dan kemudian mempertahankan kebijakan ubin/mengambang yang asli.
 
+Mode jendela mengambang bersifat eksperimental.
+
+Ikon mode jendela tersembunyi secara default; aktifkan di Control Center → Appearance → Taskbar → Icons → Optional modules.
+
 Minimalkan menggunakan ruang kerja `special:argvus-minimized` yang dicadangkan. Jangan gunakan ruang kerja itu secara manual. Proses `argvus windows service` mencatat identitas, ruang kerja/monitor asli, geometri, layar penuh/maksimalisasi, dan status pin dalam registri runtime khusus instance kompositor di bawah `$XDG_RUNTIME_DIR/argvus`. Catatan bertahan saat layanan dimulai ulang atau memuat ulang konfigurasi, tetapi tidak melintasi sesi kompositor. Menutup jendela akan menghapus catatannya. Jika monitor hilang, pemulihan menggunakan output yang tersedia. Bilah pemulihan yang hilang atau gagal mencegah minimalisasi baru; restorasi yang gagal mempertahankan catatan dan bilah pemulihan.
 
 Sesi ini memiliki `argvus-windows.service` dan `argvus-window-bar.service`. Yang terakhir membuat anak Taskbarnya tidak aktif di Tile. Plugin hyprbars dibundel oleh `argvus-hyprland`, dibuat untuk Hyprland 0.57.0 ABI pada x86_64; itu tidak dikompilasi di direktori home pengguna. Bangun kembali plugin dengan pembaruan ABI kompositor.

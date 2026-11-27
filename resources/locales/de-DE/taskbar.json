@@ -39,7 +39,7 @@
   "monitor.memory.title": "Speicher · Esc zum Schließen",
   "window_mode.title": "Fenstermodus",
   "window_mode.tile": "Kachelfenster (Standard)",
-  "window_mode.floating": "Schwebende Fenster",
+  "window_mode.floating": "Schwebende Fenster (Experimentell)",
   "window_mode.hint": "Floating zeigt Fensterschaltflächen und eine gegenüberliegende Anwendungsleiste an. „Kacheln“ stellt minimierte Fenster wieder her und ordnet nur die durch „Floating“ konvertierten Fenster neu an. Ursprünglich schwebende Fenster bleiben schwebend.",
   "window_mode.working": "Fenstermodus anwenden…",
   "window_mode.pending": "Präferenz gespeichert. Die Bewerbung für die Hyprland-Sitzung steht noch aus.",

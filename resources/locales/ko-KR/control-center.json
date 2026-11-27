@@ -2161,7 +2161,7 @@
   "control_center.snapshot.incompatible": "이 Snapper 버전은 필수 JSON 인터페이스를 지원하지 않습니다.",
   "control_center.snapshot.invalid": "스냅샷 데이터 또는 요청을 안전하게 검증할 수 없습니다.",
   "control_center.snapshot.failed": "Snapper가 작업을 완료할 수 없습니다.",
-  "control_center.keybindings.action.toggle_window_mode": "타일/부동 창 모드 전환",
+  "control_center.keybindings.action.toggle_window_mode": "타일/부동 창 모드 전환 (실험적)",
   "control_center.keybindings.action.ai": "AI 에이전트 선택기(argvus-ai 패키지 옵션)",
   "control_center.taskbar_update_status": "업데이트 상태",
   "control_center.taskbar_update_aur": "AUR 확인",

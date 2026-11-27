@@ -40,7 +40,7 @@
   "keybindings.action.maximize": "Maximizar ventana (alternar)",
   "keybindings.action.close_window": "Cerrar ventana",
   "keybindings.action.toggle_floating": "Activar/Desactivar ventana flotante",
-  "control_center.keybindings.action.toggle_window_mode": "Alternar modo mosaico/ventana flotante",
+  "control_center.keybindings.action.toggle_window_mode": "Alternar modo mosaico/ventana flotante (Experimental)",
   "keybindings.action.fullscreen": "Ventana de pantalla completa",
   "keybindings.action.toggle_split": "Alternar división vertical/horizontal",
   "keybindings.action.group_tabs": "Agrupar/Desagrupar en pestañas",

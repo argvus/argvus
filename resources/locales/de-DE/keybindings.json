@@ -40,7 +40,7 @@
   "keybindings.action.maximize": "Fenster maximieren (umschalten)",
   "keybindings.action.close_window": "Fenster schließen",
   "keybindings.action.toggle_floating": "Schwebendes Fenster aktivieren/deaktivieren",
-  "control_center.keybindings.action.toggle_window_mode": "Wechseln Sie zwischen dem Kachel- und dem schwebenden Fenstermodus",
+  "control_center.keybindings.action.toggle_window_mode": "Wechseln Sie zwischen dem Kachel- und dem schwebenden Fenstermodus (Experimentell)",
   "keybindings.action.fullscreen": "Vollbildfenster",
   "keybindings.action.toggle_split": "Umschalten zwischen vertikaler und horizontaler Aufteilung",
   "keybindings.action.group_tabs": "In Registerkarten gruppieren/Gruppierung aufheben",

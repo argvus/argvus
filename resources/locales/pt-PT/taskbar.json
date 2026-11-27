@@ -39,7 +39,7 @@
   "monitor.memory.title": "Memória · Esc para fechar",
   "window_mode.title": "Modo da janela",
   "window_mode.tile": "Janelas de ladrilho (Por omissão)",
-  "window_mode.floating": "Janelas flutuantes",
+  "window_mode.floating": "Janelas flutuantes (Experimental)",
   "window_mode.hint": "Flutuando mostra botões de janela e uma barra de aplicação oposta. A telha restaura janelas minimizadas e apenas retiliza janelas convertidas por flutuação. Janelas originalmente flutuantes permanecem flutuantes.",
   "window_mode.working": "Aplicando o modo da janela..",
   "window_mode.pending": "Preferência salva. A aplicação está pendente para a sessão Hyprland.",

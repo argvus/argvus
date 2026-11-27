@@ -2161,7 +2161,7 @@
   "control_center.snapshot.incompatible": "Esta versão do Snapper não suporta a interface JSON necessária.",
   "control_center.snapshot.invalid": "Os dados ou pedidos de fotografia não puderam ser validados com segurança.",
   "control_center.snapshot.failed": "O Snapper não conseguiu completar a operação.",
-  "control_center.keybindings.action.toggle_window_mode": "Alternar o modo da janela de Tile/Floating",
+  "control_center.keybindings.action.toggle_window_mode": "Alternar o modo da janela de Tile/Floating (Experimental)",
   "control_center.keybindings.action.ai": "AI selector de agentes (pacote opcional argvus-ai)",
   "control_center.taskbar_update_status": "Atualizar status",
   "control_center.taskbar_update_aur": "Verificar AUR",

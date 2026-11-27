@@ -39,7 +39,7 @@
   "monitor.memory.title": "内存·Esc关闭",
   "window_mode.title": "窗口模式",
   "window_mode.tile": "平铺窗口（默认）",
-  "window_mode.floating": "悬浮窗",
+  "window_mode.floating": "悬浮窗 (实验性)",
   "window_mode.hint": "浮动显示窗口按钮和相反的应用程序栏。平铺恢复最小化的窗口，并且仅重新平铺通过浮动转换的窗口。原来的浮动窗口保持浮动。",
   "window_mode.working": "应用窗口模式...",
   "window_mode.pending": "已保存首选项。 Hyprland 会议的申请正在等待处理。",

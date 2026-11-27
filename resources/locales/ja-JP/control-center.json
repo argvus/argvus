@@ -2161,7 +2161,7 @@
   "control_center.snapshot.incompatible": "この Snapper バージョンは、必要な JSON インターフェイスをサポートしていません。",
   "control_center.snapshot.invalid": "スナップショット データまたはリクエストを安全に検証できませんでした。",
   "control_center.snapshot.failed": "スナッパーは操作を完了できませんでした。",
-  "control_center.keybindings.action.toggle_window_mode": "タイル/フローティング ウィンドウ モードの切り替え",
+  "control_center.keybindings.action.toggle_window_mode": "タイル/フローティング ウィンドウ モードの切り替え (実験的)",
   "control_center.keybindings.action.ai": "AI エージェント セレクター (オプションの argvus-ai パッケージ)",
   "control_center.taskbar_update_status": "ステータスの更新",
   "control_center.taskbar_update_aur": "AURを確認する",

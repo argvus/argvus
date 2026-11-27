@@ -39,7 +39,7 @@
   "monitor.memory.title": "Memoria · Esc para cerrar",
   "window_mode.title": "Modo ventana",
   "window_mode.tile": "Ventanas en mosaico (predeterminado)",
-  "window_mode.floating": "Ventanas flotantes",
+  "window_mode.floating": "Ventanas flotantes (Experimental)",
   "window_mode.hint": "Flotante muestra los botones de la ventana y una barra de aplicaciones opuesta. Tile restaura ventanas minimizadas y solo vuelve a mosaico las ventanas convertidas mediante flotante. Las ventanas originalmente flotantes permanecen flotantes.",
   "window_mode.working": "Aplicando el modo ventana…",
   "window_mode.pending": "Preferencia guardada. La solicitud está pendiente para la sesión Hyprland.",

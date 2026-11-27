@@ -2161,7 +2161,7 @@
   "control_center.snapshot.incompatible": "Questa versione di Snapper non supporta l'interfaccia JSON richiesta.",
   "control_center.snapshot.invalid": "Non è stato possibile convalidare i dati o la richiesta dello snapshot in modo sicuro.",
   "control_center.snapshot.failed": "Snapper non è riuscito a completare l'operazione.",
-  "control_center.keybindings.action.toggle_window_mode": "Attiva/disattiva la modalità Finestra affiancata/mobile",
+  "control_center.keybindings.action.toggle_window_mode": "Attiva/disattiva la modalità Finestra affiancata/mobile (Sperimentale)",
   "control_center.keybindings.action.ai": "Selettore agente AI (pacchetto argvus-ai opzionale)",
   "control_center.taskbar_update_status": "Aggiorna stato",
   "control_center.taskbar_update_aur": "Controlla AUR",

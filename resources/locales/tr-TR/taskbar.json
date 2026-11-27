@@ -39,7 +39,7 @@
   "monitor.memory.title": "Memory · Esc to close",
   "window_mode.title": "Pencere modu",
   "window_mode.tile": "Kaplama Windows (Default)",
-  "window_mode.floating": "Yüzing Windows",
+  "window_mode.floating": "Yüzing Windows (Deneysel)",
   "window_mode.hint": "Floating pencere düğmelerini ve tam bir uygulama çubuğunu gösterir. Kaplamalar pencereleri en aza indirir ve sadece Floating tarafından dönüştürülen pencereleri yeniden döndürür. Başlangıçta yüzen pencereler yüz yüze kalır.",
   "window_mode.working": "Pencere modu uygulamak..",
   "window_mode.pending": "Tercih kurtarıldı. Uygulama Hyprland oturumu için bekliyor.",

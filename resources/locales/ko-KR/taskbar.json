@@ -39,7 +39,7 @@
   "monitor.memory.title": "메모리 · Esc 닫기",
   "window_mode.title": "창 모드",
   "window_mode.tile": "타일 ​​창(기본값)",
-  "window_mode.floating": "부동 창",
+  "window_mode.floating": "부동 창 (실험적)",
   "window_mode.hint": "플로팅에는 창 버튼과 반대쪽 응용 프로그램 표시줄이 표시됩니다. 타일은 최소화된 창을 복원하고 플로팅으로 변환된 창만 리타일합니다. 원래 떠 있던 창은 계속 떠 있습니다.",
   "window_mode.working": "창모드 적용 중…",
   "window_mode.pending": "환경설정이 저장되었습니다. Hyprland 세션에 대한 신청이 보류 중입니다.",

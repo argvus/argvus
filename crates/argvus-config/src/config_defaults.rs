@@ -264,6 +264,9 @@ fn default_taskbar(document: &mut ConfigDocument) {
     .entry("focus_enabled")
     .or_insert_with(|| Value::Bool(true));
   icons
+    .entry("mode_enabled")
+    .or_insert_with(|| Value::Bool(false));
+  icons
     .entry("launcher_enabled")
     .or_insert_with(|| Value::Bool(false));
   icons

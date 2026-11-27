@@ -2161,7 +2161,7 @@
   "control_center.snapshot.incompatible": "Bu Snapper versiyonu gerekli JSON arayüzü desteklemiyor.",
   "control_center.snapshot.invalid": "Snapshot verileri veya istek güvenle doğrulanamaz.",
   "control_center.snapshot.failed": "Snapper işlemi tamamlayamadı.",
-  "control_center.keybindings.action.toggle_window_mode": "Toggle Karo / Floating cam modu",
+  "control_center.keybindings.action.toggle_window_mode": "Toggle Karo / Floating cam modu (Deneysel)",
   "control_center.keybindings.action.ai": "AI ajan seçici veya (bağlanıcı argvus-ai paketi)",
   "control_center.taskbar_update_status": "Update Status",
   "control_center.taskbar_update_aur": "Check AUR",

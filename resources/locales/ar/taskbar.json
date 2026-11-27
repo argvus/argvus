@@ -39,7 +39,7 @@
   "monitor.memory.title": "التذكير - الاختباء",
   "window_mode.title": "نمط النافذة",
   "window_mode.tile": "Tile Windows (Default)",
-  "window_mode.floating": "زهرة النوافذ",
+  "window_mode.floating": "زهرة النوافذ (تجريبي)",
   "window_mode.hint": "تزحلق أزرار النوافذ وحانة تطبيق عكسية (تيل) يعيد النوافذ إلى الحد الأدنى ويعيد تشغيل النوافذ التي تحوّلها (فلونت). النوافذ العائمة أصلاً تبقى عائمة.",
   "window_mode.working": "تطبيق طريقة النوافذ",
   "window_mode.pending": "تم إنقاذ الأفضل وينتظر تقديم الطلب في دورة Hyprland.",

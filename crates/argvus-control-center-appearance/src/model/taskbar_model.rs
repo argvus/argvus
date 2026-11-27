@@ -50,6 +50,7 @@ impl TaskbarUtilityGroupMode {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum TaskbarModule {
   AudioPlayer,
+  WindowMode,
   Focus,
   Launcher,
   Network,
@@ -77,8 +78,9 @@ pub enum TaskbarModule {
 }
 
 impl TaskbarModule {
-  pub const ALL: [Self; 25] = [
+  pub const ALL: [Self; 26] = [
     Self::AudioPlayer,
+    Self::WindowMode,
     Self::Focus,
     Self::Launcher,
     Self::Network,
@@ -109,6 +111,7 @@ impl TaskbarModule {
   pub fn key(self) -> &'static str {
     match self {
       Self::AudioPlayer => "audio_player",
+      Self::WindowMode => "mode",
       Self::Focus => "focus",
       Self::Launcher => "launcher",
       Self::Network => "network",
@@ -140,6 +143,7 @@ impl TaskbarModule {
   pub fn label_key(self) -> &'static str {
     match self {
       Self::AudioPlayer => "control_center.taskbar_audio_player_view",
+      Self::WindowMode => "control_center.window_mode",
       Self::Focus => "control_center.taskbar_focus_icon",
       Self::Launcher => "control_center.launcher",
       Self::Network => "control_center.network",
@@ -174,6 +178,7 @@ pub struct TaskbarModules {
   pub battery_available: bool,
   pub bluetooth_available: bool,
   pub audio_player: bool,
+  pub mode: bool,
   pub focus: bool,
   pub launcher: bool,
   pub network: bool,
@@ -206,6 +211,7 @@ impl Default for TaskbarModules {
       battery_available: false,
       bluetooth_available: false,
       audio_player: true,
+      mode: false,
       focus: true,
       launcher: false,
       network: true,
@@ -238,6 +244,7 @@ impl TaskbarModules {
   pub fn enabled(&self, module: TaskbarModule) -> bool {
     match module {
       TaskbarModule::AudioPlayer => self.audio_player,
+      TaskbarModule::WindowMode => self.mode,
       TaskbarModule::Focus => self.focus,
       TaskbarModule::Launcher => self.launcher,
       TaskbarModule::Network => self.network,
@@ -268,6 +275,7 @@ impl TaskbarModules {
   pub fn set(&mut self, module: TaskbarModule, enabled: bool) {
     match module {
       TaskbarModule::AudioPlayer => self.audio_player = enabled,
+      TaskbarModule::WindowMode => self.mode = enabled,
       TaskbarModule::Focus => self.focus = enabled,
       TaskbarModule::Launcher => self.launcher = enabled,
       TaskbarModule::Network => self.network = enabled,

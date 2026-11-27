@@ -40,7 +40,7 @@
   "keybindings.action.maximize": "ونڈو کو زیادہ سے زیادہ بنائیں (ٹوگل)",
   "keybindings.action.close_window": "کھڑکی بند کریں۔",
   "keybindings.action.toggle_floating": "فلوٹنگ ونڈو کو فعال/غیر فعال کریں۔",
-  "control_center.keybindings.action.toggle_window_mode": "ٹیگ /فا لٹ ونڈو موڈ",
+  "control_center.keybindings.action.toggle_window_mode": "ٹیگ /فا لٹ ونڈو موڈ (تجرباتی)",
   "keybindings.action.fullscreen": "فل سکرین ونڈو",
   "keybindings.action.toggle_split": "عمودی/افقی ٹوگل تقسیم کریں۔",
   "keybindings.action.group_tabs": "ٹیبز میں گروپ/انگروپ کریں۔",

@@ -414,6 +414,10 @@ Uma segunda Taskbar aparece em cada monitor, na borda oposta à taskbar principa
 
 `SUPER + Alt + seta para cima` coloca a barra principal no topo e a barra de janelas no rodapé. `SUPER + Alt + seta para baixo` faz o inverso. Repetir a direção mantém as posições. Em mosaico existe apenas a barra principal. Voltar ao mosaico restaura todas as minimizadas antes de remover a barra de janelas e então preserva a política original de janelas tiled/flutuantes.
 
+O modo Floating Windows é experimental.
+
+O ícone de modo de janela fica oculto por padrão. Ative-o em Control Center → Appearance → Taskbar → Icons → Optional modules.
+
 A minimização usa o workspace reservado `special:argvus-minimized`. Não use esse workspace manualmente. O processo `argvus windows service` registra identidade, workspace/monitor de origem, geometria, tela cheia/maximização e fixação em um registro de runtime separado por instância do compositor, em `$XDG_RUNTIME_DIR/argvus`. Os registros sobrevivem ao reinício do serviço ou reload da configuração, mas não atravessam sessões do compositor. Fechar uma janela remove seu registro. Se um monitor desaparecer, a restauração usa uma saída disponível. Uma barra de recuperação ausente ou com falha impede novas minimizações; falhas de restauração preservam o registro e a barra de recuperação.
 
 A sessão gerencia `argvus-windows.service` e `argvus-window-bar.service`. O segundo mantém sua Taskbar inativa em mosaico. O plugin hyprbars é distribuído por `argvus-hyprland`, compilado para a ABI do Hyprland 0.57.0 em x86_64; não é compilado no diretório pessoal do usuário. Recompile o plugin ao atualizar a ABI do compositor.

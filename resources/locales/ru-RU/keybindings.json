@@ -40,7 +40,7 @@
   "keybindings.action.maximize": "Развернуть окно (переключить)",
   "keybindings.action.close_window": "Закрыть окно",
   "keybindings.action.toggle_floating": "Включение/отключение плавающего окна",
-  "control_center.keybindings.action.toggle_window_mode": "Переключить режим плитки/плавающего окна",
+  "control_center.keybindings.action.toggle_window_mode": "Переключить режим плитки/плавающего окна (Экспериментально)",
   "keybindings.action.fullscreen": "Полноэкранное окно",
   "keybindings.action.toggle_split": "Переключатель разделения вертикального/горизонтального режима",
   "keybindings.action.group_tabs": "Группировать/Разгруппировать по вкладкам",

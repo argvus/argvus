@@ -408,6 +408,10 @@ A second Taskbar appears on every monitor, on the edge opposite the main taskbar
 
 `SUPER + Alt + Up` places the main bar at the top and the window bar at the bottom. `SUPER + Alt + Down` does the reverse. Repeating a direction leaves the positions unchanged. Tile has only the main bar. Returning to Tile restores all minimized windows before removing the window bar, and then preserves the original tiled/floating policy.
 
+Floating Windows mode is experimental.
+
+The window mode icon is hidden by default. Enable it under Control Center → Appearance → Taskbar → Icons → Optional modules.
+
 Minimization uses the reserved `special:argvus-minimized` workspace. Do not use that workspace manually. The `argvus windows service` process records identity, original workspace/monitor, geometry, fullscreen/maximization and pin state in a compositor-instance-specific runtime registry under `$XDG_RUNTIME_DIR/argvus`. Records survive a service restart or config reload, but do not cross compositor sessions. Closing a window removes its record. If a monitor disappears, restoration uses an available output. A missing or failed recovery bar prevents new minimizations; failed restoration retains the record and recovery bar.
 
 The session owns `argvus-windows.service` and `argvus-window-bar.service`. The latter keeps its Taskbar child dormant in Tile. The hyprbars plugin is bundled by `argvus-hyprland`, built for the Hyprland 0.57.0 ABI on x86_64; it is not compiled in the user's home directory. Rebuild the plugin with a compositor ABI update.

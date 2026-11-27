@@ -530,3 +530,11 @@ fn window_spaces_breadcrumbs_include_windows_parent() {
     );
   }
 }
+
+#[test]
+fn window_mode_taskbar_module_has_an_icon() {
+  assert_eq!(
+    Item::TaskbarModule(TaskbarModule::WindowMode).icon(),
+    Some(icons::WINDOW_RULES)
+  );
+}

@@ -39,7 +39,7 @@
   "monitor.memory.title": "Bộ nhớ · Esc để đóng",
   "window_mode.title": "Chế độ cửa sổ",
   "window_mode.tile": "Cửa sổ lát (Mặc định)",
-  "window_mode.floating": "Comment",
+  "window_mode.floating": "Comment (Thử nghiệm)",
   "window_mode.hint": "Nổi hiển thị nút cửa sổ và thanh ứng dụng đối diện. Làm cho cửa sổ nhỏ lại và chỉ làm cho cửa sổ đảo lộn bằng cách nổi. Các cửa sổ nổi đầu tiên vẫn nổi.",
   "window_mode.working": "Đang áp dụng chế độ cửa sổ..",
   "window_mode.pending": "Đã lưu tham chiếu. Ứng dụng đang chờ phiên chạyHyprland.",

@@ -39,7 +39,7 @@
   "monitor.memory.title": "Mémoire · Esc pour fermer",
   "window_mode.title": "Mode fenêtre",
   "window_mode.tile": "Fenêtres en mosaïque (par défaut)",
-  "window_mode.floating": "Fenêtres flottantes",
+  "window_mode.floating": "Fenêtres flottantes (Expérimental)",
   "window_mode.hint": "Flottant affiche les boutons de la fenêtre et une barre d'application opposée. Tile restaure les fenêtres réduites et retile uniquement les fenêtres converties par Floating. Les fenêtres flottantes à l’origine restent flottantes.",
   "window_mode.working": "Application du mode fenêtre…",
   "window_mode.pending": "Préférence enregistrée. La candidature est en attente pour la session Hyprland.",

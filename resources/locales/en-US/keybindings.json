@@ -40,7 +40,7 @@
   "keybindings.action.maximize": "Maximize window (toggle)",
   "keybindings.action.close_window": "Close window",
   "keybindings.action.toggle_floating": "Enable/Disable Floating Window",
-  "control_center.keybindings.action.toggle_window_mode": "Toggle Tile/Floating window mode",
+  "control_center.keybindings.action.toggle_window_mode": "Toggle Tile/Floating window mode (Experimental)",
   "keybindings.action.fullscreen": "Full screen window",
   "keybindings.action.toggle_split": "Split vertical/horizontal toggle",
   "keybindings.action.group_tabs": "Group/Ungroup into tabs",

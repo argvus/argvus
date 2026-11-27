@@ -2161,7 +2161,7 @@
   "control_center.snapshot.incompatible": "Versi Snapper ini tidak mendukung antarmuka yang diperlukan JSON.",
   "control_center.snapshot.invalid": "Data atau permintaan Snapshot tidak bisa disahkan dengan aman.",
   "control_center.snapshot.failed": "Snapper tidak bisa menyelesaikan operasi.",
-  "control_center.keybindings.action.toggle_window_mode": "Jungkitkan mode Tile / Floating window",
+  "control_center.keybindings.action.toggle_window_mode": "Jungkitkan mode Tile / Floating window (Eksperimental)",
   "control_center.keybindings.action.ai": "[pemilih agen]",
   "control_center.taskbar_update_status": "Status Pemutakhiran",
   "control_center.taskbar_update_aur": "Periksa",

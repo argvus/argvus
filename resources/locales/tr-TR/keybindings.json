@@ -40,7 +40,7 @@
   "keybindings.action.maximize": "Pencereyi büyüt (geçiş)",
   "keybindings.action.close_window": "Pencereyi kapat",
   "keybindings.action.toggle_floating": "Kayan Pencereyi Etkinleştir/Devre Dışı Bırak",
-  "control_center.keybindings.action.toggle_window_mode": "Toggle Karo / Floating cam modu",
+  "control_center.keybindings.action.toggle_window_mode": "Toggle Karo / Floating cam modu (Deneysel)",
   "keybindings.action.fullscreen": "Tam ekran penceresi",
   "keybindings.action.toggle_split": "Dikey/yatay bölme geçişi",
   "keybindings.action.group_tabs": "Sekmeler halinde grupla/grubu çöz",

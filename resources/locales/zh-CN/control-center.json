@@ -2161,7 +2161,7 @@
   "control_center.snapshot.incompatible": "此 Snapper 版本不支持所需的 JSON 接口。",
   "control_center.snapshot.invalid": "无法安全验证快照数据或请求。",
   "control_center.snapshot.failed": "Snapper 无法完成此操作。",
-  "control_center.keybindings.action.toggle_window_mode": "切换平铺/浮动窗口模式",
+  "control_center.keybindings.action.toggle_window_mode": "切换平铺/浮动窗口模式 (实验性)",
   "control_center.keybindings.action.ai": "AI 代理选择器（可选 argvus-ai 软件包）",
   "control_center.taskbar_update_status": "更新状态",
   "control_center.taskbar_update_aur": "检查 AUR",

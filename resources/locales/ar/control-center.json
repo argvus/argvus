@@ -2161,7 +2161,7 @@
   "control_center.snapshot.incompatible": "This Snapper version does not support the required JSON interface.",
   "control_center.snapshot.invalid": "ولا يمكن التحقق من صحة بيانات أو طلب الطلقات الاصطناعية بأمان.",
   "control_center.snapshot.failed": "لم يستطع (سنابر) إكمال العملية.",
-  "control_center.keybindings.action.toggle_window_mode": "نضال طريقة النوافذ المتحركة/المحلية",
+  "control_center.keybindings.action.toggle_window_mode": "نضال طريقة النوافذ المتحركة/المحلية (تجريبي)",
   "control_center.keybindings.action.ai": "AI وكيل مختار (الحزمة المؤقتة argvus-ai)",
   "control_center.taskbar_update_status": "آخر التطورات",
   "control_center.taskbar_update_aur": "AUR",

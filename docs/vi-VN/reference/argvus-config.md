@@ -396,6 +396,10 @@ Thanh Taskbar thứ hai xuất hiện trên mọi màn hình, ở cạnh đối 
 
 `SUPER + Alt + Up` đặt thanh chính ở trên cùng và thanh cửa sổ ở dưới cùng. `SUPER + Alt + Down` thì ngược lại. Việc lặp lại một hướng sẽ khiến các vị trí không thay đổi. Ngói chỉ có thanh chính. Việc quay lại Ngói sẽ khôi phục tất cả các cửa sổ được thu nhỏ trước khi xóa thanh cửa sổ, sau đó giữ nguyên chính sách xếp kề/nổi ban đầu.
 
+Chế độ cửa sổ nổi là tính năng thử nghiệm.
+
+Biểu tượng chế độ cửa sổ bị ẩn theo mặc định; bật tại Control Center → Appearance → Taskbar → Icons → Optional modules.
+
 Giảm thiểu sử dụng không gian làm việc `special:argvus-minimized` dành riêng. Không sử dụng không gian làm việc đó một cách thủ công. Quy trình `argvus windows service` ghi lại danh tính, không gian làm việc/màn hình ban đầu, hình học, toàn màn hình/phóng to và trạng thái pin trong sổ đăng ký thời gian chạy dành riêng cho phiên bản tổng hợp trong `$XDG_RUNTIME_DIR/argvus`. Các bản ghi vẫn tồn tại sau khi khởi động lại dịch vụ hoặc tải lại cấu hình nhưng không vượt qua các phiên tổng hợp. Đóng một cửa sổ sẽ xóa bản ghi của nó. Nếu màn hình biến mất, quá trình khôi phục sẽ sử dụng đầu ra có sẵn. Thanh khôi phục bị thiếu hoặc bị lỗi sẽ ngăn cản việc giảm thiểu mới; việc khôi phục không thành công sẽ giữ lại bản ghi và thanh khôi phục.
 
 Phiên sở hữu `argvus-windows.service` và `argvus-window-bar.service`. Cái sau giữ con Taskbar của nó không hoạt động trong Ngói. Plugin hyprbars được đóng gói bởi `argvus-hyprland`, được xây dựng cho Hyprland 0.57.0 ABI trên x86_64; nó không được biên dịch trong thư mục chính của người dùng. Xây dựng lại plugin bằng bản cập nhật ABI tổng hợp.

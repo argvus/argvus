@@ -39,7 +39,7 @@
   "monitor.memory.title": "メモリ・Escを閉じる",
   "window_mode.title": "ウィンドウモード",
   "window_mode.tile": "ウィンドウを並べて表示 (デフォルト)",
-  "window_mode.floating": "フローティングウィンドウ",
+  "window_mode.floating": "フローティングウィンドウ (実験的)",
   "window_mode.hint": "フローティングでは、ウィンドウ ボタンとその反対側のアプリケーション バーが表示されます。 [並べて表示] は最小化されたウィンドウを復元し、フローティングによって変換されたウィンドウのみを並べ替えます。もともとフローティングウィンドウはフローティングのままです。",
   "window_mode.working": "ウィンドウモードを適用中…",
   "window_mode.pending": "設定が保存されました。 Hyprland セッションの申し込みは保留中です。",

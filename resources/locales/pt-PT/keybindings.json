@@ -40,7 +40,7 @@
   "keybindings.action.maximize": "Maximizar janela (toggle)",
   "keybindings.action.close_window": "Fechar janela",
   "keybindings.action.toggle_floating": "Ativa/Desativa Janela flutuante",
-  "control_center.keybindings.action.toggle_window_mode": "Alternar o modo da janela de Tile/Floating",
+  "control_center.keybindings.action.toggle_window_mode": "Alternar o modo da janela de Tile/Floating (Experimental)",
   "keybindings.action.fullscreen": "Tela cheia",
   "keybindings.action.toggle_split": "Alternar split vertical/horizontal",
   "keybindings.action.group_tabs": "Agrupar/Desagrupar em abas",

@@ -39,7 +39,7 @@
   "monitor.memory.title": "Memori",
   "window_mode.title": "Mode jendela",
   "window_mode.tile": "Jendela Ubin (Baku)",
-  "window_mode.floating": "Jendela Mengambang",
+  "window_mode.floating": "Jendela Mengambang (Eksperimental)",
   "window_mode.hint": "Mengambang menunjukkan tombol jendela dan bilah aplikasi yang berlawanan. Ubin menyimpan kembali jendela diminimalkan dan hanya pensiun jendela dikonversi oleh Floating. Awalnya jendela mengambang tetap mengambang.",
   "window_mode.working": "Menerapkan mode jendela..",
   "window_mode.pending": "Preferensi disimpan. Aplikasi tertunda untuk sesi Hyprland.",

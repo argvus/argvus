@@ -257,6 +257,7 @@ impl Item {
 fn taskbar_module_icon(module: TaskbarModule) -> &'static str {
   match module {
     TaskbarModule::AudioPlayer => icons::MUSIC,
+    TaskbarModule::WindowMode => icons::WINDOW_RULES,
     TaskbarModule::Focus => icons::TIMER,
     TaskbarModule::Launcher => icons::LAUNCHER,
     TaskbarModule::Network => icons::NETWORK,

@@ -40,7 +40,7 @@
   "keybindings.action.maximize": "最大化窗口（切换）",
   "keybindings.action.close_window": "关闭窗口",
   "keybindings.action.toggle_floating": "启用/禁用浮动窗口",
-  "control_center.keybindings.action.toggle_window_mode": "切换平铺/浮动窗口模式",
+  "control_center.keybindings.action.toggle_window_mode": "切换平铺/浮动窗口模式 (实验性)",
   "keybindings.action.fullscreen": "全屏窗口",
   "keybindings.action.toggle_split": "垂直/水平分割切换",
   "keybindings.action.group_tabs": "分组/取消分组为选项卡",

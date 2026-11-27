@@ -39,7 +39,7 @@
   "monitor.memory.title": "Memória · Esc para fechar",
   "window_mode.title": "Modo de janelas",
   "window_mode.tile": "Janelas em mosaico (padrão)",
-  "window_mode.floating": "Janelas flutuantes",
+  "window_mode.floating": "Janelas flutuantes (Experimental)",
   "window_mode.hint": "O modo flutuante mostra botões nas janelas e uma barra de aplicativos oposta. Mosaico restaura as minimizadas e recoloca em mosaico apenas as janelas convertidas. As originalmente flutuantes permanecem assim.",
   "window_mode.working": "Aplicando modo de janelas…",
   "window_mode.pending": "Preferência salva. A aplicação está pendente para a sessão Hyprland.",

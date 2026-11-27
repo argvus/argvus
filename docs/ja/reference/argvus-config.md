@@ -265,6 +265,10 @@ argvus config window-mode toggle
 
 `SUPER + Alt + Up`はメインバーを上に、ウィンドウバーを下に配置します。`SUPER + Alt + Down`はその逆を行います。同じ方向を繰り返すと、位置は変更されません。タイルにはメインバーのみがあります。タイルに戻ると、ウィンドウバーを削除する前にすべての最小化されたウィンドウを復元し、その後、元のタイル/フローティングのポリシーを保持します。
 
+フローティングウィンドウモードは実験的な機能です。
+
+ウィンドウモードのアイコンは既定で非表示です。Control Center → Appearance → Taskbar → Icons → Optional modules で有効にできます。
+
 最小化は予約済みの`special:argvus-minimized`ワークスペースを使用します。そのワークスペースを手動で使用しないでください。`argvus windows service`プロセスは、識別情報、元のワークスペース/モニター、ジオメトリ、フルスクリーン/最大化およびピン状態を、`$XDG_RUNTIME_DIR/argvus`の下にあるコンポジタインスタンス固有の実行時レジストリに記録します。記録はサービスの再起動や設定の再読み込みによっても保持されますが、コンポジタセッションを超えることはありません。ウィンドウを閉じると、その記録は削除されます。モニターが消えた場合、復元には利用可能な出力が使用されます。バーが存在しないか復元に失敗した場合、新しい最小化はできません。復元に失敗した場合、記録と復元バーは保持されます。
 
 セッションは`argvus-windows.service`と`argvus-window-bar.service`を所有します。後者はTaskbarの子プロセスをTileで休止状態に保ちます。hyprbarsプラグインは`argvus-hyprland`で同梱されており、x86_64上のHyprland 0.57.0 ABI向けにビルドされています。ユーザーのホームディレクトリではコンパイルされていません。コンポジタのABIが更新された場合、プラグインを再ビルドしてください。コマンド: `argvus windows list --json`、`watch --json`、`position top|bottom`、`restore-all`、および `minimize|restore|activate|maximize|close ADDRESS`。ウィンドウアドレスはリストから取得されます。`position top --persist` はメインバーを再起動せずに設定を保存/適用します。構成および実行時のエラーの詳細はジャーナルに書き込まれます。表示されるアクションの失敗も翻訳された通知として表示されます。

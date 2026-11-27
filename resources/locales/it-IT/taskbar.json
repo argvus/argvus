@@ -39,7 +39,7 @@
   "monitor.memory.title": "Memoria · Esc per chiudere",
   "window_mode.title": "Modalità finestra",
   "window_mode.tile": "Finestre affiancate (impostazione predefinita)",
-  "window_mode.floating": "Finestre mobili",
+  "window_mode.floating": "Finestre mobili (Sperimentale)",
   "window_mode.hint": "Mobile mostra i pulsanti della finestra e una barra delle applicazioni opposta. Affianca ripristina le finestre ridotte a icona e affianca solo le finestre convertite da Mobile. Le finestre originariamente mobili rimangono fluttuanti.",
   "window_mode.working": "Applicazione della modalità finestra…",
   "window_mode.pending": "Preferenza salvata. La domanda è in sospeso per la sessione Hyprland.",

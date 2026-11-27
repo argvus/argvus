@@ -104,6 +104,19 @@ fn defaults_report_nested_values_that_are_not_objects() {
     document.get("/taskbar/icons/tray_enabled"),
     Some(&Value::Bool(true))
   );
+  assert_eq!(
+    document.get("/taskbar/icons/mode_enabled"),
+    Some(&Value::Bool(false))
+  );
+  let mut enabled = ConfigDocument::default();
+  enabled
+    .set("/taskbar/icons/mode_enabled", Value::Bool(true))
+    .unwrap();
+  apply_defaults(&mut enabled).unwrap();
+  assert_eq!(
+    enabled.get("/taskbar/icons/mode_enabled"),
+    Some(&Value::Bool(true))
+  );
   let mut disabled = ConfigDocument::default();
   disabled
     .set("/taskbar/icons/focus_enabled", Value::Bool(false))

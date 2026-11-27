@@ -40,7 +40,7 @@
   "keybindings.action.maximize": "Ingrandisci la finestra (attiva/disattiva)",
   "keybindings.action.close_window": "Chiudi la finestra",
   "keybindings.action.toggle_floating": "Abilita/Disabilita finestra mobile",
-  "control_center.keybindings.action.toggle_window_mode": "Attiva/disattiva la modalità Finestra affiancata/mobile",
+  "control_center.keybindings.action.toggle_window_mode": "Attiva/disattiva la modalità Finestra affiancata/mobile (Sperimentale)",
   "keybindings.action.fullscreen": "Finestra a schermo intero",
   "keybindings.action.toggle_split": "Commutazione divisione verticale/orizzontale",
   "keybindings.action.group_tabs": "Raggruppa/Separa in schede",

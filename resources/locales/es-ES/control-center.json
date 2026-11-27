@@ -2161,7 +2161,7 @@
   "control_center.snapshot.incompatible": "Esta versión de Snapper no es compatible con la interfaz JSON requerida.",
   "control_center.snapshot.invalid": "Los datos de la instantánea o la solicitud no se pudieron validar de forma segura.",
   "control_center.snapshot.failed": "Snapper no pudo completar la operación.",
-  "control_center.keybindings.action.toggle_window_mode": "Alternar modo mosaico/ventana flotante",
+  "control_center.keybindings.action.toggle_window_mode": "Alternar modo mosaico/ventana flotante (Experimental)",
   "control_center.keybindings.action.ai": "Selector de agentes de IA (paquete argvus-ai opcional)",
   "control_center.taskbar_update_status": "Estado de actualización",
   "control_center.taskbar_update_aur": "Consultar AUR",

@@ -40,7 +40,7 @@
   "keybindings.action.maximize": "تكبير النافذة (تبديل)",
   "keybindings.action.close_window": "إغلاق النافذة",
   "keybindings.action.toggle_floating": "تمكين/تعطيل النافذة العائمة",
-  "control_center.keybindings.action.toggle_window_mode": "نضال طريقة النوافذ المتحركة/المحلية",
+  "control_center.keybindings.action.toggle_window_mode": "نضال طريقة النوافذ المتحركة/المحلية (تجريبي)",
   "keybindings.action.fullscreen": "نافذة ملء الشاشة",
   "keybindings.action.toggle_split": "تبديل الانقسام الرأسي/الأفقي",
   "keybindings.action.group_tabs": "التجميع/فك التجميع في علامات التبويب",

@@ -343,6 +343,7 @@ pub(super) fn validate_taskbar(document: &ConfigDocument) -> ConfigResult<()> {
   }
   for module in [
     "audio_player",
+    "mode",
     "focus",
     "launcher",
     "network",

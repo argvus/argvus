@@ -40,7 +40,7 @@
   "keybindings.action.maximize": "Agrandir la fenêtre (bascule)",
   "keybindings.action.close_window": "Fermer la fenêtre",
   "keybindings.action.toggle_floating": "Activer/Désactiver la fenêtre flottante",
-  "control_center.keybindings.action.toggle_window_mode": "Basculer le mode Mosaïque/Fenêtre flottante",
+  "control_center.keybindings.action.toggle_window_mode": "Basculer le mode Mosaïque/Fenêtre flottante (Expérimental)",
   "keybindings.action.fullscreen": "Fenêtre plein écran",
   "keybindings.action.toggle_split": "Basculement divisé vertical/horizontal",
   "keybindings.action.group_tabs": "Regrouper/Dissocier en onglets",

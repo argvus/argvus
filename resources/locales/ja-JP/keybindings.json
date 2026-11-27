@@ -40,7 +40,7 @@
   "keybindings.action.maximize": "ウィンドウの最大化（トグル）",
   "keybindings.action.close_window": "ウィンドウを閉じる",
   "keybindings.action.toggle_floating": "フローティングウィンドウの有効化/無効化",
-  "control_center.keybindings.action.toggle_window_mode": "タイル/フローティング ウィンドウ モードの切り替え",
+  "control_center.keybindings.action.toggle_window_mode": "タイル/フローティング ウィンドウ モードの切り替え (実験的)",
   "keybindings.action.fullscreen": "全画面ウィンドウ",
   "keybindings.action.toggle_split": "分割縦横切り替え",
   "keybindings.action.group_tabs": "タブへのグループ化/グループ化解除",

@@ -40,7 +40,7 @@
   "keybindings.action.maximize": "উইন্ডো ম্যাক্সিমাইজ করুন (টগল করুন)",
   "keybindings.action.close_window": "জানালা বন্ধ করুন",
   "keybindings.action.toggle_floating": "ফ্লোটিং উইন্ডো সক্ষম/অক্ষম করুন",
-  "control_center.keybindings.action.toggle_window_mode": "টালি/উইন্ডোর মোড টগল করুন",
+  "control_center.keybindings.action.toggle_window_mode": "টালি/উইন্ডোর মোড টগল করুন (পরীক্ষামূলক)",
   "keybindings.action.fullscreen": "ফুল স্ক্রিন উইন্ডো",
   "keybindings.action.toggle_split": "স্প্লিট উল্লম্ব/অনুভূমিক টগল",
   "keybindings.action.group_tabs": "ট্যাবে গ্রুপ/আনগ্রুপ করুন",

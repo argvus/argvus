@@ -264,6 +264,10 @@ argvus config window-mode toggle
 
 `SUPER + Alt + Up` 将主栏放在顶部，窗口栏放在底部。`SUPER + Alt + Down` 则相反。重复一个方向将保持位置不变。平铺模式只有主栏。返回到平铺模式会在移除窗口栏之前恢复所有最小化的窗口，然后保留原来的平铺/浮动策略。
 
+浮动窗口模式是实验性功能。
+
+窗口模式图标默认隐藏，可在 Control Center → Appearance → Taskbar → Icons → Optional modules 中启用。
+
 最小化使用保留的 `special:argvus-minimized` 工作区。不要手动使用该工作区。`argvus windows service` 进程在特定于合成器实例的运行时注册表中，在 `$XDG_RUNTIME_DIR/argvus` 下记录身份、原始工作区/显示器、几何形状、全屏/最大化和固定状态。记录在服务重启或配置重新加载后仍然存在，但不会跨合成器会话。关闭窗口会删除其记录。如果显示器消失，恢复将使用可用的输出。缺失或恢复条失败会阻止新的最小化；恢复失败会保留记录和恢复条。
 
 会话拥有 `argvus-windows.service` 和 `argvus-window-bar.service`。后者保持其 Taskbar 子项在 Tile 中处于休眠状态。hyprbars 插件由 `argvus-hyprland` 打包，为 x86_64 上的 Hyprland 0.57.0 ABI 构建；它未在用户的主目录中编译。更新合成器 ABI 后重新构建该插件。命令：`argvus windows list --json`、`watch --json`、`position top|bottom`、`restore-all` 和 `minimize|restore|activate|maximize|close ADDRESS`。窗口地址来自列表。`position top --persist` 存储/投射偏好设置而无需重启主栏。配置和运行时错误详情会记录到日志中；可见的操作失败也会显示翻译后的通知。

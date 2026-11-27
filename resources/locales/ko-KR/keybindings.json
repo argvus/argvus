@@ -40,7 +40,7 @@
   "keybindings.action.maximize": "창 최대화(토글)",
   "keybindings.action.close_window": "창 닫기",
   "keybindings.action.toggle_floating": "부동 창 활성화/비활성화",
-  "control_center.keybindings.action.toggle_window_mode": "타일/부동 창 모드 전환",
+  "control_center.keybindings.action.toggle_window_mode": "타일/부동 창 모드 전환 (실험적)",
   "keybindings.action.fullscreen": "전체 화면 창",
   "keybindings.action.toggle_split": "수직/수평 분할 토글",
   "keybindings.action.group_tabs": "탭으로 그룹화/그룹 해제",

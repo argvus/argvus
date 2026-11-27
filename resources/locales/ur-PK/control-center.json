@@ -2161,7 +2161,7 @@
   "control_center.snapshot.incompatible": "یہ Snapper version مطلوبہ پی ایچ000 جی انٹریکٹیو کی حمایت نہیں کرتا.",
   "control_center.snapshot.invalid": "اسکے بعد اُس نے کہا : ” مَیں اِس بات کا یقین نہیں کر سکتا کہ مَیں اُس کی مدد کروں گا ۔ “.",
   "control_center.snapshot.failed": "اس آپریشن کی تکمیل نہیں ہو سکی۔.",
-  "control_center.keybindings.action.toggle_window_mode": "ٹیگ /فا لٹ ونڈو موڈ",
+  "control_center.keybindings.action.toggle_window_mode": "ٹیگ /فا لٹ ونڈو موڈ (تجرباتی)",
   "control_center.keybindings.action.ai": "%PH000 جینز ایجنٹ جی پی پی ایچ001 پیک (انگریزی:",
   "control_center.taskbar_update_status": "سٹیٹس",
   "control_center.taskbar_update_aur": "چیک کریں %d",

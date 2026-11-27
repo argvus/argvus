@@ -40,7 +40,7 @@
   "keybindings.action.maximize": "विंडो को अधिकतम करें (टॉगल करें)",
   "keybindings.action.close_window": "विंडो बंद करें",
   "keybindings.action.toggle_floating": "फ़्लोटिंग विंडो सक्षम/अक्षम करें",
-  "control_center.keybindings.action.toggle_window_mode": "Toggle टाइल/फ़्लोटिंग विंडो मोड",
+  "control_center.keybindings.action.toggle_window_mode": "Toggle टाइल/फ़्लोटिंग विंडो मोड (प्रायोगिक)",
   "keybindings.action.fullscreen": "पूर्ण स्क्रीन विंडो",
   "keybindings.action.toggle_split": "स्प्लिट वर्टिकल/हॉरिजॉन्टल टॉगल",
   "keybindings.action.group_tabs": "टैब में ग्रुप/अनग्रुप करें",

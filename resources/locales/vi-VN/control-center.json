@@ -2161,7 +2161,7 @@
   "control_center.snapshot.incompatible": "Phiên bản Snapper này không hỗ trợ giao diệnJSON cần thiết.",
   "control_center.snapshot.invalid": "@ info/ rich.",
   "control_center.snapshot.failed": "Snapper không thể hoàn tất thao tác.",
-  "control_center.keybindings.action.toggle_window_mode": "Bật/ tắt chế độ cửa sổ lát/ dọc",
+  "control_center.keybindings.action.toggle_window_mode": "Bật/ tắt chế độ cửa sổ lát/ dọc (Thử nghiệm)",
   "control_center.keybindings.action.ai": "[PH000} Người chọn đặc vụ ( Góiargvus-ai",
   "control_center.taskbar_update_status": "Cập nhật trạng thái",
   "control_center.taskbar_update_aur": "Kiểm tra",

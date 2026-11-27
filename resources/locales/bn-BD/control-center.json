@@ -2161,7 +2161,7 @@
   "control_center.snapshot.incompatible": "এই সাইফারের দ্বারা আবশ্যক সংস্করণ সমর্থিত হয় না JSON ইন্টারফেস।",
   "control_center.snapshot.invalid": "নিরাপত্তা অথবা অনুরোধ বৈধ নয়।.",
   "control_center.snapshot.failed": "স্ন্যাপার অপারেশন সম্পন্ন করতে ব্যর্থ।.",
-  "control_center.keybindings.action.toggle_window_mode": "টালি/উইন্ডোর মোড টগল করুন",
+  "control_center.keybindings.action.toggle_window_mode": "টালি/উইন্ডোর মোড টগল করুন (পরীক্ষামূলক)",
   "control_center.keybindings.action.ai": "[ ৫ পৃষ্ঠার মানচিত্র]",
   "control_center.taskbar_update_status": "অবস্থা আপডেট করা হবে",
   "control_center.taskbar_update_aur": "চেক করো",

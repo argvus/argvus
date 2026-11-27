@@ -2161,7 +2161,7 @@
   "control_center.snapshot.incompatible": "Diese Snapper-Version unterstützt nicht die erforderliche JSON-Schnittstelle.",
   "control_center.snapshot.invalid": "Snapshot-Daten oder -Anfrage konnten nicht sicher validiert werden.",
   "control_center.snapshot.failed": "Snapper konnte den Vorgang nicht abschließen.",
-  "control_center.keybindings.action.toggle_window_mode": "Wechseln Sie zwischen dem Kachel- und dem schwebenden Fenstermodus",
+  "control_center.keybindings.action.toggle_window_mode": "Wechseln Sie zwischen dem Kachel- und dem schwebenden Fenstermodus (Experimentell)",
   "control_center.keybindings.action.ai": "KI-Agentenauswahl (optionales argvus-ai-Paket)",
   "control_center.taskbar_update_status": "Aktualisierungsstatus",
   "control_center.taskbar_update_aur": "Überprüfen Sie AUR",

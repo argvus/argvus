@@ -40,7 +40,7 @@
   "keybindings.action.maximize": "Phóng to cửa sổ (chuyển đổi)",
   "keybindings.action.close_window": "Đóng cửa sổ",
   "keybindings.action.toggle_floating": "Bật/Tắt Cửa sổ nổi",
-  "control_center.keybindings.action.toggle_window_mode": "Bật/ tắt chế độ cửa sổ lát/ dọc",
+  "control_center.keybindings.action.toggle_window_mode": "Bật/ tắt chế độ cửa sổ lát/ dọc (Thử nghiệm)",
   "keybindings.action.fullscreen": "Cửa sổ toàn màn hình",
   "keybindings.action.toggle_split": "Chuyển đổi chia dọc/ngang",
   "keybindings.action.group_tabs": "Nhóm/Rã nhóm thành các tab",

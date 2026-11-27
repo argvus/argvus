@@ -2161,7 +2161,7 @@
   "control_center.snapshot.incompatible": "यह स्नैपर संस्करण आवश्यक JSON इंटरफ़ेस का समर्थन नहीं करता है।.",
   "control_center.snapshot.invalid": "स्नैपशॉट डेटा या अनुरोध को सुरक्षित रूप से मान्य नहीं किया जा सकता है।.",
   "control_center.snapshot.failed": "स्नैपर ऑपरेशन को पूरा नहीं कर सकता।.",
-  "control_center.keybindings.action.toggle_window_mode": "Toggle टाइल/फ़्लोटिंग विंडो मोड",
+  "control_center.keybindings.action.toggle_window_mode": "Toggle टाइल/फ़्लोटिंग विंडो मोड (प्रायोगिक)",
   "control_center.keybindings.action.ai": "AI एजेंट चयनकर्ता (वैकल्पिक argvus-ai पैकेज)",
   "control_center.taskbar_update_status": "अद्यतन स्थिति",
   "control_center.taskbar_update_aur": "चेक AUR",

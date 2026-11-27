@@ -2161,7 +2161,7 @@
   "control_center.snapshot.incompatible": "Эта версия Snapper не поддерживает необходимый интерфейс JSON.",
   "control_center.snapshot.invalid": "Данные моментального снимка или запрос не удалось безопасно проверить.",
   "control_center.snapshot.failed": "Снаппер не смог завершить операцию.",
-  "control_center.keybindings.action.toggle_window_mode": "Переключить режим плитки/плавающего окна",
+  "control_center.keybindings.action.toggle_window_mode": "Переключить режим плитки/плавающего окна (Экспериментально)",
   "control_center.keybindings.action.ai": "Селектор агента AI (дополнительный пакет argvus-ai)",
   "control_center.taskbar_update_status": "Обновить статус",
   "control_center.taskbar_update_aur": "Проверить АУР",

@@ -398,6 +398,10 @@ Her monitörde ana görev çubuğunun karşısındaki kenarda ikinci bir Yol Çu
 
 `SUPER + Alt + Up`, ana çubuğu üste ve pencere çubuğunu aşağıya yerleştirir. `SUPER + Alt + Down` bunun tersini yapar. Bir yönün tekrarlanması konumları değiştirmeden bırakır. Döşemenin yalnızca ana çubuğu vardır. Döşemeye geri dönmek, pencere çubuğunu kaldırmadan önce simge durumuna küçültülmüş tüm pencereleri geri yükler ve ardından orijinal döşemeli/değişken ilkesini korur.
 
+Kayan pencereler modu deneyseldir.
+
+Pencere modu simgesi varsayılan olarak gizlidir; Control Center → Appearance → Taskbar → Icons → Optional modules bölümünden açın.
+
 Minimizasyon, ayrılmış `special:argvus-minimized` çalışma alanını kullanır. Bu çalışma alanını manuel olarak kullanmayın. `argvus windows service` işlemi, `$XDG_RUNTIME_DIR/argvus` altında birleştirici örneğine özgü çalışma zamanı kaydında kimliği, orijinal çalışma alanını/monitörü, geometriyi, tam ekranı/büyütmeyi ve pin durumunu kaydeder. Kayıtlar, hizmetin yeniden başlatılmasından veya yapılandırmanın yeniden yüklenmesinden sonra hayatta kalır, ancak derleyici oturumları arasında geçiş yapmaz. Bir pencerenin kapatılması kaydının kaldırılmasına neden olur. Bir monitör kaybolursa, geri yükleme mevcut bir çıkışı kullanır. Eksik veya arızalı bir kurtarma çubuğu, yeni en aza indirmeleri önler; başarısız restorasyon, kaydı ve kurtarma çubuğunu korur.
 
 Oturum, `argvus-windows.service` ve `argvus-window-bar.service`'ya sahiptir. İkincisi, Taskbar çocuğunu Tile'da hareketsiz tutuyor. Hyprbars eklentisi, x86_64 üzerinde Hyprland 0.57.0 ABI için oluşturulmuş `argvus-hyprland` tarafından paketlenmiştir; kullanıcının ana dizininde derlenmez. Eklentiyi bir besteci ABI güncellemesiyle yeniden oluşturun.
