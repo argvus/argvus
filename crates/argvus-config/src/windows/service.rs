@@ -130,12 +130,24 @@ impl Service {
         "workspace":origin.map(|origin|origin.workspace.clone()).unwrap_or_else(||model::workspace(window)),
         "active":window["address"]==active,"minimized":origin.is_some(),"maximized":window["fullscreen"]==1 || self.maximized.contains_key(target)}))
     }).collect();
+    let minimized_workspaces: Vec<_> = self
+      .registry
+      .values()
+      .filter_map(|origin| {
+        let output = outputs
+          .iter()
+          .find(|output| output["name"] == origin.monitor)
+          .or_else(|| outputs.first())?["name"]
+          .as_str()?;
+        Some(json!({"name": origin.workspace, "output": output}))
+      })
+      .collect();
     let position = document
       .get("/layout/taskbar/position")
       .and_then(Value::as_str)
       .unwrap_or("top");
     Ok(
-      json!({"ready":self.ready.is_some_and(|ready|ready.elapsed()<Duration::from_secs(5)) && bar_mapped()?,"labels":self.labels,"floating":mode_applied(),"recovering":!self.registry.is_empty(),"position":position,"windows":entries}),
+      json!({"ready":self.ready.is_some_and(|ready|ready.elapsed()<Duration::from_secs(5)) && bar_mapped()?,"labels":self.labels,"floating":mode_applied(),"recovering":!self.registry.is_empty(),"position":position,"windows":entries,"minimized_workspaces":minimized_workspaces}),
     )
   }
 
