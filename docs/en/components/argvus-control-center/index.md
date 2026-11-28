@@ -734,3 +734,9 @@ Clipboard is enabled by default. Open it from the taskbar utility group. To stop
 **Firewall** keeps settings and rule edits in a draft. **Save** writes both and restarts the service. **Cancel** discards the draft. **Restart** applies the saved files. Use `Tab` to focus the action bar.
 
 **Desktop Style > Dock** controls position, visibility, icon size, magnification, running indicators and monitor selection. Changes apply while the Shell is running. Reset Defaults preserves pinned applications.
+
+### ARGVUS Dock Settings
+
+Right-click the Dock background to open Dock Settings. Choose an edge, alignment and theme. Always Visible reserves the normal icon depth with padding and outer margin. Magnification expands into a separate surface area. Auto Hide and overlap policies reserve zero. Resetting preferences keeps the pins in their original order.
+
+`argvus control-center appearance dock`

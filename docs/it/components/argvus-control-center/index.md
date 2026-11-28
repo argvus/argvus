@@ -623,3 +623,9 @@ Il firewall mantiene impostazioni e regole in una bozza. Salva scrive entrambe e
 Posizione, Visibilità, Dimensione delle icone, Ingrandimento, Indicatori di attività, Selezione dei monitor, Ripristina le impostazioni predefinite.
 
 `argvus control-center appearance dock`
+
+### ARGVUS Dock Settings
+
+Fare clic destro sullo sfondo del Dock per aprire le impostazioni. Scegliere bordo, allineamento e tema. Sempre visibile riserva la dimensione normale delle icone con spaziatura interna e margine esterno. Lo zoom usa un’area aggiuntiva. Le modalità di scomparsa automatica e sovrapposizione non riservano spazio. Il ripristino conserva le applicazioni fissate e il loro ordine.
+
+`argvus control-center appearance dock`

@@ -737,3 +737,9 @@ A página **Firewall** mantém as alterações de configuração e regras num ra
 Posição, Visibilidade, Tamanho dos ícones, Ampliação, Indicadores de execução, Política de monitores, Reiniciar as Predefinições.
 
 `argvus control-center appearance dock`
+
+### ARGVUS Dock Settings
+
+Clique com o botão direito no fundo da Dock para abrir as definições. Escolha a extremidade, o alinhamento e o tema. Sempre visível reserva a dimensão normal dos ícones, o espaço interior e a margem exterior. A ampliação utiliza uma área adicional da superfície. A ocultação automática e as políticas de sobreposição reservam zero. Repor as preferências mantém as aplicações afixadas e a sua ordem.
+
+`argvus control-center appearance dock`

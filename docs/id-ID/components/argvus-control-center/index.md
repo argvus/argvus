@@ -688,3 +688,9 @@ Setelan dan aturan firewall disimpan sebagai draf. Simpan menulis keduanya dan m
 Posisi, Visibilitas, Ukuran ikon, Pembesaran, Indikator aplikasi berjalan, Pemilihan monitor, Reset Baku.
 
 `argvus control-center appearance dock`
+
+### ARGVUS Dock Settings
+
+Klik kanan latar Dock untuk membuka pengaturan. Pilih tepi layar, perataan, dan tema. Mode selalu terlihat menyediakan ruang untuk ukuran ikon normal beserta bantalan dan margin luar. Pembesaran memakai area tambahan. Sembunyi otomatis dan kebijakan tumpang tindih tidak mencadangkan ruang. Mengatur ulang preferensi mempertahankan aplikasi tersemat dan urutannya.
+
+`argvus control-center appearance dock`

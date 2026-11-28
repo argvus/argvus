@@ -122,7 +122,7 @@ pub fn run(args: &[String]) -> ExitCode {
       ] => {
         request(action, Some(target))?;
       }
-      [action @ ("restore-all" | "ready")] => {
+      [action @ ("show-desktop" | "restore-all" | "ready")] => {
         request(action, None)?;
       }
       _ => {

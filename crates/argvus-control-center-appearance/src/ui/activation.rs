@@ -19,6 +19,10 @@ impl AppearanceApp {
     match item {
       Item::Dock => self.go(AppearancePage::Dock),
       Item::DockOption(index) => self.change_dock(Some(index)),
+      Item::DockSettings => self.apply_result(|| {
+        backend::commands::open_dock_settings()?;
+        Ok(String::new())
+      }),
       Item::DockReset => self.change_dock(None),
       Item::Desktop => self.go(AppearancePage::Desktop),
       Item::ApplicationStyle => self.go(AppearancePage::ApplicationStyle),

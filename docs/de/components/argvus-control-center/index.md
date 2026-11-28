@@ -637,3 +637,9 @@ Die Firewall hält Einstellungen und Regeln als Entwurf. Speichern schreibt beid
 Position, Sichtbarkeit, Symbolgröße, Vergrößerung, Aktivitätsanzeigen, Monitorauswahl, Standardeinstellungen zurücksetzen.
 
 `argvus control-center appearance dock`
+
+### ARGVUS Dock Settings
+
+Ein Rechtsklick auf den Dock-Hintergrund öffnet die Einstellungen. Wählen Sie Bildschirmkante, Ausrichtung und Thema. Immer sichtbar reserviert die normale Symbolgröße einschließlich Innen- und Außenabstand. Die Vergrößerung nutzt einen zusätzlichen Bereich. Automatisches Ausblenden und Überlappungsregeln reservieren keinen Platz. Beim Zurücksetzen bleiben angeheftete Anwendungen und ihre Reihenfolge erhalten.
+
+`argvus control-center appearance dock`

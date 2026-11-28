@@ -625,3 +625,9 @@ Dans le pare-feu, les réglages et les règles restent en brouillon. Enregistrer
 Position, Visibilité, Taille des icônes, Agrandissement, Indicateurs d’activité, Choix des moniteurs, Réinitialiser les paramètres par défaut.
 
 `argvus control-center appearance dock`
+
+### ARGVUS Dock Settings
+
+Un clic droit sur le fond du Dock ouvre ses paramètres. Choisissez le bord, l’alignement et le thème. Toujours visible réserve la taille normale des icônes avec les marges intérieures et extérieures. Le zoom utilise une zone supplémentaire. Le masquage automatique et les règles de chevauchement ne réservent aucun espace. La réinitialisation conserve les applications épinglées et leur ordre.
+
+`argvus control-center appearance dock`

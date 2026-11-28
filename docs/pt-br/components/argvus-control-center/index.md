@@ -729,3 +729,9 @@ O Clipboard vem ativado por padrão e abre pelo grupo de utilidades da barra de 
 O **Firewall** mantém as alterações de configuração e regras em um rascunho. **Salvar** grava ambas e reinicia o serviço. **Cancelar** descarta o rascunho. **Reiniciar** aplica os arquivos salvos. Use `Tab` para focar a barra de ações.
 
 **Estilo da área de trabalho > Dock** controla posição, visibilidade, tamanho dos ícones, ampliação, indicadores e monitores. As mudanças são aplicadas com o Shell em execução. Restaurar padrões preserva os aplicativos fixados.
+
+### ARGVUS Dock Settings
+
+Clique com o botão direito no fundo da Dock para abrir as configurações. Escolha a borda, o alinhamento e o tema. Sempre visível reserva a dimensão normal dos ícones, o preenchimento e a margem externa. A ampliação usa uma área adicional da superfície. A ocultação automática e as políticas de sobreposição reservam zero. Restaurar as preferências preserva os aplicativos fixados e sua ordem.
+
+`argvus control-center appearance dock`

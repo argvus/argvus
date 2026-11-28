@@ -628,3 +628,9 @@ Quickshell: `launcher/Theme.qml`
 位置, 表示設定, アイコンサイズ, 拡大表示, 起動中のインジケーター, モニターの選択, デフォルトにリセット.
 
 `argvus control-center appearance dock`
+
+### ARGVUS Dock Settings
+
+Dock の背景を右クリックして設定を開き、画面の辺、配置、テーマを選びます。常時表示では通常のアイコン寸法と内外の余白を予約します。拡大表示には追加領域を使います。自動非表示やウィンドウの重なりによる非表示では領域を予約しません。設定をリセットしても固定アプリとその順序は保持されます。
+
+`argvus control-center appearance dock`

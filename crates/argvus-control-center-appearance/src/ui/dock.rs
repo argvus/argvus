@@ -11,13 +11,45 @@ const SETTINGS: &[Setting] = &[
   Setting {
     key: "position",
     label: "position",
-    values: &["bottom", "top"],
+    values: &["bottom", "top", "left", "right"],
     default: 0,
+  },
+  Setting {
+    key: "theme",
+    label: "theme",
+    values: &[
+      "native",
+      "macos-glass",
+      "macos-dark",
+      "frosted-glass",
+      "dark-minimal",
+      "light-minimal",
+      "transparent",
+      "matte",
+      "graphite",
+      "neon",
+      "classic-plank",
+      "retro",
+    ],
+    default: 0,
+  },
+  Setting {
+    key: "alignment",
+    label: "dock_alignment",
+    values: &["start", "center", "end", "fill"],
+    default: 1,
   },
   Setting {
     key: "visibility",
     label: "dock_visibility",
-    values: &["always_visible", "auto_hide", "intelligent_hide"],
+    values: &[
+      "always_visible",
+      "auto_hide",
+      "intelligent_hide",
+      "dodge_active",
+      "dodge_any",
+      "dodge_maximized",
+    ],
     default: 0,
   },
   Setting {
@@ -50,6 +82,36 @@ const SETTINGS: &[Setting] = &[
     values: &["primary", "active", "all"],
     default: 2,
   },
+  Setting {
+    key: "launcher",
+    label: "launcher",
+    values: &["false", "true"],
+    default: 0,
+  },
+  Setting {
+    key: "lock_items",
+    label: "lock",
+    values: &["false", "true"],
+    default: 0,
+  },
+  Setting {
+    key: "show_running",
+    label: "running",
+    values: &["false", "true"],
+    default: 1,
+  },
+  Setting {
+    key: "show_pinned",
+    label: "dock_pinned",
+    values: &["false", "true"],
+    default: 1,
+  },
+  Setting {
+    key: "hide_delay",
+    label: "dock_hide_delay",
+    values: &["0", "150", "250", "500", "1000", "2000", "3000"],
+    default: 2,
+  },
 ];
 
 impl AppearanceApp {
@@ -67,7 +129,7 @@ impl AppearanceApp {
   }
 
   pub(super) fn dock_rows(&self) -> Vec<argvus_tui::menu::Row<Item>> {
-    let mut rows = Vec::new();
+    let mut rows = vec![self.submenu(Item::DockSettings, "control_center.dock_settings")];
     for (index, setting) in SETTINGS.iter().enumerate() {
       let value = self.dock_value(setting);
       let label = format!("control_center.{}", setting.label);
@@ -77,7 +139,11 @@ impl AppearanceApp {
         "primary" => "primary_monitor",
         value => value,
       };
-      let detail = if value_key
+      let detail = if setting.key == "theme" {
+        tr(self.lang, &format!("control_center.dock_theme_{value}")).to_owned()
+      } else if setting.key == "alignment" {
+        tr(self.lang, &format!("control_center.dock_align_{value}")).to_owned()
+      } else if value_key
         .bytes()
         .next()
         .is_some_and(|byte| byte.is_ascii_digit())
@@ -93,6 +159,13 @@ impl AppearanceApp {
   }
 
   pub(super) fn change_dock(&mut self, index: Option<usize>) {
+    if index.is_none() {
+      self.apply_result(|| {
+        backend::commands::run_argvus_route("config", &["dock-reset"], &[])?;
+        Ok(String::new())
+      });
+      return;
+    }
     let mut patch = serde_json::Map::new();
     for (i, setting) in SETTINGS.iter().enumerate() {
       if index.is_some_and(|index| index != i) {

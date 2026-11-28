@@ -59,6 +59,22 @@ pub(crate) fn run_argvus_route(
 }
 
 /// Runs `argvus effects-toggle` with the arguments: the visual effects route.
+pub(crate) fn open_dock_settings() -> Result<(), String> {
+  run_process(
+    ProcessRequest::new("qs"),
+    "ARGVUS Dock Settings",
+    &[
+      "-p",
+      "/usr/share/argvus/shell/qml/shell.qml",
+      "ipc",
+      "call",
+      "dock",
+      "settings",
+    ],
+    &[],
+  )
+}
+
 pub(super) fn run_effects(arguments: &[&str]) -> Result<(), String> {
   run_argvus_route("effects-toggle", arguments, &[])
 }

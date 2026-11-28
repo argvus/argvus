@@ -542,7 +542,10 @@ fn window_mode_taskbar_module_has_an_icon() {
 #[test]
 fn dock_has_its_preferences_and_returns_to_desktop_style() {
   let mut application = app(AppearancePage::Dock);
-  assert_eq!(application.page_rows().len(), 8);
+  let rows = application.page_rows();
+  assert_eq!(rows.len(), 16);
+  assert_eq!(rows[0].id(), Some(&Item::DockSettings));
+  assert_eq!(rows[15].id(), Some(&Item::DockReset));
   assert!(!application.navigate_back());
   assert_eq!(application.page, AppearancePage::Desktop);
 }

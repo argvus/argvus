@@ -620,3 +620,9 @@ Quickshell: `launcher/Theme.qml`
 位置, 可见性, 图标大小, 放大, 运行指示器, 显示器选择, 重置默认值.
 
 `argvus control-center appearance dock`
+
+### ARGVUS Dock Settings
+
+右键点击程序坞背景即可打开设置，选择屏幕边缘、对齐方式和主题。始终显示模式为图标正常尺寸和内外边距预留空间。放大动画使用额外的表面区域。自动隐藏和重叠隐藏模式不预留空间。重置偏好设置会保留固定应用及其顺序。
+
+`argvus control-center appearance dock`

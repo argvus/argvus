@@ -34,6 +34,7 @@ pub(super) enum Item {
   Dock,
   DockOption(usize),
   DockReset,
+  DockSettings,
   ApplicationStyle,
   Themes,
   Accent,
@@ -210,7 +211,7 @@ impl Item {
       | Self::ShadowSharp
       | Self::ShadowColor
       | Self::ShadowField(_) => icons::SHADOW,
-      Self::Dock | Self::DockOption(_) => icons::TASKBAR,
+      Self::Dock | Self::DockSettings | Self::DockOption(_) => icons::TASKBAR,
       Self::DockReset => icons::RESTORE,
       Self::TaskbarPosition => icons::TASKBAR,
       Self::TaskbarHeight => icons::TASKBAR,

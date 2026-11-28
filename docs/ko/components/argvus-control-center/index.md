@@ -619,3 +619,9 @@ Quickshell: `launcher/Theme.qml`
 위치, 표시 설정, 아이콘 크기, 확대, 실행 표시기, 모니터 선택, 기본값 재설정.
 
 `argvus control-center appearance dock`
+
+### ARGVUS Dock Settings
+
+독 배경을 마우스 오른쪽 버튼으로 클릭하여 설정을 열고 화면 가장자리, 정렬, 테마를 선택하세요. 항상 표시 모드는 기본 아이콘 크기와 안팎 여백만큼 공간을 예약합니다. 확대에는 별도 영역을 사용합니다. 자동 숨김과 창 겹침 정책은 공간을 예약하지 않습니다. 설정을 초기화해도 고정한 앱과 순서는 유지됩니다.
+
+`argvus control-center appearance dock`

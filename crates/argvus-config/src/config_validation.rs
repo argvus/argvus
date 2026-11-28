@@ -760,3 +760,97 @@ pub(super) fn validate_launcher(document: &ConfigDocument) -> ConfigResult<()> {
   }
   Ok(())
 }
+
+pub(super) fn validate_dock(document: &ConfigDocument) -> ConfigResult<()> {
+  let Some(settings) = document.sections.get("dock").and_then(Value::as_object) else {
+    return Ok(());
+  };
+  const ENUMS: &[(&str, &[&str])] = &[
+    ("position", &["top", "bottom", "left", "right"]),
+    ("alignment", &["start", "center", "end", "fill"]),
+    (
+      "visibility",
+      &[
+        "always_visible",
+        "auto_hide",
+        "intelligent_hide",
+        "dodge_active",
+        "dodge_any",
+        "dodge_maximized",
+      ],
+    ),
+    ("monitor_policy", &["primary", "active", "all", "specific"]),
+  ];
+  for (key, value) in settings {
+    let valid = if let Some((_, choices)) = ENUMS.iter().find(|(field, _)| *field == key) {
+      value.as_str().is_some_and(|text| choices.contains(&text))
+    } else {
+      match key.as_str() {
+        "magnification_radius" => value.as_u64().is_some_and(|n| (1..=5).contains(&n)),
+        "animation_duration" => value.as_u64().is_some_and(|n| (0..=1000).contains(&n)),
+        "activation_size" => value.as_u64().is_some_and(|n| (1..=16).contains(&n)),
+        "picker_delay" => value.as_u64().is_some_and(|n| (0..=2000).contains(&n)),
+        "docklets_position" => matches!(value.as_str(), Some("start" | "end")),
+        "docklets" => value.as_array().is_some_and(|ids| {
+          let mut seen = std::collections::HashSet::new();
+          ids.iter().all(|id| {
+            matches!(
+              id.as_str(),
+              Some("desktop" | "trash" | "separator" | "projects" | "clipboard" | "devices")
+            ) && seen.insert(id.as_str())
+          })
+        }),
+        "monitor_name" => value
+          .as_str()
+          .is_some_and(|name| name.len() <= 128 && !name.chars().any(char::is_control)),
+        "reveal_delay" => value.as_u64().is_some_and(|n| n <= 3000),
+        "current_monitor" | "keyboard_reveal" | "drag_visible" | "menu_visible"
+        | "fullscreen_hide" | "window_count" | "all_workspaces" | "group_windows"
+        | "picker_hover" => value.is_boolean(),
+        "indicator_style" => value.as_str().is_some_and(|s| {
+          matches!(
+            s,
+            "none" | "dot" | "multiple_dots" | "line" | "rounded_line" | "glow"
+          )
+        }),
+        "spacing" => value.as_i64().is_some_and(|n| (0..=24).contains(&n)),
+        "padding" => value.as_i64().is_some_and(|n| (6..=24).contains(&n)),
+        "external_margin" => value.as_i64().is_some_and(|n| (-1..=48).contains(&n)),
+        "border_width" => value.as_i64().is_some_and(|n| (-1..=4).contains(&n)),
+        "background_opacity" => value
+          .as_f64()
+          .is_some_and(|n| n == -1.0 || (0.0..=1.0).contains(&n)),
+        "icon_size" => value.as_u64().is_some_and(|n| (24..=96).contains(&n)),
+        "hide_delay" => value.as_u64().is_some_and(|n| n <= 3000),
+        "magnification_strength" => value.as_f64().is_some_and(|n| (1.0..=1.8).contains(&n)),
+        "magnification" | "running_indicators" | "lock_items" | "launcher" | "show_running"
+        | "show_pinned" => value.is_boolean(),
+        "theme" => value.as_str().is_some_and(|id| {
+          !id.is_empty()
+            && id.len() <= 64
+            && !id.starts_with('-')
+            && id
+              .bytes()
+              .all(|c| c.is_ascii_lowercase() || c.is_ascii_digit() || c == b'-')
+        }),
+        "pins" => value.as_array().is_some_and(|pins| {
+          let mut seen = std::collections::HashSet::new();
+          pins.iter().all(|pin| {
+            pin.as_str().is_some_and(|id| {
+              !id.is_empty()
+                && id
+                  .bytes()
+                  .all(|c| c.is_ascii_alphanumeric() || b"_.+-".contains(&c))
+                && seen.insert(id)
+            })
+          })
+        }),
+        _ => true,
+      }
+    };
+    if !valid {
+      return Err(ConfigError::Invalid(format!("invalid dock.{key}")));
+    }
+  }
+  Ok(())
+}

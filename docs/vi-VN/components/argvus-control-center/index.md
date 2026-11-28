@@ -688,3 +688,9 @@ Các thay đổi cấu hình và quy tắc tường lửa nằm trong bản nhá
 Vị trí, Hiển thị, Kích thước biểu tượng, Phóng to, Chỉ báo ứng dụng đang chạy, Chọn màn hình, Đặt lại mặc định.
 
 `argvus control-center appearance dock`
+
+### ARGVUS Dock Settings
+
+Nhấp chuột phải vào nền Dock để mở cài đặt. Chọn cạnh màn hình, căn chỉnh và giao diện. Chế độ luôn hiện dành chỗ cho kích thước biểu tượng thông thường, khoảng đệm và lề ngoài. Hiệu ứng phóng đại dùng vùng bổ sung. Chế độ tự ẩn và ẩn khi chồng lấp không dành chỗ. Đặt lại tùy chọn vẫn giữ các ứng dụng đã ghim và thứ tự.
+
+`argvus control-center appearance dock`

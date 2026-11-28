@@ -681,3 +681,9 @@ Güvenlik duvarı ayarları ve kuralları taslakta tutulur. Kaydet ikisini de ya
 Pozisyon pozisyonu, Görünürlük, Simge boyutu, Büyütme, Çalışma göstergeleri, Monitör seçimi, Tembeller.
 
 `argvus control-center appearance dock`
+
+### ARGVUS Dock Settings
+
+Ayarları açmak için Dock arka planına sağ tıklayın. Kenarı, hizalamayı ve temayı seçin. Her zaman görünür modu normal simge boyutuyla birlikte iç ve dış boşluğu ayırır. Büyütme ek bir alan kullanır. Otomatik gizleme ve çakışma ilkeleri yer ayırmaz. Ayarları sıfırlamak sabitlenen uygulamaları ve sıralarını korur.
+
+`argvus control-center appearance dock`

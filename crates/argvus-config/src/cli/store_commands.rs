@@ -71,6 +71,17 @@ pub(super) fn run(arguments: Vec<String>) -> Result<(), Box<dyn std::error::Erro
       let enabled = session_units::current_telemetry_enabled(&cache_home()?);
       println!("{}", if enabled { "enabled" } else { "disabled" });
     }
+    "dock-reset" => {
+      let mut defaults: Map<String, Value> =
+        serde_json::from_str(include_str!("../usr/share/argvus/config/dock.json"))?;
+      defaults.remove("pins");
+      let patch = defaults
+        .into_iter()
+        .map(|(key, value)| (format!("/dock/{key}"), value))
+        .collect();
+      store.patch(&patch)?;
+    }
+    "dock-theme" => crate::dock_theme::run(&arguments[1..])?,
     "audio" => crate::audio::run(&store, &arguments[1..])?,
     "get" => get_value(&store, &arguments[1..])?,
     "set" => set_value(&store, &arguments[1..])?,
@@ -349,6 +360,8 @@ pub(super) fn print_help() {
   println!(
     "  runtime actions on the running compositor (replaces hyprctl eval/dispatch/keyword/reload)"
   );
+  println!("  dock-theme list | import FILE | remove ID");
+  println!("  dock-reset  restore Dock preferences and preserve pins");
   println!("  ensure  materialize canonical defaults without resetting explicit values");
   println!("  get /appearance/theme [--effective] [--raw]");
   println!("  set /appearance/theme \"argvus-dark\"");

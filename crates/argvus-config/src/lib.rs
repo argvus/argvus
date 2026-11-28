@@ -22,6 +22,7 @@ pub mod cli;
 pub mod css_edit;
 pub mod custom_shortcuts;
 pub mod display;
+mod dock_theme;
 pub mod effects;
 pub mod hyprland_ipc;
 pub mod i18n;
@@ -353,6 +354,7 @@ impl ConfigDocument {
       }
     }
     validate_appearance(self)?;
+    config_validation::validate_dock(self)?;
     validate_layout(self)?;
     validate_effects(self)?;
     validate_fonts(self)?;

@@ -107,6 +107,8 @@ struct Service {
   last_snapshot: String,
   labels: Value,
   suspended: bool,
+  desktop_hidden: HashSet<String>,
+  desktop_focus: Option<String>,
   bounded_windows: HashSet<String>,
 }
 
@@ -178,6 +180,8 @@ impl Service {
       self.bounded_windows.clear();
     }
     let active = query("activewindow")?["address"].clone();
+    let mut all_entries = Vec::new();
+    let all_workspaces = document.get("/dock/all_workspaces") == Some(&Value::Bool(true));
     let entries: Vec<_> = windows
       .iter()
       .filter(|window| window["mapped"] == true)
@@ -202,17 +206,29 @@ impl Service {
               .into()
           });
         let monitor = outputs.iter().find(|monitor| monitor["name"] == output)?;
-        if !model::listed(window, origin, monitor) {
+        let listed = model::listed(window, origin, monitor);
+        if !listed
+          && (!all_workspaces
+            || (window["hidden"] == true && origin.is_none())
+            || window["grouped"]
+              .as_array()
+              .and_then(|group| group.first())
+              .is_some_and(|first| origin.is_some() && first != &window["address"]))
+        {
           return None;
         }
-        Some(window_entry(
+        let entry = window_entry(
           window,
           target,
           &output,
           origin,
           &active,
           self.maximized.contains_key(target),
-        ))
+        );
+        if all_workspaces {
+          all_entries.push(entry.clone());
+        }
+        listed.then_some(entry)
       })
       .collect();
     let minimized_workspaces: Vec<_> = self
@@ -232,7 +248,7 @@ impl Service {
       .and_then(Value::as_str)
       .unwrap_or("top");
     Ok(
-      json!({"ready":self.ready.is_some_and(|ready|ready.elapsed()<Duration::from_secs(5)) && bar_mapped()?,"labels":self.labels,"floating":mode_applied(),"recovering":!self.registry.is_empty(),"position":position,"windows":entries,"minimized_workspaces":minimized_workspaces}),
+      json!({"ready":self.ready.is_some_and(|ready|ready.elapsed()<Duration::from_secs(5)) && bar_mapped()?,"labels":self.labels,"floating":mode_applied(),"recovering":!self.registry.is_empty(),"position":position,"windows":entries,"all_windows":if all_workspaces {Some(all_entries)} else {None},"primary_monitor":document.get("/displays/primary_monitor"),"minimized_workspaces":minimized_workspaces}),
     )
   }
 
@@ -487,8 +503,58 @@ impl Service {
         "window restoration failed; recovery record retained",
       ));
     }
+    self.desktop_hidden.remove(target);
     self.registry.remove(target);
     model::save(&self.registry)?;
+    Ok(())
+  }
+
+  fn show_desktop(&mut self) -> ConfigResult<()> {
+    let windows = self.reconcile()?;
+    self
+      .desktop_hidden
+      .retain(|target| self.registry.contains_key(target));
+    if !self.desktop_hidden.is_empty() {
+      for target in self.desktop_hidden.clone() {
+        self.restore_one(&target)?;
+      }
+      if let Some(target) = self.desktop_focus.take()
+        && windows.iter().any(|window| window["address"] == target)
+      {
+        on_window(&target, "hl.dispatch(hl.dsp.focus({window=w}))")?;
+      }
+      return Ok(());
+    }
+    let output = monitors()?
+      .into_iter()
+      .find(|output| output["focused"] == true)
+      .ok_or_else(|| invalid("no focused monitor"))?;
+    self.desktop_focus = query("activewindow")?["address"]
+      .as_str()
+      .map(str::to_owned);
+    for window in windows.iter().filter(|window| {
+      window["monitor"] == output["id"]
+        && window["mapped"] == true
+        && window["hidden"] != true
+        && model::listed(window, None, &output)
+    }) {
+      let Some(target) = window["address"].as_str() else {
+        continue;
+      };
+      if self.registry.contains_key(target) {
+        continue;
+      }
+      let previous: HashSet<_> = self.registry.keys().cloned().collect();
+      let result = self.minimize(target);
+      self.desktop_hidden.extend(
+        self
+          .registry
+          .keys()
+          .filter(|key| !previous.contains(*key))
+          .cloned(),
+      );
+      result?;
+    }
     Ok(())
   }
 
@@ -512,6 +578,7 @@ impl Service {
     };
     match action {
       "list" => return self.snapshot(),
+      "show-desktop" => self.show_desktop()?,
       "ready" => {
         if bar_mapped()? {
           self.ready = Some(Instant::now());
@@ -615,6 +682,8 @@ pub(super) fn run() -> ConfigResult<()> {
     last_snapshot: String::new(),
     labels: labels()?,
     suspended: false,
+    desktop_hidden: HashSet::new(),
+    desktop_focus: None,
     bounded_windows: HashSet::new(),
   };
   let mut last_floating = mode_applied();
@@ -722,6 +791,103 @@ fn labels() -> ConfigResult<Value> {
     labels.insert(
       key.into(),
       Value::String(i18n.tr(&format!("windows.{key}"))),
+    );
+  }
+  let controls =
+    argvus_i18n::I18n::new("control-center").map_err(|error| invalid(error.to_string()))?;
+  for key in [
+    "dock_settings",
+    "launcher",
+    "appearance",
+    "dock_visibility",
+    "applications",
+    "dock_indicators",
+    "settings",
+    "theme",
+    "position",
+    "dock_alignment",
+    "dock_icon_size",
+    "dock_hide_delay",
+    "dock_magnification",
+    "dock_strength",
+    "running",
+    "dock_pinned",
+    "lock",
+    "dock_monitor",
+    "reset_defaults",
+    "theme_profile_import",
+    "theme_profile_delete",
+    "enabled",
+    "disabled",
+    "primary_monitor",
+    "active",
+    "all",
+    "top",
+    "left",
+    "right",
+    "bottom",
+    "dock_align_start",
+    "dock_align_center",
+    "dock_align_end",
+    "dock_align_fill",
+    "always_visible",
+    "auto_hide",
+    "intelligent_hide",
+    "dodge_active",
+    "dodge_any",
+    "dodge_maximized",
+    "docklets",
+  ] {
+    labels.insert(
+      key.into(),
+      Value::String(controls.tr(&format!("control_center.{key}"))),
+    );
+  }
+  for key in [
+    "spacing",
+    "padding",
+    "external_margin",
+    "opacity",
+    "border_width",
+    "behavior",
+    "indicators",
+    "advanced",
+    "magnification_radius",
+    "animation_duration",
+    "activation_size",
+    "picker_hover",
+    "picker_delay",
+    "reveal_delay",
+    "keyboard_reveal",
+    "menu_visible",
+    "drag_visible",
+    "fullscreen_hide",
+    "window_count",
+    "all_workspaces",
+    "group_windows",
+    "specific",
+    "desktop",
+    "trash",
+    "separator",
+    "clipboard",
+    "devices",
+    "dot",
+    "multiple_dots",
+    "line",
+    "rounded_line",
+    "glow",
+    "close_all",
+    "focus",
+  ] {
+    labels.insert(
+      key.into(),
+      Value::String(controls.tr(&format!("control_center.dock_{key}"))),
+    );
+  }
+  for key in ["style", "none", "start", "automatic", "projects"] {
+    labels.insert(
+      key.into(),
+      Value::String(controls.tr(&format!("control_center.{key}"))),
     );
   }
   Ok(Value::Object(labels))
