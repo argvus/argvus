@@ -1,4 +1,10 @@
 {
+  "windows.open": "খুলুন",
+  "windows.pin": "ডকে পিন করুন",
+  "windows.unpin": "ডক থেকে আনপিন করুন",
+  "windows.move_left": "বামে সরান",
+  "windows.move_right": "ডানে সরান",
+  "windows.show_windows": "উইন্ডো দেখান",
   "workspace": "কর্মক্ষেত্র",
   "calendar": "বর্ষপঞ্জি",
   "session.unsupported": "অসমর্থিত সেশান: {session}",

@@ -1,4 +1,10 @@
 {
+  "windows.open": "فتح",
+  "windows.pin": "تثبيت في شريط التطبيقات",
+  "windows.unpin": "إلغاء التثبيت",
+  "windows.move_left": "نقل إلى اليسار",
+  "windows.move_right": "نقل إلى اليمين",
+  "windows.show_windows": "عرض النوافذ",
   "workspace": "مكان العمل",
   "calendar": "الجدول",
   "session.unsupported": "Unsupported session: {session}",

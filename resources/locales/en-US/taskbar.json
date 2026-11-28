@@ -1,4 +1,10 @@
 {
+  "windows.open": "Open",
+  "windows.pin": "Pin to Dock",
+  "windows.unpin": "Unpin from Dock",
+  "windows.move_left": "Move left",
+  "windows.move_right": "Move right",
+  "windows.show_windows": "Show windows",
   "workspace": "Workspace",
   "calendar": "Calendar",
   "session.unsupported": "Unsupported session: {session}",

@@ -682,3 +682,9 @@ Quickshell: `launcher/Theme.qml`
 Papan klip aktif secara default dan dapat dibuka dari grup utilitas di bilah tugas. Untuk berhenti merekam teks dan gambar, hapus centang pada opsi di Control Center → Appearance → Taskbar → Icons → Optional modules lalu pilih Apply. Ikon akan disembunyikan dan riwayat tidak bisa dibuka hingga opsi diaktifkan kembali. Entri yang tersimpan tetap tersedia.
 
 Setelan dan aturan firewall disimpan sebagai draf. Simpan menulis keduanya dan memulai ulang layanan. Batal membuang draf. Mulai ulang menerapkan berkas yang tersimpan.
+
+**Gaya Desktop > Dock**
+
+Posisi, Visibilitas, Ukuran ikon, Pembesaran, Indikator aplikasi berjalan, Pemilihan monitor, Reset Baku.
+
+`argvus control-center appearance dock`

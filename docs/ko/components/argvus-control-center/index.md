@@ -613,3 +613,9 @@ Quickshell: `launcher/Theme.qml`
 클립보드는 기본적으로 활성화되어 있으며 작업 표시줄의 유틸리티 그룹에서 열 수 있습니다. 텍스트와 이미지 기록을 중지하려면 Control Center → Appearance → Taskbar → Icons → Optional modules에서 항목을 해제하고 Apply를 선택하세요. 아이콘이 사라지고 다시 활성화할 때까지 기록을 열 수 없습니다. 저장된 항목은 유지됩니다.
 
 방화벽 설정과 규칙 변경은 초안에 보관됩니다. 저장하면 모두 기록하고 서비스를 재시작합니다. 취소하면 초안을 버리고, 재시작하면 저장된 파일을 적용합니다.
+
+**데스크탑 스타일 > Dock**
+
+위치, 표시 설정, 아이콘 크기, 확대, 실행 표시기, 모니터 선택, 기본값 재설정.
+
+`argvus control-center appearance dock`

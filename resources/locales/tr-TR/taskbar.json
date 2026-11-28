@@ -1,4 +1,10 @@
 {
+  "windows.open": "Aç",
+  "windows.pin": "Dock’a sabitle",
+  "windows.unpin": "Dock’tan kaldır",
+  "windows.move_left": "Sola taşı",
+  "windows.move_right": "Sağa taşı",
+  "windows.show_windows": "Pencereleri göster",
   "workspace": "Workspace",
   "calendar": "Takvim",
   "session.unsupported": "Desteklenen oturum: {session}",

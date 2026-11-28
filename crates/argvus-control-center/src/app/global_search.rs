@@ -605,6 +605,7 @@ impl App {
       #[cfg(feature = "appearance")]
       ("appearance", "accents") => self.open_appearance_page(AppearancePage::Accents),
       #[cfg(feature = "appearance")]
+      ("appearance", "dock") => self.open_appearance_page(AppearancePage::Dock),
       ("appearance", "taskbar")
       | ("appearance", "taskbar-group")
       | ("appearance", "utility-group") => self.open_appearance_page(AppearancePage::Taskbar),

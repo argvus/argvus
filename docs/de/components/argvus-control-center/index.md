@@ -631,3 +631,9 @@ Quickshell: `launcher/Theme.qml`
 Die Zwischenablage ist standardmäßig aktiv und lässt sich über die Dienstprogrammgruppe der Taskleiste öffnen. Um keine Texte und Bilder mehr zu erfassen, deaktivieren Sie die Option unter Control Center → Appearance → Taskbar → Icons → Optional modules und wählen Sie Apply. Das Symbol verschwindet und der Verlauf ist bis zur erneuten Aktivierung gesperrt. Gespeicherte Einträge bleiben erhalten.
 
 Die Firewall hält Einstellungen und Regeln als Entwurf. Speichern schreibt beides und startet den Dienst neu. Abbrechen verwirft den Entwurf. Neustart wendet die gespeicherten Dateien an.
+
+**Desktop-Stil > Dock**
+
+Position, Sichtbarkeit, Symbolgröße, Vergrößerung, Aktivitätsanzeigen, Monitorauswahl, Standardeinstellungen zurücksetzen.
+
+`argvus control-center appearance dock`

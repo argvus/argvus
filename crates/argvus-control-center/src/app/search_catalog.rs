@@ -1122,6 +1122,14 @@ pub fn build_search_registry(lang: Lang) -> SearchRegistry {
     ),
     #[cfg(feature = "appearance")]
     (
+      "appearance.dock",
+      "appearance",
+      "control_center.dock",
+      "dock magnification visibility monitor",
+      "appearance/dock",
+    ),
+    #[cfg(feature = "appearance")]
+    (
       "appearance.taskbar",
       "appearance",
       "control_center.taskbar",

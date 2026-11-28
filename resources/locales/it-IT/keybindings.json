@@ -1,4 +1,5 @@
 {
+  "keybindings.action.dock_focus": "Mostra il Dock e sposta il focus",
   "keybindings.action.accent": "Apri il selettore del colore di accento",
   "title": "ARGVUS Keybindings",
   "search": "Ricerca",

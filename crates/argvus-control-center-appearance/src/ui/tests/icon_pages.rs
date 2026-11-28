@@ -79,8 +79,12 @@ fn desktop_lists_icons_after_wallpaper_with_a_unique_glyph() {
     .expect("Desktop lists Icons");
 
   assert_eq!(icons_row.icon_glyph(), Some(icons::APPS));
-  // Fonts comes right after Icons, as the last Desktop entry.
-  assert_eq!(rows.last().and_then(|row| row.id()), Some(&Item::Fonts));
+  assert!(
+    rows
+      .windows(2)
+      .any(|pair| { pair[0].id() == Some(&Item::Icons) && pair[1].id() == Some(&Item::Fonts) })
+  );
+  assert_eq!(rows.last().and_then(|row| row.id()), Some(&Item::Dock));
 }
 
 #[test]

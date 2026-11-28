@@ -201,6 +201,7 @@ pub enum AppearancePage {
   },
   /// Entry point reached from the Hyprland category: groups the "Inner"
   /// and "Outer" gap submenus.
+  Dock,
   WindowSpaces,
   WindowSpacesInner,
   WindowSpacesOuter,
@@ -487,6 +488,7 @@ pub struct AppearanceState {
   pub widget_telemetry_order: Vec<WidgetTelemetryBlock>,
   pub control_panel_cards: ControlPanelCards,
   pub control_panel_order: Vec<ControlPanelCard>,
+  pub dock: serde_json::Value,
   pub taskbar_pos: TaskbarPosition,
   /// Taskbar height in pixels, one of `taskbar::TASKBAR_HEIGHTS`.
   pub taskbar_height: u32,
@@ -567,6 +569,7 @@ impl Default for AppearanceState {
       widget_telemetry_order: WidgetTelemetryBlock::ALL.to_vec(),
       control_panel_cards: ControlPanelCards::default(),
       control_panel_order: ControlPanelCard::ALL.to_vec(),
+      dock: serde_json::Value::Null,
       taskbar_pos: TaskbarPosition::Top,
       taskbar_height: 24,
       taskbar_border_enabled: true,

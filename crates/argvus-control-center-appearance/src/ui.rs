@@ -46,6 +46,7 @@ use ratatui::{
 };
 
 mod activation;
+mod dock;
 mod drafts;
 mod input;
 mod jobs;

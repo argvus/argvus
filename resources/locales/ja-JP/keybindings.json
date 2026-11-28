@@ -1,4 +1,5 @@
 {
+  "keybindings.action.dock_focus": "Dock を表示してフォーカスする",
   "keybindings.action.accent": "アクセントカラーの選択画面を開く",
   "title": "ARGVUS Keybindings",
   "search": "検索",

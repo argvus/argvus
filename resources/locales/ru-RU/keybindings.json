@@ -1,4 +1,5 @@
 {
+  "keybindings.action.dock_focus": "Показать док и перевести на него фокус",
   "keybindings.action.accent": "Открыть выбор акцентного цвета",
   "title": "ARGVUS Keybindings",
   "search": "Поиск",

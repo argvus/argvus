@@ -614,3 +614,9 @@ Quickshell: `launcher/Theme.qml`
 剪贴板默认启用，可从任务栏的实用工具组打开。若要停止记录文本和图像，请在 Control Center → Appearance → Taskbar → Icons → Optional modules 中取消勾选该选项并选择 Apply。图标会隐藏，重新启用前无法打开历史记录。已保存的条目会保留。
 
 防火墙的设置和规则修改先保存在草稿中。保存会写入两者并重启服务。取消会丢弃草稿。重启会应用已保存的文件。
+
+**桌面风格 > Dock**
+
+位置, 可见性, 图标大小, 放大, 运行指示器, 显示器选择, 重置默认值.
+
+`argvus control-center appearance dock`

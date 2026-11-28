@@ -1,4 +1,5 @@
 {
+  "keybindings.action.dock_focus": "إظهار شريط التطبيقات وتركيزه",
   "keybindings.action.accent": "فتح منتقي لون التمييز",
   "title": "ARGVUS Keybindings",
   "search": "البحث",

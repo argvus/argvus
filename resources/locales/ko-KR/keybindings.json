@@ -1,4 +1,5 @@
 {
+  "keybindings.action.dock_focus": "Dock 표시 및 포커스",
   "keybindings.action.accent": "강조 색상 선택기 열기",
   "title": "ARGVUS Keybindings",
   "search": "찾다",

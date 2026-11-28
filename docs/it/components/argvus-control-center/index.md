@@ -617,3 +617,9 @@ Quickshell: `launcher/Theme.qml`
 Gli Appunti sono attivi per impostazione predefinita e si aprono dal gruppo delle utilità della barra delle applicazioni. Per interrompere la registrazione di testo e immagini, deseleziona la voce in Control Center → Appearance → Taskbar → Icons → Optional modules e scegli Apply. L’icona scompare e la cronologia resta inaccessibile fino alla riattivazione. Le voci salvate vengono conservate.
 
 Il firewall mantiene impostazioni e regole in una bozza. Salva scrive entrambe e riavvia il servizio. Annulla scarta la bozza. Riavvia applica i file salvati.
+
+**Stile del desktop > Dock**
+
+Posizione, Visibilità, Dimensione delle icone, Ingrandimento, Indicatori di attività, Selezione dei monitor, Ripristina le impostazioni predefinite.
+
+`argvus control-center appearance dock`

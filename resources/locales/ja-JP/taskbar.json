@@ -1,4 +1,10 @@
 {
+  "windows.open": "開く",
+  "windows.pin": "Dock に固定",
+  "windows.unpin": "Dock から取り除く",
+  "windows.move_left": "左に移動",
+  "windows.move_right": "右に移動",
+  "windows.show_windows": "ウィンドウを表示",
   "workspace": "ワークスペース",
   "calendar": "カレンダー",
   "session.unsupported": "サポートされていないセッション: {session}",

@@ -17,6 +17,9 @@ impl AppearanceApp {
   /// immediate, draft edits stay in the draft).
   pub(super) fn activate(&mut self, item: Item) {
     match item {
+      Item::Dock => self.go(AppearancePage::Dock),
+      Item::DockOption(index) => self.change_dock(Some(index)),
+      Item::DockReset => self.change_dock(None),
       Item::Desktop => self.go(AppearancePage::Desktop),
       Item::ApplicationStyle => self.go(AppearancePage::ApplicationStyle),
       Item::Themes => self.go(AppearancePage::Themes),

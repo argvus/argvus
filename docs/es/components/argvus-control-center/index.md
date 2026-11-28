@@ -617,3 +617,9 @@ Quickshell: `launcher/Theme.qml`
 El Portapapeles está activado por defecto y se abre desde el grupo de utilidades de la barra de tareas. Para dejar de registrar texto e imágenes, desmarca la opción en Control Center → Appearance → Taskbar → Icons → Optional modules y selecciona Apply. El icono se oculta y el historial queda bloqueado hasta reactivar la opción. Se conservan las entradas guardadas.
 
 En **Firewall**, los ajustes y las reglas se editan en un borrador. Guardar aplica ambos cambios y reinicia el servicio. Cancelar descarta el borrador. Reiniciar aplica los archivos guardados.
+
+**Estilo de escritorio > Dock**
+
+Posición, Visibilidad, Tamaño de iconos, Ampliación, Indicadores de ejecución, Política de monitores, Restablecer valores predeterminados.
+
+`argvus control-center appearance dock`

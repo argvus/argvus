@@ -1,4 +1,10 @@
 {
+  "windows.open": "열기",
+  "windows.pin": "Dock에 고정",
+  "windows.unpin": "Dock에서 고정 해제",
+  "windows.move_left": "왼쪽으로 이동",
+  "windows.move_right": "오른쪽으로 이동",
+  "windows.show_windows": "창 표시",
   "workspace": "작업공간",
   "calendar": "달력",
   "session.unsupported": "지원되지 않는 세션: {session}",

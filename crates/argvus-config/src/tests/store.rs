@@ -611,3 +611,27 @@ fn mode_geometry_and_final_edge_survive_theme_reapplication() {
   }
   fs::remove_dir_all(directory).unwrap();
 }
+
+#[test]
+fn dock_pins_restore_in_order_and_reject_invalid_updates() {
+  let directory = env::temp_dir().join(format!("argvus-dock-pins-{}", std::process::id()));
+  let pins = serde_json::json!(["org.example.Editor", "browser"]);
+  let store = ConfigStore::at(&directory);
+  store.update("/dock/pins", pins.clone()).unwrap();
+  assert!(
+    store
+      .update("/dock/pins", serde_json::json!(["browser", "browser"]))
+      .is_err()
+  );
+  assert!(
+    store
+      .update("/dock/pins", serde_json::json!(["../browser"]))
+      .is_err()
+  );
+  let reopened = ConfigStore::at(&directory);
+  assert_eq!(
+    reopened.load_effective().unwrap().get("/dock/pins"),
+    Some(&pins)
+  );
+  fs::remove_dir_all(directory).unwrap();
+}

@@ -134,6 +134,7 @@ impl AppearanceApp {
       | AppearancePage::Mode => {
         self.go(AppearancePage::Desktop);
       }
+      AppearancePage::Dock => self.go(AppearancePage::Desktop),
       AppearancePage::Terminal => self.go(AppearancePage::ApplicationStyle),
       AppearancePage::OfficialThemes => self.go(AppearancePage::Themes),
       AppearancePage::ThemeFamilies { .. } => {
@@ -390,6 +391,7 @@ impl AppearanceApp {
         tr(self.lang, "control_center.border"),
         tr(self.lang, "control_center.thickness")
       ),
+      AppearancePage::Dock => format!("{desktop_root} > Dock"),
       AppearancePage::Taskbar => taskbar_root.clone(),
       AppearancePage::TaskbarIcons => {
         format!("{taskbar_root} > {}", tr(self.lang, "control_center.icons"))

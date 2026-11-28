@@ -732,3 +732,5 @@ Quickshell: `launcher/Theme.qml`
 Clipboard is enabled by default. Open it from the taskbar utility group. To stop recording text and images, clear the Clipboard option under Control Center → Appearance → Taskbar → Icons → Optional modules and select Apply. This also hides the icon and blocks opening history. Re-enable the option to access previously saved entries.
 
 **Firewall** keeps settings and rule edits in a draft. **Save** writes both and restarts the service. **Cancel** discards the draft. **Restart** applies the saved files. Use `Tab` to focus the action bar.
+
+**Desktop Style > Dock** controls position, visibility, icon size, magnification, running indicators and monitor selection. Changes apply while the Shell is running. Reset Defaults preserves pinned applications.

@@ -731,3 +731,9 @@ Quickshell: `launcher/Theme.qml`
 A Área de transferência está ativa por predefinição e abre a partir do grupo de utilitários da barra de tarefas. Para parar a recolha de texto e imagens, desmarque a opção em Control Center → Appearance → Taskbar → Icons → Optional modules e selecione Apply. O ícone desaparece e o histórico fica inacessível até reativar a opção. Os registos guardados são preservados.
 
 A página **Firewall** mantém as alterações de configuração e regras num rascunho. **Guardar** grava ambas e reinicia o serviço. **Cancelar** descarta o rascunho. **Reiniciar** aplica os ficheiros guardados. Use `Tab` para focar a barra de ações.
+
+**Estilo da área de trabalho > Dock**
+
+Posição, Visibilidade, Tamanho dos ícones, Ampliação, Indicadores de execução, Política de monitores, Reiniciar as Predefinições.
+
+`argvus control-center appearance dock`

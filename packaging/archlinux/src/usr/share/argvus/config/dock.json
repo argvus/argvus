@@ -1,0 +1,10 @@
+{
+  "position": "bottom",
+  "visibility": "always_visible",
+  "icon_size": 48,
+  "magnification": true,
+  "magnification_strength": 1.5,
+  "running_indicators": true,
+  "monitor_policy": "all",
+  "pins": []
+}

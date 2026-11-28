@@ -682,3 +682,9 @@ Quickshell: `launcher/Theme.qml`
 Bảng tạm được bật mặc định và mở từ nhóm tiện ích trên thanh tác vụ. Để dừng ghi lại văn bản và hình ảnh, bỏ chọn mục này trong Control Center → Appearance → Taskbar → Icons → Optional modules rồi chọn Apply. Biểu tượng sẽ ẩn và chỉ có thể mở lại lịch sử sau khi bật lại. Các mục đã lưu vẫn được giữ.
 
 Các thay đổi cấu hình và quy tắc tường lửa nằm trong bản nháp. Lưu ghi cả hai và khởi động lại dịch vụ. Hủy bỏ bản nháp. Khởi động lại áp dụng các tệp đã lưu.
+
+**Name > Dock**
+
+Vị trí, Hiển thị, Kích thước biểu tượng, Phóng to, Chỉ báo ứng dụng đang chạy, Chọn màn hình, Đặt lại mặc định.
+
+`argvus control-center appearance dock`

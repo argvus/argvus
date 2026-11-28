@@ -5,6 +5,55 @@
   "required": ["schema_version"],
   "properties": {
     "schema_version": { "type": "integer", "const": 1 },
+    "dock": {
+      "type": "object",
+      "properties": {
+        "position": {
+          "enum": [
+            "top",
+            "bottom"
+          ]
+        },
+        "visibility": {
+          "enum": [
+            "always_visible",
+            "auto_hide",
+            "intelligent_hide"
+          ]
+        },
+        "icon_size": {
+          "type": "integer",
+          "minimum": 24,
+          "maximum": 96
+        },
+        "magnification": {
+          "type": "boolean"
+        },
+        "magnification_strength": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 1.8
+        },
+        "running_indicators": {
+          "type": "boolean"
+        },
+        "monitor_policy": {
+          "enum": [
+            "primary",
+            "active",
+            "all"
+          ]
+        },
+        "pins": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.+-]+$"
+          }
+        }
+      }
+    },
     "appearance": {
       "type": "object",
       "properties": {

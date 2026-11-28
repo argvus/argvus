@@ -89,7 +89,7 @@ fn home_has_categories_and_spacing_is_nested() {
   // principal Home lists both groups directly. Taskbar/Control Panel/Widget
   // Telemetry are entered from the Desktop Shell card, not from here.
   assert_eq!(app(AppearancePage::Home).page_rows().len(), 2);
-  assert_eq!(app(AppearancePage::Desktop).page_rows().len(), 6);
+  assert_eq!(app(AppearancePage::Desktop).page_rows().len(), 7);
   assert_eq!(app(AppearancePage::ApplicationStyle).page_rows().len(), 2);
   // Position/Spaces (moved from the removed "Spaces, Borders & Position"
   // hub) now live inside Taskbar, between Transparency and Icons. Height and
@@ -537,4 +537,12 @@ fn window_mode_taskbar_module_has_an_icon() {
     Item::TaskbarModule(TaskbarModule::WindowMode).icon(),
     Some(icons::WINDOW_RULES)
   );
+}
+
+#[test]
+fn dock_has_its_preferences_and_returns_to_desktop_style() {
+  let mut application = app(AppearancePage::Dock);
+  assert_eq!(application.page_rows().len(), 8);
+  assert!(!application.navigate_back());
+  assert_eq!(application.page, AppearancePage::Desktop);
 }

@@ -29,9 +29,9 @@ fn bar_mapped_on(name: Option<&str>) -> ConfigResult<bool> {
         output["levels"].as_object().is_some_and(|levels| {
           levels.values().any(|entries| {
             entries.as_array().is_some_and(|entries| {
-              entries
-                .iter()
-                .any(|entry| entry["namespace"] == "argvus-window-bar")
+              entries.iter().any(|entry| {
+                entry["namespace"] == "argvus-dock" || entry["namespace"] == "argvus-window-bar"
+              })
             })
           })
         })
@@ -73,6 +73,30 @@ fn on_window(target: &str, statements: &str) -> ConfigResult<()> {
     quote(&format!("address:{target}"))
   ))?;
   Ok(())
+}
+
+fn window_entry(
+  window: &Value,
+  address: &str,
+  output: &str,
+  origin: Option<&model::Origin>,
+  active: &Value,
+  maximized: bool,
+) -> Value {
+  json!({
+    "address": address,
+    "title": window["title"],
+    "app_id": window["class"],
+    "initial_class": window["initialClass"],
+    "output": output,
+    "at": window["at"],
+    "size": window["size"],
+    "fullscreen": window["fullscreen"].as_i64().is_some_and(|mode| mode >= 2),
+    "workspace": origin.map(|origin| origin.workspace.clone()).unwrap_or_else(|| model::workspace(window)),
+    "active": window["address"] == *active,
+    "minimized": origin.is_some(),
+    "maximized": window["fullscreen"] == 1 || maximized,
+  })
 }
 
 struct Service {
@@ -154,17 +178,43 @@ impl Service {
       self.bounded_windows.clear();
     }
     let active = query("activewindow")?["address"].clone();
-    let entries:Vec<_>=windows.iter().filter(|window|window["mapped"]==true).filter_map(|window| {
-      let target=window["address"].as_str().unwrap_or("");let origin=self.registry.get(target);
-      let output=origin.map(|origin|origin.monitor.clone()).filter(|name|outputs.iter().any(|output|output["name"]==*name))
-        .or_else(||outputs.iter().find(|output|output["id"]==window["monitor"]).and_then(|output|output["name"].as_str()).map(str::to_owned))
-        .unwrap_or_else(||outputs.first().and_then(|output|output["name"].as_str()).unwrap_or("").into());
-      let monitor = outputs.iter().find(|monitor| monitor["name"] == output)?;
-      if !model::listed(window, origin, monitor) { return None; }
-      Some(json!({"address":target,"title":window["title"],"app_id":window["class"],"output":output,
-        "workspace":origin.map(|origin|origin.workspace.clone()).unwrap_or_else(||model::workspace(window)),
-        "active":window["address"]==active,"minimized":origin.is_some(),"maximized":window["fullscreen"]==1 || self.maximized.contains_key(target)}))
-    }).collect();
+    let entries: Vec<_> = windows
+      .iter()
+      .filter(|window| window["mapped"] == true)
+      .filter_map(|window| {
+        let target = window["address"].as_str().unwrap_or("");
+        let origin = self.registry.get(target);
+        let output = origin
+          .map(|origin| origin.monitor.clone())
+          .filter(|name| outputs.iter().any(|output| output["name"] == *name))
+          .or_else(|| {
+            outputs
+              .iter()
+              .find(|output| output["id"] == window["monitor"])
+              .and_then(|output| output["name"].as_str())
+              .map(str::to_owned)
+          })
+          .unwrap_or_else(|| {
+            outputs
+              .first()
+              .and_then(|output| output["name"].as_str())
+              .unwrap_or("")
+              .into()
+          });
+        let monitor = outputs.iter().find(|monitor| monitor["name"] == output)?;
+        if !model::listed(window, origin, monitor) {
+          return None;
+        }
+        Some(window_entry(
+          window,
+          target,
+          &output,
+          origin,
+          &active,
+          self.maximized.contains_key(target),
+        ))
+      })
+      .collect();
     let minimized_workspaces: Vec<_> = self
       .registry
       .values()
@@ -656,11 +706,38 @@ pub(super) fn run() -> ConfigResult<()> {
 fn labels() -> ConfigResult<Value> {
   let i18n = argvus_i18n::I18n::new("taskbar").map_err(|error| invalid(error.to_string()))?;
   let mut labels = serde_json::Map::new();
-  for key in ["restore", "minimize", "maximize", "close", "workspace"] {
+  for key in [
+    "restore",
+    "minimize",
+    "maximize",
+    "close",
+    "workspace",
+    "open",
+    "pin",
+    "unpin",
+    "move_left",
+    "move_right",
+    "show_windows",
+  ] {
     labels.insert(
       key.into(),
       Value::String(i18n.tr(&format!("windows.{key}"))),
     );
   }
   Ok(Value::Object(labels))
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  #[test]
+  fn snapshot_keeps_current_app_id_and_exports_initial_class() {
+    let window = json!({"address":"0x1","class":"changed","initialClass":"original"});
+    let entry = window_entry(&window, "0x1", "DP-1", None, &json!("0x1"), false);
+    let serialized: Value = serde_json::from_str(&entry.to_string()).unwrap();
+    assert_eq!(serialized["app_id"], "changed");
+    assert_eq!(serialized["initial_class"], "original");
+    assert_eq!(serialized["active"], true);
+  }
 }

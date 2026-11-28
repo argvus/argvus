@@ -1,4 +1,10 @@
 {
+  "windows.open": "Apri",
+  "windows.pin": "Fissa nel Dock",
+  "windows.unpin": "Rimuovi dal Dock",
+  "windows.move_left": "Sposta a sinistra",
+  "windows.move_right": "Sposta a destra",
+  "windows.show_windows": "Mostra finestre",
   "workspace": "Spazio di lavoro",
   "calendar": "Calendario",
   "session.unsupported": "Sessione non supportata: {session}",

@@ -727,3 +727,5 @@ Quickshell: `launcher/Theme.qml`
 O Clipboard vem ativado por padrão e abre pelo grupo de utilidades da barra de tarefas. Para parar a captura de texto e imagens, desmarque Clipboard em Control Center → Appearance → Taskbar → Icons → Optional modules e selecione Apply. O ícone some e o acesso ao histórico fica bloqueado. Reative a opção para acessar as entradas já salvas.
 
 O **Firewall** mantém as alterações de configuração e regras em um rascunho. **Salvar** grava ambas e reinicia o serviço. **Cancelar** descarta o rascunho. **Reiniciar** aplica os arquivos salvos. Use `Tab` para focar a barra de ações.
+
+**Estilo da área de trabalho > Dock** controla posição, visibilidade, tamanho dos ícones, ampliação, indicadores e monitores. As mudanças são aplicadas com o Shell em execução. Restaurar padrões preserva os aplicativos fixados.

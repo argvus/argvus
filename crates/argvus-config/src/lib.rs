@@ -120,7 +120,7 @@ fn write_backup(backup: &Path, contents: &str) -> io::Result<()> {
 }
 const MODULE_DIRECTORY: &str = "config";
 
-const KNOWN_SECTIONS: [&str; 18] = [
+const KNOWN_SECTIONS: [&str; 19] = [
   "appearance",
   "layout",
   "effects",
@@ -139,6 +139,7 @@ const KNOWN_SECTIONS: [&str; 18] = [
   "projects",
   "launcher",
   "snippets",
+  "dock",
 ];
 
 #[derive(Debug, Error)]
@@ -365,6 +366,24 @@ impl ConfigDocument {
     config_validation::validate_launcher(self)?;
     validate_session(self)?;
     validate_taskbar(self)?;
+    if let Some(pins) = self.get("/dock/pins") {
+      let mut seen = std::collections::HashSet::new();
+      if !pins.as_array().is_some_and(|pins| {
+        pins.iter().all(|pin| {
+          pin.as_str().is_some_and(|id| {
+            !id.is_empty()
+              && id
+                .bytes()
+                .all(|byte| byte.is_ascii_alphanumeric() || b"_.+-".contains(&byte))
+              && seen.insert(id)
+          })
+        })
+      }) {
+        return Err(ConfigError::Invalid(
+          "dock.pins must contain unique desktop IDs".into(),
+        ));
+      }
+    }
     Ok(())
   }
 

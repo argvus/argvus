@@ -1,4 +1,10 @@
 {
+  "windows.open": "Открыть",
+  "windows.pin": "Закрепить в доке",
+  "windows.unpin": "Открепить от дока",
+  "windows.move_left": "Переместить влево",
+  "windows.move_right": "Переместить вправо",
+  "windows.show_windows": "Показать окна",
   "workspace": "Рабочая область",
   "calendar": "Календарь",
   "session.unsupported": "Неподдерживаемый сеанс: {session}.",

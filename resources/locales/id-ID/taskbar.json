@@ -1,4 +1,10 @@
 {
+  "windows.open": "Buka",
+  "windows.pin": "Sematkan ke Dock",
+  "windows.unpin": "Lepas sematan dari Dock",
+  "windows.move_left": "Geser ke kiri",
+  "windows.move_right": "Geser ke kanan",
+  "windows.show_windows": "Tampilkan jendela",
   "workspace": "Area Kerja",
   "calendar": "Kalender",
   "session.unsupported": "Sesi tak didukung: {session}",

@@ -1,4 +1,10 @@
 {
+  "windows.open": "खोलें",
+  "windows.pin": "डॉक में पिन करें",
+  "windows.unpin": "डॉक से हटाएँ",
+  "windows.move_left": "बाएँ ले जाएँ",
+  "windows.move_right": "दाएँ ले जाएँ",
+  "windows.show_windows": "विंडो दिखाएँ",
   "workspace": "वर्कस्पेस",
   "calendar": "कैलेंडर",
   "session.unsupported": "Unsupported session: {session}",

@@ -1,4 +1,10 @@
 {
+  "windows.open": "کھولیں",
+  "windows.pin": "ڈاک پر پن کریں",
+  "windows.unpin": "ڈاک سے پن ہٹائیں",
+  "windows.move_left": "بائیں منتقل کریں",
+  "windows.move_right": "دائیں منتقل کریں",
+  "windows.show_windows": "ونڈوز دکھائیں",
   "workspace": "کام کی جگہ",
   "calendar": "کیلنڈر",
   "session.unsupported": "نصب شدہ سیشن: {session}",

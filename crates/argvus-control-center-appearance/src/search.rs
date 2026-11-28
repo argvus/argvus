@@ -16,6 +16,7 @@ pub const SEARCH_PAGES: &[(&str, AppearancePage)] = &[
   ("appearance/wallpapers", AppearancePage::Wallpapers),
   ("appearance/icons", AppearancePage::Icons),
   ("appearance/accents", AppearancePage::Accents),
+  ("appearance/dock", AppearancePage::Dock),
   ("appearance/taskbar", AppearancePage::Taskbar),
   (
     "appearance/taskbar-position",

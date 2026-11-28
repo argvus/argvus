@@ -60,6 +60,7 @@
   "widget_sidebar": "SUPER + comma",
   "widget_sidebar_mouse": "mouse:274",
   "widget_taskbar_toggle": "SUPER + BackSpace",
+  "widget_dock_focus": "SUPER + ALT + D",
   "widget_taskbar_bottom": "SUPER + ALT + down",
   "widget_taskbar_top": "SUPER + ALT + up",
   "widget_weather": "SUPER + SHIFT + W",

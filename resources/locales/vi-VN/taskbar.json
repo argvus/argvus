@@ -1,4 +1,10 @@
 {
+  "windows.open": "Mở",
+  "windows.pin": "Ghim vào Dock",
+  "windows.unpin": "Bỏ ghim khỏi Dock",
+  "windows.move_left": "Di chuyển sang trái",
+  "windows.move_right": "Di chuyển sang phải",
+  "windows.show_windows": "Hiện cửa sổ",
   "workspace": "Miền làm việc",
   "calendar": "Chuẩn",
   "session.unsupported": "Phiên chạy không được hỗ trợ:{session}",

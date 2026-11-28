@@ -31,6 +31,9 @@ use argvus_tui::{
 pub(super) enum Item {
   // Home
   Desktop,
+  Dock,
+  DockOption(usize),
+  DockReset,
   ApplicationStyle,
   Themes,
   Accent,
@@ -207,6 +210,8 @@ impl Item {
       | Self::ShadowSharp
       | Self::ShadowColor
       | Self::ShadowField(_) => icons::SHADOW,
+      Self::Dock | Self::DockOption(_) => icons::TASKBAR,
+      Self::DockReset => icons::RESTORE,
       Self::TaskbarPosition => icons::TASKBAR,
       Self::TaskbarHeight => icons::TASKBAR,
       Self::TaskbarBorder | Self::BorderEnabled => icons::BORDER,
@@ -319,7 +324,7 @@ impl AppearanceApp {
     tr(self.lang, key)
   }
 
-  fn submenu(&self, item: Item, key: &str) -> Row<Item> {
+  pub(super) fn submenu(&self, item: Item, key: &str) -> Row<Item> {
     with_icon(Row::submenu(item, self.label(key)), item.icon())
   }
 
@@ -510,6 +515,7 @@ impl AppearanceApp {
       AppearancePage::WindowSpacesOuter => self.window_spaces_outer_page_rows(),
       AppearancePage::GeneralBorders => self.general_borders_page_rows(),
       AppearancePage::EdgeThickness => self.edge_thickness_page_rows(),
+      AppearancePage::Dock => self.dock_rows(),
       AppearancePage::Taskbar => self.taskbar_page_rows(),
       // Checks come first; the submenus follow in the last rows.
       AppearancePage::TaskbarIcons => self.taskbar_icons_page_rows(),
@@ -1039,6 +1045,7 @@ impl AppearanceApp {
     if self.fonts_available {
       rows.push(self.submenu(Item::Fonts, "control_center.fonts"));
     }
+    rows.push(self.submenu(Item::Dock, "control_center.dock"));
     rows
   }
 

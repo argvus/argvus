@@ -619,3 +619,9 @@ Quickshell: `launcher/Theme.qml`
 Le Presse-papiers est activé par défaut et s’ouvre depuis le groupe des utilitaires de la barre des tâches. Pour arrêter la capture de texte et d’images, décochez cette option dans Control Center → Appearance → Taskbar → Icons → Optional modules, puis sélectionnez Apply. L’icône disparaît et l’historique reste inaccessible jusqu’à la réactivation. Les entrées enregistrées sont conservées.
 
 Dans le pare-feu, les réglages et les règles restent en brouillon. Enregistrer écrit les deux et redémarre le service. Annuler abandonne le brouillon. Redémarrer applique les fichiers enregistrés.
+
+**Style de bureau > Dock**
+
+Position, Visibilité, Taille des icônes, Agrandissement, Indicateurs d’activité, Choix des moniteurs, Réinitialiser les paramètres par défaut.
+
+`argvus control-center appearance dock`

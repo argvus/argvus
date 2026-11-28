@@ -675,3 +675,9 @@ Quickshell: `launcher/Theme.qml`
 Pano varsayılan olarak etkindir ve görev çubuğunun yardımcı araçlar grubundan açılır. Metin ve görüntü kaydını durdurmak için Control Center → Appearance → Taskbar → Icons → Optional modules bölümündeki seçeneğin işaretini kaldırıp Apply seçin. Simge gizlenir ve seçenek yeniden açılana kadar geçmişe erişilemez. Kayıtlı öğeler korunur.
 
 Güvenlik duvarı ayarları ve kuralları taslakta tutulur. Kaydet ikisini de yazar ve hizmeti yeniden başlatır. İptal taslağı atar. Yeniden başlat kayıtlı dosyaları uygular.
+
+**Masaüstü Style Style > Dock**
+
+Pozisyon pozisyonu, Görünürlük, Simge boyutu, Büyütme, Çalışma göstergeleri, Monitör seçimi, Tembeller.
+
+`argvus control-center appearance dock`

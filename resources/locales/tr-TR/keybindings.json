@@ -1,4 +1,5 @@
 {
+  "keybindings.action.dock_focus": "Dock’u göster ve odakla",
   "keybindings.action.accent": "Vurgu rengi seçicisini aç",
   "title": "ARGVUS Keybindings",
   "search": "Arama",

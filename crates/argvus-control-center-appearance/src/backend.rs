@@ -28,7 +28,7 @@ pub use crate::user_themes::{
   preview_export_path as preview_theme_export_path,
 };
 
-mod commands;
+pub(crate) mod commands;
 mod control_panel;
 mod effects;
 mod icon_themes;
@@ -102,6 +102,13 @@ pub fn load_page(
   mut state: AppearanceState,
 ) -> AppearanceState {
   use crate::model::AppearancePage;
+  if page == AppearancePage::Dock {
+    state.dock =
+      commands::run_argvus_route_output("config", &["get", "/dock", "--effective", "--raw"])
+        .and_then(|value| serde_json::from_str(&value).ok())
+        .unwrap_or_default();
+    return state;
+  }
   let theme = canonical_theme_id(&read_first(&active_theme_file(), DEFAULT_THEME));
   state.theme = theme.clone();
   let default_accent =
