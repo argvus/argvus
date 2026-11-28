@@ -1,4 +1,9 @@
 {
+  "control_center.dock_launch_animation": "Animazione di avvio",
+  "control_center.dock_bounce_animation": "Animazione di rimbalzo",
+  "control_center.dock_bounce_height": "Altezza del rimbalzo",
+  "control_center.dock_bounce_duration": "Durata del rimbalzo",
+  "control_center.dock_window_picker": "Selettore finestre",
   "control_center.dock_spacing": "Spaziatura",
   "control_center.dock_padding": "Margine interno",
   "control_center.dock_external_margin": "Margine esterno",

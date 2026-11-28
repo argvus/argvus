@@ -1,4 +1,9 @@
 {
+  "control_center.dock_launch_animation": "Animasi peluncuran",
+  "control_center.dock_bounce_animation": "Animasi pantulan",
+  "control_center.dock_bounce_height": "Tinggi pantulan",
+  "control_center.dock_bounce_duration": "Durasi pantulan",
+  "control_center.dock_window_picker": "Pemilih jendela",
   "control_center.dock_spacing": "Jarak item",
   "control_center.dock_padding": "Bantalan dalam",
   "control_center.dock_external_margin": "Margin luar",

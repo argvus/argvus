@@ -786,6 +786,9 @@ pub(super) fn validate_dock(document: &ConfigDocument) -> ConfigResult<()> {
       value.as_str().is_some_and(|text| choices.contains(&text))
     } else {
       match key.as_str() {
+        "bounce_animation" => value.is_boolean(),
+        "bounce_height" => value.as_u64().is_some_and(|n| (4..=32).contains(&n)),
+        "bounce_duration" => value.as_u64().is_some_and(|n| (150..=800).contains(&n)),
         "magnification_radius" => value.as_u64().is_some_and(|n| (1..=5).contains(&n)),
         "animation_duration" => value.as_u64().is_some_and(|n| (0..=1000).contains(&n)),
         "activation_size" => value.as_u64().is_some_and(|n| (1..=16).contains(&n)),

@@ -1,4 +1,9 @@
 {
+  "control_center.dock_launch_animation": "लॉन्च ऐनिमेशन",
+  "control_center.dock_bounce_animation": "उछाल ऐनिमेशन",
+  "control_center.dock_bounce_height": "उछाल की ऊँचाई",
+  "control_center.dock_bounce_duration": "उछाल की अवधि",
+  "control_center.dock_window_picker": "विंडो चयनकर्ता",
   "control_center.dock_spacing": "आइटम अंतर",
   "control_center.dock_padding": "भीतरी अंतर",
   "control_center.dock_external_margin": "बाहरी अंतर",

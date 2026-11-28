@@ -1,4 +1,9 @@
 {
+  "control_center.dock_launch_animation": "Animação de lançamento",
+  "control_center.dock_bounce_animation": "Animação de salto",
+  "control_center.dock_bounce_height": "Altura do salto",
+  "control_center.dock_bounce_duration": "Duração do salto",
+  "control_center.dock_window_picker": "Seletor de janelas",
   "control_center.dock_spacing": "Espaço entre itens",
   "control_center.dock_padding": "Preenchimento interno",
   "control_center.dock_external_margin": "Margem externa",

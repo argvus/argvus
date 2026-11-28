@@ -1,4 +1,9 @@
 {
+  "control_center.dock_launch_animation": "চালুর অ্যানিমেশন",
+  "control_center.dock_bounce_animation": "লাফের অ্যানিমেশন",
+  "control_center.dock_bounce_height": "লাফের উচ্চতা",
+  "control_center.dock_bounce_duration": "লাফের সময়",
+  "control_center.dock_window_picker": "উইন্ডো নির্বাচক",
   "control_center.dock_spacing": "আইটেমের ব্যবধান",
   "control_center.dock_padding": "ভেতরের ফাঁক",
   "control_center.dock_external_margin": "বাইরের ফাঁক",

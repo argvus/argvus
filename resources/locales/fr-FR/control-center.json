@@ -1,4 +1,9 @@
 {
+  "control_center.dock_launch_animation": "Animation de lancement",
+  "control_center.dock_bounce_animation": "Animation de rebond",
+  "control_center.dock_bounce_height": "Hauteur du rebond",
+  "control_center.dock_bounce_duration": "Durée du rebond",
+  "control_center.dock_window_picker": "Sélecteur de fenêtres",
   "control_center.dock_spacing": "Espacement",
   "control_center.dock_padding": "Marge intérieure",
   "control_center.dock_external_margin": "Marge extérieure",

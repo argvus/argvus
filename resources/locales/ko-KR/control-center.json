@@ -1,4 +1,9 @@
 {
+  "control_center.dock_launch_animation": "실행 애니메이션",
+  "control_center.dock_bounce_animation": "튀어 오르기 애니메이션",
+  "control_center.dock_bounce_height": "튀어 오르는 높이",
+  "control_center.dock_bounce_duration": "튀어 오르는 시간",
+  "control_center.dock_window_picker": "창 선택기",
   "control_center.dock_spacing": "항목 간격",
   "control_center.dock_padding": "안쪽 여백",
   "control_center.dock_external_margin": "바깥 여백",

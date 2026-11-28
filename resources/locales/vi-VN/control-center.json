@@ -1,4 +1,9 @@
 {
+  "control_center.dock_launch_animation": "Hiệu ứng khởi chạy",
+  "control_center.dock_bounce_animation": "Hiệu ứng nảy",
+  "control_center.dock_bounce_height": "Độ cao nảy",
+  "control_center.dock_bounce_duration": "Thời lượng nảy",
+  "control_center.dock_window_picker": "Bộ chọn cửa sổ",
   "control_center.dock_spacing": "Khoảng cách mục",
   "control_center.dock_padding": "Khoảng đệm",
   "control_center.dock_external_margin": "Lề ngoài",

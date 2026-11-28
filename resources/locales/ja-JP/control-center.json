@@ -1,4 +1,9 @@
 {
+  "control_center.dock_launch_animation": "起動アニメーション",
+  "control_center.dock_bounce_animation": "バウンスアニメーション",
+  "control_center.dock_bounce_height": "バウンスの高さ",
+  "control_center.dock_bounce_duration": "バウンスの時間",
+  "control_center.dock_window_picker": "ウィンドウ選択",
   "control_center.dock_spacing": "項目間隔",
   "control_center.dock_padding": "内側の余白",
   "control_center.dock_external_margin": "外側の余白",

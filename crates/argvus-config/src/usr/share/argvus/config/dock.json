@@ -1,4 +1,7 @@
 {
+  "bounce_animation": true,
+  "bounce_height": 12,
+  "bounce_duration": 450,
   "theme": "native",
   "alignment": "center",
   "position": "bottom",

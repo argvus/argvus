@@ -1,4 +1,9 @@
 {
+  "control_center.dock_launch_animation": "启动动画",
+  "control_center.dock_bounce_animation": "弹跳动画",
+  "control_center.dock_bounce_height": "弹跳高度",
+  "control_center.dock_bounce_duration": "弹跳时长",
+  "control_center.dock_window_picker": "窗口选择器",
   "control_center.dock_spacing": "项目间距",
   "control_center.dock_padding": "内边距",
   "control_center.dock_external_margin": "外边距",

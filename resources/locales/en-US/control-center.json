@@ -1,4 +1,9 @@
 {
+  "control_center.dock_launch_animation": "Launch animation",
+  "control_center.dock_bounce_animation": "Bounce animation",
+  "control_center.dock_bounce_height": "Bounce height",
+  "control_center.dock_bounce_duration": "Bounce duration",
+  "control_center.dock_window_picker": "Window picker",
   "control_center.dock_spacing": "Item spacing",
   "control_center.dock_padding": "Inner padding",
   "control_center.dock_external_margin": "Outer margin",

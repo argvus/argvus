@@ -1,4 +1,9 @@
 {
+  "control_center.dock_launch_animation": "حركة التشغيل",
+  "control_center.dock_bounce_animation": "حركة الارتداد",
+  "control_center.dock_bounce_height": "ارتفاع الارتداد",
+  "control_center.dock_bounce_duration": "مدة الارتداد",
+  "control_center.dock_window_picker": "محدد النوافذ",
   "control_center.dock_spacing": "تباعد العناصر",
   "control_center.dock_padding": "الهامش الداخلي",
   "control_center.dock_external_margin": "الهامش الخارجي",

@@ -1,4 +1,9 @@
 {
+  "control_center.dock_launch_animation": "Başlatma animasyonu",
+  "control_center.dock_bounce_animation": "Sıçrama animasyonu",
+  "control_center.dock_bounce_height": "Sıçrama yüksekliği",
+  "control_center.dock_bounce_duration": "Sıçrama süresi",
+  "control_center.dock_window_picker": "Pencere seçici",
   "control_center.dock_spacing": "Öğe aralığı",
   "control_center.dock_padding": "İç boşluk",
   "control_center.dock_external_margin": "Dış boşluk",

@@ -1,4 +1,9 @@
 {
+  "control_center.dock_launch_animation": "Startanimation",
+  "control_center.dock_bounce_animation": "Sprunganimation",
+  "control_center.dock_bounce_height": "Sprunghöhe",
+  "control_center.dock_bounce_duration": "Sprungdauer",
+  "control_center.dock_window_picker": "Fensterauswahl",
   "control_center.dock_spacing": "Elementabstand",
   "control_center.dock_padding": "Innenabstand",
   "control_center.dock_external_margin": "Außenabstand",

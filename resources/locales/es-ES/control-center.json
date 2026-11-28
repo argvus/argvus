@@ -1,4 +1,9 @@
 {
+  "control_center.dock_launch_animation": "Animación de lanzamiento",
+  "control_center.dock_bounce_animation": "Animación de rebote",
+  "control_center.dock_bounce_height": "Altura del rebote",
+  "control_center.dock_bounce_duration": "Duración del rebote",
+  "control_center.dock_window_picker": "Selector de ventanas",
   "control_center.dock_spacing": "Espacio entre elementos",
   "control_center.dock_padding": "Relleno interior",
   "control_center.dock_external_margin": "Margen exterior",

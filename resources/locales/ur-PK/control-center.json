@@ -1,4 +1,9 @@
 {
+  "control_center.dock_launch_animation": "آغاز کی حرکت",
+  "control_center.dock_bounce_animation": "اچھال کی حرکت",
+  "control_center.dock_bounce_height": "اچھال کی اونچائی",
+  "control_center.dock_bounce_duration": "اچھال کا دورانیہ",
+  "control_center.dock_window_picker": "دریچوں کا انتخاب",
   "control_center.dock_spacing": "آئٹم کا فاصلہ",
   "control_center.dock_padding": "اندرونی فاصلہ",
   "control_center.dock_external_margin": "بیرونی فاصلہ",
